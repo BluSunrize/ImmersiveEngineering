@@ -17,15 +17,16 @@ import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
@@ -42,49 +43,53 @@ public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
 	private static final Matrix4 mat = new Matrix4();
 
 	@Override
-	public void renderByItem(ItemStack stack, float partialTicks)
+	public void renderByItem(ItemStack stack)
 	{
 		GlStateManager.enableCull();
-		partialTicks = mc().getRenderPartialTicks();
+		float partialTicks = mc().getRenderPartialTicks();
 		if(stack.getItem() instanceof IOBJModelCallback)
 		{
 			IOBJModelCallback<ItemStack> callback = (IOBJModelCallback<ItemStack>)stack.getItem();
 			World w = IESmartObjModel.tempEntityStatic!=null?IESmartObjModel.tempEntityStatic.world: null;
-			IBakedModel model = mc().getRenderItem().getItemModelWithOverrides(stack, w,
+			IBakedModel model = mc().getItemRenderer().getItemModelWithOverrides(stack, w,
 					IESmartObjModel.tempEntityStatic);
 			if(model instanceof IESmartObjModel)
 			{
 				GlStateManager.disableCull();
 
-				ItemStack shader = ItemStack.EMPTY;
-				ShaderCase sCase = null;
-				if(!stack.isEmpty()&&stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+				ItemStack shader;
+				ShaderCase sCase;
 				{
-					CapabilityShader.ShaderWrapper wrapper = stack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-					if(wrapper!=null)
-					{
-						shader = wrapper.getShaderItem();
-						if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-							sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
-					}
+					Pair<ItemStack, ShaderCase> tmp = stack.getCapability(CapabilityShader.SHADER_CAPABILITY)
+							.map(wrapper ->
+							{
+								ItemStack shaderInner = wrapper.getShaderItem();
+								ShaderCase sCaseInner = null;
+								if(!shaderInner.isEmpty()&&shaderInner.getItem() instanceof IShaderItem)
+									sCaseInner = ((IShaderItem)shaderInner.getItem()).getShaderCase(shaderInner, stack, wrapper.getShaderType());
+								return new ImmutablePair<>(shaderInner, sCaseInner);
+							})
+							.orElse(new ImmutablePair<>(ItemStack.EMPTY, null));
+					shader = tmp.getLeft();
+					sCase = tmp.getRight();
 				}
 				IESmartObjModel obj = (IESmartObjModel)model;
 				Map<String, Boolean> visible = new HashMap<>(((OBJModel.OBJState)obj.getState()).getVisibilityMap());
 				Tessellator tes = Tessellator.getInstance();
 				BufferBuilder bb = tes.getBuffer();
-				ItemCameraTransforms.TransformType transformType = obj.lastCameraTransform;
+				TransformType transformType = obj.lastCameraTransform;
 				List<Pair<BakedQuad, ShaderLayer>> quads = new ArrayList<>();
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
 					GlStateManager.pushMatrix();
 					Matrix4 mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
 							ItemRendererIEOBJ.mat, partialTicks);
-					GlStateManager.multMatrix(mat.toFloatBuffer(transform));
+					GlStateManager.multMatrixf(mat.toFloatBuffer(transform));
 					boolean wasLightmapEnabled, wasLightingEnabled;
 					{
-						GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+						GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE1);
 						wasLightmapEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
-						GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+						GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE0);
 						wasLightingEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
 					}
 					boolean bright = callback.areGroupsFullbright(stack, groups);

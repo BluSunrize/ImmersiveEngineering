@@ -13,7 +13,9 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-public class EntityRenderNone extends Render
+import javax.annotation.Nonnull;
+
+public class EntityRenderNone<T extends Entity> extends Render<T>
 {
 	public EntityRenderNone(RenderManager renderManager)
 	{
@@ -21,12 +23,12 @@ public class EntityRenderNone extends Render
 	}
 
 	@Override
-	public void doRender(Entity entity, double x, double y, double z, float f0, float f1)
+	public void doRender(@Nonnull T entity, double x, double y, double z, float f0, float f1)
 	{
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity p_110775_1_)
+	protected ResourceLocation getEntityTexture(@Nonnull T p_110775_1_)
 	{
 		return null;
 	}

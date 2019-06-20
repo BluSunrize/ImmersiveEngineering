@@ -9,18 +9,21 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
+import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -28,12 +31,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWheel>
@@ -41,13 +43,13 @@ public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWh
 	private static IBakedModel model = null;
 
 	@Override
-	public void render(TileEntityBucketWheel tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+	public void render(TileEntityBucketWheel tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!tile.formed||!tile.getWorld().isBlockLoaded(tile.getPos(), false)||tile.isDummy())
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
-		if(state.getBlock()!=IEContent.blockMetalMultiblock)
+		if(state.getBlock()!=MetalMultiblocks.bucketWheel)
 			return;
 		if(model==null)
 		{
@@ -56,46 +58,43 @@ public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWh
 			model = blockRenderer.getModelForState(state);
 		}
 		OBJState objState = null;
-		HashMap<String, String> texMap = new HashMap<>();
-		if(state instanceof IExtendedBlockState)
+		Map<String, String> texMap = new HashMap<>();
+		List<String> list = Lists.newArrayList("bucketWheel");
+		synchronized(tile.digStacks)
 		{
-			ArrayList<String> list = Lists.newArrayList("bucketWheel");
-			synchronized(tile.digStacks)
-			{
-				for(int i = 0; i < tile.digStacks.size(); i++)
-					if(!tile.digStacks.get(i).isEmpty())
-					{
-						list.add("dig"+i);
-						Block b = Block.getBlockFromItem(tile.digStacks.get(i).getItem());
-						IBlockState digState = b!=Blocks.AIR?b.getStateFromMeta(tile.digStacks.get(i).getMetadata()): Blocks.COBBLESTONE.getDefaultState();
-						IBakedModel digModel = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(digState);
-						if(digModel!=null&&digModel.getParticleTexture()!=null)
-							texMap.put("dig"+i, digModel.getParticleTexture().getIconName());
-					}
-			}
-			objState = new OBJState(list, true);
+			for(int i = 0; i < tile.digStacks.size(); i++)
+				if(!tile.digStacks.get(i).isEmpty())
+				{
+					list.add("dig"+i);
+					Block b = Block.getBlockFromItem(tile.digStacks.get(i).getItem());
+					IBlockState digState = b!=Blocks.AIR?b.getDefaultState(): Blocks.COBBLESTONE.getDefaultState();
+					IBakedModel digModel = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(digState);
+					digModel.getParticleTexture();
+					texMap.put("dig"+i, digModel.getParticleTexture().getName().toString());
+				}
 		}
+		objState = new OBJState(list, true);
 
 		Tessellator tessellator = Tessellator.getInstance();
 		GlStateManager.pushMatrix();
 
-		GlStateManager.translate(x+.5, y+.5, z+.5);
+		GlStateManager.translated(x+.5, y+.5, z+.5);
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
 		EnumFacing facing = tile.facing;
 		if(tile.mirrored)
 		{
-			GlStateManager.scale(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
+			GlStateManager.scalef(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
 			GlStateManager.disableCull();
 		}
 		float dir = tile.facing==EnumFacing.SOUTH?90: tile.facing==EnumFacing.NORTH?-90: tile.facing==EnumFacing.EAST?180: 0;
-		GlStateManager.rotate(dir, 0, 1, 0);
+		GlStateManager.rotatef(dir, 0, 1, 0);
 		float rot = tile.rotation+(float)(tile.active?IEConfig.Machines.excavator_speed*partialTicks: 0);
-		GlStateManager.rotate(rot, 1, 0, 0);
+		GlStateManager.rotatef(rot, 1, 0, 0);
 
 		RenderHelper.disableStandardItemLighting();
-		Minecraft.getInstance().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
@@ -103,7 +102,7 @@ public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWh
 		if(model instanceof IESmartObjModel)
 			quads = ((IESmartObjModel)model).getQuads(state, null, 0, objState, texMap, true);
 		else
-			quads = model.getQuads(state, null, 0);
+			quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(objState, Model.objState));
 		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorld(), tile.getPos());
 		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();
@@ -125,12 +124,12 @@ public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWh
 	//			return;
 	//		GL11.glPushMatrix();
 	//
-	//		GlStateManager.translate(x+.5, y+.5, z+.5);
+	//		GlStateManager.translated(x+.5, y+.5, z+.5);
 	//		GL11.glRotatef(wheel.facing==3?180: wheel.facing==5?-90: wheel.facing==4?90: 0, 0,1,0);
 	//
 	//		if(wheel.mirrored)
 	//		{
-	//			GlStateManager.scale(1,1,-1);
+	//			GlStateManager.scalef(1,1,-1);
 	//			GL11.glDisable(GL11.GL_CULL_FACE);
 	//		}
 	//
@@ -191,7 +190,7 @@ public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWh
 	//
 	//		if(wheel.mirrored)
 	//		{
-	//			GlStateManager.scale(1,1,-1);
+	//			GlStateManager.scalef(1,1,-1);
 	//			GL11.glEnable(GL11.GL_CULL_FACE);
 	//		}
 	//

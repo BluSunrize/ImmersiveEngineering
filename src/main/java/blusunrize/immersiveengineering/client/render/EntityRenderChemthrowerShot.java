@@ -18,12 +18,11 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
-public class EntityRenderChemthrowerShot extends Render
+public class EntityRenderChemthrowerShot extends Render<EntityChemthrowerShot>
 {
 	public EntityRenderChemthrowerShot(RenderManager renderManager)
 	{
@@ -31,18 +30,18 @@ public class EntityRenderChemthrowerShot extends Render
 	}
 
 	@Override
-	public void doRender(Entity entity, double x, double y, double z, float f0, float f1)
+	public void doRender(EntityChemthrowerShot entity, double x, double y, double z, float f0, float f1)
 	{
-		FluidStack f = ((EntityChemthrowerShot)entity).getFluid();
+		FluidStack f = entity.getFluid();
 		if(f==null)
 		{
-			f = ((EntityChemthrowerShot)entity).getFluidSynced();
+			f = entity.getFluidSynced();
 			if(f==null)
 				return;
 		}
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y, z);
+		GlStateManager.translated(x, y, z);
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -50,30 +49,27 @@ public class EntityRenderChemthrowerShot extends Render
 
 		Tessellator tessellator = ClientUtils.tes();
 
-		GlStateManager.rotate(180.0F-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotate(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+		GlStateManager.rotatef(180.0F-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotatef(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 
-		TextureAtlasSprite sprite = ClientUtils.mc().getTextureMapBlocks().getAtlasSprite(f.getFluid().getStill(f).toString());
-		if(sprite!=null)
-		{
-			int colour = f.getFluid().getColor(f);
-			float a = (colour >> 24&255)/255f;
-			float r = (colour >> 16&255)/255f;
-			float g = (colour >> 8&255)/255f;
-			float b = (colour&255)/255f;
-			ClientUtils.bindAtlas();
-			int lightAll = entity.getBrightnessForRender();
-			int lightA = (lightAll >> 0x10)&0xffff;
-			int lightB = lightAll&0xffff;
-			GlStateManager.scale(.25f, .25f, .25f);
-			BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
-			worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
-			worldrenderer.pos(-.25, -.25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(4)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
-			worldrenderer.pos(.25, -.25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(4)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
-			worldrenderer.pos(.25, .25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(0)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
-			worldrenderer.pos(-.25, .25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(0)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
-			tessellator.draw();
-		}
+		TextureAtlasSprite sprite = ClientUtils.mc().getTextureMap().getAtlasSprite(f.getFluid().getStill(f).toString());
+		int colour = f.getFluid().getColor(f);
+		float a = (colour >> 24&255)/255f;
+		float r = (colour >> 16&255)/255f;
+		float g = (colour >> 8&255)/255f;
+		float b = (colour&255)/255f;
+		ClientUtils.bindAtlas();
+		int lightAll = entity.getBrightnessForRender();
+		int lightA = (lightAll >> 0x10)&0xffff;
+		int lightB = lightAll&0xffff;
+		GlStateManager.scalef(.25f, .25f, .25f);
+		BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
+		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
+		worldrenderer.pos(-.25, -.25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(4)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
+		worldrenderer.pos(.25, -.25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(4)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
+		worldrenderer.pos(.25, .25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(0)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
+		worldrenderer.pos(-.25, .25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(0)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
+		tessellator.draw();
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();
 		GlStateManager.disableRescaleNormal();
@@ -81,7 +77,7 @@ public class EntityRenderChemthrowerShot extends Render
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity p_110775_1_)
+	protected ResourceLocation getEntityTexture(EntityChemthrowerShot p_110775_1_)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/bullet.png");
 	}

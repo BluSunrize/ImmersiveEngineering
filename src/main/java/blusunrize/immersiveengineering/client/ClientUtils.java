@@ -58,11 +58,16 @@ import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import org.apache.commons.compress.utils.IOUtils;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
 import javax.vecmath.Quat4d;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.function.Function;
 
@@ -289,6 +294,21 @@ public class ClientUtils
 	public static float partialTicks()
 	{
 		return mc().getRenderPartialTicks();
+	}
+
+	public static BufferedImage readBufferedImage(InputStream imageStream) throws IOException
+	{
+		BufferedImage bufferedimage;
+
+		try
+		{
+			bufferedimage = ImageIO.read(imageStream);
+		} finally
+		{
+			IOUtils.closeQuietly(imageStream);
+		}
+
+		return bufferedimage;
 	}
 
 	public enum TimestampFormat

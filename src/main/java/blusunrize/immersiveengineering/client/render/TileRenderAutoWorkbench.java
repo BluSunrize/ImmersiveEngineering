@@ -9,34 +9,37 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAutoWorkbench;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.HashMultimap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resources.IResource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.Properties;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
@@ -48,7 +51,7 @@ import java.util.*;
 public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWorkbench>
 {
 	@Override
-	public void render(TileEntityAutoWorkbench te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+	public void render(TileEntityAutoWorkbench te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
@@ -57,20 +60,19 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=IEContent.blockMetalMultiblock)
+		if(state.getBlock()!=MetalMultiblocks.autoWorkbench)
 			return;
-		state = state.getBlock().getActualState(state, getWorld(), blockPos);
 		state = state.with(IEProperties.DYNAMICRENDER, true);
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
+		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 
 		//Initialize Tesselator and BufferBuilder
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x+.5, y+.5, z+.5);
+		GlStateManager.translated(x+.5, y+.5, z+.5);
 		if(te.mirrored)
-			GlStateManager.scale(te.facing.getXOffset()==0?-1: 1, 1, te.facing.getZOffset()==0?-1: 1);
+			GlStateManager.scalef(te.facing.getXOffset()==0?-1: 1, 1, te.facing.getZOffset()==0?-1: 1);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.processQueue.size()][];
@@ -175,30 +177,30 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 			renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "blueprint");
 
 
-		GlStateManager.translate(0, lift, 0);
+		GlStateManager.translated(0, lift, 0);
 		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "lift");
-		GlStateManager.translate(0, -lift, 0);
+		GlStateManager.translated(0, -lift, 0);
 
 		EnumFacing f = te.getFacing();
 		float tx = f==EnumFacing.WEST?-.9375f: f==EnumFacing.EAST?.9375f: 0;
 		float tz = f==EnumFacing.NORTH?-.9375f: f==EnumFacing.SOUTH?.9375f: 0;
-		GlStateManager.translate(tx, 0, tz);
-		GlStateManager.rotate(drill, 0, 1, 0);
+		GlStateManager.translated(tx, 0, tz);
+		GlStateManager.rotatef(drill, 0, 1, 0);
 		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "drill");
-		GlStateManager.rotate(-drill, 0, 1, 0);
-		GlStateManager.translate(-tx, 0, -tz);
+		GlStateManager.rotatef(-drill, 0, 1, 0);
+		GlStateManager.translated(-tx, 0, -tz);
 
 		tx = f==EnumFacing.WEST?-.59375f: f==EnumFacing.EAST?.59375f: 0;
 		tz = f==EnumFacing.NORTH?-.59375f: f==EnumFacing.SOUTH?.59375f: 0;
-		GlStateManager.translate(tx, -.21875, tz);
-		GlStateManager.rotate(press*90, -f.getZOffset(), 0, f.getXOffset());
+		GlStateManager.translated(tx, -.21875, tz);
+		GlStateManager.rotatef(press*90, -f.getZOffset(), 0, f.getXOffset());
 		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "press");
-		GlStateManager.rotate(-press*90, -f.getZOffset(), 0, f.getXOffset());
-		GlStateManager.translate(-tx, .21875, -tz);
+		GlStateManager.rotatef(-press*90, -f.getZOffset(), 0, f.getXOffset());
+		GlStateManager.translated(-tx, .21875, -tz);
 
-		GlStateManager.translate(0, liftPress, 0);
+		GlStateManager.translated(0, liftPress, 0);
 		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "pressLift");
-		GlStateManager.translate(0, -liftPress, 0);
+		GlStateManager.translated(0, -liftPress, 0);
 
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.popMatrix();
@@ -208,13 +210,13 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 			case NORTH:
 				break;
 			case SOUTH:
-				GlStateManager.rotate(180, 0, 1, 0);
+				GlStateManager.rotatef(180, 0, 1, 0);
 				break;
 			case WEST:
-				GlStateManager.rotate(90, 0, 1, 0);
+				GlStateManager.rotatef(90, 0, 1, 0);
 				break;
 			case EAST:
-				GlStateManager.rotate(-90, 0, 1, 0);
+				GlStateManager.rotatef(-90, 0, 1, 0);
 				break;
 		}
 
@@ -223,21 +225,21 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 			if(itemDisplays[i]!=null)
 			{
 				MultiblockProcess<IMultiblockRecipe> process = te.processQueue.get(i);
-				if(process==null||!(process instanceof MultiblockProcessInWorld))
+				if(!(process instanceof TileEntityPoweredMultiblock.MultiblockProcessInWorld))
 					continue;
 
 				float scale = .3125f;
-				List<ItemStack> dList = ((MultiblockProcessInWorld)process).getDisplayItem();
+				List<ItemStack> dList = ((MultiblockProcessInWorld<?>)process).getDisplayItem();
 				if(!dList.isEmpty())
 					if(dList.size() < 2)
 					{
-						GlStateManager.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
-						GlStateManager.rotate(itemDisplays[i][4], 1, 0, 0);
-						GlStateManager.scale(scale, scale, .5f);
-						ClientUtils.mc().getRenderItem().renderItem(dList.get(0), ItemCameraTransforms.TransformType.FIXED);
-						GlStateManager.scale(1/scale, 1/scale, 2);
-						GlStateManager.rotate(-itemDisplays[i][4], 1, 0, 0);
-						GlStateManager.translate(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
+						GlStateManager.translated(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
+						GlStateManager.rotatef(itemDisplays[i][4], 1, 0, 0);
+						GlStateManager.scalef(scale, scale, .5f);
+						ClientUtils.mc().getItemRenderer().renderItem(dList.get(0), TransformType.FIXED);
+						GlStateManager.scalef(1/scale, 1/scale, 2);
+						GlStateManager.rotatef(-itemDisplays[i][4], 1, 0, 0);
+						GlStateManager.translated(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
 					}
 					else
 					{
@@ -269,13 +271,13 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 									localItemY = -.34375f+(24-subProcess)/5f*.25f;
 								}
 							}
-							GlStateManager.translate(localItemX, localItemY, localItemZ);
-							GlStateManager.rotate(localAngle, 1, 0, 0);
-							GlStateManager.scale(scale, scale, .5f);
-							ClientUtils.mc().getRenderItem().renderItem(dList.get(d), ItemCameraTransforms.TransformType.FIXED);
-							GlStateManager.scale(1/scale, 1/scale, 2);
-							GlStateManager.rotate(-localAngle, 1, 0, 0);
-							GlStateManager.translate(-localItemX, -localItemY, -localItemZ);
+							GlStateManager.translated(localItemX, localItemY, localItemZ);
+							GlStateManager.rotatef(localAngle, 1, 0, 0);
+							GlStateManager.scalef(scale, scale, .5f);
+							ClientUtils.mc().getItemRenderer().renderItem(dList.get(d), TransformType.FIXED);
+							GlStateManager.scalef(1/scale, 1/scale, 2);
+							GlStateManager.rotatef(-localAngle, 1, 0, 0);
+							GlStateManager.translated(-localItemX, -localItemY, -localItemZ);
 						}
 					}
 			}
@@ -292,17 +294,17 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 			{
 				//Width depends on distance
 				float lineWidth = playerDistanceSq < 6?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
-				GlStateManager.translate(-.195, .125, .97);
-				GlStateManager.rotate(-45, 1, 0, 0);
+				GlStateManager.translated(-.195, .125, .97);
+				GlStateManager.rotatef(-45, 1, 0, 0);
 				GlStateManager.disableCull();
 				GlStateManager.disableTexture2D();
 				GlStateManager.enableBlend();
 				float scale = .0375f/(blueprint.textureScale/16f);
-				GlStateManager.scale(scale, -scale, scale);
-				GlStateManager.color(1, 1, 1, 1);
+				GlStateManager.scalef(scale, -scale, scale);
+				GlStateManager.color3f(1, 1, 1);
 				blueprint.draw(lineWidth);
-				GlStateManager.scale(1/scale, -1/scale, 1/scale);
-				GlStateManager.enableAlpha();
+				GlStateManager.scalef(1/scale, -1/scale, 1/scale);
+				GlStateManager.enableAlphaTest();
 				GlStateManager.enableTexture2D();
 				GlStateManager.enableCull();
 			}
@@ -312,8 +314,7 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 
 	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, String... parts)
 	{
-		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, new OBJState(Arrays.asList(parts), true));
+		IModelData data = new SinglePropertyModelData<>(new OBJState(Arrays.asList(parts), true), Model.objState);
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
@@ -326,7 +327,8 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5-pos.getX(), -.5-pos.getY(), -.5-pos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, worldRenderer, true);
+		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, worldRenderer, true, Utils.RAND,
+				0, data);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 	}
@@ -354,18 +356,18 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 		ArrayList<BufferedImage> images = new ArrayList<>();
 		try
 		{
-			IBakedModel ibakedmodel = ClientUtils.mc().getRenderItem().getItemModelWithOverrides(stack, world, player);
-			HashSet<String> textures = new HashSet();
-			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, 0);
+			IBakedModel ibakedmodel = ClientUtils.mc().getItemRenderer().getItemModelWithOverrides(stack, world, player);
+			HashSet<String> textures = new HashSet<>();
+			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
 			for(BakedQuad quad : quads)
 				if(quad!=null&&quad.getSprite()!=null)
-					textures.add(quad.getSprite().getIconName());
+					textures.add(quad.getSprite().getName().toString());
 			for(String s : textures)
 			{
 				ResourceLocation rl = new ResourceLocation(s);
 				rl = new ResourceLocation(rl.getNamespace(), String.format("%s/%s%s", "textures", rl.getPath(), ".png"));
 				IResource resource = ClientUtils.mc().getResourceManager().getResource(rl);
-				BufferedImage bufferedImage = TextureUtil.readBufferedImage(resource.getInputStream());
+				BufferedImage bufferedImage = ClientUtils.readBufferedImage(resource.getInputStream());
 				if(bufferedImage!=null)
 					images.add(bufferedImage);
 			}
@@ -374,7 +376,7 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 		}
 		if(images.isEmpty())
 			return null;
-		ArrayList<Pair<TexturePoint, TexturePoint>> lines = new ArrayList();
+		ArrayList<Pair<TexturePoint, TexturePoint>> lines = new ArrayList<>();
 		HashSet testSet = new HashSet();
 		HashMultimap<Integer, TexturePoint> area = HashMultimap.create();
 		int wMax = 0;
@@ -511,24 +513,25 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 		public void draw(float lineWidth)
 		{
 			//Draw edges
-			GlStateManager.glLineWidth(lineWidth);
-			GlStateManager.glBegin(GL11.GL_LINES);
+			GlStateManager.lineWidth(lineWidth);
+			//TODO use more modern GL?
+			GL11.glBegin(GL11.GL_LINES);
 			for(Pair<Point, Point> line : lines)
 			{
-				GlStateManager.glVertex3f(line.getKey().x, line.getKey().y, 0);
-				GlStateManager.glVertex3f(line.getValue().x, line.getValue().y, 0);
+				GL11.glVertex3f(line.getKey().x, line.getKey().y, 0);
+				GL11.glVertex3f(line.getValue().x, line.getValue().y, 0);
 			}
-			GlStateManager.glEnd();
+			GL11.glEnd();
 
 			if(lineWidth >= 1)//Draw shading if player is close enough
 			{
-				GlStateManager.glLineWidth(lineWidth*.66f);
+				GL11.glLineWidth(lineWidth*.66f);
 				GL11.glPointSize(4);
-				GlStateManager.glBegin(GL11.GL_LINES);
+				GL11.glBegin(GL11.GL_LINES);
 				for(ShadeStyle style : areas.keySet())
 					for(Point pixel : areas.get(style))
 						style.drawShading(pixel);
-				GlStateManager.glEnd();
+				GL11.glEnd();
 			}
 		}
 	}
@@ -557,30 +560,30 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 			for(int i = 0; i < stripeAmount; i++)
 				if(stripeDirection==0)//vertical
 				{
-					GlStateManager.glVertex3f(pixel.x+offset+step*i, pixel.y, 0);
-					GlStateManager.glVertex3f(pixel.x+offset+step*i, pixel.y+1, 0);
+					GL11.glVertex3f(pixel.x+offset+step*i, pixel.y, 0);
+					GL11.glVertex3f(pixel.x+offset+step*i, pixel.y+1, 0);
 				}
 				else if(stripeDirection==1)//horizontal
 				{
-					GlStateManager.glVertex3f(pixel.x, pixel.y+offset+step*i, 0);
-					GlStateManager.glVertex3f(pixel.x+1, pixel.y+offset+step*i, 0);
+					GL11.glVertex3f(pixel.x, pixel.y+offset+step*i, 0);
+					GL11.glVertex3f(pixel.x+1, pixel.y+offset+step*i, 0);
 				}
 				else if(stripeDirection==2)//diagonal
 				{
 					if(i==stripeAmount-1&&stripeAmount%2==1)
 					{
-						GlStateManager.glVertex3f(pixel.x, pixel.y+1, 0);
-						GlStateManager.glVertex3f(pixel.x+1, pixel.y, 0);
+						GL11.glVertex3f(pixel.x, pixel.y+1, 0);
+						GL11.glVertex3f(pixel.x+1, pixel.y, 0);
 					}
 					else if(i%2==0)
 					{
-						GlStateManager.glVertex3f(pixel.x, pixel.y+offset+step*(i/2), 0);
-						GlStateManager.glVertex3f(pixel.x+offset+step*(i/2), pixel.y, 0);
+						GL11.glVertex3f(pixel.x, pixel.y+offset+step*(i/2), 0);
+						GL11.glVertex3f(pixel.x+offset+step*(i/2), pixel.y, 0);
 					}
 					else
 					{
-						GlStateManager.glVertex3f(pixel.x+1-offset-step*(i/2), pixel.y+1, 0);
-						GlStateManager.glVertex3f(pixel.x+1, pixel.y+1-offset-step*(i/2), 0);
+						GL11.glVertex3f(pixel.x+1-offset-step*(i/2), pixel.y+1, 0);
+						GL11.glVertex3f(pixel.x+1, pixel.y+1-offset-step*(i/2), 0);
 					}
 				}
 		}

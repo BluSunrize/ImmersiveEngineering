@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
-import net.minecraft.client.model.ModelBanner;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.model.ModelBanner;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -29,7 +29,7 @@ public class TileRenderShaderBanner extends TileEntityRenderer<TileEntityShaderB
 	private final ModelBanner bannerModel = new ModelBanner();
 
 	@Override
-	public void render(TileEntityShaderBanner te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+	public void render(TileEntityShaderBanner te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		boolean flag = te.getWorld()!=null;
 		int orientation = flag?te.orientation: 0;
@@ -39,24 +39,24 @@ public class TileRenderShaderBanner extends TileEntityRenderer<TileEntityShaderB
 
 		if(!te.wall)
 		{
-			GlStateManager.translate((float)x+0.5F, (float)y+0.5F, (float)z+0.5F);
+			GlStateManager.translated((float)x+0.5F, (float)y+0.5F, (float)z+0.5F);
 			float f1 = (float)(orientation*360)/16.0F;
-			GlStateManager.rotate(-f1, 0.0F, 1.0F, 0.0F);
-			this.bannerModel.bannerStand.showModel = true;
+			GlStateManager.rotatef(-f1, 0.0F, 1.0F, 0.0F);
+			this.bannerModel.func_205057_b().showModel = true;
 		}
 		else
 		{
 			float rotation = orientation==2?180: orientation==3?0: orientation==4?90: -90;
 
-			GlStateManager.translate((float)x+0.5F, (float)y-0.16666667F, (float)z+0.5F);
-			GlStateManager.rotate(-rotation, 0.0F, 1.0F, 0.0F);
-			GlStateManager.translate(0.0F, -0.3125F, -0.4375F);
-			this.bannerModel.bannerStand.showModel = false;
+			GlStateManager.translated((float)x+0.5F, (float)y-0.16666667F, (float)z+0.5F);
+			GlStateManager.rotatef(-rotation, 0.0F, 1.0F, 0.0F);
+			GlStateManager.translated(0.0F, -0.3125F, -0.4375F);
+			this.bannerModel.func_205057_b().showModel = false;
 		}
 
 		BlockPos blockpos = te.getPos();
 		float f3 = (float)(blockpos.getX()*7+blockpos.getY()*9+blockpos.getZ()*13)+(float)time+partialTicks;
-		this.bannerModel.bannerSlate.rotateAngleX = (-0.0125F+0.01F*MathHelper.cos(f3*(float)Math.PI*0.02F))*(float)Math.PI;
+		this.bannerModel.func_205056_c().rotateAngleX = (-0.0125F+0.01F*MathHelper.cos(f3*(float)Math.PI*0.02F))*(float)Math.PI;
 		GlStateManager.enableRescaleNormal();
 		ResourceLocation resourcelocation = this.getBannerResourceLocation(te);
 
@@ -65,19 +65,19 @@ public class TileRenderShaderBanner extends TileEntityRenderer<TileEntityShaderB
 			this.bindTexture(resourcelocation);
 			GlStateManager.pushMatrix();
 
-			GlStateManager.enableAlpha();
+			GlStateManager.enableAlphaTest();
 			GlStateManager.enableBlend();
 
-			GlStateManager.scale(0.6666667F, -0.6666667F, -0.6666667F);
+			GlStateManager.scalef(0.6666667F, -0.6666667F, -0.6666667F);
 			this.bannerModel.renderBanner();
 
 			GlStateManager.disableBlend();
-			GlStateManager.disableAlpha();
+			GlStateManager.disableAlphaTest();
 
 			GlStateManager.popMatrix();
 		}
 
-		GlStateManager.color(1.0F, 1.0F, 1.0F, alpha);
+		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		GlStateManager.popMatrix();
 	}
 

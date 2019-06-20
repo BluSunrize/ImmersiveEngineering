@@ -9,24 +9,26 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine.BottlingProcess;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
@@ -35,7 +37,7 @@ import java.util.Arrays;
 public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBottlingMachine>
 {
 	@Override
-	public void render(TileEntityBottlingMachine te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+	public void render(TileEntityBottlingMachine te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
@@ -44,20 +46,19 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=IEContent.blockMetalMultiblock)
+		if(state.getBlock()!=MetalMultiblocks.bottlingMachine)
 			return;
-		state = state.getBlock().getActualState(state, getWorld(), blockPos);
 		state = state.with(IEProperties.DYNAMICRENDER, true);
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
+		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 
 		//Initialize Tesselator and BufferBuilder
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x+.5, y+.5, z+.5);
+		GlStateManager.translated(x+.5, y+.5, z+.5);
 		if(te.mirrored)
-			GlStateManager.scale(te.facing.getXOffset()==0?-1: 1, 1, te.facing.getZOffset()==0?-1: 1);
+			GlStateManager.scalef(te.facing.getXOffset()==0?-1: 1, 1, te.facing.getZOffset()==0?-1: 1);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.bottlingProcessQueue.size()][];
@@ -112,9 +113,9 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();
 
-		GlStateManager.translate(0, lift, 0);
+		GlStateManager.translated(0, lift, 0);
 		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "lift");
-		GlStateManager.translate(0, -lift, 0);
+		GlStateManager.translated(0, -lift, 0);
 
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.popMatrix();
@@ -124,13 +125,13 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 			case NORTH:
 				break;
 			case SOUTH:
-				GlStateManager.rotate(180, 0, 1, 0);
+				GlStateManager.rotatef(180, 0, 1, 0);
 				break;
 			case WEST:
-				GlStateManager.rotate(90, 0, 1, 0);
+				GlStateManager.rotatef(90, 0, 1, 0);
 				break;
 			case EAST:
-				GlStateManager.rotate(-90, 0, 1, 0);
+				GlStateManager.rotatef(-90, 0, 1, 0);
 				break;
 		}
 
@@ -140,25 +141,25 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 		{
 			GlStateManager.pushMatrix();
 			float level = fs.amount/(float)te.tanks[0].getCapacity();
-			GlStateManager.translate(-.21875, .376, 1.21875);
-			GlStateManager.scale(scale, scale, scale);
+			GlStateManager.translated(-.21875, .376, 1.21875);
+			GlStateManager.scalef(scale, scale, scale);
 			float h = level*9;
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
-			GlStateManager.rotate(90, 0, 1, 0);
+			GlStateManager.rotatef(90, 0, 1, 0);
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
-			GlStateManager.rotate(90, 0, 1, 0);
-			GlStateManager.translate(-7, 0, 7);
+			GlStateManager.rotatef(90, 0, 1, 0);
+			GlStateManager.translated(-7, 0, 7);
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
-			GlStateManager.rotate(90, 0, 1, 0);
+			GlStateManager.rotatef(90, 0, 1, 0);
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
 
-			GlStateManager.rotate(90, 1, 0, 0);
+			GlStateManager.rotatef(90, 1, 0, 0);
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, 7);
-			GlStateManager.translate(0, 0, -h);
+			GlStateManager.translated(0, 0, -h);
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, 7);
 
-			GlStateManager.scale(1/scale, 1/scale, 1/scale);
-			GlStateManager.translate(0, -1, -1);
+			GlStateManager.scalef(1/scale, 1/scale, 1/scale);
+			GlStateManager.translated(0, -1, -1);
 			GlStateManager.popMatrix();
 		}
 
@@ -174,13 +175,13 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 				ItemStack display = itemDisplays[i][4]==0||process.items.get(1).isEmpty()?process.items.get(0): process.items.get(1);
 				scale = .4375f;
 
-				GlStateManager.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
-				GlStateManager.scale(scale, scale, scale);
+				GlStateManager.translated(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
+				GlStateManager.scalef(scale, scale, scale);
 
 				if(itemDisplays[i][4]==0)
-					ClientUtils.mc().getRenderItem().renderItem(process.items.get(0), ItemCameraTransforms.TransformType.FIXED);
+					ClientUtils.mc().getItemRenderer().renderItem(process.items.get(0), TransformType.FIXED);
 				else if(itemDisplays[i][4]==1||!ClientProxy.stencilBufferEnabled)
-					ClientUtils.mc().getRenderItem().renderItem(display, ItemCameraTransforms.TransformType.FIXED);
+					ClientUtils.mc().getItemRenderer().renderItem(display, TransformType.FIXED);
 				else
 				{
 					float h0 = -.5f;
@@ -200,7 +201,7 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 					GL11.glStencilMask(0xFF);
 					GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
 
-					GlStateManager.rotate(90.0F-ClientUtils.mc().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+					GlStateManager.rotatef(90.0F-ClientUtils.mc().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
 
 					GlStateManager.disableTexture2D();
 					worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
@@ -208,7 +209,7 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 					tessellator.draw();
 					GlStateManager.enableTexture2D();
 
-					GlStateManager.rotate(-(90.0F-ClientUtils.mc().getRenderManager().playerViewY), 0.0F, 1.0F, 0.0F);
+					GlStateManager.rotatef(-(90.0F-ClientUtils.mc().getRenderManager().playerViewY), 0.0F, 1.0F, 0.0F);
 
 					GlStateManager.colorMask(true, true, true, true);
 					GlStateManager.depthMask(true);
@@ -216,30 +217,29 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 					GL11.glStencilMask(0x00);
 
 					GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0xFF);
-					ClientUtils.mc().getRenderItem().renderItem(process.items.get(0), ItemCameraTransforms.TransformType.FIXED);
+					ClientUtils.mc().getItemRenderer().renderItem(process.items.get(0), TransformType.FIXED);
 
 					GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-					ClientUtils.mc().getRenderItem().renderItem(display, ItemCameraTransforms.TransformType.FIXED);
+					ClientUtils.mc().getItemRenderer().renderItem(display, TransformType.FIXED);
 
 					GL11.glDisable(GL11.GL_STENCIL_TEST);
 				}
 
-				GlStateManager.scale(1/scale, 1/scale, 1/scale);
-				GlStateManager.translate(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
+				GlStateManager.scalef(1/scale, 1/scale, 1/scale);
+				GlStateManager.translated(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
 			}
 		GlStateManager.popMatrix();
 	}
 
 	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, String... parts)
 	{
-		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, new OBJState(Arrays.asList(parts), true));
+		IModelData data = new SinglePropertyModelData<>(new OBJState(Arrays.asList(parts), true), Model.objState);
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
-		GlStateManager.color(1, 0, 0, 1);
+		GlStateManager.color3f(1, 0, 0);
 		if(Minecraft.isAmbientOcclusionEnabled())
 			GlStateManager.shadeModel(7425);
 		else
@@ -247,7 +247,8 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5-pos.getX(), -.5-pos.getY(), -.5-pos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, worldRenderer, true);
+		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, worldRenderer, true, Utils.RAND, 0,
+				data);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 	}

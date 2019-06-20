@@ -10,33 +10,35 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.Properties;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO maybe replace with Forge animations?
 public class TileRenderWindmill extends TileEntityRenderer<TileEntityWindmill>
 {
 	private static List<BakedQuad>[] quads = new List[9];
 
 	@Override
-	public void render(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+	public void render(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -45,36 +47,32 @@ public class TileRenderWindmill extends TileEntityRenderer<TileEntityWindmill>
 		if(quads[tile.sails]==null)
 		{
 			IBlockState state = getWorld().getBlockState(blockPos);
-			if(state.getBlock()!=IEContent.blockWoodenDevice1)
+			if(state.getBlock()!=WoodenDevices.windmill)
 				return;
-			state = state.getActualState(getWorld(), blockPos);
 			state = state.with(IEProperties.FACING_ALL, EnumFacing.NORTH);
-			IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
-			if(state instanceof IExtendedBlockState)
-			{
-				List<String> parts = new ArrayList<>();
-				parts.add("base");
-				for(int i = 1; i <= tile.sails; i++)
-					parts.add("sail_"+i);
-				state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, new OBJState(parts, true));
-			}
-			quads[tile.sails] = model.getQuads(state, null, 0);
+			IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
+			List<String> parts = new ArrayList<>();
+			parts.add("base");
+			for(int i = 1; i <= tile.sails; i++)
+				parts.add("sail_"+i);
+			IModelData data = new SinglePropertyModelData<>(new OBJState(parts, true), IEProperties.Model.objState);
+			quads[tile.sails] = model.getQuads(state, null, Utils.RAND, data);
 		}
 		Tessellator tessellator = Tessellator.getInstance();
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x+.5, y+.5, z+.5);
+		GlStateManager.translated(x+.5, y+.5, z+.5);
 
 		float dir = tile.facing==EnumFacing.SOUTH?0: tile.facing==EnumFacing.NORTH?180: tile.facing==EnumFacing.EAST?90: -90;
 		float rot = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*tile.perTick);
 
-		GlStateManager.rotate(rot, tile.facing.getAxis()==Axis.X?1: 0, 0, tile.facing.getAxis()==Axis.Z?1: 0);
-		GlStateManager.rotate(dir, 0, 1, 0);
+		GlStateManager.rotatef(rot, tile.facing.getAxis()==Axis.X?1: 0, 0, tile.facing.getAxis()==Axis.Z?1: 0);
+		GlStateManager.rotatef(dir, 0, 1, 0);
 
 		RenderHelper.disableStandardItemLighting();
-		Minecraft.getInstance().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);

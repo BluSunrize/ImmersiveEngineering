@@ -9,21 +9,25 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalPress;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInWorld;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -31,7 +35,7 @@ import java.util.List;
 public class TileRenderMetalPress extends TileEntityRenderer<TileEntityMetalPress>
 {
 	@Override
-	public void render(TileEntityMetalPress te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+	public void render(TileEntityMetalPress te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
@@ -39,23 +43,22 @@ public class TileRenderMetalPress extends TileEntityRenderer<TileEntityMetalPres
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=IEContent.blockMetalMultiblock)
+		if(state.getBlock()!=MetalMultiblocks.metalPress)
 			return;
-		state = state.getBlock().getActualState(state, getWorld(), blockPos);
 		state = state.with(IEProperties.DYNAMICRENDER, true);
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
+		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x+.5, y+.5, z+.5);
+		GlStateManager.translated(x+.5, y+.5, z+.5);
 		float piston = 0;
-		float shift[] = new float[te.processQueue.size()];
+		float[] shift = new float[te.processQueue.size()];
 		for(int i = 0; i < shift.length; i++)
 		{
-			MultiblockProcess process = te.processQueue.get(i);
+			MultiblockProcess<MetalPressRecipe> process = te.processQueue.get(i);
 			if(process==null)
 				continue;
 			float transportTime = 52.5f/120f;
@@ -79,7 +82,7 @@ public class TileRenderMetalPress extends TileEntityRenderer<TileEntityMetalPres
 						piston = 1-(fProcess-(1-transportTime-pressTime))/pressTime;
 				}
 		}
-		GlStateManager.translate(0, -piston*.6875f, 0);
+		GlStateManager.translated(0, -piston*.6875f, 0);
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
@@ -92,42 +95,43 @@ public class TileRenderMetalPress extends TileEntityRenderer<TileEntityMetalPres
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, blockPos, worldRenderer, true);
+		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, blockPos, worldRenderer, true,
+				Utils.RAND, 0, EmptyModelData.INSTANCE);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		RenderHelper.enableStandardItemLighting();
 
-		GlStateManager.rotate(te.facing==EnumFacing.SOUTH?180: te.facing==EnumFacing.WEST?90: te.facing==EnumFacing.EAST?-90: 0, 0, 1, 0);
+		GlStateManager.rotatef(te.facing==EnumFacing.SOUTH?180: te.facing==EnumFacing.WEST?90: te.facing==EnumFacing.EAST?-90: 0, 0, 1, 0);
 		if(!te.mold.isEmpty())
 		{
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(0, .34, 0);
-			GlStateManager.rotate(-90, 1, 0, 0);
+			GlStateManager.translated(0, .34, 0);
+			GlStateManager.rotatef(-90, 1, 0, 0);
 			float scale = .75f;
-			GlStateManager.scale(scale, scale, 1);
-			ClientUtils.mc().getRenderItem().renderItem(te.mold, ItemCameraTransforms.TransformType.FIXED);
-			GlStateManager.scale(1/scale, 1/scale, 1);
+			GlStateManager.scalef(scale, scale, 1);
+			ClientUtils.mc().getItemRenderer().renderItem(te.mold, TransformType.FIXED);
+			GlStateManager.scalef(1/scale, 1/scale, 1);
 			GlStateManager.popMatrix();
 		}
-		GlStateManager.translate(0, piston*.6875f, 0);
-		GlStateManager.translate(0, -.35, 1.25);
+		GlStateManager.translated(0, piston*.6875f, 0);
+		GlStateManager.translated(0, -.35, 1.25);
 		for(int i = 0; i < shift.length; i++)
 		{
 			MultiblockProcess process = te.processQueue.get(i);
-			if(process==null||!(process instanceof MultiblockProcessInWorld))
+			if(!(process instanceof TileEntityPoweredMultiblock.MultiblockProcessInWorld))
 				continue;
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(0, 0, -2.5*shift[i]);
+			GlStateManager.translated(0, 0, -2.5*shift[i]);
 			if(piston > .92)
-				GlStateManager.translate(0, .92-piston, 0);
+				GlStateManager.translated(0, .92-piston, 0);
 
-			List<ItemStack> displays = ((MultiblockProcessInWorld)process).getDisplayItem();
+			List<ItemStack> displays = ((MultiblockProcessInWorld<?>)process).getDisplayItem();
 			if(!displays.isEmpty())
 			{
-				GlStateManager.rotate(-90, 1, 0, 0);
+				GlStateManager.rotatef(-90, 1, 0, 0);
 				float scale = .625f;
-				GlStateManager.scale(scale, scale, 1);
-				ClientUtils.mc().getRenderItem().renderItem(displays.get(0), ItemCameraTransforms.TransformType.FIXED);
+				GlStateManager.scalef(scale, scale, 1);
+				ClientUtils.mc().getItemRenderer().renderItem(displays.get(0), TransformType.FIXED);
 				GlStateManager.popMatrix();
 			}
 		}

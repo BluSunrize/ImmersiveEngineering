@@ -16,6 +16,8 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 
 import java.util.Collection;
 import java.util.Map;
@@ -97,5 +99,10 @@ public class IEProperties
 		{
 			return connections+" at "+here;
 		}
+	}
+
+	public static class Model
+	{
+		public static final ModelProperty<OBJState> objState = new ModelProperty<>();
 	}
 }

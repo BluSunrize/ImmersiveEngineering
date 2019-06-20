@@ -26,7 +26,7 @@ import java.util.List;
 public class TileRenderTeslaCoil extends TileEntityRenderer<TileEntityTeslaCoil>
 {
 	@Override
-	public void render(TileEntityTeslaCoil tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+	public void render(TileEntityTeslaCoil tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -43,7 +43,7 @@ public class TileRenderTeslaCoil extends TileEntityRenderer<TileEntityTeslaCoil>
 				animation.createLightning(Utils.RAND);
 
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(x, y, z);
+			GlStateManager.translated(x, y, z);
 
 			GlStateManager.disableTexture2D();
 			GlStateManager.enableBlend();
@@ -71,7 +71,7 @@ public class TileRenderTeslaCoil extends TileEntityRenderer<TileEntityTeslaCoil>
 
 	public static void drawAnimation(LightningAnimation animation, double tileX, double tileY, double tileZ, float[] rgba, float lineWidth)
 	{
-		GlStateManager.color(rgba[0], rgba[1], rgba[2], rgba[3]);
+		GlStateManager.color4f(rgba[0], rgba[1], rgba[2], rgba[3]);
 		GL11.glLineWidth(lineWidth);
 		Tessellator tes = ClientUtils.tes();
 		BufferBuilder worldrenderer = tes.getBuffer();

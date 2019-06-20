@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -25,8 +25,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
-
-import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 {
@@ -60,18 +58,18 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 		BufferBuilder wr = tes.getBuffer();
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y+1, z);
-		GlStateManager.rotate(entityYaw+90, 0, 1, 0);
+		GlStateManager.translated(x, y+1, z);
+		GlStateManager.rotatef(entityYaw+90, 0, 1, 0);
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(0, 0, .03125);
-		GlStateManager.rotate(entity.angleHorizontal, 1, 0, 0);
-		GlStateManager.translate(0, -entity.tubeLength/2, 0);
+		GlStateManager.translated(0, 0, .03125);
+		GlStateManager.rotatef(entity.angleHorizontal, 1, 0, 0);
+		GlStateManager.translated(0, -entity.tubeLength/2, 0);
 		drawTube(entity.active, entity.rgb, entity.tubeLength, wr, tes);
 		GlStateManager.popMatrix();
-		GlStateManager.translate(-0.25, -1, 0);
-		GlStateManager.color(1, 1, 1);
+		GlStateManager.translated(-0.25, -1, 0);
+		GlStateManager.color3f(1, 1, 1);
 		if(tex==null)
-			tex = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/iron_block");
+			tex = Minecraft.getInstance().getTextureMap().getAtlasSprite("minecraft:blocks/iron_block");
 
 		wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 		ClientUtils.renderTexturedBox(wr, 0, 0, 0, .0625, 1, .0625, tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
@@ -87,15 +85,15 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 	static void drawTube(boolean active, float[] rgb, double length, BufferBuilder wr, Tessellator tes)
 	{
 		if(tube.isEmpty())
-			tube = new ItemStack(IEContent.itemFluorescentTube);
+			tube = new ItemStack(Misc.fluorescentTube);
 		if(tubeActive.isEmpty())
 		{
-			tubeActive = new ItemStack(IEContent.itemFluorescentTube);
+			tubeActive = new ItemStack(Misc.fluorescentTube);
 			ItemFluorescentTube.setLit(tubeActive, 1);
 		}
-		GlStateManager.translate(-.5, .25, -.5);
+		GlStateManager.translated(-.5, .25, -.5);
 		ItemStack renderStack = active?tubeActive: tube;
 		ItemFluorescentTube.setRGB(renderStack, rgb);
-		ItemRendererIEOBJ.INSTANCE.renderByItem(renderStack, mc().getRenderPartialTicks());
+		ItemRendererIEOBJ.INSTANCE.renderByItem(renderStack);
 	}
 }

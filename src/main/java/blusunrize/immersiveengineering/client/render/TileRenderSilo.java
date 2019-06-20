@@ -12,30 +12,29 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
 
 public class TileRenderSilo extends TileEntityRenderer<TileEntitySilo>
 {
 	@Override
-	public void render(TileEntitySilo tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+	public void render(TileEntitySilo tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!tile.formed||tile.posInMultiblock!=4||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
 		GlStateManager.pushMatrix();
 
-		GlStateManager.translate(x+.5, y, z+.5);
+		GlStateManager.translated(x+.5, y, z+.5);
 
 		if(!tile.identStack.isEmpty())
 		{
-			GlStateManager.translate(0, 5, 0);
+			GlStateManager.translated(0, 5, 0);
 			float baseScale = .0625f;
 			float itemScale = .75f;
 			float flatScale = .001f;
 			baseScale *= itemScale;
 			float textScale = .375f;
-			GlStateManager.scale(baseScale, -baseScale, baseScale);
+			GlStateManager.scalef(baseScale, -baseScale, baseScale);
 			ItemStack stack = Utils.copyStackWithAmount(tile.identStack, tile.storageAmount);
 			String s = ""+stack.getCount();
 			float w = this.getFontRenderer().getStringWidth(s);
@@ -48,29 +47,29 @@ public class TileRenderSilo extends TileEntityRenderer<TileEntitySilo>
 			for(int i = 0; i < 4; i++)
 			{
 				GlStateManager.pushMatrix();
-				GlStateManager.translate(xx, 0, zz);
-				GlStateManager.scale(1, 1, flatScale);
-				ClientUtils.mc().getRenderItem().renderItemAndEffectIntoGUI(stack, 0, 0);
-				GlStateManager.scale(1, 1, 1/flatScale);
+				GlStateManager.translated(xx, 0, zz);
+				GlStateManager.scalef(1, 1, flatScale);
+				ClientUtils.mc().getItemRenderer().renderItemAndEffectIntoGUI(stack, 0, 0);
+				GlStateManager.scalef(1, 1, 1/flatScale);
 
 				GlStateManager.disableLighting();
 				GlStateManager.depthMask(false);
-				GlStateManager.translate(8-w/2, 17, .001f);
-				GlStateManager.scale(textScale, textScale, 1);
-				ClientUtils.font().drawString(""+stack.getCount(), 0, 0, 0x888888, true);
-				GlStateManager.scale(1/textScale, 1/textScale, 1);
-				GlStateManager.translate(-(8-w/2), -17, -.001f);
+				GlStateManager.translated(8-w/2, 17, .001f);
+				GlStateManager.scalef(textScale, textScale, 1);
+				ClientUtils.font().drawStringWithShadow(""+stack.getCount(), 0, 0, 0x888888);
+				GlStateManager.scalef(1/textScale, 1/textScale, 1);
+				GlStateManager.translated(-(8-w/2), -17, -.001f);
 				GlStateManager.depthMask(true);
 				GlStateManager.enableLighting();
 
-				GlStateManager.translate(-xx, 0, -zz);
+				GlStateManager.translated(-xx, 0, -zz);
 				GlStateManager.popMatrix();
-				GlStateManager.rotate(90, 0, 1, 0);
+				GlStateManager.rotatef(90, 0, 1, 0);
 
-				GlStateManager.enableAlpha();
+				GlStateManager.enableAlphaTest();
 				GlStateManager.alphaFunc(516, 0.1F);
 				GlStateManager.enableBlend();
-				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+				GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			}
 		}
 		GlStateManager.popMatrix();

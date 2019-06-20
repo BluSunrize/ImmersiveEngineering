@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,18 +20,18 @@ import org.lwjgl.opengl.GL11;
 public class TileRenderSheetmetalTank extends TileEntityRenderer<TileEntitySheetmetalTank>
 {
 	@Override
-	public void render(TileEntitySheetmetalTank tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+	public void render(TileEntitySheetmetalTank tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!tile.formed||tile.posInMultiblock!=4||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
 		GlStateManager.pushMatrix();
 
-		GlStateManager.translate(x+.5, y, z+.5);
+		GlStateManager.translated(x+.5, y, z+.5);
 
 		FluidStack fs = tile.tank.getFluid();
-		GlStateManager.translate(0, 3.5f, 0);
+		GlStateManager.translated(0, 3.5f, 0);
 		float baseScale = .0625f;
-		GlStateManager.scale(baseScale, -baseScale, baseScale);
+		GlStateManager.scalef(baseScale, -baseScale, baseScale);
 
 		float xx = -.5f;
 		float zz = 1.5f-.004f;
@@ -40,12 +39,12 @@ public class TileRenderSheetmetalTank extends TileEntityRenderer<TileEntitySheet
 		zz /= baseScale;
 		for(int i = 0; i < 4; i++)
 		{
-			GlStateManager.translate(xx, 0, zz);
+			GlStateManager.translated(xx, 0, zz);
 
 			GlStateManager.disableTexture2D();
 			GlStateManager.enableBlend();
-			GlStateManager.disableAlpha();
-			OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+			GlStateManager.disableAlphaTest();
+			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 			GlStateManager.disableLighting();
 
@@ -58,25 +57,25 @@ public class TileRenderSheetmetalTank extends TileEntityRenderer<TileEntitySheet
 			ClientUtils.tes().draw();
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 			GlStateManager.disableBlend();
-			GlStateManager.enableAlpha();
+			GlStateManager.enableAlphaTest();
 			GlStateManager.enableTexture2D();
 
 			if(fs!=null)
 			{
 				float h = fs.amount/(float)tile.tank.getCapacity();
 				GlStateManager.depthMask(false);
-				GlStateManager.translate(0, 0, .004f);
+				GlStateManager.translated(0, 0, .004f);
 				ClientUtils.drawRepeatedFluidSprite(fs, 0, 0+(1-h)*16, 16, h*16);
-				GlStateManager.translate(0, 0, -.004f);
+				GlStateManager.translated(0, 0, -.004f);
 				GlStateManager.depthMask(true);
 			}
 
-			GlStateManager.translate(-xx, 0, -zz);
-			GlStateManager.rotate(90, 0, 1, 0);
-			GlStateManager.enableAlpha();
+			GlStateManager.translated(-xx, 0, -zz);
+			GlStateManager.rotatef(90, 0, 1, 0);
+			GlStateManager.enableAlphaTest();
 			GlStateManager.alphaFunc(516, 0.1F);
 			GlStateManager.enableBlend();
-			OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 		}
 		GlStateManager.popMatrix();
 	}

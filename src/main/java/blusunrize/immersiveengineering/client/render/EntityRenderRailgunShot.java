@@ -13,17 +13,17 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class EntityRenderRailgunShot extends Render
+import javax.annotation.Nonnull;
+
+public class EntityRenderRailgunShot extends Render<EntityRailgunShot>
 {
 	public EntityRenderRailgunShot(RenderManager renderManager)
 	{
@@ -31,12 +31,12 @@ public class EntityRenderRailgunShot extends Render
 	}
 
 	@Override
-	public void doRender(Entity entity, double x, double y, double z, float f0, float f1)
+	public void doRender(EntityRailgunShot entity, double x, double y, double z, float f0, float f1)
 	{
 		double yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*f1-90.0F;
 		double pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*f1;
 
-		ItemStack ammo = ((EntityRailgunShot)entity).getAmmo();
+		ItemStack ammo = entity.getAmmo();
 		int[][] colourMap = {{0x777777, 0xa4a4a4}};
 		if(!ammo.isEmpty())
 		{
@@ -50,21 +50,21 @@ public class EntityRenderRailgunShot extends Render
 	public static void renderRailgunProjectile(double x, double y, double z, double yaw, double pitch, int[][] colourMap)
 	{
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y, z);
+		GlStateManager.translated(x, y, z);
 		GlStateManager.enableRescaleNormal();
 		Tessellator tes = ClientUtils.tes();
 		BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
 
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
-		GlStateManager.disableAlpha();
-		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+		GlStateManager.disableAlphaTest();
+		GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 
 		GlStateManager.disableCull();
-		GlStateManager.rotate((float)yaw, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotate((float)pitch, 0.0F, 0.0F, 1.0F);
+		GlStateManager.rotatef((float)yaw, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotatef((float)pitch, 0.0F, 0.0F, 1.0F);
 
-		GlStateManager.scale(.25f, .25f, .25f);
+		GlStateManager.scalef(.25f, .25f, .25f);
 
 		if(colourMap.length==1)
 		{
@@ -81,13 +81,13 @@ public class EntityRenderRailgunShot extends Render
 		float widthStep = height/colWidth;
 		float lengthStep = length/colLength;
 
-		GlStateManager.translate(-length*.85f, 0, 0);
+		GlStateManager.translated(-length*.85f, 0, 0);
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 		int colR;
 		int colG;
 		int colB;
 		//Front&Back
-		GlStateManager.color(1f, 1f, 1f, 1f);
+		GlStateManager.color3f(1, 1, 1);
 		for(int i = 0; i < colWidth; i++)
 		{
 			colR = (colourMap[0][i] >> 16)&255;
@@ -145,7 +145,7 @@ public class EntityRenderRailgunShot extends Render
 		tes.draw();
 
 		GlStateManager.enableBlend();
-		GlStateManager.enableAlpha();
+		GlStateManager.enableAlphaTest();
 		GlStateManager.enableTexture2D();
 
 		GlStateManager.enableCull();
@@ -155,7 +155,7 @@ public class EntityRenderRailgunShot extends Render
 
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity p_110775_1_)
+	protected ResourceLocation getEntityTexture(@Nonnull EntityRailgunShot p_110775_1_)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/white.png");
 	}

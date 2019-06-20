@@ -283,7 +283,7 @@ public class ClientProxy extends CommonProxy
 			@Override
 			public Render createRenderFor(RenderManager manager)
 			{
-				return new EntityRenderNone(manager);
+				return new EntityRenderNone<>(manager);
 			}
 		});
 		RenderingRegistry.registerEntityRenderingHandler(EntityChemthrowerShot.class, new IRenderFactory<EntityChemthrowerShot>()
