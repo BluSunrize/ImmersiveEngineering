@@ -18,25 +18,24 @@ import blusunrize.immersiveengineering.api.energy.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.fx.ParticleFractal;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiRevolver;
-import blusunrize.immersiveengineering.client.gui.GuiToolbox;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice1;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityTurntable;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.network.MessageChemthrowerSwitch;
 import blusunrize.immersiveengineering.common.network.MessageMagnetEquip;
@@ -52,15 +51,14 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.ModelVillager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -73,25 +71,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.*;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.GuiScreenEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -100,21 +98,16 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.GameData;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.resource.VanillaResourceType;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -228,47 +221,46 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-		if(event.getItemStack()==null||event.getItemStack().isEmpty())
+		event.getItemStack();
+		if(event.getItemStack().isEmpty())
 			return;
-		if(event.getItemStack().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		event.getItemStack().getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
 		{
-			ShaderWrapper wrapper = event.getItemStack().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			ItemStack shader = wrapper!=null?wrapper.getShaderItem(): null;
+			ItemStack shader = wrapper.getShaderItem();
 			if(!shader.isEmpty())
-				event.getToolTip().add(TextFormatting.DARK_GRAY+shader.getDisplayName());
-		}
+				event.getToolTip().add(shader.getDisplayName().setStyle(new Style().setColor(TextFormatting.DARK_GRAY)));
+		});
+		Style gray = new Style().setColor(TextFormatting.GRAY);
 		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Earmuffs))
 		{
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty())
-				event.getToolTip().add(TextFormatting.GRAY+earmuffs.getDisplayName());
+				event.getToolTip().add(earmuffs.getDisplayName().setStyle(gray));
 		}
 		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Powerpack))
 		{
 			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
 			{
-				event.getToolTip().add(TextFormatting.GRAY+powerpack.getDisplayName());
-				event.getToolTip().add(TextFormatting.GRAY.toString()+EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF");
+				event.getToolTip().add(powerpack.getDisplayName().setStyle(gray));
+				event.getToolTip().add(new TextComponentString(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF")
+						.setStyle(gray));
 			}
 		}
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT
-				&&ClientUtils.mc().currentScreen!=null
+		if(ClientUtils.mc().currentScreen!=null
 				&&ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
 				&&BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
-			event.getToolTip().add(TextFormatting.GRAY+I18n.format("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack())));
+			event.getToolTip().add(new TextComponentTranslation("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack()))
+					.setStyle(gray));
 		if(IEConfig.oreTooltips&&event.getFlags().isAdvanced())
 		{
-			for(int oid : OreDictionary.getOreIDs(event.getItemStack()))
-				event.getToolTip().add(TextFormatting.GRAY+OreDictionary.getOreName(oid));
-//			FluidStack fs = FluidUtil.getFluidContained(event.getItemStack());
-//			if(fs!=null && fs.getFluid()!=null)
-//				event.getToolTip().add("Fluid: "+ FluidRegistry.getFluidName(fs));
+			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
+				event.getToolTip().add(new TextComponentString(oid.toString()).setStyle(gray));
 		}
 
 		if(event.getItemStack().getItem() instanceof IBulletContainer)
 			for(String s : BULLET_TOOLTIP)
-				event.getToolTip().add(s);
+				event.getToolTip().add(new TextComponentString(s));
 	}
 
 	@SubscribeEvent()
@@ -289,8 +281,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				GlStateManager.pushMatrix();
 				GlStateManager.enableBlend();
 				GlStateManager.enableRescaleNormal();
-				GlStateManager.translate(currentX, currentY, 700);
-				GlStateManager.scale(.5f, .5f, 1);
+				GlStateManager.translatef(currentX, currentY, 700);
+				GlStateManager.scalef(.5f, .5f, 1);
 
 				GuiRevolver.drawExternalGUI(bullets, bulletAmount);
 
@@ -303,8 +295,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onPlaySound(PlaySoundEvent event)
 	{
-		if(event.getSound()==null||event.getSound().getCategory()==null)
+		if(event.getSound()==null)
+		{
 			return;
+		}
+		else
+		{
+			event.getSound().getCategory();
+		}
 		if(!ItemEarmuffs.affectedSoundCategories.contains(event.getSound().getCategory().getName()))
 			return;
 		if(ClientUtils.mc().player!=null&&!ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty())
@@ -312,7 +310,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			ItemStack earmuffs = ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 			if(ItemNBTHelper.hasKey(earmuffs, Lib.NBT_Earmuffs))
 				earmuffs = ItemNBTHelper.getItemStack(earmuffs, Lib.NBT_Earmuffs);
-			if(!earmuffs.isEmpty()&&IEContent.itemEarmuffs.equals(earmuffs.getItem())&&!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
+			if(!earmuffs.isEmpty()&&Misc.earmuffs.equals(earmuffs.getItem())&&!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
 			{
 				for(String blacklist : IEConfig.Tools.earDefenders_SoundBlacklist)
 					if(blacklist!=null&&blacklist.equalsIgnoreCase(event.getSound().getSoundLocation().toString()))
@@ -322,9 +320,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				else
 					event.setResultSound(new IEMuffledSound(event.getSound(), ItemEarmuffs.getVolumeMod(earmuffs)));
 
-				if(event.getSound() instanceof PositionedSoundRecord)
+				if(event.getSound().getCategory()==SoundCategory.RECORDS)
 				{
-					BlockPos pos = new BlockPos(event.getSound().getXPosF(), event.getSound().getYPosF(), event.getSound().getZPosF());
+					BlockPos pos = new BlockPos(event.getSound().getX(), event.getSound().getY(), event.getSound().getZ());
 					if(ClientUtils.mc().renderGlobal.mapSoundPositions.containsKey(pos))
 						ClientUtils.mc().renderGlobal.mapSoundPositions.put(pos, event.getResultSound());
 				}
@@ -348,69 +346,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		tes.draw();
 	}
 
-	/*
-	static boolean connectionsRendered = false;
-	public static void renderAllIEConnections(float partial)
-	{
-		if(connectionsRendered)
-			return;
-		GlStateManager.pushMatrix();
-
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		//		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-		GL11.glShadeModel(GL11.GL_SMOOTH);
-		RenderHelper.enableStandardItemLighting();
-
-		Tessellator.instance.startDrawing(GL11.GL_QUADS);
-
-		EntityLivingBase viewer = ClientUtils.mc().renderViewEntity;
-		double dx = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partial;//(double)event.partialTicks;
-		double dy = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partial;//(double)event.partialTicks;
-		double dz = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partial;//(double)event.partialTicks;
-
-		for(Object o : ClientUtils.mc().renderGlobal.tileEntities)
-			if(o instanceof IImmersiveConnectable)
-			{
-				TileEntity tile = (TileEntity)o;
-				//				int lb = tile.getworld().getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
-				//				int lb_j = lb % 65536;
-				//				int lb_k = lb / 65536;
-				//				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
-
-
-				Tessellator.instance.setTranslation(tile.xCoord-dx, tile.yCoord-dy, tile.zCoord-dz);
-				//				GlStateManager.translate((tile.xCoord+.5-dx), (tile.yCoord+.5-dy), (tile.zCoord+.5-dz));
-				ClientUtils.renderAttachedConnections((TileEntity)tile);
-				//				GlStateManager.translate(-(tile.xCoord+.5-dx), -(tile.yCoord+.5-dy), -(tile.zCoord+.5-dz));
-
-			}
-
-		Iterator<ImmersiveNetHandler.Connection> it = skyhookGrabableConnections.iterator();
-		World world = viewer.world;
-		while(it.hasNext())
-		{
-			ImmersiveNetHandler.Connection con = it.next();
-			Tessellator.instance.setTranslation(con.start.posX-dx, con.start.posY-dy, con.start.posZ-dz);
-			double r = con.cableType.getRenderDiameter()/2;
-			ClientUtils.drawConnection(con, Utils.toIIC(con.start, world), Utils.toIIC(con.end, world),   0x00ff99,128,r*1.75, con.cableType.getIcon(con));
-		}
-
-		Tessellator.instance.setTranslation(0,0,0);
-		Tessellator.instance.draw();
-
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-
-		GlStateManager.popMatrix();
-		connectionsRendered = true;
-	}
-	 */
-
 	@SubscribeEvent
 	public void onRenderItemFrame(RenderItemInFrameEvent event)
 	{
@@ -421,31 +356,31 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(playerDistanceSq < 1000)
 			{
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(event.getItem(), "blueprint"));
-				if(recipes!=null&&recipes.length > 0)
+				if(recipes.length > 0)
 				{
 					int i = event.getEntityItemFrame().getRotation();
 					BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
 					BlueprintLines blueprint = recipe==null?null: TileRenderAutoWorkbench.getBlueprintDrawable(recipe, event.getEntityItemFrame().getEntityWorld());
 					if(blueprint!=null)
 					{
-						GlStateManager.rotate(-i*45.0F, 0.0F, 0.0F, 1.0F);
+						GlStateManager.rotatef(-i*45.0F, 0.0F, 0.0F, 1.0F);
 						ClientUtils.bindTexture("immersiveengineering:textures/models/blueprint_frame.png");
-						GlStateManager.translate(-.5, .5, -.001);
+						GlStateManager.translated(-.5, .5, -.001);
 						ClientUtils.drawTexturedRect(.125f, -.875f, .75f, .75f, 1d, 0d, 1d, 0d);
 						//Width depends on distance
 						float lineWidth = playerDistanceSq < 3?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
-						GlStateManager.translate(.75, -.25, -.002);
+						GlStateManager.translated(.75, -.25, -.002);
 						GlStateManager.disableCull();
 						GlStateManager.disableTexture2D();
 						GlStateManager.enableBlend();
 						float scale = .0375f/(blueprint.getTextureScale()/16f);
-						GlStateManager.scale(-scale, -scale, scale);
-						GlStateManager.color(1, 1, 1, 1);
+						GlStateManager.scalef(-scale, -scale, scale);
+						GlStateManager.color3f(1, 1, 1);
 
 						blueprint.draw(lineWidth);
 
-						GlStateManager.scale(1/scale, -1/scale, 1/scale);
-						GlStateManager.enableAlpha();
+						GlStateManager.scalef(1/scale, -1/scale, 1/scale);
+						GlStateManager.enableAlphaTest();
 						GlStateManager.enableTexture2D();
 						GlStateManager.enableCull();
 
@@ -465,8 +400,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(ZoomHandler.isZooming)
 			{
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/scope.png");
-				int width = event.getResolution().getScaledWidth();
-				int height = event.getResolution().getScaledHeight();
+				int width = ClientUtils.mc().mainWindow.getScaledWidth();
+				int height = ClientUtils.mc().mainWindow.getScaledHeight();
 				int resMin = Math.min(width, height);
 				float offsetX = (width-resMin)/2f;
 				float offsetY = (height-resMin)/2f;
@@ -482,9 +417,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					ClientUtils.drawColouredRect((int)offsetX+resMin, 0, (int)offsetX+1, height, 0xff000000);
 				}
 				GlStateManager.enableBlend();
-				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+				GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 
-				GlStateManager.translate(offsetX, offsetY, 0);
+				GlStateManager.translated(offsetX, offsetY, 0);
 				ClientUtils.drawTexturedRect(0, 0, resMin, resMin, 0f, 1f, 0f, 1f);
 
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
@@ -502,12 +437,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						float totalOffset = 0;
 						float stepLength = 118/(float)steps.length;
 						float stepOffset = (stepLength-7)/2f;
-						GlStateManager.translate(223/256f*resMin, 64/256f*resMin, 0);
-						GlStateManager.translate(0, (5+stepOffset)/256*resMin, 0);
+						GlStateManager.translated(223/256f*resMin, 64/256f*resMin, 0);
+						GlStateManager.translated(0, (5+stepOffset)/256*resMin, 0);
 						for(int i = 0; i < steps.length; i++)
 						{
 							ClientUtils.drawTexturedRect(0, 0, 8/256f*resMin, 7/256f*resMin, 88/256f, 96/256f, 96/256f, 103/256f);
-							GlStateManager.translate(0, stepLength/256*resMin, 0);
+							GlStateManager.translated(0, stepLength/256*resMin, 0);
 							totalOffset += stepLength;
 
 							if(curStep==-1||Math.abs(steps[i]-ZoomHandler.fovZoom) < dist)
@@ -516,21 +451,21 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
 							}
 						}
-						GlStateManager.translate(0, -totalOffset/256*resMin, 0);
+						GlStateManager.translated(0, -totalOffset/256*resMin, 0);
 
-						if(curStep >= 0&&curStep < steps.length)
+						if(curStep < steps.length)
 						{
-							GlStateManager.translate(6/256f*resMin, curStep*stepLength/256*resMin, 0);
+							GlStateManager.translated(6/256f*resMin, curStep*stepLength/256*resMin, 0);
 							ClientUtils.drawTexturedRect(0, 0, 8/256f*resMin, 7/256f*resMin, 88/256f, 98/256f, 103/256f, 110/256f);
 							ClientUtils.font().drawString((1/steps[curStep])+"x", (int)(16/256f*resMin), 0, 0xffffff);
-							GlStateManager.translate(-6/256f*resMin, -curStep*stepLength/256*resMin, 0);
+							GlStateManager.translated(-6/256f*resMin, -curStep*stepLength/256*resMin, 0);
 						}
-						GlStateManager.translate(0, -((5+stepOffset)/256*resMin), 0);
-						GlStateManager.translate(-223/256f*resMin, -64/256f*resMin, 0);
+						GlStateManager.translated(0, -((5+stepOffset)/256*resMin), 0);
+						GlStateManager.translated(-223/256f*resMin, -64/256f*resMin, 0);
 					}
 				}
 
-				GlStateManager.translate(-offsetX, -offsetY, 0);
+				GlStateManager.translated(-offsetX, -offsetY, 0);
 			}
 		}
 	}
@@ -538,6 +473,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onRenderOverlayPost(RenderGameOverlayEvent.Post event)
 	{
+		int scaledWidth = ClientUtils.mc().mainWindow.getScaledWidth();
+		int scaledHeight = ClientUtils.mc().mainWindow.getScaledWidth();
 		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
 		{
 			EntityPlayer player = ClientUtils.mc().player;
@@ -546,32 +483,32 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				if(!player.getHeldItem(hand).isEmpty())
 				{
 					ItemStack equipped = player.getHeldItem(hand);
-					if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 2), equipped, false)||equipped.getItem() instanceof IWireCoil)
+					if(ItemStack.areItemStacksEqual(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
 					{
 						if(ItemNBTHelper.hasKey(equipped, "linkingPos"))
 						{
 							int[] link = ItemNBTHelper.getIntArray(equipped, "linkingPos");
-							if(link!=null&&link.length > 3)
+							if(link.length > 3)
 							{
 								String s = I18n.format(Lib.DESC_INFO+"attachedTo", link[1], link[2], link[3]);
 								int col = WireType.ELECTRUM.getColour(null);
 								if(equipped.getItem() instanceof IWireCoil)
 								{
 									RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
-									double d = rtr!=null&&rtr.getBlockPos()!=null?rtr.getBlockPos().distanceSq(link[1], link[2], link[3]): player.getDistanceSq(link[1], link[2], link[3]);
+									double d = rtr!=null?rtr.getBlockPos().distanceSq(link[1], link[2], link[3]): player.getDistanceSq(link[1], link[2], link[3]);
 									int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
 									if(d > max*max)
 										col = 0xdd3333;
 								}
-								ClientUtils.font().drawString(s, event.getResolution().getScaledWidth()/2-ClientUtils.font().getStringWidth(s)/2, event.getResolution().getScaledHeight()-GuiIngameForge.left_height-20, col, true);
+								ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2, scaledHeight-GuiIngameForge.left_height-20, col);
 							}
 						}
 					}
-					else if(OreDictionary.itemMatches(equipped, new ItemStack(IEContent.itemFluorescentTube), false))
+					else if(equipped.getItem()==Misc.fluorescentTube)
 					{
 						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+ItemFluorescentTube.hexColorString(equipped));
-						ClientUtils.font().drawString(s, event.getResolution().getScaledWidth()/2-ClientUtils.font().getStringWidth(s)/2,
-								event.getResolution().getScaledHeight()-GuiIngameForge.left_height-20, ItemFluorescentTube.getRGBInt(equipped, 1), true);
+						ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2,
+								scaledHeight-GuiIngameForge.left_height-20, ItemFluorescentTube.getRGBInt(equipped, 1));
 					}
 					else if(equipped.getItem() instanceof ItemRevolver||equipped.getItem() instanceof ItemSpeedloader)
 					{
@@ -581,13 +518,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
 							EnumHandSide side = hand==EnumHand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite();
 							boolean right = side==EnumHandSide.RIGHT;
-							float dx = right?event.getResolution().getScaledWidth()-32-48: 48;
-							float dy = event.getResolution().getScaledHeight()-64;
+							float dx = right?scaledWidth-32-48: 48;
+							float dy = scaledHeight-64;
 							GlStateManager.pushMatrix();
 							GlStateManager.enableRescaleNormal();
 							GlStateManager.enableBlend();
-							GlStateManager.translate(dx, dy, 0);
-							GlStateManager.scale(.5f, .5f, 1);
+							GlStateManager.translated(dx, dy, 0);
+							GlStateManager.scalef(.5f, .5f, 1);
 
 							GuiRevolver.drawExternalGUI(bullets, bulletAmount);
 
@@ -598,9 +535,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								float cooldown = 1-cd/cdMax;
 								if(cooldown > 0)
 								{
-									GlStateManager.scale(2, 2, 1);
-									GlStateManager.translate(-dx, -dy, 0);
-									GlStateManager.translate(event.getResolution().getScaledWidth()/2+(right?1: -6), event.getResolution().getScaledHeight()/2-7, 0);
+									GlStateManager.scalef(2, 2, 1);
+									GlStateManager.translated(-dx, -dy, 0);
+									GlStateManager.translated(scaledWidth/2+(right?1: -6), scaledHeight/2-7, 0);
 
 									float h1 = cooldown > .33?.5f: cooldown*1.5f;
 									float h2 = cooldown;
@@ -635,22 +572,21 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						int chargeLevel = duration < 72000?Math.min(99, (int)(duration/(float)chargeTime*100)): 0;
 						float scale = 2f;
 						GlStateManager.pushMatrix();
-						GlStateManager.translate(event.getResolution().getScaledWidth()-80, event.getResolution().getScaledHeight()-30, 0);
-						GlStateManager.scale(scale, scale, 1);
+						GlStateManager.translated(scaledWidth-80, scaledHeight-30, 0);
+						GlStateManager.scalef(scale, scale, 1);
 						ClientProxy.nixieFont.drawString((chargeLevel < 10?"0": "")+chargeLevel, 0, 0, Lib.colour_nixieTubeText, false);
-						GlStateManager.scale(1/scale, 1/scale, 1);
+						GlStateManager.scalef(1/scale, 1/scale, 1);
 						GlStateManager.popMatrix();
 					}
-					else if((equipped.getItem() instanceof ItemDrill&&equipped.getItemDamage()==0)
-							||equipped.getItem() instanceof ItemChemthrower)
+					else if(equipped.getItem() instanceof ItemDrill||equipped.getItem() instanceof ItemChemthrower)
 					{
 						boolean drill = equipped.getItem() instanceof ItemDrill;
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-						GlStateManager.color(1, 1, 1, 1);
-						float dx = event.getResolution().getScaledWidth()-16;
-						float dy = event.getResolution().getScaledHeight();
+						GlStateManager.color3f(1, 1, 1);
+						float dx = scaledWidth-16;
+						float dy = scaledHeight;
 						GlStateManager.pushMatrix();
-						GlStateManager.translate(dx, dy, 0);
+						GlStateManager.translated(dx, dy, 0);
 						int w = 31;
 						int h = 62;
 						double uMin = 179/256f;
@@ -659,7 +595,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						double vMax = 71/256f;
 						ClientUtils.drawTexturedRect(-24, -68, w, h, uMin, uMax, vMin, vMax);
 
-						GlStateManager.translate(-23, -37, 0);
+						GlStateManager.translated(-23, -37, 0);
 						IFluidHandler handler = FluidUtil.getFluidHandler(equipped);
 						int capacity = -1;
 						if(handler!=null)
@@ -679,9 +615,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							}
 							float cap = (float)capacity;
 							float angle = 83-(166*amount/cap);
-							GlStateManager.rotate(angle, 0, 0, 1);
+							GlStateManager.rotatef(angle, 0, 0, 1);
 							ClientUtils.drawTexturedRect(6, -2, 24, 4, 91/256f, 123/256f, 80/256f, 87/256f);
-							GlStateManager.rotate(-angle, 0, 0, 1);
+							GlStateManager.rotatef(-angle, 0, 0, 1);
 							//					for(int i=0; i<=8; i++)
 							//					{
 							//						float angle = 83-(166/8f)*i;
@@ -689,11 +625,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							//						ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
 							//						GL11.glRotatef(-angle, 0, 0, 1);
 							//					}
-							GlStateManager.translate(23, 37, 0);
+							GlStateManager.translated(23, 37, 0);
 							if(drill)
 							{
 								ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
-								RenderItem ir = ClientUtils.mc().getRenderItem();
+								ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 								ItemStack head = ((ItemDrill)equipped.getItem()).getHead(equipped);
 								if(!head.isEmpty())
 								{
@@ -724,13 +660,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(!upgrades.isEmpty())
 						{
 							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-							GlStateManager.color(1, 1, 1, 1);
+							GlStateManager.color3f(1, 1, 1);
 							boolean boundLeft = (player.getPrimaryHand()==EnumHandSide.RIGHT)==(hand==EnumHand.OFF_HAND);
-							float dx = boundLeft?16: (event.getResolution().getScaledWidth()-16-64);
-							float dy = event.getResolution().getScaledHeight();
+							float dx = boundLeft?16: (scaledWidth-16-64);
+							float dy = scaledHeight;
 							GlStateManager.pushMatrix();
 							GlStateManager.enableBlend();
-							GlStateManager.translate(dx, dy, 0);
+							GlStateManager.translated(dx, dy, 0);
 							ClientUtils.drawTexturedRect(0, -22, 64, 22, 0, 64/256f, 176/256f, 198/256f);
 
 							if(upgrades.getBoolean("flash"))
@@ -755,35 +691,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							GlStateManager.popMatrix();
 						}
 					}
-					//				else if(equipped.getItem() instanceof ItemRailgun)
-					//				{
-					//					float dx = event.getResolution().getScaledWidth()-32-48;
-					//					float dy = event.getResolution().getScaledHeight()-40;
-					//					ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-					//					GlStateManager.color(1, 1, 1, 1);
-					//					GlStateManager.pushMatrix();
-					//					GL11.glEnable(GL11.GL_BLEND);
-					//					GlStateManager.translate(dx, dy, 0);
-					//
-					//					int duration = player.getItemInUseDuration();
-					//					int chargeTime = ((ItemRailgun)equipped.getItem()).getChargeTime(equipped);
-					//					int chargeLevel = Math.min(99, (int)(duration/(float)chargeTime*100));
-					//					//					ClientUtils.drawTexturedRect(0,0, 64,32, 0/256f,64/256f, 96/256f,128/256f);
-					//
-					//					GlStateManager.scale(1.5f,1.5f,1.5f);
-					//					int col = Config.getBoolean("nixietubeFont")?Lib.colour_nixieTubeText:0xffffff;
-					//					ClientProxy.nixieFont.setDrawTubeFlag(false);
-					//					//					ClientProxy.nixieFont.drawString((chargeLevel<10?"0"+chargeLevel:""+chargeLevel), 19,3, col);
-					//					ClientProxy.nixieFont.setDrawTubeFlag(true);
-					//
-					//					GlStateManager.popMatrix();
-					//				}
 
 					RayTraceResult mop = ClientUtils.mc().objectMouseOver;
-					if(mop!=null&&mop.getBlockPos()!=null)
+					if(mop!=null&&mop.type==Type.BLOCK)
 					{
 						TileEntity tileEntity = player.world.getTileEntity(mop.getBlockPos());
-						if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 2), equipped, true))
+						if(equipped.getItem()==Tools.voltmeter)
 						{
 							int col = IEConfig.nixietubeFont?Lib.colour_nixieTubeText: 0xffffff;
 							String[] text = null;
@@ -794,12 +707,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								if(maxStorage > 0)
 									text = I18n.format(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
 							}
-							//						else if(Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(tileEntity))
-							//						{
-							//							String gregStored = GregTechHelper.gregtech_getEnergyStored(tileEntity);
-							//							if(gregStored!=null)
-							//								text = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"energyStored","<br>"+gregStored).split("<br>");
-							//						}
 							else if(mop.entity instanceof IFluxReceiver)
 							{
 								int maxStorage = ((IFluxReceiver)mop.entity).getMaxEnergyStored(null);
@@ -818,7 +725,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									if(s!=null)
 									{
 										int w = ClientProxy.nixieFontOptional.getStringWidth(s);
-										ClientProxy.nixieFontOptional.drawString(s, event.getResolution().getScaledWidth()/2-w/2, event.getResolution().getScaledHeight()/2-4-text.length*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2)+(i++)*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2), col, true);
+										ClientProxy.nixieFontOptional.drawStringWithShadow(s, scaledWidth/2-w/2,
+												scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2)+(i++)*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2), col);
 									}
 							}
 						}
@@ -828,7 +736,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			{
 				boolean hammer = !player.getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&Utils.isHammer(player.getHeldItem(EnumHand.MAIN_HAND));
 				RayTraceResult mop = ClientUtils.mc().objectMouseOver;
-				if(mop!=null&&mop.getBlockPos()!=null)
+				if(mop!=null&&mop.type==Type.BLOCK)
 				{
 					TileEntity tileEntity = player.world.getTileEntity(mop.getBlockPos());
 					if(tileEntity instanceof IBlockOverlayText)
@@ -836,14 +744,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
 						String[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
 						boolean useNixie = overlayBlock.useNixieFont(ClientUtils.mc().player, mop);
-						if(text!=null&&text.length > 0)
+						if(text.length > 0)
 						{
 							FontRenderer font = useNixie?ClientProxy.nixieFontOptional: ClientUtils.font();
 							int col = (useNixie&&IEConfig.nixietubeFont)?Lib.colour_nixieTubeText: 0xffffff;
 							int i = 0;
 							for(String s : text)
 								if(s!=null)
-									font.drawString(s, event.getResolution().getScaledWidth()/2+8, event.getResolution().getScaledHeight()/2+8+(i++)*font.FONT_HEIGHT, col, true);
+									font.drawStringWithShadow(s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, col);
 						}
 					}
 				}
@@ -864,13 +772,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(timeLeft < 20)
 				f1 += (event.getFarPlaneDistance()/4)*(1-timeLeft/20f);
 
-			GlStateManager.setFog(GlStateManager.FogMode.LINEAR);
-			GlStateManager.setFogStart(f1*0.25F);
-			GlStateManager.setFogEnd(f1);
-			GlStateManager.setFogDensity(.125f);
+			GlStateManager.fogMode(GlStateManager.FogMode.LINEAR);
+			GlStateManager.fogStart(f1*0.25F);
+			GlStateManager.fogEnd(f1);
+			GlStateManager.fogDensity(.125f);
 
-			if(GLContext.getCapabilities().GL_NV_fog_distance)
-				GlStateManager.glFogi(34138, 34139);
+			if(GL.getCapabilities().GL_NV_fog_distance)
+				GlStateManager.fogi(34138, 34139);
 		}
 	}
 
@@ -910,10 +818,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									curStep = i;
 									dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
 								}
-							if(curStep!=-1)
-								ZoomHandler.fovZoom = steps[curStep];
-							else
-								ZoomHandler.fovZoom = event.getFov();
+							ZoomHandler.fovZoom = steps[curStep];
 						}
 						ZoomHandler.isZooming = true;
 					}
@@ -933,9 +838,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	}
 
 	@SubscribeEvent
-	public void onMouseEvent(MouseEvent event)
+	public void onMouseEvent(MouseScrollEvent event)
 	{
-		if(event.getDwheel()!=0)
+		if(event.getScrollDelta()!=0)
 		{
 			EntityPlayer player = ClientUtils.mc().player;
 			if(!player.getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&player.isSneaking())
@@ -958,31 +863,20 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									curStep = i;
 									dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
 								}
-							if(curStep!=-1)
-							{
-								int newStep = curStep+(event.getDwheel() > 0?-1: 1);
-								if(newStep >= 0&&newStep < steps.length)
-									ZoomHandler.fovZoom = steps[newStep];
-								event.setCanceled(true);
-							}
+							int newStep = curStep+(event.getScrollDelta() > 0?-1: 1);
+							if(newStep >= 0&&newStep < steps.length)
+								ZoomHandler.fovZoom = steps[newStep];
+							event.setCanceled(true);
 						}
 					}
 				}
 				if(Config.IEConfig.Tools.chemthrower_scroll&&equipped.getItem() instanceof ItemChemthrower&&((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
 				{
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.getDwheel() < 0));
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.getScrollDelta() < 0));
 					event.setCanceled(true);
 				}
 			}
 		}
-	}
-
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void onKey(GuiScreenEvent.MouseInputEvent.Pre event)
-	{
-		//Stopping cpw's inventory sorter till I can get him to make it better
-		if(event.getGui() instanceof GuiToolbox&&Mouse.getEventButton()==2)
-			event.setCanceled(true);
 	}
 
 	@SubscribeEvent()
@@ -996,17 +890,15 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			double pz = -TileEntityRendererDispatcher.staticPlayerZ;
 			TileEntity tile = event.getPlayer().world.getTileEntity(event.getTarget().getBlockPos());
 			ItemStack stack = event.getPlayer().getHeldItem(EnumHand.MAIN_HAND);
-			//			if(event.getPlayer().world.getBlockState(event.getTarget().getBlockPos()).getBlock() instanceof IEBlockInterfaces.ICustomBoundingboxes)
 			if(tile instanceof IAdvancedSelectionBounds)
 			{
-				//				IEBlockInterfaces.ICustomBoundingboxes block = (IEBlockInterfaces.ICustomBoundingboxes) event.getPlayer().world.getBlockState(event.getTarget().getBlockPos()).getBlock();
 				IAdvancedSelectionBounds iasb = (IAdvancedSelectionBounds)tile;
 				List<AxisAlignedBB> boxes = iasb.getAdvancedSelectionBounds();
-				if(boxes!=null&&!boxes.isEmpty())
+				if(!boxes.isEmpty())
 				{
 					GlStateManager.enableBlend();
-					GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-					GlStateManager.glLineWidth(2.0F);
+					GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+					GlStateManager.lineWidth(2.0F);
 					GlStateManager.disableTexture2D();
 					GlStateManager.depthMask(false);
 					ArrayList<AxisAlignedBB> additionalBoxes = new ArrayList<AxisAlignedBB>();
@@ -1019,10 +911,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						}
 
 					if(overrideBox!=null)
-						RenderGlobal.drawSelectionBoundingBox(overrideBox.grow(f1).offset(px, py, pz), 0, 0, 0, 0.4f);
+						WorldRenderer.drawSelectionBoundingBox(overrideBox.grow(f1).offset(px, py, pz), 0, 0, 0, 0.4f);
 					else
 						for(AxisAlignedBB aabb : additionalBoxes.isEmpty()?boxes: additionalBoxes)
-							RenderGlobal.drawSelectionBoundingBox(aabb.grow(f1).offset(px, py, pz), 0, 0, 0, 0.4f);
+							WorldRenderer.drawSelectionBoundingBox(aabb.grow(f1).offset(px, py, pz), 0, 0, 0, 0.4f);
 					GlStateManager.depthMask(true);
 					GlStateManager.enableTexture2D();
 					GlStateManager.disableBlend();
@@ -1035,8 +927,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				BlockPos pos = event.getTarget().getBlockPos();
 
 				GlStateManager.enableBlend();
-				GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-				GlStateManager.glLineWidth(2.0F);
+				GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+				GlStateManager.lineWidth(2.0F);
 				GlStateManager.disableTexture2D();
 				GlStateManager.depthMask(false);
 
@@ -1066,16 +958,15 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			}
 
 			World world = event.getPlayer().world;
-			if(!stack.isEmpty()&&IEContent.blockConveyor.equals(Block.getBlockFromItem(stack.getItem()))&&event.getTarget().sideHit.getAxis()==Axis.Y)
+			if(!stack.isEmpty()&&MetalDevices.conveyor.equals(Block.getBlockFromItem(stack.getItem()))&&event.getTarget().sideHit.getAxis()==Axis.Y)
 			{
 				EnumFacing side = event.getTarget().sideHit;
 				BlockPos pos = event.getTarget().getBlockPos();
-				AxisAlignedBB targetedBB = world.getBlockState(pos).getSelectedBoundingBox(world, pos);
-				if(targetedBB!=null)
-					targetedBB = targetedBB.offset(-pos.getX(), -pos.getY(), -pos.getZ());
+				AxisAlignedBB targetedBB = world.getBlockState(pos).getRenderShape(world, pos).getBoundingBox();
+				targetedBB = targetedBB.offset(-pos.getX(), -pos.getY(), -pos.getZ());
 				GlStateManager.enableBlend();
-				GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-				GlStateManager.glLineWidth(2.0F);
+				GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+				GlStateManager.lineWidth(2.0F);
 				GlStateManager.disableTexture2D();
 				GlStateManager.depthMask(false);
 
@@ -1087,24 +978,24 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 				if(side.getAxis()==Axis.Y)
 				{
-					points[0] = new double[]{0-f1, side==EnumFacing.DOWN?((targetedBB!=null?targetedBB.minY: 0)-f1): ((targetedBB!=null?targetedBB.maxY: 1)+f1), 0-f1};
-					points[1] = new double[]{1+f1, side==EnumFacing.DOWN?((targetedBB!=null?targetedBB.minY: 0)-f1): ((targetedBB!=null?targetedBB.maxY: 1)+f1), 1+f1};
-					points[2] = new double[]{0-f1, side==EnumFacing.DOWN?((targetedBB!=null?targetedBB.minY: 0)-f1): ((targetedBB!=null?targetedBB.maxY: 1)+f1), 1+f1};
-					points[3] = new double[]{1+f1, side==EnumFacing.DOWN?((targetedBB!=null?targetedBB.minY: 0)-f1): ((targetedBB!=null?targetedBB.maxY: 1)+f1), 0-f1};
+					points[0] = new double[]{0-f1, side==EnumFacing.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 0-f1};
+					points[1] = new double[]{1+f1, side==EnumFacing.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 1+f1};
+					points[2] = new double[]{0-f1, side==EnumFacing.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 1+f1};
+					points[3] = new double[]{1+f1, side==EnumFacing.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 0-f1};
 				}
 				else if(side.getAxis()==Axis.Z)
 				{
-					points[0] = new double[]{1+f1, 1+f1, side==EnumFacing.NORTH?((targetedBB!=null?targetedBB.minZ: 0)-f1): ((targetedBB!=null?targetedBB.maxZ: 1)+f1)};
-					points[1] = new double[]{0-f1, 0-f1, side==EnumFacing.NORTH?((targetedBB!=null?targetedBB.minZ: 0)-f1): ((targetedBB!=null?targetedBB.maxZ: 1)+f1)};
-					points[2] = new double[]{0-f1, 1+f1, side==EnumFacing.NORTH?((targetedBB!=null?targetedBB.minZ: 0)-f1): ((targetedBB!=null?targetedBB.maxZ: 1)+f1)};
-					points[3] = new double[]{1+f1, 0-f1, side==EnumFacing.NORTH?((targetedBB!=null?targetedBB.minZ: 0)-f1): ((targetedBB!=null?targetedBB.maxZ: 1)+f1)};
+					points[0] = new double[]{1+f1, 1+f1, side==EnumFacing.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
+					points[1] = new double[]{0-f1, 0-f1, side==EnumFacing.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
+					points[2] = new double[]{0-f1, 1+f1, side==EnumFacing.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
+					points[3] = new double[]{1+f1, 0-f1, side==EnumFacing.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
 				}
 				else
 				{
-					points[0] = new double[]{side==EnumFacing.WEST?((targetedBB!=null?targetedBB.minX: 0)-f1): ((targetedBB!=null?targetedBB.maxX: 1)+f1), 1+f1, 1+f1};
-					points[1] = new double[]{side==EnumFacing.WEST?((targetedBB!=null?targetedBB.minX: 0)-f1): ((targetedBB!=null?targetedBB.maxX: 1)+f1), 0-f1, 0-f1};
-					points[2] = new double[]{side==EnumFacing.WEST?((targetedBB!=null?targetedBB.minX: 0)-f1): ((targetedBB!=null?targetedBB.maxX: 1)+f1), 1+f1, 0-f1};
-					points[3] = new double[]{side==EnumFacing.WEST?((targetedBB!=null?targetedBB.minX: 0)-f1): ((targetedBB!=null?targetedBB.maxX: 1)+f1), 0-f1, 1+f1};
+					points[0] = new double[]{side==EnumFacing.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 1+f1, 1+f1};
+					points[1] = new double[]{side==EnumFacing.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 0-f1, 0-f1};
+					points[2] = new double[]{side==EnumFacing.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 1+f1, 0-f1};
+					points[3] = new double[]{side==EnumFacing.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 0-f1, 1+f1};
 				}
 				BufferBuilder.begin(1, DefaultVertexFormats.POSITION_COLOR);
 				for(double[] point : points)
@@ -1123,8 +1014,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				float zFromMid = side.getAxis()==Axis.Z?0: (float)event.getTarget().hitVec.z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
 				Vec3d dir = new Vec3d(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
-				if(dir!=null)
-					drawBlockOverlayArrow(tessellator, BufferBuilder, dir, side, targetedBB);
+				drawBlockOverlayArrow(tessellator, BufferBuilder, dir, side, targetedBB);
 				BufferBuilder.setTranslation(0, 0, 0);
 
 				GlStateManager.depthMask(true);
@@ -1209,17 +1099,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		double angle = Math.acos(defaultDir.dotProduct(directionVec));
 		Vec3d axis = defaultDir.crossProduct(directionVec);
 		mat.rotate(angle, axis.x, axis.y, axis.z);
-		if(side!=null)
-		{
-			if(side.getAxis()==Axis.Z)
-				mat.rotate(Math.PI/2, 1, 0, 0).rotate(Math.PI, 0, 1, 0);
-			else if(side.getAxis()==Axis.X)
-				mat.rotate(Math.PI/2, 0, 0, 1).rotate(Math.PI/2, 0, 1, 0);
-		}
+		if(side.getAxis()==Axis.Z)
+			mat.rotate(Math.PI/2, 1, 0, 0).rotate(Math.PI, 0, 1, 0);
+		else if(side.getAxis()==Axis.X)
+			mat.rotate(Math.PI/2, 0, 0, 1).rotate(Math.PI/2, 0, 1, 0);
 		for(int i = 0; i < translatedPositions.length; i++)
 		{
 			Vec3d vec = mat.apply(new Vec3d(arrowCoords[i][0], 0, arrowCoords[i][1])).add(.5, .5, .5);
-			if(side!=null&&targetedBB!=null)
+			if(targetedBB!=null)
 				vec = new Vec3d(side==EnumFacing.WEST?targetedBB.minX-.002: side==EnumFacing.EAST?targetedBB.maxX+.002: vec.x, side==EnumFacing.DOWN?targetedBB.minY-.002: side==EnumFacing.UP?targetedBB.maxY+.002: vec.y, side==EnumFacing.NORTH?targetedBB.minZ-.002: side==EnumFacing.SOUTH?targetedBB.maxZ+.002: vec.z);
 			translatedPositions[i] = vec;
 		}
@@ -1234,7 +1121,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		tessellator.draw();
 	}
 
-	public static void drawAdditionalBlockbreak(RenderGlobal context, EntityPlayer player, float partialTicks, Collection<BlockPos> blocks)
+	public static void drawAdditionalBlockbreak(WorldRenderer context, EntityPlayer player, float partialTicks, Collection<BlockPos> blocks)
 	{
 		for(BlockPos pos : blocks)
 			context.drawSelectionBox(player, new RayTraceResult(new Vec3d(0, 0, 0), null, pos), 0, partialTicks);
@@ -1244,21 +1131,19 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ClientUtils.tes().getBuffer(), player, partialTicks, player.world, blocks);
 	}
 
-	private static ItemStack sampleDrill = ItemStack.EMPTY;
 	@SubscribeEvent
 	public void onRenderWorldLastEvent(RenderWorldLastEvent event)
 	{
 		//Overlay renderer for the sample drill
 		boolean chunkBorders = false;
-		if(sampleDrill.isEmpty())
-			sampleDrill = new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta());
 		for(EnumHand hand : EnumHand.values())
-			if(OreDictionary.itemMatches(sampleDrill, ClientUtils.mc().player.getHeldItem(hand), true))
+			if(ClientUtils.mc().player.getHeldItem(hand).getItem()==GameData.getBlockItemMap().get(MetalDevices.sampleDrill))
 			{
 				chunkBorders = true;
 				break;
 			}
-		if(!chunkBorders&&ClientUtils.mc().objectMouseOver!=null&&ClientUtils.mc().objectMouseOver.type==Type.BLOCK&&ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
+		if(!chunkBorders&&ClientUtils.mc().objectMouseOver!=null&&ClientUtils.mc().objectMouseOver.type==Type.BLOCK&&
+				ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
 			chunkBorders = true;
 
 		float partial = event.getPartialTicks();
@@ -1273,7 +1158,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.disableTexture2D();
 			GlStateManager.enableBlend();
 			GlStateManager.disableCull();
-			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
 			tessellator.getBuffer().setTranslation(-px, -py, -pz);
@@ -1304,13 +1189,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.disableTexture2D();
 			GlStateManager.enableBlend();
 			GlStateManager.disableCull();
-			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 			float r = Lib.COLOUR_F_ImmersiveOrange[0];
 			float g = Lib.COLOUR_F_ImmersiveOrange[1];
 			float b = Lib.COLOUR_F_ImmersiveOrange[2];
 			BufferBuilder.setTranslation(chunkX-px, y+2-py, chunkZ-pz);
-			GlStateManager.glLineWidth(5f);
+			GlStateManager.lineWidth(5f);
 			BufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 			BufferBuilder.pos(0, 0, 0).color(r, g, b, .375f).endVertex();
 			BufferBuilder.pos(0, h, 0).color(r, g, b, .375f).endVertex();
@@ -1348,7 +1233,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			Tessellator tes = Tessellator.getInstance();
 			BufferBuilder bb = tes.getBuffer();
 			float oldLineWidth = GL11.glGetFloat(GL11.GL_LINE_WIDTH);
-			GlStateManager.glLineWidth(5);
+			GlStateManager.lineWidth(5);
 			GlStateManager.disableTexture2D();
 			GlStateManager.enableBlend();
 			bb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
@@ -1374,42 +1259,15 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			}
 			bb.setTranslation(0, 0, 0);
 			tes.draw();
-			GlStateManager.glLineWidth(oldLineWidth);
+			GlStateManager.lineWidth(oldLineWidth);
 			GlStateManager.enableBlend();
-			GlStateManager.color(1, 0, 0, .5F);
+			GlStateManager.color4f(1, 0, 0, .5F);
 			renderObstructingBlocks(bb, tes, dx, dy, dz);
-
-			//Code to render the obstructing block through other blocks
-			//GlStateManager.color(1, 0, 0, .25F);
-			//GlStateManager.depthFunc(GL11.GL_GREATER);
-			//renderObstructingBlocks(bb, tes, dx, dy, dz);
-			//GlStateManager.depthFunc(GL11.GL_LEQUAL);
 
 			GlStateManager.disableBlend();
 			GlStateManager.enableTexture2D();
 		}
 	}
-
-	//	static void renderBoundingBox(AxisAlignedBB aabb, double offsetX, double offsetY, double offsetZ, float expand)
-	//	{
-	//		if(aabb instanceof AdvancedAABB && ((AdvancedAABB)aabb).drawOverride!=null && ((AdvancedAABB)aabb).drawOverride.length>0)
-	//		{
-	//			double midX = aabb.minX+(aabb.maxX-aabb.minX)/2;
-	//			double midY = aabb.minY+(aabb.maxY-aabb.minY)/2;
-	//			double midZ = aabb.minZ+(aabb.maxZ-aabb.minZ)/2;
-	//			ClientUtils.tes().addTranslation((float)offsetX, (float)offsetY, (float)offsetZ);
-	//			for(Vec3[] face : ((AdvancedAABB)aabb).drawOverride)
-	//			{
-	//				ClientUtils.tes().startDrawing(GL11.GL_LINE_LOOP);
-	//				for(Vec3 v : face)
-	//					ClientUtils.tes().addVertex(v.xCoord+(v.xCoord<midX?-expand:expand),v.yCoord+(v.yCoord<midY?-expand:expand),v.zCoord+(v.zCoord<midZ?-expand:expand));
-	//				ClientUtils.tes().draw();
-	//			}
-	//			ClientUtils.tes().addTranslation((float)-offsetX, (float)-offsetY, (float)-offsetZ);
-	//		}
-	//		else
-	//			RenderGlobal.drawOutlinedBoundingBox(aabb.getOffsetBoundingBox(offsetX, offsetY, offsetZ).expand((double)expand, (double)expand, (double)expand), -1);
-	//	}
 
 	@SubscribeEvent()
 	public void onClientDeath(LivingDeathEvent event)
@@ -1421,11 +1279,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getEntity().getEntityData().hasKey("headshot"))
 		{
+			//TODO IHasHead seems to exist in 1.14???
 			ModelBase model = event.getRenderer().mainModel;
 			if(model instanceof ModelBiped)
 				((ModelBiped)model).bipedHead.showModel = false;
 			else if(model instanceof ModelVillager)
-				((ModelVillager)model).villagerHead.showModel = false;
+				((ModelVillager)model).func_205072_a().showModel = false;
 		}
 	}
 
@@ -1438,28 +1297,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(model instanceof ModelBiped)
 				((ModelBiped)model).bipedHead.showModel = true;
 			else if(model instanceof ModelVillager)
-				((ModelVillager)model).villagerHead.showModel = true;
-		}
-	}
-
-
-	private boolean justLoggedIn = false;
-
-	@SubscribeEvent
-	public void onLoginClientPre(ClientConnectedToServerEvent ev)
-	{
-		justLoggedIn = true;
-	}
-
-	@SubscribeEvent
-	public void onLoginClient(EntityJoinWorldEvent ev)
-	{
-		if(ev.getEntity()==Minecraft.getInstance().player&&justLoggedIn)
-		{
-			String javaV = System.getProperty("java.version");
-			if(javaV.equals("1.8.0_25"))
-				Minecraft.getInstance().player.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO+"old_java", javaV));
-			justLoggedIn = false;
+				((ModelVillager)model).func_205072_a().showModel = true;
 		}
 	}
 }
