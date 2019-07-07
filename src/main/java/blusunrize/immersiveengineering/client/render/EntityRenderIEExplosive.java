@@ -53,7 +53,7 @@ public class EntityRenderIEExplosive extends EntityRenderer<EntityIEExplosive>
 
 		if(entity.getFuse()/5%2==0)
 		{
-			GlStateManager.disableTexture2D();
+			GlStateManager.disableTexture();
 			GlStateManager.disableLighting();
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(770, 772);
@@ -66,7 +66,7 @@ public class EntityRenderIEExplosive extends EntityRenderer<EntityIEExplosive>
 			GlStateManager.color3f(1, 1, 1);
 			GlStateManager.disableBlend();
 			GlStateManager.enableLighting();
-			GlStateManager.enableTexture2D();
+			GlStateManager.enableTexture();
 		}
 
 		GlStateManager.popMatrix();

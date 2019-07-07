@@ -41,7 +41,7 @@ public class TileRenderSheetmetalTank extends TileEntityRenderer<TileEntitySheet
 		{
 			GlStateManager.translated(xx, 0, zz);
 
-			GlStateManager.disableTexture2D();
+			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
 			GlStateManager.disableAlphaTest();
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
@@ -58,7 +58,7 @@ public class TileRenderSheetmetalTank extends TileEntityRenderer<TileEntitySheet
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 			GlStateManager.disableBlend();
 			GlStateManager.enableAlphaTest();
-			GlStateManager.enableTexture2D();
+			GlStateManager.enableTexture();
 
 			if(fs!=null)
 			{

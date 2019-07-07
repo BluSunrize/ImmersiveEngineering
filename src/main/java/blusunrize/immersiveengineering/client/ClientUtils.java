@@ -513,7 +513,7 @@ public class ClientUtils
 
 	public static void drawColouredRect(int x, int y, int w, int h, int colour)
 	{
-		GlStateManager.disableTexture2D();
+		GlStateManager.disableTexture();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlphaTest();
 		GlStateManager.blendFuncSeparate(770, 771, 1, 0);
@@ -529,7 +529,7 @@ public class ClientUtils
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		GlStateManager.disableBlend();
 		GlStateManager.enableAlphaTest();
-		GlStateManager.enableTexture2D();
+		GlStateManager.enableTexture();
 	}
 
 	public static void drawGradientRect(int x0, int y0, int x1, int y1, int colour0, int colour1)
@@ -542,7 +542,7 @@ public class ClientUtils
 		float blue1 = (colour1 >> 16&255)/255.0F;
 		float green1 = (colour1 >> 8&255)/255.0F;
 		float red1 = (colour1&255)/255.0F;
-		GlStateManager.disableTexture2D();
+		GlStateManager.disableTexture();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlphaTest();
 		GlStateManager.blendFuncSeparate(770, 771, 1, 0);
@@ -558,7 +558,7 @@ public class ClientUtils
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		GlStateManager.disableBlend();
 		GlStateManager.enableAlphaTest();
-		GlStateManager.enableTexture2D();
+		GlStateManager.enableTexture();
 	}
 
 	public static void drawTexturedRect(float x, float y, float w, float h, double... uv)
@@ -1368,11 +1368,11 @@ public class ClientUtils
 
 		if(disabled)
 		{
-			GlStateManager.disableTexture2D();
+			GlStateManager.disableTexture();
 		}
 		else
 		{
-			GlStateManager.enableTexture2D();
+			GlStateManager.enableTexture();
 		}
 
 		GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE0);
@@ -1388,16 +1388,16 @@ public class ClientUtils
 		{
 			lightmapState = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
 			if(disabled)
-				GlStateManager.disableTexture2D();
+				GlStateManager.disableTexture();
 			else
-				GlStateManager.enableTexture2D();
+				GlStateManager.enableTexture();
 		}
 		else if(lightmapState!=null)
 		{
 			if(lightmapState)
-				GlStateManager.enableTexture2D();
+				GlStateManager.enableTexture();
 			else
-				GlStateManager.disableTexture2D();
+				GlStateManager.disableTexture();
 			lightmapState = null;
 		}
 		GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE0);

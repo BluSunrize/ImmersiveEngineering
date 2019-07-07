@@ -48,17 +48,18 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.VillagerModel;
-import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.IHasHead;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -75,18 +76,14 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.GuiIngameForge;
+import net.minecraftforge.client.ForgeIngameGui;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.GuiScreenEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
@@ -143,19 +140,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.side==LogicalSide.CLIENT&&event.player!=null&&event.player==ClientUtils.mc().getRenderViewEntity())
 		{
-			//if(event.phase==Phase.START)
-			//{
-			//	skyhookGrabableConnections.clear();
-			//	EntityPlayer player = event.player;
-			//	ItemStack stack = player.getActiveItemStack();
-			//	if(!stack.isEmpty()&&stack.getItem() instanceof ItemSkyhook)
-			//	{
-			//		Connection line = ApiUtils.getTargetConnection(player.getEntityWorld(), player, null, 0);
-			//		if(line!=null)
-			//			skyhookGrabableConnections.add(line);
-			//	}
-			//}
-
 			if(event.phase==Phase.END)
 			{
 				if(this.shieldToggleTimer > 0)
@@ -169,7 +153,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						ItemStack held = player.getHeldItem(Hand.OFF_HAND);
 						if(!held.isEmpty()&&held.getItem() instanceof ItemIEShield)
 						{
-							if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet")&&((ItemIEShield)held.getItem()).getUpgrades(held).hasKey("prevSlot"))
+							if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet")&&
+									((ItemIEShield)held.getItem()).getUpgrades(held).contains("prevSlot"))
 								ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(-1));
 						}
 						else
@@ -194,22 +179,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				}
 			}
 		}
-
-//		if(event.side.isClient() && event.phase == Phase.END && event.player!=null)
-//		{
-//			EntityPlayer player = event.player;
-//			ItemStack stack = player.getActiveItemStack();
-//			boolean twohanded = stack!=null && (stack.getItem() instanceof ItemDrill);
-//			if(twohanded && (player!=ClientUtils.mc().getRenderViewEntity()||ClientUtils.mc().gameSettings.thirdPersonView!=0))
-//			{
-//				if(player.getItemInUseCount() <= 0)
-//				{
-//					player.stopActiveHand();
-//					player.setActiveHand(EnumHand.MAIN_HAND);
-//				}
-//			}
-//
-//		}
 	}
 
 	@SubscribeEvent
@@ -323,8 +292,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				if(event.getSound().getCategory()==SoundCategory.RECORDS)
 				{
 					BlockPos pos = new BlockPos(event.getSound().getX(), event.getSound().getY(), event.getSound().getZ());
-					if(ClientUtils.mc().renderGlobal.mapSoundPositions.containsKey(pos))
-						ClientUtils.mc().renderGlobal.mapSoundPositions.put(pos, event.getResultSound());
+					if(ClientUtils.mc().worldRenderer.mapSoundPositions.containsKey(pos))
+						ClientUtils.mc().worldRenderer.mapSoundPositions.put(pos, event.getResultSound());
 				}
 			}
 		}
@@ -351,7 +320,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(!event.getItem().isEmpty()&&event.getItem().getItem() instanceof ItemEngineersBlueprint)
 		{
-			double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(event.getEntityItemFrame().getPosition());
+			double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(event.getEntityItemFrame());
 
 			if(playerDistanceSq < 1000)
 			{
@@ -371,7 +340,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						float lineWidth = playerDistanceSq < 3?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
 						GlStateManager.translated(.75, -.25, -.002);
 						GlStateManager.disableCull();
-						GlStateManager.disableTexture2D();
+						GlStateManager.disableTexture();
 						GlStateManager.enableBlend();
 						float scale = .0375f/(blueprint.getTextureScale()/16f);
 						GlStateManager.scalef(-scale, -scale, scale);
@@ -381,7 +350,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 						GlStateManager.scalef(1/scale, -1/scale, 1/scale);
 						GlStateManager.enableAlphaTest();
-						GlStateManager.enableTexture2D();
+						GlStateManager.enableTexture();
 						GlStateManager.enableCull();
 
 						event.setCanceled(true);
@@ -495,12 +464,16 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								if(equipped.getItem() instanceof IWireCoil)
 								{
 									RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
-									double d = rtr!=null?rtr.getBlockPos().distanceSq(link[1], link[2], link[3]): player.getDistanceSq(link[1], link[2], link[3]);
+									double d;
+									if(rtr instanceof BlockRayTraceResult)
+										d = ((BlockRayTraceResult)rtr).getPos().distanceSq(link[1], link[2], link[3], true);
+									else
+										d = player.getDistanceSq(link[1], link[2], link[3]);
 									int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
 									if(d > max*max)
 										col = 0xdd3333;
 								}
-								ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2, scaledHeight-GuiIngameForge.left_height-20, col);
+								ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2, scaledHeight-ForgeIngameGui.left_height-20, col);
 							}
 						}
 					}
@@ -508,7 +481,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					{
 						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+ItemFluorescentTube.hexColorString(equipped));
 						ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2,
-								scaledHeight-GuiIngameForge.left_height-20, ItemFluorescentTube.getRGBInt(equipped, 1));
+								scaledHeight-ForgeIngameGui.left_height-20, ItemFluorescentTube.getRGBInt(equipped, 1));
 					}
 					else if(equipped.getItem() instanceof ItemRevolver||equipped.getItem() instanceof ItemSpeedloader)
 					{
@@ -672,7 +645,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							if(upgrades.getBoolean("flash"))
 							{
 								ClientUtils.drawTexturedRect(11, -38, 16, 16, 11/256f, 27/256f, 160/256f, 176/256f);
-								if(upgrades.hasKey("flash_cooldown"))
+								if(upgrades.contains("flash_cooldown"))
 								{
 									float h = upgrades.getInt("flash_cooldown")/40f*16;
 									ClientUtils.drawTexturedRect(11, -22-h, 16, h, 11/256f, 27/256f, (214-h)/256f, 214/256f);
@@ -681,7 +654,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							if(upgrades.getBoolean("shock"))
 							{
 								ClientUtils.drawTexturedRect(40, -38, 12, 16, 40/256f, 52/256f, 160/256f, 176/256f);
-								if(upgrades.hasKey("shock_cooldown"))
+								if(upgrades.contains("shock_cooldown"))
 								{
 									float h = upgrades.getInt("shock_cooldown")/40f*16;
 									ClientUtils.drawTexturedRect(40, -22-h, 12, h, 40/256f, 52/256f, (214-h)/256f, 214/256f);
@@ -691,44 +664,40 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							GlStateManager.popMatrix();
 						}
 					}
-
-					RayTraceResult mop = ClientUtils.mc().objectMouseOver;
-					if(mop!=null&&mop.type==Type.BLOCK)
+					if(equipped.getItem()==Tools.voltmeter)
 					{
-						TileEntity tileEntity = player.world.getTileEntity(mop.getBlockPos());
-						if(equipped.getItem()==Tools.voltmeter)
+
+						RayTraceResult rrt = ClientUtils.mc().objectMouseOver;
+						IFluxReceiver receiver = null;
+						Direction side = null;
+						if(rrt instanceof BlockRayTraceResult)
 						{
-							int col = IEConfig.nixietubeFont?Lib.colour_nixieTubeText: 0xffffff;
-							String[] text = null;
+							BlockRayTraceResult mop = (BlockRayTraceResult)rrt;
+							TileEntity tileEntity = player.world.getTileEntity(mop.getPos());
 							if(tileEntity instanceof IFluxReceiver)
-							{
-								int maxStorage = ((IFluxReceiver)tileEntity).getMaxEnergyStored(mop.sideHit);
-								int storage = ((IFluxReceiver)tileEntity).getEnergyStored(mop.sideHit);
-								if(maxStorage > 0)
-									text = I18n.format(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
-							}
-							else if(mop.entity instanceof IFluxReceiver)
-							{
-								int maxStorage = ((IFluxReceiver)mop.entity).getMaxEnergyStored(null);
-								int storage = ((IFluxReceiver)mop.entity).getEnergyStored(null);
-								if(maxStorage > 0)
-									text = I18n.format(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
-							}
-							if(text!=null)
-							{
-								if(player.world.getGameTime()%20==0)
+								receiver = (IFluxReceiver)tileEntity;
+							side = mop.getFace();
+							if(player.world.getGameTime()%20==0)
+								ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.getPos()));
+						}
+						else if(rrt instanceof EntityRayTraceResult&&((EntityRayTraceResult)rrt).getEntity() instanceof IFluxReceiver)
+							receiver = (IFluxReceiver)((EntityRayTraceResult)rrt).getEntity();
+						if(receiver!=null)
+						{
+							String[] text = new String[0];
+							int maxStorage = receiver.getMaxEnergyStored(side);
+							int storage = receiver.getEnergyStored(side);
+							if(maxStorage > 0)
+								text = I18n.format(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
+							int col = IEConfig.nixietubeFont?Lib.colour_nixieTubeText: 0xffffff;
+							int i = 0;
+							for(String s : text)
+								if(s!=null)
 								{
-									ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.getBlockPos()));
+									int w = ClientProxy.nixieFontOptional.getStringWidth(s);
+									ClientProxy.nixieFontOptional.drawStringWithShadow(s, scaledWidth/2-w/2,
+											scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2)+(i++)*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2), col);
 								}
-								int i = 0;
-								for(String s : text)
-									if(s!=null)
-									{
-										int w = ClientProxy.nixieFontOptional.getStringWidth(s);
-										ClientProxy.nixieFontOptional.drawStringWithShadow(s, scaledWidth/2-w/2,
-												scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2)+(i++)*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2), col);
-									}
-							}
 						}
 					}
 				}
@@ -736,9 +705,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			{
 				boolean hammer = !player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&Utils.isHammer(player.getHeldItem(Hand.MAIN_HAND));
 				RayTraceResult mop = ClientUtils.mc().objectMouseOver;
-				if(mop!=null&&mop.type==Type.BLOCK)
+				if(mop instanceof BlockRayTraceResult)
 				{
-					TileEntity tileEntity = player.world.getTileEntity(mop.getBlockPos());
+					TileEntity tileEntity = player.world.getTileEntity(((BlockRayTraceResult)mop).getPos());
 					if(tileEntity instanceof IBlockOverlayText)
 					{
 						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
@@ -762,9 +731,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onFogUpdate(EntityViewRenderEvent.RenderFogEvent event)
 	{
-		if(event.getEntity() instanceof LivingEntity&&((LivingEntity)event.getEntity()).getActivePotionEffect(IEPotions.flashed)!=null)
+		Entity e = event.getInfo().getRenderViewEntity();
+		if(e instanceof LivingEntity&&((LivingEntity)e).isPotionActive(IEPotions.flashed))
 		{
-			EffectInstance effect = ((LivingEntity)event.getEntity()).getActivePotionEffect(IEPotions.flashed);
+			EffectInstance effect = ((LivingEntity)e).getActivePotionEffect(IEPotions.flashed);
 			int timeLeft = effect.getDuration();
 			float saturation = 1-timeLeft/(float)(80+40*effect.getAmplifier());//Total Time =  4s + 2s per amplifier
 
@@ -785,7 +755,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onFogColourUpdate(EntityViewRenderEvent.FogColors event)
 	{
-		if(event.getEntity() instanceof LivingEntity&&((LivingEntity)event.getEntity()).getActivePotionEffect(IEPotions.flashed)!=null)
+		Entity e = event.getInfo().getRenderViewEntity();
+		if(e instanceof LivingEntity&&((LivingEntity)e).isPotionActive(IEPotions.flashed))
 		{
 			event.setRed(1);
 			event.setGreen(1);
@@ -882,14 +853,16 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void renderAdditionalBlockBounds(DrawBlockHighlightEvent event)
 	{
-		if(event.getSubID()==0&&event.getTarget().type==Type.BLOCK)
+		if(event.getSubID()==0&&event.getTarget() instanceof BlockRayTraceResult)
 		{
+			BlockRayTraceResult rtr = (BlockRayTraceResult)event.getTarget();
+			Entity player = event.getInfo().getRenderViewEntity();
 			float f1 = 0.002F;
 			double px = -TileEntityRendererDispatcher.staticPlayerX;
 			double py = -TileEntityRendererDispatcher.staticPlayerY;
 			double pz = -TileEntityRendererDispatcher.staticPlayerZ;
-			TileEntity tile = event.getPlayer().world.getTileEntity(event.getTarget().getBlockPos());
-			ItemStack stack = event.getPlayer().getHeldItem(Hand.MAIN_HAND);
+			TileEntity tile = player.world.getTileEntity(rtr.getPos());
+			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getHeldItem(Hand.MAIN_HAND): ItemStack.EMPTY;
 			if(tile instanceof IAdvancedSelectionBounds)
 			{
 				IAdvancedSelectionBounds iasb = (IAdvancedSelectionBounds)tile;
@@ -899,14 +872,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					GlStateManager.enableBlend();
 					GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 					GlStateManager.lineWidth(2.0F);
-					GlStateManager.disableTexture2D();
+					GlStateManager.disableTexture();
 					GlStateManager.depthMask(false);
 					ArrayList<AxisAlignedBB> additionalBoxes = new ArrayList<AxisAlignedBB>();
 					AxisAlignedBB overrideBox = null;
 					for(AxisAlignedBB aabb : boxes)
-						if(aabb!=null)
+						if(aabb!=null&&player instanceof PlayerEntity)
 						{
-							if(iasb.isOverrideBox(aabb, event.getPlayer(), event.getTarget(), additionalBoxes))
+							if(iasb.isOverrideBox(aabb, (PlayerEntity)player, event.getTarget(), additionalBoxes))
 								overrideBox = aabb;
 						}
 
@@ -916,7 +889,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						for(AxisAlignedBB aabb : additionalBoxes.isEmpty()?boxes: additionalBoxes)
 							WorldRenderer.drawSelectionBoundingBox(aabb.grow(f1).offset(px, py, pz), 0, 0, 0, 0.4f);
 					GlStateManager.depthMask(true);
-					GlStateManager.enableTexture2D();
+					GlStateManager.enableTexture();
 					GlStateManager.disableBlend();
 					event.setCanceled(true);
 				}
@@ -924,12 +897,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 			if(Utils.isHammer(stack)&&tile instanceof TileEntityTurntable)
 			{
-				BlockPos pos = event.getTarget().getBlockPos();
+				BlockPos pos = rtr.getPos();
 
 				GlStateManager.enableBlend();
 				GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 				GlStateManager.lineWidth(2.0F);
-				GlStateManager.disableTexture2D();
+				GlStateManager.disableTexture();
 				GlStateManager.depthMask(false);
 
 				Tessellator tessellator = Tessellator.getInstance();
@@ -939,7 +912,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				double tx = pos.getX()+.5;
 				double ty = pos.getY()+.5;
 				double tz = pos.getZ()+.5;
-				if(!event.getPlayer().world.isAirBlock(pos.offset(f)))
+				if(!player.world.isAirBlock(pos.offset(f)))
 				{
 					tx += f.getXOffset();
 					ty += f.getYOffset();
@@ -947,27 +920,27 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				}
 				BufferBuilder.setTranslation(tx+px, ty+py, tz+pz);
 
-				double angle = -event.getPlayer().ticksExisted%80/40d*Math.PI;
+				double angle = -player.ticksExisted%80/40d*Math.PI;
 				drawRotationArrows(tessellator, BufferBuilder, f, angle, ((TileEntityTurntable)tile).invert);
 
 				BufferBuilder.setTranslation(0, 0, 0);
 
 				GlStateManager.depthMask(true);
-				GlStateManager.enableTexture2D();
+				GlStateManager.enableTexture();
 				GlStateManager.disableBlend();
 			}
 
-			World world = event.getPlayer().world;
-			if(!stack.isEmpty()&&MetalDevices.conveyor.equals(Block.getBlockFromItem(stack.getItem()))&&event.getTarget().sideHit.getAxis()==Axis.Y)
+			World world = player.world;
+			if(!stack.isEmpty()&&MetalDevices.conveyor.equals(Block.getBlockFromItem(stack.getItem()))&&rtr.getFace().getAxis()==Axis.Y)
 			{
-				Direction side = event.getTarget().sideHit;
-				BlockPos pos = event.getTarget().getBlockPos();
+				Direction side = rtr.getFace();
+				BlockPos pos = rtr.getPos();
 				AxisAlignedBB targetedBB = world.getBlockState(pos).getRenderShape(world, pos).getBoundingBox();
 				targetedBB = targetedBB.offset(-pos.getX(), -pos.getY(), -pos.getZ());
 				GlStateManager.enableBlend();
 				GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 				GlStateManager.lineWidth(2.0F);
-				GlStateManager.disableTexture2D();
+				GlStateManager.disableTexture();
 				GlStateManager.depthMask(false);
 
 				Tessellator tessellator = Tessellator.getInstance();
@@ -1009,26 +982,28 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				BufferBuilder.pos(points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
 				tessellator.draw();
 
-				float xFromMid = side.getAxis()==Axis.X?0: (float)event.getTarget().hitVec.x-pos.getX()-.5f;
-				float yFromMid = side.getAxis()==Axis.Y?0: (float)event.getTarget().hitVec.y-pos.getY()-.5f;
-				float zFromMid = side.getAxis()==Axis.Z?0: (float)event.getTarget().hitVec.z-pos.getZ()-.5f;
+				float xFromMid = side.getAxis()==Axis.X?0: (float)rtr.getHitVec().x-pos.getX()-.5f;
+				float yFromMid = side.getAxis()==Axis.Y?0: (float)rtr.getHitVec().y-pos.getY()-.5f;
+				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getHitVec().z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
 				Vec3d dir = new Vec3d(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
 				drawBlockOverlayArrow(tessellator, BufferBuilder, dir, side, targetedBB);
 				BufferBuilder.setTranslation(0, 0, 0);
 
 				GlStateManager.depthMask(true);
-				GlStateManager.enableTexture2D();
+				GlStateManager.enableTexture();
 				GlStateManager.disableBlend();
 			}
 
-			if(!stack.isEmpty()&&stack.getItem() instanceof ItemDrill&&((ItemDrill)stack.getItem()).isEffective(world.getBlockState(event.getTarget().getBlockPos()).getMaterial()))
+			if(!stack.isEmpty()&&stack.getItem() instanceof ItemDrill&&
+					((ItemDrill)stack.getItem()).isEffective(world.getBlockState(rtr.getPos()).getMaterial()))
 			{
 				ItemStack head = ((ItemDrill)stack.getItem()).getHead(stack);
-				if(!head.isEmpty())
+				if(!head.isEmpty()&&player instanceof PlayerEntity)
 				{
-					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world, event.getPlayer(), event.getTarget());
-					drawAdditionalBlockbreak(event.getContext(), event.getPlayer(), event.getPartialTicks(), blocks);
+					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world,
+							(PlayerEntity)player, event.getTarget());
+					drawAdditionalBlockbreak(event.getContext(), (PlayerEntity)player, event.getPartialTicks(), blocks);
 				}
 			}
 		}
@@ -1124,7 +1099,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	public static void drawAdditionalBlockbreak(WorldRenderer context, PlayerEntity player, float partialTicks, Collection<BlockPos> blocks)
 	{
 		for(BlockPos pos : blocks)
-			context.drawSelectionBox(player, new RayTraceResult(new Vec3d(0, 0, 0), null, pos), 0, partialTicks);
+			context.drawSelectionBox(ClientUtils.mc().gameRenderer.getActiveRenderInfo(), new BlockRayTraceResult(new Vec3d(0, 0, 0), Direction.DOWN, pos, false), 0);
 
 		PlayerController controllerMP = ClientUtils.mc().playerController;
 		if(controllerMP.isHittingBlock)
@@ -1142,8 +1117,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				chunkBorders = true;
 				break;
 			}
-		if(!chunkBorders&&ClientUtils.mc().objectMouseOver!=null&&ClientUtils.mc().objectMouseOver.type==Type.BLOCK&&
-				ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
+		if(!chunkBorders&&ClientUtils.mc().objectMouseOver instanceof BlockRayTraceResult&&
+				ClientUtils.mc().world.getTileEntity(((BlockRayTraceResult)ClientUtils.mc().objectMouseOver).getPos()) instanceof TileEntitySampleDrill)
 			chunkBorders = true;
 
 		float partial = event.getPartialTicks();
@@ -1155,7 +1130,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 			Tessellator tessellator = Tessellator.getInstance();
 
-			GlStateManager.disableTexture2D();
+			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
 			GlStateManager.disableCull();
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
@@ -1170,7 +1145,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 			GlStateManager.enableCull();
 			GlStateManager.disableBlend();
-			GlStateManager.enableTexture2D();
+			GlStateManager.enableTexture();
 		}
 
 		if(chunkBorders)
@@ -1181,12 +1156,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			double pz = TileEntityRendererDispatcher.staticPlayerZ;
 			int chunkX = (int)player.posX >> 4<<4;
 			int chunkZ = (int)player.posZ >> 4<<4;
-			int y = Math.min((int)player.posY-2, player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
+			int y = Math.min((int)player.posY-2, 0);//TODO player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
 			float h = (float)Math.max(32, player.posY-y+4);
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder BufferBuilder = tessellator.getBuffer();
 
-			GlStateManager.disableTexture2D();
+			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
 			GlStateManager.disableCull();
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
@@ -1219,7 +1194,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 			GlStateManager.enableCull();
 			GlStateManager.disableBlend();
-			GlStateManager.enableTexture2D();
+			GlStateManager.enableTexture();
 		}
 
 		if(!FAILED_CONNECTIONS.isEmpty())
@@ -1234,7 +1209,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			BufferBuilder bb = tes.getBuffer();
 			float oldLineWidth = GL11.glGetFloat(GL11.GL_LINE_WIDTH);
 			GlStateManager.lineWidth(5);
-			GlStateManager.disableTexture2D();
+			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
 			bb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 			for(Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
@@ -1265,7 +1240,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			renderObstructingBlocks(bb, tes, dx, dy, dz);
 
 			GlStateManager.disableBlend();
-			GlStateManager.enableTexture2D();
+			GlStateManager.enableTexture();
 		}
 	}
 
@@ -1277,27 +1252,21 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onRenderLivingPre(RenderLivingEvent.Pre event)
 	{
-		if(event.getEntity().getEntityData().hasKey("headshot"))
-		{
-			//TODO IHasHead seems to exist in 1.14???
-			Model model = event.getRenderer().mainModel;
-			if(model instanceof BipedModel)
-				((BipedModel)model).bipedHead.showModel = false;
-			else if(model instanceof VillagerModel)
-				((VillagerModel)model).func_205072_a().showModel = false;
-		}
+		if(event.getEntity().getEntityData().contains("headshot"))
+			enableHead(event.getRenderer(), false);
 	}
 
 	@SubscribeEvent()
 	public void onRenderLivingPost(RenderLivingEvent.Post event)
 	{
-		if(event.getEntity().getEntityData().hasKey("headshot"))
-		{
-			Model model = event.getRenderer().mainModel;
-			if(model instanceof BipedModel)
-				((BipedModel)model).bipedHead.showModel = true;
-			else if(model instanceof VillagerModel)
-				((VillagerModel)model).func_205072_a().showModel = true;
-		}
+		if(event.getEntity().getEntityData().contains("headshot"))
+			enableHead(event.getRenderer(), true);
+	}
+
+	private static void enableHead(LivingRenderer renderer, boolean shouldEnable)
+	{
+		EntityModel m = renderer.getEntityModel();
+		if(m instanceof IHasHead)
+			((IHasHead)m).func_205072_a().showModel = shouldEnable;
 	}
 }

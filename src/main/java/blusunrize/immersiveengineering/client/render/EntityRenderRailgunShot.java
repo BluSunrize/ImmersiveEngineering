@@ -55,7 +55,7 @@ public class EntityRenderRailgunShot extends EntityRenderer<EntityRailgunShot>
 		Tessellator tes = ClientUtils.tes();
 		BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
 
-		GlStateManager.disableTexture2D();
+		GlStateManager.disableTexture();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlphaTest();
 		GlStateManager.blendFuncSeparate(770, 771, 1, 0);
@@ -146,7 +146,7 @@ public class EntityRenderRailgunShot extends EntityRenderer<EntityRailgunShot>
 
 		GlStateManager.enableBlend();
 		GlStateManager.enableAlphaTest();
-		GlStateManager.enableTexture2D();
+		GlStateManager.enableTexture();
 
 		GlStateManager.enableCull();
 		GlStateManager.disableRescaleNormal();

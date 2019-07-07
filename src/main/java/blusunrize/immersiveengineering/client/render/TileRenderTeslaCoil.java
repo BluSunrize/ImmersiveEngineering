@@ -45,7 +45,7 @@ public class TileRenderTeslaCoil extends TileEntityRenderer<TileEntityTeslaCoil>
 			GlStateManager.pushMatrix();
 			GlStateManager.translated(x, y, z);
 
-			GlStateManager.disableTexture2D();
+			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
 
 
@@ -57,7 +57,7 @@ public class TileRenderTeslaCoil extends TileEntityRenderer<TileEntityTeslaCoil>
 			drawAnimation(animation, tx, ty, tz, new float[]{1, 1, 1, 1}, 1f);
 			GL11.glLineWidth(curWidth);
 
-			GlStateManager.enableTexture2D();
+			GlStateManager.enableTexture();
 			GlStateManager.disableBlend();
 
 			GlStateManager.popMatrix();

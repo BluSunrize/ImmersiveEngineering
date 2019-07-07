@@ -71,7 +71,7 @@ public class TileRenderWorkbench extends TileEntityRenderer<TileEntityModWorkben
 
 							//Width depends on distance
 							GlStateManager.disableCull();
-							GlStateManager.disableTexture2D();
+							GlStateManager.disableTexture();
 							GlStateManager.enableBlend();
 							float texScale = blueprint.textureScale/16f;
 							GlStateManager.scalef(1/texScale, 1/texScale, 1/texScale);
@@ -79,7 +79,7 @@ public class TileRenderWorkbench extends TileEntityRenderer<TileEntityModWorkben
 							blueprint.draw(lineWidth);
 							GlStateManager.scalef(texScale, texScale, texScale);
 							GlStateManager.enableAlphaTest();
-							GlStateManager.enableTexture2D();
+							GlStateManager.enableTexture();
 							GlStateManager.enableCull();
 							GlStateManager.translated(-dX, -dY/scale, 0);
 							i++;

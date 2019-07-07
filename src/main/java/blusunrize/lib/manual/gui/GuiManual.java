@@ -13,17 +13,16 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.AbstractNode;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
@@ -32,6 +31,7 @@ import java.util.*;
 
 public class GuiManual extends Screen
 {
+	private Minecraft mc = Minecraft.getInstance();
 	private int xSize = 186;
 	private int ySize = 198;
 	private int guiLeft;
@@ -56,21 +56,15 @@ public class GuiManual extends Screen
 
 	public GuiManual(ManualInstance manual, String texture)
 	{
-		super();
+		super(new StringTextComponent("manual"));
 		this.manual = manual;
 		this.currentNode = manual.contentTree.getRoot();
 		this.texture = texture;
 
-		prevGuiScale = Minecraft.getInstance().gameSettings.guiScale;
+		prevGuiScale = mc.gameSettings.guiScale;
 		if(prevGuiScale!=0&&prevGuiScale!=2&&manual.allowGuiRescale())
-			Minecraft.getInstance().gameSettings.guiScale = 2;
+			mc.gameSettings.guiScale = 2;
 		activeManual = this;
-	}
-
-	@Override
-	public boolean doesGuiPauseGame()
-	{
-		return false;
 	}
 
 	public ManualEntry getCurrentPage()
@@ -91,15 +85,14 @@ public class GuiManual extends Screen
 	}
 
 	@Override
-	public void initGui()
+	protected void init()
 	{
-		if(Minecraft.getInstance().gameSettings.guiScale==1)
+		if(mc.gameSettings.guiScale==1)
 		{
-			Minecraft.getInstance().gameSettings.guiScale = 2;
-			ScaledResolution res = new ScaledResolution(this.mc);
-			this.width = res.getScaledWidth();
-			this.height = res.getScaledHeight();
-			Minecraft.getInstance().gameSettings.guiScale = 1;
+			mc.gameSettings.guiScale = 2;
+			this.width = mc.mainWindow.getScaledWidth();
+			this.height = mc.mainWindow.getScaledHeight();
+			mc.gameSettings.guiScale = 1;
 		}
 		this.manual.openManual();
 
@@ -107,13 +100,13 @@ public class GuiManual extends Screen
 		guiTop = (this.height-this.ySize)/2;
 		boolean textField = false;
 
-		this.buttonList.clear();
+		this.buttons.clear();
 		this.pageButtons.clear();
 		hasSuggestions = -1;
 		if(currentNode.isLeaf())
 		{
 			currentNode.getLeafData().addButtons(this, guiLeft+32, guiTop+28, page, pageButtons);
-			buttonList.addAll(pageButtons);
+			buttons.addAll(pageButtons);
 		}
 		else
 		{
@@ -121,22 +114,22 @@ public class GuiManual extends Screen
 			for(AbstractNode<ResourceLocation, ManualEntry> node : currentNode.getChildren())
 				if(manual.showNodeInList(node))
 					children.add(node);
-			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40, guiTop+20, 100, 168,
+			this.buttons.add(new GuiClickableList(this, 0, guiLeft+40, guiTop+20, 100, 168,
 					1f, children));
 			textField = true;
 		}
 		if(currentNode.getSuperNode()!=null)
-			this.buttonList.add(new GuiButtonManualNavigation(this, 1, guiLeft+24, guiTop+10, 10, 10, 0));
+			this.buttons.add(new GuiButtonManualNavigation(this, 1, guiLeft+24, guiTop+10, 10, 10, 0));
 
 		if(textField)
 		{
-			Keyboard.enableRepeatEvents(true);
-			searchField = new TextFieldWidget(99, this.fontRenderer, guiLeft+166, guiTop+78, 120, 12);
+			mc.keyboardListener.enableRepeatEvents(true);
+			searchField = new TextFieldWidget(font, guiLeft+166, guiTop+78, 120, 12, "");
 			searchField.setTextColor(-1);
 			searchField.setDisabledTextColour(-1);
 			searchField.setEnableBackgroundDrawing(false);
 			searchField.setMaxStringLength(17);
-			searchField.setFocused(true);
+			searchField.setFocused2(true);
 			searchField.setCanLoseFocus(false);
 		}
 		else if(searchField!=null)
@@ -144,41 +137,39 @@ public class GuiManual extends Screen
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float f)
+	public void render(int mouseX, int mouseY, float f)
 	{
 		manualTick++;
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		boolean uni = manual.fontRenderer.getUnicodeFlag();
-		manual.fontRenderer.setUnicodeFlag(true);
 		manual.entryRenderPre();
 
 		ManualUtils.bindTexture(texture);
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 		if(this.searchField!=null)
 		{
 			int l = searchField.getText().length()*6;
 			if(l > 20)
-				this.drawTexturedModalRect(guiLeft+166, guiTop+74, 136+(120-l), 238, l, 18);
-			if(this.hasSuggestions!=-1&&this.hasSuggestions < this.buttonList.size())
+				this.blit(guiLeft+166, guiTop+74, 136+(120-l), 238, l, 18);
+			if(this.hasSuggestions!=-1&&this.hasSuggestions < this.buttons.size())
 			{
-				this.drawTexturedModalRect(guiLeft+174, guiTop+100, 214, 212, 16, 26);
-				int h = ((GuiClickableList)this.buttonList.get(hasSuggestions)).getFontHeight()*Math.min(((GuiClickableList)this.buttonList.get(hasSuggestions)).perPage, ((GuiClickableList)this.buttonList.get(hasSuggestions)).headers.length);
+				this.blit(guiLeft+174, guiTop+100, 214, 212, 16, 26);
+				int h = ((GuiClickableList)this.buttons.get(hasSuggestions)).getFontHeight()*Math.min(((GuiClickableList)this.buttons.get(hasSuggestions)).perPage, ((GuiClickableList)this.buttons.get(hasSuggestions)).headers.length);
 				int w = 76;
-				this.drawTexturedModalRect(guiLeft+174, guiTop+116, 230, 212, 16, 16);//Top Left
-				this.drawTexturedModalRect(guiLeft+174, guiTop+132+h, 230, 228, 16, 10);//Bottom Left
-				this.drawTexturedModalRect(guiLeft+190+w, guiTop+116, 246, 212, 10, 16);//Top Right
-				this.drawTexturedModalRect(guiLeft+190+w, guiTop+132+h, 246, 228, 10, 10);//Bottom Right
+				this.blit(guiLeft+174, guiTop+116, 230, 212, 16, 16);//Top Left
+				this.blit(guiLeft+174, guiTop+132+h, 230, 228, 16, 10);//Bottom Left
+				this.blit(guiLeft+190+w, guiTop+116, 246, 212, 10, 16);//Top Right
+				this.blit(guiLeft+190+w, guiTop+132+h, 246, 228, 10, 10);//Bottom Right
 				for(int hh = 0; hh < h; hh++)
 				{
-					this.drawTexturedModalRect(guiLeft+174, guiTop+132+hh, 230, 228, 16, 1);
+					this.blit(guiLeft+174, guiTop+132+hh, 230, 228, 16, 1);
 					for(int ww = 0; ww < w; ww++)
-						this.drawTexturedModalRect(guiLeft+190+ww, guiTop+132+hh, 246, 228, 1, 1);
-					this.drawTexturedModalRect(guiLeft+190+w, guiTop+132+hh, 246, 228, 10, 1);
+						this.blit(guiLeft+190+ww, guiTop+132+hh, 246, 228, 1, 1);
+					this.blit(guiLeft+190+w, guiTop+132+hh, 246, 228, 10, 1);
 				}
 				for(int ww = 0; ww < w; ww++)
 				{
-					this.drawTexturedModalRect(guiLeft+190+ww, guiTop+116, 246, 212, 1, 16);
-					this.drawTexturedModalRect(guiLeft+190+ww, guiTop+132+h, 246, 228, 1, 10);
+					this.blit(guiLeft+190+ww, guiTop+116, 246, 212, 1, 16);
+					this.blit(guiLeft+190+ww, guiTop+132+h, 246, 228, 1, 10);
 
 				}
 			}
@@ -194,9 +185,9 @@ public class GuiManual extends Screen
 
 			GL11.glEnable(GL11.GL_BLEND);
 			if(page > 0)
-				this.drawTexturedModalRect(guiLeft+32, guiTop+179, 0, 216+(b0?20: 0), 16, 10);
+				this.blit(guiLeft+32, guiTop+179, 0, 216+(b0?20: 0), 16, 10);
 			if(page < selectedEntry.getPageCount()-1)
-				this.drawTexturedModalRect(guiLeft+136, guiTop+179, 0, 226+(b1?20: 0), 16, 10);
+				this.blit(guiLeft+136, guiTop+179, 0, 226+(b1?20: 0), 16, 10);
 
 			manual.titleRenderPre();
 			//Title
@@ -222,9 +213,9 @@ public class GuiManual extends Screen
 		}
 		if(this.searchField!=null)
 		{
-			manual.fontRenderer.setUnicodeFlag(true);
 			this.searchField.drawTextBox();
-			if(this.hasSuggestions!=-1&&this.hasSuggestions < this.buttonList.size())
+			if(this.hasSuggestions!=-1&&this.hasSuggestions < this.buttons.size())
+				//TODO translation
 				manual.fontRenderer.drawString("It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour(), false);
 		}
 		for(Button btn : pageButtons)
@@ -241,7 +232,7 @@ public class GuiManual extends Screen
 		this.manual.closeManual();
 		super.onGuiClosed();
 		if(prevGuiScale!=-1&&manual.allowGuiRescale())
-			Minecraft.getInstance().gameSettings.guiScale = prevGuiScale;
+			mc.gameSettings.guiScale = prevGuiScale;
 	}
 
 	@Override
@@ -321,10 +312,10 @@ public class GuiManual extends Screen
 	}
 
 	@Override
-	public void drawHoveringText(List<String> text, int x, int y, @Nonnull FontRenderer font)
+	public void renderTooltip(List<String> text, int x, int y, FontRenderer font)
 	{
 		manual.tooltipRenderPre();
-		super.drawHoveringText(text, x, y, font);
+		super.renderTooltip(text, x, y, font);
 		manual.tooltipRenderPost();
 	}
 
@@ -414,7 +405,7 @@ public class GuiManual extends Screen
 			if(lastDrag==null)
 				lastDrag = new int[]{mx-guiLeft, my-guiTop};
 			currentNode.getLeafData().mouseDragged(this, guiLeft+32, guiTop+28, lastClick[0], lastClick[1], mx-guiLeft,
-					my-guiTop, lastDrag[0], lastDrag[1], buttonList.get(button));
+					my-guiTop, lastDrag[0], lastDrag[1], buttons.get(button));
 			lastDrag = new int[]{mx-guiLeft, my-guiTop};
 		}
 	}
@@ -461,23 +452,23 @@ public class GuiManual extends Screen
 						}
 					}
 
-				this.buttonList.set(0, new GuiClickableList(this, 0, guiLeft+40, guiTop+20, 100, 148,
+				this.buttons.set(0, new GuiClickableList(this, 0, guiLeft+40, guiTop+20, 100, 148,
 						1f, lHeaders));
 				if(!lCorrections.isEmpty())
 				{
 					GuiClickableList suggestions = new GuiClickableList(this, 11, guiLeft+180, guiTop+138, 100, 80, 1f,
 							lCorrections);
 					if(hasSuggestions!=-1)
-						this.buttonList.set(hasSuggestions, suggestions);
+						this.buttons.set(hasSuggestions, suggestions);
 					else
 					{
-						hasSuggestions = this.buttonList.size();
-						this.buttonList.add(suggestions);
+						hasSuggestions = this.buttons.size();
+						this.buttons.add(suggestions);
 					}
 				}
 				else if(hasSuggestions!=-1)
 				{
-					this.buttonList.remove(hasSuggestions);
+					this.buttons.remove(hasSuggestions);
 					hasSuggestions = -1;
 				}
 			}

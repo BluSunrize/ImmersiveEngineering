@@ -300,7 +300,7 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 				GlStateManager.translated(-.195, .125, .97);
 				GlStateManager.rotatef(-45, 1, 0, 0);
 				GlStateManager.disableCull();
-				GlStateManager.disableTexture2D();
+				GlStateManager.disableTexture();
 				GlStateManager.enableBlend();
 				float scale = .0375f/(blueprint.textureScale/16f);
 				GlStateManager.scalef(scale, -scale, scale);
@@ -308,7 +308,7 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 				blueprint.draw(lineWidth);
 				GlStateManager.scalef(1/scale, -1/scale, 1/scale);
 				GlStateManager.enableAlphaTest();
-				GlStateManager.enableTexture2D();
+				GlStateManager.enableTexture();
 				GlStateManager.enableCull();
 			}
 		}

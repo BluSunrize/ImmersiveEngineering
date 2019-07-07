@@ -206,11 +206,11 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 
 					GlStateManager.rotatef(90.0F-ClientUtils.mc().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
 
-					GlStateManager.disableTexture2D();
+					GlStateManager.disableTexture();
 					worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 					ClientUtils.renderBox(worldrenderer, -.5, h0, -.5, .5, h1, .5);
 					tessellator.draw();
-					GlStateManager.enableTexture2D();
+					GlStateManager.enableTexture();
 
 					GlStateManager.rotatef(-(90.0F-ClientUtils.mc().getRenderManager().playerViewY), 0.0F, 1.0F, 0.0F);
 
