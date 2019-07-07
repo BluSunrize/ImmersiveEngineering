@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.immersiveflux;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 /**
  * A simple storage object for IF and an example implementation of {@link IFluxStorage}.
@@ -39,7 +39,7 @@ public class FluxStorage implements IFluxStorage
 		this(capacity, capacity, capacity);
 	}
 
-	public FluxStorage readFromNBT(NBTTagCompound nbt)
+	public FluxStorage readFromNBT(CompoundNBT nbt)
 	{
 		this.energy = nbt.getInt("ifluxEnergy");
 		if(energy > capacity)
@@ -47,7 +47,7 @@ public class FluxStorage implements IFluxStorage
 		return this;
 	}
 
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
 		if(energy < 0)
 			energy = 0;

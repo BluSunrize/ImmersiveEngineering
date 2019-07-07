@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
@@ -40,10 +40,10 @@ public class MessageMagnetEquip implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		EntityPlayerMP player = context.get().getSender();
+		ServerPlayerEntity player = context.get().getSender();
 		assert player!=null;
 		player.getServerWorld().addScheduledTask(() -> {
-			ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
+			ItemStack held = player.getHeldItem(Hand.OFF_HAND);
 			if(fetchSlot >= 0)
 			{
 				ItemStack s = player.inventory.mainInventory.get(fetchSlot);
@@ -51,7 +51,7 @@ public class MessageMagnetEquip implements IMessage
 				{
 					((ItemIEShield)s.getItem()).getUpgrades(s).setInt("prevSlot", fetchSlot);
 					player.inventory.mainInventory.set(fetchSlot, held);
-					player.setHeldItem(EnumHand.OFF_HAND, s);
+					player.setHeldItem(Hand.OFF_HAND, s);
 				}
 			}
 			else
@@ -59,7 +59,7 @@ public class MessageMagnetEquip implements IMessage
 				int prevSlot = ((ItemIEShield)held.getItem()).getUpgrades(held).getInt("prevSlot");
 				ItemStack s = player.inventory.mainInventory.get(prevSlot);
 				player.inventory.mainInventory.set(prevSlot, held);
-				player.setHeldItem(EnumHand.OFF_HAND, s);
+				player.setHeldItem(Hand.OFF_HAND, s);
 				((ItemIEShield)held.getItem()).getUpgrades(held).removeTag("prevSlot");
 			}
 		});

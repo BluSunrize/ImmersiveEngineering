@@ -18,13 +18,13 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecor
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -100,21 +100,21 @@ public class MultiblockBucketWheel implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(IBlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		return Utils.isInTag(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)), "blockSteel");
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
-		if(side==EnumFacing.UP||side==EnumFacing.DOWN)
-			side = EnumFacing.fromAngle(player.rotationYaw);
+		if(side==Direction.UP||side==Direction.DOWN)
+			side = Direction.fromAngle(player.rotationYaw);
 
 		for(int h = -3; h <= 3; h++)
 			for(int w = -3; w <= 3; w++)
 			{
-				BlockPos pos2 = pos.add((side==EnumFacing.NORTH?w: side==EnumFacing.SOUTH?-w: 0), h, (side==EnumFacing.WEST?w: side==EnumFacing.EAST?-w: 0));
+				BlockPos pos2 = pos.add((side==Direction.NORTH?w: side==Direction.SOUTH?-w: 0), h, (side==Direction.WEST?w: side==Direction.EAST?-w: 0));
 
 				if((h==-3||h==3)&&w!=0)
 					continue;
@@ -133,12 +133,12 @@ public class MultiblockBucketWheel implements IMultiblock
 			}
 
 
-		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.BUCKET_WHEEL.getMeta());
+		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.BUCKET_WHEEL.getMeta());
 		state = state.with(IEProperties.FACING_HORIZONTAL, side);
 		for(int h = -3; h <= 3; h++)
 			for(int w = -3; w <= 3; w++)
 			{
-				BlockPos pos2 = pos.add((side==EnumFacing.NORTH?w: side==EnumFacing.SOUTH?-w: 0), h, (side==EnumFacing.WEST?w: side==EnumFacing.EAST?-w: 0));
+				BlockPos pos2 = pos.add((side==Direction.NORTH?w: side==Direction.SOUTH?-w: 0), h, (side==Direction.WEST?w: side==Direction.EAST?-w: 0));
 
 				if((h==-3||h==3)&&w!=0)
 					continue;
@@ -153,7 +153,7 @@ public class MultiblockBucketWheel implements IMultiblock
 					tile.formed = true;
 					tile.posInMultiblock = (w+3)+(h+3)*7;
 
-					tile.offset = new int[]{(side==EnumFacing.NORTH?w: side==EnumFacing.SOUTH?-w: 0), h, (side==EnumFacing.WEST?w: side==EnumFacing.EAST?-w: 0)};
+					tile.offset = new int[]{(side==Direction.NORTH?w: side==Direction.SOUTH?-w: 0), h, (side==Direction.WEST?w: side==Direction.EAST?-w: 0)};
 					tile.markDirty();
 					world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 				}

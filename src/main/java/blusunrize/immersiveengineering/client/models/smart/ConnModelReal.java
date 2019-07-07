@@ -20,7 +20,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -59,7 +59,7 @@ public class ConnModelReal implements IBakedModel
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
 	{
 		if(side==null&&state instanceof IExtendedBlockState)
 		{
@@ -126,7 +126,7 @@ public class ConnModelReal implements IBakedModel
 		return ItemOverrideList.NONE;
 	}
 
-	private List<BakedQuad> getBaseQuads(BlockRenderLayer currentLayer, IBlockState state, EnumFacing side, long rand)
+	private List<BakedQuad> getBaseQuads(BlockRenderLayer currentLayer, BlockState state, Direction side, long rand)
 	{
 		if(layers.contains(currentLayer)||currentLayer==null)
 			return base.getQuads(state, side, rand);
@@ -149,7 +149,7 @@ public class ConnModelReal implements IBakedModel
 
 		@Nonnull
 		@Override
-		public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
 		{
 			BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
 			if(layer!=BlockRenderLayer.SOLID&&layer!=BlockRenderLayer.TRANSLUCENT)

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
@@ -19,17 +19,17 @@ import net.minecraft.util.math.Vec3d;
  */
 public class AdvancedAABB extends AxisAlignedBB
 {
-	public EnumFacing fd;
+	public Direction fd;
 	public Vec3d[][] drawOverride;
 
-	public AdvancedAABB(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, EnumFacing fd, Vec3d[]... drawOverride)
+	public AdvancedAABB(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, Direction fd, Vec3d[]... drawOverride)
 	{
 		super(xMin, yMin, zMin, xMax, yMax, zMax);
 		this.fd = fd;
 		this.drawOverride = drawOverride;
 	}
 
-	public AdvancedAABB(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, EnumFacing fd)
+	public AdvancedAABB(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, Direction fd)
 	{
 		this(xMin, yMin, zMin, xMax, yMax, zMax, fd, new Vec3d[0][]);
 	}
@@ -44,7 +44,7 @@ public class AdvancedAABB extends AxisAlignedBB
 		this(xMin, yMin, zMin, xMax, yMax, zMax, null, new Vec3d[0][]);
 	}
 
-	public AdvancedAABB(AxisAlignedBB aabb, EnumFacing fd)
+	public AdvancedAABB(AxisAlignedBB aabb, Direction fd)
 	{
 		this(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, fd, new Vec3d[0][]);
 	}

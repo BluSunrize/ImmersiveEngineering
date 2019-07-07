@@ -11,16 +11,16 @@ package blusunrize.immersiveengineering.common.blocks.plant;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockBush;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BushBlock;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -28,14 +28,13 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.IWorldReaderBase;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 
 import java.util.EnumMap;
 import java.util.Random;
 
-public class BlockHemp extends BlockBush implements IGrowable
+public class BlockHemp extends BushBlock implements IGrowable
 {
 	public final String name;
 	public final static EnumProperty<EnumHempGrowth> GROWTH = EnumProperty.create("growth", EnumHempGrowth.class);
@@ -45,11 +44,11 @@ public class BlockHemp extends BlockBush implements IGrowable
 		super(Block.Properties.create(Material.PLANTS).hardnessAndResistance(0));
 		this.name = name;
 		IEContent.registeredIEBlocks.add(this);
-		IEContent.registeredIEItems.add(new ItemBlock(this, new Item.Properties()));
+		IEContent.registeredIEItems.add(new BlockItem(this, new Item.Properties()));
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, IBlockState> builder)
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
 	{
 		super.fillStateContainer(builder);
 		builder.add(GROWTH);
@@ -72,21 +71,21 @@ public class BlockHemp extends BlockBush implements IGrowable
 	}
 
 	@Override
-	public boolean isValidPosition(IBlockState state, IWorldReaderBase world, BlockPos pos)
+	public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos)
 	{
 		boolean b = super.isValidPosition(state, world, pos);
 		if(state.get(GROWTH)==EnumHempGrowth.TOP0)
 		{
-			IBlockState stateBelow = world.getBlockState(pos.add(0, -1, 0));
+			BlockState stateBelow = world.getBlockState(pos.add(0, -1, 0));
 			b = stateBelow.getBlock().equals(this)&&stateBelow.get(GROWTH)==getMaxGrowth(EnumHempGrowth.BOTTOM0);
 		}
 		return b;
 	}
 
 	@Override
-	protected boolean isValidGround(IBlockState state, IBlockReader world, BlockPos pos)
+	protected boolean isValidGround(BlockState state, IBlockReader world, BlockPos pos)
 	{
-		return state.canSustainPlant(world, pos, EnumFacing.UP, this);
+		return state.canSustainPlant(world, pos, Direction.UP, this);
 	}
 
 	@Override
@@ -108,13 +107,13 @@ public class BlockHemp extends BlockBush implements IGrowable
 	}
 
 	@Override
-	public VoxelShape getShape(IBlockState state, IBlockReader worldIn, BlockPos pos)
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
 		return shapes.getOrDefault(state.get(GROWTH), VoxelShapes.fullCube());
 	}
 
 	@Override
-	public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
+	public void getDrops(BlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
 	{
 		EnumHempGrowth growth = state.get(GROWTH);
 		if(growth==getMaxGrowth(growth))
@@ -127,7 +126,7 @@ public class BlockHemp extends BlockBush implements IGrowable
 	}
 
 	@Override
-	public void onNeighborChange(IBlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor)
+	public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor)
 	{
 		super.onNeighborChange(state, world, pos, neighbor);
 		//TODO is this what this was intended to do?
@@ -138,7 +137,7 @@ public class BlockHemp extends BlockBush implements IGrowable
 	}
 
 	@Override
-	public void tick(IBlockState state, World world, BlockPos pos, Random random)
+	public void tick(BlockState state, World world, BlockPos pos, Random random)
 	{
 		//TODO this.checkAndDropBlock(world, pos, state);
 		int light = world.getLight(pos);
@@ -160,19 +159,19 @@ public class BlockHemp extends BlockBush implements IGrowable
 		}
 	}
 
-	private float getGrowthSpeed(World world, BlockPos pos, IBlockState state, int light)
+	private float getGrowthSpeed(World world, BlockPos pos, BlockState state, int light)
 	{
 		float growth = 0.125f*(light-11);
 		if(world.canBlockSeeSky(pos))
 			growth += 2f;
-		IBlockState soil = world.getBlockState(pos.add(0, -1, 0));
+		BlockState soil = world.getBlockState(pos.add(0, -1, 0));
 		if(soil.getBlock().isFertile(soil, world, pos.add(0, -1, 0)))
 			growth *= 1.5f;
 		return 1f+growth;
 	}
 
 	@Override
-	public boolean canGrow(IBlockReader world, BlockPos pos, IBlockState state, boolean isClient)
+	public boolean canGrow(IBlockReader world, BlockPos pos, BlockState state, boolean isClient)
 	{
 		EnumHempGrowth growth = state.get(GROWTH);
 		if(growth!=getMaxGrowth(growth))
@@ -183,13 +182,13 @@ public class BlockHemp extends BlockBush implements IGrowable
 
 	//canBonemeal
 	@Override
-	public boolean canUseBonemeal(World world, Random rand, BlockPos pos, IBlockState state)
+	public boolean canUseBonemeal(World world, Random rand, BlockPos pos, BlockState state)
 	{
 		return canGrow(world, pos, world.getBlockState(pos), world.isRemote);
 	}
 
 	@Override
-	public void grow(World world, Random rand, BlockPos pos, IBlockState state)
+	public void grow(World world, Random rand, BlockPos pos, BlockState state)
 	{
 		EnumHempGrowth growth = state.get(GROWTH);
 		if(growth!=getMaxGrowth(growth))

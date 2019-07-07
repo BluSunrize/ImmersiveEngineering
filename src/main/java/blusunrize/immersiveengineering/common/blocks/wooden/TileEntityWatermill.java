@@ -15,14 +15,14 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public class TileEntityWatermill extends TileEntityIEBase implements ITickable, IDirectionalTile, IHasDummyBlocks, IHasObjProperty
 {
 	public static TileEntityType<TileEntityWatermill> TYPE;
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 	public int[] offset = {0, 0};
 	public float rotation = 0;
 	private Vec3d rotationVec = null;
@@ -136,11 +136,11 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	{
 		if(world==null)
 			return true;
-		for(EnumFacing fdY : new EnumFacing[]{EnumFacing.UP, EnumFacing.DOWN})
-			for(EnumFacing fdW : facing.getAxis()==Axis.Z?new EnumFacing[]{EnumFacing.EAST, EnumFacing.WEST}: new EnumFacing[]{EnumFacing.SOUTH, EnumFacing.NORTH})
+		for(Direction fdY : new Direction[]{Direction.UP, Direction.DOWN})
+			for(Direction fdW : facing.getAxis()==Axis.Z?new Direction[]{Direction.EAST, Direction.WEST}: new Direction[]{Direction.SOUTH, Direction.NORTH})
 			{
 				BlockPos pos = getPos().offset(fdW, 2).offset(fdY, 2);
-				IBlockState state = world.getBlockState(pos);
+				BlockState state = world.getBlockState(pos);
 				if(state.getBlockFaceShape(world, pos, fdW.getOpposite())==BlockFaceShape.SOLID)
 					return true;
 				if(state.getBlockFaceShape(world, pos, fdY.getOpposite())==BlockFaceShape.SOLID)
@@ -229,9 +229,9 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		prevRotation = nbt.getFloat("prevRotation");
 		offset = nbt.getIntArray("offset");
 		rotation = nbt.getFloat("rotation");
@@ -241,7 +241,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("facing", facing.ordinal());
 		nbt.setFloat("prevRotation", prevRotation);
@@ -265,13 +265,13 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -283,19 +283,19 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
@@ -307,7 +307,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
 	{
 		for(int hh = -2; hh <= 2; hh++)
 			for(int ww = -2; ww <= 2; ww++)
@@ -322,7 +322,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public void breakDummies(BlockPos pos, IBlockState state)
+	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		if(!formed)
 			return;

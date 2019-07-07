@@ -17,9 +17,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -38,23 +38,23 @@ public class LocalWireNetwork implements IWorldTickable
 	private final Map<ResourceLocation, LocalNetworkHandler> handlers = new HashMap<>();
 	/*private */final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
 
-	public LocalWireNetwork(NBTTagCompound subnet, GlobalWireNetwork globalNet)
+	public LocalWireNetwork(CompoundNBT subnet, GlobalWireNetwork globalNet)
 	{
 		this(globalNet);
-		NBTTagList proxies = subnet.getList("proxies", NBT.TAG_COMPOUND);
+		ListNBT proxies = subnet.getList("proxies", NBT.TAG_COMPOUND);
 		for(NBTBase b : proxies)
 		{
-			IICProxy proxy = IICProxy.readFromNBT(((NBTTagCompound)b).getCompound("proxy"));
-			for(NBTBase p : ((NBTTagCompound)b).getList("points", NBT.TAG_COMPOUND))
+			IICProxy proxy = IICProxy.readFromNBT(((CompoundNBT)b).getCompound("proxy"));
+			for(NBTBase p : ((CompoundNBT)b).getList("points", NBT.TAG_COMPOUND))
 			{
-				ConnectionPoint point = new ConnectionPoint((NBTTagCompound)p);
+				ConnectionPoint point = new ConnectionPoint((CompoundNBT)p);
 				loadConnector(point, proxy);
 			}
 		}
-		NBTTagList wires = subnet.getList("wires", NBT.TAG_COMPOUND);
+		ListNBT wires = subnet.getList("wires", NBT.TAG_COMPOUND);
 		for(NBTBase b : wires)
 		{
-			Connection wire = new Connection((NBTTagCompound)b);
+			Connection wire = new Connection((CompoundNBT)b);
 			if(connectors.containsKey(wire.getEndA().getPosition())&&connectors.containsKey(wire.getEndB().getPosition()))
 				addConnection(wire);
 			else
@@ -68,19 +68,19 @@ public class LocalWireNetwork implements IWorldTickable
 		handlerUserCount.defaultReturnValue(0);
 	}
 
-	public NBTTagCompound writeToNBT()
+	public CompoundNBT writeToNBT()
 	{
-		NBTTagList wires = new NBTTagList();
+		ListNBT wires = new ListNBT();
 		for(ConnectionPoint p : connections.keySet())
 			for(Connection conn : connections.get(p))
 				if(conn.isPositiveEnd(p))
 					wires.add(conn.toNBT());
-		NBTTagCompound ret = new NBTTagCompound();
+		CompoundNBT ret = new CompoundNBT();
 		ret.setTag("wires", wires);
 		Multimap<BlockPos, ConnectionPoint> connsByBlock = HashMultimap.create();
 		for(ConnectionPoint cp : connections.keySet())
 			connsByBlock.put(cp.getPosition(), cp);
-		NBTTagList proxies = new NBTTagList();
+		ListNBT proxies = new ListNBT();
 		for(BlockPos p : connectors.keySet())
 		{
 			IImmersiveConnectable iic = connectors.get(p);
@@ -91,9 +91,9 @@ public class LocalWireNetwork implements IWorldTickable
 				proxy = new IICProxy((TileEntity)iic);
 			if(proxy!=null)
 			{
-				NBTTagCompound complete = new NBTTagCompound();
+				CompoundNBT complete = new CompoundNBT();
 				complete.setTag("proxy", proxy.writeToNBT());
-				NBTTagList cps = new NBTTagList();
+				ListNBT cps = new ListNBT();
 				for(ConnectionPoint cp : connsByBlock.get(p))
 					cps.add(cp.createTag());
 				complete.setTag("points", cps);

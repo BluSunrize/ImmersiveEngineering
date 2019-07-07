@@ -17,14 +17,14 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.*;
 
 import javax.annotation.Nonnull;
@@ -44,7 +44,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	private static final int LEFT_INDEX = 1;
 	private WireType leftType;
 	private WireType rightType;
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 	public int dummy = 0;
 	public boolean onPost = false;
 	protected Set<String> acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY);
@@ -70,7 +70,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInt("facing", facing.ordinal());
@@ -83,10 +83,10 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		if(nbt.hasKey("leftType"))
 			leftType = ApiUtils.getWireTypeFromNBT(nbt, "leftType");
 		else
@@ -203,21 +203,21 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		if(onPost)
 		{
 			if(right)
-				return new Vec3d(.5+(facing==EnumFacing.EAST?.4375: facing==EnumFacing.WEST?-.4375: 0), 1.4375, .5+(facing==EnumFacing.SOUTH?.4375: facing==EnumFacing.NORTH?-.4375: 0));
+				return new Vec3d(.5+(facing==Direction.EAST?.4375: facing==Direction.WEST?-.4375: 0), 1.4375, .5+(facing==Direction.SOUTH?.4375: facing==Direction.NORTH?-.4375: 0));
 			else
-				return new Vec3d(.5+(facing==EnumFacing.EAST?-.0625: facing==EnumFacing.WEST?.0625: 0), .25, .5+(facing==EnumFacing.SOUTH?-.0625: facing==EnumFacing.NORTH?.0625: 0));
+				return new Vec3d(.5+(facing==Direction.EAST?-.0625: facing==Direction.WEST?.0625: 0), .25, .5+(facing==Direction.SOUTH?-.0625: facing==Direction.NORTH?.0625: 0));
 		}
 		else
 		{
 			double conRadius = con.type.getRenderDiameter()/2;
 			double offset = getHigherWiretype().equals(con.type.getCategory())?getHigherOffset(): getLowerOffset();
-			if(facing==EnumFacing.NORTH)
+			if(facing==Direction.NORTH)
 				return new Vec3d(right?.8125: .1875, 2+offset-conRadius, .5);
-			if(facing==EnumFacing.SOUTH)
+			if(facing==Direction.SOUTH)
 				return new Vec3d(right?.1875: .8125, 2+offset-conRadius, .5);
-			if(facing==EnumFacing.WEST)
+			if(facing==Direction.WEST)
 				return new Vec3d(.5, 2+offset-conRadius, right?.1875: .8125);
-			if(facing==EnumFacing.EAST)
+			if(facing==Direction.EAST)
 				return new Vec3d(.5, 2+offset-conRadius, right?.8125: .1875);
 		}
 		return new Vec3d(.5, .5, .5);
@@ -238,22 +238,22 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		{
 			if(offset.getY()!=2)
 				return null;
-			if(facing==EnumFacing.NORTH)
+			if(facing==Direction.NORTH)
 				if(target.hitX < .5)
 					return new ConnectionPoint(pos, LEFT_INDEX);
 				else
 					return new ConnectionPoint(pos, RIGHT_INDEX);
-			else if(facing==EnumFacing.SOUTH)
+			else if(facing==Direction.SOUTH)
 				if(target.hitX < .5)
 					return new ConnectionPoint(pos, RIGHT_INDEX);
 				else
 					return new ConnectionPoint(pos, LEFT_INDEX);
-			else if(facing==EnumFacing.WEST)
+			else if(facing==Direction.WEST)
 				if(target.hitZ < .5)
 					return new ConnectionPoint(pos, RIGHT_INDEX);
 				else
 					return new ConnectionPoint(pos, LEFT_INDEX);
-			else if(facing==EnumFacing.EAST)
+			else if(facing==Direction.EAST)
 				if(target.hitZ < .5)
 					return new ConnectionPoint(pos, LEFT_INDEX);
 				else
@@ -294,13 +294,13 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -312,19 +312,19 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
@@ -336,7 +336,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
 	{
 		if(state.get(IEProperties.IS_SECOND_STATE))
 		{
@@ -355,7 +355,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void breakDummies(BlockPos pos, IBlockState state)
+	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		if(onPost)
 			return;
@@ -369,12 +369,12 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		if(dummy==2)
 			return new float[]{facing.getAxis()==Axis.Z?0: .3125f, 0, facing.getAxis()==Axis.X?0: .3125f, facing.getAxis()==Axis.Z?1: .6875f, this instanceof TileEntityTransformerHV?.75f: .5625f, facing.getAxis()==Axis.X?1: .6875f};
 		if(onPost)
-			return new float[]{facing.getAxis()==Axis.Z?.25F: facing==EnumFacing.WEST?-.375F: .6875F,
+			return new float[]{facing.getAxis()==Axis.Z?.25F: facing==Direction.WEST?-.375F: .6875F,
 					0,
-					facing.getAxis()==Axis.X?.25F: facing==EnumFacing.NORTH?-.375F: .6875F,
-					facing.getAxis()==Axis.Z?.75F: facing==EnumFacing.EAST?1.375F: .3125F,
+					facing.getAxis()==Axis.X?.25F: facing==Direction.NORTH?-.375F: .6875F,
+					facing.getAxis()==Axis.Z?.75F: facing==Direction.EAST?1.375F: .3125F,
 					1,
-					facing.getAxis()==Axis.X?.75F: facing==EnumFacing.SOUTH?1.375F: .3125F};
+					facing.getAxis()==Axis.X?.75F: facing==Direction.SOUTH?1.375F: .3125F};
 		return null;
 	}
 
@@ -389,13 +389,13 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		{
 			double offsetA = mirrored?getHigherOffset(): getLowerOffset();
 			double offsetB = mirrored?getLowerOffset(): getHigherOffset();
-			if(facing==EnumFacing.NORTH)
+			if(facing==Direction.NORTH)
 				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(0, 0, .3125, .375, offsetB, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.625, 0, .3125, 1, offsetA, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(facing==EnumFacing.SOUTH)
+			if(facing==Direction.SOUTH)
 				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(0, 0, .3125, .375, offsetA, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.625, 0, .3125, 1, offsetB, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(facing==EnumFacing.WEST)
+			if(facing==Direction.WEST)
 				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(.3125, 0, 0, .6875, offsetA, .375).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.3125, 0, .625, .6875, offsetB, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(facing==EnumFacing.EAST)
+			if(facing==Direction.EAST)
 				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(.3125, 0, 0, .6875, offsetB, .375).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.3125, 0, .625, .6875, offsetA, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			cachedMirrored = mirrored;
 		}
@@ -407,7 +407,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return box.grow(.002).contains(mop.hitVec);
 	}

@@ -10,20 +10,20 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 
-public class InventoryBlueprint extends InventoryBasic
+public class InventoryBlueprint extends Inventory
 {
 	private final BlueprintCraftingRecipe[] recipes;
 
 	public InventoryBlueprint(Container container, BlueprintCraftingRecipe[] recipes)
 	{
-		super(new TextComponentString("BlueprintOutput"), recipes.length);
+		super(new StringTextComponent("BlueprintOutput"), recipes.length);
 		this.recipes = recipes;
 	}
 

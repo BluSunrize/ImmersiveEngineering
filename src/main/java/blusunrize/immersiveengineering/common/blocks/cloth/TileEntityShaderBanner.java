@@ -16,15 +16,15 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntityBanner;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.BannerTileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
@@ -40,7 +40,7 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 	public byte orientation = 0;
 	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct("immersiveengineering:banner");
 
-	public static TileEntityType<TileEntityBanner> TYPE;
+	public static TileEntityType<BannerTileEntity> TYPE;
 
 	public TileEntityShaderBanner()
 	{
@@ -48,7 +48,7 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		this.wall = nbt.getBoolean("wall");
 		this.orientation = nbt.getByte("orientation");
@@ -60,7 +60,7 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setBoolean("wall", this.wall);
 		nbt.setByte("orientation", this.orientation);
@@ -94,14 +94,14 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 
 
 	@Override
-	public NonNullList<ItemStack> getTileDrops(@Nullable EntityPlayer player, IBlockState state)
+	public NonNullList<ItemStack> getTileDrops(@Nullable PlayerEntity player, BlockState state)
 	{
 		return NonNullList.from(ItemStack.EMPTY,
 				new ItemStack(Items.WHITE_BANNER, 1), this.shader.getShaderItem());
 	}
 
 	@Override
-	public void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack)
+	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
 	{
 	}
 
@@ -120,7 +120,7 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityShader.SHADER_CAPABILITY)
 			return ApiUtils.constantOptional(shaderCap, shader);

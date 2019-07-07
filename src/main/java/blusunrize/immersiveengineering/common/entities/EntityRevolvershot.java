@@ -15,18 +15,18 @@ import blusunrize.immersiveengineering.common.network.MessageBirthdayParty;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.RayTraceResult;
@@ -75,12 +75,12 @@ public class EntityRevolvershot extends EntityIEProjectile
 		this(TYPE, world, x, y, z, ax, ay, az, type);
 	}
 
-	public EntityRevolvershot(World world, EntityLivingBase living, double ax, double ay, double az, IBullet type)
+	public EntityRevolvershot(World world, LivingEntity living, double ax, double ay, double az, IBullet type)
 	{
 		this(world, living, ax, ay, az, BulletHandler.findRegistryName(type));
 	}
 
-	public EntityRevolvershot(World world, EntityLivingBase living, double ax, double ay, double az, String type)
+	public EntityRevolvershot(World world, LivingEntity living, double ax, double ay, double az, String type)
 	{
 		this(TYPE, world, living.posX+ax, living.posY+living.getEyeHeight()+ay, living.posZ+az, ax, ay, az, BulletHandler.getBullet(type));
 		setShooterSynced();
@@ -100,26 +100,26 @@ public class EntityRevolvershot extends EntityIEProjectile
 	public void onImpact(RayTraceResult mop)
 	{
 		boolean headshot = false;
-		if(mop.entity instanceof EntityLivingBase)
-			headshot = Utils.isVecInEntityHead((EntityLivingBase)mop.entity, new Vec3d(posX, posY, posZ));
+		if(mop.entity instanceof LivingEntity)
+			headshot = Utils.isVecInEntityHead((LivingEntity)mop.entity, new Vec3d(posX, posY, posZ));
 
 		if(this.bulletType!=null)
 		{
 			bulletType.onHitTarget(world, mop, this.shootingEntity, this, headshot);
-			if(headshot&&mop.entity instanceof EntityAgeable&&((EntityAgeable)mop.entity).isChild()&&((EntityLivingBase)mop.entity).getHealth() <= 0)
+			if(headshot&&mop.entity instanceof AgeableEntity&&((AgeableEntity)mop.entity).isChild()&&((LivingEntity)mop.entity).getHealth() <= 0)
 			{
-				EntityPlayer shooter = world.getPlayerEntityByUUID(shootingEntity);
+				PlayerEntity shooter = world.getPlayerEntityByUUID(shootingEntity);
 				if(shooter!=null)
 					Utils.unlockIEAdvancement(shooter, "main/secret_birthdayparty");
 				world.playSound(null, posX, posY, posZ, IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F/(this.rand.nextFloat()*0.2F+0.9F));
-				ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_ENTITY.with(() -> mop.entity), new MessageBirthdayParty((EntityLivingBase)mop.entity));
+				ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_ENTITY.with(() -> mop.entity), new MessageBirthdayParty((LivingEntity)mop.entity));
 			}
 		}
 		if(!this.world.isRemote)
 			this.secondaryImpact(mop);
 		if(mop.type==Type.BLOCK)
 		{
-			IBlockState state = this.world.getBlockState(mop.getBlockPos());
+			BlockState state = this.world.getBlockState(mop.getBlockPos());
 			if(state.getBlock().getMaterial(state)!=Material.AIR)
 				state.getBlock().onEntityCollision(state, this.world, mop.getBlockPos(), this);
 		}
@@ -129,14 +129,14 @@ public class EntityRevolvershot extends EntityIEProjectile
 
 	public void secondaryImpact(RayTraceResult mop)
 	{
-		if(bulletElectro&&mop.entity instanceof EntityLivingBase)
+		if(bulletElectro&&mop.entity instanceof LivingEntity)
 		{
-			EntityPlayer shooter = world.getPlayerEntityByUUID(shootingEntity);
+			PlayerEntity shooter = world.getPlayerEntityByUUID(shootingEntity);
 			float percentualDrain = .15f/(bulletType==null?1: bulletType.getProjectileCount(shooter));
-			((EntityLivingBase)mop.entity).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 15, 4));
-			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
+			((LivingEntity)mop.entity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 15, 4));
+			for(EquipmentSlotType slot : EquipmentSlotType.values())
 			{
-				ItemStack stack = ((EntityLivingBase)mop.entity).getItemStackFromSlot(slot);
+				ItemStack stack = ((LivingEntity)mop.entity).getItemStackFromSlot(slot);
 				if(EnergyHelper.isFluxReceiver(stack)&&EnergyHelper.getEnergyStored(stack) > 0)
 				{
 					int drain = (int)Math.max(EnergyHelper.getEnergyStored(stack), EnergyHelper.getMaxEnergyStored(stack)*percentualDrain);
@@ -164,17 +164,17 @@ public class EntityRevolvershot extends EntityIEProjectile
 	}
 
 	@Override
-	public void writeAdditional(NBTTagCompound nbt)
+	public void writeAdditional(CompoundNBT nbt)
 	{
 		super.writeAdditional(nbt);
 		nbt.setByte("inGround", (byte)(this.inGround?1: 0));
 		nbt.setString("bulletType", BulletHandler.findRegistryName(this.bulletType));
 		if(!bulletPotion.isEmpty())
-			nbt.setTag("bulletPotion", bulletPotion.write(new NBTTagCompound()));
+			nbt.setTag("bulletPotion", bulletPotion.write(new CompoundNBT()));
 	}
 
 	@Override
-	public void readAdditional(NBTTagCompound nbt)
+	public void readAdditional(CompoundNBT nbt)
 	{
 		super.readAdditional(nbt);
 		this.bulletType = BulletHandler.getBullet(nbt.getString("bulletType"));

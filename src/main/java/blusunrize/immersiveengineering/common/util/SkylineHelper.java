@@ -12,16 +12,15 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -41,7 +40,7 @@ public class SkylineHelper
 {
 	private static final double LN_0_98 = Math.log(.98);
 
-	public static void spawnHook(EntityLivingBase player, TileEntity start, Connection connection, EnumHand hand,
+	public static void spawnHook(LivingEntity player, TileEntity start, Connection connection, Hand hand,
 								 boolean limitSpeed)
 	{
 
@@ -90,7 +89,7 @@ public class SkylineHelper
 				}
 
 				player.world.spawnEntity(hook);
-				SkyhookUserData data = Objects.requireNonNull(player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP));
+				SkyhookUserData data = Objects.requireNonNull(player.getCapability(SKYHOOK_USER_DATA, Direction.UP));
 				data.startRiding();
 				data.hook = hook;
 				player.startRiding(hook);
@@ -151,7 +150,7 @@ public class SkylineHelper
 		WorldBorder worldborder = w.getWorldBorder();
 		boolean outsideWorld = entityIn!=null&&entityIn.isOutsideBorder();
 		boolean insideWorld = entityIn!=null&&w.isInsideWorldBorder(entityIn);
-		IBlockState outsideState = Blocks.STONE.getDefaultState();
+		BlockState outsideState = Blocks.STONE.getDefaultState();
 		BlockPos.PooledMutableBlockPos mutPos = BlockPos.PooledMutableBlockPos.retain();
 
 		try
@@ -177,7 +176,7 @@ public class SkylineHelper
 								mutPos.setPos(x, y, z);
 								if(!ignored.contains(mutPos))
 								{
-									IBlockState currState;
+									BlockState currState;
 
 									if(!worldborder.contains(mutPos)&&insideWorld)
 										currState = outsideState;

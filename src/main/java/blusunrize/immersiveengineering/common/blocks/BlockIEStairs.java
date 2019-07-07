@@ -10,15 +10,15 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-public class BlockIEStairs extends BlockStairs
+public class BlockIEStairs extends StairsBlock
 {
 	public boolean hasFlavour = false;
 	public boolean isFlammable = false;
@@ -26,7 +26,7 @@ public class BlockIEStairs extends BlockStairs
 	float explosionResistance;
 	BlockRenderLayer renderLayer = BlockRenderLayer.SOLID;
 
-	public BlockIEStairs(String name, IBlockState state)
+	public BlockIEStairs(String name, BlockState state)
 	{
 		super(state);
 		this.name = name;
@@ -64,7 +64,7 @@ public class BlockIEStairs extends BlockStairs
 	}
 
 	@Override
-	public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
+	public boolean doesSideBlockRendering(BlockState state, IBlockAccess world, BlockPos pos, Direction face)
 	{
 		if(this.renderLayer!=BlockRenderLayer.SOLID)
 			return false;

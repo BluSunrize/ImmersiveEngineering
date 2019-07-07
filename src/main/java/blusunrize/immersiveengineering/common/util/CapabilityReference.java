@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
@@ -29,12 +29,12 @@ public abstract class CapabilityReference<T>
 		return new TECapReference<>(local::getWorld, pos, cap);
 	}
 
-	public static <T> CapabilityReference<T> forRelative(TileEntity local, Capability<T> cap, Vec3i offset, EnumFacing side)
+	public static <T> CapabilityReference<T> forRelative(TileEntity local, Capability<T> cap, Vec3i offset, Direction side)
 	{
 		return forTileEntity(local, () -> new DirectionalBlockPos(local.getPos().add(offset), side.getOpposite()), cap);
 	}
 
-	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, @Nonnull EnumFacing side)
+	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, @Nonnull Direction side)
 	{
 		return forRelative(local, cap, BlockPos.ORIGIN.offset(side), side);
 	}

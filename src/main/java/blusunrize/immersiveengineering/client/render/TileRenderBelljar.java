@@ -15,16 +15,19 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -39,8 +42,8 @@ import java.util.List;
 
 public class TileRenderBelljar extends TileEntityRenderer<TileEntityBelljar>
 {
-	private static HashMap<EnumFacing, List<BakedQuad>> quads = new HashMap<>();
-	private static HashMap<IBlockState, List<BakedQuad>> plantQuads = new HashMap<>();
+	private static HashMap<Direction, List<BakedQuad>> quads = new HashMap<>();
+	private static HashMap<BlockState, List<BakedQuad>> plantQuads = new HashMap<>();
 
 	@Override
 	public void render(TileEntityBelljar tile, double x, double y, double z, float partialTicks, int destroyStage)
@@ -51,7 +54,7 @@ public class TileRenderBelljar extends TileEntityRenderer<TileEntityBelljar>
 		BlockPos blockPos = tile.getPos();
 		if(!quads.containsKey(tile.getFacing()))
 		{
-			IBlockState state = getWorld().getBlockState(blockPos);
+			BlockState state = getWorld().getBlockState(blockPos);
 			if(state.getBlock()!=MetalDevices.belljar)
 				return;
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
@@ -71,7 +74,7 @@ public class TileRenderBelljar extends TileEntityRenderer<TileEntityBelljar>
 			GlStateManager.shadeModel(7425);
 		else
 			GlStateManager.shadeModel(7424);
-		Minecraft.getInstance().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = Tessellator.getInstance().getBuffer();
 
 
@@ -88,17 +91,17 @@ public class TileRenderBelljar extends TileEntityRenderer<TileEntityBelljar>
 			GlStateManager.scalef(scale, scale, scale);
 			if(!plantHandler.overrideRender(inventory.get(1), inventory.get(0), tile.renderGrowth, tile, blockRenderer))
 			{
-				IBlockState[] states = plantHandler.getRenderedPlant(inventory.get(1), inventory.get(0), tile.renderGrowth, tile);
+				BlockState[] states = plantHandler.getRenderedPlant(inventory.get(1), inventory.get(0), tile.renderGrowth, tile);
 				if(states==null||states.length < 1)
 					return;
-				for(IBlockState s : states)
+				for(BlockState s : states)
 				{
 					List<BakedQuad> plantQuadList = plantQuads.get(s);
 					if(plantQuadList==null)
 					{
 						IBakedModel plantModel = blockRenderer.getModelForState(s);
 						plantQuadList = new ArrayList<>(plantModel.getQuads(s, null, Utils.RAND, EmptyModelData.INSTANCE));
-						for(EnumFacing f : EnumFacing.values())
+						for(Direction f : Direction.values())
 							plantQuadList.addAll(plantModel.getQuads(s, f, Utils.RAND, EmptyModelData.INSTANCE));
 						plantQuads.put(s, plantQuadList);
 					}

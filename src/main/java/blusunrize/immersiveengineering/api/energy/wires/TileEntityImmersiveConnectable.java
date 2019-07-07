@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -70,7 +70,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		this.markDirty();
 		if(world!=null)
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state, state, 3);
 		}
 	}
@@ -128,13 +128,13 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		if(id==-1||id==255)
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state, state, 3);
 			return true;
 		}
 		else if(id==254)
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			if(state instanceof IExtendedBlockState)
 			{
 				state = state.getBlock().getExtendedState(state, world, getPos());
@@ -155,12 +155,12 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
 	{
 	}
 
 	@Override
-	public void writeCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
 	{
 	}
 

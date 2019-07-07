@@ -18,18 +18,18 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -54,7 +54,7 @@ import java.util.function.Function;
 import static java.util.Collections.newSetFromMap;
 
 public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty,
-		IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
+		IOBJModelCallback<BlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
 		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile
 {
 	public static TileEntityType<TileEntityFluidPipe> TYPE;
@@ -94,7 +94,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public ItemStack pipeCover = ItemStack.EMPTY;
 	private byte connections = 0;
 	@Nullable
-	private EnumDyeColor color = null;
+	private DyeColor color = null;
 
 	public static Set<DirectionalFluidOutput> getConnectedFluidHandlers(BlockPos node, World world)
 	{
@@ -116,7 +116,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 				for(int i = 0; i < 6; i++)
 				{
 					//						boolean b = (te instanceof TileEntityFluidPipe)? (((TileEntityFluidPipe) te).sideConfig[i]==0): (((TileEntityFluidPump) te).sideConfig[i]==1);
-					EnumFacing fd = EnumFacing.byIndex(i);
+					Direction fd = Direction.byIndex(i);
 					if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
 					{
 						BlockPos nextPos = next.offset(fd);
@@ -158,7 +158,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if(!world.isRemote)
 		{
 			boolean changed = false;
-			for(EnumFacing f : EnumFacing.VALUES)
+			for(Direction f : Direction.VALUES)
 				changed |= updateConnectionByte(f);
 			if(changed)
 			{
@@ -180,7 +180,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(!(entity instanceof EntityLivingBase)||((EntityLivingBase)entity).isOnLadder()||pipeCover.isEmpty())
+		if(!(entity instanceof LivingEntity)||((LivingEntity)entity).isOnLadder()||pipeCover.isEmpty())
 			return;
 		else
 		{
@@ -207,7 +207,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			if(entity.motionY < -.15)
 				entity.motionY = -0.15D;
 
-			if(entity.motionY < 0&&entity instanceof EntityPlayer&&entity.isSneaking())
+			if(entity.motionY < 0&&entity instanceof PlayerEntity&&entity.isSneaking())
 			{
 				entity.motionY = .05;
 				return;
@@ -218,32 +218,32 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null||sideConfig.length!=6)
 			sideConfig = new int[]{0, 0, 0, 0, 0, 0};
 		pipeCover = ItemStack.read(nbt.getCompound("pipeCover"));
-		EnumDyeColor oldColor = color;
+		DyeColor oldColor = color;
 		if(nbt.contains("color", NBT.TAG_INT))
-			color = EnumDyeColor.byId(nbt.getInt("color"));
+			color = DyeColor.byId(nbt.getInt("color"));
 		else
 			color = null;
 		byte oldConns = connections;
 		connections = nbt.getByte("connections");
 		if(world!=null&&world.isRemote&&(connections!=oldConns||color!=oldColor))
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state, state, 3);
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setIntArray("sideConfig", sideConfig);
 		if(!pipeCover.isEmpty())
-			nbt.setTag("pipeCover", (pipeCover.write(new NBTTagCompound())));
+			nbt.setTag("pipeCover", (pipeCover.write(new CompoundNBT())));
 		nbt.setByte("connections", connections);
 		if(color!=null)
 			nbt.setInt("color", color.getId());
@@ -257,11 +257,11 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		return false;
 	}
 
-	private EnumMap<EnumFacing, LazyOptional<IFluidHandler>> sidedHandlers = new EnumMap<>(EnumFacing.class);
-	private EnumMap<EnumFacing, CapabilityReference<IFluidHandler>> neighbors = new EnumMap<>(EnumFacing.class);
+	private EnumMap<Direction, LazyOptional<IFluidHandler>> sidedHandlers = new EnumMap<>(Direction.class);
+	private EnumMap<Direction, CapabilityReference<IFluidHandler>> neighbors = new EnumMap<>(Direction.class);
 
 	{
-		for(EnumFacing f : EnumFacing.VALUES)
+		for(Direction f : Direction.VALUES)
 		{
 			sidedHandlers.put(f, registerConstantCap(new PipeFluidHandler(this, f)));
 			neighbors.put(f, CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f));
@@ -270,7 +270,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&sideConfig[facing.ordinal()]==0)
 			return sidedHandlers.get(facing).cast();
@@ -304,20 +304,20 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public String getCacheKey(IBlockState object)
+	public String getCacheKey(BlockState object)
 	{
 		return getRenderCacheKey();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
+	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
 	{
 		return transform;
 	}
 
 	@Override
-	public Collection<ItemStack> getExtraDrops(EntityPlayer player, IBlockState state)
+	public Collection<ItemStack> getExtraDrops(PlayerEntity player, BlockState state)
 	{
 		if(!pipeCover.isEmpty())
 			return Lists.newArrayList(pipeCover);
@@ -327,7 +327,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	@Override
 	public void onNeighborBlockChange(BlockPos otherPos)
 	{
-		EnumFacing dir = EnumFacing.getFacingFromVector(otherPos.getX()-pos.getX(),
+		Direction dir = Direction.getFacingFromVector(otherPos.getX()-pos.getX(),
 				otherPos.getY()-pos.getY(), otherPos.getZ()-pos.getZ());
 		if(updateConnectionByte(dir))
 		{
@@ -339,9 +339,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	static class PipeFluidHandler implements IFluidHandler
 	{
 		TileEntityFluidPipe pipe;
-		EnumFacing facing;
+		Direction facing;
 
-		public PipeFluidHandler(TileEntityFluidPipe pipe, EnumFacing facing)
+		public PipeFluidHandler(TileEntityFluidPipe pipe, Direction facing)
 		{
 			this.pipe = pipe;
 			this.facing = facing;
@@ -439,10 +439,10 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public static class DirectionalFluidOutput
 	{
 		IFluidHandler output;
-		EnumFacing direction;
+		Direction direction;
 		TileEntity containingTile;
 
-		public DirectionalFluidOutput(IFluidHandler output, TileEntity containingTile, EnumFacing direction)
+		public DirectionalFluidOutput(IFluidHandler output, TileEntity containingTile, Direction direction)
 		{
 			this.output = output;
 			this.direction = direction;
@@ -450,7 +450,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		}
 	}
 
-	public boolean updateConnectionByte(EnumFacing dir)
+	public boolean updateConnectionByte(Direction dir)
 	{
 		IFluidTankProperties[] tankInfo;
 		final byte oldConn = connections;
@@ -475,7 +475,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		byte connections = 0;
 		IFluidTankProperties[] tankInfo;
 		int mask = 1<<6;
-		for(EnumFacing dir : EnumFacing.VALUES)
+		for(Direction dir : Direction.VALUES)
 		{
 			mask >>= 1;
 			if(neighbors.get(dir).isPresent())
@@ -502,7 +502,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if(connections!=3&&connections!=12&&connections!=48)
 			return 1;
 		//		TileEntity con = world.getTileEntity(xCoord+(connection==4?-1: connection==5?1: 0),yCoord+(connection==0?-1: connection==1?1: 0),zCoord+(connection==2?-1: connection==3?1: 0));
-		TileEntity con = world.getTileEntity(getPos().offset(EnumFacing.byIndex(connection)));
+		TileEntity con = world.getTileEntity(getPos().offset(Direction.byIndex(connection)));
 		if(con instanceof TileEntityFluidPipe)
 		{
 			byte tileConnections = ((TileEntityFluidPipe)con).connections;
@@ -519,7 +519,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			sideConfig[side] = -1;
 		markDirty();
 
-		EnumFacing fd = EnumFacing.byIndex(side);
+		Direction fd = Direction.byIndex(side);
 		TileEntity connected = world.getTileEntity(getPos().offset(fd));
 		if(connected instanceof TileEntityFluidPipe)
 		{
@@ -605,7 +605,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			//			if(pipeCover!=null)
 			//				size = 0;
 			if((availableConnections&0x1)==1)
-				list.add(new AdvancedAABB(new AxisAlignedBB(i==4?0: i==5?1-depth: size, i==0?0: i==1?1-depth: size, i==2?0: i==3?1-depth: size, i==4?depth: i==5?1: 1-size, i==0?depth: i==1?1: 1-size, i==2?depth: i==3?1: 1-size).offset(getPos()), EnumFacing.byIndex(i)));
+				list.add(new AdvancedAABB(new AxisAlignedBB(i==4?0: i==5?1-depth: size, i==0?0: i==1?1-depth: size, i==2?0: i==3?1-depth: size, i==4?depth: i==5?1: 1-size, i==0?depth: i==1?1: 1-size, i==2?depth: i==3?1: 1-size).offset(getPos()), Direction.byIndex(i)));
 			if((connections&(1<<i))!=0)
 				baseAABB[i] += i%2==1?.125: -.125;
 			baseAABB[i] = Math.min(Math.max(baseAABB[i], 0), 1);
@@ -616,7 +616,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		if(box instanceof AdvancedAABB)
 		{
@@ -952,13 +952,13 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(heldItem.isEmpty()&&player.isSneaking()&&!pipeCover.isEmpty())
 		{
 			if(!world.isRemote&&world.getGameRules().getBoolean("doTileDrops"))
 			{
-				EntityItem entityitem = player.dropItem(pipeCover.copy(), false);
+				ItemEntity entityitem = player.dropItem(pipeCover.copy(), false);
 				if(entityitem!=null)
 					entityitem.setNoPickupDelay();
 			}
@@ -976,7 +976,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 					{
 						if(!world.isRemote&&!pipeCover.isEmpty()&&world.getGameRules().getBoolean("doTileDrops"))
 						{
-							EntityItem entityitem = player.dropItem(pipeCover.copy(), false);
+							ItemEntity entityitem = player.dropItem(pipeCover.copy(), false);
 							if(entityitem!=null)
 								entityitem.setNoPickupDelay();
 						}
@@ -987,7 +987,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 						return true;
 					}
 				}
-			EnumDyeColor heldDye = Utils.getDye(heldItem);
+			DyeColor heldDye = Utils.getDye(heldItem);
 			if(heldDye!=null)
 			{
 				color = heldDye;
@@ -999,11 +999,11 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote)
 			return true;
-		EnumFacing fd = side;
+		Direction fd = side;
 		List<AxisAlignedBB> boxes = this.getAdvancedSelectionBounds();
 		for(AxisAlignedBB box : boxes)
 			if(box instanceof AdvancedAABB)
@@ -1023,10 +1023,10 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	public void onTilePlaced(World world, BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer, ItemStack stack)
+	public void onTilePlaced(World world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack)
 	{
 		TileEntity te;
-		for(EnumFacing dir : EnumFacing.values())
+		for(Direction dir : Direction.values())
 			if((te = world.getTileEntity(pos.offset(dir))) instanceof TileEntityFluidPipe)
 				if(((TileEntityFluidPipe)te).color!=this.color)
 					this.toggleSide(dir.ordinal());
@@ -1039,13 +1039,13 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	public boolean hasOutputConnection(EnumFacing side)
+	public boolean hasOutputConnection(Direction side)
 	{
 		return side!=null&&sideConfig[side.ordinal()]==0;
 	}
 
 	@Override
-	public int getRenderColour(IBlockState object, String group)
+	public int getRenderColour(BlockState object, String group)
 	{
 		if(color!=null)
 			return color.colorValue|(0xff000000);

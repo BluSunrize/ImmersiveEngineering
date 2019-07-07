@@ -16,8 +16,8 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.UUID;
 
@@ -29,18 +29,18 @@ public class CommandShaders
 		main.requires(source -> source.hasPermissionLevel(4));
 		main.executes(source -> clearShaders(source, source.getSource().asPlayer()));
 		main.then(Commands.argument("player", EntityArgument.singlePlayer()).executes(
-				context -> clearShaders(context, context.getArgument("player", EntityPlayerMP.class))));
+				context -> clearShaders(context, context.getArgument("player", ServerPlayerEntity.class))));
 		return main;
 	}
 
-	private static int clearShaders(CommandContext<CommandSource> context, EntityPlayerMP player)
+	private static int clearShaders(CommandContext<CommandSource> context, ServerPlayerEntity player)
 	{
 		UUID uuid = player.getUniqueID();
 		if(ShaderRegistry.receivedShaders.containsKey(uuid))
 			ShaderRegistry.receivedShaders.get(uuid).clear();
 		ShaderRegistry.recalculatePlayerTotalWeight(uuid);
 		context.getSource().sendFeedback(
-				new TextComponentTranslation(Lib.CHAT_COMMAND+"shaders.clear.sucess", player.getName()),
+				new TranslationTextComponent(Lib.CHAT_COMMAND+"shaders.clear.sucess", player.getName()),
 				true);
 		return Command.SINGLE_SUCCESS;
 	}

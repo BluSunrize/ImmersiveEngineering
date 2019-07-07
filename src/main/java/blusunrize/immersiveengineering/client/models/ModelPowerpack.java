@@ -22,12 +22,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.Hand;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
@@ -183,14 +183,14 @@ public class ModelPowerpack extends ModelIEArmorBase
 	@Override
 	public void render(Entity entity, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float scale)
 	{
-		if(entity instanceof EntityLivingBase)
+		if(entity instanceof LivingEntity)
 		{
-			ItemStack chest = ((EntityLivingBase)entity).getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+			ItemStack chest = ((LivingEntity)entity).getItemStackFromSlot(EquipmentSlotType.CHEST);
 			ItemStack powerpack = null;
 			float storage = 0;
 			if(!chest.isEmpty()&&chest.getItem() instanceof ItemPowerpack)
 				powerpack = chest;
-			else if(!chest.isEmpty()&&chest.getItem() instanceof ItemArmor&&ItemNBTHelper.hasKey(chest, "IE:Powerpack"))
+			else if(!chest.isEmpty()&&chest.getItem() instanceof ArmorItem&&ItemNBTHelper.hasKey(chest, "IE:Powerpack"))
 				powerpack = ItemNBTHelper.getItemStack(chest, "IE:Powerpack");
 			else if(IEBipedLayerRenderer.POWERPACK_PLAYERS.containsKey(entity.getUniqueID()))
 				powerpack = IEBipedLayerRenderer.POWERPACK_PLAYERS.get(entity.getUniqueID()).getLeft();
@@ -209,13 +209,13 @@ public class ModelPowerpack extends ModelIEArmorBase
 
 		ClientUtils.bindTexture("immersiveengineering:textures/blocks/wire.png");
 		GlStateManager.pushMatrix();
-		if(entity instanceof EntityLivingBase)
-			for(EnumHand hand : EnumHand.values())
+		if(entity instanceof LivingEntity)
+			for(Hand hand : Hand.values())
 			{
-				ItemStack stack = ((EntityLivingBase)entity).getHeldItem(hand);
+				ItemStack stack = ((LivingEntity)entity).getHeldItem(hand);
 				if(!stack.isEmpty()&&EnergyHelper.isFluxItem(stack))
 				{
-					boolean right = (hand==EnumHand.MAIN_HAND)==(((EntityLivingBase)entity).getPrimaryHand()==EnumHandSide.RIGHT);
+					boolean right = (hand==Hand.MAIN_HAND)==(((LivingEntity)entity).getPrimaryHand()==HandSide.RIGHT);
 					float angleX = (right?bipedRightArm: bipedLeftArm).rotateAngleX;
 					float angleZ = (right?bipedRightArm: bipedLeftArm).rotateAngleZ;
 					String cacheKey = keyFormat.format(angleX)+"_"+keyFormat.format(angleZ);

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -32,11 +32,11 @@ public class ZoomHandler
 		/**
 		 * @return whether this item is valid for zooming in
 		 */
-		boolean canZoom(ItemStack stack, EntityPlayer player);
+		boolean canZoom(ItemStack stack, PlayerEntity player);
 
 		/**
 		 * @return the different steps of zoom the item has, sorted from low to high
 		 */
-		float[] getZoomSteps(ItemStack stack, EntityPlayer player);
+		float[] getZoomSteps(ItemStack stack, PlayerEntity player);
 	}
 }

@@ -4,14 +4,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.ToolItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 
@@ -21,7 +19,7 @@ import java.util.Set;
 /**
  * @author BluSunrize - 08.07.2018
  */
-public class ItemToolBase extends ItemTool
+public class ItemToolBase extends ToolItem
 {
 	private final ImmutableSet<ToolType> toolClasses;
 	private final ResourceLocation oreDict;
@@ -37,7 +35,7 @@ public class ItemToolBase extends ItemTool
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, ToolType tool, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
+	public int getHarvestLevel(ItemStack stack, ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
 	{
 		int level = super.getHarvestLevel(stack, tool, player, blockState);
 		if(level==-1&&toolClasses.contains(tool))

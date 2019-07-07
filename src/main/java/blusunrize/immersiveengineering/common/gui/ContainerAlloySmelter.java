@@ -9,19 +9,19 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityAlloySmelter;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnaceFuel;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.FurnaceFuelSlot;
+import net.minecraft.inventory.container.Slot;
 
 public class ContainerAlloySmelter extends ContainerIEBase<TileEntityAlloySmelter>
 {
-	public ContainerAlloySmelter(InventoryPlayer inventoryPlayer, TileEntityAlloySmelter tile)
+	public ContainerAlloySmelter(PlayerInventory inventoryPlayer, TileEntityAlloySmelter tile)
 	{
 		super(inventoryPlayer, tile);
 
 		this.addSlot(new Slot(this.inv, 0, 38, 17));
 		this.addSlot(new Slot(this.inv, 1, 66, 17));
-		this.addSlot(new SlotFurnaceFuel(this.inv, 2, 52, 53));
+		this.addSlot(new FurnaceFuelSlot(this.inv, 2, 52, 53));
 		this.addSlot(new IESlot.Output(this, this.inv, 3, 120, 35));
 		slotCount = 4;
 

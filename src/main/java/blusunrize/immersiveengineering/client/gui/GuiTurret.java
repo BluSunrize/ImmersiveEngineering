@@ -20,15 +20,15 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretChem;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretGun;
 import blusunrize.immersiveengineering.common.gui.ContainerTurret;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -36,9 +36,9 @@ import java.util.ArrayList;
 public class GuiTurret extends GuiIEContainerBase
 {
 	public TileEntityTurret tile;
-	private GuiTextField nameField;
+	private TextFieldWidget nameField;
 
-	public GuiTurret(InventoryPlayer inventoryPlayer, TileEntityTurret tile)
+	public GuiTurret(PlayerInventory inventoryPlayer, TileEntityTurret tile)
 	{
 		super(new ContainerTurret(inventoryPlayer, tile));
 		this.tile = tile;
@@ -50,7 +50,7 @@ public class GuiTurret extends GuiIEContainerBase
 	{
 		super.initGui();
 		mc.keyboardListener.enableRepeatEvents(true);
-		this.nameField = new GuiTextField(0, this.fontRenderer, guiLeft+11, guiTop+88, 58, 12);
+		this.nameField = new TextFieldWidget(0, this.fontRenderer, guiLeft+11, guiTop+88, 58, 12);
 		this.nameField.setTextColor(-1);
 		this.nameField.setDisabledTextColour(-1);
 		this.nameField.setEnableBackgroundDrawing(false);
@@ -63,7 +63,7 @@ public class GuiTurret extends GuiIEContainerBase
 			public void onClick(double mouseX, double mouseY)
 			{
 				super.onClick(mouseX, mouseY);
-				NBTTagCompound tag = new NBTTagCompound();
+				CompoundNBT tag = new CompoundNBT();
 				int listOffset = -1;
 				int rem = selectedOption;
 				tile.targetList.remove(rem);
@@ -78,7 +78,7 @@ public class GuiTurret extends GuiIEContainerBase
 			public void onClick(double mouseX, double mouseY)
 			{
 				super.onClick(mouseX, mouseY);
-				NBTTagCompound tag = new NBTTagCompound();
+				CompoundNBT tag = new CompoundNBT();
 				int listOffset = -1;
 				String name = nameField.getText();
 				if(!tile.targetList.contains(name))
@@ -97,7 +97,7 @@ public class GuiTurret extends GuiIEContainerBase
 			public void onClick(double mouseX, double mouseY)
 			{
 				super.onClick(mouseX, mouseY);
-				NBTTagCompound tag = new NBTTagCompound();
+				CompoundNBT tag = new CompoundNBT();
 				int listOffset = -1;
 				tile.whitelist = !state;
 				tag.setBoolean("whitelist", tile.whitelist);
@@ -110,7 +110,7 @@ public class GuiTurret extends GuiIEContainerBase
 			public void onClick(double mouseX, double mouseY)
 			{
 				super.onClick(mouseX, mouseY);
-				NBTTagCompound tag = new NBTTagCompound();
+				CompoundNBT tag = new CompoundNBT();
 				int listOffset = -1;
 				tile.attackAnimals = state;
 				tag.setBoolean("attackAnimals", tile.attackAnimals);
@@ -123,7 +123,7 @@ public class GuiTurret extends GuiIEContainerBase
 			public void onClick(double mouseX, double mouseY)
 			{
 				super.onClick(mouseX, mouseY);
-				NBTTagCompound tag = new NBTTagCompound();
+				CompoundNBT tag = new CompoundNBT();
 				int listOffset = -1;
 				tile.attackPlayers = state;
 				tag.setBoolean("attackPlayers", tile.attackPlayers);
@@ -136,7 +136,7 @@ public class GuiTurret extends GuiIEContainerBase
 			public void onClick(double mouseX, double mouseY)
 			{
 				super.onClick(mouseX, mouseY);
-				NBTTagCompound tag = new NBTTagCompound();
+				CompoundNBT tag = new CompoundNBT();
 				int listOffset = -1;
 				tile.attackNeutrals = state;
 				tag.setBoolean("attackNeutrals", tile.attackNeutrals);
@@ -151,7 +151,7 @@ public class GuiTurret extends GuiIEContainerBase
 				public void onClick(double mouseX, double mouseY)
 				{
 					super.onClick(mouseX, mouseY);
-					NBTTagCompound tag = new NBTTagCompound();
+					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
 					((TileEntityTurretChem)tile).ignite = state;
 					tag.setBoolean("ignite", ((TileEntityTurretChem)tile).ignite);
@@ -165,7 +165,7 @@ public class GuiTurret extends GuiIEContainerBase
 				public void onClick(double mouseX, double mouseY)
 				{
 					super.onClick(mouseX, mouseY);
-					NBTTagCompound tag = new NBTTagCompound();
+					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
 					((TileEntityTurretGun)tile).expelCasings = state;
 					tag.setBoolean("expelCasings", ((TileEntityTurretGun)tile).expelCasings);
@@ -175,7 +175,7 @@ public class GuiTurret extends GuiIEContainerBase
 
 	}
 
-	private void handleButtonClick(NBTTagCompound nbt, int listOffset)
+	private void handleButtonClick(CompoundNBT nbt, int listOffset)
 	{
 		if(!nbt.isEmpty())
 		{
@@ -193,18 +193,18 @@ public class GuiTurret extends GuiIEContainerBase
 
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		if(mx >= guiLeft+158&&mx < guiLeft+165&&my >= guiTop+16&&my < guiTop+62)
-			tooltip.add(new TextComponentString(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
 		if(tile instanceof TileEntityTurretChem)
 		{
 			ClientUtils.handleGuiTank(((TileEntityTurretChem)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my, "immersiveengineering:textures/gui/turret.png", tooltip);
 			if(mx >= guiLeft+135&&mx < guiLeft+149&&my >= guiTop+68&&my < guiTop+82)
-				tooltip.add(new TextComponentTranslation(Lib.GUI_CONFIG+"turret.ignite_fluid"));
+				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"turret.ignite_fluid"));
 		}
 		else if(tile instanceof TileEntityTurretGun)
 		{
 			if(mx >= guiLeft+134&&mx < guiLeft+150&&my >= guiTop+31&&my < guiTop+47)
-				tooltip.add(new TextComponentTranslation(Lib.GUI_CONFIG+"turret.expel_casings_"+(((TileEntityTurretGun)tile).expelCasings?"on": "off")));
+				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"turret.expel_casings_"+(((TileEntityTurretGun)tile).expelCasings?"on": "off")));
 		}
 		if(!tooltip.isEmpty())
 		{
@@ -253,7 +253,7 @@ public class GuiTurret extends GuiIEContainerBase
 			String name = this.nameField.getText();
 			if(!tile.targetList.contains(name))
 			{
-				NBTTagCompound tag = new NBTTagCompound();
+				CompoundNBT tag = new CompoundNBT();
 				tag.setString("add", name);
 				tile.targetList.add(name);
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));

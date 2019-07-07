@@ -14,19 +14,19 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -48,7 +48,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	public int posInMultiblock = -1;
 	public int[] offset = {0, 0, 0};
 	public boolean mirrored = false;
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 	private final IMultiblock multiblockInstance;
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
@@ -71,13 +71,13 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return this.facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -89,19 +89,19 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
@@ -111,17 +111,17 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	//		DATA MANAGEMENT
 	//	=================================
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		formed = nbt.getBoolean("formed");
 		posInMultiblock = nbt.getInt("pos");
 		offset = nbt.getIntArray("offset");
 		mirrored = nbt.getBoolean("mirrored");
-		setFacing(EnumFacing.byIndex(nbt.getInt("facing")));
+		setFacing(Direction.byIndex(nbt.getInt("facing")));
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setBoolean("formed", formed);
 		nbt.setInt("pos", posInMultiblock);
@@ -130,10 +130,10 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		nbt.setInt("facing", facing.ordinal());
 	}
 
-	private EnumMap<EnumFacing, LazyOptional<IFluidHandler>> fluidCaps = new EnumMap<>(EnumFacing.class);
+	private EnumMap<Direction, LazyOptional<IFluidHandler>> fluidCaps = new EnumMap<>(Direction.class);
 
 	{
-		for(EnumFacing f : EnumFacing.VALUES)
+		for(Direction f : Direction.VALUES)
 		{
 			LazyOptional<IFluidHandler> forSide = registerConstantCap(new MultiblockFluidWrapper(this, f));
 			fluidCaps.put(f, forSide);
@@ -141,7 +141,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	}
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&
 				this.getAccessibleFluidTanks(facing).length > 0)
@@ -153,18 +153,18 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	//		FLUID MANAGEMENT
 	//	=================================
 	@Nonnull
-	protected abstract IFluidTank[] getAccessibleFluidTanks(EnumFacing side);
+	protected abstract IFluidTank[] getAccessibleFluidTanks(Direction side);
 
-	protected abstract boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource);
+	protected abstract boolean canFillTankFrom(int iTank, Direction side, FluidStack resource);
 
-	protected abstract boolean canDrainTankFrom(int iTank, EnumFacing side);
+	protected abstract boolean canDrainTankFrom(int iTank, Direction side);
 
 	public static class MultiblockFluidWrapper implements IFluidHandler
 	{
 		final TileEntityMultiblockPart multiblock;
-		final EnumFacing side;
+		final Direction side;
 
-		public MultiblockFluidWrapper(TileEntityMultiblockPart multiblock, EnumFacing side)
+		public MultiblockFluidWrapper(TileEntityMultiblockPart multiblock, Direction side)
 		{
 			this.multiblock = multiblock;
 			this.side = side;
@@ -280,7 +280,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		return this.getClass().isInstance(te)?(T)te: null;
 	}
 
-	public void updateMasterBlock(IBlockState state, boolean blockUpdate)
+	public void updateMasterBlock(BlockState state, boolean blockUpdate)
 	{
 		T master = master();
 		if(master!=null)
@@ -351,11 +351,11 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 						}
 						if(pos.equals(getPos()))
 							s = this.getOriginalBlock();
-						IBlockState state = Utils.getStateFromItemStack(s);
+						BlockState state = Utils.getStateFromItemStack(s);
 						if(state!=null)
 						{
 							if(pos.equals(getPos()))
-								world.spawnEntity(new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s));
+								world.spawnEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s));
 							else
 								replaceStructureBlock(pos, state, s, yy, ll, ww);
 						}
@@ -379,7 +379,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		return getPos().offset(facing, distL).offset(facing.rotateY(), w).add(0, distH, 0);
 	}
 
-	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
 	{
 		if(state.getBlock()==this.getBlockState())
 			world.removeBlock(pos);
@@ -408,7 +408,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		if(this.isRedstonePos()&&hasRedstoneControl)
 		{
@@ -416,7 +416,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 			if(master!=null)
 			{
 				master.redstoneControlInverted = !master.redstoneControlInverted;
-				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl."
+				ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."
 						+(master.redstoneControlInverted?"invertedOn": "invertedOff")));
 				this.updateMasterBlock(null, true);
 				return true;

@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nullable;
@@ -30,7 +30,7 @@ public class BlockShaderBanner extends BlockIETileProvider
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(IBlockState state)
+	public TileEntity createBasicTE(BlockState state)
 	{
 		return new TileEntityShaderBanner();
 	}

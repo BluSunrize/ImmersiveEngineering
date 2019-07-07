@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade.ToolUpgrade;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
+import net.minecraft.item.Rarity;
 
 import java.util.EnumMap;
 import java.util.IdentityHashMap;
@@ -116,7 +116,7 @@ public final class IEItems
 		public static Item blueprint;
 		public static Item skyhook;
 		public static Item shader;
-		public static Map<EnumRarity, Item> itemShaderBag = new EnumMap<>(EnumRarity.class);
+		public static Map<Rarity, Item> itemShaderBag = new EnumMap<>(Rarity.class);
 		public static Item earmuffs;
 		public static Item coresample;
 		public static Item graphiteElectrode;

@@ -19,11 +19,11 @@ import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 {
 	TileEntityAutoWorkbench tile;
 
-	public GuiAutoWorkbench(InventoryPlayer inventoryPlayer, TileEntityAutoWorkbench tile)
+	public GuiAutoWorkbench(PlayerInventory inventoryPlayer, TileEntityAutoWorkbench tile)
 	{
 		super(new ContainerAutoWorkbench(inventoryPlayer, tile));
 		this.tile = tile;
@@ -65,7 +65,7 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 									tile.selectedRecipe = -1;
 								else
 									tile.selectedRecipe = id;
-								NBTTagCompound message = new NBTTagCompound();
+								CompoundNBT message = new CompoundNBT();
 								message.setInt("recipe", tile.selectedRecipe);
 								ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, message));
 								initGui();
@@ -83,7 +83,7 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		if(mx > guiLeft+80&&mx < guiLeft+87&&my > guiTop+36&&my < guiTop+82)
-			tooltip.add(new TextComponentString(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
 		if(!tooltip.isEmpty())
 		{

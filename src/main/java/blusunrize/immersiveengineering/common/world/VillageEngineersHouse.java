@@ -16,19 +16,15 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrat
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityHanging;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.*;
+import net.minecraft.entity.item.HangingEntity;
+import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.properties.DoorHingeSide;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.*;
@@ -53,7 +49,7 @@ public class VillageEngineersHouse extends Village
 	{
 	}
 
-	public VillageEngineersHouse(Start villagePiece, int par2, Random par3Random, MutableBoundingBox par4MutableBoundingBox, EnumFacing facing)
+	public VillageEngineersHouse(Start villagePiece, int par2, Random par3Random, MutableBoundingBox par4MutableBoundingBox, Direction facing)
 	{
 		super(villagePiece, par2);
 		this.setCoordBaseMode(facing);
@@ -80,10 +76,10 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 1, 0, 1, 9, 0, 8, Blocks.COBBLESTONE.getDefaultState(), Blocks.COBBLESTONE.getDefaultState(), false);
 		this.fillWithBlocks(world, box, 6, 0, 1, 9, 0, 2, Blocks.AIR.getDefaultState(), Blocks.AIR.getDefaultState(), false);
 		//Stair
-		this.setBlockState(world, Blocks.COBBLESTONE_STAIRS.getDefaultState().with(BlockStairs.FACING, EnumFacing.NORTH), 4, 0, 0, box);
+		this.setBlockState(world, Blocks.COBBLESTONE_STAIRS.getDefaultState().with(StairsBlock.FACING, Direction.NORTH), 4, 0, 0, box);
 
 		//Pillars
-		IBlockState treatedWood = getBiomeSpecificBlockState(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL).getDefaultState());
+		BlockState treatedWood = getBiomeSpecificBlockState(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL).getDefaultState());
 		this.fillWithBlocks(world, box, 1, 1, 3, 1, 4, 3, treatedWood, treatedWood, false);
 		this.fillWithBlocks(world, box, 1, 1, 8, 1, 6, 8, treatedWood, treatedWood, false);
 		this.fillWithBlocks(world, box, 9, 1, 3, 9, 6, 3, treatedWood, treatedWood, false);
@@ -95,7 +91,7 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 2, 4, 5, 8, 4, 7, Blocks.AIR.getDefaultState(), Blocks.AIR.getDefaultState(), false);
 
 		//Wool
-		IBlockState greenWool = getBiomeSpecificBlockState(Blocks.GREEN_WOOL.getDefaultState());
+		BlockState greenWool = getBiomeSpecificBlockState(Blocks.GREEN_WOOL.getDefaultState());
 		this.fillWithBlocks(world, box, 2, 0, 3, 5, 0, 4, greenWool, greenWool, false);
 		this.fillWithBlocks(world, box, 2, 0, 4, 8, 0, 7, greenWool, greenWool, false);
 		this.fillWithBlocks(world, box, 6, 4, 4, 8, 4, 4, greenWool, greenWool, false);
@@ -104,7 +100,7 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 2, 4, 7, 4, 4, 7, greenWool, greenWool, false);
 
 		//Walls
-		IBlockState planks = getBiomeSpecificBlockState(Blocks.OAK_PLANKS.getDefaultState());
+		BlockState planks = getBiomeSpecificBlockState(Blocks.OAK_PLANKS.getDefaultState());
 		//Front
 		this.fillWithBlocks(world, box, 2, 1, 3, 8, 3, 3, planks, planks, false);
 		this.fillWithBlocks(world, box, 7, 5, 3, 8, 6, 3, planks, planks, false);
@@ -126,7 +122,7 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 9, 5, 4, 9, 6, 7, planks, planks, false);
 
 		//Windows
-		IBlockState glassPane = Blocks.GLASS_PANE.getDefaultState();
+		BlockState glassPane = Blocks.GLASS_PANE.getDefaultState();
 		//Front
 		this.setBlockState(world, glassPane, 2, 2, 3, box);
 		this.setBlockState(world, glassPane, 6, 2, 3, box);
@@ -144,7 +140,7 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 9, 6, 5, 9, 6, 6, glassPane, glassPane, false);
 
 		//Fences
-		IBlockState fence = getBiomeSpecificBlockState(WoodenDecoration.treatedFence.getDefaultState());
+		BlockState fence = getBiomeSpecificBlockState(WoodenDecoration.treatedFence.getDefaultState());
 		this.fillWithBlocks(world, box, 1, 1, 1, 1, 1, 2, fence, fence, false);
 		this.fillWithBlocks(world, box, 2, 1, 1, 3, 1, 1, fence, fence, false);
 		this.fillWithBlocks(world, box, 5, 1, 1, 5, 1, 2, fence, fence, false);
@@ -153,16 +149,16 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 7, 1, 6, 7, 5, 6, fence, fence, false);
 
 		//Doors
-		this.generateDoor(world, box, rand, 4, 1, 3, EnumFacing.NORTH, biomeDoor());
-		if(getCoordBaseMode()==EnumFacing.SOUTH||getCoordBaseMode()==EnumFacing.WEST)
+		this.generateDoor(world, box, rand, 4, 1, 3, Direction.NORTH, biomeDoor());
+		if(getCoordBaseMode()==Direction.SOUTH||getCoordBaseMode()==Direction.WEST)
 		{
-			this.placeDoor(world, box, rand, 3, 5, 5, EnumFacing.NORTH, DoorHingeSide.LEFT);
-			this.placeDoor(world, box, rand, 4, 5, 5, EnumFacing.NORTH, DoorHingeSide.RIGHT);
+			this.placeDoor(world, box, rand, 3, 5, 5, Direction.NORTH, DoorHingeSide.LEFT);
+			this.placeDoor(world, box, rand, 4, 5, 5, Direction.NORTH, DoorHingeSide.RIGHT);
 		}
 		else
 		{
-			this.placeDoor(world, box, rand, 3, 5, 5, EnumFacing.NORTH, DoorHingeSide.LEFT);
-			this.placeDoor(world, box, rand, 4, 5, 5, EnumFacing.NORTH, DoorHingeSide.RIGHT);
+			this.placeDoor(world, box, rand, 3, 5, 5, Direction.NORTH, DoorHingeSide.LEFT);
+			this.placeDoor(world, box, rand, 4, 5, 5, Direction.NORTH, DoorHingeSide.RIGHT);
 		}
 
 		//Lanterns
@@ -170,8 +166,8 @@ public class VillageEngineersHouse extends Village
 		this.placeLantern(world, box, 5, 7, 6, 0);
 
 		//Stairs
-		IBlockState stairs = getBiomeSpecificBlockState(Blocks.OAK_STAIRS.getDefaultState())
-				.with(BlockStairs.FACING, EnumFacing.NORTH);
+		BlockState stairs = getBiomeSpecificBlockState(Blocks.OAK_STAIRS.getDefaultState())
+				.with(StairsBlock.FACING, Direction.NORTH);
 		setBlockState(world, stairs, 8, 1, 6, box);
 		stairs = stairs.rotate(Rotation.COUNTERCLOCKWISE_90);
 		setBlockState(world, Blocks.OAK_PLANKS.getDefaultState(), 8, 1, 7, box);
@@ -180,8 +176,8 @@ public class VillageEngineersHouse extends Village
 		setBlockState(world, stairs, 5, 4, 7, box);
 
 		//Roof
-		IBlockState brickSlab = getBiomeSpecificBlockState(Blocks.BRICK_SLAB.getDefaultState());
-		IBlockState brickSlabInverted = brickSlab.with(BlockSlab.TYPE, SlabType.TOP);
+		BlockState brickSlab = getBiomeSpecificBlockState(Blocks.BRICK_SLAB.getDefaultState());
+		BlockState brickSlabInverted = brickSlab.with(SlabBlock.TYPE, SlabType.TOP);
 		this.fillWithBlocks(world, box, 0, 6, 4, 0, 6, 8, brickSlabInverted, brickSlabInverted, false);
 		this.fillWithBlocks(world, box, 1, 7, 4, 1, 7, 8, brickSlab, brickSlab, false);
 		this.fillWithBlocks(world, box, 3, 8, 4, 3, 8, 8, brickSlab, brickSlab, false);
@@ -190,14 +186,14 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 9, 7, 2, 9, 7, 8, brickSlab, brickSlab, false);
 		this.fillWithBlocks(world, box, 10, 6, 2, 10, 6, 8, brickSlabInverted, brickSlabInverted, false);
 
-		IBlockState brickStairs = Blocks.BRICK_STAIRS.getDefaultState().with(BlockStairs.FACING, EnumFacing.EAST);
+		BlockState brickStairs = Blocks.BRICK_STAIRS.getDefaultState().with(StairsBlock.FACING, Direction.EAST);
 		this.fillWithBlocks(world, box, 2, 7, 4, 2, 7, 8, brickStairs, brickStairs, false);
 		this.fillWithBlocks(world, box, 4, 8, 4, 4, 8, 8, brickStairs, brickStairs, false);
 		brickStairs = brickStairs.rotate(Rotation.CLOCKWISE_180);
 		this.fillWithBlocks(world, box, 6, 8, 2, 6, 8, 8, brickStairs, brickStairs, false);
 		this.fillWithBlocks(world, box, 8, 7, 2, 8, 7, 8, brickStairs, brickStairs, false);
 
-		IBlockState bricks = getBiomeSpecificBlockState(Blocks.BRICKS.getDefaultState());
+		BlockState bricks = getBiomeSpecificBlockState(Blocks.BRICKS.getDefaultState());
 		this.fillWithBlocks(world, box, 2, 7, 5, 2, 8, 5, bricks, bricks, false);
 		this.fillWithBlocks(world, box, 7, 8, 4, 7, 9, 4, bricks, bricks, false);
 
@@ -232,7 +228,7 @@ public class VillageEngineersHouse extends Village
 		int j1 = this.getYWithOffset(y);
 		int k1 = this.getZWithOffset(x, z);
 		BlockPos pos = new BlockPos(i1, j1, k1);
-		IBlockState crateState = WoodenDevices.crate.getDefaultState();
+		BlockState crateState = WoodenDevices.crate.getDefaultState();
 		if(box.isVecInside(pos)&&(world.getBlockState(pos)!=crateState))
 		{
 			world.setBlockState(pos, crateState, 2);
@@ -245,14 +241,14 @@ public class VillageEngineersHouse extends Village
 			return false;
 	}
 
-	protected void placeDoor(IWorld worldIn, MutableBoundingBox boundingBoxIn, Random rand, int x, int y, int z, EnumFacing facing, DoorHingeSide hinge)
+	protected void placeDoor(IWorld worldIn, MutableBoundingBox boundingBoxIn, Random rand, int x, int y, int z, Direction facing, DoorHingeSide hinge)
 	{
-		IBlockState basicDoor = getBiomeSpecificBlockState(Blocks.OAK_DOOR.getDefaultState())
-				.with(BlockDoor.FACING, facing)
-				.with(BlockDoor.HINGE, hinge);
+		BlockState basicDoor = getBiomeSpecificBlockState(Blocks.OAK_DOOR.getDefaultState())
+				.with(DoorBlock.FACING, facing)
+				.with(DoorBlock.HINGE, hinge);
 		this.setBlockState(worldIn, basicDoor, x, y, z, boundingBoxIn);
 		this.setBlockState(worldIn, basicDoor
-				.with(BlockDoor.HALF, DoubleBlockHalf.UPPER), x, y+1, z, boundingBoxIn);
+				.with(DoorBlock.HALF, DoubleBlockHalf.UPPER), x, y+1, z, boundingBoxIn);
 	}
 
 	protected boolean placeLantern(IWorld world, MutableBoundingBox box, int x, int y, int z, int facing)
@@ -269,15 +265,15 @@ public class VillageEngineersHouse extends Village
 		return box.isVecInside(pos);
 	}
 
-	public void placeItemframe(Random random, World world, int x, int y, int z, EnumFacing side, ItemStack stack)
+	public void placeItemframe(Random random, World world, int x, int y, int z, Direction side, ItemStack stack)
 	{
 		int i1 = this.getXWithOffset(x, z);
 		int j1 = this.getYWithOffset(y);
 		int k1 = this.getZWithOffset(x, z);
 
-		EntityItemFrame e = new EntityItemFrame(world, new BlockPos(i1, j1, k1), side);
+		ItemFrameEntity e = new ItemFrameEntity(world, new BlockPos(i1, j1, k1), side);
 		e.setDisplayedItem(stack);
-		if(e.onValidSurface()&&world.getEntitiesWithinAABB(EntityHanging.class, new AxisAlignedBB(i1-.125, j1, k1-.125, i1+1.125, j1+1, k1+1.125)).isEmpty())
+		if(e.onValidSurface()&&world.getEntitiesWithinAABB(HangingEntity.class, new AxisAlignedBB(i1-.125, j1, k1-.125, i1+1.125, j1+1, k1+1.125)).isEmpty())
 			if(!world.isRemote)
 				world.spawnEntity(e);
 	}
@@ -298,7 +294,7 @@ public class VillageEngineersHouse extends Village
 	{
 
 		@Override
-		public Village buildComponent(PieceWeight villagePiece, Start startPiece, List<StructurePiece> pieces, Random random, int p1, int p2, int p3, EnumFacing facing, int p5)
+		public Village buildComponent(PieceWeight villagePiece, Start startPiece, List<StructurePiece> pieces, Random random, int p1, int p2, int p3, Direction facing, int p5)
 		{
 			MutableBoundingBox box = MutableBoundingBox.getComponentToAddBoundingBox(p1, p2, p3, 0, 0, 0, 11, 10, 9, facing);
 			return (!canVillageGoDeeper(box))||(StructurePiece.findIntersecting(pieces, box)!=null)?null: new VillageEngineersHouse(startPiece, p5, random, box, facing);

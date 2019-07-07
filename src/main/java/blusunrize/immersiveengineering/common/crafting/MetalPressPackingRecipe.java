@@ -12,10 +12,10 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.VanillaRecipeTypes;
@@ -86,13 +86,13 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 		}
 
 		@Override
-		public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+		public CompoundNBT writeToNBT(CompoundNBT nbt)
 		{
 			nbt.setString("type", "packing"+input.inputSize);
-			nbt.setTag("mapKey", mapKey.writeToNBT(new NBTTagCompound()));
-			nbt.setTag("output", output.write(new NBTTagCompound()));
-			nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
-			nbt.setTag("mold", mold.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("mapKey", mapKey.writeToNBT(new CompoundNBT()));
+			nbt.setTag("output", output.write(new CompoundNBT()));
+			nbt.setTag("input", input.writeToNBT(new CompoundNBT()));
+			nbt.setTag("mold", mold.writeToNBT(new CompoundNBT()));
 			nbt.setInt("energy", (int)(getTotalProcessEnergy()/energyModifier));
 			return nbt;
 		}
@@ -118,7 +118,7 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 
 	public static ItemStack getPackedOutput(int gridSize, int totalAmount, ItemStack stack, World world)
 	{
-		InventoryCrafting invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(gridSize, gridSize, NonNullList.withSize(totalAmount, stack.copy()));
+		CraftingInventory invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(gridSize, gridSize, NonNullList.withSize(totalAmount, stack.copy()));
 		IRecipe recipe = world.getRecipeManager().getRecipe(invC, world, VanillaRecipeTypes.CRAFTING);
 		if(recipe!=null)
 			return recipe.getCraftingResult(invC);

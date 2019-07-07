@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -117,7 +117,7 @@ public class RecipePowerpack implements IRecipe
 
 	private boolean isValidArmor(ItemStack stack)
 	{
-		if(!(stack.getItem() instanceof ItemArmor)||((ItemArmor)stack.getItem()).getEquipmentSlot()!=EntityEquipmentSlot.CHEST)
+		if(!(stack.getItem() instanceof ArmorItem)||((ArmorItem)stack.getItem()).getEquipmentSlot()!=EquipmentSlotType.CHEST)
 			return false;
 		if(stack.getItem()==IEContent.itemPowerpack)
 			return false;

@@ -10,18 +10,18 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFire;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityBlaze;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.block.FireBlock;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.monster.BlazeEntity;
+import net.minecraft.entity.monster.EndermanEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -130,19 +130,19 @@ public class ChemthrowerHandler
 
 	public abstract static class ChemthrowerEffect
 	{
-		public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+		public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
 		{
 			applyToEntity(target, shooter, thrower, fluid.getFluid());
 		}
 
-		public abstract void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid);
+		public abstract void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid);
 
-		public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+		public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
 		{
 			applyToBlock(world, mop, shooter, thrower, fluid.getFluid());
 		}
 
-		public abstract void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid);
+		public abstract void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid);
 	}
 
 	public static class ChemthrowerEffect_Damage extends ChemthrowerEffect
@@ -157,7 +157,7 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 		{
 			if(this.source!=null)
 			{
@@ -171,17 +171,17 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 		{
 		}
 	}
 
 	public static class ChemthrowerEffect_Potion extends ChemthrowerEffect_Damage
 	{
-		PotionEffect[] potionEffects;
+		EffectInstance[] potionEffects;
 		float[] effectChances;
 
-		public ChemthrowerEffect_Potion(DamageSource source, float damage, PotionEffect... effects)
+		public ChemthrowerEffect_Potion(DamageSource source, float damage, EffectInstance... effects)
 		{
 			super(source, damage);
 			this.potionEffects = effects;
@@ -190,9 +190,9 @@ public class ChemthrowerHandler
 				this.effectChances[i] = 1;
 		}
 
-		public ChemthrowerEffect_Potion(DamageSource source, float damage, Potion potion, int duration, int amplifier)
+		public ChemthrowerEffect_Potion(DamageSource source, float damage, Effect potion, int duration, int amplifier)
 		{
-			this(source, damage, new PotionEffect(potion, duration, amplifier));
+			this(source, damage, new EffectInstance(potion, duration, amplifier));
 		}
 
 		public ChemthrowerEffect_Potion setEffectChance(int effectIndex, float chance)
@@ -203,15 +203,15 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 		{
 			super.applyToEntity(target, shooter, thrower, fluid);
 			if(this.potionEffects!=null&&this.potionEffects.length > 0)
 				for(int iEffect = 0; iEffect < this.potionEffects.length; iEffect++)
 					if(target.getRNG().nextFloat() < this.effectChances[iEffect])
 					{
-						PotionEffect e = this.potionEffects[iEffect];
-						PotionEffect newEffect = new PotionEffect(e.getPotion(), e.getDuration(), e.getAmplifier());
+						EffectInstance e = this.potionEffects[iEffect];
+						EffectInstance newEffect = new EffectInstance(e.getPotion(), e.getDuration(), e.getAmplifier());
 						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
 						target.addPotionEffect(newEffect);
 					}
@@ -220,7 +220,7 @@ public class ChemthrowerHandler
 
 	public static class ChemthrowerEffect_Extinguish extends ChemthrowerEffect
 	{
-		private static DamageSource getPlayerDrownDamage(EntityPlayer player)
+		private static DamageSource getPlayerDrownDamage(PlayerEntity player)
 		{
 			if(player==null)
 				return DamageSource.DROWN;
@@ -228,21 +228,21 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 		{
 			if(target.isBurning())
 				target.extinguish();
 
-			if(target instanceof EntityBlaze||target instanceof EntityEnderman)
+			if(target instanceof BlazeEntity||target instanceof EndermanEntity)
 				if(target.attackEntityFrom(getPlayerDrownDamage(shooter), 3))
 					target.hurtResistantTime = (int)(target.hurtResistantTime*.75);
 		}
 
 		@Override
-		public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 		{
 			Block b = world.getBlockState(mop.getBlockPos().offset(mop.sideHit)).getBlock();
-			if(b instanceof BlockFire)
+			if(b instanceof FireBlock)
 				world.removeBlock(mop.getBlockPos().offset(mop.sideHit));
 		}
 	}
@@ -258,7 +258,7 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(LivingEntity target, PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 		{
 			super.applyToEntity(target, shooter, thrower, fluid);
 			if(Utils.RAND.nextFloat() < chance)

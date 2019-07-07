@@ -22,16 +22,16 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
@@ -124,14 +124,14 @@ public class MultiblockArcFurnace implements IMultiblock
 	}
 
 	@Override
-	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
+	public BlockState getBlockstateFromStack(int index, ItemStack stack)
 	{
 		if(!stack.isEmpty())
 		{
 			if(stack.getItem()==Items.CAULDRON)
 				return Blocks.CAULDRON.getDefaultState();
-			else if(stack.getItem() instanceof ItemBlock)
-				return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
+			else if(stack.getItem() instanceof BlockItem)
+				return ((BlockItem)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
 		}
 		return null;
 	}
@@ -176,16 +176,16 @@ public class MultiblockArcFurnace implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(IBlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		return state.getBlock()==Blocks.CAULDRON;
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
-		if(side==EnumFacing.UP||side==EnumFacing.DOWN)
-			side = EnumFacing.fromAngle(player.rotationYaw);
+		if(side==Direction.UP||side==Direction.DOWN)
+			side = Direction.fromAngle(player.rotationYaw);
 		BlockPos startPos = pos;
 		side = side.getOpposite();
 
@@ -206,7 +206,7 @@ public class MultiblockArcFurnace implements IMultiblock
 
 		if(b)
 		{
-			IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
+			BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
 			state = state.with(IEProperties.FACING_HORIZONTAL, side);
 			for(int l = 0; l < 5; l++)
 				for(int w = -2; w <= 2; w++)
@@ -223,7 +223,7 @@ public class MultiblockArcFurnace implements IMultiblock
 								TileEntityArcFurnace tile = (TileEntityArcFurnace)curr;
 								tile.formed = true;
 								tile.pos = h*25+l*5+(w+2);
-								tile.offset = new int[]{(side==EnumFacing.WEST?-l+2: side==EnumFacing.EAST?l-2: side==EnumFacing.NORTH?ww: -ww), h-1, (side==EnumFacing.NORTH?-l+2: side==EnumFacing.SOUTH?l-2: side==EnumFacing.EAST?ww: -ww)};
+								tile.offset = new int[]{(side==Direction.WEST?-l+2: side==Direction.EAST?l-2: side==Direction.NORTH?ww: -ww), h-1, (side==Direction.NORTH?-l+2: side==Direction.SOUTH?l-2: side==Direction.EAST?ww: -ww)};
 								tile.mirrored = mirrored;
 								tile.markDirty();
 								world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
@@ -233,7 +233,7 @@ public class MultiblockArcFurnace implements IMultiblock
 		return b;
 	}
 
-	boolean structureCheck(World world, BlockPos startPos, EnumFacing dir, boolean mirror)
+	boolean structureCheck(World world, BlockPos startPos, Direction dir, boolean mirror)
 	{
 		for(int l = 0; l < 5; l++)
 			for(int w = -2; w <= 2; w++)

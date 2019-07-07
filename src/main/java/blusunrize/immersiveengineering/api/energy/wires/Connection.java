@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -44,7 +44,7 @@ public class Connection
 		this.internal = true;
 	}
 
-	public Connection(NBTTagCompound nbt)
+	public Connection(CompoundNBT nbt)
 	{
 		type = WireType.getValue(nbt.getString("type"));
 		endA = new ConnectionPoint(nbt.getCompound("endA"));
@@ -77,9 +77,9 @@ public class Connection
 		return p.equals(endA);
 	}
 
-	public NBTTagCompound toNBT()
+	public CompoundNBT toNBT()
 	{
-		NBTTagCompound nbt = new NBTTagCompound();
+		CompoundNBT nbt = new CompoundNBT();
 		nbt.setTag("endA", endA.createTag());
 		nbt.setTag("endB", endB.createTag());
 		nbt.setString("type", type.getUniqueName());

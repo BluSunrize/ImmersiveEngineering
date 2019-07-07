@@ -13,13 +13,16 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMixer;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fluids.FluidStack;
@@ -35,7 +38,7 @@ public class TileRenderMixer extends TileEntityRenderer<TileEntityMixer>
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
-		IBlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=MetalMultiblocks.mixer)
 			return;
 		state = state.with(IEProperties.DYNAMICRENDER, true);
@@ -52,7 +55,7 @@ public class TileRenderMixer extends TileEntityRenderer<TileEntityMixer>
 			GlStateManager.scalef(te.facing.getXOffset()==0?-1: 1, 1, te.facing.getZOffset()==0?-1: 1);
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translated(te.facing==EnumFacing.SOUTH||te.facing==EnumFacing.WEST?-.5: .5, 0, te.facing==EnumFacing.SOUTH||te.facing==EnumFacing.EAST?.5: -.5);
+		GlStateManager.translated(te.facing==Direction.SOUTH||te.facing==Direction.WEST?-.5: .5, 0, te.facing==Direction.SOUTH||te.facing==Direction.EAST?.5: -.5);
 		float agitator = te.animation_agitator-(!te.shouldRenderAsActive()?0: (1-partialTicks)*9f);
 		GlStateManager.rotatef(agitator, 0, 1, 0);
 

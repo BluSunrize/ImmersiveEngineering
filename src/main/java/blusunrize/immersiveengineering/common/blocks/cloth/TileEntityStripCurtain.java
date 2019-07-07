@@ -16,17 +16,17 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -37,7 +37,7 @@ import java.util.List;
 public class TileEntityStripCurtain extends TileEntityIEBase implements ITickable, IRedstoneOutput, IHammerInteraction,
 		IAdvancedCollisionBounds, IAdvancedDirectionalTile, IDualState, IColouredTile, ITileDrop
 {
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 	public boolean ceilingAttached = false;
 	public int colour = 0xffffff;
 	private int redstoneSignal = 0;
@@ -79,13 +79,13 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 				redstoneSignal = 15;
 				markDirty();
 				world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
-				world.notifyNeighborsOfStateChange(getPos().offset(EnumFacing.UP), getBlockState().getBlock());
+				world.notifyNeighborsOfStateChange(getPos().offset(Direction.UP), getBlockState().getBlock());
 			}
 		}
 	}
 
 	@Override
-	public int getStrongRSOutput(IBlockState state, EnumFacing side)
+	public int getStrongRSOutput(BlockState state, Direction side)
 	{
 		if(!strongSignal)
 			return 0;
@@ -93,29 +93,29 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public int getWeakRSOutput(IBlockState state, EnumFacing side)
+	public int getWeakRSOutput(BlockState state, Direction side)
 	{
-		if(side==EnumFacing.DOWN)
+		if(side==Direction.DOWN)
 			return 0;
 		return redstoneSignal;
 	}
 
 	@Override
-	public boolean canConnectRedstone(IBlockState state, EnumFacing side)
+	public boolean canConnectRedstone(BlockState state, Direction side)
 	{
 		return false;
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		ceilingAttached = nbt.getBoolean("ceilingAttached");
 		colour = nbt.getInt("colour");
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(facing!=null)
 			nbt.setInt("facing", facing.ordinal());
@@ -146,13 +146,13 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -164,27 +164,27 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
 
 	@Override
-	public void onDirectionalPlacement(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer)
+	public void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer)
 	{
-		if(side==EnumFacing.DOWN)
+		if(side==Direction.DOWN)
 			ceilingAttached = true;
 	}
 
@@ -209,7 +209,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
+	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
 	{
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		if(colour!=0xffffff)
@@ -218,17 +218,17 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
+	public void readOnPlacement(LivingEntity placer, ItemStack stack)
 	{
 		if(ItemNBTHelper.hasKey(stack, "colour"))
 			this.colour = ItemNBTHelper.getInt(stack, "colour");
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		strongSignal = !strongSignal;
-		ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl.strongSignal."+strongSignal));
+		ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl.strongSignal."+strongSignal));
 		return true;
 	}
 }

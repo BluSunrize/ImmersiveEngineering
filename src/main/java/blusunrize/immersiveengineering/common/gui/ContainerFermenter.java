@@ -9,12 +9,12 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 
 public class ContainerFermenter extends ContainerIEBase<TileEntityFermenter>
 {
-	public ContainerFermenter(InventoryPlayer inventoryPlayer, TileEntityFermenter tile)
+	public ContainerFermenter(PlayerInventory inventoryPlayer, TileEntityFermenter tile)
 	{
 		super(inventoryPlayer, tile);
 

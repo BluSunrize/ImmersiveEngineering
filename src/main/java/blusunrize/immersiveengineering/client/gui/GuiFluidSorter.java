@@ -15,17 +15,17 @@ import blusunrize.immersiveengineering.client.gui.GuiSorter.ButtonSorter;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityFluidSorter;
 import blusunrize.immersiveengineering.common.gui.ContainerFluidSorter;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -35,9 +35,9 @@ import java.util.ArrayList;
 public class GuiFluidSorter extends GuiIEContainerBase
 {
 	public TileEntityFluidSorter tile;
-	InventoryPlayer playerInventory;
+	PlayerInventory playerInventory;
 
-	public GuiFluidSorter(InventoryPlayer inventoryPlayer, TileEntityFluidSorter tile)
+	public GuiFluidSorter(PlayerInventory inventoryPlayer, TileEntityFluidSorter tile)
 	{
 		super(new ContainerFluidSorter(inventoryPlayer, tile));
 		this.tile = tile;
@@ -50,7 +50,7 @@ public class GuiFluidSorter extends GuiIEContainerBase
 	{
 		super.render(mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
-		for(GuiButton button : this.buttons)
+		for(Button button : this.buttons)
 		{
 			if(button instanceof ButtonSorter)
 				if(mx > button.x&&mx < button.x+18&&my > button.y&&my < button.y+18)
@@ -59,7 +59,7 @@ public class GuiFluidSorter extends GuiIEContainerBase
 					Style white = new Style().setColor(TextFormatting.WHITE);
 					Style gray = new Style().setColor(TextFormatting.WHITE);
 					for(int i = 0; i < split.length; i++)
-						tooltip.add(new TextComponentString(split[i]).setStyle(i==0?white: gray));
+						tooltip.add(new StringTextComponent(split[i]).setStyle(i==0?white: gray));
 				}
 		}
 		for(int side = 0; side < 6; side++)
@@ -121,7 +121,7 @@ public class GuiFluidSorter extends GuiIEContainerBase
 				}
 			int x = guiLeft+30+(side/2)*58;
 			int y = guiTop+44+(side%2)*76;
-			String s = I18n.format("desc.immersiveengineering.info.blockSide."+EnumFacing.byIndex(side).toString()).substring(0, 1);
+			String s = I18n.format("desc.immersiveengineering.info.blockSide."+Direction.byIndex(side).toString()).substring(0, 1);
 			GlStateManager.enableBlend();
 			ClientUtils.font().drawStringWithShadow(s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
 		}
@@ -145,7 +145,7 @@ public class GuiFluidSorter extends GuiIEContainerBase
 				{
 					tile.sortWithNBT[sideFinal] = (byte)(tile.sortWithNBT[sideFinal]==1?0: 1);
 
-					NBTTagCompound tag = new NBTTagCompound();
+					CompoundNBT tag = new CompoundNBT();
 					tag.setByteArray("sideConfig", tile.sortWithNBT);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 					initGui();
@@ -159,11 +159,11 @@ public class GuiFluidSorter extends GuiIEContainerBase
 	public void setFluidInSlot(int side, int slot, FluidStack fluid)
 	{
 		tile.filters[side][slot] = fluid;
-		NBTTagCompound tag = new NBTTagCompound();
+		CompoundNBT tag = new CompoundNBT();
 		tag.setInt("filter_side", side);
 		tag.setInt("filter_slot", slot);
 		if(fluid!=null)
-			tag.setTag("filter", fluid.writeToNBT(new NBTTagCompound()));
+			tag.setTag("filter", fluid.writeToNBT(new CompoundNBT()));
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 	}
 }

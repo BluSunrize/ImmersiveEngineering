@@ -23,15 +23,15 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -52,7 +52,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
 		ITickable, IGeneralMultiblock, IFaceShape
 {
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 	private final IConveyorBelt conveyorBeltSubtype;
 
 	public TileEntityConveyorBelt(ResourceLocation typeName)
@@ -76,9 +76,9 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		if(nbt.hasKey("conveyorBeltSubtypeNBT"))
 			conveyorBeltSubtype.readConveyorNBT(nbt.getCompound("conveyorBeltSubtypeNBT"));
 
@@ -87,7 +87,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("facing", facing.ordinal());
 		if(conveyorBeltSubtype!=null)
@@ -95,13 +95,13 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return this.facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -113,25 +113,25 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return !entity.isSneaking();
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return true;
 	}
 
 	@Override
-	public void afterRotation(EnumFacing oldDir, EnumFacing newDir)
+	public void afterRotation(Direction oldDir, Direction newDir)
 	{
 		if(this.conveyorBeltSubtype!=null)
 			this.conveyorBeltSubtype.afterRotation(oldDir, newDir);
@@ -152,7 +152,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking()&&conveyorBeltSubtype!=null&&conveyorBeltSubtype.changeConveyorDirection())
 		{
@@ -175,14 +175,14 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(conveyorBeltSubtype!=null)
 		{
 			boolean update;
 			if(conveyorBeltSubtype.canBeDyed()&&Utils.isDye(heldItem))
 			{
-				EnumDyeColor dye = Utils.getDye(heldItem);
+				DyeColor dye = Utils.getDye(heldItem);
 				update = dye!=null&&conveyorBeltSubtype.setDyeColour(dye);
 			}
 			else
@@ -239,7 +239,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	}
 
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
@@ -248,7 +248,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
 		if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return insertionCap.cast();
@@ -256,12 +256,12 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	}
 
 	@Override
-	public BlockFaceShape getFaceShape(EnumFacing side)
+	public BlockFaceShape getFaceShape(Direction side)
 	{
 		IConveyorBelt subtype = this.getConveyorSubtype();
 		if(subtype==null)
 			return BlockFaceShape.UNDEFINED;
-		if(side==EnumFacing.DOWN&&subtype.getConveyorDirection()==ConveyorDirection.HORIZONTAL)
+		if(side==Direction.DOWN&&subtype.getConveyorDirection()==ConveyorDirection.HORIZONTAL)
 			return BlockFaceShape.SOLID;
 		if(subtype instanceof ConveyorVertical)
 		{
@@ -302,7 +302,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		{
 			if(!simulate)
 			{
-				EntityItem entity = new EntityItem(conveyor.getWorld(), conveyor.getPos().getX()+.5, conveyor.getPos().getY()+.1875, conveyor.getPos().getZ()+.5, stack.copy());
+				ItemEntity entity = new ItemEntity(conveyor.getWorld(), conveyor.getPos().getX()+.5, conveyor.getPos().getY()+.1875, conveyor.getPos().getZ()+.5, stack.copy());
 				entity.motionX = 0;
 				entity.motionY = 0;
 				entity.motionZ = 0;

@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -84,26 +84,26 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
+		nbt.setTag("input", input.writeToNBT(new CompoundNBT()));
 		if(this.additives.length > 0)
 		{
-			NBTTagList list = new NBTTagList();
+			ListNBT list = new ListNBT();
 			for(IngredientStack add : this.additives)
-				list.add(add.writeToNBT(new NBTTagCompound()));
+				list.add(add.writeToNBT(new CompoundNBT()));
 			nbt.setTag("additives", list);
 		}
 		return nbt;
 	}
 
-	public static ArcFurnaceRecipe loadFromNBT(NBTTagCompound nbt)
+	public static ArcFurnaceRecipe loadFromNBT(CompoundNBT nbt)
 	{
 		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
 		IngredientStack[] additives = null;
 		if(nbt.hasKey("additives"))
 		{
-			NBTTagList list = nbt.getList("additives", 10);
+			ListNBT list = nbt.getList("additives", 10);
 			additives = new IngredientStack[list.size()];
 			for(int i = 0; i < additives.length; i++)
 				additives[i] = IngredientStack.readFromNBT(list.getCompound(i));

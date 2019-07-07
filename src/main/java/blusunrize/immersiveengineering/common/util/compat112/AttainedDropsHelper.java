@@ -13,14 +13,14 @@ import blusunrize.immersiveengineering.api.tool.BelljarHandler.IPlantHandler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockCrops;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.CropsBlock;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -38,7 +38,7 @@ public class AttainedDropsHelper extends IECompatModule
 	/**
 	 * Map of soil stack meta to bulbs, as defined in ADType below.  Soil meta is type.ordinal() + 1.
 	 */
-	private static Int2ObjectMap<IBlockState> bulbMap = new Int2ObjectOpenHashMap<>();
+	private static Int2ObjectMap<BlockState> bulbMap = new Int2ObjectOpenHashMap<>();
 	
 	private Item seed;
 	private Block plant;
@@ -105,9 +105,9 @@ public class AttainedDropsHelper extends IECompatModule
 
 			@Override
 			@OnlyIn(Dist.CLIENT)
-			public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+			public BlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 			{
-				return new IBlockState[0];
+				return new BlockState[0];
 			}
 
 			@Override
@@ -121,7 +121,7 @@ public class AttainedDropsHelper extends IECompatModule
 			@OnlyIn(Dist.CLIENT)
 			public boolean overrideRender(ItemStack seed, ItemStack soil, float growth, TileEntity tile, BlockRendererDispatcher blockRenderer)
 			{
-				IBlockState state = plant.getDefaultState().with(BlockCrops.AGE, growth >= .5?7: Math.min(7, Math.round(7*growth*2)));
+				BlockState state = plant.getDefaultState().with(CropsBlock.AGE, growth >= .5?7: Math.min(7, Math.round(7*growth*2)));
 				IBakedModel model = blockRenderer.getModelForState(state);
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(0, 0, 1);

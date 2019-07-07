@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.client.gui.elements;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 
-public class GuiButtonItem extends GuiButton
+public class GuiButtonItem extends Button
 {
 	public boolean state;
 	ItemStack item;

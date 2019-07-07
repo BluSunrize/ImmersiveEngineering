@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.util.math.BlockPos;
@@ -67,7 +67,7 @@ public class ParticleFluidSplash extends Particle
 		}
 
 		BlockPos blockpos = new BlockPos(this.posX, this.posY, this.posZ);
-		IBlockState iblockstate = this.world.getBlockState(blockpos);
+		BlockState iblockstate = this.world.getBlockState(blockpos);
 		Material material = iblockstate.getMaterial();
 
 		if(material.isLiquid()||material.isSolid())

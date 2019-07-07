@@ -20,19 +20,19 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -58,10 +58,10 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		if(shouldLimitSpeed(stack))
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
 		else
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"skyhook.noLimit"));
-		list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"skyhook"));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"skyhook.noLimit"));
+		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"skyhook"));
 	}
 
 	private static final String LIMIT_SPEED = "limitSpeed";
@@ -78,7 +78,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 
 	public static boolean toggleSpeedLimit(ItemStack stack)
 	{
-		NBTTagCompound nbt = stack.getOrCreateTag();
+		CompoundNBT nbt = stack.getOrCreateTag();
 		boolean wasActive = nbt.getBoolean(LIMIT_SPEED);
 		nbt.setBoolean(LIMIT_SPEED, !wasActive);
 		return !wasActive;
@@ -109,23 +109,23 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 
 		ItemStack stack = player.getHeldItem(hand);
 		if(player.getCooldownTracker().hasCooldown(this))
-			return new ActionResult<>(EnumActionResult.PASS, stack);
+			return new ActionResult<>(ActionResultType.PASS, stack);
 		if(player.isSneaking())
 		{
 			boolean limitSpeed = toggleSpeedLimit(stack);
 			if(limitSpeed)
-				player.sendStatusMessage(new TextComponentTranslation("chat.immersiveengineering.info.skyhookLimited"), true);
+				player.sendStatusMessage(new TranslationTextComponent("chat.immersiveengineering.info.skyhookLimited"), true);
 			else
-				player.sendStatusMessage(new TextComponentTranslation("chat.immersiveengineering.info.skyhookUnlimited"), true);
+				player.sendStatusMessage(new TranslationTextComponent("chat.immersiveengineering.info.skyhookUnlimited"), true);
 		}
 		else
 		{
-			SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP).orElseThrow(RuntimeException::new);
+			SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, Direction.UP).orElseThrow(RuntimeException::new);
 			if(data.hook!=null&&!world.isRemote)
 			{
 				data.dismount();
@@ -137,14 +137,14 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 				player.setActiveHand(hand);
 			}
 		}
-		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}
 
 	@Override
-	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
+	public void onUsingTick(ItemStack stack, LivingEntity player, int count)
 	{
 		super.onUsingTick(stack, player, count);
-		SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP).orElseThrow(RuntimeException::new);
+		SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, Direction.UP).orElseThrow(RuntimeException::new);
 		if(data.getStatus()!=SkyhookStatus.HOLDING_CONNECTING)
 			return;
 		World world = player.world;
@@ -161,11 +161,11 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase player, int timeLeft)
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity player, int timeLeft)
 	{
 		super.onPlayerStoppedUsing(stack, worldIn, player, timeLeft);
 		if(!worldIn.isRemote)
-			player.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP).ifPresent(SkyhookUserData::release);
+			player.getCapability(SKYHOOK_USER_DATA, Direction.UP).ifPresent(SkyhookUserData::release);
 	}
 
 	public float getSkylineSpeed(ItemStack stack)

@@ -16,14 +16,14 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -110,16 +110,16 @@ public class MultiblockLightningrod implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(IBlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		return state.getBlock()==IEContent.blockMetalDecoration0&&(state.getBlock().getMetaFromState(state)==BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
 		if(side.getAxis()==Axis.Y)
-			side = EnumFacing.fromAngle(player.rotationYaw);
+			side = Direction.fromAngle(player.rotationYaw);
 		else
 			side = side.getOpposite();
 
@@ -169,7 +169,7 @@ public class MultiblockLightningrod implements IMultiblock
 					}
 				}
 
-		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.LIGHTNINGROD.getMeta());
+		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.LIGHTNINGROD.getMeta());
 		state = state.with(IEProperties.FACING_HORIZONTAL, side);
 		for(int l = 0; l < 3; l++)
 			for(int w = -1; w <= 1; w++)
@@ -185,7 +185,7 @@ public class MultiblockLightningrod implements IMultiblock
 						TileEntityLightningrod tile = (TileEntityLightningrod)curr;
 						tile.formed = true;
 						tile.posInMultiblock = (h+1)*9+l*3+(w+1);
-						tile.offset = new int[]{(side==EnumFacing.WEST?1-l: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww), h, (side==EnumFacing.NORTH?1-l: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww: -ww)};
+						tile.offset = new int[]{(side==Direction.WEST?1-l: side==Direction.EAST?l-1: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?1-l: side==Direction.SOUTH?l-1: side==Direction.EAST?ww: -ww)};
 						tile.mirrored = mirror;
 						tile.markDirty();
 						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);

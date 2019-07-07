@@ -17,11 +17,11 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -35,9 +35,9 @@ import java.util.List;
  */
 public class ConveyorSplit extends ConveyorBasic
 {
-	EnumFacing outputFace = EnumFacing.NORTH;
+	Direction outputFace = Direction.NORTH;
 
-	public ConveyorSplit(EnumFacing startingOutputFace)
+	public ConveyorSplit(Direction startingOutputFace)
 	{
 		this.outputFace = startingOutputFace.rotateY();
 	}
@@ -61,18 +61,18 @@ public class ConveyorSplit extends ConveyorBasic
 	}
 
 	@Override
-	public void afterRotation(EnumFacing oldDir, EnumFacing newDir)
+	public void afterRotation(Direction oldDir, Direction newDir)
 	{
 		this.outputFace = newDir.rotateY();
 	}
 
 	@Override
-	public void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ)
+	public void handleInsertion(TileEntity tile, ItemEntity entity, Direction facing, ConveyorDirection conDir, double distX, double distZ)
 	{
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
 		if(entity.getEntityData().hasKey(nbtKey))
 		{
-			EnumFacing redirect = EnumFacing.values()[entity.getEntityData().getInt(nbtKey)];
+			Direction redirect = Direction.values()[entity.getEntityData().getInt(nbtKey)];
 			BlockPos nextPos = tile.getPos().offset(redirect);
 			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.posZ: entity.posX));
 			if(distNext < .7)
@@ -81,16 +81,16 @@ public class ConveyorSplit extends ConveyorBasic
 	}
 
 	@Override
-	public void onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing)
+	public void onEntityCollision(TileEntity tile, Entity entity, Direction facing)
 	{
 		if(!isActive(tile))
 			return;
-		EnumFacing redirect = null;
+		Direction redirect = null;
 		if(entity!=null&&!entity.isDead)
 		{
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
 			if(entity.getEntityData().hasKey(nbtKey))
-				redirect = EnumFacing.values()[entity.getEntityData().getInt(nbtKey)];
+				redirect = Direction.values()[entity.getEntityData().getInt(nbtKey)];
 			else
 			{
 				redirect = this.outputFace;
@@ -120,25 +120,25 @@ public class ConveyorSplit extends ConveyorBasic
 	}
 
 	@Override
-	public boolean renderWall(TileEntity tile, EnumFacing facing, int wall)
+	public boolean renderWall(TileEntity tile, Direction facing, int wall)
 	{
 		return false;
 	}
 
 	@Override
-	public EnumFacing[] sigTransportDirections(TileEntity conveyorTile, EnumFacing facing)
+	public Direction[] sigTransportDirections(TileEntity conveyorTile, Direction facing)
 	{
-		return new EnumFacing[]{facing.rotateY(), facing.rotateYCCW()};
+		return new Direction[]{facing.rotateY(), facing.rotateYCCW()};
 	}
 
 	@Override
-	public Vec3d getDirection(TileEntity conveyorTile, Entity entity, EnumFacing facing)
+	public Vec3d getDirection(TileEntity conveyorTile, Entity entity, Direction facing)
 	{
 		Vec3d vec = super.getDirection(conveyorTile, entity, facing);
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(conveyorTile.getPos().hashCode());
 		if(!entity.getEntityData().hasKey(nbtKey))
 			return vec;
-		EnumFacing redirect = EnumFacing.byIndex(entity.getEntityData().getInt(nbtKey));
+		Direction redirect = Direction.byIndex(entity.getEntityData().getInt(nbtKey));
 		BlockPos wallPos = conveyorTile.getPos().offset(facing);
 		double distNext = Math.abs((facing.getAxis()==Axis.Z?wallPos.getZ(): wallPos.getX())+.5-(facing.getAxis()==Axis.Z?entity.posZ: entity.posX));
 		if(distNext < 1.33)
@@ -152,18 +152,18 @@ public class ConveyorSplit extends ConveyorBasic
 	}
 
 	@Override
-	public NBTTagCompound writeConveyorNBT()
+	public CompoundNBT writeConveyorNBT()
 	{
-		NBTTagCompound nbt = super.writeConveyorNBT();
+		CompoundNBT nbt = super.writeConveyorNBT();
 		nbt.setInt("outputFace", outputFace.ordinal());
 		return nbt;
 	}
 
 	@Override
-	public void readConveyorNBT(NBTTagCompound nbt)
+	public void readConveyorNBT(CompoundNBT nbt)
 	{
 		super.readConveyorNBT(nbt);
-		outputFace = EnumFacing.values()[nbt.getInt("outputFace")];
+		outputFace = Direction.values()[nbt.getInt("outputFace")];
 	}
 
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor_split");
@@ -185,13 +185,13 @@ public class ConveyorSplit extends ConveyorBasic
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
 	{
 		TextureAtlasSprite tex_casing0 = ClientUtils.getSprite(texture_casing);
 		Matrix4 matrix = new Matrix4(facing);
 		float[] colour = {1, 1, 1, 1};
 		Vector3f[] vertices = {new Vector3f(.0625f, .1875f, 0), new Vector3f(.0625f, .1875f, 1), new Vector3f(.9375f, .1875f, 1), new Vector3f(.9375f, .1875f, 0)};
-		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), EnumFacing.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
+		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Direction.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
 
 		vertices = new Vector3f[]{new Vector3f(.0625f, 0, 0), new Vector3f(.0625f, .1875f, 0), new Vector3f(.9375f, .1875f, 0), new Vector3f(.9375f, 0, 0)};
 		baseModel.set(15, ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));

@@ -17,12 +17,12 @@ import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultibloc
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSheetmetalTank;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -48,9 +48,9 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	}
 
 	@Override
-	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
+	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(Utils.isFluidRelatedItemStack(player.getHeldItem(EnumHand.MAIN_HAND)))
+		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
 		{
 			TileEntitySheetmetalTank master = master();
 			FluidStack fs = master!=null?master.tank.getFluid(): this.tank.getFluid();
@@ -65,7 +65,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	}
 
 	@Override
-	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
+	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
 	{
 		return false;
 	}
@@ -75,8 +75,8 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(!isDummy()&&!world.isRemote&&!isRSDisabled())
-			for(EnumFacing f : EnumFacing.VALUES)
-				if(f!=EnumFacing.UP&&tank.getFluidAmount() > 0)
+			for(Direction f : Direction.VALUES)
+				if(f!=Direction.UP&&tank.getFluidAmount() > 0)
 				{
 					int outSize = Math.min(144, tank.getFluidAmount());
 					FluidStack out = Utils.copyFluidStackWithAmount(tank.getFluid(), outSize, false);
@@ -102,17 +102,17 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		tank.readFromNBT(nbt.getCompound("tank"));
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		NBTTagCompound tankTag = tank.writeToNBT(new NBTTagCompound());
+		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
 		nbt.setTag("tank", tankTag);
 	}
 
@@ -133,7 +133,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		TileEntitySheetmetalTank master = master();
 		if(master!=null&&(posInMultiblock==4||posInMultiblock==40))
@@ -142,19 +142,19 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
 		return posInMultiblock==4||posInMultiblock==40;
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return posInMultiblock==4;
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		TileEntitySheetmetalTank master = this.master();
 		if(master!=null)

@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -63,24 +63,24 @@ public class MultiblockHandler
 		 * Check whether the given block can be used to trigger the structure creation of the multiblock.<br>
 		 * Basically, a less resource-intensive preliminary check to avoid checking every structure.
 		 */
-		boolean isBlockTrigger(IBlockState state);
+		boolean isBlockTrigger(BlockState state);
 
 		/**
 		 * This method checks the structure and sets the new one.
 		 *
 		 * @return if the structure was valid and transformed
 		 */
-		boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player);
+		boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player);
 
 		/**
 		 * A three-dimensional array (height, length, width) of the structure to be rendered in the Engineers Manual
 		 */
 		ItemStack[][][] getStructureManual();
 
-		default IBlockState getBlockstateFromStack(int index, ItemStack stack)
+		default BlockState getBlockstateFromStack(int index, ItemStack stack)
 		{
-			if(!stack.isEmpty()&&stack.getItem() instanceof ItemBlock)
-				return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
+			if(!stack.isEmpty()&&stack.getItem() instanceof BlockItem)
+				return ((BlockItem)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
 			return null;
 		}
 
@@ -115,7 +115,7 @@ public class MultiblockHandler
 		int[] getSize();
 	}
 
-	public static MultiblockFormEvent postMultiblockFormationEvent(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
+	public static MultiblockFormEvent postMultiblockFormationEvent(PlayerEntity player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
 	{
 		MultiblockFormEvent event = new MultiblockFormEvent(player, multiblock, clickedBlock, hammer);
 		MinecraftForge.EVENT_BUS.post(event);
@@ -133,7 +133,7 @@ public class MultiblockHandler
 		private final BlockPos clickedBlock;
 		private final ItemStack hammer;
 
-		public MultiblockFormEvent(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
+		public MultiblockFormEvent(PlayerEntity player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
 		{
 			super(player);
 			this.multiblock = multiblock;

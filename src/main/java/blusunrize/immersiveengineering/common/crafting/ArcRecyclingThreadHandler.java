@@ -169,7 +169,7 @@ public class ArcRecyclingThreadHandler extends Thread
 		if(stack.isEmpty())
 			return false;
 		Item item = stack.getItem();
-		if(item instanceof ItemTool||item instanceof ItemSword||item instanceof ItemHoe||item instanceof ItemArmor)
+		if(item instanceof ToolItem||item instanceof SwordItem||item instanceof HoeItem||item instanceof ArmorItem)
 			return true;
 		for(Object recycle : ArcFurnaceRecipe.recyclingAllowed)
 			if(ApiUtils.stackMatchesObject(stack, recycle))

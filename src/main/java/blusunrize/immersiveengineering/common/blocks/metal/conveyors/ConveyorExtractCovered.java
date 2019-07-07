@@ -15,13 +15,13 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nullable;
@@ -34,21 +34,21 @@ public class ConveyorExtractCovered extends ConveyorExtract
 {
 	public ItemStack cover = ItemStack.EMPTY;
 
-	public ConveyorExtractCovered(EnumFacing conveyorDir)
+	public ConveyorExtractCovered(Direction conveyorDir)
 	{
 		super(conveyorDir);
 	}
 
 	@Override
-	public void onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing)
+	public void onEntityCollision(TileEntity tile, Entity entity, Direction facing)
 	{
 		super.onEntityCollision(tile, entity, facing);
-		if(entity instanceof EntityItem)
-			((EntityItem)entity).setPickupDelay(10);
+		if(entity instanceof ItemEntity)
+			((ItemEntity)entity).setPickupDelay(10);
 	}
 
 	@Override
-	public void onItemDeployed(TileEntity tile, EntityItem entity, EnumFacing facing)
+	public void onItemDeployed(TileEntity tile, ItemEntity entity, Direction facing)
 	{
 		entity.setPickupDelay(10);
 		ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);
@@ -56,7 +56,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
 	{
 		baseModel = super.modifyQuads(baseModel, tile, facing);
 		ConveyorCovered.addCoverToQuads(baseModel, tile, facing, () -> cover, ConveyorDirection.HORIZONTAL, new boolean[]{
@@ -66,7 +66,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	}
 
 	@Override
-	public String getModelCacheKey(TileEntity tile, EnumFacing facing)
+	public String getModelCacheKey(TileEntity tile, Direction facing)
 	{
 		String key = super.getModelCacheKey(tile, facing);
 		if(!cover.isEmpty())
@@ -76,7 +76,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 
 
 	@Override
-	public boolean playerInteraction(TileEntity tile, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, EnumFacing side)
+	public boolean playerInteraction(TileEntity tile, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 	{
 		if(super.playerInteraction(tile, player, hand, heldItem, hitX, hitY, hitZ, side))
 			return true;
@@ -86,7 +86,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
 
 	@Override
-	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, EnumFacing facing)
+	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, Direction facing)
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList(conveyorBounds);
 		list.add(topBox);
@@ -94,22 +94,22 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	}
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, EnumFacing facing)
+	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
 	{
 		return Lists.newArrayList(Block.FULL_BLOCK_AABB);
 	}
 
 	@Override
-	public NBTTagCompound writeConveyorNBT()
+	public CompoundNBT writeConveyorNBT()
 	{
-		NBTTagCompound nbt = super.writeConveyorNBT();
+		CompoundNBT nbt = super.writeConveyorNBT();
 		if(cover!=null)
-			nbt.setTag("cover", cover.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("cover", cover.writeToNBT(new CompoundNBT()));
 		return nbt;
 	}
 
 	@Override
-	public void readConveyorNBT(NBTTagCompound nbt)
+	public void readConveyorNBT(CompoundNBT nbt)
 	{
 		super.readConveyorNBT(nbt);
 		cover = new ItemStack(nbt.getCompound("cover"));

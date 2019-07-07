@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat112;
 
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 public class ChiselHelper extends IECompatModule
@@ -46,7 +46,7 @@ public class ChiselHelper extends IECompatModule
 
 	private void addVariation(String group, Block block, int meta)
 	{
-		NBTTagCompound tag = new NBTTagCompound();
+		CompoundNBT tag = new CompoundNBT();
 		tag.setString("group", group);
 		tag.setString("block", block.getRegistryName().toString());
 		tag.setInt("meta", meta);

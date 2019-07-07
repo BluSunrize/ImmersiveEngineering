@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -99,13 +99,13 @@ public class SqueezerRecipe extends MultiblockRecipe
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
+		nbt.setTag("input", input.writeToNBT(new CompoundNBT()));
 		return nbt;
 	}
 
-	public static SqueezerRecipe loadFromNBT(NBTTagCompound nbt)
+	public static SqueezerRecipe loadFromNBT(CompoundNBT nbt)
 	{
 		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
 		for(SqueezerRecipe recipe : recipeList)

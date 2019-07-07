@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
@@ -28,7 +28,7 @@ public class BlockMiscConnector extends BlockConnector
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(IBlockState state)
+	public TileEntity createBasicTE(BlockState state)
 	{
 		return tileType.create();
 	}

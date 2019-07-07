@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityFluidSorter;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerFluidSorter extends Container
@@ -20,7 +20,7 @@ public class ContainerFluidSorter extends Container
 	TileEntityFluidSorter tile;
 	int slotCount;
 
-	public ContainerFluidSorter(InventoryPlayer inventoryPlayer, TileEntityFluidSorter tile)
+	public ContainerFluidSorter(PlayerInventory inventoryPlayer, TileEntityFluidSorter tile)
 	{
 		this.tile = tile;
 		for(int i = 0; i < 3; i++)
@@ -31,13 +31,13 @@ public class ContainerFluidSorter extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(PlayerEntity player)
 	{
 		return tile!=null&&tile.getWorld().getTileEntity(tile.getPos())==tile&&player.getDistanceSq(tile.getPos().getX()+.5, tile.getPos().getY()+.5, tile.getPos().getZ()+.5) <= 64;
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
 	{
 		return ItemStack.EMPTY;
 	}

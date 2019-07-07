@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -155,27 +155,27 @@ public class MixerRecipe extends MultiblockRecipe
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("fluidInput", fluidInput.writeToNBT(new NBTTagCompound()));
+		nbt.setTag("fluidInput", fluidInput.writeToNBT(new CompoundNBT()));
 		if(this.itemInputs.length > 0)
 		{
-			NBTTagList list = new NBTTagList();
+			ListNBT list = new ListNBT();
 			for(IngredientStack add : this.itemInputs)
-				list.add(add.writeToNBT(new NBTTagCompound()));
+				list.add(add.writeToNBT(new CompoundNBT()));
 			nbt.setTag("itemInputs", list);
 		}
 		return nbt;
 	}
 
 	@Nullable
-	public static MixerRecipe loadFromNBT(NBTTagCompound nbt)
+	public static MixerRecipe loadFromNBT(CompoundNBT nbt)
 	{
 		FluidStack fluidInput = FluidStack.loadFluidStackFromNBT(nbt.getCompound("fluidInput"));
 		IngredientStack[] itemInputs = null;
 		if(nbt.hasKey("itemInputs"))
 		{
-			NBTTagList list = nbt.getList("itemInputs", 10);
+			ListNBT list = nbt.getList("itemInputs", 10);
 			itemInputs = new IngredientStack[list.size()];
 			for(int i = 0; i < itemInputs.length; i++)
 				itemInputs[i] = IngredientStack.readFromNBT(list.getCompound(i));

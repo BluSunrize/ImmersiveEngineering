@@ -17,15 +17,18 @@ import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMu
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalPress;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.lwjgl.opengl.GL11;
@@ -42,7 +45,7 @@ public class TileRenderMetalPress extends TileEntityRenderer<TileEntityMetalPres
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
-		IBlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=MetalMultiblocks.metalPress)
 			return;
 		state = state.with(IEProperties.DYNAMICRENDER, true);
@@ -101,7 +104,7 @@ public class TileRenderMetalPress extends TileEntityRenderer<TileEntityMetalPres
 		tessellator.draw();
 		RenderHelper.enableStandardItemLighting();
 
-		GlStateManager.rotatef(te.facing==EnumFacing.SOUTH?180: te.facing==EnumFacing.WEST?90: te.facing==EnumFacing.EAST?-90: 0, 0, 1, 0);
+		GlStateManager.rotatef(te.facing==Direction.SOUTH?180: te.facing==Direction.WEST?90: te.facing==Direction.EAST?-90: 0, 0, 1, 0);
 		if(!te.mold.isEmpty())
 		{
 			GlStateManager.pushMatrix();

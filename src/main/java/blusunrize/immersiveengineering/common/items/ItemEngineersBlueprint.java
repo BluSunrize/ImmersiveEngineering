@@ -18,8 +18,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,18 +51,18 @@ public class ItemEngineersBlueprint extends ItemIEBase
 		{
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;
 			String formatted = I18n.format(formatKey);
-			if(formatKey.equals(formatted)) list.add(new TextComponentString(key));
-			else list.add(new TextComponentTranslation(formatKey));
+			if(formatKey.equals(formatted)) list.add(new StringTextComponent(key));
+			else list.add(new TranslationTextComponent(formatKey));
 			if(Minecraft.getInstance().player.isSneaking())
 			{
-				list.add(new TextComponentTranslation(Lib.DESC_INFO+"blueprint.creates1"));
+				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates1"));
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
 				if(recipes.length > 0)
 					for(int i = 0; i < recipes.length; i++)
-						list.add(new TextComponentString(" "+recipes[i].output.getDisplayName()));
+						list.add(new StringTextComponent(" "+recipes[i].output.getDisplayName()));
 			}
 			else
-				list.add(new TextComponentTranslation(Lib.DESC_INFO+"blueprint.creates0"));
+				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates0"));
 		}
 	}
 

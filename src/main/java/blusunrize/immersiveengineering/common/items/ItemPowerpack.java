@@ -17,19 +17,19 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.entity.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,26 +46,26 @@ import java.util.List;
  * @author BluSunrize
  * @since 15.06.2017
  */
-public class ItemPowerpack extends ItemArmor implements IIEEnergyItem
+public class ItemPowerpack extends ArmorItem implements IIEEnergyItem
 {
 	public ItemPowerpack()
 	{
 		//TODO custome material rather than leather
-		super(ArmorMaterial.LEATHER, EntityEquipmentSlot.CHEST, new Properties().maxStackSize(1).defaultMaxDamage(0)
+		super(ArmorMaterial.LEATHER, EquipmentSlotType.CHEST, new Properties().maxStackSize(1).defaultMaxDamage(0)
 		.group(ImmersiveEngineering.itemGroup));
 		String name = "powerpack";
 		IEContent.registeredIEItems.add(this);
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
 	{
 		return "immersiveengineering:textures/models/powerpack.png";
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
+	public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default)
 	{
 		return ModelPowerpack.getModel();
 	}
@@ -74,7 +74,7 @@ public class ItemPowerpack extends ItemArmor implements IIEEnergyItem
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
-		list.add(new TextComponentTranslation(Lib.DESC+"info.energyStored", stored));
+		list.add(new TranslationTextComponent(Lib.DESC+"info.energyStored", stored));
 	}
 
 	@Override
@@ -85,13 +85,13 @@ public class ItemPowerpack extends ItemArmor implements IIEEnergyItem
 	}
 
 	@Override
-	public void onArmorTick(ItemStack itemStack, World world, EntityPlayer player)
+	public void onArmorTick(ItemStack itemStack, World world, PlayerEntity player)
 	{
 		int energy = getEnergyStored(itemStack);
 		if(energy > 0)
 		{
 			int pre = energy;
-			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
+			for(EquipmentSlotType slot : EquipmentSlotType.values())
 				if(EnergyHelper.isFluxItem(player.getItemStackFromSlot(slot))&&!(player.getItemStackFromSlot(slot).getItem() instanceof ItemPowerpack))
 					energy -= EnergyHelper.insertFlux(player.getItemStackFromSlot(slot), Math.min(energy, 256), false);
 			if(pre!=energy)
@@ -106,7 +106,7 @@ public class ItemPowerpack extends ItemArmor implements IIEEnergyItem
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
 		if(!stack.isEmpty())
 			return new ICapabilityProvider()
@@ -116,7 +116,7 @@ public class ItemPowerpack extends ItemArmor implements IIEEnergyItem
 
 				@Nullable
 				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 				{
 					return capability==CapabilityEnergy.ENERGY?energyStorage.cast(): null;
 				}

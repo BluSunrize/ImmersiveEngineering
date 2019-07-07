@@ -17,17 +17,17 @@ import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -39,8 +39,8 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	
 	NonNullList<ItemStack> inventory = NonNullList.withSize(ItemToolbox.SLOT_COUNT, ItemStack.EMPTY);
 	public ITextComponent name;
-	private EnumFacing facing = EnumFacing.NORTH;
-	private NBTTagList enchantments;
+	private Direction facing = Direction.NORTH;
+	private ListNBT enchantments;
 
 	public TileEntityToolbox()
 	{
@@ -48,9 +48,9 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		if(nbt.hasKey("name"))
 			this.name = ITextComponent.Serializer.fromJson(nbt.getString("name"));
 		if(nbt.hasKey("enchantments"))
@@ -60,7 +60,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("facing", facing.ordinal());
 		if(this.name!=null)
@@ -72,13 +72,13 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking())
 		{
 			if(!world.isRemote)
 			{
-				EntityItem entityitem = new EntityItem(world, getPos().getX()+.5, getPos().getY()+.5,
+				ItemEntity entityitem = new ItemEntity(world, getPos().getX()+.5, getPos().getY()+.5,
 						getPos().getZ()+.5, getTileDrop(player, world.getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
 				world.removeBlock(getPos());
@@ -98,7 +98,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	//}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		return true;
 	}
@@ -140,7 +140,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	}
 
 	@Override
-	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
+	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
 	{
 		ItemStack stack = new ItemStack(Tools.toolbox);
 		((ItemInternalStorage)Tools.toolbox).setContainedItems(stack, inventory);
@@ -152,7 +152,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	}
 
 	@Override
-	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
+	public void readOnPlacement(LivingEntity placer, ItemStack stack)
 	{
 		if(stack.getItem() instanceof ItemInternalStorage)
 		{
@@ -176,13 +176,13 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -194,19 +194,19 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return true;
 	}

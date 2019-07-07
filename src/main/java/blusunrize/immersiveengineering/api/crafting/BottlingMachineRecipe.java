@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -83,13 +83,13 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
+		nbt.setTag("input", input.writeToNBT(new CompoundNBT()));
 		return nbt;
 	}
 
-	public static BottlingMachineRecipe loadFromNBT(NBTTagCompound nbt)
+	public static BottlingMachineRecipe loadFromNBT(CompoundNBT nbt)
 	{
 		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
 		for(BottlingMachineRecipe recipe : recipeList)

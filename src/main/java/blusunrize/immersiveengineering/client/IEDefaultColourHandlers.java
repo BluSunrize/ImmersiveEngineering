@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.ItemStack;
@@ -27,7 +27,7 @@ public class IEDefaultColourHandlers implements IItemColor, IBlockColor
 	public static IEDefaultColourHandlers INSTANCE = new IEDefaultColourHandlers();
 
 	@Override
-	public int colorMultiplier(IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex)
+	public int colorMultiplier(BlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex)
 	{
 		if(state.getBlock() instanceof IColouredBlock)
 			return ((IColouredBlock)state.getBlock()).getRenderColour(state, worldIn, pos, tintIndex);

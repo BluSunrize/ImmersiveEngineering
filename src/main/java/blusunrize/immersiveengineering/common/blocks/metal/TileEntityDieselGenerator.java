@@ -23,13 +23,13 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Particles;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -60,7 +60,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		tanks[0].readFromNBT(nbt.getCompound("tank0"));
@@ -71,10 +71,10 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setTag("tank0", tanks[0].writeToNBT(new NBTTagCompound()));
+		nbt.setTag("tank0", tanks[0].writeToNBT(new CompoundNBT()));
 		nbt.setBoolean("active", active);
 		nbt.setFloat("animation_fanRotation", animation_fanRotation);
 		nbt.setInt("animation_fanFadeIn", animation_fanFadeIn);
@@ -113,8 +113,8 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 			if(active&&world.getGameTime()%4==0)
 			{
 				BlockPos exhaust = this.getBlockPosForPos(38);
-				EnumFacing fl = facing;
-				EnumFacing fw = facing.rotateY();
+				Direction fl = facing;
+				Direction fw = facing.rotateY();
 				if(mirrored)
 					fw = fw.getOpposite();
 				world.spawnParticle(Particles.LARGE_SMOKE,
@@ -139,7 +139,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 						receivers[i] = getEnergyOutput(i==1?-1: i==2?1: 0);
 						if(receivers[i]!=null)
 						{
-							if(EnergyHelper.insertFlux(receivers[i], EnumFacing.DOWN, 4096, true) > 0)
+							if(EnergyHelper.insertFlux(receivers[i], Direction.DOWN, 4096, true) > 0)
 								connected++;
 						}
 					}
@@ -155,7 +155,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 						int leftover = output%connected;
 						for(int i = 0; i < 3; i++)
 							if(receivers[i]!=null)
-								EnergyHelper.insertFlux(receivers[i], EnumFacing.DOWN, splitOutput+(leftover-- > 0?1: 0), false);
+								EnergyHelper.insertFlux(receivers[i], Direction.DOWN, splitOutput+(leftover-- > 0?1: 0), false);
 					}
 					else if(active)
 					{
@@ -183,7 +183,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	{
 		BlockPos outPos = this.getBlockPosForPos(16+w).add(0, 1, 0);
 		TileEntity eTile = Utils.getExistingTileEntity(world, outPos);
-		if(EnergyHelper.isFluxReceiver(eTile, EnumFacing.DOWN))
+		if(EnergyHelper.isFluxReceiver(eTile, Direction.DOWN))
 			return eTile;
 		return null;
 	}
@@ -191,25 +191,25 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	@Override
 	public float[] getBlockBounds()
 	{
-		EnumFacing fl = facing;
-		EnumFacing fw = facing.rotateY();
+		Direction fl = facing;
+		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
 
 		if(posInMultiblock==1)
-			return new float[]{fl==EnumFacing.WEST?-.625f: 0, .5f, fl==EnumFacing.NORTH?-.625f: 0, fl==EnumFacing.EAST?1.375f: 1, 1.5f, fl==EnumFacing.SOUTH?1.375f: 1};
+			return new float[]{fl==Direction.WEST?-.625f: 0, .5f, fl==Direction.NORTH?-.625f: 0, fl==Direction.EAST?1.375f: 1, 1.5f, fl==Direction.SOUTH?1.375f: 1};
 		if(posInMultiblock==0||posInMultiblock==29||posInMultiblock==44)
-			return new float[]{fw==EnumFacing.WEST?.5f: (posInMultiblock%15 > 11&&fl==EnumFacing.EAST)?-.125f: 0, 0, fw==EnumFacing.NORTH?.5f: (posInMultiblock%15 > 11&&fl==EnumFacing.SOUTH)?-.125f: 0, fw==EnumFacing.EAST?.5f: (posInMultiblock%15 > 11&&fl==EnumFacing.WEST)?1.125f: 1, posInMultiblock > 30?.8125f: 1, fw==EnumFacing.SOUTH?.5f: (posInMultiblock%15 > 11&&fl==EnumFacing.NORTH)?1.125f: 1};
+			return new float[]{fw==Direction.WEST?.5f: (posInMultiblock%15 > 11&&fl==Direction.EAST)?-.125f: 0, 0, fw==Direction.NORTH?.5f: (posInMultiblock%15 > 11&&fl==Direction.SOUTH)?-.125f: 0, fw==Direction.EAST?.5f: (posInMultiblock%15 > 11&&fl==Direction.WEST)?1.125f: 1, posInMultiblock > 30?.8125f: 1, fw==Direction.SOUTH?.5f: (posInMultiblock%15 > 11&&fl==Direction.NORTH)?1.125f: 1};
 		if(posInMultiblock==2||posInMultiblock==27||posInMultiblock==42)
-			return new float[]{fw==EnumFacing.EAST?.5f: (posInMultiblock%15 > 11&&fl==EnumFacing.EAST)?-.125f: 0, 0, fw==EnumFacing.SOUTH?.5f: (posInMultiblock%15 > 11&&fl==EnumFacing.SOUTH)?-.125f: 0, fw==EnumFacing.WEST?.5f: (posInMultiblock%15 > 11&&fl==EnumFacing.WEST)?1.125f: 1, posInMultiblock > 30?.8125f: 1, fw==EnumFacing.NORTH?.5f: (posInMultiblock%15 > 11&&fl==EnumFacing.NORTH)?1.125f: 1};
+			return new float[]{fw==Direction.EAST?.5f: (posInMultiblock%15 > 11&&fl==Direction.EAST)?-.125f: 0, 0, fw==Direction.SOUTH?.5f: (posInMultiblock%15 > 11&&fl==Direction.SOUTH)?-.125f: 0, fw==Direction.WEST?.5f: (posInMultiblock%15 > 11&&fl==Direction.WEST)?1.125f: 1, posInMultiblock > 30?.8125f: 1, fw==Direction.NORTH?.5f: (posInMultiblock%15 > 11&&fl==Direction.NORTH)?1.125f: 1};
 		if(posInMultiblock==43)
-			return new float[]{posInMultiblock%15 > 11&&fl==EnumFacing.EAST?.375f: 0, 0, posInMultiblock%15 > 11&&fl==EnumFacing.SOUTH?.375f: 0, posInMultiblock%15 > 11&&fl==EnumFacing.WEST?.625f: 1, posInMultiblock > 30?.8125f: 1, posInMultiblock%15 > 11&&fl==EnumFacing.NORTH?.625f: 1};
+			return new float[]{posInMultiblock%15 > 11&&fl==Direction.EAST?.375f: 0, 0, posInMultiblock%15 > 11&&fl==Direction.SOUTH?.375f: 0, posInMultiblock%15 > 11&&fl==Direction.WEST?.625f: 1, posInMultiblock > 30?.8125f: 1, posInMultiblock%15 > 11&&fl==Direction.NORTH?.625f: 1};
 
 		if(posInMultiblock >= 15&&posInMultiblock <= 17)
 			return new float[]{0, .5f, 0, 1, 1, 1};
 
 		if(posInMultiblock==19||posInMultiblock==34)
-			return new float[]{fl==EnumFacing.EAST?.375f: fl.getAxis()==Axis.Z?.0625f: 0, 0, fl==EnumFacing.SOUTH?.375f: fl.getAxis()==Axis.X?.0625f: 0, fl==EnumFacing.WEST?.625f: fl.getAxis()==Axis.Z?.9375f: 1, posInMultiblock > 30?.3125f: 1, fl==EnumFacing.NORTH?.625f: fl.getAxis()==Axis.X?.9375f: 1};
+			return new float[]{fl==Direction.EAST?.375f: fl.getAxis()==Axis.Z?.0625f: 0, 0, fl==Direction.SOUTH?.375f: fl.getAxis()==Axis.X?.0625f: 0, fl==Direction.WEST?.625f: fl.getAxis()==Axis.Z?.9375f: 1, posInMultiblock > 30?.3125f: 1, fl==Direction.NORTH?.625f: fl.getAxis()==Axis.X?.9375f: 1};
 		if(posInMultiblock==37||posInMultiblock==40)
 			return new float[]{fl.getAxis()==Axis.Z?.0625f: 0, 0, fl.getAxis()==Axis.X?.0625f: 0, fl.getAxis()==Axis.Z?.9375f: 1, .3125f, fl.getAxis()==Axis.X?.9375f: 1};
 
@@ -217,18 +217,18 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 			return new float[]{0, 0, 0, 1, .5f, 1};
 
 		if(posInMultiblock < 30&&posInMultiblock%3==0)
-			return new float[]{fw==EnumFacing.EAST?.9375f: (posInMultiblock < 21&&fl==EnumFacing.EAST)?.375f: 0, -.5f, fw==EnumFacing.SOUTH?.9375f: (posInMultiblock < 21&&fl==EnumFacing.SOUTH)?.375f: 0, fw==EnumFacing.WEST?.0625f: (posInMultiblock < 21&&fl==EnumFacing.WEST)?.625f: 1, .625f, fw==EnumFacing.NORTH?.0625f: (posInMultiblock < 21&&fl==EnumFacing.NORTH)?.625f: 1};
+			return new float[]{fw==Direction.EAST?.9375f: (posInMultiblock < 21&&fl==Direction.EAST)?.375f: 0, -.5f, fw==Direction.SOUTH?.9375f: (posInMultiblock < 21&&fl==Direction.SOUTH)?.375f: 0, fw==Direction.WEST?.0625f: (posInMultiblock < 21&&fl==Direction.WEST)?.625f: 1, .625f, fw==Direction.NORTH?.0625f: (posInMultiblock < 21&&fl==Direction.NORTH)?.625f: 1};
 		if(posInMultiblock < 30&&posInMultiblock%3==2)
-			return new float[]{fw==EnumFacing.WEST?.9375f: (posInMultiblock < 21&&fl==EnumFacing.EAST)?.375f: 0, -.5f, fw==EnumFacing.NORTH?.9375f: (posInMultiblock < 21&&fl==EnumFacing.SOUTH)?.375f: 0, fw==EnumFacing.EAST?.0625f: (posInMultiblock < 21&&fl==EnumFacing.WEST)?.625f: 1, .625f, fw==EnumFacing.SOUTH?.0625f: (posInMultiblock < 21&&fl==EnumFacing.NORTH)?.625f: 1};
+			return new float[]{fw==Direction.WEST?.9375f: (posInMultiblock < 21&&fl==Direction.EAST)?.375f: 0, -.5f, fw==Direction.NORTH?.9375f: (posInMultiblock < 21&&fl==Direction.SOUTH)?.375f: 0, fw==Direction.EAST?.0625f: (posInMultiblock < 21&&fl==Direction.WEST)?.625f: 1, .625f, fw==Direction.SOUTH?.0625f: (posInMultiblock < 21&&fl==Direction.NORTH)?.625f: 1};
 
 		if(posInMultiblock==36||posInMultiblock==38)
 		{
 			if(posInMultiblock==38)
 				fw = fw.getOpposite();
-			float minX = fl==EnumFacing.WEST?-.0625f: fl==EnumFacing.EAST?.5625f: fw==EnumFacing.WEST?-.0625f: .5625f;
-			float maxX = fl==EnumFacing.WEST?.4375f: fl==EnumFacing.EAST?1.0625f: fw==EnumFacing.WEST?.4375f: 1.0625f;
-			float minZ = fl==EnumFacing.NORTH?-.0625f: fl==EnumFacing.SOUTH?.5625f: fw==EnumFacing.NORTH?-.0625f: .5625f;
-			float maxZ = fl==EnumFacing.NORTH?.4375f: fl==EnumFacing.SOUTH?1.0625f: fw==EnumFacing.NORTH?.4375f: 1.0625f;
+			float minX = fl==Direction.WEST?-.0625f: fl==Direction.EAST?.5625f: fw==Direction.WEST?-.0625f: .5625f;
+			float maxX = fl==Direction.WEST?.4375f: fl==Direction.EAST?1.0625f: fw==Direction.WEST?.4375f: 1.0625f;
+			float minZ = fl==Direction.NORTH?-.0625f: fl==Direction.SOUTH?.5625f: fw==Direction.NORTH?-.0625f: .5625f;
+			float maxZ = fl==Direction.NORTH?.4375f: fl==Direction.SOUTH?1.0625f: fw==Direction.NORTH?.4375f: 1.0625f;
 			return new float[]{minX, 0, minZ, maxX, posInMultiblock==38?1.125f: .75f, maxZ};
 		}
 
@@ -238,23 +238,23 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		EnumFacing fl = facing;
-		EnumFacing fw = facing.rotateY();
+		Direction fl = facing;
+		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
 
 		if(posInMultiblock==16)
 		{
 			return Lists.newArrayList(new AxisAlignedBB(0, .5f, 0, 1, 1, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()),
-					new AxisAlignedBB(fl==EnumFacing.WEST?-.625f: 0, -.5f, fl==EnumFacing.NORTH?-.625f: 0, fl==EnumFacing.EAST?1.375f: 1, .5f, fl==EnumFacing.SOUTH?1.375f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+					new AxisAlignedBB(fl==Direction.WEST?-.625f: 0, -.5f, fl==Direction.NORTH?-.625f: 0, fl==Direction.EAST?1.375f: 1, .5f, fl==Direction.SOUTH?1.375f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 		}
 		if(posInMultiblock==15||posInMultiblock==17)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, .5f, 0, 1, 1, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			if(posInMultiblock==17)
 				fw = fw.getOpposite();
-			list.add(new AxisAlignedBB(fw==EnumFacing.EAST?.125f: fw==EnumFacing.WEST?.625f: .125f, 0, fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: .125f, fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.875f: .375f, .5f, fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: .375f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			list.add(new AxisAlignedBB(fw==EnumFacing.EAST?.125f: fw==EnumFacing.WEST?.625f: .625f, 0, fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: .625f, fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.875f: .875f, .5f, fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: .875f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(fw==Direction.EAST?.125f: fw==Direction.WEST?.625f: .125f, 0, fw==Direction.SOUTH?.125f: fw==Direction.NORTH?.625f: .125f, fw==Direction.EAST?.375f: fw==Direction.WEST?.875f: .375f, .5f, fw==Direction.SOUTH?.375f: fw==Direction.NORTH?.875f: .375f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(fw==Direction.EAST?.125f: fw==Direction.WEST?.625f: .625f, 0, fw==Direction.SOUTH?.125f: fw==Direction.NORTH?.625f: .625f, fw==Direction.EAST?.375f: fw==Direction.WEST?.875f: .875f, .5f, fw==Direction.SOUTH?.375f: fw==Direction.NORTH?.875f: .875f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
 
@@ -263,8 +263,8 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 		{
 			float[] defaultBounds = this.getBlockBounds();
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(defaultBounds[0], defaultBounds[1], defaultBounds[2], defaultBounds[3], defaultBounds[4], defaultBounds[5]).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			list.add(new AxisAlignedBB(fw==EnumFacing.EAST?.5f: fw==EnumFacing.WEST?0: .3125f, .25f, fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?0: .3125f, fw==EnumFacing.EAST?1: fw==EnumFacing.WEST?.5f: .6875f, .75f, fw==EnumFacing.SOUTH?1: fw==EnumFacing.NORTH?.5f: .6875f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			list.add(new AxisAlignedBB(fw==EnumFacing.EAST?.6875f: fw==EnumFacing.WEST?.1875f: .4375f, -.5f, fw==EnumFacing.SOUTH?.6875f: fw==EnumFacing.NORTH?.1875f: .4375f, fw==EnumFacing.EAST?.8125f: fw==EnumFacing.WEST?.3125f: .5625f, .25f, fw==EnumFacing.SOUTH?.8125f: fw==EnumFacing.NORTH?.3125f: .5625f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(fw==Direction.EAST?.5f: fw==Direction.WEST?0: .3125f, .25f, fw==Direction.SOUTH?.5f: fw==Direction.NORTH?0: .3125f, fw==Direction.EAST?1: fw==Direction.WEST?.5f: .6875f, .75f, fw==Direction.SOUTH?1: fw==Direction.NORTH?.5f: .6875f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(fw==Direction.EAST?.6875f: fw==Direction.WEST?.1875f: .4375f, -.5f, fw==Direction.SOUTH?.6875f: fw==Direction.NORTH?.1875f: .4375f, fw==Direction.EAST?.8125f: fw==Direction.WEST?.3125f: .5625f, .25f, fw==Direction.SOUTH?.8125f: fw==Direction.NORTH?.3125f: .5625f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
 
@@ -277,42 +277,42 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 
 			if(posInMultiblock < 6)
 			{
-				float minX = fw==EnumFacing.WEST?0: fw==EnumFacing.EAST?.125f: fl==EnumFacing.WEST?.25f: .5f;
-				float maxX = fw==EnumFacing.WEST?.875f: fw==EnumFacing.EAST?1: fl==EnumFacing.EAST?.75f: .5f;
-				float minZ = fw==EnumFacing.NORTH?0: fw==EnumFacing.SOUTH?.125f: fl==EnumFacing.NORTH?.25f: .5f;
-				float maxZ = fw==EnumFacing.NORTH?.875f: fw==EnumFacing.SOUTH?1: fl==EnumFacing.SOUTH?.75f: .5f;
+				float minX = fw==Direction.WEST?0: fw==Direction.EAST?.125f: fl==Direction.WEST?.25f: .5f;
+				float maxX = fw==Direction.WEST?.875f: fw==Direction.EAST?1: fl==Direction.EAST?.75f: .5f;
+				float minZ = fw==Direction.NORTH?0: fw==Direction.SOUTH?.125f: fl==Direction.NORTH?.25f: .5f;
+				float maxZ = fw==Direction.NORTH?.875f: fw==Direction.SOUTH?1: fl==Direction.SOUTH?.75f: .5f;
 				list.add(new AxisAlignedBB(minX, .5625f, minZ, maxX, .8125f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
-				minX = fw==EnumFacing.WEST?.625f: fw==EnumFacing.EAST?.125f: fl==EnumFacing.EAST?0: .5f;
-				maxX = fw==EnumFacing.WEST?.875f: fw==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?1: .5f;
-				minZ = fw==EnumFacing.NORTH?.625f: fw==EnumFacing.SOUTH?.125f: fl==EnumFacing.SOUTH?0: .5f;
-				maxZ = fw==EnumFacing.NORTH?.875f: fw==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?1: .5f;
+				minX = fw==Direction.WEST?.625f: fw==Direction.EAST?.125f: fl==Direction.EAST?0: .5f;
+				maxX = fw==Direction.WEST?.875f: fw==Direction.EAST?.375f: fl==Direction.WEST?1: .5f;
+				minZ = fw==Direction.NORTH?.625f: fw==Direction.SOUTH?.125f: fl==Direction.SOUTH?0: .5f;
+				maxZ = fw==Direction.NORTH?.875f: fw==Direction.SOUTH?.375f: fl==Direction.NORTH?1: .5f;
 				list.add(new AxisAlignedBB(minX, .5625f, minZ, maxX, .8125f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			}
 			else if(posInMultiblock < 12)
 			{
-				float minX = (fw==EnumFacing.WEST?0: fw==EnumFacing.EAST?.4375f: fl==EnumFacing.EAST?.25f: -.5625f)+(posInMultiblock <= 8?0: fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
-				float maxX = (fw==EnumFacing.WEST?.5626f: fw==EnumFacing.EAST?1: fl==EnumFacing.WEST?.75f: 1.4375f)+(posInMultiblock <= 8?0: fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
-				float minZ = (fw==EnumFacing.NORTH?0: fw==EnumFacing.SOUTH?.4375f: fl==EnumFacing.SOUTH?.25f: -.5625f)+(posInMultiblock <= 8?0: fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
-				float maxZ = (fw==EnumFacing.NORTH?.5625f: fw==EnumFacing.SOUTH?1: fl==EnumFacing.NORTH?.75f: 1.4375f)+(posInMultiblock <= 8?0: fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
+				float minX = (fw==Direction.WEST?0: fw==Direction.EAST?.4375f: fl==Direction.EAST?.25f: -.5625f)+(posInMultiblock <= 8?0: fl==Direction.WEST?1: fl==Direction.EAST?-1: 0);
+				float maxX = (fw==Direction.WEST?.5626f: fw==Direction.EAST?1: fl==Direction.WEST?.75f: 1.4375f)+(posInMultiblock <= 8?0: fl==Direction.WEST?1: fl==Direction.EAST?-1: 0);
+				float minZ = (fw==Direction.NORTH?0: fw==Direction.SOUTH?.4375f: fl==Direction.SOUTH?.25f: -.5625f)+(posInMultiblock <= 8?0: fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0);
+				float maxZ = (fw==Direction.NORTH?.5625f: fw==Direction.SOUTH?1: fl==Direction.NORTH?.75f: 1.4375f)+(posInMultiblock <= 8?0: fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0);
 				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			}
 			if(posInMultiblock > 8)
 			{
-				float minX = (fw==EnumFacing.WEST?.5625f: fw==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.5625f: .1875f)+(posInMultiblock <= 11?0: fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
-				float maxX = (fw==EnumFacing.WEST?.625f: fw==EnumFacing.EAST?.4375f: fl==EnumFacing.EAST?.4375f: .8125f)+(posInMultiblock <= 11?0: fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
-				float minZ = (fw==EnumFacing.NORTH?.5625f: fw==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.5625f: .1875f)+(posInMultiblock <= 11?0: fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
-				float maxZ = (fw==EnumFacing.NORTH?.625f: fw==EnumFacing.SOUTH?.4375f: fl==EnumFacing.SOUTH?.4375f: .8125f)+(posInMultiblock <= 11?0: fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
+				float minX = (fw==Direction.WEST?.5625f: fw==Direction.EAST?.375f: fl==Direction.WEST?.5625f: .1875f)+(posInMultiblock <= 11?0: fl==Direction.WEST?1: fl==Direction.EAST?-1: 0);
+				float maxX = (fw==Direction.WEST?.625f: fw==Direction.EAST?.4375f: fl==Direction.EAST?.4375f: .8125f)+(posInMultiblock <= 11?0: fl==Direction.WEST?1: fl==Direction.EAST?-1: 0);
+				float minZ = (fw==Direction.NORTH?.5625f: fw==Direction.SOUTH?.375f: fl==Direction.NORTH?.5625f: .1875f)+(posInMultiblock <= 11?0: fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0);
+				float maxZ = (fw==Direction.NORTH?.625f: fw==Direction.SOUTH?.4375f: fl==Direction.SOUTH?.4375f: .8125f)+(posInMultiblock <= 11?0: fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0);
 				list.add(new AxisAlignedBB(minX, .5625f, minZ, maxX, .8125f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-				minX = (fw==EnumFacing.WEST?.5f: fw==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?-.875f: 1.625f)+(posInMultiblock <= 11?0: fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
-				maxX = (fw==EnumFacing.WEST?.625f: fw==EnumFacing.EAST?.5f: fl==EnumFacing.EAST?1.875f: -.625f)+(posInMultiblock <= 11?0: fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
-				minZ = (fw==EnumFacing.NORTH?.5f: fw==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?-.875f: 1.625f)+(posInMultiblock <= 11?0: fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
-				maxZ = (fw==EnumFacing.NORTH?.625f: fw==EnumFacing.SOUTH?.5f: fl==EnumFacing.SOUTH?1.875f: -.625f)+(posInMultiblock <= 11?0: fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
+				minX = (fw==Direction.WEST?.5f: fw==Direction.EAST?.375f: fl==Direction.WEST?-.875f: 1.625f)+(posInMultiblock <= 11?0: fl==Direction.WEST?1: fl==Direction.EAST?-1: 0);
+				maxX = (fw==Direction.WEST?.625f: fw==Direction.EAST?.5f: fl==Direction.EAST?1.875f: -.625f)+(posInMultiblock <= 11?0: fl==Direction.WEST?1: fl==Direction.EAST?-1: 0);
+				minZ = (fw==Direction.NORTH?.5f: fw==Direction.SOUTH?.375f: fl==Direction.NORTH?-.875f: 1.625f)+(posInMultiblock <= 11?0: fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0);
+				maxZ = (fw==Direction.NORTH?.625f: fw==Direction.SOUTH?.5f: fl==Direction.SOUTH?1.875f: -.625f)+(posInMultiblock <= 11?0: fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0);
 				list.add(new AxisAlignedBB(minX, .5625f, minZ, maxX, .8125f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-				minX = (fw==EnumFacing.WEST?.625f: fw==EnumFacing.EAST?.125f: fl==EnumFacing.EAST?.1875f: -.875f)+(posInMultiblock <= 11?0: fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
-				maxX = (fw==EnumFacing.WEST?.875f: fw==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.8125f: 1.875f)+(posInMultiblock <= 11?0: fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
-				minZ = (fw==EnumFacing.NORTH?.625f: fw==EnumFacing.SOUTH?.125f: fl==EnumFacing.SOUTH?.1875f: -.875f)+(posInMultiblock <= 11?0: fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
-				maxZ = (fw==EnumFacing.NORTH?.875f: fw==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.8125f: 1.875f)+(posInMultiblock <= 11?0: fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
+				minX = (fw==Direction.WEST?.625f: fw==Direction.EAST?.125f: fl==Direction.EAST?.1875f: -.875f)+(posInMultiblock <= 11?0: fl==Direction.WEST?1: fl==Direction.EAST?-1: 0);
+				maxX = (fw==Direction.WEST?.875f: fw==Direction.EAST?.375f: fl==Direction.WEST?.8125f: 1.875f)+(posInMultiblock <= 11?0: fl==Direction.WEST?1: fl==Direction.EAST?-1: 0);
+				minZ = (fw==Direction.NORTH?.625f: fw==Direction.SOUTH?.125f: fl==Direction.SOUTH?.1875f: -.875f)+(posInMultiblock <= 11?0: fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0);
+				maxZ = (fw==Direction.NORTH?.875f: fw==Direction.SOUTH?.375f: fl==Direction.NORTH?.8125f: 1.875f)+(posInMultiblock <= 11?0: fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0);
 				list.add(new AxisAlignedBB(minX, .5625f, minZ, maxX, .8125f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			}
 			return list;
@@ -321,7 +321,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	}
 
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
@@ -344,7 +344,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		TileEntityDieselGenerator master = master();
 		if(master!=null&&(posInMultiblock==0||posInMultiblock==2)&&(side==null||side.getAxis()==facing.rotateYCCW().getAxis()))
@@ -353,7 +353,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
 	{
 		if(resources==null)
 			return false;
@@ -361,7 +361,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return false;
 	}
@@ -373,12 +373,12 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	}
 
 	@Override
-	public BlockFaceShape getFaceShape(EnumFacing side)
+	public BlockFaceShape getFaceShape(Direction side)
 	{
 		if(posInMultiblock==0||posInMultiblock==2)
 			return side.getAxis()==facing.rotateY().getAxis()?BlockFaceShape.SOLID: BlockFaceShape.UNDEFINED;
 		else if(posInMultiblock >= 15&&posInMultiblock <= 17)
-			return side==EnumFacing.UP?BlockFaceShape.SOLID: BlockFaceShape.UNDEFINED;
+			return side==Direction.UP?BlockFaceShape.SOLID: BlockFaceShape.UNDEFINED;
 		else if(posInMultiblock==23)
 			return side.getAxis()==facing.rotateY().getAxis()?BlockFaceShape.SOLID: BlockFaceShape.UNDEFINED;
 		return BlockFaceShape.UNDEFINED;

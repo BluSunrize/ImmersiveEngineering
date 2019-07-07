@@ -18,10 +18,10 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucke
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,7 +48,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		float nbtRot = nbt.getFloat("rotation");
@@ -59,30 +59,30 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setFloat("rotation", rotation);
 		nbt.setTag("digStacks", Utils.writeInventory(digStacks));
 		nbt.setBoolean("active", active);
 		if(!particleStack.isEmpty())
-			nbt.setTag("particleStack", particleStack.write(new NBTTagCompound()));
+			nbt.setTag("particleStack", particleStack.write(new CompoundNBT()));
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		return new IFluidTank[0];
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
 	{
 		return false;
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return false;
 	}
@@ -110,7 +110,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		}
 		else if(active&&world.getGameTime()%20==0)
 		{
-			NBTTagCompound nbt = new NBTTagCompound();
+			CompoundNBT nbt = new CompoundNBT();
 			nbt.setFloat("rotation", rotation);
 			MessageTileSync sync = new MessageTileSync(this, nbt);
 			ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)), sync);
@@ -148,7 +148,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	}
 
 	@Override
-	public void receiveMessageFromServer(NBTTagCompound message)
+	public void receiveMessageFromServer(CompoundNBT message)
 	{
 		synchronized(digStacks)
 		{
@@ -196,13 +196,13 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		else if(posInMultiblock==45||posInMultiblock==37||posInMultiblock==39)
 			return new float[]{0, 0, 0, 1, .75f, 1};
 		else if(posInMultiblock==21)
-			return new float[]{facing==EnumFacing.NORTH?.25f: 0, 0, facing==EnumFacing.WEST?.25f: 0, facing==EnumFacing.SOUTH?.75f: 1, 1, facing==EnumFacing.EAST?.75f: 1};
+			return new float[]{facing==Direction.NORTH?.25f: 0, 0, facing==Direction.WEST?.25f: 0, facing==Direction.SOUTH?.75f: 1, 1, facing==Direction.EAST?.75f: 1};
 		else if(posInMultiblock==27)
-			return new float[]{facing==EnumFacing.SOUTH?.25f: 0, 0, facing==EnumFacing.EAST?.25f: 0, facing==EnumFacing.NORTH?.75f: 1, 1, facing==EnumFacing.WEST?.75f: 1};
+			return new float[]{facing==Direction.SOUTH?.25f: 0, 0, facing==Direction.EAST?.25f: 0, facing==Direction.NORTH?.75f: 1, 1, facing==Direction.WEST?.75f: 1};
 		else if(posInMultiblock==15||posInMultiblock==29)
-			return new float[]{facing==EnumFacing.NORTH?.25f: 0, 0, facing==EnumFacing.WEST?.25f: 0, facing==EnumFacing.SOUTH?.75f: 1, 1, facing==EnumFacing.EAST?.75f: 1};
+			return new float[]{facing==Direction.NORTH?.25f: 0, 0, facing==Direction.WEST?.25f: 0, facing==Direction.SOUTH?.75f: 1, 1, facing==Direction.EAST?.75f: 1};
 		else if(posInMultiblock==19||posInMultiblock==33)
-			return new float[]{facing==EnumFacing.SOUTH?.25f: 0, 0, facing==EnumFacing.EAST?.25f: 0, facing==EnumFacing.NORTH?.75f: 1, 1, facing==EnumFacing.WEST?.75f: 1};
+			return new float[]{facing==Direction.SOUTH?.25f: 0, 0, facing==Direction.EAST?.25f: 0, facing==Direction.NORTH?.75f: 1, 1, facing==Direction.WEST?.75f: 1};
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 }

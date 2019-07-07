@@ -13,13 +13,13 @@ import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
@@ -27,11 +27,11 @@ import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Map;
 
-public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
+public class ItemFaradaySuit extends ArmorItem implements IElectricEquipment
 {
 	public static IArmorMaterial mat;
 
-	public ItemFaradaySuit(EntityEquipmentSlot type)
+	public ItemFaradaySuit(EquipmentSlotType type)
 	{
 		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.itemGroup));
 		String name = "faraday_suit_"+type.getName().toLowerCase(Locale.ENGLISH);
@@ -39,7 +39,7 @@ public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 	}
 
 	@Override
-	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache,
+	public void onStrike(ItemStack s, EquipmentSlotType eqSlot, LivingEntity p, Map<String, Object> cache,
 						 @Nullable DamageSource dSource, ElectricSource eSource)
 	{
 		if(!(dSource instanceof ElectricDamageSource))
@@ -57,15 +57,15 @@ public class ItemFaradaySuit extends ItemArmor implements IElectricEquipment
 		else
 		{
 			dmg.dmg *= 1.2;
-			if((!(p instanceof EntityPlayer)||!((EntityPlayer)p).abilities.isCreativeMode)&&
-					s.attemptDamageItem(2, Item.random, (dmg.getTrueSource() instanceof EntityPlayerMP)?(EntityPlayerMP)dmg.getTrueSource(): null))
+			if((!(p instanceof PlayerEntity)||!((PlayerEntity)p).abilities.isCreativeMode)&&
+					s.attemptDamageItem(2, Item.random, (dmg.getTrueSource() instanceof ServerPlayerEntity)?(ServerPlayerEntity)dmg.getTrueSource(): null))
 				p.setItemStackToSlot(eqSlot, ItemStack.EMPTY);
 		}
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
 	{
-		return "immersiveengineering:textures/models/armor_faraday"+(slot==EntityEquipmentSlot.LEGS?"_legs": "")+".png";
+		return "immersiveengineering:textures/models/armor_faraday"+(slot==EquipmentSlotType.LEGS?"_legs": "")+".png";
 	}
 }

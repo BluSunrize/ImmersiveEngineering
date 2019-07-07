@@ -10,17 +10,17 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockTNT;
+import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class BlockGunpowderBarrel extends BlockTNT
+public class BlockGunpowderBarrel extends TNTBlock
 {
 
 	public BlockGunpowderBarrel(String name)
@@ -29,7 +29,7 @@ public class BlockGunpowderBarrel extends BlockTNT
 	}
 
 	@Override
-	public void explode(World world, BlockPos pos, @Nullable EntityLivingBase igniter)
+	public void explode(World world, BlockPos pos, @Nullable LivingEntity igniter)
 	{
 		EntityIEExplosive explosive = new EntityIEExplosive(world, pos, igniter, world.getBlockState(pos), 4).setDropChance(1);
 		world.spawnEntity(explosive);

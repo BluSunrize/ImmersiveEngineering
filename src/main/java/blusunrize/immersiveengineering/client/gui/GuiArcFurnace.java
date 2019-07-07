@@ -17,11 +17,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.gui.ContainerArcFurnace;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class GuiArcFurnace extends GuiIEContainerBase
 	TileEntityArcFurnace tile;
 	private GuiButtonIE distributeButton;
 
-	public GuiArcFurnace(InventoryPlayer inventoryPlayer, TileEntityArcFurnace tile)
+	public GuiArcFurnace(PlayerInventory inventoryPlayer, TileEntityArcFurnace tile)
 	{
 		super(new ContainerArcFurnace(inventoryPlayer, tile));
 		this.ySize = 207;
@@ -44,9 +44,9 @@ public class GuiArcFurnace extends GuiIEContainerBase
 		super.render(mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		if(mx > guiLeft+157&&mx < guiLeft+164&&my > guiTop+22&&my < guiTop+68)
-			tooltip.add(new TextComponentString(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 		if(distributeButton.canFocus())
-			tooltip.add(new TextComponentTranslation(Lib.GUI_CONFIG+"arcfurnace.distribute"));
+			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
 
 		if(!tooltip.isEmpty())
 		{

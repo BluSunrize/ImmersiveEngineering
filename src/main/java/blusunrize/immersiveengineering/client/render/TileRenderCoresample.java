@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCoresample;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class TileRenderCoresample extends TileEntityRenderer<TileEntityCoresample>
 {
@@ -26,7 +26,7 @@ public class TileRenderCoresample extends TileEntityRenderer<TileEntityCoresampl
 		GlStateManager.pushMatrix();
 		GlStateManager.disableLighting();
 		GlStateManager.translated(x+.5, y+.54864, z+.52903);
-		GlStateManager.rotatef(tile.facing==EnumFacing.NORTH?180: tile.facing==EnumFacing.WEST?-90: tile.facing==EnumFacing.EAST?90: 0, 0, 1, 0);
+		GlStateManager.rotatef(tile.facing==Direction.NORTH?180: tile.facing==Direction.WEST?-90: tile.facing==Direction.EAST?90: 0, 0, 1, 0);
 		GlStateManager.rotatef(-45, 1, 0, 0);
 		ClientUtils.mc().getItemRenderer().renderItem(tile.coresample, TransformType.FIXED);
 		GlStateManager.enableLighting();

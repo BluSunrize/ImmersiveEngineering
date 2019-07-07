@@ -11,13 +11,10 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -37,7 +34,7 @@ public class ItemGraphiteElectrode extends ItemIEBase
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		float integrity = 100-(float)getDurabilityForDisplay(stack)*100f;
-		list.add(new TextComponentTranslation(Lib.DESC_INFO+"electrodeIntegrity", String.format("%.2f", integrity)));
+		list.add(new TranslationTextComponent(Lib.DESC_INFO+"electrodeIntegrity", String.format("%.2f", integrity)));
 	}
 
 	@Override

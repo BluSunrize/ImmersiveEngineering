@@ -15,23 +15,23 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemMap;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
 
@@ -44,7 +44,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	public static TileEntityType<TileEntityCoresample> TYPE;
 	
 	public ItemStack coresample = ItemStack.EMPTY;
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 
 	public TileEntityCoresample()
 	{
@@ -52,27 +52,27 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		coresample = ItemStack.read(nbt.getCompound("coresample"));
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setTag("coresample", coresample.write(new NBTTagCompound()));
+		nbt.setTag("coresample", coresample.write(new CompoundNBT()));
 		nbt.setInt("facing", facing.ordinal());
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -84,31 +84,31 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking())
 		{
 			if(!world.isRemote)
 			{
-				EntityItem entityitem = new EntityItem(world, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, world.getBlockState(getPos())));
+				ItemEntity entityitem = new ItemEntity(world, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, world.getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
 				world.removeBlock(getPos());
 				world.spawnEntity(entityitem);
@@ -119,17 +119,17 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 		{
 			if(!world.isRemote)
 			{
-				MapData mapData = ItemMap.getMapData(heldItem, player.getEntityWorld());
+				MapData mapData = FilledMapItem.getMapData(heldItem, player.getEntityWorld());
 				if(mapData!=null)
 				{
 					int[] coords = ItemNBTHelper.getIntArray(coresample, "coords");
 					String ident = "ie:coresample_"+coords[0]+";"+coords[1]+";"+coords[2];
-					NBTTagCompound mapTagCompound = ItemNBTHelper.getTag(heldItem);
-					NBTTagList nbttaglist = mapTagCompound.getList("Decorations", 10);
+					CompoundNBT mapTagCompound = ItemNBTHelper.getTag(heldItem);
+					ListNBT nbttaglist = mapTagCompound.getList("Decorations", 10);
 
 					for(int i = 0; i < nbttaglist.size(); i++)
 					{
-						NBTTagCompound tagCompound = (NBTTagCompound)nbttaglist.get(i);
+						CompoundNBT tagCompound = (CompoundNBT)nbttaglist.get(i);
 						if(ident.equalsIgnoreCase(tagCompound.getString("id")))
 						{
 							nbttaglist.removeTag(i);
@@ -147,7 +147,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 					float distZ = (float)(sampleZ-mapData.zCenter)/(float)mapScale;
 					if(distX >= -63&&distX <= 63&&distZ >= -63&&distZ <= 63)
 					{
-						NBTTagCompound tagCompound = new NBTTagCompound();
+						CompoundNBT tagCompound = new CompoundNBT();
 						tagCompound.setString("id", ident);
 						tagCompound.setByte("type", MapDecoration.Type.TARGET_POINT.getIcon());
 						tagCompound.setDouble("x", sampleX);
@@ -158,7 +158,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 						mapTagCompound.setTag("Decorations", nbttaglist);
 					}
 					else
-						player.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO+"coresample.mapFail"));
+						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapFail"));
 				}
 			}
 			return true;
@@ -173,17 +173,17 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 		if(coresample.hasDisplayName())
 			return coresample.getDisplayName();
 		else
-			return new TextComponentTranslation("item.immersiveengineering.coresample.name");
+			return new TranslationTextComponent("item.immersiveengineering.coresample.name");
 	}
 
 	@Override
-	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
+	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
 	{
 		return this.coresample;
 	}
 
 	@Override
-	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
+	public void readOnPlacement(LivingEntity placer, ItemStack stack)
 	{
 		this.coresample = stack.copy();
 	}
@@ -197,7 +197,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	private String[] overlay = null;
 
 	@Override
-	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
+	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
 		if(coresample!=null&&ItemNBTHelper.hasKey(coresample, "coords"))
 		{
@@ -229,7 +229,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	}
 
 	@Override
-	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
+	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
 	{
 		return false;
 	}

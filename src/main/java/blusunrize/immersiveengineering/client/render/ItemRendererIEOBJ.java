@@ -16,11 +16,13 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -36,9 +38,9 @@ import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class ItemRendererIEOBJ extends TileEntityItemStackRenderer
+public class ItemRendererIEOBJ extends ItemStackTileEntityRenderer
 {
-	public static final TileEntityItemStackRenderer INSTANCE = new ItemRendererIEOBJ();
+	public static final ItemStackTileEntityRenderer INSTANCE = new ItemRendererIEOBJ();
 	private static FloatBuffer transform = GLAllocation.createDirectFloatBuffer(16);
 	private static final Matrix4 mat = new Matrix4();
 

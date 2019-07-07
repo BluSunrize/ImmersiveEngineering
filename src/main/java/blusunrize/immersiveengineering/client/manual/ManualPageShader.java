@@ -23,12 +23,12 @@ import blusunrize.lib.manual.SpecialManualElement;
 import blusunrize.lib.manual.gui.GuiButtonManual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -66,14 +66,14 @@ public class ManualPageShader extends SpecialManualElement
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<GuiButton> buttons)
+	public void onOpened(GuiManual gui, int x, int y, List<Button> buttons)
 	{
-		EntityPlayer player = ManualUtils.mc().player;
+		PlayerEntity player = ManualUtils.mc().player;
 		String username = player.getName();
 		unlocked = ShaderRegistry.receivedShaders.get(username).contains(shader.getName());
 
 		shaderItem = new ItemStack(ShaderRegistry.itemShader);
-		shaderItem.setTagCompound(new NBTTagCompound());
+		shaderItem.setTagCompound(new CompoundNBT());
 		shaderItem.getTagCompound().setString("shader_name", shader.getName());
 		replicationCost = shader.replicationCost;
 
@@ -160,12 +160,12 @@ public class ManualPageShader extends SpecialManualElement
 	}
 
 	@Override
-	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, GuiButton button)
+	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, Button button)
 	{
 	}
 
 	@Override
-	public void buttonPressed(GuiManual gui, GuiButton button)
+	public void buttonPressed(GuiManual gui, Button button)
 	{
 		if(button.id==100)
 		{

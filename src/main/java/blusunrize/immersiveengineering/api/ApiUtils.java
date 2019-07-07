@@ -23,23 +23,24 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.util.concurrent.ListenableFutureTask;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.IntNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
@@ -290,7 +291,7 @@ public class ApiUtils
 		return null;
 	}
 
-	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
+	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side)
 	{
 		if(!stack.isEmpty()&&inventory!=null&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
@@ -301,7 +302,7 @@ public class ApiUtils
 		return false;
 	}
 
-	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
+	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side)
 	{
 		if(!stack.isEmpty()&&inventory!=null&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
@@ -313,7 +314,7 @@ public class ApiUtils
 		return stack;
 	}
 
-	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side, boolean simulate)
+	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side, boolean simulate)
 	{
 		if(inventory!=null&&!stack.isEmpty()&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
 		{
@@ -624,10 +625,10 @@ public class ApiUtils
 		return false;
 	}
 
-	public static WireType getWireTypeFromNBT(NBTTagCompound tag, String key)
+	public static WireType getWireTypeFromNBT(CompoundNBT tag, String key)
 	{
 		//Legacy code for old save data, where types used to be integers
-		if(tag.getTag(key) instanceof NBTTagInt)
+		if(tag.getTag(key) instanceof IntNBT)
 		{
 			int i = tag.getInt(key);
 			return i==1?WireType.ELECTRUM: i==2?WireType.STEEL: i==3?WireType.STRUCTURE_ROPE: i==4?WireType.STRUCTURE_STEEL: WireType.COPPER;
@@ -636,7 +637,7 @@ public class ApiUtils
 			return WireType.getValue(tag.getString(key));
 	}
 
-	public static EnumActionResult doCoilUse(IWireCoil coil, EntityPlayer player, World world, BlockPos pos, ItemStack hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public static ActionResultType doCoilUse(IWireCoil coil, PlayerEntity player, World world, BlockPos pos, ItemStack hand, Direction side, float hitX, float hitY, float hitZ)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity instanceof IImmersiveConnectable&&((IImmersiveConnectable)tileEntity).canConnect())
@@ -648,7 +649,7 @@ public class ApiUtils
 			Vec3i offsetHere = pos.subtract(masterPos);
 			tileEntity = world.getTileEntity(masterPos);
 			if(!(tileEntity instanceof IImmersiveConnectable)||!((IImmersiveConnectable)tileEntity).canConnect())
-				return EnumActionResult.PASS;
+				return ActionResultType.PASS;
 			IImmersiveConnectable iicHere = (IImmersiveConnectable)tileEntity;
 			ConnectionPoint cpHere = iicHere.getTargetedPoint(targetHere, offsetHere);
 
@@ -656,8 +657,8 @@ public class ApiUtils
 					!coil.canConnectCable(stack, tileEntity))
 			{
 				if(!world.isRemote)
-					player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongCable"), true);
-				return EnumActionResult.FAIL;
+					player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongCable"), true);
+				return ActionResultType.FAIL;
 			}
 
 			if(!world.isRemote)
@@ -665,7 +666,7 @@ public class ApiUtils
 				{
 					ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(), masterPos.getX(), masterPos.getY(), masterPos.getZ(),
 							offsetHere.getX(), offsetHere.getY(), offsetHere.getZ()});
-					NBTTagCompound targetNbt = new NBTTagCompound();
+					CompoundNBT targetNbt = new CompoundNBT();
 					targetHere.writeToNBT(targetNbt);
 					ItemNBTHelper.setTagCompound(stack, "targettingInfo", targetNbt);
 				}
@@ -681,17 +682,17 @@ public class ApiUtils
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
 					if(array[0]!=world.provider.getDimension())
-						player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"wrongDimension"), true);
+						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongDimension"), true);
 					else if(linkPos.equals(masterPos))
-						player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"sameConnection"), true);
+						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"sameConnection"), true);
 					else if(distanceSq > maxLengthSq)
-						player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"tooFar"), true);
+						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"tooFar"), true);
 					else
 					{
 						TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
 						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable))
 						{
-							player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"), true);
+							player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"invalidPoint"), true);
 						}
 						else
 						{
@@ -701,7 +702,7 @@ public class ApiUtils
 									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
 									!coil.canConnectCable(stack, tileEntityLinkingPos))
 							{
-								player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"invalidPoint"), true);
+								player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"invalidPoint"), true);
 							}
 							else
 							{
@@ -719,7 +720,7 @@ public class ApiUtils
 												connectionExists = true;
 								}
 								if(connectionExists)
-									player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"connectionExists"), true);
+									player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"connectionExists"), true);
 								else
 								{
 									Set<BlockPos> ignore = new HashSet<>();
@@ -732,7 +733,7 @@ public class ApiUtils
 									boolean canSee = ApiUtils.raytraceAlongCatenaryRelative(tempConn, (p) -> {
 										if(ignore.contains(p.getLeft()))
 											return false;
-										IBlockState state = world.getBlockState(p.getLeft());
+										BlockState state = world.getBlockState(p.getLeft());
 										if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
 										{
 											failedReason.setPos(p.getLeft());
@@ -755,7 +756,7 @@ public class ApiUtils
 											coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
 										((TileEntity)iicHere).markDirty();
 										world.addBlockEvent(masterPos, ((TileEntity)iicHere).getBlockState(), -1, 0);
-										IBlockState state = world.getBlockState(masterPos);
+										BlockState state = world.getBlockState(masterPos);
 										world.notifyBlockUpdate(masterPos, state, state, 3);
 										((TileEntity)iicLink).markDirty();
 										world.addBlockEvent(linkPos, ((TileEntity)iicLink).getBlockState(), -1, 0);
@@ -764,7 +765,7 @@ public class ApiUtils
 									}
 									else
 									{
-										player.sendStatusMessage(new TextComponentTranslation(Lib.CHAT_WARN+"cantSee"), true);
+										player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"cantSee"), true);
 										ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(tempConn, failedReason, player.world),
 												new NetworkRegistry.TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
 														64));
@@ -776,9 +777,9 @@ public class ApiUtils
 					ItemNBTHelper.remove(stack, "linkingPos");
 					ItemNBTHelper.remove(stack, "targettingInfo");
 				}
-			return EnumActionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		}
-		return EnumActionResult.PASS;
+		return ActionResultType.PASS;
 	}
 
 	public static Object convertToValidRecipeInput(Object input)
@@ -886,11 +887,11 @@ public class ApiUtils
 		return ItemStack.EMPTY;
 	}
 
-	public static boolean hasPlayerIngredient(EntityPlayer player, IngredientStack ingredient)
+	public static boolean hasPlayerIngredient(PlayerEntity player, IngredientStack ingredient)
 	{
 		int amount = ingredient.inputSize;
 		ItemStack itemstack;
-		for(EnumHand hand : EnumHand.values())
+		for(Hand hand : Hand.values())
 		{
 			itemstack = player.getHeldItem(hand);
 			if(ingredient.matchesItemStackIgnoringSize(itemstack))
@@ -913,11 +914,11 @@ public class ApiUtils
 		return amount <= 0;
 	}
 
-	public static void consumePlayerIngredient(EntityPlayer player, IngredientStack ingredient)
+	public static void consumePlayerIngredient(PlayerEntity player, IngredientStack ingredient)
 	{
 		int amount = ingredient.inputSize;
 		ItemStack itemstack;
-		for(EnumHand hand : EnumHand.values())
+		for(Hand hand : Hand.values())
 		{
 			itemstack = player.getHeldItem(hand);
 			if(ingredient.matchesItemStackIgnoringSize(itemstack))
@@ -960,7 +961,7 @@ public class ApiUtils
 			EventHandler.REMOVE_FROM_TICKING.add(te);
 	}
 
-	public static boolean preventsConnection(World worldIn, BlockPos pos, IBlockState state, Vec3d a, Vec3d b)
+	public static boolean preventsConnection(World worldIn, BlockPos pos, BlockState state, Vec3d a, Vec3d b)
 	{
 		if(state.getBlock().canCollideCheck(state, false))
 		{
@@ -975,13 +976,13 @@ public class ApiUtils
 			}
 			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a.add(pos.getX(), pos.getY(), pos.getZ()),
 					b.add(pos.getX(), pos.getY(), pos.getZ()));
-			return rayResult!=null&&rayResult.type==RayTraceResult.Type.BLOCK;
+			return rayResult!=null&&rayResult.type==Type.BLOCK;
 		}
 		return false;
 	}
 
 	//Based on net.minecraft.entity.EntityLivingBase.knockBack
-	public static void knockbackNoSource(EntityLivingBase entity, double strength, double xRatio, double zRatio)
+	public static void knockbackNoSource(LivingEntity entity, double strength, double xRatio, double zRatio)
 	{
 		entity.isAirBorne = true;
 		float factor = MathHelper.sqrt(xRatio*xRatio+zRatio*zRatio);
@@ -1148,7 +1149,7 @@ public class ApiUtils
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static TextureAtlasSprite getRegisterSprite(TextureMap map, String path)
+	public static TextureAtlasSprite getRegisterSprite(AtlasTexture map, String path)
 	{
 		TextureAtlasSprite sprite = map.getTextureExtry(path);
 		if(sprite==null)
@@ -1160,7 +1161,7 @@ public class ApiUtils
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static TextureAtlasSprite getRegisterSprite(TextureMap map, ResourceLocation path)
+	public static TextureAtlasSprite getRegisterSprite(AtlasTexture map, ResourceLocation path)
 	{
 		TextureAtlasSprite sprite = map.getTextureExtry(path.toString());
 		if(sprite==null)
@@ -1244,10 +1245,10 @@ public class ApiUtils
 				}
 
 				@Override
-				public void setQuadOrientation(@Nonnull EnumFacing orientation)
+				public void setQuadOrientation(@Nonnull Direction orientation)
 				{
 					Vec3d newFront = normalTransform.apply(new Vec3d(orientation.getDirectionVec()));
-					EnumFacing newOrientation = EnumFacing.getFacingFromVector((float)newFront.x, (float)newFront.y,
+					Direction newOrientation = Direction.getFacingFromVector((float)newFront.x, (float)newFront.y,
 							(float)newFront.z);
 					currentQuadBuilder.setQuadOrientation(newOrientation);
 				}

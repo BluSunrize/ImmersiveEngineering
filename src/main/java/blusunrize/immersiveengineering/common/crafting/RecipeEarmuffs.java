@@ -15,10 +15,10 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredIt
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -55,8 +55,8 @@ public class RecipeEarmuffs implements IRecipe
 			if(!stackInSlot.isEmpty())
 				if(earmuffs.isEmpty()&&IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					earmuffs = stackInSlot;
-				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ItemArmor&&
-						((ItemArmor)stackInSlot.getItem()).getEquipmentSlot()==EntityEquipmentSlot.HEAD&&
+				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ArmorItem&&
+						((ArmorItem)stackInSlot.getItem()).getEquipmentSlot()==EquipmentSlotType.HEAD&&
 						!IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
@@ -97,7 +97,7 @@ public class RecipeEarmuffs implements IRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = EntitySheep.getDyeRgb(Utils.getDye(stackInSlot));
+					float[] afloat = SheepEntity.getDyeRgb(Utils.getDye(stackInSlot));
 					int r = (int)(afloat[0]*255.0F);
 					int g = (int)(afloat[1]*255.0F);
 					int b = (int)(afloat[2]*255.0F);
@@ -107,8 +107,8 @@ public class RecipeEarmuffs implements IRecipe
 					colourArray[2] += b;
 					++totalColourSets;
 				}
-				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ItemArmor&&
-						((ItemArmor)stackInSlot.getItem()).getEquipmentSlot()==EntityEquipmentSlot.HEAD&&
+				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ArmorItem&&
+						((ArmorItem)stackInSlot.getItem()).getEquipmentSlot()==EquipmentSlotType.HEAD&&
 						!IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 		}

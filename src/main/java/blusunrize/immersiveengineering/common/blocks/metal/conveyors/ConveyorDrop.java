@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
-import net.minecraft.block.BlockTrapDoor;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.TrapDoorBlock;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -29,7 +29,7 @@ import net.minecraft.world.World;
 public class ConveyorDrop extends ConveyorBasic
 {
 	@Override
-	public void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ)
+	public void handleInsertion(TileEntity tile, ItemEntity entity, Direction facing, ConveyorDirection conDir, double distX, double distZ)
 	{
 		BlockPos posDown = tile.getPos().down();
 		TileEntity inventoryTile = tile.getWorld().getTileEntity(posDown);
@@ -42,7 +42,7 @@ public class ConveyorDrop extends ConveyorBasic
 				ItemStack stack = entity.getItem();
 				if(!stack.isEmpty())
 				{
-					ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.UP);
+					ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, Direction.UP);
 					if(ret.isEmpty())
 						entity.setDead();
 					else if(ret.getCount() < stack.getCount())
@@ -68,9 +68,9 @@ public class ConveyorDrop extends ConveyorBasic
 			return true;
 		if(tile instanceof IConveyorTile)
 			return true;
-		IBlockState state = world.getBlockState(pos);
-		if(state.getBlock() instanceof BlockTrapDoor)
-			return state.getValue(BlockTrapDoor.OPEN).booleanValue();
+		BlockState state = world.getBlockState(pos);
+		if(state.getBlock() instanceof TrapDoorBlock)
+			return state.getValue(TrapDoorBlock.OPEN).booleanValue();
 		return false;
 	}
 

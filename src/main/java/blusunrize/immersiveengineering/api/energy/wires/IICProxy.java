@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -113,15 +113,15 @@ public class IICProxy implements IImmersiveConnectable
 		return ImmutableList.of();//TODO do we need this to work properly? Test breakers in unloaded chunks!
 	}
 
-	public static IICProxy readFromNBT(NBTTagCompound nbt)
+	public static IICProxy readFromNBT(CompoundNBT nbt)
 	{
 		return new IICProxy(nbt.getInt("dim"),
 				NBTUtil.getPosFromTag(nbt.getCompound("pos")));
 	}
 
-	public NBTTagCompound writeToNBT()
+	public CompoundNBT writeToNBT()
 	{
-		NBTTagCompound ret = new NBTTagCompound();
+		CompoundNBT ret = new CompoundNBT();
 		ret.setInt("dim", dim);
 		ret.setTag("pos", NBTUtil.createPosTag(pos));
 		return ret;

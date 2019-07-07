@@ -14,17 +14,17 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
-public class EntityRenderChemthrowerShot extends Render<EntityChemthrowerShot>
+public class EntityRenderChemthrowerShot extends EntityRenderer<EntityChemthrowerShot>
 {
-	public EntityRenderChemthrowerShot(RenderManager renderManager)
+	public EntityRenderChemthrowerShot(EntityRendererManager renderManager)
 	{
 		super(renderManager);
 	}

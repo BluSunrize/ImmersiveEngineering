@@ -16,11 +16,11 @@ import de.ellpeck.actuallyadditions.api.farmer.FarmerResult;
 import de.ellpeck.actuallyadditions.api.farmer.IFarmerBehavior;
 import de.ellpeck.actuallyadditions.api.internal.IFarmer;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -109,9 +109,9 @@ public class ActuallyAdditionsHelper extends IECompatModule
 			int use = 250;
 			if(farmer.getEnergy() >= use)
 			{
-				IBlockState state = world.getBlockState(pos);
+				BlockState state = world.getBlockState(pos);
 				BlockPos up = pos.up();
-				IBlockState stateUp = world.getBlockState(up);
+				BlockState stateUp = world.getBlockState(up);
 				if(IEContent.blockCrop==state.getBlock()&&state.getBlock().getMetaFromState(state)==4&&stateUp.getBlock()==IEContent.blockCrop)//Fully Grown
 				{
 					NonNullList<ItemStack> drops = NonNullList.create();

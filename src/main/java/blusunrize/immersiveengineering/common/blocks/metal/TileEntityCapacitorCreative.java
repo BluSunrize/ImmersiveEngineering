@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 {
@@ -27,7 +27,7 @@ public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 	}
 
 	@Override
-	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
+	public int receiveEnergy(Direction from, int maxReceive, boolean simulate)
 	{
 		if(world.isRemote||from.ordinal() >= sideConfig.length||sideConfig[from.ordinal()]!=SideConfig.INPUT)
 			return 0;
@@ -35,7 +35,7 @@ public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 	}
 
 	@Override
-	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
+	public int extractEnergy(Direction from, int maxExtract, boolean simulate)
 	{
 		if(world.isRemote||from.ordinal() >= sideConfig.length||sideConfig[from.ordinal()]!=SideConfig.OUTPUT)
 			return 0;
@@ -43,23 +43,23 @@ public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 	}
 
 	@Override
-	public int getEnergyStored(EnumFacing from)
+	public int getEnergyStored(Direction from)
 	{
 		return Integer.MAX_VALUE;
 	}
 
 	@Override
-	public int getMaxEnergyStored(EnumFacing from)
+	public int getMaxEnergyStored(Direction from)
 	{
 		return Integer.MAX_VALUE;
 	}
 
 	@Override
-	protected void transferEnergy(EnumFacing side)
+	protected void transferEnergy(Direction side)
 	{
 		if(sideConfig[side]!=SideConfig.OUTPUT)
 			return;
-		EnumFacing to = EnumFacing.byIndex(side);
+		Direction to = Direction.byIndex(side);
 		TileEntity te = Utils.getExistingTileEntity(world, pos.offset(to));
 		EnergyHelper.insertFlux(te, to.getOpposite(), Integer.MAX_VALUE, false);
 	}

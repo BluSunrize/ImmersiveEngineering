@@ -20,10 +20,10 @@ import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -66,7 +66,7 @@ public class CommonProxy
 	{
 	}
 
-	public void addFailedConnection(Connection connection, BlockPos reason, EntityPlayer player)
+	public void addFailedConnection(Connection connection, BlockPos reason, PlayerEntity player)
 	{
 	}
 
@@ -119,7 +119,7 @@ public class CommonProxy
 		return false;
 	}
 
-	public boolean drawConveyorInGui(String conveyor, EnumFacing facing)
+	public boolean drawConveyorInGui(String conveyor, Direction facing)
 	{
 		return false;
 	}
@@ -138,7 +138,7 @@ public class CommonProxy
 		return null;
 	}
 
-	public EntityPlayer getClientPlayer()
+	public PlayerEntity getClientPlayer()
 	{
 		return null;
 	}

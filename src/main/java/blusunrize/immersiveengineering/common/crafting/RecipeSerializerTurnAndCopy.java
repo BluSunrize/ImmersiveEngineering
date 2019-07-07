@@ -15,7 +15,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.RecipeSerializers;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -31,24 +31,24 @@ public class RecipeSerializerTurnAndCopy implements IRecipeSerializer<RecipeTurn
 		ShapedRecipe basic = RecipeSerializers.CRAFTING_SHAPED.read(recipeId, json);
 		RecipeTurnAndCopy recipe = new RecipeTurnAndCopy(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
 				basic.getIngredients(), basic.getRecipeOutput());
-		if(JsonUtils.getBoolean(json, "quarter_turn", false))
+		if(JSONUtils.getBoolean(json, "quarter_turn", false))
 			recipe.allowQuarterTurn();
-		if(JsonUtils.getBoolean(json, "eighth_turn", false))
+		if(JSONUtils.getBoolean(json, "eighth_turn", false))
 			recipe.allowEighthTurn();
-		if(JsonUtils.hasField(json, "copy_nbt"))
+		if(JSONUtils.hasField(json, "copy_nbt"))
 		{
-			if(JsonUtils.isJsonArray(json, "copy_nbt"))
+			if(JSONUtils.isJsonArray(json, "copy_nbt"))
 			{
-				JsonArray jArray = JsonUtils.getJsonArray(json, "copy_nbt");
+				JsonArray jArray = JSONUtils.getJsonArray(json, "copy_nbt");
 				int[] array = new int[jArray.size()];
 				for(int i = 0; i < array.length; i++)
 					array[i] = jArray.get(i).getAsInt();
 				recipe.setNBTCopyTargetRecipe(array);
 			}
 			else
-				recipe.setNBTCopyTargetRecipe(JsonUtils.getInt(json, "copy_nbt"));
-			if(JsonUtils.hasField(json, "copy_nbt_predicate"))
-				recipe.setNBTCopyPredicate(JsonUtils.getString(json, "copy_nbt_predicate"));
+				recipe.setNBTCopyTargetRecipe(JSONUtils.getInt(json, "copy_nbt"));
+			if(JSONUtils.hasField(json, "copy_nbt_predicate"))
+				recipe.setNBTCopyPredicate(JSONUtils.getString(json, "copy_nbt_predicate"));
 		}
 		return recipe;
 	}

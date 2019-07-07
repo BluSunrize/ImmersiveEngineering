@@ -17,11 +17,11 @@ import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMu
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -49,7 +49,7 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		tanks[0].readFromNBT(nbt.getCompound("tank0"));
@@ -60,12 +60,12 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setTag("tank0", tanks[0].writeToNBT(new NBTTagCompound()));
-		nbt.setTag("tank1", tanks[1].writeToNBT(new NBTTagCompound()));
-		nbt.setTag("tank2", tanks[2].writeToNBT(new NBTTagCompound()));
+		nbt.setTag("tank0", tanks[0].writeToNBT(new CompoundNBT()));
+		nbt.setTag("tank1", tanks[1].writeToNBT(new CompoundNBT()));
+		nbt.setTag("tank2", tanks[2].writeToNBT(new CompoundNBT()));
 		if(!descPacket)
 			nbt.setTag("inventory", Utils.writeInventory(inventory));
 	}
@@ -172,7 +172,7 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 		if(posInMultiblock==0||posInMultiblock==1||posInMultiblock==3)
 			return new float[]{0, 0, 0, 1, .5f, 1};
 		if(posInMultiblock==19)
-			return new float[]{facing==EnumFacing.WEST?.5f: 0, 0, facing==EnumFacing.NORTH?.5f: 0, facing==EnumFacing.EAST?.5f: 1, 1, facing==EnumFacing.SOUTH?.5f: 1};
+			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
 		if(posInMultiblock==17)
 			return new float[]{.0625f, 0, .0625f, .9375f, 1, .9375f};
 
@@ -182,8 +182,8 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		EnumFacing fl = facing;
-		EnumFacing fw = facing.rotateY();
+		Direction fl = facing;
+		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
 		if(posInMultiblock==0||posInMultiblock==4||posInMultiblock==10||posInMultiblock==14)
@@ -194,24 +194,24 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 			if(posInMultiblock%10==0)
 				fw = fw.getOpposite();
 
-			float minX = fl==EnumFacing.WEST?0: fl==EnumFacing.EAST?.75f: fw==EnumFacing.WEST?.5f: .25f;
-			float maxX = fl==EnumFacing.EAST?1: fl==EnumFacing.WEST?.25f: fw==EnumFacing.EAST?.5f: .75f;
-			float minZ = fl==EnumFacing.NORTH?0: fl==EnumFacing.SOUTH?.75f: fw==EnumFacing.NORTH?.5f: .25f;
-			float maxZ = fl==EnumFacing.SOUTH?1: fl==EnumFacing.NORTH?.25f: fw==EnumFacing.SOUTH?.5f: .75f;
+			float minX = fl==Direction.WEST?0: fl==Direction.EAST?.75f: fw==Direction.WEST?.5f: .25f;
+			float maxX = fl==Direction.EAST?1: fl==Direction.WEST?.25f: fw==Direction.EAST?.5f: .75f;
+			float minZ = fl==Direction.NORTH?0: fl==Direction.SOUTH?.75f: fw==Direction.NORTH?.5f: .25f;
+			float maxZ = fl==Direction.SOUTH?1: fl==Direction.NORTH?.25f: fw==Direction.SOUTH?.5f: .75f;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1.375f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 			if(posInMultiblock==4)
 			{
-				minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .125f;
-				maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .25f;
-				minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .125f;
-				maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .25f;
+				minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
+				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .25f;
+				minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .125f;
+				maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .25f;
 				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
-				minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .75f;
-				maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .875f;
-				minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .75f;
-				maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .875f;
+				minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .75f;
+				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .875f;
+				minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .75f;
+				maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .875f;
 				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			}
 
@@ -225,10 +225,10 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 			if(posInMultiblock%10==1)
 				fw = fw.getOpposite();
 
-			float minX = fl==EnumFacing.WEST?0: fl==EnumFacing.EAST?.75f: fw==EnumFacing.WEST?.75f: 0;
-			float maxX = fl==EnumFacing.EAST?1: fl==EnumFacing.WEST?.25f: fw==EnumFacing.EAST?.25f: 1;
-			float minZ = fl==EnumFacing.NORTH?0: fl==EnumFacing.SOUTH?.75f: fw==EnumFacing.NORTH?.75f: 0;
-			float maxZ = fl==EnumFacing.SOUTH?1: fl==EnumFacing.NORTH?.25f: fw==EnumFacing.SOUTH?.25f: 1;
+			float minX = fl==Direction.WEST?0: fl==Direction.EAST?.75f: fw==Direction.WEST?.75f: 0;
+			float maxX = fl==Direction.EAST?1: fl==Direction.WEST?.25f: fw==Direction.EAST?.25f: 1;
+			float minZ = fl==Direction.NORTH?0: fl==Direction.SOUTH?.75f: fw==Direction.NORTH?.75f: 0;
+			float maxZ = fl==Direction.SOUTH?1: fl==Direction.NORTH?.25f: fw==Direction.SOUTH?.25f: 1;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1.375f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
@@ -238,18 +238,18 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 			List<AxisAlignedBB> list = Lists.newArrayList();
 			if(posInMultiblock%5==4)
 				fw = fw.getOpposite();
-			float minX = fl==EnumFacing.WEST?-.25f: fl==EnumFacing.EAST?-.25f: fw==EnumFacing.WEST?-1f: .5f;
-			float maxX = fl==EnumFacing.EAST?1.25f: fl==EnumFacing.WEST?1.25f: fw==EnumFacing.EAST?2: .5f;
-			float minZ = fl==EnumFacing.NORTH?-.25f: fl==EnumFacing.SOUTH?-.25f: fw==EnumFacing.NORTH?-1f: .5f;
-			float maxZ = fl==EnumFacing.SOUTH?1.25f: fl==EnumFacing.NORTH?1.25f: fw==EnumFacing.SOUTH?2: .5f;
+			float minX = fl==Direction.WEST?-.25f: fl==Direction.EAST?-.25f: fw==Direction.WEST?-1f: .5f;
+			float maxX = fl==Direction.EAST?1.25f: fl==Direction.WEST?1.25f: fw==Direction.EAST?2: .5f;
+			float minZ = fl==Direction.NORTH?-.25f: fl==Direction.SOUTH?-.25f: fw==Direction.NORTH?-1f: .5f;
+			float maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?1.25f: fw==Direction.SOUTH?2: .5f;
 			float minY = posInMultiblock < 35?.5f: -.5f;
 			float maxY = posInMultiblock < 35?2f: 1f;
 			if(posInMultiblock%15 >= 10)
 			{
-				minX += fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0;
-				maxX += fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0;
-				minZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
-				maxZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
+				minX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
+				maxX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
+				minZ += fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0;
+				maxZ += fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0;
 			}
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
@@ -259,18 +259,18 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 			List<AxisAlignedBB> list = Lists.newArrayList();
 			if(posInMultiblock%5==3)
 				fw = fw.getOpposite();
-			float minX = fl==EnumFacing.WEST?-.25f: fl==EnumFacing.EAST?-.25f: fw==EnumFacing.WEST?0f: -.5f;
-			float maxX = fl==EnumFacing.EAST?1.25f: fl==EnumFacing.WEST?1.25f: fw==EnumFacing.EAST?1f: 1.5f;
-			float minZ = fl==EnumFacing.NORTH?-.25f: fl==EnumFacing.SOUTH?-.25f: fw==EnumFacing.NORTH?0: -.5f;
-			float maxZ = fl==EnumFacing.SOUTH?1.25f: fl==EnumFacing.NORTH?1.25f: fw==EnumFacing.SOUTH?1f: 1.5f;
+			float minX = fl==Direction.WEST?-.25f: fl==Direction.EAST?-.25f: fw==Direction.WEST?0f: -.5f;
+			float maxX = fl==Direction.EAST?1.25f: fl==Direction.WEST?1.25f: fw==Direction.EAST?1f: 1.5f;
+			float minZ = fl==Direction.NORTH?-.25f: fl==Direction.SOUTH?-.25f: fw==Direction.NORTH?0: -.5f;
+			float maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?1.25f: fw==Direction.SOUTH?1f: 1.5f;
 			float minY = posInMultiblock < 35?.5f: -.5f;
 			float maxY = posInMultiblock < 35?2f: 1f;
 			if(posInMultiblock%15 >= 10)
 			{
-				minX += fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0;
-				maxX += fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0;
-				minZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
-				maxZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
+				minX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
+				maxX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
+				minZ += fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0;
+				maxZ += fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0;
 			}
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
@@ -279,7 +279,7 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 	}
 
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
@@ -386,7 +386,7 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		TileEntityRefinery master = this.master();
 		if(master!=null)
@@ -400,7 +400,7 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
 		if((posInMultiblock==5||posInMultiblock==9)&&(side==null||side.getAxis()==facing.rotateYCCW().getAxis()))
 		{
@@ -422,7 +422,7 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return posInMultiblock==2&&(side==null||side==facing.getOpposite());
 	}
@@ -441,13 +441,13 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 	}
 
 	@Override
-	protected RefineryRecipe readRecipeFromNBT(NBTTagCompound tag)
+	protected RefineryRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
 		return RefineryRecipe.loadFromNBT(tag);
 	}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		return formed;
 	}

@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.LogicalSide;
@@ -72,7 +72,7 @@ public class MessageShaderManual implements IMessage
 		Context ctx = context.get();
 		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
 		{
-			EntityPlayerMP player = ctx.getSender();
+			ServerPlayerEntity player = ctx.getSender();
 			assert player!=null;
 			String playerName = player.getScoreboardName();
 			player.getServerWorld().addScheduledTask(() -> {
@@ -93,7 +93,7 @@ public class MessageShaderManual implements IMessage
 						ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(playerName).replicationCost);
 					ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
 					ItemNBTHelper.setString(shaderStack, "shader_name", args[0]);
-					EntityItem entityitem = player.dropItem(shaderStack, false);
+					ItemEntity entityitem = player.dropItem(shaderStack, false);
 					if(entityitem!=null)
 					{
 						entityitem.setNoPickupDelay();
@@ -106,7 +106,7 @@ public class MessageShaderManual implements IMessage
 			Minecraft.getInstance().addScheduledTask(() -> {
 				if(key==MessageType.SYNC)
 				{
-					EntityPlayer player = ImmersiveEngineering.proxy.getClientPlayer();
+					PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 					if(player!=null)
 					{
 						String name = player.getScoreboardName();

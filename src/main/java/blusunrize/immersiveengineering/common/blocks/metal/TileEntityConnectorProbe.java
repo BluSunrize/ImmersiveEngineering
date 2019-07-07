@@ -11,15 +11,15 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -34,7 +34,7 @@ import java.util.List;
 
 public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 {
-	private EnumDyeColor redstoneChannelSending = EnumDyeColor.WHITE;
+	private DyeColor redstoneChannelSending = DyeColor.WHITE;
 	private int lastOutput = 0;
 
 	@Override
@@ -67,7 +67,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	private int getComparatorSignal()
 	{
 		BlockPos pos = this.getPos().offset(facing);
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		if(state.hasComparatorInputOverride())
 			return state.getComparatorInputOverride(world, pos);
 		else if(state.isNormalCube())
@@ -78,7 +78,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 				return state.getComparatorInputOverride(world, pos);
 			else if(state.getMaterial()==Material.AIR)
 			{
-				EntityItemFrame entityitemframe = this.findItemFrame(world, facing, pos);
+				ItemFrameEntity entityitemframe = this.findItemFrame(world, facing, pos);
 				if(entityitemframe!=null)
 					return entityitemframe.getAnalogOutput();
 			}
@@ -86,9 +86,9 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 		return 0;
 	}
 
-	private EntityItemFrame findItemFrame(World world, final EnumFacing facing, BlockPos pos)
+	private ItemFrameEntity findItemFrame(World world, final Direction facing, BlockPos pos)
 	{
-		List<EntityItemFrame> list = world.getEntitiesWithinAABB(EntityItemFrame.class, new AxisAlignedBB(pos), entity -> entity!=null&&entity.getHorizontalFacing()==facing);
+		List<ItemFrameEntity> list = world.getEntitiesWithinAABB(ItemFrameEntity.class, new AxisAlignedBB(pos), entity -> entity!=null&&entity.getHorizontalFacing()==facing);
 		return list.size()==1?list.get(0): null;
 	}
 
@@ -101,12 +101,12 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	//}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking())
-			redstoneChannel = EnumDyeColor.byId(redstoneChannel.getId()+1);
+			redstoneChannel = DyeColor.byId(redstoneChannel.getId()+1);
 		else
-			redstoneChannelSending = EnumDyeColor.byId(redstoneChannelSending.getId()+1);
+			redstoneChannelSending = DyeColor.byId(redstoneChannelSending.getId()+1);
 		markDirty();
 		//TODO wireNetwork.updateValues();
 		//TODO onChange();
@@ -116,23 +116,23 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInt("redstoneChannelSending", redstoneChannelSending.getId());
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		redstoneChannelSending = EnumDyeColor.byId(nbt.getInt("redstoneChannelSending"));
+		redstoneChannelSending = DyeColor.byId(nbt.getInt("redstoneChannelSending"));
 	}
 
 	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		EnumFacing side = facing.getOpposite();
+		Direction side = facing.getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5+side.getXOffset()*(.375-conRadius), .5+side.getYOffset()*(.375-conRadius), .5+side.getZOffset()*(.375-conRadius));
 	}
@@ -159,7 +159,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean shouldRenderGroup(IBlockState object, String group)
+	public boolean shouldRenderGroup(BlockState object, String group)
 	{
 		if("glass".equals(group))
 			return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.TRANSLUCENT;
@@ -168,7 +168,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public int getRenderColour(IBlockState object, String group)
+	public int getRenderColour(BlockState object, String group)
 	{
 		if("colour_in".equals(group))
 			return 0xff000000|redstoneChannel.colorValue;
@@ -178,13 +178,13 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	}
 
 	@Override
-	public String getCacheKey(IBlockState object)
+	public String getCacheKey(BlockState object)
 	{
 		return redstoneChannel+";"+redstoneChannelSending;
 	}
 
 	@Override
-	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
+	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
 		if(!hammer)
 			return null;
@@ -195,7 +195,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone
 	}
 
 	@Override
-	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
+	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
 	{
 		return false;
 	}

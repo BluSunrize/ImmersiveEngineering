@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import com.google.common.collect.ArrayListMultimap;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -37,21 +37,21 @@ public class ShaderRegistry
 	/**
 	 * A map of EnumRarities to weight for grab bag distribution
 	 */
-	public static HashMap<EnumRarity, Integer> rarityWeightMap = new HashMap<>();
+	public static HashMap<Rarity, Integer> rarityWeightMap = new HashMap<>();
 
 	static
 	{
-		rarityWeightMap.put(EnumRarity.COMMON, 9);
-		rarityWeightMap.put(EnumRarity.UNCOMMON, 7);
-		rarityWeightMap.put(EnumRarity.RARE, 5);
-		rarityWeightMap.put(EnumRarity.EPIC, 3);
+		rarityWeightMap.put(Rarity.COMMON, 9);
+		rarityWeightMap.put(Rarity.UNCOMMON, 7);
+		rarityWeightMap.put(Rarity.RARE, 5);
+		rarityWeightMap.put(Rarity.EPIC, 3);
 		rarityWeightMap.put(Lib.RARITY_Masterwork, 1);
 	}
 
 	/**
 	 * A list of EnumRarities sorted by their weight
 	 */
-	public static ArrayList<EnumRarity> sortedRarityMap = new ArrayList<>();
+	public static ArrayList<Rarity> sortedRarityMap = new ArrayList<>();
 
 
 	/**
@@ -61,11 +61,11 @@ public class ShaderRegistry
 	/**
 	 * The map of EnumRarities to the total weight of all shaders of that rarity or rarer
 	 */
-	public static HashMap<EnumRarity, Integer> totalWeight = new HashMap<>();
+	public static HashMap<Rarity, Integer> totalWeight = new HashMap<>();
 	/**
 	 * The total weight in relation to the player. This takes into account shaders the player has gotten, which then result in less weight
 	 */
-	public static HashMap<UUID, HashMap<EnumRarity, Integer>> playerTotalWeight = new HashMap<>();
+	public static HashMap<UUID, HashMap<Rarity, Integer>> playerTotalWeight = new HashMap<>();
 	/**
 	 * The deafault cost for replicating a shader. Prices are multiplied with 10-rarity level. Prices can be adjusted for every registry entry
 	 */
@@ -82,7 +82,7 @@ public class ShaderRegistry
 		return null;
 	}
 
-	public static ShaderRegistryEntry registerShader(String name, String overlayType, EnumRarity rarity, int colourPrimary, int colourSecondary, int colourBackground, int colourBlade, String additionalTexture, int colourAdditional, boolean loot, boolean bags)
+	public static ShaderRegistryEntry registerShader(String name, String overlayType, Rarity rarity, int colourPrimary, int colourSecondary, int colourBackground, int colourBlade, String additionalTexture, int colourAdditional, boolean loot, boolean bags)
 	{
 		registerShader_Item(name, rarity, colourBackground, colourPrimary, colourSecondary);
 		registerShader_Revolver(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture, colourAdditional);
@@ -98,7 +98,7 @@ public class ShaderRegistry
 		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags).setReplicationCost(defaultReplicationCost.copyWithMultipliedSize(10-rarityWeightMap.get(rarity)));
 	}
 
-	public static <T extends ShaderCase> T registerShaderCase(String name, T shader, EnumRarity rarity)
+	public static <T extends ShaderCase> T registerShaderCase(String name, T shader, Rarity rarity)
 	{
 		if(!shaderRegistry.containsKey(name))
 			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
@@ -118,7 +118,7 @@ public class ShaderRegistry
 	 * @param colour2 design colour
 	 * @return the registered ShaderCase
 	 */
-	public static ShaderCaseItem registerShader_Item(String name, EnumRarity rarity, int colour0, int colour1, int colour2)
+	public static ShaderCaseItem registerShader_Item(String name, Rarity rarity, int colour0, int colour1, int colour2)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shader_0"), colour0));
@@ -142,7 +142,7 @@ public class ShaderRegistry
 	 * @param colourAddtional   colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
-	public static ShaderCaseRevolver registerShader_Revolver(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, int colourBlade, String additionalTexture, int colourAddtional)
+	public static ShaderCaseRevolver registerShader_Revolver(String name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, int colourBlade, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_grip"), colour0));
@@ -172,7 +172,7 @@ public class ShaderRegistry
 	 * @param colourAddtional   colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
-	public static ShaderCaseChemthrower registerShader_Chemthrower(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
+	public static ShaderCaseChemthrower registerShader_Chemthrower(String name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_0"), colour0));
@@ -202,7 +202,7 @@ public class ShaderRegistry
 	 * @param colourAddtional   colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
-	public static ShaderCaseDrill registerShader_Drill(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
+	public static ShaderCaseDrill registerShader_Drill(String name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_0"), colour0));
@@ -232,7 +232,7 @@ public class ShaderRegistry
 	 * @param colourAddtional   colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
-	public static ShaderCaseRailgun registerShader_Railgun(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
+	public static ShaderCaseRailgun registerShader_Railgun(String name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_0"), colour0));
@@ -261,7 +261,7 @@ public class ShaderRegistry
 	 * @param colourAddtional   colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
-	public static ShaderCaseShield registerShader_Shield(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
+	public static ShaderCaseShield registerShader_Shield(String name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_0"), colour0));
@@ -289,7 +289,7 @@ public class ShaderRegistry
 	 * @param colourAddtional   colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
-	public static ShaderCaseMinecart registerShader_Minecart(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
+	public static ShaderCaseMinecart registerShader_Minecart(String name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
 		//Minecart textures need .png behind them, since they are used for direct binding, not stitching >_>
@@ -330,7 +330,7 @@ public class ShaderRegistry
 	 * @param colourAddtional   colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
-	public static ShaderCaseBalloon registerShader_Balloon(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
+	public static ShaderCaseBalloon registerShader_Balloon(String name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_0"), colour0));
@@ -358,7 +358,7 @@ public class ShaderRegistry
 	 * @param colourAddtional   colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
-	public static ShaderCaseBanner registerShader_Banner(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
+	public static ShaderCaseBanner registerShader_Banner(String name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_0"), colour0));
@@ -400,7 +400,7 @@ public class ShaderRegistry
 		 * @param colourAddtional   colour for the additional texture, if present
 		 * @return the registered ShaderCase
 		 */
-		T apply(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, int colour3, String additionalTexture, int colourAddtional);
+		T apply(String name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, int colour3, String additionalTexture, int colourAddtional);
 	}
 
 	public static Item itemShader;
@@ -419,7 +419,7 @@ public class ShaderRegistry
 			if(entry.getIsBagLoot())
 			{
 				int entryRarityWeight = rarityWeightMap.get(entry.getRarity());
-				for(Map.Entry<EnumRarity, Integer> weightedRarity : rarityWeightMap.entrySet())
+				for(Map.Entry<Rarity, Integer> weightedRarity : rarityWeightMap.entrySet())
 					if(entry.getIsInLowerBags()?(weightedRarity.getValue() >= entryRarityWeight): (weightedRarity.getValue()==entryRarityWeight))
 					{
 						int i = totalWeight.containsKey(weightedRarity.getKey())?totalWeight.get(weightedRarity.getKey()): 0;
@@ -434,10 +434,10 @@ public class ShaderRegistry
 
 		sortedRarityMap.clear();
 		sortedRarityMap.addAll(ShaderRegistry.rarityWeightMap.keySet());
-		Collections.sort(sortedRarityMap, new Comparator<EnumRarity>()
+		Collections.sort(sortedRarityMap, new Comparator<Rarity>()
 		{
 			@Override
-			public int compare(EnumRarity enum0, EnumRarity enum1)
+			public int compare(Rarity enum0, Rarity enum1)
 			{
 				return Integer.compare(ShaderRegistry.rarityWeightMap.get(enum0), ShaderRegistry.rarityWeightMap.get(enum1));
 			}
@@ -457,7 +457,7 @@ public class ShaderRegistry
 			if(entry.getIsBagLoot())
 			{
 				int entryRarityWeight = rarityWeightMap.get(entry.getRarity());
-				for(Map.Entry<EnumRarity, Integer> weightedRarity : rarityWeightMap.entrySet())
+				for(Map.Entry<Rarity, Integer> weightedRarity : rarityWeightMap.entrySet())
 					if(entry.getIsInLowerBags()?(weightedRarity.getValue() >= entryRarityWeight): (weightedRarity.getValue()==entryRarityWeight))
 					{
 						int weight = playerTotalWeight.get(player).containsKey(weightedRarity.getKey())?playerTotalWeight.get(player).get(weightedRarity.getKey()): 0;
@@ -469,7 +469,7 @@ public class ShaderRegistry
 			}
 	}
 
-	public static String getRandomShader(UUID player, Random rand, EnumRarity minRarity, boolean addToReceived)
+	public static String getRandomShader(UUID player, Random rand, Rarity minRarity, boolean addToReceived)
 	{
 		int total = 0;
 		if(!playerTotalWeight.containsKey(player))
@@ -505,7 +505,7 @@ public class ShaderRegistry
 		return shader;
 	}
 
-	public static EnumRarity getLowerRarity(EnumRarity rarity)
+	public static Rarity getLowerRarity(Rarity rarity)
 	{
 		int idx = sortedRarityMap.indexOf(rarity);
 		int weight = rarityWeightMap.get(rarity);
@@ -515,9 +515,9 @@ public class ShaderRegistry
 		return null;
 	}
 
-	public static ArrayList<EnumRarity> getAllLowerRarities(EnumRarity rarity)
+	public static ArrayList<Rarity> getAllLowerRarities(Rarity rarity)
 	{
-		ArrayList<EnumRarity> list = new ArrayList<>();
+		ArrayList<Rarity> list = new ArrayList<>();
 		int idx = sortedRarityMap.indexOf(rarity);
 		int weight = rarityWeightMap.get(rarity);
 		for(int next = idx+1; next < sortedRarityMap.size(); next++)
@@ -526,9 +526,9 @@ public class ShaderRegistry
 		return list;
 	}
 
-	public static ArrayList<EnumRarity> getHigherRarities(EnumRarity rarity)
+	public static ArrayList<Rarity> getHigherRarities(Rarity rarity)
 	{
-		ArrayList<EnumRarity> list = new ArrayList<>();
+		ArrayList<Rarity> list = new ArrayList<>();
 		int idx = sortedRarityMap.indexOf(rarity);
 		if(idx <= 0)
 			return list;
@@ -537,7 +537,7 @@ public class ShaderRegistry
 		int lowerWeight = -1;
 		for(; next >= 0; next--)
 		{
-			EnumRarity r = sortedRarityMap.get(next);
+			Rarity r = sortedRarityMap.get(next);
 			int rWeight = rarityWeightMap.get(r);
 			if(rWeight < weight&&(lowerWeight==-1||rWeight >= lowerWeight))
 			{
@@ -548,9 +548,9 @@ public class ShaderRegistry
 		return list;
 	}
 
-	public static ArrayList<EnumRarity> getAllHigherRarities(EnumRarity rarity)
+	public static ArrayList<Rarity> getAllHigherRarities(Rarity rarity)
 	{
-		ArrayList<EnumRarity> list = new ArrayList<>();
+		ArrayList<Rarity> list = new ArrayList<>();
 		int idx = sortedRarityMap.indexOf(rarity);
 		if(idx <= 0)
 			return list;
@@ -558,7 +558,7 @@ public class ShaderRegistry
 		int weight = rarityWeightMap.get(rarity);
 		for(; next >= 0; next--)
 		{
-			EnumRarity r = sortedRarityMap.get(next);
+			Rarity r = sortedRarityMap.get(next);
 			int rWeight = rarityWeightMap.get(r);
 			if(rWeight < weight)
 				list.add(r);
@@ -594,7 +594,7 @@ public class ShaderRegistry
 	{
 		public String name;
 		public HashMap<String, ShaderCase> cases = new HashMap<>();
-		public EnumRarity rarity;
+		public Rarity rarity;
 		public int weight;
 		public boolean isCrateLoot;
 		public boolean isBagLoot;
@@ -609,7 +609,7 @@ public class ShaderRegistry
 		private static final IShaderEffectFunction DEFAULT_EFFECT = (world, shader, item, shaderType, pos, dir, scale) -> {
 		};
 
-		public ShaderRegistryEntry(String name, EnumRarity rarity, List<ShaderCase> cases)
+		public ShaderRegistryEntry(String name, Rarity rarity, List<ShaderCase> cases)
 		{
 			this.name = name;
 			this.rarity = rarity;
@@ -618,7 +618,7 @@ public class ShaderRegistry
 				this.cases.put(sCase.getShaderType(), sCase);
 		}
 
-		public ShaderRegistryEntry(String name, EnumRarity rarity, ShaderCase... cases)
+		public ShaderRegistryEntry(String name, Rarity rarity, ShaderCase... cases)
 		{
 			this(name, rarity, Arrays.asList(cases));
 		}
@@ -649,7 +649,7 @@ public class ShaderRegistry
 			return this.name;
 		}
 
-		public EnumRarity getRarity()
+		public Rarity getRarity()
 		{
 			return this.rarity;
 		}

@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.gui.ContainerCokeOven;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class GuiCokeOven extends GuiIEContainerBase
 {
 	TileEntityCokeOven tile;
 
-	public GuiCokeOven(InventoryPlayer inventoryPlayer, TileEntityCokeOven tile)
+	public GuiCokeOven(PlayerInventory inventoryPlayer, TileEntityCokeOven tile)
 	{
 		super(new ContainerCokeOven(inventoryPlayer, tile));
 		this.tile = tile;

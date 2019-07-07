@@ -14,16 +14,16 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
 import blusunrize.immersiveengineering.common.gui.ContainerSorter;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class GuiSorter extends GuiIEContainerBase
 {
 	TileEntitySorter tile;
 
-	public GuiSorter(InventoryPlayer inventoryPlayer, TileEntitySorter tile)
+	public GuiSorter(PlayerInventory inventoryPlayer, TileEntitySorter tile)
 	{
 		super(new ContainerSorter(inventoryPlayer, tile));
 		this.tile = tile;
@@ -48,7 +48,7 @@ public class GuiSorter extends GuiIEContainerBase
 	public void render(int mx, int my, float partial)
 	{
 		super.render(mx, my, partial);
-		for(GuiButton button : this.buttons)
+		for(Button button : this.buttons)
 		{
 			if(button instanceof ButtonSorter)
 				if(mx > button.x&&mx < button.x+18&&my > button.y&&my < button.y+18)
@@ -57,7 +57,7 @@ public class GuiSorter extends GuiIEContainerBase
 					int type = ((ButtonSorter)button).type;
 					String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"oreDict": type==1?"nbt": "fuzzy")).split("<br>");
 					for(int i = 0; i < split.length; i++)
-						tooltip.add(new TextComponentString(split[i]).setStyle(new Style().setColor(i==0?TextFormatting.WHITE: TextFormatting.GRAY)));
+						tooltip.add(new StringTextComponent(split[i]).setStyle(new Style().setColor(i==0?TextFormatting.WHITE: TextFormatting.GRAY)));
 					ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
 					RenderHelper.enableGUIStandardItemLighting();
 				}
@@ -75,7 +75,7 @@ public class GuiSorter extends GuiIEContainerBase
 		{
 			int x = guiLeft+30+(side/2)*58;
 			int y = guiTop+44+(side%2)*76;
-			String s = I18n.format("desc.immersiveengineering.info.blockSide."+EnumFacing.byIndex(side).toString()).substring(0, 1);
+			String s = I18n.format("desc.immersiveengineering.info.blockSide."+Direction.byIndex(side).toString()).substring(0, 1);
 			GlStateManager.enableBlend();
 			ClientUtils.font().drawStringWithShadow(s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
 		}
@@ -102,7 +102,7 @@ public class GuiSorter extends GuiIEContainerBase
 						int mask = (1<<bit);
 						tile.sideFilter[side] = tile.sideFilter[side]^mask;
 
-						NBTTagCompound tag = new NBTTagCompound();
+						CompoundNBT tag = new CompoundNBT();
 						tag.setIntArray("sideConfig", tile.sideFilter);
 						ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 						initGui();
@@ -113,7 +113,7 @@ public class GuiSorter extends GuiIEContainerBase
 			}
 	}
 
-	public static class ButtonSorter extends GuiButton
+	public static class ButtonSorter extends Button
 	{
 		int type;
 		boolean active = false;

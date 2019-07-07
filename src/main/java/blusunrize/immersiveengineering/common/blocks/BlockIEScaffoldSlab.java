@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -33,7 +33,7 @@ public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> ext
 	}
 
 	@Override
-	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
+	public void addCollisionBoxToList(BlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityIESlab)
@@ -51,7 +51,7 @@ public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> ext
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
+	public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityIESlab)
@@ -69,10 +69,10 @@ public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> ext
 	}
 
 	@Override
-	public void onEntityCollision(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
+	public void onEntityCollision(World worldIn, BlockPos pos, BlockState state, Entity entityIn)
 	{
 		super.onEntityCollision(worldIn, pos, state, entityIn);
-		if(entityIn instanceof EntityLivingBase&&!((EntityLivingBase)entityIn).isOnLadder()&&isLadder(state, worldIn, pos, (EntityLivingBase)entityIn))
+		if(entityIn instanceof LivingEntity&&!((LivingEntity)entityIn).isOnLadder()&&isLadder(state, worldIn, pos, (LivingEntity)entityIn))
 		{
 			float f5 = 0.15F;
 			if(entityIn.motionX < -f5)
@@ -88,7 +88,7 @@ public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> ext
 			if(entityIn.motionY < -0.15D)
 				entityIn.motionY = -0.15D;
 
-			if(entityIn.motionY < 0&&entityIn instanceof EntityPlayer&&entityIn.isSneaking())
+			if(entityIn.motionY < 0&&entityIn instanceof PlayerEntity&&entityIn.isSneaking())
 			{
 				entityIn.motionY = 0;
 				return;
@@ -99,7 +99,7 @@ public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> ext
 	}
 
 	@Override
-	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
+	public boolean isLadder(BlockState state, IBlockAccess world, BlockPos pos, LivingEntity entity)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityIESlab&&((TileEntityIESlab)te).slabType==0)
@@ -108,7 +108,7 @@ public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> ext
 	}
 
 	@Override
-	public boolean allowHammerHarvest(IBlockState state)
+	public boolean allowHammerHarvest(BlockState state)
 	{
 		return true;
 	}

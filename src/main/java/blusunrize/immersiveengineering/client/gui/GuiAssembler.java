@@ -20,9 +20,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.*;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class GuiAssembler extends GuiIEContainerBase
 	static final String texture = "immersiveengineering:textures/gui/assembler.png";
 	public TileEntityAssembler tile;
 
-	public GuiAssembler(InventoryPlayer inventoryPlayer, TileEntityAssembler tile)
+	public GuiAssembler(PlayerInventory inventoryPlayer, TileEntityAssembler tile)
 	{
 		super(new ContainerAssembler(inventoryPlayer, tile));
 		this.tile = tile;
@@ -54,7 +54,7 @@ public class GuiAssembler extends GuiIEContainerBase
 				public void onClick(double mX, double mY)
 				{
 					super.onClick(mX, mY);
-					NBTTagCompound tag = new NBTTagCompound();
+					CompoundNBT tag = new CompoundNBT();
 					tag.setInt("buttonID", id);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 				}
@@ -78,7 +78,7 @@ public class GuiAssembler extends GuiIEContainerBase
 		super.render(mx, my, partial);
 		List<ITextComponent> tooltip = new ArrayList<>();
 		if(mx >= guiLeft+187&&mx < guiLeft+194&&my >= guiTop+12&&my < guiTop+59)
-			tooltip.add(new TextComponentString(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
 		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
 		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
@@ -95,9 +95,9 @@ public class GuiAssembler extends GuiIEContainerBase
 				}
 
 		if(((mx >= guiLeft+11&&mx < guiLeft+21)||(mx >= guiLeft+69&&mx < guiLeft+79)||(mx >= guiLeft+127&&mx < guiLeft+137))&&my > guiTop+67&&my < guiTop+77)
-			tooltip.add(new TextComponentTranslation(Lib.GUI_CONFIG+"assembler.clearRecipe"));
+			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"assembler.clearRecipe"));
 		if(mx >= guiLeft+162&&mx < guiLeft+178&&my > guiTop+69&&my < guiTop+85)
-			tooltip.add(new TextComponentTranslation(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients")));
+			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients")));
 
 		if(!tooltip.isEmpty())
 		{

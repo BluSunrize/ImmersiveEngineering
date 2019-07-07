@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_RandomTeleport;
 import blusunrize.immersiveengineering.common.util.IEPotions;
-import net.minecraft.init.MobEffects;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 
 public class FoundryHelper extends IECompatModule
 {
@@ -32,7 +32,7 @@ public class FoundryHelper extends IECompatModule
 	{
 		ChemthrowerHandler.registerEffect("liquidenderpearl", new ChemthrowerEffect_RandomTeleport(null, 0, .25f));
 		ChemthrowerHandler.registerEffect("liquidredstone", new ChemthrowerEffect_Potion(null, 0, IEPotions.conductive, 100, 1));
-		ChemthrowerHandler.registerEffect("liquidglowstone", new ChemthrowerEffect_Potion(null, 0, new PotionEffect(MobEffects.GLOWING, 200, 0), new PotionEffect(MobEffects.SPEED, 200, 0), new PotionEffect(MobEffects.JUMP_BOOST, 200, 0)));
+		ChemthrowerHandler.registerEffect("liquidglowstone", new ChemthrowerEffect_Potion(null, 0, new EffectInstance(Effects.GLOWING, 200, 0), new EffectInstance(Effects.SPEED, 200, 0), new EffectInstance(Effects.JUMP_BOOST, 200, 0)));
 	}
 
 	@Override

@@ -18,9 +18,9 @@ import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyConnector;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -79,7 +79,7 @@ public abstract class BlockConnector extends BlockIETileProvider
 	*/
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
+	public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
 	{
 		super.neighborChanged(state, world, pos, blockIn, fromPos);
 		TileEntity te = world.getTileEntity(pos);
@@ -95,7 +95,7 @@ public abstract class BlockConnector extends BlockIETileProvider
 	}
 
 	@Override
-	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, EntityPlayer player)
+	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
 	{
 		//Select the wire if the player is sneaking
 		//TODO alternative to world instaceof World
@@ -126,7 +126,7 @@ public abstract class BlockConnector extends BlockIETileProvider
 	}
 
 	@Override
-	public boolean allowHammerHarvest(IBlockState state)
+	public boolean allowHammerHarvest(BlockState state)
 	{
 		return true;
 	}

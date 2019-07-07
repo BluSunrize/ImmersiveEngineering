@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -36,16 +36,16 @@ public class IESaveData extends WorldSavedData
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
+	public void readFromNBT(CompoundNBT nbt)
 	{
 		//Load new info from NBT
 		int[] savedDimensions = nbt.getIntArray("savedDimensions");
 		for(int dim : savedDimensions)
 		{
-			NBTTagList connectionList = nbt.getList("connectionList"+dim, 10);
+			ListNBT connectionList = nbt.getList("connectionList"+dim, 10);
 			for(int i = 0; i < connectionList.size(); i++)
 			{
-				NBTTagCompound conTag = connectionList.getCompound(i);
+				CompoundNBT conTag = connectionList.getCompound(i);
 				ImmersiveNetHandler.Connection con = ImmersiveNetHandler.Connection.readFromNBT(conTag);
 				if(con!=null)
 				{
@@ -54,17 +54,17 @@ public class IESaveData extends WorldSavedData
 			}
 		}
 
-		NBTTagList proxies = nbt.getList("iicProxies", 10);
+		ListNBT proxies = nbt.getList("iicProxies", 10);
 		for(int i = 0; i < proxies.size(); i++)
 			ImmersiveNetHandler.INSTANCE.addProxy(IICProxy.readFromNBT(proxies.getCompound(i)));
 
 		EventHandler.validateConnsNextTick = true;
 
-		NBTTagList mineralList = nbt.getList("mineralDepletion", 10);
+		ListNBT mineralList = nbt.getList("mineralDepletion", 10);
 		ExcavatorHandler.mineralCache.clear();
 		for(int i = 0; i < mineralList.size(); i++)
 		{
-			NBTTagCompound tag = mineralList.getCompound(i);
+			CompoundNBT tag = mineralList.getCompound(i);
 			DimensionChunkCoords coords = DimensionChunkCoords.readFromNBT(tag);
 			if(coords!=null)
 			{
@@ -74,14 +74,14 @@ public class IESaveData extends WorldSavedData
 		}
 
 
-		NBTTagList receivedShaderList = nbt.getList("receivedShaderList", 10);
+		ListNBT receivedShaderList = nbt.getList("receivedShaderList", 10);
 		for(int i = 0; i < receivedShaderList.size(); i++)
 		{
-			NBTTagCompound tag = receivedShaderList.getCompound(i);
+			CompoundNBT tag = receivedShaderList.getCompound(i);
 			String player = tag.getString("player");
 			ShaderRegistry.receivedShaders.get(player).clear();
 
-			NBTTagList playerReceived = tag.getList("received", 8);
+			ListNBT playerReceived = tag.getList("received", 8);
 			for(int j = 0; j < playerReceived.size(); j++)
 			{
 				String s = playerReceived.getStringTagAt(j);
@@ -92,7 +92,7 @@ public class IESaveData extends WorldSavedData
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
 		Integer[] relDim = ImmersiveNetHandler.INSTANCE.getRelevantDimensions().toArray(new Integer[0]);
 		int[] savedDimensions = new int[relDim.length];
@@ -102,7 +102,7 @@ public class IESaveData extends WorldSavedData
 		nbt.setIntArray("savedDimensions", savedDimensions);
 		for(int dim : savedDimensions)
 		{
-			NBTTagList connectionList = new NBTTagList();
+			ListNBT connectionList = new ListNBT();
 			for(ImmersiveNetHandler.Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(dim))
 			{
 				connectionList.add(con.writeToNBT());
@@ -110,31 +110,31 @@ public class IESaveData extends WorldSavedData
 			nbt.setTag("connectionList"+dim, connectionList);
 		}
 
-		NBTTagList proxies = new NBTTagList();
+		ListNBT proxies = new ListNBT();
 		for(IICProxy iic : ImmersiveNetHandler.INSTANCE.proxies.values())
 			proxies.add(iic.writeToNBT());
 		nbt.setTag("iicProxies", proxies);
 
-		NBTTagList mineralList = new NBTTagList();
+		ListNBT mineralList = new ListNBT();
 		for(Map.Entry<DimensionChunkCoords, MineralWorldInfo> e : ExcavatorHandler.mineralCache.entrySet())
 			if(e.getKey()!=null&&e.getValue()!=null)
 			{
-				NBTTagCompound tag = e.getKey().writeToNBT();
+				CompoundNBT tag = e.getKey().writeToNBT();
 				tag.setTag("info", e.getValue().writeToNBT());
 				mineralList.add(tag);
 			}
 		nbt.setTag("mineralDepletion", mineralList);
 
 
-		NBTTagList receivedShaderList = new NBTTagList();
+		ListNBT receivedShaderList = new ListNBT();
 		for(String player : ShaderRegistry.receivedShaders.keySet())
 		{
-			NBTTagCompound tag = new NBTTagCompound();
+			CompoundNBT tag = new CompoundNBT();
 			tag.setString("player", player);
-			NBTTagList playerReceived = new NBTTagList();
+			ListNBT playerReceived = new ListNBT();
 			for(String shader : ShaderRegistry.receivedShaders.get(player))
 				if(shader!=null&&!shader.isEmpty())
-					playerReceived.add(new NBTTagString(shader));
+					playerReceived.add(new StringNBT(shader));
 			tag.setTag("received", playerReceived);
 			receivedShaderList.add(tag);
 		}

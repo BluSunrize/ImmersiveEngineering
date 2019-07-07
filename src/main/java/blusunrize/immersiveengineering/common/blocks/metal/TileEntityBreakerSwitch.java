@@ -19,19 +19,19 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
@@ -42,14 +42,14 @@ import java.util.Optional;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
 
 //TODO ConnectionPoints for opening/closing
-public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IAdvancedDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<IBlockState>
+public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IAdvancedDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<BlockState>
 {
 	public static TileEntityType<TileEntityBreakerSwitch> TYPE;
 
 	public static final int LEFT_INDEX = 0;
 	public static final int RIGHT_INDEX = 1;
 	public int rotation = 0;
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 	public int wires = 0;
 	public boolean active = false;
 	public boolean inverted = false;
@@ -109,7 +109,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInt("facing", facing.ordinal());
@@ -120,10 +120,10 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		rotation = nbt.getInt("rotation");
 		wires = nbt.getInt("wires");
 		active = nbt.getBoolean("active");
@@ -140,12 +140,12 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking())
 		{
 			inverted = !inverted;
-			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
+			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
 			notifyNeighbours();
 			updateConductivity();
 		}
@@ -155,7 +155,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(!Utils.isHammer(heldItem))
 		{
@@ -180,7 +180,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	{
 		markDirty();
 		world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
-		for(EnumFacing f : EnumFacing.VALUES)
+		for(Direction f : Direction.VALUES)
 			world.notifyNeighborsOfStateChange(getPos().offset(f), getBlockState().getBlock());
 	}
 
@@ -201,13 +201,13 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -219,19 +219,19 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
@@ -250,25 +250,25 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public int getWeakRSOutput(IBlockState state, EnumFacing side)
+	public int getWeakRSOutput(BlockState state, Direction side)
 	{
 		return (active^inverted)?15: 0;
 	}
 
 	@Override
-	public int getStrongRSOutput(IBlockState state, EnumFacing side)
+	public int getStrongRSOutput(BlockState state, Direction side)
 	{
 		return side.getOpposite()==facing&&(active^inverted)?15: 0;
 	}
 
 	@Override
-	public boolean canConnectRedstone(IBlockState state, EnumFacing side)
+	public boolean canConnectRedstone(BlockState state, Direction side)
 	{
 		return true;
 	}
 
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
+	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
 	{
 		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrixVec())).orElseGet(Matrix4::new);
 		mat = mat.translate(.5, 0, .5).rotate(Math.PI/2*rotation, 0, 1, 0).translate(-.5, 0, -.5);
@@ -277,25 +277,25 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public String getCacheKey(IBlockState object)
+	public String getCacheKey(BlockState object)
 	{
 		return rotation+","+facing.getIndex()+","+active;
 	}
 
 	@Override
-	public void onDirectionalPlacement(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer)
+	public void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer)
 	{
-		EnumFacing f = EnumFacing.SOUTH;
+		Direction f = Direction.SOUTH;
 		if(side.getAxis()==Axis.Y)
 		{
 			float xFromMid = hitX-.5f;
 			float zFromMid = hitZ-.5f;
 			float max = Math.max(Math.abs(xFromMid), Math.abs(zFromMid));
 			if(max==Math.abs(xFromMid))
-				f = xFromMid < 0?EnumFacing.WEST: EnumFacing.EAST;
+				f = xFromMid < 0?Direction.WEST: Direction.EAST;
 			else
-				f = zFromMid < 0?EnumFacing.NORTH: EnumFacing.SOUTH;
-			if((side==EnumFacing.UP&&f.getAxis()==Axis.Z)||side==EnumFacing.DOWN)
+				f = zFromMid < 0?Direction.NORTH: Direction.SOUTH;
+			if((side==Direction.UP&&f.getAxis()==Axis.Z)||side==Direction.DOWN)
 				f = f.getOpposite();
 		}
 		rotation = f.getHorizontalIndex();

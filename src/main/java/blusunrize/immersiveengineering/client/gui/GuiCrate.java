@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.gui.ContainerCrate;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.tileentity.TileEntity;
 
 public class GuiCrate extends GuiIEContainerBase
 {
-	public GuiCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile)
+	public GuiCrate(PlayerInventory inventoryPlayer, TileEntityWoodenCrate tile)
 	{
 		super(new ContainerCrate(inventoryPlayer, tile));
 		this.ySize = 168;

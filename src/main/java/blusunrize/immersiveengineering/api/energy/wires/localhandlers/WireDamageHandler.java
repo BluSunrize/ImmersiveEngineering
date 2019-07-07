@@ -16,11 +16,12 @@ import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTran
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 
 public class WireDamageHandler extends LocalNetworkHandler implements ICollisionHandler
@@ -35,7 +36,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 	}
 
 	@Override
-	public void onCollided(EntityLivingBase e, BlockPos pos, CollisionInfo info)
+	public void onCollided(LivingEntity e, BlockPos pos, CollisionInfo info)
 	{
 		WireType wType = info.conn.type;
 		if(!(wType instanceof IShockingWire))
@@ -50,7 +51,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 			rayRes = null;
 		else
 			rayRes = includingExtra.calculateIntercept(info.intersectA, info.intersectB);
-		if(endpointsInEntity||(rayRes!=null&&rayRes.type==RayTraceResult.Type.BLOCK))
+		if(endpointsInEntity||(rayRes!=null&&rayRes.type==Type.BLOCK))
 		{
 			//TODO proper damage calculations
 			float damage = 5;

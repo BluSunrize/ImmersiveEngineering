@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -41,7 +41,7 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 		this.setTickLimit(400);
 	}
 
-	public EntityRevolvershotFlare(World world, EntityLivingBase living, double ax, double ay, double az, IBullet type, ItemStack stack)
+	public EntityRevolvershotFlare(World world, LivingEntity living, double ax, double ay, double az, IBullet type, ItemStack stack)
 	{
 		super(world, living, ax, ay, az, type);
 		this.setTickLimit(400);

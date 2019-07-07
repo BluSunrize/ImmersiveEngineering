@@ -11,16 +11,16 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.IEExplosion;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.init.Items;
+import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -33,7 +33,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class EntityIEExplosive extends EntityTNTPrimed
+public class EntityIEExplosive extends TNTEntity
 {
 	public static final EntityType<EntityIEExplosive> TYPE = new Builder<>(EntityIEExplosive.class, EntityIEExplosive::new)
 			.build(ImmersiveEngineering.MODID+":explosive");
@@ -42,10 +42,10 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	private boolean explosionSmoke = true;
 	private boolean explosionFire = false;
 	private float explosionDropChance;
-	public IBlockState block;
+	public BlockState block;
 	private ITextComponent name;
 
-	private static final DataParameter<Optional<IBlockState>> dataMarker_block = EntityDataManager.createKey(EntityIEExplosive.class, DataSerializers.OPTIONAL_BLOCK_STATE);
+	private static final DataParameter<Optional<BlockState>> dataMarker_block = EntityDataManager.createKey(EntityIEExplosive.class, DataSerializers.OPTIONAL_BLOCK_STATE);
 	private static final DataParameter<Integer> dataMarker_fuse = EntityDataManager.createKey(EntityIEExplosive.class, DataSerializers.VARINT);
 
 	public EntityIEExplosive(World world)
@@ -53,7 +53,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		super(world);
 	}
 
-	public EntityIEExplosive(World world, double x, double y, double z, EntityLivingBase igniter, IBlockState blockstate, float explosionPower)
+	public EntityIEExplosive(World world, double x, double y, double z, LivingEntity igniter, BlockState blockstate, float explosionPower)
 	{
 		super(world, x, y, z, igniter);
 		this.explosionPower = explosionPower;
@@ -62,7 +62,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		this.setBlockSynced();
 	}
 
-	public EntityIEExplosive(World world, BlockPos pos, EntityLivingBase igniter, IBlockState blockstate, float explosionPower)
+	public EntityIEExplosive(World world, BlockPos pos, LivingEntity igniter, BlockState blockstate, float explosionPower)
 	{
 		this(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, igniter, blockstate, explosionPower);
 	}
@@ -124,7 +124,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	}
 
 	@Override
-	protected void writeAdditional(NBTTagCompound tagCompound)
+	protected void writeAdditional(CompoundNBT tagCompound)
 	{
 		super.writeAdditional(tagCompound);
 		tagCompound.setFloat("explosionPower", explosionPower);
@@ -135,7 +135,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	}
 
 	@Override
-	protected void readAdditional(NBTTagCompound tagCompound)
+	protected void readAdditional(CompoundNBT tagCompound)
 	{
 		super.readAdditional(tagCompound);
 		explosionPower = tagCompound.getFloat("explosionPower");

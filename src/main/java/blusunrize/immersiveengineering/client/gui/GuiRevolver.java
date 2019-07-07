@@ -15,10 +15,10 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletCont
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
@@ -28,7 +28,7 @@ public class GuiRevolver extends GuiIEContainerBase
 	private boolean otherRevolver = false;
 	private int offset = 0;
 
-	public GuiRevolver(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack revolver)
+	public GuiRevolver(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack revolver)
 	{
 		super(new ContainerRevolver(inventoryPlayer, world, slot, revolver));
 		if(!revolver.isEmpty()&&revolver.getItem() instanceof IBulletContainer)
@@ -55,7 +55,7 @@ public class GuiRevolver extends GuiIEContainerBase
 		int off = (offset < 0?-offset: 0);
 		for(int hand = 0; hand < (otherRevolver?2: 1); hand++)
 		{
-			int side = !otherRevolver?0: (hand==0)==(ImmersiveEngineering.proxy.getClientPlayer().getPrimaryHand()==EnumHandSide.RIGHT)?1: 0;
+			int side = !otherRevolver?0: (hand==0)==(ImmersiveEngineering.proxy.getClientPlayer().getPrimaryHand()==HandSide.RIGHT)?1: 0;
 			this.drawTexturedModalRect(guiLeft+off+00, guiTop+1, 00, 51, 74, 74);
 			if(bullets[side] >= 18)
 				this.drawTexturedModalRect(guiLeft+off+47, guiTop+1, 74, 51, 103, 74);

@@ -15,9 +15,9 @@ import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -30,14 +30,14 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.*;
 
-public class GuiManual extends GuiScreen
+public class GuiManual extends Screen
 {
 	private int xSize = 186;
 	private int ySize = 198;
 	private int guiLeft;
 	private int guiTop;
 	private int manualTick = 0;
-	private List<GuiButton> pageButtons = new ArrayList<>();
+	private List<Button> pageButtons = new ArrayList<>();
 
 	@Nonnull
 	public AbstractNode<ResourceLocation, ManualEntry> currentNode;
@@ -50,7 +50,7 @@ public class GuiManual extends GuiScreen
 	private boolean buttonHeld = false;
 	private int[] lastClick;
 	private int[] lastDrag;
-	private GuiTextField searchField;
+	private TextFieldWidget searchField;
 	private int hasSuggestions = -1;
 	private int prevGuiScale = -1;
 
@@ -131,7 +131,7 @@ public class GuiManual extends GuiScreen
 		if(textField)
 		{
 			Keyboard.enableRepeatEvents(true);
-			searchField = new GuiTextField(99, this.fontRenderer, guiLeft+166, guiTop+78, 120, 12);
+			searchField = new TextFieldWidget(99, this.fontRenderer, guiLeft+166, guiTop+78, 120, 12);
 			searchField.setTextColor(-1);
 			searchField.setDisabledTextColour(-1);
 			searchField.setEnableBackgroundDrawing(false);
@@ -227,7 +227,7 @@ public class GuiManual extends GuiScreen
 			if(this.hasSuggestions!=-1&&this.hasSuggestions < this.buttonList.size())
 				manual.fontRenderer.drawString("It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour(), false);
 		}
-		for (GuiButton btn:pageButtons)
+		for(Button btn : pageButtons)
 			btn.drawButton(mc, mouseX, mouseY, f);
 		manual.fontRenderer.setUnicodeFlag(uni);
 		super.drawScreen(mouseX, mouseY, f);
@@ -245,7 +245,7 @@ public class GuiManual extends GuiScreen
 	}
 
 	@Override
-	public void actionPerformed(GuiButton button)
+	public void actionPerformed(Button button)
 	{
 		if(buttonHeld)
 			return;

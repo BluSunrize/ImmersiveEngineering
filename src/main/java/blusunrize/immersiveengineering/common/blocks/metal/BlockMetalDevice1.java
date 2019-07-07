@@ -14,17 +14,17 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -63,12 +63,12 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.TURRET_GUN.getMeta());
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.BELLJAR.getMeta());
 
-		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta(), EnumPushReaction.BLOCK);
-		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta(), EnumPushReaction.BLOCK);
-		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.TESLA_COIL.getMeta(), EnumPushReaction.BLOCK);
-		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.TURRET_CHEM.getMeta(), EnumPushReaction.BLOCK);
-		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.TURRET_GUN.getMeta(), EnumPushReaction.BLOCK);
-		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.BELLJAR.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta(), PushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta(), PushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.TESLA_COIL.getMeta(), PushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.TURRET_CHEM.getMeta(), PushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.TURRET_GUN.getMeta(), PushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDevice1.BELLJAR.getMeta(), PushReaction.BLOCK);
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	}
 
 	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
+	public BlockState getExtendedState(BlockState state, IBlockAccess world, BlockPos pos)
 	{
 		state = super.getExtendedState(state, world, pos);
 		TileEntity tile = world.getTileEntity(pos);
@@ -122,7 +122,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
 	{
 		if(stack.getItemDamage()==BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta()||stack.getItemDamage()==BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta()||stack.getItemDamage()==BlockTypes_MetalDevice1.BELLJAR.getMeta())
 		{
@@ -147,7 +147,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(BlockState state, IBlockAccess world, BlockPos pos, Direction side)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof TileEntityTeslaCoil)
@@ -157,7 +157,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		else if(tile instanceof TileEntityFluidPipe)
 			return !((TileEntityFluidPipe)tile).pipeCover.isEmpty();
 		else if(tile instanceof TileEntityElectricLantern||tile instanceof TileEntityChargingStation||tile instanceof TileEntityFloodlight)
-			return side==EnumFacing.DOWN;
+			return side==Direction.DOWN;
 		return true;
 	}
 
@@ -378,7 +378,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	//		}
 	//	}
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
+	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
 //	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
 //		super.onNeighborChange(world, pos, fromPos);
@@ -388,20 +388,20 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	}
 
 	@Override
-	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+	public BlockState getStateForPlacement(World worldIn, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer)
 	{
 		TileEntityFluidPipe.indirectConnections.clear();
 		return super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
 	}
 
 	@Override
-	public boolean allowHammerHarvest(IBlockState state)
+	public boolean allowHammerHarvest(BlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void breakBlock(World world, BlockPos pos, BlockState state)
 	{
 		if(state.getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
 		{
@@ -412,7 +412,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 				for(int i = 0; i < 6; i++)
 					if(here.sideConfig[i]==-1)
 					{
-						EnumFacing f = EnumFacing.VALUES[i];
+						Direction f = Direction.VALUES[i];
 
 						TileEntity there = world.getTileEntity(pos.offset(f));
 						if(there instanceof TileEntityFluidPipe)

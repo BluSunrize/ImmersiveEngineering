@@ -28,42 +28,42 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFence;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FenceBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.IProperty;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.*;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.*;
-import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
-import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.VanillaRecipeTypes;
@@ -150,28 +150,28 @@ public class Utils
 		return s2;
 	}
 
-	public static Map<ResourceLocation, EnumDyeColor> dyesByTag =
-			ImmutableMap.<ResourceLocation, EnumDyeColor>builder()
-					.put(Tags.Items.DYES_BLACK.getId(), EnumDyeColor.BLACK)
-					.put(Tags.Items.DYES_RED.getId(), EnumDyeColor.RED)
-					.put(Tags.Items.DYES_GREEN.getId(), EnumDyeColor.GREEN)
-					.put(Tags.Items.DYES_BROWN.getId(), EnumDyeColor.BROWN)
-					.put(Tags.Items.DYES_BLUE.getId(), EnumDyeColor.BLUE)
-					.put(Tags.Items.DYES_PURPLE.getId(), EnumDyeColor.PURPLE)
-					.put(Tags.Items.DYES_CYAN.getId(), EnumDyeColor.CYAN)
-					.put(Tags.Items.DYES_LIGHT_GRAY.getId(), EnumDyeColor.LIGHT_GRAY)
-					.put(Tags.Items.DYES_GRAY.getId(), EnumDyeColor.GRAY)
-					.put(Tags.Items.DYES_PINK.getId(), EnumDyeColor.PINK)
-					.put(Tags.Items.DYES_LIME.getId(), EnumDyeColor.LIME)
-					.put(Tags.Items.DYES_YELLOW.getId(), EnumDyeColor.YELLOW)
-					.put(Tags.Items.DYES_LIGHT_BLUE.getId(), EnumDyeColor.LIGHT_BLUE)
-					.put(Tags.Items.DYES_MAGENTA.getId(), EnumDyeColor.MAGENTA)
-					.put(Tags.Items.DYES_ORANGE.getId(), EnumDyeColor.ORANGE)
-					.put(Tags.Items.DYES_WHITE.getId(), EnumDyeColor.WHITE)
+	public static Map<ResourceLocation, DyeColor> dyesByTag =
+			ImmutableMap.<ResourceLocation, DyeColor>builder()
+					.put(Tags.Items.DYES_BLACK.getId(), DyeColor.BLACK)
+					.put(Tags.Items.DYES_RED.getId(), DyeColor.RED)
+					.put(Tags.Items.DYES_GREEN.getId(), DyeColor.GREEN)
+					.put(Tags.Items.DYES_BROWN.getId(), DyeColor.BROWN)
+					.put(Tags.Items.DYES_BLUE.getId(), DyeColor.BLUE)
+					.put(Tags.Items.DYES_PURPLE.getId(), DyeColor.PURPLE)
+					.put(Tags.Items.DYES_CYAN.getId(), DyeColor.CYAN)
+					.put(Tags.Items.DYES_LIGHT_GRAY.getId(), DyeColor.LIGHT_GRAY)
+					.put(Tags.Items.DYES_GRAY.getId(), DyeColor.GRAY)
+					.put(Tags.Items.DYES_PINK.getId(), DyeColor.PINK)
+					.put(Tags.Items.DYES_LIME.getId(), DyeColor.LIME)
+					.put(Tags.Items.DYES_YELLOW.getId(), DyeColor.YELLOW)
+					.put(Tags.Items.DYES_LIGHT_BLUE.getId(), DyeColor.LIGHT_BLUE)
+					.put(Tags.Items.DYES_MAGENTA.getId(), DyeColor.MAGENTA)
+					.put(Tags.Items.DYES_ORANGE.getId(), DyeColor.ORANGE)
+					.put(Tags.Items.DYES_WHITE.getId(), DyeColor.WHITE)
 					.build();
 
 	@Nullable
-	public static EnumDyeColor getDye(ItemStack stack)
+	public static DyeColor getDye(ItemStack stack)
 	{
 		if(stack.isEmpty())
 			return null;
@@ -223,7 +223,7 @@ public class Utils
 		return ApiUtils.toBlockPos(object);
 	}
 
-	public static DirectionalBlockPos toDirCC(Object object, EnumFacing direction)
+	public static DirectionalBlockPos toDirCC(Object object, Direction direction)
 	{
 		if(object instanceof BlockPos)
 			return new DirectionalBlockPos((BlockPos)object, direction);
@@ -239,16 +239,16 @@ public class Utils
 
 	public static boolean isOreBlockAt(World world, BlockPos pos, Tag<Block> tag)
 	{
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		return state.getBlock().isIn(tag);
 	}
 
-	public static boolean canFenceConnectTo(IBlockReader world, BlockPos pos, EnumFacing facing, Material material)
+	public static boolean canFenceConnectTo(IBlockReader world, BlockPos pos, Direction facing, Material material)
 	{
 		BlockPos other = pos.offset(facing);
-		IBlockState state = world.getBlockState(other);
+		BlockState state = world.getBlockState(other);
 		BlockFaceShape shape = state.getBlockFaceShape(world, other, facing.getOpposite());
-		return ((BlockFence)Blocks.ACACIA_FENCE).attachesTo(state, shape);
+		return ((FenceBlock)Blocks.ACACIA_FENCE).attachesTo(state, shape);
 	}
 
 	public static String formatDouble(double d, String s)
@@ -325,31 +325,31 @@ public class Utils
 		return -1;
 	}
 
-	public static EnumFacing rotateFacingTowardsDir(EnumFacing f, EnumFacing dir)
+	public static Direction rotateFacingTowardsDir(Direction f, Direction dir)
 	{
-		if(dir==EnumFacing.NORTH)
+		if(dir==Direction.NORTH)
 			return f;
-		else if(dir==EnumFacing.SOUTH&&f.getAxis()!=Axis.Y)
+		else if(dir==Direction.SOUTH&&f.getAxis()!=Axis.Y)
 			return f.rotateY().rotateY();
-		else if(dir==EnumFacing.WEST&&f.getAxis()!=Axis.Y)
+		else if(dir==Direction.WEST&&f.getAxis()!=Axis.Y)
 			return f.rotateYCCW();
-		else if(dir==EnumFacing.EAST&&f.getAxis()!=Axis.Y)
+		else if(dir==Direction.EAST&&f.getAxis()!=Axis.Y)
 			return f.rotateY();
-		else if(dir==EnumFacing.DOWN&&f.getAxis()!=Axis.Y)
+		else if(dir==Direction.DOWN&&f.getAxis()!=Axis.Y)
 			return f.rotateAround(Axis.X);
-		else if(dir==EnumFacing.UP&&f.getAxis()!=Axis.X)
+		else if(dir==Direction.UP&&f.getAxis()!=Axis.X)
 			return f.rotateAround(Axis.X).getOpposite();
 		return f;
 	}
 
-	public static RayTraceResult getMovingObjectPositionFromPlayer(World world, EntityLivingBase living, boolean bool,
+	public static RayTraceResult getMovingObjectPositionFromPlayer(World world, LivingEntity living, boolean bool,
 																   RayTraceFluidMode fluidMode)
 	{
 		float f = 1.0F;
 		float f1 = living.prevRotationPitch+(living.rotationPitch-living.prevRotationPitch)*f;
 		float f2 = living.prevRotationYaw+(living.rotationYaw-living.prevRotationYaw)*f;
 		double d0 = living.prevPosX+(living.posX-living.prevPosX)*(double)f;
-		double d1 = living.prevPosY+(living.posY-living.prevPosY)*(double)f+(double)(world.isRemote?living.getEyeHeight()-(living instanceof EntityPlayer?((EntityPlayer)living).getDefaultEyeHeight(): 0): living.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
+		double d1 = living.prevPosY+(living.posY-living.prevPosY)*(double)f+(double)(world.isRemote?living.getEyeHeight()-(living instanceof PlayerEntity?((PlayerEntity)living).getDefaultEyeHeight(): 0): living.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
 		double d2 = living.prevPosZ+(living.posZ-living.prevPosZ)*(double)f;
 		Vec3d vec3 = new Vec3d(d0, d1, d2);
 		float f3 = MathHelper.cos(-f2*(float)Math.PI/180-(float)Math.PI);
@@ -359,8 +359,8 @@ public class Utils
 		float f7 = f4*f5;
 		float f8 = f3*f5;
 		double d3 = 5.0D;
-		if(living instanceof EntityPlayer)
-			d3 = living.getAttribute(EntityPlayer.REACH_DISTANCE).getValue();
+		if(living instanceof PlayerEntity)
+			d3 = living.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
 
 		Vec3d vec31 = vec3.add((double)f7*d3, (double)f6*d3, (double)f8*d3);
 		return world.rayTraceBlocks(vec3, vec31, fluidMode, !bool, false);
@@ -379,9 +379,9 @@ public class Utils
 		return true;
 	}
 
-	public static Vec3d getLivingFrontPos(EntityLivingBase entity, double offset, double height, EnumHandSide hand, boolean useSteppedYaw, float partialTicks)
+	public static Vec3d getLivingFrontPos(LivingEntity entity, double offset, double height, HandSide hand, boolean useSteppedYaw, float partialTicks)
 	{
-		double offsetX = hand==EnumHandSide.LEFT?-.3125: hand==EnumHandSide.RIGHT?.3125: 0;
+		double offsetX = hand==HandSide.LEFT?-.3125: hand==HandSide.RIGHT?.3125: 0;
 
 		float yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks;
 		if(useSteppedYaw)
@@ -396,7 +396,7 @@ public class Utils
 		return new Vec3d(entity.posX+offsetX*yawCos+offset*pitchCos*yawSin, entity.posY+offset*pitchSin+height, entity.posZ+offset*pitchCos*yawCos-offsetX*yawSin);
 	}
 
-	public static List<EntityLivingBase> getTargetsInCone(World world, Vec3d start, Vec3d dir, float spreadAngle, float truncationLength)
+	public static List<LivingEntity> getTargetsInCone(World world, Vec3d start, Vec3d dir, float spreadAngle, float truncationLength)
 	{
 		double length = dir.length();
 		Vec3d dirNorm = dir.normalize();
@@ -408,7 +408,7 @@ public class Utils
 		AxisAlignedBB box = new AxisAlignedBB(minInArray(start.x, endLow.x, endHigh.x), minInArray(start.y, endLow.y, endHigh.y), minInArray(start.z, endLow.z, endHigh.z),
 				maxInArray(start.x, endLow.x, endHigh.x), maxInArray(start.y, endLow.y, endHigh.y), maxInArray(start.z, endLow.z, endHigh.z));
 
-		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, box);
+		List<LivingEntity> list = world.getEntitiesWithinAABB(LivingEntity.class, box);
 		list.removeIf(e -> !isPointInCone(dirNorm, radius, length, truncationLength, e.getPositionVector().subtract(start)));
 		return list;
 	}
@@ -485,17 +485,17 @@ public class Utils
 		return new Vec3d((double)(f1*f2), (double)f3, (double)(f*f2));
 	}
 
-	public static void attractEnemies(EntityLivingBase target, float radius)
+	public static void attractEnemies(LivingEntity target, float radius)
 	{
 		attractEnemies(target, radius, null);
 	}
 
-	public static void attractEnemies(EntityLivingBase target, float radius, Predicate<EntityMob> predicate)
+	public static void attractEnemies(LivingEntity target, float radius, Predicate<MonsterEntity> predicate)
 	{
 		AxisAlignedBB aabb = new AxisAlignedBB(target.posX-radius, target.posY-radius, target.posZ-radius, target.posX+radius, target.posY+radius, target.posZ+radius);
 
-		List<EntityMob> list = target.getEntityWorld().getEntitiesWithinAABB(EntityMob.class, aabb);
-		for(EntityMob mob : list)
+		List<MonsterEntity> list = target.getEntityWorld().getEntitiesWithinAABB(MonsterEntity.class, aabb);
+		for(MonsterEntity mob : list)
 			if(predicate==null||predicate.test(mob))
 			{
 				mob.setAttackTarget(target);
@@ -517,7 +517,7 @@ public class Utils
 		return stack.getItem().getToolTypes(stack).contains(ItemWirecutter.CUTTER_TOOL);
 	}
 
-	public static boolean canBlockDamageSource(EntityLivingBase entity, DamageSource damageSourceIn)
+	public static boolean canBlockDamageSource(LivingEntity entity, DamageSource damageSourceIn)
 	{
 		if(!damageSourceIn.isUnblockable()&&entity.isActiveItemStackBlocking())
 		{
@@ -535,7 +535,7 @@ public class Utils
 
 	public static Vec3d getFlowVector(World world, BlockPos pos)
 	{
-		IBlockState bState = world.getBlockState(pos);
+		BlockState bState = world.getBlockState(pos);
 		IFluidState fState = bState.getFluidState();
 		return fState.getFlow(world, pos);
 	}
@@ -565,7 +565,7 @@ public class Utils
 		return max;
 	}
 
-	public static boolean isVecInEntityHead(EntityLivingBase entity, Vec3d vec)
+	public static boolean isVecInEntityHead(LivingEntity entity, Vec3d vec)
 	{
 		if(entity.height/entity.width < 2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
 			return false;
@@ -573,12 +573,12 @@ public class Utils
 		return Math.abs(d) < .25;
 	}
 
-	public static void unlockIEAdvancement(EntityPlayer player, String name)
+	public static void unlockIEAdvancement(PlayerEntity player, String name)
 	{
-		if(player instanceof EntityPlayerMP)
+		if(player instanceof ServerPlayerEntity)
 		{
-			PlayerAdvancements advancements = ((EntityPlayerMP)player).getAdvancements();
-			AdvancementManager manager = ((WorldServer)player.getEntityWorld()).getServer().getAdvancementManager();
+			PlayerAdvancements advancements = ((ServerPlayerEntity)player).getAdvancements();
+			AdvancementManager manager = ((ServerWorld)player.getEntityWorld()).getServer().getAdvancementManager();
 			Advancement advancement = manager.getAdvancement(new ResourceLocation(ImmersiveEngineering.MODID, name));
 			if(advancement!=null)
 				advancements.grantCriterion(advancement, "code_trigger");
@@ -586,10 +586,10 @@ public class Utils
 	}
 
 	//TODO test! I think the NBT format is wrong
-	public static NBTTagCompound getRandomFireworkExplosion(Random rand, int preType)
+	public static CompoundNBT getRandomFireworkExplosion(Random rand, int preType)
 	{
-		NBTTagCompound tag = new NBTTagCompound();
-		NBTTagCompound expl = new NBTTagCompound();
+		CompoundNBT tag = new CompoundNBT();
+		CompoundNBT expl = new CompoundNBT();
 		expl.setBoolean("Flicker", true);
 		expl.setBoolean("Trail", true);
 		int[] colors = new int[rand.nextInt(8)+1];
@@ -601,14 +601,14 @@ public class Utils
 				j++;
 			if(j > 6)
 				j += 2;
-			colors[i] = EnumDyeColor.byId(j).func_196060_f();
+			colors[i] = DyeColor.byId(j).func_196060_f();
 		}
 		expl.setIntArray("Colors", colors);
 		int type = preType >= 0?preType: rand.nextInt(4);
 		if(preType < 0&&type==3)
 			type = 4;
 		expl.setByte("Type", (byte)type);
-		NBTTagList list = new NBTTagList();
+		ListNBT list = new ListNBT();
 		list.add(expl);
 		tag.setTag("Explosions", list);
 
@@ -653,7 +653,7 @@ public class Utils
 	{
 		if(fluid==null||fluid.getFluid()==null)
 			return false;
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		Block b = state.getBlock();
 		Block fluidBlock = fluid.getFluid().getBlock();
 
@@ -681,7 +681,7 @@ public class Utils
 		return false;
 	}
 
-	public static IBlockState getStateFromItemStack(ItemStack stack)
+	public static BlockState getStateFromItemStack(ItemStack stack)
 	{
 		if(stack.isEmpty())
 			return null;
@@ -712,11 +712,11 @@ public class Utils
 		dropStackAtPos(world, pos, stack, pos.direction);
 	}
 
-	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack, EnumFacing facing)
+	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack, Direction facing)
 	{
 		if(!stack.isEmpty())
 		{
-			EntityItem ei = new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, stack.copy());
+			ItemEntity ei = new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, stack.copy());
 			ei.motionY = 0.025;
 			if(facing!=null)
 			{
@@ -759,7 +759,7 @@ public class Utils
 		return stackLimit >= stack.getCount()?ItemStack.EMPTY: stack.split(stack.getCount()-stackLimit);
 	}
 
-	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable EntityPlayer player)
+	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable PlayerEntity player)
 	{
 		if(containerIn==null||containerIn.isEmpty())
 			return ItemStack.EMPTY;
@@ -782,7 +782,7 @@ public class Utils
 		return ItemStack.EMPTY;
 	}
 
-	public static ItemStack drainFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable EntityPlayer player)
+	public static ItemStack drainFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable PlayerEntity player)
 	{
 		if(containerIn==null||containerIn.isEmpty())
 			return ItemStack.EMPTY;
@@ -830,7 +830,7 @@ public class Utils
 		return stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 	}
 
-	public static IRecipe findCraftingRecipe(InventoryCrafting crafting, World world)
+	public static IRecipe findCraftingRecipe(CraftingInventory crafting, World world)
 	{
 		return world.getRecipeManager().getRecipe(crafting, world, VanillaRecipeTypes.CRAFTING);
 	}
@@ -852,7 +852,7 @@ public class Utils
 		return list;
 	}
 
-	public static float[] rotateToFacing(float[] in, EnumFacing facing)
+	public static float[] rotateToFacing(float[] in, Direction facing)
 	{
 		for(int i = 0; i < in.length; i++)
 			in[i] -= .5F;
@@ -878,7 +878,7 @@ public class Utils
 		return ret;
 	}
 
-	public static int hashBlockstate(IBlockState state, Set<Object> ignoredProperties)
+	public static int hashBlockstate(BlockState state, Set<Object> ignoredProperties)
 	{
 		int val = 0;
 		final int prime = 31;
@@ -891,7 +891,7 @@ public class Utils
 		return val;
 	}
 
-	public static boolean areStatesEqual(IBlockState state, IBlockState other, Set<Object> ignoredProperties, boolean includeExtended)
+	public static boolean areStatesEqual(BlockState state, BlockState other, Set<Object> ignoredProperties, boolean includeExtended)
 	{
 		for(IProperty<?> i : state.getProperties())
 		{
@@ -922,9 +922,9 @@ public class Utils
 		{
 			Object o1 = a[i];
 			Object o2 = a2[i];
-			if(o1 instanceof IBlockState&&o2 instanceof IBlockState)
+			if(o1 instanceof BlockState&&o2 instanceof BlockState)
 			{
-				if(!areStatesEqual((IBlockState)o1, (IBlockState)o2, ImmutableSet.of(), false))
+				if(!areStatesEqual((BlockState)o1, (BlockState)o2, ImmutableSet.of(), false))
 					return false;
 			}
 			else if(!(o1==null?o2==null: o1.equals(o2)))
@@ -971,7 +971,7 @@ public class Utils
 				vec3d.z <= pos.getZ()-offset.getZ()+1+eps;
 	}
 
-	public static class InventoryCraftingFalse extends InventoryCrafting
+	public static class InventoryCraftingFalse extends CraftingInventory
 	{
 		private static final Container nullContainer = new Container()
 		{
@@ -981,7 +981,7 @@ public class Utils
 			}
 
 			@Override
-			public boolean canInteractWith(@Nonnull EntityPlayer p_75145_1_)
+			public boolean canInteractWith(@Nonnull PlayerEntity p_75145_1_)
 			{
 				return false;
 			}
@@ -992,9 +992,9 @@ public class Utils
 			super(nullContainer, w, h);
 		}
 
-		public static InventoryCrafting createFilledCraftingInventory(int w, int h, NonNullList<ItemStack> stacks)
+		public static CraftingInventory createFilledCraftingInventory(int w, int h, NonNullList<ItemStack> stacks)
 		{
-			InventoryCrafting invC = new Utils.InventoryCraftingFalse(w, h);
+			CraftingInventory invC = new Utils.InventoryCraftingFalse(w, h);
 			for(int j = 0; j < w*h; j++)
 				if(!stacks.get(j).isEmpty())
 					invC.setInventorySlotContents(j, stacks.get(j).copy());
@@ -1066,7 +1066,7 @@ public class Utils
 		if(checked.isEmpty())
 		{
 			BlockPos pos = new BlockPos(start);
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			Block b = state.getBlock();
 			if(b.isCollidable(state)&&Block.collisionRayTrace(state, world, pos, start, end)!=null)
 				ret.add(pos);
@@ -1094,7 +1094,7 @@ public class Utils
 			BlockPos blockPos = new BlockPos((int)Math.floor(pos.x),
 					(int)Math.floor(pos.y), (int)Math.floor(pos.z));
 			Block b;
-			IBlockState state;
+			BlockState state;
 			if(!checked.contains(blockPos)&&i+lengthAdd+standartOff < dif)
 			{
 				state = world.getBlockState(blockPos);
@@ -1181,13 +1181,13 @@ public class Utils
 
 	//TODO use vanilla helpers instead (ItemStackHelper)
 	@Deprecated
-	public static NonNullList<ItemStack> readInventory(NBTTagList nbt, int size)
+	public static NonNullList<ItemStack> readInventory(ListNBT nbt, int size)
 	{
 		NonNullList<ItemStack> inv = NonNullList.withSize(size, ItemStack.EMPTY);
 		int max = nbt.size();
 		for(int i = 0; i < max; i++)
 		{
-			NBTTagCompound itemTag = nbt.getCompound(i);
+			CompoundNBT itemTag = nbt.getCompound(i);
 			int slot = itemTag.getByte("Slot")&255;
 			if(slot >= 0&&slot < size)
 				inv.set(slot, ItemStack.read(itemTag));
@@ -1196,13 +1196,13 @@ public class Utils
 	}
 
 	@Deprecated
-	public static NBTTagList writeInventory(ItemStack[] inv)
+	public static ListNBT writeInventory(ItemStack[] inv)
 	{
-		NBTTagList invList = new NBTTagList();
+		ListNBT invList = new ListNBT();
 		for(int i = 0; i < inv.length; i++)
 			if(!inv[i].isEmpty())
 			{
-				NBTTagCompound itemTag = new NBTTagCompound();
+				CompoundNBT itemTag = new CompoundNBT();
 				itemTag.setByte("Slot", (byte)i);
 				inv[i].write(itemTag);
 				invList.add(itemTag);
@@ -1211,15 +1211,15 @@ public class Utils
 	}
 
 	@Deprecated
-	public static NBTTagList writeInventory(Collection<ItemStack> inv)
+	public static ListNBT writeInventory(Collection<ItemStack> inv)
 	{
-		NBTTagList invList = new NBTTagList();
+		ListNBT invList = new ListNBT();
 		byte slot = 0;
 		for(ItemStack s : inv)
 		{
 			if(!s.isEmpty())
 			{
-				NBTTagCompound itemTag = new NBTTagCompound();
+				CompoundNBT itemTag = new CompoundNBT();
 				itemTag.setByte("Slot", slot);
 				s.write(itemTag);
 				invList.add(itemTag);
@@ -1230,18 +1230,18 @@ public class Utils
 	}
 
 	@Deprecated
-	public static NonNullList<ItemStack> loadItemStacksFromNBT(INBTBase nbt)
+	public static NonNullList<ItemStack> loadItemStacksFromNBT(INBT nbt)
 	{
 		NonNullList<ItemStack> itemStacks = NonNullList.create();
-		if(nbt instanceof NBTTagCompound)
+		if(nbt instanceof CompoundNBT)
 		{
-			ItemStack stack = ItemStack.read((NBTTagCompound)nbt);
+			ItemStack stack = ItemStack.read((CompoundNBT)nbt);
 			itemStacks.add(stack);
 			return itemStacks;
 		}
-		else if(nbt instanceof NBTTagList)
+		else if(nbt instanceof ListNBT)
 		{
-			NBTTagList list = (NBTTagList)nbt;
+			ListNBT list = (ListNBT)nbt;
 			return readInventory(list, list.size());
 		}
 		return itemStacks;
@@ -1295,7 +1295,7 @@ public class Utils
 		Collections.shuffle(stacks, rand);
 	}
 
-	private static final Gson GSON_INSTANCE = (new GsonBuilder()).registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer()).registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer()).registerTypeHierarchyAdapter(LootEntry.class, new LootEntry.Serializer()).registerTypeHierarchyAdapter(LootFunction.class, new LootFunctionManager.Serializer()).registerTypeHierarchyAdapter(LootCondition.class, new LootConditionManager.Serializer()).registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
+	private static final Gson GSON_INSTANCE = (new GsonBuilder()).registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer()).registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer()).registerTypeHierarchyAdapter(ILootGenerator.class, new ILootGenerator.Serializer()).registerTypeHierarchyAdapter(ILootFunction.class, new LootFunctionManager.Serializer()).registerTypeHierarchyAdapter(ILootCondition.class, new LootConditionManager.Serializer()).registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
 
 	public static LootTable loadBuiltinLootTable(ResourceLocation resource, LootTableManager lootTableManager)
 	{
@@ -1418,7 +1418,7 @@ public class Utils
 	*/
 
 	//TODO getDrops wants a world now, how do we deal with that?
-	public static NonNullList<ItemStack> getDrops(IBlockState state)
+	public static NonNullList<ItemStack> getDrops(BlockState state)
 	{
 		IBlockReader w = getSingleBlockWorldAccess(state);
 		NonNullList<ItemStack> ret = NonNullList.create();
@@ -1426,10 +1426,10 @@ public class Utils
 		return ret;
 	}
 
-	public static AxisAlignedBB transformAABB(AxisAlignedBB original, EnumFacing facing)
+	public static AxisAlignedBB transformAABB(AxisAlignedBB original, Direction facing)
 	{
 		double minX = 0, minZ = 0, maxX = 0, maxZ = 0;
-		EnumFacing right = facing.rotateY();
+		Direction right = facing.rotateY();
 		switch(facing)
 		{
 			case NORTH:
@@ -1471,16 +1471,16 @@ public class Utils
 		return new AxisAlignedBB(minX, original.minY, minZ, maxX, original.maxY, maxZ);
 	}
 
-	public static IBlockReader getSingleBlockWorldAccess(IBlockState state)
+	public static IBlockReader getSingleBlockWorldAccess(BlockState state)
 	{
 		return new SingleBlockAcess(state);
 	}
 
 	private static class SingleBlockAcess implements IBlockReader
 	{
-		IBlockState state;
+		BlockState state;
 
-		public SingleBlockAcess(IBlockState state)
+		public SingleBlockAcess(BlockState state)
 		{
 			this.state = state;
 		}
@@ -1495,7 +1495,7 @@ public class Utils
 
 		@Nonnull
 		@Override
-		public IBlockState getBlockState(@Nonnull BlockPos pos)
+		public BlockState getBlockState(@Nonnull BlockPos pos)
 		{
 			return pos.equals(BlockPos.ORIGIN)?state: Blocks.AIR.getDefaultState();
 		}

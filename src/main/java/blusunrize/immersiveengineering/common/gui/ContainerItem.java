@@ -9,12 +9,12 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -23,15 +23,15 @@ import java.util.function.Supplier;
 
 public abstract class ContainerItem extends Container implements Supplier<World>
 {
-	protected final InventoryPlayer inventoryPlayer;
+	protected final PlayerInventory inventoryPlayer;
 	protected final World world;
 	protected int blockedSlot;
-	protected final EntityEquipmentSlot equipmentSlot;
+	protected final EquipmentSlotType equipmentSlot;
 	protected final ItemStack heldItem;
-	protected final EntityPlayer player;
+	protected final PlayerEntity player;
 	public int internalSlots;
 
-	public ContainerItem(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot entityEquipmentSlot, ItemStack heldItem)
+	public ContainerItem(PlayerInventory inventoryPlayer, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
 	{
 		this.inventoryPlayer = inventoryPlayer;
 		this.world = world;
@@ -48,14 +48,14 @@ public abstract class ContainerItem extends Container implements Supplier<World>
 
 	abstract int addSlots();
 
-	public EntityEquipmentSlot getEquipmentSlot()
+	public EquipmentSlotType getEquipmentSlot()
 	{
 		return equipmentSlot;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int slot)
+	public ItemStack transferStackInSlot(PlayerEntity par1EntityPlayer, int slot)
 	{
 		ItemStack oldStackInSlot = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
@@ -120,14 +120,14 @@ public abstract class ContainerItem extends Container implements Supplier<World>
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull PlayerEntity entityplayer)
 	{
 		return ItemStack.areItemsEqual(player.getItemStackFromSlot(equipmentSlot), heldItem);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int par1, int par2, ClickType par3, EntityPlayer par4EntityPlayer)
+	public ItemStack slotClick(int par1, int par2, ClickType par3, PlayerEntity par4EntityPlayer)
 	{
 		if(par1==this.blockedSlot||(par3==ClickType.SWAP&&par2==par4EntityPlayer.inventory.currentItem))
 			return ItemStack.EMPTY;
@@ -137,7 +137,7 @@ public abstract class ContainerItem extends Container implements Supplier<World>
 	}
 
 	@Override
-	public void onContainerClosed(EntityPlayer par1EntityPlayer)
+	public void onContainerClosed(PlayerEntity par1EntityPlayer)
 	{
 		super.onContainerClosed(par1EntityPlayer);
 		if(!this.world.isRemote)

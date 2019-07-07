@@ -19,11 +19,11 @@ import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetwo
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -41,9 +41,9 @@ public class WireCollisions implements IWorldEventListener
 {
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if(!e.world.isRemote&&IEConfig.enableWireDamage&&e instanceof EntityLivingBase&&
+		if(!e.world.isRemote&&IEConfig.enableWireDamage&&e instanceof LivingEntity&&
 				!e.isEntityInvulnerable(IEDamageSources.wireShock)&&
-				!(e instanceof EntityPlayer&&((EntityPlayer)e).capabilities.disableDamage))
+				!(e instanceof PlayerEntity&&((PlayerEntity)e).capabilities.disableDamage))
 		{
 			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.world);
 			WireCollisionData wireData = global.getCollisionData();
@@ -54,13 +54,13 @@ public class WireCollisions implements IWorldEventListener
 					LocalWireNetwork local = info.getLocalNet();
 					for(LocalNetworkHandler h : local.getAllHandlers())
 						if(h instanceof ICollisionHandler)
-							((ICollisionHandler)h).onCollided((EntityLivingBase)e, p, info);
+							((ICollisionHandler)h).onCollided((LivingEntity)e, p, info);
 				}
 		}
 	}
 
 	@Override
-	public void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull IBlockState oldState, @Nonnull IBlockState newState, int flags)
+	public void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, @Nonnull BlockState newState, int flags)
 	{
 		if(!worldIn.isRemote&&(flags&1)!=0&&newState.getBlock().canCollideCheck(newState, false))
 		{
@@ -81,7 +81,7 @@ public class WireCollisions implements IWorldEventListener
 						BlockPos dropPos = pos;
 						if(ApiUtils.preventsConnection(worldIn, pos, newState, info.intersectA, info.intersectB))
 						{
-							for(EnumFacing f : EnumFacing.VALUES)
+							for(Direction f : Direction.VALUES)
 								if(worldIn.isAirBlock(pos.offset(f)))
 								{
 									dropPos = dropPos.offset(f);
@@ -107,7 +107,7 @@ public class WireCollisions implements IWorldEventListener
 	}
 
 	@Override
-	public void playSoundToAllNearExcept(EntityPlayer player, @Nonnull SoundEvent soundIn, @Nonnull SoundCategory category, double x, double y, double z, float volume, float pitch)
+	public void playSoundToAllNearExcept(PlayerEntity player, @Nonnull SoundEvent soundIn, @Nonnull SoundCategory category, double x, double y, double z, float volume, float pitch)
 	{
 	}
 
@@ -142,7 +142,7 @@ public class WireCollisions implements IWorldEventListener
 	}
 
 	@Override
-	public void playEvent(EntityPlayer player, int type, @Nonnull BlockPos blockPosIn, int data)
+	public void playEvent(PlayerEntity player, int type, @Nonnull BlockPos blockPosIn, int data)
 	{
 	}
 

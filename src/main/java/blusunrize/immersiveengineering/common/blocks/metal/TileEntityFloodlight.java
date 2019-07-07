@@ -24,21 +24,21 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.EnumLightType;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.LightType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -50,7 +50,7 @@ import javax.vecmath.Vector3f;
 import java.util.*;
 
 public class TileEntityFloodlight extends TileEntityImmersiveConnectable implements ITickable, IAdvancedDirectionalTile,
-		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<IBlockState>,
+		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<BlockState>,
 		EnergyConnector
 {
 	public static TileEntityType<TileEntityFloodlight> TYPE;
@@ -60,8 +60,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	private int maximumStorage = IEConfig.Machines.floodlight_maximumStorage;
 	public boolean active = false;
 	public boolean redstoneControlInverted = false;
-	public EnumFacing facing = EnumFacing.NORTH;
-	public EnumFacing side = EnumFacing.UP;
+	public Direction facing = Direction.NORTH;
+	public Direction side = Direction.UP;
 	public float rotY = 0;
 	public float rotX = 0;
 	public List<BlockPos> fakeLights = new ArrayList<>();
@@ -119,7 +119,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		{
 			this.markContainingBlockForUpdate(null);
 			updateFakeLights(true, active);
-			world.checkLightFor(EnumLightType.BLOCK, getPos());
+			world.checkLightFor(LightType.BLOCK, getPos());
 		}
 		if(!active)
 		{
@@ -171,7 +171,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 		if(genNew)
 		{
-			float angle = (float)(facing==EnumFacing.NORTH?180: facing==EnumFacing.EAST?90: facing==EnumFacing.WEST?-90: 0);
+			float angle = (float)(facing==Direction.NORTH?180: facing==Direction.EAST?90: facing==Direction.WEST?-90: 0);
 			float yRotation = rotY;
 			double angleX = Math.toRadians(rotX);
 
@@ -181,11 +181,11 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 					/*Intermediate*/new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1),
 					/*Diagonal*/new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1)};
 			Matrix4 mat = new Matrix4();
-			if(side==EnumFacing.DOWN)
+			if(side==Direction.DOWN)
 				mat.scale(1, -1, 1);
-			else if(side!=EnumFacing.UP)
+			else if(side!=Direction.UP)
 			{
-				angle = facing==EnumFacing.DOWN?180: facing==EnumFacing.NORTH?-90: facing==EnumFacing.SOUTH?90: angle;
+				angle = facing==Direction.DOWN?180: facing==Direction.NORTH?-90: facing==Direction.SOUTH?90: angle;
 				if(side.getAxis()==Axis.X)
 				{
 					mat.rotate(Math.PI/2, -1, 0, 0);
@@ -194,7 +194,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 				else
 				{
 					mat.rotate(Math.PI/2, -1, 0, 0);
-					if(side==EnumFacing.SOUTH)//I dunno why south is giving me so much trouble, but this works, so who cares
+					if(side==Direction.SOUTH)//I dunno why south is giving me so much trouble, but this works, so who cares
 					{
 						mat.rotate(Math.PI, 0, 0, 1);
 						if(facing.getAxis()==Axis.X)
@@ -298,15 +298,15 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		boolean oldActive = active;
 		active = nbt.getBoolean("active");
 		energyStorage = nbt.getInt("energy");
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
-		side = EnumFacing.byIndex(nbt.getInt("side"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
+		side = Direction.byIndex(nbt.getInt("side"));
 		rotY = nbt.getFloat("rotY");
 		rotX = nbt.getFloat("rotX");
 		int lightAmount = nbt.getInt("lightAmount");
@@ -325,12 +325,12 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 		if(world!=null&&oldActive!=active)
 		{
-			world.checkLightFor(EnumLightType.BLOCK, pos);
+			world.checkLightFor(LightType.BLOCK, pos);
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setBoolean("active", active);
@@ -359,7 +359,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		if(id==1)
 		{
 			this.markContainingBlockForUpdate(null);
-			world.checkLightFor(EnumLightType.BLOCK, getPos());
+			world.checkLightFor(LightType.BLOCK, getPos());
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
@@ -384,19 +384,19 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			case DOWN:
 			case UP:
 				x = (Math.abs(xDif) >= Math.abs(zDif))?(xDif >= 0)?.9375: .0625: .5;
-				y = (side==EnumFacing.DOWN)?.9375: .0625;
+				y = (side==Direction.DOWN)?.9375: .0625;
 				z = (Math.abs(zDif) > Math.abs(xDif))?(zDif >= 0)?.9375: .0625: .5;
 				break;
 			case NORTH:
 			case SOUTH:
 				x = (Math.abs(xDif) >= Math.abs(yDif))?(xDif >= 0)?.9375: .0625: .5;
 				y = (Math.abs(yDif) > Math.abs(xDif))?(yDif >= 0)?.9375: .0625: .5;
-				z = (side==EnumFacing.NORTH)?.9375: .0625;
+				z = (side==Direction.NORTH)?.9375: .0625;
 				break;
 			case WEST:
 			case EAST:
 			default:
-				x = (side==EnumFacing.WEST)?.9375: .0625;
+				x = (side==Direction.WEST)?.9375: .0625;
 				y = (Math.abs(yDif) >= Math.abs(zDif))?(yDif >= 0)?.9375: .0625: .5;
 				z = (Math.abs(zDif) > Math.abs(yDif))?(zDif >= 0)?.9375: .0625: .5;
 				break;
@@ -430,15 +430,15 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking()&&side!=this.side)
 		{
-			boolean base = this.side==EnumFacing.DOWN?hitY >= .8125: this.side==EnumFacing.UP?hitY <= .1875: this.side==EnumFacing.NORTH?hitZ >= .8125: this.side==EnumFacing.UP?hitZ <= .1875: this.side==EnumFacing.WEST?hitX >= .8125: hitX <= .1875;
+			boolean base = this.side==Direction.DOWN?hitY >= .8125: this.side==Direction.UP?hitY <= .1875: this.side==Direction.NORTH?hitZ >= .8125: this.side==Direction.UP?hitZ <= .1875: this.side==Direction.WEST?hitX >= .8125: hitX <= .1875;
 			if(base)
 			{
 				redstoneControlInverted = !redstoneControlInverted;
-				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+				ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
 				markDirty();
 				this.markContainingBlockForUpdate(null);
 				return true;
@@ -452,13 +452,13 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return side;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.side = facing;
 	}
@@ -470,35 +470,35 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
 
 	@Override
-	public void onDirectionalPlacement(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer)
+	public void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer)
 	{
-		EnumFacing f = EnumFacing.fromAngle(placer.rotationYaw);
+		Direction f = Direction.fromAngle(placer.rotationYaw);
 		if(f==side.getOpposite())
-			f = placer.rotationPitch > 0?EnumFacing.DOWN: EnumFacing.UP;
+			f = placer.rotationPitch > 0?Direction.DOWN: Direction.UP;
 		facing = f;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean shouldRenderGroup(IBlockState object, String group)
+	public boolean shouldRenderGroup(BlockState object, String group)
 	{
 		if("glass".equals(group))
 			return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.TRANSLUCENT;
@@ -508,7 +508,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
+	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
 	{
 		if(!transform.isPresent())
 			transform = Optional.of(new TRSRTransformation((Matrix4f)null));
@@ -522,31 +522,31 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		//		pitch, yaw, roll
 		if(side.getAxis()==Axis.Y)
 		{
-			yaw = facing==EnumFacing.SOUTH?180: facing==EnumFacing.WEST?90: facing==EnumFacing.EAST?-90: 0;
-			if(side==EnumFacing.DOWN)
+			yaw = facing==Direction.SOUTH?180: facing==Direction.WEST?90: facing==Direction.EAST?-90: 0;
+			if(side==Direction.DOWN)
 				roll = 180;
 		}
 		else //It's a mess, but it works!
 		{
-			if(side==EnumFacing.NORTH)
+			if(side==Direction.NORTH)
 			{
 				pitch = 90;
 				yaw = 180;
 			}
-			if(side==EnumFacing.SOUTH)
+			if(side==Direction.SOUTH)
 				pitch = 90;
-			if(side==EnumFacing.WEST)
+			if(side==Direction.WEST)
 			{
 				pitch = 90;
 				yaw = -90;
 			}
-			if(side==EnumFacing.EAST)
+			if(side==Direction.EAST)
 			{
 				pitch = 90;
 				yaw = 90;
 			}
 
-			if(facing==EnumFacing.DOWN)
+			if(facing==Direction.DOWN)
 				roll += 180;
 			else if(side.getAxis()==Axis.X&&facing.getAxis()==Axis.Z)
 				roll += 90*facing.getAxisDirection().getOffset()*side.getAxisDirection().getOffset();
@@ -571,7 +571,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public String getCacheKey(IBlockState object)
+	public String getCacheKey(BlockState object)
 	{
 		return side+":"+facing+":"+rotX+":"+rotY+":"+active;
 	}

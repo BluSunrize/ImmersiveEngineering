@@ -19,27 +19,20 @@ import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.entity.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemArmorDyeable;
+import net.minecraft.item.IDyeableArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -48,17 +41,17 @@ import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-public class ItemEarmuffs extends ItemArmorDyeable implements IConfigurableTool, ITool, IColouredItem
+public class ItemEarmuffs extends IDyeableArmorItem implements IConfigurableTool, ITool, IColouredItem
 {
 	public ItemEarmuffs()
 	{
-		super(ArmorMaterial.LEATHER, EntityEquipmentSlot.HEAD, new Properties().group(ImmersiveEngineering.itemGroup)
+		super(ArmorMaterial.LEATHER, EquipmentSlotType.HEAD, new Properties().group(ImmersiveEngineering.itemGroup)
 		.maxStackSize(1));
 		IEContent.registeredIEItems.add(this);
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
 	{
 		if("overlay".equals(type))
 			return "immersiveengineering:textures/models/earmuffs_overlay.png";
@@ -66,11 +59,11 @@ public class ItemEarmuffs extends ItemArmorDyeable implements IConfigurableTool,
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	ModelBiped armorModel;
+	BipedModel armorModel;
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
+	public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default)
 	{
 		return ModelEarmuffs.getModel();
 	}
@@ -122,7 +115,7 @@ public class ItemEarmuffs extends ItemArmorDyeable implements IConfigurableTool,
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		String hexCol = Integer.toHexString(this.getColourForIEItem(stack, 0));
-		list.add(new TextComponentTranslation(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
+		list.add(new TranslationTextComponent(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
 	}
 
 	@Override

@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -85,12 +85,12 @@ public class ExtBlockstateAdapter
 	{
 		if(o==null)
 			return "NULL";
-		if(o instanceof IBlockState)
+		if(o instanceof BlockState)
 		{
 			String ret = "";
-			for(IProperty<?> p : ((IBlockState)o).getProperties())
+			for(IProperty<?> p : ((BlockState)o).getProperties())
 			{
-				ret += toStringProp(p)+" has value "+toStringDebug(((IBlockState)o).getValue(p))+"\n";
+				ret += toStringProp(p)+" has value "+toStringDebug(((BlockState)o).getValue(p))+"\n";
 			}
 			if(o instanceof IExtendedBlockState)
 			{

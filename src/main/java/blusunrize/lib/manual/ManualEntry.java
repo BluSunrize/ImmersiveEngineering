@@ -16,13 +16,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import gnu.trove.map.TIntObjectMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
@@ -126,7 +126,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		return specials;
 	}
 
-	public void addButtons(GuiManual gui, int x, int y, int page, List<GuiButton> pageButtons)
+	public void addButtons(GuiManual gui, int x, int y, int page, List<Button> pageButtons)
 	{
 		boolean uni = manual.fontRenderer.getUnicodeFlag();
 		manual.fontRenderer.setUnicodeFlag(true);
@@ -135,9 +135,9 @@ public class ManualEntry implements Comparable<ManualEntry>
 		ManualUtils.addLinks(this, manual, gui, p.renderText, x,
 				y+p.special.getPixelsTaken(), pageButtons, linkData);
 		manual.fontRenderer.setUnicodeFlag(uni);
-		List<GuiButton> tempButtons = new ArrayList<>();
+		List<Button> tempButtons = new ArrayList<>();
 		pages.get(gui.page).special.onOpened(gui, 0, 0, tempButtons);
-		for(GuiButton btn : tempButtons)
+		for(Button btn : tempButtons)
 		{
 			btn.x += x;
 			btn.y += y;
@@ -174,7 +174,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 	}
 
 	//TODO range checks everywhere
-	public void buttonPressed(GuiManual gui, GuiButton button)
+	public void buttonPressed(GuiManual gui, Button button)
 	{
 		if(button instanceof GuiButtonManualLink)
 			((GuiButtonManualLink)button).link.changePage(gui, true);
@@ -183,7 +183,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 	}
 
 	public void mouseDragged(GuiManual gui, int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY,
-							 GuiButton button)
+							 Button button)
 	{
 		pages.get(gui.page).special.mouseDragged(x, y, clickX, clickY, mx, my, lastX, lastY, button);
 	}
@@ -280,7 +280,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 					return new String[]{"ERROR", "This is not a good thing", "Could not find the file for "+name};
 				try
 				{
-					JsonObject json = JsonUtils.gsonDeserialize(GSON, new InputStreamReader(resData.getInputStream()),
+					JsonObject json = JSONUtils.gsonDeserialize(GSON, new InputStreamReader(resData.getInputStream()),
 							JsonObject.class, true);
 					byte[] bytesLang = IOUtils.toByteArray(resLang.getInputStream());
 					String content = new String(bytesLang);
@@ -334,7 +334,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 	{
 
 		@Override
-		public void onOpened(GuiManual m, int x, int y, List<GuiButton> buttons)
+		public void onOpened(GuiManual m, int x, int y, List<Button> buttons)
 		{
 		}
 
@@ -350,13 +350,13 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 
 		@Override
-		public void buttonPressed(GuiManual gui, GuiButton button)
+		public void buttonPressed(GuiManual gui, Button button)
 		{
 		}
 
 		@Override
 		public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY,
-								 GuiButton button)
+								 Button button)
 		{
 		}
 

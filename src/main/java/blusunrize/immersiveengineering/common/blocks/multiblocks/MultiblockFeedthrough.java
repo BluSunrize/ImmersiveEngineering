@@ -19,15 +19,15 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -86,11 +86,11 @@ public class MultiblockFeedthrough implements IMultiblock
 	}
 
 	@Override
-	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
+	public BlockState getBlockstateFromStack(int index, ItemStack stack)
 	{
-		IBlockState ret = IMultiblock.super.getBlockstateFromStack(index, stack);
+		BlockState ret = IMultiblock.super.getBlockstateFromStack(index, stack);
 		if(stack==structure[0][0][0])
-			return ret.with(IEProperties.FACING_ALL, EnumFacing.SOUTH);
+			return ret.with(IEProperties.FACING_ALL, Direction.SOUTH);
 		return ret;
 	}
 
@@ -107,16 +107,16 @@ public class MultiblockFeedthrough implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(IBlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		return WireApi.getWireType(state)!=null;
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
 		//Check
-		IBlockState stateHere = world.getBlockState(pos).getActualState(world, pos);
+		BlockState stateHere = world.getBlockState(pos).getActualState(world, pos);
 		if(stateHere.getProperties().contains(IEProperties.FACING_ALL))
 			side = stateHere.getValue(IEProperties.FACING_ALL);
 		Set<ImmersiveNetHandler.Connection> connHere = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
@@ -128,11 +128,11 @@ public class MultiblockFeedthrough implements IMultiblock
 		if(wire==null)//This shouldn't ever happen
 			return false;
 		BlockPos middlePos = pos.offset(side);
-		IBlockState middle = world.getBlockState(middlePos).getActualState(world, middlePos);
-		if(!middle.isFullCube()||middle.getBlock().hasTileEntity(middle)||middle.getRenderType()!=EnumBlockRenderType.MODEL)
+		BlockState middle = world.getBlockState(middlePos).getActualState(world, middlePos);
+		if(!middle.isFullCube()||middle.getBlock().hasTileEntity(middle)||middle.getRenderType()!=BlockRenderType.MODEL)
 			return false;
 		BlockPos otherPos = pos.offset(side, 2);
-		IBlockState otherConn = world.getBlockState(otherPos).getActualState(world, otherPos);
+		BlockState otherConn = world.getBlockState(otherPos).getActualState(world, otherPos);
 		if(WireApi.getWireType(otherConn)!=wire)
 			return false;
 		if(otherConn.getValue(IEProperties.FACING_ALL)!=side.getOpposite())
@@ -150,7 +150,7 @@ public class MultiblockFeedthrough implements IMultiblock
 		//Form
 		if(!world.isRemote)
 		{
-			IBlockState state = IEContent.blockConnectors.getDefaultState().with(IEContent.blockConnectors.property,
+			BlockState state = IEContent.blockConnectors.getDefaultState().with(IEContent.blockConnectors.property,
 					BlockTypes_Connector.FEEDTHROUGH).with(IEProperties.FACING_ALL, side);
 			BlockPos masterPos = pos.offset(side);
 			TileEntityFeedthrough master = setBlock(world, masterPos, state, wire, middle, 0);
@@ -183,7 +183,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	//}
 
 	@Nullable
-	private TileEntityFeedthrough setBlock(World world, BlockPos here, IBlockState newState, WireType wire, IBlockState middle,
+	private TileEntityFeedthrough setBlock(World world, BlockPos here, BlockState newState, WireType wire, BlockState middle,
 										   int offset)
 	{
 		world.setBlockState(here, newState);

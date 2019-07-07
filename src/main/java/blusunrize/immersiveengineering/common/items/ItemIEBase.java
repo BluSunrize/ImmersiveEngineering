@@ -15,14 +15,14 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredIt
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.enchantment.EnchantmentDurability;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Enchantments;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.enchantment.UnbreakingEnchantment;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
+import net.minecraft.stats.Stats;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -51,14 +51,14 @@ public class ItemIEBase extends Item implements IColouredItem
 		return burnTime;
 	}
 
-	protected void damageIETool(ItemStack stack, int amount, Random rand, @Nullable EntityPlayer player)
+	protected void damageIETool(ItemStack stack, int amount, Random rand, @Nullable PlayerEntity player)
 	{
 		if(amount <= 0||!(this instanceof IItemDamageableIE))
 			return;
 
 		int unbreakLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.UNBREAKING, stack);
 		for(int i = 0; unbreakLevel > 0&&i < amount; i++)
-			if(EnchantmentDurability.negateDamage(stack, unbreakLevel, rand))
+			if(UnbreakingEnchantment.negateDamage(stack, unbreakLevel, rand))
 				amount--;
 		if(amount <= 0)
 			return;
@@ -66,15 +66,15 @@ public class ItemIEBase extends Item implements IColouredItem
 		int curDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE);
 		curDamage += amount;
 
-		if(player instanceof EntityPlayerMP)
-			CriteriaTriggers.ITEM_DURABILITY_CHANGED.trigger((EntityPlayerMP)player, stack, curDamage);
+		if(player instanceof ServerPlayerEntity)
+			CriteriaTriggers.ITEM_DURABILITY_CHANGED.trigger((ServerPlayerEntity)player, stack, curDamage);
 
 		if(curDamage >= ((IItemDamageableIE)this).getItemDamageIE(stack))
 		{
 			if(player!=null)
 			{
 				player.renderBrokenItemStack(stack);
-				player.addStat(StatList.ITEM_BROKEN.get(this));
+				player.addStat(Stats.ITEM_BROKEN.get(this));
 			}
 			stack.shrink(1);
 			return;

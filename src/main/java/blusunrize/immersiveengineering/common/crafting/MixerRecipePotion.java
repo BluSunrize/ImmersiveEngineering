@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.init.Items;
-import net.minecraft.init.PotionTypes;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionType;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -33,16 +33,16 @@ import java.util.Set;
  */
 public class MixerRecipePotion extends MixerRecipe
 {
-	public static final HashMap<PotionType, MixerRecipePotion> REGISTERED = new HashMap<>();
+	public static final HashMap<Potion, MixerRecipePotion> REGISTERED = new HashMap<>();
 	public static final Set<String> BLACKLIST = new HashSet<>();
 	private final Set<Pair<FluidStack, IngredientStack[]>> alternateInputs = new HashSet<>();
 
-	public MixerRecipePotion(PotionType outputType, PotionType inputType, IngredientStack reagent)
+	public MixerRecipePotion(Potion outputType, Potion inputType, IngredientStack reagent)
 	{
 		super(getFluidStackForType(outputType, 1000), getFluidStackForType(inputType, 1000), new IngredientStack[]{reagent}, 6400);
 	}
 
-	public void addAlternateInput(PotionType inputType, IngredientStack reagent)
+	public void addAlternateInput(Potion inputType, IngredientStack reagent)
 	{
 		alternateInputs.add(Pair.of(getFluidStackForType(inputType, 1000), new IngredientStack[]{reagent}));
 	}
@@ -52,7 +52,7 @@ public class MixerRecipePotion extends MixerRecipe
 		return alternateInputs;
 	}
 
-	public static void registerPotionRecipe(PotionType output, PotionType input, IngredientStack reagent)
+	public static void registerPotionRecipe(Potion output, Potion input, IngredientStack reagent)
 	{
 		if(REGISTERED.containsKey(output))
 		{
@@ -70,12 +70,12 @@ public class MixerRecipePotion extends MixerRecipe
 		}
 	}
 
-	public static FluidStack getFluidStackForType(PotionType type, int amount)
+	public static FluidStack getFluidStackForType(Potion type, int amount)
 	{
-		if(type==PotionTypes.WATER||type==null)
+		if(type==Potions.WATER||type==null)
 			return new FluidStack(FluidRegistry.WATER, amount);
 		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
-		stack.tag = new NBTTagCompound();
+		stack.tag = new CompoundNBT();
 		stack.tag.setString("Potion", type.getRegistryName().toString());
 		return stack;
 	}

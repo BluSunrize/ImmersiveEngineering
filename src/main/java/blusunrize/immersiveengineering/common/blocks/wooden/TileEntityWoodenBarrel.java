@@ -18,19 +18,19 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -54,9 +54,9 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	public static final int IGNITION_TEMPERATURE = 573;
 	public static TileEntityType<TileEntityWoodenBarrel> TYPE;
 
-	public EnumMap<EnumFacing, SideConfig> sideConfig = new EnumMap<>(ImmutableMap.of(
-			EnumFacing.DOWN, OUTPUT,
-			EnumFacing.UP, SideConfig.INPUT
+	public EnumMap<Direction, SideConfig> sideConfig = new EnumMap<>(ImmutableMap.of(
+			Direction.DOWN, OUTPUT,
+			Direction.UP, SideConfig.INPUT
 	));
 	public FluidTank tank = new FluidTank(12000);
 
@@ -70,9 +70,9 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		this(TYPE);
 	}
 
-	private Map<EnumFacing, CapabilityReference<IFluidHandler>> neighbors = ImmutableMap.of(
-			EnumFacing.DOWN, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN),
-			EnumFacing.UP, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, EnumFacing.UP)
+	private Map<Direction, CapabilityReference<IFluidHandler>> neighbors = ImmutableMap.of(
+			Direction.DOWN, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, Direction.DOWN),
+			Direction.UP, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, Direction.UP)
 	);
 
 	@Override
@@ -82,7 +82,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 			return;
 
 		boolean update = false;
-		for(EnumFacing side : neighbors.keySet())
+		for(Direction side : neighbors.keySet())
 			if(tank.getFluidAmount() > 0&&sideConfig.get(side)==OUTPUT)
 			{
 				int out = Math.min(40, tank.getFluidAmount());
@@ -107,9 +107,9 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
+	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(Utils.isFluidRelatedItemStack(player.getHeldItem(EnumHand.MAIN_HAND)))
+		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
 		{
 			String s = null;
 			if(tank.getFluid()!=null)
@@ -133,57 +133,57 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
+	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
 	{
 		return false;
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		int[] sideCfgArray = nbt.getIntArray("sideConfig");
 		if(sideCfgArray.length < 2)
 			sideCfgArray = new int[]{-1, 0};
 		sideConfig.clear();
 		for(int i = 0; i < sideCfgArray.length; ++i)
-			sideConfig.put(EnumFacing.byIndex(i), SideConfig.VALUES[sideCfgArray[i]]);
+			sideConfig.put(Direction.byIndex(i), SideConfig.VALUES[sideCfgArray[i]]);
 		this.readTank(nbt);
 	}
 
-	public void readTank(NBTTagCompound nbt)
+	public void readTank(CompoundNBT nbt)
 	{
 		tank.readFromNBT(nbt.getCompound("tank"));
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		int[] sideCfgArray = new int[2];
-		sideCfgArray[0] = sideConfig.get(EnumFacing.DOWN).ordinal();
-		sideCfgArray[1] = sideConfig.get(EnumFacing.UP).ordinal();
+		sideCfgArray[0] = sideConfig.get(Direction.DOWN).ordinal();
+		sideCfgArray[1] = sideConfig.get(Direction.UP).ordinal();
 		nbt.setIntArray("sideConfig", sideCfgArray);
 		this.writeTank(nbt, false);
 	}
 
-	public void writeTank(NBTTagCompound nbt, boolean toItem)
+	public void writeTank(CompoundNBT nbt, boolean toItem)
 	{
 		boolean write = tank.getFluidAmount() > 0;
-		NBTTagCompound tankTag = tank.writeToNBT(new NBTTagCompound());
+		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
 		if(!toItem||write)
 			nbt.setTag("tank", tankTag);
 	}
 
-	private Map<EnumFacing, LazyOptional<IFluidHandler>> sidedFluidHandler = new HashMap<>();
+	private Map<Direction, LazyOptional<IFluidHandler>> sidedFluidHandler = new HashMap<>();
 
 	{
-		sidedFluidHandler.put(EnumFacing.DOWN, registerCap(() -> new SidedFluidHandler(this, EnumFacing.DOWN)));
-		sidedFluidHandler.put(EnumFacing.UP, registerCap(() -> new SidedFluidHandler(this, EnumFacing.UP)));
+		sidedFluidHandler.put(Direction.DOWN, registerCap(() -> new SidedFluidHandler(this, Direction.DOWN)));
+		sidedFluidHandler.put(Direction.UP, registerCap(() -> new SidedFluidHandler(this, Direction.UP)));
 		sidedFluidHandler.put(null, registerCap(() -> new SidedFluidHandler(this, null)));
 	}
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==FLUID_HANDLER_CAPABILITY&&(facing==null||facing.getAxis()==Axis.Y))
 			return sidedFluidHandler.getOrDefault(facing, LazyOptional.empty()).cast();
@@ -194,9 +194,9 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	{
 		TileEntityWoodenBarrel barrel;
 		@Nullable
-		EnumFacing facing;
+		Direction facing;
 
-		SidedFluidHandler(TileEntityWoodenBarrel barrel, @Nullable EnumFacing facing)
+		SidedFluidHandler(TileEntityWoodenBarrel barrel, @Nullable Direction facing)
 		{
 			this.barrel = barrel;
 			this.facing = facing;
@@ -254,13 +254,13 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public SideConfig getSideConfig(EnumFacing side)
+	public SideConfig getSideConfig(Direction side)
 	{
 		return sideConfig.getOrDefault(side, NONE);
 	}
 
 	@Override
-	public boolean toggleSide(EnumFacing side, EntityPlayer p)
+	public boolean toggleSide(Direction side, PlayerEntity p)
 	{
 		if(side.getAxis()!=Axis.Y)
 			return false;
@@ -283,7 +283,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		LazyOptional<FluidStack> fOptional = FluidUtil.getFluidContained(heldItem);
 		boolean metal = this instanceof TileEntityMetalBarrel;
@@ -292,12 +292,12 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 			LazyOptional<Boolean> ret = fOptional.map((f) -> {
 				if(f.getFluid().isGaseous(f))
 				{
-					ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
+					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"noGasAllowed"));
 					return true;
 				}
 				else if(f.getFluid().getTemperature(f) >= TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
 				{
-					ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"tooHot"));
+					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"tooHot"));
 					return true;
 				}
 				else
@@ -317,10 +317,10 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
+	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
 	{
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
-		NBTTagCompound tag = new NBTTagCompound();
+		CompoundNBT tag = new CompoundNBT();
 		writeTank(tag, true);
 		if(!tag.isEmpty())
 			stack.setTag(tag);
@@ -328,7 +328,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
+	public void readOnPlacement(LivingEntity placer, ItemStack stack)
 	{
 		if(stack.hasTag())
 			readTank(stack.getOrCreateTag());

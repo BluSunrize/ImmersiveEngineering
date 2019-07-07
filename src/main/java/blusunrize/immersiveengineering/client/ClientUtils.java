@@ -25,28 +25,30 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.model.ModelBiped;
-import net.minecraft.client.renderer.entity.model.ModelBox;
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -270,7 +272,7 @@ public class ClientUtils
 
 	public static void bindAtlas()
 	{
-		mc().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		mc().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 	}
 
 	public static ResourceLocation getResource(String path)
@@ -376,13 +378,13 @@ public class ClientUtils
 		return sound;
 	}
 
-	public static ModelRenderer[] copyModelRenderers(ModelBase model, ModelRenderer... oldRenderers)
+	public static RendererModel[] copyModelRenderers(Model model, RendererModel... oldRenderers)
 	{
-		ModelRenderer[] newRenderers = new ModelRenderer[oldRenderers.length];
+		RendererModel[] newRenderers = new RendererModel[oldRenderers.length];
 		for(int i = 0; i < newRenderers.length; i++)
 			if(oldRenderers[i]!=null)
 			{
-				newRenderers[i] = new ModelRenderer(model, oldRenderers[i].boxName);
+				newRenderers[i] = new RendererModel(model, oldRenderers[i].boxName);
 				int toX = oldRenderers[i].textureOffsetX;
 				int toY = oldRenderers[i].textureOffsetY;
 				newRenderers[i].setTextureOffset(toX, toY);
@@ -402,20 +404,20 @@ public class ClientUtils
 		return newRenderers;
 	}
 
-	public static void handleBipedRotations(ModelBiped model, Entity entity)
+	public static void handleBipedRotations(BipedModel model, Entity entity)
 	{
 		if(!Config.IEConfig.fancyItemHolding)
 			return;
 
-		if(entity instanceof EntityPlayer)
+		if(entity instanceof PlayerEntity)
 		{
-			EntityPlayer player = (EntityPlayer)entity;
-			for(EnumHand hand : EnumHand.values())
+			PlayerEntity player = (PlayerEntity)entity;
+			for(Hand hand : Hand.values())
 			{
 				ItemStack heldItem = player.getHeldItem(hand);
 				if(!heldItem.isEmpty())
 				{
-					boolean right = (hand==EnumHand.MAIN_HAND)==(player.getPrimaryHand()==EnumHandSide.RIGHT);
+					boolean right = (hand==Hand.MAIN_HAND)==(player.getPrimaryHand()==HandSide.RIGHT);
 					if(heldItem.getItem() instanceof ItemRevolver)
 					{
 						if(right)
@@ -465,7 +467,7 @@ public class ClientUtils
 		int progress = (int)(Minecraft.getInstance().playerController.curBlockDamageMP*10f)-1; // 0-10
 		if(progress < 0)
 			return;
-		renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 		//preRenderDamagedBlocks BEGIN
 		GlStateManager.blendFuncSeparate(774, 768, 1, 0);
 		GlStateManager.enableBlend();
@@ -483,12 +485,12 @@ public class ClientUtils
 		{
 			Block block = world.getBlockState(blockpos).getBlock();
 			TileEntity te = world.getTileEntity(blockpos);
-			boolean hasBreak = block instanceof BlockChest||block instanceof BlockEnderChest
-					||block instanceof BlockSign||block instanceof BlockSkull;
+			boolean hasBreak = block instanceof ChestBlock||block instanceof EnderChestBlock
+					||block instanceof AbstractSignBlock||block instanceof SkullBlock;
 			if(!hasBreak) hasBreak = te!=null&&te.canRenderBreaking();
 			if(!hasBreak)
 			{
-				IBlockState iblockstate = world.getBlockState(blockpos);
+				BlockState iblockstate = world.getBlockState(blockpos);
 				if(iblockstate.getMaterial()!=Material.AIR)
 				{
 					TextureAtlasSprite textureatlassprite = destroyBlockIcons[progress];
@@ -579,7 +581,7 @@ public class ClientUtils
 
 	public static void drawRepeatedFluidSprite(FluidStack fluid, float x, float y, float w, float h)
 	{
-		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE.toString());
+		bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE.toString());
 		TextureAtlasSprite sprite = getSprite(fluid.getFluid().getStill(fluid));
 		int col = fluid.getFluid().getColor(fluid);
 		GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
@@ -761,31 +763,31 @@ public class ClientUtils
 	public static void addFluidTooltip(FluidStack fluid, List<ITextComponent> tooltip, int tankCapacity)
 	{
 		if(fluid!=null&&fluid.getFluid()!=null)
-			tooltip.add(new TextComponentTranslation(fluid.getUnlocalizedName()).setStyle(new Style().setColor(fluid.getFluid().getRarity(fluid).color)));
+			tooltip.add(new TranslationTextComponent(fluid.getUnlocalizedName()).setStyle(new Style().setColor(fluid.getFluid().getRarity(fluid).color)));
 		else
-			tooltip.add(new TextComponentTranslation("gui.immersiveengineering.empty"));
+			tooltip.add(new TranslationTextComponent("gui.immersiveengineering.empty"));
 		if(fluid!=null&&fluid.getFluid() instanceof IEFluid)
 			((IEFluid)fluid.getFluid()).addTooltipInfo(fluid, null, tooltip);
 
 		if(mc().gameSettings.advancedItemTooltips&&fluid!=null)
-			if(!GuiScreen.isShiftKeyDown())
-				tooltip.add(new TextComponentTranslation(Lib.DESC_INFO+"holdShiftForInfo"));
+			if(!Screen.isShiftKeyDown())
+				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"holdShiftForInfo"));
 			else
 			{
 				Style darkGray = new Style().setColor(TextFormatting.DARK_GRAY);
 				//TODO translation keys
-				tooltip.add(new TextComponentString("Fluid Registry: "+FluidRegistry.getFluidName(fluid)).setStyle(darkGray));
-				tooltip.add(new TextComponentString("Density: "+fluid.getFluid().getDensity(fluid)).setStyle(darkGray));
-				tooltip.add(new TextComponentString("Temperature: "+fluid.getFluid().getTemperature(fluid)).setStyle(darkGray));
-				tooltip.add(new TextComponentString("Viscosity: "+fluid.getFluid().getViscosity(fluid)).setStyle(darkGray));
-				tooltip.add(new TextComponentString("NBT Data: "+fluid.tag).setStyle(darkGray));
+				tooltip.add(new StringTextComponent("Fluid Registry: "+FluidRegistry.getFluidName(fluid)).setStyle(darkGray));
+				tooltip.add(new StringTextComponent("Density: "+fluid.getFluid().getDensity(fluid)).setStyle(darkGray));
+				tooltip.add(new StringTextComponent("Temperature: "+fluid.getFluid().getTemperature(fluid)).setStyle(darkGray));
+				tooltip.add(new StringTextComponent("Viscosity: "+fluid.getFluid().getViscosity(fluid)).setStyle(darkGray));
+				tooltip.add(new StringTextComponent("NBT Data: "+fluid.tag).setStyle(darkGray));
 			}
 
 		Style gray = new Style().setColor(TextFormatting.GRAY);
 		if(tankCapacity > 0)
-			tooltip.add(new TextComponentString((fluid!=null?fluid.amount: 0)+"/"+tankCapacity+"mB").setStyle(gray));
+			tooltip.add(new StringTextComponent((fluid!=null?fluid.amount: 0)+"/"+tankCapacity+"mB").setStyle(gray));
 		else
-			tooltip.add(new TextComponentString((fluid!=null?fluid.amount: 0)+"mB").setStyle(gray));
+			tooltip.add(new StringTextComponent((fluid!=null?fluid.amount: 0)+"mB").setStyle(gray));
 	}
 
 	public static Quat4d degreeToQuaterion(double x, double y, double z)
@@ -852,8 +854,8 @@ public class ClientUtils
 						current.subtract(cross),
 						previous.subtract(cross),
 						previous.add(cross)};
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.DOWN, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.DOWN, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.UP, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
 
 				if(!vertical)
 				{
@@ -866,8 +868,8 @@ public class ClientUtils
 						current.subtract(cross),
 						previous.subtract(cross),
 						previous.add(cross)};
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.WEST, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.EAST, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.WEST, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.EAST, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
 			}
 		}
 		return ret;
@@ -904,18 +906,18 @@ public class ClientUtils
 		return ret;
 	}
 
-	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
-		return createBakedBox(from, to, matrix, EnumFacing.NORTH, textureGetter, colour);
+		return createBakedBox(from, to, matrix, Direction.NORTH, textureGetter, colour);
 	}
 
-	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, EnumFacing facing, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, Direction facing, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		return createBakedBox(from, to, matrix, facing, vertices -> vertices, textureGetter, colour);
 	}
 
 	@Nonnull
-	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, EnumFacing facing, Function<Vec3d[], Vec3d[]> vertexTransformer, Function<EnumFacing, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, Direction facing, Function<Vec3d[], Vec3d[]> vertexTransformer, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		HashSet<BakedQuad> quads = new HashSet<>();
 		if(vertexTransformer==null)
@@ -927,18 +929,18 @@ public class ClientUtils
 				new Vec3d(to.x, from.y, to.z),
 				new Vec3d(to.x, from.y, from.z)
 		};
-		TextureAtlasSprite sprite = textureGetter.apply(EnumFacing.DOWN);
+		TextureAtlasSprite sprite = textureGetter.apply(Direction.DOWN);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.DOWN, facing), sprite, new double[]{from.x*16, 16-from.z*16, to.x*16, 16-to.z*16}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), sprite, new double[]{from.x*16, 16-from.z*16, to.x*16, 16-to.z*16}, colour, true));
 
 		for(int i = 0; i < vertices.length; i++)
 		{
 			Vec3d v = vertices[i];
 			vertices[i] = new Vec3d(v.x, to.y, v.z);
 		}
-		sprite = textureGetter.apply(EnumFacing.UP);
+		sprite = textureGetter.apply(Direction.UP);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.UP, facing), sprite, new double[]{from.x*16, from.z*16, to.x*16, to.z*16}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.UP, facing), sprite, new double[]{from.x*16, from.z*16, to.x*16, to.z*16}, colour, false));
 
 		vertices = new Vec3d[]{
 				new Vec3d(to.x, to.y, from.z),
@@ -946,18 +948,18 @@ public class ClientUtils
 				new Vec3d(from.x, from.y, from.z),
 				new Vec3d(from.x, to.y, from.z)
 		};
-		sprite = textureGetter.apply(EnumFacing.NORTH);
+		sprite = textureGetter.apply(Direction.NORTH);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.NORTH, facing), sprite, new double[]{from.x*16, 16-to.y*16, to.x*16, 16-from.y*16}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, facing), sprite, new double[]{from.x*16, 16-to.y*16, to.x*16, 16-from.y*16}, colour, false));
 
 		for(int i = 0; i < vertices.length; i++)
 		{
 			Vec3d v = vertices[i];
 			vertices[i] = new Vec3d(v.x, v.y, to.z);
 		}
-		sprite = textureGetter.apply(EnumFacing.SOUTH);
+		sprite = textureGetter.apply(Direction.SOUTH);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.SOUTH, facing), sprite, new double[]{to.x*16, 16-to.y*16, from.x*16, 16-from.y*16}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), sprite, new double[]{to.x*16, 16-to.y*16, from.x*16, 16-from.y*16}, colour, true));
 
 		vertices = new Vec3d[]{
 				new Vec3d(from.x, to.y, to.z),
@@ -965,43 +967,43 @@ public class ClientUtils
 				new Vec3d(from.x, from.y, from.z),
 				new Vec3d(from.x, to.y, from.z)
 		};
-		sprite = textureGetter.apply(EnumFacing.WEST);
+		sprite = textureGetter.apply(Direction.WEST);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing), sprite, new double[]{to.z*16, 16-to.y*16, from.z*16, 16-from.y*16}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.WEST, facing), sprite, new double[]{to.z*16, 16-to.y*16, from.z*16, 16-from.y*16}, colour, true));
 
 		for(int i = 0; i < vertices.length; i++)
 		{
 			Vec3d v = vertices[i];
 			vertices[i] = new Vec3d(to.x, v.y, v.z);
 		}
-		sprite = textureGetter.apply(EnumFacing.EAST);
+		sprite = textureGetter.apply(Direction.EAST);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing), sprite, new double[]{16-to.z*16, 16-to.y*16, 16-from.z*16, 16-from.y*16}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.EAST, facing), sprite, new double[]{16-to.z*16, 16-to.y*16, 16-from.z*16, 16-from.y*16}, colour, false));
 
 		return quads;
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha);
 	}
 
-	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vec3d[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
+	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha, true, base);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alphaNoFading);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alpha, false, null);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
 		builder.setQuadOrientation(facing);
@@ -1083,19 +1085,20 @@ public class ClientUtils
 		}
 	}
 
-	public static ResourceLocation getSideTexture(@Nonnull ItemStack stack, EnumFacing side)
+	public static ResourceLocation getSideTexture(@Nonnull ItemStack stack, Direction side)
 	{
 		IBakedModel model = mc().getItemRenderer().getItemModelWithOverrides(stack, null, null);
 		return getSideTexture(model, side, null);
 	}
 
-	public static ResourceLocation getSideTexture(@Nonnull IBlockState state, EnumFacing side)
+	public static ResourceLocation getSideTexture(@Nonnull BlockState state, Direction side)
 	{
 		IBakedModel model = mc().getBlockRendererDispatcher().getModelForState(state);
 		return getSideTexture(model, side, state);
 	}
 
-	public static ResourceLocation getSideTexture(@Nonnull IBakedModel model, EnumFacing side, @Nullable IBlockState state) {
+	public static ResourceLocation getSideTexture(@Nonnull IBakedModel model, Direction side, @Nullable BlockState state)
+	{
 		List<BakedQuad> quads = model.getQuads(state, side, Utils.RAND);
 		if(quads==null||quads.isEmpty())//no quads for the specified side D:
 			quads = model.getQuads(state, null, Utils.RAND);
@@ -1231,7 +1234,7 @@ public class ClientUtils
 			if(!useCached)
 			{
 				// Calculate surrounding brighness and split into block and sky light
-				for(EnumFacing f : EnumFacing.VALUES)
+				for(Direction f : Direction.VALUES)
 				{
 					int val = world.getCombinedLight(pos.offset(f), 0);
 					neighbourBrightness[0][f.getIndex()] = (val >> 16)&255;

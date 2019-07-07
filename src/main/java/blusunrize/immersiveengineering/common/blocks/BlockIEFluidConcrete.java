@@ -13,13 +13,13 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.util.IEPotions;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -48,7 +48,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 	}
 
 	@Override
-	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand)
+	public void updateTick(World world, BlockPos pos, BlockState state, Random rand)
 	{
 		if(!isSourceBlock(world, pos)&&ForgeEventFactory.canCreateFluidSource(world, pos, state, false))
 		{
@@ -67,7 +67,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 		int expQuanta = -101;
 		if(timer >= Math.min(14, quantaRemaining))
 		{
-			IBlockState solidState;
+			BlockState solidState;
 			if(level >= 14)
 				solidState = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CONCRETE_SHEET.getMeta());
 			else if(level >= 10)
@@ -79,8 +79,8 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 			else
 				solidState = IEContent.blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta());
 			world.setBlockState(pos, solidState);
-			for(EntityLivingBase living : world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos, pos.add(1, 1, 1))))
-				living.addPotionEffect(new PotionEffect(IEPotions.concreteFeet, Integer.MAX_VALUE));
+			for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1))))
+				living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet, Integer.MAX_VALUE));
 			return;
 		}
 		else
@@ -114,9 +114,9 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 
 			int total = level;
 			int blocks = 1;
-			for(EnumFacing f : EnumFacing.HORIZONTALS)
+			for(Direction f : Direction.HORIZONTALS)
 			{
-				IBlockState otherState = world.getBlockState(pos.offset(f));
+				BlockState otherState = world.getBlockState(pos.offset(f));
 				if(otherState.getBlock()==this)
 				{
 					blocks++;
@@ -124,9 +124,9 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 				}
 			}
 			int newEvenQuanta = (int)Math.ceil(total/(float)blocks);
-			for(EnumFacing f : EnumFacing.HORIZONTALS)
+			for(Direction f : Direction.HORIZONTALS)
 			{
-				IBlockState otherState = world.getBlockState(pos.offset(f));
+				BlockState otherState = world.getBlockState(pos.offset(f));
 				if(otherState.getBlock()==this)
 					world.setBlockState(pos.offset(f), otherState.with(LEVEL, newEvenQuanta));
 

@@ -16,16 +16,16 @@ import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTran
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.EnumLightType;
+import net.minecraft.world.LightType;
 
 import javax.annotation.Nonnull;
 
@@ -73,7 +73,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		if(active!=b)
 		{
 			this.markContainingBlockForUpdate(null);
-			world.checkLightFor(EnumLightType.BLOCK, getPos());
+			world.checkLightFor(LightType.BLOCK, getPos());
 			world.addBlockEvent(getPos(), getBlockState().getBlock(), 1, 0);
 		}
 	}
@@ -105,7 +105,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		active = nbt.getBoolean("active");
@@ -114,7 +114,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setBoolean("active", active);
@@ -128,7 +128,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		if(id==1)
 		{
 			this.markContainingBlockForUpdate(null);
-			world.checkLightFor(EnumLightType.BLOCK, getPos());
+			world.checkLightFor(LightType.BLOCK, getPos());
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
@@ -171,13 +171,13 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
-		return flipped?EnumFacing.UP: EnumFacing.NORTH;
+		return flipped?Direction.UP: Direction.NORTH;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 	}
 
@@ -188,25 +188,25 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		flipped = !flipped;
 		markContainingBlockForUpdate(null);

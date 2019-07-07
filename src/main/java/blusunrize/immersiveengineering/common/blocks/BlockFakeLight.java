@@ -14,12 +14,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightVal
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
@@ -41,31 +41,31 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 	}
 
 	@Override
-	public boolean isAir(IBlockState state, IBlockAccess world, BlockPos pos)
+	public boolean isAir(BlockState state, IBlockAccess world, BlockPos pos)
 	{
 		return true;
 	}
 
 	@Nullable
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
+	public AxisAlignedBB getCollisionBoundingBox(BlockState blockState, IBlockAccess worldIn, BlockPos pos)
 	{
 		return null;
 	}
 
 	@Override
-	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos)
+	public AxisAlignedBB getSelectedBoundingBox(BlockState state, World world, BlockPos pos)
 	{
 		return null;
 	}
 
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, BlockState state, int fortune)
 	{
 	}
 
 	@Override
-	public boolean canCollideCheck(IBlockState state, boolean b)
+	public boolean canCollideCheck(BlockState state, boolean b)
 	{
 		return false;
 	}
@@ -77,19 +77,19 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 	}
 
 	@Override
-	public RayTraceResult collisionRayTrace(IBlockState state, World par1World, BlockPos pos, Vec3d par5Vec3, Vec3d par6Vec3)
+	public RayTraceResult collisionRayTrace(BlockState state, World par1World, BlockPos pos, Vec3d par5Vec3, Vec3d par6Vec3)
 	{
 		return null;
 	}
 
 	@Override
-	public EnumPushReaction getPushReaction(IBlockState state)
+	public PushReaction getPushReaction(BlockState state)
 	{
-		return EnumPushReaction.DESTROY;
+		return PushReaction.DESTROY;
 	}
 
 	@Override
-	public boolean canBeReplacedByLeaves(IBlockState state, IBlockAccess world, BlockPos pos)
+	public boolean canBeReplacedByLeaves(BlockState state, IBlockAccess world, BlockPos pos)
 	{
 		return true;
 	}
@@ -169,13 +169,13 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 		}
 
 		@Override
-		public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+		public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 		{
 			floodlightCoords = nbt.getIntArray("floodlightCoords");
 		}
 
 		@Override
-		public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+		public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 		{
 			nbt.setIntArray("floodlightCoords", floodlightCoords);
 

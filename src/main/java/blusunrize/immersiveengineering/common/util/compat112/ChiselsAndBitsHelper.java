@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevic
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice1;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import com.google.common.base.Function;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 import javax.annotation.Nullable;
@@ -53,7 +53,7 @@ public class ChiselsAndBitsHelper extends IECompatModule implements Function<Lis
 		list.add(IEContent.blockMetalDevice0.getStateFromMeta(BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta()));
 		list.add(IEContent.blockMetalDevice0.getStateFromMeta(BlockTypes_MetalDevice0.CAPACITOR_CREATIVE.getMeta()));
 		list.add(IEContent.blockMetalDevice0.getStateFromMeta(BlockTypes_MetalDevice0.BARREL.getMeta()));
-		for(EnumFacing f : EnumFacing.values())
+		for(Direction f : Direction.values())
 		{
 			list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta()).with(IEProperties.FACING_ALL, f));
 			if(f.getAxis()!=Axis.Y)
@@ -61,9 +61,9 @@ public class ChiselsAndBitsHelper extends IECompatModule implements Function<Lis
 //			if(f==EnumFacing.NORTH)
 //				list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).with(IEProperties.FACING_ALL,f));
 		}
-		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).with(IEProperties.FACING_ALL, EnumFacing.UP));
-		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).with(IEProperties.FACING_ALL, EnumFacing.DOWN));
-		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).with(IEProperties.FACING_ALL, EnumFacing.NORTH));
+		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).with(IEProperties.FACING_ALL, Direction.UP));
+		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).with(IEProperties.FACING_ALL, Direction.DOWN));
+		list.add(IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta()).with(IEProperties.FACING_ALL, Direction.NORTH));
 
 
 		list.add(IEContent.blockWoodenDevice0.getStateFromMeta(BlockTypes_WoodenDevice0.CRATE.getMeta()));

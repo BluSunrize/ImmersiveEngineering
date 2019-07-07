@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -29,7 +29,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 	public IInventory inv;
 	public int slotCount;
 
-	public ContainerIEBase(InventoryPlayer inventoryPlayer, T tile)
+	public ContainerIEBase(PlayerInventory inventoryPlayer, T tile)
 	{
 		this.tile = tile;
 		if(tile instanceof IIEInventory)
@@ -37,14 +37,14 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return inv!=null&&inv.isUsableByPlayer(player);//Override for TE's that don't implement IIEInventory
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
+	public ItemStack slotClick(int id, int button, ClickType clickType, PlayerEntity player)
 	{
 		Slot slot = id < 0?null: this.inventorySlots.get(id);
 		if(!(slot instanceof IESlot.Ghost))
@@ -59,7 +59,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 			slot.putStack(ItemStack.EMPTY);
 		else if(button==0||button==1)
 		{
-			InventoryPlayer playerInv = player.inventory;
+			PlayerInventory playerInv = player.inventory;
 			ItemStack stackHeld = playerInv.getItemStack();
 			if(stackSlot.isEmpty())
 			{
@@ -79,7 +79,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 		}
 		else if(button==5)
 		{
-			InventoryPlayer playerInv = player.inventory;
+			PlayerInventory playerInv = player.inventory;
 			ItemStack stackHeld = playerInv.getItemStack();
 			if(!slot.getHasStack())
 			{
@@ -91,7 +91,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
 	{
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slotObject = this.inventorySlots.get(slot);
@@ -243,7 +243,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 	}
 
 	@Override
-	public void onContainerClosed(EntityPlayer playerIn)
+	public void onContainerClosed(PlayerEntity playerIn)
 	{
 		super.onContainerClosed(playerIn);
 		if(inv!=null)

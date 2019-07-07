@@ -20,11 +20,11 @@ import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumRarity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Items;
+import net.minecraft.item.Rarity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
 
 public class BotaniaHelper extends IECompatModule
 {
-	EnumRarity rariryRelic;
+	Rarity rariryRelic;
 
 	@Override
 	public void preInit()
@@ -66,7 +66,7 @@ public class BotaniaHelper extends IECompatModule
 			IELogger.error("[Botania] Failed to protect IE conveyors against Botania's magnets");
 			e.printStackTrace();
 		}
-		rariryRelic = EnumRarity.valueOf("RELIC");
+		rariryRelic = Rarity.valueOf("RELIC");
 		if(rariryRelic!=null)
 		{
 			ShaderRegistry.rarityWeightMap.put(rariryRelic, 2);
@@ -101,10 +101,10 @@ public class BotaniaHelper extends IECompatModule
 	{
 		if(!event.isCanceled()&&event.getEntityLiving().getClass().getName().endsWith("EntityDoppleganger"))
 		{
-			NBTTagCompound tag = new NBTTagCompound();
+			CompoundNBT tag = new CompoundNBT();
 			event.getEntityLiving().writeAdditional(tag);
 			if(tag.getBoolean("hardMode"))
-				for(EntityItem item : event.getDrops())
+				for(ItemEntity item : event.getDrops())
 					if(item!=null&&!item.getItem().isEmpty()&&IEContent.itemShaderBag.equals(item.getItem().getItem()))
 						ItemNBTHelper.setString(item.getItem(), "rarity", "RELIC");
 		}

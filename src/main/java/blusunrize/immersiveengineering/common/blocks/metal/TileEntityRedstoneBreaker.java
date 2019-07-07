@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.Vec3d;
 
@@ -76,25 +76,25 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	}
 
 	@Override
-	public int getWeakRSOutput(IBlockState state, EnumFacing side)
+	public int getWeakRSOutput(BlockState state, Direction side)
 	{
 		return 0;
 	}
 
 	@Override
-	public int getStrongRSOutput(IBlockState state, EnumFacing side)
+	public int getStrongRSOutput(BlockState state, Direction side)
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canConnectRedstone(IBlockState state, EnumFacing side)
+	public boolean canConnectRedstone(BlockState state, Direction side)
 	{
 		return false;
 	}

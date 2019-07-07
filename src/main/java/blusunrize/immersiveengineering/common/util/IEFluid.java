@@ -10,12 +10,11 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.PotionTypes;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializer;
+import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.potion.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -41,7 +40,7 @@ public class IEFluid extends Fluid
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<ITextComponent> tooltip)
+	public void addTooltipInfo(FluidStack fluidStack, @Nullable PlayerEntity player, List<ITextComponent> tooltip)
 	{
 	}
 
@@ -54,25 +53,25 @@ public class IEFluid extends Fluid
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<ITextComponent> tooltip)
+		public void addTooltipInfo(FluidStack fluidStack, @Nullable PlayerEntity player, List<ITextComponent> tooltip)
 		{
 			if(fluidStack!=null&&fluidStack.tag!=null)
 			{
-				List<PotionEffect> effects = PotionUtils.getEffectsFromTag(fluidStack.tag);
+				List<EffectInstance> effects = PotionUtils.getEffectsFromTag(fluidStack.tag);
 				if(effects.isEmpty())
 					tooltip.add(TextFormatting.GRAY+I18n.format("effect.none").trim());
 				else
 				{
-					for(PotionEffect potioneffect : effects)
+					for(EffectInstance potioneffect : effects)
 					{
 						String s1 = I18n.format(potioneffect.getEffectName()).trim();
-						Potion potion = potioneffect.getPotion();
+						Effect potion = potioneffect.getPotion();
 
 						if(potioneffect.getAmplifier() > 0)
 							s1 = s1+" "+I18n.format("potion.potency."+potioneffect.getAmplifier()).trim();
 
 						if(potioneffect.getDuration() > 20)
-							s1 = s1+" ("+PotionUtil.getPotionDurationString(potioneffect, 1)+")";
+							s1 = s1+" ("+EffectUtils.getPotionDurationString(potioneffect, 1)+")";
 
 						if(potion.isBadEffect())
 							tooltip.add(TextFormatting.RED+s1);
@@ -80,8 +79,8 @@ public class IEFluid extends Fluid
 							tooltip.add(TextFormatting.BLUE+s1);
 					}
 				}
-				PotionType potionType = PotionUtils.getPotionTypeFromNBT(fluidStack.tag);
-				if(potionType!=PotionTypes.EMPTY)
+				Potion potionType = PotionUtils.getPotionTypeFromNBT(fluidStack.tag);
+				if(potionType!=Potions.EMPTY)
 				{
 					String modID = potionType.getRegistryName().getNamespace();
 					tooltip.add(TextFormatting.DARK_GRAY+I18n.format(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)));
@@ -106,13 +105,13 @@ public class IEFluid extends Fluid
 		}
 	}
 
-	public static final DataSerializer<Optional<FluidStack>> OPTIONAL_FLUID_STACK = new DataSerializer<Optional<FluidStack>>()
+	public static final IDataSerializer<Optional<FluidStack>> OPTIONAL_FLUID_STACK = new IDataSerializer<Optional<FluidStack>>()
 	{
 		@Override
 		public void write(PacketBuffer buf, Optional<FluidStack> value)
 		{
 			buf.writeBoolean(value.isPresent());
-			value.ifPresent(fs -> buf.writeCompoundTag(fs.writeToNBT(new NBTTagCompound())));
+			value.ifPresent(fs -> buf.writeCompoundTag(fs.writeToNBT(new CompoundNBT())));
 		}
 
 		@Nonnull

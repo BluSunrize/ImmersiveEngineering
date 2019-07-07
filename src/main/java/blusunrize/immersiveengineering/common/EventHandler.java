@@ -42,27 +42,27 @@ import blusunrize.immersiveengineering.common.network.MessageMineralListSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.wires.WireCollisions;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.EnumRarity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.ILootGenerator;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -151,10 +151,10 @@ public class EventHandler
 	@SubscribeEvent
 	public void onCapabilitiesAttachEntity(AttachCapabilitiesEvent<Entity> event)
 	{
-		if(event.getObject() instanceof EntityMinecart)
+		if(event.getObject() instanceof AbstractMinecartEntity)
 			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
 					new ShaderWrapper_Direct("immersiveengineering:minecart"));
-		if(event.getObject() instanceof EntityPlayer)
+		if(event.getObject() instanceof PlayerEntity)
 			event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "skyhook_data"),
 					new SimpleSkyhookProvider());
 	}
@@ -176,7 +176,7 @@ public class EventHandler
 				if(wrapper!=null)
 				{
 					wrapper.setShaderItem(Utils.copyStackWithAmount(event.getItem(), 1));
-					ImmersiveEngineering.packetHandler.sendTo(new MessageMinecartShaderSync(event.getMinecart(), wrapper), (EntityPlayerMP)event.getPlayer());
+					ImmersiveEngineering.packetHandler.sendTo(new MessageMinecartShaderSync(event.getMinecart(), wrapper), (ServerPlayerEntity)event.getPlayer());
 					event.setCanceled(true);
 				}
 			}
@@ -226,8 +226,8 @@ public class EventHandler
 							}
 							if(f_lootEntries!=null)
 							{
-								List<LootEntry> entryList = (List<LootEntry>)f_lootEntries.get(injectPool);
-								for(LootEntry entry : entryList)
+								List<ILootGenerator> entryList = (List<ILootGenerator>)f_lootEntries.get(injectPool);
+								for(ILootGenerator entry : entryList)
 									mainPool.addEntry(entry);
 							}
 						} catch(Exception e)
@@ -240,7 +240,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
 	{
-		if(event.getEntity().world.isRemote&&event.getEntity() instanceof EntityMinecart&&event.getEntity().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		if(event.getEntity().world.isRemote&&event.getEntity() instanceof AbstractMinecartEntity&&event.getEntity().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity(), null));
 	}
 //	@SubscribeEvent
@@ -339,7 +339,7 @@ public class EventHandler
 				World w = DimensionManager.getWorld(curr.getLeft());
 				if(w!=null)
 				{
-					IBlockState state = w.getBlockState(curr.getRight());
+					BlockState state = w.getBlockState(curr.getRight());
 					w.notifyBlockUpdate(curr.getRight(), state, state, 3);
 				}
 			}
@@ -378,11 +378,11 @@ public class EventHandler
 	//	}
 
 	public static HashMap<UUID, TileEntityCrusher> crusherMap = new HashMap<UUID, TileEntityCrusher>();
-	public static HashSet<Class<? extends EntityLiving>> listOfBoringBosses = new HashSet();
+	public static HashSet<Class<? extends MobEntity>> listOfBoringBosses = new HashSet();
 
 	static
 	{
-		listOfBoringBosses.add(EntityWither.class);
+		listOfBoringBosses.add(WitherEntity.class);
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
@@ -393,7 +393,7 @@ public class EventHandler
 			TileEntityCrusher crusher = crusherMap.get(event.getEntityLiving().getUniqueID());
 			if(crusher!=null)
 			{
-				for(EntityItem item : event.getDrops())
+				for(ItemEntity item : event.getDrops())
 					if(item!=null&&!item.getItem().isEmpty())
 						crusher.doProcessOutput(item.getItem());
 				crusherMap.remove(event.getEntityLiving().getUniqueID());
@@ -407,22 +407,22 @@ public class EventHandler
 	{
 		if(!event.isCanceled()&&!event.getEntityLiving().isNonBoss())
 		{
-			EnumRarity r = EnumRarity.EPIC;
-			for(Class<? extends EntityLiving> boring : listOfBoringBosses)
+			Rarity r = Rarity.EPIC;
+			for(Class<? extends MobEntity> boring : listOfBoringBosses)
 				if(boring.isAssignableFrom(event.getEntityLiving().getClass()))
 					return;
 			ItemStack bag = new ItemStack(IEContent.itemShaderBag);
 			ItemNBTHelper.setString(bag, "rarity", r.toString());
-			event.getDrops().add(new EntityItem(event.getEntityLiving().world, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
+			event.getDrops().add(new ItemEntity(event.getEntityLiving().world, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
 		}
 	}
 
 	@SubscribeEvent
 	public void onLivingAttacked(LivingAttackEvent event)
 	{
-		if(event.getEntityLiving() instanceof EntityPlayer)
+		if(event.getEntityLiving() instanceof PlayerEntity)
 		{
-			EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 			ItemStack activeStack = player.getActiveItemStack();
 			if(!activeStack.isEmpty()&&activeStack.getItem() instanceof ItemIEShield&&event.getAmount() >= 3&&Utils.canBlockDamageSource(player, event.getSource()))
 			{
@@ -449,8 +449,8 @@ public class EventHandler
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
-		if(!event.isCanceled()&&!event.getEntityLiving().isNonBoss()&&event.getAmount() >= event.getEntityLiving().getHealth()&&event.getSource().getTrueSource() instanceof EntityPlayer&&((EntityPlayer)event.getSource().getTrueSource()).getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemDrill)
-			Utils.unlockIEAdvancement((EntityPlayer)event.getSource().getTrueSource(), "main/secret_drillbreak");
+		if(!event.isCanceled()&&!event.getEntityLiving().isNonBoss()&&event.getAmount() >= event.getEntityLiving().getHealth()&&event.getSource().getTrueSource() instanceof PlayerEntity&&((PlayerEntity)event.getSource().getTrueSource()).getHeldItem(Hand.MAIN_HAND).getItem() instanceof ItemDrill)
+			Utils.unlockIEAdvancement((PlayerEntity)event.getSource().getTrueSource(), "main/secret_drillbreak");
 	}
 
 	@SubscribeEvent
@@ -469,11 +469,11 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingUpdate(LivingUpdateEvent event)
 	{
-		if(event.getEntityLiving() instanceof EntityPlayer&&!event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()&&ItemNBTHelper.hasKey(event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.CHEST), Lib.NBT_Powerpack))
+		if(event.getEntityLiving() instanceof PlayerEntity&&!event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()&&ItemNBTHelper.hasKey(event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST), Lib.NBT_Powerpack))
 		{
-			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.CHEST), Lib.NBT_Powerpack);
+			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
-				powerpack.getItem().onArmorTick(event.getEntityLiving().getEntityWorld(), (EntityPlayer)event.getEntityLiving(), powerpack);
+				powerpack.getItem().onArmorTick(event.getEntityLiving().getEntityWorld(), (PlayerEntity)event.getEntityLiving(), powerpack);
 		}
 	}
 
@@ -481,7 +481,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onEnderTeleport(EnderTeleportEvent event)
 	{
-		if(event.getEntityLiving().isCreatureType(EnumCreatureType.MONSTER, false))
+		if(event.getEntityLiving().isCreatureType(EntityClassification.MONSTER, false))
 		{
 			synchronized(interdictionTiles)
 			{
@@ -516,7 +516,7 @@ public class EventHandler
 		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY
 				||event.isSpawner())
 			return;
-		if(event.getEntityLiving().isCreatureType(EnumCreatureType.MONSTER, false))
+		if(event.getEntityLiving().isCreatureType(EntityClassification.MONSTER, false))
 		{
 			synchronized(interdictionTiles)
 			{
@@ -546,7 +546,7 @@ public class EventHandler
 	@SubscribeEvent()
 	public void digSpeedEvent(PlayerEvent.BreakSpeed event)
 	{
-		ItemStack current = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+		ItemStack current = event.getEntityPlayer().getHeldItem(Hand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
 		if(!current.isEmpty()&&current.getItem().equals(IEContent.itemDrill)&&current.getItemDamage()==0&&event.getEntityPlayer().isInsideOfMaterial(Material.WATER))
 			if(((ItemDrill)IEContent.itemDrill).getUpgrades(current).getBoolean("waterproof"))

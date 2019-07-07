@@ -13,14 +13,17 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.lwjgl.opengl.GL11;
 
@@ -38,10 +41,10 @@ public class TileRenderWatermill extends TileEntityRenderer<TileEntityWatermill>
 		if(quads==null)
 		{
 			final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-			IBlockState state = tile.getWorld().getBlockState(tile.getPos());
+			BlockState state = tile.getWorld().getBlockState(tile.getPos());
 			if(state.getBlock()!=WoodenDevices.watermill)
 				return;
-			state = state.with(IEProperties.FACING_ALL, EnumFacing.NORTH);
+			state = state.with(IEProperties.FACING_ALL, Direction.NORTH);
 			quads = blockRenderer.getModel(state).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
 		}
 		Tessellator tessellator = Tessellator.getInstance();
@@ -56,7 +59,7 @@ public class TileRenderWatermill extends TileEntityRenderer<TileEntityWatermill>
 		GlStateManager.rotatef(dir, 0, 1, 0);
 		GlStateManager.rotatef(wheelRotation, 0, 0, 1);
 		RenderHelper.disableStandardItemLighting();
-		Minecraft.getInstance().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);

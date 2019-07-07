@@ -14,16 +14,19 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
@@ -46,10 +49,10 @@ public class TileRenderWindmill extends TileEntityRenderer<TileEntityWindmill>
 		BlockPos blockPos = tile.getPos();
 		if(quads[tile.sails]==null)
 		{
-			IBlockState state = getWorld().getBlockState(blockPos);
+			BlockState state = getWorld().getBlockState(blockPos);
 			if(state.getBlock()!=WoodenDevices.windmill)
 				return;
-			state = state.with(IEProperties.FACING_ALL, EnumFacing.NORTH);
+			state = state.with(IEProperties.FACING_ALL, Direction.NORTH);
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 			List<String> parts = new ArrayList<>();
 			parts.add("base");
@@ -65,14 +68,14 @@ public class TileRenderWindmill extends TileEntityRenderer<TileEntityWindmill>
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(x+.5, y+.5, z+.5);
 
-		float dir = tile.facing==EnumFacing.SOUTH?0: tile.facing==EnumFacing.NORTH?180: tile.facing==EnumFacing.EAST?90: -90;
+		float dir = tile.facing==Direction.SOUTH?0: tile.facing==Direction.NORTH?180: tile.facing==Direction.EAST?90: -90;
 		float rot = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*tile.perTick);
 
 		GlStateManager.rotatef(rot, tile.facing.getAxis()==Axis.X?1: 0, 0, tile.facing.getAxis()==Axis.Z?1: 0);
 		GlStateManager.rotatef(dir, 0, 1, 0);
 
 		RenderHelper.disableStandardItemLighting();
-		Minecraft.getInstance().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);

@@ -19,15 +19,15 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -49,7 +49,7 @@ public class ItemVoltmeter extends ItemIEBase implements ITool
 		{
 			int[] link = stack.getOrCreateTag().getIntArray("linkingPos");
 			if(link.length > 3)
-				tooltip.add(new TextComponentTranslation(Lib.DESC_INFO+"attachedToDim", link[1], link[2], link[3], link[0]));
+				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"attachedToDim", link[1], link[2], link[3], link[0]));
 		}
 
 	}
@@ -61,12 +61,12 @@ public class ItemVoltmeter extends ItemIEBase implements ITool
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext context)
+	public ActionResultType onItemUse(ItemUseContext context)
 	{
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
-		EnumFacing side = context.getFace();
-		EntityPlayer player = context.getPlayer();
+		Direction side = context.getFace();
+		PlayerEntity player = context.getPlayer();
 		ItemStack stack = context.getItem();
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if((player==null||!player.isSneaking())&&(tileEntity instanceof IFluxReceiver||tileEntity instanceof IFluxProvider))
@@ -84,8 +84,8 @@ public class ItemVoltmeter extends ItemIEBase implements ITool
 				stored = ((IFluxProvider)tileEntity).getEnergyStored(side);
 			}
 			if(max > 0)
-				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"energyStorage", stored, max));
-			return EnumActionResult.SUCCESS;
+				ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"energyStorage", stored, max));
+			return ActionResultType.SUCCESS;
 		}
 		if(player!=null&&player.isSneaking()&&tileEntity instanceof IImmersiveConnectable)
 		{
@@ -109,14 +109,14 @@ public class ItemVoltmeter extends ItemIEBase implements ITool
 						Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world, true);
 						for(AbstractConnection con : connections)
 							if(Utils.toCC(nodeHere).equals(con.end))
-								player.sendMessage(new TextComponentTranslation(Lib.CHAT_INFO+"averageLoss", Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
+								player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"averageLoss", Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
 					}
 				}
 				ItemNBTHelper.remove(stack, "linkingPos");
 				ItemNBTHelper.remove(stack, "linkingDim");
 			}
-			return EnumActionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		}
-		return EnumActionResult.PASS;
+		return ActionResultType.PASS;
 	}
 }

@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.util.chickenbones;
 
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
@@ -89,7 +89,7 @@ public class Matrix4
 		m33 = mat.m33;
 	}
 
-	public Matrix4(EnumFacing facing)
+	public Matrix4(Direction facing)
 	{
 		this();
 		setIdentity();

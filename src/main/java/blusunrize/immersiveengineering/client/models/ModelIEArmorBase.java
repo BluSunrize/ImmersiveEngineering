@@ -9,16 +9,15 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.entity.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityArmorStand;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ArmorStandEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class ModelIEArmorBase extends ModelBiped
+public abstract class ModelIEArmorBase extends BipedModel
 {
 	public ModelIEArmorBase(float modelSize, float p_i1149_2_, int textureWidthIn, int textureHeightIn)
 	{
@@ -28,12 +27,12 @@ public abstract class ModelIEArmorBase extends ModelBiped
 	@Override
 	public void render(Entity entity, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float scale)
 	{
-		if(entity instanceof EntityLivingBase)
+		if(entity instanceof LivingEntity)
 		{
-			isChild = ((EntityLivingBase)entity).isChild();
+			isChild = ((LivingEntity)entity).isChild();
 			isSneak = entity.isSneaking();
 			isRiding = entity.isRiding();
-			this.setLivingAnimations((EntityLivingBase)entity, p_78088_2_, p_78088_3_, ClientUtils.partialTicks());
+			this.setLivingAnimations((LivingEntity)entity, p_78088_2_, p_78088_3_, ClientUtils.partialTicks());
 		}
 		super.render(entity, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
 	}
@@ -41,11 +40,11 @@ public abstract class ModelIEArmorBase extends ModelBiped
 	@Override
 	public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, Entity entity)
 	{
-		if(entity instanceof EntityLivingBase)
-			swingProgress = ((EntityLivingBase)entity).getSwingProgress(ClientUtils.partialTicks());
-		if(entity instanceof EntityArmorStand)
+		if(entity instanceof LivingEntity)
+			swingProgress = ((LivingEntity)entity).getSwingProgress(ClientUtils.partialTicks());
+		if(entity instanceof ArmorStandEntity)
 			setRotationAnglesStand(p_78087_1_, p_78087_2_, p_78087_3_, p_78087_4_, p_78087_5_, p_78087_6_, entity);
-		else if(entity instanceof EntitySkeleton||entity instanceof EntityZombie)
+		else if(entity instanceof SkeletonEntity||entity instanceof ZombieEntity)
 			setRotationAnglesZombie(p_78087_1_, p_78087_2_, p_78087_3_, p_78087_4_, p_78087_5_, p_78087_6_, entity);
 		else
 			super.setRotationAngles(p_78087_1_, p_78087_2_, p_78087_3_, p_78087_4_, p_78087_5_, p_78087_6_, entity);
@@ -72,9 +71,9 @@ public abstract class ModelIEArmorBase extends ModelBiped
 
 	public void setRotationAnglesStand(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, Entity entity)
 	{
-		if((entity instanceof EntityArmorStand))
+		if((entity instanceof ArmorStandEntity))
 		{
-			EntityArmorStand entityarmorstand = (EntityArmorStand)entity;
+			ArmorStandEntity entityarmorstand = (ArmorStandEntity)entity;
 			this.bipedHead.rotateAngleX = (0.01745329F*entityarmorstand.getHeadRotation().getX());
 			this.bipedHead.rotateAngleY = (0.01745329F*entityarmorstand.getHeadRotation().getY());
 			this.bipedHead.rotateAngleZ = (0.01745329F*entityarmorstand.getHeadRotation().getZ());

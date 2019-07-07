@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api;
 import com.google.common.collect.Lists;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
+import net.minecraft.potion.Effect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -55,7 +55,7 @@ public class IEApi
 	 * 1: slippery, makes the target slide around and randomly drop their held item<br>
 	 * 2: conductive, increases flux damage done to the target (CoFH/RedstoneArsenal compat112)<br>
 	 */
-	public static Potion[] potions;
+	public static Effect[] potions;
 
 	/**
 	 * Each element of this list will be called once when the command "/cie resetrender" is run.

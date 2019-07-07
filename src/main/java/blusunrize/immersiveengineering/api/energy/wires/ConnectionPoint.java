@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 
@@ -26,15 +26,15 @@ public final class ConnectionPoint implements Comparable<ConnectionPoint>
 		this.index = index;
 	}
 
-	public ConnectionPoint(NBTTagCompound nbt)
+	public ConnectionPoint(CompoundNBT nbt)
 	{
 		pos = NBTUtil.getPosFromTag(nbt);
 		index = nbt.getInt("index");
 	}
 
-	public NBTTagCompound createTag()
+	public CompoundNBT createTag()
 	{
-		NBTTagCompound ret = NBTUtil.createPosTag(pos);
+		CompoundNBT ret = NBTUtil.createPosTag(pos);
 		ret.setInt("index", index);
 		return ret;
 	}

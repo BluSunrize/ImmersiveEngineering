@@ -14,13 +14,13 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -70,7 +70,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 				else
 				{
 					BlockPos targetPos = lowestLayer.poll();
-					IBlockState state = world.getBlockState(targetPos);
+					BlockState state = world.getBlockState(targetPos);
 					if((state.getBlock().isAir(state, world, targetPos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(targetPos, state))
 						if(tryPlaceFluid(null, world, tank.getFluid(), targetPos))
 						{
@@ -87,7 +87,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	//FIXME: Blatantly stolen from Forge. I'm going to do a PR to return this method back to forge, but for now...
 	//Forge changed this method to require an ItemStack which isn't appropriate here.
 	//Mezz reported he was doing further work in this space for us, we should be able to remove this soon.
-	public static boolean tryPlaceFluid(@Nullable EntityPlayer player, World worldIn, FluidStack fluidStack, BlockPos pos)
+	public static boolean tryPlaceFluid(@Nullable PlayerEntity player, World worldIn, FluidStack fluidStack, BlockPos pos)
 	{
 		if(worldIn==null||fluidStack==null||pos==null)
 		{
@@ -101,7 +101,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 		}
 
 		// check that we can place the fluid at the destination
-		IBlockState destBlockState = worldIn.getBlockState(pos);
+		BlockState destBlockState = worldIn.getBlockState(pos);
 		Material destMaterial = destBlockState.getMaterial();
 		boolean isDestNonSolid = !destMaterial.isSolid();
 		boolean isDestReplaceable = destBlockState.getBlock().isReplaceable(worldIn, pos);
@@ -124,7 +124,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 			SoundEvent soundevent = fluid.getEmptySound(fluidStack);
 			worldIn.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-			IBlockState fluidBlockState = fluid.getBlock().getDefaultState();
+			BlockState fluidBlockState = fluid.getBlock().getDefaultState();
 			worldIn.setBlockState(pos, fluidBlockState, 11);
 		}
 		return true;
@@ -153,8 +153,8 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 
 	private void addConnectedSpaces(BlockPos pos)
 	{
-		for(EnumFacing facing : EnumFacing.values())
-			if(facing!=EnumFacing.UP&&(pos!=getPos()||sideConfig[facing.ordinal()]==1))
+		for(Direction facing : Direction.values())
+			if(facing!=Direction.UP&&(pos!=getPos()||sideConfig[facing.ordinal()]==1))
 				addToQueue(pos.offset(facing));
 	}
 
@@ -165,7 +165,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 				if(pos.distanceSq(getPos()) < 64*64)//Within max range
 					if(world.isBlockLoaded(pos))
 					{
-						IBlockState state = world.getBlockState(pos);
+						BlockState state = world.getBlockState(pos);
 						if(tank.getFluid()!=null&&tank.getFluid().getFluid()==FluidRegistry.lookupFluidForBlock(state.getBlock()))
 							tempFluids.add(pos);
 						if((state.getBlock().isAir(state, world, pos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(pos, state))
@@ -181,7 +181,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 			addConnectedSpaces(pos);
 	}
 
-	private boolean isFullFluidBlock(BlockPos pos, IBlockState state)
+	private boolean isFullFluidBlock(BlockPos pos, BlockState state)
 	{
 		if(state.getBlock() instanceof IFluidBlock)
 			return Math.abs(((IFluidBlock)state.getBlock()).getFilledPercentage(world, pos))==1;
@@ -191,7 +191,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null||sideConfig.length!=6)
@@ -202,20 +202,20 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setIntArray("sideConfig", sideConfig);
-		nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
+		nbt.setTag("tank", tank.writeToNBT(new CompoundNBT()));
 	}
 
 	@Override
-	public SideConfig getSideConfig(EnumFacing side)
+	public SideConfig getSideConfig(Direction side)
 	{
 		return SideConfig.values()[this.sideConfig[side]+1];
 	}
 
 	@Override
-	public boolean toggleSide(EnumFacing side, EntityPlayer p)
+	public boolean toggleSide(Direction side, PlayerEntity p)
 	{
 		sideConfig[side]++;
 		if(sideConfig[side] > 1)
@@ -228,7 +228,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+	public boolean hasCapability(Capability<?> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||sideConfig[facing.ordinal()]==0))
 			return true;
@@ -237,7 +237,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||sideConfig[facing.ordinal()]==0))
 			return (T)tank;
@@ -245,7 +245,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
+	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
 		if(hammer&&IEConfig.colourblindSupport)
 		{
@@ -262,7 +262,7 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
+	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
 	{
 		return false;
 	}

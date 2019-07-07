@@ -11,27 +11,27 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class IEPotions
 {
-	public static Potion flammable;
-	public static Potion slippery;
-	public static Potion conductive;
-	public static Potion sticky;
-	public static Potion stunned;
-	public static Potion concreteFeet;
-	public static Potion flashed;
+	public static Effect flammable;
+	public static Effect slippery;
+	public static Effect conductive;
+	public static Effect sticky;
+	public static Effect stunned;
+	public static Effect concreteFeet;
+	public static Effect flashed;
 
 	public static void init()
 	{
@@ -43,10 +43,10 @@ public class IEPotions
 		concreteFeet = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "concreteFeet"), true, 0x624a98, 0, false, 5, true, true).registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, 2);
 		flashed = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flashed"), true, 0x624a98, 0, false, 6, true, true).registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15000000596046448D, 2);
 
-		IEApi.potions = new Potion[]{flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed};
+		IEApi.potions = new Effect[]{flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed};
 	}
 
-	public static class IEPotion extends Potion
+	public static class IEPotion extends Effect
 	{
 		static ResourceLocation tex = new ResourceLocation("immersiveengineering", "textures/gui/potioneffects.png");
 		final int tickrate;
@@ -67,19 +67,19 @@ public class IEPotions
 		}
 
 		@Override
-		public boolean shouldRender(PotionEffect effect)
+		public boolean shouldRender(EffectInstance effect)
 		{
 			return showInInventory;
 		}
 
 		@Override
-		public boolean shouldRenderInvText(PotionEffect effect)
+		public boolean shouldRenderInvText(EffectInstance effect)
 		{
 			return showInInventory;
 		}
 
 		@Override
-		public boolean shouldRenderHUD(PotionEffect effect)
+		public boolean shouldRenderHUD(EffectInstance effect)
 		{
 			return showInHud;
 		}
@@ -101,23 +101,23 @@ public class IEPotions
 		}
 
 		@Override
-		public void performEffect(EntityLivingBase living, int amplifier)
+		public void performEffect(LivingEntity living, int amplifier)
 		{
 			if(this==IEPotions.slippery)
 			{
 				if(living.onGround)
 					living.moveRelative(0, 0, 1, 0.005F);
-				EntityEquipmentSlot hand = living.getRNG().nextBoolean()?EntityEquipmentSlot.MAINHAND: EntityEquipmentSlot.OFFHAND;
+				EquipmentSlotType hand = living.getRNG().nextBoolean()?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND;
 				if(!living.world.isRemote&&living.getRNG().nextInt(300)==0&&!living.getItemStackFromSlot(hand).isEmpty())
 				{
-					EntityItem dropped = living.entityDropItem(living.getItemStackFromSlot(hand).copy(), 1);
+					ItemEntity dropped = living.entityDropItem(living.getItemStackFromSlot(hand).copy(), 1);
 					dropped.setPickupDelay(20);
 					living.setItemStackToSlot(hand, ItemStack.EMPTY);
 				}
 			}
 			else if(this==IEPotions.concreteFeet&&!living.world.isRemote)
 			{
-				IBlockState state = living.world.getBlockState(living.getPosition());
+				BlockState state = living.world.getBlockState(living.getPosition());
 				if(state.getBlock()!=IEContent.blockStoneDecoration&&state.getBlock()!=IEContent.blockStoneDecorationSlabs&&state.getBlock()!=IEContent.blockStoneDevice)
 					living.removeActivePotionEffect(this);
 			}

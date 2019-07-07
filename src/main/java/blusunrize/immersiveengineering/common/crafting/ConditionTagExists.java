@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import com.google.gson.JsonObject;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IConditionSerializer;
@@ -35,8 +35,8 @@ public class ConditionTagExists implements IConditionSerializer
 	@Override
 	public BooleanSupplier parse(@Nonnull JsonObject json)
 	{
-		String key = JsonUtils.getString(json, "tag");
-		boolean value = JsonUtils.getBoolean(json, "value", true);
+		String key = JSONUtils.getString(json, "tag");
+		boolean value = JSONUtils.getBoolean(json, "value", true);
 		return () -> ApiUtils.isExistingOreName(key)==value;
 	}
 }

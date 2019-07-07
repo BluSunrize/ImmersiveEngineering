@@ -11,14 +11,14 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import invtweaks.api.container.ChestContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 @ChestContainer
 public class ContainerCrate extends ContainerIEBase
 {
-	public ContainerCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile)
+	public ContainerCrate(PlayerInventory inventoryPlayer, TileEntityWoodenCrate tile)
 	{
 		super(inventoryPlayer, tile);
 		for(int i = 0; i < tile.getInventory().size(); i++)

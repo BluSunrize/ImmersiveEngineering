@@ -19,12 +19,12 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.effect.LightningBoltEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -61,7 +61,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			if(energyStorage.getEnergyStored() > 0)
 			{
 				TileEntity tileEntity;
-				for(EnumFacing f : EnumFacing.BY_HORIZONTAL_INDEX)
+				for(Direction f : Direction.BY_HORIZONTAL_INDEX)
 				{
 					tileEntity = Utils.getExistingTileEntity(world, getPos().offset(f, 2));
 					int output = EnergyHelper.insertFlux(tileEntity, f.getOpposite(), energyStorage.getLimitExtract(), true);
@@ -83,7 +83,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 				{
 					this.energyStorage.setEnergy(IEConfig.Machines.lightning_output);
 					BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
-					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(world, pos.getX(), pos.getY(), pos.getZ(), true);
+					LightningBoltEntity entityLightningBolt = new LightningBoltEntity(world, pos.getX(), pos.getY(), pos.getZ(), true);
 					world.addWeatherEffect(entityLightningBolt);
 					world.spawnEntity(entityLightningBolt);
 				}
@@ -119,11 +119,11 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			if(!closedList.contains(next)&&isFence(next))
 			{
 				closedList.add(next);
-				openList.add(next.offset(EnumFacing.WEST));
-				openList.add(next.offset(EnumFacing.EAST));
-				openList.add(next.offset(EnumFacing.NORTH));
-				openList.add(next.offset(EnumFacing.SOUTH));
-				openList.add(next.offset(EnumFacing.UP));
+				openList.add(next.offset(Direction.WEST));
+				openList.add(next.offset(Direction.EAST));
+				openList.add(next.offset(Direction.NORTH));
+				openList.add(next.offset(Direction.SOUTH));
+				openList.add(next.offset(Direction.UP));
 			}
 			openList.remove(0);
 		}
@@ -136,14 +136,14 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
@@ -170,19 +170,19 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			{
 				yMin = -.5f;
 				yMax = 1.25f;
-				xMin = (facing.getAxis()==Axis.X?(posInMultiblock%9 > 2^facing==EnumFacing.EAST): (posInMultiblock%3==2^facing==EnumFacing.NORTH))?.8125f: .4375f;
-				xMax = (facing.getAxis()==Axis.X?(posInMultiblock%9 < 3^facing==EnumFacing.EAST): (posInMultiblock%3==0^facing==EnumFacing.NORTH))?.1875f: .5625f;
-				zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==EnumFacing.EAST): (posInMultiblock%9 < 3^facing==EnumFacing.NORTH))?.8125f: .4375f;
-				zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==EnumFacing.EAST): (posInMultiblock%9 > 2^facing==EnumFacing.NORTH))?.1875f: .5625f;
+				xMin = (facing.getAxis()==Axis.X?(posInMultiblock%9 > 2^facing==Direction.EAST): (posInMultiblock%3==2^facing==Direction.NORTH))?.8125f: .4375f;
+				xMax = (facing.getAxis()==Axis.X?(posInMultiblock%9 < 3^facing==Direction.EAST): (posInMultiblock%3==0^facing==Direction.NORTH))?.1875f: .5625f;
+				zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==Direction.EAST): (posInMultiblock%9 < 3^facing==Direction.NORTH))?.8125f: .4375f;
+				zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==Direction.EAST): (posInMultiblock%9 > 2^facing==Direction.NORTH))?.1875f: .5625f;
 			}
 			else
 			{
 				yMin = .25f;
 				yMax = .75f;
-				xMin = (facing.getAxis()==Axis.X?(posInMultiblock%9 > 2^facing==EnumFacing.EAST): (posInMultiblock%3==2^facing==EnumFacing.NORTH))?1: .625f;
-				xMax = (facing.getAxis()==Axis.X?(posInMultiblock%9 < 3^facing==EnumFacing.EAST): (posInMultiblock%3==0^facing==EnumFacing.NORTH))?0: .375f;
-				zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==EnumFacing.EAST): (posInMultiblock%9 < 3^facing==EnumFacing.NORTH))?1: .625f;
-				zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==EnumFacing.EAST): (posInMultiblock%9 > 2^facing==EnumFacing.NORTH))?0: .375f;
+				xMin = (facing.getAxis()==Axis.X?(posInMultiblock%9 > 2^facing==Direction.EAST): (posInMultiblock%3==2^facing==Direction.NORTH))?1: .625f;
+				xMax = (facing.getAxis()==Axis.X?(posInMultiblock%9 < 3^facing==Direction.EAST): (posInMultiblock%3==0^facing==Direction.NORTH))?0: .375f;
+				zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==Direction.EAST): (posInMultiblock%9 < 3^facing==Direction.NORTH))?1: .625f;
+				zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==Direction.EAST): (posInMultiblock%9 > 2^facing==Direction.NORTH))?0: .375f;
 			}
 		}
 		else if(posInMultiblock > 17)
@@ -198,19 +198,19 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		return new IFluidTank[0];
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
 		return false;
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return false;
 	}
@@ -242,7 +242,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(@Nullable EnumFacing facing)
+	public SideConfig getEnergySideConfig(@Nullable Direction facing)
 	{
 		return this.formed&&this.isEnergyPos()?SideConfig.OUTPUT: SideConfig.NONE;
 	}
@@ -250,7 +250,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	private IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		if(this.formed&&this.isEnergyPos())
 			return wrapper;

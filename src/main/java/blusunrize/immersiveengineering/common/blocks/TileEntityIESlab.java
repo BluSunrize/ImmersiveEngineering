@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityIESlab extends TileEntityIEBase
 {
 	public int slabType = 0;
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		slabType = nbt.getInt("slabType");
 		if(descPacket&&world!=null)
@@ -23,7 +23,7 @@ public class TileEntityIESlab extends TileEntityIEBase
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("slabType", slabType);
 	}

@@ -17,8 +17,8 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -98,13 +98,13 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 			else if(posInMultiblock < 27)
 				indent = .375f;
 
-			if((posInMultiblock%9 < 3&&facing==EnumFacing.WEST)||(posInMultiblock%9 > 5&&facing==EnumFacing.EAST)||(posInMultiblock%3==2&&facing==EnumFacing.SOUTH)||(posInMultiblock%3==0&&facing==EnumFacing.NORTH))
+			if((posInMultiblock%9 < 3&&facing==Direction.WEST)||(posInMultiblock%9 > 5&&facing==Direction.EAST)||(posInMultiblock%3==2&&facing==Direction.SOUTH)||(posInMultiblock%3==0&&facing==Direction.NORTH))
 				xMin = (1-indent);
-			if((posInMultiblock%9 < 3&&facing==EnumFacing.EAST)||(posInMultiblock%9 > 5&&facing==EnumFacing.WEST)||(posInMultiblock%3==2&&facing==EnumFacing.NORTH)||(posInMultiblock%3==0&&facing==EnumFacing.SOUTH))
+			if((posInMultiblock%9 < 3&&facing==Direction.EAST)||(posInMultiblock%9 > 5&&facing==Direction.WEST)||(posInMultiblock%3==2&&facing==Direction.NORTH)||(posInMultiblock%3==0&&facing==Direction.SOUTH))
 				xMax = indent;
-			if((posInMultiblock%9 < 3&&facing==EnumFacing.SOUTH)||(posInMultiblock%9 > 5&&facing==EnumFacing.NORTH)||(posInMultiblock%3==2&&facing==EnumFacing.EAST)||(posInMultiblock%3==0&&facing==EnumFacing.WEST))
+			if((posInMultiblock%9 < 3&&facing==Direction.SOUTH)||(posInMultiblock%9 > 5&&facing==Direction.NORTH)||(posInMultiblock%3==2&&facing==Direction.EAST)||(posInMultiblock%3==0&&facing==Direction.WEST))
 				zMin = (1-indent);
-			if((posInMultiblock%9 < 3&&facing==EnumFacing.NORTH)||(posInMultiblock%9 > 5&&facing==EnumFacing.SOUTH)||(posInMultiblock%3==2&&facing==EnumFacing.WEST)||(posInMultiblock%3==0&&facing==EnumFacing.EAST))
+			if((posInMultiblock%9 < 3&&facing==Direction.NORTH)||(posInMultiblock%9 > 5&&facing==Direction.SOUTH)||(posInMultiblock%3==2&&facing==Direction.WEST)||(posInMultiblock%3==0&&facing==Direction.EAST))
 				zMax = indent;
 		}
 
@@ -117,7 +117,7 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 		int i = 1;
 		for(int j = 0; j < 2; j++)
 		{
-			EnumFacing phf = j==0?facing.rotateY(): facing.rotateYCCW();
+			Direction phf = j==0?facing.rotateY(): facing.rotateYCCW();
 			BlockPos pos = getPos().add(0, -1, 0).offset(phf, 2);
 			TileEntity te = Utils.getExistingTileEntity(world, pos);
 			if(te instanceof TileEntityBlastFurnacePreheater)
@@ -141,14 +141,14 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if((posInMultiblock==1||posInMultiblock==7||posInMultiblock==31)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityBlastFurnaceAdvanced master = (TileEntityBlastFurnaceAdvanced)master();
 			if(master==null)
 				return null;
-			if(posInMultiblock==31&&facing==EnumFacing.UP)
+			if(posInMultiblock==31&&facing==Direction.UP)
 				return master.inputHandler.cast();
 			if(posInMultiblock==1&&facing==master.facing)
 				return master.outputHandler.cast();

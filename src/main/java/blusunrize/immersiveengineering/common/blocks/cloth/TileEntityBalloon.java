@@ -24,19 +24,19 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.init.Particles;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -62,7 +62,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		//to prevent old ballons from going black
@@ -81,7 +81,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	}
 
 	@Override
-	public void writeCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInt("nbtVersion", 1);
@@ -113,7 +113,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityShader.SHADER_CAPABILITY)
 			return ApiUtils.constantOptional(shaderCap, shader);
@@ -122,7 +122,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 
 	@Nonnull
 	@Override
-	public String getCacheKey(@Nonnull IBlockState object)
+	public String getCacheKey(@Nonnull BlockState object)
 	{
 		if(shader!=null&&!shader.getShaderItem().isEmpty()&&shader.getShaderItem().getItem() instanceof IShaderItem)
 			return ((IShaderItem)shader.getShaderItem().getItem()).getShaderName(shader.getShaderItem());
@@ -130,7 +130,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	}
 
 	@Override
-	public int getRenderColour(IBlockState object, String group)
+	public int getRenderColour(BlockState object, String group)
 	{
 		if(shader!=null&&!shader.getShaderItem().isEmpty()&&shader.getShaderItem().getItem() instanceof IShaderItem)
 			return 0xffffffff;
@@ -171,7 +171,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem)
 		{
@@ -198,10 +198,10 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 			else
 				target = (hitY > .5625&&hitY < .75)?1: 0;
 		}
-		EnumDyeColor heldDye = Utils.getDye(heldItem);
+		DyeColor heldDye = Utils.getDye(heldItem);
 		if(heldDye==null)
 			return false;
-		int color = ObfuscationReflectionHelper.getPrivateValue(EnumDyeColor.class, heldDye,
+		int color = ObfuscationReflectionHelper.getPrivateValue(DyeColor.class, heldDye,
 				"field_193351_w");
 		if(target==0)
 		{
@@ -220,7 +220,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		style = 1-style;
 		markContainingBlockForUpdate(null);
@@ -230,7 +230,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(entity instanceof EntityArrow||entity instanceof EntityRevolvershot)
+		if(entity instanceof AbstractArrowEntity||entity instanceof EntityRevolvershot)
 		{
 			Vec3d pos = new Vec3d(getPos()).add(.5, .5, .5);
 			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST,

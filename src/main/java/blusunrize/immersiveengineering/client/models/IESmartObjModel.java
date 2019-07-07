@@ -24,7 +24,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
@@ -32,9 +32,9 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -67,9 +67,9 @@ public class IESmartObjModel extends OBJBakedModel
 	HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
 	ImmutableList<BakedQuad> bakedQuads;
 	ItemStack tempStack = ItemStack.EMPTY;
-	IBlockState tempState;
-	public EntityLivingBase tempEntity;
-	public static EntityLivingBase tempEntityStatic;
+	BlockState tempState;
+	public LivingEntity tempEntity;
+	public static LivingEntity tempEntityStatic;
 	VertexFormat format;
 	Map<String, String> texReplace = null;
 	public TransformType lastCameraTransform = TransformType.FIXED;
@@ -137,7 +137,7 @@ public class IESmartObjModel extends OBJBakedModel
 	ItemOverrideList overrideList = new ItemOverrideList(new ArrayList<>())
 	{
 		@Override
-		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
+		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
 		{
 			tempEntityStatic = entity;
 			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack, false, true);
@@ -201,7 +201,7 @@ public class IESmartObjModel extends OBJBakedModel
 	};
 
 	@Override
-	public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand)
+	public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand)
 	{
 		if (side!=null)
 			return ImmutableList.of();
@@ -222,7 +222,7 @@ public class IESmartObjModel extends OBJBakedModel
 		return getQuads(blockState, side, rand, objState, tex, false);
 	}
 
-	public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand, OBJState objstate, Map<String, String> tex,
+	public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand, OBJState objstate, Map<String, String> tex,
 									boolean addAnimationAndTex)
 	{
 		texReplace = tex;
@@ -399,7 +399,7 @@ public class IESmartObjModel extends OBJBakedModel
 				if(tempSprite!=null)
 				{
 					Builder builder = new Builder(getFormat());
-					builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
+					builder.setQuadOrientation(Direction.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
 					builder.setTexture(tempSprite);
 					builder.setQuadTint(pass);
 					Normal faceNormal = f.getNormal();

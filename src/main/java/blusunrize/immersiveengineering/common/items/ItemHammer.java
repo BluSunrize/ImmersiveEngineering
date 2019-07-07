@@ -22,22 +22,22 @@ import blusunrize.immersiveengineering.common.util.RotationUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Enchantments;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.IWorldReader;
@@ -72,64 +72,64 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 		super.addInformation(stack, worldIn, tooltip, flagIn);
 		if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
 		{
-			NBTTagList tagList = stack.getOrCreateTag().getList("multiblockPermission", 8);
+			ListNBT tagList = stack.getOrCreateTag().getList("multiblockPermission", 8);
 			String s = I18n.format(Lib.DESC_INFO+"multiblocksAllowed");
 			addInfo(tooltip, s, tagList);
 		}
 		if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
 		{
-			NBTTagList tagList = stack.getOrCreateTag().getList("multiblockInterdiction", 8);
+			ListNBT tagList = stack.getOrCreateTag().getList("multiblockInterdiction", 8);
 			String s = I18n.format(Lib.DESC_INFO+"multiblockForbidden");
 			addInfo(tooltip, s, tagList);
 		}
 	}
 
-	private void addInfo(List<ITextComponent> list, String s, NBTTagList tagList)
+	private void addInfo(List<ITextComponent> list, String s, ListNBT tagList)
 	{
-		if(!GuiScreen.isShiftKeyDown())
-			list.add(new TextComponentTranslation(Lib.DESC_INFO+"holdShift", s));
+		if(!Screen.isShiftKeyDown())
+			list.add(new TranslationTextComponent(Lib.DESC_INFO+"holdShift", s));
 		else
 		{
-			list.add(new TextComponentString(s));
+			list.add(new StringTextComponent(s));
 			for(int i = 0; i < tagList.size(); i++)
-				list.add(new TextComponentTranslation(Lib.DESC_INFO+"multiblock."+tagList.getString(i))
+				list.add(new TranslationTextComponent(Lib.DESC_INFO+"multiblock."+tagList.getString(i))
 						.setStyle(new Style().setColor(TextFormatting.DARK_GRAY)));
 		}
 	}
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext context)
+	public ActionResultType onItemUse(ItemUseContext context)
 	{
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
-		EnumFacing side = context.getFace();
+		Direction side = context.getFace();
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(!(tileEntity instanceof IDirectionalTile)&&!(tileEntity instanceof IHammerInteraction)&&!(tileEntity instanceof IConfigurableSides))
 			if(RotationUtil.rotateBlock(world, pos, side))
-				return EnumActionResult.SUCCESS;
-		return EnumActionResult.PASS;
+				return ActionResultType.SUCCESS;
+		return ActionResultType.PASS;
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, ItemUseContext context)
+	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context)
 	{
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
-		EntityPlayer player = context.getPlayer();
-		EnumFacing side = context.getFace();
+		PlayerEntity player = context.getPlayer();
+		Direction side = context.getFace();
 		String[] permittedMultiblocks = null;
 		String[] interdictedMultiblocks = null;
 		if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
 		{
-			NBTTagList list = stack.getOrCreateTag().getList("multiblockPermission", 8);
+			ListNBT list = stack.getOrCreateTag().getList("multiblockPermission", 8);
 			permittedMultiblocks = new String[list.size()];
 			for(int i = 0; i < permittedMultiblocks.length; i++)
 				permittedMultiblocks[i] = list.getString(i);
 		}
 		if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
 		{
-			NBTTagList list = stack.getOrCreateTag().getList("multiblockInterdiction", 8);
+			ListNBT list = stack.getOrCreateTag().getList("multiblockInterdiction", 8);
 			interdictedMultiblocks = new String[list.size()];
 			for(int i = 0; i < interdictedMultiblocks.length; i++)
 				interdictedMultiblocks[i] = list.getString(i);
@@ -160,12 +160,12 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 					continue;
 				if(mb.createStructure(world, pos, side, player))
 				{
-					if(player instanceof EntityPlayerMP)
-						IEAdvancements.TRIGGER_MULTIBLOCK.trigger((EntityPlayerMP)player, mb, stack);
-					return EnumActionResult.SUCCESS;
+					if(player instanceof ServerPlayerEntity)
+						IEAdvancements.TRIGGER_MULTIBLOCK.trigger((ServerPlayerEntity)player, mb, stack);
+					return ActionResultType.SUCCESS;
 				}
 			}
-		return EnumActionResult.PASS;
+		return ActionResultType.PASS;
 	}
 
 	@Nonnull
@@ -196,13 +196,13 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 	}
 
 	@Override
-	public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, EntityPlayer player)
+	public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
+	public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand)
 	{
 		return !player.world.isRemote&&RotationUtil.rotateEntity(entity, player);
 	}
@@ -215,7 +215,7 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
+	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
 	{
 		if(getToolTypes(stack).contains(tool))
 			return 2;
@@ -224,7 +224,7 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		for(ToolType type : this.getToolTypes(stack))
 			if(state.getBlock().isToolEffective(state, type))
@@ -239,7 +239,7 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 	}
 
 	@Override
-	public boolean canHarvestBlock(ItemStack stack, IBlockState state)
+	public boolean canHarvestBlock(ItemStack stack, BlockState state)
 	{
 		if(state.getBlock() instanceof BlockIEBase)
 		{

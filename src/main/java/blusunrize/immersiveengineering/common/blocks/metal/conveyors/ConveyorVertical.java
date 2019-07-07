@@ -19,13 +19,13 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -42,7 +42,7 @@ import java.util.List;
 public class ConveyorVertical extends ConveyorBasic
 {
 	@Override
-	public boolean renderWall(TileEntity tile, EnumFacing facing, int wall)
+	public boolean renderWall(TileEntity tile, Direction facing, int wall)
 	{
 		return true;
 	}
@@ -61,7 +61,7 @@ public class ConveyorVertical extends ConveyorBasic
 
 
 	@Override
-	public String getModelCacheKey(TileEntity tile, EnumFacing facing)
+	public String getModelCacheKey(TileEntity tile, Direction facing)
 	{
 		String key = ConveyorHandler.reverseClassRegistry.get(this.getClass()).toString();
 		key += "f"+facing.ordinal();
@@ -71,27 +71,27 @@ public class ConveyorVertical extends ConveyorBasic
 		return key;
 	}
 
-	boolean renderBottomBelt(TileEntity tile, EnumFacing facing)
+	boolean renderBottomBelt(TileEntity tile, Direction facing)
 	{
 		TileEntity te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0));
 		if(te instanceof IConveyorTile&&((IConveyorTile)te).getConveyorSubtype()!=null)
-			for(EnumFacing f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
-				if(f==EnumFacing.UP)
+			for(Direction f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+				if(f==Direction.UP)
 					return false;
-		for(EnumFacing f : EnumFacing.HORIZONTALS)
+		for(Direction f : Direction.HORIZONTALS)
 			if(f!=facing&&isInwardConveyor(tile, f))
 				return true;
 		return false;
 	}
 
-	protected boolean isInwardConveyor(TileEntity tile, EnumFacing f)
+	protected boolean isInwardConveyor(TileEntity tile, Direction f)
 	{
 		TileEntity te = tile.getWorld().getTileEntity(tile.getPos().offset(f));
 		if(te instanceof IConveyorTile)
 		{
 			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
 			if(sub!=null)
-				for(EnumFacing f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+				for(Direction f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
 					if(f==f2.getOpposite())
 						return true;
 		}
@@ -102,11 +102,11 @@ public class ConveyorVertical extends ConveyorBasic
 			if(sub!=null)
 			{
 				int b = 0;
-				for(EnumFacing f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+				for(Direction f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
 				{
 					if(f==f2.getOpposite())
 						b++;
-					else if(EnumFacing.UP==f2)
+					else if(Direction.UP==f2)
 						b++;
 					if(b==2)
 						return true;
@@ -116,19 +116,19 @@ public class ConveyorVertical extends ConveyorBasic
 		return false;
 	}
 
-	protected boolean renderBottomWall(TileEntity tile, EnumFacing facing, int wall)
+	protected boolean renderBottomWall(TileEntity tile, Direction facing, int wall)
 	{
 		return super.renderWall(tile, facing, wall);
 	}
 
 	@Override
-	public EnumFacing[] sigTransportDirections(TileEntity conveyorTile, EnumFacing facing)
+	public Direction[] sigTransportDirections(TileEntity conveyorTile, Direction facing)
 	{
-		return new EnumFacing[]{EnumFacing.UP, facing};
+		return new Direction[]{Direction.UP, facing};
 	}
 
 	@Override
-	public Vec3d getDirection(TileEntity conveyorTile, Entity entity, EnumFacing facing)
+	public Vec3d getDirection(TileEntity conveyorTile, Entity entity, Direction facing)
 	{
 		BlockPos posWall = conveyorTile.getPos().offset(facing);
 		double d = .625+entity.width;
@@ -136,7 +136,7 @@ public class ConveyorVertical extends ConveyorBasic
 		if(distToWall > d)
 			return super.getDirection(conveyorTile, entity, facing);
 
-		double vBase = entity instanceof EntityLivingBase?1.5: 1.15;
+		double vBase = entity instanceof LivingEntity?1.5: 1.15;
 		double distY = Math.abs(conveyorTile.getPos().add(0, 1, 0).getY()+.5-entity.posY);
 		double treshold = .9;
 		boolean contact = distY < treshold;
@@ -147,18 +147,18 @@ public class ConveyorVertical extends ConveyorBasic
 		if(entity.motionY < 0)
 			vY += entity.motionY*.9;
 
-		if(!(entity instanceof EntityPlayer))
+		if(!(entity instanceof PlayerEntity))
 		{
 			vX = 0.05*facing.getXOffset();
 			vZ = 0.05*facing.getZOffset();
-			if(facing==EnumFacing.WEST||facing==EnumFacing.EAST)
+			if(facing==Direction.WEST||facing==Direction.EAST)
 			{
 				if(entity.posZ > conveyorTile.getPos().getZ()+0.65D)
 					vZ = -0.1D*vBase;
 				else if(entity.posZ < conveyorTile.getPos().getZ()+0.35D)
 					vZ = 0.1D*vBase;
 			}
-			else if(facing==EnumFacing.NORTH||facing==EnumFacing.SOUTH)
+			else if(facing==Direction.NORTH||facing==Direction.SOUTH)
 			{
 				if(entity.posX > conveyorTile.getPos().getX()+0.65D)
 					vX = -0.1D*vBase;
@@ -174,7 +174,7 @@ public class ConveyorVertical extends ConveyorBasic
 	}
 
 	@Override
-	public void onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing)
+	public void onEntityCollision(TileEntity tile, Entity entity, Direction facing)
 	{
 		if(!isActive(tile))
 			return;
@@ -188,7 +188,7 @@ public class ConveyorVertical extends ConveyorBasic
 			return;
 		}
 
-		if(entity!=null&&!entity.isDead&&!(entity instanceof EntityPlayer&&entity.isSneaking()))
+		if(entity!=null&&!entity.isDead&&!(entity instanceof PlayerEntity&&entity.isSneaking()))
 		{
 			double distY = Math.abs(tile.getPos().add(0, 1, 0).getY()+.5-entity.posY);
 			double treshold = .9;
@@ -213,9 +213,9 @@ public class ConveyorVertical extends ConveyorBasic
 					ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
 			}
 
-			if(entity instanceof EntityItem)
+			if(entity instanceof ItemEntity)
 			{
-				EntityItem item = (EntityItem)entity;
+				ItemEntity item = (ItemEntity)entity;
 				if(!contact)
 				{
 					if(item.getAge() > item.lifespan-60*20)
@@ -232,7 +232,7 @@ public class ConveyorVertical extends ConveyorBasic
 							ItemStack stack = item.getItem();
 							if(!stack.isEmpty())
 							{
-								ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.DOWN);
+								ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, Direction.DOWN);
 								if(ret.isEmpty())
 									entity.setDead();
 								else if(ret.getCount() < stack.getCount())
@@ -248,7 +248,7 @@ public class ConveyorVertical extends ConveyorBasic
 	static final AxisAlignedBB[] verticalBounds = {new AxisAlignedBB(0, 0, 0, 1, 1, .125f), new AxisAlignedBB(0, 0, .875f, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .125f, 1, 1), new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)};
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, EnumFacing facing)
+	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
 	{
 		ArrayList list = new ArrayList();
 		if(facing.ordinal() > 1)
@@ -259,7 +259,7 @@ public class ConveyorVertical extends ConveyorBasic
 	}
 
 	@Override
-	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, EnumFacing facing)
+	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, Direction facing)
 	{
 		ArrayList list = new ArrayList();
 		if(facing.ordinal() > 1)
@@ -271,7 +271,7 @@ public class ConveyorVertical extends ConveyorBasic
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Matrix4f modifyBaseRotationMatrix(Matrix4f matrix, TileEntity tile, EnumFacing facing)
+	public Matrix4f modifyBaseRotationMatrix(Matrix4f matrix, TileEntity tile, Direction facing)
 	{
 		return new Matrix4(matrix).translate(0, 1, 0).rotate(Math.PI/2, 1, 0, 0).toMatrix4f();
 	}
@@ -293,7 +293,7 @@ public class ConveyorVertical extends ConveyorBasic
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
 	{
 		if(tile!=null&&this.renderBottomBelt(tile, facing))
 		{

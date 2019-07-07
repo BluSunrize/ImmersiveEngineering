@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 
 /**
  * @author BluSunrize - 11.03.2015
@@ -18,12 +18,12 @@ import net.minecraft.util.EnumFacing;
  */
 public class TargetingInfo
 {
-	public final EnumFacing side;
+	public final Direction side;
 	public final float hitX;
 	public final float hitY;
 	public final float hitZ;
 
-	public TargetingInfo(EnumFacing side, float hitX, float hitY, float hitZ)
+	public TargetingInfo(Direction side, float hitX, float hitY, float hitZ)
 	{
 		this.side = side;
 		this.hitX = hitX;
@@ -31,7 +31,7 @@ public class TargetingInfo
 		this.hitZ = hitZ;
 	}
 
-	public void writeToNBT(NBTTagCompound tag)
+	public void writeToNBT(CompoundNBT tag)
 	{
 		tag.setInt("side", side.ordinal());
 		tag.setFloat("hitX", hitX);
@@ -39,8 +39,8 @@ public class TargetingInfo
 		tag.setFloat("hitZ", hitZ);
 	}
 
-	public static TargetingInfo readFromNBT(NBTTagCompound tag)
+	public static TargetingInfo readFromNBT(CompoundNBT tag)
 	{
-		return new TargetingInfo(EnumFacing.byIndex(tag.getInt("side")), tag.getFloat("hitX"), tag.getFloat("hitY"), tag.getFloat("hitZ"));
+		return new TargetingInfo(Direction.byIndex(tag.getInt("side")), tag.getFloat("hitX"), tag.getFloat("hitY"), tag.getFloat("hitZ"));
 	}
 }

@@ -20,21 +20,21 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -84,20 +84,20 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public boolean hasTileEntity(IBlockState state)
+	public boolean hasTileEntity(BlockState state)
 	{
 		return true;
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(IBlockState state, IBlockReader world)
+	public TileEntity createTileEntity(BlockState state, IBlockReader world)
 	{
 		TileEntity basic = createBasicTE(state);
 		Collection<IProperty<?>> keys = state.getProperties();
 		if(basic instanceof IDirectionalTile)
 		{
-			EnumFacing newFacing = null;
+			Direction newFacing = null;
 			if(keys.contains(IEProperties.FACING_HORIZONTAL))
 				newFacing = state.get(IEProperties.FACING_HORIZONTAL);
 			else if(keys.contains(IEProperties.FACING_ALL))
@@ -139,9 +139,9 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	protected IBlockState getInitDefaultState()
+	protected BlockState getInitDefaultState()
 	{
-		IBlockState ret = super.getInitDefaultState();
+		BlockState ret = super.getInitDefaultState();
 		if(ret.getProperties().contains(IEProperties.FACING_ALL))
 			ret = ret.with(IEProperties.FACING_ALL, getDefaultFacing());
 		else if(ret.getProperties().contains(IEProperties.FACING_HORIZONTAL))
@@ -150,10 +150,10 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Nullable
-	public abstract TileEntity createBasicTE(IBlockState state);
+	public abstract TileEntity createBasicTE(BlockState state);
 
 	@Override
-	public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
+	public void getDrops(BlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		DimensionBlockPos dpos = new DimensionBlockPos(pos, world.getDimension().getType());
@@ -194,7 +194,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
+	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IHasDummyBlocks)
@@ -208,7 +208,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 					double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
 					double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
 					double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
-					world.spawnEntity(new EntityItem(world, dx, dy, dz, c.type.getWireCoil(c)));
+					world.spawnEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
 				}
 			};
 		else
@@ -223,7 +223,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity tile, ItemStack stack)
+	public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state, TileEntity tile, ItemStack stack)
 	{
 		if(tile instanceof IAdditionalDrops)
 		{
@@ -237,7 +237,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public boolean canEntityDestroy(IBlockState state, IBlockReader world, BlockPos pos, Entity entity)
+	public boolean canEntityDestroy(BlockState state, IBlockReader world, BlockPos pos, Entity entity)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IEntityProof)
@@ -246,7 +246,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, EntityPlayer player)
+	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof ITileDrop)
@@ -261,16 +261,16 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 
 
 	@Override
-	public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int eventID, int eventParam)
+	public boolean eventReceived(BlockState state, World worldIn, BlockPos pos, int eventID, int eventParam)
 	{
 		super.eventReceived(state, worldIn, pos, eventID, eventParam);
 		TileEntity tileentity = worldIn.getTileEntity(pos);
 		return tileentity!=null&&tileentity.receiveClientEvent(eventID, eventParam);
 	}
 
-	protected EnumFacing getDefaultFacing()
+	protected Direction getDefaultFacing()
 	{
-		return EnumFacing.NORTH;
+		return Direction.NORTH;
 	}
 
 	/*TODO why isn't there an axis/EnumFacing parameter any more
@@ -346,13 +346,13 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	 */
 
 	@Override
-	public void onIEBlockPlacedBy(BlockItemUseContext context, IBlockState state)
+	public void onIEBlockPlacedBy(BlockItemUseContext context, BlockState state)
 	{
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		TileEntity tile = world.getTileEntity(pos);
-		EntityPlayer placer = context.getPlayer();
-		EnumFacing side = context.getFace();
+		PlayerEntity placer = context.getPlayer();
+		Direction side = context.getFace();
 		float hitX = context.getHitX();
 		float hitY = context.getHitY();
 		float hitZ = context.getHitZ();
@@ -360,7 +360,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 
 		if(tile instanceof IDirectionalTile)
 		{
-			EnumFacing f = ((IDirectionalTile)tile).getFacingForPlacement(placer, pos, side, hitX, hitY, hitZ);
+			Direction f = ((IDirectionalTile)tile).getFacingForPlacement(placer, pos, side, hitX, hitY, hitZ);
 			((IDirectionalTile)tile).setFacing(f);
 			if(tile instanceof IAdvancedDirectionalTile)
 				((IAdvancedDirectionalTile)tile).onDirectionalPlacement(side, hitX, hitY, hitZ, placer);
@@ -380,24 +380,24 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ)
 	{
 		ItemStack heldItem = player.getHeldItem(hand);
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IConfigurableSides&&Utils.isHammer(heldItem)&&!world.isRemote)
 		{
-			EnumFacing activeSide = player.isSneaking()?side.getOpposite(): side;
+			Direction activeSide = player.isSneaking()?side.getOpposite(): side;
 			if(((IConfigurableSides)tile).toggleSide(activeSide, player))
 				return true;
 		}
 		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player)&&!world.isRemote)
 		{
-			EnumFacing f = ((IDirectionalTile)tile).getFacing();
-			EnumFacing oldF = f;
+			Direction f = ((IDirectionalTile)tile).getFacing();
+			Direction oldF = f;
 			int limit = ((IDirectionalTile)tile).getFacingLimitation();
 
 			if(limit==0)
-				f = EnumFacing.VALUES[(f.ordinal()+1)%EnumFacing.VALUES.length];
+				f = Direction.VALUES[(f.ordinal()+1)%Direction.VALUES.length];
 			else if(limit==1)
 				f = player.isSneaking()?f.rotateAround(side.getAxis()).getOpposite(): f.rotateAround(side.getAxis());
 			else if(limit==2||limit==5)
@@ -421,7 +421,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 			if(b)
 				return b;
 		}
-		if(tile instanceof IInteractionObjectIE&&hand==EnumHand.MAIN_HAND&&!player.isSneaking())
+		if(tile instanceof IInteractionObjectIE&&hand==Hand.MAIN_HAND&&!player.isSneaking())
 		{
 			IInteractionObjectIE interaction = (IInteractionObjectIE)tile;
 			IInteractionObjectIE master = interaction.getGuiMaster();
@@ -433,7 +433,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
+	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
 	{
 		if(!world.isRemote)
 		{
@@ -453,7 +453,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public int getLightValue(IBlockState state, IWorldReader world, BlockPos pos)
+	public int getLightValue(BlockState state, IWorldReader world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof ILightValue)
@@ -474,7 +474,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public int getRenderColour(IBlockState state, @Nullable IBlockReader worldIn, @Nullable BlockPos pos, int tintIndex)
+	public int getRenderColour(BlockState state, @Nullable IBlockReader worldIn, @Nullable BlockPos pos, int tintIndex)
 	{
 		if(worldIn!=null&&pos!=null)
 		{
@@ -486,7 +486,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public BlockFaceShape getBlockFaceShape(IBlockReader world, IBlockState state, BlockPos pos, EnumFacing side)
+	public BlockFaceShape getBlockFaceShape(IBlockReader world, BlockState state, BlockPos pos, Direction side)
 	{
 		if(!notNormalBlock)
 			return BlockFaceShape.SOLID;
@@ -530,7 +530,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public VoxelShape getShape(IBlockState state, IBlockReader world, BlockPos pos)
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos)
 	{
 		//TODO caching?
 		if(world.getBlockState(pos).getBlock()==this)
@@ -560,7 +560,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 
 	@Nullable
 	@Override
-	public RayTraceResult getRayTraceResult(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original)
+	public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IAdvancedSelectionBounds)
@@ -591,13 +591,13 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride(IBlockState state)
+	public boolean hasComparatorInputOverride(BlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
+	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IComparatorOverride)
@@ -607,7 +607,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 
 
 	@Override
-	public int getWeakPower(IBlockState blockState, IBlockReader world, BlockPos pos, EnumFacing side)
+	public int getWeakPower(BlockState blockState, IBlockReader world, BlockPos pos, Direction side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
@@ -616,7 +616,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public int getStrongPower(IBlockState blockState, IBlockReader world, BlockPos pos, EnumFacing side)
+	public int getStrongPower(BlockState blockState, IBlockReader world, BlockPos pos, Direction side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
@@ -625,13 +625,13 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public boolean canProvidePower(IBlockState state)
+	public boolean canProvidePower(BlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canConnectRedstone(IBlockState state, IBlockReader world, BlockPos pos, EnumFacing side)
+	public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, Direction side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
@@ -640,7 +640,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements IColour
 	}
 
 	@Override
-	public void onEntityCollision(IBlockState state, World world, BlockPos pos, Entity entity)
+	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityIEBase)

@@ -20,11 +20,11 @@ import blusunrize.immersiveengineering.common.gui.ContainerMixer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class GuiMixer extends GuiIEContainerBase
 {
 	TileEntityMixer tile;
 
-	public GuiMixer(InventoryPlayer inventoryPlayer, TileEntityMixer tile)
+	public GuiMixer(PlayerInventory inventoryPlayer, TileEntityMixer tile)
 	{
 		super(new ContainerMixer(inventoryPlayer, tile));
 		this.tile = tile;
@@ -51,7 +51,7 @@ public class GuiMixer extends GuiIEContainerBase
 			@Override
 			public void onClick(double mX, double mY)
 			{
-				NBTTagCompound tag = new NBTTagCompound();
+				CompoundNBT tag = new CompoundNBT();
 				tile.outputAll = state;
 				tag.setBoolean("outputAll", tile.outputAll);
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
@@ -70,7 +70,7 @@ public class GuiMixer extends GuiIEContainerBase
 		{
 			float capacity = tile.tank.getCapacity();
 			if(tile.tank.getFluidTypes()==0)
-				tooltip.add(new TextComponentTranslation("gui.immersiveengineering.empty"));
+				tooltip.add(new TranslationTextComponent("gui.immersiveengineering.empty"));
 			else
 			{
 
@@ -95,9 +95,9 @@ public class GuiMixer extends GuiIEContainerBase
 			}
 		}
 		if(mx >= guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
-			tooltip.add(new TextComponentString(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 		if(mx >= guiLeft+106&&mx <= guiLeft+136&&my >= guiTop+61&&my <= guiTop+77)
-			tooltip.add(new TextComponentTranslation(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
+			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);

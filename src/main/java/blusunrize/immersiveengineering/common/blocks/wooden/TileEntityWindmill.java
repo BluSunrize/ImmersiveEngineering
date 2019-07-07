@@ -17,16 +17,16 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -38,7 +38,7 @@ import java.util.ArrayList;
 public class TileEntityWindmill extends TileEntityIEBase implements ITickable, IDirectionalTile, ITileDrop, IPlayerInteraction, IHasObjProperty
 {
 	public static TileEntityType<TileEntityWindmill> TYPE;
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 	public float prevRotation = 0;
 	public float rotation = 0;
 	public float turnSpeed = 0;
@@ -92,7 +92,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 
 	public boolean checkArea()
 	{
-		if(facing.getAxis()==EnumFacing.Axis.Y)
+		if(facing.getAxis()==Direction.Axis.Y)
 			return false;
 
 		turnSpeed = 0;
@@ -132,9 +132,9 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		sails = nbt.getInt("sails");
 		//prevRotation = nbt.getFloat("prevRotation");
 		rotation = nbt.getFloat("rotation");
@@ -142,7 +142,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("facing", facing.ordinal());
 		nbt.setInt("sails", sails);
@@ -164,13 +164,13 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -182,19 +182,19 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
@@ -208,7 +208,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(sails < 8&&heldItem.getItem()==IEContent.itemWindmillSail)
 		{
@@ -220,7 +220,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	}
 
 	@Override
-	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
+	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
 	{
 		ItemStack stack = new ItemStack(state.getBlock());
 		if(sails > 0)
@@ -229,7 +229,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	}
 
 	@Override
-	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
+	public void readOnPlacement(LivingEntity placer, ItemStack stack)
 	{
 		if(ItemNBTHelper.hasKey(stack, "sails"))
 			this.sails = ItemNBTHelper.getInt(stack, "sails");

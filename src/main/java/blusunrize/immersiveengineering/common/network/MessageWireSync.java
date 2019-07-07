@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -74,14 +74,14 @@ public class MessageWireSync implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		Minecraft.getInstance().addScheduledTask(() -> {
-			EntityPlayer player = ImmersiveEngineering.proxy.getClientPlayer();
+			PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 			World w = player.world;
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
 			if(added)
 				globalNet.addConnection(new Connection(type, start, end));
 			else
 				globalNet.removeConnection(new Connection(WireType.STEEL, start, end));
-			IBlockState state = w.getBlockState(start.getPosition());
+			BlockState state = w.getBlockState(start.getPosition());
 			w.notifyBlockUpdate(start.getPosition(), state, state, 3);
 			state = w.getBlockState(end.getPosition());
 			w.notifyBlockUpdate(end.getPosition(), state, state, 3);

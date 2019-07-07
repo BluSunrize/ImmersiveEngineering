@@ -8,16 +8,16 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -46,9 +46,9 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	@Nonnull
 	public WireType reference = WireType.COPPER;
 	@Nonnull
-	public IBlockState stateForMiddle = Blocks.DIRT.getDefaultState();
+	public BlockState stateForMiddle = Blocks.DIRT.getDefaultState();
 	@Nonnull
-	EnumFacing facing = EnumFacing.NORTH;
+	Direction facing = Direction.NORTH;
 	public int offset = 0;
 	@Nullable
 	public ConnectionPoint connPositive = null;
@@ -61,7 +61,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setString(WIRE, reference.getUniqueName());
@@ -70,20 +70,20 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		nbt.setBoolean(HAS_NEGATIVE, hasNegative);
 		nbt.setInt(FACING, facing.getIndex());
 		nbt.setInt(OFFSET, offset);
-		NBTTagCompound stateNbt = new NBTTagCompound();
+		CompoundNBT stateNbt = new CompoundNBT();
 		Utils.stateToNBT(stateNbt, stateForMiddle);
 		nbt.setTag(MIDDLE_STATE, stateNbt);
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		reference = WireType.getValue(nbt.getString(WIRE));
 		if(nbt.contains(POSITIVE, NBT.TAG_COMPOUND))
 			connPositive = new ConnectionPoint(nbt.getCompound(POSITIVE));
 		hasNegative = nbt.getBoolean(HAS_NEGATIVE);
-		facing = EnumFacing.VALUES[nbt.getInt(FACING)];
+		facing = Direction.VALUES[nbt.getInt(FACING)];
 		offset = nbt.getInt(OFFSET);
 		stateForMiddle = Utils.stateFromNBT(nbt.getCompound(MIDDLE_STATE));
 	}
@@ -166,7 +166,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public NonNullList<ItemStack> getTileDrops(@Nullable EntityPlayer player, IBlockState state)
+	public NonNullList<ItemStack> getTileDrops(@Nullable PlayerEntity player, BlockState state)
 	{
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
 		if(info.canReplace())
@@ -183,8 +183,8 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 		else
 		{
 			ItemStack stack = new ItemStack(state.getBlock(), 1);
-			stack.setTagInfo(WIRE, new NBTTagString(reference.getUniqueName()));
-			NBTTagCompound stateNbt = new NBTTagCompound();
+			stack.setTagInfo(WIRE, new StringNBT(reference.getUniqueName()));
+			CompoundNBT stateNbt = new CompoundNBT();
 			Utils.stateToNBT(stateNbt, stateForMiddle);
 			stack.setTagInfo(MIDDLE_STATE, stateNbt);
 			return NonNullList.from(ItemStack.EMPTY, stack);
@@ -192,7 +192,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public ItemStack getPickBlock(@Nullable EntityPlayer player, IBlockState state, RayTraceResult rayRes)
+	public ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
 	{
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
 		if(info.canReplace()&&offset==0)
@@ -210,20 +210,20 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack)
+	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
 	{
 		reference = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
 		stateForMiddle = Utils.stateFromNBT(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -235,26 +235,26 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
 
 	//Called after setFacing
 	@Override
-	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
 	{
 		for(int i = -1; i <= 1; i += 2)
 		{
@@ -273,7 +273,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void breakDummies(BlockPos pos, IBlockState state)
+	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		if(!formed)
 			return;
@@ -338,7 +338,7 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 			TileEntity te = world.getTileEntity(replacePos);
 			if(te instanceof TileEntityFeedthrough)
 				((TileEntityFeedthrough)te).formed = false;
-			IBlockState newState = Blocks.AIR.getDefaultState();
+			BlockState newState = Blocks.AIR.getDefaultState();
 			switch(toBreak)
 			{
 				case -1:

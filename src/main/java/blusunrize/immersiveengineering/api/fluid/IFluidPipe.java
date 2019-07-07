@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.api.fluid;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public interface IFluidPipe
 {
 	boolean canOutputPressurized(boolean consumePower);
 
-	boolean hasOutputConnection(EnumFacing side);
+	boolean hasOutputConnection(Direction side);
 }

@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
 public class ContainerArcFurnace extends ContainerIEBase<TileEntityArcFurnace>
 {
-	public ContainerArcFurnace(InventoryPlayer inventoryPlayer, TileEntityArcFurnace tile)
+	public ContainerArcFurnace(PlayerInventory inventoryPlayer, TileEntityArcFurnace tile)
 	{
 		super(inventoryPlayer, tile);
 		this.tile = tile;
@@ -45,7 +45,7 @@ public class ContainerArcFurnace extends ContainerIEBase<TileEntityArcFurnace>
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
 	{
 		return super.transferStackInSlot(player, slot);
 //		ItemStack stack = null;

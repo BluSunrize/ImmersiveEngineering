@@ -13,19 +13,19 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -52,23 +52,23 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 	 */
 	private static Set<BlockPos> routed = null;
 
-	private EnumMap<EnumFacing, CapabilityReference<IItemHandler>> neighborCaps = new EnumMap<>(EnumFacing.class);
+	private EnumMap<Direction, CapabilityReference<IItemHandler>> neighborCaps = new EnumMap<>(Direction.class);
 
 	public TileEntitySorter()
 	{
 		super(TYPE);
 		filter = new SorterInventory(this);
-		for(EnumFacing f : EnumFacing.VALUES)
+		for(Direction f : Direction.VALUES)
 			neighborCaps.put(f, CapabilityReference.forNeighbor(this, ITEM_HANDLER_CAPABILITY, f));
 	}
 
 
-	public ItemStack routeItem(EnumFacing inputSide, ItemStack stack, boolean simulate)
+	public ItemStack routeItem(Direction inputSide, ItemStack stack, boolean simulate)
 	{
 		if(!world.isRemote&&canRoute())
 		{
 			boolean first = startRouting();
-			EnumFacing[][] validOutputs = getValidOutputs(inputSide, stack);
+			Direction[][] validOutputs = getValidOutputs(inputSide, stack);
 			stack = doInsert(stack, validOutputs[0], simulate);
 			stack = doInsert(stack, validOutputs[1], simulate);
 			if(first)
@@ -91,7 +91,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 		return first;
 	}
 
-	private ItemStack doInsert(ItemStack stack, EnumFacing[] sides, boolean simulate)
+	private ItemStack doInsert(ItemStack stack, Direction[] sides, boolean simulate)
 	{
 		int lengthFiltered = sides.length;
 		while(lengthFiltered > 0 && !stack.isEmpty())
@@ -126,7 +126,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 	}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		return true;
 	}
@@ -144,19 +144,19 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 	}
 
 	@Override
-	public void receiveMessageFromClient(NBTTagCompound message)
+	public void receiveMessageFromClient(CompoundNBT message)
 	{
 		if(message.hasKey("sideConfig"))
 			this.sideFilter = message.getIntArray("sideConfig");
 	}
 
-	public EnumFacing[][] getValidOutputs(EnumFacing inputSide, ItemStack stack)
+	public Direction[][] getValidOutputs(Direction inputSide, ItemStack stack)
 	{
 		if(stack.isEmpty())
-			return new EnumFacing[][]{{}, {}, {}, {}};
-		List<EnumFacing> validFiltered = new ArrayList<>(6);
-		List<EnumFacing> validUnfiltered = new ArrayList<>(6);
-		for(EnumFacing side : EnumFacing.values())
+			return new Direction[][]{{}, {}, {}, {}};
+		List<Direction> validFiltered = new ArrayList<>(6);
+		List<Direction> validUnfiltered = new ArrayList<>(6);
+		for(Direction side : Direction.values())
 			if(side!=inputSide)
 			{
 				EnumFilterResult result = checkStackAgainstFilter(stack, side);
@@ -166,18 +166,18 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 						validUnfiltered.add(side);
 			}
 
-		return new EnumFacing[][]{
-				validFiltered.toArray(new EnumFacing[0]),
-				validUnfiltered.toArray(new EnumFacing[0])
+		return new Direction[][]{
+				validFiltered.toArray(new Direction[0]),
+				validUnfiltered.toArray(new Direction[0])
 		};
 	}
 
-	public ItemStack pullItem(EnumFacing outputSide, int amount, boolean simulate)
+	public ItemStack pullItem(Direction outputSide, int amount, boolean simulate)
 	{
 		if(!world.isRemote&&canRoute())
 		{
 			boolean first = startRouting();
-			for(EnumFacing side : EnumFacing.values())
+			for(Direction side : Direction.values())
 				if(side!=outputSide)
 				{
 					CapabilityReference<IItemHandler> capRef = neighborCaps.get(side);
@@ -232,7 +232,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 	 * @param side          the side the filter is on
 	 * @return If the stack is permitted by the given filter
 	 */
-	private EnumFilterResult checkStackAgainstFilter(ItemStack stack, EnumFacing side)
+	private EnumFilterResult checkStackAgainstFilter(ItemStack stack, Direction side)
 	{
 		boolean unmapped = true;
 		for(ItemStack filterStack : filter.filters[side.ordinal()])
@@ -251,7 +251,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 	 * @return A Predicate representing the concatinated filters of two sides.<br>
 	 * If one filter is empty, uses the full filter of the other side, else the matching items make up the filter
 	 */
-	private Predicate<ItemStack> concatFilters(EnumFacing side0, EnumFacing side1)
+	private Predicate<ItemStack> concatFilters(Direction side0, Direction side1)
 	{
 		final List<ItemStack> concat = new ArrayList<>();
 		for(ItemStack filterStack : filter.filters[side0.ordinal()])
@@ -288,19 +288,19 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 		};
 	}
 
-	public ItemStack outputItemToInv(ItemStack stack, EnumFacing side, boolean simulate)
+	public ItemStack outputItemToInv(ItemStack stack, Direction side, boolean simulate)
 	{
 		TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
 		return Utils.insertStackIntoInventory(inventory, stack, side.getOpposite(), simulate);
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		sideFilter = nbt.getIntArray("sideFilter");
 		if(!descPacket)
 		{
-			NBTTagList filterList = nbt.getList("filter", 10);
+			ListNBT filterList = nbt.getList("filter", 10);
 			filter = new SorterInventory(this);
 			filter.readFromNBT(filterList);
 
@@ -309,21 +309,21 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setIntArray("sideFilter", sideFilter);
 		if(!descPacket)
 		{
-			NBTTagList filterList = new NBTTagList();
+			ListNBT filterList = new ListNBT();
 			filter.writeToNBT(filterList);
 			nbt.setTag("filter", filterList);
 		}
 	}
 
-	private EnumMap<EnumFacing, LazyOptional<IItemHandler>> insertionHandlers = new EnumMap<>(EnumFacing.class);
+	private EnumMap<Direction, LazyOptional<IItemHandler>> insertionHandlers = new EnumMap<>(Direction.class);
 
 	{
-		for(EnumFacing f : EnumFacing.VALUES)
+		for(Direction f : Direction.VALUES)
 		{
 			LazyOptional<IItemHandler> forSide = registerConstantCap(new SorterInventoryHandler(this, f));
 			insertionHandlers.put(f, forSide);
@@ -332,7 +332,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==ITEM_HANDLER_CAPABILITY&&facing!=null)
 			return insertionHandlers.get(facing).cast();
@@ -348,9 +348,9 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 	public static class SorterInventoryHandler implements IItemHandlerModifiable
 	{
 		TileEntitySorter sorter;
-		EnumFacing side;
+		Direction side;
 
-		public SorterInventoryHandler(TileEntitySorter sorter, EnumFacing side)
+		public SorterInventoryHandler(TileEntitySorter sorter, Direction side)
 		{
 			this.sorter = sorter;
 			this.side = side;
@@ -482,7 +482,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 		@Override
 		public ITextComponent getName()
 		{
-			return new TextComponentString("IESorterLayout");
+			return new StringTextComponent("IESorterLayout");
 		}
 
 		@Override
@@ -505,18 +505,18 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 		}
 
 		@Override
-		public boolean isUsableByPlayer(EntityPlayer player)
+		public boolean isUsableByPlayer(PlayerEntity player)
 		{
 			return true;
 		}
 
 		@Override
-		public void openInventory(EntityPlayer player)
+		public void openInventory(PlayerEntity player)
 		{
 		}
 
 		@Override
-		public void closeInventory(EntityPlayer player)
+		public void closeInventory(PlayerEntity player)
 		{
 		}
 
@@ -532,13 +532,13 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 			this.tile.markDirty();
 		}
 
-		public void writeToNBT(NBTTagList list)
+		public void writeToNBT(ListNBT list)
 		{
 			for(int i = 0; i < this.filters.length; i++)
 				for(int j = 0; j < this.filters[i].length; j++)
 					if(!this.filters[i][j].isEmpty())
 					{
-						NBTTagCompound itemTag = new NBTTagCompound();
+						CompoundNBT itemTag = new CompoundNBT();
 						itemTag.setByte("Slot", (byte)(i*filterSlotsPerSide+j));
 						this.filters[i][j].write(itemTag);
 						list.add(itemTag);
@@ -546,11 +546,11 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 
 		}
 
-		public void readFromNBT(NBTTagList list)
+		public void readFromNBT(ListNBT list)
 		{
 			for(int i = 0; i < list.size(); i++)
 			{
-				NBTTagCompound itemTag = list.getCompound(i);
+				CompoundNBT itemTag = list.getCompound(i);
 				int slot = itemTag.getByte("Slot")&255;
 				if(slot < getSizeInventory())
 					this.filters[slot/filterSlotsPerSide][slot%filterSlotsPerSide] = ItemStack.read(itemTag);

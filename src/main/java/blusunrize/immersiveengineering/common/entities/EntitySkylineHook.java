@@ -18,14 +18,14 @@ import blusunrize.immersiveengineering.common.network.MessageSkyhookSync;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Particles;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -51,7 +51,7 @@ public class EntitySkylineHook extends Entity
 	public double horizontalSpeed;//Blocks per tick, vertical iff the connection is vertical
 	private double angle;
 	public double friction = .99;
-	public EnumHand hand;
+	public Hand hand;
 	private boolean limitSpeed;
 	private final Set<BlockPos> ignoreCollisions = new HashSet<>();
 
@@ -63,7 +63,7 @@ public class EntitySkylineHook extends Entity
 		//		this.noClip=true;
 	}
 
-	public EntitySkylineHook(World world, Connection connection, double linePos, EnumHand hand, double horSpeed,
+	public EntitySkylineHook(World world, Connection connection, double linePos, Hand hand, double horSpeed,
 							 boolean limitSpeed)
 	{
 		this(world);
@@ -124,10 +124,10 @@ public class EntitySkylineHook extends Entity
 	{
 		if(ticksExisted==1)
 			ImmersiveEngineering.proxy.startSkyhookSound(this);
-		EntityPlayer player = null;
+		PlayerEntity player = null;
 		List<Entity> list = this.getPassengers();
-		if(!list.isEmpty()&&list.get(0) instanceof EntityPlayer)
-			player = (EntityPlayer)list.get(0);
+		if(!list.isEmpty()&&list.get(0) instanceof PlayerEntity)
+			player = (PlayerEntity)list.get(0);
 		if(connection==null||player==null||(hand!=null&&player.getHeldItem(hand).getItem()!=IEContent.itemSkyhook))
 		{
 			if(!world.isRemote)
@@ -278,13 +278,13 @@ public class EntitySkylineHook extends Entity
 			switchConnection(switchingAtPos, player, horSpeedToUse);
 	}
 
-	private void sendUpdatePacketTo(EntityPlayer player)
+	private void sendUpdatePacketTo(PlayerEntity player)
 	{
-		if(player instanceof EntityPlayerMP)
-			ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (EntityPlayerMP)player);
+		if(player instanceof ServerPlayerEntity)
+			ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (ServerPlayerEntity)player);
 	}
 
-	public void switchConnection(BlockPos posForSwitch, EntityPlayer player, double lastHorSpeed)
+	public void switchConnection(BlockPos posForSwitch, PlayerEntity player, double lastHorSpeed)
 	{
 		Optional<Connection> line = Optional.empty();
 		Set<Connection> possible = ImmersiveNetHandler.INSTANCE.getConnections(world, posForSwitch);
@@ -327,7 +327,7 @@ public class EntitySkylineHook extends Entity
 		}
 	}
 
-	public boolean isValidPosition(double x, double y, double z, @Nonnull EntityLivingBase player)
+	public boolean isValidPosition(double x, double y, double z, @Nonnull LivingEntity player)
 	{
 		final double tolerance = connection.vertical?5: 10;//TODO are these values good?
 		double radius = player.width/2;
@@ -405,12 +405,12 @@ public class EntitySkylineHook extends Entity
 	}
 
 	@Override
-	protected void writeAdditional(NBTTagCompound nbt)
+	protected void writeAdditional(CompoundNBT nbt)
 	{
 	}
 
 	@Override
-	protected void readAdditional(NBTTagCompound nbt)
+	protected void readAdditional(CompoundNBT nbt)
 	{
 	}
 
@@ -463,14 +463,14 @@ public class EntitySkylineHook extends Entity
 			passenger.fallDistance = SkylineHelper.fallDistanceFromSpeed(motionY);
 			passenger.onGround = false;
 		}
-		if(passenger.hasCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
-			Objects.requireNonNull(passenger.getCapability(SKYHOOK_USER_DATA, EnumFacing.UP))
+		if(passenger.hasCapability(SKYHOOK_USER_DATA, Direction.UP))
+			Objects.requireNonNull(passenger.getCapability(SKYHOOK_USER_DATA, Direction.UP))
 					.release();
-		if(hand!=null&&passenger instanceof EntityPlayer)
+		if(hand!=null&&passenger instanceof PlayerEntity)
 		{
-			ItemStack held = ((EntityPlayer)passenger).getHeldItem(hand);
+			ItemStack held = ((PlayerEntity)passenger).getHeldItem(hand);
 			if(held.getItem()==IEContent.itemSkyhook)
-				((EntityPlayer)passenger).getCooldownTracker().setCooldown(IEContent.itemSkyhook,
+				((PlayerEntity)passenger).getCooldownTracker().setCooldown(IEContent.itemSkyhook,
 						10);
 		}
 	}

@@ -17,11 +17,11 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.criterion.AbstractCriterionInstance;
+import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
@@ -76,17 +76,17 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 	@Override
 	public MultiblockTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context)
 	{
-		return new MultiblockTrigger.Instance(JsonUtils.getString(json, "multiblock"), ItemPredicate.deserialize(json.get("item")));
+		return new MultiblockTrigger.Instance(JSONUtils.getString(json, "multiblock"), ItemPredicate.deserialize(json.get("item")));
 	}
 
-	public void trigger(EntityPlayerMP player, IMultiblock multiblock, ItemStack hammer)
+	public void trigger(ServerPlayerEntity player, IMultiblock multiblock, ItemStack hammer)
 	{
 		MultiblockTrigger.Listeners listeners = this.listeners.get(player.getAdvancements());
 		if(listeners!=null)
 			listeners.trigger(multiblock, hammer);
 	}
 
-	public static class Instance extends AbstractCriterionInstance
+	public static class Instance extends CriterionInstance
 	{
 		private final String multiblock;
 		private final ItemPredicate hammer;

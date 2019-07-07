@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -50,22 +50,22 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IInteract
 	 * results in every possible path to be "tested"). Using a set results in effectively a DFS.
 	 */
 	private static Set<BlockPos> usedRouters = null;
-	private EnumMap<EnumFacing, CapabilityReference<IFluidHandler>> neighborCaps = new EnumMap<>(EnumFacing.class);
+	private EnumMap<Direction, CapabilityReference<IFluidHandler>> neighborCaps = new EnumMap<>(Direction.class);
 
 	public TileEntityFluidSorter()
 	{
 		super(TYPE);
-		for(EnumFacing f : EnumFacing.VALUES)
+		for(Direction f : Direction.VALUES)
 			neighborCaps.put(f, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, f));
 	}
 
-	public int routeFluid(EnumFacing inputSide, FluidStack stack, boolean doFill)
+	public int routeFluid(Direction inputSide, FluidStack stack, boolean doFill)
 	{
 		int ret = 0;
 		if(!world.isRemote&&canRoute())
 		{
 			boolean first = startRouting();
-			EnumFacing[][] validOutputs = getValidOutputs(inputSide, stack);
+			Direction[][] validOutputs = getValidOutputs(inputSide, stack);
 			ret += doInsert(stack, validOutputs[0], doFill);
 			ret += doInsert(stack, validOutputs[1], doFill);
 			if(first)
@@ -88,14 +88,14 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IInteract
 		return first;
 	}
 
-	private int doInsert(FluidStack stack, EnumFacing[] sides, boolean doFill)
+	private int doInsert(FluidStack stack, Direction[] sides, boolean doFill)
 	{
 		int ret = 0;
 		int lengthFiltered = sides.length;
 		while(lengthFiltered > 0&&stack.amount>0)
 		{
 			int rand = Utils.RAND.nextInt(lengthFiltered);
-			EnumFacing currentSide = sides[rand];
+			Direction currentSide = sides[rand];
 			CapabilityReference<IFluidHandler> capRef = neighborCaps.get(currentSide);
 			IFluidHandler fluidOut = capRef.get();
 			if(fluidOut!=null)
@@ -137,7 +137,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IInteract
 	}
 
 	@Override
-	public void receiveMessageFromClient(NBTTagCompound message)
+	public void receiveMessageFromClient(CompoundNBT message)
 	{
 		if(message.hasKey("sideConfig"))
 			this.sortWithNBT = message.getByteArray("sideConfig");
@@ -150,13 +150,13 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IInteract
 		this.markDirty();
 	}
 
-	public EnumFacing[][] getValidOutputs(EnumFacing inputSide, @Nullable FluidStack fluidStack)
+	public Direction[][] getValidOutputs(Direction inputSide, @Nullable FluidStack fluidStack)
 	{
 		if(fluidStack==null)
-			return new EnumFacing[2][0];
-		ArrayList<EnumFacing> validFilteredInvOuts = new ArrayList<>(6);
-		ArrayList<EnumFacing> validUnfilteredInvOuts = new ArrayList<>(6);
-		for(EnumFacing side : EnumFacing.values())
+			return new Direction[2][0];
+		ArrayList<Direction> validFilteredInvOuts = new ArrayList<>(6);
+		ArrayList<Direction> validUnfilteredInvOuts = new ArrayList<>(6);
+		for(Direction side : Direction.values())
 			if(side!=inputSide&&world.isBlockLoaded(getPos().offset(side)))
 			{
 				boolean unmapped = true;
@@ -182,34 +182,34 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IInteract
 				else if(unmapped)
 					validUnfilteredInvOuts.add(side);
 			}
-		return new EnumFacing[][]{
-				validFilteredInvOuts.toArray(new EnumFacing[0]),
-				validUnfilteredInvOuts.toArray(new EnumFacing[0])
+		return new Direction[][]{
+				validFilteredInvOuts.toArray(new Direction[0]),
+				validUnfilteredInvOuts.toArray(new Direction[0])
 		};
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		sortWithNBT = nbt.getByteArray("sortWithNBT");
 		for(int side = 0; side < 6; side++)
 		{
-			NBTTagList filterList = nbt.getList("filter_"+side, 10);
+			ListNBT filterList = nbt.getList("filter_"+side, 10);
 			for(int i = 0; i < filterList.size(); i++)
 				filters[side][i] = FluidStack.loadFluidStackFromNBT(filterList.getCompound(i));
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setByteArray("sortWithNBT", sortWithNBT);
 		for(int side = 0; side < 6; side++)
 		{
-			NBTTagList filterList = new NBTTagList();
+			ListNBT filterList = new ListNBT();
 			for(int i = 0; i < filters[side].length; i++)
 			{
-				NBTTagCompound tag = new NBTTagCompound();
+				CompoundNBT tag = new CompoundNBT();
 				if(filters[side][i]!=null)
 					filters[side][i].writeToNBT(tag);
 				filterList.add(tag);
@@ -219,10 +219,10 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IInteract
 	}
 
 
-	private EnumMap<EnumFacing, LazyOptional<IFluidHandler>> insertionHandlers = new EnumMap<>(EnumFacing.class);
+	private EnumMap<Direction, LazyOptional<IFluidHandler>> insertionHandlers = new EnumMap<>(Direction.class);
 
 	{
-		for(EnumFacing f : EnumFacing.VALUES)
+		for(Direction f : Direction.VALUES)
 		{
 			LazyOptional<IFluidHandler> forSide = registerConstantCap(new SorterFluidHandler(this, f));
 			insertionHandlers.put(f, forSide);
@@ -231,7 +231,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IInteract
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==FLUID_HANDLER_CAPABILITY&&facing!=null)
 			return insertionHandlers.get(facing).cast();
@@ -241,9 +241,9 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IInteract
 	static class SorterFluidHandler implements IFluidHandler
 	{
 		TileEntityFluidSorter tile;
-		EnumFacing facing;
+		Direction facing;
 
-		SorterFluidHandler(TileEntityFluidSorter tile, EnumFacing facing)
+		SorterFluidHandler(TileEntityFluidSorter tile, Direction facing)
 		{
 			this.tile = tile;
 			this.facing = facing;

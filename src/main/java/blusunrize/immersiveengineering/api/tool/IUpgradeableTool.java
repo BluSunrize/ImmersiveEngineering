@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import java.util.function.Supplier;
@@ -29,7 +29,7 @@ public interface IUpgradeableTool
 	 * @return an NBTTagCompound containing the upgrades as keys and their values<br>
 	 * Examples include "speed" for the mining speed of the drill or "bullets" for extended magazines on the revolver
 	 */
-	NBTTagCompound getUpgrades(ItemStack stack);
+	CompoundNBT getUpgrades(ItemStack stack);
 
 	void clearUpgrades(ItemStack stack);
 
@@ -45,7 +45,7 @@ public interface IUpgradeableTool
 	 */
 	boolean canTakeFromWorkbench(ItemStack stack);
 
-	void removeFromWorkbench(EntityPlayer player, ItemStack stack);
+	void removeFromWorkbench(PlayerEntity player, ItemStack stack);
 
 	boolean canModify(ItemStack stack);
 

@@ -23,10 +23,10 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -64,16 +64,16 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 	//		DATA MANAGEMENT
 	//	=================================
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
-		NBTTagList processNBT = nbt.getList("processQueue", 10);
+		ListNBT processNBT = nbt.getList("processQueue", 10);
 		processQueue.clear();
 		for(int i = 0; i < processNBT.size(); i++)
 		{
-			NBTTagCompound tag = processNBT.getCompound(i);
+			CompoundNBT tag = processNBT.getCompound(i);
 			IMultiblockRecipe recipe = readRecipeFromNBT(tag);
 			if(recipe!=null)
 			{
@@ -105,12 +105,12 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
 		nbt.setBoolean("redstoneControlInverted", redstoneControlInverted);
-		NBTTagList processNBT = new NBTTagList();
+		ListNBT processNBT = new ListNBT();
 		for(MultiblockProcess process : this.processQueue)
 			processNBT.add(writeProcessToNBT(process));
 		nbt.setTag("processQueue", processNBT);
@@ -121,10 +121,10 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 	}
 
 	@Nullable
-	protected abstract R readRecipeFromNBT(NBTTagCompound tag);
+	protected abstract R readRecipeFromNBT(CompoundNBT tag);
 
 	@Nullable
-	protected MultiblockProcess<R> loadProcessFromNBT(NBTTagCompound tag)
+	protected MultiblockProcess<R> loadProcessFromNBT(CompoundNBT tag)
 	{
 		R recipe = readRecipeFromNBT(tag);
 		if(recipe!=null)
@@ -137,9 +137,9 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 		return null;
 	}
 
-	protected NBTTagCompound writeProcessToNBT(MultiblockProcess process)
+	protected CompoundNBT writeProcessToNBT(MultiblockProcess process)
 	{
-		NBTTagCompound tag = process.recipe.writeToNBT(new NBTTagCompound());
+		CompoundNBT tag = process.recipe.writeToNBT(new CompoundNBT());
 		tag.setInt("process_processTick", process.processTick);
 		process.writeExtraDataToNBT(tag);
 		return tag;
@@ -171,7 +171,7 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(EnumFacing facing)
+	public SideConfig getEnergySideConfig(Direction facing)
 	{
 		return this.formed&&this.isEnergyPos()?SideConfig.INPUT: SideConfig.NONE;
 	}
@@ -179,7 +179,7 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		if(this.formed&&this.isEnergyPos())
 			return wrapper;
@@ -549,7 +549,7 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 			this.clearProcess = true;
 		}
 
-		protected abstract void writeExtraDataToNBT(NBTTagCompound nbt);
+		protected abstract void writeExtraDataToNBT(CompoundNBT nbt);
 	}
 
 	public static class MultiblockProcessInMachine<R extends IMultiblockRecipe> extends MultiblockProcess<R>
@@ -687,7 +687,7 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 		}
 
 		@Override
-		protected void writeExtraDataToNBT(NBTTagCompound nbt)
+		protected void writeExtraDataToNBT(CompoundNBT nbt)
 		{
 			if(inputSlots!=null)
 				nbt.setIntArray("process_inputSlots", inputSlots);
@@ -722,7 +722,7 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 		}
 
 		@Override
-		protected void writeExtraDataToNBT(NBTTagCompound nbt)
+		protected void writeExtraDataToNBT(CompoundNBT nbt)
 		{
 			nbt.setTag("process_inputItem", Utils.writeInventory(inputItems));
 			nbt.setFloat("process_transformationPoint", transformationPoint);

@@ -17,13 +17,13 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
@@ -52,7 +52,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 
 	public void outputEnergy(int amount)
 	{
-		for(EnumFacing fd : EnumFacing.VALUES)
+		for(Direction fd : Direction.VALUES)
 		{
 			TileEntity te = Utils.getExistingTileEntity(world, getPos().offset(fd));
 			amount -= EnergyHelper.insertFlux(te, fd.getOpposite(), amount, false);
@@ -68,7 +68,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 	private void recalculateEnergyOutput()
 	{
 		int energy = 0;
-		for(EnumFacing fd : new EnumFacing[]{EnumFacing.DOWN, EnumFacing.NORTH, EnumFacing.WEST})
+		for(Direction fd : new Direction[]{Direction.DOWN, Direction.NORTH, Direction.WEST})
 			if(!world.isAirBlock(getPos().offset(fd))&&!world.isAirBlock(getPos().offset(fd.getOpposite())))
 			{
 				int temp0 = getTemperature(getPos().offset(fd));
@@ -88,26 +88,26 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 		//Fluid f = getFluid(pos);
 		//if(f!=null)
 		//	return f.getTemperature(world, pos);
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		return ThermoelectricHandler.getTemperature(state.getBlock());
 	}
 
 	@Nullable
 	Fluid getFluid(BlockPos pos)
 	{
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		IFluidState fState = state.getFluidState();
 		return fState.getFluid();
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		this.energyOutput = nbt.getInt("enegyOutput");
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("enegyOutput", this.energyOutput);
 	}
@@ -115,13 +115,13 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(@Nullable EnumFacing facing)
+	public SideConfig getEnergySideConfig(@Nullable Direction facing)
 	{
 		return SideConfig.OUTPUT;
 	}
 
 	@Override
-	public boolean canConnectEnergy(EnumFacing from)
+	public boolean canConnectEnergy(Direction from)
 	{
 		return true;
 	}
@@ -129,7 +129,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		return wrapper;
 	}

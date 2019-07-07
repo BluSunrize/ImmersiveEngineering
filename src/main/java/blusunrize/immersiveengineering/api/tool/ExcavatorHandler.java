@@ -15,10 +15,10 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.network.MessageMineralListSync;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.FloatNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -226,30 +226,30 @@ public class ExcavatorHandler
 			return true;
 		}
 
-		public NBTTagCompound writeToNBT()
+		public CompoundNBT writeToNBT()
 		{
-			NBTTagCompound tag = new NBTTagCompound();
+			CompoundNBT tag = new CompoundNBT();
 			tag.setString("name", this.name);
 			tag.setFloat("failChance", this.failChance);
-			NBTTagList tagList = new NBTTagList();
+			ListNBT tagList = new ListNBT();
 			for(String ore : this.ores)
-				tagList.add(new NBTTagString(ore));
+				tagList.add(new StringNBT(ore));
 			tag.setTag("ores", tagList);
 
-			tagList = new NBTTagList();
+			tagList = new ListNBT();
 			for(float chance : this.chances)
-				tagList.add(new NBTTagFloat(chance));
+				tagList.add(new FloatNBT(chance));
 			tag.setTag("chances", tagList);
 
-			tagList = new NBTTagList();
+			tagList = new ListNBT();
 			if(this.oreOutput!=null)
 				for(ItemStack output : this.oreOutput)
-					tagList.add(output.writeToNBT(new NBTTagCompound()));
+					tagList.add(output.writeToNBT(new CompoundNBT()));
 			tag.setTag("oreOutput", tagList);
 
-			tagList = new NBTTagList();
+			tagList = new ListNBT();
 			for(float chance : this.recalculatedChances)
-				tagList.add(new NBTTagFloat(chance));
+				tagList.add(new FloatNBT(chance));
 			tag.setTag("recalculatedChances", tagList);
 			tag.setBoolean("isValid", isValid);
 			tag.setIntArray("dimensionWhitelist", dimensionWhitelist);
@@ -257,12 +257,12 @@ public class ExcavatorHandler
 			return tag;
 		}
 
-		public static MineralMix readFromNBT(NBTTagCompound tag)
+		public static MineralMix readFromNBT(CompoundNBT tag)
 		{
 			String name = tag.getString("name");
 			float failChance = tag.getFloat("failChance");
 
-			NBTTagList tagList = tag.getList("ores", 8);
+			ListNBT tagList = tag.getList("ores", 8);
 			String[] ores = new String[tagList.size()];
 			for(int i = 0; i < ores.length; i++)
 				ores[i] = tagList.getStringTagAt(i);
@@ -299,9 +299,9 @@ public class ExcavatorHandler
 		public MineralMix mineralOverride;
 		public int depletion;
 
-		public NBTTagCompound writeToNBT()
+		public CompoundNBT writeToNBT()
 		{
-			NBTTagCompound tag = new NBTTagCompound();
+			CompoundNBT tag = new CompoundNBT();
 			if(mineral!=null)
 				tag.setString("mineral", mineral.name);
 			if(mineralOverride!=null)
@@ -310,7 +310,7 @@ public class ExcavatorHandler
 			return tag;
 		}
 
-		public static MineralWorldInfo readFromNBT(NBTTagCompound tag)
+		public static MineralWorldInfo readFromNBT(CompoundNBT tag)
 		{
 			MineralWorldInfo info = new MineralWorldInfo();
 			if(tag.hasKey("mineral"))

@@ -23,16 +23,16 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -44,7 +44,7 @@ public class GuiModWorkbench extends GuiIEContainerBase
 {
 	TileEntityModWorkbench workbench;
 
-	public GuiModWorkbench(InventoryPlayer inventoryPlayer, World world, TileEntityModWorkbench tile)
+	public GuiModWorkbench(PlayerInventory inventoryPlayer, World world, TileEntityModWorkbench tile)
 	{
 		super(new ContainerModWorkbench(inventoryPlayer, world, tile));
 		workbench = tile;
@@ -73,7 +73,7 @@ public class GuiModWorkbench extends GuiIEContainerBase
 		}
 	}
 
-	NBTTagCompound lastMessage;
+	CompoundNBT lastMessage;
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int state)
@@ -84,12 +84,12 @@ public class GuiModWorkbench extends GuiIEContainerBase
 		{
 			ItemStack stack = s.getStack();
 			IConfigurableTool tool = ((IConfigurableTool)stack.getItem());
-			NBTTagCompound message = new NBTTagCompound();
+			CompoundNBT message = new CompoundNBT();
 			ToolConfigBoolean[] boolArray = tool.getBooleanOptions(stack);
 			int iBool = 0;
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			int iFloat = 0;
-			for(GuiButton button : this.buttons)
+			for(Button button : this.buttons)
 			{
 				if(button instanceof GuiButtonCheckbox&&boolArray!=null)
 					message.setBoolean("b_"+boolArray[iBool++].name, ((GuiButtonCheckbox)button).state);
@@ -137,7 +137,7 @@ public class GuiModWorkbench extends GuiIEContainerBase
 								inputs.add(toAdd.copy());
 						}
 						for(ItemStack ss : inputs)
-							tooltip.add(new TextComponentString(ss.getCount()+"x "+ss.getDisplayName())
+							tooltip.add(new StringTextComponent(ss.getCount()+"x "+ss.getDisplayName())
 									.setStyle(new Style().setColor(TextFormatting.GRAY)));
 
 						ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer);

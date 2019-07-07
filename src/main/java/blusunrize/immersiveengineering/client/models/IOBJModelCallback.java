@@ -10,10 +10,9 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -75,7 +74,7 @@ public interface IOBJModelCallback<T>
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	default Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective, @Nullable EntityLivingBase entity)
+	default Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective, @Nullable LivingEntity entity)
 	{
 		return perspective;
 	}
@@ -101,14 +100,14 @@ public interface IOBJModelCallback<T>
 	String[][] EMPTY_STRING_A = new String[0][];
 
 	@OnlyIn(Dist.CLIENT)
-	default String[][] getSpecialGroups(ItemStack stack, TransformType transform, EntityLivingBase entity)
+	default String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
 	{
 		return IOBJModelCallback.EMPTY_STRING_A;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Nonnull
-	default Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, EntityLivingBase entity,
+	default Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
 										  Matrix4 mat, float partialTicks)
 	{
 		return mat.setIdentity();

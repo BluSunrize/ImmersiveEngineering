@@ -16,13 +16,13 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -45,12 +45,12 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiI
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
-			CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND?EntityEquipmentSlot.MAINHAND: EntityEquipmentSlot.OFFHAND);
-		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+			CommonProxy.openGuiForItem(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}
 
 	public boolean isEmpty(ItemStack stack)
@@ -100,14 +100,14 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiI
 
 	@Nullable
 	@Override
-	public NBTTagCompound getShareTag(ItemStack stack)
+	public CompoundNBT getShareTag(ItemStack stack)
 	{
-		NBTTagCompound ret = super.getShareTag(stack);
+		CompoundNBT ret = super.getShareTag(stack);
 		if(ret==null)
-			ret = new NBTTagCompound();
+			ret = new CompoundNBT();
 		else
 			ret = ret.copy();
-		final NBTTagCompound retConst = ret;
+		final CompoundNBT retConst = ret;
 		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler->
 		{
 			NonNullList<ItemStack> bullets = NonNullList.withSize(getSlotCount(stack), ItemStack.EMPTY);

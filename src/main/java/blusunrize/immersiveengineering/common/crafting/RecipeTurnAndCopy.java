@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeHooks;
@@ -85,7 +85,7 @@ public class RecipeTurnAndCopy extends ShapedRecipe
 		if(nbtCopyTargetSlot!=null)
 		{
 			ItemStack out = getRecipeOutput().copy();
-			NBTTagCompound tag = out.getOrCreateTag();
+			CompoundNBT tag = out.getOrCreateTag();
 			for(int targetSlot : nbtCopyTargetSlot)
 			{
 				ItemStack s = matrix.getStackInSlot(targetSlot);

@@ -15,7 +15,8 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -24,10 +25,9 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.LightUtil;
@@ -66,7 +66,7 @@ public class ModelCoresample implements IBakedModel
 //	}
 
 	@Override
-	public List<BakedQuad> getQuads(@Nullable IBlockState blockState, @Nullable EnumFacing side, long rand)
+	public List<BakedQuad> getQuads(@Nullable BlockState blockState, @Nullable Direction side, long rand)
 	{
 		if(bakedQuads==null)
 		{
@@ -87,7 +87,7 @@ public class ModelCoresample implements IBakedModel
 						{
 							int weight = Math.max(2, Math.round(16*mineral.recalculatedChances[i]));
 							Block b = Block.getBlockFromItem(mineral.oreOutput.get(i).getItem());
-							IBlockState state = b!=null&&b!=Blocks.AIR?b.getStateFromMeta(mineral.oreOutput.get(i).getMetadata()): Blocks.STONE.getDefaultState();
+							BlockState state = b!=null&&b!=Blocks.AIR?b.getStateFromMeta(mineral.oreOutput.get(i).getMetadata()): Blocks.STONE.getDefaultState();
 							IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 							if(model!=null&&model.getParticleTexture()!=null)
 								textureOre.put(model.getParticleTexture(), weight);
@@ -160,7 +160,7 @@ public class ModelCoresample implements IBakedModel
 	protected final void putVertexData(Vector3f normal, Vector3f[] vertices, Vector2f[] uvs, TextureAtlasSprite sprite)
 	{
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(DefaultVertexFormats.ITEM);
-		builder.setQuadOrientation(EnumFacing.getFacingFromVector(normal.x, normal.y, normal.z));
+		builder.setQuadOrientation(Direction.getFacingFromVector(normal.x, normal.y, normal.z));
 		builder.setTexture(sprite);
 //		builder.setQuadColored();
 		for(int i = 0; i < vertices.length; i++)
@@ -215,7 +215,7 @@ public class ModelCoresample implements IBakedModel
 	ItemOverrideList overrideList = new ItemOverrideList(new ArrayList())
 	{
 		@Override
-		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
+		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
 		{
 			if(ItemNBTHelper.hasKey(stack, "mineral"))
 			{

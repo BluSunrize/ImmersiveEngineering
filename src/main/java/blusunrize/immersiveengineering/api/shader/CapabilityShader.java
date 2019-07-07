@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -71,10 +71,10 @@ public class CapabilityShader
 		public void setShaderItem(ItemStack shader)
 		{
 			if(!container.hasTagCompound())
-				container.setTagCompound(new NBTTagCompound());
+				container.setTagCompound(new CompoundNBT());
 			if(!shader.isEmpty())
 			{
-				NBTTagCompound shaderTag = shader.writeToNBT(new NBTTagCompound());
+				CompoundNBT shaderTag = shader.writeToNBT(new CompoundNBT());
 				container.getTagCompound().setTag(SHADER_NBT_KEY, shaderTag);
 			}
 			else
@@ -85,14 +85,14 @@ public class CapabilityShader
 		@Nullable
 		public ItemStack getShaderItem()
 		{
-			NBTTagCompound tagCompound = container.getTagCompound();
+			CompoundNBT tagCompound = container.getTagCompound();
 			if(tagCompound==null||!tagCompound.hasKey(SHADER_NBT_KEY))
 				return ItemStack.EMPTY;
 			return new ItemStack(tagCompound.getCompound(SHADER_NBT_KEY));
 		}
 	}
 
-	public static class ShaderWrapper_Direct extends ShaderWrapper implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
+	public static class ShaderWrapper_Direct extends ShaderWrapper implements ICapabilityProvider, INBTSerializable<CompoundNBT>
 	{
 		@Nonnull
 		protected ItemStack shader = ItemStack.EMPTY;
@@ -116,13 +116,13 @@ public class CapabilityShader
 		}
 
 		@Override
-		public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+		public boolean hasCapability(Capability<?> capability, @Nullable Direction facing)
 		{
 			return capability==SHADER_CAPABILITY;
 		}
 
 		@Override
-		public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+		public <T> T getCapability(Capability<T> capability, @Nullable Direction facing)
 		{
 			if(capability==SHADER_CAPABILITY)
 				return (T)this;
@@ -130,9 +130,9 @@ public class CapabilityShader
 		}
 
 		@Override
-		public NBTTagCompound serializeNBT()
+		public CompoundNBT serializeNBT()
 		{
-			NBTTagCompound nbt = new NBTTagCompound();
+			CompoundNBT nbt = new CompoundNBT();
 			ItemStack shader = getShaderItem();
 			if(!shader.isEmpty())
 				shader.writeToNBT(nbt);
@@ -143,9 +143,9 @@ public class CapabilityShader
 		}
 
 		@Override
-		public void deserializeNBT(NBTTagCompound nbt)
+		public void deserializeNBT(CompoundNBT nbt)
 		{
-			NBTTagCompound tags = nbt;
+			CompoundNBT tags = nbt;
 			setShaderType(tags.getString("IE:ShaderType"));
 			if(!tags.hasKey("IE:NoShader"))
 				setShaderItem(new ItemStack(tags));
@@ -157,9 +157,9 @@ public class CapabilityShader
 		CapabilityManager.INSTANCE.register(ShaderWrapper.class, new Capability.IStorage<ShaderWrapper>()
 		{
 			@Override
-			public NBTBase writeNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, EnumFacing side)
+			public NBTBase writeNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, Direction side)
 			{
-				NBTTagCompound nbt = new NBTTagCompound();
+				CompoundNBT nbt = new CompoundNBT();
 				ItemStack shader = instance.getShaderItem();
 				if(!shader.isEmpty())
 					shader.writeToNBT(nbt);
@@ -170,9 +170,9 @@ public class CapabilityShader
 			}
 
 			@Override
-			public void readNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, EnumFacing side, NBTBase nbt)
+			public void readNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, Direction side, NBTBase nbt)
 			{
-				NBTTagCompound tags = (NBTTagCompound)nbt;
+				CompoundNBT tags = (CompoundNBT)nbt;
 				instance.setShaderType(tags.getString("IE:ShaderType"));
 				if(!tags.hasKey("IE:NoShader"))
 					instance.setShaderItem(new ItemStack(tags));

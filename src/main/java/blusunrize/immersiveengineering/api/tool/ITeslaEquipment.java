@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
@@ -22,10 +22,10 @@ import java.util.Map;
 @Deprecated
 public interface ITeslaEquipment extends IElectricEquipment
 {
-	void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource dmg);
+	void onStrike(ItemStack s, EquipmentSlotType eqSlot, LivingEntity p, Map<String, Object> cache, DamageSource dmg);
 
 	@Override
-	default void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, @Nullable DamageSource dmg, ElectricSource desc)
+	default void onStrike(ItemStack s, EquipmentSlotType eqSlot, LivingEntity p, Map<String, Object> cache, @Nullable DamageSource dmg, ElectricSource desc)
 	{
 		if(dmg!=null)
 			onStrike(s, eqSlot, p, cache, dmg);

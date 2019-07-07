@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.immersiveflux;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 
@@ -27,17 +27,17 @@ public interface IFluxProvider extends IFluxConnection
 	 * @param simulate If TRUE, the process is simulated and will not decrease the storage.
 	 * @return Amount of energy that was, or would have been, if simulated, extracted.
 	 */
-	int extractEnergy(@Nullable EnumFacing from, int energy, boolean simulate);
+	int extractEnergy(@Nullable Direction from, int energy, boolean simulate);
 
 	/**
 	 * @param from The direction the check is performed from, null for unknown.
 	 * @return The amount of energy stored in the Tile.
 	 */
-	int getEnergyStored(@Nullable EnumFacing from);
+	int getEnergyStored(@Nullable Direction from);
 
 	/**
 	 * @param from The direction the check is performed from, null for unknown.
 	 * @return The maximum amount of energy that can be stored in the Tile.
 	 */
-	int getMaxEnergyStored(@Nullable EnumFacing from);
+	int getMaxEnergyStored(@Nullable Direction from);
 }

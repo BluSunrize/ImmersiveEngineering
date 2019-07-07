@@ -20,12 +20,12 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeO
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +64,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		return formed;
 	}
@@ -233,7 +233,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		process = nbt.getInt("process");
@@ -248,14 +248,14 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInt("process", process);
 		nbt.setInt("processMax", processMax);
 		nbt.setBoolean("active", active);
 
-		NBTTagCompound tankTag = tank.writeToNBT(new NBTTagCompound());
+		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
 		nbt.setTag("tank", tankTag);
 		if(!descPacket)
 		{
@@ -270,7 +270,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		TileEntityCokeOven master = master();
 		if(master!=null)
@@ -279,13 +279,13 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
 		return false;
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return true;
 	}
@@ -329,7 +329,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

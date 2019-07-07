@@ -22,8 +22,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.resource.IResourceType;
@@ -59,9 +59,9 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		((IReloadableResourceManager)Minecraft.getInstance().getResourceManager()).registerReloadListener(this);
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "crafting"), s -> {
 			Object[] stacksAndRecipes;
-			if(JsonUtils.isJsonArray(s, "recipes"))
+			if(JSONUtils.isJsonArray(s, "recipes"))
 			{
-				JsonArray data = JsonUtils.getJsonArray(s, "recipes");
+				JsonArray data = JSONUtils.getJsonArray(s, "recipes");
 				stacksAndRecipes = new Object[data.size()];
 				for(int i = 0; i < data.size(); i++)
 				{
@@ -89,17 +89,17 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		});
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "image"),
 				s -> {
-					JsonArray data = JsonUtils.getJsonArray(s, "images");
+					JsonArray data = JSONUtils.getJsonArray(s, "images");
 					ManualImage[] images = new ManualImage[data.size()];
 					for(int i = 0; i < data.size(); i++)
 					{
 						JsonObject img = data.get(i).getAsJsonObject();
 						ResourceLocation loc = ManualUtils.getLocationForManual(
-								JsonUtils.getString(img, "location"), this);
-						int uMin = JsonUtils.getInt(img, "uMin");
-						int vMin = JsonUtils.getInt(img, "vMin");
-						int uSize = JsonUtils.getInt(img, "uSize");
-						int vSize = JsonUtils.getInt(img, "vSize");
+								JSONUtils.getString(img, "location"), this);
+						int uMin = JSONUtils.getInt(img, "uMin");
+						int vMin = JSONUtils.getInt(img, "vMin");
+						int uSize = JSONUtils.getInt(img, "uSize");
+						int vSize = JSONUtils.getInt(img, "vSize");
 						images[i] = new ManualImage(loc, uMin, uSize, vMin, vSize);
 					}
 					return new ManualElementImage(this, images);
@@ -127,7 +127,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		);
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "table"),
 				s -> {
-					JsonArray arr = JsonUtils.getJsonArray(s, "table");
+					JsonArray arr = JSONUtils.getJsonArray(s, "table");
 					String[][] table = new String[arr.size()][];
 					for(int i = 0; i < table.length; i++)
 					{
@@ -136,7 +136,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 						for(int j = 0; j < row.size(); j++)
 							table[i][j] = row.get(j).getAsString();
 					}
-					return new ManualElementTable(this, table, JsonUtils.getBoolean(s,
+					return new ManualElementTable(this, table, JSONUtils.getBoolean(s,
 							"horizontal_bars", false));
 				}
 		);
@@ -289,7 +289,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 			ret = ret*31+stack.getMetadata();
 		if(stack.hasTagCompound())
 		{
-			NBTTagCompound nbt = stack.getTagCompound();
+			CompoundNBT nbt = stack.getTagCompound();
 			if(!nbt.isEmpty())
 				ret = ret*31+nbt.hashCode();
 		}

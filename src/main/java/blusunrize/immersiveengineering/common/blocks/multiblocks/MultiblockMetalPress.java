@@ -17,14 +17,14 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -67,7 +67,7 @@ public class MultiblockMetalPress implements IMultiblock
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		if(iterator==3||iterator==5)
-			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", EnumFacing.EAST);
+			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", Direction.EAST);
 		return false;
 	}
 
@@ -107,18 +107,18 @@ public class MultiblockMetalPress implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(IBlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		return state.getBlock()==Blocks.PISTON&&(state.getBlock().getMetaFromState(state)==0);
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
-		if(side==EnumFacing.UP||side==EnumFacing.DOWN)
-			side = EnumFacing.fromAngle(player.rotationYaw);
+		if(side==Direction.UP||side==Direction.DOWN)
+			side = Direction.fromAngle(player.rotationYaw);
 
-		EnumFacing dir = side.rotateY();
+		Direction dir = side.rotateY();
 		if(world.getTileEntity(pos.offset(dir)) instanceof TileEntityConveyorBelt)
 			dir = ((TileEntityConveyorBelt)world.getTileEntity(pos.offset(dir))).getFacing();
 
@@ -161,7 +161,7 @@ public class MultiblockMetalPress implements IMultiblock
 						return false;
 				}
 			}
-		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
+		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
 		state = state.with(IEProperties.FACING_HORIZONTAL, dir);
 		for(int l = -1; l <= 1; l++)
 			for(int h = -1; h <= 1; h++)
@@ -176,7 +176,7 @@ public class MultiblockMetalPress implements IMultiblock
 					TileEntityMetalPress tile = (TileEntityMetalPress)curr;
 					tile.formed = true;
 					tile.pos = (h+1)*3+(l+1);
-					tile.offset = new int[]{(dir==EnumFacing.WEST?-l: dir==EnumFacing.EAST?l: 0), h, (dir==EnumFacing.NORTH?-l: dir==EnumFacing.SOUTH?l: 0)};
+					tile.offset = new int[]{(dir==Direction.WEST?-l: dir==Direction.EAST?l: 0), h, (dir==Direction.NORTH?-l: dir==Direction.SOUTH?l: 0)};
 					tile.markDirty();
 					world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 				}

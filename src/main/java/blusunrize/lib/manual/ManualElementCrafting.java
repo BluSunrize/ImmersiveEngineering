@@ -10,7 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -150,7 +150,7 @@ public class ManualElementCrafting extends SpecialManualElements
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
+	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
 	{
 		int recipeYOffset = 0;
 		for(int i = 0; i < this.recipeRows.length; i++)
@@ -235,7 +235,7 @@ public class ManualElementCrafting extends SpecialManualElements
 	}
 
 	@Override
-	public void buttonPressed(GuiManual gui, GuiButton button)
+	public void buttonPressed(GuiManual gui, Button button)
 	{
 		super.buttonPressed(gui, button);
 		int r = button.id/100-1;

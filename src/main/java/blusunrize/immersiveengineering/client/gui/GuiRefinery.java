@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.gui.ContainerRefinery;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,7 @@ public class GuiRefinery extends GuiIEContainerBase
 {
 	TileEntityRefinery tile;
 
-	public GuiRefinery(InventoryPlayer inventoryPlayer, TileEntityRefinery tile)
+	public GuiRefinery(PlayerInventory inventoryPlayer, TileEntityRefinery tile)
 	{
 		super(new ContainerRefinery(inventoryPlayer, tile));
 		this.tile = tile;
@@ -38,7 +38,7 @@ public class GuiRefinery extends GuiIEContainerBase
 		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+61, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/refinery.png", tooltip);
 		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+109, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/refinery.png", tooltip);
 		if(mx > guiLeft+157&&mx < guiLeft+164&&my > guiTop+21&&my < guiTop+67)
-			tooltip.add(new TextComponentString(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
 		if(!tooltip.isEmpty())
 		{

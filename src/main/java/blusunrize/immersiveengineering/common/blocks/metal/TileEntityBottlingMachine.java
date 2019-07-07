@@ -17,16 +17,16 @@ import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMu
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -58,15 +58,15 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 
-		NBTTagList processNBT = nbt.getList("bottlingQueue", 10);
+		ListNBT processNBT = nbt.getList("bottlingQueue", 10);
 		bottlingProcessQueue.clear();
 		for(int i = 0; i < processNBT.size(); i++)
 		{
-			NBTTagCompound tag = processNBT.getCompound(i);
+			CompoundNBT tag = processNBT.getCompound(i);
 			BottlingProcess process = BottlingProcess.readFromNBT(tag);
 			bottlingProcessQueue.add(process);
 		}
@@ -74,23 +74,23 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		NBTTagList processNBT = new NBTTagList();
+		ListNBT processNBT = new ListNBT();
 		for(BottlingProcess process : this.bottlingProcessQueue)
 			processNBT.add(process.writeToNBT());
 		nbt.setTag("bottlingQueue", processNBT);
-		nbt.setTag("tank", tanks[0].writeToNBT(new NBTTagCompound()));
+		nbt.setTag("tank", tanks[0].writeToNBT(new CompoundNBT()));
 	}
 
 	@Override
-	public void receiveMessageFromClient(NBTTagCompound message)
+	public void receiveMessageFromClient(CompoundNBT message)
 	{
 	}
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {
-		EnumFacing outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
+		Direction outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
 		return new DirectionalBlockPos(getBlockPosForPos(8).offset(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
@@ -135,27 +135,27 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 			return new float[]{.0625f, 0, .0625f, .9375f, 1, .9375f};
 		if(posInMultiblock==10)
 		{
-			EnumFacing f = mirrored?facing.rotateYCCW(): facing.rotateY();
-			float xMin = f==EnumFacing.EAST?-.0625f: f==EnumFacing.WEST?.25f: facing==EnumFacing.WEST?.125f: facing==EnumFacing.EAST?.25f: 0;
-			float zMin = facing==EnumFacing.NORTH?.125f: facing==EnumFacing.SOUTH?.25f: f==EnumFacing.SOUTH?-.0625f: f==EnumFacing.NORTH?.25f: 0;
-			float xMax = f==EnumFacing.EAST?.75f: f==EnumFacing.WEST?1.0625f: facing==EnumFacing.WEST?.75f: facing==EnumFacing.EAST?.875f: 1;
-			float zMax = facing==EnumFacing.NORTH?.75f: facing==EnumFacing.SOUTH?.875f: f==EnumFacing.SOUTH?.75f: f==EnumFacing.NORTH?1.0625f: 1;
+			Direction f = mirrored?facing.rotateYCCW(): facing.rotateY();
+			float xMin = f==Direction.EAST?-.0625f: f==Direction.WEST?.25f: facing==Direction.WEST?.125f: facing==Direction.EAST?.25f: 0;
+			float zMin = facing==Direction.NORTH?.125f: facing==Direction.SOUTH?.25f: f==Direction.SOUTH?-.0625f: f==Direction.NORTH?.25f: 0;
+			float xMax = f==Direction.EAST?.75f: f==Direction.WEST?1.0625f: facing==Direction.WEST?.75f: facing==Direction.EAST?.875f: 1;
+			float zMax = facing==Direction.NORTH?.75f: facing==Direction.SOUTH?.875f: f==Direction.SOUTH?.75f: f==Direction.NORTH?1.0625f: 1;
 			return new float[]{xMin, .0625f, zMin, xMax, .6875f, zMax};
 		}
 		if(posInMultiblock==13)
 		{
-			float xMin = facing==EnumFacing.WEST?0: .21875f;
-			float zMin = facing==EnumFacing.NORTH?0: .21875f;
-			float xMax = facing==EnumFacing.EAST?1: .78125f;
-			float zMax = facing==EnumFacing.SOUTH?1: .78125f;
+			float xMin = facing==Direction.WEST?0: .21875f;
+			float zMin = facing==Direction.NORTH?0: .21875f;
+			float xMax = facing==Direction.EAST?1: .78125f;
+			float zMax = facing==Direction.SOUTH?1: .78125f;
 			return new float[]{xMin, -.4375f, zMin, xMax, .5625f, zMax};
 		}
 		if(posInMultiblock==16)
 		{
-			float xMin = facing==EnumFacing.WEST?.8125f: facing==EnumFacing.EAST?0: .125f;
-			float zMin = facing==EnumFacing.NORTH?.8125f: facing==EnumFacing.SOUTH?0: .125f;
-			float xMax = facing==EnumFacing.WEST?1: facing==EnumFacing.EAST?.1875f: .875f;
-			float zMax = facing==EnumFacing.NORTH?1: facing==EnumFacing.SOUTH?.1875f: .875f;
+			float xMin = facing==Direction.WEST?.8125f: facing==Direction.EAST?0: .125f;
+			float zMin = facing==Direction.NORTH?.8125f: facing==Direction.SOUTH?0: .125f;
+			float xMax = facing==Direction.WEST?1: facing==Direction.EAST?.1875f: .875f;
+			float zMax = facing==Direction.NORTH?1: facing==Direction.SOUTH?.1875f: .875f;
 			return new float[]{xMin, -1, zMin, xMax, .25f, zMax};
 		}
 		return new float[]{0, 0, 0, 1, 1, 1};
@@ -175,7 +175,7 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 
 
 	@Override
-	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
 	{
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==2&&l==1&&w==1)
@@ -195,12 +195,12 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(posInMultiblock==6&&!world.isRemote&&entity!=null&&entity.isAlive()&&entity instanceof EntityItem)
+		if(posInMultiblock==6&&!world.isRemote&&entity!=null&&entity.isAlive()&&entity instanceof ItemEntity)
 		{
 			TileEntityBottlingMachine master = master();
 			if(master==null)
 				return;
-			ItemStack stack = ((EntityItem)entity).getItem();
+			ItemStack stack = ((ItemEntity)entity).getItem();
 			if(stack.isEmpty())
 				return;
 
@@ -246,7 +246,7 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 		output = Utils.insertStackIntoInventory(outputCap, output, false);
 		if(!output.isEmpty())
 		{
-			EnumFacing outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
+			Direction outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
 			BlockPos pos = getPos().offset(outDir, 2);
 			Utils.dropStackAtPos(world, pos, output, outDir);
 		}
@@ -331,7 +331,7 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 	}
 
 	@Override
-	protected IMultiblockRecipe readRecipeFromNBT(NBTTagCompound tag)
+	protected IMultiblockRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
 		return null;
 	}
@@ -340,7 +340,7 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -355,7 +355,7 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		TileEntityBottlingMachine master = this.master();
 		if(master!=null)
@@ -367,7 +367,7 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
 		if(posInMultiblock==3&&(side==null||side.getAxis()!=Axis.Y))
 		{
@@ -378,17 +378,17 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return false;
 	}
 
 	@Override
-	public EnumFacing[] sigOutputDirections()
+	public Direction[] sigOutputDirections()
 	{
 		if(posInMultiblock==8)
-			return new EnumFacing[]{mirrored?facing.rotateYCCW(): facing.rotateY()};
-		return new EnumFacing[0];
+			return new Direction[]{mirrored?facing.rotateYCCW(): facing.rotateY()};
+		return new Direction[0];
 	}
 
 	public static class BottlingProcess
@@ -441,18 +441,18 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 			return false;
 		}
 
-		public NBTTagCompound writeToNBT()
+		public CompoundNBT writeToNBT()
 		{
-			NBTTagCompound nbt = new NBTTagCompound();
+			CompoundNBT nbt = new CompoundNBT();
 			if(!items.get(0).isEmpty())
-				nbt.setTag("input", items.get(0).write(new NBTTagCompound()));
+				nbt.setTag("input", items.get(0).write(new CompoundNBT()));
 			if(!items.get(1).isEmpty())
-				nbt.setTag("output", items.get(1).write(new NBTTagCompound()));
+				nbt.setTag("output", items.get(1).write(new CompoundNBT()));
 			nbt.setInt("processTick", processTick);
 			return nbt;
 		}
 
-		public static BottlingProcess readFromNBT(NBTTagCompound nbt)
+		public static BottlingProcess readFromNBT(CompoundNBT nbt)
 		{
 			ItemStack input = ItemStack.read(nbt.getCompound("input"));
 			BottlingProcess process = new BottlingProcess(input);

@@ -1,12 +1,12 @@
 package blusunrize.immersiveengineering.common.items.tools;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.IItemTier;
-import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PickaxeItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 
@@ -17,11 +17,11 @@ public class ItemIEPickaxe extends ItemToolBase
 {
 	public ItemIEPickaxe(IItemTier materialIn, String name, ResourceLocation oreDict)
 	{
-		super(materialIn, name, ToolType.PICKAXE, oreDict, ItemPickaxe.EFFECTIVE_ON, 1.0f, -2.8f);
+		super(materialIn, name, ToolType.PICKAXE, oreDict, PickaxeItem.EFFECTIVE_ON, 1.0f, -2.8f);
 	}
 
 	@Override
-	public boolean canHarvestBlock(IBlockState blockIn)
+	public boolean canHarvestBlock(BlockState blockIn)
 	{
 		Block block = blockIn.getBlock();
 		if(block==Blocks.OBSIDIAN)
@@ -56,7 +56,7 @@ public class ItemIEPickaxe extends ItemToolBase
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		Material material = state.getMaterial();
 		return material!=Material.IRON&&material!=Material.ANVIL&&material!=Material.ROCK?super.getDestroySpeed(stack, state): this.efficiency;

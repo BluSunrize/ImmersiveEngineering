@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -26,10 +26,10 @@ import java.util.function.Supplier;
 public class MessageTileSync implements IMessage
 {
 	private BlockPos pos;
-	private NBTTagCompound nbt;
+	private CompoundNBT nbt;
 
 	//TODO get rid of NBT in packets
-	public MessageTileSync(TileEntityIEBase tile, NBTTagCompound nbt)
+	public MessageTileSync(TileEntityIEBase tile, CompoundNBT nbt)
 	{
 		this.pos = tile.getPos();
 		this.nbt = nbt;
@@ -54,7 +54,7 @@ public class MessageTileSync implements IMessage
 		Context ctx = context.get();
 		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
 		{
-			WorldServer world = Objects.requireNonNull(ctx.getSender()).getServerWorld();
+			ServerWorld world = Objects.requireNonNull(ctx.getSender()).getServerWorld();
 			world.addScheduledTask(() -> {
 				if(world.isBlockLoaded(pos))
 				{

@@ -14,17 +14,17 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPost;
-import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -44,12 +44,12 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.STEEL_SLOPE.getMeta(), BlockRenderLayer.CUTOUT_MIPPED);
 		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.ALU_SLOPE.getMeta(), BlockRenderLayer.CUTOUT_MIPPED);
 		lightOpacity = 0;
-		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.STEEL_POST.getMeta(), EnumPushReaction.BLOCK);
-		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.STEEL_POST.getMeta(), PushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta(), PushReaction.BLOCK);
 	}
 
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, BlockState state, int fortune)
 	{
 		if(this.getMetaFromState(state)==BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta()||this.getMetaFromState(state)==BlockTypes_MetalDecoration2.STEEL_POST.getMeta())
 			return;
@@ -57,19 +57,19 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(BlockState state, IBlockAccess world, BlockPos pos, Direction side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityPost)
 		{
 			//TODO getFaceShape
-			return ((TileEntityPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityPost)te).dummy > 3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
+			return ((TileEntityPost)te).dummy==0?side==Direction.DOWN: ((TileEntityPost)te).dummy==3?side==Direction.UP: ((TileEntityPost)te).dummy > 3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
 		}
 		return super.isSideSolid(state, world, pos, side);
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
 	{
 		if(stack.getItemDamage()==BlockTypes_MetalDecoration2.STEEL_POST.getMeta()||stack.getItemDamage()==BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta())
 		{
@@ -84,7 +84,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	}
 
 	@Override
-	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
+	public boolean isLadder(BlockState state, IBlockAccess world, BlockPos pos, LivingEntity entity)
 	{
 		return (world.getTileEntity(pos) instanceof TileEntityPost);
 	}
@@ -114,20 +114,20 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	@Override
 	public boolean canConnectTransformer(IBlockAccess world, BlockPos pos)
 	{
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		BlockTypes_MetalDecoration2 type = state.getValue(property);
 		boolean slave = state.getValue(IEProperties.MULTIBLOCKSLAVE);
 		return slave&&(type==BlockTypes_MetalDecoration2.STEEL_POST||type==BlockTypes_MetalDecoration2.ALUMINUM_POST);
 	}
 
 	@Override
-	public boolean allowHammerHarvest(IBlockState state)
+	public boolean allowHammerHarvest(BlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean allowWirecutterHarvest(IBlockState state)
+	public boolean allowWirecutterHarvest(BlockState state)
 	{
 		return getMetaFromState(state)==BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta();
 	}

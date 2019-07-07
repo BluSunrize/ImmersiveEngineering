@@ -13,7 +13,7 @@ import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
@@ -21,7 +21,7 @@ import org.lwjgl.input.Mouse;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class GuiClickableList extends GuiButton
+public class GuiClickableList extends Button
 {
 	String[] headers;
 	boolean[] isCategory;

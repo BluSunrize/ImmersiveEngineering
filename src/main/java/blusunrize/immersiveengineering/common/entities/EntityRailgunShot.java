@@ -13,12 +13,12 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
 import blusunrize.immersiveengineering.common.Config.IEConfig.Tools;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -52,7 +52,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 		this.pickupStatus = PickupStatus.ALLOWED;
 	}
 
-	public EntityRailgunShot(World world, EntityLivingBase living, double ax, double ay, double az, ItemStack ammo)
+	public EntityRailgunShot(World world, LivingEntity living, double ax, double ay, double az, ItemStack ammo)
 	{
 		super(TYPE, world, living, ax, ay, az);
 		this.setSize(.5f, .5f);
@@ -132,7 +132,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 			{
 				if(getAmmoProperties()!=null)
 				{
-					EntityPlayer shooter = world.getPlayerEntityByUUID(getShooter());
+					PlayerEntity shooter = world.getPlayerEntityByUUID(getShooter());
 					if(!getAmmoProperties().overrideHitEntity(mop.entity, shooter))
 						mop.entity.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, shooter), (float)getAmmoProperties().damage*Tools.railgun_damage);
 				}
@@ -153,15 +153,15 @@ public class EntityRailgunShot extends EntityIEProjectile
 
 
 	@Override
-	public void writeAdditional(NBTTagCompound nbt)
+	public void writeAdditional(CompoundNBT nbt)
 	{
 		super.writeAdditional(nbt);
 		if(!this.ammo.isEmpty())
-			nbt.setTag("ammo", this.ammo.write(new NBTTagCompound()));
+			nbt.setTag("ammo", this.ammo.write(new CompoundNBT()));
 	}
 
 	@Override
-	public void readAdditional(NBTTagCompound nbt)
+	public void readAdditional(CompoundNBT nbt)
 	{
 		super.readAdditional(nbt);
 		this.ammo = ItemStack.read(nbt.getCompound("ammo"));

@@ -9,7 +9,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 
@@ -33,7 +33,7 @@ public class ManualElementTable extends SpecialManualElements
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
+	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
 	{
 		super.onOpened(gui, x, y, pageButtons);
 		manual.fontRenderer.setUnicodeFlag(true);

@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -32,7 +32,7 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 		super(typeName);
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forNeighbor(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forNeighbor(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
 
 	@Override
 	public void onEntityCollision(World world, Entity entity)
@@ -42,7 +42,7 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 			if(world.getRedstonePowerFromNeighbors(pos) > 0)
 				return;
 
-			double vBase = entity instanceof EntityLivingBase?1.5: 1.15;
+			double vBase = entity instanceof LivingEntity?1.5: 1.15;
 			double distY = Math.abs(getPos().add(0, 1, 0).getY()+.5-entity.posY);
 			double treshold = .9;
 			boolean contact = distY < treshold;
@@ -53,18 +53,18 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 			if(entity.motionY < 0)
 				vY += entity.motionY*.9;
 
-			if(!(entity instanceof EntityPlayer))
+			if(!(entity instanceof PlayerEntity))
 			{
 				vX = 0.05*this.facing.getXOffset();
 				vZ = 0.05*this.facing.getZOffset();
-				if(facing==EnumFacing.WEST||facing==EnumFacing.EAST)
+				if(facing==Direction.WEST||facing==Direction.EAST)
 				{
 					if(entity.posZ > getPos().getZ()+0.65D)
 						vZ = -0.1D*vBase;
 					else if(entity.posZ < getPos().getZ()+0.35D)
 						vZ = 0.1D*vBase;
 				}
-				else if(facing==EnumFacing.NORTH||facing==EnumFacing.SOUTH)
+				else if(facing==Direction.NORTH||facing==Direction.SOUTH)
 				{
 					if(entity.posX > getPos().getX()+0.65D)
 						vX = -0.1D*vBase;
@@ -83,23 +83,23 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 			entity.motionX = vX;
 			entity.motionY = vY;
 			entity.motionZ = vZ;
-			if(entity instanceof EntityItem)
+			if(entity instanceof ItemEntity)
 			{
-				((EntityItem)entity).setNoDespawn();
+				((ItemEntity)entity).setNoDespawn();
 				TileEntity inventoryTile;
 				inventoryTile = world.getTileEntity(getPos().add(0, 1, 0));
 				if(!world.isRemote)
 				{
 					if(contact&&inventoryTile!=null&&!(inventoryTile instanceof TileEntityConveyorBelt))
 					{
-						ItemStack stack = ((EntityItem)entity).getItem();
+						ItemStack stack = ((ItemEntity)entity).getItem();
 						if(!stack.isEmpty())
 						{
 							ItemStack ret = Utils.insertStackIntoInventory(output, stack, false);
 							if(ret.isEmpty())
 								entity.remove();
 							else if(ret.getCount() < stack.getCount())
-								((EntityItem)entity).setItem(ret);
+								((ItemEntity)entity).setItem(ret);
 						}
 					}
 				}
@@ -108,13 +108,13 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return true;
 	}
@@ -122,10 +122,10 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 	@Override
 	public float[] getBlockBounds()
 	{
-		float minX = facing==EnumFacing.EAST?.875f: 0;
-		float maxX = facing==EnumFacing.WEST?.125f: 1;
-		float minZ = facing==EnumFacing.SOUTH?.875f: 0;
-		float maxZ = facing==EnumFacing.NORTH?.125f: 1;
+		float minX = facing==Direction.EAST?.875f: 0;
+		float maxX = facing==Direction.WEST?.125f: 1;
+		float minZ = facing==Direction.SOUTH?.875f: 0;
+		float maxZ = facing==Direction.NORTH?.125f: 1;
 		return new float[]{minX, 0, minZ, maxX, 1, maxZ};
 	}
 

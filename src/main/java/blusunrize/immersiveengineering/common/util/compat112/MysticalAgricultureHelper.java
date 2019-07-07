@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat112;
 
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;

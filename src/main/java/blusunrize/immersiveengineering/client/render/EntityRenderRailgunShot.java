@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -23,9 +23,9 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 
-public class EntityRenderRailgunShot extends Render<EntityRailgunShot>
+public class EntityRenderRailgunShot extends EntityRenderer<EntityRailgunShot>
 {
-	public EntityRenderRailgunShot(RenderManager renderManager)
+	public EntityRenderRailgunShot(EntityRendererManager renderManager)
 	{
 		super(renderManager);
 	}

@@ -34,15 +34,15 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -68,7 +68,7 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class TileEntityBelljar extends TileEntityIEBase implements ITickable, IDirectionalTile, IBlockBounds, IHasDummyBlocks,
-		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE, IOBJModelCallback<IBlockState>
+		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE, IOBJModelCallback<BlockState>
 {
 	public static TileEntityType<TileEntityBelljar> TYPE;
 
@@ -76,7 +76,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	public static final int SLOT_SEED = 1;
 	public static final int SLOT_FERTILIZER = 2;
 
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 	public int dummy = 0;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 	public final FluidTank tank = new FluidTank(4000)
@@ -274,7 +274,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 
 	protected void sendSyncPacket(int type)
 	{
-		NBTTagCompound nbt = new NBTTagCompound();
+		CompoundNBT nbt = new CompoundNBT();
 		if(type==0)
 		{
 			nbt.setFloat("growth", growth);
@@ -287,13 +287,13 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 			nbt.setFloat("fertilizerMod", fertilizerMod);
 		}
 		else if(type==2)
-			nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("tank", tank.writeToNBT(new CompoundNBT()));
 		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)),
 				new MessageTileSync(this, nbt));
 	}
 
 	@Override
-	public void receiveMessageFromServer(NBTTagCompound message)
+	public void receiveMessageFromServer(CompoundNBT message)
 	{
 		if(message.hasKey("growth"))
 			renderGrowth = message.getFloat("growth");
@@ -310,9 +310,9 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		dummy = nbt.getInt("dummy");
 		inventory = Utils.readInventory(nbt.getList("inventory", 10), 7);
 		energyStorage.readFromNBT(nbt);
@@ -324,13 +324,13 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("facing", facing.ordinal());
 		nbt.setInt("dummy", dummy);
 		nbt.setTag("inventory", Utils.writeInventory(inventory));
 		energyStorage.writeToNBT(nbt);
-		NBTTagCompound tankTag = tank.writeToNBT(new NBTTagCompound());
+		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
 		nbt.setTag("tank", tankTag);
 		nbt.setInt("fertilizerAmount", fertilizerAmount);
 		nbt.setFloat("fertilizerMod", fertilizerMod);
@@ -338,13 +338,13 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -356,19 +356,19 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return true;
 	}
@@ -386,7 +386,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
 	{
 		for(int i = 1; i <= 2; i++)
 		{
@@ -397,7 +397,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	}
 
 	@Override
-	public void breakDummies(BlockPos pos, IBlockState state)
+	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 2; i++)
 		{
@@ -451,7 +451,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -470,7 +470,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		return true;
 	}
@@ -495,7 +495,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
+	public TextureAtlasSprite getTextureReplacement(BlockState object, String material)
 	{
 		if(!inventory.get(SLOT_SOIL).isEmpty()&&"farmland".equals(material))
 		{
@@ -508,21 +508,21 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean shouldRenderGroup(IBlockState object, String group)
+	public boolean shouldRenderGroup(BlockState object, String group)
 	{
 		return !"glass".equals(group);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
+	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
 	{
 		return transform;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public String getCacheKey(IBlockState object)
+	public String getCacheKey(BlockState object)
 	{
 		if(!inventory.get(SLOT_SOIL).isEmpty())
 		{
@@ -544,12 +544,12 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		{
 			try
 			{
-				IBlockState state = Utils.getStateFromItemStack(soil);
+				BlockState state = Utils.getStateFromItemStack(soil);
 				if(state!=null)
-					rl = ClientUtils.getSideTexture(state, EnumFacing.UP);
+					rl = ClientUtils.getSideTexture(state, Direction.UP);
 			} catch(Exception e)
 			{
-				rl = ClientUtils.getSideTexture(soil, EnumFacing.UP);
+				rl = ClientUtils.getSideTexture(soil, Direction.UP);
 			}
 		}
 		if(rl==null&&!soil.isEmpty()&&Utils.isFluidRelatedItemStack(soil))
@@ -572,17 +572,17 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(@Nullable EnumFacing facing)
+	public SideConfig getEnergySideConfig(@Nullable Direction facing)
 	{
-		return facing==null||(dummy==0&&facing.getAxis()==this.facing.rotateY().getAxis())||(dummy==2&&facing==EnumFacing.UP)?SideConfig.INPUT: SideConfig.NONE;
+		return facing==null||(dummy==0&&facing.getAxis()==this.facing.rotateY().getAxis())||(dummy==2&&facing==Direction.UP)?SideConfig.INPUT: SideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper energyWrapper = new IEForgeEnergyWrapper(this, null);
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(facing==null||(dummy==0&&facing.getAxis()==this.facing.rotateY().getAxis())||(dummy==2&&facing==EnumFacing.UP))
+		if(facing==null||(dummy==0&&facing.getAxis()==this.facing.rotateY().getAxis())||(dummy==2&&facing==Direction.UP))
 			return energyWrapper;
 		return null;
 	}

@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -31,21 +31,21 @@ public class NetHandlerCapability
 		CapabilityManager.INSTANCE.register(GlobalWireNetwork.class, new Capability.IStorage<GlobalWireNetwork>()
 		{
 			@Override
-			public NBTBase writeNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, EnumFacing side)
+			public NBTBase writeNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side)
 			{
 				return instance.writeToNBT();
 			}
 
 			@Override
-			public void readNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, EnumFacing side, NBTBase nbt)
+			public void readNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side, NBTBase nbt)
 			{
-				instance.readFromNBT((NBTTagCompound)nbt);
+				instance.readFromNBT((CompoundNBT)nbt);
 			}
 			//TODO whatb is this used for? How will it work in 1.13?
 		}, () -> new GlobalWireNetwork(null));
 	}
 
-	public static class Provider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
+	public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundNBT>
 	{
 		private final GlobalWireNetwork net;
 
@@ -55,14 +55,14 @@ public class NetHandlerCapability
 		}
 
 		@Override
-		public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+		public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable Direction facing)
 		{
 			return capability==NET_CAPABILITY;
 		}
 
 		@Nullable
 		@Override
-		public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+		public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 		{
 			if (capability==NET_CAPABILITY)
 				return NET_CAPABILITY.cast(net);
@@ -70,13 +70,13 @@ public class NetHandlerCapability
 		}
 
 		@Override
-		public NBTTagCompound serializeNBT()
+		public CompoundNBT serializeNBT()
 		{
 			return net.writeToNBT();
 		}
 
 		@Override
-		public void deserializeNBT(NBTTagCompound nbt)
+		public void deserializeNBT(CompoundNBT nbt)
 		{
 			net.readFromNBT(nbt);
 		}

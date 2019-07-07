@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -20,7 +20,7 @@ public class ContainerSorter extends ContainerIEBase<TileEntitySorter>
 {
 	int slotCount;
 
-	public ContainerSorter(InventoryPlayer inventoryPlayer, TileEntitySorter tile)
+	public ContainerSorter(PlayerInventory inventoryPlayer, TileEntitySorter tile)
 	{
 		super(inventoryPlayer, tile);
 		this.tile = tile;
@@ -42,14 +42,14 @@ public class ContainerSorter extends ContainerIEBase<TileEntitySorter>
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull EntityPlayer player)
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
 		return tile!=null&&tile.getWorld().getTileEntity(tile.getPos())==tile&&player.getDistanceSq(tile.getPos().getX()+.5, tile.getPos().getY()+.5, tile.getPos().getZ()+.5) <= 64;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
 	{
 		return ItemStack.EMPTY;
 		//		ItemStack stack = null;

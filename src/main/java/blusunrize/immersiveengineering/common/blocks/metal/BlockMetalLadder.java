@@ -13,17 +13,17 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -58,7 +58,7 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	}
 
 	@Override
-	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
+	public BlockFaceShape getBlockFaceShape(IBlockAccess world, BlockState state, BlockPos pos, Direction side)
 	{
 		int meta = this.getMetaFromState(state);
 		if(meta==0)
@@ -69,27 +69,27 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(BlockState state, IBlockAccess world, BlockPos pos, Direction side)
 	{
 		int meta = this.getMetaFromState(state);
 		return (meta!=0&&side.getAxis()!=Axis.Y)&&super.isSideSolid(state, world, pos, side);
 	}
 
 	@Override
-	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean shouldSideBeRendered(BlockState state, IBlockAccess world, BlockPos pos, Direction side)
 	{
 		return true;
 	}
 
 	@Override
-	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
+	public void addCollisionBoxToList(BlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
 	{
 		int meta = this.getMetaFromState(state);
 		if(meta==0)
 			addCollisionBoxToList(pos, entityBox, collidingBoxes, this.getBoundingBox(state, world, pos));
 		else
 		{
-			EnumFacing dir = ((TileEntityLadder)world.getTileEntity(pos)).getFacing();
+			Direction dir = ((TileEntityLadder)world.getTileEntity(pos)).getFacing();
 			for(int i = 0; i < 4; i++)
 				if(i==dir.getIndex()-2)
 					addCollisionBoxToList(pos, entityBox, collidingBoxes, LADDER_AABB[i]);
@@ -99,7 +99,7 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
+	public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess world, BlockPos pos)
 	{
 		if(this.getMetaFromState(state)==0)
 		{
@@ -114,7 +114,7 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
 	{
 		if(stack.getMetadata() > 0)
 			return true;
@@ -129,21 +129,21 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 			return this.canAttachTo(world, pos.south(), side);
 	}
 
-	public boolean canAttachTo(World world, BlockPos pos, EnumFacing facing)
+	public boolean canAttachTo(World world, BlockPos pos, Direction facing)
 	{
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		boolean flag = isExceptBlockForAttachWithPiston(state.getBlock());
 		return !flag&&state.getBlockFaceShape(world, pos, facing)==BlockFaceShape.SOLID&&!state.canProvidePower();
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
+	public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityLadder)
 		{
 			TileEntityLadder ladder = (TileEntityLadder)te;
-			EnumFacing enumfacing = ladder.getFacing();
+			Direction enumfacing = ladder.getFacing();
 			if(getMetaFromState(state)==0&&!this.canAttachTo(world, pos.offset(enumfacing.getOpposite()), enumfacing))
 			{
 				this.dropBlockAsItem(world, pos, state, 0);
@@ -154,7 +154,7 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	}
 
 	@Override
-	public void onIEBlockPlacedBy(BlockItemUseContext context, IBlockState state)
+	public void onIEBlockPlacedBy(BlockItemUseContext context, BlockState state)
 	{
 		TileEntityLadder tile = (TileEntityLadder)world.getTileEntity(pos);
 		if(tile!=null)
@@ -162,7 +162,7 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	}
 
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
+	public BlockState getActualState(BlockState state, IBlockAccess world, BlockPos pos)
 	{
 		state = super.getActualState(state, world, pos);
 		TileEntityLadder tile = (TileEntityLadder)world.getTileEntity(pos);
@@ -172,26 +172,26 @@ public class BlockMetalLadder extends IELadderBlock<BlockTypes_MetalLadder>
 	}
 
 	@Override
-	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
+	public boolean isLadder(BlockState state, IBlockAccess world, BlockPos pos, LivingEntity entity)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean allowHammerHarvest(IBlockState state)
+	public boolean allowHammerHarvest(BlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean hasTileEntity(IBlockState state)
+	public boolean hasTileEntity(BlockState state)
 	{
 		return true;
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state)
+	public TileEntity createTileEntity(World world, BlockState state)
 	{
 		return new TileEntityLadder();
 	}

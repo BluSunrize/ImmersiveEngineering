@@ -18,17 +18,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -122,18 +122,18 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	}
 
 	@Override
-	protected void readAdditional(NBTTagCompound nbt)
+	protected void readAdditional(CompoundNBT nbt)
 	{
-		NBTTagCompound comp = nbt.getCompound("nbt");
+		CompoundNBT comp = nbt.getCompound("nbt");
 		rgb = new float[]{comp.getFloat("r"), comp.getFloat("g"), comp.getFloat("b")};
 		angleHorizontal = nbt.getFloat("angleHor");
 
 	}
 
 	@Override
-	protected void writeAdditional(NBTTagCompound nbt)
+	protected void writeAdditional(CompoundNBT nbt)
 	{
-		NBTTagCompound comp = new NBTTagCompound();
+		CompoundNBT comp = new CompoundNBT();
 		comp.setFloat("r", rgb[0]);
 		comp.setFloat("g", rgb[1]);
 		comp.setFloat("b", rgb[2]);
@@ -148,7 +148,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		{
 			ItemStack tube = new ItemStack(IEContent.itemFluorescentTube);
 			ItemFluorescentTube.setRGB(tube, rgb);
-			EntityItem ent = new EntityItem(world, posX, posY, posZ, tube);
+			ItemEntity ent = new ItemEntity(world, posX, posY, posZ, tube);
 			world.spawnEntity(ent);
 			remove();
 		}
@@ -173,14 +173,14 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 
 	@Nonnull
 	@Override
-	public EnumActionResult applyPlayerInteraction(EntityPlayer player, Vec3d targetVec3, EnumHand hand)
+	public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d targetVec3, Hand hand)
 	{
 		if(Utils.isHammer(player.getHeldItem(hand)))
 		{
 			angleHorizontal += (player.isSneaking()?10: 1);
 			angleHorizontal %= 360;
 			dataManager.set(dataMarker_angleHorizontal, angleHorizontal);
-			return EnumActionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		}
 		return super.applyPlayerInteraction(player, targetVec3, hand);
 	}

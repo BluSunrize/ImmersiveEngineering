@@ -21,20 +21,20 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.IEntityOwnable;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -43,7 +43,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -61,7 +61,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	public boolean dummy = false;
 	public FluxStorage energyStorage = new FluxStorage(16000);
 	public boolean redstoneControlInverted = false;
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 
 	public String owner;
 	public List<String> targetList = new ArrayList<>();
@@ -71,7 +71,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	public boolean attackNeutrals = false;
 
 	protected int tick = 0;
-	protected EntityLivingBase target;
+	protected LivingEntity target;
 	public float rotationYaw;
 	public float rotationPitch;
 
@@ -92,8 +92,8 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		if(targetId!=null)
 		{
 			AxisAlignedBB validBox = VoxelShapes.fullCube().getBoundingBox().offset(pos).grow(range);
-			List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, validBox);
-			for(EntityLivingBase entity : entities)
+			List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, validBox);
+			for(LivingEntity entity : entities)
 				if(entity.getUniqueID().equals(targetId)&&isValidTarget(entity, true))
 				{
 					target = entity;
@@ -110,7 +110,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 				this.target = null;
 			else if(world.isRemote)
 			{
-				float facingYaw = facing==EnumFacing.NORTH?180: facing==EnumFacing.WEST?-90: facing==EnumFacing.EAST?90: 0;
+				float facingYaw = facing==Direction.NORTH?180: facing==Direction.WEST?-90: facing==Direction.EAST?90: 0;
 				double yaw = (MathHelper.atan2(delta.x, delta.z)*(180/Math.PI))-facingYaw;
 				this.rotationPitch = (float)(Math.atan2(Math.sqrt(delta.x*delta.x+delta.z*delta.z), delta.y)*(180/Math.PI))-90;
 				if(this.rotationYaw==0)//moving from default
@@ -174,7 +174,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			target = null;
 	}
 
-	private boolean canShootEntity(EntityLivingBase entity)
+	private boolean canShootEntity(LivingEntity entity)
 	{
 		Vec3d start = getGunPosition();
 		Vec3d end = getTargetVector(entity);
@@ -184,8 +184,8 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			return false;
 		//Don't shoot non-targeted entities between the turret and the target
 		AxisAlignedBB potentialCollateralArea = entity.getBoundingBox().union(new AxisAlignedBB(pos.up()));
-		List<EntityLivingBase> potentialCollateral = world.getEntitiesWithinAABB(EntityLivingBase.class, potentialCollateralArea);
-		for(EntityLivingBase coll : potentialCollateral)
+		List<LivingEntity> potentialCollateral = world.getEntitiesWithinAABB(LivingEntity.class, potentialCollateralArea);
+		for(LivingEntity coll : potentialCollateral)
 		{
 			AxisAlignedBB entityBB = coll.getBoundingBox().grow(.125f/2+.4);//Add the range of a revolver bullet in all directions
 			if(!isValidTarget(coll, false)&&entityBB.calculateIntercept(start, end)!=null)
@@ -194,7 +194,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		return true;
 	}
 
-	protected Vec3d getTargetVector(EntityLivingBase e)
+	protected Vec3d getTargetVector(LivingEntity e)
 	{
 		return new Vec3d(e.posX, e.posY+.5*e.getEyeHeight(), e.posZ);
 	}
@@ -204,26 +204,26 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		return new Vec3d(pos.getX()+.5, pos.getY()+1.375, pos.getZ()+.5);
 	}
 
-	protected Vec3d getGunToTargetVec(EntityLivingBase target)
+	protected Vec3d getGunToTargetVec(LivingEntity target)
 	{
 		//target-gun
 		return getGunPosition().subtractReverse(getTargetVector(target));
 	}
 
 	@Nullable
-	private EntityLivingBase getTarget()
+	private LivingEntity getTarget()
 	{
 		double range = getRange();
-		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(getPos().getX()-range, getPos().getY(), getPos().getZ()-range, getPos().getX()+range, getPos().getY()+3, getPos().getZ()+range));
+		List<LivingEntity> list = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(getPos().getX()-range, getPos().getY(), getPos().getZ()-range, getPos().getX()+range, getPos().getY()+3, getPos().getZ()+range));
 		if(list.isEmpty())
 			return null;
-		for(EntityLivingBase entity : list)
+		for(LivingEntity entity : list)
 			if(isValidTarget(entity, true))
 				return entity;
 		return null;
 	}
 
-	public boolean isValidTarget(EntityLivingBase entity, boolean checkCanShoot)
+	public boolean isValidTarget(LivingEntity entity, boolean checkCanShoot)
 	{
 		if(entity==null||!entity.isAlive()||entity.getHealth() <= 0)
 			return false;
@@ -238,11 +238,11 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 				return false;
 		}
 
-		if(entity instanceof EntityAnimal&&!attackAnimals)
+		if(entity instanceof AnimalEntity&&!attackAnimals)
 			return false;
-		if(entity instanceof EntityPlayer&&!attackPlayers)
+		if(entity instanceof PlayerEntity&&!attackPlayers)
 			return false;
-		if(!(entity instanceof EntityPlayer)&&!(entity instanceof EntityAnimal)&&!entity.isCreatureType(EnumCreatureType.MONSTER, false)&&!attackNeutrals)
+		if(!(entity instanceof PlayerEntity)&&!(entity instanceof AnimalEntity)&&!entity.isCreatureType(EntityClassification.MONSTER, false)&&!attackNeutrals)
 			return false;
 
 		if(target==null||entity.getDistanceSq(getPos()) < target.getDistanceSq(getPos())) return true;
@@ -269,7 +269,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 	protected abstract void activate();
 
-	protected boolean hasOwnerRights(EntityPlayer player)
+	protected boolean hasOwnerRights(PlayerEntity player)
 	{
 		if(player.abilities.isCreativeMode||owner==null||owner.isEmpty())
 			return true;
@@ -277,7 +277,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public void receiveMessageFromClient(NBTTagCompound message)
+	public void receiveMessageFromClient(CompoundNBT message)
 	{
 		if(message.hasKey("add"))
 			targetList.add(message.getString("add"));
@@ -296,16 +296,16 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		dummy = nbt.getBoolean("dummy");
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		energyStorage.readFromNBT(nbt);
 
 		if(nbt.hasKey("owner"))
 			owner = nbt.getString("owner");
-		NBTTagList list = nbt.getList("targetList", 8);
+		ListNBT list = nbt.getList("targetList", 8);
 		targetList.clear();
 		for(int i = 0; i < list.size(); i++)
 			targetList.add(list.getString(i));
@@ -320,7 +320,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setBoolean("dummy", dummy);
 		nbt.setBoolean("redstoneInverted", redstoneControlInverted);
@@ -330,9 +330,9 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 		if(owner!=null)
 			nbt.setString("owner", owner);
-		NBTTagList list = new NBTTagList();
+		ListNBT list = new ListNBT();
 		for(String s : targetList)
-			list.add(new NBTTagString(s));
+			list.add(new StringNBT(s));
 		nbt.setTag("targetList", list);
 		nbt.setBoolean("whitelist", whitelist);
 		nbt.setBoolean("attackAnimals", attackAnimals);
@@ -374,7 +374,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		if(dummy)
 		{
@@ -386,7 +386,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		if(player.isSneaking())
 		{
 			redstoneControlInverted = !redstoneControlInverted;
-			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 		}
@@ -417,11 +417,11 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		if(hasOwnerRights(player))
 			return true;
-		ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"notOwner", owner));
+		ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"notOwner", owner));
 		return false;
 	}
 
@@ -443,13 +443,13 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -461,19 +461,19 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
@@ -487,8 +487,8 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			if(te instanceof TileEntityTurret)
 				return ((TileEntityTurret)te).canEntityDestroy(entity);
 		}
-		if(entity instanceof EntityPlayer)
-			return hasOwnerRights((EntityPlayer)entity);
+		if(entity instanceof PlayerEntity)
+			return hasOwnerRights((PlayerEntity)entity);
 		return true;
 	}
 
@@ -499,7 +499,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
 	{
 		world.setBlockState(pos.up(), state);
 		((TileEntityTurret)world.getTileEntity(pos.up())).dummy = true;
@@ -507,14 +507,14 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public void breakDummies(BlockPos pos, IBlockState state)
+	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		if(world.getTileEntity(dummy?getPos().down(): getPos().up()) instanceof TileEntityTurret)
 			world.removeBlock(dummy?getPos().down(): getPos().up());
 	}
 
 	@Override
-	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
+	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
 	{
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		TileEntityTurret turret = this;
@@ -527,15 +527,15 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 				return stack;
 		}
 
-		NBTTagCompound tag = new NBTTagCompound();
+		CompoundNBT tag = new CompoundNBT();
 		//Only writing values when they are different from defaults
 		if(turret.owner!=null&&(player==null||!player.getName().getString().equalsIgnoreCase(turret.owner)))
 			tag.setString("owner", turret.owner);
 		if(turret.targetList.size()!=1||!isListedName(turret.targetList, turret.owner))
 		{
-			NBTTagList list = new NBTTagList();
+			ListNBT list = new ListNBT();
 			for(String s : turret.targetList)
-				list.add(new NBTTagString(s));
+				list.add(new StringNBT(s));
 			tag.setTag("targetList", list);
 		}
 		if(turret.whitelist)
@@ -555,18 +555,18 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack)
+	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
 	{
 		if(stack.hasTag())
 		{
-			NBTTagCompound tag = stack.getOrCreateTag();
+			CompoundNBT tag = stack.getOrCreateTag();
 			if(tag.hasKey("owner"))
 				this.owner = tag.getString("owner");
 			else if(placer!=null)
 				this.owner = placer.getName().getString();
 			if(tag.hasKey("targetList"))
 			{
-				NBTTagList list = tag.getList("targetList", 8);
+				ListNBT list = tag.getList("targetList", 8);
 				targetList.clear();
 				for(int i = 0; i < list.size(); i++)
 					targetList.add(list.getString(i));
@@ -606,7 +606,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(EnumFacing facing)
+	public SideConfig getEnergySideConfig(Direction facing)
 	{
 		return !dummy?SideConfig.INPUT: SideConfig.NONE;
 	}
@@ -614,7 +614,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	IEForgeEnergyWrapper[] wrappers = IEForgeEnergyWrapper.getDefaultWrapperArray(this);
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		if(!dummy)
 			return wrappers[facing==null?0: facing.ordinal()];

@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
@@ -62,5 +62,5 @@ public interface IMultiblockRecipe
 
 	int getMultipleProcessTicks();
 
-	NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound);
+	CompoundNBT writeToNBT(CompoundNBT nbtTagCompound);
 }

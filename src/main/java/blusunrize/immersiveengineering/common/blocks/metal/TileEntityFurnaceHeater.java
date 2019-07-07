@@ -19,11 +19,11 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 
 import javax.annotation.Nonnull;
@@ -34,7 +34,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256, Math.max(IEConfig.Machines.heater_consumption, IEConfig.Machines.heater_speedupConsumption)));
 	//public int[] sockets = new int[6];
 	public boolean active = false;
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 
 	public TileEntityFurnaceHeater()
 	{
@@ -51,7 +51,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 			if(active&&!redstonePower)
 				active = false;
 			if(energyStorage.getEnergyStored() > 3200||a)
-				for(EnumFacing fd : EnumFacing.VALUES)
+				for(Direction fd : Direction.VALUES)
 				{
 					TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(fd));
 					int consumed = 0;
@@ -96,10 +96,10 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		//		sockets = nbt.getIntArray("sockets");
 		//		if(sockets.length<6)
 		//			sockets = new int[0];
@@ -107,7 +107,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
 		nbt.setInt("facing", facing.ordinal());
@@ -124,7 +124,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(EnumFacing facing)
+	public SideConfig getEnergySideConfig(Direction facing)
 	{
 		return facing==this.facing?SideConfig.INPUT: SideConfig.NONE;
 	}
@@ -132,7 +132,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, facing);
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		if(facing==this.facing)
 		{
@@ -144,13 +144,13 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return this.facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -162,19 +162,19 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return placer.isSneaking();
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return true;
 	}

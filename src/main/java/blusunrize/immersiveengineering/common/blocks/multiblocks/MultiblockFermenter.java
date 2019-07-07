@@ -17,16 +17,16 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -90,14 +90,14 @@ public class MultiblockFermenter implements IMultiblock
 	}
 
 	@Override
-	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
+	public BlockState getBlockstateFromStack(int index, ItemStack stack)
 	{
 		if(!stack.isEmpty())
 		{
 			if(stack.getItem()==Items.CAULDRON)
 				return Blocks.CAULDRON.getDefaultState();
-			else if(stack.getItem() instanceof ItemBlock)
-				return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
+			else if(stack.getItem() instanceof BlockItem)
+				return ((BlockItem)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
 		}
 		return null;
 	}
@@ -140,17 +140,17 @@ public class MultiblockFermenter implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(IBlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		return state.getBlock()==Blocks.CAULDRON;
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
 		side = side.getOpposite();
-		if(side==EnumFacing.UP||side==EnumFacing.DOWN)
-			side = EnumFacing.fromAngle(player.rotationYaw);
+		if(side==Direction.UP||side==Direction.DOWN)
+			side = Direction.fromAngle(player.rotationYaw);
 
 		boolean mirror = false;
 		boolean b = this.structureCheck(world, pos, side, mirror);
@@ -162,7 +162,7 @@ public class MultiblockFermenter implements IMultiblock
 		if(!b)
 			return false;
 
-		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.FERMENTER.getMeta());
+		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.FERMENTER.getMeta());
 		state = state.with(IEProperties.FACING_HORIZONTAL, side);
 		for(int h = -1; h <= 1; h++)
 			for(int l = -1; l <= 1; l++)
@@ -181,7 +181,7 @@ public class MultiblockFermenter implements IMultiblock
 						TileEntityFermenter tile = (TileEntityFermenter)curr;
 						tile.formed = true;
 						tile.pos = (h+1)*9+(l+1)*3+(w+1);
-						tile.offset = new int[]{(side==EnumFacing.WEST?-l: side==EnumFacing.EAST?l: side==EnumFacing.NORTH?ww: -ww), h, (side==EnumFacing.NORTH?-l: side==EnumFacing.SOUTH?l: side==EnumFacing.EAST?ww: -ww)};
+						tile.offset = new int[]{(side==Direction.WEST?-l: side==Direction.EAST?l: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?-l: side==Direction.SOUTH?l: side==Direction.EAST?ww: -ww)};
 						tile.mirrored = mirror;
 						tile.markDirty();
 						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
@@ -190,7 +190,7 @@ public class MultiblockFermenter implements IMultiblock
 		return true;
 	}
 
-	boolean structureCheck(World world, BlockPos startPos, EnumFacing dir, boolean mirror)
+	boolean structureCheck(World world, BlockPos startPos, Direction dir, boolean mirror)
 	{
 		for(int h = -1; h <= 1; h++)
 			for(int l = -1; l <= 1; l++)

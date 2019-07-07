@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class TileRenderWorkbench extends TileEntityRenderer<TileEntityModWorkbench>
 {
@@ -32,9 +32,9 @@ public class TileRenderWorkbench extends TileEntityRenderer<TileEntityModWorkben
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(x+.5, y+.5, z+.5);
 
-		EnumFacing facing = te.getFacing();
+		Direction facing = te.getFacing();
 
-		float angle = facing==EnumFacing.NORTH?0: facing==EnumFacing.WEST?90: facing==EnumFacing.EAST?-90: 180;
+		float angle = facing==Direction.NORTH?0: facing==Direction.WEST?90: facing==Direction.EAST?-90: 180;
 
 		GlStateManager.rotatef(angle, 0, 1, 0);
 

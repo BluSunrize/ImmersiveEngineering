@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -299,7 +299,7 @@ public class IngredientStack
 		return false;
 	}
 
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
 		if(this.fluid!=null)
 		{
@@ -314,16 +314,16 @@ public class IngredientStack
 		}
 		else if(this.stackList!=null)
 		{
-			NBTTagList list = new NBTTagList();
+			ListNBT list = new ListNBT();
 			for(ItemStack stack : stackList)
 				if(!stack.isEmpty())
-					list.add(stack.writeToNBT(new NBTTagCompound()));
+					list.add(stack.writeToNBT(new CompoundNBT()));
 			nbt.setTag("stackList", list);
 			nbt.setInt("nbtType", 1);
 		}
 		else
 		{
-			nbt.setTag("stack", stack.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("stack", stack.writeToNBT(new CompoundNBT()));
 			nbt.setInt("nbtType", 0);
 			nbt.setBoolean("useNBT", useNBT);
 		}
@@ -331,7 +331,7 @@ public class IngredientStack
 		return nbt;
 	}
 
-	public static IngredientStack readFromNBT(NBTTagCompound nbt)
+	public static IngredientStack readFromNBT(CompoundNBT nbt)
 	{
 		if(nbt.hasKey("nbtType"))
 			switch(nbt.getInt("nbtType"))
@@ -343,7 +343,7 @@ public class IngredientStack
 					ingr.useNBT = nbt.getBoolean("useNBT");
 					return ingr;
 				case 1:
-					NBTTagList list = nbt.getList("stackList", 10);
+					ListNBT list = nbt.getList("stackList", 10);
 					List<ItemStack> stackList = new ArrayList();
 					for(int i = 0; i < list.size(); i++)
 						stackList.add(new ItemStack(list.getCompound(i)));

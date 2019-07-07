@@ -16,7 +16,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelMinecart;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -85,8 +85,8 @@ public class RailcraftHelper extends IECompatModule
 					if(e.getValue().getClass().getName().endsWith("ModelLowSidesMinecart"))
 						e.setValue(new ModelShaderLowSidesMinecart());
 
-				ShaderCaseMinecart.invalidMinecartClasses.add((Class<? extends EntityMinecart>)Class.forName("mods.railcraft.common.carts.EntityLocomotive"));
-				ShaderCaseMinecart.invalidMinecartClasses.add((Class<? extends EntityMinecart>)Class.forName("mods.railcraft.common.carts.EntityTunnelBore"));
+				ShaderCaseMinecart.invalidMinecartClasses.add((Class<? extends AbstractMinecartEntity>)Class.forName("mods.railcraft.common.carts.EntityLocomotive"));
+				ShaderCaseMinecart.invalidMinecartClasses.add((Class<? extends AbstractMinecartEntity>)Class.forName("mods.railcraft.common.carts.EntityTunnelBore"));
 			} catch(Exception e)
 			{
 				e.printStackTrace();

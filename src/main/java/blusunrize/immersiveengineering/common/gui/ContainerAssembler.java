@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
 public class ContainerAssembler extends ContainerIEBase<TileEntityAssembler>
 {
-	public ContainerAssembler(InventoryPlayer inventoryPlayer, TileEntityAssembler tile)
+	public ContainerAssembler(PlayerInventory inventoryPlayer, TileEntityAssembler tile)
 	{
 		super(inventoryPlayer, tile);
 		this.tile = tile;
@@ -46,7 +46,7 @@ public class ContainerAssembler extends ContainerIEBase<TileEntityAssembler>
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
 	{
 		ItemStack stack = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);

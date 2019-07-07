@@ -14,10 +14,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjPr
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,7 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 {
 	public static TileEntityType<TileEntityLantern> TYPE;
 
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 
 	public TileEntityLantern()
 	{
@@ -34,25 +34,25 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("facing", facing.ordinal());
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -64,19 +64,19 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return true;
 	}
@@ -84,7 +84,7 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public float[] getBlockBounds()
 	{
-		return new float[]{facing==EnumFacing.EAST?0: .25f, facing==EnumFacing.UP?0: facing==EnumFacing.DOWN?.125f: .0625f, facing==EnumFacing.SOUTH?0: .25f, facing==EnumFacing.WEST?1: .75f, facing==EnumFacing.DOWN?1: .875f, facing==EnumFacing.NORTH?1: .75f};
+		return new float[]{facing==Direction.EAST?0: .25f, facing==Direction.UP?0: facing==Direction.DOWN?.125f: .0625f, facing==Direction.SOUTH?0: .25f, facing==Direction.WEST?1: .75f, facing==Direction.DOWN?1: .875f, facing==Direction.NORTH?1: .75f};
 	}
 
 	static ArrayList[] displayList = {
@@ -98,9 +98,9 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public ArrayList<String> compileDisplayList()
 	{
-		if(facing==EnumFacing.UP)
+		if(facing==Direction.UP)
 			return displayList[1];
-		else if(facing==EnumFacing.DOWN)
+		else if(facing==Direction.DOWN)
 			return displayList[0];
 
 		return displayList[3];

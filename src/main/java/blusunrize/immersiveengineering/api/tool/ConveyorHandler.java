@@ -17,16 +17,16 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -131,7 +131,7 @@ public class ConveyorHandler
 	/**
 	 * @return whether the given subtype key can be found at the location. Useful for multiblocks
 	 */
-	public static boolean isConveyor(World world, BlockPos pos, @Nonnull String key, @Nullable EnumFacing facing)
+	public static boolean isConveyor(World world, BlockPos pos, @Nonnull String key, @Nullable Direction facing)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(!(tile instanceof IConveyorTile))
@@ -193,7 +193,7 @@ public class ConveyorHandler
 		 * @return the string by which unique models would be cached. Override for additional appended information*
 		 * The model class will also append to this key for rendered walls and facing
 		 */
-		default String getModelCacheKey(TileEntity tile, EnumFacing facing)
+		default String getModelCacheKey(TileEntity tile, Direction facing)
 		{
 			String key = reverseClassRegistry.get(this.getClass()).toString();
 			key += "f"+facing.ordinal();
@@ -230,7 +230,7 @@ public class ConveyorHandler
 		/**
 		 * Called after the conveyor has been rotated with a hammer
 		 */
-		default void afterRotation(EnumFacing oldDir, EnumFacing newDir)
+		default void afterRotation(Direction oldDir, Direction newDir)
 		{
 		}
 
@@ -251,7 +251,7 @@ public class ConveyorHandler
 		 * @return true if renderupdate should happen
 		 * @param colour
 		 */
-		boolean setDyeColour(EnumDyeColor colour);
+		boolean setDyeColour(DyeColor colour);
 
 		/**
 		 * @return the dyed colour as a hex RGB
@@ -263,7 +263,7 @@ public class ConveyorHandler
 		 *
 		 * @return true if anything happened, cancelling item use
 		 */
-		default boolean playerInteraction(TileEntity tile, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, EnumFacing side)
+		default boolean playerInteraction(TileEntity tile, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 		{
 			return false;
 		}
@@ -272,20 +272,20 @@ public class ConveyorHandler
 		 * @param wall 0 is left, 1 is right
 		 * @return whether the wall should be drawn on the model. Also used for they cache key
 		 */
-		default boolean renderWall(TileEntity tile, EnumFacing facing, int wall)
+		default boolean renderWall(TileEntity tile, Direction facing, int wall)
 		{
 			if(getConveyorDirection()!=ConveyorDirection.HORIZONTAL)
 				return true;
-			EnumFacing side = wall==0?facing.rotateYCCW(): facing.rotateY();
+			Direction side = wall==0?facing.rotateYCCW(): facing.rotateY();
 			BlockPos pos = tile.getPos().offset(side);
 			TileEntity te = Utils.getExistingTileEntity(tile.getWorld(), pos);
 			if(te instanceof IConveyorAttachable)
 			{
 				boolean b = false;
-				for(EnumFacing f : ((IConveyorAttachable)te).sigOutputDirections())
+				for(Direction f : ((IConveyorAttachable)te).sigOutputDirections())
 					if(f==side.getOpposite())
 						b = true;
-					else if(f==EnumFacing.UP)
+					else if(f==Direction.UP)
 						b = false;
 				return !b;
 			}
@@ -295,10 +295,10 @@ public class ConveyorHandler
 				if(te instanceof IConveyorAttachable)
 				{
 					int b = 0;
-					for(EnumFacing f : ((IConveyorAttachable)te).sigOutputDirections())
+					for(Direction f : ((IConveyorAttachable)te).sigOutputDirections())
 						if(f==side.getOpposite())
 							b++;
-						else if(f==EnumFacing.UP)
+						else if(f==Direction.UP)
 							b++;
 					return b < 2;
 				}
@@ -309,19 +309,19 @@ public class ConveyorHandler
 		/**
 		 * a rough indication of where this conveyor will transport things. Relevant for vertical conveyors, to see if they need to render the groundpiece below them.
 		 */
-		default EnumFacing[] sigTransportDirections(TileEntity conveyorTile, EnumFacing facing)
+		default Direction[] sigTransportDirections(TileEntity conveyorTile, Direction facing)
 		{
 			if(getConveyorDirection()==ConveyorDirection.UP)
-				return new EnumFacing[]{facing, EnumFacing.UP};
+				return new Direction[]{facing, Direction.UP};
 			else if(getConveyorDirection()==ConveyorDirection.DOWN)
-				return new EnumFacing[]{facing, EnumFacing.DOWN};
-			return new EnumFacing[]{facing};
+				return new Direction[]{facing, Direction.DOWN};
+			return new Direction[]{facing};
 		}
 
 		/**
 		 * @return a vector representing the movement applied to the entity
 		 */
-		default Vec3d getDirection(TileEntity conveyorTile, Entity entity, EnumFacing facing)
+		default Vec3d getDirection(TileEntity conveyorTile, Entity entity, Direction facing)
 		{
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			BlockPos pos = conveyorTile.getPos();
@@ -339,14 +339,14 @@ public class ConveyorHandler
 			if(conveyorDirection!=ConveyorDirection.HORIZONTAL)
 				entity.onGround = false;
 
-			if(facing==EnumFacing.WEST||facing==EnumFacing.EAST)
+			if(facing==Direction.WEST||facing==Direction.EAST)
 			{
 				if(entity.posZ > pos.getZ()+0.55D)
 					vZ = -0.1D*vBase;
 				else if(entity.posZ < pos.getZ()+0.45D)
 					vZ = 0.1D*vBase;
 			}
-			else if(facing==EnumFacing.NORTH||facing==EnumFacing.SOUTH)
+			else if(facing==Direction.NORTH||facing==Direction.SOUTH)
 			{
 				if(entity.posX > pos.getX()+0.55D)
 					vX = -0.1D*vBase;
@@ -357,14 +357,14 @@ public class ConveyorHandler
 			return new Vec3d(vX, vY, vZ);
 		}
 
-		default void onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing)
+		default void onEntityCollision(TileEntity tile, Entity entity, Direction facing)
 		{
 			if(!isActive(tile))
 				return;
 			BlockPos pos = tile.getPos();
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			float heightLimit = conveyorDirection==ConveyorDirection.HORIZONTAL?.25f: 1f;
-			if(entity!=null&&!entity.isDead&&!(entity instanceof EntityPlayer&&entity.isSneaking())&&entity.posY-pos.getY() >= 0&&entity.posY-pos.getY() < heightLimit)
+			if(entity!=null&&!entity.isDead&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.posY-pos.getY() >= 0&&entity.posY-pos.getY() < heightLimit)
 			{
 				Vec3d vec = this.getDirection(tile, entity, facing);
 				if(entity.fallDistance < 3)
@@ -391,9 +391,9 @@ public class ConveyorHandler
 				}
 
 				// In the first tick this could be an entity the conveyor belt just dropped, causing #3023
-				if(entity instanceof EntityItem&&entity.ticksExisted > 1)
+				if(entity instanceof ItemEntity&&entity.ticksExisted > 1)
 				{
-					EntityItem item = (EntityItem)entity;
+					ItemEntity item = (ItemEntity)entity;
 					if(!contact)
 					{
 						if(item.getAge() > item.lifespan-60*20)
@@ -408,11 +408,11 @@ public class ConveyorHandler
 		/**
 		 * Called when an item is inserted into the conveyor and deployed as an entity
 		 */
-		default void onItemDeployed(TileEntity tile, EntityItem entity, EnumFacing facing)
+		default void onItemDeployed(TileEntity tile, ItemEntity entity, Direction facing)
 		{
 		}
 
-		default void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ)
+		default void handleInsertion(TileEntity tile, ItemEntity entity, Direction facing, ConveyorDirection conDir, double distX, double distZ)
 		{
 			BlockPos invPos = tile.getPos().offset(facing).add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0);
 			World world = tile.getWorld();
@@ -441,29 +441,29 @@ public class ConveyorHandler
 			return false;
 		}
 
-		default void onUpdate(TileEntity tile, EnumFacing facing)
+		default void onUpdate(TileEntity tile, Direction facing)
 		{
 		}
 
 		AxisAlignedBB conveyorBounds = new AxisAlignedBB(0, 0, 0, 1, .125f, 1);
 		AxisAlignedBB highConveyorBounds = new AxisAlignedBB(0, 0, 0, 1, 1.125f, 1);
 
-		default List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, EnumFacing facing)
+		default List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
 		{
 			return getConveyorDirection()==ConveyorDirection.HORIZONTAL?Lists.newArrayList(conveyorBounds): Lists.newArrayList(highConveyorBounds);
 		}
 
-		default List<AxisAlignedBB> getColisionBoxes(TileEntity tile, EnumFacing facing)
+		default List<AxisAlignedBB> getColisionBoxes(TileEntity tile, Direction facing)
 		{
 			return Lists.newArrayList(conveyorBounds);
 		}
 
-		NBTTagCompound writeConveyorNBT();
+		CompoundNBT writeConveyorNBT();
 
-		void readConveyorNBT(NBTTagCompound nbt);
+		void readConveyorNBT(CompoundNBT nbt);
 
 		@OnlyIn(Dist.CLIENT)
-		default Matrix4f modifyBaseRotationMatrix(Matrix4f matrix, @Nullable TileEntity tile, EnumFacing facing)
+		default Matrix4f modifyBaseRotationMatrix(Matrix4f matrix, @Nullable TileEntity tile, Direction facing)
 		{
 			return matrix;
 		}
@@ -481,7 +481,7 @@ public class ConveyorHandler
 		}
 
 		@OnlyIn(Dist.CLIENT)
-		default List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
+		default List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
 		{
 			return baseModel;
 		}
@@ -499,12 +499,12 @@ public class ConveyorHandler
 	 */
 	public interface IConveyorAttachable
 	{
-		EnumFacing getFacing();
+		Direction getFacing();
 
 		/**
 		 * @return a rough indication of where this block will output things. Will determine if attached conveyors render a wall in the opposite direction
 		 */
-		EnumFacing[] sigOutputDirections();
+		Direction[] sigOutputDirections();
 	}
 
 	/**
@@ -515,12 +515,12 @@ public class ConveyorHandler
 		IConveyorBelt getConveyorSubtype();
 
 		@Override
-		default EnumFacing[] sigOutputDirections()
+		default Direction[] sigOutputDirections()
 		{
 			IConveyorBelt subtype = getConveyorSubtype();
 			if(subtype!=null)
 				return subtype.sigTransportDirections((TileEntity)this, this.getFacing());
-			return new EnumFacing[0];
+			return new Direction[0];
 		}
 	}
 }

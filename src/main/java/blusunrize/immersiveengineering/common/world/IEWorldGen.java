@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.world;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ArrayListMultimap;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -21,7 +21,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.CompositeFeature;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.MinableConfig;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,14 +38,14 @@ import java.util.Random;
 @EventBusSubscriber
 public class IEWorldGen
 {
-	public static Map<String, CompositeFeature<MinableConfig, CountRangeConfig>> features = new HashMap<>();
+	public static Map<String, CompositeFeature<OreFeatureConfig, CountRangeConfig>> features = new HashMap<>();
 	//TODO public static ArrayList<Integer> oreDimBlacklist = new ArrayList();
 	public static Map<String, Boolean> retrogenMap = new HashMap<>();
 
-	public static void addOreGen(String name, IBlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence, int weight)
+	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence, int weight)
 	{
-		MinableConfig cfg = new MinableConfig(MinableConfig.IS_ROCK, state, maxVeinSize);
-		CompositeFeature<MinableConfig, CountRangeConfig> feature = Biome.createCompositeFeature(Feature.MINABLE, cfg, Biome.COUNT_RANGE,
+		OreFeatureConfig cfg = new OreFeatureConfig(OreFeatureConfig.IS_ROCK, state, maxVeinSize);
+		CompositeFeature<OreFeatureConfig, CountRangeConfig> feature = Biome.createCompositeFeature(Feature.MINABLE, cfg, Biome.COUNT_RANGE,
 				new CountRangeConfig(chunkOccurence, minY, maxY, minY));
 		for(Biome biome : Biome.BIOMES)
 			biome.addFeature(Decoration.UNDERGROUND_ORES, feature);
@@ -55,7 +55,7 @@ public class IEWorldGen
 	public void generateOres(Random random, int chunkX, int chunkZ, World world, boolean newGeneration)
 	{
 		//if(!oreDimBlacklist.contains(world.provider.getDimension()))
-		for(Entry<String, CompositeFeature<MinableConfig, CountRangeConfig>> gen : features.entrySet())
+		for(Entry<String, CompositeFeature<OreFeatureConfig, CountRangeConfig>> gen : features.entrySet())
 			if(newGeneration||retrogenMap.get("retrogen_"+gen.getKey()))
 				gen.getValue().func_212245_a(world, world.getChunkProvider().getChunkGenerator(),
 						random, new BlockPos(16*chunkX, 0, 16*chunkZ),
@@ -65,7 +65,7 @@ public class IEWorldGen
 	@SubscribeEvent
 	public void chunkSave(ChunkDataEvent.Save event)
 	{
-		NBTTagCompound nbt = new NBTTagCompound();
+		CompoundNBT nbt = new CompoundNBT();
 		event.getData().setTag("ImmersiveEngineering", nbt);
 		nbt.setBoolean(IEConfig.Ores.retrogen_key, true);
 	}

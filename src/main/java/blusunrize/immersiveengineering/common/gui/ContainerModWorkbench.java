@@ -16,10 +16,10 @@ import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -29,11 +29,11 @@ import javax.annotation.Nonnull;
 public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbench>
 {
 	private final World world;
-	public InventoryPlayer inventoryPlayer;
+	public PlayerInventory inventoryPlayer;
 	private InventoryBlueprint inventoryBPoutput;
 	public InventoryShader shaderInv;
 
-	public ContainerModWorkbench(InventoryPlayer inventoryPlayer, World world, TileEntityModWorkbench tile)
+	public ContainerModWorkbench(PlayerInventory inventoryPlayer, World world, TileEntityModWorkbench tile)
 	{
 		super(inventoryPlayer, tile);
 		this.world = world;
@@ -41,7 +41,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		rebindSlots();
 	}
 
-	private void bindPlayerInv(InventoryPlayer inventoryPlayer)
+	private void bindPlayerInv(PlayerInventory inventoryPlayer)
 	{
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
@@ -121,7 +121,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
 	{
 		ItemStack stack = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
@@ -187,7 +187,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
+	public ItemStack slotClick(int id, int button, ClickType clickType, PlayerEntity player)
 	{
 		ItemStack ret = super.slotClick(id, button, clickType, player);
 		tile.markContainingBlockForUpdate(null);

@@ -16,18 +16,14 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInf
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
-import net.minecraft.entity.IMerchant;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemMap;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.merchant.IMerchant;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.item.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.structure.StructureIO;
+import net.minecraft.world.gen.feature.structure.Structures;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration.Type;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
@@ -55,7 +51,7 @@ public class IEVillagerHandler
 			return;
 
 		VILLAGER_REGISTRY.registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
-		StructureIO.registerStructureComponent(VillageEngineersHouse.class, ImmersiveEngineering.MODID+":EngineersHouse");
+		Structures.registerStructureComponent(VillageEngineersHouse.class, ImmersiveEngineering.MODID+":EngineersHouse");
 	}
 
 	public static void initIEVillagerTrades()
@@ -74,19 +70,19 @@ public class IEVillagerHandler
 		 */
 		VillagerRegistry.VillagerCareer career_engineer = new VillagerRegistry.VillagerCareer(PROF_ENGINEER, ImmersiveEngineering.MODID+".engineer");
 		career_engineer.addTrade(1,
-				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 0), new EntityVillager.PriceInfo(8, 16)),
-				new ItemstackForEmerald(new ItemStack(IEContent.blockWoodenDecoration, 1, 1), new EntityVillager.PriceInfo(-10, -6)),
-				new ItemstackForEmerald(new ItemStack(IEContent.blockClothDevice, 1, 1), new EntityVillager.PriceInfo(-3, -1))
+				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 0), new VillagerEntity.PriceInfo(8, 16)),
+				new ItemstackForEmerald(new ItemStack(IEContent.blockWoodenDecoration, 1, 1), new VillagerEntity.PriceInfo(-10, -6)),
+				new ItemstackForEmerald(new ItemStack(IEContent.blockClothDevice, 1, 1), new VillagerEntity.PriceInfo(-3, -1))
 		);
 		career_engineer.addTrade(2,
-				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 1), new EntityVillager.PriceInfo(2, 6)),
-				new ItemstackForEmerald(new ItemStack(IEContent.blockMetalDecoration1, 1, 1), new EntityVillager.PriceInfo(-8, -4)),
-				new ItemstackForEmerald(new ItemStack(IEContent.blockMetalDecoration1, 1, 5), new EntityVillager.PriceInfo(-8, -4))
+				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 1), new VillagerEntity.PriceInfo(2, 6)),
+				new ItemstackForEmerald(new ItemStack(IEContent.blockMetalDecoration1, 1, 1), new VillagerEntity.PriceInfo(-8, -4)),
+				new ItemstackForEmerald(new ItemStack(IEContent.blockMetalDecoration1, 1, 5), new VillagerEntity.PriceInfo(-8, -4))
 		);
 		career_engineer.addTrade(3,
-				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 2), new EntityVillager.PriceInfo(2, 6)),
-				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 7), new EntityVillager.PriceInfo(4, 8)),
-				new ItemstackForEmerald(new ItemStack(IEContent.blockStoneDecoration, 1, 5), new EntityVillager.PriceInfo(-6, -2))
+				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 2), new VillagerEntity.PriceInfo(2, 6)),
+				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 7), new VillagerEntity.PriceInfo(4, 8)),
+				new ItemstackForEmerald(new ItemStack(IEContent.blockStoneDecoration, 1, 5), new VillagerEntity.PriceInfo(-6, -2))
 		);
 		career_engineer.addTrade(4,
 				new OreveinMapForEmeralds()
@@ -97,26 +93,26 @@ public class IEVillagerHandler
 		 */
 		VillagerRegistry.VillagerCareer career_machinist = new VillagerRegistry.VillagerCareer(PROF_ENGINEER, ImmersiveEngineering.MODID+".machinist");
 		career_machinist.addTrade(1,
-				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 6), new EntityVillager.PriceInfo(8, 16)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemTool, 1, 0), new EntityVillager.PriceInfo(4, 7))
+				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 6), new VillagerEntity.PriceInfo(8, 16)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemTool, 1, 0), new VillagerEntity.PriceInfo(4, 7))
 		);
 		career_machinist.addTrade(2,
-				new EmeraldForItemstack(new ItemStack(IEContent.itemMetal, 1, 0), new EntityVillager.PriceInfo(4, 6)),
-				new EmeraldForItemstack(new ItemStack(IEContent.itemMetal, 1, 1), new EntityVillager.PriceInfo(4, 6)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 9), new EntityVillager.PriceInfo(1, 3))
+				new EmeraldForItemstack(new ItemStack(IEContent.itemMetal, 1, 0), new VillagerEntity.PriceInfo(4, 6)),
+				new EmeraldForItemstack(new ItemStack(IEContent.itemMetal, 1, 1), new VillagerEntity.PriceInfo(4, 6)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 9), new VillagerEntity.PriceInfo(1, 3))
 		);
 		career_machinist.addTrade(3,
-				new ItemstackForEmerald(new ItemStack(IEContent.itemToolbox, 1, 0), new EntityVillager.PriceInfo(6, 8)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 10), new EntityVillager.PriceInfo(1, 3)),
-				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9))
+				new ItemstackForEmerald(new ItemStack(IEContent.itemToolbox, 1, 0), new VillagerEntity.PriceInfo(6, 8)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 10), new VillagerEntity.PriceInfo(1, 3)),
+				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new VillagerEntity.PriceInfo(5, 9))
 		);
 		career_machinist.addTrade(4,
-				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 1), new EntityVillager.PriceInfo(28, 40)),
-				new ItemstackForEmerald(IEContent.itemEarmuffs, new EntityVillager.PriceInfo(4, 9))
+				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 1), new VillagerEntity.PriceInfo(28, 40)),
+				new ItemstackForEmerald(IEContent.itemEarmuffs, new VillagerEntity.PriceInfo(4, 9))
 		);
 		career_machinist.addTrade(5,
-				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 0), new EntityVillager.PriceInfo(32, 48)),
-				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
+				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 0), new VillagerEntity.PriceInfo(32, 48)),
+				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new VillagerEntity.PriceInfo(12, 24))
 		);
 
 		/* Electrician
@@ -124,27 +120,27 @@ public class IEVillagerHandler
 		 */
 		VillagerRegistry.VillagerCareer career_electrician = new VillagerRegistry.VillagerCareer(PROF_ENGINEER, ImmersiveEngineering.MODID+".electrician");
 		career_electrician.addTrade(1,
-				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 20), new EntityVillager.PriceInfo(8, 16)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemTool, 1, 1), new EntityVillager.PriceInfo(4, 7)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemWireCoil, 1, 0), new EntityVillager.PriceInfo(-4, -2))
+				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 20), new VillagerEntity.PriceInfo(8, 16)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemTool, 1, 1), new VillagerEntity.PriceInfo(4, 7)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemWireCoil, 1, 0), new VillagerEntity.PriceInfo(-4, -2))
 		);
 		career_electrician.addTrade(2,
-				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 21), new EntityVillager.PriceInfo(6, 12)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemTool, 1, 2), new EntityVillager.PriceInfo(4, 7)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemWireCoil, 1, 1), new EntityVillager.PriceInfo(-4, -1))
+				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 21), new VillagerEntity.PriceInfo(6, 12)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemTool, 1, 2), new VillagerEntity.PriceInfo(4, 7)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemWireCoil, 1, 1), new VillagerEntity.PriceInfo(-4, -1))
 		);
 		career_electrician.addTrade(3,
-				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 22), new EntityVillager.PriceInfo(4, 8)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemWireCoil, 1, 2), new EntityVillager.PriceInfo(-2, -1)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemToolUpgrades, 1, 6), new EntityVillager.PriceInfo(8, 12))
+				new EmeraldForItemstack(new ItemStack(IEContent.itemMaterial, 1, 22), new VillagerEntity.PriceInfo(4, 8)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemWireCoil, 1, 2), new VillagerEntity.PriceInfo(-2, -1)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemToolUpgrades, 1, 6), new VillagerEntity.PriceInfo(8, 12))
 		);
 		career_electrician.addTrade(4,
-				new ItemstackForEmerald(new ItemStack(IEContent.itemToolUpgrades, 1, 9), new EntityVillager.PriceInfo(8, 12)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemFluorescentTube), new EntityVillager.PriceInfo(8, 12)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemsFaradaySuit[0]), new EntityVillager.PriceInfo(5, 7)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemsFaradaySuit[1]), new EntityVillager.PriceInfo(9, 11)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemsFaradaySuit[2]), new EntityVillager.PriceInfo(5, 7)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemsFaradaySuit[3]), new EntityVillager.PriceInfo(11, 15))
+				new ItemstackForEmerald(new ItemStack(IEContent.itemToolUpgrades, 1, 9), new VillagerEntity.PriceInfo(8, 12)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemFluorescentTube), new VillagerEntity.PriceInfo(8, 12)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemsFaradaySuit[0]), new VillagerEntity.PriceInfo(5, 7)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemsFaradaySuit[1]), new VillagerEntity.PriceInfo(9, 11)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemsFaradaySuit[2]), new VillagerEntity.PriceInfo(5, 7)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemsFaradaySuit[3]), new VillagerEntity.PriceInfo(11, 15))
 		);
 
 		/* Outfitter
@@ -153,29 +149,29 @@ public class IEVillagerHandler
 		VillagerRegistry.VillagerCareer career_outfitter = new VillagerRegistry.VillagerCareer(PROF_ENGINEER, ImmersiveEngineering.MODID+".outfitter");
 
 		ItemStack bag_common = new ItemStack(IEContent.itemShaderBag);
-		ItemNBTHelper.setString(bag_common, "rarity", EnumRarity.COMMON.toString());
+		ItemNBTHelper.setString(bag_common, "rarity", Rarity.COMMON.toString());
 		ItemStack bag_uncommon = new ItemStack(IEContent.itemShaderBag);
-		ItemNBTHelper.setString(bag_uncommon, "rarity", EnumRarity.UNCOMMON.toString());
+		ItemNBTHelper.setString(bag_uncommon, "rarity", Rarity.UNCOMMON.toString());
 		ItemStack bag_rare = new ItemStack(IEContent.itemShaderBag);
-		ItemNBTHelper.setString(bag_rare, "rarity", EnumRarity.RARE.toString());
+		ItemNBTHelper.setString(bag_rare, "rarity", Rarity.RARE.toString());
 
 		career_outfitter.addTrade(1,
-				new ItemstackForEmerald(bag_common, new EntityVillager.PriceInfo(8, 16))
+				new ItemstackForEmerald(bag_common, new VillagerEntity.PriceInfo(8, 16))
 		);
 		career_outfitter.addTrade(2,
-				new ItemstackForEmerald(bag_uncommon, new EntityVillager.PriceInfo(12, 20))
+				new ItemstackForEmerald(bag_uncommon, new VillagerEntity.PriceInfo(12, 20))
 		);
 		career_outfitter.addTrade(3,
-				new ItemstackForEmerald(bag_rare, new EntityVillager.PriceInfo(16, 24))
+				new ItemstackForEmerald(bag_rare, new VillagerEntity.PriceInfo(16, 24))
 		);
 	}
 
-	private static class EmeraldForItemstack implements EntityVillager.ITradeList
+	private static class EmeraldForItemstack implements VillagerEntity.ITradeList
 	{
 		public ItemStack buyingItem;
-		public EntityVillager.PriceInfo buyAmounts;
+		public VillagerEntity.PriceInfo buyAmounts;
 
-		public EmeraldForItemstack(@Nonnull ItemStack item, @Nonnull EntityVillager.PriceInfo buyAmounts)
+		public EmeraldForItemstack(@Nonnull ItemStack item, @Nonnull VillagerEntity.PriceInfo buyAmounts)
 		{
 			this.buyingItem = item;
 			this.buyAmounts = buyAmounts;
@@ -188,18 +184,18 @@ public class IEVillagerHandler
 		}
 	}
 
-	private static class ItemstackForEmerald implements EntityVillager.ITradeList
+	private static class ItemstackForEmerald implements VillagerEntity.ITradeList
 	{
 		public ItemStack sellingItem;
-		public EntityVillager.PriceInfo priceInfo;
+		public VillagerEntity.PriceInfo priceInfo;
 
-		public ItemstackForEmerald(Item par1Item, EntityVillager.PriceInfo priceInfo)
+		public ItemstackForEmerald(Item par1Item, VillagerEntity.PriceInfo priceInfo)
 		{
 			this.sellingItem = new ItemStack(par1Item);
 			this.priceInfo = priceInfo;
 		}
 
-		public ItemstackForEmerald(ItemStack stack, EntityVillager.PriceInfo priceInfo)
+		public ItemstackForEmerald(ItemStack stack, VillagerEntity.PriceInfo priceInfo)
 		{
 			this.sellingItem = stack;
 			this.priceInfo = priceInfo;
@@ -227,9 +223,9 @@ public class IEVillagerHandler
 		}
 	}
 
-	private static class OreveinMapForEmeralds implements EntityVillager.ITradeList
+	private static class OreveinMapForEmeralds implements VillagerEntity.ITradeList
 	{
-		public EntityVillager.PriceInfo value;
+		public VillagerEntity.PriceInfo value;
 
 		public OreveinMapForEmeralds()
 		{
@@ -263,8 +259,8 @@ public class IEVillagerHandler
 					return;
 				}
 				BlockPos blockPos = new BlockPos(chunkCoords.getXStart()+8, 64, chunkCoords.getZStart()+8);
-				ItemStack itemstack = ItemMap.setupNewMap(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
-				ItemMap.renderBiomePreviewMap(world, itemstack);
+				ItemStack itemstack = FilledMapItem.setupNewMap(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
+				FilledMapItem.renderBiomePreviewMap(world, itemstack);
 				MapData.addTargetDecoration(itemstack, blockPos, "ie:coresample_treasure", Type.TARGET_POINT);
 				itemstack.setTranslatableName("item.immersiveengineering.map_orevein.name");
 				ItemNBTHelper.setLore(itemstack, mineralWorldInfo.mineral.name);

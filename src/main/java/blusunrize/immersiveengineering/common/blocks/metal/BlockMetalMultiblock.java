@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -37,7 +37,7 @@ public class BlockMetalMultiblock extends BlockIEMultiblock
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(IBlockState state)
+	public TileEntity createBasicTE(BlockState state)
 	{
 		return tileType.create();
 	}

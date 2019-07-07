@@ -10,13 +10,13 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 
@@ -37,7 +37,7 @@ public class InventoryTile implements IInventory
 	@Override
 	public ITextComponent getName()
 	{
-		return new TextComponentTranslation(this.name);
+		return new TranslationTextComponent(this.name);
 	}
 
 	@Override
@@ -49,14 +49,14 @@ public class InventoryTile implements IInventory
 	@Override
 	public ITextComponent getDisplayName()
 	{
-		return new TextComponentString(this.name);
+		return new StringTextComponent(this.name);
 	}
 
 	@Nullable
 	@Override
 	public ITextComponent getCustomName()
 	{
-		return new TextComponentString(this.name);
+		return new StringTextComponent(this.name);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class InventoryTile implements IInventory
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer player)
+	public boolean isUsableByPlayer(PlayerEntity player)
 	{
 		if(tile instanceof IInteractionObjectIE&&!((IInteractionObjectIE)tile).canUseGui(player))
 			return false;
@@ -135,12 +135,12 @@ public class InventoryTile implements IInventory
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player)
+	public void openInventory(PlayerEntity player)
 	{
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer player)
+	public void closeInventory(PlayerEntity player)
 	{
 		for(int i = 0; i < getSizeInventory(); i++)
 			inv.doGraphicalUpdates(i);

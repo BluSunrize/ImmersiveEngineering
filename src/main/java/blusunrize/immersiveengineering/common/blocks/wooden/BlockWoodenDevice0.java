@@ -13,17 +13,17 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase.ItemBlockIENoInventory;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -40,13 +40,13 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 		this.setResistance(5.0F);
 		this.setMetaLightOpacity(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), 0);
 		this.setNotNormalBlock(BlockTypes_WoodenDevice0.WORKBENCH.getMeta());
-		this.setMetaMobilityFlag(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), PushReaction.BLOCK);
 	}
 
 	@Override
-	protected EnumFacing getDefaultFacing()
+	protected Direction getDefaultFacing()
 	{
-		return EnumFacing.UP;
+		return Direction.UP;
 	}
 
 	@Override
@@ -66,11 +66,11 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
 	{
 		if(stack.getItemDamage()==BlockTypes_WoodenDevice0.WORKBENCH.getMeta())
 		{
-			EnumFacing f = EnumFacing.fromAngle(player.rotationYaw);
+			Direction f = Direction.fromAngle(player.rotationYaw);
 			if(f.getAxis()==Axis.Z)
 			{
 				return world.getBlockState(pos.add(1, 0, 0)).getBlock().isReplaceable(world, pos.add(1, 0, 0))||world.getBlockState(pos.add(-1, 0, 0)).getBlock().isReplaceable(world, pos.add(-1, 0, 0));
@@ -90,7 +90,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune)
+	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, BlockState state, float chance, int fortune)
 	{
 		if(!isExploding||this.getExplosivesType(state) < 0)
 			super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
@@ -106,7 +106,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
+	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
 //	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbour)
 	{
 //		super.onNeighborChange(world, pos, neighbour);
@@ -117,7 +117,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
+	public void onBlockAdded(World world, BlockPos pos, BlockState state)
 	{
 		super.onBlockAdded(world, pos, state);
 		int explosivesType = this.getExplosivesType(state);
@@ -135,12 +135,12 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity)
+	public void onEntityCollision(World world, BlockPos pos, BlockState state, Entity entity)
 	{
 		super.onEntityCollision(world, pos, state, entity);
 		int explosivesType = this.getExplosivesType(state);
-		if(!world.isRemote&&entity instanceof EntityArrow&&entity.isBurning()&&explosivesType >= 0)
-			this.doExplosion(world, pos, state, ((EntityArrow)entity).shootingEntity instanceof EntityLivingBase?(EntityLivingBase)((EntityArrow)entity).shootingEntity: null, explosivesType);
+		if(!world.isRemote&&entity instanceof AbstractArrowEntity&&entity.isBurning()&&explosivesType >= 0)
+			this.doExplosion(world, pos, state, ((AbstractArrowEntity)entity).shootingEntity instanceof LivingEntity?(LivingEntity)((AbstractArrowEntity)entity).shootingEntity: null, explosivesType);
 	}
 
 
@@ -168,7 +168,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public boolean allowHammerHarvest(IBlockState state)
+	public boolean allowHammerHarvest(BlockState state)
 	{
 		return true;
 	}

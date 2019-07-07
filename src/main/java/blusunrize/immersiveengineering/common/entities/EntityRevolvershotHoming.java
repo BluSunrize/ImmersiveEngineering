@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -19,7 +19,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 {
 	public int trackCountdown = 5;
 	public double redirectionSpeed = .25;
-	public EntityLivingBase targetOverride;
+	public LivingEntity targetOverride;
 
 	public EntityRevolvershotHoming(World world)
 	{
@@ -31,7 +31,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 		super(world, x, y, z, ax, ay, az, type);
 	}
 
-	public EntityRevolvershotHoming(World world, EntityLivingBase living, double ax, double ay, double az, IBullet type, ItemStack stack)
+	public EntityRevolvershotHoming(World world, LivingEntity living, double ax, double ay, double az, IBullet type, ItemStack stack)
 	{
 		super(world, living, ax, ay, az, type);
 	}
@@ -43,7 +43,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 
 		if(!world.isRemote&&this.ticksExisted > trackCountdown)
 		{
-			EntityLivingBase target = getTarget();
+			LivingEntity target = getTarget();
 			if(target!=null)
 			{
 				Vec3d newMotion = new Vec3d(
@@ -58,17 +58,17 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 		}
 	}
 
-	public EntityLivingBase getTarget()
+	public LivingEntity getTarget()
 	{
 		if(targetOverride!=null&&targetOverride.isAlive())
 			return targetOverride;
 		double r = 20D;
 		AxisAlignedBB aabb = new AxisAlignedBB(posX-r, posY-r, posZ-r, posX+r, posY+r, posZ+r);
-		EntityLivingBase target = null;
-		for(Object o : world.getEntitiesWithinAABB(EntityLivingBase.class, aabb))
-			if(o instanceof EntityLivingBase&&!o.equals(this.shootingEntity))
-				if(target==null||((EntityLivingBase)o).getDistanceSq(this) < target.getDistanceSq(this))
-					target = (EntityLivingBase)o;
+		LivingEntity target = null;
+		for(Object o : world.getEntitiesWithinAABB(LivingEntity.class, aabb))
+			if(o instanceof LivingEntity&&!o.equals(this.shootingEntity))
+				if(target==null||((LivingEntity)o).getDistanceSq(this) < target.getDistanceSq(this))
+					target = (LivingEntity)o;
 		return target;
 	}
 }

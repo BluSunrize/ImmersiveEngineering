@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -78,13 +78,13 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 		}
 
 		@Override
-		public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+		public CompoundNBT writeToNBT(CompoundNBT nbt)
 		{
 			nbt.setString("type", "unpacking");
-			nbt.setTag("mapKey", mapKey.writeToNBT(new NBTTagCompound()));
-			nbt.setTag("output", output.write(new NBTTagCompound()));
-			nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
-			nbt.setTag("mold", mold.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("mapKey", mapKey.writeToNBT(new CompoundNBT()));
+			nbt.setTag("output", output.write(new CompoundNBT()));
+			nbt.setTag("input", input.writeToNBT(new CompoundNBT()));
+			nbt.setTag("mold", mold.writeToNBT(new CompoundNBT()));
 			nbt.setInt("energy", (int)(getTotalProcessEnergy()/energyModifier));
 			return nbt;
 		}

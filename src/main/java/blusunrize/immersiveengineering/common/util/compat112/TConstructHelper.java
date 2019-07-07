@@ -19,12 +19,12 @@ import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.MobEffects;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
@@ -147,7 +147,7 @@ public class TConstructHelper extends IECompatModule
 
 	public static Fluid sendFluidForMelting(String ore, Fluid fluid)
 	{
-		NBTTagCompound tag = new NBTTagCompound();
+		CompoundNBT tag = new CompoundNBT();
 		tag.setString("fluid", fluid.getName());
 		tag.setString("ore", ore);
 		tag.setBoolean("toolforge", true);
@@ -167,13 +167,13 @@ public class TConstructHelper extends IECompatModule
 					inputStacks[i] = new FluidStack(f, (Integer)input[i*2+1]);
 			}
 
-		NBTTagList tagList = new NBTTagList();
-		tagList.add(output.writeToNBT(new NBTTagCompound()));
+		ListNBT tagList = new ListNBT();
+		tagList.add(output.writeToNBT(new CompoundNBT()));
 		for(FluidStack stack : inputStacks)
 			if(stack!=null)
-				tagList.add(stack.writeToNBT(new NBTTagCompound()));
+				tagList.add(stack.writeToNBT(new CompoundNBT()));
 
-		NBTTagCompound message = new NBTTagCompound();
+		CompoundNBT message = new CompoundNBT();
 		message.setTag("alloy", tagList);
 		//		FMLInterModComms.sendMessage("tconstruct", "alloy", message);
 		//	For some reason IMC on this is broken? So direct interaction is required. Oh well.
@@ -212,7 +212,7 @@ public class TConstructHelper extends IECompatModule
 		}
 
 		@Override
-		public void afterHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damageDealt, boolean wasCritical, boolean wasHit)
+		public void afterHit(ItemStack tool, LivingEntity player, LivingEntity target, float damageDealt, boolean wasCritical, boolean wasHit)
 		{
 			if(target.isEntityAlive()&&wasHit)
 			{
@@ -224,7 +224,7 @@ public class TConstructHelper extends IECompatModule
 					if(tempDif < 0&&!target.isImmuneToFire())
 						target.setFire((int)Math.floor(tempDif*3));
 					else if(tempDif > 0)
-						target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 4, (int)Math.floor(tempDif*2)));
+						target.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 4, (int)Math.floor(tempDif*2)));
 				}
 			}
 		}

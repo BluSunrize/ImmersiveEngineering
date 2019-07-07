@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMu
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMixer;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -22,7 +22,7 @@ import net.minecraftforge.items.IItemHandler;
 //TODO custom subclass of ItemStackHandler for markDirty etc
 public class ContainerMixer extends ContainerIEBase<TileEntityMixer> implements ICallbackContainer
 {
-	public ContainerMixer(InventoryPlayer inventoryPlayer, TileEntityMixer tile)
+	public ContainerMixer(PlayerInventory inventoryPlayer, TileEntityMixer tile)
 	{
 		super(inventoryPlayer, tile);
 

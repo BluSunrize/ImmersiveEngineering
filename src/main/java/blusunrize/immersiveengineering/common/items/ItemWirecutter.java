@@ -20,17 +20,17 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamage
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Enchantments;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
@@ -90,9 +90,9 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player)
+	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, PlayerEntity player)
 	{
-		IBlockState state = player.world.getBlockState(pos);
+		BlockState state = player.world.getBlockState(pos);
 		boolean effective = false;
 		for(ToolType tool : getToolTypes(itemstack))
 			if(state.getBlock().isToolEffective(state, tool))
@@ -105,20 +105,20 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext context)
+	public ActionResultType onItemUse(ItemUseContext context)
 	{
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		TileEntity tileEntity = world.getTileEntity(pos);
 		TargetingInfo target = new TargetingInfo(context.getFace(), context.getHitX(), context.getHitY(), context.getHitZ());
 		ItemStack stack = context.getItem();
-		EntityPlayer player = context.getPlayer();
+		PlayerEntity player = context.getPlayer();
 		if(player!=null&&tileEntity instanceof IImmersiveConnectable)
 		{
 			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(null, target);
 			tileEntity = world.getTileEntity(masterPos);
 			if(!(tileEntity instanceof IImmersiveConnectable))
-				return EnumActionResult.PASS;
+				return ActionResultType.PASS;
 
 			if(!world.isRemote)
 			{
@@ -133,17 +133,17 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 					else
 					{
 						player.renderBrokenItemStack(stack);
-						player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
+						player.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
 					}
 				}
 			}
 		}
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
@@ -154,11 +154,11 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 			//if(target!=null)
 			//	ImmersiveNetHandler.INSTANCE.removeConnectionAndDrop(target, world, player.getPosition());
 		}
-		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
+	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
 	{
 		if(getToolTypes(stack).contains(tool))
 			return 2;
@@ -175,7 +175,7 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		for(ToolType type : this.getToolTypes(stack))
 			if(state.getBlock().isToolEffective(state, type))
@@ -184,7 +184,7 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 	}
 
 	@Override
-	public boolean canHarvestBlock(ItemStack stack, IBlockState state)
+	public boolean canHarvestBlock(ItemStack stack, BlockState state)
 	{
 		if(state.getBlock() instanceof BlockIEBase)
 		{

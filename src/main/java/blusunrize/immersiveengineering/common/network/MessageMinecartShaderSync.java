@@ -14,11 +14,11 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -64,7 +64,7 @@ public class MessageMinecartShaderSync implements IMessage
 	{
 		if(context.get().getDirection().getReceptionSide()==LogicalSide.SERVER)
 		{
-			WorldServer world = Objects.requireNonNull(context.get().getSender()).getServerWorld();
+			ServerWorld world = Objects.requireNonNull(context.get().getSender()).getServerWorld();
 			world.addScheduledTask(() -> {
 				Entity entity = world.getEntityByID(entityID);
 				if(entity==null)
@@ -85,7 +85,7 @@ public class MessageMinecartShaderSync implements IMessage
 				if (world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
 					Entity entity = world.getEntityByID(entityID);
-					if(entity instanceof EntityMinecart)
+					if(entity instanceof AbstractMinecartEntity)
 						ModelShaderMinecart.shadedCarts.put(entityID, shader);
 				}
 			});

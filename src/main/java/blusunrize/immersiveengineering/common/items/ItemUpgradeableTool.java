@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -41,7 +41,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	}
 
 	@Override
-	public NBTTagCompound getUpgrades(ItemStack stack)
+	public CompoundNBT getUpgrades(ItemStack stack)
 	{
 		return ItemNBTHelper.getTagCompound(stack, "upgrades");
 	}
@@ -66,7 +66,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 		LazyOptional<IItemHandler> lazyInv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		lazyInv.ifPresent(inv->
 		{
-			NBTTagCompound upgradeTag = getUpgradeBase(stack).copy();
+			CompoundNBT upgradeTag = getUpgradeBase(stack).copy();
 			for(int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack u = inv.getStackInSlot(i);
@@ -82,9 +82,9 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 		});
 	}
 
-	public NBTTagCompound getUpgradeBase(ItemStack stack)
+	public CompoundNBT getUpgradeBase(ItemStack stack)
 	{
-		return new NBTTagCompound();
+		return new CompoundNBT();
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	}
 
 	@Override
-	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
+	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
 	{
 	}
 

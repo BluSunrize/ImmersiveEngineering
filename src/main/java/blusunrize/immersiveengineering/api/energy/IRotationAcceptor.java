@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.api.energy;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nonnull;
 
 public interface IRotationAcceptor
 {
-	void inputRotation(double rotation, @Nonnull EnumFacing side);
+	void inputRotation(double rotation, @Nonnull Direction side);
 }

@@ -13,26 +13,26 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
@@ -70,9 +70,9 @@ public class IEBlockInterfaces
 
 	public interface IBlockOverlayText
 	{
-		String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer);
+		String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer);
 
-		boolean useNixieFont(EntityPlayer player, RayTraceResult mop);
+		boolean useNixieFont(PlayerEntity player, RayTraceResult mop);
 	}
 
 	public interface ISoundTile
@@ -92,14 +92,14 @@ public class IEBlockInterfaces
 
 	public interface IRedstoneOutput
 	{
-		default int getWeakRSOutput(IBlockState state, EnumFacing side)
+		default int getWeakRSOutput(BlockState state, Direction side)
 		{
 			return getStrongRSOutput(state, side);
 		}
 
-		int getStrongRSOutput(IBlockState state, EnumFacing side);
+		int getStrongRSOutput(BlockState state, Direction side);
 
-		boolean canConnectRedstone(IBlockState state, EnumFacing side);
+		boolean canConnectRedstone(BlockState state, Direction side);
 	}
 
 	public interface ILightValue
@@ -111,7 +111,7 @@ public class IEBlockInterfaces
 	{
 		boolean hasCustomBlockColours();
 
-		int getRenderColour(IBlockState state, @Nullable IBlockReader worldIn, @Nullable BlockPos pos, int tintIndex);
+		int getRenderColour(BlockState state, @Nullable IBlockReader worldIn, @Nullable BlockPos pos, int tintIndex);
 	}
 
 	public interface IColouredTile
@@ -121,31 +121,31 @@ public class IEBlockInterfaces
 
 	public interface IDirectionalTile
 	{
-		EnumFacing getFacing();
+		Direction getFacing();
 
-		void setFacing(EnumFacing facing);
+		void setFacing(Direction facing);
 
 		/**
 		 * @return 0 = side clicked, 1=piston behaviour,  2 = horizontal, 3 = vertical, 4 = x/z axis, 5 = horizontal based on quadrant, 6 = horizontal preferring clicked side
 		 */
 		int getFacingLimitation();
 
-		default EnumFacing getFacingForPlacement(EntityLivingBase placer, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+		default Direction getFacingForPlacement(LivingEntity placer, BlockPos pos, Direction side, float hitX, float hitY, float hitZ)
 		{
-			EnumFacing f = EnumFacing.DOWN;
+			Direction f = Direction.DOWN;
 			int limit = getFacingLimitation();
 			if(limit==0)
 				f = side;
 			else if(limit==1)
-				f = EnumFacing.getFacingDirections(placer)[0];
+				f = Direction.getFacingDirections(placer)[0];
 			else if(limit==2)
-				f = EnumFacing.fromAngle(placer.rotationYaw);
+				f = Direction.fromAngle(placer.rotationYaw);
 			else if(limit==3)
-				f = (side!=EnumFacing.DOWN&&(side==EnumFacing.UP||hitY <= .5))?EnumFacing.UP: EnumFacing.DOWN;
+				f = (side!=Direction.DOWN&&(side==Direction.UP||hitY <= .5))?Direction.UP: Direction.DOWN;
 			else if(limit==4)
 			{
-				f = EnumFacing.fromAngle(placer.rotationYaw);
-				if(f==EnumFacing.SOUTH||f==EnumFacing.WEST)
+				f = Direction.fromAngle(placer.rotationYaw);
+				if(f==Direction.SOUTH||f==Direction.WEST)
 					f = f.getOpposite();
 			}
 			else if(limit==5)
@@ -158,9 +158,9 @@ public class IEBlockInterfaces
 					float zFromMid = hitZ-.5f;
 					float max = Math.max(Math.abs(xFromMid), Math.abs(zFromMid));
 					if(max==Math.abs(xFromMid))
-						f = xFromMid < 0?EnumFacing.WEST: EnumFacing.EAST;
+						f = xFromMid < 0?Direction.WEST: Direction.EAST;
 					else
-						f = zFromMid < 0?EnumFacing.NORTH: EnumFacing.SOUTH;
+						f = zFromMid < 0?Direction.NORTH: Direction.SOUTH;
 				}
 			}
 			else if(limit==6)
@@ -169,27 +169,27 @@ public class IEBlockInterfaces
 			return mirrorFacingOnPlacement(placer)?f.getOpposite(): f;
 		}
 
-		boolean mirrorFacingOnPlacement(EntityLivingBase placer);
+		boolean mirrorFacingOnPlacement(LivingEntity placer);
 
-		boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity);
+		boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity);
 
-		boolean canRotate(EnumFacing axis);
+		boolean canRotate(Direction axis);
 
-		default void afterRotation(EnumFacing oldDir, EnumFacing newDir)
+		default void afterRotation(Direction oldDir, Direction newDir)
 		{
 		}
 	}
 
 	public interface IAdvancedDirectionalTile extends IDirectionalTile
 	{
-		void onDirectionalPlacement(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer);
+		void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer);
 	}
 
 	public interface IConfigurableSides
 	{
-		IEEnums.SideConfig getSideConfig(EnumFacing side);
+		IEEnums.SideConfig getSideConfig(Direction side);
 
-		boolean toggleSide(EnumFacing side, EntityPlayer p);
+		boolean toggleSide(Direction side, PlayerEntity p);
 	}
 
 	public interface ITileDrop
@@ -197,23 +197,23 @@ public class IEBlockInterfaces
 		/**
 		 * Don't call this on generic TE'S, use getTileDrops or getPickBlock
 		 */
-		default ItemStack getTileDrop(@Nullable EntityPlayer player, IBlockState state)
+		default ItemStack getTileDrop(@Nullable PlayerEntity player, BlockState state)
 		{
 			NonNullList<ItemStack> drops = getTileDrops(player, state);
 			return drops.size() > 0?drops.get(0): ItemStack.EMPTY;
 		}
 
-		default NonNullList<ItemStack> getTileDrops(@Nullable EntityPlayer player, IBlockState state)
+		default NonNullList<ItemStack> getTileDrops(@Nullable PlayerEntity player, BlockState state)
 		{
 			return NonNullList.from(ItemStack.EMPTY, getTileDrop(player, state));
 		}
 
-		default ItemStack getPickBlock(@Nullable EntityPlayer player, IBlockState state, RayTraceResult rayRes)
+		default ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
 		{
 			return getTileDrop(player, state);
 		}
 
-		void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack);
+		void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack);
 
 		default boolean preventInventoryDrop()
 		{
@@ -223,7 +223,7 @@ public class IEBlockInterfaces
 
 	public interface IAdditionalDrops
 	{
-		Collection<ItemStack> getExtraDrops(EntityPlayer player, IBlockState state);
+		Collection<ItemStack> getExtraDrops(PlayerEntity player, BlockState state);
 	}
 
 	public interface IEntityProof
@@ -233,17 +233,17 @@ public class IEBlockInterfaces
 
 	public interface IPlayerInteraction
 	{
-		boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
+		boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
 	}
 
 	public interface IHammerInteraction
 	{
-		boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ);
+		boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ);
 	}
 
 	public interface IPlacementInteraction
 	{
-		void onTilePlaced(World world, BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer, ItemStack stack);
+		void onTilePlaced(World world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack);
 	}
 
 	public interface IActiveState extends IUsesBooleanProperty
@@ -298,14 +298,14 @@ public class IEBlockInterfaces
 
 	public interface IFaceShape
 	{
-		BlockFaceShape getFaceShape(EnumFacing side);
+		BlockFaceShape getFaceShape(Direction side);
 	}
 
 	public interface IAdvancedSelectionBounds extends IBlockBounds
 	{
 		List<AxisAlignedBB> getAdvancedSelectionBounds();
 
-		boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list);
+		boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list);
 	}
 
 	public interface IAdvancedCollisionBounds extends IBlockBounds
@@ -316,9 +316,9 @@ public class IEBlockInterfaces
 	//TODO move a lot of this to block states!
 	public interface IHasDummyBlocks extends IGeneralMultiblock
 	{
-		void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ);
+		void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ);
 
-		void breakDummies(BlockPos pos, IBlockState state);
+		void breakDummies(BlockPos pos, BlockState state);
 
 		boolean isDummy();
 
@@ -358,7 +358,7 @@ public class IEBlockInterfaces
 		@Nullable
 		IInteractionObjectIE getGuiMaster();
 
-		boolean canUseGui(EntityPlayer player);
+		boolean canUseGui(PlayerEntity player);
 
 		@Nonnull
 		ResourceLocation getGuiName();
@@ -366,7 +366,7 @@ public class IEBlockInterfaces
 		@Override
 		default ITextComponent getName()
 		{
-			return new TextComponentString("Unknown");
+			return new StringTextComponent("Unknown");
 		}
 
 		@Nullable
@@ -389,7 +389,7 @@ public class IEBlockInterfaces
 		}
 
 		@Override
-		default Container createContainer(InventoryPlayer inventoryPlayer, EntityPlayer entityPlayer)
+		default Container createContainer(PlayerInventory inventoryPlayer, PlayerEntity entityPlayer)
 		{
 			return GuiHandler.createContainer(getGuiName(), inventoryPlayer, (TileEntity)this);
 		}

@@ -52,38 +52,38 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.model.ModelBiped;
-import net.minecraft.client.renderer.entity.model.ModelVillager;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.VillagerModel;
+import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.GuiIngameForge;
@@ -127,7 +127,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(resourcePredicate.test(VanillaResourceType.TEXTURES))
 		{
-			TextureMap texturemap = Minecraft.getInstance().getTextureMap();
+			AtlasTexture texturemap = Minecraft.getInstance().getTextureMap();
 			for(int i = 0; i < ClientUtils.destroyBlockIcons.length; i++)
 				ClientUtils.destroyBlockIcons[i] = texturemap.getAtlasSprite("minecraft:blocks/destroy_stage_"+i);
 
@@ -165,8 +165,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						this.shieldToggleTimer = 7;
 					else
 					{
-						EntityPlayer player = event.player;
-						ItemStack held = player.getHeldItem(EnumHand.OFF_HAND);
+						PlayerEntity player = event.player;
+						ItemStack held = player.getHeldItem(Hand.OFF_HAND);
 						if(!held.isEmpty()&&held.getItem() instanceof ItemIEShield)
 						{
 							if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet")&&((ItemIEShield)held.getItem()).getUpgrades(held).hasKey("prevSlot"))
@@ -188,7 +188,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 				if(ClientProxy.keybind_chemthrowerSwitch.isPressed())
 				{
-					ItemStack held = event.player.getHeldItem(EnumHand.MAIN_HAND);
+					ItemStack held = event.player.getHeldItem(Hand.MAIN_HAND);
 					if(held.getItem() instanceof ItemChemthrower&&((ItemChemthrower)held.getItem()).getUpgrades(held).getBoolean("multitank"))
 						ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(true));
 				}
@@ -243,24 +243,24 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(!powerpack.isEmpty())
 			{
 				event.getToolTip().add(powerpack.getDisplayName().setStyle(gray));
-				event.getToolTip().add(new TextComponentString(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF")
+				event.getToolTip().add(new StringTextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF")
 						.setStyle(gray));
 			}
 		}
 		if(ClientUtils.mc().currentScreen!=null
 				&&ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
 				&&BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
-			event.getToolTip().add(new TextComponentTranslation("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack()))
+			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack()))
 					.setStyle(gray));
 		if(IEConfig.oreTooltips&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
-				event.getToolTip().add(new TextComponentString(oid.toString()).setStyle(gray));
+				event.getToolTip().add(new StringTextComponent(oid.toString()).setStyle(gray));
 		}
 
 		if(event.getItemStack().getItem() instanceof IBulletContainer)
 			for(String s : BULLET_TOOLTIP)
-				event.getToolTip().add(new TextComponentString(s));
+				event.getToolTip().add(new StringTextComponent(s));
 	}
 
 	@SubscribeEvent()
@@ -305,9 +305,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 		if(!ItemEarmuffs.affectedSoundCategories.contains(event.getSound().getCategory().getName()))
 			return;
-		if(ClientUtils.mc().player!=null&&!ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty())
+		if(ClientUtils.mc().player!=null&&!ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty())
 		{
-			ItemStack earmuffs = ClientUtils.mc().player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+			ItemStack earmuffs = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
 			if(ItemNBTHelper.hasKey(earmuffs, Lib.NBT_Earmuffs))
 				earmuffs = ItemNBTHelper.getItemStack(earmuffs, Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty()&&Misc.earmuffs.equals(earmuffs.getItem())&&!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
@@ -424,7 +424,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 				ClientUtils.drawTexturedRect(218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 64/256f, 88/256f, 96/256f, 224/256f);
-				ItemStack equipped = ClientUtils.mc().player.getHeldItem(EnumHand.MAIN_HAND);
+				ItemStack equipped = ClientUtils.mc().player.getHeldItem(Hand.MAIN_HAND);
 				if(!equipped.isEmpty()&&equipped.getItem() instanceof IZoomTool)
 				{
 					IZoomTool tool = (IZoomTool)equipped.getItem();
@@ -477,9 +477,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		int scaledHeight = ClientUtils.mc().mainWindow.getScaledWidth();
 		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
 		{
-			EntityPlayer player = ClientUtils.mc().player;
+			PlayerEntity player = ClientUtils.mc().player;
 
-			for(EnumHand hand : EnumHand.values())
+			for(Hand hand : Hand.values())
 				if(!player.getHeldItem(hand).isEmpty())
 				{
 					ItemStack equipped = player.getHeldItem(hand);
@@ -516,8 +516,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(bullets!=null)
 						{
 							int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
-							EnumHandSide side = hand==EnumHand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite();
-							boolean right = side==EnumHandSide.RIGHT;
+							HandSide side = hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite();
+							boolean right = side==HandSide.RIGHT;
 							float dx = right?scaledWidth-32-48: 48;
 							float dy = scaledHeight-64;
 							GlStateManager.pushMatrix();
@@ -656,12 +656,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					}
 					else if(equipped.getItem() instanceof ItemIEShield)
 					{
-						NBTTagCompound upgrades = ((ItemIEShield)equipped.getItem()).getUpgrades(equipped);
+						CompoundNBT upgrades = ((ItemIEShield)equipped.getItem()).getUpgrades(equipped);
 						if(!upgrades.isEmpty())
 						{
 							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 							GlStateManager.color3f(1, 1, 1);
-							boolean boundLeft = (player.getPrimaryHand()==EnumHandSide.RIGHT)==(hand==EnumHand.OFF_HAND);
+							boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
 							float dx = boundLeft?16: (scaledWidth-16-64);
 							float dy = scaledHeight;
 							GlStateManager.pushMatrix();
@@ -734,7 +734,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				}
 			if(ClientUtils.mc().objectMouseOver!=null)
 			{
-				boolean hammer = !player.getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&Utils.isHammer(player.getHeldItem(EnumHand.MAIN_HAND));
+				boolean hammer = !player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&Utils.isHammer(player.getHeldItem(Hand.MAIN_HAND));
 				RayTraceResult mop = ClientUtils.mc().objectMouseOver;
 				if(mop!=null&&mop.type==Type.BLOCK)
 				{
@@ -762,9 +762,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onFogUpdate(EntityViewRenderEvent.RenderFogEvent event)
 	{
-		if(event.getEntity() instanceof EntityLivingBase&&((EntityLivingBase)event.getEntity()).getActivePotionEffect(IEPotions.flashed)!=null)
+		if(event.getEntity() instanceof LivingEntity&&((LivingEntity)event.getEntity()).getActivePotionEffect(IEPotions.flashed)!=null)
 		{
-			PotionEffect effect = ((EntityLivingBase)event.getEntity()).getActivePotionEffect(IEPotions.flashed);
+			EffectInstance effect = ((LivingEntity)event.getEntity()).getActivePotionEffect(IEPotions.flashed);
 			int timeLeft = effect.getDuration();
 			float saturation = 1-timeLeft/(float)(80+40*effect.getAmplifier());//Total Time =  4s + 2s per amplifier
 
@@ -785,7 +785,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onFogColourUpdate(EntityViewRenderEvent.FogColors event)
 	{
-		if(event.getEntity() instanceof EntityLivingBase&&((EntityLivingBase)event.getEntity()).getActivePotionEffect(IEPotions.flashed)!=null)
+		if(event.getEntity() instanceof LivingEntity&&((LivingEntity)event.getEntity()).getActivePotionEffect(IEPotions.flashed)!=null)
 		{
 			event.setRed(1);
 			event.setGreen(1);
@@ -796,12 +796,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onFOVUpdate(FOVUpdateEvent event)
 	{
-		EntityPlayer player = ClientUtils.mc().player;
-		if(!player.getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof IZoomTool)
+		PlayerEntity player = ClientUtils.mc().player;
+		if(!player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IZoomTool)
 		{
 			if(player.isSneaking()&&player.onGround)
 			{
-				ItemStack equipped = player.getHeldItem(EnumHand.MAIN_HAND);
+				ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
 				IZoomTool tool = (IZoomTool)equipped.getItem();
 				if(tool.canZoom(equipped, player))
 				{
@@ -842,10 +842,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getScrollDelta()!=0)
 		{
-			EntityPlayer player = ClientUtils.mc().player;
-			if(!player.getHeldItem(EnumHand.MAIN_HAND).isEmpty()&&player.isSneaking())
+			PlayerEntity player = ClientUtils.mc().player;
+			if(!player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&player.isSneaking())
 			{
-				ItemStack equipped = player.getHeldItem(EnumHand.MAIN_HAND);
+				ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
 
 				if(equipped.getItem() instanceof IZoomTool)
 				{
@@ -889,7 +889,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			double py = -TileEntityRendererDispatcher.staticPlayerY;
 			double pz = -TileEntityRendererDispatcher.staticPlayerZ;
 			TileEntity tile = event.getPlayer().world.getTileEntity(event.getTarget().getBlockPos());
-			ItemStack stack = event.getPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			ItemStack stack = event.getPlayer().getHeldItem(Hand.MAIN_HAND);
 			if(tile instanceof IAdvancedSelectionBounds)
 			{
 				IAdvancedSelectionBounds iasb = (IAdvancedSelectionBounds)tile;
@@ -935,7 +935,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				Tessellator tessellator = Tessellator.getInstance();
 				BufferBuilder BufferBuilder = tessellator.getBuffer();
 
-				EnumFacing f = ((TileEntityTurntable)tile).getFacing();
+				Direction f = ((TileEntityTurntable)tile).getFacing();
 				double tx = pos.getX()+.5;
 				double ty = pos.getY()+.5;
 				double tz = pos.getZ()+.5;
@@ -960,7 +960,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			World world = event.getPlayer().world;
 			if(!stack.isEmpty()&&MetalDevices.conveyor.equals(Block.getBlockFromItem(stack.getItem()))&&event.getTarget().sideHit.getAxis()==Axis.Y)
 			{
-				EnumFacing side = event.getTarget().sideHit;
+				Direction side = event.getTarget().sideHit;
 				BlockPos pos = event.getTarget().getBlockPos();
 				AxisAlignedBB targetedBB = world.getBlockState(pos).getRenderShape(world, pos).getBoundingBox();
 				targetedBB = targetedBB.offset(-pos.getX(), -pos.getY(), -pos.getZ());
@@ -978,24 +978,24 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 				if(side.getAxis()==Axis.Y)
 				{
-					points[0] = new double[]{0-f1, side==EnumFacing.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 0-f1};
-					points[1] = new double[]{1+f1, side==EnumFacing.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 1+f1};
-					points[2] = new double[]{0-f1, side==EnumFacing.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 1+f1};
-					points[3] = new double[]{1+f1, side==EnumFacing.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 0-f1};
+					points[0] = new double[]{0-f1, side==Direction.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 0-f1};
+					points[1] = new double[]{1+f1, side==Direction.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 1+f1};
+					points[2] = new double[]{0-f1, side==Direction.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 1+f1};
+					points[3] = new double[]{1+f1, side==Direction.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 0-f1};
 				}
 				else if(side.getAxis()==Axis.Z)
 				{
-					points[0] = new double[]{1+f1, 1+f1, side==EnumFacing.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
-					points[1] = new double[]{0-f1, 0-f1, side==EnumFacing.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
-					points[2] = new double[]{0-f1, 1+f1, side==EnumFacing.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
-					points[3] = new double[]{1+f1, 0-f1, side==EnumFacing.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
+					points[0] = new double[]{1+f1, 1+f1, side==Direction.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
+					points[1] = new double[]{0-f1, 0-f1, side==Direction.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
+					points[2] = new double[]{0-f1, 1+f1, side==Direction.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
+					points[3] = new double[]{1+f1, 0-f1, side==Direction.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
 				}
 				else
 				{
-					points[0] = new double[]{side==EnumFacing.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 1+f1, 1+f1};
-					points[1] = new double[]{side==EnumFacing.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 0-f1, 0-f1};
-					points[2] = new double[]{side==EnumFacing.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 1+f1, 0-f1};
-					points[3] = new double[]{side==EnumFacing.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 0-f1, 1+f1};
+					points[0] = new double[]{side==Direction.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 1+f1, 1+f1};
+					points[1] = new double[]{side==Direction.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 0-f1, 0-f1};
+					points[2] = new double[]{side==Direction.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 1+f1, 0-f1};
+					points[3] = new double[]{side==Direction.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 0-f1, 1+f1};
 				}
 				BufferBuilder.begin(1, DefaultVertexFormats.POSITION_COLOR);
 				for(double[] point : points)
@@ -1037,7 +1037,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	private static double[][] rotationArrowCoords = {{.375, 0}, {.5, -.125}, {.4375, -.125}, {.4375, -.25}, {.25, -.4375}, {-.25, -.4375}, {-.4375, -.25}, {-.4375, -.0625}, {-.3125, -.0625}, {-.3125, -.1875}, {-.1875, -.3125}, {.1875, -.3125}, {.3125, -.1875}, {.3125, -.125}, {.25, -.125}};
 	private static double[][] rotationArrowQuads = {rotationArrowCoords[7], rotationArrowCoords[8], rotationArrowCoords[6], rotationArrowCoords[9], rotationArrowCoords[5], rotationArrowCoords[10], rotationArrowCoords[4], rotationArrowCoords[11], rotationArrowCoords[3], rotationArrowCoords[12], rotationArrowCoords[2], rotationArrowCoords[13], rotationArrowCoords[1], rotationArrowCoords[14], rotationArrowCoords[0], rotationArrowCoords[0]};
 
-	public static void drawRotationArrows(Tessellator tessellator, BufferBuilder BufferBuilder, EnumFacing facing, double rotation, boolean flip)
+	public static void drawRotationArrows(Tessellator tessellator, BufferBuilder BufferBuilder, Direction facing, double rotation, boolean flip)
 	{
 		double cos = Math.cos(rotation);
 		double sin = Math.sin(rotation);
@@ -1090,7 +1090,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 	private static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
 
-	public static void drawBlockOverlayArrow(Tessellator tessellator, BufferBuilder BufferBuilder, Vec3d directionVec, EnumFacing side, AxisAlignedBB targetedBB)
+	public static void drawBlockOverlayArrow(Tessellator tessellator, BufferBuilder BufferBuilder, Vec3d directionVec, Direction side, AxisAlignedBB targetedBB)
 	{
 		Vec3d[] translatedPositions = new Vec3d[arrowCoords.length];
 		Matrix4 mat = new Matrix4();
@@ -1107,7 +1107,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			Vec3d vec = mat.apply(new Vec3d(arrowCoords[i][0], 0, arrowCoords[i][1])).add(.5, .5, .5);
 			if(targetedBB!=null)
-				vec = new Vec3d(side==EnumFacing.WEST?targetedBB.minX-.002: side==EnumFacing.EAST?targetedBB.maxX+.002: vec.x, side==EnumFacing.DOWN?targetedBB.minY-.002: side==EnumFacing.UP?targetedBB.maxY+.002: vec.y, side==EnumFacing.NORTH?targetedBB.minZ-.002: side==EnumFacing.SOUTH?targetedBB.maxZ+.002: vec.z);
+				vec = new Vec3d(side==Direction.WEST?targetedBB.minX-.002: side==Direction.EAST?targetedBB.maxX+.002: vec.x, side==Direction.DOWN?targetedBB.minY-.002: side==Direction.UP?targetedBB.maxY+.002: vec.y, side==Direction.NORTH?targetedBB.minZ-.002: side==Direction.SOUTH?targetedBB.maxZ+.002: vec.z);
 			translatedPositions[i] = vec;
 		}
 
@@ -1121,12 +1121,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		tessellator.draw();
 	}
 
-	public static void drawAdditionalBlockbreak(WorldRenderer context, EntityPlayer player, float partialTicks, Collection<BlockPos> blocks)
+	public static void drawAdditionalBlockbreak(WorldRenderer context, PlayerEntity player, float partialTicks, Collection<BlockPos> blocks)
 	{
 		for(BlockPos pos : blocks)
 			context.drawSelectionBox(player, new RayTraceResult(new Vec3d(0, 0, 0), null, pos), 0, partialTicks);
 
-		PlayerControllerMP controllerMP = ClientUtils.mc().playerController;
+		PlayerController controllerMP = ClientUtils.mc().playerController;
 		if(controllerMP.isHittingBlock)
 			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ClientUtils.tes().getBuffer(), player, partialTicks, player.world, blocks);
 	}
@@ -1136,7 +1136,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		//Overlay renderer for the sample drill
 		boolean chunkBorders = false;
-		for(EnumHand hand : EnumHand.values())
+		for(Hand hand : Hand.values())
 			if(ClientUtils.mc().player.getHeldItem(hand).getItem()==GameData.getBlockItemMap().get(MetalDevices.sampleDrill))
 			{
 				chunkBorders = true;
@@ -1175,7 +1175,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 		if(chunkBorders)
 		{
-			EntityPlayer player = ClientUtils.mc().player;
+			PlayerEntity player = ClientUtils.mc().player;
 			double px = TileEntityRendererDispatcher.staticPlayerX;
 			double py = TileEntityRendererDispatcher.staticPlayerY;
 			double pz = TileEntityRendererDispatcher.staticPlayerZ;
@@ -1280,11 +1280,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(event.getEntity().getEntityData().hasKey("headshot"))
 		{
 			//TODO IHasHead seems to exist in 1.14???
-			ModelBase model = event.getRenderer().mainModel;
-			if(model instanceof ModelBiped)
-				((ModelBiped)model).bipedHead.showModel = false;
-			else if(model instanceof ModelVillager)
-				((ModelVillager)model).func_205072_a().showModel = false;
+			Model model = event.getRenderer().mainModel;
+			if(model instanceof BipedModel)
+				((BipedModel)model).bipedHead.showModel = false;
+			else if(model instanceof VillagerModel)
+				((VillagerModel)model).func_205072_a().showModel = false;
 		}
 	}
 
@@ -1293,11 +1293,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getEntity().getEntityData().hasKey("headshot"))
 		{
-			ModelBase model = event.getRenderer().mainModel;
-			if(model instanceof ModelBiped)
-				((ModelBiped)model).bipedHead.showModel = true;
-			else if(model instanceof ModelVillager)
-				((ModelVillager)model).func_205072_a().showModel = true;
+			Model model = event.getRenderer().mainModel;
+			if(model instanceof BipedModel)
+				((BipedModel)model).bipedHead.showModel = true;
+			else if(model instanceof VillagerModel)
+				((VillagerModel)model).func_205072_a().showModel = true;
 		}
 	}
 }

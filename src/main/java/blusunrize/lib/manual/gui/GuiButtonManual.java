@@ -10,7 +10,7 @@ package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 
 import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
@@ -18,7 +18,7 @@ import static net.minecraft.client.renderer.GlStateManager.DestFactor.ZERO;
 import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
 import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
 
-public class GuiButtonManual extends GuiButton
+public class GuiButtonManual extends Button
 {
 	public GuiManual gui;
 	public int[] colour = {0x33000000, 0x33cb7f32};

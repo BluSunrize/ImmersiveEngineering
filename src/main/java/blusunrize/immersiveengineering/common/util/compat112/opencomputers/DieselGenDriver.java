@@ -7,14 +7,14 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class DieselGenDriver extends DriverSidedTileEntity
 {
 	@Override
-	public ManagedEnvironment createEnvironment(World w, BlockPos bp, EnumFacing f)
+	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction f)
 	{
 		TileEntity te = w.getTileEntity(bp);
 		if(te instanceof TileEntityDieselGenerator)

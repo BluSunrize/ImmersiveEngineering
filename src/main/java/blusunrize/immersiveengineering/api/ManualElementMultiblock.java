@@ -15,24 +15,27 @@ import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.Biomes;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -77,7 +80,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
+	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
 	{
 		int yOff = 0;
 		if(multiblock.getStructureManual()!=null)
@@ -194,7 +197,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 				else
 					GlStateManager.shadeModel(GL11.GL_FLAT);
 
-				gui.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+				gui.mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 				int idx = 0;
 				if(showCompleted&&multiblock.canRenderFormedStructure())
 					multiblock.renderFormedStructure();
@@ -211,7 +214,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 									GlStateManager.translate(-l, -h, -w);
 									if(!b)
 									{
-										IBlockState state = blockAccess.getBlockState(pos);
+										BlockState state = blockAccess.getBlockState(pos);
 										Tessellator tessellator = Tessellator.getInstance();
 										BufferBuilder buffer = tessellator.getBuffer();
 										buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
@@ -260,7 +263,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	}
 
 	@Override
-	public void mouseDragged(int x, int y, int clickX, int clickY, int mouseX, int mouseY, int lastX, int lastY, GuiButton button)
+	public void mouseDragged(int x, int y, int clickX, int clickY, int mouseX, int mouseY, int lastX, int lastY, Button button)
 	{
 		if((clickX >= 40&&clickX < 144&&mouseX >= 20&&mouseX < 164)&&(clickY >= 30&&clickY < 130&&mouseY >= 30&&mouseY < 180))
 		{
@@ -272,7 +275,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	}
 
 	@Override
-	public void buttonPressed(GuiManual gui, GuiButton button)
+	public void buttonPressed(GuiManual gui, Button button)
 	{
 		if(button.id==100)
 		{
@@ -307,7 +310,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	static class MultiblockBlockAccess implements IBlockAccess
 	{
 		private final MultiblockRenderInfo data;
-		private final IBlockState[][][] structure;
+		private final BlockState[][][] structure;
 
 		MultiblockBlockAccess(MultiblockRenderInfo data)
 		{
@@ -317,16 +320,16 @@ public class ManualElementMultiblock extends SpecialManualElements
 				return Arrays.stream(layer).map(row -> {
 					return Arrays.stream(row).map(itemstack -> {
 						return convert(index[0]++, itemstack);
-					}).collect(Collectors.toList()).toArray(new IBlockState[0]);
-				}).collect(Collectors.toList()).toArray(new IBlockState[0][]);
-			}).collect(Collectors.toList()).toArray(new IBlockState[0][][]);
+					}).collect(Collectors.toList()).toArray(new BlockState[0]);
+				}).collect(Collectors.toList()).toArray(new BlockState[0][]);
+			}).collect(Collectors.toList()).toArray(new BlockState[0][][]);
 		}
 
-		private IBlockState convert(int index, ItemStack itemstack)
+		private BlockState convert(int index, ItemStack itemstack)
 		{
 			if(itemstack==null)
 				return Blocks.AIR.getDefaultState();
-			IBlockState state = data.multiblock.getBlockstateFromStack(index, itemstack);
+			BlockState state = data.multiblock.getBlockstateFromStack(index, itemstack);
 			if(state!=null)
 				return state;
 			return Blocks.AIR.getDefaultState();
@@ -347,7 +350,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		}
 
 		@Override
-		public IBlockState getBlockState(BlockPos pos)
+		public BlockState getBlockState(BlockPos pos)
 		{
 			int x = pos.getX();
 			int y = pos.getY();
@@ -381,7 +384,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		}
 
 		@Override
-		public int getStrongPower(BlockPos pos, EnumFacing direction)
+		public int getStrongPower(BlockPos pos, Direction direction)
 		{
 			return 0;
 		}
@@ -398,7 +401,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		}
 
 		@Override
-		public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default)
+		public boolean isSideSolid(BlockPos pos, Direction side, boolean _default)
 		{
 			return false;
 		}

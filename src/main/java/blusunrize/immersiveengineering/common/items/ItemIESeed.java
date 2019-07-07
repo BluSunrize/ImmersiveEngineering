@@ -9,12 +9,12 @@
 package blusunrize.immersiveengineering.common.items;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -35,29 +35,29 @@ public class ItemIESeed extends ItemIEBase implements IPlantable
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext context)
+	public ActionResultType onItemUse(ItemUseContext context)
 	{
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		ItemStack stack = context.getItem();
-		EntityPlayer player = context.getPlayer();
-		EnumFacing side = context.getFace();
-		if(side!=EnumFacing.UP)
-			return EnumActionResult.PASS;
+		PlayerEntity player = context.getPlayer();
+		Direction side = context.getFace();
+		if(side!=Direction.UP)
+			return ActionResultType.PASS;
 		else if(player!=null&&player.canPlayerEdit(pos, side, stack)&&player.canPlayerEdit(pos.add(0, 1, 0), side, stack))
 		{
-			IBlockState state = world.getBlockState(pos);
-			if(state.getBlock().canSustainPlant(state, world, pos, EnumFacing.UP, this)&&world.isAirBlock(pos.add(0, 1, 0)))
+			BlockState state = world.getBlockState(pos);
+			if(state.getBlock().canSustainPlant(state, world, pos, Direction.UP, this)&&world.isAirBlock(pos.add(0, 1, 0)))
 			{
 				world.setBlockState(pos.add(0, 1, 0), this.cropBlock.getDefaultState());
 				stack.shrink(1);
-				return EnumActionResult.SUCCESS;
+				return ActionResultType.SUCCESS;
 			}
 			else
-				return EnumActionResult.PASS;
+				return ActionResultType.PASS;
 		}
 		else
-			return EnumActionResult.PASS;
+			return ActionResultType.PASS;
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class ItemIESeed extends ItemIEBase implements IPlantable
 	}
 
 	@Override
-	public IBlockState getPlant(IBlockReader world, BlockPos pos)
+	public BlockState getPlant(IBlockReader world, BlockPos pos)
 	{
 		return cropBlock.getDefaultState();
 	}

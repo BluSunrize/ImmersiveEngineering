@@ -73,14 +73,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelMinecart;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleRedstone;
+import net.minecraft.client.particle.RedstoneParticle;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -92,19 +93,14 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.entity.*;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -152,7 +148,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
-	public static TextureMap revolverTextureMap;
+	public static AtlasTexture revolverTextureMap;
 	public static final ResourceLocation revolverTextureResource = new ResourceLocation("textures/atlas/immersiveengineering/revolvers.png");
 	public static FontRenderer nixieFontOptional;
 	public static IENixieFontRender nixieFont;
@@ -273,7 +269,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new IRenderFactory<EntityRevolvershot>()
 		{
 			@Override
-			public Render createRenderFor(RenderManager manager)
+			public EntityRenderer createRenderFor(EntityRendererManager manager)
 			{
 				return new EntityRenderRevolvershot(manager);
 			}
@@ -281,7 +277,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntitySkylineHook.class, new IRenderFactory<EntitySkylineHook>()
 		{
 			@Override
-			public Render createRenderFor(RenderManager manager)
+			public EntityRenderer createRenderFor(EntityRendererManager manager)
 			{
 				return new EntityRenderNone<>(manager);
 			}
@@ -289,7 +285,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityChemthrowerShot.class, new IRenderFactory<EntityChemthrowerShot>()
 		{
 			@Override
-			public Render createRenderFor(RenderManager manager)
+			public EntityRenderer createRenderFor(EntityRendererManager manager)
 			{
 				return new EntityRenderChemthrowerShot(manager);
 			}
@@ -297,7 +293,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityRailgunShot.class, new IRenderFactory<EntityRailgunShot>()
 		{
 			@Override
-			public Render createRenderFor(RenderManager manager)
+			public EntityRenderer createRenderFor(EntityRendererManager manager)
 			{
 				return new EntityRenderRailgunShot(manager);
 			}
@@ -305,7 +301,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityIEExplosive.class, new IRenderFactory<EntityIEExplosive>()
 		{
 			@Override
-			public Render createRenderFor(RenderManager manager)
+			public EntityRenderer createRenderFor(EntityRendererManager manager)
 			{
 				return new EntityRenderIEExplosive(manager);
 			}
@@ -313,7 +309,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityFluorescentTube.class, new IRenderFactory<EntityFluorescentTube>()
 		{
 			@Override
-			public Render createRenderFor(RenderManager manager)
+			public EntityRenderer createRenderFor(EntityRendererManager manager)
 			{
 				return new EntityRenderFluorescentTube(manager);
 			}
@@ -375,7 +371,7 @@ public class ClientProxy extends CommonProxy
 
 		for(Item item : IEContent.registeredIEItems)
 		{
-			if(item instanceof ItemBlock)
+			if(item instanceof BlockItem)
 				continue;
 			if(item instanceof ItemIEBase)
 			{
@@ -558,8 +554,8 @@ public class ClientProxy extends CommonProxy
 				ClientUtils.mc().getBlockColors().registerBlockColorHandler(IEDefaultColourHandlers.INSTANCE, block);
 
 		/**Render Layers*/
-		Map<String, RenderPlayer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
-		RenderPlayer render = skinMap.get("default");
+		Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
+		PlayerRenderer render = skinMap.get("default");
 		render.addLayer(new IEBipedLayerRenderer());
 		render = skinMap.get("slim");
 		render.addLayer(new IEBipedLayerRenderer());
@@ -704,7 +700,7 @@ public class ClientProxy extends CommonProxy
 		ManualInstance ieMan = ManualHelper.getManual();
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
 				s -> new ManualElementMultiblock(ieMan,
-						MultiblockHandler.getByUniqueName(JsonUtils.getString(s, "name"))));
+						MultiblockHandler.getByUniqueName(JSONUtils.getString(s, "name"))));
 		Tree.Node<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
 				ManualHelper.CAT_ENERGY), 1);
 		Tree.Node<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
@@ -1209,11 +1205,11 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public Object getClientGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z)
 	{
 		if(ID >= Lib.GUIID_Base_Item)
 		{
-			EntityEquipmentSlot slot = EntityEquipmentSlot.values()[ID/100];
+			EquipmentSlotType slot = EquipmentSlotType.values()[ID/100];
 			ID %= 100;//Slot determined, get actual ID
 			ItemStack item = player.getItemStackFromSlot(slot);
 			if(!item.isEmpty()&&item.getItem() instanceof IGuiItem&&((IGuiItem)item.getItem()).getGuiID(item)==ID)
@@ -1232,7 +1228,7 @@ public class ClientProxy extends CommonProxy
 		if(ID >= Lib.GUIID_Base_Item)
 		{
 			ItemStack item = ItemStack.EMPTY;
-			for(EnumHand hand : EnumHand.values())
+			for(Hand hand : Hand.values())
 			{
 				ItemStack held = player.getHeldItem(hand);
 				if(!held.isEmpty()&&held.getItem() instanceof IGuiItem&&((IGuiItem)held.getItem()).getGuiID(held)==ID)
@@ -1388,21 +1384,21 @@ public class ClientProxy extends CommonProxy
 		if(!ModelShaderMinecart.rendersReplaced)
 		{
 			for(Object render : ClientUtils.mc().getRenderManager().entityRenderMap.values())
-				if(RenderMinecart.class.isAssignableFrom(render.getClass()))
+				if(MinecartRenderer.class.isAssignableFrom(render.getClass()))
 				{
-					Object wrapped = ObfuscationReflectionHelper.getPrivateValue(RenderMinecart.class, (RenderMinecart)render, "field_77013_a", "modelMinecart");
+					Object wrapped = ObfuscationReflectionHelper.getPrivateValue(MinecartRenderer.class, (MinecartRenderer)render, "field_77013_a", "modelMinecart");
 					if(wrapped instanceof ModelMinecart)
-						ObfuscationReflectionHelper.setPrivateValue(RenderMinecart.class, (RenderMinecart)render, new ModelShaderMinecart((ModelMinecart)wrapped), "field_77013_a", "modelMinecart");
+						ObfuscationReflectionHelper.setPrivateValue(MinecartRenderer.class, (MinecartRenderer)render, new ModelShaderMinecart((ModelMinecart)wrapped), "field_77013_a", "modelMinecart");
 				}
 			ModelShaderMinecart.rendersReplaced = true;
 		}
 		if(!IEBipedLayerRenderer.rendersAssigned)
 		{
 			for(Object render : ClientUtils.mc().getRenderManager().entityRenderMap.values())
-				if(RenderBiped.class.isAssignableFrom(render.getClass()))
-					((RenderBiped)render).addLayer(new IEBipedLayerRenderer());
-				else if(RenderArmorStand.class.isAssignableFrom(render.getClass()))
-					((RenderArmorStand)render).addLayer(new IEBipedLayerRenderer());
+				if(BipedRenderer.class.isAssignableFrom(render.getClass()))
+					((BipedRenderer)render).addLayer(new IEBipedLayerRenderer());
+				else if(ArmorStandRenderer.class.isAssignableFrom(render.getClass()))
+					((ArmorStandRenderer)render).addLayer(new IEBipedLayerRenderer());
 			IEBipedLayerRenderer.rendersAssigned = true;
 		}
 	}
@@ -1441,7 +1437,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnRedstoneFX(World world, double x, double y, double z, double mx, double my, double mz, float size, float r, float g, float b)
 	{
-		ParticleRedstone particle = (ParticleRedstone)ClientUtils.mc().effectRenderer.spawnEffectParticle(Particles.REDSTONE.getParticleID(), x, y, z, 0, 0, 0);
+		RedstoneParticle particle = (RedstoneParticle)ClientUtils.mc().effectRenderer.spawnEffectParticle(Particles.REDSTONE.getParticleID(), x, y, z, 0, 0, 0);
 		particle.motionX *= mx;
 		particle.motionY *= my;
 		particle.motionZ *= mz;
@@ -1477,7 +1473,7 @@ public class ClientProxy extends CommonProxy
 	public void draw3DBlockCauldron()
 	{
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		IBlockState state = Blocks.CAULDRON.getDefaultState();
+		BlockState state = Blocks.CAULDRON.getDefaultState();
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
 		RenderHelper.disableStandardItemLighting();
@@ -1495,7 +1491,7 @@ public class ClientProxy extends CommonProxy
 	public void drawSpecificFluidPipe(String configuration)
 	{
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		IBlockState state = IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
+		BlockState state = IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 		if(state instanceof IExtendedBlockState)
 			state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, TileEntityFluidPipe.getStateFromKey(configuration));
@@ -1521,13 +1517,13 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public boolean armorHasCustomModel(ItemStack stack)
 	{
-		if(!stack.isEmpty()&&stack.getItem() instanceof ItemArmor)
+		if(!stack.isEmpty()&&stack.getItem() instanceof ArmorItem)
 		{
 			Boolean b = hasArmorModel.get(stack.getTranslationKey());
 			if(b==null)
 				try
 				{
-					ModelBiped model = stack.getItem().getArmorModel(ClientUtils.mc().player, stack, ((ItemArmor)stack.getItem()).getEquipmentSlot(), null);
+					ModelBiped model = stack.getItem().getArmorModel(ClientUtils.mc().player, stack, ((ArmorItem)stack.getItem()).getEquipmentSlot(), null);
 					b = model!=null&&model.getClass()!=ModelBiped.class; //Model isn't a base Biped
 					hasArmorModel.put(stack.getTranslationKey(), b);
 				} catch(Exception e)
@@ -1539,7 +1535,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public boolean drawConveyorInGui(String conveyor, EnumFacing facing)
+	public boolean drawConveyorInGui(String conveyor, Direction facing)
 	{
 		IConveyorBelt con = ConveyorHandler.getConveyor(new ResourceLocation(conveyor), null);
 		if(con!=null)
@@ -1559,7 +1555,7 @@ public class ClientProxy extends CommonProxy
 	public void drawFluidPumpTop()
 	{
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		IBlockState state = IEContent.blockMetalDevice0.getStateFromMeta(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
+		BlockState state = IEContent.blockMetalDevice0.getStateFromMeta(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
 		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
@@ -1620,7 +1616,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public EntityPlayer getClientPlayer()
+	public PlayerEntity getClientPlayer()
 	{
 		return ClientUtils.mc().player;
 	}
@@ -1661,7 +1657,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void addFailedConnection(ImmersiveNetHandler.Connection connection, BlockPos reason, EntityPlayer player)
+	public void addFailedConnection(ImmersiveNetHandler.Connection connection, BlockPos reason, PlayerEntity player)
 	{
 		ClientEventHandler.FAILED_CONNECTIONS.put(connection,
 				new ImmutablePair<>(reason, new AtomicInteger(200)));
@@ -1730,7 +1726,7 @@ public class ClientProxy extends CommonProxy
 
 		@Nonnull
 		@Override
-		protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
+		protected ModelResourceLocation getModelResourceLocation(@Nonnull BlockState state)
 		{
 			return location;
 		}

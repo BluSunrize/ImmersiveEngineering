@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PotionItem;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.RecipeSerializers;
@@ -49,7 +49,7 @@ public class RecipePotionBullets implements IRecipe
 			if(!stackInSlot.isEmpty())
 				if(bullet.isEmpty()&&IEContent.itemBullet.equals(stackInSlot.getItem())&&"potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
-				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof ItemPotion)
+				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof PotionItem)
 					potion = stackInSlot;
 				else
 					return false;
@@ -69,7 +69,7 @@ public class RecipePotionBullets implements IRecipe
 			if(!stackInSlot.isEmpty())
 				if(bullet.isEmpty()&&IEContent.itemBullet.equals(stackInSlot.getItem())&&"potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
-				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof ItemPotion)
+				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof PotionItem)
 					potion = stackInSlot;
 		}
 		ItemStack newBullet = Utils.copyStackWithAmount(bullet, 1);

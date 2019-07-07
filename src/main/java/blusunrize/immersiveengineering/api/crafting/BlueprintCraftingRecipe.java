@@ -15,8 +15,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -291,19 +291,19 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		NBTTagList list = new NBTTagList();
+		ListNBT list = new ListNBT();
 		for(IngredientStack ingr : this.inputs)
-			list.add(ingr.writeToNBT(new NBTTagCompound()));
+			list.add(ingr.writeToNBT(new CompoundNBT()));
 		nbt.setTag("inputs", list);
 		nbt.setString("blueprintCategory", this.blueprintCategory);
 		return nbt;
 	}
 
-	public static BlueprintCraftingRecipe loadFromNBT(NBTTagCompound nbt)
+	public static BlueprintCraftingRecipe loadFromNBT(CompoundNBT nbt)
 	{
-		NBTTagList list = nbt.getList("inputs", 10);
+		ListNBT list = nbt.getList("inputs", 10);
 		IngredientStack[] inputs = new IngredientStack[list.size()];
 		for(int i = 0; i < inputs.length; i++)
 			inputs[i] = IngredientStack.readFromNBT(list.getCompound(i));

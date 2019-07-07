@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler.DefaultPlantHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -56,7 +56,7 @@ public class ExtraUtilsHelper extends IECompatModule
 	static void registerXUPlant(ItemStack seed, Block block, ItemStack soil, ItemStack[] output, final int maxAge, final float growthStep, final boolean useFertilizer)
 	{
 		IProperty propGrowth = null;
-		final IBlockState state = block.getDefaultState();
+		final BlockState state = block.getDefaultState();
 		for(IProperty prop : state.getProperties())
 			if("growth".equals(prop.getName()))
 				propGrowth = prop;
@@ -81,9 +81,9 @@ public class ExtraUtilsHelper extends IECompatModule
 
 				@Override
 				@OnlyIn(Dist.CLIENT)
-				public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+				public BlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 				{
-					return new IBlockState[]{state.with(finalPropGrowth, Math.min(maxAge, Math.round(maxAge*growth)))};
+					return new BlockState[]{state.with(finalPropGrowth, Math.min(maxAge, Math.round(maxAge*growth)))};
 				}
 			};
 			handler.register(seed, output, soil, state);

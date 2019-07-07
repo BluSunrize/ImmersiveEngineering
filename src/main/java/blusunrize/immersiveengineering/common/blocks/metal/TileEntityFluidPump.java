@@ -25,17 +25,17 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -78,7 +78,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 
 		if(world.getRedstonePowerFromNeighbors(getPos()) > 0||world.getRedstonePowerFromNeighbors(getPos().add(0, 1, 0)) > 0)
 		{
-			for(EnumFacing f : EnumFacing.values())
+			for(Direction f : Direction.values())
 				if(sideConfig[f.ordinal()]==0)
 				{
 					BlockPos output = getPos().offset(f);
@@ -95,9 +95,9 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)&&world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER&&IEConfig.Machines.pump_infiniteWater&&tank.fill(new FluidStack(FluidRegistry.WATER, 1000), false)==1000&&this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true) >= IEConfig.Machines.pump_consumption)
 					{
 						int connectedSources = 0;
-						for(EnumFacing f2 : EnumFacing.HORIZONTALS)
+						for(Direction f2 : Direction.HORIZONTALS)
 						{
-							IBlockState waterState = world.getBlockState(getPos().offset(f).offset(f2));
+							BlockState waterState = world.getBlockState(getPos().offset(f).offset(f2));
 							if(waterState.getBlock()==Blocks.WATER&&Blocks.WATER.getMetaFromState(waterState)==0)
 								connectedSources++;
 						}
@@ -147,7 +147,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		openList.clear();
 		closedList.clear();
 		checked.clear();
-		for(EnumFacing f : EnumFacing.values())
+		for(Direction f : Direction.values())
 			if(sideConfig[f.ordinal()]==0)
 			{
 				openList.add(getPos().offset(f));
@@ -174,7 +174,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 
 					if(Utils.drainFluidBlock(world, next, false)!=null)
 						closedList.add(next);
-					for(EnumFacing f : EnumFacing.values())
+					for(Direction f : Direction.values())
 					{
 						BlockPos pos2 = next.offset(f);
 						fluid = Utils.getRelatedFluid(world, pos2);
@@ -203,7 +203,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		final int fluidForSort = canAccept;
 		int sum = 0;
 		HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<DirectionalFluidOutput, Integer>();
-		for(EnumFacing f : EnumFacing.values())
+		for(Direction f : Direction.values())
 			if(sideConfig[f.ordinal()]==1)
 			{
 				TileEntity tile = Utils.getExistingTileEntity(world, getPos().offset(f));
@@ -213,7 +213,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.amount, true);
 					if(tile instanceof TileEntityFluidPipe&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 					{
-						insertResource.tag = new NBTTagCompound();
+						insertResource.tag = new CompoundNBT();
 						insertResource.tag.setBoolean("pressurized", true);
 					}
 					int temp = handler.fill(insertResource, false);
@@ -238,7 +238,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				if(output.containingTile instanceof TileEntityFluidPipe&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 				{
 					this.energyStorage.extractEnergy(accelPower, false);
-					insertResource.tag = new NBTTagCompound();
+					insertResource.tag = new CompoundNBT();
 					insertResource.tag.setBoolean("pressurized", true);
 				}
 				int r = output.output.fill(insertResource, !simulate);
@@ -254,7 +254,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null||sideConfig.length!=6)
@@ -269,23 +269,23 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setIntArray("sideConfig", sideConfig);
 		nbt.setBoolean("dummy", dummy);
 		nbt.setBoolean("placeCobble", placeCobble);
-		nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
+		nbt.setTag("tank", tank.writeToNBT(new CompoundNBT()));
 		energyStorage.writeToNBT(nbt);
 	}
 
 	@Override
-	public SideConfig getSideConfig(EnumFacing side)
+	public SideConfig getSideConfig(Direction side)
 	{
 		return (side >= 0&&side < 6)?SideConfig.values()[this.sideConfig[side]+1]: SideConfig.NONE;
 	}
 
 	@Override
-	public boolean toggleSide(EnumFacing side, EntityPlayer p)
+	public boolean toggleSide(Direction side, PlayerEntity p)
 	{
 		if(side!=1&&!dummy)
 		{
@@ -307,7 +307,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 					master = (TileEntityFluidPump)tmp;
 			}
 			master.placeCobble = !master.placeCobble;
-			ChatUtils.sendServerNoSpamMessages(p, new TextComponentTranslation(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble));
+			ChatUtils.sendServerNoSpamMessages(p, new TranslationTextComponent(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble));
 			return true;
 		}
 		return false;
@@ -316,7 +316,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	SidedFluidHandler[] sidedFluidHandler = new SidedFluidHandler[6];
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+	public boolean hasCapability(Capability<?> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&!dummy)
 			return true;
@@ -325,7 +325,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&!dummy)
 		{
@@ -337,7 +337,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
+	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
 		if(hammer&&IEConfig.colourblindSupport&&!dummy)
 		{
@@ -354,7 +354,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
+	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
 	{
 		return false;
 	}
@@ -362,9 +362,9 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	static class SidedFluidHandler implements IFluidHandler
 	{
 		TileEntityFluidPump pump;
-		EnumFacing facing;
+		Direction facing;
 
-		SidedFluidHandler(TileEntityFluidPump pump, EnumFacing facing)
+		SidedFluidHandler(TileEntityFluidPump pump, Direction facing)
 		{
 			this.pump = pump;
 			this.facing = facing;
@@ -416,17 +416,17 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(EnumFacing facing)
+	public SideConfig getEnergySideConfig(Direction facing)
 	{
-		return dummy&&facing==EnumFacing.UP?SideConfig.INPUT: SideConfig.NONE;
+		return dummy&&facing==Direction.UP?SideConfig.INPUT: SideConfig.NONE;
 	}
 
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, EnumFacing.UP);
+	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, Direction.UP);
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(!dummy&&facing==EnumFacing.UP)
+		if(!dummy&&facing==Direction.UP)
 			return null;
 		return wrapper;
 	}
@@ -438,14 +438,14 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
 	{
 		world.setBlockState(pos.add(0, 1, 0), state);
 		((TileEntityFluidPump)world.getTileEntity(pos.add(0, 1, 0))).dummy = true;
 	}
 
 	@Override
-	public void breakDummies(BlockPos pos, IBlockState state)
+	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 1; i++)
 			if(Utils.isBlockAt(world, getPos().add(0, dummy?-1: 0, 0).add(0, i, 0), IEContent.blockMetalDevice0, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()))
@@ -474,7 +474,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	}
 
 	@Override
-	public boolean hasOutputConnection(EnumFacing side)
+	public boolean hasOutputConnection(Direction side)
 	{
 		return side!=null&&this.sideConfig[side.ordinal()]==1;
 	}

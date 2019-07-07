@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.EnumPushReaction;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -47,7 +47,7 @@ public class BlockIEBase extends Block
 	protected Set<BlockRenderLayer> renderLayers = Sets.newHashSet(BlockRenderLayer.SOLID);
 	//TODO wtf is variable opacity?
 	protected int lightOpacity;
-	protected EnumPushReaction mobilityFlag = EnumPushReaction.NORMAL;
+	protected PushReaction mobilityFlag = PushReaction.NORMAL;
 	protected boolean canHammerHarvest;
 	protected boolean notNormalBlock;
 	private boolean opaqueCube = false;
@@ -121,7 +121,7 @@ public class BlockIEBase extends Block
 	}
 
 	@Override
-	public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer)
+	public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer)
 	{
 		return renderLayers.contains(layer);
 	}
@@ -133,19 +133,19 @@ public class BlockIEBase extends Block
 	}
 
 	@Override
-	public int getLightValue(IBlockState state, IWorldReader world, BlockPos pos)
+	public int getLightValue(BlockState state, IWorldReader world, BlockPos pos)
 	{
 		return lightOpacity;
 	}
 
-	public BlockIEBase setMobility(EnumPushReaction flag)
+	public BlockIEBase setMobility(PushReaction flag)
 	{
 		mobilityFlag = flag;
 		return this;
 	}
 
 	@Override
-	public EnumPushReaction getPushReaction(IBlockState state)
+	public PushReaction getPushReaction(BlockState state)
 	{
 		return mobilityFlag;
 	}
@@ -157,7 +157,7 @@ public class BlockIEBase extends Block
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState state)
+	public boolean isFullCube(BlockState state)
 	{
 		return notNormalBlock;
 	}
@@ -170,46 +170,46 @@ public class BlockIEBase extends Block
 	}*/
 
 	@Override
-	public boolean causesSuffocation(IBlockState state)
+	public boolean causesSuffocation(BlockState state)
 	{
 		return !notNormalBlock;
 	}
 
 	@Override
-	public boolean isNormalCube(IBlockState state, IBlockReader world, BlockPos pos)
+	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
 	{
 		return notNormalBlock;
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, IBlockState> builder)
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
 	{
 		super.fillStateContainer(builder);
 		//TODO ext states?
 		builder.add(tempProperties);
 	}
 
-	protected IBlockState getInitDefaultState()
+	protected BlockState getInitDefaultState()
 	{
 		return this.stateContainer.getBaseState();
 	}
 
-	protected <V extends Comparable<V>> IBlockState applyProperty(IBlockState in, IProperty<V> prop, Object val)
+	protected <V extends Comparable<V>> BlockState applyProperty(BlockState in, IProperty<V> prop, Object val)
 	{
 		return in.with(prop, (V)val);
 	}
 
-	public void onIEBlockPlacedBy(BlockItemUseContext context, IBlockState state)
+	public void onIEBlockPlacedBy(BlockItemUseContext context, BlockState state)
 	{
 	}
 
-	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
 	{
 		return true;
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
 	{
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 	}
@@ -222,7 +222,7 @@ public class BlockIEBase extends Block
 	}
 
 	@Override
-	public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int eventID, int eventParam)
+	public boolean eventReceived(BlockState state, World worldIn, BlockPos pos, int eventID, int eventParam)
 	{
 		if(worldIn.isRemote&&eventID==255)
 		{
@@ -238,12 +238,12 @@ public class BlockIEBase extends Block
 		return this;
 	}
 
-	public boolean allowHammerHarvest(IBlockState blockState)
+	public boolean allowHammerHarvest(BlockState blockState)
 	{
 		return canHammerHarvest;
 	}
 
-	public boolean allowWirecutterHarvest(IBlockState blockState)
+	public boolean allowWirecutterHarvest(BlockState blockState)
 	{
 		return false;
 	}
@@ -260,7 +260,7 @@ public class BlockIEBase extends Block
 	}
 
 	@Override
-	public boolean isToolEffective(IBlockState state, ToolType tool)
+	public boolean isToolEffective(BlockState state, ToolType tool)
 	{
 		if(allowHammerHarvest(state)&&tool==IEContent.toolHammer)
 			return true;
@@ -275,8 +275,8 @@ public class BlockIEBase extends Block
 	}
 
 	@Override
-	public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand,
-									EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
+									Direction side, float hitX, float hitY, float hitZ)
 	{
 		ItemStack activeStack = player.getHeldItem(hand);
 		if(activeStack.getToolTypes().contains(IEContent.toolHammer))
@@ -284,7 +284,7 @@ public class BlockIEBase extends Block
 		return super.onBlockActivated(state, world, pos, player, hand, side, hitX, hitY, hitZ);
 	}
 
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, World w, BlockPos pos,
+	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos,
 								 float hitX, float hitY, float hitZ)
 	{
 
@@ -299,10 +299,10 @@ public class BlockIEBase extends Block
 		}
 
 		@Override
-		public void onEntityCollision(IBlockState state, World worldIn, BlockPos pos, Entity entityIn)
+		public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
 		{
 			super.onEntityCollision(state, worldIn, pos, entityIn);
-			if(entityIn instanceof EntityLivingBase&&!((EntityLivingBase)entityIn).isOnLadder()&&isLadder(state, worldIn, pos, (EntityLivingBase)entityIn))
+			if(entityIn instanceof LivingEntity&&!((LivingEntity)entityIn).isOnLadder()&&isLadder(state, worldIn, pos, (LivingEntity)entityIn))
 			{
 				float f5 = 0.15F;
 				if(entityIn.motionX < -f5)
@@ -318,7 +318,7 @@ public class BlockIEBase extends Block
 				if(entityIn.motionY < -0.15D)
 					entityIn.motionY = -0.15D;
 
-				if(entityIn.motionY < 0&&entityIn instanceof EntityPlayer&&entityIn.isSneaking())
+				if(entityIn.motionY < 0&&entityIn instanceof PlayerEntity&&entityIn.isSneaking())
 				{
 					entityIn.motionY = 0;
 					return;

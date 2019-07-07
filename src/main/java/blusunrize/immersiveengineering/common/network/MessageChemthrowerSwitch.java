@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.items.ItemChemthrower;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
@@ -40,10 +40,10 @@ public class MessageChemthrowerSwitch implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		EntityPlayerMP player = context.get().getSender();
+		ServerPlayerEntity player = context.get().getSender();
 		assert player!=null;
 		player.getServerWorld().addScheduledTask(() -> {
-			ItemStack equipped = player.getHeldItem(EnumHand.MAIN_HAND);
+			ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
 			if(equipped.getItem() instanceof ItemChemthrower&&((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
 				((ItemChemthrower)equipped.getItem()).switchTank(equipped, forward);
 		});

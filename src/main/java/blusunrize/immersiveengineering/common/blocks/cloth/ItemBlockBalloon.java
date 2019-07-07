@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -32,7 +32,7 @@ public class ItemBlockBalloon extends ItemBlockIEBase
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand)
 	{
 		ItemStack itemStackIn = playerIn.getHeldItem(hand);
 		if(playerIn.isSneaking())
@@ -41,7 +41,7 @@ public class ItemBlockBalloon extends ItemBlockIEBase
 		{
 			Vec3d pos = playerIn.getPositionVector().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
 			BlockPos bPos = new BlockPos(pos);
-			NBTTagCompound nbt = itemStackIn.getOrCreateTag();
+			CompoundNBT nbt = itemStackIn.getOrCreateTag();
 			int offset = nbt.getByte("offset");
 			bPos = bPos.up(offset);
 			if(worldIn.isAirBlock(bPos))
@@ -53,20 +53,20 @@ public class ItemBlockBalloon extends ItemBlockIEBase
 					if(itemStackIn.getCount() <= 0)
 						playerIn.setHeldItem(hand, ItemStack.EMPTY);
 				}
-				return new ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
+				return new ActionResult<>(ActionResultType.SUCCESS, itemStackIn);
 			}
 		}
-		return new ActionResult<>(EnumActionResult.PASS, itemStackIn);
+		return new ActionResult<>(ActionResultType.PASS, itemStackIn);
 	}
 
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public ActionResultType onItemUse(PlayerEntity playerIn, World worldIn, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ)
 	{
 		ItemStack stack = playerIn.getHeldItem(hand);
 		if(playerIn.isSneaking())
 		{
 			increaseOffset(stack);
-			return EnumActionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		}
 		return super.onItemUse(playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
 	}
@@ -75,7 +75,7 @@ public class ItemBlockBalloon extends ItemBlockIEBase
 	public ITextComponent getDisplayName(ItemStack stack)
 	{
 		ITextComponent ret = super.getDisplayName(stack);
-		NBTTagCompound nbt = stack.getOrCreateTag();
+		CompoundNBT nbt = stack.getOrCreateTag();
 		if(nbt.getByte("offset")!=0)
 			ret.appendText(" (+"+nbt.getByte("offset")+")");
 		return ret;
@@ -83,7 +83,7 @@ public class ItemBlockBalloon extends ItemBlockIEBase
 
 	private void increaseOffset(ItemStack s)
 	{
-		NBTTagCompound tag = s.getOrCreateTag();
+		CompoundNBT tag = s.getOrCreateTag();
 		byte offset = tag.getByte("offset");
 		tag.setByte("offset", (byte)((offset+1)%5));
 	}

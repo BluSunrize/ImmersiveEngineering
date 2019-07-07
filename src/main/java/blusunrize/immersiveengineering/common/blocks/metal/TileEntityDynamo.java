@@ -17,11 +17,11 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFluxConnector, IDirectionalTile, IRotationAcceptor
 {
 	public static TileEntityType<TileEntityDynamo> TYPE;
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 
 	public TileEntityDynamo()
 	{
@@ -38,12 +38,12 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	}
 
 	@Override
-	public void inputRotation(double rotation, @Nonnull EnumFacing side)
+	public void inputRotation(double rotation, @Nonnull Direction side)
 	{
 		if(side!=this.facing.getOpposite())
 			return;
 		int output = (int)(IEConfig.Machines.dynamo_output*rotation);
-		for(EnumFacing fd : EnumFacing.VALUES)
+		for(Direction fd : Direction.VALUES)
 		{
 			BlockPos outputPos = getPos().offset(fd);
 			TileEntity te = Utils.getExistingTileEntity(world, outputPos);
@@ -52,13 +52,13 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -70,44 +70,44 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return true;
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("facing", facing.ordinal());
 	}
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(@Nullable EnumFacing facing)
+	public SideConfig getEnergySideConfig(@Nullable Direction facing)
 	{
 		return SideConfig.OUTPUT;
 	}
 
 	@Override
-	public boolean canConnectEnergy(EnumFacing from)
+	public boolean canConnectEnergy(Direction from)
 	{
 		return true;
 	}
@@ -115,7 +115,7 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		return wrapper;
 	}

@@ -18,9 +18,9 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarr
 import mcp.mobius.waila.api.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -83,7 +83,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 		}
 		else if(tile instanceof TileEntityWoodenBarrel)
 		{
-			NBTTagCompound tank = accessor.getNBTData().getCompound("tank");
+			CompoundNBT tank = accessor.getNBTData().getCompound("tank");
 			if(!tank.hasKey("Empty")&&!tank.isEmpty())
 			{
 				FluidStack fluid = FluidStack.loadFluidStackFromNBT(tank);
@@ -116,7 +116,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos)
+	public CompoundNBT getNBTData(ServerPlayerEntity player, TileEntity te, CompoundNBT tag, World world, BlockPos pos)
 	{
 		int cur = -1;
 		int max = -1;
@@ -143,7 +143,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			tag.setBoolean("lowPower", ((TileEntityTeslaCoil)te).lowPower);
 		}
 		else if(te instanceof TileEntityWoodenBarrel)
-			tag.setTag("tank", ((TileEntityWoodenBarrel)te).tank.writeToNBT(new NBTTagCompound()));
+			tag.setTag("tank", ((TileEntityWoodenBarrel)te).tank.writeToNBT(new CompoundNBT()));
 		return tag;
 	}
 }

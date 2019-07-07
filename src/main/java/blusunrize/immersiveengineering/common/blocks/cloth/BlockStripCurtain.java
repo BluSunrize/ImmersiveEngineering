@@ -15,13 +15,13 @@ import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
@@ -41,7 +41,7 @@ public class BlockStripCurtain extends BlockIETileProvider
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(IBlockState state)
+	public TileEntity createBasicTE(BlockState state)
 	{
 		return new TileEntityBalloon();
 	}
@@ -60,12 +60,12 @@ public class BlockStripCurtain extends BlockIETileProvider
 		if(ItemNBTHelper.hasKey(stack, "colour"))
 		{
 			String hexCol = Integer.toHexString(ItemNBTHelper.getInt(stack, "colour"));
-			tooltip.add(new TextComponentTranslation(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
+			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
 		}
 	}
 
 	@Override
-	public boolean allowHammerHarvest(IBlockState blockState)
+	public boolean allowHammerHarvest(BlockState blockState)
 	{
 		return true;
 	}

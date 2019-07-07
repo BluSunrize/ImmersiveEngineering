@@ -31,33 +31,33 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.EnumAction;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.item.UseAction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.play.server.SChangeBlockPacket;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -146,18 +146,18 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	{
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drill.fuel", fs.amount, getCapacity(stack, 2000)));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.fuel", fs.amount, getCapacity(stack, 2000)));
 		else
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drill.empty"));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty"));
 		if(getHead(stack).isEmpty())
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drill.noHead"));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.noHead"));
 		else
 		{
 			int maxDmg = getMaxHeadDamage(stack);
 			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
 			String status = ""+(quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drill.headDamage", status+dmg, maxDmg));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage", status+dmg, maxDmg));
 		}
 	}
 
@@ -167,7 +167,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public static HashMap<UUID, Integer> animationTimer = new HashMap<>();
 
 	@Override
-	public boolean onEntitySwing(ItemStack stack, EntityLivingBase entity)
+	public boolean onEntitySwing(ItemStack stack, LivingEntity entity)
 	{
 		if(canDrillBeUsed(stack, entity))
 		{
@@ -196,7 +196,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	{
 		if(group.equals("drill_frame")||group.equals("drill_grip"))
 			return true;
-		NBTTagCompound upgrades = this.getUpgrades(stack);
+		CompoundNBT upgrades = this.getUpgrades(stack);
 		if(group.equals("upgrade_waterproof"))
 			return upgrades.getBoolean("waterproof");
 		if(group.equals("upgrade_speed"))
@@ -222,7 +222,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	{
 		if(transform.isPresent())
 		{
-			NBTTagCompound upgrades = this.getUpgrades(stack);
+			CompoundNBT upgrades = this.getUpgrades(stack);
 			if(group.equals("drill_head")&&upgrades.getInt("damage") <= 0)
 			{
 				Matrix4 mat = new Matrix4(transform.get().getMatrixVec());
@@ -242,17 +242,17 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			{"upgrade_damage1", "upgrade_damage2", "upgrade_damage3", "upgrade_damage4"}
 	};
 
-	private boolean shouldRotate(EntityLivingBase entity, ItemStack stack, TransformType transform)
+	private boolean shouldRotate(LivingEntity entity, ItemStack stack, TransformType transform)
 	{
 		return entity!=null&&canDrillBeUsed(stack, entity)&&
-				(entity.getHeldItem(EnumHand.MAIN_HAND)==stack||entity.getHeldItem(EnumHand.OFF_HAND)==stack)&&
+				(entity.getHeldItem(Hand.MAIN_HAND)==stack||entity.getHeldItem(Hand.OFF_HAND)==stack)&&
 				(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||
 						transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, EntityLivingBase entity)
+	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
 	{
 		if(shouldRotate(entity, stack, transform))
 			return ROTATING;
@@ -264,7 +264,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 
 	@Nonnull
 	@Override
-	public Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, EntityLivingBase entity, Matrix4 mat, float partialTicks)
+	public Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, Matrix4 mat, float partialTicks)
 	{
 		mat.setIdentity();
 		if(groups==FIXED[0])
@@ -293,13 +293,13 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	}
 
 	@Override
-	public EnumAction getUseAction(ItemStack p_77661_1_)
+	public UseAction getUseAction(ItemStack p_77661_1_)
 	{
-		return EnumAction.BOW;
+		return UseAction.BOW;
 	}
 
 	@Override
-	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
+	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
 	{
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv-> {
@@ -338,7 +338,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		return true;
 	}
 
-	public boolean canDrillBeUsed(ItemStack drill, EntityLivingBase player)
+	public boolean canDrillBeUsed(ItemStack drill, LivingEntity player)
 	{
 		if(player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
 			return false;
@@ -363,13 +363,13 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase player)
+	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity player)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase living)
+	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
 	{
 		if((double)state.getBlockHardness(world, pos)!=0.0D)
 		{
@@ -377,11 +377,11 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty())
 			{
-				if(living instanceof EntityPlayer)
+				if(living instanceof PlayerEntity)
 				{
-					if(((EntityPlayer)living).abilities.isCreativeMode)
+					if(((PlayerEntity)living).abilities.isCreativeMode)
 						return true;
-					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (EntityPlayer)living);
+					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (PlayerEntity)living);
 				}
 				if(!getUpgrades(stack).getBoolean("oiled")||Utils.RAND.nextInt(4)==0)
 					((IDrillHead)head.getItem()).damageHead(head, dmg);
@@ -405,10 +405,10 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	}
 
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
 	{
 		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		if(slot==EntityEquipmentSlot.MAINHAND)
+		if(slot==EquipmentSlotType.MAINHAND)
 		{
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty())
@@ -421,7 +421,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable EntityPlayer player, @Nullable IBlockState blockState)
+	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
 	{
 		ItemStack head = getHead(stack);
 		if(!head.isEmpty())
@@ -446,13 +446,13 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	}
 
 	@Override
-	public boolean canHarvestBlock(ItemStack stack, IBlockState state)
+	public boolean canHarvestBlock(ItemStack stack, BlockState state)
 	{
 		return isEffective(state.getMaterial())&&!isDrillBroken(stack);
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState state)
+	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		ItemStack head = getHead(stack);
 		if(!head.isEmpty()&&!isDrillBroken(stack))
@@ -460,7 +460,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		return super.getDestroySpeed(stack, state);
 	}
 
-	public boolean canBreakExtraBlock(World world, Block block, BlockPos pos, IBlockState state, EntityPlayer player, ItemStack drill, ItemStack head, boolean inWorld)
+	public boolean canBreakExtraBlock(World world, Block block, BlockPos pos, BlockState state, PlayerEntity player, ItemStack drill, ItemStack head, boolean inWorld)
 	{
 		if(block.canHarvestBlock(state, world, pos, player)&&isEffective(state.getMaterial())&&!isDrillBroken(drill))
 		{
@@ -473,10 +473,10 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, EntityPlayer player)
+	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, PlayerEntity player)
 	{
 		World world = player.world;
-		if(player.isSneaking()||world.isRemote||!(player instanceof EntityPlayerMP))
+		if(player.isSneaking()||world.isRemote||!(player instanceof ServerPlayerEntity))
 			return false;
 		RayTraceResult mop = this.rayTrace(world, player, true);
 		ItemStack head = getHead(stack);
@@ -487,14 +487,14 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		{
 			if(!world.isBlockLoaded(pos))
 				continue;
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 
 			if(block!=null&&!block.isAir(state, world, pos)&&state.getPlayerRelativeBlockHardness(player, world, pos)!=0)
 			{
 				if(!this.canBreakExtraBlock(world, block, pos, state, player, stack, head, true))
 					continue;
-				int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, ((EntityPlayerMP)player).interactionManager.getGameType(), (EntityPlayerMP)player, pos);
+				int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayerEntity)player).interactionManager.getGameType(), (ServerPlayerEntity)player, pos);
 				if(xpDropEvent < 0)
 					continue;
 
@@ -518,7 +518,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 					}
 				}
 				world.playEvent(2001, pos, Block.getStateId(state));
-				((EntityPlayerMP)player).connection.sendPacket(new SPacketBlockChange(world, pos));
+				((ServerPlayerEntity)player).connection.sendPacket(new SChangeBlockPacket(world, pos));
 			}
 		}
 		return false;
@@ -541,7 +541,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
@@ -551,7 +551,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 
 				@Nonnull
 				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 				{
 					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
 						return fluids.cast();
@@ -577,14 +577,14 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 
 	@Nullable
 	@Override
-	public NBTTagCompound getShareTag(ItemStack stack)
+	public CompoundNBT getShareTag(ItemStack stack)
 	{
-		NBTTagCompound ret = super.getShareTag(stack);
+		CompoundNBT ret = super.getShareTag(stack);
 		if(ret==null)
-			ret = new NBTTagCompound();
+			ret = new CompoundNBT();
 		else
 			ret = ret.copy();
-		NBTTagCompound tmp = new NBTTagCompound();
+		CompoundNBT tmp = new CompoundNBT();
 		getHead(stack).write(tmp);
 		ret.setTag("head", tmp);
 		return ret;

@@ -16,20 +16,20 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,17 +55,17 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drillhead.size", perms.drillSize, perms.drillDepth));
-		list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drillhead.level", Utils.getHarvestLevelName(getMiningLevel(stack))));
-		list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drillhead.speed", Utils.formatDouble(getMiningSpeed(stack), "0.###")));
-		list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drillhead.damage", Utils.formatDouble(getAttackDamage(stack), "0.###")));
+		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drillhead.size", perms.drillSize, perms.drillDepth));
+		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drillhead.level", Utils.getHarvestLevelName(getMiningLevel(stack))));
+		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drillhead.speed", Utils.formatDouble(getMiningSpeed(stack), "0.###")));
+		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drillhead.damage", Utils.formatDouble(getAttackDamage(stack), "0.###")));
 
 		int maxDmg = getMaximumHeadDamage(stack);
 		int dmg = maxDmg-getHeadDamage(stack);
 		float quote = dmg/(float)maxDmg;
 		String status = ""+(quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
 		String s = status+(getMaximumHeadDamage(stack)-getHeadDamage(stack))+"/"+getMaximumHeadDamage(stack);
-		list.add(new TextComponentTranslation(Lib.DESC_INFO+"durability", s));
+		list.add(new TranslationTextComponent(Lib.DESC_INFO+"durability", s));
 	}
 
 	@Override
@@ -75,13 +75,13 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	}
 
 	@Override
-	public boolean beforeBlockbreak(ItemStack drill, ItemStack head, EntityPlayer player)
+	public boolean beforeBlockbreak(ItemStack drill, ItemStack head, PlayerEntity player)
 	{
 		return false;
 	}
 
 	@Override
-	public void afterBlockbreak(ItemStack drill, ItemStack head, EntityPlayer player)
+	public void afterBlockbreak(ItemStack drill, ItemStack head, PlayerEntity player)
 	{
 	}
 
@@ -169,14 +169,14 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	}
 
 	@Override
-	public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, World world, EntityPlayer player, RayTraceResult mop)
+	public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, World world, PlayerEntity player, RayTraceResult mop)
 	{
-		EnumFacing side = mop.sideHit;
+		Direction side = mop.sideHit;
 		int diameter = perms.drillSize;
 		int depth = perms.drillDepth;
 
 		BlockPos startPos = mop.getBlockPos();
-		IBlockState state = world.getBlockState(startPos);
+		BlockState state = world.getBlockState(startPos);
 		Block block = state.getBlock();
 		float maxHardness = 1;
 		if(block!=null&&!block.isAir(state, world, startPos))

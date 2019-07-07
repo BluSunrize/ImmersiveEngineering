@@ -23,20 +23,20 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
 import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough.MIDDLE_STATE;
 import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough.WIRE;
-import static net.minecraft.util.EnumFacing.Axis.Y;
+import static net.minecraft.util.Direction.Axis.Y;
 
 public class FeedthroughModel implements IBakedModel
 {
@@ -79,11 +79,11 @@ public class FeedthroughModel implements IBakedModel
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
 	{
-		IBlockState baseState = Blocks.STONE.getDefaultState();
+		BlockState baseState = Blocks.STONE.getDefaultState();
 		WireType wire = WireType.COPPER;
-		EnumFacing facing = EnumFacing.NORTH;
+		Direction facing = Direction.NORTH;
 		int offset = 1;
 		BlockPos p = null;
 		World w = null;
@@ -181,7 +181,7 @@ public class FeedthroughModel implements IBakedModel
 
 		@Nonnull
 		@Override
-		public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
+		public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
 		{
 			Item connItem = Item.getItemFromBlock(IEContent.blockConnectors);
 			if(stack!=null&&stack.getItem()==connItem&&stack.getMetadata()==BlockTypes_Connector.FEEDTHROUGH.ordinal())
@@ -203,12 +203,12 @@ public class FeedthroughModel implements IBakedModel
 	private static class FeedthroughCacheKey
 	{
 		final WireType type;
-		final IBlockState baseState;
+		final BlockState baseState;
 		final int offset;
-		final EnumFacing facing;
+		final Direction facing;
 		final BlockRenderLayer layer;
 
-		public FeedthroughCacheKey(WireType type, IBlockState baseState, int offset, EnumFacing facing,
+		public FeedthroughCacheKey(WireType type, BlockState baseState, int offset, Direction facing,
 								   BlockRenderLayer layer)
 		{
 			this.type = type;
@@ -251,8 +251,8 @@ public class FeedthroughModel implements IBakedModel
 		public SpecificFeedthroughModel(ItemStack stack)
 		{
 			WireType w = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
-			IBlockState state = Utils.stateFromNBT(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
-			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, EnumFacing.NORTH, null), null, null);
+			BlockState state = Utils.stateFromNBT(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
+			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, Direction.NORTH, null), null, null);
 		}
 
 		public SpecificFeedthroughModel(FeedthroughCacheKey key, World w, BlockPos p)
@@ -278,8 +278,8 @@ public class FeedthroughModel implements IBakedModel
 			}
 			for(int j = 0; j < 7; j++)
 			{
-				EnumFacing side = j < 6?EnumFacing.VALUES[j]: null;
-				EnumFacing facing = k.facing;
+				Direction side = j < 6?Direction.VALUES[j]: null;
+				Direction facing = k.facing;
 				switch(k.offset)
 				{
 					case 0:
@@ -316,26 +316,26 @@ public class FeedthroughModel implements IBakedModel
 			}
 		}
 
-		private List<BakedQuad> getConnQuads(EnumFacing facing, EnumFacing side, WireType type, Matrix4 mat)
+		private List<BakedQuad> getConnQuads(Direction facing, Direction side, WireType type, Matrix4 mat)
 		{
 			//connector model+feedthrough border
 			WireApi.FeedthroughModelInfo info = INFOS.get(type);
 			mat.translate(.5, .5, .5);
 			if(facing.getAxis()==Y)
 			{
-				if(facing==EnumFacing.UP)
+				if(facing==Direction.UP)
 					mat.rotate(Math.PI, 1, 0, 0);
 			}
 			else
 			{
-				EnumFacing rotateAround = facing.rotateAround(Y);
+				Direction rotateAround = facing.rotateAround(Y);
 				mat.rotate(Math.PI/2, rotateAround.getXOffset(), rotateAround.getYOffset(),
 						rotateAround.getZOffset());
 			}
 			mat.translate(-.5, -.5, -.5);
 			List<BakedQuad> conn = new ArrayList<>(info.model.getQuads(null, side, 0));
 			if(side==facing)
-				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, info.tex, info.uvs, WHITE, false));
+				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
 			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(mat, null,
 					null);//I hope no one uses tint index for connectors
 			if(transf!=null)
@@ -346,7 +346,7 @@ public class FeedthroughModel implements IBakedModel
 
 		@Nonnull
 		@Override
-		public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
 		{
 			return quads.get(side==null?6: side.getIndex());
 		}

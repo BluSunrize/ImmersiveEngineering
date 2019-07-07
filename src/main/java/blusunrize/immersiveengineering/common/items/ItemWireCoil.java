@@ -12,18 +12,12 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -55,24 +49,24 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 	{
 		if(WireType.REDSTONE_CATEGORY.equals(type.getCategory()))
 		{
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"coil.redstone"));
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"coil.construction1"));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.redstone"));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
 		else if(WireType.STRUCTURE_CATEGORY.equals(type.getCategory()))
 		{
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"coil.construction0"));
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"coil.construction1"));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.construction0"));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
 		if(stack.hasTag()&&stack.getOrCreateTag().contains("linkingPos", NBT.TAG_INT_ARRAY))
 		{
 			int[] link = stack.getOrCreateTag().getIntArray("linkingPos");
 			if(link.length > 3)
-				list.add(new TextComponentTranslation(Lib.DESC_INFO+"attachedToDim", link[1], link[2], link[3], link[0]));
+				list.add(new TranslationTextComponent(Lib.DESC_INFO+"attachedToDim", link[1], link[2], link[3], link[0]));
 		}
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		return ApiUtils.doCoilUse(this, ctx.getPlayer(), ctx.getWorld(), ctx.getPos(), ctx.getItem(), ctx.getFace(),
 				ctx.getHitX(), ctx.getHitY(), ctx.getHitZ());

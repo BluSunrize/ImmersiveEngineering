@@ -23,15 +23,15 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
@@ -65,12 +65,12 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(!descPacket)
 		{
-			NBTTagList invList = nbt.getList("inputs", 10);
+			ListNBT invList = nbt.getList("inputs", 10);
 			inputs.clear();
 			for(int i = 0; i < invList.size(); i++)
 				inputs.add(ItemStack.read(invList.getCompound(i)));
@@ -78,14 +78,14 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!descPacket)
 		{
-			NBTTagList invList = new NBTTagList();
+			ListNBT invList = new ListNBT();
 			for(ItemStack s : inputs)
-				invList.add(s.write(new NBTTagCompound()));
+				invList.add(s.write(new CompoundNBT()));
 			nbt.setTag("inputs", invList);
 		}
 	}
@@ -132,8 +132,8 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 		if(posInMultiblock==37)
 			return new float[]{0, 0, 0, 0, 0, 0};
 
-		EnumFacing fl = facing;
-		EnumFacing fw = facing.rotateY();
+		Direction fl = facing;
+		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
 		if(posInMultiblock > 15&&posInMultiblock%5 > 0&&posInMultiblock%5 < 4)
@@ -144,34 +144,34 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 			float maxZ = 1;
 			if(posInMultiblock%5==1)
 			{
-				minX = fw==EnumFacing.EAST?.1875f: 0;
-				maxX = fw==EnumFacing.WEST?.8125f: 1;
-				minZ = fw==EnumFacing.SOUTH?.1875f: 0;
-				maxZ = fw==EnumFacing.NORTH?.8125f: 1;
+				minX = fw==Direction.EAST?.1875f: 0;
+				maxX = fw==Direction.WEST?.8125f: 1;
+				minZ = fw==Direction.SOUTH?.1875f: 0;
+				maxZ = fw==Direction.NORTH?.8125f: 1;
 			}
 			else if(posInMultiblock%5==3)
 			{
-				minX = fw==EnumFacing.WEST?.1875f: 0;
-				maxX = fw==EnumFacing.EAST?.8125f: 1;
-				minZ = fw==EnumFacing.NORTH?.1875f: 0;
-				maxZ = fw==EnumFacing.SOUTH?.8125f: 1;
+				minX = fw==Direction.WEST?.1875f: 0;
+				maxX = fw==Direction.EAST?.8125f: 1;
+				minZ = fw==Direction.NORTH?.1875f: 0;
+				maxZ = fw==Direction.SOUTH?.8125f: 1;
 			}
 			if((posInMultiblock%15)/5==0)
 			{
-				if(fl==EnumFacing.EAST)
+				if(fl==Direction.EAST)
 					minX = .1875f;
-				if(fl==EnumFacing.WEST)
+				if(fl==Direction.WEST)
 					maxX = .8125f;
-				if(fl==EnumFacing.SOUTH)
+				if(fl==Direction.SOUTH)
 					minZ = .1875f;
-				if(fl==EnumFacing.NORTH)
+				if(fl==Direction.NORTH)
 					maxZ = .8125f;
 			}
 
 			return new float[]{minX, 0, minZ, maxX, 1, maxZ};
 		}
 		if(posInMultiblock==19)
-			return new float[]{facing==EnumFacing.WEST?.5f: 0, 0, facing==EnumFacing.NORTH?.5f: 0, facing==EnumFacing.EAST?.5f: 1, 1, facing==EnumFacing.SOUTH?.5f: 1};
+			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
 
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
@@ -181,23 +181,23 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 	{
 		if(posInMultiblock%15==7)
 			return null;
-		EnumFacing fl = facing;
-		EnumFacing fw = facing.rotateY();
+		Direction fl = facing;
+		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
 		if(posInMultiblock==4)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			float minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .125f;
-			float maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .25f;
-			float minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .125f;
-			float maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .25f;
+			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
+			float maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .25f;
+			float minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .125f;
+			float maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .25f;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
-			minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .75f;
-			maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .875f;
-			minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .75f;
-			maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .875f;
+			minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .75f;
+			maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .875f;
+			minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .75f;
+			maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .875f;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
@@ -205,19 +205,19 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 		{
 			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>(3);
 			float minY = .5f;
-			float minX = (posInMultiblock%5==1&&fw==EnumFacing.EAST)||(posInMultiblock%5==3&&fw==EnumFacing.WEST)?.4375f: 0;
-			float maxX = (posInMultiblock%5==1&&fw==EnumFacing.WEST)||(posInMultiblock%5==3&&fw==EnumFacing.EAST)?.5625f: 1;
-			float minZ = (posInMultiblock%5==1&&fw==EnumFacing.SOUTH)||(posInMultiblock%5==3&&fw==EnumFacing.NORTH)?.4375f: 0;
-			float maxZ = (posInMultiblock%5==1&&fw==EnumFacing.NORTH)||(posInMultiblock%5==3&&fw==EnumFacing.SOUTH)?.5625f: 1;
+			float minX = (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.4375f: 0;
+			float maxX = (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.5625f: 1;
+			float minZ = (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.4375f: 0;
+			float maxZ = (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.5625f: 1;
 			if(posInMultiblock > 20&&posInMultiblock < 24)
 				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			else
 				minY = 0;
 
-			minX = (posInMultiblock%5==1&&fw==EnumFacing.EAST)||(posInMultiblock%5==3&&fw==EnumFacing.WEST)?.1875f: (posInMultiblock%5==1&&fw==EnumFacing.WEST)||(posInMultiblock%5==3&&fw==EnumFacing.EAST)?.5625f: 0;
-			maxX = (posInMultiblock%5==1&&fw==EnumFacing.WEST)||(posInMultiblock%5==3&&fw==EnumFacing.EAST)?.8125f: (posInMultiblock%5==1&&fw==EnumFacing.EAST)||(posInMultiblock%5==3&&fw==EnumFacing.WEST)?.4375f: 1;
-			minZ = (posInMultiblock%5==1&&fw==EnumFacing.SOUTH)||(posInMultiblock%5==3&&fw==EnumFacing.NORTH)?.1875f: (posInMultiblock%5==1&&fw==EnumFacing.NORTH)||(posInMultiblock%5==3&&fw==EnumFacing.SOUTH)?.5625f: 0;
-			maxZ = (posInMultiblock%5==1&&fw==EnumFacing.NORTH)||(posInMultiblock%5==3&&fw==EnumFacing.SOUTH)?.8125f: (posInMultiblock%5==1&&fw==EnumFacing.SOUTH)||(posInMultiblock%5==3&&fw==EnumFacing.NORTH)?.4375f: 1;
+			minX = (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.1875f: (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.5625f: 0;
+			maxX = (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.8125f: (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.4375f: 1;
+			minZ = (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.1875f: (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.5625f: 0;
+			maxZ = (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.8125f: (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.4375f: 1;
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
@@ -227,10 +227,10 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 				fl = fl.getOpposite();
 			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>(3);
 			float minY = .5f;
-			float minX = (posInMultiblock%5==1&&fw==EnumFacing.EAST)||(posInMultiblock%5==3&&fw==EnumFacing.WEST)?.4375f: fl==EnumFacing.EAST?.4375f: 0;
-			float maxX = (posInMultiblock%5==1&&fw==EnumFacing.WEST)||(posInMultiblock%5==3&&fw==EnumFacing.EAST)?.5625f: fl==EnumFacing.WEST?.5625f: 1;
-			float minZ = (posInMultiblock%5==1&&fw==EnumFacing.SOUTH)||(posInMultiblock%5==3&&fw==EnumFacing.NORTH)?.4375f: fl==EnumFacing.SOUTH?.4375f: 0;
-			float maxZ = (posInMultiblock%5==1&&fw==EnumFacing.NORTH)||(posInMultiblock%5==3&&fw==EnumFacing.SOUTH)?.5625f: fl==EnumFacing.NORTH?.5625f: 1;
+			float minX = (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.4375f: fl==Direction.EAST?.4375f: 0;
+			float maxX = (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.5625f: fl==Direction.WEST?.5625f: 1;
+			float minZ = (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.4375f: fl==Direction.SOUTH?.4375f: 0;
+			float maxZ = (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.5625f: fl==Direction.NORTH?.5625f: 1;
 			if((posInMultiblock > 15&&posInMultiblock < 19)||(posInMultiblock > 25&&posInMultiblock < 29))
 				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			else
@@ -239,27 +239,27 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 			if(posInMultiblock/15 > 9)
 				fl = fl.getOpposite();
 
-			minX = (posInMultiblock%5==1&&fw==EnumFacing.EAST)||(posInMultiblock%5==3&&fw==EnumFacing.WEST)?.1875f: fl==EnumFacing.EAST?.1875f: fl==EnumFacing.WEST?.5625f: 0;
-			maxX = (posInMultiblock%5==1&&fw==EnumFacing.WEST)||(posInMultiblock%5==3&&fw==EnumFacing.EAST)?.8125f: fl==EnumFacing.WEST?.8125f: fl==EnumFacing.EAST?.4375f: 1;
-			minZ = (posInMultiblock%5==1&&fw==EnumFacing.SOUTH)||(posInMultiblock%5==3&&fw==EnumFacing.NORTH)?.1875f: fl==EnumFacing.SOUTH?.1875f: fl==EnumFacing.NORTH?.5625f: 0;
-			maxZ = (posInMultiblock%5==1&&fw==EnumFacing.NORTH)||(posInMultiblock%5==3&&fw==EnumFacing.SOUTH)?.8125f: fl==EnumFacing.NORTH?.8125f: fl==EnumFacing.SOUTH?.4375f: 1;
+			minX = (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.1875f: fl==Direction.EAST?.1875f: fl==Direction.WEST?.5625f: 0;
+			maxX = (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.8125f: fl==Direction.WEST?.8125f: fl==Direction.EAST?.4375f: 1;
+			minZ = (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.1875f: fl==Direction.SOUTH?.1875f: fl==Direction.NORTH?.5625f: 0;
+			maxZ = (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.8125f: fl==Direction.NORTH?.8125f: fl==Direction.SOUTH?.4375f: 1;
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			if(posInMultiblock!=17&&posInMultiblock!=32&&posInMultiblock!=27&&posInMultiblock!=42)
 			{
-				minX = (posInMultiblock%5==1&&fw==EnumFacing.EAST)||(posInMultiblock%5==3&&fw==EnumFacing.WEST)?.1875f: fl==EnumFacing.EAST?.4375f: fl==EnumFacing.WEST?0: .5625f;
-				maxX = (posInMultiblock%5==1&&fw==EnumFacing.WEST)||(posInMultiblock%5==3&&fw==EnumFacing.EAST)?.8125f: fl==EnumFacing.WEST?.5625f: fl==EnumFacing.EAST?1: .4375f;
-				minZ = (posInMultiblock%5==1&&fw==EnumFacing.SOUTH)||(posInMultiblock%5==3&&fw==EnumFacing.NORTH)?.1875f: fl==EnumFacing.SOUTH?.4375f: fl==EnumFacing.NORTH?0: .5625f;
-				maxZ = (posInMultiblock%5==1&&fw==EnumFacing.NORTH)||(posInMultiblock%5==3&&fw==EnumFacing.SOUTH)?.8125f: fl==EnumFacing.NORTH?.5625f: fl==EnumFacing.SOUTH?1: .4375f;
+				minX = (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.1875f: fl==Direction.EAST?.4375f: fl==Direction.WEST?0: .5625f;
+				maxX = (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.8125f: fl==Direction.WEST?.5625f: fl==Direction.EAST?1: .4375f;
+				minZ = (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.1875f: fl==Direction.SOUTH?.4375f: fl==Direction.NORTH?0: .5625f;
+				maxZ = (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.8125f: fl==Direction.NORTH?.5625f: fl==Direction.SOUTH?1: .4375f;
 				list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 				if(posInMultiblock%15%10==1)
 					fw = fw.getOpposite();
 				if((posInMultiblock > 15&&posInMultiblock < 19)||(posInMultiblock > 25&&posInMultiblock < 29))
 				{
-					minX = fl==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.25f: fw==EnumFacing.EAST?.5f: .25f;
-					maxX = fl==EnumFacing.EAST?.5f: fl==EnumFacing.WEST?.75f: fw==EnumFacing.EAST?.75f: .5f;
-					minZ = fl==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.25f: fw==EnumFacing.SOUTH?.5f: .25f;
-					maxZ = fl==EnumFacing.SOUTH?.5f: fl==EnumFacing.NORTH?.75f: fw==EnumFacing.SOUTH?.75f: .5f;
+					minX = fl==Direction.WEST?.5f: fl==Direction.EAST?.25f: fw==Direction.EAST?.5f: .25f;
+					maxX = fl==Direction.EAST?.5f: fl==Direction.WEST?.75f: fw==Direction.EAST?.75f: .5f;
+					minZ = fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.25f: fw==Direction.SOUTH?.5f: .25f;
+					maxZ = fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.75f: fw==Direction.SOUTH?.75f: .5f;
 					list.add(new AxisAlignedBB(minX, 0, minZ, maxX, .5f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 				}
 			}
@@ -272,10 +272,10 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 				fl = fl.getOpposite();
 			if(posInMultiblock%15%10==1)
 				fw = fw.getOpposite();
-			float minX = fl==EnumFacing.WEST?.5f: fl==EnumFacing.EAST?.25f: fw==EnumFacing.EAST?.5f: .25f;
-			float maxX = fl==EnumFacing.EAST?.5f: fl==EnumFacing.WEST?.75f: fw==EnumFacing.EAST?.75f: .5f;
-			float minZ = fl==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.25f: fw==EnumFacing.SOUTH?.5f: .25f;
-			float maxZ = fl==EnumFacing.SOUTH?.5f: fl==EnumFacing.NORTH?.75f: fw==EnumFacing.SOUTH?.75f: .5f;
+			float minX = fl==Direction.WEST?.5f: fl==Direction.EAST?.25f: fw==Direction.EAST?.5f: .25f;
+			float maxX = fl==Direction.EAST?.5f: fl==Direction.WEST?.75f: fw==Direction.EAST?.75f: .5f;
+			float minZ = fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.25f: fw==Direction.SOUTH?.5f: .25f;
+			float maxZ = fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.75f: fw==Direction.SOUTH?.75f: .5f;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
 			return list;
@@ -285,7 +285,7 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 	}
 
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
@@ -314,9 +314,9 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
 			if(!entity.getBoundingBox().intersects(crusherInternal))
 				return;
-			if(entity instanceof EntityItem&&!((EntityItem)entity).getItem().isEmpty())
+			if(entity instanceof ItemEntity&&!((ItemEntity)entity).getItem().isEmpty())
 			{
-				ItemStack stack = ((EntityItem)entity).getItem();
+				ItemStack stack = ((ItemEntity)entity).getItem();
 				if(stack.isEmpty())
 					return;
 				CrusherRecipe recipe = master.findRecipeForInsertion(stack);
@@ -332,7 +332,7 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 						entity.remove();
 				}
 			}
-			else if(entity instanceof EntityLivingBase&&(!(entity instanceof EntityPlayer)||!((EntityPlayer)entity).abilities.disableDamage))
+			else if(entity instanceof LivingEntity&&(!(entity instanceof PlayerEntity)||!((PlayerEntity)entity).abilities.disableDamage))
 			{
 				int consumed = master.energyStorage.extractEnergy(80, true);
 				if(consumed > 0)
@@ -470,19 +470,19 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		return new IFluidTank[0];
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
 	{
 		return false;
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return false;
 	}
@@ -498,7 +498,7 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(isInInput()&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -516,7 +516,7 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 	}
 
 	@Override
-	protected CrusherRecipe readRecipeFromNBT(NBTTagCompound tag)
+	protected CrusherRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
 		return CrusherRecipe.loadFromNBT(tag);
 	}

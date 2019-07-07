@@ -13,9 +13,12 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -34,7 +37,7 @@ public class TileRenderCrusher extends TileEntityRenderer<TileEntityCrusher>
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
-		IBlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=MetalMultiblocks.crusher)
 			return;
 		state = state.with(IEProperties.DYNAMICRENDER, true);
@@ -75,7 +78,7 @@ public class TileRenderCrusher extends TileEntityRenderer<TileEntityCrusher>
 	}
 
 	private void renderPart(BufferBuilder bb, BlockPos pos, BlockRendererDispatcher blockRenderer, Tessellator tes,
-							TileEntity te, IBakedModel model, IBlockState state)
+							TileEntity te, IBakedModel model, BlockState state)
 	{
 		bb.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		bb.setTranslation(-.5-pos.getX(), -.5-pos.getY(), -.5-pos.getZ());

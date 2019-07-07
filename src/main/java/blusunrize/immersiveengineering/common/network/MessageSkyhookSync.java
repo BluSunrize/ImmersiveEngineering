@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -38,7 +38,7 @@ public class MessageSkyhookSync implements IMessage
 	public MessageSkyhookSync(PacketBuffer buf)
 	{
 		entityID = buf.readInt();
-		NBTTagCompound tag = buf.readCompoundTag();
+		CompoundNBT tag = buf.readCompoundTag();
 		connection = ImmersiveNetHandler.Connection.readFromNBT(tag);
 		linePos = buf.readDouble();
 		speed = buf.readDouble();

@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.gui.ContainerBlastFurnace;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 public class GuiBlastFurnace extends GuiIEContainerBase
 {
 	TileEntityBlastFurnace tile;
 
-	public GuiBlastFurnace(InventoryPlayer inventoryPlayer, TileEntityBlastFurnace tile)
+	public GuiBlastFurnace(PlayerInventory inventoryPlayer, TileEntityBlastFurnace tile)
 	{
 		super(new ContainerBlastFurnace(inventoryPlayer, tile));
 		this.tile = tile;

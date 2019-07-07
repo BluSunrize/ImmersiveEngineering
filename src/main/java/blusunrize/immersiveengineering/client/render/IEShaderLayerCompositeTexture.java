@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.function.IntFunction;
 
 @OnlyIn(Dist.CLIENT)
-public class IEShaderLayerCompositeTexture extends AbstractTexture
+public class IEShaderLayerCompositeTexture extends Texture
 {
 	/**
 	 * The location of the texture.

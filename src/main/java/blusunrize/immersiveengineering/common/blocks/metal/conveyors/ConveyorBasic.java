@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.DyeColor;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -56,7 +56,7 @@ public class ConveyorBasic implements IConveyorBelt
 	}
 
 	@Override
-	public boolean setDyeColour(EnumDyeColor colour)
+	public boolean setDyeColour(DyeColor colour)
 	{
 		if(colour==this.dyeColour)
 			return false;
@@ -71,16 +71,16 @@ public class ConveyorBasic implements IConveyorBelt
 	}
 
 	@Override
-	public NBTTagCompound writeConveyorNBT()
+	public CompoundNBT writeConveyorNBT()
 	{
-		NBTTagCompound nbt = new NBTTagCompound();
+		CompoundNBT nbt = new CompoundNBT();
 		nbt.setInt("direction", direction.ordinal());
 		nbt.setInt("dyeColour", dyeColour);
 		return nbt;
 	}
 
 	@Override
-	public void readConveyorNBT(NBTTagCompound nbt)
+	public void readConveyorNBT(CompoundNBT nbt)
 	{
 		direction = ConveyorDirection.values()[nbt.getInt("direction")];
 		dyeColour = nbt.hasKey("dyeColour")?nbt.getInt("dyeColour"): -1;

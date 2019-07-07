@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.dimension.DimensionType;
@@ -49,16 +49,16 @@ public class DimensionChunkCoords extends ChunkPos
 		return new DimensionChunkCoords(this.dimension, this.x+offsetX, this.z+offsetZ);
 	}
 
-	public NBTTagCompound writeToNBT()
+	public CompoundNBT writeToNBT()
 	{
-		NBTTagCompound tag = new NBTTagCompound();
+		CompoundNBT tag = new CompoundNBT();
 		tag.setString("dim", dimension.getRegistryName().toString());
 		tag.setInt("x", this.x);
 		tag.setInt("z", this.z);
 		return tag;
 	}
 
-	public static DimensionChunkCoords readFromNBT(NBTTagCompound tag)
+	public static DimensionChunkCoords readFromNBT(CompoundNBT tag)
 	{
 		if(tag.contains("dim", NBT.TAG_STRING)&&tag.contains("x", NBT.TAG_INT)&&tag.contains("z", NBT.TAG_INT))
 		{

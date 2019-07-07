@@ -15,12 +15,15 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurret;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretGun;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockPos;
@@ -42,7 +45,7 @@ public class TileRenderTurret extends TileEntityRenderer<TileEntityTurret>
 		//Grab model + correct eextended state
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
-		IBlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=MetalDevices.turretChem&&state.getBlock()!=MetalDevices.turretGun)
 			return;
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
@@ -76,7 +79,7 @@ public class TileRenderTurret extends TileEntityRenderer<TileEntityTurret>
 		GlStateManager.popMatrix();
 	}
 
-	public static void renderModelPart(Tessellator tessellator, BufferBuilder worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, boolean isFirst, String... parts)
+	public static void renderModelPart(Tessellator tessellator, BufferBuilder worldRenderer, World world, BlockState state, IBakedModel model, BlockPos pos, boolean isFirst, String... parts)
 	{
 		pos = pos.up();
 
@@ -84,7 +87,7 @@ public class TileRenderTurret extends TileEntityRenderer<TileEntityTurret>
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
-		Minecraft.getInstance().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 		if(Minecraft.isAmbientOcclusionEnabled())
 			GlStateManager.shadeModel(7425);
 		else

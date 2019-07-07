@@ -16,11 +16,11 @@ import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecor
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityAlloySmelter;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -77,15 +77,15 @@ public class MultiblockAlloySmelter implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(IBlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		return state.getBlock()==IEContent.blockStoneDecoration&&state.getBlock().getMetaFromState(state)==BlockTypes_StoneDecoration.ALLOYBRICK.getMeta();
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
-		EnumFacing f = EnumFacing.fromAngle(player.rotationYaw);
+		Direction f = Direction.fromAngle(player.rotationYaw);
 
 		if(Utils.isBlockAt(world, pos.down(), IEContent.blockStoneDecoration, BlockTypes_StoneDecoration.ALLOYBRICK.getMeta()))
 			pos = pos.down();
@@ -100,7 +100,7 @@ public class MultiblockAlloySmelter implements IMultiblock
 					if(!Utils.isBlockAt(world, pos2, IEContent.blockStoneDecoration, BlockTypes_StoneDecoration.ALLOYBRICK.getMeta()))
 						return false;
 				}
-		IBlockState state = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.ALLOY_SMELTER.getMeta());
+		BlockState state = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.ALLOY_SMELTER.getMeta());
 		state = state.with(IEProperties.FACING_HORIZONTAL, f.getOpposite());
 		for(int h = 0; h <= 1; h++)
 			for(int l = 0; l <= 1; l++)

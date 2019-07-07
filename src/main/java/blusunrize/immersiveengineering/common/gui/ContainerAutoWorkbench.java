@@ -10,19 +10,19 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAutoWorkbench;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
 public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbench>
 {
-	public InventoryPlayer inventoryPlayer;
+	public PlayerInventory inventoryPlayer;
 
-	public ContainerAutoWorkbench(InventoryPlayer inventoryPlayer, TileEntityAutoWorkbench tile)
+	public ContainerAutoWorkbench(PlayerInventory inventoryPlayer, TileEntityAutoWorkbench tile)
 	{
 		super(inventoryPlayer, tile);
 
@@ -36,7 +36,7 @@ public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbe
 		bindPlayerInv(inventoryPlayer);
 	}
 
-	private void bindPlayerInv(InventoryPlayer inventoryPlayer)
+	private void bindPlayerInv(PlayerInventory inventoryPlayer)
 	{
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
@@ -53,7 +53,7 @@ public class ContainerAutoWorkbench extends ContainerIEBase<TileEntityAutoWorkbe
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
 	{
 		ItemStack stack = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);

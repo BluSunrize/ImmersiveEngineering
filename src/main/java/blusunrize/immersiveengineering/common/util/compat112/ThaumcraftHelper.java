@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
+import net.minecraft.potion.Effect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
@@ -42,7 +42,7 @@ public class ThaumcraftHelper extends IECompatModule
 	{
 		FMLInterModComms.sendMessage("thaumcraft", "harvestStackedCrop", new ItemStack(IEContent.blockCrop, 5));
 
-		Potion potion_ward = Potion.getPotionFromResourceLocation("thaumcraft:warpward");
+		Effect potion_ward = Effect.getPotionFromResourceLocation("thaumcraft:warpward");
 		if(potion_ward!=null)
 			ChemthrowerHandler.registerEffect("purifying_fluid", new ChemthrowerEffect_Potion(null, 0, potion_ward, 100, 0));
 		try
@@ -89,7 +89,7 @@ public class ThaumcraftHelper extends IECompatModule
 				m_canSmelt.setAccessible(true);
 				f_furnaceBurnTime = c_TileSmelter.getDeclaredField("furnaceBurnTime");
 				Class c_BlockStateUtils = Class.forName("thaumcraft.common.lib.utils.BlockStateUtils");
-				m_isEnabled = c_BlockStateUtils.getMethod("isEnabled", IBlockState.class);
+				m_isEnabled = c_BlockStateUtils.getMethod("isEnabled", BlockState.class);
 				Class c_BlockSmelter = Class.forName("thaumcraft.common.blocks.essentia.BlockSmelter");
 				m_setFurnaceState = c_BlockSmelter.getMethod("setFurnaceState", World.class, BlockPos.class, boolean.class);
 			} catch(Exception e)

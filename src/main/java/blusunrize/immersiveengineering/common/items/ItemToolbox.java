@@ -17,10 +17,10 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -54,32 +54,32 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
-			CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND?EntityEquipmentSlot.MAINHAND: EntityEquipmentSlot.OFFHAND);
-		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+			CommonProxy.openGuiForItem(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		ItemStack stack = ctx.getItem();
-		EntityPlayer player = ctx.getPlayer();
+		PlayerEntity player = ctx.getPlayer();
 		if(player!=null && player.isSneaking())
 		{
 			World world = ctx.getWorld();
 			BlockPos pos = ctx.getPos();
-			EnumFacing side = ctx.getFace();
-			IBlockState state = world.getBlockState(pos);
+			Direction side = ctx.getFace();
+			BlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 			if(!block.isReplaceable(state, new BlockItemUseContext(ctx)))
 				pos = pos.offset(side);
 
 			if(stack.getCount()!=0&&player.canPlayerEdit(pos, side, stack))//TODO &&world.mayPlace(IEContent.blockToolbox, pos, false, side, null))
 			{
-				IBlockState toolbox = IEContent.blockToolbox.getDefaultState();
+				BlockState toolbox = IEContent.blockToolbox.getDefaultState();
 				if(world.setBlockState(pos, toolbox, 3))
 				{
 					((BlockIEBase)IEContent.blockToolbox).onIEBlockPlacedBy(new BlockItemUseContext(ctx), toolbox);
@@ -88,10 +88,10 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
 					stack.shrink(1);
 				}
-				return EnumActionResult.SUCCESS;
+				return ActionResultType.SUCCESS;
 			}
 			else
-				return EnumActionResult.FAIL;
+				return ActionResultType.FAIL;
 		}
 		return super.onItemUse(ctx);
 	}

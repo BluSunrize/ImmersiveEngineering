@@ -22,9 +22,9 @@ import com.google.common.collect.ImmutableSet;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IntHashMap;
 import net.minecraft.util.math.BlockPos;
@@ -495,9 +495,9 @@ public class ImmersiveNetHandler
 	@SuppressWarnings("unused")
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if(!e.world.isRemote&&IEConfig.enableWireDamage&&e instanceof EntityLivingBase&&
+		if(!e.world.isRemote&&IEConfig.enableWireDamage&&e instanceof LivingEntity&&
 				!e.isEntityInvulnerable(IEDamageSources.wireShock)&&
-				!(e instanceof EntityPlayer&&((EntityPlayer)e).capabilities.disableDamage))
+				!(e instanceof PlayerEntity&&((PlayerEntity)e).capabilities.disableDamage))
 		{
 			Map<BlockPos, BlockWireInfo> mapForDim = INSTANCE.blockWireMap.lookup(e.dimension);
 			if(mapForDim!=null)
@@ -505,14 +505,14 @@ public class ImmersiveNetHandler
 				BlockWireInfo info = mapForDim.get(p);
 				if(info!=null)
 				{
-					handleMapForDamage(info.in, (EntityLivingBase)e, p);
-					handleMapForDamage(info.near, (EntityLivingBase)e, p);
+					handleMapForDamage(info.in, (LivingEntity)e, p);
+					handleMapForDamage(info.near, (LivingEntity)e, p);
 				}
 			}
 		}
 	}
 
-	private static void handleMapForDamage(Set<Triple<Connection, Vec3d, Vec3d>> in, EntityLivingBase e, BlockPos here)
+	private static void handleMapForDamage(Set<Triple<Connection, Vec3d, Vec3d>> in, LivingEntity e, BlockPos here)
 	{
 		/*TODO move to new handler/own class
 		if(!in.isEmpty())
@@ -643,9 +643,9 @@ public class ImmersiveNetHandler
 				return Math.sinh((pos*horizontalLength-catOffsetX)/catA);
 		}
 
-		public NBTTagCompound writeToNBT()
+		public CompoundNBT writeToNBT()
 		{
-			NBTTagCompound tag = new NBTTagCompound();
+			CompoundNBT tag = new CompoundNBT();
 			if(start!=null)
 				tag.setIntArray("start", new int[]{start.getX(), start.getY(), start.getZ()});
 			if(end!=null)
@@ -655,7 +655,7 @@ public class ImmersiveNetHandler
 			return tag;
 		}
 
-		public static Connection readFromNBT(NBTTagCompound tag)
+		public static Connection readFromNBT(CompoundNBT tag)
 		{
 			if(tag==null)
 				return null;

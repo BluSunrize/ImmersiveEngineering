@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.RecipeSerializers;
@@ -68,7 +68,7 @@ public class RecipeShaderBags implements IRecipe
 			if(!stackInSlot.isEmpty())
 			{
 				ItemStack output = new ItemStack(IEContent.itemShaderBag, IEContent.itemShaderBag.equals(stackInSlot.getItem())?2: 1);
-				EnumRarity next = ShaderRegistry.getLowerRarity(stackInSlot.getRarity());
+				Rarity next = ShaderRegistry.getLowerRarity(stackInSlot.getRarity());
 				if(next!=null)
 				{
 					ItemNBTHelper.setString(output, "rarity", next.toString());

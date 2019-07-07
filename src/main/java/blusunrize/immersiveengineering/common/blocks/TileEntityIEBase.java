@@ -11,14 +11,14 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -43,42 +43,42 @@ public abstract class TileEntityIEBase extends TileEntity
 	}
 
 	@Override
-	public void read(NBTTagCompound nbt)
+	public void read(CompoundNBT nbt)
 	{
 		super.read(nbt);
 		this.readCustomNBT(nbt, false);
 	}
 
-	public abstract void readCustomNBT(NBTTagCompound nbt, boolean descPacket);
+	public abstract void readCustomNBT(CompoundNBT nbt, boolean descPacket);
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound nbt)
+	public CompoundNBT write(CompoundNBT nbt)
 	{
 		super.write(nbt);
 		this.writeCustomNBT(nbt, false);
 		return nbt;
 	}
 
-	public abstract void writeCustomNBT(NBTTagCompound nbt, boolean descPacket);
+	public abstract void writeCustomNBT(CompoundNBT nbt, boolean descPacket);
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket()
+	public SUpdateTileEntityPacket getUpdatePacket()
 	{
-		NBTTagCompound nbttagcompound = new NBTTagCompound();
+		CompoundNBT nbttagcompound = new CompoundNBT();
 		this.writeCustomNBT(nbttagcompound, true);
-		return new SPacketUpdateTileEntity(this.pos, 3, nbttagcompound);
+		return new SUpdateTileEntityPacket(this.pos, 3, nbttagcompound);
 	}
 
 	@Override
-	public NBTTagCompound getUpdateTag()
+	public CompoundNBT getUpdateTag()
 	{
-		NBTTagCompound nbt = super.getUpdateTag();
+		CompoundNBT nbt = super.getUpdateTag();
 		writeCustomNBT(nbt, true);
 		return nbt;
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
 	{
 		this.readCustomNBT(pkt.getNbtCompound(), true);
 	}
@@ -87,9 +87,9 @@ public abstract class TileEntityIEBase extends TileEntity
 	@Override
 	public void rotate(Rotation rot)
 	{
-		if(rot!=Rotation.NONE&&this instanceof IDirectionalTile&&((IDirectionalTile)this).canRotate(EnumFacing.UP))
+		if(rot!=Rotation.NONE&&this instanceof IDirectionalTile&&((IDirectionalTile)this).canRotate(Direction.UP))
 		{
-			EnumFacing f = ((IDirectionalTile)this).getFacing();
+			Direction f = ((IDirectionalTile)this).getFacing();
 			switch(rot)
 			{
 				case CLOCKWISE_90:
@@ -122,11 +122,11 @@ public abstract class TileEntityIEBase extends TileEntity
 	}
 
 
-	public void receiveMessageFromClient(NBTTagCompound message)
+	public void receiveMessageFromClient(CompoundNBT message)
 	{
 	}
 
-	public void receiveMessageFromServer(NBTTagCompound message)
+	public void receiveMessageFromServer(CompoundNBT message)
 	{
 	}
 
@@ -144,21 +144,21 @@ public abstract class TileEntityIEBase extends TileEntity
 		}
 		else if(id==254)
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state, state, 3);
 			return true;
 		}
 		return super.receiveClientEvent(id, type);
 	}
 
-	public void markContainingBlockForUpdate(@Nullable IBlockState newState)
+	public void markContainingBlockForUpdate(@Nullable BlockState newState)
 	{
 		markBlockForUpdate(getPos(), newState);
 	}
 
-	public void markBlockForUpdate(BlockPos pos, @Nullable IBlockState newState)
+	public void markBlockForUpdate(BlockPos pos, @Nullable BlockState newState)
 	{
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		if(newState==null)
 			newState = state;
 		world.notifyBlockUpdate(pos, state, newState, 3);
@@ -166,7 +166,7 @@ public abstract class TileEntityIEBase extends TileEntity
 	}
 
 	private final Set<LazyOptional<?>> caps = new HashSet<>();
-	private final EnumMap<EnumFacing, LazyOptional<IEnergyStorage>> energyCaps = new EnumMap<>(EnumFacing.class);
+	private final EnumMap<Direction, LazyOptional<IEnergyStorage>> energyCaps = new EnumMap<>(Direction.class);
 
 	protected <T> LazyOptional<T> registerConstantCap(T val)
 	{
@@ -186,7 +186,7 @@ public abstract class TileEntityIEBase extends TileEntity
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
 		if(cap==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
 			return energyCaps

@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -104,7 +104,7 @@ public class InventoryShader implements IInventory
 	@Override
 	public ITextComponent getName()
 	{
-		return new TextComponentTranslation("container."+name);
+		return new TranslationTextComponent("container."+name);
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class InventoryShader implements IInventory
 	@Override
 	public ITextComponent getCustomName()
 	{
-		return new TextComponentString(name);
+		return new StringTextComponent(name);
 	}
 
 	@Override
@@ -140,18 +140,18 @@ public class InventoryShader implements IInventory
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer entityplayer)
+	public boolean isUsableByPlayer(PlayerEntity entityplayer)
 	{
 		return true;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player)
+	public void openInventory(PlayerEntity player)
 	{
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer player)
+	public void closeInventory(PlayerEntity player)
 	{
 	}
 

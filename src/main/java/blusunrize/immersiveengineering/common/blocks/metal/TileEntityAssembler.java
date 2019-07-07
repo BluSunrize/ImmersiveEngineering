@@ -22,22 +22,22 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssem
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -71,7 +71,7 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 	public boolean recursiveIngredients = false;
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		tanks[0].readFromNBT(nbt.getCompound("tank0"));
@@ -83,7 +83,7 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 			inventory = Utils.readInventory(nbt.getList("inventory", 10), 18+3);
 			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
-				NBTTagList patternList = nbt.getList("pattern"+iPattern, 10);
+				ListNBT patternList = nbt.getList("pattern"+iPattern, 10);
 				patterns[iPattern] = new CrafterPatternInventory(this);
 				patterns[iPattern].readFromNBT(patternList);
 			}
@@ -100,19 +100,19 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setTag("tank0", tanks[0].writeToNBT(new NBTTagCompound()));
-		nbt.setTag("tank1", tanks[1].writeToNBT(new NBTTagCompound()));
-		nbt.setTag("tank2", tanks[2].writeToNBT(new NBTTagCompound()));
+		nbt.setTag("tank0", tanks[0].writeToNBT(new CompoundNBT()));
+		nbt.setTag("tank1", tanks[1].writeToNBT(new CompoundNBT()));
+		nbt.setTag("tank2", tanks[2].writeToNBT(new CompoundNBT()));
 		nbt.setBoolean("recursiveIngredients", recursiveIngredients);
 		if(!descPacket)
 		{
 			nbt.setTag("inventory", Utils.writeInventory(inventory));
 			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
-				NBTTagList patternList = new NBTTagList();
+				ListNBT patternList = new ListNBT();
 				patterns[iPattern].writeToNBT(patternList);
 				nbt.setTag("pattern"+iPattern, patternList);
 			}
@@ -128,7 +128,7 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 	}
 
 	@Override
-	public void receiveMessageFromClient(NBTTagCompound message)
+	public void receiveMessageFromClient(CompoundNBT message)
 	{
 		if(message.hasKey("buttonID"))
 		{
@@ -147,11 +147,11 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 		else if(message.hasKey("patternSync"))
 		{
 			int r = message.getInt("recipe");
-			NBTTagList list = message.getList("patternSync", 10);
+			ListNBT list = message.getList("patternSync", 10);
 			CrafterPatternInventory pattern = patterns[r];
 			for(int i = 0; i < list.size(); i++)
 			{
-				NBTTagCompound itemTag = list.getCompound(i);
+				CompoundNBT itemTag = list.getCompound(i);
 				pattern.inv.set(itemTag.getInt("slot"), ItemStack.read(itemTag));
 			}
 		}
@@ -362,21 +362,21 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 		float xMax = 1;
 		float yMax = 1;
 		float zMax = 1;
-		if((posInMultiblock%9 < 3&&facing==EnumFacing.SOUTH)||(posInMultiblock%9 >= 6&&facing==EnumFacing.NORTH))
+		if((posInMultiblock%9 < 3&&facing==Direction.SOUTH)||(posInMultiblock%9 >= 6&&facing==Direction.NORTH))
 			zMin = .25f;
-		else if((posInMultiblock%9 < 3&&facing==EnumFacing.NORTH)||(posInMultiblock%9 >= 6&&facing==EnumFacing.SOUTH))
+		else if((posInMultiblock%9 < 3&&facing==Direction.NORTH)||(posInMultiblock%9 >= 6&&facing==Direction.SOUTH))
 			zMax = .75f;
-		else if((posInMultiblock%9 < 3&&facing==EnumFacing.EAST)||(posInMultiblock%9 >= 6&&facing==EnumFacing.WEST))
+		else if((posInMultiblock%9 < 3&&facing==Direction.EAST)||(posInMultiblock%9 >= 6&&facing==Direction.WEST))
 			xMin = .25f;
-		else if((posInMultiblock%9 < 3&&facing==EnumFacing.WEST)||(posInMultiblock%9 >= 6&&facing==EnumFacing.EAST))
+		else if((posInMultiblock%9 < 3&&facing==Direction.WEST)||(posInMultiblock%9 >= 6&&facing==Direction.EAST))
 			xMax = .75f;
-		if((posInMultiblock%3==0&&facing==EnumFacing.EAST)||(posInMultiblock%3==2&&facing==EnumFacing.WEST))
+		if((posInMultiblock%3==0&&facing==Direction.EAST)||(posInMultiblock%3==2&&facing==Direction.WEST))
 			zMin = .1875f;
-		else if((posInMultiblock%3==0&&facing==EnumFacing.WEST)||(posInMultiblock%3==2&&facing==EnumFacing.EAST))
+		else if((posInMultiblock%3==0&&facing==Direction.WEST)||(posInMultiblock%3==2&&facing==Direction.EAST))
 			zMax = .8125f;
-		else if((posInMultiblock%3==0&&facing==EnumFacing.NORTH)||(posInMultiblock%3==2&&facing==EnumFacing.SOUTH))
+		else if((posInMultiblock%3==0&&facing==Direction.NORTH)||(posInMultiblock%3==2&&facing==Direction.SOUTH))
 			xMin = .1875f;
-		else if((posInMultiblock%3==0&&facing==EnumFacing.SOUTH)||(posInMultiblock%3==2&&facing==EnumFacing.NORTH))
+		else if((posInMultiblock%3==0&&facing==Direction.SOUTH)||(posInMultiblock%3==2&&facing==Direction.NORTH))
 			xMax = .8125f;
 		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
 	}
@@ -394,7 +394,7 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 	}
 
 	@Override
-	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
 	{
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==1&&w==1&&l!=1)
@@ -508,7 +508,7 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 	{
 		if((posInMultiblock==10||posInMultiblock==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -532,13 +532,13 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 	}
 
 	@Override
-	protected IMultiblockRecipe readRecipeFromNBT(NBTTagCompound tag)
+	protected IMultiblockRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		return formed;
 	}
@@ -556,7 +556,7 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		TileEntityAssembler master = master();
 		if(master!=null&&posInMultiblock==1&&(side==null||side==facing.getOpposite()))
@@ -565,23 +565,23 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
 		return true;
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return true;
 	}
 
 	@Override
-	public EnumFacing[] sigOutputDirections()
+	public Direction[] sigOutputDirections()
 	{
 		if(posInMultiblock==16)
-			return new EnumFacing[]{this.facing};
-		return new EnumFacing[0];
+			return new Direction[]{this.facing};
+		return new Direction[0];
 	}
 
 	public static class CrafterPatternInventory implements IInventory
@@ -664,7 +664,7 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 
 		public void recalculateOutput()
 		{
-			InventoryCrafting invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
+			CraftingInventory invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
 			this.recipe = Utils.findCraftingRecipe(invC, tile.getWorld());
 			this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC): ItemStack.EMPTY);
 		}
@@ -679,7 +679,7 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 		@Override
 		public ITextComponent getName()
 		{
-			return new TextComponentString("IECrafterPattern");
+			return new StringTextComponent("IECrafterPattern");
 		}
 
 		@Override
@@ -695,18 +695,18 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 		}
 
 		@Override
-		public boolean isUsableByPlayer(EntityPlayer player)
+		public boolean isUsableByPlayer(PlayerEntity player)
 		{
 			return true;
 		}
 
 		@Override
-		public void openInventory(EntityPlayer player)
+		public void openInventory(PlayerEntity player)
 		{
 		}
 
 		@Override
-		public void closeInventory(EntityPlayer player)
+		public void closeInventory(PlayerEntity player)
 		{
 		}
 
@@ -722,23 +722,23 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 			this.tile.markDirty();
 		}
 
-		public void writeToNBT(NBTTagList list)
+		public void writeToNBT(ListNBT list)
 		{
 			for(int i = 0; i < this.inv.size(); i++)
 				if(!this.inv.get(i).isEmpty())
 				{
-					NBTTagCompound itemTag = new NBTTagCompound();
+					CompoundNBT itemTag = new CompoundNBT();
 					itemTag.setByte("Slot", (byte)i);
 					this.inv.get(i).write(itemTag);
 					list.add(itemTag);
 				}
 		}
 
-		public void readFromNBT(NBTTagList list)
+		public void readFromNBT(ListNBT list)
 		{
 			for(int i = 0; i < list.size(); i++)
 			{
-				NBTTagCompound itemTag = list.getCompound(i);
+				CompoundNBT itemTag = list.getCompound(i);
 				int slot = itemTag.getByte("Slot")&255;
 				if(slot < getSizeInventory())
 					this.inv.set(slot, ItemStack.read(itemTag));

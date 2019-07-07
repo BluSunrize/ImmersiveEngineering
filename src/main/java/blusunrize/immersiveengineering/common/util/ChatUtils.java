@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.network.MessageNoSpamChatComponents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiNewChat;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.client.gui.NewChatGui;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,7 +27,7 @@ public class ChatUtils
 	@OnlyIn(Dist.CLIENT)//Credit goes to WayOfFlowingTime
 	public static void sendClientNoSpamMessages(ITextComponent[] messages)
 	{
-		GuiNewChat chat = Minecraft.getInstance().ingameGUI.getChatGUI();
+		NewChatGui chat = Minecraft.getInstance().ingameGUI.getChatGUI();
 		for(int i = DELETION_ID+messages.length-1; i <= lastAdded; i++)
 			chat.deleteChatLine(i);
 		for(int i = 0; i < messages.length; i++)
@@ -35,10 +35,10 @@ public class ChatUtils
 		lastAdded = DELETION_ID+messages.length-1;
 	}
 
-	public static void sendServerNoSpamMessages(EntityPlayer player, ITextComponent... messages)
+	public static void sendServerNoSpamMessages(PlayerEntity player, ITextComponent... messages)
 	{
-		if(messages.length > 0&&player instanceof EntityPlayerMP)
-			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (EntityPlayerMP)player),
+		if(messages.length > 0&&player instanceof ServerPlayerEntity)
+			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
 					new MessageNoSpamChatComponents(messages));
 	}
 }

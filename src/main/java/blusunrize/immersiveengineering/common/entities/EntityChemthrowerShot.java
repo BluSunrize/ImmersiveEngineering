@@ -15,15 +15,15 @@ import com.google.common.base.Optional;
 import elucent.albedo.lighting.ILightProvider;
 import elucent.albedo.lighting.Light;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -52,7 +52,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 		this.setFluidSynced();
 	}
 
-	public EntityChemthrowerShot(World world, EntityLivingBase living, double ax, double ay, double az, FluidStack fluid)
+	public EntityChemthrowerShot(World world, LivingEntity living, double ax, double ay, double az, FluidStack fluid)
 	{
 		super(world, living, ax, ay, az);
 		this.fluid = fluid;
@@ -105,7 +105,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 	{
 		if(this.getFluid()==null&&this.world.isRemote)
 			this.fluid = getFluidSynced();
-		IBlockState state = world.getBlockState(new BlockPos(posX, posY, posZ));
+		BlockState state = world.getBlockState(new BlockPos(posX, posY, posZ));
 		Block b = state.getBlock();
 		if(b!=null&&this.canIgnite()&&(state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
 			this.setFire(6);
@@ -132,12 +132,12 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 			if(effect!=null)
 			{
 				ItemStack thrower = ItemStack.EMPTY;
-				EntityPlayer shooter = (EntityPlayer)this.getShooter();
+				PlayerEntity shooter = (PlayerEntity)this.getShooter();
 				if(shooter!=null)
-					thrower = shooter.getHeldItem(EnumHand.MAIN_HAND);
+					thrower = shooter.getHeldItem(Hand.MAIN_HAND);
 
-				if(mop.type==Type.ENTITY&&mop.entity instanceof EntityLivingBase)
-					effect.applyToEntity((EntityLivingBase)mop.entity, shooter, thrower, fluidStack);
+				if(mop.type==Type.ENTITY&&mop.entity instanceof LivingEntity)
+					effect.applyToEntity((LivingEntity)mop.entity, shooter, thrower, fluidStack);
 				else if(mop.type==Type.BLOCK)
 					effect.applyToBlock(world, mop, shooter, thrower, fluidStack);
 			}

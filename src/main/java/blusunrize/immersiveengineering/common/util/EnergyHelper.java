@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -61,7 +61,7 @@ public class EnergyHelper
 		return getEnergyStored(stack, null);
 	}
 
-	public static int getEnergyStored(ICapabilityProvider stack, @Nullable EnumFacing side)
+	public static int getEnergyStored(ICapabilityProvider stack, @Nullable Direction side)
 	{
 		if(stack==null)
 			return 0;
@@ -75,7 +75,7 @@ public class EnergyHelper
 		return getMaxEnergyStored(stack, null);
 	}
 
-	public static int getMaxEnergyStored(ICapabilityProvider stack, @Nullable EnumFacing side)
+	public static int getMaxEnergyStored(ICapabilityProvider stack, @Nullable Direction side)
 	{
 		if(stack==null)
 			return 0;
@@ -89,7 +89,7 @@ public class EnergyHelper
 		return isFluxReceiver(tile, null);
 	}
 
-	public static boolean isFluxReceiver(ICapabilityProvider tile, @Nullable EnumFacing facing)
+	public static boolean isFluxReceiver(ICapabilityProvider tile, @Nullable Direction facing)
 	{
 		if(tile==null)
 			return false;
@@ -103,7 +103,7 @@ public class EnergyHelper
 		return insertFlux(tile, null, energy, simulate);
 	}
 
-	public static int insertFlux(ICapabilityProvider tile, @Nullable EnumFacing facing, int energy, boolean simulate)
+	public static int insertFlux(ICapabilityProvider tile, @Nullable Direction facing, int energy, boolean simulate)
 	{
 		if(tile==null)
 			return 0;
@@ -117,7 +117,7 @@ public class EnergyHelper
 		return extractFlux(tile, null, energy, simulate);
 	}
 
-	public static int extractFlux(ICapabilityProvider tile, @Nullable EnumFacing facing, int energy, boolean simulate)
+	public static int extractFlux(ICapabilityProvider tile, @Nullable Direction facing, int energy, boolean simulate)
 	{
 		if(tile==null)
 			return 0;
@@ -137,7 +137,7 @@ public class EnergyHelper
 		}
 
 		@Override
-		default int extractEnergy(@Nullable EnumFacing fd, int amount, boolean simulate)
+		default int extractEnergy(@Nullable Direction fd, int amount, boolean simulate)
 		{
 			if(((TileEntity)this).getWorld().isRemote||getEnergySideConfig(fd)!=SideConfig.OUTPUT)
 				return 0;
@@ -147,19 +147,19 @@ public class EnergyHelper
 		}
 
 		@Override
-		default int getEnergyStored(@Nullable EnumFacing fd)
+		default int getEnergyStored(@Nullable Direction fd)
 		{
 			return getFluxStorage().getEnergyStored();
 		}
 
 		@Override
-		default int getMaxEnergyStored(@Nullable EnumFacing fd)
+		default int getMaxEnergyStored(@Nullable Direction fd)
 		{
 			return getFluxStorage().getMaxEnergyStored();
 		}
 
 		@Override
-		default int receiveEnergy(@Nullable EnumFacing fd, int amount, boolean simulate)
+		default int receiveEnergy(@Nullable Direction fd, int amount, boolean simulate)
 		{
 			if(((TileEntity)this).getWorld().isRemote||getEnergySideConfig(fd)!=SideConfig.INPUT)
 				return 0;
@@ -172,24 +172,24 @@ public class EnergyHelper
 	public interface IIEInternalFluxConnector extends IFluxConnection
 	{
 		@Nonnull
-		SideConfig getEnergySideConfig(@Nullable EnumFacing facing);
+		SideConfig getEnergySideConfig(@Nullable Direction facing);
 
 		@Override
-		default boolean canConnectEnergy(@Nullable EnumFacing fd)
+		default boolean canConnectEnergy(@Nullable Direction fd)
 		{
 			return getEnergySideConfig(fd)!=SideConfig.NONE;
 		}
 
 		@Nullable
-		IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing);
+		IEForgeEnergyWrapper getCapabilityWrapper(Direction facing);
 	}
 
 	public static class IEForgeEnergyWrapper implements IEnergyStorage
 	{
 		final IIEInternalFluxConnector fluxHandler;
-		public final EnumFacing side;
+		public final Direction side;
 
-		public IEForgeEnergyWrapper(IIEInternalFluxConnector fluxHandler, EnumFacing side)
+		public IEForgeEnergyWrapper(IIEInternalFluxConnector fluxHandler, Direction side)
 		{
 			this.fluxHandler = fluxHandler;
 			this.side = side;
@@ -246,12 +246,12 @@ public class EnergyHelper
 		public static IEForgeEnergyWrapper[] getDefaultWrapperArray(IIEInternalFluxConnector handler)
 		{
 			return new IEForgeEnergyWrapper[]{
-					new IEForgeEnergyWrapper(handler, EnumFacing.DOWN),
-					new IEForgeEnergyWrapper(handler, EnumFacing.UP),
-					new IEForgeEnergyWrapper(handler, EnumFacing.NORTH),
-					new IEForgeEnergyWrapper(handler, EnumFacing.SOUTH),
-					new IEForgeEnergyWrapper(handler, EnumFacing.WEST),
-					new IEForgeEnergyWrapper(handler, EnumFacing.EAST)
+					new IEForgeEnergyWrapper(handler, Direction.DOWN),
+					new IEForgeEnergyWrapper(handler, Direction.UP),
+					new IEForgeEnergyWrapper(handler, Direction.NORTH),
+					new IEForgeEnergyWrapper(handler, Direction.SOUTH),
+					new IEForgeEnergyWrapper(handler, Direction.WEST),
+					new IEForgeEnergyWrapper(handler, Direction.EAST)
 			};
 		}
 	}

@@ -9,7 +9,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -19,13 +19,13 @@ public abstract class SpecialManualElement
 	//The number of vertical pixels this element occupies.
 	public abstract int getPixelsTaken();
 
-	public abstract void onOpened(GuiManual gui, int x, int y, List<GuiButton> buttons);
+	public abstract void onOpened(GuiManual gui, int x, int y, List<Button> buttons);
 
 	public abstract void render(GuiManual gui, int x, int y, int mouseX, int mouseY);
 
-	public abstract void buttonPressed(GuiManual gui, GuiButton button);
+	public abstract void buttonPressed(GuiManual gui, Button button);
 
-	public abstract void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, GuiButton button);
+	public abstract void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, Button button);
 
 	public abstract boolean listForSearch(String searchTag);
 

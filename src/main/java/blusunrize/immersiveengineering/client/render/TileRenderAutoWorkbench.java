@@ -22,18 +22,21 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAutoWorkben
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.HashMultimap;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResource;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -59,7 +62,7 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 		//Grab model + correct eextended state
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
-		IBlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=MetalMultiblocks.autoWorkbench)
 			return;
 		state = state.with(IEProperties.DYNAMICRENDER, true);
@@ -181,17 +184,17 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "lift");
 		GlStateManager.translated(0, -lift, 0);
 
-		EnumFacing f = te.getFacing();
-		float tx = f==EnumFacing.WEST?-.9375f: f==EnumFacing.EAST?.9375f: 0;
-		float tz = f==EnumFacing.NORTH?-.9375f: f==EnumFacing.SOUTH?.9375f: 0;
+		Direction f = te.getFacing();
+		float tx = f==Direction.WEST?-.9375f: f==Direction.EAST?.9375f: 0;
+		float tz = f==Direction.NORTH?-.9375f: f==Direction.SOUTH?.9375f: 0;
 		GlStateManager.translated(tx, 0, tz);
 		GlStateManager.rotatef(drill, 0, 1, 0);
 		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "drill");
 		GlStateManager.rotatef(-drill, 0, 1, 0);
 		GlStateManager.translated(-tx, 0, -tz);
 
-		tx = f==EnumFacing.WEST?-.59375f: f==EnumFacing.EAST?.59375f: 0;
-		tz = f==EnumFacing.NORTH?-.59375f: f==EnumFacing.SOUTH?.59375f: 0;
+		tx = f==Direction.WEST?-.59375f: f==Direction.EAST?.59375f: 0;
+		tz = f==Direction.NORTH?-.59375f: f==Direction.SOUTH?.59375f: 0;
 		GlStateManager.translated(tx, -.21875, tz);
 		GlStateManager.rotatef(press*90, -f.getZOffset(), 0, f.getXOffset());
 		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "press");
@@ -312,7 +315,7 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 		GlStateManager.popMatrix();
 	}
 
-	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, String... parts)
+	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, BlockState state, IBakedModel model, BlockPos pos, String... parts)
 	{
 		IModelData data = new SinglePropertyModelData<>(new OBJState(Arrays.asList(parts), true), Model.objState);
 
@@ -352,7 +355,7 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 	{
 		if(stack.isEmpty())
 			return null;
-		EntityPlayer player = ClientUtils.mc().player;
+		PlayerEntity player = ClientUtils.mc().player;
 		ArrayList<BufferedImage> images = new ArrayList<>();
 		try
 		{

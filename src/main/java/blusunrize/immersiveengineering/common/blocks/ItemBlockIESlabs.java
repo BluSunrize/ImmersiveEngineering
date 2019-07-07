@@ -9,15 +9,15 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,16 +39,16 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 	}
 
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ)
 	{
 		ItemStack stack = player.getHeldItem(hand);
-		IBlockState iblockstate = world.getBlockState(pos);
+		BlockState iblockstate = world.getBlockState(pos);
 		Block localBlock = iblockstate.getBlock();
 		BlockPos posThere = pos;
 		BlockPos posOffset = pos.offset(side);
 
 		if(localBlock==Blocks.SNOW_LAYER&&localBlock.isReplaceable(world, pos))
-			side = EnumFacing.UP;
+			side = Direction.UP;
 		else if(!localBlock.isReplaceable(world, pos))
 			pos = pos.offset(side);
 
@@ -65,7 +65,7 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 			if(te instanceof TileEntityIESlab)
 			{
 				int type = ((TileEntityIESlab)te).slabType;
-				if((type==0&&(side==EnumFacing.DOWN||hitY >= .5))||(type==1&&(side==EnumFacing.UP||hitY <= .5)))
+				if((type==0&&(side==Direction.DOWN||hitY >= .5))||(type==1&&(side==Direction.UP||hitY <= .5)))
 					stackSlab = ((TileEntityIESlab)te);
 			}
 		}
@@ -77,7 +77,7 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 			stackSlab.markContainingBlockForUpdate(null);
 			world.playSound(stackSlab.getPos().getX()+.5, stackSlab.getPos().getY()+.5, stackSlab.getPos().getZ()+.5, this.block.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (this.block.getSoundType().getVolume()+1.0F)/2.0F, this.block.getSoundType().getPitch()*0.8F, false);
 			stack.shrink(1);
-			return EnumActionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		}
 		else
 			return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
@@ -85,20 +85,20 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack)
+	public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, Direction side, PlayerEntity player, ItemStack stack)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState)
+	public boolean placeBlockAt(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, BlockState newState)
 	{
 		boolean ret = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
 		if(ret)
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof TileEntityIESlab)
-				((TileEntityIESlab)tileEntity).slabType = (side==EnumFacing.DOWN||(side!=EnumFacing.UP&&hitY >= .5))?1: 0;
+				((TileEntityIESlab)tileEntity).slabType = (side==Direction.DOWN||(side!=Direction.UP&&hitY >= .5))?1: 0;
 		}
 		return ret;
 	}

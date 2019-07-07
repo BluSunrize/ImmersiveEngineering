@@ -14,18 +14,18 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityToolbox;
 import blusunrize.immersiveengineering.common.gui.ContainerToolboxBlock;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 
 public class GuiToolboxBlock extends GuiIEContainerBase
 {
-	public GuiToolboxBlock(InventoryPlayer inventoryPlayer, TileEntityToolbox toolbox)
+	public GuiToolboxBlock(PlayerInventory inventoryPlayer, TileEntityToolbox toolbox)
 	{
 		super(new ContainerToolboxBlock(inventoryPlayer, toolbox));
 		this.ySize = 238;
@@ -47,7 +47,7 @@ public class GuiToolboxBlock extends GuiIEContainerBase
 		if(slot >= 0)
 			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
 		if(ss!=null)
-			tooltip.add(new TextComponentTranslation(Lib.DESC_INFO+"toolbox."+ss).setStyle(new Style().setColor(TextFormatting.GRAY)));
+			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss).setStyle(new Style().setColor(TextFormatting.GRAY)));
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);

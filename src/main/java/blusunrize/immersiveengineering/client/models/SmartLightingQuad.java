@@ -8,16 +8,14 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import net.minecraft.client.renderer.chunk.RenderChunkCache;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumType;
-import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.client.renderer.vertex.VertexFormatElement.Type;
+import net.minecraft.client.renderer.vertex.VertexFormatElement.Usage;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraftforge.client.model.pipeline.*;
 
@@ -47,7 +45,7 @@ public class SmartLightingQuad extends BakedQuad
 	boolean ignoreLight;
 	public static int staticBrightness;
 
-	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, EnumFacing faceIn, TextureAtlasSprite spriteIn, VertexFormat format, BlockPos p)
+	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, Direction faceIn, TextureAtlasSprite spriteIn, VertexFormat format, BlockPos p)
 	{
 		super(vertexDataIn, tintIndexIn, faceIn, spriteIn, false, format);
 		blockPos = p;
@@ -60,7 +58,7 @@ public class SmartLightingQuad extends BakedQuad
 			};
 	}
 
-	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, EnumFacing faceIn, TextureAtlasSprite spriteIn, VertexFormat format)
+	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, Direction faceIn, TextureAtlasSprite spriteIn, VertexFormat format)
 	{
 		super(vertexDataIn, tintIndexIn, faceIn, spriteIn, false, format);
 		ignoreLight = true;
@@ -96,7 +94,7 @@ public class SmartLightingQuad extends BakedQuad
 			for(int e = 0; e < count; e++)
 				if(eMap[e]!=itemCount)
 				{
-					if(format.getElement(e).getUsage()==EnumUsage.UV&&format.getElement(e).getType()==EnumType.SHORT)//lightmap is UV with 2 shorts
+					if(format.getElement(e).getUsage()==Usage.UV&&format.getElement(e).getType()==Type.SHORT)//lightmap is UV with 2 shorts
 					{
 						int brightness;
 						if(!ignoreLight&&world!=null)

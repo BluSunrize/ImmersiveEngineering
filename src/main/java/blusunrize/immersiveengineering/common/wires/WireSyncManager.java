@@ -13,12 +13,12 @@ import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.network.MessageWireSync;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.world.ChunkWatchEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -32,7 +32,7 @@ import java.util.Set;
 @EventBusSubscriber
 public class WireSyncManager
 {
-	private static void sendMessagesForChunk(Chunk chunk, EntityPlayerMP player, boolean add)
+	private static void sendMessagesForChunk(Chunk chunk, ServerPlayerEntity player, boolean add)
 	{
 		World w = chunk.getWorld();
 		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(w);
@@ -43,7 +43,7 @@ public class WireSyncManager
 					ImmersiveEngineering.packetHandler.sendTo(new MessageWireSync(conn, add), player);
 	}
 
-	private static boolean shouldSendConnection(Connection conn, Chunk chunk, EntityPlayerMP player, boolean add,
+	private static boolean shouldSendConnection(Connection conn, Chunk chunk, ServerPlayerEntity player, boolean add,
 												ConnectionPoint currEnd)
 	{
 		if(conn.isInternal())
@@ -52,12 +52,12 @@ public class WireSyncManager
 		ChunkPos otherChunk = new ChunkPos(other.getPosition());
 		if(otherChunk.equals(chunk.getPos()))
 			return conn.isPositiveEnd(currEnd);
-		PlayerChunkMapEntry e = ((WorldServer)chunk.getWorld()).getPlayerChunkMap().getEntry(otherChunk.x, otherChunk.z);
+		PlayerChunkMapEntry e = ((ServerWorld)chunk.getWorld()).getPlayerChunkMap().getEntry(otherChunk.x, otherChunk.z);
 		boolean playerTracking = e!=null&&e.containsPlayer(player);
 		return add==playerTracking;
 	}
 
-	private static void addPlayersTrackingPoint(Set<EntityPlayerMP> receivers, int x, int z, WorldServer world)
+	private static void addPlayersTrackingPoint(Set<ServerPlayerEntity> receivers, int x, int z, ServerWorld world)
 	{
 		PlayerChunkMapEntry entry = world.getPlayerChunkMap().getEntry(MathHelper.floor(x) >> 4, MathHelper.floor(z) >> 4);
 		if(entry==null)
@@ -65,25 +65,25 @@ public class WireSyncManager
 		receivers.addAll(entry.getWatchingPlayers());
 	}
 
-	private static void sendToPlayersForConnection(IMessage msg, WorldServer world, Connection c)
+	private static void sendToPlayersForConnection(IMessage msg, ServerWorld world, Connection c)
 	{
-		Set<EntityPlayerMP> targets = new HashSet<>();
+		Set<ServerPlayerEntity> targets = new HashSet<>();
 		addPlayersTrackingPoint(targets, c.getEndA().getX(), c.getEndA().getZ(), world);
 		addPlayersTrackingPoint(targets, c.getEndB().getX(), c.getEndB().getZ(), world);
-		for(EntityPlayerMP p : targets)
+		for(ServerPlayerEntity p : targets)
 			ImmersiveEngineering.packetHandler.sendTo(msg, p);
 	}
 
 	public static void onConnectionAdded(Connection c, World w)
 	{
-		if(!c.isInternal()&&!w.isRemote&&w instanceof WorldServer)
-			sendToPlayersForConnection(new MessageWireSync(c, true), (WorldServer)w, c);
+		if(!c.isInternal()&&!w.isRemote&&w instanceof ServerWorld)
+			sendToPlayersForConnection(new MessageWireSync(c, true), (ServerWorld)w, c);
 	}
 
 	public static void onConnectionRemoved(Connection c, World w)
 	{
-		if(!c.isInternal()&&!w.isRemote&&w instanceof WorldServer)
-			sendToPlayersForConnection(new MessageWireSync(c, false), (WorldServer)w, c);
+		if(!c.isInternal()&&!w.isRemote&&w instanceof ServerWorld)
+			sendToPlayersForConnection(new MessageWireSync(c, false), (ServerWorld)w, c);
 	}
 
 	@SubscribeEvent

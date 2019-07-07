@@ -17,9 +17,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine.BottlingProcess;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -45,7 +48,7 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 		//Grab model + correct eextended state
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
-		IBlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=MetalMultiblocks.bottlingMachine)
 			return;
 		state = state.with(IEProperties.DYNAMICRENDER, true);
@@ -231,7 +234,7 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBott
 		GlStateManager.popMatrix();
 	}
 
-	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, IBlockState state, IBakedModel model, BlockPos pos, String... parts)
+	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, BlockState state, IBakedModel model, BlockPos pos, String... parts)
 	{
 		IModelData data = new SinglePropertyModelData<>(new OBJState(Arrays.asList(parts), true), Model.objState);
 

@@ -12,10 +12,10 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils.InventoryCraftingFalse;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.block.Blocks;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
@@ -47,7 +47,7 @@ public class AssemblerHandler
 		public RecipeQuery[] getQueriedInputs(IRecipe recipe, NonNullList<ItemStack> input)
 		{
 			NonNullList<Ingredient> ingred = recipe.getIngredients();
-			InventoryCrafting verificationInv = InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input);
+			CraftingInventory verificationInv = InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input);
 			boolean matches;
 			ForgeHooks.setCraftingPlayer(FakePlayerUtil.getAnyFakePlayer());
 			if(recipe instanceof IShapedRecipe)

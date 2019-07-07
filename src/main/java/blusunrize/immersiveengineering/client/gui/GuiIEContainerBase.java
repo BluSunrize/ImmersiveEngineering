@@ -8,13 +8,13 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.inventory.container.Container;
 
 /**
  * @author BluSunrize - 05.07.2017
  */
-public abstract class GuiIEContainerBase extends GuiContainer
+public abstract class GuiIEContainerBase extends ContainerScreen
 {
 	public GuiIEContainerBase(Container inventorySlotsIn)
 	{

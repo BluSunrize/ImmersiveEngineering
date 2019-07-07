@@ -11,30 +11,30 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
 public class ContainerMaintenanceKit extends ContainerItem
 {
-	private final IInventory inv = new InventoryBasic(new TextComponentString("MaintenanceKit"), 1);
+	private final IInventory inv = new Inventory(new StringTextComponent("MaintenanceKit"), 1);
 	private boolean wasUsed = false;
 
-	public ContainerMaintenanceKit(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack item)
+	public ContainerMaintenanceKit(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
 	{
 		super(inventoryPlayer, world, slot, item);
 		updateSlots();
 	}
 
-	private void bindPlayerInv(InventoryPlayer inventoryPlayer)
+	private void bindPlayerInv(PlayerInventory inventoryPlayer)
 	{
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
@@ -78,7 +78,7 @@ public class ContainerMaintenanceKit extends ContainerItem
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
+	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
 	{
 		ItemStack stack = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
@@ -138,7 +138,7 @@ public class ContainerMaintenanceKit extends ContainerItem
 	}
 
 	@Override
-	public void onContainerClosed(EntityPlayer par1EntityPlayer)
+	public void onContainerClosed(PlayerEntity par1EntityPlayer)
 	{
 		if(wasUsed)
 		{

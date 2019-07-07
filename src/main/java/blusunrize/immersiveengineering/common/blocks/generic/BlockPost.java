@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import net.minecraft.block.material.EnumPushReaction;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.material.PushReaction;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -32,17 +32,17 @@ public class BlockPost extends BlockIEBase
 	{
 		super(name, blockProps, ItemBlockIEBase.class, IEProperties.MULTIBLOCKSLAVE);
 		setNotNormalBlock();
-		setMobility(EnumPushReaction.BLOCK);
+		setMobility(PushReaction.BLOCK);
 		lightOpacity = 0;
 	}
 
 	@Override
-	public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
+	public void getDrops(BlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
 	{
 	}
 
 	@Override
-	public void onReplaced(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, IBlockState newState, boolean moving)
+	public void onReplaced(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, BlockState newState, boolean moving)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity instanceof TileEntityPost&&!((TileEntityPost)tileEntity).isDummy())
@@ -51,7 +51,7 @@ public class BlockPost extends BlockIEBase
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(@Nonnull IBlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(@Nonnull BlockState newState, BlockItemUseContext context)
 	{
 		BlockPos startingPos = context.getPos();
 		World world = context.getWorld();
@@ -70,14 +70,14 @@ public class BlockPost extends BlockIEBase
 	}
 
 	@Override
-	public boolean isLadder(IBlockState state, IWorldReader world, BlockPos pos, EntityLivingBase entity)
+	public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
 	{
 		return true;
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(IBlockState state, IBlockReader world)
+	public TileEntity createTileEntity(BlockState state, IBlockReader world)
 	{
 		return new TileEntityPost();
 	}

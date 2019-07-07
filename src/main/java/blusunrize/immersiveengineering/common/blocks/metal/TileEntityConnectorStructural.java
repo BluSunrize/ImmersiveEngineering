@@ -16,11 +16,11 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -31,10 +31,10 @@ import java.util.Optional;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.STRUCTURE_CATEGORY;
 
 public class TileEntityConnectorStructural extends TileEntityImmersiveConnectable implements IHammerInteraction,
-		IOBJModelCallback<IBlockState>, IBlockBounds
+		IOBJModelCallback<BlockState>, IBlockBounds
 {
 	public float rotation = 0;
-	public EnumFacing facing = EnumFacing.DOWN;
+	public Direction facing = Direction.DOWN;
 
 	public static TileEntityType<TileEntityConnectorStructural> TYPE;
 
@@ -44,7 +44,7 @@ public class TileEntityConnectorStructural extends TileEntityImmersiveConnectabl
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		rotation += player.isSneaking()?-22.5f: 22.5f;
 		rotation %= 360;
@@ -54,7 +54,7 @@ public class TileEntityConnectorStructural extends TileEntityImmersiveConnectabl
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInt("facing", facing.ordinal());
@@ -62,10 +62,10 @@ public class TileEntityConnectorStructural extends TileEntityImmersiveConnectabl
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		rotation = nbt.getFloat("rotation");
 		if(world!=null&&world.isRemote)
 			this.markContainingBlockForUpdate(null);
@@ -74,7 +74,7 @@ public class TileEntityConnectorStructural extends TileEntityImmersiveConnectabl
 	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		EnumFacing side = facing.getOpposite();
+		Direction side = facing.getOpposite();
 		double conRadius = .03125;
 		return new Vec3d(.5+side.getXOffset()*(-.125-conRadius),
 				.5+side.getYOffset()*(-.125-conRadius),
@@ -89,7 +89,7 @@ public class TileEntityConnectorStructural extends TileEntityImmersiveConnectabl
 	}
 
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
+	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
 	{
 		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrixVec())).orElseGet(Matrix4::new);
 		mat = mat.translate(.5, 0, .5).rotate(Math.toRadians(rotation), 0, 1, 0).translate(-.5, 0, -.5);
@@ -98,7 +98,7 @@ public class TileEntityConnectorStructural extends TileEntityImmersiveConnectabl
 	}
 
 	@Override
-	public String getCacheKey(IBlockState object)
+	public String getCacheKey(BlockState object)
 	{
 		return Float.toString(rotation);
 	}

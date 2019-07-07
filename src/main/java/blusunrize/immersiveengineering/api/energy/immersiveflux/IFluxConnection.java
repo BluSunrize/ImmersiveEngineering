@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.immersiveflux;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 
@@ -23,5 +23,5 @@ public interface IFluxConnection
 	 * @param from The direction the check is performed from, null for unknown.
 	 * @return If the TileEntity can connect.
 	 */
-	boolean canConnectEnergy(@Nullable EnumFacing from);
+	boolean canConnectEnergy(@Nullable Direction from);
 }

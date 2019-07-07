@@ -21,24 +21,24 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.block.BlockDispenser;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.item.UseAction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -60,11 +60,11 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	public ItemIEShield()
 	{
 		super("shield", new Properties().maxStackSize(1).defaultMaxDamage(1024), "SHIELD");
-		BlockDispenser.registerDispenseBehavior(this, ItemArmor.DISPENSER_BEHAVIOR);
+		DispenserBlock.registerDispenseBehavior(this, ArmorItem.DISPENSER_BEHAVIOR);
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
@@ -78,7 +78,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 
 				@Nonnull
 				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 				{
 					if(capability==CapabilityEnergy.ENERGY)
 						return energyStorage.cast();
@@ -113,7 +113,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 		if(this.getMaxEnergyStored(stack) > 0)
 		{
 			String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
-			list.add(new TextComponentTranslation(Lib.DESC+"info.energyStored", stored));
+			list.add(new TranslationTextComponent(Lib.DESC+"info.energyStored", stored));
 		}
 	}
 
@@ -124,10 +124,10 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 		if(world.isRemote)
 			return;
 
-		if(ent instanceof EntityLivingBase)
-			inHand |= ((EntityLivingBase)ent).getHeldItem(EnumHand.OFF_HAND)==stack;
+		if(ent instanceof LivingEntity)
+			inHand |= ((LivingEntity)ent).getHeldItem(Hand.OFF_HAND)==stack;
 
-		boolean blocking = ent instanceof EntityLivingBase&&((EntityLivingBase)ent).isActiveItemStackBlocking();
+		boolean blocking = ent instanceof LivingEntity&&((LivingEntity)ent).isActiveItemStackBlocking();
 		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
 			if(getUpgrades(stack).hasKey("flash_cooldown")&&this.extractEnergy(stack, 20, true)==20)
@@ -152,24 +152,24 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	}
 
 	@Override
-	public boolean isShield(ItemStack stack, @Nullable EntityLivingBase entity)
+	public boolean isShield(ItemStack stack, @Nullable LivingEntity entity)
 	{
 		return true;
 	}
 
-	public void hitShield(ItemStack stack, EntityPlayer player, DamageSource source, float amount, LivingAttackEvent event)
+	public void hitShield(ItemStack stack, PlayerEntity player, DamageSource source, float amount, LivingAttackEvent event)
 	{
 		if(getUpgrades(stack).getBoolean("flash")&&getUpgrades(stack).getInt("flash_cooldown") <= 0)
 		{
 			Vec3d look = player.getLookVec();
 			//Offsets Player position by look backwards, then truncates cone at 1
-			List<EntityLivingBase> targets = Utils.getTargetsInCone(player.getEntityWorld(), player.getPositionVector().subtract(look), player.getLookVec().scale(9), 1.57079f, .5f);
-			for(EntityLivingBase t : targets)
+			List<LivingEntity> targets = Utils.getTargetsInCone(player.getEntityWorld(), player.getPositionVector().subtract(look), player.getLookVec().scale(9), 1.57079f, .5f);
+			for(LivingEntity t : targets)
 				if(!player.equals(t))
 				{
-					t.addPotionEffect(new PotionEffect(IEPotions.flashed, 100, 1));
-					if(t instanceof EntityLiving)
-						((EntityLiving)t).setAttackTarget(null);
+					t.addPotionEffect(new EffectInstance(IEPotions.flashed, 100, 1));
+					if(t instanceof MobEntity)
+						((MobEntity)t).setAttackTarget(null);
 				}
 			getUpgrades(stack).setInt("flash_cooldown", 40);
 		}
@@ -183,7 +183,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				event.setCanceled(true);
 				b = true;
 			}
-			if(event.getSource().getTrueSource()!=null&&event.getSource().getTrueSource() instanceof EntityLivingBase&&event.getSource().getTrueSource().getDistanceSq(player) < 4)
+			if(event.getSource().getTrueSource()!=null&&event.getSource().getTrueSource() instanceof LivingEntity&&event.getSource().getTrueSource().getDistanceSq(player) < 4)
 			{
 				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(1, true);
 				dmgsrc.apply(event.getSource().getTrueSource());
@@ -217,18 +217,18 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, @Nonnull EnumHand handIn)
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand handIn)
 	{
 		ItemStack itemstack = playerIn.getHeldItem(handIn);
 		playerIn.setActiveHand(handIn);
-		return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+		return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
 	}
 
 	@Nonnull
 	@Override
-	public EnumAction getUseAction(ItemStack stack)
+	public UseAction getUseAction(ItemStack stack)
 	{
-		return EnumAction.BLOCK;
+		return UseAction.BLOCK;
 	}
 
 	@Override
@@ -242,10 +242,10 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 	}
 
 	@Override
-	public Matrix4 handlePerspective(ItemStack Object, TransformType cameraTransformType, Matrix4 perspective, EntityLivingBase entity)
+	public Matrix4 handlePerspective(ItemStack Object, TransformType cameraTransformType, Matrix4 perspective, LivingEntity entity)
 	{
 		if(entity!=null&&entity.isHandActive())
-			if((entity.getActiveHand()==EnumHand.MAIN_HAND)==(entity.getPrimaryHand()==EnumHandSide.RIGHT))
+			if((entity.getActiveHand()==Hand.MAIN_HAND)==(entity.getPrimaryHand()==HandSide.RIGHT))
 			{
 				if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
 					perspective.rotate(-.15, 1, 0, 0).translate(-.25, .5, -.4375);

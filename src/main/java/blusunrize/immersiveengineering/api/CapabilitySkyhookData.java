@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
+import net.minecraft.nbt.IntNBT;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -72,16 +72,16 @@ public class CapabilitySkyhookData
 		SkyhookUserData data = new SkyhookUserData();
 
 		@Override
-		public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+		public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable Direction facing)
 		{
-			return capability==SKYHOOK_USER_DATA&&facing==EnumFacing.UP;
+			return capability==SKYHOOK_USER_DATA&&facing==Direction.UP;
 		}
 
 		@Nullable
 		@Override
-		public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+		public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 		{
-			if(capability==SKYHOOK_USER_DATA&&facing==EnumFacing.UP)
+			if(capability==SKYHOOK_USER_DATA&&facing==Direction.UP)
 				return SKYHOOK_USER_DATA.cast(data);
 			return null;
 		}
@@ -123,15 +123,15 @@ public class CapabilitySkyhookData
 		CapabilityManager.INSTANCE.register(SkyhookUserData.class, new Capability.IStorage<SkyhookUserData>()
 		{
 			@Override
-			public NBTBase writeNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, EnumFacing side)
+			public NBTBase writeNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side)
 			{
-				return new NBTTagInt(instance.status.ordinal());
+				return new IntNBT(instance.status.ordinal());
 			}
 
 			@Override
-			public void readNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, EnumFacing side, NBTBase nbt)
+			public void readNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side, NBTBase nbt)
 			{
-				instance.status = SkyhookStatus.values()[((NBTTagInt)nbt).getInt()];
+				instance.status = SkyhookStatus.values()[((IntNBT)nbt).getInt()];
 			}
 		}, SkyhookUserData::new);
 	}

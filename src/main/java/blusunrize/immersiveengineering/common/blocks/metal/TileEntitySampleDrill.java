@@ -24,16 +24,16 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -152,18 +152,18 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
 		nbt.setInt("dummy", dummy);
 		nbt.setInt("process", process);
 		nbt.setBoolean("active", active);
 		if(!sample.isEmpty())
-			nbt.setTag("sample", sample.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("sample", sample.writeToNBT(new CompoundNBT()));
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
 		dummy = nbt.getInt("dummy");
@@ -205,20 +205,20 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(EnumFacing facing)
+	public SideConfig getEnergySideConfig(Direction facing)
 	{
 		return dummy==0&&facing!=null&&facing.getAxis()!=Axis.Y?SideConfig.INPUT: SideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper[] wrappers = {
-			new IEForgeEnergyWrapper(this, EnumFacing.NORTH),
-			new IEForgeEnergyWrapper(this, EnumFacing.SOUTH),
-			new IEForgeEnergyWrapper(this, EnumFacing.WEST),
-			new IEForgeEnergyWrapper(this, EnumFacing.EAST)
+			new IEForgeEnergyWrapper(this, Direction.NORTH),
+			new IEForgeEnergyWrapper(this, Direction.SOUTH),
+			new IEForgeEnergyWrapper(this, Direction.WEST),
+			new IEForgeEnergyWrapper(this, Direction.EAST)
 	};
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		if(dummy==0&&facing!=null&&facing.getAxis()!=Axis.Y)
 			return wrappers[facing.ordinal()-2];
@@ -232,7 +232,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
 	{
 		for(int i = 1; i <= 2; i++)
 		{
@@ -242,7 +242,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public void breakDummies(BlockPos pos, IBlockState state)
+	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 2; i++)
 			if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof TileEntitySampleDrill)
@@ -250,7 +250,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(dummy!=0)
 		{

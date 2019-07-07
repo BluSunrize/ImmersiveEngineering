@@ -11,7 +11,7 @@ import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -19,7 +19,7 @@ public class CapacitorDriver extends DriverSidedTileEntity
 {
 
 	@Override
-	public ManagedEnvironment createEnvironment(World w, BlockPos bp, EnumFacing facing)
+	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
 		if(te instanceof TileEntityCapacitorLV)
@@ -81,13 +81,13 @@ public class CapacitorDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():int -- returns the amount of energy that can be stored")
 		public Object[] getMaxEnergyStored(Context context, Arguments args)
 		{
-			return new Object[]{getTileEntity().getMaxEnergyStored(EnumFacing.UP)};
+			return new Object[]{getTileEntity().getMaxEnergyStored(Direction.UP)};
 		}
 
 		@Callback(doc = "function():int -- returns the amount of energy that can be stored")
 		public Object[] getEnergyStored(Context context, Arguments args)
 		{
-			return new Object[]{getTileEntity().getEnergyStored(EnumFacing.DOWN)};
+			return new Object[]{getTileEntity().getEnergyStored(Direction.DOWN)};
 		}
 
 	}

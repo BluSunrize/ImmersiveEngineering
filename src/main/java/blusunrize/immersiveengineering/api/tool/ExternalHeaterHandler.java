@@ -9,14 +9,14 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFurnace;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FurnaceBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 
 import java.util.HashMap;
 
@@ -87,9 +87,9 @@ public class ExternalHeaterHandler
 	}
 
 
-	public static class DefaultFurnaceAdapter extends HeatableAdapter<TileEntityFurnace>
+	public static class DefaultFurnaceAdapter extends HeatableAdapter<FurnaceTileEntity>
 	{
-		boolean canCook(TileEntityFurnace tileEntity)
+		boolean canCook(FurnaceTileEntity tileEntity)
 		{
 			ItemStack input = tileEntity.getStackInSlot(0);
 			if(input.isEmpty())
@@ -107,7 +107,7 @@ public class ExternalHeaterHandler
 		}
 
 		@Override
-		public int doHeatTick(TileEntityFurnace tileEntity, int energyAvailable, boolean redstone)
+		public int doHeatTick(FurnaceTileEntity tileEntity, int energyAvailable, boolean redstone)
 		{
 			int energyConsumed = 0;
 			boolean canCook = canCook(tileEntity);
@@ -146,16 +146,16 @@ public class ExternalHeaterHandler
 		{
 			Block containing = tileEntity.getBlockState();
 			if(containing==Blocks.FURNACE)
-				BlockFurnace.setState(active, tileEntity.getWorld(), tileEntity.getPos());
+				FurnaceBlock.setState(active, tileEntity.getWorld(), tileEntity.getPos());
 //			else
 			{
 				//Fix for Natura, might work on other furnaces that extend the vanilla one and use the variable name "active". Let's hope. xD
-				NBTTagCompound nbt = new NBTTagCompound();
+				CompoundNBT nbt = new CompoundNBT();
 				tileEntity.writeToNBT(nbt);
 				nbt.setBoolean("active", active);
 				nbt.setBoolean("Active", active);
 				tileEntity.readFromNBT(nbt);
-				IBlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
+				BlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
 				tileEntity.getWorld().notifyBlockUpdate(tileEntity.getPos(), state, state, 3);
 			}
 		}

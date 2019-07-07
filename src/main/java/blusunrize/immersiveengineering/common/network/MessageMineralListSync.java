@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -34,7 +34,7 @@ public class MessageMineralListSync implements IMessage
 		int size = buf.readInt();
 		for(int i = 0; i < size; i++)
 		{
-			NBTTagCompound tag = buf.readCompoundTag();
+			CompoundNBT tag = buf.readCompoundTag();
 			assert tag!=null;
 			MineralMix mix = MineralMix.readFromNBT(tag);
 			if(mix!=null)
@@ -48,7 +48,7 @@ public class MessageMineralListSync implements IMessage
 		buf.writeInt(map.size());
 		for(Map.Entry<MineralMix, Integer> e : map.entrySet())
 		{
-			NBTTagCompound tag = e.getKey().writeToNBT();
+			CompoundNBT tag = e.getKey().writeToNBT();
 			tag.setInt("weight", e.getValue());
 			buf.writeCompoundTag(tag);
 		}

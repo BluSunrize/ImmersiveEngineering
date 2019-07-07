@@ -23,14 +23,14 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
@@ -47,7 +47,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	public static TileEntityType<TileEntityChargingStation> TYPE;
 
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	private boolean charging = true;
 	public int comparatorOutput = 0;
@@ -75,9 +75,9 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 					if(charge >= 1||(time%12 >= i*4&&time%12 <= i*4+2))
 					{
 						int shift = i-1;
-						double x = getPos().getX()+.5+(facing==EnumFacing.WEST?-.46875: facing==EnumFacing.EAST?.46875: facing==EnumFacing.NORTH?(-.1875*shift): (.1875*shift));
+						double x = getPos().getX()+.5+(facing==Direction.WEST?-.46875: facing==Direction.EAST?.46875: facing==Direction.NORTH?(-.1875*shift): (.1875*shift));
 						double y = getPos().getY()+.25;
-						double z = getPos().getZ()+.5+(facing==EnumFacing.NORTH?-.46875: facing==EnumFacing.SOUTH?.46875: facing==EnumFacing.EAST?(-.1875*shift): (.1875*shift));
+						double z = getPos().getZ()+.5+(facing==Direction.NORTH?-.46875: facing==Direction.SOUTH?.46875: facing==Direction.EAST?(-.1875*shift): (.1875*shift));
 						ImmersiveEngineering.proxy.spawnRedstoneFX(world, x, y, z, .25, .25, .25, .5f, 1-charge, charge, 0);
 					}
 				}
@@ -137,22 +137,22 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		inventory.set(0, ItemStack.read(nbt.getCompound("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
 		nbt.setInt("facing", facing.ordinal());
 		nbt.setBoolean("charging", charging);
 		if(!inventory.get(0).isEmpty())
-			nbt.setTag("inventory", inventory.get(0).write(new NBTTagCompound()));
+			nbt.setTag("inventory", inventory.get(0).write(new CompoundNBT()));
 	}
 
 	@Override
@@ -175,18 +175,18 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(EnumFacing facing)
+	public SideConfig getEnergySideConfig(Direction facing)
 	{
-		return facing==EnumFacing.DOWN||facing==this.facing.getOpposite()?SideConfig.INPUT: SideConfig.NONE;
+		return facing==Direction.DOWN||facing==this.facing.getOpposite()?SideConfig.INPUT: SideConfig.NONE;
 	}
 
-	IEForgeEnergyWrapper wrapperDown = new IEForgeEnergyWrapper(this, EnumFacing.DOWN);
+	IEForgeEnergyWrapper wrapperDown = new IEForgeEnergyWrapper(this, Direction.DOWN);
 	IEForgeEnergyWrapper wrapperDir = new IEForgeEnergyWrapper(this, facing.getOpposite());
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(facing==EnumFacing.DOWN)
+		if(facing==Direction.DOWN)
 			return wrapperDown;
 		else if(facing==this.facing.getOpposite())
 		{
@@ -204,13 +204,13 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -222,19 +222,19 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return true;
 	}
@@ -274,7 +274,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return insertionHandler.cast();
@@ -282,7 +282,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(EnergyHelper.isFluxItem(heldItem))
 		{

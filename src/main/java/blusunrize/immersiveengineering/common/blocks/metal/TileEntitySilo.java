@@ -15,10 +15,10 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSilo;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -53,11 +53,11 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		super(MultiblockSilo.instance, TYPE, true);
 	}
 
-	private EnumMap<EnumFacing, CapabilityReference<IItemHandler>> outputCaps = new EnumMap<>(EnumFacing.class);
+	private EnumMap<Direction, CapabilityReference<IItemHandler>> outputCaps = new EnumMap<>(Direction.class);
 
 	{
-		for(EnumFacing f : EnumFacing.VALUES)
-			if(f!=EnumFacing.UP)
+		for(Direction f : Direction.VALUES)
+			if(f!=Direction.UP)
 				outputCaps.put(f, CapabilityReference.forNeighbor(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f));
 	}
 
@@ -69,8 +69,8 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		if(!isDummy()&&!world.isRemote&&!this.identStack.isEmpty()&&storageAmount > 0&&world.getGameTime()%8==0&&!isRSDisabled())
 		{
 			updateComparatorValuesPart1();
-			for(EnumFacing f : EnumFacing.values())
-				if(f!=EnumFacing.UP)
+			for(Direction f : Direction.values())
+				if(f!=Direction.UP)
 				{
 					ItemStack stack = Utils.copyStackWithAmount(identStack, 1);
 					stack = Utils.insertStackIntoInventory(outputCaps.get(f), stack, false);
@@ -96,12 +96,12 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(nbt.hasKey("identStack"))
 		{
-			NBTTagCompound t = nbt.getCompound("identStack");
+			CompoundNBT t = nbt.getCompound("identStack");
 			this.identStack = ItemStack.read(t);
 		}
 		else
@@ -111,12 +111,12 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!this.identStack.isEmpty())
 		{
-			NBTTagCompound t = this.identStack.write(new NBTTagCompound());
+			CompoundNBT t = this.identStack.write(new CompoundNBT());
 			nbt.setTag("identStack", t);
 		}
 		nbt.setInt("storageAmount", storageAmount);
@@ -124,19 +124,19 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		return new FluidTank[0];
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
 	{
 		return false;
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return false;
 	}
@@ -146,10 +146,10 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	{
 		if(posInMultiblock==0||posInMultiblock==2||posInMultiblock==6||posInMultiblock==8)
 		{
-			float xMin = (facing.getAxis()==Axis.X?(posInMultiblock > 2^facing==EnumFacing.EAST): (posInMultiblock%3==2^facing==EnumFacing.SOUTH))?.75f: 0;
-			float xMax = (facing.getAxis()==Axis.X?(posInMultiblock < 3^facing==EnumFacing.EAST): (posInMultiblock%3==0^facing==EnumFacing.SOUTH))?.25f: 1;
-			float zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==EnumFacing.EAST): (posInMultiblock < 3^facing==EnumFacing.SOUTH))?.75f: 0;
-			float zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==EnumFacing.EAST): (posInMultiblock > 2^facing==EnumFacing.SOUTH))?.25f: 1;
+			float xMin = (facing.getAxis()==Axis.X?(posInMultiblock > 2^facing==Direction.EAST): (posInMultiblock%3==2^facing==Direction.SOUTH))?.75f: 0;
+			float xMax = (facing.getAxis()==Axis.X?(posInMultiblock < 3^facing==Direction.EAST): (posInMultiblock%3==0^facing==Direction.SOUTH))?.25f: 1;
+			float zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==Direction.EAST): (posInMultiblock < 3^facing==Direction.SOUTH))?.75f: 0;
+			float zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==Direction.EAST): (posInMultiblock > 2^facing==Direction.SOUTH))?.25f: 1;
 			return new float[]{xMin, 0, zMin, xMax, 1, zMax};
 		}
 		return new float[]{0, 0, 0, 1, 1, 1};
@@ -180,7 +180,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if((posInMultiblock==4||posInMultiblock==58)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return insertionHandler.cast();

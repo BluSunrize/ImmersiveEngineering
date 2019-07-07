@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.common.gui.ContainerMaintenanceKit;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -21,10 +21,10 @@ import java.util.function.Supplier;
 
 public class MessageMaintenanceKit implements IMessage
 {
-	EntityEquipmentSlot slot;
-	NBTTagCompound nbt;
+	EquipmentSlotType slot;
+	CompoundNBT nbt;
 
-	public MessageMaintenanceKit(EntityEquipmentSlot slot, NBTTagCompound nbt)
+	public MessageMaintenanceKit(EquipmentSlotType slot, CompoundNBT nbt)
 	{
 		this.slot = slot;
 		this.nbt = nbt;
@@ -32,7 +32,7 @@ public class MessageMaintenanceKit implements IMessage
 
 	public MessageMaintenanceKit(PacketBuffer buf)
 	{
-		this.slot = EntityEquipmentSlot.fromString(buf.readString(100));
+		this.slot = EquipmentSlotType.fromString(buf.readString(100));
 		this.nbt = buf.readCompoundTag();
 	}
 
@@ -46,7 +46,7 @@ public class MessageMaintenanceKit implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		EntityPlayerMP player = context.get().getSender();
+		ServerPlayerEntity player = context.get().getSender();
 		assert player!=null;
 		player.getServerWorld().addScheduledTask(() -> {
 			if(player.openContainer instanceof ContainerMaintenanceKit)

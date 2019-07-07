@@ -19,20 +19,20 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.WorldServer;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.storage.loot.ILootContainer;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootTable;
@@ -54,7 +54,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public ResourceLocation lootTable;
 	public String name;
-	private NBTTagList enchantments;
+	private ListNBT enchantments;
 	private boolean reinforced = false;
 
 	public TileEntityWoodenCrate()
@@ -69,7 +69,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(nbt.contains("name", NBT.TAG_STRING))
 			this.name = nbt.getString("name");
@@ -86,7 +86,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(this.name!=null)
 			nbt.setString("name", this.name);
@@ -102,16 +102,16 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 		nbt.setBoolean("reinforced", reinforced);
 	}
 
-	public void writeInv(NBTTagCompound nbt, boolean toItem)
+	public void writeInv(CompoundNBT nbt, boolean toItem)
 	{
 		boolean write = false;
-		NBTTagList invList = new NBTTagList();
+		ListNBT invList = new ListNBT();
 		for(int i = 0; i < this.inventory.size(); i++)
 			if(!this.inventory.get(i).isEmpty())
 			{
 				if(toItem)
 					write = true;
-				NBTTagCompound itemTag = new NBTTagCompound();
+				CompoundNBT itemTag = new CompoundNBT();
 				itemTag.setByte("Slot", (byte)i);
 				this.inventory.get(i).write(itemTag);
 				invList.add(itemTag);
@@ -125,18 +125,18 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	public ITextComponent getDisplayName()
 	{
 		if(name!=null)
-			return new TextComponentString(name);
+			return new StringTextComponent(name);
 		else
 		{
 			if(reinforced)
-				return new TextComponentTranslation("tile.immersiveengineering.wooden_device0.reinforced_crate.name");
+				return new TranslationTextComponent("tile.immersiveengineering.wooden_device0.reinforced_crate.name");
 			else
-				return new TextComponentTranslation("tile.immersiveengineering.wooden_device0.crate.name");
+				return new TranslationTextComponent("tile.immersiveengineering.wooden_device0.crate.name");
 		}
 	}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		return true;
 	}
@@ -154,14 +154,14 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	}
 
 	@Override
-	public void onGuiOpened(EntityPlayer player, boolean clientside)
+	public void onGuiOpened(PlayerEntity player, boolean clientside)
 	{
 		if(this.lootTable!=null&&!clientside)
 		{
 			LootTable loottable = this.world.getServer().getLootTableManager()
 					.getLootTableFromLocation(this.lootTable);
 			this.lootTable = null;
-			LootContext.Builder contextBuilder = new LootContext.Builder((WorldServer)this.world);
+			LootContext.Builder contextBuilder = new LootContext.Builder((ServerWorld)this.world);
 			if(player!=null)
 				contextBuilder.withLuck(player.getLuck());
 			LootContext context = contextBuilder.build();
@@ -210,22 +210,22 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	}
 
 	@Override
-	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
+	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
 	{
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
-		NBTTagCompound tag = new NBTTagCompound();
+		CompoundNBT tag = new CompoundNBT();
 		writeInv(tag, true);
 		if(!tag.isEmpty())
 			stack.setTag(tag);
 		if(this.name!=null)
-			stack.setDisplayName(new TextComponentString(this.name));
+			stack.setDisplayName(new StringTextComponent(this.name));
 		if(enchantments!=null&&enchantments.size() > 0)
 			ItemNBTHelper.getTag(stack).setTag("ench", enchantments);
 		return stack;
 	}
 
 	@Override
-	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
+	public void readOnPlacement(LivingEntity placer, ItemStack stack)
 	{
 		if(stack.hasTag())
 		{
@@ -252,7 +252,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return insertionCap.cast();

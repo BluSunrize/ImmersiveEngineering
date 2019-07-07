@@ -19,10 +19,10 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -273,13 +273,13 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean canTakeStack(EntityPlayer player)
+		public boolean canTakeStack(PlayerEntity player)
 		{
 			return !(!this.getStack().isEmpty()&&getStack().getItem() instanceof IUpgradeableTool&&!((IUpgradeableTool)getStack().getItem()).canTakeFromWorkbench(getStack()));
 		}
 
 		@Override
-		public ItemStack onTake(EntityPlayer player, ItemStack stack)
+		public ItemStack onTake(PlayerEntity player, ItemStack stack)
 		{
 			ItemStack result = super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool)
@@ -320,13 +320,13 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean canTakeStack(EntityPlayer player)
+		public boolean canTakeStack(PlayerEntity player)
 		{
 			return !(!this.getStack().isEmpty()&&getStack().getItem() instanceof IUpgradeableTool&&!((IUpgradeableTool)getStack().getItem()).canTakeFromWorkbench(getStack()));
 		}
 
 		@Override
-		public ItemStack onTake(EntityPlayer player, ItemStack stack)
+		public ItemStack onTake(PlayerEntity player, ItemStack stack)
 		{
 			ItemStack result = super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool)
@@ -378,7 +378,7 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean canTakeStack(EntityPlayer player)
+		public boolean canTakeStack(PlayerEntity player)
 		{
 			return false;
 		}
@@ -404,7 +404,7 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean canTakeStack(EntityPlayer player)
+		public boolean canTakeStack(PlayerEntity player)
 		{
 			return false;
 		}
@@ -455,7 +455,7 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public ItemStack onTake(EntityPlayer player, ItemStack stack)
+		public ItemStack onTake(PlayerEntity player, ItemStack stack)
 		{
 			((InventoryBlueprint)this.inventory).reduceIputs(this.inputInventory, recipe, stack);
 			return super.onTake(player, stack);
@@ -557,7 +557,7 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean canTakeStack(EntityPlayer player)
+		public boolean canTakeStack(PlayerEntity player)
 		{
 			if(this.container instanceof ICallbackContainer)
 				return ((ICallbackContainer)this.container).canTake(this.getStack(), slotNumber, this);

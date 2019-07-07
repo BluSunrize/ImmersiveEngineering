@@ -5,13 +5,13 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.SwordItem;
 import net.minecraft.util.ResourceLocation;
 
 /**
  * @author BluSunrize - 08.07.2018
  */
-public class ItemIESword extends ItemSword
+public class ItemIESword extends SwordItem
 {
 	private final ResourceLocation oreDict;
 

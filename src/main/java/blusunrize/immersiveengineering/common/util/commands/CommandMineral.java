@@ -28,10 +28,10 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.ColumnPosArgument;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,7 +59,7 @@ public class CommandMineral
 			int i = 0;
 			for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
 				s.append((i++) > 0?", ": "").append(mm.name);
-			command.getSource().sendFeedback(new TextComponentString(s.toString()), true);
+			command.getSource().sendFeedback(new StringTextComponent(s.toString()), true);
 			return Command.SINGLE_SUCCESS;
 		});
 		return list;
@@ -69,7 +69,7 @@ public class CommandMineral
 	{
 		LiteralArgumentBuilder<CommandSource> get = Commands.literal("get");
 		get.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
-			EntityPlayerMP player = command.getSource().asPlayer();
+			ServerPlayerEntity player = command.getSource().asPlayer();
 			getMineral(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
 			return Command.SINGLE_SUCCESS;
 		}).then(
@@ -88,7 +88,7 @@ public class CommandMineral
 		CommandSource sender = context.getSource();
 		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(),
 				xChunk, zChunk);
-		sender.sendFeedback(new TextComponentTranslation(Lib.CHAT_COMMAND+"mineral.get",
+		sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get",
 				TextFormatting.GOLD+(info.mineral!=null?info.mineral.name: "null")+TextFormatting.RESET,
 				TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name: "null")+TextFormatting.RESET,
 				TextFormatting.GOLD+(""+info.depletion)+TextFormatting.RESET), true);
@@ -99,7 +99,7 @@ public class CommandMineral
 		LiteralArgumentBuilder<CommandSource> set = Commands.literal("set");
 		RequiredArgumentBuilder<CommandSource, MineralMix> mineralArg = Commands.argument("mineral", new MineralArgument());
 		mineralArg.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
-			EntityPlayerMP player = command.getSource().asPlayer();
+			ServerPlayerEntity player = command.getSource().asPlayer();
 			setMineral(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
 			return Command.SINGLE_SUCCESS;
 		}).then(
@@ -122,7 +122,7 @@ public class CommandMineral
 				xChunk, zChunk);
 		MineralMix mineral = context.getArgument("mineral", MineralMix.class);
 		info.mineralOverride = mineral;
-		sender.sendFeedback(new TextComponentTranslation(Lib.CHAT_COMMAND+
+		sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
 				"mineral.set.sucess", mineral.name), true);
 		IESaveData.setDirty(sender.getWorld().getDimension().getType());
 	}
@@ -133,7 +133,7 @@ public class CommandMineral
 		RequiredArgumentBuilder<CommandSource, Integer> mineralArg = Commands.argument("depletion",
 				IntegerArgumentType.integer(-1, 100));
 		mineralArg.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
-			EntityPlayerMP player = command.getSource().asPlayer();
+			ServerPlayerEntity player = command.getSource().asPlayer();
 			setMineralDepletion(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
 			return Command.SINGLE_SUCCESS;
 		}).then(
@@ -162,7 +162,7 @@ public class CommandMineral
 	private static class MineralArgument implements ArgumentType<MineralMix>
 	{
 		public static final DynamicCommandExceptionType invalidVein = new DynamicCommandExceptionType(
-				(input) -> new TextComponentTranslation(Lib.CHAT_COMMAND+"mineral.invalid", input));
+				(input) -> new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.invalid", input));
 
 		@Override
 		public <S> MineralMix parse(StringReader reader) throws CommandSyntaxException

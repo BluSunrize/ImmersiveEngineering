@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api.tool;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -85,7 +85,7 @@ public class BulletHandler
 		{
 		}
 
-		default int getProjectileCount(@Nullable EntityPlayer shooter)
+		default int getProjectileCount(@Nullable PlayerEntity shooter)
 		{
 			return 1;
 		}
@@ -97,7 +97,7 @@ public class BulletHandler
 		 * @param charged    whether the revolver has the electron tube upgrade
 		 * @return the given or a custom entity
 		 */
-		default Entity getProjectile(@Nullable EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean charged)
+		default Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean charged)
 		{
 			return projectile;
 		}

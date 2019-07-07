@@ -9,14 +9,14 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar.*;
 
 public class ContainerBelljar extends ContainerIEBase
 {
-	public ContainerBelljar(InventoryPlayer inventoryPlayer, TileEntityBelljar tile)
+	public ContainerBelljar(PlayerInventory inventoryPlayer, TileEntityBelljar tile)
 	{
 		super(inventoryPlayer, tile);
 		this.addSlot(new IESlot.Belljar(SLOT_SOIL, this, this.inv, SLOT_SOIL, 62, 54));

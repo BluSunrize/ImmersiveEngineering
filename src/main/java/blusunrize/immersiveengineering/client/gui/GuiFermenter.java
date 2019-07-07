@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.gui.ContainerFermenter;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,7 @@ public class GuiFermenter extends GuiIEContainerBase
 {
 	TileEntityFermenter tile;
 
-	public GuiFermenter(InventoryPlayer inventoryPlayer, TileEntityFermenter tile)
+	public GuiFermenter(PlayerInventory inventoryPlayer, TileEntityFermenter tile)
 	{
 		super(new ContainerFermenter(inventoryPlayer, tile));
 		this.tile = tile;
@@ -36,7 +36,7 @@ public class GuiFermenter extends GuiIEContainerBase
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+112, guiTop+21, 16, 47, 177, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/cokeOven.png", tooltip);
 		if(mx > guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
-			tooltip.add(new TextComponentString(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);

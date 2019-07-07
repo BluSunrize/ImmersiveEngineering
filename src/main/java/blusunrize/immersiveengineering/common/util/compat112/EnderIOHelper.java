@@ -13,13 +13,13 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.IERecipes;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.function.BiConsumer;
@@ -51,19 +51,19 @@ public class EnderIOHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		ChemthrowerHandler.registerEffect("nutrient_distillation", new ChemthrowerEffect_Potion(null, 0, MobEffects.NAUSEA, 80, 1));
-		ChemthrowerHandler.registerEffect("liquid_sunshine", new ChemthrowerEffect_Potion(null, 0, new PotionEffect(MobEffects.GLOWING, 200, 0), new PotionEffect(MobEffects.LEVITATION, 40, 0)));
-		ChemthrowerHandler.registerEffect("cloud_seed_concentrated", new ChemthrowerEffect_Potion(null, 0, MobEffects.BLINDNESS, 40, 0));
-		ChemthrowerHandler.registerEffect("vapor_of_levity", new ChemthrowerEffect_Potion(null, 0, MobEffects.LEVITATION, 80, 2));
+		ChemthrowerHandler.registerEffect("nutrient_distillation", new ChemthrowerEffect_Potion(null, 0, Effects.NAUSEA, 80, 1));
+		ChemthrowerHandler.registerEffect("liquid_sunshine", new ChemthrowerEffect_Potion(null, 0, new EffectInstance(Effects.GLOWING, 200, 0), new EffectInstance(Effects.LEVITATION, 40, 0)));
+		ChemthrowerHandler.registerEffect("cloud_seed_concentrated", new ChemthrowerEffect_Potion(null, 0, Effects.BLINDNESS, 40, 0));
+		ChemthrowerHandler.registerEffect("vapor_of_levity", new ChemthrowerEffect_Potion(null, 0, Effects.LEVITATION, 80, 2));
 
 		ConveyorHandler.registerMagnetSupression(new BiConsumer<Entity, IConveyorTile>()
 		{
 			@Override
 			public void accept(Entity entity, IConveyorTile iConveyorTile)
 			{
-				if(entity instanceof EntityItem)
+				if(entity instanceof ItemEntity)
 				{
-					NBTTagCompound data = entity.getEntityData();
+					CompoundNBT data = entity.getEntityData();
 					long pos = ((TileEntity)iConveyorTile).getPos().toLong();
 					if(!data.hasKey(EIO_MAGNET_NBT)||data.getLong(EIO_MAGNET_NBT)!=pos)
 						data.setLong(EIO_MAGNET_NBT, pos);
@@ -74,7 +74,7 @@ public class EnderIOHelper extends IECompatModule
 			@Override
 			public void accept(Entity entity, IConveyorTile iConveyorTile)
 			{
-				if(entity instanceof EntityItem)
+				if(entity instanceof ItemEntity)
 					entity.getEntityData().removeTag(EIO_MAGNET_NBT);
 			}
 		});

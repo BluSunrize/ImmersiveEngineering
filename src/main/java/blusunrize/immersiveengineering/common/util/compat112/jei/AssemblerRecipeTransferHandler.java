@@ -19,7 +19,7 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
@@ -41,7 +41,7 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<Co
 
 	@Nullable
 	@Override
-	public IRecipeTransferError transferRecipe(@Nonnull ContainerAssembler container, @Nonnull IRecipeLayout recipeLayout, @Nonnull EntityPlayer player, boolean maxTransfer, boolean doTransfer)
+	public IRecipeTransferError transferRecipe(@Nonnull ContainerAssembler container, @Nonnull IRecipeLayout recipeLayout, @Nonnull PlayerEntity player, boolean maxTransfer, boolean doTransfer)
 	{
 		for(int i = 0; i < 3; i++)
 			if(container.tile.patterns[i].recipe==null)

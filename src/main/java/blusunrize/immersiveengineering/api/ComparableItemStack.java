@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class ComparableItemStack
@@ -101,19 +101,19 @@ public class ComparableItemStack
 	}
 
 
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
 		if(this.oreID!=-1)
 			nbt.setString("oreID", OreDictionary.getOreName(oreID));
 		else
 		{
-			nbt.setTag("stack", stack.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("stack", stack.writeToNBT(new CompoundNBT()));
 			nbt.setBoolean("useNBT", useNBT);
 		}
 		return nbt;
 	}
 
-	public static ComparableItemStack readFromNBT(NBTTagCompound nbt)
+	public static ComparableItemStack readFromNBT(CompoundNBT nbt)
 	{
 		if(nbt.hasKey("oreID"))
 			return new ComparableItemStack(nbt.getString("oreID"));

@@ -7,14 +7,14 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ExcavatorDriver extends DriverSidedTileEntity
 {
 	@Override
-	public ManagedEnvironment createEnvironment(World w, BlockPos pos, EnumFacing facing)
+	public ManagedEnvironment createEnvironment(World w, BlockPos pos, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(pos);
 		if(te instanceof TileEntityExcavator)

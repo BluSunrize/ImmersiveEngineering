@@ -11,14 +11,14 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -47,13 +47,13 @@ public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFac
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		dummy = nbt.getByte("dummy");
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setByte("dummy", dummy);
 	}
@@ -83,13 +83,13 @@ public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFac
 			te = world.getTileEntity(getPos().add(0, 1+i, 0));
 			if(te instanceof TileEntityPost)//Stacked pieces
 			{
-				for(EnumFacing f : EnumFacing.BY_HORIZONTAL_INDEX)
+				for(Direction f : Direction.BY_HORIZONTAL_INDEX)
 					if(((TileEntityPost)te).hasConnection(f))
 					{
 						if(i==2)//Arms
 						{
 							TileEntityPost arm = (TileEntityPost)world.getTileEntity(pos.add(0, 1+i, 0).offset(f));
-							boolean down = arm.hasConnection(EnumFacing.DOWN);
+							boolean down = arm.hasConnection(Direction.DOWN);
 							if(down)
 								list.add("arm_"+f.getName2()+"_down");
 							else
@@ -104,21 +104,21 @@ public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFac
 	}
 
 	@Override
-	public BlockFaceShape getFaceShape(EnumFacing side)
+	public BlockFaceShape getFaceShape(Direction side)
 	{
 		if(dummy==0)
-			return side==EnumFacing.DOWN?BlockFaceShape.CENTER_BIG: BlockFaceShape.UNDEFINED;
+			return side==Direction.DOWN?BlockFaceShape.CENTER_BIG: BlockFaceShape.UNDEFINED;
 		else if(dummy >= 3)
-			return (side==EnumFacing.UP||(dummy > 3&&side==EnumFacing.DOWN))?BlockFaceShape.CENTER_BIG: BlockFaceShape.UNDEFINED;
+			return (side==Direction.UP||(dummy > 3&&side==Direction.DOWN))?BlockFaceShape.CENTER_BIG: BlockFaceShape.UNDEFINED;
 		return BlockFaceShape.CENTER;
 	}
 
-	public boolean hasConnection(EnumFacing dir)
+	public boolean hasConnection(Direction dir)
 	{
 		BlockPos pos = getPos().offset(dir);
 		if(dummy > 0&&dummy < 3)
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			//TODO test
 			return state.canBeConnectedTo(world, pos, dir.getOpposite());
 		}
@@ -131,7 +131,7 @@ public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFac
 		{
 			if(world.isAirBlock(pos)||dir.getAxis()!=Axis.Y)
 				return false;
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			if(state.getMaterial().isReplaceable())
 				return false;
 			BlockFaceShape shape = state.getBlockFaceShape(world, pos, dir.getOpposite());
@@ -146,11 +146,11 @@ public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFac
 		if(dummy==0)
 			return new float[]{.25f, 0, .25f, .75f, 1, .75f};
 		if(dummy <= 2)
-			return new float[]{hasConnection(EnumFacing.WEST)?0: .375f, 0, hasConnection(EnumFacing.NORTH)?0: .375f, hasConnection(EnumFacing.EAST)?1: .625f, 1, hasConnection(EnumFacing.SOUTH)?1: .625f};
+			return new float[]{hasConnection(Direction.WEST)?0: .375f, 0, hasConnection(Direction.NORTH)?0: .375f, hasConnection(Direction.EAST)?1: .625f, 1, hasConnection(Direction.SOUTH)?1: .625f};
 		if(dummy==3)
-			return new float[]{hasConnection(EnumFacing.WEST)?0: .3125f, 0, hasConnection(EnumFacing.NORTH)?0: .3125f, hasConnection(EnumFacing.EAST)?1: .6875f, 1, hasConnection(EnumFacing.SOUTH)?1: .6875f};
+			return new float[]{hasConnection(Direction.WEST)?0: .3125f, 0, hasConnection(Direction.NORTH)?0: .3125f, hasConnection(Direction.EAST)?1: .6875f, 1, hasConnection(Direction.SOUTH)?1: .6875f};
 
-		float down = hasConnection(EnumFacing.DOWN)?0: .4375f;
+		float down = hasConnection(Direction.DOWN)?0: .4375f;
 		float up = down > 0?1: .5625f;
 		if(dummy-3==2)
 			return new float[]{.3125f, down, .3125f, .6875f, up, 1};
@@ -170,7 +170,7 @@ public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFac
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
 	{
 		for(int i = 1; i <= 3; i++)
 		{
@@ -182,7 +182,7 @@ public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFac
 	}
 
 	@Override
-	public void breakDummies(BlockPos pos, IBlockState state)
+	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		if(dummy <= 3)
 			for(int i = 0; i <= 3; i++)
@@ -192,7 +192,7 @@ public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFac
 				if(i==3)
 				{
 					TileEntity te;
-					for(EnumFacing facing : EnumFacing.BY_HORIZONTAL_INDEX)
+					for(Direction facing : Direction.BY_HORIZONTAL_INDEX)
 					{
 						te = world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0).offset(facing));
 						if(te instanceof TileEntityPost&&((TileEntityPost)te).dummy==(3+facing.ordinal()))
@@ -203,7 +203,7 @@ public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFac
 	}
 
 	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
 		if(this.dummy==3&&side.getAxis()!=Axis.Y)
 		{
@@ -226,7 +226,7 @@ public class TileEntityPost extends TileEntityIEBase implements IPostBlock, IFac
 		}
 		else if(this.dummy > 3)
 		{
-			EnumFacing f = EnumFacing.byIndex(dummy-3).getOpposite();
+			Direction f = Direction.byIndex(dummy-3).getOpposite();
 			this.world.removeBlock(getPos());
 			this.markBlockForUpdate(getPos().offset(f).add(0, -3, 0), null);
 		}

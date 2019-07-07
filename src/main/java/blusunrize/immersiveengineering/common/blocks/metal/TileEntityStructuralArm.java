@@ -16,15 +16,15 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbou
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.*;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -33,16 +33,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.minecraft.util.EnumFacing.*;
+import static net.minecraft.util.Direction.*;
 
-public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJModelCallback<IBlockState>, INeighbourChangeTile,
+public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJModelCallback<BlockState>, INeighbourChangeTile,
 		IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds
 {
 	public static TileEntityType<TileEntityStructuralArm> TYPE;
 
 	private int totalLength = 1;
 	private int slopePosition = 0;
-	private EnumFacing facing = NORTH;
+	private Direction facing = NORTH;
 	private boolean onCeiling = false;
 
 	public TileEntityStructuralArm()
@@ -51,7 +51,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		int oldLength = totalLength, oldPos = slopePosition;
 		totalLength = nbt.getInt("totalLength");
@@ -59,15 +59,15 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 		onCeiling = nbt.getBoolean("onCeiling");
 		if(world!=null&&world.isRemote&&(oldLength!=totalLength||slopePosition!=oldPos))
 		{
-			IBlockState state = world.getBlockState(pos);
+			BlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state, state, 3);
 			bounds = null;
 		}
-		facing = EnumFacing.VALUES[nbt.getInt("facing")];
+		facing = Direction.VALUES[nbt.getInt("facing")];
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("totalLength", totalLength);
 		nbt.setInt("slopePosition", slopePosition);
@@ -93,8 +93,8 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 			if(atOther instanceof TileEntityStructuralArm)
 			{
 				TileEntityStructuralArm tmp = (TileEntityStructuralArm)atOther;
-				IBlockState stateHere = world.getBlockState(pos);
-				IBlockState stateThere = world.getBlockState(otherPos);
+				BlockState stateHere = world.getBlockState(pos);
+				BlockState stateThere = world.getBlockState(otherPos);
 				if(tmp.facing==this.facing&&stateHere.getBlock()==stateThere.getBlock())
 					slope = (TileEntityStructuralArm)atOther;
 			}
@@ -183,8 +183,8 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 		{
 			TileEntityStructuralArm slope = (TileEntityStructuralArm)teAtI;
 			int offsetAtPos = slopePosition+offsetToHere;
-			IBlockState stateHere = world.getBlockState(pos);
-			IBlockState stateThere = world.getBlockState(posI);
+			BlockState stateHere = world.getBlockState(pos);
+			BlockState stateThere = world.getBlockState(posI);
 			if((!removing||(slope.totalLength==this.totalLength&&slope.slopePosition==offsetAtPos&&slope.onCeiling==this.onCeiling))
 					&&stateHere.getBlock()==stateThere.getBlock()
 					&&slope.facing==this.facing)
@@ -194,18 +194,18 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 
 	private void updateNoNeighbours(BlockPos pos)
 	{
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, state, state, 3);
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 		totalLength = 1;
@@ -216,8 +216,8 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 	}
 
 	@Override
-	public EnumFacing getFacingForPlacement(EntityLivingBase placer, BlockPos pos, EnumFacing side, float hitX, float hitY,
-											float hitZ)
+	public Direction getFacingForPlacement(LivingEntity placer, BlockPos pos, Direction side, float hitX, float hitY,
+										   float hitZ)
 	{
 		onCeiling = (side==DOWN)||(side!=UP&&hitY > .5);
 		return IDirectionalTile.super.getFacingForPlacement(placer, pos, side, hitX, hitY, hitZ);
@@ -230,19 +230,19 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return side.getAxis()==Axis.Y;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return axis.getAxis()==Axis.Y;
 	}
@@ -256,7 +256,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 	}
 
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
@@ -421,7 +421,7 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 	}
 
 	@Override
-	public String getCacheKey(IBlockState object)
+	public String getCacheKey(BlockState object)
 	{
 		return totalLength+","+slopePosition+","+facing.name()+","+(onCeiling?"1": "0");
 	}

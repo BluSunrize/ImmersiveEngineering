@@ -18,15 +18,15 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecor
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -125,13 +125,13 @@ public class MultiblockCrusher implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(IBlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		return state.getBlock()==IEContent.blockMetalDecoration1&&(state.getBlock().getMetaFromState(state)==BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta());
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
 		if(side.getAxis()==Axis.Y)
 			return false;
@@ -155,7 +155,7 @@ public class MultiblockCrusher implements IMultiblock
 
 		if(b)
 		{
-			IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.CRUSHER.getMeta());
+			BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.CRUSHER.getMeta());
 			state = state.with(IEProperties.FACING_HORIZONTAL, side);
 			for(int l = 0; l < 3; l++)
 				for(int w = -2; w <= 2; w++)
@@ -173,7 +173,7 @@ public class MultiblockCrusher implements IMultiblock
 							TileEntityCrusher tile = (TileEntityCrusher)curr;
 							tile.formed = true;
 							tile.pos = (h+1)*15+l*5+(w+2);
-							tile.offset = new int[]{(side==EnumFacing.WEST?-l+1: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww), h, (side==EnumFacing.NORTH?-l+1: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww: -ww)};
+							tile.offset = new int[]{(side==Direction.WEST?-l+1: side==Direction.EAST?l-1: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?-l+1: side==Direction.SOUTH?l-1: side==Direction.EAST?ww: -ww)};
 							tile.mirrored = mirrored;
 							tile.markDirty();
 							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
@@ -183,7 +183,7 @@ public class MultiblockCrusher implements IMultiblock
 		return b;
 	}
 
-	boolean structureCheck(World world, BlockPos startPos, EnumFacing dir, boolean mirror)
+	boolean structureCheck(World world, BlockPos startPos, Direction dir, boolean mirror)
 	{
 		for(int l = 0; l < 3; l++)
 			for(int w = -2; w <= 2; w++)

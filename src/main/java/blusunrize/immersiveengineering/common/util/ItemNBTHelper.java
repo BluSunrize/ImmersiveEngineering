@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.util;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.regex.Pattern;
@@ -49,7 +49,7 @@ public class ItemNBTHelper
 		modifyInt(stack.getOrCreateTag(), key, mod);
 	}
 
-	public static void modifyInt(NBTTagCompound tagCompound, String key, int mod)
+	public static void modifyInt(CompoundNBT tagCompound, String key, int mod)
 	{
 		tagCompound.setInt(key, tagCompound.getInt(key)+mod);
 	}
@@ -94,7 +94,7 @@ public class ItemNBTHelper
 		stack.getOrCreateTag().setFloat(key, val);
 	}
 
-	public static void modifyFloat(NBTTagCompound tagCompound, String key, float mod)
+	public static void modifyFloat(CompoundNBT tagCompound, String key, float mod)
 	{
 		tagCompound.setFloat(key, tagCompound.getFloat(key)+mod);
 	}
@@ -114,21 +114,21 @@ public class ItemNBTHelper
 		return hasTag(stack)&&stack.getOrCreateTag().getBoolean(key);
 	}
 
-	public static void setTagCompound(ItemStack stack, String key, NBTTagCompound val)
+	public static void setTagCompound(ItemStack stack, String key, CompoundNBT val)
 	{
 		stack.getOrCreateTag().setTag(key, val);
 	}
 
-	public static NBTTagCompound getTagCompound(ItemStack stack, String key)
+	public static CompoundNBT getTagCompound(ItemStack stack, String key)
 	{
-		return hasTag(stack)?stack.getOrCreateTag().getCompound(key): new NBTTagCompound();
+		return hasTag(stack)?stack.getOrCreateTag().getCompound(key): new CompoundNBT();
 	}
 
 	public static void setFluidStack(ItemStack stack, String key, FluidStack val)
 	{
 		if(val!=null&&val.getFluid()!=null)
 		{
-			setTagCompound(stack, key, val.writeToNBT(new NBTTagCompound()));
+			setTagCompound(stack, key, val.writeToNBT(new CompoundNBT()));
 		}
 		else
 			remove(stack, key);
@@ -145,7 +145,7 @@ public class ItemNBTHelper
 
 	public static void setItemStack(ItemStack stack, String key, ItemStack val)
 	{
-		stack.getOrCreateTag().setTag(key, val.write(new NBTTagCompound()));
+		stack.getOrCreateTag().setTag(key, val.write(new CompoundNBT()));
 	}
 
 	public static ItemStack getItemStack(ItemStack stack, String key)
@@ -157,10 +157,10 @@ public class ItemNBTHelper
 
 	public static void setLore(ItemStack stack, String... lore)
 	{
-		NBTTagCompound displayTag = getTagCompound(stack, "display");
-		NBTTagList list = new NBTTagList();
+		CompoundNBT displayTag = getTagCompound(stack, "display");
+		ListNBT list = new ListNBT();
 		for(String s : lore)
-			list.add(new NBTTagString(s));
+			list.add(new StringNBT(s));
 		displayTag.setTag("Lore", list);
 		setTagCompound(stack, "display", displayTag);
 	}
@@ -213,8 +213,8 @@ public class ItemNBTHelper
 					setLong(stack, (String)key, (Long)value);
 				else if(value instanceof String)
 					setString(stack, (String)key, (String)value);
-				else if(value instanceof NBTTagCompound)
-					setTagCompound(stack, (String)key, (NBTTagCompound)value);
+				else if(value instanceof CompoundNBT)
+					setTagCompound(stack, (String)key, (CompoundNBT)value);
 				else if(value instanceof int[])
 					setIntArray(stack, (String)key, (int[])value);
 				else if(value instanceof ItemStack)
@@ -226,7 +226,7 @@ public class ItemNBTHelper
 		return stack;
 	}
 
-	public static NBTTagCompound combineTags(NBTTagCompound target, NBTTagCompound add, Pattern pattern)
+	public static CompoundNBT combineTags(CompoundNBT target, CompoundNBT add, Pattern pattern)
 	{
 		if(target==null||target.isEmpty())
 			return add.copy();
@@ -268,8 +268,8 @@ public class ItemNBTHelper
 							target.setString(key, (target.getString(key)+add.getString(key)));
 							break;
 						case 9: //List
-							NBTTagList listTarget = (NBTTagList)target.getTag(key);
-							NBTTagList listAdd = (NBTTagList)add.getTag(key);
+							ListNBT listTarget = (ListNBT)target.getTag(key);
+							ListNBT listAdd = (ListNBT)add.getTag(key);
 							for(int i = 0; i < listAdd.size(); i++)
 								listTarget.add(listAdd.get(i));
 							target.setTag(key, listTarget);

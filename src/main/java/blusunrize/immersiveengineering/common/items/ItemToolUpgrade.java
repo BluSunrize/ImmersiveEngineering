@@ -17,14 +17,13 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -45,7 +44,7 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade
 			String[] flavour = ImmersiveEngineering.proxy.splitStringOnWidth(
 					I18n.format(Lib.DESC_FLAVOUR+getRegistryName().getPath()), 200);
 			for(String s : flavour)
-				list.add(new TextComponentString(s));
+				list.add(new StringTextComponent(s));
 	}
 
 	@Override
@@ -70,7 +69,7 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade
 	}
 
 	@Override
-	public void applyUpgrades(ItemStack target, ItemStack upgrade, NBTTagCompound modifications)
+	public void applyUpgrades(ItemStack target, ItemStack upgrade, CompoundNBT modifications)
 	{
 		type.function.accept(upgrade, modifications);
 	}
@@ -99,19 +98,19 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade
 		private ImmutableSet<String> toolset;
 		private int stackSize = 1;
 		private BiPredicate<ItemStack, ItemStack> applyCheck;
-		private BiConsumer<ItemStack, NBTTagCompound> function;
+		private BiConsumer<ItemStack, CompoundNBT> function;
 
-		ToolUpgrade(ImmutableSet<String> toolset, BiConsumer<ItemStack, NBTTagCompound> function)
+		ToolUpgrade(ImmutableSet<String> toolset, BiConsumer<ItemStack, CompoundNBT> function)
 		{
 			this(toolset, 1, function);
 		}
 
-		ToolUpgrade(ImmutableSet<String> toolset, int stackSize, BiConsumer<ItemStack, NBTTagCompound> function)
+		ToolUpgrade(ImmutableSet<String> toolset, int stackSize, BiConsumer<ItemStack, CompoundNBT> function)
 		{
 			this(toolset, stackSize, null, function);
 		}
 
-		ToolUpgrade(ImmutableSet<String> toolset, int stackSize, BiPredicate<ItemStack, ItemStack> applyCheck, BiConsumer<ItemStack, NBTTagCompound> function)
+		ToolUpgrade(ImmutableSet<String> toolset, int stackSize, BiPredicate<ItemStack, ItemStack> applyCheck, BiConsumer<ItemStack, CompoundNBT> function)
 		{
 			this.toolset = toolset;
 			this.stackSize = stackSize;

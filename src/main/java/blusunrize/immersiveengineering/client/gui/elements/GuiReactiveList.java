@@ -11,15 +11,15 @@ package blusunrize.immersiveengineering.client.gui.elements;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.function.Function;
 
-public class GuiReactiveList extends GuiButton
+public class GuiReactiveList extends Button
 {
-	private final GuiScreen gui;
+	private final Screen gui;
 	private String[] entries;
 	private int[] padding = {0, 0, 0, 0};
 	private boolean needsSlider = false;
@@ -35,7 +35,7 @@ public class GuiReactiveList extends GuiButton
 	private int targetEntry = -1;
 	private int hoverTimer = 0;
 
-	public GuiReactiveList(GuiScreen gui, int id, int x, int y, int w, int h, String... entries)
+	public GuiReactiveList(Screen gui, int id, int x, int y, int w, int h, String... entries)
 	{
 		super(id, x, y, w, h, "");
 		this.gui = gui;

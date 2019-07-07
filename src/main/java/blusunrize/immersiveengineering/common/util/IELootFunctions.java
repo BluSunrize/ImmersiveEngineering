@@ -14,10 +14,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.conditions.ILootCondition;
+import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 
 import javax.annotation.Nonnull;
@@ -33,9 +33,9 @@ public class IELootFunctions
 		LootFunctionManager.registerFunction(new Bluprintz.Serializer());
 	}
 
-	public static class Bluprintz extends LootFunction
+	public static class Bluprintz extends ILootFunction
 	{
-		protected Bluprintz(LootCondition[] conditionsIn)
+		protected Bluprintz(ILootCondition[] conditionsIn)
 		{
 			super(conditionsIn);
 		}
@@ -43,12 +43,12 @@ public class IELootFunctions
 		@Override
 		public ItemStack apply(ItemStack stack, Random rand, LootContext context)
 		{
-			stack.setDisplayName(new TextComponentString("Super Special BluPrintz"));
+			stack.setDisplayName(new StringTextComponent("Super Special BluPrintz"));
 			ItemNBTHelper.setLore(stack, "Congratulations!", "You have found an easter egg!");
 			return stack;
 		}
 
-		public static class Serializer extends LootFunction.Serializer<Bluprintz>
+		public static class Serializer extends ILootFunction.Serializer<Bluprintz>
 		{
 			protected Serializer()
 			{
@@ -62,7 +62,7 @@ public class IELootFunctions
 
 			@Override
 			@Nonnull
-			public Bluprintz deserialize(@Nonnull JsonObject object, @Nonnull JsonDeserializationContext deserializationContext, @Nonnull LootCondition[] conditionsIn)
+			public Bluprintz deserialize(@Nonnull JsonObject object, @Nonnull JsonDeserializationContext deserializationContext, @Nonnull ILootCondition[] conditionsIn)
 			{
 				return new Bluprintz(conditionsIn);
 			}

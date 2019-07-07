@@ -13,18 +13,18 @@ import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPost;
-import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -39,13 +39,13 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 		this.setResistance(5.0F);
 		this.setAllNotNormalBlock();
 		lightOpacity = 0;
-		this.setMetaMobilityFlag(BlockTypes_WoodenDevice1.POST.getMeta(), EnumPushReaction.BLOCK);
-		this.setMetaMobilityFlag(BlockTypes_WoodenDevice1.WATERMILL.getMeta(), EnumPushReaction.BLOCK);
-		this.setMetaMobilityFlag(BlockTypes_WoodenDevice1.WINDMILL.getMeta(), EnumPushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_WoodenDevice1.POST.getMeta(), PushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_WoodenDevice1.WATERMILL.getMeta(), PushReaction.BLOCK);
+		this.setMetaMobilityFlag(BlockTypes_WoodenDevice1.WINDMILL.getMeta(), PushReaction.BLOCK);
 	}
 
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, BlockState state, int fortune)
 	{
 		if(this.getMetaFromState(state)==BlockTypes_WoodenDevice1.POST.getMeta())
 			return;
@@ -53,19 +53,19 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void breakBlock(World world, BlockPos pos, BlockState state)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity instanceof TileEntityPost)
 		{
 			if(!((TileEntityPost)tileEntity).isDummy()&&!world.isRemote&&world.getGameRules().getBoolean("doTileDrops")&&!world.restoringBlockSnapshots)
-				world.spawnEntity(new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, new ItemStack(this, 1, this.getMetaFromState(state))));
+				world.spawnEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, new ItemStack(this, 1, this.getMetaFromState(state))));
 		}
 		super.breakBlock(world, pos, state);
 	}
 
 	@Override
-	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
+	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, Direction facing)
 	{
 		int meta = this.getMetaFromState(world.getBlockState(pos));
 		if(meta==BlockTypes_WoodenDevice1.WALLMOUNT.getMeta())
@@ -73,9 +73,9 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof TileEntityWallmount)
 			{
-				if(facing==EnumFacing.UP)
+				if(facing==Direction.UP)
 					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2;
-				else if(facing==EnumFacing.DOWN)
+				else if(facing==Direction.DOWN)
 					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
 				else
 					return facing==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing);
@@ -85,7 +85,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
+	public BlockFaceShape getBlockFaceShape(IBlockAccess world, BlockState state, BlockPos pos, Direction side)
 	{
 		int meta = this.getMetaFromState(state);
 		if(meta==BlockTypes_WoodenDevice1.WALLMOUNT.getMeta())
@@ -93,9 +93,9 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof TileEntityWallmount)
 			{
-				if(side==EnumFacing.UP)
+				if(side==Direction.UP)
 					return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
-				else if(side==EnumFacing.DOWN)
+				else if(side==Direction.DOWN)
 					return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
 				else
 					return side==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing)?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
@@ -105,18 +105,18 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(BlockState state, IBlockAccess world, BlockPos pos, Direction side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityPost)
 		{
-			return ((TileEntityPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityPost)te).dummy > 3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
+			return ((TileEntityPost)te).dummy==0?side==Direction.DOWN: ((TileEntityPost)te).dummy==3?side==Direction.UP: ((TileEntityPost)te).dummy > 3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
 		}
 		if(te instanceof TileEntityWallmount)
 		{
-			if(side==EnumFacing.UP)
+			if(side==Direction.UP)
 				return ((TileEntityWallmount)te).orientation==0||((TileEntityWallmount)te).orientation==2;
-			else if(side==EnumFacing.DOWN)
+			else if(side==Direction.DOWN)
 				return ((TileEntityWallmount)te).orientation==1||((TileEntityWallmount)te).orientation==3;
 			else
 				return side==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing);
@@ -125,7 +125,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
+	public boolean isLadder(BlockState state, IBlockAccess world, BlockPos pos, LivingEntity entity)
 	{
 		return (world.getTileEntity(pos) instanceof TileEntityPost);
 	}
@@ -138,11 +138,11 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	//	}
 
 	@Override
-	public boolean canIEBlockBePlaced(IBlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
 	{
 		if(stack.getItemDamage()==BlockTypes_WoodenDevice1.WATERMILL.getMeta())
 		{
-			EnumFacing f = EnumFacing.fromAngle(player.rotationYaw);
+			Direction f = Direction.fromAngle(player.rotationYaw);
 			for(int hh = -2; hh <= 2; hh++)
 				for(int ww = -2; ww <= 2; ww++)
 					if((hh > -2&&hh < 2)||(ww > -2&&ww < 2))
@@ -367,14 +367,14 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	@Override
 	public boolean canConnectTransformer(IBlockAccess world, BlockPos pos)
 	{
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		BlockTypes_WoodenDevice1 type = state.getValue(property);
 		boolean slave = state.getValue(IEProperties.MULTIBLOCKSLAVE);
 		return slave&&type==BlockTypes_WoodenDevice1.POST;
 	}
 
 	@Override
-	public boolean allowHammerHarvest(IBlockState state)
+	public boolean allowHammerHarvest(BlockState state)
 	{
 		return true;
 	}

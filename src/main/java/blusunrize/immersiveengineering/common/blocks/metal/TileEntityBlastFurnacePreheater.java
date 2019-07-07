@@ -16,12 +16,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
@@ -33,7 +33,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	public boolean active;
 	public int dummy = 0;
 	public FluxStorage energyStorage = new FluxStorage(8000);
-	public EnumFacing facing = EnumFacing.NORTH;
+	public Direction facing = Direction.NORTH;
 	public float angle = 0;
 	public long lastRenderTick = -1;
 
@@ -70,7 +70,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
 	{
 		for(int i = 1; i <= 2; i++)
 		{
@@ -81,7 +81,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	}
 
 	@Override
-	public void breakDummies(BlockPos pos, IBlockState state)
+	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 2; i++)
 			if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof TileEntityBlastFurnacePreheater)
@@ -89,10 +89,10 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		dummy = nbt.getInt("dummy");
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
+		facing = Direction.byIndex(nbt.getInt("facing"));
 		energyStorage.readFromNBT(nbt);
 		active = nbt.getBoolean("active");
 		if(descPacket)
@@ -100,7 +100,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.setInt("dummy", dummy);
 		nbt.setInt("facing", facing.ordinal());
@@ -123,29 +123,29 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(EnumFacing facing)
+	public SideConfig getEnergySideConfig(Direction facing)
 	{
-		return dummy==2&&facing==EnumFacing.UP?SideConfig.INPUT: SideConfig.NONE;
+		return dummy==2&&facing==Direction.UP?SideConfig.INPUT: SideConfig.NONE;
 	}
 
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, EnumFacing.UP);
+	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, Direction.UP);
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(dummy==2&&facing==EnumFacing.UP)
+		if(dummy==2&&facing==Direction.UP)
 			return wrapper;
 		return null;
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -157,25 +157,25 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return true;
 	}
 
 	@Override
-	public void afterRotation(EnumFacing oldDir, EnumFacing newDir)
+	public void afterRotation(Direction oldDir, Direction newDir)
 	{
 		for(int i = 0; i <= 2; i++)
 		{

@@ -13,12 +13,12 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
@@ -57,9 +57,9 @@ public class MessageSetGhostSlots implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		EntityPlayerMP player = context.get().getSender();
+		ServerPlayerEntity player = context.get().getSender();
 		assert player!=null;
-		WorldServer world = player.getServerWorld();
+		ServerWorld world = player.getServerWorld();
 		world.addScheduledTask(() -> {
 			Container container = player.openContainer;
 			if(container!=null)

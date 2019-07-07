@@ -16,8 +16,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -26,7 +26,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
-public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
+public class EntityRenderFluorescentTube extends EntityRenderer<EntityFluorescentTube>
 {
 	static double sqrt2Half = Math.sqrt(2)/2;
 	public static final double[][] octagon = {
@@ -37,7 +37,7 @@ public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 	ResourceLocation modelLocation = new ResourceLocation("immersiveengineering:fluorescent_tube.obj");
 	TextureAtlasSprite tex;
 
-	public EntityRenderFluorescentTube(RenderManager renderManager)
+	public EntityRenderFluorescentTube(EntityRendererManager renderManager)
 	{
 		super(renderManager);
 		shadowOpaque = 0;

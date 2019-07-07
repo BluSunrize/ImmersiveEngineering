@@ -11,17 +11,17 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.common.EventHandler;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.EnchantmentProtection;
+import net.minecraft.enchantment.ProtectionEnchantment;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.init.Particles;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -64,7 +64,7 @@ public class IEExplosion extends Explosion
 		for(; blockDestroyInt < max; blockDestroyInt++)
 		{
 			BlockPos pos = this.getAffectedBlockPositions().get(blockDestroyInt);
-			IBlockState state = this.world.getBlockState(pos);
+			BlockState state = this.world.getBlockState(pos);
 			Block block = state.getBlock();
 
 //			if(spawnParticles)
@@ -125,7 +125,7 @@ public class IEExplosion extends Explosion
 						for(float f1 = 0.3F; f > 0.0F; f -= 0.22500001F)
 						{
 							BlockPos blockpos = new BlockPos(d4, d6, d8);
-							IBlockState iblockstate = this.world.getBlockState(blockpos);
+							BlockState iblockstate = this.world.getBlockState(blockpos);
 							IFluidState ifluidstate = this.world.getFluidState(blockpos);
 							if(!iblockstate.isAir(world, blockpos)||!ifluidstate.isEmpty())
 							{
@@ -184,12 +184,12 @@ public class IEExplosion extends Explosion
 						double d14 = world.getBlockDensity(vec3, entity.getBoundingBox());
 						double d10 = (1.0D-d12)*d14;
 						entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), (float)((int)((d10*d10+d10)/2.0D*8.0D*(double)f3+1.0D)));
-						double d11 = entity instanceof EntityLivingBase?EnchantmentProtection.getBlastDamageReduction((EntityLivingBase)entity, d10): d10;
+						double d11 = entity instanceof LivingEntity?ProtectionEnchantment.getBlastDamageReduction((LivingEntity)entity, d10): d10;
 						entity.motionX += d5*d11;
 						entity.motionY += d7*d11;
 						entity.motionZ += d9*d11;
-						if(entity instanceof EntityPlayer&&!((EntityPlayer)entity).abilities.disableDamage)
-							this.getPlayerKnockbackMap().put((EntityPlayer)entity, new Vec3d(d5*d10, d7*d10, d9*d10));
+						if(entity instanceof PlayerEntity&&!((PlayerEntity)entity).abilities.disableDamage)
+							this.getPlayerKnockbackMap().put((PlayerEntity)entity, new Vec3d(d5*d10, d7*d10, d9*d10));
 					}
 				}
 			}

@@ -25,21 +25,21 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.EnumRarity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Rarity;
+import net.minecraft.item.UseAction;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -84,25 +84,25 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	{
 		if(fs!=null)
 		{
-			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON?TextFormatting.GRAY:
+			TextFormatting rarity = fs.getFluid().getRarity()==Rarity.COMMON?TextFormatting.GRAY:
 					fs.getFluid().getRarity().color;
-			return new TextComponentTranslation(Lib.DESC_FLAVOUR+"chemthrower.fluidStack", fs.getLocalizedName(),
+			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"chemthrower.fluidStack", fs.getLocalizedName(),
 					fs.amount, capacity).setStyle(new Style().setColor(rarity));
 		}
 		else
-			return new TextComponentTranslation(Lib.DESC_FLAVOUR+"drill.empty");
+			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty");
 
 	}
 
 	@Nonnull
 	@Override
-	public EnumAction getUseAction(ItemStack stack)
+	public UseAction getUseAction(ItemStack stack)
 	{
-		return EnumAction.NONE;
+		return UseAction.NONE;
 	}
 
 	@Override
-	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
+	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
 	{
 //		ToDo: Make an Upgrade Advancement?
 //		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
@@ -110,7 +110,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(player.isSneaking())
@@ -120,11 +120,11 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		}
 		else
 			player.setActiveHand(hand);
-		return new ActionResult(EnumActionResult.SUCCESS, stack);
+		return new ActionResult(ActionResultType.SUCCESS, stack);
 	}
 
 	@Override
-	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
+	public void onUsingTick(ItemStack stack, LivingEntity player, int count)
 	{
 		FluidStack fs = this.getFluid(stack);
 		if(fs!=null&&fs.getFluid()!=null)
@@ -184,7 +184,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase player, int timeLeft)
+	public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity player, int timeLeft)
 	{
 		FluidStack fs = this.getFluid(stack);
 		if(fs!=null)
@@ -208,9 +208,9 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	{
 		if(getUpgrades(stack).getBoolean("multitank"))
 		{
-			NBTTagCompound fluidTag = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY);
-			NBTTagCompound fluidTag1 = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"1");
-			NBTTagCompound fluidTag2 = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"2");
+			CompoundNBT fluidTag = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY);
+			CompoundNBT fluidTag1 = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"1");
+			CompoundNBT fluidTag2 = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"2");
 
 			if(forward)
 			{
@@ -244,7 +244,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	{
 		if("base".equals(group)||"grip".equals(group)||"cage".equals(group)||"tanks".equals(group))
 			return true;
-		NBTTagCompound upgrades = this.getUpgrades(stack);
+		CompoundNBT upgrades = this.getUpgrades(stack);
 		if("large_tank".equals(group)&&upgrades.getInt("capacity") > 0)
 			return true;
 		else if("multi_tank".equals(group)&&upgrades.getBoolean("multitank"))
@@ -270,7 +270,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
@@ -280,7 +280,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 
 				@Nonnull
 				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 				{
 					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
 						return fluids.cast();

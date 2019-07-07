@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -23,7 +23,7 @@ public class MessageBirthdayParty implements IMessage
 {
 	int entityId;
 
-	public MessageBirthdayParty(EntityLivingBase entity)
+	public MessageBirthdayParty(LivingEntity entity)
 	{
 		this.entityId = entity.getEntityId();
 	}
@@ -47,7 +47,7 @@ public class MessageBirthdayParty implements IMessage
 			if(world!=null) // This can happen if the task is scheduled right before leaving the world
 			{
 				Entity entity = world.getEntityByID(entityId);
-				if(entity!=null&&entity instanceof EntityLivingBase)
+				if(entity!=null&&entity instanceof LivingEntity)
 				{
 					world.makeFireworks(entity.posX, entity.posY, entity.posZ, 0, 0, 0, Utils.getRandomFireworkExplosion(Utils.RAND, 4));
 					entity.getEntityData().setBoolean("headshot", true);

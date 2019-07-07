@@ -18,16 +18,16 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -76,22 +76,22 @@ public class TileEntityMetalPress extends TileEntityPoweredMultiblock<TileEntity
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		mold = ItemStack.read(nbt.getCompound("mold"));
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!this.mold.isEmpty())
-			nbt.setTag("mold", this.mold.write(new NBTTagCompound()));
+			nbt.setTag("mold", this.mold.write(new CompoundNBT()));
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		TileEntityMetalPress master = master();
 		if(master!=null)
@@ -135,7 +135,7 @@ public class TileEntityMetalPress extends TileEntityPoweredMultiblock<TileEntity
 	}
 
 	@Override
-	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
 	{
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==1&&l!=1)
@@ -149,13 +149,13 @@ public class TileEntityMetalPress extends TileEntityPoweredMultiblock<TileEntity
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(posInMultiblock==3&&!world.isRemote&&entity instanceof EntityItem&&entity.isAlive()
-				&&!((EntityItem)entity).getItem().isEmpty())
+		if(posInMultiblock==3&&!world.isRemote&&entity instanceof ItemEntity&&entity.isAlive()
+				&&!((ItemEntity)entity).getItem().isEmpty())
 		{
 			TileEntityMetalPress master = master();
 			if(master==null)
 				return;
-			ItemStack stack = ((EntityItem)entity).getItem();
+			ItemStack stack = ((ItemEntity)entity).getItem();
 			if(stack.isEmpty())
 				return;
 			MetalPressRecipe recipe = master.findRecipeForInsertion(stack);
@@ -289,19 +289,19 @@ public class TileEntityMetalPress extends TileEntityPoweredMultiblock<TileEntity
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		return new IFluidTank[0];
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
 	{
 		return false;
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return false;
 	}
@@ -319,7 +319,7 @@ public class TileEntityMetalPress extends TileEntityPoweredMultiblock<TileEntity
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -340,16 +340,16 @@ public class TileEntityMetalPress extends TileEntityPoweredMultiblock<TileEntity
 	}
 
 	@Override
-	protected MetalPressRecipe readRecipeFromNBT(NBTTagCompound tag)
+	protected MetalPressRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
 		return MetalPressRecipe.loadFromNBT(tag);
 	}
 
 	@Override
-	public EnumFacing[] sigOutputDirections()
+	public Direction[] sigOutputDirections()
 	{
 		if(posInMultiblock==5)
-			return new EnumFacing[]{this.facing};
-		return new EnumFacing[0];
+			return new Direction[]{this.facing};
+		return new Direction[0];
 	}
 }

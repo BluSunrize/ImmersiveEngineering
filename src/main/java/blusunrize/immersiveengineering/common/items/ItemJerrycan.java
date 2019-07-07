@@ -11,22 +11,18 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Rarity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -56,17 +52,17 @@ public class ItemJerrycan extends ItemIEBase
 		LazyOptional<FluidStack> fsCap = FluidUtil.getFluidContained(stack);
 		fsCap.ifPresent(fs ->
 		{
-			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON?TextFormatting.GRAY: fs.getFluid().getRarity().color;
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"fluidStack", fs.amount, 10000)
+			TextFormatting rarity = fs.getFluid().getRarity()==Rarity.COMMON?TextFormatting.GRAY: fs.getFluid().getRarity().color;
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fs.amount, 10000)
 					.setStyle(new Style().setColor(rarity)));
 		});
 		if(!fsCap.isPresent())
-			list.add(new TextComponentTranslation(Lib.DESC_FLAVOUR+"drill.empty"));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty"));
 	}
 
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		World world = ctx.getWorld();
 		BlockPos pos = ctx.getPos();
@@ -80,10 +76,10 @@ public class ItemJerrycan extends ItemIEBase
 				if(fs.amount <= 0)
 					fs = null;
 				ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
-				return EnumActionResult.SUCCESS;
+				return ActionResultType.SUCCESS;
 			}
 		}
-		return EnumActionResult.PASS;
+		return ActionResultType.PASS;
 	}
 
 	@Override
@@ -114,7 +110,7 @@ public class ItemJerrycan extends ItemIEBase
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
 		if(!stack.isEmpty())
 			return new FluidHandlerItemStack(stack, 10000);

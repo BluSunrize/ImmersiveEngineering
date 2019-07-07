@@ -16,14 +16,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.JsonContext;
@@ -329,7 +329,7 @@ public class ManualUtils
 	}
 
 	public static void addLinks(ManualEntry entry, ManualInstance helper, GuiManual gui, List<String> text, int x, int y,
-								List<GuiButton> pageButtons, List<String[]> repList)
+								List<Button> pageButtons, List<String[]> repList)
 	{
 		for(int linkIndex = 0; linkIndex < repList.size(); linkIndex++)
 		{
@@ -463,8 +463,8 @@ public class ManualUtils
 
 	private static void parseSpecial(JsonObject obj, String anchor, TextSplitter splitter, ManualInstance instance)
 	{
-		String type = JsonUtils.getString(obj, "type");
-		int offset = JsonUtils.getInt(obj, "offset", 0);
+		String type = JSONUtils.getString(obj, "type");
+		int offset = JSONUtils.getInt(obj, "offset", 0);
 		ResourceLocation resLoc = getLocationForManual(type, instance);
 		Function<JsonObject, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
 		splitter.addSpecialPage(anchor, offset, createElement.apply(obj));
@@ -494,11 +494,11 @@ public class ManualUtils
 	public static PositionedItemStack parsePosItemStack(JsonElement ele, JsonContext ctx)
 	{
 		JsonObject json = ele.getAsJsonObject();
-		int x = JsonUtils.getInt(json, "x");
-		int y = JsonUtils.getInt(json, "y");
-		if(JsonUtils.isString(json, "item"))
+		int x = JSONUtils.getInt(json, "x");
+		int y = JSONUtils.getInt(json, "y");
+		if(JSONUtils.isString(json, "item"))
 			return new PositionedItemStack(CraftingHelper.getItemStack(json, ctx), x, y);
-		else if(JsonUtils.isJsonArray(json, "stacks"))
+		else if(JSONUtils.isJsonArray(json, "stacks"))
 		{
 			JsonArray arr = json.getAsJsonArray("stacks");
 			List<ItemStack> stacks = new ArrayList<>(arr.size());
@@ -516,11 +516,11 @@ public class ManualUtils
 		if(jsonEle.isJsonObject())
 		{
 			JsonObject json = jsonEle.getAsJsonObject();
-			if(JsonUtils.isString(json, "recipe"))
-				return ManualUtils.getLocationForManual(JsonUtils.getString(json, "recipe"), m);
-			else if(JsonUtils.isString(json, "orename"))
+			if(JSONUtils.isString(json, "recipe"))
+				return ManualUtils.getLocationForManual(JSONUtils.getString(json, "recipe"), m);
+			else if(JSONUtils.isString(json, "orename"))
 				return json.get("orename").getAsString();
-			else if(JsonUtils.isString(json, "item"))
+			else if(JSONUtils.isString(json, "item"))
 				return CraftingHelper.getItemStack(json, ctx);
 		}
 		else if(jsonEle.isJsonArray())

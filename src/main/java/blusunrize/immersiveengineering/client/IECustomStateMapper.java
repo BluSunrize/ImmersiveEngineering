@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.util.ResourceLocation;
@@ -36,7 +36,7 @@ public class IECustomStateMapper extends StateMapperBase
 	}
 
 	@Override
-	protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+	protected ModelResourceLocation getModelResourceLocation(BlockState state)
 	{
 		try
 		{

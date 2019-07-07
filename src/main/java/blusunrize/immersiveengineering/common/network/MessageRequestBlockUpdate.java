@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.common.EventHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -42,7 +42,7 @@ public class MessageRequestBlockUpdate implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		WorldServer world = Objects.requireNonNull(context.get().getSender()).getServerWorld();
+		ServerWorld world = Objects.requireNonNull(context.get().getSender()).getServerWorld();
 		world.addScheduledTask(() -> {
 			if(world.isBlockLoaded(pos))
 			{

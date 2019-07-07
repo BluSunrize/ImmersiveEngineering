@@ -16,11 +16,11 @@ import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecor
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -77,15 +77,15 @@ public class MultiblockCokeOven implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(IBlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		return state.getBlock()==IEContent.blockStoneDecoration&&(state.getBlock().getMetaFromState(state)==BlockTypes_StoneDecoration.COKEBRICK.getMeta());
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
-		EnumFacing f = EnumFacing.fromAngle(player.rotationYaw);
+		Direction f = Direction.fromAngle(player.rotationYaw);
 		pos = pos.offset(f);
 
 		for(int h = -1; h <= 1; h++)
@@ -95,14 +95,14 @@ public class MultiblockCokeOven implements IMultiblock
 					if(!Utils.isBlockAt(world, pos.add(xx, h, zz), IEContent.blockStoneDecoration, BlockTypes_StoneDecoration.COKEBRICK.getMeta()))
 						return false;
 				}
-		IBlockState state = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.COKE_OVEN.getMeta());
+		BlockState state = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.COKE_OVEN.getMeta());
 		state = state.with(IEProperties.FACING_HORIZONTAL, f.getOpposite());
 		for(int h = -1; h <= 1; h++)
 			for(int l = -1; l <= 1; l++)
 				for(int w = -1; w <= 1; w++)
 				{
-					int xx = f==EnumFacing.EAST?l: f==EnumFacing.WEST?-l: f==EnumFacing.NORTH?-w: w;
-					int zz = f==EnumFacing.NORTH?l: f==EnumFacing.SOUTH?-l: f==EnumFacing.EAST?w: -w;
+					int xx = f==Direction.EAST?l: f==Direction.WEST?-l: f==Direction.NORTH?-w: w;
+					int zz = f==Direction.NORTH?l: f==Direction.SOUTH?-l: f==Direction.EAST?w: -w;
 
 					world.setBlockState(pos.add(xx, h, zz), state);
 					BlockPos pos2 = pos.add(xx, h, zz);

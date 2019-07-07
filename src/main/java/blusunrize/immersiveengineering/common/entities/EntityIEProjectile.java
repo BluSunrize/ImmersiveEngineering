@@ -8,19 +8,20 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,10 +33,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class EntityIEProjectile extends EntityArrow//Yes I have to extend arrow or else it's all weird and broken >_>
+public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have to extend arrow or else it's all weird and broken >_>
 {
 	protected BlockPos stuckIn = null;
-	protected IBlockState inBlockState;
+	protected BlockState inBlockState;
 	public boolean inGround;
 	public int ticksInGround;
 	public int ticksInAir;
@@ -56,7 +57,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 		this.setPosition(x, y, z);
 	}
 
-	public EntityIEProjectile(EntityType<? extends EntityIEProjectile> type, World world, EntityLivingBase living, double ax, double ay, double az)
+	public EntityIEProjectile(EntityType<? extends EntityIEProjectile> type, World world, LivingEntity living, double ax, double ay, double az)
 	{
 		this(type, world);
 		this.setLocationAndAngles(living.posX, living.posY+living.getEyeHeight(), living.posZ, living.rotationYaw, living.rotationPitch);
@@ -114,7 +115,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 
 		this.baseTick();
 
-		IBlockState localState = this.world.getBlockState(stuckIn);
+		BlockState localState = this.world.getBlockState(stuckIn);
 
 		if(localState.getMaterial()!=Material.AIR)
 		{
@@ -203,14 +204,14 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 				if(mop.entity!=null)
 				{
 					boolean allowHit = true;
-					EntityPlayer shooter = world.getPlayerEntityByUUID(shootingEntity);
-					if(shooter!=null&&mop.entity instanceof EntityPlayer)
-						allowHit = shooter.canAttackPlayer((EntityPlayer)mop.entity);
+					PlayerEntity shooter = world.getPlayerEntityByUUID(shootingEntity);
+					if(shooter!=null&&mop.entity instanceof PlayerEntity)
+						allowHit = shooter.canAttackPlayer((PlayerEntity)mop.entity);
 					if(allowHit)
 						this.onImpact(mop);
 					this.remove();
 				}
-				else if(mop.type==RayTraceResult.Type.BLOCK)
+				else if(mop.type==Type.BLOCK)
 				{
 					this.onImpact(mop);
 					this.stuckIn = mop.getBlockPos();
@@ -270,7 +271,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 	}
 
 	@Override
-	public void onCollideWithPlayer(EntityPlayer p_70100_1_)
+	public void onCollideWithPlayer(PlayerEntity p_70100_1_)
 	{
 	}
 
@@ -306,7 +307,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 	}
 
 	@Override
-	public void writeAdditional(NBTTagCompound nbt)
+	public void writeAdditional(CompoundNBT nbt)
 	{
 		super.writeAdditional(nbt);
 		if(inBlockState!=null)
@@ -321,7 +322,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 	}
 
 	@Override
-	public void readAdditional(NBTTagCompound nbt)
+	public void readAdditional(CompoundNBT nbt)
 	{
 		super.readAdditional(nbt);
 		if(nbt.contains("inTile", NBT.TAG_COMPOUND))

@@ -19,12 +19,12 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -127,7 +127,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 							double cZ = getPos().getZ()+.5;
 							Vec3d vCasing = vec.rotateYaw(-1.57f);
 							world.spawnParticle(RedstoneParticleData.REDSTONE_DUST, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0, 0, 0);
-							EntityItem entCasing = new EntityItem(world, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, casing.copy());
+							ItemEntity entCasing = new ItemEntity(world, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, casing.copy());
 							entCasing.motionX = 0;
 							entCasing.motionY = -0.01;
 							entCasing.motionZ = 0;
@@ -152,7 +152,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 
 	protected void sendRenderPacket()
 	{
-		NBTTagCompound tag = new NBTTagCompound();
+		CompoundNBT tag = new CompoundNBT();
 		tag.setBoolean("cycle", true);
 		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)),
 				new MessageTileSync(this, tag));
@@ -189,14 +189,14 @@ public class TileEntityTurretGun extends TileEntityTurret
 	}
 
 	@Override
-	public void receiveMessageFromServer(NBTTagCompound message)
+	public void receiveMessageFromServer(CompoundNBT message)
 	{
 		if(message.hasKey("cycle"))
 			cycleRender = 5;
 	}
 
 	@Override
-	public void receiveMessageFromClient(NBTTagCompound message)
+	public void receiveMessageFromClient(CompoundNBT message)
 	{
 		super.receiveMessageFromClient(message);
 		if(message.hasKey("expelCasings"))
@@ -204,7 +204,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		expelCasings = nbt.getBoolean("expelCasings");
@@ -213,7 +213,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setBoolean("expelCasings", expelCasings);
@@ -227,9 +227,9 @@ public class TileEntityTurretGun extends TileEntityTurret
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(!dummy&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
+		if(!dummy&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==Direction.DOWN||facing==this.facing.getOpposite()))
 			return itemHandler.cast();
 		return super.getCapability(capability, facing);
 	}

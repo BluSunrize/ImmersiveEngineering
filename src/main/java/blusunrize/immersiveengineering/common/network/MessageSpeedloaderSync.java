@@ -14,10 +14,10 @@ import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
@@ -25,9 +25,9 @@ import java.util.function.Supplier;
 public class MessageSpeedloaderSync implements IMessage
 {
 	int slot;
-	EnumHand hand;
+	Hand hand;
 
-	public MessageSpeedloaderSync(int slot, EnumHand hand)
+	public MessageSpeedloaderSync(int slot, Hand hand)
 	{
 		this.slot = slot;
 		this.hand = hand;
@@ -36,7 +36,7 @@ public class MessageSpeedloaderSync implements IMessage
 	public MessageSpeedloaderSync(PacketBuffer buf)
 	{
 		slot = buf.readByte();
-		hand = EnumHand.values()[buf.readByte()];
+		hand = Hand.values()[buf.readByte()];
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class MessageSpeedloaderSync implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		Minecraft.getInstance().addScheduledTask(() -> {
-			EntityPlayer player = ImmersiveEngineering.proxy.getClientPlayer();
+			PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 			if(player!=null)
 			{
 				if(player.getHeldItem(hand).getItem() instanceof ItemRevolver)

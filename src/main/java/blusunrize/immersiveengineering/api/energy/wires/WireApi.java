@@ -5,8 +5,8 @@ import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -43,7 +43,7 @@ public final class WireApi
 
 	@Deprecated
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-													  ResourceLocation texLoc, float[] uvs, double connLength, Predicate<IBlockState> matches,
+													  ResourceLocation texLoc, float[] uvs, double connLength, Predicate<BlockState> matches,
 													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 	{
 		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connLength, matches, dmgPerEnergy, maxDmg, postProcessDmg));
@@ -52,7 +52,7 @@ public final class WireApi
 	@Deprecated
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
 													  ResourceLocation texLoc, float[] uvs, double connLength, double connOffset,
-													  Predicate<IBlockState> matches,
+													  Predicate<BlockState> matches,
 													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 	{
 		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connOffset, matches, dmgPerEnergy, maxDmg, postProcessDmg));
@@ -60,14 +60,14 @@ public final class WireApi
 
 	@Deprecated
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ResourceLocation texLoc, float[] uvs,
-													  double connLength, Predicate<IBlockState> matches,
+													  double connLength, Predicate<BlockState> matches,
 													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 	{
 		INFOS.put(w, new FeedthroughModelInfo(model, ImmutableMap.of(), texLoc, uvs, connLength, connLength, matches, dmgPerEnergy, maxDmg, postProcessDmg));
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-													  ResourceLocation texLoc, float[] uvs, double connLength, IBlockState conn,
+													  ResourceLocation texLoc, float[] uvs, double connLength, BlockState conn,
 													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 	{
 		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connLength, conn, dmgPerEnergy, maxDmg, postProcessDmg));
@@ -75,21 +75,21 @@ public final class WireApi
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
 													  ResourceLocation texLoc, float[] uvs, double connLength, double connOffset,
-													  IBlockState conn,
+													  BlockState conn,
 													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 	{
 		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connOffset, conn, dmgPerEnergy, maxDmg, postProcessDmg));
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ResourceLocation texLoc, float[] uvs,
-													  double connLength, IBlockState conn,
+													  double connLength, BlockState conn,
 													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 	{
 		INFOS.put(w, new FeedthroughModelInfo(model, ImmutableMap.of(), texLoc, uvs, connLength, connLength, conn, dmgPerEnergy, maxDmg, postProcessDmg));
 	}
 
 	@Nullable
-	public static WireType getWireType(IBlockState state)
+	public static WireType getWireType(BlockState state)
 	{
 		for(Map.Entry<WireType, FeedthroughModelInfo> entry : INFOS.entrySet())
 			if(entry.getValue().isValidConnector(state))
@@ -131,7 +131,7 @@ public final class WireApi
 		public final float maxDmg;
 		public final Function<Float, Float> postProcessDmg;
 		@Nullable
-		public IBlockState conn;
+		public BlockState conn;
 		@OnlyIn(Dist.CLIENT)
 		public IBakedModel model;
 		final ResourceLocation texLoc;
@@ -141,10 +141,10 @@ public final class WireApi
 		public final double connLength;
 		public final double connOffset;
 		@Nullable
-		private Predicate<IBlockState> matches;
+		private Predicate<BlockState> matches;
 
 		public FeedthroughModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
-									double connLength, double connOffset, @Nullable Predicate<IBlockState> matches,
+									double connLength, double connOffset, @Nullable Predicate<BlockState> matches,
 									float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 		{
 			modelLoc = model;
@@ -161,14 +161,14 @@ public final class WireApi
 		}
 
 		public FeedthroughModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
-									double connLength, double connOffset, IBlockState conn,
+									double connLength, double connOffset, BlockState conn,
 									float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 		{
-			this(model, texRepl, texLoc, uvs, connLength, connOffset, (Predicate<IBlockState>)null, dmgPerEnergy, maxDmg, postProcessDmg);
+			this(model, texRepl, texLoc, uvs, connLength, connOffset, (Predicate<BlockState>)null, dmgPerEnergy, maxDmg, postProcessDmg);
 			this.conn = conn;
 		}
 
-		public boolean isValidConnector(IBlockState state)
+		public boolean isValidConnector(BlockState state)
 		{
 			if(matches!=null)
 			{

@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -132,17 +132,17 @@ public class MetalPressRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	public static HashMap<String, Function<NBTTagCompound, MetalPressRecipe>> deserializers = new HashMap<>();
+	public static HashMap<String, Function<CompoundNBT, MetalPressRecipe>> deserializers = new HashMap<>();
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
-		nbt.setTag("mold", mold.writeToNBT(new NBTTagCompound()));
+		nbt.setTag("input", input.writeToNBT(new CompoundNBT()));
+		nbt.setTag("mold", mold.writeToNBT(new CompoundNBT()));
 		return nbt;
 	}
 
-	public static MetalPressRecipe loadFromNBT(NBTTagCompound nbt)
+	public static MetalPressRecipe loadFromNBT(CompoundNBT nbt)
 	{
 		if(nbt.hasKey("type")&&deserializers.containsKey(nbt.getString("type")))
 			return deserializers.get(nbt.getString("type")).apply(nbt);

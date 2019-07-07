@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -21,7 +21,7 @@ public abstract class ContainerInternalStorageItem extends ContainerItem
 {
 	public IItemHandler inv;
 
-	public ContainerInternalStorageItem(InventoryPlayer iinventory, World world, EntityEquipmentSlot entityEquipmentSlot, ItemStack heldItem)
+	public ContainerInternalStorageItem(PlayerInventory iinventory, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
 	{
 		super(iinventory, world, entityEquipmentSlot, heldItem);
 		this.inv = heldItem.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
@@ -39,7 +39,7 @@ public abstract class ContainerInternalStorageItem extends ContainerItem
 	}
 
 	@Override
-	public void onContainerClosed(EntityPlayer par1EntityPlayer)
+	public void onContainerClosed(PlayerEntity par1EntityPlayer)
 	{
 		super.onContainerClosed(par1EntityPlayer);
 		if(inv instanceof IEItemStackHandler)

@@ -22,12 +22,12 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -56,7 +56,7 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 	public int selectedRecipe = -1;
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		selectedRecipe = nbt.getInt("selectedRecipe");
@@ -67,7 +67,7 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInt("selectedRecipe", selectedRecipe);
@@ -78,7 +78,7 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 	}
 
 	@Override
-	public void receiveMessageFromClient(NBTTagCompound message)
+	public void receiveMessageFromClient(CompoundNBT message)
 	{
 		if(message.hasKey("recipe"))
 		{
@@ -135,25 +135,25 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 		if(posInMultiblock==10||posInMultiblock==11)
 		{
 			yMax = .8125f;
-			if(facing==EnumFacing.NORTH)
+			if(facing==Direction.NORTH)
 			{
 				zMin = .1875f;
 				if(posInMultiblock==11)
 					xMax = .875f;
 			}
-			else if(facing==EnumFacing.SOUTH)
+			else if(facing==Direction.SOUTH)
 			{
 				zMax = .8125f;
 				if(posInMultiblock==11)
 					xMin = .125f;
 			}
-			else if(facing==EnumFacing.WEST)
+			else if(facing==Direction.WEST)
 			{
 				xMin = .1875f;
 				if(posInMultiblock==11)
 					zMin = .125f;
 			}
-			else if(facing==EnumFacing.EAST)
+			else if(facing==Direction.EAST)
 			{
 				xMax = .8125f;
 				if(posInMultiblock==11)
@@ -163,22 +163,22 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 		if(posInMultiblock==17)
 		{
 			yMax = .3125f;
-			if(facing==EnumFacing.NORTH)
+			if(facing==Direction.NORTH)
 			{
 				zMin = .25f;
 				xMax = .875f;
 			}
-			else if(facing==EnumFacing.SOUTH)
+			else if(facing==Direction.SOUTH)
 			{
 				zMax = .75f;
 				xMin = .125f;
 			}
-			else if(facing==EnumFacing.WEST)
+			else if(facing==Direction.WEST)
 			{
 				xMin = .25f;
 				zMin = .125f;
 			}
-			else if(facing==EnumFacing.EAST)
+			else if(facing==Direction.EAST)
 			{
 				xMax = .75f;
 				zMax = .875f;
@@ -213,7 +213,7 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 
 	CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
 			() -> {
-				EnumFacing outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
+				Direction outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
 				return new DirectionalBlockPos(pos.offset(outDir, 2), outDir.getOpposite());
 			}
 			, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
@@ -221,7 +221,7 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		EnumFacing outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
+		Direction outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
 		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
 			Utils.dropStackAtPos(world, pos, output, outDir);
@@ -305,7 +305,7 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(posInMultiblock==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
@@ -324,13 +324,13 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 	}
 
 	@Override
-	protected IMultiblockRecipe readRecipeFromNBT(NBTTagCompound tag)
+	protected IMultiblockRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
 		return BlueprintCraftingRecipe.loadFromNBT(tag);
 	}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		return formed;
 	}
@@ -348,33 +348,33 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		return new FluidTank[0];
 	}
 
 	@Override
-	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
+	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
 		return true;
 	}
 
 	@Override
-	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return true;
 	}
 
 	@Override
-	public EnumFacing[] sigOutputDirections()
+	public Direction[] sigOutputDirections()
 	{
 		if(posInMultiblock==14)
-			return new EnumFacing[]{this.facing.rotateY()};
-		return new EnumFacing[0];
+			return new Direction[]{this.facing.rotateY()};
+		return new Direction[0];
 	}
 
 	@Override
-	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
 	{
 		if(state.getBlock()==MetalDevices.conveyor)
 		{

@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.model.ModelBanner;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.model.BannerModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +26,7 @@ import java.util.HashMap;
 
 public class TileRenderShaderBanner extends TileEntityRenderer<TileEntityShaderBanner>
 {
-	private final ModelBanner bannerModel = new ModelBanner();
+	private final BannerModel bannerModel = new BannerModel();
 
 	@Override
 	public void render(TileEntityShaderBanner te, double x, double y, double z, float partialTicks, int destroyStage)

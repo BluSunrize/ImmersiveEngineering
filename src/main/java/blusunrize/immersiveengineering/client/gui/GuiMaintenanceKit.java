@@ -17,18 +17,18 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
 import blusunrize.immersiveengineering.common.gui.ContainerMaintenanceKit;
 import blusunrize.immersiveengineering.common.network.MessageMaintenanceKit;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 public class GuiMaintenanceKit extends GuiIEContainerBase
 {
-	public GuiMaintenanceKit(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack item)
+	public GuiMaintenanceKit(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
 	{
 		super(new ContainerMaintenanceKit(inventoryPlayer, world, slot, item));
 		this.xSize = 195;
@@ -56,7 +56,7 @@ public class GuiMaintenanceKit extends GuiIEContainerBase
 		}
 	}
 
-	NBTTagCompound lastMessage;
+	CompoundNBT lastMessage;
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int state)
@@ -67,12 +67,12 @@ public class GuiMaintenanceKit extends GuiIEContainerBase
 		{
 			ItemStack stack = s.getStack();
 			IConfigurableTool tool = ((IConfigurableTool)stack.getItem());
-			NBTTagCompound message = new NBTTagCompound();
+			CompoundNBT message = new CompoundNBT();
 			ToolConfigBoolean[] boolArray = tool.getBooleanOptions(stack);
 			int iBool = 0;
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			int iFloat = 0;
-			for(GuiButton button : this.buttons)
+			for(Button button : this.buttons)
 			{
 				if(button instanceof GuiButtonCheckbox&&boolArray!=null)
 				{

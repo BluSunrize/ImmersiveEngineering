@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.util;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.world.WorldEvent;
@@ -45,15 +45,15 @@ public class FakePlayerUtil
 	public static void onLoad(WorldEvent.Load ev)
 	{
 		IWorld world = ev.getWorld();
-		if(world instanceof WorldServer)
-			fakePlayerInstances.put(world, FakePlayerFactory.get((WorldServer)world, IE_PROFILE));
+		if(world instanceof ServerWorld)
+			fakePlayerInstances.put(world, FakePlayerFactory.get((ServerWorld)world, IE_PROFILE));
 	}
 
 	@SubscribeEvent
 	public static void onUnload(WorldEvent.Unload ev)
 	{
 		IWorld world = ev.getWorld();
-		if(world instanceof WorldServer)
+		if(world instanceof ServerWorld)
 			fakePlayerInstances.remove(world);
 	}
 

@@ -12,14 +12,14 @@ import blusunrize.lib.manual.ManualInstance.ManualLink;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Collections;
 import java.util.List;
 
-public class GuiButtonManualLink extends GuiButton
+public class GuiButtonManualLink extends Button
 {
 	public String localized;
 	public ManualLink link;

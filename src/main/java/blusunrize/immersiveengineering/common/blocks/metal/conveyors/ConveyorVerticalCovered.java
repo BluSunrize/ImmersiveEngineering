@@ -14,20 +14,20 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -46,7 +46,7 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 	public ItemStack cover = ItemStack.EMPTY;
 
 	@Override
-	public String getModelCacheKey(TileEntity tile, EnumFacing facing)
+	public String getModelCacheKey(TileEntity tile, Direction facing)
 	{
 		String key = ConveyorHandler.reverseClassRegistry.get(this.getClass()).toString();
 		key += "f"+facing.ordinal();
@@ -59,21 +59,21 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 	}
 
 	@Override
-	public void onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing)
+	public void onEntityCollision(TileEntity tile, Entity entity, Direction facing)
 	{
 		super.onEntityCollision(tile, entity, facing);
-		if(entity instanceof EntityItem)
-			((EntityItem)entity).setPickupDelay(10);
+		if(entity instanceof ItemEntity)
+			((ItemEntity)entity).setPickupDelay(10);
 	}
 
 	@Override
-	public void onItemDeployed(TileEntity tile, EntityItem entity, EnumFacing facing)
+	public void onItemDeployed(TileEntity tile, ItemEntity entity, Direction facing)
 	{
 		entity.setPickupDelay(10);
 	}
 
 	@Override
-	public boolean playerInteraction(TileEntity tile, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, EnumFacing side)
+	public boolean playerInteraction(TileEntity tile, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 	{
 		return ConveyorCovered.handleCoverInteraction(tile, player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
 	}
@@ -81,7 +81,7 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 	static final List<AxisAlignedBB> selectionBoxes = Collections.singletonList(Block.FULL_BLOCK_AABB);
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, EnumFacing facing)
+	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
 	{
 		return selectionBoxes;
 	}
@@ -90,7 +90,7 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 	static final AxisAlignedBB[] topBoundsCorner = {new AxisAlignedBB(0, .75, .75, 1, 1, 1), new AxisAlignedBB(0, .75, 0, 1, 1, .25), new AxisAlignedBB(.75, .75, 0, 1, 1, 1), new AxisAlignedBB(0, .75, 0, .25, 1, 1)};
 
 	@Override
-	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, EnumFacing facing)
+	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, Direction facing)
 	{
 		ArrayList list = new ArrayList();
 		boolean bottom = renderBottomBelt(tile, facing);
@@ -106,7 +106,7 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
 	{
 		boolean renderBottom = tile!=null&&this.renderBottomBelt(tile, facing);
 		boolean[] walls;
@@ -122,14 +122,14 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 
 		ItemStack cover = !this.cover.isEmpty()?this.cover: ConveyorCovered.defaultCover;
 		Block b = Block.getBlockFromItem(cover.getItem());
-		IBlockState state = !cover.isEmpty()?b.getStateFromMeta(cover.getMetadata()): Blocks.STONE.getDefaultState();
+		BlockState state = !cover.isEmpty()?b.getStateFromMeta(cover.getMetadata()): Blocks.STONE.getDefaultState();
 		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 		if(model!=null)
 		{
 			TextureAtlasSprite sprite = model.getParticleTexture();
-			HashMap<EnumFacing, TextureAtlasSprite> sprites = new HashMap<>();
+			HashMap<Direction, TextureAtlasSprite> sprites = new HashMap<>();
 
-			for(EnumFacing f : EnumFacing.VALUES)
+			for(Direction f : Direction.VALUES)
 				for(BakedQuad q : model.getQuads(state, f, 0))
 					if(q!=null&&q.getSprite()!=null)
 						sprites.put(f, q.getSprite());
@@ -137,7 +137,7 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 				if(q!=null&&q.getSprite()!=null&&q.getFace()!=null)
 					sprites.put(q.getFace(), q.getSprite());
 
-			Function<EnumFacing, TextureAtlasSprite> getSprite = f -> sprites.containsKey(f)?sprites.get(f): sprite;
+			Function<Direction, TextureAtlasSprite> getSprite = f -> sprites.containsKey(f)?sprites.get(f): sprite;
 
 			float[] colour = {1, 1, 1, 1};
 			Matrix4 matrix = new Matrix4(facing);
@@ -176,16 +176,16 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 	}
 
 	@Override
-	public NBTTagCompound writeConveyorNBT()
+	public CompoundNBT writeConveyorNBT()
 	{
-		NBTTagCompound nbt = super.writeConveyorNBT();
+		CompoundNBT nbt = super.writeConveyorNBT();
 		if(cover!=null)
-			nbt.setTag("cover", cover.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("cover", cover.writeToNBT(new CompoundNBT()));
 		return nbt;
 	}
 
 	@Override
-	public void readConveyorNBT(NBTTagCompound nbt)
+	public void readConveyorNBT(CompoundNBT nbt)
 	{
 		super.readConveyorNBT(nbt);
 		cover = new ItemStack(nbt.getCompound("cover"));

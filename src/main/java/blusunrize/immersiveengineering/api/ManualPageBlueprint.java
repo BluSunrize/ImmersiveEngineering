@@ -16,7 +16,7 @@ import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.ArrayListMultimap;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -77,7 +77,7 @@ public class ManualPageBlueprint extends SpecialManualElements
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
+	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
 	{
 		if(this.recipes.size() > 1)
 		{
@@ -143,7 +143,7 @@ public class ManualPageBlueprint extends SpecialManualElements
 	}
 
 	@Override
-	public void buttonPressed(GuiManual gui, GuiButton button)
+	public void buttonPressed(GuiManual gui, Button button)
 	{
 		super.buttonPressed(gui, button);
 		if(button.id%100==0)

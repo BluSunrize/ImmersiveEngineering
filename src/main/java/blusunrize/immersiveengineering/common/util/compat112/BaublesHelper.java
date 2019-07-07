@@ -14,10 +14,10 @@ import baubles.api.cap.BaublesCapabilities;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -41,12 +41,12 @@ public class BaublesHelper extends IECompatModule
 		}
 
 		@Override
-		public void onWornTick(ItemStack itemstack, EntityLivingBase player)
+		public void onWornTick(ItemStack itemstack, LivingEntity player)
 		{
 			if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
 				IEBipedLayerRenderer.addWornPowerpack(player, itemstack);
-			if(player instanceof EntityPlayer)
-				IEContent.itemPowerpack.onArmorTick(player.world, (EntityPlayer)player, itemstack);
+			if(player instanceof PlayerEntity)
+				IEContent.itemPowerpack.onArmorTick(player.world, (PlayerEntity)player, itemstack);
 		}
 	};
 
@@ -81,14 +81,14 @@ public class BaublesHelper extends IECompatModule
 			event.addCapability(new ResourceLocation("baubles", "bauble_cap"), new ICapabilityProvider()
 			{
 				@Override
-				public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+				public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable Direction facing)
 				{
 					return capability==BaublesCapabilities.CAPABILITY_ITEM_BAUBLE;
 				}
 
 				@Nullable
 				@Override
-				public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+				public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 				{
 					return capability==BaublesCapabilities.CAPABILITY_ITEM_BAUBLE?BaublesCapabilities.CAPABILITY_ITEM_BAUBLE.cast(BAUBLE_POWERPACK): null;
 				}

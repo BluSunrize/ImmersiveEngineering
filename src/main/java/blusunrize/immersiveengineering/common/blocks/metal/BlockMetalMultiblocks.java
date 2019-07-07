@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
-import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -52,9 +52,9 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	}
 
 	@Override
-	public EnumPushReaction getPushReaction(IBlockState state)
+	public PushReaction getPushReaction(BlockState state)
 	{
-		return EnumPushReaction.BLOCK;
+		return PushReaction.BLOCK;
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 
 
 	@Override
-	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(BlockState state, IBlockAccess world, BlockPos pos, Direction side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityMultiblockPart)
@@ -110,7 +110,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 				return true;
 			if(te instanceof TileEntityMetalPress)
 			{
-				return tile.posInMultiblock < 3||(tile.posInMultiblock==7&&side==EnumFacing.UP);
+				return tile.posInMultiblock < 3||(tile.posInMultiblock==7&&side==Direction.UP);
 			}
 			else if(te instanceof TileEntityCrusher)
 			{
@@ -137,7 +137,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 				if(tile.posInMultiblock==0||tile.posInMultiblock==2)
 					return side.getAxis()==tile.facing.rotateY().getAxis();
 				else if(tile.posInMultiblock >= 15&&tile.posInMultiblock <= 17)
-					return side==EnumFacing.UP;
+					return side==Direction.UP;
 				else if(tile.posInMultiblock==23)
 					return side==(tile.mirrored?tile.facing.rotateYCCW(): tile.facing.rotateY());
 			}
@@ -149,9 +149,9 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 			else if(te instanceof TileEntityArcFurnace)
 			{
 				if(tile.posInMultiblock==2||tile.posInMultiblock==25||tile.posInMultiblock==52)
-					return side.getOpposite()==tile.facing||(tile.posInMultiblock==52&&side==EnumFacing.UP);
+					return side.getOpposite()==tile.facing||(tile.posInMultiblock==52&&side==Direction.UP);
 				if(tile.posInMultiblock==82||tile.posInMultiblock==86||tile.posInMultiblock==88||tile.posInMultiblock==112)
-					return side==EnumFacing.UP;
+					return side==Direction.UP;
 				if((tile.posInMultiblock >= 21&&tile.posInMultiblock <= 23)||(tile.posInMultiblock >= 46&&tile.posInMultiblock <= 48)||(tile.posInMultiblock >= 71&&tile.posInMultiblock <= 73))
 					return side==tile.facing;
 			}
@@ -160,7 +160,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	}
 
 	@Override
-	public boolean allowHammerHarvest(IBlockState state)
+	public boolean allowHammerHarvest(BlockState state)
 	{
 		return true;
 	}

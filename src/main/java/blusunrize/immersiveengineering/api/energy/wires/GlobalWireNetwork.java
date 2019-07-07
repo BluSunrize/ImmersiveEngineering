@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.common.wires.WireSyncManager;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
@@ -141,7 +141,7 @@ public class GlobalWireNetwork implements ITickable
 		double dy = dropAt.getY()+.5;
 		double dz = dropAt.getZ()+.5;
 		if(world.getGameRules().getBoolean("doTileDrops"))
-			world.spawnEntity(new EntityItem(world, dx, dy, dz, c.type.getWireCoil(c)));
+			world.spawnEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
 	}
 
 	private void splitNet(LocalWireNetwork oldNet)
@@ -153,13 +153,13 @@ public class GlobalWireNetwork implements ITickable
 					localNets.put(p, net);
 	}
 
-	public void readFromNBT(NBTTagCompound nbt)
+	public void readFromNBT(CompoundNBT nbt)
 	{
 		localNets.clear();
-		NBTTagList locals = nbt.getList("locals", NBT.TAG_COMPOUND);
+		ListNBT locals = nbt.getList("locals", NBT.TAG_COMPOUND);
 		for(NBTBase b : locals)
 		{
-			NBTTagCompound subnet = (NBTTagCompound)b;
+			CompoundNBT subnet = (CompoundNBT)b;
 			LocalWireNetwork localNet = new LocalWireNetwork(subnet, this);
 			IELogger.logger.info("Loading net {}", localNet);
 			for(ConnectionPoint p : localNet.getConnectionPoints())
@@ -167,10 +167,10 @@ public class GlobalWireNetwork implements ITickable
 		}
 	}
 
-	public NBTTagCompound writeToNBT()
+	public CompoundNBT writeToNBT()
 	{
-		NBTTagCompound ret = new NBTTagCompound();
-		NBTTagList locals = new NBTTagList();
+		CompoundNBT ret = new CompoundNBT();
+		ListNBT locals = new ListNBT();
 		Set<LocalWireNetwork> savedNets = Collections.newSetFromMap(new IdentityHashMap<>());
 		for(LocalWireNetwork local : localNets.values())
 			if(savedNets.add(local))

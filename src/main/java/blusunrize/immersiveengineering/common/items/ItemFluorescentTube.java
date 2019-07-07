@@ -20,23 +20,22 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -57,12 +56,12 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemUseContext ctx)
+	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
-		EnumFacing side = ctx.getFace();
+		Direction side = ctx.getFace();
 		World world = ctx.getWorld();
-		EntityPlayer player = ctx.getPlayer();
-		if(side==EnumFacing.UP && player!=null)
+		PlayerEntity player = ctx.getPlayer();
+		if(side==Direction.UP&&player!=null)
 		{
 			if(!world.isRemote)
 			{
@@ -75,11 +74,11 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 				world.spawnEntity(tube);
 				stack.split(1);
 				if(stack.getCount() > 0)
-					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack);
+					player.setItemStackToSlot(EquipmentSlotType.MAINHAND, stack);
 				else
-					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
+					player.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
 			}
-			return EnumActionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		}
 		return super.onItemUse(ctx);
 	}
@@ -88,7 +87,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	{
 		if(ItemNBTHelper.hasKey(s, "rgb"))
 		{
-			NBTTagCompound nbt = ItemNBTHelper.getTagCompound(s, "rgb");
+			CompoundNBT nbt = ItemNBTHelper.getTagCompound(s, "rgb");
 			return new float[]{nbt.getFloat("r"), nbt.getFloat("g"), nbt.getFloat("b")};
 		}
 		return new float[]{1, 1, 1};
@@ -96,7 +95,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 
 	public static void setRGB(ItemStack s, float[] rgb)
 	{
-		NBTTagCompound nbt = new NBTTagCompound();
+		CompoundNBT nbt = new CompoundNBT();
 		nbt.setFloat("r", rgb[0]);
 		nbt.setFloat("g", rgb[1]);
 		nbt.setFloat("b", rgb[2]);
@@ -151,7 +150,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		list.add(new TextComponentTranslation(Lib.DESC_INFO+"colour", "#"+hexColorString(stack)));
+		list.add(new TranslationTextComponent(Lib.DESC_INFO+"colour", "#"+hexColorString(stack)));
 	}
 
 	@Override
@@ -204,7 +203,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	}
 
 	@Override
-	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource dmg,
+	public void onStrike(ItemStack s, EquipmentSlotType eqSlot, LivingEntity p, Map<String, Object> cache, DamageSource dmg,
 						 ElectricSource eSource)
 	{
 		setLit(s, eSource.level);
@@ -237,7 +236,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	private static final String[][] special = {{"tube"}};
 
 	@Override
-	public String[][] getSpecialGroups(ItemStack stack, ItemCameraTransforms.TransformType transform, EntityLivingBase entity)
+	public String[][] getSpecialGroups(ItemStack stack, ItemCameraTransforms.TransformType transform, LivingEntity entity)
 	{
 		if(isLit(stack))
 			return special;

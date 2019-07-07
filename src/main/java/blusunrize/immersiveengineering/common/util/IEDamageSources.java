@@ -14,16 +14,16 @@ import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSourc
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class IEDamageSources
 {
-	public static class IEDamageSource_Indirect extends EntityDamageSourceIndirect
+	public static class IEDamageSource_Indirect extends IndirectEntityDamageSource
 	{
 		public IEDamageSource_Indirect(String tag, Entity shot, Entity shooter)
 		{
@@ -62,8 +62,8 @@ public class IEDamageSources
 
 		public boolean apply(Entity e)
 		{
-			if(e instanceof EntityLivingBase)
-				IElectricEquipment.applyToEntity((EntityLivingBase)e, this, source);
+			if(e instanceof LivingEntity)
+				IElectricEquipment.applyToEntity((LivingEntity)e, this, source);
 			if(dmg > 0)
 				e.attackEntityFrom(this, dmg);
 			return dmg > 0;
@@ -78,10 +78,10 @@ public class IEDamageSources
 		}
 
 		@Override
-		public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn)
+		public ITextComponent getDeathMessage(LivingEntity entityLivingBaseIn)
 		{
 			String s = "death.attack."+this.damageType+".turret";
-			return new TextComponentTranslation(s, entityLivingBaseIn.getDisplayName());
+			return new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName());
 		}
 	}
 

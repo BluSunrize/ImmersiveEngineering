@@ -26,11 +26,11 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -66,7 +66,7 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 
 	private final String voltage;
 	private final boolean relay;
-	public EnumFacing facing = EnumFacing.DOWN;
+	public Direction facing = Direction.DOWN;
 	public int currentTickToMachine = 0;
 	public int currentTickToNet = 0;
 	public static int[] connectorInputValues = Config.IEConfig.Machines.wireConnectorInput;
@@ -109,13 +109,13 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return this.facing;
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(Direction facing)
 	{
 		this.facing = facing;
 	}
@@ -127,19 +127,19 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canRotate(EnumFacing axis)
+	public boolean canRotate(Direction axis)
 	{
 		return false;
 	}
@@ -157,33 +157,33 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInt("facing", facing.ordinal());
-		NBTTagCompound toNet = new NBTTagCompound();
+		CompoundNBT toNet = new CompoundNBT();
 		storageToNet.writeToNBT(toNet);
 		nbt.setTag("toNet", toNet);
-		NBTTagCompound toMachine = new NBTTagCompound();
+		CompoundNBT toMachine = new CompoundNBT();
 		storageToMachine.writeToNBT(toMachine);
 		nbt.setTag("toMachine", toMachine);
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = EnumFacing.byIndex(nbt.getInt("facing"));
-		NBTTagCompound toMachine = nbt.getCompound("toMachine");
+		facing = Direction.byIndex(nbt.getInt("facing"));
+		CompoundNBT toMachine = nbt.getCompound("toMachine");
 		storageToMachine.readFromNBT(toMachine);
-		NBTTagCompound toNet = nbt.getCompound("toNet");
+		CompoundNBT toNet = nbt.getCompound("toNet");
 		storageToNet.readFromNBT(toNet);
 	}
 
 	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		EnumFacing side = facing.getOpposite();
+		Direction side = facing.getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
 	}
@@ -191,7 +191,7 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 	IEForgeEnergyWrapper energyWrapper;
 
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		if(facing!=this.facing||relay)
 			return null;
@@ -207,13 +207,13 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public SideConfig getEnergySideConfig(EnumFacing facing)
+	public SideConfig getEnergySideConfig(Direction facing)
 	{
 		return (!relay&&facing==this.facing)?SideConfig.INPUT: SideConfig.NONE;
 	}
 
 	@Override
-	public boolean canConnectEnergy(EnumFacing from)
+	public boolean canConnectEnergy(Direction from)
 	{
 		if(relay)
 			return false;
@@ -221,7 +221,7 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public int receiveEnergy(EnumFacing from, int energy, boolean simulate)
+	public int receiveEnergy(Direction from, int energy, boolean simulate)
 	{
 		if(world.isRemote||relay)
 			return 0;
@@ -245,7 +245,7 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public int getEnergyStored(EnumFacing from)
+	public int getEnergyStored(Direction from)
 	{
 		if(relay)
 			return 0;
@@ -253,7 +253,7 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public int getMaxEnergyStored(EnumFacing from)
+	public int getMaxEnergyStored(Direction from)
 	{
 		if(relay)
 			return 0;
@@ -261,7 +261,7 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public int extractEnergy(EnumFacing from, int energy, boolean simulate)
+	public int extractEnergy(Direction from, int energy, boolean simulate)
 	{
 		return 0;
 	}
@@ -296,7 +296,7 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 		LENGTH.defaultReturnValue(0.5F);
 	}
 
-	public static float[] getConnectorBounds(EnumFacing facing, float wMin, float length)
+	public static float[] getConnectorBounds(Direction facing, float wMin, float length)
 	{
 		float wMax = 1-wMin;
 		switch(facing.getOpposite())

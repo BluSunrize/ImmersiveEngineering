@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -37,7 +37,7 @@ public class BlockBalloon extends BlockIETileProvider
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(@Nonnull IBlockState state)
+	public TileEntity createBasicTE(@Nonnull BlockState state)
 	{
 		return new TileEntityBalloon();
 	}

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -118,14 +118,14 @@ public class RefineryRecipe extends MultiblockRecipe
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("input0", input0.writeToNBT(new NBTTagCompound()));
-		nbt.setTag("input1", input1.writeToNBT(new NBTTagCompound()));
+		nbt.setTag("input0", input0.writeToNBT(new CompoundNBT()));
+		nbt.setTag("input1", input1.writeToNBT(new CompoundNBT()));
 		return nbt;
 	}
 
-	public static RefineryRecipe loadFromNBT(NBTTagCompound nbt)
+	public static RefineryRecipe loadFromNBT(CompoundNBT nbt)
 	{
 		FluidStack input0 = FluidStack.loadFluidStackFromNBT(nbt.getCompound("input0"));
 		FluidStack input1 = FluidStack.loadFluidStackFromNBT(nbt.getCompound("input1"));

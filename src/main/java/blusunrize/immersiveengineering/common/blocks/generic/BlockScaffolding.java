@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.Direction;
 
 public class BlockScaffolding extends BlockIEBase.IELadderBlock
 {
@@ -22,7 +22,7 @@ public class BlockScaffolding extends BlockIEBase.IELadderBlock
 	}
 
 	@Override
-	public boolean isSideInvisible(IBlockState state, IBlockState adjState, EnumFacing side)
+	public boolean isSideInvisible(BlockState state, BlockState adjState, Direction side)
 	{
 		return adjState.getBlock()==this;
 	}

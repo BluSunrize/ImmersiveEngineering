@@ -19,17 +19,20 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import org.lwjgl.opengl.GL11;
 
@@ -48,13 +51,13 @@ public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWh
 		if(!tile.formed||!tile.getWorld().isBlockLoaded(tile.getPos(), false)||tile.isDummy())
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
+		BlockState state = tile.getWorld().getBlockState(tile.getPos());
 		if(state.getBlock()!=MetalMultiblocks.bucketWheel)
 			return;
 		if(model==null)
 		{
 			state = state.with(IEProperties.DYNAMICRENDER, true);
-			state = state.with(IEProperties.FACING_HORIZONTAL, EnumFacing.NORTH);
+			state = state.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
 			model = blockRenderer.getModelForState(state);
 		}
 		OBJState objState = null;
@@ -67,7 +70,7 @@ public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWh
 				{
 					list.add("dig"+i);
 					Block b = Block.getBlockFromItem(tile.digStacks.get(i).getItem());
-					IBlockState digState = b!=Blocks.AIR?b.getDefaultState(): Blocks.COBBLESTONE.getDefaultState();
+					BlockState digState = b!=Blocks.AIR?b.getDefaultState(): Blocks.COBBLESTONE.getDefaultState();
 					IBakedModel digModel = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(digState);
 					digModel.getParticleTexture();
 					texMap.put("dig"+i, digModel.getParticleTexture().getName().toString());
@@ -82,19 +85,19 @@ public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWh
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
-		EnumFacing facing = tile.facing;
+		Direction facing = tile.facing;
 		if(tile.mirrored)
 		{
 			GlStateManager.scalef(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
 			GlStateManager.disableCull();
 		}
-		float dir = tile.facing==EnumFacing.SOUTH?90: tile.facing==EnumFacing.NORTH?-90: tile.facing==EnumFacing.EAST?180: 0;
+		float dir = tile.facing==Direction.SOUTH?90: tile.facing==Direction.NORTH?-90: tile.facing==Direction.EAST?180: 0;
 		GlStateManager.rotatef(dir, 0, 1, 0);
 		float rot = tile.rotation+(float)(tile.active?IEConfig.Machines.excavator_speed*partialTicks: 0);
 		GlStateManager.rotatef(rot, 1, 0, 0);
 
 		RenderHelper.disableStandardItemLighting();
-		Minecraft.getInstance().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);

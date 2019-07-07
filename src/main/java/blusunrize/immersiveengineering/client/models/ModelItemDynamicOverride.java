@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.models;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -19,9 +19,9 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.BakedModelWrapper;
@@ -65,7 +65,7 @@ public class ModelItemDynamicOverride implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
 	{
 		if(quads!=null&&side==null)
 			return quads;
@@ -119,7 +119,7 @@ public class ModelItemDynamicOverride implements IBakedModel
 	{
 
 		@Override
-		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
+		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
 		{
 			if(!stack.isEmpty()&&stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
 			{
@@ -150,7 +150,7 @@ public class ModelItemDynamicOverride implements IBakedModel
 			ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
 			for(BakedQuad quad : originalModel.quads)
 			{
-				if(quad.getFace()==EnumFacing.SOUTH)
+				if(quad.getFace()==Direction.SOUTH)
 				{
 					builder.add(quad);
 				}
@@ -160,7 +160,7 @@ public class ModelItemDynamicOverride implements IBakedModel
 
 		@Nonnull
 		@Override
-		public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
 		{
 			if(side==null)
 			{

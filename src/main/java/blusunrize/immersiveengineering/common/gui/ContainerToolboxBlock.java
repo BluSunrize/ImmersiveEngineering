@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityToolbox;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -24,7 +24,7 @@ public class ContainerToolboxBlock extends ContainerIEBase implements ICallbackC
 {
 	IItemHandler inv;
 
-	public ContainerToolboxBlock(InventoryPlayer inventoryPlayer, TileEntityToolbox tile)
+	public ContainerToolboxBlock(PlayerInventory inventoryPlayer, TileEntityToolbox tile)
 	{
 		super(inventoryPlayer, tile);
 		this.tile = tile;
@@ -79,7 +79,7 @@ public class ContainerToolboxBlock extends ContainerIEBase implements ICallbackC
 	}
 
 	@Override
-	public void onContainerClosed(EntityPlayer playerIn)
+	public void onContainerClosed(PlayerEntity playerIn)
 	{
 		if(inv instanceof IEItemStackHandler)
 			((IEItemStackHandler)inv).setTile(null);

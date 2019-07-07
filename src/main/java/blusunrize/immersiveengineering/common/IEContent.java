@@ -64,38 +64,30 @@ import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionType;
-import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.*;
 import net.minecraft.tileentity.BannerPattern;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
@@ -193,7 +185,7 @@ public class IEContent
 		IEBlocks.StoneDecoration.insulatingGlass = new BlockIEBase("insulating_glass", stoneDecoProps, ItemBlockIEBase.class)
 		{
 			@Override
-			public int getOpacity(IBlockState p_200011_1_, IBlockReader p_200011_2_, BlockPos p_200011_3_)
+			public int getOpacity(BlockState p_200011_1_, IBlockReader p_200011_2_, BlockPos p_200011_3_)
 			{
 				return 0;
 			}
@@ -203,13 +195,13 @@ public class IEContent
 		IEBlocks.StoneDecoration.concreteSprayed = new BlockIEBase("concrete_sprayed", Block.Properties.create(Material.ROCK).hardnessAndResistance(.2F, 1)., ItemBlockIEBase.class)
 		{
 			@Override
-			public int getItemsToDropCount(@Nonnull IBlockState state, int fortune, World world, BlockPos pos, @Nonnull Random r)
+			public int getItemsToDropCount(@Nonnull BlockState state, int fortune, World world, BlockPos pos, @Nonnull Random r)
 			{
 				return 0;
 			}
 
 			@Override
-			public int getOpacity(IBlockState p_200011_1_, IBlockReader p_200011_2_, BlockPos p_200011_3_)
+			public int getOpacity(BlockState p_200011_1_, IBlockReader p_200011_2_, BlockPos p_200011_3_)
 			{
 				return 0;
 			}
@@ -302,7 +294,7 @@ public class IEContent
 		itemGraphiteElectrode = new ItemGraphiteElectrode();
 		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("faradayChains", "immersiveengineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0);
 		for(int i = 0; i < itemsFaradaySuit.length; i++)
-			itemsFaradaySuit[i] = new ItemFaradaySuit(EntityEquipmentSlot.values()[2+i]);
+			itemsFaradaySuit[i] = new ItemFaradaySuit(EquipmentSlotType.values()[2+i]);
 		itemFluorescentTube = new ItemFluorescentTube();
 		itemPowerpack = new ItemPowerpack();
 		itemShield = new ItemIEShield();
@@ -351,7 +343,7 @@ public class IEContent
 
 
 	@SubscribeEvent
-	public static void registerPotions(RegistryEvent.Register<Potion> event)
+	public static void registerPotions(RegistryEvent.Register<Effect> event)
 	{
 		/*POTIONS*/
 		IEPotions.init();
@@ -557,7 +549,7 @@ public class IEContent
 		WireType.init();
 		/*CONVEYORS*/
 		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
-			NBTTagCompound data = entity.getEntityData();
+			CompoundNBT data = entity.getEntityData();
 			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
 				data.setBoolean(Lib.MAGNET_PREVENT_NBT, true);
 		}, (entity, iConveyorTile) -> {
@@ -567,12 +559,12 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extract"), ConveyorExtract.class, (tileEntity) -> new ConveyorExtract(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extract"), ConveyorExtract.class, (tileEntity) -> new ConveyorExtract(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "droppercovered"), ConveyorDropCovered.class, (tileEntity) -> new ConveyorDropCovered());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
 		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
 
 		/*BULLETS*/
@@ -741,24 +733,24 @@ public class IEContent
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("fuel"));
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
 
-		blockFluidCreosote.setPotionEffects(new PotionEffect(IEPotions.flammable, 100, 0));
-		blockFluidEthanol.setPotionEffects(new PotionEffect(MobEffects.NAUSEA, 40, 0));
-		blockFluidBiodiesel.setPotionEffects(new PotionEffect(IEPotions.flammable, 100, 1));
-		blockFluidConcrete.setPotionEffects(new PotionEffect(MobEffects.SLOWNESS, 20, 3, false, false));
+		blockFluidCreosote.setPotionEffects(new EffectInstance(IEPotions.flammable, 100, 0));
+		blockFluidEthanol.setPotionEffects(new EffectInstance(Effects.NAUSEA, 40, 0));
+		blockFluidBiodiesel.setPotionEffects(new EffectInstance(IEPotions.flammable, 100, 1));
+		blockFluidConcrete.setPotionEffects(new EffectInstance(Effects.SLOWNESS, 20, 3, false, false));
 
 		ChemthrowerHandler.registerEffect(FluidRegistry.WATER, new ChemthrowerEffect_Extinguish());
 
 		ChemthrowerHandler.registerEffect(fluidPotion, new ChemthrowerEffect()
 		{
 			@Override
-			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
 			{
 				if(fluid.tag!=null)
 				{
-					List<PotionEffect> effects = PotionUtils.getEffectsFromTag(fluid.tag);
-					for(PotionEffect e : effects)
+					List<EffectInstance> effects = PotionUtils.getEffectsFromTag(fluid.tag);
+					for(EffectInstance e : effects)
 					{
-						PotionEffect newEffect = new PotionEffect(e.getPotion(), (int)Math.ceil(e.getDuration()*.05), e.getAmplifier());
+						EffectInstance newEffect = new EffectInstance(e.getPotion(), (int)Math.ceil(e.getDuration()*.05), e.getAmplifier());
 						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
 						target.addPotionEffect(newEffect);
 					}
@@ -766,18 +758,18 @@ public class IEContent
 			}
 
 			@Override
-			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 			{
 			}
 
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
 			{
 
 			}
 
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 			{
 			}
 		});
@@ -785,20 +777,20 @@ public class IEContent
 		ChemthrowerHandler.registerEffect(fluidConcrete, new ChemthrowerEffect()
 		{
 			@Override
-			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
 			{
-				hit(target.world, target.getPosition(), EnumFacing.UP);
+				hit(target.world, target.getPosition(), Direction.UP);
 			}
 
 			@Override
-			public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 			{
 			}
 
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
 			{
-				IBlockState hit = world.getBlockState(mop.getBlockPos());
+				BlockState hit = world.getBlockState(mop.getBlockPos());
 				if(hit.getBlock()!=blockStoneDecoration||hit.getBlock().getMetaFromState(hit)!=BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta())
 				{
 					BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
@@ -812,19 +804,19 @@ public class IEContent
 			}
 
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 			{
 			}
 
-			private void hit(World world, BlockPos pos, EnumFacing side)
+			private void hit(World world, BlockPos pos, Direction side)
 			{
 				AxisAlignedBB aabb = new AxisAlignedBB(pos);
 				List<EntityChemthrowerShot> otherProjectiles = world.getEntitiesWithinAABB(EntityChemthrowerShot.class, aabb);
 				for(EntityChemthrowerShot shot : otherProjectiles)
 					shot.setDead();
 				world.setBlockState(pos, blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta()));
-				for(EntityLivingBase living : world.getEntitiesWithinAABB(EntityLivingBase.class, aabb))
-					living.addPotionEffect(new PotionEffect(IEPotions.concreteFeet, Integer.MAX_VALUE));
+				for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, aabb))
+					living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet, Integer.MAX_VALUE));
 			}
 		});
 
@@ -833,7 +825,7 @@ public class IEContent
 		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 1));
 		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
 		ChemthrowerHandler.registerFlammable(fluidEthanol);
-		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null, 0, new PotionEffect(IEPotions.flammable, 140, 0), new PotionEffect(MobEffects.BLINDNESS, 80, 1)));
+		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null, 0, new EffectInstance(IEPotions.flammable, 140, 0), new EffectInstance(Effects.BLINDNESS, 80, 1)));
 		ChemthrowerHandler.registerFlammable("oil");
 		ChemthrowerHandler.registerEffect("fuel", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 100, 1));
 		ChemthrowerHandler.registerFlammable("fuel");
@@ -853,7 +845,7 @@ public class IEContent
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.Machines.heater_consumption;
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.Machines.heater_speedupConsumption;
-		ExternalHeaterHandler.registerHeatableAdapter(TileEntityFurnace.class, new DefaultFurnaceAdapter());
+		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
 
 		BelljarHandler.DefaultPlantHandler hempBelljarHandler = new BelljarHandler.DefaultPlantHandler()
 		{
@@ -867,12 +859,12 @@ public class IEContent
 
 			@Override
 			@OnlyIn(Dist.CLIENT)
-			public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+			public BlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 			{
 				int age = Math.min(4, Math.round(growth*4));
 				if(age==4)
-					return new IBlockState[]{blockCrop.getStateFromMeta(age), blockCrop.getStateFromMeta(age+1)};
-				return new IBlockState[]{blockCrop.getStateFromMeta(age)};
+					return new BlockState[]{blockCrop.getStateFromMeta(age), blockCrop.getStateFromMeta(age+1)};
+				return new BlockState[]{blockCrop.getStateFromMeta(age)};
 			}
 
 			@Override
@@ -922,9 +914,9 @@ public class IEContent
 
 		/*LOOT*/
 		if(IEConfig.villagerHouse)
-			LootTableList.register(VillageEngineersHouse.woodenCrateLoot);
+			LootTables.register(VillageEngineersHouse.woodenCrateLoot);
 		for(ResourceLocation rl : EventHandler.lootInjections)
-			LootTableList.register(rl);
+			LootTables.register(rl);
 
 		//		//Railcraft Compat
 		//		if(Loader.isModLoaded("Railcraft"))
@@ -974,8 +966,8 @@ public class IEContent
 			input.setAccessible(true);
 			for(Object mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
 				//noinspection unchecked
-				MixerRecipePotion.registerPotionRecipe(((IRegistryDelegate<PotionType>)output.get(mixPredicate)).get(),
-						((IRegistryDelegate<PotionType>)input.get(mixPredicate)).get(),
+				MixerRecipePotion.registerPotionRecipe(((IRegistryDelegate<Potion>)output.get(mixPredicate)).get(),
+						((IRegistryDelegate<Potion>)input.get(mixPredicate)).get(),
 						ApiUtils.createIngredientStack(reagent.get(mixPredicate)));
 		} catch(Exception x)
 		{
@@ -1140,7 +1132,7 @@ public class IEContent
 		registeredIETiles.add(tile);
 	}
 
-	public static void addConfiguredWorldgen(IBlockState state, String name, int[] config)
+	public static void addConfiguredWorldgen(BlockState state, String name, int[] config)
 	{
 		if(config!=null&&config.length >= 5&&config[0] > 0)
 			IEWorldGen.addOreGen(name, state, config[0], config[1], config[2], config[3], config[4]);

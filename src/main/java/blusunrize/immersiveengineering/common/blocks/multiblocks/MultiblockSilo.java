@@ -18,13 +18,13 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMulti
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -101,15 +101,15 @@ public class MultiblockSilo implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(IBlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		return Utils.isInTag(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)), "blockSheetmetalIron");
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, EnumFacing side, EntityPlayer player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
-		EnumFacing f = EnumFacing.fromAngle(player.rotationYaw);
+		Direction f = Direction.fromAngle(player.rotationYaw);
 		pos = pos.offset(f);
 		if(!(Utils.isOreBlockAt(world, pos.offset(f, -1).offset(f.rotateY()), "fenceTreatedWood")&&Utils.isOreBlockAt(world, pos.offset(f, -1).offset(f.rotateYCCW()), "fenceTreatedWood")))
 			for(int i = 0; i < 6; i++)
@@ -144,7 +144,7 @@ public class MultiblockSilo implements IMultiblock
 							return false;
 					}
 
-		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.SILO.getMeta());
+		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.SILO.getMeta());
 		state = state.with(IEProperties.FACING_HORIZONTAL, f.getOpposite());
 		for(int h = 0; h <= 6; h++)
 			for(int l = -1; l <= 1; l++)
@@ -155,8 +155,8 @@ public class MultiblockSilo implements IMultiblock
 					if(h > 0&&h < 6&&l==0&&w==0)
 						continue;
 
-					int xx = f==EnumFacing.EAST?l: f==EnumFacing.WEST?-l: f==EnumFacing.NORTH?-w: w;
-					int zz = f==EnumFacing.NORTH?l: f==EnumFacing.SOUTH?-l: f==EnumFacing.EAST?w: -w;
+					int xx = f==Direction.EAST?l: f==Direction.WEST?-l: f==Direction.NORTH?-w: w;
+					int zz = f==Direction.NORTH?l: f==Direction.SOUTH?-l: f==Direction.EAST?w: -w;
 
 					world.setBlockState(pos.add(xx, h, zz), state);
 					BlockPos pos2 = pos.add(xx, h, zz);

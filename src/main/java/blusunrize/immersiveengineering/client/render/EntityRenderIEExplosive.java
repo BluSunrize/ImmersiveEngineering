@@ -12,15 +12,15 @@ import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class EntityRenderIEExplosive extends Render<EntityIEExplosive>
+public class EntityRenderIEExplosive extends EntityRenderer<EntityIEExplosive>
 {
-	public EntityRenderIEExplosive(RenderManager renderManager)
+	public EntityRenderIEExplosive(EntityRendererManager renderManager)
 	{
 		super(renderManager);
 		this.shadowSize = .5f;
@@ -76,6 +76,6 @@ public class EntityRenderIEExplosive extends Render<EntityIEExplosive>
 	@Override
 	protected ResourceLocation getEntityTexture(EntityIEExplosive entity)
 	{
-		return TextureMap.LOCATION_BLOCKS_TEXTURE;
+		return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
 	}
 }

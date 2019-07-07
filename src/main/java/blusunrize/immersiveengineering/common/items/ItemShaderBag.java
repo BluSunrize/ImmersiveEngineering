@@ -13,14 +13,14 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -28,9 +28,9 @@ import javax.annotation.Nonnull;
 public class ItemShaderBag extends ItemIEBase
 {
 	@Nonnull
-	private final EnumRarity rarity;
+	private final Rarity rarity;
 
-	public ItemShaderBag(EnumRarity rarity)
+	public ItemShaderBag(Rarity rarity)
 	{
 		super("shader_bag_"+rarity.name().toLowerCase(), new Properties());
 		this.rarity = rarity;
@@ -51,17 +51,17 @@ public class ItemShaderBag extends ItemIEBase
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack)
 	{
-		return new TextComponentString(rarity.name()+" ").appendSibling(super.getDisplayName(stack));
+		return new StringTextComponent(rarity.name()+" ").appendSibling(super.getDisplayName(stack));
 	}
 
 	@Override
-	public EnumRarity getRarity(ItemStack stack)
+	public Rarity getRarity(ItemStack stack)
 	{
 		return rarity;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
@@ -69,19 +69,19 @@ public class ItemShaderBag extends ItemIEBase
 			{
 				String shader = ShaderRegistry.getRandomShader(player.getUniqueID(), player.getRNG(), rarity, true);
 				if(shader==null||shader.isEmpty())
-					return new ActionResult<>(EnumActionResult.FAIL, stack);
+					return new ActionResult<>(ActionResultType.FAIL, stack);
 				ItemStack shaderItem = new ItemStack(Misc.shader);
 				ItemNBTHelper.setString(shaderItem, "shader_name", shader);
-				EnumRarity shaderRarity = ShaderRegistry.shaderRegistry.get(shader).getRarity();
-				if(ShaderRegistry.sortedRarityMap.indexOf(shaderRarity) <= ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.EPIC)&&
-						ShaderRegistry.sortedRarityMap.indexOf(rarity) >= ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.COMMON))
+				Rarity shaderRarity = ShaderRegistry.shaderRegistry.get(shader).getRarity();
+				if(ShaderRegistry.sortedRarityMap.indexOf(shaderRarity) <= ShaderRegistry.sortedRarityMap.indexOf(Rarity.EPIC)&&
+						ShaderRegistry.sortedRarityMap.indexOf(rarity) >= ShaderRegistry.sortedRarityMap.indexOf(Rarity.COMMON))
 					Utils.unlockIEAdvancement(player, "main/secret_luckofthedraw");
 				stack.shrink(1);
 				if(stack.getCount() <= 0)
-					return new ActionResult<>(EnumActionResult.SUCCESS, shaderItem);
+					return new ActionResult<>(ActionResultType.SUCCESS, shaderItem);
 				if(!player.inventory.addItemStackToInventory(shaderItem))
 					player.dropItem(shaderItem, false, true);
 			}
-		return new ActionResult<>(EnumActionResult.PASS, stack);
+		return new ActionResult<>(ActionResultType.PASS, stack);
 	}
 }

@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
@@ -25,11 +25,11 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
@@ -67,18 +67,18 @@ public class BlockConveyor extends BlockIETileProvider
 	{
 		String flavourKey = getTranslationKey()+".flavour";
 		if(I18n.hasKey(flavourKey))
-			tooltip.add(new TextComponentTranslation(flavourKey));
+			tooltip.add(new TranslationTextComponent(flavourKey));
 	}
 
 	@Override
-	public void onIEBlockPlacedBy(BlockItemUseContext context, IBlockState state)
+	public void onIEBlockPlacedBy(BlockItemUseContext context, BlockState state)
 	{
 		super.onIEBlockPlacedBy(context, state);
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof TileEntityConveyorBelt&&!(tile instanceof TileEntityConveyorVertical))
 		{
 			TileEntityConveyorBelt conveyor = (TileEntityConveyorBelt)tile;
-			EnumFacing f = conveyor.facing;
+			Direction f = conveyor.facing;
 			tile = world.getTileEntity(pos.offset(f));
 			TileEntity tileUp = world.getTileEntity(pos.offset(f).add(0, 1, 0));
 			IConveyorBelt subType = conveyor.getConveyorSubtype();
@@ -90,13 +90,13 @@ public class BlockConveyor extends BlockIETileProvider
 	}
 
 	@Override
-	public TileEntity createBasicTE(IBlockState world)
+	public TileEntity createBasicTE(BlockState world)
 	{
 		return new TileEntityConveyorBelt(typeName);
 	}
 
 	@Override
-	public boolean allowHammerHarvest(IBlockState blockState)
+	public boolean allowHammerHarvest(BlockState blockState)
 	{
 		return true;
 	}
