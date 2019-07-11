@@ -177,7 +177,7 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 		@Override
 		public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 		{
-			nbt.setIntArray("floodlightCoords", floodlightCoords);
+			nbt.putIntArray("floodlightCoords", floodlightCoords);
 
 		}
 	}

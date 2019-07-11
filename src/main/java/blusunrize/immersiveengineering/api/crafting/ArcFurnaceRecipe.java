@@ -86,13 +86,13 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	@Override
 	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("input", input.writeToNBT(new CompoundNBT()));
+		nbt.put("input", input.writeToNBT(new CompoundNBT()));
 		if(this.additives.length > 0)
 		{
 			ListNBT list = new ListNBT();
 			for(IngredientStack add : this.additives)
 				list.add(add.writeToNBT(new CompoundNBT()));
-			nbt.setTag("additives", list);
+			nbt.put("additives", list);
 		}
 		return nbt;
 	}

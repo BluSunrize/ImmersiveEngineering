@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import gnu.trove.map.TIntObjectMap;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.IResource;
@@ -182,8 +183,8 @@ public class ManualEntry implements Comparable<ManualEntry>
 			pages.get(gui.page).special.buttonPressed(gui, button);
 	}
 
-	public void mouseDragged(GuiManual gui, int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY,
-							 Button button)
+	public void mouseDragged(GuiManual gui, int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY,
+							 Widget button)
 	{
 		pages.get(gui.page).special.mouseDragged(x, y, clickX, clickY, mx, my, lastX, lastY, button);
 	}

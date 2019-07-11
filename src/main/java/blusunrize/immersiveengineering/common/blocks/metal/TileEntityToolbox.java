@@ -62,13 +62,13 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("facing", facing.ordinal());
+		nbt.putInt("facing", facing.ordinal());
 		if(this.name!=null)
-			nbt.setString("name", ITextComponent.Serializer.toJson(this.name));
+			nbt.putString("name", ITextComponent.Serializer.toJson(this.name));
 		if(this.enchantments!=null)
-			nbt.setTag("enchantments", this.enchantments);
+			nbt.put("enchantments", this.enchantments);
 		if(!descPacket)
-			nbt.setTag("inventory", Utils.writeInventory(inventory));
+			nbt.put("inventory", Utils.writeInventory(inventory));
 	}
 
 	@Override
@@ -147,7 +147,7 @@ public class TileEntityToolbox extends TileEntityIEBase implements IDirectionalT
 		if(this.name!=null)
 			stack.setDisplayName(this.name);
 		if(enchantments!=null)
-			stack.getOrCreateTag().setTag("ench", enchantments);
+			stack.getOrCreateTag().put("ench", enchantments);
 		return stack;
 	}
 

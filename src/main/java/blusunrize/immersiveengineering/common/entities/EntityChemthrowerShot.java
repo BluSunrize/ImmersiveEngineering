@@ -210,7 +210,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 //	{
 //		super.writeAdditional(nbt);
 //		if(this.fluid!=null)
-//			nbt.setString("fluid", this.fluid.getName());
+//			nbt.putString("fluid", this.fluid.getName());
 //	}
 //
 //	@Override

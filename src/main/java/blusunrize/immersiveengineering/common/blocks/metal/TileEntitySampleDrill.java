@@ -135,19 +135,19 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		ItemStack stack = new ItemStack(IEContent.itemCoresample);
 		ItemNBTHelper.setLong(stack, "timestamp", world.getGameTime());
-		ItemNBTHelper.setIntArray(stack, "coords", new int[]{world.getDimension(), chunkX, chunkZ});
+		ItemNBTHelper.putIntArray(stack, "coords", new int[]{world.getDimension(), chunkX, chunkZ});
 		if(info==null)
 			return stack;
 		if(info.mineralOverride!=null)
-			ItemNBTHelper.setString(stack, "mineral", info.mineralOverride.name);
+			ItemNBTHelper.putString(stack, "mineral", info.mineralOverride.name);
 		else if(info.mineral!=null)
-			ItemNBTHelper.setString(stack, "mineral", info.mineral.name);
+			ItemNBTHelper.putString(stack, "mineral", info.mineral.name);
 		else
 			return stack;
 		if(ExcavatorHandler.mineralVeinCapacity < 0||info.depletion < 0)
-			ItemNBTHelper.setBoolean(stack, "infinite", true);
+			ItemNBTHelper.putBoolean(stack, "infinite", true);
 		else
-			ItemNBTHelper.setInt(stack, "depletion", info.depletion);
+			ItemNBTHelper.putInt(stack, "depletion", info.depletion);
 		return stack;
 	}
 
@@ -155,11 +155,11 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
-		nbt.setInt("dummy", dummy);
-		nbt.setInt("process", process);
-		nbt.setBoolean("active", active);
+		nbt.putInt("dummy", dummy);
+		nbt.putInt("process", process);
+		nbt.putBoolean("active", active);
 		if(!sample.isEmpty())
-			nbt.setTag("sample", sample.writeToNBT(new CompoundNBT()));
+			nbt.put("sample", sample.writeToNBT(new CompoundNBT()));
 	}
 
 	@Override

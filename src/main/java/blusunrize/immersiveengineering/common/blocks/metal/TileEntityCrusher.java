@@ -86,7 +86,7 @@ public class TileEntityCrusher extends TileEntityPoweredMultiblock<TileEntityCru
 			ListNBT invList = new ListNBT();
 			for(ItemStack s : inputs)
 				invList.add(s.write(new CompoundNBT()));
-			nbt.setTag("inputs", invList);
+			nbt.put("inputs", invList);
 		}
 	}
 

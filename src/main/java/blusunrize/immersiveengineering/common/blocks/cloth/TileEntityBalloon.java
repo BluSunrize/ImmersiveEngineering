@@ -84,11 +84,11 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	public void writeCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInt("nbtVersion", 1);
-		nbt.setInt("style", style);
-		nbt.setInt("colour0", colour0);
-		nbt.setInt("colour1", colour1);
-		nbt.setTag("shader", shader.serializeNBT());
+		nbt.putInt("nbtVersion", 1);
+		nbt.putInt("style", style);
+		nbt.putInt("colour0", colour0);
+		nbt.putInt("colour1", colour1);
+		nbt.put("shader", shader.serializeNBT());
 	}
 
 	@Nonnull

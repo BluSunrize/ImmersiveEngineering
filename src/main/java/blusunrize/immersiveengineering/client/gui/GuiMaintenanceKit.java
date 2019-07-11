@@ -76,12 +76,12 @@ public class GuiMaintenanceKit extends GuiIEContainerBase
 			{
 				if(button instanceof GuiButtonCheckbox&&boolArray!=null)
 				{
-					message.setBoolean("b_"+boolArray[iBool].name, ((GuiButtonCheckbox)button).state);
+					message.putBoolean("b_"+boolArray[iBool].name, ((GuiButtonCheckbox)button).state);
 					tool.applyConfigOption(stack, boolArray[iBool++].name, ((GuiButtonCheckbox)button).state);
 				}
 				if(button instanceof GuiSliderIE&&floatArray!=null)
 				{
-					message.setFloat("f_"+floatArray[iFloat].name, (float)((GuiSliderIE)button).sliderValue);
+					message.putFloat("f_"+floatArray[iFloat].name, (float)((GuiSliderIE)button).sliderValue);
 					tool.applyConfigOption(stack, floatArray[iFloat++].name, (float)((GuiSliderIE)button).sliderValue);
 				}
 			}

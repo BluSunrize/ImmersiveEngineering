@@ -122,8 +122,8 @@ public class IICProxy implements IImmersiveConnectable
 	public CompoundNBT writeToNBT()
 	{
 		CompoundNBT ret = new CompoundNBT();
-		ret.setInt("dim", dim);
-		ret.setTag("pos", NBTUtil.createPosTag(pos));
+		ret.putInt("dim", dim);
+		ret.put("pos", NBTUtil.createPosTag(pos));
 		return ret;
 	}
 

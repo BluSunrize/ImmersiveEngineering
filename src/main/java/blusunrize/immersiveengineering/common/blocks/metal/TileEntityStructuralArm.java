@@ -69,10 +69,10 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IOBJMod
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("totalLength", totalLength);
-		nbt.setInt("slopePosition", slopePosition);
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setBoolean("onCeiling", onCeiling);
+		nbt.putInt("totalLength", totalLength);
+		nbt.putInt("slopePosition", slopePosition);
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putBoolean("onCeiling", onCeiling);
 	}
 
 	@Override

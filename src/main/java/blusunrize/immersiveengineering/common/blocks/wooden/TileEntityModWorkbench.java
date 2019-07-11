@@ -64,9 +64,9 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setBoolean("dummy", dummy);
-		nbt.setTag("inventory", Utils.writeInventory(inventory));
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putBoolean("dummy", dummy);
+		nbt.put("inventory", Utils.writeInventory(inventory));
 	}
 
 	@OnlyIn(Dist.CLIENT)

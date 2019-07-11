@@ -64,15 +64,15 @@ public class TileEntityFeedthrough extends TileEntityImmersiveConnectable implem
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setString(WIRE, reference.getUniqueName());
+		nbt.putString(WIRE, reference.getUniqueName());
 		if(connPositive!=null)
-			nbt.setTag(POSITIVE, connPositive.createTag());
-		nbt.setBoolean(HAS_NEGATIVE, hasNegative);
-		nbt.setInt(FACING, facing.getIndex());
-		nbt.setInt(OFFSET, offset);
+			nbt.put(POSITIVE, connPositive.createTag());
+		nbt.putBoolean(HAS_NEGATIVE, hasNegative);
+		nbt.putInt(FACING, facing.getIndex());
+		nbt.putInt(OFFSET, offset);
 		CompoundNBT stateNbt = new CompoundNBT();
 		Utils.stateToNBT(stateNbt, stateForMiddle);
-		nbt.setTag(MIDDLE_STATE, stateNbt);
+		nbt.put(MIDDLE_STATE, stateNbt);
 	}
 
 	@Override

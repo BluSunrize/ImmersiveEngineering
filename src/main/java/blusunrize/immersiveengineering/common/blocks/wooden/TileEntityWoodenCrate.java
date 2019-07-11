@@ -89,17 +89,17 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(this.name!=null)
-			nbt.setString("name", this.name);
+			nbt.putString("name", this.name);
 		if(this.enchantments!=null&&this.enchantments.size() > 0)
-			nbt.setTag("enchantments", this.enchantments);
+			nbt.put("enchantments", this.enchantments);
 		if(!descPacket)
 		{
 			if(lootTable!=null)
-				nbt.setString("lootTable", lootTable.toString());
+				nbt.putString("lootTable", lootTable.toString());
 			else
 				writeInv(nbt, false);
 		}
-		nbt.setBoolean("reinforced", reinforced);
+		nbt.putBoolean("reinforced", reinforced);
 	}
 
 	public void writeInv(CompoundNBT nbt, boolean toItem)
@@ -117,7 +117,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 				invList.add(itemTag);
 			}
 		if(!toItem||write)
-			nbt.setTag("inventory", invList);
+			nbt.put("inventory", invList);
 	}
 
 	//TODO @Override
@@ -216,11 +216,11 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 		CompoundNBT tag = new CompoundNBT();
 		writeInv(tag, true);
 		if(!tag.isEmpty())
-			stack.setTag(tag);
+			stack.put(tag);
 		if(this.name!=null)
 			stack.setDisplayName(new StringTextComponent(this.name));
 		if(enchantments!=null&&enchantments.size() > 0)
-			ItemNBTHelper.getTag(stack).setTag("ench", enchantments);
+			ItemNBTHelper.getTag(stack).put("ench", enchantments);
 		return stack;
 	}
 

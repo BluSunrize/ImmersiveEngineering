@@ -123,11 +123,11 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setBoolean("formed", formed);
-		nbt.setInt("pos", posInMultiblock);
-		nbt.setIntArray("offset", offset);
-		nbt.setBoolean("mirrored", mirrored);
-		nbt.setInt("facing", facing.ordinal());
+		nbt.putBoolean("formed", formed);
+		nbt.putInt("pos", posInMultiblock);
+		nbt.putIntArray("offset", offset);
+		nbt.putBoolean("mirrored", mirrored);
+		nbt.putInt("facing", facing.ordinal());
 	}
 
 	private EnumMap<Direction, LazyOptional<IFluidHandler>> fluidCaps = new EnumMap<>(Direction.class);

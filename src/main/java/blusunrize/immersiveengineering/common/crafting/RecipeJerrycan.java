@@ -86,7 +86,7 @@ public class RecipeJerrycan implements IRecipe
 				handler.fill(fs, true);
 				newContainer = handler.getContainer();// Because buckets are silly
 //				FluidUtil.getFluidHandler(jerrycan).drain(accepted,true);
-				ItemNBTHelper.setInt(jerrycan, "jerrycanDrain", accepted);
+				ItemNBTHelper.putInt(jerrycan, "jerrycanDrain", accepted);
 			}
 			return newContainer;
 		}

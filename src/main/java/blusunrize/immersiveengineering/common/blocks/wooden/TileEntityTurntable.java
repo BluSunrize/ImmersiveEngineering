@@ -43,9 +43,9 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setBoolean("redstone", redstone);
-		nbt.setBoolean("invert", invert);
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putBoolean("redstone", redstone);
+		nbt.putBoolean("invert", invert);
 	}
 
 	@Override

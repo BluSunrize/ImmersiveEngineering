@@ -113,7 +113,7 @@ public class RecipeRGBColouration implements IRecipe
 			b = (int)((float)b*colourMod/highestColour);
 			int newColour = (r<<8)+g;
 			newColour = (newColour<<8)+b;
-			newItem.getOrCreateTag().setInt(colorKey, newColour);
+			newItem.getOrCreateTag().putInt(colorKey, newColour);
 			return newItem;
 		}
 		return ItemStack.EMPTY;

@@ -590,8 +590,8 @@ public class Utils
 	{
 		CompoundNBT tag = new CompoundNBT();
 		CompoundNBT expl = new CompoundNBT();
-		expl.setBoolean("Flicker", true);
-		expl.setBoolean("Trail", true);
+		expl.putBoolean("Flicker", true);
+		expl.putBoolean("Trail", true);
 		int[] colors = new int[rand.nextInt(8)+1];
 		for(int i = 0; i < colors.length; i++)
 		{
@@ -603,14 +603,14 @@ public class Utils
 				j += 2;
 			colors[i] = DyeColor.byId(j).func_196060_f();
 		}
-		expl.setIntArray("Colors", colors);
+		expl.putIntArray("Colors", colors);
 		int type = preType >= 0?preType: rand.nextInt(4);
 		if(preType < 0&&type==3)
 			type = 4;
 		expl.setByte("Type", (byte)type);
 		ListNBT list = new ListNBT();
 		list.add(expl);
-		tag.setTag("Explosions", list);
+		tag.put("Explosions", list);
 
 		return tag;
 	}
@@ -1396,7 +1396,7 @@ public class Utils
 	/*TODO use NBTUtil instead!
 	public static void stateToNBT(NBTTagCompound out, IBlockState state)
 	{
-		out.setString("block", state.getBlock().getRegistryName().toString());
+		out.putString("block", state.getBlock().getRegistryName().toString());
 		for(IProperty<?> prop : state.getProperties())
 			saveProp(state, prop, out);
 	}

@@ -75,7 +75,7 @@ public class CapabilityShader
 			if(!shader.isEmpty())
 			{
 				CompoundNBT shaderTag = shader.writeToNBT(new CompoundNBT());
-				container.getTagCompound().setTag(SHADER_NBT_KEY, shaderTag);
+				container.getTagCompound().put(SHADER_NBT_KEY, shaderTag);
 			}
 			else
 				container.getTagCompound().removeTag(SHADER_NBT_KEY);
@@ -137,8 +137,8 @@ public class CapabilityShader
 			if(!shader.isEmpty())
 				shader.writeToNBT(nbt);
 			else
-				nbt.setString("IE:NoShader", "");
-			nbt.setString("IE:ShaderType", getShaderType());
+				nbt.putString("IE:NoShader", "");
+			nbt.putString("IE:ShaderType", getShaderType());
 			return nbt;
 		}
 
@@ -164,8 +164,8 @@ public class CapabilityShader
 				if(!shader.isEmpty())
 					shader.writeToNBT(nbt);
 				else
-					nbt.setString("IE:NoShader", "");
-				nbt.setString("IE:ShaderType", instance.getShaderType());
+					nbt.putString("IE:NoShader", "");
+				nbt.putString("IE:ShaderType", instance.getShaderType());
 				return nbt;
 			}
 

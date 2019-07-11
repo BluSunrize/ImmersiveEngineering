@@ -152,8 +152,8 @@ public class ExternalHeaterHandler
 				//Fix for Natura, might work on other furnaces that extend the vanilla one and use the variable name "active". Let's hope. xD
 				CompoundNBT nbt = new CompoundNBT();
 				tileEntity.writeToNBT(nbt);
-				nbt.setBoolean("active", active);
-				nbt.setBoolean("Active", active);
+				nbt.putBoolean("active", active);
+				nbt.putBoolean("Active", active);
 				tileEntity.readFromNBT(nbt);
 				BlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
 				tileEntity.getWorld().notifyBlockUpdate(tileEntity.getPos(), state, state, 3);

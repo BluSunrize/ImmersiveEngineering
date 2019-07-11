@@ -71,7 +71,7 @@ public class ItemShaderBag extends ItemIEBase
 				if(shader==null||shader.isEmpty())
 					return new ActionResult<>(ActionResultType.FAIL, stack);
 				ItemStack shaderItem = new ItemStack(Misc.shader);
-				ItemNBTHelper.setString(shaderItem, "shader_name", shader);
+				ItemNBTHelper.putString(shaderItem, "shader_name", shader);
 				Rarity shaderRarity = ShaderRegistry.shaderRegistry.get(shader).getRarity();
 				if(ShaderRegistry.sortedRarityMap.indexOf(shaderRarity) <= ShaderRegistry.sortedRarityMap.indexOf(Rarity.EPIC)&&
 						ShaderRegistry.sortedRarityMap.indexOf(rarity) >= ShaderRegistry.sortedRarityMap.indexOf(Rarity.COMMON))

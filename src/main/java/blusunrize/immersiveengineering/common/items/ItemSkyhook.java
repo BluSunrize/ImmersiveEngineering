@@ -73,14 +73,14 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 
 	public static void setLimitSpeed(ItemStack stack, boolean doLimit)
 	{
-		ItemNBTHelper.setBoolean(stack, LIMIT_SPEED, doLimit);
+		ItemNBTHelper.putBoolean(stack, LIMIT_SPEED, doLimit);
 	}
 
 	public static boolean toggleSpeedLimit(ItemStack stack)
 	{
 		CompoundNBT nbt = stack.getOrCreateTag();
 		boolean wasActive = nbt.getBoolean(LIMIT_SPEED);
-		nbt.setBoolean(LIMIT_SPEED, !wasActive);
+		nbt.putBoolean(LIMIT_SPEED, !wasActive);
 		return !wasActive;
 	}
 
@@ -91,7 +91,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		if(getUpgrades(stack).getBoolean("fallBoost"))
 		{
 			float dmg = (float)Math.ceil(ent.fallDistance/5);
-			ItemNBTHelper.setFloat(stack, "fallDamageBoost", dmg);
+			ItemNBTHelper.putFloat(stack, "fallDamageBoost", dmg);
 		}
 	}
 	/*@Override

@@ -49,7 +49,7 @@ public class MessageMineralListSync implements IMessage
 		for(Map.Entry<MineralMix, Integer> e : map.entrySet())
 		{
 			CompoundNBT tag = e.getKey().writeToNBT();
-			tag.setInt("weight", e.getValue());
+			tag.putInt("weight", e.getValue());
 			buf.writeCompoundTag(tag);
 		}
 	}

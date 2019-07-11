@@ -74,8 +74,8 @@ public class ConveyorBasic implements IConveyorBelt
 	public CompoundNBT writeConveyorNBT()
 	{
 		CompoundNBT nbt = new CompoundNBT();
-		nbt.setInt("direction", direction.ordinal());
-		nbt.setInt("dyeColour", dyeColour);
+		nbt.putInt("direction", direction.ordinal());
+		nbt.putInt("dyeColour", dyeColour);
 		return nbt;
 	}
 

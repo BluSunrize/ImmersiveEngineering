@@ -25,6 +25,6 @@ public class TileEntityIESlab extends TileEntityIEBase
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("slabType", slabType);
+		nbt.putInt("slabType", slabType);
 	}
 }

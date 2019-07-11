@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.CommonProxy;
@@ -16,8 +17,7 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IESaveData;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
-import blusunrize.immersiveengineering.common.gui.GuiHandler;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
@@ -33,12 +33,10 @@ import com.google.gson.JsonStreamParser;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.ExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLFingerprintViolationEvent;
@@ -80,7 +78,6 @@ public class ImmersiveEngineering
 		//TODO right bus?
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarting);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarted);
-		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::createGui);
 	}
 
 	static
@@ -219,20 +216,11 @@ public class ImmersiveEngineering
 		//TODO isn't this always true? if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			//TODO hardcoding DimensionType.OVERWORLD seems hacky/broken
-			World world = event.getServer().getWorld(DimensionType.OVERWORLD);
+			ServerWorld world = event.getServer().getWorld(DimensionType.OVERWORLD);
 			if(!world.isRemote)
 			{
-				IESaveData worldData = world.func_212411_a(DimensionType.OVERWORLD, IESaveData::new, IESaveData.dataName);
-
-				if(worldData==null)
-				{
-					IELogger.info("WorldData not found");
-					worldData = new IESaveData(IESaveData.dataName);
-					world.func_212409_a(DimensionType.OVERWORLD, IESaveData.dataName, worldData);
-				}
-				else
-					IELogger.info("WorldData retrieved");
-				IESaveData.setInstance(world.getDimension().getType(), worldData);
+				IESaveData worldData = world.getSavedData().get(IESaveData::new, IESaveData.dataName);
+				IESaveData.setInstance(worldData);
 			}
 		}
 		IEContent.refreshFluidReferences();
@@ -244,14 +232,7 @@ public class ImmersiveEngineering
 		@Nonnull
 		public ItemStack createIcon()
 		{
-			return ItemStack.EMPTY;
-		}
-
-
-		@Override
-		public ItemStack getIcon()
-		{
-			return new ItemStack(MetalDecoration.lVCoil, 1);
+			return new ItemStack(Misc.wireCoils.get(WireType.COPPER));
 		}
 	};
 

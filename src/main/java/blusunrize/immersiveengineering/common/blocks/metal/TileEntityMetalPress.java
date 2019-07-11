@@ -87,7 +87,7 @@ public class TileEntityMetalPress extends TileEntityPoweredMultiblock<TileEntity
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!this.mold.isEmpty())
-			nbt.setTag("mold", this.mold.write(new CompoundNBT()));
+			nbt.put("mold", this.mold.write(new CompoundNBT()));
 	}
 
 	@Override

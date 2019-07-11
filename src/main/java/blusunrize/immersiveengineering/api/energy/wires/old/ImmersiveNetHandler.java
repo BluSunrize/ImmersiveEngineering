@@ -647,11 +647,11 @@ public class ImmersiveNetHandler
 		{
 			CompoundNBT tag = new CompoundNBT();
 			if(start!=null)
-				tag.setIntArray("start", new int[]{start.getX(), start.getY(), start.getZ()});
+				tag.putIntArray("start", new int[]{start.getX(), start.getY(), start.getZ()});
 			if(end!=null)
-				tag.setIntArray("end", new int[]{end.getX(), end.getY(), end.getZ()});
-			tag.setString("cableType", cableType.getUniqueName());
-			tag.setInt("length", length);
+				tag.putIntArray("end", new int[]{end.getX(), end.getY(), end.getZ()});
+			tag.putString("cableType", cableType.getUniqueName());
+			tag.putInt("length", length);
 			return tag;
 		}
 

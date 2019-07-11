@@ -223,7 +223,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	protected void sendRenderPacket(Entity target)
 	{
 		CompoundNBT tag = new CompoundNBT();
-		tag.setInt("targetEntity", target.getEntityId());
+		tag.putInt("targetEntity", target.getEntityId());
 		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)), new MessageTileSync(this, tag));
 	}
 
@@ -357,11 +357,11 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setBoolean("dummy", dummy);
-		nbt.setBoolean("redstoneInverted", redstoneControlInverted);
-		nbt.setBoolean("lowPower", lowPower);
+		nbt.putBoolean("dummy", dummy);
+		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
+		nbt.putBoolean("lowPower", lowPower);
 		if(facing!=null)
-			nbt.setInt("facing", facing.ordinal());
+			nbt.putInt("facing", facing.ordinal());
 		energyStorage.writeToNBT(nbt);
 	}
 

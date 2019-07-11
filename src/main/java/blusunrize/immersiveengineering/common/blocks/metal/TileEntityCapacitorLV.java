@@ -149,7 +149,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		for(Direction f : Direction.VALUES)
-			nbt.setInt("sideConfig_"+f.ordinal(), sideConfig.get(f).ordinal());
+			nbt.putInt("sideConfig_"+f.ordinal(), sideConfig.get(f).ordinal());
 		energyStorage.writeToNBT(nbt);
 	}
 

@@ -220,7 +220,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				if(reload <= 0)
 					ItemNBTHelper.remove(stack, "reload");
 				else
-					ItemNBTHelper.setInt(stack, "reload", reload);
+					ItemNBTHelper.putInt(stack, "reload", reload);
 			}
 			if(ItemNBTHelper.hasKey(stack, "cooldown"))
 			{
@@ -228,7 +228,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				if(cooldown <= 0)
 					ItemNBTHelper.remove(stack, "cooldown");
 				else
-					ItemNBTHelper.setInt(stack, "cooldown", cooldown);
+					ItemNBTHelper.putInt(stack, "cooldown", cooldown);
 			}
 		}
 	}
@@ -272,7 +272,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 									ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
 											new MessageSpeedloaderSync(i, hand));
 
-								ItemNBTHelper.setInt(revolver, "reload", 60);
+								ItemNBTHelper.putInt(revolver, "reload", 60);
 								return new ActionResult<>(ActionResultType.SUCCESS, revolver);
 							}
 						}
@@ -321,7 +321,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 						cycled.set(cycled.size()-1, bullets.get(0));
 						setBullets(revolver, cycled);
 						player.inventory.markDirty();
-						ItemNBTHelper.setInt(revolver, "cooldown", getMaxShootCooldown(revolver));
+						ItemNBTHelper.putInt(revolver, "cooldown", getMaxShootCooldown(revolver));
 						return new ActionResult<>(ActionResultType.SUCCESS, revolver);
 					}
 				}
@@ -608,22 +608,22 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			return;
 		}
 		if(r.tag!=null&&!r.tag.isEmpty())
-			ItemNBTHelper.setString(stack, "elite", r.tag);
+			ItemNBTHelper.putString(stack, "elite", r.tag);
 		if(r.flavour!=null&&!r.flavour.isEmpty())
-			ItemNBTHelper.setString(stack, "flavour", r.flavour);
+			ItemNBTHelper.putString(stack, "flavour", r.flavour);
 		CompoundNBT baseUpgrades = new CompoundNBT();
 		for(Map.Entry<String, Object> e : r.baseUpgrades.entrySet())
 		{
 			if(e.getValue() instanceof Boolean)
-				baseUpgrades.setBoolean(e.getKey(), (Boolean)e.getValue());
+				baseUpgrades.putBoolean(e.getKey(), (Boolean)e.getValue());
 			else if(e.getValue() instanceof Integer)
-				baseUpgrades.setInt(e.getKey(), (Integer)e.getValue());
+				baseUpgrades.putInt(e.getKey(), (Integer)e.getValue());
 			else if(e.getValue() instanceof Float)
 				baseUpgrades.setDouble(e.getKey(), (Float)e.getValue());
 			else if(e.getValue() instanceof Double)
 				baseUpgrades.setDouble(e.getKey(), (Double)e.getValue());
 			else if(e.getValue() instanceof String)
-				baseUpgrades.setString(e.getKey(), (String)e.getValue());
+				baseUpgrades.putString(e.getKey(), (String)e.getValue());
 		}
 		ItemNBTHelper.setTagCompound(stack, "baseUpgrades", baseUpgrades);
 	}
@@ -659,7 +659,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			NonNullList<ItemStack> bullets = NonNullList.withSize(getBulletCount(stack), ItemStack.EMPTY);
 			for(int i = 0; i < getBulletCount(stack); i++)
 				bullets.set(i, handler.getStackInSlot(i));
-			retFinal.setTag("bullets", Utils.writeInventory(bullets));
+			retFinal.put("bullets", Utils.writeInventory(bullets));
 		});
 		return retFinal;
 	}

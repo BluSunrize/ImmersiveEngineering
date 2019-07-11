@@ -113,7 +113,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
-		nbt.setTag("tank", tankTag);
+		nbt.put("tank", tankTag);
 	}
 
 	@Override

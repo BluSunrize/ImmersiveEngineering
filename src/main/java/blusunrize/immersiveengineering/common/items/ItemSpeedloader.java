@@ -113,7 +113,7 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiI
 			NonNullList<ItemStack> bullets = NonNullList.withSize(getSlotCount(stack), ItemStack.EMPTY);
 			for(int i = 0; i < getSlotCount(stack); i++)
 				bullets.set(i, handler.getStackInSlot(i));
-			retConst.setTag("bullets", Utils.writeInventory(bullets));
+			retConst.put("bullets", Utils.writeInventory(bullets));
 		});
 		return retConst;
 	}

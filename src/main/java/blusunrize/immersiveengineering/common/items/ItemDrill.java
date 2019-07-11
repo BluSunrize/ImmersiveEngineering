@@ -586,7 +586,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			ret = ret.copy();
 		CompoundNBT tmp = new CompoundNBT();
 		getHead(stack).write(tmp);
-		ret.setTag("head", tmp);
+		ret.put("head", tmp);
 		return ret;
 	}
 }

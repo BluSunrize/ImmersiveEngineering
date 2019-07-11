@@ -118,7 +118,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	@Override
 	public void damageHead(ItemStack head, int dmg)
 	{
-		ItemNBTHelper.setInt(head, "headDamage", ItemNBTHelper.getInt(head, "headDamage")+dmg);
+		ItemNBTHelper.putInt(head, "headDamage", ItemNBTHelper.getInt(head, "headDamage")+dmg);
 	}
 
 	@Override

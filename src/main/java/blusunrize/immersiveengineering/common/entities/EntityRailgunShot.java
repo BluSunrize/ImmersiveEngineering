@@ -157,7 +157,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 	{
 		super.writeAdditional(nbt);
 		if(!this.ammo.isEmpty())
-			nbt.setTag("ammo", this.ammo.write(new CompoundNBT()));
+			nbt.put("ammo", this.ammo.write(new CompoundNBT()));
 	}
 
 	@Override

@@ -63,11 +63,11 @@ public class TileEntityRefinery extends TileEntityPoweredMultiblock<TileEntityRe
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setTag("tank0", tanks[0].writeToNBT(new CompoundNBT()));
-		nbt.setTag("tank1", tanks[1].writeToNBT(new CompoundNBT()));
-		nbt.setTag("tank2", tanks[2].writeToNBT(new CompoundNBT()));
+		nbt.put("tank0", tanks[0].writeToNBT(new CompoundNBT()));
+		nbt.put("tank1", tanks[1].writeToNBT(new CompoundNBT()));
+		nbt.put("tank2", tanks[2].writeToNBT(new CompoundNBT()));
 		if(!descPacket)
-			nbt.setTag("inventory", Utils.writeInventory(inventory));
+			nbt.put("inventory", Utils.writeInventory(inventory));
 	}
 
 	@Override

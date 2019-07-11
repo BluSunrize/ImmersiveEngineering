@@ -80,10 +80,10 @@ public class Connection
 	public CompoundNBT toNBT()
 	{
 		CompoundNBT nbt = new CompoundNBT();
-		nbt.setTag("endA", endA.createTag());
-		nbt.setTag("endB", endB.createTag());
-		nbt.setString("type", type.getUniqueName());
-		nbt.setBoolean("internal", internal);
+		nbt.put("endA", endA.createTag());
+		nbt.put("endB", endB.createTag());
+		nbt.putString("type", type.getUniqueName());
+		nbt.putBoolean("internal", internal);
 		return nbt;
 	}
 

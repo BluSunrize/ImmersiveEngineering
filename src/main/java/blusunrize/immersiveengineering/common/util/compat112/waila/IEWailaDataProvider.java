@@ -132,18 +132,18 @@ public class IEWailaDataProvider implements IWailaDataProvider
 		}
 		if(cur!=-1)
 		{
-			tag.setInt("Energy", cur);
-			tag.setInt("MaxStorage", max);
+			tag.putInt("Energy", cur);
+			tag.putInt("MaxStorage", max);
 		}
 		if(te instanceof TileEntityTeslaCoil)
 		{
 			if(((TileEntityTeslaCoil)te).dummy)
 				te = te.getWorld().getTileEntity(te.getPos().offset(((TileEntityTeslaCoil)te).facing, -1));
-			tag.setBoolean("redstoneInverted", ((TileEntityTeslaCoil)te).redstoneControlInverted);
-			tag.setBoolean("lowPower", ((TileEntityTeslaCoil)te).lowPower);
+			tag.putBoolean("redstoneInverted", ((TileEntityTeslaCoil)te).redstoneControlInverted);
+			tag.putBoolean("lowPower", ((TileEntityTeslaCoil)te).lowPower);
 		}
 		else if(te instanceof TileEntityWoodenBarrel)
-			tag.setTag("tank", ((TileEntityWoodenBarrel)te).tank.writeToNBT(new CompoundNBT()));
+			tag.put("tank", ((TileEntityWoodenBarrel)te).tank.writeToNBT(new CompoundNBT()));
 		return tag;
 	}
 }

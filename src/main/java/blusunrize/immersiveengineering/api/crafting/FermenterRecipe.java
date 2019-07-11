@@ -101,7 +101,7 @@ public class FermenterRecipe extends MultiblockRecipe
 	@Override
 	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("input", input.writeToNBT(new CompoundNBT()));
+		nbt.put("input", input.writeToNBT(new CompoundNBT()));
 		return nbt;
 	}
 

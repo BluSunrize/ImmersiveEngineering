@@ -95,7 +95,7 @@ public class TileEntityArcFurnace extends TileEntityPoweredMultiblock<TileEntity
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!descPacket)
-			nbt.setTag("inventory", Utils.writeInventory(inventory));
+			nbt.put("inventory", Utils.writeInventory(inventory));
 	}
 
 	@Override

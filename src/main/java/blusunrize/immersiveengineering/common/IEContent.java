@@ -551,7 +551,7 @@ public class IEContent
 		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
 			CompoundNBT data = entity.getEntityData();
 			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
-				data.setBoolean(Lib.MAGNET_PREVENT_NBT, true);
+				data.putBoolean(Lib.MAGNET_PREVENT_NBT, true);
 		}, (entity, iConveyorTile) -> {
 			entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
 		});

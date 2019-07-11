@@ -129,7 +129,7 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 				{
 					int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;
 					if(nbtDamage < cutterDurabiliy)
-						ItemNBTHelper.setInt(stack, Lib.NBT_DAMAGE, nbtDamage);
+						ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, nbtDamage);
 					else
 					{
 						player.renderBrokenItemStack(stack);

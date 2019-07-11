@@ -214,7 +214,7 @@ public class TileEntityFluidSorter extends TileEntityIEBase implements IInteract
 					filters[side][i].writeToNBT(tag);
 				filterList.add(tag);
 			}
-			nbt.setTag("filter_"+side, filterList);
+			nbt.put("filter_"+side, filterList);
 		}
 	}
 

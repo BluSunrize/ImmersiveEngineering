@@ -153,7 +153,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 	protected void sendRenderPacket()
 	{
 		CompoundNBT tag = new CompoundNBT();
-		tag.setBoolean("cycle", true);
+		tag.putBoolean("cycle", true);
 		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)),
 				new MessageTileSync(this, tag));
 	}
@@ -216,9 +216,9 @@ public class TileEntityTurretGun extends TileEntityTurret
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setBoolean("expelCasings", expelCasings);
+		nbt.putBoolean("expelCasings", expelCasings);
 		if(!descPacket)
-			nbt.setTag("inventory", Utils.writeInventory(inventory));
+			nbt.put("inventory", Utils.writeInventory(inventory));
 	}
 
 	private LazyOptional<IItemHandler> itemHandler = registerConstantCap(

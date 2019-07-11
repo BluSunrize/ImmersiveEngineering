@@ -94,7 +94,7 @@ public class ConveyorSplit extends ConveyorBasic
 			else
 			{
 				redirect = this.outputFace;
-				entity.getEntityData().setInt(nbtKey, redirect.ordinal());
+				entity.getEntityData().putInt(nbtKey, redirect.ordinal());
 				BlockPos nextPos = tile.getPos().offset(this.outputFace.getOpposite());
 				if(tile.getWorld().isBlockLoaded(nextPos))
 				{
@@ -155,7 +155,7 @@ public class ConveyorSplit extends ConveyorBasic
 	public CompoundNBT writeConveyorNBT()
 	{
 		CompoundNBT nbt = super.writeConveyorNBT();
-		nbt.setInt("outputFace", outputFace.ordinal());
+		nbt.putInt("outputFace", outputFace.ordinal());
 		return nbt;
 	}
 

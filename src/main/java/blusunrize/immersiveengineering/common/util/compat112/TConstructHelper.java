@@ -148,9 +148,9 @@ public class TConstructHelper extends IECompatModule
 	public static Fluid sendFluidForMelting(String ore, Fluid fluid)
 	{
 		CompoundNBT tag = new CompoundNBT();
-		tag.setString("fluid", fluid.getName());
-		tag.setString("ore", ore);
-		tag.setBoolean("toolforge", true);
+		tag.putString("fluid", fluid.getName());
+		tag.putString("ore", ore);
+		tag.putBoolean("toolforge", true);
 		FMLInterModComms.sendMessage("tconstruct", "integrateSmeltery", tag);
 		return fluid;
 	}
@@ -174,7 +174,7 @@ public class TConstructHelper extends IECompatModule
 				tagList.add(stack.writeToNBT(new CompoundNBT()));
 
 		CompoundNBT message = new CompoundNBT();
-		message.setTag("alloy", tagList);
+		message.put("alloy", tagList);
 		//		FMLInterModComms.sendMessage("tconstruct", "alloy", message);
 		//	For some reason IMC on this is broken? So direct interaction is required. Oh well.
 		TinkerRegistry.registerAlloy(output, inputStacks);

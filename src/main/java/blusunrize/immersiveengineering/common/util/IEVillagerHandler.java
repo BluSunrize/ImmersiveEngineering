@@ -149,11 +149,11 @@ public class IEVillagerHandler
 		VillagerRegistry.VillagerCareer career_outfitter = new VillagerRegistry.VillagerCareer(PROF_ENGINEER, ImmersiveEngineering.MODID+".outfitter");
 
 		ItemStack bag_common = new ItemStack(IEContent.itemShaderBag);
-		ItemNBTHelper.setString(bag_common, "rarity", Rarity.COMMON.toString());
+		ItemNBTHelper.putString(bag_common, "rarity", Rarity.COMMON.toString());
 		ItemStack bag_uncommon = new ItemStack(IEContent.itemShaderBag);
-		ItemNBTHelper.setString(bag_uncommon, "rarity", Rarity.UNCOMMON.toString());
+		ItemNBTHelper.putString(bag_uncommon, "rarity", Rarity.UNCOMMON.toString());
 		ItemStack bag_rare = new ItemStack(IEContent.itemShaderBag);
-		ItemNBTHelper.setString(bag_rare, "rarity", Rarity.RARE.toString());
+		ItemNBTHelper.putString(bag_rare, "rarity", Rarity.RARE.toString());
 
 		career_outfitter.addTrade(1,
 				new ItemstackForEmerald(bag_common, new VillagerEntity.PriceInfo(8, 16))

@@ -168,9 +168,9 @@ public class EntityRevolvershot extends EntityIEProjectile
 	{
 		super.writeAdditional(nbt);
 		nbt.setByte("inGround", (byte)(this.inGround?1: 0));
-		nbt.setString("bulletType", BulletHandler.findRegistryName(this.bulletType));
+		nbt.putString("bulletType", BulletHandler.findRegistryName(this.bulletType));
 		if(!bulletPotion.isEmpty())
-			nbt.setTag("bulletPotion", bulletPotion.write(new CompoundNBT()));
+			nbt.put("bulletPotion", bulletPotion.write(new CompoundNBT()));
 	}
 
 	@Override

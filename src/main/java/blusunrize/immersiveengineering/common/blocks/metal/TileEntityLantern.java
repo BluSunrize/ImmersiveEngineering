@@ -42,7 +42,7 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("facing", facing.ordinal());
+		nbt.putInt("facing", facing.ordinal());
 	}
 
 	@Override

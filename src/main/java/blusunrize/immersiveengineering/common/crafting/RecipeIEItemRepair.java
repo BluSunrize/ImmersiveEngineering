@@ -60,7 +60,7 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 			i1 = 0;
 
 		ItemStack ret = new ItemStack(first.getItem(), 1);
-		ItemNBTHelper.setInt(ret, Lib.NBT_DAMAGE, i1);
+		ItemNBTHelper.putInt(ret, Lib.NBT_DAMAGE, i1);
 		return ret;
 	}
 

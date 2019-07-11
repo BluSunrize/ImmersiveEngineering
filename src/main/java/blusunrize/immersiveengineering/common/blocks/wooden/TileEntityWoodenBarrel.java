@@ -161,7 +161,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		int[] sideCfgArray = new int[2];
 		sideCfgArray[0] = sideConfig.get(Direction.DOWN).ordinal();
 		sideCfgArray[1] = sideConfig.get(Direction.UP).ordinal();
-		nbt.setIntArray("sideConfig", sideCfgArray);
+		nbt.putIntArray("sideConfig", sideCfgArray);
 		this.writeTank(nbt, false);
 	}
 
@@ -170,7 +170,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		boolean write = tank.getFluidAmount() > 0;
 		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
 		if(!toItem||write)
-			nbt.setTag("tank", tankTag);
+			nbt.put("tank", tankTag);
 	}
 
 	private Map<Direction, LazyOptional<IFluidHandler>> sidedFluidHandler = new HashMap<>();
@@ -323,7 +323,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		CompoundNBT tag = new CompoundNBT();
 		writeTank(tag, true);
 		if(!tag.isEmpty())
-			stack.setTag(tag);
+			stack.put(tag);
 		return stack;
 	}
 

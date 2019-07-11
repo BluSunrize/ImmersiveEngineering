@@ -322,25 +322,25 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setBoolean("dummy", dummy);
-		nbt.setBoolean("redstoneInverted", redstoneControlInverted);
+		nbt.putBoolean("dummy", dummy);
+		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		if(facing!=null)
-			nbt.setInt("facing", facing.ordinal());
+			nbt.putInt("facing", facing.ordinal());
 		energyStorage.writeToNBT(nbt);
 
 		if(owner!=null)
-			nbt.setString("owner", owner);
+			nbt.putString("owner", owner);
 		ListNBT list = new ListNBT();
 		for(String s : targetList)
 			list.add(new StringNBT(s));
-		nbt.setTag("targetList", list);
-		nbt.setBoolean("whitelist", whitelist);
-		nbt.setBoolean("attackAnimals", attackAnimals);
-		nbt.setBoolean("attackPlayers", attackPlayers);
-		nbt.setBoolean("attackNeutrals", attackNeutrals);
+		nbt.put("targetList", list);
+		nbt.putBoolean("whitelist", whitelist);
+		nbt.putBoolean("attackAnimals", attackAnimals);
+		nbt.putBoolean("attackPlayers", attackPlayers);
+		nbt.putBoolean("attackNeutrals", attackNeutrals);
 
 		if(target!=null)
-			nbt.setString("target", target.getUniqueID().toString());
+			nbt.putString("target", target.getUniqueID().toString());
 	}
 
 	@Override
@@ -530,27 +530,27 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		CompoundNBT tag = new CompoundNBT();
 		//Only writing values when they are different from defaults
 		if(turret.owner!=null&&(player==null||!player.getName().getString().equalsIgnoreCase(turret.owner)))
-			tag.setString("owner", turret.owner);
+			tag.putString("owner", turret.owner);
 		if(turret.targetList.size()!=1||!isListedName(turret.targetList, turret.owner))
 		{
 			ListNBT list = new ListNBT();
 			for(String s : turret.targetList)
 				list.add(new StringNBT(s));
-			tag.setTag("targetList", list);
+			tag.put("targetList", list);
 		}
 		if(turret.whitelist)
-			tag.setBoolean("whitelist", turret.whitelist);
+			tag.putBoolean("whitelist", turret.whitelist);
 		if(turret.attackAnimals)
-			tag.setBoolean("attackAnimals", turret.attackAnimals);
+			tag.putBoolean("attackAnimals", turret.attackAnimals);
 		if(!turret.attackPlayers)
-			tag.setBoolean("attackPlayers", turret.attackPlayers);
+			tag.putBoolean("attackPlayers", turret.attackPlayers);
 		if(turret.attackNeutrals)
-			tag.setBoolean("attackNeutrals", turret.attackNeutrals);
+			tag.putBoolean("attackNeutrals", turret.attackNeutrals);
 		if(turret.redstoneControlInverted)
-			tag.setBoolean("redstoneControlInverted", turret.redstoneControlInverted);
+			tag.putBoolean("redstoneControlInverted", turret.redstoneControlInverted);
 
 		if(!tag.isEmpty())
-			stack.setTag(tag);
+			stack.put(tag);
 		return stack;
 	}
 

@@ -55,7 +55,7 @@ public class GuiAssembler extends GuiIEContainerBase
 				{
 					super.onClick(mX, mY);
 					CompoundNBT tag = new CompoundNBT();
-					tag.setInt("buttonID", id);
+					tag.putInt("buttonID", id);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 				}
 			}.setHoverOffset(0, 10));

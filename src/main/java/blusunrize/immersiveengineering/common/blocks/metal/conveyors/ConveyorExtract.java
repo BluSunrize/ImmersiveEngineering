@@ -315,9 +315,9 @@ public class ConveyorExtract extends ConveyorBasic
 	public CompoundNBT writeConveyorNBT()
 	{
 		CompoundNBT nbt = super.writeConveyorNBT();
-		nbt.setInt("extractDirection", extractDirection.ordinal());
-		nbt.setInt("transferCooldown", transferCooldown);
-		nbt.setInt("transferTickrate", transferTickrate);
+		nbt.putInt("extractDirection", extractDirection.ordinal());
+		nbt.putInt("transferCooldown", transferCooldown);
+		nbt.putInt("transferTickrate", transferTickrate);
 		return nbt;
 	}
 

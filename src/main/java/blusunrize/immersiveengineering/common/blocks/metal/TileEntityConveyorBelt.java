@@ -89,9 +89,9 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("facing", facing.ordinal());
+		nbt.putInt("facing", facing.ordinal());
 		if(conveyorBeltSubtype!=null)
-			nbt.setTag("conveyorBeltSubtypeNBT", conveyorBeltSubtype.writeConveyorNBT());
+			nbt.put("conveyorBeltSubtypeNBT", conveyorBeltSubtype.writeConveyorNBT());
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public final class ConnectionPoint implements Comparable<ConnectionPoint>
 	public CompoundNBT createTag()
 	{
 		CompoundNBT ret = NBTUtil.createPosTag(pos);
-		ret.setInt("index", index);
+		ret.putInt("index", index);
 		return ret;
 	}
 

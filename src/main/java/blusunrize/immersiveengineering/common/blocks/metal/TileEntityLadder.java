@@ -39,7 +39,7 @@ public class TileEntityLadder extends TileEntityIEBase implements IDirectionalTi
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("facing", facing.ordinal());
+		nbt.putInt("facing", facing.ordinal());
 	}
 
 	@Override

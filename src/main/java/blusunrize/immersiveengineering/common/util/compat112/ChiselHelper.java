@@ -47,9 +47,9 @@ public class ChiselHelper extends IECompatModule
 	private void addVariation(String group, Block block, int meta)
 	{
 		CompoundNBT tag = new CompoundNBT();
-		tag.setString("group", group);
-		tag.setString("block", block.getRegistryName().toString());
-		tag.setInt("meta", meta);
+		tag.putString("group", group);
+		tag.putString("block", block.getRegistryName().toString());
+		tag.putInt("meta", meta);
 		FMLInterModComms.sendMessage("chisel", "add_variation", tag);
 	}
 }

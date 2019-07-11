@@ -109,7 +109,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("enegyOutput", this.energyOutput);
+		nbt.putInt("enegyOutput", this.energyOutput);
 	}
 
 

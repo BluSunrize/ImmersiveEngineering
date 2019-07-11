@@ -74,7 +74,7 @@ public class ManualPageShader extends SpecialManualElement
 
 		shaderItem = new ItemStack(ShaderRegistry.itemShader);
 		shaderItem.setTagCompound(new CompoundNBT());
-		shaderItem.getTagCompound().setString("shader_name", shader.getName());
+		shaderItem.getTagCompound().putString("shader_name", shader.getName());
 		replicationCost = shader.replicationCost;
 
 		if(unlocked)

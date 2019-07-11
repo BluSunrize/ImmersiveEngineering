@@ -57,8 +57,8 @@ public class TileEntityConnectorStructural extends TileEntityImmersiveConnectabl
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setFloat("rotation", rotation);
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putFloat("rotation", rotation);
 	}
 
 	@Override

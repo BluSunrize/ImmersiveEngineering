@@ -92,9 +92,9 @@ public class GuiModWorkbench extends GuiIEContainerBase
 			for(Button button : this.buttons)
 			{
 				if(button instanceof GuiButtonCheckbox&&boolArray!=null)
-					message.setBoolean("b_"+boolArray[iBool++].name, ((GuiButtonCheckbox)button).state);
+					message.putBoolean("b_"+boolArray[iBool++].name, ((GuiButtonCheckbox)button).state);
 				if(button instanceof GuiSliderIE&&floatArray!=null)
-					message.setFloat("f_"+floatArray[iFloat++].name, (float)((GuiSliderIE)button).sliderValue);
+					message.putFloat("f_"+floatArray[iFloat++].name, (float)((GuiSliderIE)button).sliderValue);
 			}
 			if(!message.equals(lastMessage))//Only send packets when values have changed
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(this.workbench, message));

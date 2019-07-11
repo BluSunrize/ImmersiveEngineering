@@ -61,8 +61,8 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setTag("coresample", coresample.write(new CompoundNBT()));
-		nbt.setInt("facing", facing.ordinal());
+		nbt.put("coresample", coresample.write(new CompoundNBT()));
+		nbt.putInt("facing", facing.ordinal());
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 						if(ident.equalsIgnoreCase(tagCompound.getString("id")))
 						{
 							nbttaglist.removeTag(i);
-							mapTagCompound.setTag("Decorations", nbttaglist);
+							mapTagCompound.put("Decorations", nbttaglist);
 							mapData.mapDecorations.remove(ident);
 							return true;
 						}
@@ -148,14 +148,14 @@ public class TileEntityCoresample extends TileEntityIEBase implements IDirection
 					if(distX >= -63&&distX <= 63&&distZ >= -63&&distZ <= 63)
 					{
 						CompoundNBT tagCompound = new CompoundNBT();
-						tagCompound.setString("id", ident);
+						tagCompound.putString("id", ident);
 						tagCompound.setByte("type", MapDecoration.Type.TARGET_POINT.getIcon());
 						tagCompound.setDouble("x", sampleX);
 						tagCompound.setDouble("z", sampleZ);
 						tagCompound.setDouble("rot", 180.0);
 
 						nbttaglist.add(tagCompound);
-						mapTagCompound.setTag("Decorations", nbttaglist);
+						mapTagCompound.put("Decorations", nbttaglist);
 					}
 					else
 						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapFail"));

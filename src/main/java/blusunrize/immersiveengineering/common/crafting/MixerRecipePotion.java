@@ -76,7 +76,7 @@ public class MixerRecipePotion extends MixerRecipe
 			return new FluidStack(FluidRegistry.WATER, amount);
 		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
 		stack.tag = new CompoundNBT();
-		stack.tag.setString("Potion", type.getRegistryName().toString());
+		stack.tag.putString("Potion", type.getRegistryName().toString());
 		return stack;
 	}
 

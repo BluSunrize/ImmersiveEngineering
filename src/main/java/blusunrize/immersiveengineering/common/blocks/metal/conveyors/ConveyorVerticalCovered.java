@@ -180,7 +180,7 @@ public class ConveyorVerticalCovered extends ConveyorVertical
 	{
 		CompoundNBT nbt = super.writeConveyorNBT();
 		if(cover!=null)
-			nbt.setTag("cover", cover.writeToNBT(new CompoundNBT()));
+			nbt.put("cover", cover.writeToNBT(new CompoundNBT()));
 		return nbt;
 	}
 

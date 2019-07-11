@@ -157,13 +157,13 @@ public class MixerRecipe extends MultiblockRecipe
 	@Override
 	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("fluidInput", fluidInput.writeToNBT(new CompoundNBT()));
+		nbt.put("fluidInput", fluidInput.writeToNBT(new CompoundNBT()));
 		if(this.itemInputs.length > 0)
 		{
 			ListNBT list = new ListNBT();
 			for(IngredientStack add : this.itemInputs)
 				list.add(add.writeToNBT(new CompoundNBT()));
-			nbt.setTag("itemInputs", list);
+			nbt.put("itemInputs", list);
 		}
 		return nbt;
 	}

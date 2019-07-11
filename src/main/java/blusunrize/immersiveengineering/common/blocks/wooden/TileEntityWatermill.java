@@ -243,10 +243,10 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setFloat("prevRotation", prevRotation);
-		nbt.setIntArray("offset", offset);
-		nbt.setFloat("rotation", rotation);
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putFloat("prevRotation", prevRotation);
+		nbt.putIntArray("offset", offset);
+		nbt.putFloat("rotation", rotation);
 	}
 
 	@OnlyIn(Dist.CLIENT)

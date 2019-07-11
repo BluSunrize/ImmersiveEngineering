@@ -214,7 +214,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 					if(tile instanceof TileEntityFluidPipe&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 					{
 						insertResource.tag = new CompoundNBT();
-						insertResource.tag.setBoolean("pressurized", true);
+						insertResource.tag.putBoolean("pressurized", true);
 					}
 					int temp = handler.fill(insertResource, false);
 					if(temp > 0)
@@ -239,7 +239,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				{
 					this.energyStorage.extractEnergy(accelPower, false);
 					insertResource.tag = new CompoundNBT();
-					insertResource.tag.setBoolean("pressurized", true);
+					insertResource.tag.putBoolean("pressurized", true);
 				}
 				int r = output.output.fill(insertResource, !simulate);
 				f += r;
@@ -271,10 +271,10 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setIntArray("sideConfig", sideConfig);
-		nbt.setBoolean("dummy", dummy);
-		nbt.setBoolean("placeCobble", placeCobble);
-		nbt.setTag("tank", tank.writeToNBT(new CompoundNBT()));
+		nbt.putIntArray("sideConfig", sideConfig);
+		nbt.putBoolean("dummy", dummy);
+		nbt.putBoolean("placeCobble", placeCobble);
+		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
 		energyStorage.writeToNBT(nbt);
 	}
 

@@ -62,11 +62,11 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setFloat("rotation", rotation);
-		nbt.setTag("digStacks", Utils.writeInventory(digStacks));
-		nbt.setBoolean("active", active);
+		nbt.putFloat("rotation", rotation);
+		nbt.put("digStacks", Utils.writeInventory(digStacks));
+		nbt.putBoolean("active", active);
 		if(!particleStack.isEmpty())
-			nbt.setTag("particleStack", particleStack.write(new CompoundNBT()));
+			nbt.put("particleStack", particleStack.write(new CompoundNBT()));
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		else if(active&&world.getGameTime()%20==0)
 		{
 			CompoundNBT nbt = new CompoundNBT();
-			nbt.setFloat("rotation", rotation);
+			nbt.putFloat("rotation", rotation);
 			MessageTileSync sync = new MessageTileSync(this, nbt);
 			ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)), sync);
 		}

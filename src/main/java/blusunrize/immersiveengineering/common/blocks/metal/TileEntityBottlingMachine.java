@@ -80,8 +80,8 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 		ListNBT processNBT = new ListNBT();
 		for(BottlingProcess process : this.bottlingProcessQueue)
 			processNBT.add(process.writeToNBT());
-		nbt.setTag("bottlingQueue", processNBT);
-		nbt.setTag("tank", tanks[0].writeToNBT(new CompoundNBT()));
+		nbt.put("bottlingQueue", processNBT);
+		nbt.put("tank", tanks[0].writeToNBT(new CompoundNBT()));
 	}
 
 	@Override
@@ -445,10 +445,10 @@ public class TileEntityBottlingMachine extends TileEntityPoweredMultiblock<TileE
 		{
 			CompoundNBT nbt = new CompoundNBT();
 			if(!items.get(0).isEmpty())
-				nbt.setTag("input", items.get(0).write(new CompoundNBT()));
+				nbt.put("input", items.get(0).write(new CompoundNBT()));
 			if(!items.get(1).isEmpty())
-				nbt.setTag("output", items.get(1).write(new CompoundNBT()));
-			nbt.setInt("processTick", processTick);
+				nbt.put("output", items.get(1).write(new CompoundNBT()));
+			nbt.putInt("processTick", processTick);
 			return nbt;
 		}
 

@@ -78,9 +78,9 @@ public class TileEntitySqueezer extends TileEntityPoweredMultiblock<TileEntitySq
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		CompoundNBT tankTag = tanks[0].writeToNBT(new CompoundNBT());
-		nbt.setTag("tank", tankTag);
+		nbt.put("tank", tankTag);
 		if(!descPacket)
-			nbt.setTag("inventory", Utils.writeInventory(inventory));
+			nbt.put("inventory", Utils.writeInventory(inventory));
 	}
 
 	@Override

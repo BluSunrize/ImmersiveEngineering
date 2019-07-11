@@ -251,15 +251,15 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInt("process", process);
-		nbt.setInt("processMax", processMax);
-		nbt.setBoolean("active", active);
+		nbt.putInt("process", process);
+		nbt.putInt("processMax", processMax);
+		nbt.putBoolean("active", active);
 
 		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
-		nbt.setTag("tank", tankTag);
+		nbt.put("tank", tankTag);
 		if(!descPacket)
 		{
-			nbt.setTag("inventory", Utils.writeInventory(inventory));
+			nbt.put("inventory", Utils.writeInventory(inventory));
 		}
 	}
 

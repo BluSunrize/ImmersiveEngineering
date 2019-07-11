@@ -127,7 +127,7 @@ public class RecipeEarmuffs implements IRecipe
 				b = (int)((float)b*colourMod/highestColour);
 				int newColour = (r<<8)+g;
 				newColour = (newColour<<8)+b;
-				ItemNBTHelper.setInt(earmuffs, Lib.NBT_EarmuffColour, newColour);
+				ItemNBTHelper.putInt(earmuffs, Lib.NBT_EarmuffColour, newColour);
 			}
 			ItemStack output;
 			if(!armor.isEmpty())

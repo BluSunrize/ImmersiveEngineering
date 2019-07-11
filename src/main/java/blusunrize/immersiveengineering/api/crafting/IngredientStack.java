@@ -303,14 +303,14 @@ public class IngredientStack
 	{
 		if(this.fluid!=null)
 		{
-			nbt.setString("fluid", FluidRegistry.getFluidName(fluid));
-			nbt.setInt("fluidAmount", fluid.amount);
-			nbt.setInt("nbtType", 3);
+			nbt.putString("fluid", FluidRegistry.getFluidName(fluid));
+			nbt.putInt("fluidAmount", fluid.amount);
+			nbt.putInt("nbtType", 3);
 		}
 		else if(this.oreName!=null)
 		{
-			nbt.setString("oreName", oreName);
-			nbt.setInt("nbtType", 2);
+			nbt.putString("oreName", oreName);
+			nbt.putInt("nbtType", 2);
 		}
 		else if(this.stackList!=null)
 		{
@@ -318,16 +318,16 @@ public class IngredientStack
 			for(ItemStack stack : stackList)
 				if(!stack.isEmpty())
 					list.add(stack.writeToNBT(new CompoundNBT()));
-			nbt.setTag("stackList", list);
-			nbt.setInt("nbtType", 1);
+			nbt.put("stackList", list);
+			nbt.putInt("nbtType", 1);
 		}
 		else
 		{
-			nbt.setTag("stack", stack.writeToNBT(new CompoundNBT()));
-			nbt.setInt("nbtType", 0);
-			nbt.setBoolean("useNBT", useNBT);
+			nbt.put("stack", stack.writeToNBT(new CompoundNBT()));
+			nbt.putInt("nbtType", 0);
+			nbt.putBoolean("useNBT", useNBT);
 		}
-		nbt.setInt("inputSize", inputSize);
+		nbt.putInt("inputSize", inputSize);
 		return nbt;
 	}
 

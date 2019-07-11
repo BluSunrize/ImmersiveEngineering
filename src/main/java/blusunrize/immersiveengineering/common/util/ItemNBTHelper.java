@@ -34,14 +34,14 @@ public class ItemNBTHelper
 		{
 			stack.getOrCreateTag().removeTag(key);
 			if(stack.getOrCreateTag().isEmpty())
-				stack.setTag(null);
+				stack.put(null);
 		}
 	}
 
 
-	public static void setInt(ItemStack stack, String key, int val)
+	public static void putInt(ItemStack stack, String key, int val)
 	{
-		stack.getOrCreateTag().setInt(key, val);
+		stack.getOrCreateTag().putInt(key, val);
 	}
 
 	public static void modifyInt(ItemStack stack, String key, int mod)
@@ -51,7 +51,7 @@ public class ItemNBTHelper
 
 	public static void modifyInt(CompoundNBT tagCompound, String key, int mod)
 	{
-		tagCompound.setInt(key, tagCompound.getInt(key)+mod);
+		tagCompound.putInt(key, tagCompound.getInt(key)+mod);
 	}
 
 	public static int getInt(ItemStack stack, String key)
@@ -59,9 +59,9 @@ public class ItemNBTHelper
 		return hasTag(stack)?stack.getOrCreateTag().getInt(key): 0;
 	}
 
-	public static void setString(ItemStack stack, String key, String val)
+	public static void putString(ItemStack stack, String key, String val)
 	{
-		stack.getOrCreateTag().setString(key, val);
+		stack.getOrCreateTag().putString(key, val);
 	}
 
 	public static String getString(ItemStack stack, String key)
@@ -79,9 +79,9 @@ public class ItemNBTHelper
 		return hasTag(stack)?stack.getOrCreateTag().getLong(key): 0;
 	}
 
-	public static void setIntArray(ItemStack stack, String key, int[] val)
+	public static void putIntArray(ItemStack stack, String key, int[] val)
 	{
-		stack.getOrCreateTag().setIntArray(key, val);
+		stack.getOrCreateTag().putIntArray(key, val);
 	}
 
 	public static int[] getIntArray(ItemStack stack, String key)
@@ -89,14 +89,14 @@ public class ItemNBTHelper
 		return hasTag(stack)?stack.getOrCreateTag().getIntArray(key): new int[0];
 	}
 
-	public static void setFloat(ItemStack stack, String key, float val)
+	public static void putFloat(ItemStack stack, String key, float val)
 	{
-		stack.getOrCreateTag().setFloat(key, val);
+		stack.getOrCreateTag().putFloat(key, val);
 	}
 
 	public static void modifyFloat(CompoundNBT tagCompound, String key, float mod)
 	{
-		tagCompound.setFloat(key, tagCompound.getFloat(key)+mod);
+		tagCompound.putFloat(key, tagCompound.getFloat(key)+mod);
 	}
 
 	public static float getFloat(ItemStack stack, String key)
@@ -104,9 +104,9 @@ public class ItemNBTHelper
 		return hasTag(stack)?stack.getOrCreateTag().getFloat(key): 0;
 	}
 
-	public static void setBoolean(ItemStack stack, String key, boolean val)
+	public static void putBoolean(ItemStack stack, String key, boolean val)
 	{
-		stack.getOrCreateTag().setBoolean(key, val);
+		stack.getOrCreateTag().putBoolean(key, val);
 	}
 
 	public static boolean getBoolean(ItemStack stack, String key)
@@ -116,7 +116,7 @@ public class ItemNBTHelper
 
 	public static void setTagCompound(ItemStack stack, String key, CompoundNBT val)
 	{
-		stack.getOrCreateTag().setTag(key, val);
+		stack.getOrCreateTag().put(key, val);
 	}
 
 	public static CompoundNBT getTagCompound(ItemStack stack, String key)
@@ -145,7 +145,7 @@ public class ItemNBTHelper
 
 	public static void setItemStack(ItemStack stack, String key, ItemStack val)
 	{
-		stack.getOrCreateTag().setTag(key, val.write(new CompoundNBT()));
+		stack.getOrCreateTag().put(key, val.write(new CompoundNBT()));
 	}
 
 	public static ItemStack getItemStack(ItemStack stack, String key)
@@ -161,7 +161,7 @@ public class ItemNBTHelper
 		ListNBT list = new ListNBT();
 		for(String s : lore)
 			list.add(new StringNBT(s));
-		displayTag.setTag("Lore", list);
+		displayTag.put("Lore", list);
 		setTagCompound(stack, "display", displayTag);
 	}
 
@@ -172,7 +172,7 @@ public class ItemNBTHelper
 		if(!simulate)
 		{
 			stored += accepted;
-			ItemNBTHelper.setInt(container, "energy", stored);
+			ItemNBTHelper.putInt(container, "energy", stored);
 		}
 		return accepted;
 	}
@@ -184,7 +184,7 @@ public class ItemNBTHelper
 		if(!simulate)
 		{
 			stored -= extracted;
-			ItemNBTHelper.setInt(container, "energy", stored);
+			ItemNBTHelper.putInt(container, "energy", stored);
 		}
 		return extracted;
 	}
@@ -204,19 +204,19 @@ public class ItemNBTHelper
 			if(key instanceof String)
 			{
 				if(value instanceof Boolean)
-					setBoolean(stack, (String)key, (Boolean)value);
+					putBoolean(stack, (String)key, (Boolean)value);
 				else if(value instanceof Integer)
-					setInt(stack, (String)key, (Integer)value);
+					putInt(stack, (String)key, (Integer)value);
 				else if(value instanceof Float)
-					setFloat(stack, (String)key, (Float)value);
+					putFloat(stack, (String)key, (Float)value);
 				else if(value instanceof Long)
 					setLong(stack, (String)key, (Long)value);
 				else if(value instanceof String)
-					setString(stack, (String)key, (String)value);
+					putString(stack, (String)key, (String)value);
 				else if(value instanceof CompoundNBT)
 					setTagCompound(stack, (String)key, (CompoundNBT)value);
 				else if(value instanceof int[])
-					setIntArray(stack, (String)key, (int[])value);
+					putIntArray(stack, (String)key, (int[])value);
 				else if(value instanceof ItemStack)
 					setItemStack(stack, (String)key, (ItemStack)value);
 				else if(value instanceof FluidStack)
@@ -233,7 +233,7 @@ public class ItemNBTHelper
 		for(String key : add.keySet())
 			if(pattern==null||pattern.matcher(key).matches())
 				if(!target.hasKey(key))
-					target.setTag(key, add.getTag(key));
+					target.put(key, add.getTag(key));
 				else
 				{
 					switch(add.getTagId(key))
@@ -245,13 +245,13 @@ public class ItemNBTHelper
 							target.setShort(key, (short)(target.getShort(key)+add.getShort(key)));
 							break;
 						case 3: //Int
-							target.setInt(key, (target.getInt(key)+add.getInt(key)));
+							target.putInt(key, (target.getInt(key)+add.getInt(key)));
 							break;
 						case 4: //Long
 							target.setLong(key, (target.getLong(key)+add.getLong(key)));
 							break;
 						case 5: //Float
-							target.setFloat(key, (target.getFloat(key)+add.getFloat(key)));
+							target.putFloat(key, (target.getFloat(key)+add.getFloat(key)));
 							break;
 						case 6: //Double
 							target.setDouble(key, (target.getDouble(key)+add.getDouble(key)));
@@ -265,14 +265,14 @@ public class ItemNBTHelper
 							target.setByteArray(key, bytes);
 							break;
 						case 8: //String
-							target.setString(key, (target.getString(key)+add.getString(key)));
+							target.putString(key, (target.getString(key)+add.getString(key)));
 							break;
 						case 9: //List
 							ListNBT listTarget = (ListNBT)target.getTag(key);
 							ListNBT listAdd = (ListNBT)add.getTag(key);
 							for(int i = 0; i < listAdd.size(); i++)
 								listTarget.add(listAdd.get(i));
-							target.setTag(key, listTarget);
+							target.put(key, listTarget);
 							break;
 						case 10: //Compound
 							combineTags(target.getCompound(key), add.getCompound(key), null);
@@ -283,7 +283,7 @@ public class ItemNBTHelper
 							int[] ints = new int[intsTarget.length+intsAdd.length];
 							System.arraycopy(intsTarget, 0, ints, 0, intsTarget.length);
 							System.arraycopy(intsAdd, 0, ints, intsTarget.length, intsAdd.length);
-							target.setIntArray(key, ints);
+							target.putIntArray(key, ints);
 							break;
 					}
 				}

@@ -137,7 +137,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				if(--cooldown <= 0)
 					getUpgrades(stack).removeTag("flash_cooldown");
 				else
-					getUpgrades(stack).setInt("flash_cooldown", cooldown);
+					getUpgrades(stack).putInt("flash_cooldown", cooldown);
 			}
 			if(getUpgrades(stack).hasKey("shock_cooldown")&&this.extractEnergy(stack, 20, true)==20)
 			{
@@ -146,7 +146,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				if(--cooldown <= 0)
 					getUpgrades(stack).removeTag("shock_cooldown");
 				else
-					getUpgrades(stack).setInt("shock_cooldown", cooldown);
+					getUpgrades(stack).putInt("shock_cooldown", cooldown);
 			}
 		}
 	}
@@ -171,7 +171,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 					if(t instanceof MobEntity)
 						((MobEntity)t).setAttackTarget(null);
 				}
-			getUpgrades(stack).setInt("flash_cooldown", 40);
+			getUpgrades(stack).putInt("flash_cooldown", 40);
 		}
 		if(getUpgrades(stack).getBoolean("shock")&&getUpgrades(stack).getInt("shock_cooldown") <= 0)
 		{
@@ -191,7 +191,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 			}
 			if(b)
 			{
-				getUpgrades(stack).setInt("shock_cooldown", 40);
+				getUpgrades(stack).putInt("shock_cooldown", 40);
 				player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.spark, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
 			}
 		}

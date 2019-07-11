@@ -149,10 +149,10 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setBoolean("charging", charging);
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putBoolean("charging", charging);
 		if(!inventory.get(0).isEmpty())
-			nbt.setTag("inventory", inventory.get(0).write(new CompoundNBT()));
+			nbt.put("inventory", inventory.get(0).write(new CompoundNBT()));
 	}
 
 	@Override

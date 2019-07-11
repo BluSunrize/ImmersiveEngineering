@@ -53,7 +53,7 @@ public class GuiMixer extends GuiIEContainerBase
 			{
 				CompoundNBT tag = new CompoundNBT();
 				tile.outputAll = state;
-				tag.setBoolean("outputAll", tile.outputAll);
+				tag.putBoolean("outputAll", tile.outputAll);
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 				initGui();
 			}

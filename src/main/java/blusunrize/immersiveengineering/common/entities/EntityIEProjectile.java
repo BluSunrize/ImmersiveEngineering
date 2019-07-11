@@ -312,8 +312,8 @@ public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have
 		super.writeAdditional(nbt);
 		if(inBlockState!=null)
 		{
-			nbt.setTag("inPos", NBTUtil.writeBlockPos(stuckIn));
-			nbt.setTag("inTile", NBTUtil.writeBlockState(inBlockState));
+			nbt.put("inPos", NBTUtil.writeBlockPos(stuckIn));
+			nbt.put("inTile", NBTUtil.writeBlockState(inBlockState));
 		}
 		nbt.setByte("inGround", (byte)(this.inGround?1: 0));
 		if(this.shootingEntity!=null)

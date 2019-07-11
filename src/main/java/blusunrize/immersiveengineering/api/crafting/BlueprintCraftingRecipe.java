@@ -65,7 +65,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static ItemStack getTypedBlueprint(String type)
 	{
 		ItemStack stack = new ItemStack(itemBlueprint, 1, 0);
-		ItemNBTHelper.setString(stack, "blueprint", type);
+		ItemNBTHelper.putString(stack, "blueprint", type);
 		return stack;
 	}
 
@@ -296,8 +296,8 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		ListNBT list = new ListNBT();
 		for(IngredientStack ingr : this.inputs)
 			list.add(ingr.writeToNBT(new CompoundNBT()));
-		nbt.setTag("inputs", list);
-		nbt.setString("blueprintCategory", this.blueprintCategory);
+		nbt.put("inputs", list);
+		nbt.putString("blueprintCategory", this.blueprintCategory);
 		return nbt;
 	}
 

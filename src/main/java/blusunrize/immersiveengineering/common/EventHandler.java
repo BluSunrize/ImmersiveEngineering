@@ -412,7 +412,7 @@ public class EventHandler
 				if(boring.isAssignableFrom(event.getEntityLiving().getClass()))
 					return;
 			ItemStack bag = new ItemStack(IEContent.itemShaderBag);
-			ItemNBTHelper.setString(bag, "rarity", r.toString());
+			ItemNBTHelper.putString(bag, "rarity", r.toString());
 			event.getDrops().add(new ItemEntity(event.getEntityLiving().world, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
 		}
 	}

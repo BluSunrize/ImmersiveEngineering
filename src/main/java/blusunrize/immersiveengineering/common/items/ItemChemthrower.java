@@ -116,7 +116,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		if(player.isSneaking())
 		{
 			if(!world.isRemote)
-				ItemNBTHelper.setBoolean(stack, "ignite", !ItemNBTHelper.getBoolean(stack, "ignite"));
+				ItemNBTHelper.putBoolean(stack, "ignite", !ItemNBTHelper.getBoolean(stack, "ignite"));
 		}
 		else
 			player.setActiveHand(hand);

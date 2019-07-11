@@ -8,9 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -27,8 +24,7 @@ public class BlockBalloon extends BlockIETileProvider
 {
 	public BlockBalloon()
 	{
-		super("balloon", Properties.create(Material.CLOTH).hardnessAndResistance(0.8F), ItemBlockBalloon.class,
-				IEProperties.BOOLEANS[0], IOBJModelCallback.PROPERTY, CapabilityShader.BLOCKSTATE_PROPERTY, IEProperties.CONNECTIONS);
+		super("balloon", Properties.create(Material.WOOL).hardnessAndResistance(0.8F), ItemBlockBalloon.class);
 		setHasColours();
 		setLightOpacity(0);
 		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);

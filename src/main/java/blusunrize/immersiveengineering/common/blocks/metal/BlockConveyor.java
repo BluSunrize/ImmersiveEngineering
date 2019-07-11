@@ -57,7 +57,7 @@ public class BlockConveyor extends BlockIETileProvider
 		for(ResourceLocation key : ConveyorHandler.classRegistry.keySet())
 		{
 			ItemStack stack = new ItemStack(this);
-			ItemNBTHelper.setString(stack, "conveyorType", key.toString());
+			ItemNBTHelper.putString(stack, "conveyorType", key.toString());
 			items.add(stack);
 		}
 	}

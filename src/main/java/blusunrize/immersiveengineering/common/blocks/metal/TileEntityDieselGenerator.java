@@ -74,11 +74,11 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart<TileEnti
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setTag("tank0", tanks[0].writeToNBT(new CompoundNBT()));
-		nbt.setBoolean("active", active);
-		nbt.setFloat("animation_fanRotation", animation_fanRotation);
-		nbt.setInt("animation_fanFadeIn", animation_fanFadeIn);
-		nbt.setInt("animation_fanFadeOut", animation_fanFadeOut);
+		nbt.put("tank0", tanks[0].writeToNBT(new CompoundNBT()));
+		nbt.putBoolean("active", active);
+		nbt.putFloat("animation_fanRotation", animation_fanRotation);
+		nbt.putInt("animation_fanFadeIn", animation_fanFadeIn);
+		nbt.putInt("animation_fanFadeOut", animation_fanFadeOut);
 	}
 
 	@Override

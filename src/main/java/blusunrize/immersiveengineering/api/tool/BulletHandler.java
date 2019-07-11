@@ -62,7 +62,7 @@ public class BulletHandler
 	public static ItemStack getBulletStack(String key)
 	{
 		ItemStack stack = basicCartridge.copy();
-		stack.getOrCreateTag().setString("bullet", key);
+		stack.getOrCreateTag().putString("bullet", key);
 		return stack;
 	}
 

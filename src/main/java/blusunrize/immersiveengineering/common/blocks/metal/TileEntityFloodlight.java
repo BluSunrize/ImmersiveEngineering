@@ -333,23 +333,23 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setBoolean("active", active);
-		nbt.setInt("energyStorage", energyStorage);
-		nbt.setBoolean("redstoneControlInverted", redstoneControlInverted);
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setInt("side", side.ordinal());
-		nbt.setFloat("rotY", rotY);
-		nbt.setFloat("rotX", rotX);
-		nbt.setInt("lightAmount", fakeLights.size());
+		nbt.putBoolean("active", active);
+		nbt.putInt("energyStorage", energyStorage);
+		nbt.putBoolean("redstoneControlInverted", redstoneControlInverted);
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putInt("side", side.ordinal());
+		nbt.putFloat("rotY", rotY);
+		nbt.putFloat("rotX", rotX);
+		nbt.putInt("lightAmount", fakeLights.size());
 		for(int i = 0; i < fakeLights.size(); i++)
 		{
 			BlockPos cc = fakeLights.get(i);
-			nbt.setIntArray("fakeLight_"+i, new int[]{cc.getX(), cc.getY(), cc.getZ()});
+			nbt.putIntArray("fakeLight_"+i, new int[]{cc.getX(), cc.getY(), cc.getZ()});
 		}
 		if(descPacket)
 		{
-			nbt.setBoolean("computerControlled", controllingComputers > 0);
-			nbt.setBoolean("computerOn", computerOn);
+			nbt.putBoolean("computerControlled", controllingComputers > 0);
+			nbt.putBoolean("computerOn", computerOn);
 		}
 	}
 

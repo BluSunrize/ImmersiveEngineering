@@ -204,8 +204,8 @@ public class TileEntityFluidPlacer extends TileEntityIEBase implements ITickable
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setIntArray("sideConfig", sideConfig);
-		nbt.setTag("tank", tank.writeToNBT(new CompoundNBT()));
+		nbt.putIntArray("sideConfig", sideConfig);
+		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
 	}
 
 	@Override

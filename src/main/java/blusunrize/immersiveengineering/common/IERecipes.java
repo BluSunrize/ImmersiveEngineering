@@ -66,7 +66,7 @@ public class IERecipes
 		final ItemStack stripCurtain = new ItemStack(IEContent.blockClothDevice, 1, BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
 		registry.register(new RecipeRGBColouration((s) -> (OreDictionary.itemMatches(stripCurtain, s, true)),
 				(s) -> (ItemNBTHelper.hasKey(s, "colour")?ItemNBTHelper.getInt(s, "colour"): 0xffffff),
-				(s, i) -> ItemNBTHelper.setInt(s, "colour", i))
+				(s, i) -> ItemNBTHelper.putInt(s, "colour", i))
 				.setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
 	}
 
@@ -141,11 +141,11 @@ public class IERecipes
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":potionBullet", RecipePotionBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
 		//Flare
 		bullet = BulletHandler.getBulletStack("flare");
-		ItemNBTHelper.setInt(bullet, "flareColour", 0xcc2e06);
+		ItemNBTHelper.putInt(bullet, "flareColour", 0xcc2e06);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeRed");
-		ItemNBTHelper.setInt(bullet, "flareColour", 0x2ca30b);
+		ItemNBTHelper.putInt(bullet, "flareColour", 0x2ca30b);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeGreen");
-		ItemNBTHelper.setInt(bullet, "flareColour", 0xffff82);
+		ItemNBTHelper.putInt(bullet, "flareColour", 0xffff82);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeYellow");
 		ForgeRegistries.RECIPES.register(new RecipeFlareBullets(id).setRegistryName(ImmersiveEngineering.MODID, "potion_flare"));
 		//RecipeSorter.register(ImmersiveEngineering.MODID+":flareBullet", RecipeFlareBullets.class, Category.SHAPELESS, "after:forge:shapelessore");

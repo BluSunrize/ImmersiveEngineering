@@ -110,9 +110,9 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
-		nbt.setInt("facing", facing.ordinal());
-		//		nbt.setIntArray("sockets", sockets);
-		nbt.setBoolean("active", active);
+		nbt.putInt("facing", facing.ordinal());
+		//		nbt.putIntArray("sockets", sockets);
+		nbt.putBoolean("active", active);
 	}
 
 	@Nonnull

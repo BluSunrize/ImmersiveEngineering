@@ -137,8 +137,8 @@ public class MetalPressRecipe extends MultiblockRecipe
 	@Override
 	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("input", input.writeToNBT(new CompoundNBT()));
-		nbt.setTag("mold", mold.writeToNBT(new CompoundNBT()));
+		nbt.put("input", input.writeToNBT(new CompoundNBT()));
+		nbt.put("mold", mold.writeToNBT(new CompoundNBT()));
 		return nbt;
 	}
 

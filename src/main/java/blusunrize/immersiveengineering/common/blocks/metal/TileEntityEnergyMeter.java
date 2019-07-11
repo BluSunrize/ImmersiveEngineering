@@ -133,8 +133,8 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setBoolean("dummy", lower);
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putBoolean("dummy", lower);
 	}
 
 	@Override

@@ -163,7 +163,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 				if(entry.getValue().isProperCartridge())
 				{
 					ItemStack s = new ItemStack(this, 1);
-					ItemNBTHelper.setString(s, "bullet", entry.getKey());
+					ItemNBTHelper.putString(s, "bullet", entry.getKey());
 					list.add(s);
 				}
 		}

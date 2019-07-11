@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.common.world;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ArrayListMultimap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -19,10 +21,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage.Decoration;
-import net.minecraft.world.gen.feature.CompositeFeature;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
 import net.minecraft.world.gen.placement.CountRangeConfig;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -38,14 +42,15 @@ import java.util.Random;
 @EventBusSubscriber
 public class IEWorldGen
 {
-	public static Map<String, CompositeFeature<OreFeatureConfig, CountRangeConfig>> features = new HashMap<>();
-	//TODO public static ArrayList<Integer> oreDimBlacklist = new ArrayList();
+	public static Map<String, ConfiguredFeature<?>> features = new HashMap<>();
+	//TODO
+	public static IntList oreDimBlacklist = new IntArrayList();
 	public static Map<String, Boolean> retrogenMap = new HashMap<>();
 
 	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence, int weight)
 	{
-		OreFeatureConfig cfg = new OreFeatureConfig(OreFeatureConfig.IS_ROCK, state, maxVeinSize);
-		CompositeFeature<OreFeatureConfig, CountRangeConfig> feature = Biome.createCompositeFeature(Feature.MINABLE, cfg, Biome.COUNT_RANGE,
+		OreFeatureConfig cfg = new OreFeatureConfig(FillerBlockType.NATURAL_STONE, state, maxVeinSize);
+		ConfiguredFeature<?> feature = Biome.createDecoratedFeature(Feature.ORE, cfg, Placement.COUNT_RANGE,
 				new CountRangeConfig(chunkOccurence, minY, maxY, minY));
 		for(Biome biome : Biome.BIOMES)
 			biome.addFeature(Decoration.UNDERGROUND_ORES, feature);
@@ -55,26 +60,31 @@ public class IEWorldGen
 	public void generateOres(Random random, int chunkX, int chunkZ, World world, boolean newGeneration)
 	{
 		//if(!oreDimBlacklist.contains(world.provider.getDimension()))
-		for(Entry<String, CompositeFeature<OreFeatureConfig, CountRangeConfig>> gen : features.entrySet())
+		for(Entry<String, ConfiguredFeature<?>> gen : features.entrySet())
 			if(newGeneration||retrogenMap.get("retrogen_"+gen.getKey()))
-				gen.getValue().func_212245_a(world, world.getChunkProvider().getChunkGenerator(),
-						random, new BlockPos(16*chunkX, 0, 16*chunkZ),
-						null);
+				gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(),
+						random, new BlockPos(16*chunkX, 0, 16*chunkZ));
 	}
 
 	@SubscribeEvent
 	public void chunkSave(ChunkDataEvent.Save event)
 	{
 		CompoundNBT nbt = new CompoundNBT();
-		event.getData().setTag("ImmersiveEngineering", nbt);
-		nbt.setBoolean(IEConfig.Ores.retrogen_key, true);
+		event.getData().put("ImmersiveEngineering", nbt);
+		nbt.putBoolean(IEConfig.Ores.retrogen_key, true);
 	}
 
 	@SubscribeEvent
 	public void chunkLoad(ChunkDataEvent.Load event)
 	{
 		DimensionType dimension = event.getWorld().getDimension().getType();
-		if((!event.getData().getCompound("ImmersiveEngineering").hasKey(IEConfig.Ores.retrogen_key))&&(IEConfig.Ores.retrogen_copper||IEConfig.Ores.retrogen_bauxite||IEConfig.Ores.retrogen_lead||IEConfig.Ores.retrogen_silver||IEConfig.Ores.retrogen_nickel||IEConfig.Ores.retrogen_uranium))
+		if((!event.getData().getCompound("ImmersiveEngineering").contains(IEConfig.Ores.retrogen_key))&&
+				(IEConfig.Ores.retrogen_copper||
+						IEConfig.Ores.retrogen_bauxite||
+						IEConfig.Ores.retrogen_lead||
+						IEConfig.Ores.retrogen_silver||
+						IEConfig.Ores.retrogen_nickel||
+						IEConfig.Ores.retrogen_uranium))
 		{
 			if(IEConfig.Ores.retrogen_log_flagChunk)
 				IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");

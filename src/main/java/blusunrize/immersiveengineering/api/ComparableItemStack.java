@@ -104,11 +104,11 @@ public class ComparableItemStack
 	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
 		if(this.oreID!=-1)
-			nbt.setString("oreID", OreDictionary.getOreName(oreID));
+			nbt.putString("oreID", OreDictionary.getOreName(oreID));
 		else
 		{
-			nbt.setTag("stack", stack.writeToNBT(new CompoundNBT()));
-			nbt.setBoolean("useNBT", useNBT);
+			nbt.put("stack", stack.writeToNBT(new CompoundNBT()));
+			nbt.putBoolean("useNBT", useNBT);
 		}
 		return nbt;
 	}

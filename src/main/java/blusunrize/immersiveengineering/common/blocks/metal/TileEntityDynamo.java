@@ -96,7 +96,7 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("facing", facing.ordinal());
+		nbt.putInt("facing", facing.ordinal());
 	}
 
 	@Nonnull

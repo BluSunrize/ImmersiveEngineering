@@ -102,9 +102,9 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("dummy", dummy);
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setBoolean("active", active);
+		nbt.putInt("dummy", dummy);
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putBoolean("active", active);
 		energyStorage.writeToNBT(nbt);
 	}
 

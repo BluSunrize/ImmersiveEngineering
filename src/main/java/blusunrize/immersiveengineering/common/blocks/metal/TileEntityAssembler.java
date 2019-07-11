@@ -103,18 +103,18 @@ public class TileEntityAssembler extends TileEntityPoweredMultiblock<TileEntityA
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setTag("tank0", tanks[0].writeToNBT(new CompoundNBT()));
-		nbt.setTag("tank1", tanks[1].writeToNBT(new CompoundNBT()));
-		nbt.setTag("tank2", tanks[2].writeToNBT(new CompoundNBT()));
-		nbt.setBoolean("recursiveIngredients", recursiveIngredients);
+		nbt.put("tank0", tanks[0].writeToNBT(new CompoundNBT()));
+		nbt.put("tank1", tanks[1].writeToNBT(new CompoundNBT()));
+		nbt.put("tank2", tanks[2].writeToNBT(new CompoundNBT()));
+		nbt.putBoolean("recursiveIngredients", recursiveIngredients);
 		if(!descPacket)
 		{
-			nbt.setTag("inventory", Utils.writeInventory(inventory));
+			nbt.put("inventory", Utils.writeInventory(inventory));
 			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
 				ListNBT patternList = new ListNBT();
 				patterns[iPattern].writeToNBT(patternList);
-				nbt.setTag("pattern"+iPattern, patternList);
+				nbt.put("pattern"+iPattern, patternList);
 			}
 		}
 		if(isComputerControlled)

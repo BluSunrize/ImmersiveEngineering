@@ -241,12 +241,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setIntArray("sideConfig", sideConfig);
+		nbt.putIntArray("sideConfig", sideConfig);
 		if(!pipeCover.isEmpty())
-			nbt.setTag("pipeCover", (pipeCover.write(new CompoundNBT())));
+			nbt.put("pipeCover", (pipeCover.write(new CompoundNBT())));
 		nbt.setByte("connections", connections);
 		if(color!=null)
-			nbt.setInt("color", color.getId());
+			nbt.putInt("color", color.getId());
 	}
 
 

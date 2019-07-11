@@ -118,9 +118,9 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(facing!=null)
-			nbt.setInt("facing", facing.ordinal());
-		nbt.setBoolean("ceilingAttached", ceilingAttached);
-		nbt.setInt("colour", colour);
+			nbt.putInt("facing", facing.ordinal());
+		nbt.putBoolean("ceilingAttached", ceilingAttached);
+		nbt.putInt("colour", colour);
 	}
 
 	AxisAlignedBB[] bounds = {
@@ -213,7 +213,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 	{
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		if(colour!=0xffffff)
-			ItemNBTHelper.setInt(stack, "colour", colour);
+			ItemNBTHelper.putInt(stack, "colour", colour);
 		return stack;
 	}
 

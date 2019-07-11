@@ -129,7 +129,7 @@ public class ThaumcraftHelper extends IECompatModule
 								m_setFurnaceState.invoke(null, tileEntity.getWorld(), tileEntity.getPos(), true);
 						}
 					}
-					f_furnaceBurnTime.setInt(tileEntity, time);
+					f_furnaceBurnTime.putInt(tileEntity, time);
 				}
 			} catch(Exception e)
 			{

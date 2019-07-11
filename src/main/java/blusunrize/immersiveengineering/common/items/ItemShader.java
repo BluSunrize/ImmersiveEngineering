@@ -247,7 +247,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				{
 					IELogger.info("SHADER UPDATE: Fixing "+name+" to "+corrected.get(0));
 					IELogger.info("Others: "+corrected);
-					ItemNBTHelper.setString(stack, "shader_name", corrected.get(0));
+					ItemNBTHelper.putString(stack, "shader_name", corrected.get(0));
 					return corrected.get(0);
 				}
 			}
@@ -355,7 +355,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 			for(String key : ShaderRegistry.shaderRegistry.keySet())
 			{
 				ItemStack s = new ItemStack(this);
-				ItemNBTHelper.setString(s, "shader_name", key);
+				ItemNBTHelper.putString(s, "shader_name", key);
 				list.add(s);
 			}
 	}

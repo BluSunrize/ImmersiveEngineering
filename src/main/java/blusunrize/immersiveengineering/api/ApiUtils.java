@@ -664,7 +664,7 @@ public class ApiUtils
 			if(!world.isRemote)
 				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 				{
-					ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(), masterPos.getX(), masterPos.getY(), masterPos.getZ(),
+					ItemNBTHelper.putIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(), masterPos.getX(), masterPos.getY(), masterPos.getZ(),
 							offsetHere.getX(), offsetHere.getY(), offsetHere.getZ()});
 					CompoundNBT targetNbt = new CompoundNBT();
 					targetHere.writeToNBT(targetNbt);

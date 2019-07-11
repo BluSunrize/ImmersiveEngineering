@@ -52,9 +52,9 @@ public class DimensionChunkCoords extends ChunkPos
 	public CompoundNBT writeToNBT()
 	{
 		CompoundNBT tag = new CompoundNBT();
-		tag.setString("dim", dimension.getRegistryName().toString());
-		tag.setInt("x", this.x);
-		tag.setInt("z", this.z);
+		tag.putString("dim", dimension.getRegistryName().toString());
+		tag.putInt("x", this.x);
+		tag.putInt("z", this.z);
 		return tag;
 	}
 

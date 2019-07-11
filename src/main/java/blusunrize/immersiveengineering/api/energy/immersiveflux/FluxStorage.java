@@ -51,7 +51,7 @@ public class FluxStorage implements IFluxStorage
 	{
 		if(energy < 0)
 			energy = 0;
-		nbt.setInt("ifluxEnergy", energy);
+		nbt.putInt("ifluxEnergy", energy);
 		return nbt;
 	}
 

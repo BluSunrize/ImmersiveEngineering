@@ -120,8 +120,8 @@ public class RefineryRecipe extends MultiblockRecipe
 	@Override
 	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		nbt.setTag("input0", input0.writeToNBT(new CompoundNBT()));
-		nbt.setTag("input1", input1.writeToNBT(new CompoundNBT()));
+		nbt.put("input0", input0.writeToNBT(new CompoundNBT()));
+		nbt.put("input1", input1.writeToNBT(new CompoundNBT()));
 		return nbt;
 	}
 

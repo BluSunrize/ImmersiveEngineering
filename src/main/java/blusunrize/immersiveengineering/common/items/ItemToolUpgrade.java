@@ -77,8 +77,8 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade
 
 	public enum ToolUpgrade
 	{
-		DRILL_WATERPROOF(ImmutableSet.of("DRILL"), (upgrade, modifications) -> modifications.setBoolean("waterproof", true)),
-		DRILL_LUBE(ImmutableSet.of("DRILL"), (upgrade, modifications) -> modifications.setBoolean("oiled", true)),
+		DRILL_WATERPROOF(ImmutableSet.of("DRILL"), (upgrade, modifications) -> modifications.putBoolean("waterproof", true)),
+		DRILL_LUBE(ImmutableSet.of("DRILL"), (upgrade, modifications) -> modifications.putBoolean("oiled", true)),
 		DRILL_DAMAGE(ImmutableSet.of("DRILL"), 3, (upgrade, modifications) -> {
 			ItemNBTHelper.modifyFloat(modifications, "speed", upgrade.getCount()*2f);
 			ItemNBTHelper.modifyInt(modifications, "damage", upgrade.getCount());
@@ -86,14 +86,14 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade
 		DRILL_CAPACITY(ImmutableSet.of("DRILL", "CHEMTHROWER"), 1, (target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).hasKey("multitank"), (upgrade, modifications) -> ItemNBTHelper.modifyInt(modifications, "capacity", 2000)),
 		REVOLVER_BAYONET(ImmutableSet.of("REVOLVER"), (upgrade, modifications) -> ItemNBTHelper.modifyFloat(modifications, "melee", 6f)),
 		REVOLVER_MAGAZINE(ImmutableSet.of("REVOLVER"), 1, (target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).hasKey("bullets"), (upgrade, modifications) -> ItemNBTHelper.modifyInt(modifications, "bullets", 6)),
-		REVOLVER_ELECTRO(ImmutableSet.of("REVOLVER"), (upgrade, modifications) -> modifications.setBoolean("electro", true)),
-		CHEMTHROWER_FOCUS(ImmutableSet.of("CHEMTHROWER"), (upgrade, modifications) -> modifications.setBoolean("focus", true)),
-		RAILGUN_SCOPE(ImmutableSet.of("RAILGUN"), (upgrade, modifications) -> modifications.setBoolean("scope", true)),
-		RAILGUN_CAPACITORS(ImmutableSet.of("RAILGUN"), (upgrade, modifications) -> modifications.setFloat("speed", 1f)),
-		SHIELD_FLASH(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.setBoolean("flash", true)),
-		SHIELD_SHOCK(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.setBoolean("shock", true)),
-		SHIELD_MAGNET(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.setBoolean("magnet", true)),
-		CHEMTHROWER_MULTITANK(ImmutableSet.of("CHEMTHROWER"), 1, (target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).hasKey("capacity"), (upgrade, modifications) -> modifications.setBoolean("multitank", true));
+		REVOLVER_ELECTRO(ImmutableSet.of("REVOLVER"), (upgrade, modifications) -> modifications.putBoolean("electro", true)),
+		CHEMTHROWER_FOCUS(ImmutableSet.of("CHEMTHROWER"), (upgrade, modifications) -> modifications.putBoolean("focus", true)),
+		RAILGUN_SCOPE(ImmutableSet.of("RAILGUN"), (upgrade, modifications) -> modifications.putBoolean("scope", true)),
+		RAILGUN_CAPACITORS(ImmutableSet.of("RAILGUN"), (upgrade, modifications) -> modifications.putFloat("speed", 1f)),
+		SHIELD_FLASH(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.putBoolean("flash", true)),
+		SHIELD_SHOCK(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.putBoolean("shock", true)),
+		SHIELD_MAGNET(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.putBoolean("magnet", true)),
+		CHEMTHROWER_MULTITANK(ImmutableSet.of("CHEMTHROWER"), 1, (target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).hasKey("capacity"), (upgrade, modifications) -> modifications.putBoolean("multitank", true));
 
 		private ImmutableSet<String> toolset;
 		private int stackSize = 1;

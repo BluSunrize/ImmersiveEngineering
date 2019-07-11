@@ -98,7 +98,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	{
 		super.recalculateUpgrades(stack, w);
 		if(this.getEnergyStored(stack) > this.getMaxEnergyStored(stack))
-			ItemNBTHelper.setInt(stack, "energy", this.getMaxEnergyStored(stack));
+			ItemNBTHelper.putInt(stack, "energy", this.getMaxEnergyStored(stack));
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	{
 		super.clearUpgrades(stack);
 		if(this.getEnergyStored(stack) > this.getMaxEnergyStored(stack))
-			ItemNBTHelper.setInt(stack, "energy", this.getMaxEnergyStored(stack));
+			ItemNBTHelper.putInt(stack, "energy", this.getMaxEnergyStored(stack));
 	}
 
 	@Override

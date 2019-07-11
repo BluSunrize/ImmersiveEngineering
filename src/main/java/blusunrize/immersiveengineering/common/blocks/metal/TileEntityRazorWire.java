@@ -64,7 +64,7 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInt("facing", facing.ordinal());
+		nbt.putInt("facing", facing.ordinal());
 	}
 
 	@Override

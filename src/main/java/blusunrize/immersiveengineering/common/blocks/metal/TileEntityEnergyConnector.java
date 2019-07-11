@@ -160,13 +160,13 @@ public class TileEntityEnergyConnector extends TileEntityImmersiveConnectable im
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInt("facing", facing.ordinal());
+		nbt.putInt("facing", facing.ordinal());
 		CompoundNBT toNet = new CompoundNBT();
 		storageToNet.writeToNBT(toNet);
-		nbt.setTag("toNet", toNet);
+		nbt.put("toNet", toNet);
 		CompoundNBT toMachine = new CompoundNBT();
 		storageToMachine.writeToNBT(toMachine);
-		nbt.setTag("toMachine", toMachine);
+		nbt.put("toMachine", toMachine);
 	}
 
 	@Override

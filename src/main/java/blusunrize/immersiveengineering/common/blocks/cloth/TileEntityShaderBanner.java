@@ -62,9 +62,9 @@ public class TileEntityShaderBanner extends TileEntityIEBase implements IAdvance
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setBoolean("wall", this.wall);
+		nbt.putBoolean("wall", this.wall);
 		nbt.setByte("orientation", this.orientation);
-		nbt.setTag("shader", shader.serializeNBT());
+		nbt.put("shader", shader.serializeNBT());
 	}
 
 	@Override

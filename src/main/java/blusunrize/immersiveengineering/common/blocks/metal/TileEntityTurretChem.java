@@ -139,8 +139,8 @@ public class TileEntityTurretChem extends TileEntityTurret
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setTag("tank", tank.writeToNBT(new CompoundNBT()));
-		nbt.setBoolean("ignite", ignite);
+		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
+		nbt.putBoolean("ignite", ignite);
 	}
 
 	private LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);

@@ -117,10 +117,10 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 		if(!this.identStack.isEmpty())
 		{
 			CompoundNBT t = this.identStack.write(new CompoundNBT());
-			nbt.setTag("identStack", t);
+			nbt.put("identStack", t);
 		}
-		nbt.setInt("storageAmount", storageAmount);
-		nbt.setBoolean("lockItem", lockItem);
+		nbt.putInt("storageAmount", storageAmount);
+		nbt.putBoolean("lockItem", lockItem);
 	}
 
 	@Override

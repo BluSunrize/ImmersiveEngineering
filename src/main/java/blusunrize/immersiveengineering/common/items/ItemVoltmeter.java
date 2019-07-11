@@ -91,8 +91,8 @@ public class ItemVoltmeter extends ItemIEBase implements ITool
 		{
 			if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 			{
-				ItemNBTHelper.setString(stack, "linkingDim", world.getDimension().getType().toString());
-				ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{pos.getX(), pos.getY(), pos.getZ()});
+				ItemNBTHelper.putString(stack, "linkingDim", world.getDimension().getType().toString());
+				ItemNBTHelper.putIntArray(stack, "linkingPos", new int[]{pos.getX(), pos.getY(), pos.getZ()});
 			}
 			else
 			{

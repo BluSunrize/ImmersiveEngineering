@@ -116,7 +116,7 @@ public class RecipeFlareBullets implements IRecipe
 			b = (int)((float)b*colourMod/highestColour);
 			int newColour = (r<<8)+g;
 			newColour = (newColour<<8)+b;
-			ItemNBTHelper.setInt(newBullet, "flareColour", newColour);
+			ItemNBTHelper.putInt(newBullet, "flareColour", newColour);
 			return newBullet;
 		}
 		return ItemStack.EMPTY;

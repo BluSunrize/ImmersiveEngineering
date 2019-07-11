@@ -92,7 +92,7 @@ public class MessageShaderManual implements IMessage
 					if(!player.abilities.isCreativeMode)
 						ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(playerName).replicationCost);
 					ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
-					ItemNBTHelper.setString(shaderStack, "shader_name", args[0]);
+					ItemNBTHelper.putString(shaderStack, "shader_name", args[0]);
 					ItemEntity entityitem = player.dropItem(shaderStack, false);
 					if(entityitem!=null)
 					{

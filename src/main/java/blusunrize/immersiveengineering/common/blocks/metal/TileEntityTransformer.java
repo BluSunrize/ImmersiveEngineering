@@ -73,13 +73,13 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInt("facing", facing.ordinal());
+		nbt.putInt("facing", facing.ordinal());
 		if(leftType!=null)
-			nbt.setString("leftType", leftType.getUniqueName());
+			nbt.putString("leftType", leftType.getUniqueName());
 		if(rightType!=null)
-			nbt.setString("rightType", rightType.getUniqueName());
-		nbt.setInt("dummy", dummy);
-		nbt.setBoolean("postAttached", onPost);
+			nbt.putString("rightType", rightType.getUniqueName());
+		nbt.putInt("dummy", dummy);
+		nbt.putBoolean("postAttached", onPost);
 	}
 
 	@Override

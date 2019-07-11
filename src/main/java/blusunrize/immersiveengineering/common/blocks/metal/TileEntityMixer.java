@@ -78,10 +78,10 @@ public class TileEntityMixer extends TileEntityPoweredMultiblock<TileEntityMixer
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
-		nbt.setTag("tank", tankTag);
+		nbt.put("tank", tankTag);
 		if(!descPacket)
-			nbt.setTag("inventory", Utils.writeInventory(inventory));
-		nbt.setBoolean("outputAll", outputAll);
+			nbt.put("inventory", Utils.writeInventory(inventory));
+		nbt.putBoolean("outputAll", outputAll);
 	}
 
 	@Override

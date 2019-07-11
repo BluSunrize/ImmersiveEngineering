@@ -56,7 +56,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		for(FluidStack fs : this.fluids)
 			if(fs!=null)
 				tagList.add(fs.writeToNBT(new CompoundNBT()));
-		nbt.setTag("fluids", tagList);
+		nbt.put("fluids", tagList);
 		return nbt;
 	}
 

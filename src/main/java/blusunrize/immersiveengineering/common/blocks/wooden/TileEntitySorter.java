@@ -311,12 +311,12 @@ public class TileEntitySorter extends TileEntityIEBase implements IInteractionOb
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setIntArray("sideFilter", sideFilter);
+		nbt.putIntArray("sideFilter", sideFilter);
 		if(!descPacket)
 		{
 			ListNBT filterList = new ListNBT();
 			filter.writeToNBT(filterList);
-			nbt.setTag("filter", filterList);
+			nbt.put("filter", filterList);
 		}
 	}
 

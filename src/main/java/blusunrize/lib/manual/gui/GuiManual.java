@@ -26,7 +26,6 @@ import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.*;
 
 public class GuiManual extends Screen
@@ -47,9 +46,8 @@ public class GuiManual extends Screen
 
 	ManualInstance manual;
 	String texture;
-	private boolean buttonHeld = false;
-	private int[] lastClick;
-	private int[] lastDrag;
+	private double[] lastClick;
+	private double[] lastDrag;
 	private TextFieldWidget searchField;
 	private int hasSuggestions = -1;
 	private int prevGuiScale = -1;
@@ -115,11 +113,39 @@ public class GuiManual extends Screen
 				if(manual.showNodeInList(node))
 					children.add(node);
 			this.buttons.add(new GuiClickableList(this, 0, guiLeft+40, guiTop+20, 100, 168,
-					1f, children));
+					1f, children)
+			{
+				@Override
+				public void onClick(double x, double y)
+				{
+					super.onClick(x, y);
+					int sel = selectedOption;
+					if(sel >= 0&&sel < headers.length)
+					{
+						previousSelectedEntry.clear();
+						setCurrentNode(nodes.get(sel));
+					}
+					selectedOption = -1;
+					GuiManual.this.init();
+				}
+			});
 			textField = true;
 		}
 		if(currentNode.getSuperNode()!=null)
-			this.buttons.add(new GuiButtonManualNavigation(this, 1, guiLeft+24, guiTop+10, 10, 10, 0));
+			this.buttons.add(new GuiButtonManualNavigation(this, 1, guiLeft+24, guiTop+10, 10, 10, 0)
+			{
+				@Override
+				public void onClick(double x, double y)
+				{
+					super.onClick(x, y);
+					if(currentNode.isLeaf()&&!previousSelectedEntry.isEmpty())
+						previousSelectedEntry.pop().changePage(GuiManual.this, false);
+					else if(currentNode.getSuperNode()!=null)
+						setCurrentNode(currentNode.getSuperNode());
+					page = 0;
+					GuiManual.this.init();
+				}
+			});
 
 		if(textField)
 		{
@@ -213,92 +239,48 @@ public class GuiManual extends Screen
 		}
 		if(this.searchField!=null)
 		{
-			this.searchField.drawTextBox();
+			this.searchField.render(mouseX, mouseY, f);
 			if(this.hasSuggestions!=-1&&this.hasSuggestions < this.buttons.size())
 				//TODO translation
-				manual.fontRenderer.drawString("It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour(), false);
+				manual.fontRenderer.drawString("It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
 		}
 		for(Button btn : pageButtons)
-			btn.drawButton(mc, mouseX, mouseY, f);
-		manual.fontRenderer.setUnicodeFlag(uni);
-		super.drawScreen(mouseX, mouseY, f);
+			btn.render(mouseX, mouseY, f);
+		super.render(mouseX, mouseY, f);
 		GlStateManager.enableBlend();
 		manual.entryRenderPost();
 	}
 
 	@Override
-	public void onGuiClosed()
+	public void onClose()
 	{
 		this.manual.closeManual();
-		super.onGuiClosed();
+		super.onClose();
 		if(prevGuiScale!=-1&&manual.allowGuiRescale())
 			mc.gameSettings.guiScale = prevGuiScale;
 	}
 
-	@Override
-	public void actionPerformed(Button button)
-	{
-		if(buttonHeld)
-			return;
-		if(button instanceof GuiClickableList)
-		{
-			GuiClickableList clickList = ((GuiClickableList)button);
-			int sel = clickList.selectedOption;
-			if(sel >= 0&&sel < clickList.headers.length)
-			{
-				if(button.id==0)
-					previousSelectedEntry.clear();
-				setCurrentNode(clickList.nodes.get(sel));
-			}
-			((GuiClickableList)button).selectedOption = -1;
-			this.initGui();
-		}
-		else if(button.id==1)
-		{
-			if(currentNode.isLeaf()&&!previousSelectedEntry.isEmpty())
-				previousSelectedEntry.pop().changePage(this, false);
-			else if(currentNode.getSuperNode()!=null)
-				setCurrentNode(currentNode.getSuperNode());
-			page = 0;
-			this.initGui();
-		}
-		else if(pageButtons.contains(button)&&currentNode.isLeaf())
-		{
-			currentNode.getLeafData().buttonPressed(this, button);
-		}
-		buttonHeld = true;
-	}
-
-
 	private void drawCenteredStringScaled(FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)
 	{
-		int xx = (int)Math.floor(x/scale-(fr.getStringWidth(s)/2));
-		int yy = (int)Math.floor(y/scale-(fr.FONT_HEIGHT/2));
+		int xx = (int)Math.floor(x/scale-(fr.getStringWidth(s)/2.));
+		int yy = (int)Math.floor(y/scale-(fr.FONT_HEIGHT/2.));
 		if(scale!=1)
-			GlStateManager.scale(scale, scale, scale);
-		fr.drawString(s, xx, yy, colour, shadow);
+		{
+			GlStateManager.pushMatrix();
+			GlStateManager.scalef(scale, scale, scale);
+		}
+		if(shadow)
+			fr.drawStringWithShadow(s, xx, yy, colour);
+		else
+			fr.drawString(s, xx, yy, colour);
 		if(scale!=1)
-			GlStateManager.scale(1/scale, 1/scale, 1/scale);
+			GlStateManager.popMatrix();
 	}
 
 	@Override
-	public void renderToolTip(ItemStack stack, int x, int y)
+	public List<String> getTooltipFromItem(ItemStack stack)
 	{
-		super.renderToolTip(stack, x, y);
-	}
-
-	//Change access from protected to public
-	@Override
-	public void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor)
-	{
-		super.drawGradientRect(left, top, right, bottom, startColor, endColor);
-		GlStateManager.enableBlend();
-	}
-
-	@Override
-	public List<String> getItemToolTip(ItemStack stack)
-	{
-		List<String> tooltip = super.getItemToolTip(stack);
+		List<String> tooltip = super.getTooltipFromItem(stack);
 		if(currentNode.isLeaf())
 		{
 			if(currentNode.getLeafData().getHighlightedStack(page)==stack)
@@ -320,27 +302,29 @@ public class GuiManual extends Screen
 	}
 
 	@Override
-	public void handleMouseInput() throws IOException
+	public boolean mouseScrolled(double x, double y, double wheel)
 	{
-		super.handleMouseInput();
-		int wheel = Mouse.getEventDWheel();
+		super.mouseScrolled(x, y, wheel);
 		if(wheel!=0&&currentNode.isLeaf())
 		{
 			if(wheel > 0&&page > 0)
 			{
 				page--;
-				this.initGui();
+				this.init();
+				return true;
 			}
 			else if(wheel < 0&&page < currentNode.getLeafData().getPageCount()-1)
 			{
 				page++;
-				this.initGui();
+				this.init();
+				return true;
 			}
 		}
+		return false;
 	}
 
 	@Override
-	public void mouseClicked(int mx, int my, int button) throws IOException
+	public boolean mouseClicked(double mx, double my, int button)
 	{
 		super.mouseClicked(mx, my, button);
 		if(button==0&&currentNode.isLeaf())
@@ -351,12 +335,14 @@ public class GuiManual extends Screen
 			if(page > 0&&mx > 32&&mx < 32+17&&my > 179&&my < 179+10)
 			{
 				page--;
-				this.initGui();
+				this.init();
+				return true;
 			}
 			else if(page < selectedEntry.getPageCount()-1&&mx > 135&&mx < 135+17&&my > 179&&my < 179+10)
 			{
 				page++;
-				this.initGui();
+				this.init();
+				return true;
 			}
 			else
 			{
@@ -366,6 +352,7 @@ public class GuiManual extends Screen
 					ManualLink link = this.getManual().getManualLink(highlighted);
 					if(link!=null)
 						link.changePage(this, true);
+					return true;
 				}
 			}
 		}
@@ -380,46 +367,48 @@ public class GuiManual extends Screen
 				setCurrentNode(currentNode.getSuperNode());
 				page = 0;
 			}
-			this.initGui();
+			this.init();
+			return true;
 		}
-		lastClick = new int[]{mx, my};
+		lastClick = new double[]{mx, my};
 		if(this.searchField!=null)
 			this.searchField.mouseClicked(mx, my, button);
+		return false;
 	}
 
 	@Override
-	protected void mouseReleased(int mx, int my, int action)
+	public boolean mouseReleased(double mx, double my, int action)
 	{
-		super.mouseReleased(mx, my, action);
-		if(buttonHeld&&(action==0||action==1))
-			buttonHeld = false;
 		lastClick = null;
 		lastDrag = null;
+		return super.mouseReleased(mx, my, action);
 	}
 
 	@Override
-	protected void mouseClickMove(int mx, int my, int button, long time)
+	public boolean mouseDragged(double mx, double my, int button, double p_mouseDragged_6_, double p_mouseDragged_8_)
 	{
 		if(lastClick!=null&&currentNode.isLeaf())
 		{
 			if(lastDrag==null)
-				lastDrag = new int[]{mx-guiLeft, my-guiTop};
+				lastDrag = new double[]{mx-guiLeft, my-guiTop};
 			currentNode.getLeafData().mouseDragged(this, guiLeft+32, guiTop+28, lastClick[0], lastClick[1], mx-guiLeft,
 					my-guiTop, lastDrag[0], lastDrag[1], buttons.get(button));
-			lastDrag = new int[]{mx-guiLeft, my-guiTop};
+			lastDrag = new double[]{mx-guiLeft, my-guiTop};
+			return true;
 		}
+		return false;
 	}
 
 	@Override
-	protected void keyTyped(char c, int i) throws IOException
+	public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_)
 	{
-		if(this.searchField!=null&&this.searchField.textboxKeyTyped(c, i))
+		if(this.searchField!=null&&this.searchField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_))
 		{
 			String search = searchField.getText();
 			if(search.trim().isEmpty())
 			{
 				hasSuggestions = -1;
-				this.initGui();
+				this.init();
 			}
 			else
 			{
@@ -472,10 +461,11 @@ public class GuiManual extends Screen
 					hasSuggestions = -1;
 				}
 			}
+			return true;
 		}
 		else
 		{
-			super.keyTyped(c, i);
+			return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
 		}
 	}
 

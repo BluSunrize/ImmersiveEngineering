@@ -33,10 +33,10 @@ public class TargetingInfo
 
 	public void writeToNBT(CompoundNBT tag)
 	{
-		tag.setInt("side", side.ordinal());
-		tag.setFloat("hitX", hitX);
-		tag.setFloat("hitY", hitY);
-		tag.setFloat("hitZ", hitZ);
+		tag.putInt("side", side.ordinal());
+		tag.putFloat("hitX", hitX);
+		tag.putFloat("hitY", hitY);
+		tag.putFloat("hitZ", hitZ);
 	}
 
 	public static TargetingInfo readFromNBT(CompoundNBT tag)

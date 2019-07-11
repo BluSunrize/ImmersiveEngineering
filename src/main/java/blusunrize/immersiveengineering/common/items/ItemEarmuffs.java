@@ -108,7 +108,7 @@ public class ItemEarmuffs extends IDyeableArmorItem implements IConfigurableTool
 	@Override
 	public void setColor(ItemStack stack, int color)
 	{
-		ItemNBTHelper.setInt(stack, Lib.NBT_EarmuffColour, color);
+		ItemNBTHelper.putInt(stack, Lib.NBT_EarmuffColour, color);
 	}
 
 	@Override
@@ -191,9 +191,9 @@ public class ItemEarmuffs extends IDyeableArmorItem implements IConfigurableTool
 	public void applyConfigOption(ItemStack stack, String key, Object value)
 	{
 		if(value instanceof Boolean)
-			ItemNBTHelper.setBoolean(stack, "IE:Earmuffs:Cat_"+key, !(Boolean)value);
+			ItemNBTHelper.putBoolean(stack, "IE:Earmuffs:Cat_"+key, !(Boolean)value);
 		else if(value instanceof Float)
-			ItemNBTHelper.setFloat(stack, "IE:Earmuffs:Volume", 1-(Float)value);
+			ItemNBTHelper.putFloat(stack, "IE:Earmuffs:Volume", 1-(Float)value);
 	}
 
 	@Override

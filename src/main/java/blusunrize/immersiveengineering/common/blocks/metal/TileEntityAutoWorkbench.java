@@ -70,10 +70,10 @@ public class TileEntityAutoWorkbench extends TileEntityPoweredMultiblock<TileEnt
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInt("selectedRecipe", selectedRecipe);
+		nbt.putInt("selectedRecipe", selectedRecipe);
 //		if(!descPacket) Disabled because blueprint. Have yet to see issue because of this
 		{
-			nbt.setTag("inventory", Utils.writeInventory(inventory));
+			nbt.put("inventory", Utils.writeInventory(inventory));
 		}
 	}
 

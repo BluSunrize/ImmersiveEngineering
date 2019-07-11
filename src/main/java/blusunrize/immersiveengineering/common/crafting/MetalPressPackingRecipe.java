@@ -88,12 +88,12 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 		@Override
 		public CompoundNBT writeToNBT(CompoundNBT nbt)
 		{
-			nbt.setString("type", "packing"+input.inputSize);
-			nbt.setTag("mapKey", mapKey.writeToNBT(new CompoundNBT()));
-			nbt.setTag("output", output.write(new CompoundNBT()));
-			nbt.setTag("input", input.writeToNBT(new CompoundNBT()));
-			nbt.setTag("mold", mold.writeToNBT(new CompoundNBT()));
-			nbt.setInt("energy", (int)(getTotalProcessEnergy()/energyModifier));
+			nbt.putString("type", "packing"+input.inputSize);
+			nbt.put("mapKey", mapKey.writeToNBT(new CompoundNBT()));
+			nbt.put("output", output.write(new CompoundNBT()));
+			nbt.put("input", input.writeToNBT(new CompoundNBT()));
+			nbt.put("mold", mold.writeToNBT(new CompoundNBT()));
+			nbt.putInt("energy", (int)(getTotalProcessEnergy()/energyModifier));
 			return nbt;
 		}
 	}

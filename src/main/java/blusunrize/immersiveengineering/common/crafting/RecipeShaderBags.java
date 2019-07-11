@@ -71,7 +71,7 @@ public class RecipeShaderBags implements IRecipe
 				Rarity next = ShaderRegistry.getLowerRarity(stackInSlot.getRarity());
 				if(next!=null)
 				{
-					ItemNBTHelper.setString(output, "rarity", next.toString());
+					ItemNBTHelper.putString(output, "rarity", next.toString());
 					return output;
 				}
 			}

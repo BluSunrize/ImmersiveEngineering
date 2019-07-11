@@ -175,7 +175,7 @@ public class GlobalWireNetwork implements ITickable
 		for(LocalWireNetwork local : localNets.values())
 			if(savedNets.add(local))
 				locals.add(local.writeToNBT());
-		ret.setTag("locals", locals);
+		ret.put("locals", locals);
 		return ret;
 	}
 

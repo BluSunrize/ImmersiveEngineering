@@ -117,9 +117,9 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setBoolean("active", active);
-		nbt.setInt("energyStorage", energyStorage);
-		nbt.setBoolean("flipped", flipped);
+		nbt.putBoolean("active", active);
+		nbt.putInt("energyStorage", energyStorage);
+		nbt.putBoolean("flipped", flipped);
 	}
 
 	@Override

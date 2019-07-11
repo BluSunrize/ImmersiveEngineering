@@ -67,7 +67,7 @@ public class GuiTurret extends GuiIEContainerBase
 				int listOffset = -1;
 				int rem = selectedOption;
 				tile.targetList.remove(rem);
-				tag.setInt("remove", rem);
+				tag.putInt("remove", rem);
 				listOffset = getOffset()-1;
 				handleButtonClick(tag, listOffset);
 			}
@@ -84,7 +84,7 @@ public class GuiTurret extends GuiIEContainerBase
 				if(!tile.targetList.contains(name))
 				{
 					listOffset = ((GuiReactiveList)buttons.get(0)).getMaxOffset();
-					tag.setString("add", name);
+					tag.putString("add", name);
 					tile.targetList.add(name);
 				}
 				nameField.setText("");
@@ -100,7 +100,7 @@ public class GuiTurret extends GuiIEContainerBase
 				CompoundNBT tag = new CompoundNBT();
 				int listOffset = -1;
 				tile.whitelist = !state;
-				tag.setBoolean("whitelist", tile.whitelist);
+				tag.putBoolean("whitelist", tile.whitelist);
 				handleButtonClick(tag, listOffset);
 			}
 		});
@@ -113,7 +113,7 @@ public class GuiTurret extends GuiIEContainerBase
 				CompoundNBT tag = new CompoundNBT();
 				int listOffset = -1;
 				tile.attackAnimals = state;
-				tag.setBoolean("attackAnimals", tile.attackAnimals);
+				tag.putBoolean("attackAnimals", tile.attackAnimals);
 				handleButtonClick(tag, listOffset);
 			}
 		});
@@ -126,7 +126,7 @@ public class GuiTurret extends GuiIEContainerBase
 				CompoundNBT tag = new CompoundNBT();
 				int listOffset = -1;
 				tile.attackPlayers = state;
-				tag.setBoolean("attackPlayers", tile.attackPlayers);
+				tag.putBoolean("attackPlayers", tile.attackPlayers);
 				handleButtonClick(tag, listOffset);
 			}
 		});
@@ -139,7 +139,7 @@ public class GuiTurret extends GuiIEContainerBase
 				CompoundNBT tag = new CompoundNBT();
 				int listOffset = -1;
 				tile.attackNeutrals = state;
-				tag.setBoolean("attackNeutrals", tile.attackNeutrals);
+				tag.putBoolean("attackNeutrals", tile.attackNeutrals);
 				handleButtonClick(tag, listOffset);
 			}
 		});
@@ -154,7 +154,7 @@ public class GuiTurret extends GuiIEContainerBase
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
 					((TileEntityTurretChem)tile).ignite = state;
-					tag.setBoolean("ignite", ((TileEntityTurretChem)tile).ignite);
+					tag.putBoolean("ignite", ((TileEntityTurretChem)tile).ignite);
 					handleButtonClick(tag, listOffset);
 				}
 			});
@@ -168,7 +168,7 @@ public class GuiTurret extends GuiIEContainerBase
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
 					((TileEntityTurretGun)tile).expelCasings = state;
-					tag.setBoolean("expelCasings", ((TileEntityTurretGun)tile).expelCasings);
+					tag.putBoolean("expelCasings", ((TileEntityTurretGun)tile).expelCasings);
 					handleButtonClick(tag, listOffset);
 				}
 			});
@@ -254,7 +254,7 @@ public class GuiTurret extends GuiIEContainerBase
 			if(!tile.targetList.contains(name))
 			{
 				CompoundNBT tag = new CompoundNBT();
-				tag.setString("add", name);
+				tag.putString("add", name);
 				tile.targetList.add(name);
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 

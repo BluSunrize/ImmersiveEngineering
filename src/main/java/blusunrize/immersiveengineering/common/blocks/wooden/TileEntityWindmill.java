@@ -144,11 +144,11 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setInt("sails", sails);
-		//nbt.setFloat("prevRotation", prevRotation);
-		nbt.setFloat("rotation", rotation);
-		nbt.setFloat("turnSpeed", turnSpeed);
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putInt("sails", sails);
+		//nbt.putFloat("prevRotation", prevRotation);
+		nbt.putFloat("rotation", rotation);
+		nbt.putFloat("turnSpeed", turnSpeed);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -224,7 +224,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	{
 		ItemStack stack = new ItemStack(state.getBlock());
 		if(sails > 0)
-			ItemNBTHelper.setInt(stack, "sails", sails);
+			ItemNBTHelper.putInt(stack, "sails", sails);
 		return stack;
 	}
 

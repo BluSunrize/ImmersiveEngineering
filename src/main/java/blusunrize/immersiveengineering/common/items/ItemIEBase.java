@@ -79,7 +79,7 @@ public class ItemIEBase extends Item implements IColouredItem
 			stack.shrink(1);
 			return;
 		}
-		ItemNBTHelper.setInt(stack, Lib.NBT_DAMAGE, curDamage);
+		ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, curDamage);
 	}
 
 	@Override

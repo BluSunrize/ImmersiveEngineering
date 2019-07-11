@@ -175,8 +175,8 @@ public class TileEntityExcavator extends TileEntityPoweredMultiblock<TileEntityE
 								}
 								if(!wheel.digStacks.get(targetDown).isEmpty())
 								{
-									packet.setInt("fill", targetDown);
-									packet.setTag("fillStack", wheel.digStacks.get(targetDown).write(new CompoundNBT()));
+									packet.putInt("fill", targetDown);
+									packet.put("fillStack", wheel.digStacks.get(targetDown).write(new CompoundNBT()));
 								}
 							}
 							if(!wheel.digStacks.get(target).isEmpty())
@@ -188,7 +188,7 @@ public class TileEntityExcavator extends TileEntityPoweredMultiblock<TileEntityE
 								wheel.digStacks.set(target, ItemStack.EMPTY);
 								wheel.markDirty();
 								this.markContainingBlockForUpdate(null);
-								packet.setInt("empty", target);
+								packet.putInt("empty", target);
 							}
 							if(!packet.isEmpty())
 								ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)),

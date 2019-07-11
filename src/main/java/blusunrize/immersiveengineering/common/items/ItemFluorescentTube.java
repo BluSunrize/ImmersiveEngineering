@@ -96,9 +96,9 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	public static void setRGB(ItemStack s, float[] rgb)
 	{
 		CompoundNBT nbt = new CompoundNBT();
-		nbt.setFloat("r", rgb[0]);
-		nbt.setFloat("g", rgb[1]);
-		nbt.setFloat("b", rgb[2]);
+		nbt.putFloat("r", rgb[0]);
+		nbt.putFloat("g", rgb[1]);
+		nbt.putFloat("b", rgb[2]);
 		ItemNBTHelper.setTagCompound(s, "rgb", nbt);
 	}
 
@@ -198,8 +198,8 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 
 	public static void setLit(ItemStack stack, float strength)
 	{
-		ItemNBTHelper.setInt(stack, LIT_TIME, 35);
-		ItemNBTHelper.setFloat(stack, LIT_STRENGTH, MathHelper.clamp(strength, 0, 1F));
+		ItemNBTHelper.putInt(stack, LIT_TIME, 35);
+		ItemNBTHelper.putFloat(stack, LIT_STRENGTH, MathHelper.clamp(strength, 0, 1F));
 	}
 
 	@Override
@@ -223,7 +223,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 				ItemNBTHelper.remove(stack, LIT_STRENGTH);
 			}
 			else
-				ItemNBTHelper.setInt(stack, LIT_TIME, litTicksRemaining);
+				ItemNBTHelper.putInt(stack, LIT_TIME, litTicksRemaining);
 		}
 	}
 

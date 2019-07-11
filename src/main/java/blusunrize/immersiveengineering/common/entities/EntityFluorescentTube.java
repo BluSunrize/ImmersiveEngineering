@@ -134,11 +134,11 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	protected void writeAdditional(CompoundNBT nbt)
 	{
 		CompoundNBT comp = new CompoundNBT();
-		comp.setFloat("r", rgb[0]);
-		comp.setFloat("g", rgb[1]);
-		comp.setFloat("b", rgb[2]);
-		nbt.setTag("nbt", comp);
-		nbt.setFloat("angleHor", angleHorizontal);
+		comp.putFloat("r", rgb[0]);
+		comp.putFloat("g", rgb[1]);
+		comp.putFloat("b", rgb[2]);
+		nbt.put("nbt", comp);
+		nbt.putFloat("angleHor", angleHorizontal);
 	}
 
 	@Override

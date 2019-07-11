@@ -277,17 +277,17 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		CompoundNBT nbt = new CompoundNBT();
 		if(type==0)
 		{
-			nbt.setFloat("growth", growth);
-			nbt.setInt("energy", energyStorage.getEnergyStored());
-			nbt.setBoolean("renderActive", renderActive);
+			nbt.putFloat("growth", growth);
+			nbt.putInt("energy", energyStorage.getEnergyStored());
+			nbt.putBoolean("renderActive", renderActive);
 		}
 		else if(type==1)
 		{
-			nbt.setInt("fertilizerAmount", fertilizerAmount);
-			nbt.setFloat("fertilizerMod", fertilizerMod);
+			nbt.putInt("fertilizerAmount", fertilizerAmount);
+			nbt.putFloat("fertilizerMod", fertilizerMod);
 		}
 		else if(type==2)
-			nbt.setTag("tank", tank.writeToNBT(new CompoundNBT()));
+			nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
 		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)),
 				new MessageTileSync(this, nbt));
 	}
@@ -326,15 +326,15 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setInt("dummy", dummy);
-		nbt.setTag("inventory", Utils.writeInventory(inventory));
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putInt("dummy", dummy);
+		nbt.put("inventory", Utils.writeInventory(inventory));
 		energyStorage.writeToNBT(nbt);
 		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
-		nbt.setTag("tank", tankTag);
-		nbt.setInt("fertilizerAmount", fertilizerAmount);
-		nbt.setFloat("fertilizerMod", fertilizerMod);
-		nbt.setFloat("growth", growth);
+		nbt.put("tank", tankTag);
+		nbt.putInt("fertilizerAmount", fertilizerAmount);
+		nbt.putFloat("fertilizerMod", fertilizerMod);
+		nbt.putFloat("growth", growth);
 	}
 
 	@Override

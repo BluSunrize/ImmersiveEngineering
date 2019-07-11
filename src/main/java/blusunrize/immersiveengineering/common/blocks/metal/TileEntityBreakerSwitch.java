@@ -112,11 +112,11 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.setInt("facing", facing.ordinal());
-		nbt.setInt("rotation", rotation);
-		nbt.setInt("wires", wires);
-		nbt.setBoolean("active", active);
-		nbt.setBoolean("inverted", inverted);
+		nbt.putInt("facing", facing.ordinal());
+		nbt.putInt("rotation", rotation);
+		nbt.putInt("wires", wires);
+		nbt.putBoolean("active", active);
+		nbt.putBoolean("inverted", inverted);
 	}
 
 	@Override

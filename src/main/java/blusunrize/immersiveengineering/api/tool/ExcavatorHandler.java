@@ -15,14 +15,16 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.network.MessageMineralListSync;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.FloatNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.nbt.*;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.*;
 
@@ -41,7 +43,7 @@ public class ExcavatorHandler
 	private static HashMap<Integer, Set<MineralMix>> dimensionPermittedMinerals = new HashMap<Integer, Set<MineralMix>>();
 	public static int mineralVeinCapacity = 0;
 	public static double mineralChance = 0;
-	public static int[] defaultDimensionBlacklist = new int[0];
+	public static Set<DimensionType> defaultDimensionBlacklist = new HashSet<>();
 	public static boolean allowPackets = false;
 
 	public static MineralMix addMineral(String name, int mineralWeight, float failChance, String[] ores, float[] chances)
@@ -57,13 +59,13 @@ public class ExcavatorHandler
 		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
 			e.getKey().recalculateChances();
 		dimensionPermittedMinerals.clear();
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER&&allowPackets&&!mutePackets)
+		if(EffectiveSide.get()==LogicalSide.SERVER&&allowPackets&&!mutePackets)
 		{
 			HashMap<MineralMix, Integer> packetMap = new HashMap<MineralMix, Integer>();
 			for(Map.Entry<MineralMix, Integer> e : ExcavatorHandler.mineralList.entrySet())
 				if(e.getKey()!=null&&e.getValue()!=null)
 					packetMap.put(e.getKey(), e.getValue());
-			ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
+			ImmersiveEngineering.packetHandler.send(PacketDistributor.ALL.with(null), new MessageMineralListSync(packetMap));
 		}
 	}
 
@@ -83,7 +85,7 @@ public class ExcavatorHandler
 
 	public static MineralWorldInfo getMineralWorldInfo(World world, int chunkX, int chunkZ)
 	{
-		return getMineralWorldInfo(world, new DimensionChunkCoords(world.provider.getDimension(), chunkX, chunkZ), false);
+		return getMineralWorldInfo(world, new DimensionChunkCoords(world.getDimension().getType(), chunkX, chunkZ), false);
 	}
 
 	public static MineralWorldInfo getMineralWorldInfo(World world, DimensionChunkCoords chunkCoords, boolean guaranteed)
@@ -94,7 +96,7 @@ public class ExcavatorHandler
 		if(worldInfo==null)
 		{
 			MineralMix mix = null;
-			Random r = world.getChunk(chunkCoords.x, chunkCoords.z).getRandomWithSeed(940610);
+			Random r = SharedSeedRandom.seedSlimeChunk(chunkCoords.x, chunkCoords.z, world.getSeed(), 940610990913L);
 			double dd = r.nextDouble();
 
 			boolean empty = !guaranteed&&dd > mineralChance;
@@ -126,7 +128,7 @@ public class ExcavatorHandler
 	{
 		MineralWorldInfo info = getMineralWorldInfo(world, chunkX, chunkZ);
 		info.depletion++;
-		IESaveData.setDirty(world.provider.getDimension());
+		IESaveData.setDirty();
 	}
 
 	public static class MineralMix
@@ -142,8 +144,8 @@ public class ExcavatorHandler
 		 * Should an ore given to this mix not be present in the dictionary, it will attempt to draw a replacement from this list
 		 */
 		public HashMap<String, String> replacementOres;
-		public int[] dimensionWhitelist = new int[0];
-		public int[] dimensionBlacklist = new int[0];
+		public Set<DimensionType> dimensionWhitelist = new HashSet<>();
+		public Set<DimensionType> dimensionBlacklist;
 
 		public MineralMix(String name, float failChance, String[] ores, float[] chances)
 		{
@@ -151,7 +153,7 @@ public class ExcavatorHandler
 			this.failChance = failChance;
 			this.ores = ores;
 			this.chances = chances;
-			this.dimensionBlacklist = defaultDimensionBlacklist.clone();
+			this.dimensionBlacklist = new HashSet<>(defaultDimensionBlacklist);
 		}
 
 		public MineralMix addReplacement(String original, String replacement)
@@ -207,54 +209,60 @@ public class ExcavatorHandler
 			return isValid;
 		}
 
-		public boolean validDimension(int dim)
+		public boolean validDimension(DimensionType dim)
 		{
-			if(dimensionWhitelist!=null&&dimensionWhitelist.length > 0)
-			{
-				for(int white : dimensionWhitelist)
-					if(dim==white)
-						return true;
-				return false;
-			}
-			else if(dimensionBlacklist!=null&&dimensionBlacklist.length > 0)
-			{
-				for(int black : dimensionBlacklist)
-					if(dim==black)
-						return false;
-				return true;
-			}
+			if(dimensionWhitelist!=null&&!dimensionWhitelist.isEmpty())
+				return dimensionWhitelist.contains(dim);
+			else if(dimensionBlacklist!=null&&!dimensionBlacklist.isEmpty())
+				return !dimensionBlacklist.contains(dim);
 			return true;
 		}
 
 		public CompoundNBT writeToNBT()
 		{
 			CompoundNBT tag = new CompoundNBT();
-			tag.setString("name", this.name);
-			tag.setFloat("failChance", this.failChance);
+			tag.putString("name", this.name);
+			tag.putFloat("failChance", this.failChance);
 			ListNBT tagList = new ListNBT();
 			for(String ore : this.ores)
 				tagList.add(new StringNBT(ore));
-			tag.setTag("ores", tagList);
+			tag.put("ores", tagList);
 
 			tagList = new ListNBT();
 			for(float chance : this.chances)
 				tagList.add(new FloatNBT(chance));
-			tag.setTag("chances", tagList);
+			tag.put("chances", tagList);
 
 			tagList = new ListNBT();
 			if(this.oreOutput!=null)
 				for(ItemStack output : this.oreOutput)
-					tagList.add(output.writeToNBT(new CompoundNBT()));
-			tag.setTag("oreOutput", tagList);
+					tagList.add(output.write(new CompoundNBT()));
+			tag.put("oreOutput", tagList);
 
 			tagList = new ListNBT();
 			for(float chance : this.recalculatedChances)
 				tagList.add(new FloatNBT(chance));
-			tag.setTag("recalculatedChances", tagList);
-			tag.setBoolean("isValid", isValid);
-			tag.setIntArray("dimensionWhitelist", dimensionWhitelist);
-			tag.setIntArray("dimensionBlacklist", dimensionBlacklist);
+			tag.put("recalculatedChances", tagList);
+			tag.putBoolean("isValid", isValid);
+			tag.put("dimensionWhitelist", toNBT(dimensionWhitelist));
+			tag.put("dimensionBlacklist", toNBT(dimensionBlacklist));
 			return tag;
+		}
+
+		private static ListNBT toNBT(Set<DimensionType> types)
+		{
+			ListNBT ret = new ListNBT();
+			for(DimensionType t : types)
+				ret.add(new StringNBT(DimensionType.getKey(t).toString()));
+			return ret;
+		}
+
+		private static Set<DimensionType> fromNBT(ListNBT nbt)
+		{
+			Set<DimensionType> ret = new HashSet<>();
+			for(INBT entry : nbt)
+				ret.add(DimensionType.byName(new ResourceLocation(entry.getString())));
+			return ret;
 		}
 
 		public static MineralMix readFromNBT(CompoundNBT tag)
@@ -265,30 +273,30 @@ public class ExcavatorHandler
 			ListNBT tagList = tag.getList("ores", 8);
 			String[] ores = new String[tagList.size()];
 			for(int i = 0; i < ores.length; i++)
-				ores[i] = tagList.getStringTagAt(i);
+				ores[i] = tagList.getString(i);
 
 			tagList = tag.getList("chances", 5);
 			float[] chances = new float[tagList.size()];
 			for(int i = 0; i < chances.length; i++)
-				chances[i] = tagList.getFloatAt(i);
+				chances[i] = tagList.getFloat(i);
 
 			tagList = tag.getList("oreOutput", 10);
 			NonNullList<ItemStack> oreOutput = NonNullList.withSize(tagList.size(), ItemStack.EMPTY);
 			for(int i = 0; i < oreOutput.size(); i++)
-				oreOutput.set(i, new ItemStack(tagList.getCompound(i)));
+				oreOutput.set(i, ItemStack.read(tagList.getCompound(i)));
 
 			tagList = tag.getList("recalculatedChances", 5);
 			float[] recalculatedChances = new float[tagList.size()];
 			for(int i = 0; i < recalculatedChances.length; i++)
-				recalculatedChances[i] = tagList.getFloatAt(i);
+				recalculatedChances[i] = tagList.getFloat(i);
 
 			boolean isValid = tag.getBoolean("isValid");
 			MineralMix mix = new MineralMix(name, failChance, ores, chances);
 			mix.oreOutput = oreOutput;
 			mix.recalculatedChances = recalculatedChances;
 			mix.isValid = isValid;
-			mix.dimensionWhitelist = tag.getIntArray("dimensionWhitelist");
-			mix.dimensionBlacklist = tag.getIntArray("dimensionBlacklist");
+			mix.dimensionWhitelist = fromNBT(tag.getList("dimensionWhitelist", NBT.TAG_STRING));
+			mix.dimensionBlacklist = fromNBT(tag.getList("dimensionBlacklist", NBT.TAG_STRING));
 			return mix;
 		}
 	}
@@ -303,24 +311,24 @@ public class ExcavatorHandler
 		{
 			CompoundNBT tag = new CompoundNBT();
 			if(mineral!=null)
-				tag.setString("mineral", mineral.name);
+				tag.putString("mineral", mineral.name);
 			if(mineralOverride!=null)
-				tag.setString("mineralOverride", mineralOverride.name);
-			tag.setInt("depletion", depletion);
+				tag.putString("mineralOverride", mineralOverride.name);
+			tag.putInt("depletion", depletion);
 			return tag;
 		}
 
 		public static MineralWorldInfo readFromNBT(CompoundNBT tag)
 		{
 			MineralWorldInfo info = new MineralWorldInfo();
-			if(tag.hasKey("mineral"))
+			if(tag.contains("mineral"))
 			{
 				String s = tag.getString("mineral");
 				for(MineralMix mineral : mineralList.keySet())
 					if(s.equalsIgnoreCase(mineral.name))
 						info.mineral = mineral;
 			}
-			if(tag.hasKey("mineralOverride"))
+			if(tag.contains("mineralOverride"))
 			{
 				String s = tag.getString("mineralOverride");
 				for(MineralMix mineral : mineralList.keySet())

@@ -75,7 +75,7 @@ public class ItemEngineersBlueprint extends ItemIEBase
 			for(String key : BlueprintCraftingRecipe.blueprintCategories)
 			{
 				ItemStack stack = new ItemStack(this);
-				ItemNBTHelper.setString(stack, "blueprint", key);
+				ItemNBTHelper.putString(stack, "blueprint", key);
 				list.add(stack);
 			}
 	}

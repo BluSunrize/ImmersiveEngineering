@@ -127,11 +127,11 @@ public class EntityIEExplosive extends TNTEntity
 	protected void writeAdditional(CompoundNBT tagCompound)
 	{
 		super.writeAdditional(tagCompound);
-		tagCompound.setFloat("explosionPower", explosionPower);
-		tagCompound.setBoolean("explosionSmoke", explosionSmoke);
-		tagCompound.setBoolean("explosionFire", explosionFire);
+		tagCompound.putFloat("explosionPower", explosionPower);
+		tagCompound.putBoolean("explosionSmoke", explosionSmoke);
+		tagCompound.putBoolean("explosionFire", explosionFire);
 		if(this.block!=null)
-			tagCompound.setInt("block", Block.getStateId(this.block));
+			tagCompound.putInt("block", Block.getStateId(this.block));
 	}
 
 	@Override

@@ -103,7 +103,7 @@ public class GuiSorter extends GuiIEContainerBase
 						tile.sideFilter[side] = tile.sideFilter[side]^mask;
 
 						CompoundNBT tag = new CompoundNBT();
-						tag.setIntArray("sideConfig", tile.sideFilter);
+						tag.putIntArray("sideConfig", tile.sideFilter);
 						ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 						initGui();
 					}

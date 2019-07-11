@@ -109,13 +109,13 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
-		nbt.setBoolean("redstoneControlInverted", redstoneControlInverted);
+		nbt.putBoolean("redstoneControlInverted", redstoneControlInverted);
 		ListNBT processNBT = new ListNBT();
 		for(MultiblockProcess process : this.processQueue)
 			processNBT.add(writeProcessToNBT(process));
-		nbt.setTag("processQueue", processNBT);
+		nbt.put("processQueue", processNBT);
 		if(computerOn.isPresent())
-			nbt.setBoolean("computerOn", computerOn.get());
+			nbt.putBoolean("computerOn", computerOn.get());
 		else
 			nbt.setByte("computerOn", (byte)2);
 	}
@@ -140,7 +140,7 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 	protected CompoundNBT writeProcessToNBT(MultiblockProcess process)
 	{
 		CompoundNBT tag = process.recipe.writeToNBT(new CompoundNBT());
-		tag.setInt("process_processTick", process.processTick);
+		tag.putInt("process_processTick", process.processTick);
 		process.writeExtraDataToNBT(tag);
 		return tag;
 	}
@@ -690,11 +690,11 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 		protected void writeExtraDataToNBT(CompoundNBT nbt)
 		{
 			if(inputSlots!=null)
-				nbt.setIntArray("process_inputSlots", inputSlots);
+				nbt.putIntArray("process_inputSlots", inputSlots);
 			if(inputAmounts!=null)
-				nbt.setIntArray("process_inputAmounts", inputAmounts);
+				nbt.putIntArray("process_inputAmounts", inputAmounts);
 			if(inputTanks!=null)
-				nbt.setIntArray("process_inputTanks", inputTanks);
+				nbt.putIntArray("process_inputTanks", inputTanks);
 		}
 	}
 
@@ -724,8 +724,8 @@ public abstract class TileEntityPoweredMultiblock<T extends TileEntityPoweredMul
 		@Override
 		protected void writeExtraDataToNBT(CompoundNBT nbt)
 		{
-			nbt.setTag("process_inputItem", Utils.writeInventory(inputItems));
-			nbt.setFloat("process_transformationPoint", transformationPoint);
+			nbt.put("process_inputItem", Utils.writeInventory(inputItems));
+			nbt.putFloat("process_transformationPoint", transformationPoint);
 		}
 
 		@Override
