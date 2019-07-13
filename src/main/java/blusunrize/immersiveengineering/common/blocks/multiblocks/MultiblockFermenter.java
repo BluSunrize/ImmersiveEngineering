@@ -176,9 +176,9 @@ public class MultiblockFermenter implements IMultiblock
 
 					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
-					if(curr instanceof TileEntityFermenter)
+					if(curr instanceof FermenterTileEntity)
 					{
-						TileEntityFermenter tile = (TileEntityFermenter)curr;
+						FermenterTileEntity tile = (FermenterTileEntity)curr;
 						tile.formed = true;
 						tile.pos = (h+1)*9+(l+1)*3+(w+1);
 						tile.offset = new int[]{(side==Direction.WEST?-l: side==Direction.EAST?l: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?-l: side==Direction.SOUTH?l: side==Direction.EAST?ww: -ww)};

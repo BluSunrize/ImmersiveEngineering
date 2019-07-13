@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityToolbox;
+import blusunrize.immersiveengineering.common.blocks.metal.ToolboxTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerToolboxBlock;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class GuiToolboxBlock extends GuiIEContainerBase
 {
-	public GuiToolboxBlock(PlayerInventory inventoryPlayer, TileEntityToolbox toolbox)
+	public GuiToolboxBlock(PlayerInventory inventoryPlayer, ToolboxTileEntity toolbox)
 	{
 		super(new ContainerToolboxBlock(inventoryPlayer, toolbox));
 		this.ySize = 238;

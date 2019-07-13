@@ -30,17 +30,14 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
-import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
-import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
-import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
-import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityStripCurtain;
-import blusunrize.immersiveengineering.common.blocks.generic.BlockConnector;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPost;
+import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
+import blusunrize.immersiveengineering.common.blocks.cloth.*;
+import blusunrize.immersiveengineering.common.blocks.generic.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
-import blusunrize.immersiveengineering.common.blocks.plant.BlockHemp;
-import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
+import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
@@ -102,7 +99,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.IRegistryDelegate;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -140,15 +136,15 @@ public class IEContent
 			String name = m.name().toLowerCase();
 			Block storage;
 			Block ore;
-			Block sheetmetal = new BlockIEBase("sheetmetal_"+name, sheetmetalProperties, ItemBlockIEBase.class)
+			Block sheetmetal = new IEBaseBlock("sheetmetal_"+name, sheetmetalProperties, ItemBlockIEBase.class)
 					.setOpaque(true);
 			addSlabFor(sheetmetal);
 			if(!m.isVanillaMetal())
 			{
-				ore = new BlockIEBase("ore_"+m.name().toLowerCase(), Block.Properties.create(Material.ROCK)
+				ore = new IEBaseBlock("ore_"+m.name().toLowerCase(), Block.Properties.create(Material.ROCK)
 						.hardnessAndResistance(3, 5), ItemBlockIEBase.class)
 						.setOpaque(true);
-				storage = new BlockIEBase("storage_"+m.name().toLowerCase(), storageProperties, ItemBlockIEBase.class)
+				storage = new IEBaseBlock("storage_"+m.name().toLowerCase(), storageProperties, ItemBlockIEBase.class)
 						.setOpaque(true);
 				addSlabFor(storage);
 			}
@@ -172,17 +168,17 @@ public class IEContent
 		}
 		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10);
 
-		IEBlocks.StoneDecoration.cokebrick = new BlockIEBase("cokebrick", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.blastbrick = new BlockIEBase("blastbrick", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.blastbrickReinforced = new BlockIEBase("blastbrick_reinforced", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.coke = new BlockIEBase("coke", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.hempcrete = new BlockIEBase("hempcrete", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.concrete = new BlockIEBase("concrete", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.concreteTile = new BlockIEBase("concrete_tile", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.concreteLeaded = new BlockIEBase("concrete_leaded", Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180), ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.alloybrick = new BlockIEBase("alloybrick", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.cokebrick = new IEBaseBlock("cokebrick", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.blastbrick = new IEBaseBlock("blastbrick", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.blastbrickReinforced = new IEBaseBlock("blastbrick_reinforced", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.coke = new IEBaseBlock("coke", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.hempcrete = new IEBaseBlock("hempcrete", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.concrete = new IEBaseBlock("concrete", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.concreteTile = new IEBaseBlock("concrete_tile", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.concreteLeaded = new IEBaseBlock("concrete_leaded", Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180), ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.alloybrick = new IEBaseBlock("alloybrick", stoneDecoProps, ItemBlockIEBase.class);
 
-		IEBlocks.StoneDecoration.insulatingGlass = new BlockIEBase("insulating_glass", stoneDecoProps, ItemBlockIEBase.class)
+		IEBlocks.StoneDecoration.insulatingGlass = new IEBaseBlock("insulating_glass", stoneDecoProps, ItemBlockIEBase.class)
 		{
 			@Override
 			public int getOpacity(BlockState p_200011_1_, IBlockReader p_200011_2_, BlockPos p_200011_3_)
@@ -192,12 +188,13 @@ public class IEContent
 		}
 				.setBlockLayer(BlockRenderLayer.TRANSLUCENT)
 				.setNotNormalBlock();
-		IEBlocks.StoneDecoration.concreteSprayed = new BlockIEBase("concrete_sprayed", Block.Properties.create(Material.ROCK).hardnessAndResistance(.2F, 1)., ItemBlockIEBase.class)
+		IEBlocks.StoneDecoration.concreteSprayed = new IEBaseBlock("concrete_sprayed", Block.Properties.create(Material.ROCK).hardnessAndResistance(.2F, 1), ItemBlockIEBase.class)
 		{
+
 			@Override
-			public int getItemsToDropCount(@Nonnull BlockState state, int fortune, World world, BlockPos pos, @Nonnull Random r)
+			public ResourceLocation getLootTable()
 			{
-				return 0;
+				return new ResourceLocation(ImmersiveEngineering.MODID, "empty");
 			}
 
 			@Override
@@ -218,45 +215,96 @@ public class IEContent
 		addSlabFor(IEBlocks.StoneDecoration.concreteSprayed);
 		addSlabFor(IEBlocks.StoneDecoration.alloybrick);
 
-		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stone_decoration_slab", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3, 8, sprConcreteMeta).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
-		blockStoneStair_hempcrete = new BlockIEStairs("stone_decoration_stairs_hempcrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
-		blockStoneStair_concrete0 = new BlockIEStairs("stone_decoration_stairs_concrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
-		blockStoneStair_concrete1 = new BlockIEStairs("stone_decoration_stairs_concrete_tile", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
-		blockStoneStair_concrete2 = new BlockIEStairs("stone_decoration_stairs_concrete_leaded", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta())).setExplosionResistance(180f);
+		StoneDecoration.hempcreteStairs = new IEStairsBlock("stone_decoration_stairs_hempcrete", StoneDecoration.hempcrete.getDefaultState());
+		StoneDecoration.concreteStairs[0] = new IEStairsBlock("stone_decoration_stairs_concrete", StoneDecoration.concrete.getDefaultState());
+		StoneDecoration.concreteStairs[1] = new IEStairsBlock("stone_decoration_stairs_concrete_tile", StoneDecoration.concreteTile.getDefaultState());
+		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stone_decoration_stairs_concrete_leaded", StoneDecoration.concreteLeaded.getDefaultState())
+				.setExplosionResistance(180f);
 
-		blockStoneDevice = new BlockStoneDevice();
+		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
+		Multiblocks.blastFurnace = new StoneMultiBlock("coke_oven", () -> BlastFurnaceTileEntity.TYPE);
+		Multiblocks.alloySmelter = new StoneMultiBlock("coke_oven", () -> AlloySmelterTileEntity.TYPE);
+		Multiblocks.blastFurnaceAdv = new StoneMultiBlock("coke_oven", () -> BlastFurnaceAdvancedTileEntity.TYPE);
 
-		blockTreatedWood = (BlockIEBase)new BlockIEBase("treated_wood", Material.WOOD, PropertyEnum.create("type", TreatedWoodStyles.class), ItemBlockIEBase.class).setOpaque(true).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
-		blockTreatedWoodSlabs = (BlockIESlab)new BlockIESlab("treated_wood_slab", Material.WOOD, PropertyEnum.create("type", TreatedWoodStyles.class)).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
-		blockWoodenStair = new BlockIEStairs("treated_wood_stairs0", blockTreatedWood.getStateFromMeta(0)).setHasFlavour(true);
-		blockWoodenStair1 = new BlockIEStairs("treated_wood_stairs1", blockTreatedWood.getStateFromMeta(1)).setHasFlavour(true);
-		blockWoodenStair2 = new BlockIEStairs("treated_wood_stairs2", blockTreatedWood.getStateFromMeta(2)).setHasFlavour(true);
+		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5);
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
+		{
+			Block baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, ItemBlockIEBase.class)
+					.setOpaque(true)
+					.setHasFlavour(true);
+			WoodenDecoration.treatedWood.put(style, baseBlock);
+			addSlabFor(baseBlock);
+			WoodenDecoration.treatedStairs.put(style,
+					new IEStairsBlock("treated_wood_stairs0", baseBlock.getDefaultState())
+							.setHasFlavour(true));
+		}
+		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodProperties);
+		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodProperties);
 
-		blockWoodenDecoration = new BlockWoodenDecoration();
-		blockWoodenDevice0 = new BlockWoodenDevice0();
-		blockWoodenDevice1 = new BlockWoodenDevice1().setMetaHidden(BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta());
-		blockCrop = new BlockHemp("hemp", PropertyEnum.create("type", EnumHempGrowth.class));
-		blockClothDevice = new BlockClothDevice();
-		blockFakeLight = new BlockFakeLight();
+
+		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
+		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
+		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
+		WoodenDevices.turntable = new TurntableBlock("turntable");
+		WoodenDevices.crate = new CrateBlock("crate", false);
+		WoodenDevices.reinforcedCrate = new CrateBlock("reinforced_crate", true);
+		WoodenDevices.sorter = new SorterBlock("sorter", false);
+		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
+		WoodenDevices.windmill = new WindmillBlock("windmill");
+		WoodenDevices.watermill = new WatermillBlock("watermill");
+		WoodenDevices.treatedPost = new PostBlock("treated_post", standardWoodProperties);
+		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodProperties);
+		IEBlocks.Misc.crop = new HempBlock("hemp");
+
+		Cloth.cushion = new CushionBlock();
+		Cloth.balloon = new BalloonBlock();
+		Cloth.curtain = new StripCurtainBlock();
+		Cloth.shaderBanner = new ShaderBannerBlock();
+
+		Misc.fakeLight = new FakeLightBlock();
 
 
-		blockMetalDecoration0 = new BlockMetalDecoration0();
-		blockMetalDecoration1 = new BlockMetalDecoration1();
-		blockMetalDecoration2 = new BlockMetalDecoration2();
+		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15);
+		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, ItemBlockIEBase.class);
+		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, ItemBlockIEBase.class);
+		MetalDecoration.hvCoil = new IEBaseBlock("coil_hv", defaultMetalProperties, ItemBlockIEBase.class);
+		MetalDecoration.engineeringRS = new IEBaseBlock("rs_engineering", defaultMetalProperties, ItemBlockIEBase.class);
+		MetalDecoration.engineeringHeavy = new IEBaseBlock("heavy_engineering", defaultMetalProperties, ItemBlockIEBase.class);
+		MetalDecoration.engineeringLight = new IEBaseBlock("light_engineering", defaultMetalProperties, ItemBlockIEBase.class);
+		MetalDecoration.generator = new IEBaseBlock("generator", defaultMetalProperties, ItemBlockIEBase.class);
+		MetalDecoration.radiator = new IEBaseBlock("radiator", defaultMetalProperties, ItemBlockIEBase.class);
+		MetalDecoration.steelFence = new IEFenceBlock("steel_fence", defaultMetalProperties);
+		MetalDecoration.aluFence = new IEFenceBlock("steel_fence", defaultMetalProperties);
+		MetalDecoration.steelWallmount = new WallmountBlock("steel_wallmount", defaultMetalProperties);
+		MetalDecoration.aluWallmount = new WallmountBlock("alu_wallmount", defaultMetalProperties);
+		MetalDecoration.steelPost = new PostBlock("steel_post", defaultMetalProperties);
+		MetalDecoration.aluPost = new PostBlock("alu_post", defaultMetalProperties);
+		MetalDecoration.lantern = new;
+		MetalDecoration.slopeSteel;
+		MetalDecoration.slopeAlu;
+		MetalDecoration.metalLadder;
+		MetalDecoration.steelScaffolding;
+		MetalDecoration.aluScaffolding;
+		MetalDecoration.steelScaffoldingStair;
+		MetalDecoration.aluScaffoldingStair;
+
+		blockMetalDecoration0 = new MetalDecoration0Block();
+		blockMetalDecoration1 = new MetalDecoration1Block();
+		blockMetalDecoration2 = new MetalDecoration2Block();
 		blockMetalDecorationSlabs1 = (BlockIESlab)new BlockIEScaffoldSlab("metal_decoration1_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration1.class)).setMetaHidden(0, 4).setHardness(3.0F).setResistance(15.0F);
-		blockSteelScaffoldingStair = new BlockIEStairs("steel_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(1)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockSteelScaffoldingStair1 = new BlockIEStairs("steel_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(2)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockSteelScaffoldingStair2 = new BlockIEStairs("steel_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(3)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockAluminumScaffoldingStair = new BlockIEStairs("aluminum_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(5)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockAluminumScaffoldingStair1 = new BlockIEStairs("aluminum_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(6)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockAluminumScaffoldingStair2 = new BlockIEStairs("aluminum_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(7)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockMetalLadder = new BlockMetalLadder();
+		blockSteelScaffoldingStair = new IEStairsBlock("steel_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(1)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockSteelScaffoldingStair1 = new IEStairsBlock("steel_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(2)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockSteelScaffoldingStair2 = new IEStairsBlock("steel_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(3)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockAluminumScaffoldingStair = new IEStairsBlock("aluminum_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(5)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockAluminumScaffoldingStair1 = new IEStairsBlock("aluminum_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(6)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockAluminumScaffoldingStair2 = new IEStairsBlock("aluminum_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(7)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		blockMetalLadder = new MetalLadderBlock();
 
-		blockConnectors = new BlockConnector();
-		blockMetalDevice0 = new BlockMetalDevice0();
-		blockMetalDevice1 = new BlockMetalDevice1();
-		blockConveyor = new BlockConveyor();
-		blockMetalMultiblock = new BlockMetalMultiblocks();
+		blockConnectors = new ConnectorBlock();
+		blockMetalDevice0 = new MetalDevice0Block();
+		blockMetalDevice1 = new MetalDevice1Block();
+		blockConveyor = new ConveyorBlock();
+		blockMetalMultiblock = new MetalMultiblocksBlock();
 
 		blockFluidCreosote = new BlockIEFluid("fluidCreosote", fluidCreosote, Material.WATER).setFlammability(40, 400);
 		blockFluidPlantoil = new BlockIEFluid("fluidPlantoil", fluidPlantoil, Material.WATER);
@@ -358,92 +406,92 @@ public class IEContent
 
 	public static void registerTEs(RegistryEvent.Register<TileEntityType<?>> event)
 	{
-		TileEntityEnergyConnector.registerConnectorTEs(event);
+		EnergyConnectorTileEntity.registerConnectorTEs(event);
 		ConveyorHandler.registerConveyorTEs(event);
 
-		registerTile(TileEntityIESlab.class, event);
+		registerTile(IESlabTileEntity.class, event);
 
-		registerTile(TileEntityBalloon.class, event);
-		registerTile(TileEntityStripCurtain.class, event);
-		registerTile(TileEntityShaderBanner.class, event);
+		registerTile(BalloonTileEntity.class, event);
+		registerTile(StripCurtainTileEntity.class, event);
+		registerTile(ShaderBannerTileEntity.class, event);
 
-		registerTile(TileEntityCokeOven.class, event);
-		registerTile(TileEntityBlastFurnace.class, event);
-		registerTile(TileEntityBlastFurnaceAdvanced.class, event);
-		registerTile(TileEntityCoresample.class, event);
-		registerTile(TileEntityAlloySmelter.class, event);
+		registerTile(CokeOvenTileEntity.class, event);
+		registerTile(BlastFurnaceTileEntity.class, event);
+		registerTile(BlastFurnaceAdvancedTileEntity.class, event);
+		registerTile(CoresampleTileEntity.class, event);
+		registerTile(AlloySmelterTileEntity.class, event);
 
-		registerTile(TileEntityWoodenCrate.class, event);
-		registerTile(TileEntityWoodenBarrel.class, event);
-		registerTile(TileEntityModWorkbench.class, event);
-		registerTile(TileEntitySorter.class, event);
-		registerTile(TileEntityTurntable.class, event);
-		registerTile(TileEntityFluidSorter.class, event);
-		registerTile(TileEntityWatermill.class, event);
-		registerTile(TileEntityWindmill.class, event);
-		registerTile(TileEntityPost.class, event);
+		registerTile(WoodenCrateTileEntity.class, event);
+		registerTile(WoodenBarrelTileEntity.class, event);
+		registerTile(ModWorkbenchTileEntity.class, event);
+		registerTile(SorterTileEntity.class, event);
+		registerTile(TurntableTileEntity.class, event);
+		registerTile(FluidSorterTileEntity.class, event);
+		registerTile(WatermillTileEntity.class, event);
+		registerTile(WindmillTileEntity.class, event);
+		registerTile(PostTileEntity.class, event);
 		registerTile(TileEntityWallmount.class, event);
 
-		registerTile(TileEntityLadder.class, event);
-		registerTile(TileEntityLantern.class, event);
-		registerTile(TileEntityRazorWire.class, event);
-		registerTile(TileEntityToolbox.class, event);
-		registerTile(TileEntityStructuralArm.class, event);
+		registerTile(LadderTileEntity.class, event);
+		registerTile(LanternTileEntity.class, event);
+		registerTile(RazorWireTileEntity.class, event);
+		registerTile(ToolboxTileEntity.class, event);
+		registerTile(StructuralArmTileEntity.class, event);
 
-		registerTile(TileEntityConnectorStructural.class, event);
-		registerTile(TileEntityTransformer.class, event);
-		registerTile(TileEntityTransformerHV.class, event);
-		registerTile(TileEntityBreakerSwitch.class, event);
-		registerTile(TileEntityRedstoneBreaker.class, event);
-		registerTile(TileEntityEnergyMeter.class, event);
-		registerTile(TileEntityConnectorRedstone.class, event);
-		registerTile(TileEntityConnectorProbe.class, event);
-		registerTile(TileEntityFeedthrough.class, event);
+		registerTile(ConnectorStructuralTileEntity.class, event);
+		registerTile(TransformerTileEntity.class, event);
+		registerTile(TransformerHVTileEntity.class, event);
+		registerTile(BreakerSwitchTileEntity.class, event);
+		registerTile(RedstoneBreakerTileEntity.class, event);
+		registerTile(EnergyMeterTileEntity.class, event);
+		registerTile(ConnectorRedstoneTileEntity.class, event);
+		registerTile(ConnectorProbeTileEntity.class, event);
+		registerTile(FeedthroughTileEntity.class, event);
 
-		registerTile(TileEntityCapacitorLV.class, event);
-		registerTile(TileEntityCapacitorMV.class, event);
-		registerTile(TileEntityCapacitorHV.class, event);
-		registerTile(TileEntityCapacitorCreative.class, event);
-		registerTile(TileEntityMetalBarrel.class, event);
-		registerTile(TileEntityFluidPump.class, event);
-		registerTile(TileEntityFluidPlacer.class, event);
+		registerTile(CapacitorLVTileEntity.class, event);
+		registerTile(CapacitorMVTileEntity.class, event);
+		registerTile(CapacitorHVTileEntity.class, event);
+		registerTile(CapacitorCreativeTileEntity.class, event);
+		registerTile(MetalBarrelTileEntity.class, event);
+		registerTile(FluidPumpTileEntity.class, event);
+		registerTile(FluidPlacerTileEntity.class, event);
 
-		registerTile(TileEntityBlastFurnacePreheater.class, event);
-		registerTile(TileEntityFurnaceHeater.class, event);
-		registerTile(TileEntityDynamo.class, event);
-		registerTile(TileEntityThermoelectricGen.class, event);
-		registerTile(TileEntityElectricLantern.class, event);
-		registerTile(TileEntityChargingStation.class, event);
-		registerTile(TileEntityFluidPipe.class, event);
-		registerTile(TileEntitySampleDrill.class, event);
-		registerTile(TileEntityTeslaCoil.class, event);
-		registerTile(TileEntityFloodlight.class, event);
-		registerTile(TileEntityTurret.class, event);
-		registerTile(TileEntityTurretChem.class, event);
-		registerTile(TileEntityTurretGun.class, event);
-		registerTile(TileEntityBelljar.class, event);
+		registerTile(BlastFurnacePreheaterTileEntity.class, event);
+		registerTile(FurnaceHeaterTileEntity.class, event);
+		registerTile(DynamoTileEntity.class, event);
+		registerTile(ThermoelectricGenTileEntity.class, event);
+		registerTile(ElectricLanternTileEntity.class, event);
+		registerTile(ChargingStationTileEntity.class, event);
+		registerTile(FluidPipeTileEntity.class, event);
+		registerTile(SampleDrillTileEntity.class, event);
+		registerTile(TeslaCoilTileEntity.class, event);
+		registerTile(FloodlightTileEntity.class, event);
+		registerTile(TurretTileEntity.class, event);
+		registerTile(TurretChemTileEntity.class, event);
+		registerTile(TurretGunTileEntity.class, event);
+		registerTile(BelljarTileEntity.class, event);
 
-		registerTile(TileEntityConveyorBelt.class, event);
-		registerTile(TileEntityConveyorVertical.class, event);
+		registerTile(ConveyorBeltTileEntity.class, event);
+		registerTile(ConveyorVerticalTileEntity.class, event);
 
-		registerTile(TileEntityMetalPress.class, event);
-		registerTile(TileEntityCrusher.class, event);
-		registerTile(TileEntitySheetmetalTank.class, event);
-		registerTile(TileEntitySilo.class, event);
-		registerTile(TileEntityAssembler.class, event);
-		registerTile(TileEntityAutoWorkbench.class, event);
-		registerTile(TileEntityBottlingMachine.class, event);
-		registerTile(TileEntitySqueezer.class, event);
-		registerTile(TileEntityFermenter.class, event);
-		registerTile(TileEntityRefinery.class, event);
-		registerTile(TileEntityDieselGenerator.class, event);
-		registerTile(TileEntityBucketWheel.class, event);
-		registerTile(TileEntityExcavator.class, event);
-		registerTile(TileEntityArcFurnace.class, event);
-		registerTile(TileEntityLightningrod.class, event);
-		registerTile(TileEntityMixer.class, event);
+		registerTile(MetalPressTileEntity.class, event);
+		registerTile(CrusherTileEntity.class, event);
+		registerTile(SheetmetalTankTileEntity.class, event);
+		registerTile(SiloTileEntity.class, event);
+		registerTile(AssemblerTileEntity.class, event);
+		registerTile(AutoWorkbenchTileEntity.class, event);
+		registerTile(BottlingMachineTileEntity.class, event);
+		registerTile(SqueezerTileEntity.class, event);
+		registerTile(FermenterTileEntity.class, event);
+		registerTile(RefineryTileEntity.class, event);
+		registerTile(DieselGeneratorTileEntity.class, event);
+		registerTile(BucketWheelTileEntity.class, event);
+		registerTile(ExcavatorTileEntity.class, event);
+		registerTile(ArcFurnaceTileEntity.class, event);
+		registerTile(LightningrodTileEntity.class, event);
+		registerTile(MixerTileEntity.class, event);
 		//		registerTile(TileEntitySkycrateDispenser.class);
-		registerTile(TileEntityFakeLight.class, event);
+		registerTile(FakeLightTileEntity.class, event);
 	}
 
 	@SubscribeEvent
@@ -939,7 +987,7 @@ public class IEContent
 			return stack.getItem() instanceof ItemShulkerBox;
 		});
 
-		TileEntityFluidPipe.initCovers();
+		FluidPipeTileEntity.initCovers();
 		IEDataFixers.register();
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler.class);
 		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class);
@@ -1058,7 +1106,7 @@ public class IEContent
 		return sb.toString();
 	}
 
-	public static void registerToOreDict(String type, BlockIEBase item, int... metas)
+	public static void registerToOreDict(String type, IEBaseBlock item, int... metas)
 	{
 		if(metas==null||metas.length < 1)
 		{
@@ -1106,10 +1154,11 @@ public class IEContent
 			OreDictionary.registerOre("slabSheetmetal"+type, slabSheet);
 	}
 
-	public static <T extends TileEntity> void registerTile(Class<T> tile, Register<TileEntityType<?>> event)
+	public static <T extends TileEntity> void registerTile(Class<T> tile, Register<TileEntityType<?>> event, Block... valid)
 	{
 		String s = tile.getSimpleName();
 		s = s.substring(s.indexOf("TileEntity")+"TileEntity".length());
+		Set<Block> validSet = new HashSet<>(Arrays.asList(valid));
 		TileEntityType<T> type = new TileEntityType<>(() -> {
 			try
 			{
@@ -1119,8 +1168,9 @@ public class IEContent
 				e.printStackTrace();
 			}
 			return null;
-		}, null);
+		}, validSet, null);//TODO where do I get a Type<T> from?
 		type.setRegistryName(MODID, s);
+		event.getRegistry().register(type);
 		try
 		{
 			Field typeField = tile.getField("TYPE");

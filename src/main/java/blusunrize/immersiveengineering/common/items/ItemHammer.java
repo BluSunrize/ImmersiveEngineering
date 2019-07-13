@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -241,9 +241,9 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 	@Override
 	public boolean canHarvestBlock(ItemStack stack, BlockState state)
 	{
-		if(state.getBlock() instanceof BlockIEBase)
+		if(state.getBlock() instanceof IEBaseBlock)
 		{
-			if(((BlockIEBase)state.getBlock()).allowHammerHarvest(state))
+			if(((IEBaseBlock)state.getBlock()).allowHammerHarvest(state))
 				return true;
 		}
 		else if(state.getBlock().isToolEffective(state, HAMMER_TOOL))

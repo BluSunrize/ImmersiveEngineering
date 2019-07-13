@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
+import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
@@ -161,9 +161,9 @@ public class MultiblockSheetmetalTank implements IMultiblock
 					world.setBlockState(pos.add(xx, h, zz), state);
 					BlockPos pos2 = pos.add(xx, h, zz);
 					TileEntity curr = world.getTileEntity(pos2);
-					if(curr instanceof TileEntitySheetmetalTank)
+					if(curr instanceof SheetmetalTankTileEntity)
 					{
-						TileEntitySheetmetalTank currTank = (TileEntitySheetmetalTank)curr;
+						SheetmetalTankTileEntity currTank = (SheetmetalTankTileEntity)curr;
 						currTank.offset = new int[]{xx, h, zz};
 						currTank.posInMultiblock = h*9+(l+1)*3+(w+1);
 						currTank.formed = true;

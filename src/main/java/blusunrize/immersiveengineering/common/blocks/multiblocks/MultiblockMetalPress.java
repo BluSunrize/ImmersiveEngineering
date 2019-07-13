@@ -119,8 +119,8 @@ public class MultiblockMetalPress implements IMultiblock
 			side = Direction.fromAngle(player.rotationYaw);
 
 		Direction dir = side.rotateY();
-		if(world.getTileEntity(pos.offset(dir)) instanceof TileEntityConveyorBelt)
-			dir = ((TileEntityConveyorBelt)world.getTileEntity(pos.offset(dir))).getFacing();
+		if(world.getTileEntity(pos.offset(dir)) instanceof ConveyorBeltTileEntity)
+			dir = ((ConveyorBeltTileEntity)world.getTileEntity(pos.offset(dir))).getFacing();
 
 		for(int l = -1; l <= 1; l++)
 			for(int h = -1; h <= 1; h++)
@@ -171,9 +171,9 @@ public class MultiblockMetalPress implements IMultiblock
 				BlockPos pos2 = pos.offset(dir, l).add(0, h, 0);
 				world.setBlockState(pos2, state);
 				TileEntity curr = world.getTileEntity(pos2);
-				if(curr instanceof TileEntityMetalPress)
+				if(curr instanceof MetalPressTileEntity)
 				{
-					TileEntityMetalPress tile = (TileEntityMetalPress)curr;
+					MetalPressTileEntity tile = (MetalPressTileEntity)curr;
 					tile.formed = true;
 					tile.pos = (h+1)*3+(l+1);
 					tile.offset = new int[]{(dir==Direction.WEST?-l: dir==Direction.EAST?l: 0), h, (dir==Direction.NORTH?-l: dir==Direction.SOUTH?l: 0)};

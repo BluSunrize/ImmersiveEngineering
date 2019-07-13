@@ -153,9 +153,9 @@ public class ItemBlockIEBase extends BlockItem
 	}
 
 	@Override
-	public BlockIEBase getBlock()
+	public IEBaseBlock getBlock()
 	{
-		return (BlockIEBase)super.getBlock();
+		return (IEBaseBlock)super.getBlock();
 	}
 
 	public static class ItemBlockIENoInventory extends ItemBlockIEBase

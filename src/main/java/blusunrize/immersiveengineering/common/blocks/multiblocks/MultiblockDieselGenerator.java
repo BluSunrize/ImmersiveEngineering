@@ -174,9 +174,9 @@ public class MultiblockDieselGenerator implements IMultiblock
 
 						world.setBlockState(pos2, state);
 						TileEntity curr = world.getTileEntity(pos2);
-						if(curr instanceof TileEntityDieselGenerator)
+						if(curr instanceof DieselGeneratorTileEntity)
 						{
-							TileEntityDieselGenerator tile = (TileEntityDieselGenerator)curr;
+							DieselGeneratorTileEntity tile = (DieselGeneratorTileEntity)curr;
 							tile.formed = true;
 							tile.pos = (h+1)*15+l*3+(w+1);
 							tile.offset = new int[]{(side==Direction.WEST?-l+2: side==Direction.EAST?l-2: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?-l+2: side==Direction.SOUTH?l-2: side==Direction.EAST?ww: -ww)};

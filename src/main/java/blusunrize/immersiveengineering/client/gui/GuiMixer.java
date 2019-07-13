@@ -12,10 +12,10 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInMachine;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMixer;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
+import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerMixer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import net.minecraft.client.renderer.GlStateManager;
@@ -32,9 +32,9 @@ import java.util.List;
 
 public class GuiMixer extends GuiIEContainerBase
 {
-	TileEntityMixer tile;
+	MixerTileEntity tile;
 
-	public GuiMixer(PlayerInventory inventoryPlayer, TileEntityMixer tile)
+	public GuiMixer(PlayerInventory inventoryPlayer, MixerTileEntity tile)
 	{
 		super(new ContainerMixer(inventoryPlayer, tile));
 		this.tile = tile;
@@ -113,7 +113,7 @@ public class GuiMixer extends GuiIEContainerBase
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(MultiblockProcess process : tile.processQueue)
-			if(process instanceof TileEntityPoweredMultiblock.MultiblockProcessInMachine)
+			if(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInMachine)
 			{
 				float mod = 1-(process.processTick/(float)process.maxTicks);
 				for(int slot : ((MultiblockProcessInMachine)process).getInputSlots())

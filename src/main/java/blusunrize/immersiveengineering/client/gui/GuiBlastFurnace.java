@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerBlastFurnace;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 
 public class GuiBlastFurnace extends GuiIEContainerBase
 {
-	TileEntityBlastFurnace tile;
+	BlastFurnaceTileEntity tile;
 
-	public GuiBlastFurnace(PlayerInventory inventoryPlayer, TileEntityBlastFurnace tile)
+	public GuiBlastFurnace(PlayerInventory inventoryPlayer, BlastFurnaceTileEntity tile)
 	{
 		super(new ContainerBlastFurnace(inventoryPlayer, tile));
 		this.tile = tile;

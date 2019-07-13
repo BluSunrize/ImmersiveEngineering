@@ -28,13 +28,13 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRazorWire;
+import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.RazorWireTileEntity;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
@@ -371,13 +371,13 @@ public class EventHandler
 	//	{
 	//		TileEntity tI = event.initialWorld.getTileEntity(event.initialX, event.initialY, event.initialZ);
 	//		TileEntity tF = event.finalWorld.getTileEntity(event.finalX, event.finalY, event.finalZ);
-	//		if(tI instanceof TileEntityImmersiveConnectable || tF instanceof TileEntityImmersiveConnectable)
+	//		if(tI instanceof ImmersiveConnectableTileEntity || tF instanceof ImmersiveConnectableTileEntity)
 	//			event.setCanceled(true);
-	//		if(tI instanceof TileEntityMultiblockPart || tF instanceof TileEntityMultiblockPart)
+	//		if(tI instanceof MultiblockPartTileEntity || tF instanceof MultiblockPartTileEntity)
 	//			event.setCanceled(true);
 	//	}
 
-	public static HashMap<UUID, TileEntityCrusher> crusherMap = new HashMap<UUID, TileEntityCrusher>();
+	public static HashMap<UUID, CrusherTileEntity> crusherMap = new HashMap<UUID, CrusherTileEntity>();
 	public static HashSet<Class<? extends MobEntity>> listOfBoringBosses = new HashSet();
 
 	static
@@ -390,7 +390,7 @@ public class EventHandler
 	{
 		if(!event.isCanceled()&&Lib.DMG_Crusher.equals(event.getSource().getDamageType()))
 		{
-			TileEntityCrusher crusher = crusherMap.get(event.getEntityLiving().getUniqueID());
+			CrusherTileEntity crusher = crusherMap.get(event.getEntityLiving().getUniqueID());
 			if(crusher!=null)
 			{
 				for(ItemEntity item : event.getDrops())
@@ -557,7 +557,7 @@ public class EventHandler
 			if(!OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 1), current, false))
 			{
 				event.setCanceled(true);
-				TileEntityRazorWire.applyDamage(event.getEntityLiving());
+				RazorWireTileEntity.applyDamage(event.getEntityLiving());
 			}
 		TileEntity te = event.getEntityPlayer().getEntityWorld().getTileEntity(event.getPos());
 		if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getEntityPlayer()))
@@ -608,12 +608,12 @@ public class EventHandler
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void breakLast(BlockEvent.BreakEvent event)
 	{
-		if(event.getState().getBlock() instanceof BlockIEMultiblock)
+		if(event.getState().getBlock() instanceof IEMultiblockBlock)
 		{
 			TileEntity te = event.getWorld().getTileEntity(event.getPos());
-			if(te instanceof TileEntityMultiblockPart)
+			if(te instanceof MultiblockPartTileEntity)
 			{
-				((TileEntityMultiblockPart)te).onlyLocalDissassembly = event.getWorld().getGameTime();
+				((MultiblockPartTileEntity)te).onlyLocalDissassembly = event.getWorld().getGameTime();
 			}
 		}
 	}

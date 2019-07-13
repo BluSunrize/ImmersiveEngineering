@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.Too
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
+import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerModWorkbench;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -42,9 +42,9 @@ import java.util.List;
 
 public class GuiModWorkbench extends GuiIEContainerBase
 {
-	TileEntityModWorkbench workbench;
+	ModWorkbenchTileEntity workbench;
 
-	public GuiModWorkbench(PlayerInventory inventoryPlayer, World world, TileEntityModWorkbench tile)
+	public GuiModWorkbench(PlayerInventory inventoryPlayer, World world, ModWorkbenchTileEntity tile)
 	{
 		super(new ContainerModWorkbench(inventoryPlayer, world, tile));
 		workbench = tile;

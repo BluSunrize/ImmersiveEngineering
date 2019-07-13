@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
+import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import net.minecraft.client.gui.FontRenderer;
@@ -31,9 +31,9 @@ import java.util.List;
 public class GuiAssembler extends GuiIEContainerBase
 {
 	static final String texture = "immersiveengineering:textures/gui/assembler.png";
-	public TileEntityAssembler tile;
+	public AssemblerTileEntity tile;
 
-	public GuiAssembler(PlayerInventory inventoryPlayer, TileEntityAssembler tile)
+	public GuiAssembler(PlayerInventory inventoryPlayer, AssemblerTileEntity tile)
 	{
 		super(new ContainerAssembler(inventoryPlayer, tile));
 		this.tile = tile;

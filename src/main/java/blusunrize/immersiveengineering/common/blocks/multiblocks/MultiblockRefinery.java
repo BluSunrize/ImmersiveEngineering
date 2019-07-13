@@ -189,9 +189,9 @@ public class MultiblockRefinery implements IMultiblock
 
 					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
-					if(curr instanceof TileEntityRefinery)
+					if(curr instanceof RefineryTileEntity)
 					{
-						TileEntityRefinery tile = (TileEntityRefinery)curr;
+						RefineryTileEntity tile = (RefineryTileEntity)curr;
 						tile.formed = true;
 						tile.pos = (h+1)*15+l*5+(w+2);
 						tile.offset = new int[]{(side==Direction.WEST?-l: side==Direction.EAST?l: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?-l: side==Direction.SOUTH?l: side==Direction.EAST?ww: -ww)};

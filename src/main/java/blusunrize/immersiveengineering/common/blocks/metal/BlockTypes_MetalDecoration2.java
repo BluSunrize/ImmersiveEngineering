@@ -8,17 +8,17 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_MetalDecoration2 implements IStringSerializable, BlockIEBase.IBlockEnum
+public enum BlockTypes_MetalDecoration2 implements IStringSerializable, IEBaseBlock.IBlockEnum
 {
-	//BlockWallmount
+	//WallmountBlock
 	STEEL_WALLMOUNT,
 	ALUMINUM_WALLMOUNT,
-	//BlockPost
+	//PostBlock
 	STEEL_POST,
 	ALUMINUM_POST,
 

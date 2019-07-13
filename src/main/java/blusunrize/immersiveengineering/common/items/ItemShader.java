@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
+import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -275,19 +275,19 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 					int orientation = wall?blockState.get(WallBannerBlock.HORIZONTAL_FACING).getIndex(): blockState.get(BannerBlock.ROTATION);
 					world.setBlockState(pos, IEContent.blockShaderBanner.getDefaultState().with(IEProperties.FACING_ALL, Direction.SOUTH));
 					tile = world.getTileEntity(pos);
-					if(tile instanceof TileEntityShaderBanner)
+					if(tile instanceof ShaderBannerTileEntity)
 					{
-						((TileEntityShaderBanner)tile).wall = wall;
-						((TileEntityShaderBanner)tile).orientation = (byte)orientation;
-						((TileEntityShaderBanner)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
+						((ShaderBannerTileEntity)tile).wall = wall;
+						((ShaderBannerTileEntity)tile).orientation = (byte)orientation;
+						((ShaderBannerTileEntity)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
 						tile.markDirty();
 						return ActionResultType.SUCCESS;
 					}
 				}
 			}
-			else if(tile instanceof TileEntityShaderBanner)
+			else if(tile instanceof ShaderBannerTileEntity)
 			{
-				ItemStack current = ((TileEntityShaderBanner)tile).shader.getShaderItem();
+				ItemStack current = ((ShaderBannerTileEntity)tile).shader.getShaderItem();
 				if(!current.isEmpty() && !world.isRemote && (ctx.getPlayer()==null || !ctx.getPlayer().abilities.isCreativeMode))
 				{
 					double dx = pos.getX()+.5+ctx.getFace().getXOffset();
@@ -297,7 +297,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 					entityitem.setDefaultPickupDelay();
 					world.spawnEntity(entityitem);
 				}
-				((TileEntityShaderBanner)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
+				((ShaderBannerTileEntity)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
 				tile.markDirty();
 				return ActionResultType.SUCCESS;
 			}

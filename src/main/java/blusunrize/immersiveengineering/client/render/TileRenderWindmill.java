@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
+import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -36,12 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO maybe replace with Forge animations?
-public class TileRenderWindmill extends TileEntityRenderer<TileEntityWindmill>
+public class TileRenderWindmill extends TileEntityRenderer<WindmillTileEntity>
 {
 	private static List<BakedQuad>[] quads = new List[9];
 
 	@Override
-	public void render(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(WindmillTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.state.BlockFaceShape;
@@ -330,7 +330,7 @@ public class IEBlockInterfaces
 	}
 
 	/**
-	 * super-interface for {@link TileEntityMultiblockPart} and {@link IHasDummyBlocks}
+	 * super-interface for {@link MultiblockPartTileEntity} and {@link IHasDummyBlocks}
 	 */
 	public interface IGeneralMultiblock
 	{

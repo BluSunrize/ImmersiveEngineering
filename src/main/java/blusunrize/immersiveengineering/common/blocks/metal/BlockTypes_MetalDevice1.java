@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_MetalDevice1 implements IStringSerializable, BlockIEBase.IBlockEnum
+public enum BlockTypes_MetalDevice1 implements IStringSerializable, IEBaseBlock.IBlockEnum
 {
 	BLAST_FURNACE_PREHEATER,
 	FURNACE_HEATER,

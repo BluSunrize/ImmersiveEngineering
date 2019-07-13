@@ -50,7 +50,7 @@ public class ItemBlockIEStairs extends BlockItem
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag)
 	{
-		if(((BlockIEStairs)block).hasFlavour)
-			tooltip.add(I18n.format(Lib.DESC_FLAVOUR+((BlockIEStairs)block).name));
+		if(((IEStairsBlock)block).hasFlavour)
+			tooltip.add(I18n.format(Lib.DESC_FLAVOUR+((IEStairsBlock)block).name));
 	}
 }

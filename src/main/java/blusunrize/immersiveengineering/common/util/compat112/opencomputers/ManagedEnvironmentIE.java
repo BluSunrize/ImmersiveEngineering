@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.NamedBlock;
@@ -14,14 +14,14 @@ import net.minecraft.world.World;
 
 import java.util.Optional;
 
-public abstract class ManagedEnvironmentIE<T extends TileEntityIEBase> extends AbstractManagedEnvironment implements NamedBlock
+public abstract class ManagedEnvironmentIE<T extends IEBaseTileEntity> extends AbstractManagedEnvironment implements NamedBlock
 {
 	World w;
 	BlockPos pos;
-	Class<? extends TileEntityIEBase> myClass;
+	Class<? extends IEBaseTileEntity> myClass;
 
 	//teClass and the type parameter HAVE to match
-	public ManagedEnvironmentIE(World w, BlockPos p, Class<? extends TileEntityIEBase> teClass)
+	public ManagedEnvironmentIE(World w, BlockPos p, Class<? extends IEBaseTileEntity> teClass)
 	{
 		this.w = w;
 		pos = p;
@@ -41,7 +41,7 @@ public abstract class ManagedEnvironmentIE<T extends TileEntityIEBase> extends A
 	public abstract static class ManagedEnvMultiblock<T2 extends TileEntityMultiblockMetal<?, ?>> extends ManagedEnvironmentIE<T2>
 	{
 
-		public ManagedEnvMultiblock(World w, BlockPos p, Class<? extends TileEntityIEBase> teClass)
+		public ManagedEnvMultiblock(World w, BlockPos p, Class<? extends IEBaseTileEntity> teClass)
 		{
 			super(w, p, teClass);
 		}

@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.GuiSorter.ButtonSorter;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityFluidSorter;
+import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerFluidSorter;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import net.minecraft.client.gui.widget.button.Button;
@@ -34,10 +34,10 @@ import java.util.ArrayList;
 
 public class GuiFluidSorter extends GuiIEContainerBase
 {
-	public TileEntityFluidSorter tile;
+	public FluidSorterTileEntity tile;
 	PlayerInventory playerInventory;
 
-	public GuiFluidSorter(PlayerInventory inventoryPlayer, TileEntityFluidSorter tile)
+	public GuiFluidSorter(PlayerInventory inventoryPlayer, FluidSorterTileEntity tile)
 	{
 		super(new ContainerFluidSorter(inventoryPlayer, tile));
 		this.tile = tile;

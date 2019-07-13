@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.common.util.compat112.waila;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
-import blusunrize.immersiveengineering.common.blocks.plant.BlockHemp;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
+import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
+import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
 import mcp.mobius.waila.api.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
@@ -33,10 +33,10 @@ public class IEWailaDataProvider implements IWailaDataProvider
 	public static void callbackRegister(IWailaRegistrar registrar)
 	{
 		IEWailaDataProvider dataProvider = new IEWailaDataProvider();
-		registrar.registerBodyProvider(dataProvider, BlockHemp.class);
-		registrar.registerBodyProvider(dataProvider, TileEntityWoodenBarrel.class);
-		registrar.registerNBTProvider(dataProvider, TileEntityWoodenBarrel.class);
-		registrar.registerStackProvider(dataProvider, TileEntityMultiblockPart.class);
+		registrar.registerBodyProvider(dataProvider, HempBlock.class);
+		registrar.registerBodyProvider(dataProvider, WoodenBarrelTileEntity.class);
+		registrar.registerNBTProvider(dataProvider, WoodenBarrelTileEntity.class);
+		registrar.registerStackProvider(dataProvider, MultiblockPartTileEntity.class);
 
 		registrar.registerBodyProvider(dataProvider, IFluxReceiver.class);
 		registrar.registerNBTProvider(dataProvider, IFluxReceiver.class);
@@ -48,7 +48,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 	@Override
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
-		if(accessor.getTileEntity() instanceof TileEntityMultiblockPart)
+		if(accessor.getTileEntity() instanceof MultiblockPartTileEntity)
 			return new ItemStack(accessor.getBlock(), 1, accessor.getMetadata());
 		return ItemStack.EMPTY;
 	}
@@ -64,11 +64,11 @@ public class IEWailaDataProvider implements IWailaDataProvider
 	{
 		Block b = accessor.getBlock();
 		TileEntity tile = accessor.getTileEntity();
-		if(b instanceof BlockHemp)
+		if(b instanceof HempBlock)
 		{
 			int meta = accessor.getMetadata();
-			int min = ((BlockHemp)b).getMinGrowth(meta);
-			int max = ((BlockHemp)b).getMaxGrowth(meta);
+			int min = ((HempBlock)b).getMinGrowth(meta);
+			int max = ((HempBlock)b).getMaxGrowth(meta);
 			if(min==max)
 				currenttip.add(String.format("%s : %s", I18n.format("hud.msg.growth"), I18n.format("hud.msg.mature")));
 			else
@@ -81,7 +81,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			}
 			return currenttip;
 		}
-		else if(tile instanceof TileEntityWoodenBarrel)
+		else if(tile instanceof WoodenBarrelTileEntity)
 		{
 			CompoundNBT tank = accessor.getNBTData().getCompound("tank");
 			if(!tank.hasKey("Empty")&&!tank.isEmpty())
@@ -98,7 +98,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			int max = accessor.getNBTInteger(accessor.getNBTData(), "MaxStorage");
 			if(max > 0&&((ITaggedList)currenttip).getEntries("IFEnergyStorage").size()==0)
 				((ITaggedList)currenttip).add(String.format("%d / %d IF", cur, max), "IFEnergyStorage");
-			if(tile instanceof TileEntityTeslaCoil&&((ITaggedList)currenttip).getEntries("teslaCoil").size()==0)
+			if(tile instanceof TeslaCoilTileEntity&&((ITaggedList)currenttip).getEntries("teslaCoil").size()==0)
 			{
 				boolean rsInv = accessor.getNBTData().getBoolean("redstoneInverted");
 				boolean lowPower = accessor.getNBTData().getBoolean("lowPower");
@@ -135,15 +135,15 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			tag.putInt("Energy", cur);
 			tag.putInt("MaxStorage", max);
 		}
-		if(te instanceof TileEntityTeslaCoil)
+		if(te instanceof TeslaCoilTileEntity)
 		{
-			if(((TileEntityTeslaCoil)te).dummy)
-				te = te.getWorld().getTileEntity(te.getPos().offset(((TileEntityTeslaCoil)te).facing, -1));
-			tag.putBoolean("redstoneInverted", ((TileEntityTeslaCoil)te).redstoneControlInverted);
-			tag.putBoolean("lowPower", ((TileEntityTeslaCoil)te).lowPower);
+			if(((TeslaCoilTileEntity)te).dummy)
+				te = te.getWorld().getTileEntity(te.getPos().offset(((TeslaCoilTileEntity)te).facing, -1));
+			tag.putBoolean("redstoneInverted", ((TeslaCoilTileEntity)te).redstoneControlInverted);
+			tag.putBoolean("lowPower", ((TeslaCoilTileEntity)te).lowPower);
 		}
-		else if(te instanceof TileEntityWoodenBarrel)
-			tag.put("tank", ((TileEntityWoodenBarrel)te).tank.writeToNBT(new CompoundNBT()));
+		else if(te instanceof WoodenBarrelTileEntity)
+			tag.put("tank", ((WoodenBarrelTileEntity)te).tank.writeToNBT(new CompoundNBT()));
 		return tag;
 	}
 }

@@ -31,8 +31,8 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityTurntable;
+import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.TurntableTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
@@ -895,7 +895,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				}
 			}
 
-			if(Utils.isHammer(stack)&&tile instanceof TileEntityTurntable)
+			if(Utils.isHammer(stack)&&tile instanceof TurntableTileEntity)
 			{
 				BlockPos pos = rtr.getPos();
 
@@ -908,7 +908,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				Tessellator tessellator = Tessellator.getInstance();
 				BufferBuilder BufferBuilder = tessellator.getBuffer();
 
-				Direction f = ((TileEntityTurntable)tile).getFacing();
+				Direction f = ((TurntableTileEntity)tile).getFacing();
 				double tx = pos.getX()+.5;
 				double ty = pos.getY()+.5;
 				double tz = pos.getZ()+.5;
@@ -921,7 +921,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				BufferBuilder.setTranslation(tx+px, ty+py, tz+pz);
 
 				double angle = -player.ticksExisted%80/40d*Math.PI;
-				drawRotationArrows(tessellator, BufferBuilder, f, angle, ((TileEntityTurntable)tile).invert);
+				drawRotationArrows(tessellator, BufferBuilder, f, angle, ((TurntableTileEntity)tile).invert);
 
 				BufferBuilder.setTranslation(0, 0, 0);
 
@@ -1118,7 +1118,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				break;
 			}
 		if(!chunkBorders&&ClientUtils.mc().objectMouseOver instanceof BlockRayTraceResult&&
-				ClientUtils.mc().world.getTileEntity(((BlockRayTraceResult)ClientUtils.mc().objectMouseOver).getPos()) instanceof TileEntitySampleDrill)
+				ClientUtils.mc().world.getTileEntity(((BlockRayTraceResult)ClientUtils.mc().objectMouseOver).getPos()) instanceof SampleDrillTileEntity)
 			chunkBorders = true;
 
 		float partial = event.getPartialTicks();

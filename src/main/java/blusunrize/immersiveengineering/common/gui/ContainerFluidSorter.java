@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityFluidSorter;
+import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -17,10 +17,10 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerFluidSorter extends Container
 {
-	TileEntityFluidSorter tile;
+	FluidSorterTileEntity tile;
 	int slotCount;
 
-	public ContainerFluidSorter(PlayerInventory inventoryPlayer, TileEntityFluidSorter tile)
+	public ContainerFluidSorter(PlayerInventory inventoryPlayer, FluidSorterTileEntity tile)
 	{
 		this.tile = tile;
 		for(int i = 0; i < 3; i++)

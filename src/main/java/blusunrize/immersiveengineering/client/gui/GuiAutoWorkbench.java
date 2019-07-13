@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonItem;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAutoWorkbench;
+import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerAutoWorkbench;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -29,9 +29,9 @@ import java.util.ArrayList;
 
 public class GuiAutoWorkbench extends GuiIEContainerBase
 {
-	TileEntityAutoWorkbench tile;
+	AutoWorkbenchTileEntity tile;
 
-	public GuiAutoWorkbench(PlayerInventory inventoryPlayer, TileEntityAutoWorkbench tile)
+	public GuiAutoWorkbench(PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
 	{
 		super(new ContainerAutoWorkbench(inventoryPlayer, tile));
 		this.tile = tile;

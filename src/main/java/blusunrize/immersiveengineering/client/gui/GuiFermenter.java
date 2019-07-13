@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
+import blusunrize.immersiveengineering.common.blocks.metal.FermenterTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerFermenter;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -21,9 +21,9 @@ import java.util.ArrayList;
 
 public class GuiFermenter extends GuiIEContainerBase
 {
-	TileEntityFermenter tile;
+	FermenterTileEntity tile;
 
-	public GuiFermenter(PlayerInventory inventoryPlayer, TileEntityFermenter tile)
+	public GuiFermenter(PlayerInventory inventoryPlayer, FermenterTileEntity tile)
 	{
 		super(new ContainerFermenter(inventoryPlayer, tile));
 		this.tile = tile;

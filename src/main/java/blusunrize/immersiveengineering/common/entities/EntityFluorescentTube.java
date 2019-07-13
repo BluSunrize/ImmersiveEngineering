@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
 import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
@@ -164,7 +164,7 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 	@Override
 	public void onHit(TileEntity te, boolean lowPower)
 	{
-		if(te instanceof TileEntityTeslaCoil&&((TileEntityTeslaCoil)te).energyStorage.extractEnergy(1, false) > 0)
+		if(te instanceof TeslaCoilTileEntity&&((TeslaCoilTileEntity)te).energyStorage.extractEnergy(1, false) > 0)
 		{
 			timer = 35;
 			dataManager.set(dataMarker_active, true);

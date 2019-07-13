@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityAlloySmelter;
+import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerAlloySmelter;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 
 public class GuiAlloySmelter extends GuiIEContainerBase
 {
-	TileEntityAlloySmelter tile;
+	AlloySmelterTileEntity tile;
 
-	public GuiAlloySmelter(PlayerInventory inventoryPlayer, TileEntityAlloySmelter tile)
+	public GuiAlloySmelter(PlayerInventory inventoryPlayer, AlloySmelterTileEntity tile)
 	{
 		super(new ContainerAlloySmelter(inventoryPlayer, tile));
 		this.tile = tile;

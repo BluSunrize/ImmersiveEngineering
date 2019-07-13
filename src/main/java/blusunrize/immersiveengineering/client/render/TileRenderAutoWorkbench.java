@@ -15,10 +15,10 @@ import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInWorld;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAutoWorkbench;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInWorld;
+import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.HashMultimap;
@@ -51,10 +51,10 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 
-public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWorkbench>
+public class TileRenderAutoWorkbench extends TileEntityRenderer<AutoWorkbenchTileEntity>
 {
 	@Override
-	public void render(TileEntityAutoWorkbench te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(AutoWorkbenchTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
@@ -228,7 +228,7 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<TileEntityAutoWo
 			if(itemDisplays[i]!=null)
 			{
 				MultiblockProcess<IMultiblockRecipe> process = te.processQueue.get(i);
-				if(!(process instanceof TileEntityPoweredMultiblock.MultiblockProcessInWorld))
+				if(!(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInWorld))
 					continue;
 
 				float scale = .3125f;

@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCoresample;
+import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.Direction;
 
-public class TileRenderCoresample extends TileEntityRenderer<TileEntityCoresample>
+public class TileRenderCoresample extends TileEntityRenderer<CoresampleTileEntity>
 {
 	@Override
-	public void render(TileEntityCoresample tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(CoresampleTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!tile.getWorld().isBlockLoaded(tile.getPos(), false)||tile.coresample==null)
 			return;

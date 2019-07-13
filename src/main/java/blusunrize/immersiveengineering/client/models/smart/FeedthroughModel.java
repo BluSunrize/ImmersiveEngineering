@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough;
+import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -56,8 +56,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
-import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough.MIDDLE_STATE;
-import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough.WIRE;
+import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.MIDDLE_STATE;
+import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.WIRE;
 import static net.minecraft.util.Direction.Axis.Y;
 
 public class FeedthroughModel implements IBakedModel
@@ -90,12 +90,12 @@ public class FeedthroughModel implements IBakedModel
 		if(state instanceof IExtendedBlockState)
 		{
 			TileEntity te = ((IExtendedBlockState)state).getValue(IEProperties.TILEENTITY_PASSTHROUGH);
-			if(te instanceof TileEntityFeedthrough)
+			if(te instanceof FeedthroughTileEntity)
 			{
-				baseState = ((TileEntityFeedthrough)te).stateForMiddle;
-				wire = ((TileEntityFeedthrough)te).reference;
-				facing = ((TileEntityFeedthrough)te).getFacing();
-				offset = ((TileEntityFeedthrough)te).offset;
+				baseState = ((FeedthroughTileEntity)te).stateForMiddle;
+				wire = ((FeedthroughTileEntity)te).reference;
+				facing = ((FeedthroughTileEntity)te).getFacing();
+				offset = ((FeedthroughTileEntity)te).offset;
 				p = te.getPos();
 				w = te.getWorld();
 			}

@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.IESaveData;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -186,9 +186,9 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 	@Override
 	public boolean canHarvestBlock(ItemStack stack, BlockState state)
 	{
-		if(state.getBlock() instanceof BlockIEBase)
+		if(state.getBlock() instanceof IEBaseBlock)
 		{
-			if(((BlockIEBase)state.getBlock()).allowWirecutterHarvest(state))
+			if(((IEBaseBlock)state.getBlock()).allowWirecutterHarvest(state))
 				return true;
 		}
 		else if(state.getBlock().isToolEffective(state, CUTTER_TOOL))

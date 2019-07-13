@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
+import blusunrize.immersiveengineering.common.blocks.metal.RefineryTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerRefinery;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -21,9 +21,9 @@ import java.util.ArrayList;
 
 public class GuiRefinery extends GuiIEContainerBase
 {
-	TileEntityRefinery tile;
+	RefineryTileEntity tile;
 
-	public GuiRefinery(PlayerInventory inventoryPlayer, TileEntityRefinery tile)
+	public GuiRefinery(PlayerInventory inventoryPlayer, RefineryTileEntity tile)
 	{
 		super(new ContainerRefinery(inventoryPlayer, tile));
 		this.tile = tile;

@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
+import blusunrize.immersiveengineering.common.blocks.metal.EnergyMeterTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -19,7 +19,7 @@ public class EnergyMeterDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityEnergyMeter&&((TileEntityEnergyMeter)te).lower)
+		if(te instanceof EnergyMeterTileEntity&&((EnergyMeterTileEntity)te).lower)
 		{
 			return new EnergyMeterEnvironment(w, bp);
 		}
@@ -29,15 +29,15 @@ public class EnergyMeterDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityEnergyMeter.class;
+		return EnergyMeterTileEntity.class;
 	}
 
 
-	public class EnergyMeterEnvironment extends ManagedEnvironmentIE<TileEntityEnergyMeter>
+	public class EnergyMeterEnvironment extends ManagedEnvironmentIE<EnergyMeterTileEntity>
 	{
 		public EnergyMeterEnvironment(World w, BlockPos bp)
 		{
-			super(w, bp, TileEntityEnergyMeter.class);
+			super(w, bp, EnergyMeterTileEntity.class);
 		}
 
 

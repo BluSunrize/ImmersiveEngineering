@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFeedthrough;
+import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -153,7 +153,7 @@ public class MultiblockFeedthrough implements IMultiblock
 			BlockState state = IEContent.blockConnectors.getDefaultState().with(IEContent.blockConnectors.property,
 					BlockTypes_Connector.FEEDTHROUGH).with(IEProperties.FACING_ALL, side);
 			BlockPos masterPos = pos.offset(side);
-			TileEntityFeedthrough master = setBlock(world, masterPos, state, wire, middle, 0);
+			FeedthroughTileEntity master = setBlock(world, masterPos, state, wire, middle, 0);
 			if(master!=null)
 			{
 				//TODO
@@ -168,7 +168,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	}
 
 	//private void moveConnectionsToMaster(Collection<Connection> conns, World world, boolean positive,
-	//									 TileEntityFeedthrough master)
+	//									 FeedthroughTileEntity master)
 	//{
 	//	BlockPos masterPos = master.getPos();
 	//	for(Connection c : ImmutableSet.copyOf(conns))
@@ -183,14 +183,14 @@ public class MultiblockFeedthrough implements IMultiblock
 	//}
 
 	@Nullable
-	private TileEntityFeedthrough setBlock(World world, BlockPos here, BlockState newState, WireType wire, BlockState middle,
+	private FeedthroughTileEntity setBlock(World world, BlockPos here, BlockState newState, WireType wire, BlockState middle,
 										   int offset)
 	{
 		world.setBlockState(here, newState);
 		TileEntity te = world.getTileEntity(here);
-		if(te instanceof TileEntityFeedthrough)
+		if(te instanceof FeedthroughTileEntity)
 		{
-			TileEntityFeedthrough feedthrough = (TileEntityFeedthrough)te;
+			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)te;
 			feedthrough.reference = wire;
 			feedthrough.stateForMiddle = middle;
 			feedthrough.offset = offset;

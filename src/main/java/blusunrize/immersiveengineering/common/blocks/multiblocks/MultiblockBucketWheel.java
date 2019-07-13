@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
+import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -147,9 +147,9 @@ public class MultiblockBucketWheel implements IMultiblock
 
 				world.setBlockState(pos2, state);
 				TileEntity curr = world.getTileEntity(pos2);
-				if(curr instanceof TileEntityBucketWheel)
+				if(curr instanceof BucketWheelTileEntity)
 				{
-					TileEntityBucketWheel tile = (TileEntityBucketWheel)curr;
+					BucketWheelTileEntity tile = (BucketWheelTileEntity)curr;
 					tile.formed = true;
 					tile.posInMultiblock = (w+3)+(h+3)*7;
 

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
+import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerSqueezer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -22,9 +22,9 @@ import java.util.List;
 
 public class GuiSqueezer extends GuiIEContainerBase
 {
-	TileEntitySqueezer tile;
+	SqueezerTileEntity tile;
 
-	public GuiSqueezer(PlayerInventory inventoryPlayer, TileEntitySqueezer tile)
+	public GuiSqueezer(PlayerInventory inventoryPlayer, SqueezerTileEntity tile)
 	{
 		super(new ContainerSqueezer(inventoryPlayer, tile));
 		this.tile = tile;

@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
@@ -28,12 +28,12 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityArcFurnace)
+		if(te instanceof ArcFurnaceTileEntity)
 		{
-			TileEntityArcFurnace arc = (TileEntityArcFurnace)te;
-			TileEntityArcFurnace master = arc.master();
+			ArcFurnaceTileEntity arc = (ArcFurnaceTileEntity)te;
+			ArcFurnaceTileEntity master = arc.master();
 			if(master!=null&&arc.isRedstonePos())
-				return new ArcFurnaceEnvironment(w, master.getPos(), TileEntityArcFurnace.class);
+				return new ArcFurnaceEnvironment(w, master.getPos(), ArcFurnaceTileEntity.class);
 		}
 		return null;
 	}
@@ -41,10 +41,10 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityArcFurnace.class;
+		return ArcFurnaceTileEntity.class;
 	}
 
-	public class ArcFurnaceEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityArcFurnace>
+	public class ArcFurnaceEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<ArcFurnaceTileEntity>
 	{
 
 		@Override
@@ -59,7 +59,7 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 			return 1000;
 		}
 
-		public ArcFurnaceEnvironment(World w, BlockPos p, Class<? extends TileEntityIEBase> teClass)
+		public ArcFurnaceEnvironment(World w, BlockPos p, Class<? extends IEBaseTileEntity> teClass)
 		{
 			super(w, p, teClass);
 		}
@@ -88,7 +88,7 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 			int slot = args.checkInteger(0);
 			if(slot < 1||slot > 12)
 				throw new IllegalArgumentException("Input slots are 1-12");
-			TileEntityArcFurnace master = getTileEntity();
+			ArcFurnaceTileEntity master = getTileEntity();
 			Map<String, Object> stack = Utils.saveStack(master.inventory.get(slot-1));
 			mainLoop:
 			for(MultiblockProcess<ArcFurnaceRecipe> p : master.processQueue)
@@ -134,7 +134,7 @@ public class ArcFurnaceDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():boolean -- checks whether the arc furnace has all 3 electrodes")
 		public Object[] hasElectrodes(Context context, Arguments args)
 		{
-			TileEntityArcFurnace master = getTileEntity();
+			ArcFurnaceTileEntity master = getTileEntity();
 			return new Object[]{master.hasElectrodes()};
 		}
 

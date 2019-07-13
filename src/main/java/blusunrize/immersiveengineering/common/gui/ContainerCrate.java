@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
+import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 @ChestContainer
 public class ContainerCrate extends ContainerIEBase
 {
-	public ContainerCrate(PlayerInventory inventoryPlayer, TileEntityWoodenCrate tile)
+	public ContainerCrate(PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 		for(int i = 0; i < tile.getInventory().size(); i++)

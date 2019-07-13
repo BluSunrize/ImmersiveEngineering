@@ -9,15 +9,15 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityChargingStation;
+import blusunrize.immersiveengineering.common.blocks.metal.ChargingStationTileEntity;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 
-public class TileRenderChargingStation extends TileEntityRenderer<TileEntityChargingStation>
+public class TileRenderChargingStation extends TileEntityRenderer<ChargingStationTileEntity>
 {
 	@Override
-	public void render(TileEntityChargingStation te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(ChargingStationTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(te.getWorld()!=null&&te.getWorld().isBlockLoaded(te.getPos(), false))
 		{

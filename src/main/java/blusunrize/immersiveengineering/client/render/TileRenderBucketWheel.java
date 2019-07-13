@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
+import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
@@ -41,12 +41,12 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("deprecation")
-public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWheel>
+public class TileRenderBucketWheel extends TileEntityRenderer<BucketWheelTileEntity>
 {
 	private static IBakedModel model = null;
 
 	@Override
-	public void render(TileEntityBucketWheel tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(BucketWheelTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!tile.formed||!tile.getWorld().isBlockLoaded(tile.getPos(), false)||tile.isDummy())
 			return;
@@ -122,7 +122,7 @@ public class TileRenderBucketWheel extends TileEntityRenderer<TileEntityBucketWh
 	//	@Override
 	//	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float f)
 	//	{
-	//		TileEntityBucketWheel wheel = (TileEntityBucketWheel)tile;
+	//		BucketWheelTileEntity wheel = (BucketWheelTileEntity)tile;
 	//		if(!wheel.formed || wheel.pos!=24)
 	//			return;
 	//		GL11.glPushMatrix();

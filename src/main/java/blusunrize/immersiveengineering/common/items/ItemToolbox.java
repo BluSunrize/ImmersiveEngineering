@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
@@ -82,7 +82,7 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 				BlockState toolbox = IEContent.blockToolbox.getDefaultState();
 				if(world.setBlockState(pos, toolbox, 3))
 				{
-					((BlockIEBase)IEContent.blockToolbox).onIEBlockPlacedBy(new BlockItemUseContext(ctx), toolbox);
+					((IEBaseBlock)IEContent.blockToolbox).onIEBlockPlacedBy(new BlockItemUseContext(ctx), toolbox);
 
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);

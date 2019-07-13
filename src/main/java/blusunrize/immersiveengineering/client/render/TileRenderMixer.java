@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMixer;
+import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -28,10 +28,10 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
-public class TileRenderMixer extends TileEntityRenderer<TileEntityMixer>
+public class TileRenderMixer extends TileEntityRenderer<MixerTileEntity>
 {
 	@Override
-	public void render(TileEntityMixer te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(MixerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;

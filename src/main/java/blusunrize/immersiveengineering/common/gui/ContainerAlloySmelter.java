@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityAlloySmelter;
+import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.FurnaceFuelSlot;
 import net.minecraft.inventory.container.Slot;
 
-public class ContainerAlloySmelter extends ContainerIEBase<TileEntityAlloySmelter>
+public class ContainerAlloySmelter extends ContainerIEBase<AlloySmelterTileEntity>
 {
-	public ContainerAlloySmelter(PlayerInventory inventoryPlayer, TileEntityAlloySmelter tile)
+	public ContainerAlloySmelter(PlayerInventory inventoryPlayer, AlloySmelterTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 

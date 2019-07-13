@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -20,7 +20,7 @@ public class TeslaCoilDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityTeslaCoil&&!((TileEntityTeslaCoil)te).isDummy())
+		if(te instanceof TeslaCoilTileEntity&&!((TeslaCoilTileEntity)te).isDummy())
 		{
 			return new EnergyMeterEnvironment(w, bp);
 		}
@@ -30,15 +30,15 @@ public class TeslaCoilDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityTeslaCoil.class;
+		return TeslaCoilTileEntity.class;
 	}
 
 
-	public class EnergyMeterEnvironment extends ManagedEnvironmentIE<TileEntityTeslaCoil>
+	public class EnergyMeterEnvironment extends ManagedEnvironmentIE<TeslaCoilTileEntity>
 	{
 		public EnergyMeterEnvironment(World w, BlockPos bp)
 		{
-			super(w, bp, TileEntityTeslaCoil.class);
+			super(w, bp, TeslaCoilTileEntity.class);
 		}
 
 
@@ -67,7 +67,7 @@ public class TeslaCoilDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():boolean -- checks whether the coil is active")
 		public Object[] isActive(Context context, Arguments args)
 		{
-			TileEntityTeslaCoil te = getTileEntity();
+			TeslaCoilTileEntity te = getTileEntity();
 			int energyDrain = IEConfig.Machines.teslacoil_consumption;
 			if(te.lowPower)
 				energyDrain /= 2;
@@ -84,7 +84,7 @@ public class TeslaCoilDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():boolean -- checks whether the coil is active")
 		public Object[] setPowerMode(Context context, Arguments args)
 		{
-			TileEntityTeslaCoil te = getTileEntity();
+			TeslaCoilTileEntity te = getTileEntity();
 			int energyDrain = IEConfig.Machines.teslacoil_consumption;
 			if(te.lowPower)
 				energyDrain /= 2;

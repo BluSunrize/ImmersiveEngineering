@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.util.compat112;
 
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil.LightningAnimation;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity.LightningAnimation;
 import blusunrize.immersiveengineering.common.util.Utils;
 import elucent.albedo.event.GatherLightsEvent;
 import elucent.albedo.lighting.Light;
@@ -40,7 +40,7 @@ public class AlbedoHelper extends IECompatModule
 	@OnlyIn(Dist.CLIENT)
 	public void gatherLights(GatherLightsEvent event)
 	{
-		for(LightningAnimation animation : TileEntityTeslaCoil.effectMap.values())
+		for(LightningAnimation animation : TeslaCoilTileEntity.effectMap.values())
 		{
 			if(animation.shoudlRecalculateLightning())
 				animation.createLightning(Utils.RAND);

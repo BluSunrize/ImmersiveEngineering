@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
+import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerCrate;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
@@ -17,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public class GuiCrate extends GuiIEContainerBase
 {
-	public GuiCrate(PlayerInventory inventoryPlayer, TileEntityWoodenCrate tile)
+	public GuiCrate(PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile)
 	{
 		super(new ContainerCrate(inventoryPlayer, tile));
 		this.ySize = 168;
@@ -27,7 +27,7 @@ public class GuiCrate extends GuiIEContainerBase
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
 		TileEntity te = ((ContainerCrate)this.inventorySlots).tile;
-		this.fontRenderer.drawString(((TileEntityWoodenCrate)te).getName().getFormattedText(),
+		this.fontRenderer.drawString(((WoodenCrateTileEntity)te).getName().getFormattedText(),
 				8, 6, 0x0a0a0a);
 	}
 

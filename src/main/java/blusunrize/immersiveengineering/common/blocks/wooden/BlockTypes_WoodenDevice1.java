@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_WoodenDevice1 implements IStringSerializable, BlockIEBase.IBlockEnum
+public enum BlockTypes_WoodenDevice1 implements IStringSerializable, IEBaseBlock.IBlockEnum
 {
 	WATERMILL,
 	WINDMILL,

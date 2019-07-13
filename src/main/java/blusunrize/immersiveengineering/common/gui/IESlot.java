@@ -38,8 +38,8 @@ import net.minecraftforge.items.SlotItemHandler;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar.SLOT_SEED;
-import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar.SLOT_SOIL;
+import static blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity.SLOT_SEED;
+import static blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity.SLOT_SOIL;
 
 public abstract class IESlot extends Slot
 {

@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
+import blusunrize.immersiveengineering.common.blocks.metal.ExcavatorTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -17,10 +17,10 @@ public class ExcavatorDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos pos, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(pos);
-		if(te instanceof TileEntityExcavator)
+		if(te instanceof ExcavatorTileEntity)
 		{
-			TileEntityExcavator exc = (TileEntityExcavator)te;
-			TileEntityExcavator master = exc.master();
+			ExcavatorTileEntity exc = (ExcavatorTileEntity)te;
+			ExcavatorTileEntity master = exc.master();
 			if(master!=null&&exc.isRedstonePos())
 				return new ExcavatorEnvironment(w, master.getPos());
 		}
@@ -31,15 +31,15 @@ public class ExcavatorDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityExcavator.class;
+		return ExcavatorTileEntity.class;
 	}
 
-	public class ExcavatorEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityExcavator>
+	public class ExcavatorEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<ExcavatorTileEntity>
 	{
 
 		public ExcavatorEnvironment(World w, BlockPos pos)
 		{
-			super(w, pos, TileEntityExcavator.class);
+			super(w, pos, ExcavatorTileEntity.class);
 		}
 
 		@Callback(doc = "function():number -- get energy storage capacity")

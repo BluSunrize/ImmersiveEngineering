@@ -8,13 +8,13 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
+import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 
-public class ContainerSqueezer extends ContainerIEBase<TileEntitySqueezer>
+public class ContainerSqueezer extends ContainerIEBase<SqueezerTileEntity>
 {
-	public ContainerSqueezer(PlayerInventory inventoryPlayer, TileEntitySqueezer tile)
+	public ContainerSqueezer(PlayerInventory inventoryPlayer, SqueezerTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 

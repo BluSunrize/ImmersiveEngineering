@@ -54,6 +54,22 @@ public final class IEBlocks
 		public static Block alloySmelter;
 		public static Block blastFurnaceAdv;
 
+		public static Block metalPress;
+		public static Block crusher;
+		public static Block tank;
+		public static Block silo;
+		public static Block assembler;
+		public static Block autoWorkbench;
+		public static Block bottlingMachine;
+		public static Block squeezer;
+		public static Block fermenter;
+		public static Block refinery;
+		public static Block dieselGenerator;
+		public static Block excavator;
+		public static Block bucketWheel;
+		public static Block arcFurnace;
+		public static Block lightningrod;
+		public static Block mixer;
 	}
 
 	public static final class Metals
@@ -169,26 +185,6 @@ public final class IEBlocks
 		public static Block balloon;
 		public static Block curtain;
 		public static Block shaderBanner;
-	}
-
-	public static final class MetalMultiblocks
-	{
-		public static Block metalPress;
-		public static Block crusher;
-		public static Block tank;
-		public static Block silo;
-		public static Block assembler;
-		public static Block autoWorkbench;
-		public static Block bottlingMachine;
-		public static Block squeezer;
-		public static Block fermenter;
-		public static Block refinery;
-		public static Block dieselGenerator;
-		public static Block excavator;
-		public static Block bucketWheel;
-		public static Block arcFurnace;
-		public static Block lightningrod;
-		public static Block mixer;
 	}
 
 	public static final class Misc

@@ -15,9 +15,9 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.client.gui.elements.GuiReactiveList;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurret;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretChem;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretGun;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretChemTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerTurret;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -35,10 +35,10 @@ import java.util.ArrayList;
 
 public class GuiTurret extends GuiIEContainerBase
 {
-	public TileEntityTurret tile;
+	public TurretTileEntity tile;
 	private TextFieldWidget nameField;
 
-	public GuiTurret(PlayerInventory inventoryPlayer, TileEntityTurret tile)
+	public GuiTurret(PlayerInventory inventoryPlayer, TurretTileEntity tile)
 	{
 		super(new ContainerTurret(inventoryPlayer, tile));
 		this.tile = tile;
@@ -144,8 +144,8 @@ public class GuiTurret extends GuiIEContainerBase
 			}
 		});
 
-		if(tile instanceof TileEntityTurretChem)
-			this.buttons.add(new GuiButtonState(6, guiLeft+135, guiTop+68, 14, 14, null, ((TileEntityTurretChem)tile).ignite, "immersiveengineering:textures/gui/turret.png", 176, 51, 0)
+		if(tile instanceof TurretChemTileEntity)
+			this.buttons.add(new GuiButtonState(6, guiLeft+135, guiTop+68, 14, 14, null, ((TurretChemTileEntity)tile).ignite, "immersiveengineering:textures/gui/turret.png", 176, 51, 0)
 			{
 				@Override
 				public void onClick(double mouseX, double mouseY)
@@ -153,13 +153,13 @@ public class GuiTurret extends GuiIEContainerBase
 					super.onClick(mouseX, mouseY);
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
-					((TileEntityTurretChem)tile).ignite = state;
-					tag.putBoolean("ignite", ((TileEntityTurretChem)tile).ignite);
+					((TurretChemTileEntity)tile).ignite = state;
+					tag.putBoolean("ignite", ((TurretChemTileEntity)tile).ignite);
 					handleButtonClick(tag, listOffset);
 				}
 			});
-		else if(tile instanceof TileEntityTurretGun)
-			this.buttons.add(new GuiButtonState(6, guiLeft+134, guiTop+31, 16, 16, null, ((TileEntityTurretGun)tile).expelCasings, "immersiveengineering:textures/gui/turret.png", 176, 81, 0)
+		else if(tile instanceof TurretGunTileEntity)
+			this.buttons.add(new GuiButtonState(6, guiLeft+134, guiTop+31, 16, 16, null, ((TurretGunTileEntity)tile).expelCasings, "immersiveengineering:textures/gui/turret.png", 176, 81, 0)
 			{
 				@Override
 				public void onClick(double mouseX, double mouseY)
@@ -167,8 +167,8 @@ public class GuiTurret extends GuiIEContainerBase
 					super.onClick(mouseX, mouseY);
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
-					((TileEntityTurretGun)tile).expelCasings = state;
-					tag.putBoolean("expelCasings", ((TileEntityTurretGun)tile).expelCasings);
+					((TurretGunTileEntity)tile).expelCasings = state;
+					tag.putBoolean("expelCasings", ((TurretGunTileEntity)tile).expelCasings);
 					handleButtonClick(tag, listOffset);
 				}
 			});
@@ -195,16 +195,16 @@ public class GuiTurret extends GuiIEContainerBase
 		if(mx >= guiLeft+158&&mx < guiLeft+165&&my >= guiTop+16&&my < guiTop+62)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
-		if(tile instanceof TileEntityTurretChem)
+		if(tile instanceof TurretChemTileEntity)
 		{
-			ClientUtils.handleGuiTank(((TileEntityTurretChem)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my, "immersiveengineering:textures/gui/turret.png", tooltip);
+			ClientUtils.handleGuiTank(((TurretChemTileEntity)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my, "immersiveengineering:textures/gui/turret.png", tooltip);
 			if(mx >= guiLeft+135&&mx < guiLeft+149&&my >= guiTop+68&&my < guiTop+82)
 				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"turret.ignite_fluid"));
 		}
-		else if(tile instanceof TileEntityTurretGun)
+		else if(tile instanceof TurretGunTileEntity)
 		{
 			if(mx >= guiLeft+134&&mx < guiLeft+150&&my >= guiTop+31&&my < guiTop+47)
-				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"turret.expel_casings_"+(((TileEntityTurretGun)tile).expelCasings?"on": "off")));
+				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"turret.expel_casings_"+(((TurretGunTileEntity)tile).expelCasings?"on": "off")));
 		}
 		if(!tooltip.isEmpty())
 		{
@@ -224,12 +224,12 @@ public class GuiTurret extends GuiIEContainerBase
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+158, guiTop+16+(46-stored), guiLeft+165, guiTop+62, 0xffb51500, 0xff600b00);
 
-		if(tile instanceof TileEntityTurretChem)
+		if(tile instanceof TurretChemTileEntity)
 		{
 			this.drawTexturedModalRect(guiLeft+132, guiTop+14, 176, 0, 20, 51);
-			ClientUtils.handleGuiTank(((TileEntityTurretChem)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my, "immersiveengineering:textures/gui/turret.png", null);
+			ClientUtils.handleGuiTank(((TurretChemTileEntity)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my, "immersiveengineering:textures/gui/turret.png", null);
 		}
-		else if(tile instanceof TileEntityTurretGun)
+		else if(tile instanceof TurretGunTileEntity)
 		{
 			ClientUtils.drawDarkSlot(guiLeft+134, guiTop+13, 16, 16);
 			ClientUtils.drawDarkSlot(guiLeft+134, guiTop+49, 16, 16);

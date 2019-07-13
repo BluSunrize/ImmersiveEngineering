@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
+import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -19,10 +19,10 @@ public class SqueezerDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntitySqueezer)
+		if(te instanceof SqueezerTileEntity)
 		{
-			TileEntitySqueezer squeezer = (TileEntitySqueezer)te;
-			TileEntitySqueezer master = squeezer.master();
+			SqueezerTileEntity squeezer = (SqueezerTileEntity)te;
+			SqueezerTileEntity master = squeezer.master();
 			if(master!=null&&squeezer.isRedstonePos())
 				return new SqueezerEnvironment(w, master.getPos());
 		}
@@ -32,16 +32,16 @@ public class SqueezerDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntitySqueezer.class;
+		return SqueezerTileEntity.class;
 	}
 
 
-	public class SqueezerEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntitySqueezer>
+	public class SqueezerEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<SqueezerTileEntity>
 	{
 
 		public SqueezerEnvironment(World w, BlockPos bp)
 		{
-			super(w, bp, TileEntitySqueezer.class);
+			super(w, bp, SqueezerTileEntity.class);
 		}
 
 
@@ -51,7 +51,7 @@ public class SqueezerDriver extends DriverSidedTileEntity
 			int slot = args.checkInteger(0);
 			if(slot < 1||slot > 8)
 				throw new IllegalArgumentException("Input slots are 1-8");
-			TileEntitySqueezer master = getTileEntity();
+			SqueezerTileEntity master = getTileEntity();
 			SqueezerRecipe recipe = SqueezerRecipe.findRecipe(master.inventory.get(slot-1));
 			if(recipe!=null)
 				return new Object[]{master.inventory.get(slot-1), recipe.itemOutput, recipe.fluidOutput, recipe.getTotalProcessTime()};

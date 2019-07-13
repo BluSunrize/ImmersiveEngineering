@@ -16,10 +16,10 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
+import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -208,9 +208,9 @@ public class MultiblockAssembler implements IMultiblock
 
 					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
-					if(curr instanceof TileEntityAssembler)
+					if(curr instanceof AssemblerTileEntity)
 					{
-						TileEntityAssembler tile = (TileEntityAssembler)curr;
+						AssemblerTileEntity tile = (AssemblerTileEntity)curr;
 						tile.formed = true;
 						tile.pos = (h+1)*9+l*3+(w+1);
 						tile.offset = new int[]{(side==Direction.WEST?1-l: side==Direction.EAST?l-1: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?1-l: side==Direction.SOUTH?l-1: side==Direction.EAST?ww: -ww)};

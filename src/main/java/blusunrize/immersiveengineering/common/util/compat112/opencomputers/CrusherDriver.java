@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -29,12 +29,12 @@ public class CrusherDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityCrusher)
+		if(te instanceof CrusherTileEntity)
 		{
-			TileEntityCrusher crush = (TileEntityCrusher)te;
-			TileEntityCrusher master = crush.master();
+			CrusherTileEntity crush = (CrusherTileEntity)te;
+			CrusherTileEntity master = crush.master();
 			if(master!=null&&crush.isRedstonePos())
-				return new CrusherEnvironment(w, master.getPos(), TileEntityCrusher.class);
+				return new CrusherEnvironment(w, master.getPos(), CrusherTileEntity.class);
 		}
 		return null;
 	}
@@ -42,13 +42,13 @@ public class CrusherDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityCrusher.class;
+		return CrusherTileEntity.class;
 	}
 
 
-	public class CrusherEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityCrusher>
+	public class CrusherEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<CrusherTileEntity>
 	{
-		public CrusherEnvironment(World w, BlockPos bp, Class<? extends TileEntityIEBase> teClass)
+		public CrusherEnvironment(World w, BlockPos bp, Class<? extends IEBaseTileEntity> teClass)
 		{
 			super(w, bp, teClass);
 		}
@@ -74,7 +74,7 @@ public class CrusherDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():table -- returns the entire input queue of the crusher")
 		public Object[] getInputQueue(Context context, Arguments args)
 		{
-			TileEntityCrusher master = getTileEntity();
+			CrusherTileEntity master = getTileEntity();
 			Map<Integer, Object> ret = new HashMap<>();
 			List<MultiblockProcess<CrusherRecipe>> queue = master.processQueue;
 			for(int i = 0; i < queue.size(); i++)

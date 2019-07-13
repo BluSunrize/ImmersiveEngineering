@@ -39,16 +39,16 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
-import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
+import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorSplit;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityAlloySmelter;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCoresample;
+import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
@@ -466,54 +466,54 @@ public class ClientProxy extends CommonProxy
 		nixieFontOptional = IEConfig.nixietubeFont?new IENixieFontRender(): ClientUtils.font();
 		nixieFont = new IENixieFontRender();
 		itemFont = new IEItemFontRender();
-		TileEntityTeslaCoil.effectMap = ArrayListMultimap.create();
+		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 
 		//		//METAL
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices());
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices2());
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDecoration());
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalMultiblocks());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityImmersiveConnectable.class, new TileRenderImmersiveConnectable());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(ImmersiveConnectableTileEntity.class, new TileRenderImmersiveConnectable());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnector.class, new TileRenderConnectorLV());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorMV.class, new TileRenderConnectorMV());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransformer.class, new TileRenderTransformer());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(TransformerTileEntity.class, new TileRenderTransformer());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRelayHV.class, new TileRenderRelayHV());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorHV.class, new TileRenderConnectorHV());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransformerHV.class, new TileRenderTransformer());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorStructural.class, new TileRenderConnectorStructural());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLantern.class, new TileRenderLantern());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBreakerSwitch.class, new TileRenderBreakerSwitch());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyMeter.class, new TileRenderEnergyMeter());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectricLantern.class, new TileRenderElectricLantern());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFloodlight.class, new TileRenderFloodlight());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPipe.class, new TileRenderFluidPipe());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPump.class, new TileRenderFluidPump());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRedstoneBreaker.class, new TileRenderRedstoneBreaker());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChargingStation.class, new TileRenderChargingStation());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySampleDrill.class, new TileRenderSampleDrill());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTeslaCoil.class, new TileRenderTeslaCoil());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurret.class, new TileRenderTurret());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBelljar.class, new TileRenderBelljar());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(TransformerHVTileEntity.class, new TileRenderTransformer());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(ConnectorStructuralTileEntity.class, new TileRenderConnectorStructural());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(LanternTileEntity.class, new TileRenderLantern());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(BreakerSwitchTileEntity.class, new TileRenderBreakerSwitch());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(EnergyMeterTileEntity.class, new TileRenderEnergyMeter());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(ElectricLanternTileEntity.class, new TileRenderElectricLantern());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(FloodlightTileEntity.class, new TileRenderFloodlight());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(FluidPipeTileEntity.class, new TileRenderFluidPipe());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(FluidPumpTileEntity.class, new TileRenderFluidPump());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(RedstoneBreakerTileEntity.class, new TileRenderRedstoneBreaker());
+		ClientRegistry.bindTileEntitySpecialRenderer(ChargingStationTileEntity.class, new TileRenderChargingStation());
+		ClientRegistry.bindTileEntitySpecialRenderer(SampleDrillTileEntity.class, new TileRenderSampleDrill());
+		ClientRegistry.bindTileEntitySpecialRenderer(TeslaCoilTileEntity.class, new TileRenderTeslaCoil());
+		ClientRegistry.bindTileEntitySpecialRenderer(TurretTileEntity.class, new TileRenderTurret());
+		ClientRegistry.bindTileEntitySpecialRenderer(BelljarTileEntity.class, new TileRenderBelljar());
 		// MULTIBLOCKS
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMetalPress.class, new TileRenderMetalPress());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrusher.class, new TileRenderCrusher());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySheetmetalTank.class, new TileRenderSheetmetalTank());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySilo.class, new TileRenderSilo());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySqueezer.class, new TileRenderSqueezer());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDieselGenerator.class, new TileRenderDieselGenerator());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBucketWheel.class, new TileRenderBucketWheel());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityArcFurnace.class, new TileRenderArcFurnace());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAutoWorkbench.class, new TileRenderAutoWorkbench());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBottlingMachine.class, new TileRenderBottlingMachine());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMixer.class, new TileRenderMixer());
+		ClientRegistry.bindTileEntitySpecialRenderer(MetalPressTileEntity.class, new TileRenderMetalPress());
+		ClientRegistry.bindTileEntitySpecialRenderer(CrusherTileEntity.class, new TileRenderCrusher());
+		ClientRegistry.bindTileEntitySpecialRenderer(SheetmetalTankTileEntity.class, new TileRenderSheetmetalTank());
+		ClientRegistry.bindTileEntitySpecialRenderer(SiloTileEntity.class, new TileRenderSilo());
+		ClientRegistry.bindTileEntitySpecialRenderer(SqueezerTileEntity.class, new TileRenderSqueezer());
+		ClientRegistry.bindTileEntitySpecialRenderer(DieselGeneratorTileEntity.class, new TileRenderDieselGenerator());
+		ClientRegistry.bindTileEntitySpecialRenderer(BucketWheelTileEntity.class, new TileRenderBucketWheel());
+		ClientRegistry.bindTileEntitySpecialRenderer(ArcFurnaceTileEntity.class, new TileRenderArcFurnace());
+		ClientRegistry.bindTileEntitySpecialRenderer(AutoWorkbenchTileEntity.class, new TileRenderAutoWorkbench());
+		ClientRegistry.bindTileEntitySpecialRenderer(BottlingMachineTileEntity.class, new TileRenderBottlingMachine());
+		ClientRegistry.bindTileEntitySpecialRenderer(MixerTileEntity.class, new TileRenderMixer());
 		//WOOD
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWatermill.class, new TileRenderWatermill());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmill.class, new TileRenderWindmill());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityModWorkbench.class, new TileRenderWorkbench());
+		ClientRegistry.bindTileEntitySpecialRenderer(WatermillTileEntity.class, new TileRenderWatermill());
+		ClientRegistry.bindTileEntitySpecialRenderer(WindmillTileEntity.class, new TileRenderWindmill());
+		ClientRegistry.bindTileEntitySpecialRenderer(ModWorkbenchTileEntity.class, new TileRenderWorkbench());
 		//STONE
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCoresample.class, new TileRenderCoresample());
+		ClientRegistry.bindTileEntitySpecialRenderer(CoresampleTileEntity.class, new TileRenderCoresample());
 		//CLOTH
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityShaderBanner.class, new TileRenderShaderBanner());
+		ClientRegistry.bindTileEntitySpecialRenderer(ShaderBannerTileEntity.class, new TileRenderShaderBanner());
 
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWallmount.class, new TileRenderWallmount());
 		//
@@ -522,7 +522,7 @@ public class ClientProxy extends CommonProxy
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderStoneDevices());
 		//		//CLOTH
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderClothDevices());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBalloon.class, new TileRenderBalloon());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(BalloonTileEntity.class, new TileRenderBalloon());
 		//
 		//		//REVOLVER
 		//		
@@ -1245,40 +1245,40 @@ public class ClientProxy extends CommonProxy
 			if(te instanceof IGuiTile)
 			{
 				Object gui = null;
-				if(ID==Lib.GUIID_CokeOven&&te instanceof TileEntityCokeOven)
-					gui = new GuiCokeOven(player.inventory, (TileEntityCokeOven)te);
-				if(ID==Lib.GUIID_AlloySmelter&&te instanceof TileEntityAlloySmelter)
-					gui = new GuiAlloySmelter(player.inventory, (TileEntityAlloySmelter)te);
-				if(ID==Lib.GUIID_BlastFurnace&&te instanceof TileEntityBlastFurnace)
-					gui = new GuiBlastFurnace(player.inventory, (TileEntityBlastFurnace)te);
-				if(ID==Lib.GUIID_WoodenCrate&&te instanceof TileEntityWoodenCrate)
-					gui = new GuiCrate(player.inventory, (TileEntityWoodenCrate)te);
-				if(ID==Lib.GUIID_Workbench&&te instanceof TileEntityModWorkbench)
-					gui = new GuiModWorkbench(player.inventory, world, (TileEntityModWorkbench)te);
-				if(ID==Lib.GUIID_Sorter&&te instanceof TileEntitySorter)
-					gui = new GuiSorter(player.inventory, (TileEntitySorter)te);
-				if(ID==Lib.GUIID_Squeezer&&te instanceof TileEntitySqueezer)
-					gui = new GuiSqueezer(player.inventory, (TileEntitySqueezer)te);
-				if(ID==Lib.GUIID_Fermenter&&te instanceof TileEntityFermenter)
-					gui = new GuiFermenter(player.inventory, (TileEntityFermenter)te);
-				if(ID==Lib.GUIID_Refinery&&te instanceof TileEntityRefinery)
-					gui = new GuiRefinery(player.inventory, (TileEntityRefinery)te);
-				if(ID==Lib.GUIID_ArcFurnace&&te instanceof TileEntityArcFurnace)
-					gui = new GuiArcFurnace(player.inventory, (TileEntityArcFurnace)te);
-				if(ID==Lib.GUIID_Assembler&&te instanceof TileEntityAssembler)
-					gui = new GuiAssembler(player.inventory, (TileEntityAssembler)te);
-				if(ID==Lib.GUIID_AutoWorkbench&&te instanceof TileEntityAutoWorkbench)
-					gui = new GuiAutoWorkbench(player.inventory, (TileEntityAutoWorkbench)te);
-				if(ID==Lib.GUIID_Mixer&&te instanceof TileEntityMixer)
-					gui = new GuiMixer(player.inventory, (TileEntityMixer)te);
-				if(ID==Lib.GUIID_Turret&&te instanceof TileEntityTurret)
-					gui = new GuiTurret(player.inventory, (TileEntityTurret)te);
-				if(ID==Lib.GUIID_FluidSorter&&te instanceof TileEntityFluidSorter)
-					gui = new GuiFluidSorter(player.inventory, (TileEntityFluidSorter)te);
-				if(ID==Lib.GUIID_Belljar&&te instanceof TileEntityBelljar)
-					gui = new GuiBelljar(player.inventory, (TileEntityBelljar)te);
-				if(ID==Lib.GUIID_ToolboxBlock&&te instanceof TileEntityToolbox)
-					gui = new GuiToolboxBlock(player.inventory, (TileEntityToolbox)te);
+				if(ID==Lib.GUIID_CokeOven&&te instanceof CokeOvenTileEntity)
+					gui = new GuiCokeOven(player.inventory, (CokeOvenTileEntity)te);
+				if(ID==Lib.GUIID_AlloySmelter&&te instanceof AlloySmelterTileEntity)
+					gui = new GuiAlloySmelter(player.inventory, (AlloySmelterTileEntity)te);
+				if(ID==Lib.GUIID_BlastFurnace&&te instanceof BlastFurnaceTileEntity)
+					gui = new GuiBlastFurnace(player.inventory, (BlastFurnaceTileEntity)te);
+				if(ID==Lib.GUIID_WoodenCrate&&te instanceof WoodenCrateTileEntity)
+					gui = new GuiCrate(player.inventory, (WoodenCrateTileEntity)te);
+				if(ID==Lib.GUIID_Workbench&&te instanceof ModWorkbenchTileEntity)
+					gui = new GuiModWorkbench(player.inventory, world, (ModWorkbenchTileEntity)te);
+				if(ID==Lib.GUIID_Sorter&&te instanceof SorterTileEntity)
+					gui = new GuiSorter(player.inventory, (SorterTileEntity)te);
+				if(ID==Lib.GUIID_Squeezer&&te instanceof SqueezerTileEntity)
+					gui = new GuiSqueezer(player.inventory, (SqueezerTileEntity)te);
+				if(ID==Lib.GUIID_Fermenter&&te instanceof FermenterTileEntity)
+					gui = new GuiFermenter(player.inventory, (FermenterTileEntity)te);
+				if(ID==Lib.GUIID_Refinery&&te instanceof RefineryTileEntity)
+					gui = new GuiRefinery(player.inventory, (RefineryTileEntity)te);
+				if(ID==Lib.GUIID_ArcFurnace&&te instanceof ArcFurnaceTileEntity)
+					gui = new GuiArcFurnace(player.inventory, (ArcFurnaceTileEntity)te);
+				if(ID==Lib.GUIID_Assembler&&te instanceof AssemblerTileEntity)
+					gui = new GuiAssembler(player.inventory, (AssemblerTileEntity)te);
+				if(ID==Lib.GUIID_AutoWorkbench&&te instanceof AutoWorkbenchTileEntity)
+					gui = new GuiAutoWorkbench(player.inventory, (AutoWorkbenchTileEntity)te);
+				if(ID==Lib.GUIID_Mixer&&te instanceof MixerTileEntity)
+					gui = new GuiMixer(player.inventory, (MixerTileEntity)te);
+				if(ID==Lib.GUIID_Turret&&te instanceof TurretTileEntity)
+					gui = new GuiTurret(player.inventory, (TurretTileEntity)te);
+				if(ID==Lib.GUIID_FluidSorter&&te instanceof FluidSorterTileEntity)
+					gui = new GuiFluidSorter(player.inventory, (FluidSorterTileEntity)te);
+				if(ID==Lib.GUIID_Belljar&&te instanceof BelljarTileEntity)
+					gui = new GuiBelljar(player.inventory, (BelljarTileEntity)te);
+				if(ID==Lib.GUIID_ToolboxBlock&&te instanceof ToolboxTileEntity)
+					gui = new GuiToolboxBlock(player.inventory, (ToolboxTileEntity)te);
 				if(gui!=null)
 					((IGuiTile)te).onGuiOpened(player, true);
 				return gui;
@@ -1404,7 +1404,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void spawnBucketWheelFX(TileEntityBucketWheel tile, ItemStack stack)
+	public void spawnBucketWheelFX(BucketWheelTileEntity tile, ItemStack stack)
 	{
 		//		if(stack!=null && Config.getBoolean("excavator_particles"))
 		//			for(int i=0; i<16; i++)
@@ -1494,7 +1494,7 @@ public class ClientProxy extends CommonProxy
 		BlockState state = IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, TileEntityFluidPipe.getStateFromKey(configuration));
+			state = ((IExtendedBlockState)state).with(Properties.AnimationProperty, FluidPipeTileEntity.getStateFromKey(configuration));
 
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(0, 0, 1);
@@ -1678,7 +1678,7 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(ConnModelReal.cache::invalidateAll);
 		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::clear);
-		IEApi.renderCacheClearers.add(TileEntityFluidPipe.cachedOBJStates::clear);
+		IEApi.renderCacheClearers.add(FluidPipeTileEntity.cachedOBJStates::clear);
 		IEApi.renderCacheClearers.add(TileRenderBelljar::reset);
 		IEApi.renderCacheClearers.add(TileRenderWatermill::reset);
 		IEApi.renderCacheClearers.add(TileRenderWindmill::reset);

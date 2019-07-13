@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
+import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -17,10 +17,10 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
-public class TileRenderSheetmetalTank extends TileEntityRenderer<TileEntitySheetmetalTank>
+public class TileRenderSheetmetalTank extends TileEntityRenderer<SheetmetalTankTileEntity>
 {
 	@Override
-	public void render(TileEntitySheetmetalTank tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(SheetmetalTankTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!tile.formed||tile.posInMultiblock!=4||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;

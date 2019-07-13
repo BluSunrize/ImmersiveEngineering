@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
+import blusunrize.immersiveengineering.common.blocks.metal.FermenterTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -19,10 +19,10 @@ public class FermenterDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityFermenter)
+		if(te instanceof FermenterTileEntity)
 		{
-			TileEntityFermenter ferment = (TileEntityFermenter)te;
-			TileEntityFermenter master = ferment.master();
+			FermenterTileEntity ferment = (FermenterTileEntity)te;
+			FermenterTileEntity master = ferment.master();
 			if(master!=null&&ferment.isRedstonePos())
 				return new FermenterEnvironment(w, master.getPos());
 		}
@@ -32,16 +32,16 @@ public class FermenterDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityFermenter.class;
+		return FermenterTileEntity.class;
 	}
 
 
-	public class FermenterEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityFermenter>
+	public class FermenterEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<FermenterTileEntity>
 	{
 
 		public FermenterEnvironment(World w, BlockPos bp)
 		{
-			super(w, bp, TileEntityFermenter.class);
+			super(w, bp, FermenterTileEntity.class);
 		}
 
 
@@ -51,7 +51,7 @@ public class FermenterDriver extends DriverSidedTileEntity
 			int slot = args.checkInteger(0);
 			if(slot < 1||slot > 8)
 				throw new IllegalArgumentException("Input slots are 1-8");
-			TileEntityFermenter master = getTileEntity();
+			FermenterTileEntity master = getTileEntity();
 			FermenterRecipe recipe = FermenterRecipe.findRecipe(master.inventory.get(slot-1));
 			if(recipe!=null)
 				return new Object[]{master.inventory.get(slot-1), recipe.itemOutput, recipe.fluidOutput, recipe.getTotalProcessTime()};

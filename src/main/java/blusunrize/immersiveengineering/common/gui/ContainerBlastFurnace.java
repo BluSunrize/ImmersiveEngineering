@@ -9,14 +9,14 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerBlastFurnace extends ContainerIEBase<TileEntityBlastFurnace>
+public class ContainerBlastFurnace extends ContainerIEBase<BlastFurnaceTileEntity>
 {
-	public ContainerBlastFurnace(PlayerInventory inventoryPlayer, TileEntityBlastFurnace tile)
+	public ContainerBlastFurnace(PlayerInventory inventoryPlayer, BlastFurnaceTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 

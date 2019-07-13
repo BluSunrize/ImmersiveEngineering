@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
+import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -26,10 +26,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.lwjgl.opengl.GL11;
 
-public class TileRenderDieselGenerator extends TileEntityRenderer<TileEntityDieselGenerator>
+public class TileRenderDieselGenerator extends TileEntityRenderer<DieselGeneratorTileEntity>
 {
 	@Override
-	public void render(TileEntityDieselGenerator te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(DieselGeneratorTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;

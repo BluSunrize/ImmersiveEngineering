@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil.LightningAnimation;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity.LightningAnimation;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,14 +23,14 @@ import org.lwjgl.opengl.GL11;
 import java.util.Iterator;
 import java.util.List;
 
-public class TileRenderTeslaCoil extends TileEntityRenderer<TileEntityTeslaCoil>
+public class TileRenderTeslaCoil extends TileEntityRenderer<TeslaCoilTileEntity>
 {
 	@Override
-	public void render(TileEntityTeslaCoil tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TeslaCoilTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
-		Iterator<LightningAnimation> animationIt = TileEntityTeslaCoil.effectMap.get(tile.getPos()).iterator();
+		Iterator<LightningAnimation> animationIt = TeslaCoilTileEntity.effectMap.get(tile.getPos()).iterator();
 
 		setLightmapDisabled(true);
 		boolean wasLightingEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);

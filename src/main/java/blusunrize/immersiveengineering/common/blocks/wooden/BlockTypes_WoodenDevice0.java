@@ -8,25 +8,25 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_WoodenDevice0 implements IStringSerializable, BlockIEBase.IBlockEnum
+public enum BlockTypes_WoodenDevice0 implements IStringSerializable, IEBaseBlock.IBlockEnum
 {
 
 	WORKBENCH,
-	//BlockGunpowderBarrel
+	//GunpowderBarrelBlock
 	GUNPOWDER_BARREL,
-	//BlockBarrel
+	//BarrelBlock
 	BARREL,
-	//BlockTurntable
+	//TurntableBlock
 	TURNTABLE,
-	//BlockCrate
+	//CrateBlock
 	CRATE,
 	REINFORCED_CRATE,
-	//BlockSorter
+	//SorterBlock
 	SORTER,
 	FLUID_SORTER;
 

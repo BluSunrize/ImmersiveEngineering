@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.tool.BelljarHandler.IPlantHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar;
+import blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -40,13 +40,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class TileRenderBelljar extends TileEntityRenderer<TileEntityBelljar>
+public class TileRenderBelljar extends TileEntityRenderer<BelljarTileEntity>
 {
 	private static HashMap<Direction, List<BakedQuad>> quads = new HashMap<>();
 	private static HashMap<BlockState, List<BakedQuad>> plantQuads = new HashMap<>();
 
 	@Override
-	public void render(TileEntityBelljar tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(BelljarTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(tile.dummy!=0||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;

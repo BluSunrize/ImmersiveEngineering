@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
+import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -16,23 +16,23 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class ContainerSorter extends ContainerIEBase<TileEntitySorter>
+public class ContainerSorter extends ContainerIEBase<SorterTileEntity>
 {
 	int slotCount;
 
-	public ContainerSorter(PlayerInventory inventoryPlayer, TileEntitySorter tile)
+	public ContainerSorter(PlayerInventory inventoryPlayer, SorterTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 		this.tile = tile;
 		for(int side = 0; side < 6; side++)
-			for(int i = 0; i < TileEntitySorter.filterSlotsPerSide; i++)
+			for(int i = 0; i < SorterTileEntity.filterSlotsPerSide; i++)
 			{
 				int x = 4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
 				int y = 22+(side%2)*76+(i < 3?0: i > 4?36: 18);
-				int id = side*TileEntitySorter.filterSlotsPerSide+i;
+				int id = side*SorterTileEntity.filterSlotsPerSide+i;
 				this.addSlot(new IESlot.Ghost(this, tile.filter, id, x, y));
 			}
-		slotCount = 6*TileEntitySorter.filterSlotsPerSide;
+		slotCount = 6*SorterTileEntity.filterSlotsPerSide;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

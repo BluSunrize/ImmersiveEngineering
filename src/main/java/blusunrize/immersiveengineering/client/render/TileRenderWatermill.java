@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
+import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -29,12 +29,12 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class TileRenderWatermill extends TileEntityRenderer<TileEntityWatermill>
+public class TileRenderWatermill extends TileEntityRenderer<WatermillTileEntity>
 {
 	private static List<BakedQuad> quads;
 
 	@Override
-	public void render(TileEntityWatermill tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(WatermillTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;

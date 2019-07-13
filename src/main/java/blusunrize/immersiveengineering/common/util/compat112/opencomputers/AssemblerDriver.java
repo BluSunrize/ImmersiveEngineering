@@ -2,8 +2,8 @@ package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
+import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -25,12 +25,12 @@ public class AssemblerDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction s)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityAssembler)
+		if(te instanceof AssemblerTileEntity)
 		{
-			TileEntityAssembler assembler = (TileEntityAssembler)te;
-			TileEntityAssembler master = assembler.master();
+			AssemblerTileEntity assembler = (AssemblerTileEntity)te;
+			AssemblerTileEntity master = assembler.master();
 			if(master!=null&&assembler.isRedstonePos())
-				return new AssemblerEnvironment(w, master.getPos(), TileEntityAssembler.class);
+				return new AssemblerEnvironment(w, master.getPos(), AssemblerTileEntity.class);
 		}
 		return null;
 	}
@@ -38,10 +38,10 @@ public class AssemblerDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityAssembler.class;
+		return AssemblerTileEntity.class;
 	}
 
-	public class AssemblerEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityAssembler>
+	public class AssemblerEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<AssemblerTileEntity>
 	{
 
 		@Override
@@ -56,7 +56,7 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			return 1000;
 		}
 
-		public AssemblerEnvironment(World w, BlockPos bp, Class<? extends TileEntityIEBase> teClass)
+		public AssemblerEnvironment(World w, BlockPos bp, Class<? extends IEBaseTileEntity> teClass)
 		{
 			super(w, bp, teClass);
 		}
@@ -67,10 +67,10 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			int recipe = args.checkInteger(0);
 			if(recipe > 3||recipe < 1)
 				throw new IllegalArgumentException("Only recipes 1-3 are available");
-			TileEntityAssembler master = getTileEntity();
+			AssemblerTileEntity master = getTileEntity();
 			if(master.patterns[recipe-1].inv.get(9).isEmpty())
 				throw new IllegalArgumentException("The requested recipe is invalid");
-			TileEntityAssembler.CrafterPatternInventory pattern = master.patterns[recipe-1];
+			AssemblerTileEntity.CrafterPatternInventory pattern = master.patterns[recipe-1];
 			AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
 			ArrayList<ItemStack> queryList = new ArrayList<>();
 			for(ItemStack stack : master.inventory)
@@ -88,7 +88,7 @@ public class AssemblerDriver extends DriverSidedTileEntity
 			int recipe = args.checkInteger(0);
 			if(recipe > 3||recipe < 1)
 				throw new IllegalArgumentException("Only recipes 1-3 are available");
-			TileEntityAssembler te = getTileEntity();
+			AssemblerTileEntity te = getTileEntity();
 			HashMap<String, Object> ret = new HashMap<>();
 			for(int i = 0; i < 9; i++)
 				ret.put("in"+(i+1), te.patterns[recipe-1].inv.get(i));
@@ -148,7 +148,7 @@ public class AssemblerDriver extends DriverSidedTileEntity
 		@Callback(doc = "function(enabled:bool):nil -- Enables or disables computer control for the attached machine")
 		public Object[] enableComputerControl(Context context, Arguments args)
 		{
-			TileEntityAssembler te = getTileEntity();
+			AssemblerTileEntity te = getTileEntity();
 			te.isComputerControlled = args.checkBoolean(0);
 			for(int i = 0; i < 3; i++)
 				te.computerOn[i] = true;

@@ -8,18 +8,18 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_MetalDevice0 implements IStringSerializable, BlockIEBase.IBlockEnum
+public enum BlockTypes_MetalDevice0 implements IStringSerializable, IEBaseBlock.IBlockEnum
 {
 	CAPACITOR_LV,
 	CAPACITOR_MV,
 	CAPACITOR_HV,
 	CAPACITOR_CREATIVE,
-	//BlockBarrel
+	//BarrelBlock
 	BARREL,
 	FLUID_PUMP,
 	FLUID_PLACER;

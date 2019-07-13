@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
+import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -19,12 +19,12 @@ public class BottlingMachineDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityBottlingMachine)
+		if(te instanceof BottlingMachineTileEntity)
 		{
-			TileEntityBottlingMachine ref = (TileEntityBottlingMachine)te;
-			TileEntityBottlingMachine master = ref.master();
+			BottlingMachineTileEntity ref = (BottlingMachineTileEntity)te;
+			BottlingMachineTileEntity master = ref.master();
 			if(master!=null&&ref.isRedstonePos())
-				return new BottlingMachineEnvironment(w, master.getPos(), TileEntityBottlingMachine.class);
+				return new BottlingMachineEnvironment(w, master.getPos(), BottlingMachineTileEntity.class);
 		}
 		return null;
 	}
@@ -32,13 +32,13 @@ public class BottlingMachineDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityBottlingMachine.class;
+		return BottlingMachineTileEntity.class;
 	}
 
-	public class BottlingMachineEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityBottlingMachine>
+	public class BottlingMachineEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<BottlingMachineTileEntity>
 	{
 
-		public BottlingMachineEnvironment(World w, BlockPos bp, Class<? extends TileEntityIEBase> teClass)
+		public BottlingMachineEnvironment(World w, BlockPos bp, Class<? extends IEBaseTileEntity> teClass)
 		{
 			super(w, bp, teClass);
 		}

@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -168,9 +168,9 @@ public class MultiblockCrusher implements IMultiblock
 
 						world.setBlockState(pos2, state);
 						TileEntity curr = world.getTileEntity(pos2);
-						if(curr instanceof TileEntityCrusher)
+						if(curr instanceof CrusherTileEntity)
 						{
-							TileEntityCrusher tile = (TileEntityCrusher)curr;
+							CrusherTileEntity tile = (CrusherTileEntity)curr;
 							tile.formed = true;
 							tile.pos = (h+1)*15+l*5+(w+2);
 							tile.offset = new int[]{(side==Direction.WEST?-l+1: side==Direction.EAST?l-1: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?-l+1: side==Direction.SOUTH?l-1: side==Direction.EAST?ww: -ww)};

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -16,9 +16,9 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class ContainerArcFurnace extends ContainerIEBase<TileEntityArcFurnace>
+public class ContainerArcFurnace extends ContainerIEBase<ArcFurnaceTileEntity>
 {
-	public ContainerArcFurnace(PlayerInventory inventoryPlayer, TileEntityArcFurnace tile)
+	public ContainerArcFurnace(PlayerInventory inventoryPlayer, ArcFurnaceTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 		this.tile = tile;

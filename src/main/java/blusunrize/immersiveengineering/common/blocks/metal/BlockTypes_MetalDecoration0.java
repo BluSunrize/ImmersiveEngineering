@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_MetalDecoration0 implements IStringSerializable, BlockIEBase.IBlockEnum
+public enum BlockTypes_MetalDecoration0 implements IStringSerializable, IEBaseBlock.IBlockEnum
 {
-	//Use BlockIEBase or some "BlockIEInert"
+	//Use IEBaseBlock or some "BlockIEInert"
 	COIL_LV,
 	COIL_MV,
 	COIL_HV,

@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
+import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -17,10 +17,10 @@ public class DieselGenDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction f)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityDieselGenerator)
+		if(te instanceof DieselGeneratorTileEntity)
 		{
-			TileEntityDieselGenerator gen = ((TileEntityDieselGenerator)te);
-			TileEntityDieselGenerator master = gen.master();
+			DieselGeneratorTileEntity gen = ((DieselGeneratorTileEntity)te);
+			DieselGeneratorTileEntity master = gen.master();
 			if(master!=null&&gen.isRedstonePos())
 				return new DieselEnvironment(w, master.getPos());
 		}
@@ -30,15 +30,15 @@ public class DieselGenDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityDieselGenerator.class;
+		return DieselGeneratorTileEntity.class;
 	}
 
-	public class DieselEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityDieselGenerator>
+	public class DieselEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<DieselGeneratorTileEntity>
 	{
 
 		public DieselEnvironment(World w, BlockPos bp)
 		{
-			super(w, bp, TileEntityDieselGenerator.class);
+			super(w, bp, DieselGeneratorTileEntity.class);
 		}
 
 		@Callback(doc = "function():boolean -- get whether the generator is currently producing energy")

@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import blusunrize.immersiveengineering.common.Config.IEConfig.Machines;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyConnector;
+import blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorTileEntity;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat112.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
@@ -496,7 +496,7 @@ public class Config
 		if(IEConfig.validateConnections)
 			IELogger.warn("Connection validation enabled");
 
-		TileEntityEnergyConnector.connectorInputValues = IEConfig.Machines.wireConnectorInput;
+		EnergyConnectorTileEntity.connectorInputValues = IEConfig.Machines.wireConnectorInput;
 
 		Calendar calendar = Calendar.getInstance();
 		seaonal_festive = calendar.get(Calendar.MONTH)+1==12;//December

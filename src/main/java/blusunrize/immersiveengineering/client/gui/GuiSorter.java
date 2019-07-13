@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
+import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerSorter;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import net.minecraft.client.gui.widget.button.Button;
@@ -35,9 +35,9 @@ import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPH
 
 public class GuiSorter extends GuiIEContainerBase
 {
-	TileEntitySorter tile;
+	SorterTileEntity tile;
 
-	public GuiSorter(PlayerInventory inventoryPlayer, TileEntitySorter tile)
+	public GuiSorter(PlayerInventory inventoryPlayer, SorterTileEntity tile)
 	{
 		super(new ContainerSorter(inventoryPlayer, tile));
 		this.tile = tile;

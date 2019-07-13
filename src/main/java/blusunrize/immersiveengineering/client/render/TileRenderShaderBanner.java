@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
+import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.model.BannerModel;
@@ -24,12 +24,12 @@ import net.minecraft.util.math.MathHelper;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
-public class TileRenderShaderBanner extends TileEntityRenderer<TileEntityShaderBanner>
+public class TileRenderShaderBanner extends TileEntityRenderer<ShaderBannerTileEntity>
 {
 	private final BannerModel bannerModel = new BannerModel();
 
 	@Override
-	public void render(TileEntityShaderBanner te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(ShaderBannerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		boolean flag = te.getWorld()!=null;
 		int orientation = flag?te.orientation: 0;
@@ -85,7 +85,7 @@ public class TileRenderShaderBanner extends TileEntityRenderer<TileEntityShaderB
 	private static final HashMap<String, ResourceLocation> CACHE = new HashMap<>();
 
 	@Nullable
-	private ResourceLocation getBannerResourceLocation(TileEntityShaderBanner bannerObj)
+	private ResourceLocation getBannerResourceLocation(ShaderBannerTileEntity bannerObj)
 	{
 		String name = null;
 		ShaderCase sCase = null;

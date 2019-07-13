@@ -12,10 +12,10 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInWorld;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalPress;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInWorld;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -35,10 +35,10 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class TileRenderMetalPress extends TileEntityRenderer<TileEntityMetalPress>
+public class TileRenderMetalPress extends TileEntityRenderer<MetalPressTileEntity>
 {
 	@Override
-	public void render(TileEntityMetalPress te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(MetalPressTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
@@ -121,7 +121,7 @@ public class TileRenderMetalPress extends TileEntityRenderer<TileEntityMetalPres
 		for(int i = 0; i < shift.length; i++)
 		{
 			MultiblockProcess process = te.processQueue.get(i);
-			if(!(process instanceof TileEntityPoweredMultiblock.MultiblockProcessInWorld))
+			if(!(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInWorld))
 				continue;
 			GlStateManager.pushMatrix();
 			GlStateManager.translated(0, 0, -2.5*shift[i]);

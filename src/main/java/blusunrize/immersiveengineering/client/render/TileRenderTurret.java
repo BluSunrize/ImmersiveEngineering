@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurret;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretGun;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -34,10 +34,10 @@ import org.lwjgl.opengl.GL11;
 import java.util.Arrays;
 import java.util.List;
 
-public class TileRenderTurret extends TileEntityRenderer<TileEntityTurret>
+public class TileRenderTurret extends TileEntityRenderer<TurretTileEntity>
 {
 	@Override
-	public void render(TileEntityTurret tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(TurretTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
@@ -61,15 +61,15 @@ public class TileRenderTurret extends TileEntityRenderer<TileEntityTurret>
 		GlStateManager.rotatef(tile.rotationPitch, tile.facing.getZOffset(), 0, -tile.facing.getXOffset());
 
 		renderModelPart(tessellator, worldRenderer, tile.getWorld(), state, model, tile.getPos(), true, "gun");
-		if(tile instanceof TileEntityTurretGun)
+		if(tile instanceof TurretGunTileEntity)
 		{
-			if(((TileEntityTurretGun)tile).cycleRender > 0)
+			if(((TurretGunTileEntity)tile).cycleRender > 0)
 			{
 				float cycle = 0;
-				if(((TileEntityTurretGun)tile).cycleRender > 3)
-					cycle = (5-((TileEntityTurretGun)tile).cycleRender)/2f;
+				if(((TurretGunTileEntity)tile).cycleRender > 3)
+					cycle = (5-((TurretGunTileEntity)tile).cycleRender)/2f;
 				else
-					cycle = ((TileEntityTurretGun)tile).cycleRender/3f;
+					cycle = ((TurretGunTileEntity)tile).cycleRender/3f;
 
 				GlStateManager.translated(-tile.facing.getXOffset()*cycle*.3125, 0, -tile.facing.getZOffset()*cycle*.3125);
 			}

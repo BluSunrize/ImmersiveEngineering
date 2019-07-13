@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
+import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -19,7 +19,7 @@ public class FloodlightDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityFloodlight)
+		if(te instanceof FloodlightTileEntity)
 			return new FermenterEnvironment(w, bp);
 		return null;
 	}
@@ -27,16 +27,16 @@ public class FloodlightDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityFloodlight.class;
+		return FloodlightTileEntity.class;
 	}
 
 
-	public class FermenterEnvironment extends ManagedEnvironmentIE<TileEntityFloodlight>
+	public class FermenterEnvironment extends ManagedEnvironmentIE<FloodlightTileEntity>
 	{
 
 		public FermenterEnvironment(World w, BlockPos bp)
 		{
-			super(w, bp, TileEntityFloodlight.class);
+			super(w, bp, FloodlightTileEntity.class);
 		}
 
 		@Override
@@ -54,7 +54,7 @@ public class FloodlightDriver extends DriverSidedTileEntity
 		@Override
 		public void onConnect(Node node)
 		{
-			TileEntityFloodlight te = getTileEntity();
+			FloodlightTileEntity te = getTileEntity();
 			te.controllingComputers++;
 			te.computerOn = true;
 		}
@@ -63,7 +63,7 @@ public class FloodlightDriver extends DriverSidedTileEntity
 		@Override
 		public void onDisconnect(Node node)
 		{
-			TileEntityFloodlight te = getTileEntity();
+			FloodlightTileEntity te = getTileEntity();
 			if(te!=null)
 				te.controllingComputers--;
 		}
@@ -118,7 +118,7 @@ public class FloodlightDriver extends DriverSidedTileEntity
 		@Callback(direct = false, doc = "function():nil -- waits until the floodlightn can turn again")
 		public Object[] waitForCooldown(Context context, Arguments args)
 		{
-			TileEntityFloodlight te = getTileEntity();
+			FloodlightTileEntity te = getTileEntity();
 			if(te.turnCooldown > 0)
 				context.pause(te.turnCooldown/20F);
 			return null;

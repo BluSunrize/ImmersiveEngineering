@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -137,9 +137,9 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 						world.setBlockState(pos.add(xx, h, zz), state);
 						BlockPos pos2 = pos.add(xx, h, zz);
 						TileEntity curr = world.getTileEntity(pos2);
-						if(curr instanceof TileEntityBlastFurnace)
+						if(curr instanceof BlastFurnaceTileEntity)
 						{
-							TileEntityBlastFurnace currBlast = (TileEntityBlastFurnace)curr;
+							BlastFurnaceTileEntity currBlast = (BlastFurnaceTileEntity)curr;
 							currBlast.offset = new int[]{xx, h, zz};
 							currBlast.posInMultiblock = (h+1)*9+(l+1)*3+(w+1);
 							currBlast.formed = true;

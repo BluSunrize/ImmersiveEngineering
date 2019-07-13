@@ -167,9 +167,9 @@ public class MultiblockBottlingMachine implements IMultiblock
 
 						world.setBlockState(pos2, state);
 						TileEntity curr = world.getTileEntity(pos2);
-						if(curr instanceof TileEntityBottlingMachine)
+						if(curr instanceof BottlingMachineTileEntity)
 						{
-							TileEntityBottlingMachine tile = (TileEntityBottlingMachine)curr;
+							BottlingMachineTileEntity tile = (BottlingMachineTileEntity)curr;
 							tile.formed = true;
 							tile.pos = (h+1)*6+l*3+(w+1);
 							tile.offset = new int[]{(side==Direction.WEST?1-l: side==Direction.EAST?l-1: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?1-l: side==Direction.SOUTH?l-1: side==Direction.EAST?ww: -ww)};

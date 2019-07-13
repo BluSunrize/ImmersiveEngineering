@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import net.minecraft.block.*;
@@ -233,8 +233,8 @@ public class VillageEngineersHouse extends Village
 		{
 			world.setBlockState(pos, crateState, 2);
 			TileEntity tile = world.getTileEntity(pos);
-			if(tile instanceof TileEntityWoodenCrate)
-				((TileEntityWoodenCrate)tile).lootTable = woodenCrateLoot;
+			if(tile instanceof WoodenCrateTileEntity)
+				((WoodenCrateTileEntity)tile).lootTable = woodenCrateLoot;
 			return true;
 		}
 		else
@@ -258,10 +258,10 @@ public class VillageEngineersHouse extends Village
 		int k1 = this.getZWithOffset(x, z);
 		BlockPos pos = new BlockPos(i1, j1, k1);
 		//TODO why is this commented out?
-		//			world.setBlock(pos, IEContent.blockMetalDecoration0,BlockMetalDecoration1.META_lantern, 2);
+		//			world.setBlock(pos, IEContent.blockMetalDecoration0,MetalDecoration1Block.META_lantern, 2);
 //			TileEntity tile = world.getTileEntity(pos);
-//			if(tile instanceof TileEntityLantern)
-//				((TileEntityLantern)tile).facing = facing;
+//			if(tile instanceof LanternTileEntity)
+//				((LanternTileEntity)tile).facing = facing;
 		return box.isVecInside(pos);
 	}
 

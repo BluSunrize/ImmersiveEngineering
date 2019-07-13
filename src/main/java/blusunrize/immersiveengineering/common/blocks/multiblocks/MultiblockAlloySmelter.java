@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityAlloySmelter;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -109,9 +109,9 @@ public class MultiblockAlloySmelter implements IMultiblock
 					BlockPos pos2 = pos.up(h).offset(f, l).offset(f.rotateY(), w);
 					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
-					if(curr instanceof TileEntityAlloySmelter)
+					if(curr instanceof AlloySmelterTileEntity)
 					{
-						TileEntityAlloySmelter currBlast = (TileEntityAlloySmelter)curr;
+						AlloySmelterTileEntity currBlast = (AlloySmelterTileEntity)curr;
 						currBlast.offset = new int[]{pos2.getX()-pos.getX(), pos2.getY()-pos.getY(), pos2.getZ()-pos.getZ()};
 						currBlast.posInMultiblock = (h+1)*9+(l+1)*3+(w+1);
 						currBlast.formed = true;

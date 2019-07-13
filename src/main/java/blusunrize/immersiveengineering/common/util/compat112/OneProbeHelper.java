@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityMultiblockPart;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
 import com.google.common.base.Function;
 import mcjty.theoneprobe.Tools;
 import mcjty.theoneprobe.api.*;
@@ -89,9 +89,9 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
 		{
 			TileEntity te = world.getTileEntity(data.getPos());
-			if(te instanceof TileEntitySheetmetalTank)
+			if(te instanceof SheetmetalTankTileEntity)
 			{
-				TileEntitySheetmetalTank master = ((TileEntitySheetmetalTank)te).master();
+				SheetmetalTankTileEntity master = ((SheetmetalTankTileEntity)te).master();
 				int current = master.tank.getFluidAmount();
 				int max = master.tank.getCapacity();
 
@@ -199,14 +199,14 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
 		{
 			TileEntity te = world.getTileEntity(data.getPos());
-			if(te instanceof TileEntityTeslaCoil)
+			if(te instanceof TeslaCoilTileEntity)
 			{
-				TileEntityTeslaCoil tc = (TileEntityTeslaCoil)te;
+				TeslaCoilTileEntity tc = (TeslaCoilTileEntity)te;
 				if(tc.dummy)
 				{
 					te = world.getTileEntity(data.getPos().offset(tc.facing, -1));
-					if(te instanceof TileEntityTeslaCoil)
-						tc = (TileEntityTeslaCoil)te;
+					if(te instanceof TeslaCoilTileEntity)
+						tc = (TeslaCoilTileEntity)te;
 					else
 					{
 						probeInfo.text("<ERROR>");
@@ -250,7 +250,7 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
 		{
 			TileEntity te = world.getTileEntity(data.getPos());
-			if(te instanceof TileEntityMultiblockPart)
+			if(te instanceof MultiblockPartTileEntity)
 			{
 				ItemStack stack = new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
 				if(Tools.show(mode, Config.getRealConfig().getShowModName()))

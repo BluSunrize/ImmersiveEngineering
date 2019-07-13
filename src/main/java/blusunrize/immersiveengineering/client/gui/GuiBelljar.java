@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar;
+import blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerBelljar;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.GlStateManager;
@@ -25,9 +25,9 @@ import java.util.ArrayList;
 
 public class GuiBelljar extends GuiIEContainerBase
 {
-	TileEntityBelljar tile;
+	BelljarTileEntity tile;
 
-	public GuiBelljar(PlayerInventory inventoryPlayer, TileEntityBelljar tile)
+	public GuiBelljar(PlayerInventory inventoryPlayer, BelljarTileEntity tile)
 	{
 		super(new ContainerBelljar(inventoryPlayer, tile));
 		this.tile = tile;

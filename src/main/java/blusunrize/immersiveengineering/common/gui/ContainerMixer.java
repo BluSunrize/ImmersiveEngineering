@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInMachine;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMixer;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
+import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -20,9 +20,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 //TODO custom subclass of ItemStackHandler for markDirty etc
-public class ContainerMixer extends ContainerIEBase<TileEntityMixer> implements ICallbackContainer
+public class ContainerMixer extends ContainerIEBase<MixerTileEntity> implements ICallbackContainer
 {
-	public ContainerMixer(PlayerInventory inventoryPlayer, TileEntityMixer tile)
+	public ContainerMixer(PlayerInventory inventoryPlayer, MixerTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 

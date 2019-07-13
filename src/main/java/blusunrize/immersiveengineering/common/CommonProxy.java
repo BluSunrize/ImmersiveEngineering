@@ -17,7 +17,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
+import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
@@ -82,7 +82,7 @@ public class CommonProxy
 	{
 	}
 
-	public void spawnBucketWheelFX(TileEntityBucketWheel tile, ItemStack stack)
+	public void spawnBucketWheelFX(BucketWheelTileEntity tile, ItemStack stack)
 	{
 	}
 

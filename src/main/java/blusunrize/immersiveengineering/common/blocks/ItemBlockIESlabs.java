@@ -52,21 +52,21 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 		else if(!localBlock.isReplaceable(world, pos))
 			pos = pos.offset(side);
 
-		TileEntityIESlab stackSlab = null;
+		IESlabTileEntity stackSlab = null;
 		if(side.getAxis().isVertical()&&this.block.equals(world.getBlockState(posThere).getBlock())&&world.getBlockState(posThere).getBlock().getMetaFromState(world.getBlockState(posThere))==stack.getItemDamage())
 		{
 			TileEntity te = world.getTileEntity(posThere);
-			if(te instanceof TileEntityIESlab&&((TileEntityIESlab)te).slabType+side.ordinal()==1)
-				stackSlab = ((TileEntityIESlab)te);
+			if(te instanceof IESlabTileEntity&&((IESlabTileEntity)te).slabType+side.ordinal()==1)
+				stackSlab = ((IESlabTileEntity)te);
 		}
 		else if(this.block.equals(world.getBlockState(posOffset).getBlock())&&world.getBlockState(posOffset).getBlock().getMetaFromState(world.getBlockState(posOffset))==stack.getItemDamage())
 		{
 			TileEntity te = world.getTileEntity(posOffset);
-			if(te instanceof TileEntityIESlab)
+			if(te instanceof IESlabTileEntity)
 			{
-				int type = ((TileEntityIESlab)te).slabType;
+				int type = ((IESlabTileEntity)te).slabType;
 				if((type==0&&(side==Direction.DOWN||hitY >= .5))||(type==1&&(side==Direction.UP||hitY <= .5)))
-					stackSlab = ((TileEntityIESlab)te);
+					stackSlab = ((IESlabTileEntity)te);
 			}
 		}
 		else
@@ -97,8 +97,8 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 		if(ret)
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
-			if(tileEntity instanceof TileEntityIESlab)
-				((TileEntityIESlab)tileEntity).slabType = (side==Direction.DOWN||(side!=Direction.UP&&hitY >= .5))?1: 0;
+			if(tileEntity instanceof IESlabTileEntity)
+				((IESlabTileEntity)tileEntity).slabType = (side==Direction.DOWN||(side!=Direction.UP&&hitY >= .5))?1: 0;
 		}
 		return ret;
 	}

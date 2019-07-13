@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 public enum TreatedWoodStyles
 {
-	//Use BlockIEBase instances and probably a tag
+	//Use IEBaseBlock instances and probably a tag
 	HORIZONTAL,
 	VERTICAL,
 	PACKAGED;

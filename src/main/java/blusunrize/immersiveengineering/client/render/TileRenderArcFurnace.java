@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
@@ -34,13 +34,13 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class TileRenderArcFurnace extends TileEntityRenderer<TileEntityArcFurnace>
+public class TileRenderArcFurnace extends TileEntityRenderer<ArcFurnaceTileEntity>
 {
 	private TextureAtlasSprite hotMetal_flow = null;
 	private TextureAtlasSprite hotMetal_still = null;
 
 	@Override
-	public void render(TileEntityArcFurnace te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(ArcFurnaceTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;

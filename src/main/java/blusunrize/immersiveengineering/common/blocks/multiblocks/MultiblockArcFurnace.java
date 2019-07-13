@@ -15,10 +15,10 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
+import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
@@ -218,9 +218,9 @@ public class MultiblockArcFurnace implements IMultiblock
 
 							world.setBlockState(pos2, state);
 							TileEntity curr = world.getTileEntity(pos2);
-							if(curr instanceof TileEntityArcFurnace)
+							if(curr instanceof ArcFurnaceTileEntity)
 							{
-								TileEntityArcFurnace tile = (TileEntityArcFurnace)curr;
+								ArcFurnaceTileEntity tile = (ArcFurnaceTileEntity)curr;
 								tile.formed = true;
 								tile.pos = h*25+l*5+(w+2);
 								tile.offset = new int[]{(side==Direction.WEST?-l+2: side==Direction.EAST?l-2: side==Direction.NORTH?ww: -ww), h-1, (side==Direction.NORTH?-l+2: side==Direction.SOUTH?l-2: side==Direction.EAST?ww: -ww)};

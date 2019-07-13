@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockConveyor;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -81,8 +81,8 @@ public class ModelConveyor implements IBakedModel
 			if(blockState instanceof IExtendedBlockState)
 			{
 				IExtendedBlockState exState = (IExtendedBlockState)blockState;
-				if(exState.getUnlistedNames().contains(BlockConveyor.ICONEYOR_PASSTHROUGH))
-					conveyor = ((IExtendedBlockState)blockState).getValue(BlockConveyor.ICONEYOR_PASSTHROUGH);
+				if(exState.getUnlistedNames().contains(ConveyorBlock.ICONEYOR_PASSTHROUGH))
+					conveyor = ((IExtendedBlockState)blockState).getValue(ConveyorBlock.ICONEYOR_PASSTHROUGH);
 				if(exState.getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
 					tile = ((IExtendedBlockState)blockState).getValue(IEProperties.TILEENTITY_PASSTHROUGH);
 				if(conveyor!=null&&tile!=null)

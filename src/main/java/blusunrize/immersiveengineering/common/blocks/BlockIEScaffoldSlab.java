@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIESlab<E>
+public class BlockIEScaffoldSlab<E extends Enum<E> & IEBaseBlock.IBlockEnum> extends BlockIESlab<E>
 {
 	public BlockIEScaffoldSlab(String name, Material material, PropertyEnum property)
 	{
@@ -36,9 +36,9 @@ public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> ext
 	public void addCollisionBoxToList(BlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
 	{
 		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof TileEntityIESlab)
+		if(te instanceof IESlabTileEntity)
 		{
-			int type = ((TileEntityIESlab)te).slabType;
+			int type = ((IESlabTileEntity)te).slabType;
 			if(type==0)
 				addCollisionBoxToList(pos, entityBox, collidingBoxes, new AxisAlignedBB(.0625f, 0, .0625f, .9375f, .5, .9375f));
 			else if(type==1)
@@ -54,9 +54,9 @@ public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> ext
 	public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof TileEntityIESlab)
+		if(te instanceof IESlabTileEntity)
 		{
-			int type = ((TileEntityIESlab)te).slabType;
+			int type = ((IESlabTileEntity)te).slabType;
 			if(type==0)
 				return new AxisAlignedBB(0, 0, 0, 1, .5f, 1);
 			else if(type==1)
@@ -102,7 +102,7 @@ public class BlockIEScaffoldSlab<E extends Enum<E> & BlockIEBase.IBlockEnum> ext
 	public boolean isLadder(BlockState state, IBlockAccess world, BlockPos pos, LivingEntity entity)
 	{
 		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof TileEntityIESlab&&((TileEntityIESlab)te).slabType==0)
+		if(te instanceof IESlabTileEntity&&((IESlabTileEntity)te).slabType==0)
 			return entity.posY-pos.getY() < .5;
 		return true;
 	}

@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
+import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.RefineryTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -25,12 +25,12 @@ public class RefineryDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityRefinery)
+		if(te instanceof RefineryTileEntity)
 		{
-			TileEntityRefinery ref = (TileEntityRefinery)te;
-			TileEntityRefinery master = ref.master();
+			RefineryTileEntity ref = (RefineryTileEntity)te;
+			RefineryTileEntity master = ref.master();
 			if(master!=null&&ref.isRedstonePos())
-				return new RefineryEnvironment(w, master.getPos(), TileEntityRefinery.class);
+				return new RefineryEnvironment(w, master.getPos(), RefineryTileEntity.class);
 		}
 		return null;
 	}
@@ -38,13 +38,13 @@ public class RefineryDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityRefinery.class;
+		return RefineryTileEntity.class;
 	}
 
-	public class RefineryEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityRefinery>
+	public class RefineryEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<RefineryTileEntity>
 	{
 
-		public RefineryEnvironment(World w, BlockPos bp, Class<? extends TileEntityIEBase> teClass)
+		public RefineryEnvironment(World w, BlockPos bp, Class<? extends IEBaseTileEntity> teClass)
 		{
 			super(w, bp, teClass);
 		}
@@ -64,7 +64,7 @@ public class RefineryDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():table -- get tankinfo for input tanks")
 		public Object[] getInputFluidTanks(Context context, Arguments args)
 		{
-			TileEntityRefinery master = getTileEntity();
+			RefineryTileEntity master = getTileEntity();
 			HashMap<String, FluidTankInfo> ret = new HashMap<>(2);
 			ret.put("input1", master.tanks[0].getInfo());
 			ret.put("input2", master.tanks[1].getInfo());
@@ -99,7 +99,7 @@ public class RefineryDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():table -- return item input slot contents for both input and output tanks")
 		public Object[] getEmptyCannisters(Context context, Arguments args)
 		{
-			TileEntityRefinery te = getTileEntity();
+			RefineryTileEntity te = getTileEntity();
 			HashMap<String, ItemStack> ret = new HashMap<>(3);
 			ret.put("input1", te.inventory.get(1));
 			ret.put("input2", te.inventory.get(3));
@@ -110,7 +110,7 @@ public class RefineryDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():table -- return item output slot contents for both input and output tanks")
 		public Object[] getFullCannisters(Context context, Arguments args)
 		{
-			TileEntityRefinery te = getTileEntity();
+			RefineryTileEntity te = getTileEntity();
 			HashMap<String, ItemStack> ret = new HashMap<>(3);
 			ret.put("input1", te.inventory.get(0));
 			ret.put("input2", te.inventory.get(2));

@@ -9,14 +9,14 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
+import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerCokeOven extends ContainerIEBase<TileEntityCokeOven>
+public class ContainerCokeOven extends ContainerIEBase<CokeOvenTileEntity>
 {
-	public ContainerCokeOven(PlayerInventory inventoryPlayer, TileEntityCokeOven tile)
+	public ContainerCokeOven(PlayerInventory inventoryPlayer, CokeOvenTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 

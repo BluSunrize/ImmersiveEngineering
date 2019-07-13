@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -29,7 +29,7 @@ public class MessageTileSync implements IMessage
 	private CompoundNBT nbt;
 
 	//TODO get rid of NBT in packets
-	public MessageTileSync(TileEntityIEBase tile, CompoundNBT nbt)
+	public MessageTileSync(IEBaseTileEntity tile, CompoundNBT nbt)
 	{
 		this.pos = tile.getPos();
 		this.nbt = nbt;
@@ -59,8 +59,8 @@ public class MessageTileSync implements IMessage
 				if(world.isBlockLoaded(pos))
 				{
 					TileEntity tile = world.getTileEntity(pos);
-					if(tile instanceof TileEntityIEBase)
-						((TileEntityIEBase)tile).receiveMessageFromClient(nbt);
+					if(tile instanceof IEBaseTileEntity)
+						((IEBaseTileEntity)tile).receiveMessageFromClient(nbt);
 				}
 			});
 		}
@@ -70,8 +70,8 @@ public class MessageTileSync implements IMessage
 				if(world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
 					TileEntity tile = world.getTileEntity(pos);
-					if(tile instanceof TileEntityIEBase)
-						((TileEntityIEBase)tile).receiveMessageFromServer(nbt);
+					if(tile instanceof IEBaseTileEntity)
+						((IEBaseTileEntity)tile).receiveMessageFromServer(nbt);
 				}
 			});
 	}

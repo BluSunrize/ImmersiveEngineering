@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMixer;
+import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -25,12 +25,12 @@ public class MixerDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityMixer)
+		if(te instanceof MixerTileEntity)
 		{
-			TileEntityMixer arc = (TileEntityMixer)te;
-			TileEntityMixer master = arc.master();
+			MixerTileEntity arc = (MixerTileEntity)te;
+			MixerTileEntity master = arc.master();
 			if(master!=null&&arc.isRedstonePos())
-				return new MixerEnvironment(w, master.getPos(), TileEntityMixer.class);
+				return new MixerEnvironment(w, master.getPos(), MixerTileEntity.class);
 		}
 		return null;
 	}
@@ -38,14 +38,14 @@ public class MixerDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntityMixer.class;
+		return MixerTileEntity.class;
 	}
 
-	public class MixerEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<TileEntityMixer>
+	public class MixerEnvironment extends ManagedEnvironmentIE.ManagedEnvMultiblock<MixerTileEntity>
 	{
 
 
-		public MixerEnvironment(World w, BlockPos p, Class<? extends TileEntityIEBase> teClass)
+		public MixerEnvironment(World w, BlockPos p, Class<? extends IEBaseTileEntity> teClass)
 		{
 			super(w, p, teClass);
 		}
@@ -74,7 +74,7 @@ public class MixerDriver extends DriverSidedTileEntity
 			int slot = args.checkInteger(0);
 			if(slot < 1||slot > 12)
 				throw new IllegalArgumentException("Input slots are 1-12");
-			TileEntityMixer master = getTileEntity();
+			MixerTileEntity master = getTileEntity();
 			Map<String, Object> stack = Utils.saveStack(master.inventory.get(slot-1));
 			mainLoop:
 			for(MultiblockProcess<MixerRecipe> p : master.processQueue)

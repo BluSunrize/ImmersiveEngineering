@@ -8,24 +8,24 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_StoneDevices implements IStringSerializable, BlockIEBase.IBlockEnum
+public enum BlockTypes_StoneDevices implements IStringSerializable, IEBaseBlock.IBlockEnum
 {
-	//Instances of BlockStoneMultiblock with appropiate TEType
+	//Instances of StoneMultiBlock with appropiate TEType
 	COKE_OVEN,
 	BLAST_FURNACE,
 	ALLOY_SMELTER,
 	//BlockBFAdvanced
 	BLAST_FURNACE_ADVANCED,
-	//BlockPartialConcrete
+	//PartialConcreteBlock
 	CONCRETE_SHEET,
 	CONCRETE_QUARTER,
 	CONCRETE_THREEQUARTER,
-	//BlockCoresample
+	//CoresampleBlock
 	CORESAMPLE;
 
 	@Override

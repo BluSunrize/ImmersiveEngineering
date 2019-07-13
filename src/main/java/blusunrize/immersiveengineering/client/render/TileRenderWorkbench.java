@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
+import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,11 +20,11 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 
-public class TileRenderWorkbench extends TileEntityRenderer<TileEntityModWorkbench>
+public class TileRenderWorkbench extends TileEntityRenderer<ModWorkbenchTileEntity>
 {
 
 	@Override
-	public void render(TileEntityModWorkbench te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(ModWorkbenchTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(te.dummy||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;

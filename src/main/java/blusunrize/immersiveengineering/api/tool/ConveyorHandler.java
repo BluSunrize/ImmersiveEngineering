@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockConveyor;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
@@ -100,7 +100,7 @@ public class ConveyorHandler
 	{
 		for(ResourceLocation rl : classRegistry.keySet())
 		{
-			TileEntityType<TileEntityConveyorBelt> te = new TileEntityType<>(() -> new TileEntityConveyorBelt(rl), null);
+			TileEntityType<ConveyorBeltTileEntity> te = new TileEntityType<>(() -> new ConveyorBeltTileEntity(rl), null);
 			te.setRegistryName(rl);
 			tileEntities.put(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor_"
 					+rl.toString().replace(':', '_')), te);
@@ -117,7 +117,7 @@ public class ConveyorHandler
 	{
 		for(ResourceLocation rl : classRegistry.keySet())
 		{
-			Block b = new BlockConveyor(rl);
+			Block b = new ConveyorBlock(rl);
 			evt.getRegistry().register(b);
 			conveyorBlocks.put(rl, b);
 		}

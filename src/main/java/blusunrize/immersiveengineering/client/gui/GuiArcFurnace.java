@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.TileEntityPoweredMultiblock.MultiblockProcessInMachine;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
+import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerArcFurnace;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -28,10 +28,10 @@ import java.util.ArrayList;
 public class GuiArcFurnace extends GuiIEContainerBase
 {
 	static final String texture = "immersiveengineering:textures/gui/arc_furnace.png";
-	TileEntityArcFurnace tile;
+	ArcFurnaceTileEntity tile;
 	private GuiButtonIE distributeButton;
 
-	public GuiArcFurnace(PlayerInventory inventoryPlayer, TileEntityArcFurnace tile)
+	public GuiArcFurnace(PlayerInventory inventoryPlayer, ArcFurnaceTileEntity tile)
 	{
 		super(new ContainerArcFurnace(inventoryPlayer, tile));
 		this.ySize = 207;

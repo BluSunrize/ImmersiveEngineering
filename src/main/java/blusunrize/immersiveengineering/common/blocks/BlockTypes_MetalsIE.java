@@ -12,7 +12,7 @@ import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_MetalsIE implements IStringSerializable, BlockIEBase.IBlockEnum
+public enum BlockTypes_MetalsIE implements IStringSerializable, IEBaseBlock.IBlockEnum
 {
 	COPPER,
 	ALUMINUM,

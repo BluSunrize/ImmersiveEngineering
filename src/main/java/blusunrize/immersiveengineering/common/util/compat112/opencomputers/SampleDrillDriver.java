@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat112.opencomputers;
 
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
+import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -19,9 +19,9 @@ public class SampleDrillDriver extends DriverSidedTileEntity
 	public ManagedEnvironment createEnvironment(World w, BlockPos bp, Direction facing)
 	{
 		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntitySampleDrill)
+		if(te instanceof SampleDrillTileEntity)
 		{
-			TileEntitySampleDrill drill = (TileEntitySampleDrill)te;
+			SampleDrillTileEntity drill = (SampleDrillTileEntity)te;
 			if(drill.dummy==0)
 				return new SampleDrillEnvironment(w, bp);
 		}
@@ -31,16 +31,16 @@ public class SampleDrillDriver extends DriverSidedTileEntity
 	@Override
 	public Class<?> getTileEntityClass()
 	{
-		return TileEntitySampleDrill.class;
+		return SampleDrillTileEntity.class;
 	}
 
 
-	public class SampleDrillEnvironment extends ManagedEnvironmentIE<TileEntitySampleDrill>
+	public class SampleDrillEnvironment extends ManagedEnvironmentIE<SampleDrillTileEntity>
 	{
 
 		public SampleDrillEnvironment(World w, BlockPos bp)
 		{
-			super(w, bp, TileEntitySampleDrill.class);
+			super(w, bp, SampleDrillTileEntity.class);
 		}
 
 		@Override
@@ -70,7 +70,7 @@ public class SampleDrillDriver extends DriverSidedTileEntity
 		@Callback
 		public Object[] getVeinUnlocalizedName(Context context, Arguments args)
 		{
-			TileEntitySampleDrill te = getTileEntity();
+			SampleDrillTileEntity te = getTileEntity();
 			if(te.isSamplingFinished())
 				return new Object[]{te.getVein()};
 			return new Object[0];
@@ -79,7 +79,7 @@ public class SampleDrillDriver extends DriverSidedTileEntity
 		@Callback
 		public Object[] getVeinLocalizedName(Context context, Arguments args)
 		{
-			TileEntitySampleDrill te = getTileEntity();
+			SampleDrillTileEntity te = getTileEntity();
 			if(te.isSamplingFinished())
 				return new Object[]{te.getVeinLocalizedName()};
 			return new Object[0];
@@ -88,7 +88,7 @@ public class SampleDrillDriver extends DriverSidedTileEntity
 		@Callback
 		public Object[] getVeinIntegrity(Context context, Arguments args)
 		{
-			TileEntitySampleDrill te = getTileEntity();
+			SampleDrillTileEntity te = getTileEntity();
 			if(te.isSamplingFinished())
 				return new Object[]{te.getVeinIntegrity()};
 			return new Object[0];
@@ -115,7 +115,7 @@ public class SampleDrillDriver extends DriverSidedTileEntity
 		@Callback
 		public Object[] reset(Context context, Arguments args)
 		{
-			TileEntitySampleDrill d = getTileEntity();
+			SampleDrillTileEntity d = getTileEntity();
 			d.process = 0;
 			d.active = true;
 			d.sample = ItemStack.EMPTY;

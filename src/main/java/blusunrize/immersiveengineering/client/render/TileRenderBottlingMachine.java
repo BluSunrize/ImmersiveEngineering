@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine.BottlingProcess;
+import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity.BottlingProcess;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -37,10 +37,10 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
 
-public class TileRenderBottlingMachine extends TileEntityRenderer<TileEntityBottlingMachine>
+public class TileRenderBottlingMachine extends TileEntityRenderer<BottlingMachineTileEntity>
 {
 	@Override
-	public void render(TileEntityBottlingMachine te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(BottlingMachineTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;

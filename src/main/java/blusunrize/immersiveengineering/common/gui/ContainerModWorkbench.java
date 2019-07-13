@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
+import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,14 +26,14 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbench>
+public class ContainerModWorkbench extends ContainerIEBase<ModWorkbenchTileEntity>
 {
 	private final World world;
 	public PlayerInventory inventoryPlayer;
 	private InventoryBlueprint inventoryBPoutput;
 	public InventoryShader shaderInv;
 
-	public ContainerModWorkbench(PlayerInventory inventoryPlayer, World world, TileEntityModWorkbench tile)
+	public ContainerModWorkbench(PlayerInventory inventoryPlayer, World world, ModWorkbenchTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 		this.world = world;

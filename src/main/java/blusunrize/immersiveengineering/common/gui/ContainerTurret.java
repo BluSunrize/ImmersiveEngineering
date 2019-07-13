@@ -10,22 +10,22 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurret;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretGun;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class ContainerTurret extends ContainerIEBase<TileEntityTurret>
+public class ContainerTurret extends ContainerIEBase<TurretTileEntity>
 {
-	public ContainerTurret(PlayerInventory inventoryPlayer, TileEntityTurret tile)
+	public ContainerTurret(PlayerInventory inventoryPlayer, TurretTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 		this.tile = tile;
 
-		if(tile instanceof TileEntityTurretGun)
+		if(tile instanceof TurretGunTileEntity)
 		{
 			this.addSlot(new IESlot.Bullet(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 					.orElseThrow(RuntimeException::new), 0, 134, 13, 64)

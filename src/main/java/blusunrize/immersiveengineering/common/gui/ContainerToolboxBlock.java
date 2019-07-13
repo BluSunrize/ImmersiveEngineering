@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityToolbox;
+import blusunrize.immersiveengineering.common.blocks.metal.ToolboxTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,7 +24,7 @@ public class ContainerToolboxBlock extends ContainerIEBase implements ICallbackC
 {
 	IItemHandler inv;
 
-	public ContainerToolboxBlock(PlayerInventory inventoryPlayer, TileEntityToolbox tile)
+	public ContainerToolboxBlock(PlayerInventory inventoryPlayer, ToolboxTileEntity tile)
 	{
 		super(inventoryPlayer, tile);
 		this.tile = tile;

@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
+import blusunrize.immersiveengineering.common.blocks.metal.SiloTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
 
-public class TileRenderSilo extends TileEntityRenderer<TileEntitySilo>
+public class TileRenderSilo extends TileEntityRenderer<SiloTileEntity>
 {
 	@Override
-	public void render(TileEntitySilo tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(SiloTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(!tile.formed||tile.posInMultiblock!=4||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
