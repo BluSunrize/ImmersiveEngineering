@@ -26,7 +26,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -194,19 +193,7 @@ public class IEBlockInterfaces
 
 	public interface ITileDrop
 	{
-		/**
-		 * Don't call this on generic TE'S, use getTileDrops or getPickBlock
-		 */
-		default ItemStack getTileDrop(@Nullable PlayerEntity player, BlockState state)
-		{
-			NonNullList<ItemStack> drops = getTileDrops(player, state);
-			return drops.size() > 0?drops.get(0): ItemStack.EMPTY;
-		}
-
-		default NonNullList<ItemStack> getTileDrops(@Nullable PlayerEntity player, BlockState state)
-		{
-			return NonNullList.from(ItemStack.EMPTY, getTileDrop(player, state));
-		}
+		ItemStack getTileDrop(@Nullable Entity player, BlockState state);
 
 		default ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
 		{

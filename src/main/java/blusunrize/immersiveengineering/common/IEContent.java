@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
+import blusunrize.immersiveengineering.common.blocks.TileDropLootFunction.Serializer;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -74,6 +75,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.*;
+import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -85,6 +87,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTables;
+import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
@@ -98,6 +101,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.IRegistryDelegate;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -122,6 +126,8 @@ public class IEContent
 
 	static
 	{
+		LootFunctionManager.registerFunction(new Serializer());
+
 		fluidCreosote = setupFluid(new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(1100).setViscosity(3000));
 		fluidPlantoil = setupFluid(new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000));
 		fluidEthanol = setupFluid(new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000));
@@ -279,31 +285,70 @@ public class IEContent
 		MetalDecoration.aluWallmount = new WallmountBlock("alu_wallmount", defaultMetalProperties);
 		MetalDecoration.steelPost = new PostBlock("steel_post", defaultMetalProperties);
 		MetalDecoration.aluPost = new PostBlock("alu_post", defaultMetalProperties);
-		MetalDecoration.lantern = new;
-		MetalDecoration.slopeSteel;
-		MetalDecoration.slopeAlu;
-		MetalDecoration.metalLadder;
-		MetalDecoration.steelScaffolding;
-		MetalDecoration.aluScaffolding;
-		MetalDecoration.steelScaffoldingStair;
-		MetalDecoration.aluScaffoldingStair;
+		MetalDecoration.lantern = new LanternBlock("lantern");
+		MetalDecoration.slopeSteel = new StructuralArmBlock("steel_slope");
+		MetalDecoration.slopeAlu = new StructuralArmBlock("alu_slope");
+		MetalDecoration.metalLadder = new MetalLadderBlock();
+		for(MetalScaffoldingType type : MetalScaffoldingType.values())
+		{
+			String name = type.name().toLowerCase();
+			Block steelBlock = new ScaffoldingBlock("steel_scaffolding_"+name, defaultMetalProperties);
+			Block aluBlock = new ScaffoldingBlock("alu_scaffolding_"+name, defaultMetalProperties);
+			MetalDecoration.steelScaffolding.put(type, steelBlock);
+			MetalDecoration.aluScaffolding.put(type, aluBlock);
+			MetalDecoration.steelScaffoldingStair.put(type, new IEStairsBlock("steel_scaffolding_stairs_"+name,
+					steelBlock.getDefaultState()));
+			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("alu_scaffolding_stairs_"+name,
+					aluBlock.getDefaultState()));
+			addSlabFor(steelBlock);
+			addSlabFor(aluBlock);
+		}
+		for(String cat : new String[]{WireType.LV_CATEGORY, WireType.MV_CATEGORY, WireType.HV_CATEGORY})
+		{
+			Block connector = new PowerConnectorBlock(cat, false);
+			Block relay = new PowerConnectorBlock(cat, true);
+			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, false), connector);
+			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, true), relay);
+		}
 
-		blockMetalDecoration0 = new MetalDecoration0Block();
-		blockMetalDecoration1 = new MetalDecoration1Block();
-		blockMetalDecoration2 = new MetalDecoration2Block();
-		blockMetalDecorationSlabs1 = (BlockIESlab)new BlockIEScaffoldSlab("metal_decoration1_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration1.class)).setMetaHidden(0, 4).setHardness(3.0F).setResistance(15.0F);
-		blockSteelScaffoldingStair = new IEStairsBlock("steel_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(1)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockSteelScaffoldingStair1 = new IEStairsBlock("steel_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(2)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockSteelScaffoldingStair2 = new IEStairsBlock("steel_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(3)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockAluminumScaffoldingStair = new IEStairsBlock("aluminum_scaffolding_stairs0", blockMetalDecoration1.getStateFromMeta(5)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockAluminumScaffoldingStair1 = new IEStairsBlock("aluminum_scaffolding_stairs1", blockMetalDecoration1.getStateFromMeta(6)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockAluminumScaffoldingStair2 = new IEStairsBlock("aluminum_scaffolding_stairs2", blockMetalDecoration1.getStateFromMeta(7)).setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED);
-		blockMetalLadder = new MetalLadderBlock();
+		Connectors.connectorStructural = new MiscConnectorBlock("connector_structural", () -> ConnectorStructuralTileEntity.TYPE);
+		Connectors.transformer = new MiscConnectorBlock("transformer", () -> TransformerTileEntity.TYPE);
+		Connectors.transformerHV = new MiscConnectorBlock("transformer_hv", () -> TransformerHVTileEntity.TYPE);
+		Connectors.breakerswitch = new MiscConnectorBlock("breaker_switch", () -> BreakerSwitchTileEntity.TYPE);
+		Connectors.redstoneBreaker = new MiscConnectorBlock("redstone_breaker", () -> RedstoneBreakerTileEntity.TYPE);
+		Connectors.energyMeter = new MiscConnectorBlock("current_transformer", () -> EnergyMeterTileEntity.TYPE);
+		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
+		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE);
+		Connectors.feedthrough = new MiscConnectorBlock("feedthrough", () -> FeedthroughTileEntity.TYPE);
 
-		blockConnectors = new ConnectorBlock();
-		blockMetalDevice0 = new MetalDevice0Block();
-		blockMetalDevice1 = new MetalDevice1Block();
-		blockConveyor = new ConveyorBlock();
+		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE);
+		MetalDevices.toolbox = new GenericTileBlock("toolbox_block", () -> ToolboxTileEntity.TYPE, defaultMetalProperties,
+				null, new IProperty[0]);
+		MetalDevices.capacitorLV = new GenericTileBlock("capacitor_lv", () -> CapacitorLVTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.capacitorMV = new GenericTileBlock("capacitor_mv", () -> CapacitorMVTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.capacitorHV = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.barrel = new BarrelBlock("barrel", false);
+		//MetalDevices.fluidPump = ;
+		//MetalDevices.fluidPlacer = ;
+		MetalDevices.blastFurnacePreheater = new GenericTileBlock("blastfurnace_preheater", () -> BlastFurnacePreheaterTileEntity.TYPE,
+				defaultMetalProperties);
+		MetalDevices.furnaceHeater = new GenericTileBlock("furnace_heater", () -> FurnaceHeaterTileEntity.TYPE,
+				defaultMetalProperties);
+		MetalDevices.dynamo = new GenericTileBlock("dynamo", () -> DynamoTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.thermoelectricGen = new GenericTileBlock("thermoelectric_generator", () -> ThermoelectricGenTileEntity.TYPE,
+				defaultMetalProperties);
+		MetalDevices.electricLantern = new MiscConnectorBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE);
+		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
+				defaultMetalProperties);
+		//MetalDevices.fluidPipe = ;
+		MetalDevices.sampleDrill = new GenericTileBlock("sample_drill", () -> SampleDrillTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.teslaCoil = new GenericTileBlock("tesla_coil", () -> TeslaCoilTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.floodlight = new MiscConnectorBlock("floodlight", () -> FloodlightTileEntity.TYPE);
+		MetalDevices.turretChem = new GenericTileBlock("turret_chem", () -> TurretChemTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties);
+
 		blockMetalMultiblock = new MetalMultiblocksBlock();
 
 		blockFluidCreosote = new BlockIEFluid("fluidCreosote", fluidCreosote, Material.WATER).setFlammability(40, 400);
@@ -409,89 +454,83 @@ public class IEContent
 		EnergyConnectorTileEntity.registerConnectorTEs(event);
 		ConveyorHandler.registerConveyorTEs(event);
 
-		registerTile(IESlabTileEntity.class, event);
+		registerTile(BalloonTileEntity.class, event, Cloth.balloon);
+		registerTile(StripCurtainTileEntity.class, event, Cloth.curtain);
+		registerTile(ShaderBannerTileEntity.class, event, Cloth.shaderBanner);
 
-		registerTile(BalloonTileEntity.class, event);
-		registerTile(StripCurtainTileEntity.class, event);
-		registerTile(ShaderBannerTileEntity.class, event);
+		registerTile(CokeOvenTileEntity.class, event, Multiblocks.cokeOven);
+		registerTile(BlastFurnaceTileEntity.class, event, Multiblocks.blastFurnace);
+		registerTile(BlastFurnaceAdvancedTileEntity.class, event, Multiblocks.blastFurnaceAdv);
+		registerTile(CoresampleTileEntity.class, event, StoneDecoration.coresample);
+		registerTile(AlloySmelterTileEntity.class, event, Multiblocks.alloySmelter);
 
-		registerTile(CokeOvenTileEntity.class, event);
-		registerTile(BlastFurnaceTileEntity.class, event);
-		registerTile(BlastFurnaceAdvancedTileEntity.class, event);
-		registerTile(CoresampleTileEntity.class, event);
-		registerTile(AlloySmelterTileEntity.class, event);
+		registerTile(WoodenCrateTileEntity.class, event, WoodenDevices.crate);
+		registerTile(WoodenBarrelTileEntity.class, event, WoodenDevices.woodenBarrel);
+		registerTile(ModWorkbenchTileEntity.class, event, WoodenDevices.workbench);
+		registerTile(SorterTileEntity.class, event, WoodenDevices.sorter);
+		registerTile(TurntableTileEntity.class, event, WoodenDevices.turntable);
+		registerTile(FluidSorterTileEntity.class, event, WoodenDevices.fluidSorter);
+		registerTile(WatermillTileEntity.class, event, WoodenDevices.watermill);
+		registerTile(WindmillTileEntity.class, event, WoodenDevices.windmill);
+		registerTile(PostTileEntity.class, event, WoodenDevices.treatedPost, MetalDecoration.aluPost,
+				MetalDecoration.steelPost);
 
-		registerTile(WoodenCrateTileEntity.class, event);
-		registerTile(WoodenBarrelTileEntity.class, event);
-		registerTile(ModWorkbenchTileEntity.class, event);
-		registerTile(SorterTileEntity.class, event);
-		registerTile(TurntableTileEntity.class, event);
-		registerTile(FluidSorterTileEntity.class, event);
-		registerTile(WatermillTileEntity.class, event);
-		registerTile(WindmillTileEntity.class, event);
-		registerTile(PostTileEntity.class, event);
-		registerTile(TileEntityWallmount.class, event);
+		registerTile(LadderTileEntity.class, event, MetalDecoration.metalLadder);
+		registerTile(LanternTileEntity.class, event, MetalDecoration.lantern);
+		registerTile(RazorWireTileEntity.class, event, MetalDevices.razorWire);
+		registerTile(ToolboxTileEntity.class, event, MetalDevices.toolbox);
+		registerTile(StructuralArmTileEntity.class, event, MetalDecoration.slopeAlu, MetalDecoration.slopeSteel);
 
-		registerTile(LadderTileEntity.class, event);
-		registerTile(LanternTileEntity.class, event);
-		registerTile(RazorWireTileEntity.class, event);
-		registerTile(ToolboxTileEntity.class, event);
-		registerTile(StructuralArmTileEntity.class, event);
+		registerTile(ConnectorStructuralTileEntity.class, event, Connectors.connectorStructural);
+		registerTile(TransformerTileEntity.class, event, Connectors.transformer);
+		registerTile(TransformerHVTileEntity.class, event, Connectors.transformerHV);
+		registerTile(BreakerSwitchTileEntity.class, event, Connectors.breakerswitch);
+		registerTile(RedstoneBreakerTileEntity.class, event, Connectors.redstoneBreaker);
+		registerTile(EnergyMeterTileEntity.class, event, Connectors.energyMeter);
+		registerTile(ConnectorRedstoneTileEntity.class, event, Connectors.connectorRedstone);
+		registerTile(ConnectorProbeTileEntity.class, event, Connectors.connectorProbe);
+		registerTile(FeedthroughTileEntity.class, event, Connectors.feedthrough);
 
-		registerTile(ConnectorStructuralTileEntity.class, event);
-		registerTile(TransformerTileEntity.class, event);
-		registerTile(TransformerHVTileEntity.class, event);
-		registerTile(BreakerSwitchTileEntity.class, event);
-		registerTile(RedstoneBreakerTileEntity.class, event);
-		registerTile(EnergyMeterTileEntity.class, event);
-		registerTile(ConnectorRedstoneTileEntity.class, event);
-		registerTile(ConnectorProbeTileEntity.class, event);
-		registerTile(FeedthroughTileEntity.class, event);
+		registerTile(CapacitorLVTileEntity.class, event, MetalDevices.capacitorLV);
+		registerTile(CapacitorMVTileEntity.class, event, MetalDevices.capacitorMV);
+		registerTile(CapacitorHVTileEntity.class, event, MetalDevices.capacitorHV);
+		registerTile(CapacitorCreativeTileEntity.class, event, MetalDevices.capacitorCreative);
+		registerTile(MetalBarrelTileEntity.class, event, MetalDevices.barrel);
+		//registerTile(FluidPumpTileEntity.class, event, MetalDevices.fluidPump);
+		//registerTile(FluidPlacerTileEntity.class, event, MetalDevices.fluidPipe);
 
-		registerTile(CapacitorLVTileEntity.class, event);
-		registerTile(CapacitorMVTileEntity.class, event);
-		registerTile(CapacitorHVTileEntity.class, event);
-		registerTile(CapacitorCreativeTileEntity.class, event);
-		registerTile(MetalBarrelTileEntity.class, event);
-		registerTile(FluidPumpTileEntity.class, event);
-		registerTile(FluidPlacerTileEntity.class, event);
+		registerTile(BlastFurnacePreheaterTileEntity.class, event, MetalDevices.blastFurnacePreheater);
+		registerTile(FurnaceHeaterTileEntity.class, event, MetalDevices.furnaceHeater);
+		registerTile(DynamoTileEntity.class, event, MetalDevices.dynamo);
+		registerTile(ThermoelectricGenTileEntity.class, event, MetalDevices.thermoelectricGen);
+		registerTile(ElectricLanternTileEntity.class, event, MetalDevices.electricLantern);
+		registerTile(ChargingStationTileEntity.class, event, MetalDevices.chargingStation);
+		registerTile(FluidPipeTileEntity.class, event, MetalDevices.fluidPipe);
+		registerTile(SampleDrillTileEntity.class, event, MetalDevices.sampleDrill);
+		registerTile(TeslaCoilTileEntity.class, event, MetalDevices.teslaCoil);
+		registerTile(FloodlightTileEntity.class, event, MetalDevices.floodlight);
+		registerTile(TurretChemTileEntity.class, event, MetalDevices.turretChem);
+		registerTile(TurretGunTileEntity.class, event, MetalDevices.turretGun);
+		registerTile(BelljarTileEntity.class, event, MetalDevices.belljar);
 
-		registerTile(BlastFurnacePreheaterTileEntity.class, event);
-		registerTile(FurnaceHeaterTileEntity.class, event);
-		registerTile(DynamoTileEntity.class, event);
-		registerTile(ThermoelectricGenTileEntity.class, event);
-		registerTile(ElectricLanternTileEntity.class, event);
-		registerTile(ChargingStationTileEntity.class, event);
-		registerTile(FluidPipeTileEntity.class, event);
-		registerTile(SampleDrillTileEntity.class, event);
-		registerTile(TeslaCoilTileEntity.class, event);
-		registerTile(FloodlightTileEntity.class, event);
-		registerTile(TurretTileEntity.class, event);
-		registerTile(TurretChemTileEntity.class, event);
-		registerTile(TurretGunTileEntity.class, event);
-		registerTile(BelljarTileEntity.class, event);
-
-		registerTile(ConveyorBeltTileEntity.class, event);
-		registerTile(ConveyorVerticalTileEntity.class, event);
-
-		registerTile(MetalPressTileEntity.class, event);
-		registerTile(CrusherTileEntity.class, event);
-		registerTile(SheetmetalTankTileEntity.class, event);
-		registerTile(SiloTileEntity.class, event);
-		registerTile(AssemblerTileEntity.class, event);
-		registerTile(AutoWorkbenchTileEntity.class, event);
-		registerTile(BottlingMachineTileEntity.class, event);
-		registerTile(SqueezerTileEntity.class, event);
-		registerTile(FermenterTileEntity.class, event);
-		registerTile(RefineryTileEntity.class, event);
-		registerTile(DieselGeneratorTileEntity.class, event);
-		registerTile(BucketWheelTileEntity.class, event);
-		registerTile(ExcavatorTileEntity.class, event);
-		registerTile(ArcFurnaceTileEntity.class, event);
-		registerTile(LightningrodTileEntity.class, event);
-		registerTile(MixerTileEntity.class, event);
+		registerTile(MetalPressTileEntity.class, event, Multiblocks.metalPress);
+		registerTile(CrusherTileEntity.class, event, Multiblocks.crusher);
+		registerTile(SheetmetalTankTileEntity.class, event, Multiblocks.tank);
+		registerTile(SiloTileEntity.class, event, Multiblocks.silo);
+		registerTile(AssemblerTileEntity.class, event, Multiblocks.assembler);
+		registerTile(AutoWorkbenchTileEntity.class, event, Multiblocks.autoWorkbench);
+		registerTile(BottlingMachineTileEntity.class, event, Multiblocks.bottlingMachine);
+		registerTile(SqueezerTileEntity.class, event, Multiblocks.squeezer);
+		registerTile(FermenterTileEntity.class, event, Multiblocks.fermenter);
+		registerTile(RefineryTileEntity.class, event, Multiblocks.refinery);
+		registerTile(DieselGeneratorTileEntity.class, event, Multiblocks.dieselGenerator);
+		registerTile(BucketWheelTileEntity.class, event, Multiblocks.bucketWheel);
+		registerTile(ExcavatorTileEntity.class, event, Multiblocks.excavator);
+		registerTile(ArcFurnaceTileEntity.class, event, Multiblocks.arcFurnace);
+		registerTile(LightningrodTileEntity.class, event, Multiblocks.lightningrod);
+		registerTile(MixerTileEntity.class, event, Multiblocks.mixer);
 		//		registerTile(TileEntitySkycrateDispenser.class);
-		registerTile(FakeLightTileEntity.class, event);
+		registerTile(FakeLightTileEntity.class, event, Misc.fakeLight);
 	}
 
 	@SubscribeEvent

@@ -38,4 +38,9 @@ public enum EnumMetals
 	{
 		return isVanilla;
 	}
+
+	public String tagName()
+	{
+		return name().toLowerCase();
+	}
 }

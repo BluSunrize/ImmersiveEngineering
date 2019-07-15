@@ -36,6 +36,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.IntNBT;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
@@ -73,7 +76,7 @@ public class ApiUtils
 {
 	public static boolean compareToOreName(ItemStack stack, String oreName)
 	{
-		if(!isExistingOreName(oreName))
+		if(!isNonemptyItemTag(oreName))
 			return false;
 		List<ItemStack> s = OreDictionary.getOres(oreName);
 		for(ItemStack st : s)
@@ -190,12 +193,16 @@ public class ApiUtils
 		return comp;
 	}
 
-	public static boolean isExistingOreName(String name)
+	public static boolean isNonemptyItemTag(ResourceLocation name)
 	{
-		if(!OreDictionary.doesOreNameExist(name))
-			return false;
-		else
-			return !OreDictionary.getOres(name).isEmpty();
+		Tag<Item> t = ItemTags.getCollection().getTagMap().get(name);
+		return t!=null&&!t.getAllElements().isEmpty();
+	}
+
+	public static boolean isNonemptyBlockTag(ResourceLocation name)
+	{
+		Tag<Block> t = BlockTags.getCollection().getTagMap().get(name);
+		return t!=null&&!t.getAllElements().isEmpty();
 	}
 
 	public static boolean isMetalComponent(ItemStack stack, String componentType)
@@ -269,7 +276,7 @@ public class ApiUtils
 			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
-				return copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+type[1]), (int)val);
+				return copyStackWithAmount(IEApi.getPreferredTagStack("ingot"+type[1]), (int)val);
 			}
 		}
 		return ItemStack.EMPTY;
@@ -285,7 +292,7 @@ public class ApiUtils
 			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
-				return new ImmutablePair<>(IEApi.getPreferredOreStack("ingot"+type[1]), val);
+				return new ImmutablePair<>(IEApi.getPreferredTagStack("ingot"+type[1]), val);
 			}
 		}
 		return null;
@@ -794,7 +801,7 @@ public class ApiUtils
 			return input;
 		else if(input instanceof String)
 		{
-			if(!ApiUtils.isExistingOreName((String)input))
+			if(!ApiUtils.isNonemptyItemTag((String)input))
 				return null;
 			List<ItemStack> l = OreDictionary.getOres((String)input);
 			if(!l.isEmpty())
@@ -876,7 +883,7 @@ public class ApiUtils
 			return ((List<ItemStack>)o).get(0);
 		else if(o instanceof String)
 		{
-			if(!isExistingOreName((String)o))
+			if(!isNonemptyItemTag((String)o))
 				return ItemStack.EMPTY;
 			List<ItemStack> l = OreDictionary.getOres((String)o);
 			if(!l.isEmpty())

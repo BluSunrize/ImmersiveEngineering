@@ -50,7 +50,7 @@ public class ComparableItemStack
 
 	public ComparableItemStack(String oreName)
 	{
-		this(IEApi.getPreferredOreStack(oreName), true, false);
+		this(IEApi.getPreferredTagStack(oreName), true, false);
 		this.oreID = OreDictionary.getOreID(oreName);
 	}
 

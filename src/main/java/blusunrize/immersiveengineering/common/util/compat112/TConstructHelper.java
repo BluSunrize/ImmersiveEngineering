@@ -95,7 +95,7 @@ public class TConstructHelper extends IECompatModule
 	@Override
 	public void registerRecipes()
 	{
-		if(ApiUtils.isExistingOreName("ingotAlubrass"))
+		if(ApiUtils.isNonemptyItemTag("ingotAlubrass"))
 			IERecipes.addOreDictArcAlloyingRecipe("ingotAlubrass", 4, "Copper", 100, 512, "dustAluminum", "dustAluminum", "dustAluminum");
 		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Cobalt", 200, 512, "ingotArdite");
 		IERecipes.addOreDictArcAlloyingRecipe("ingotManyullyn", 1, "Ardite", 200, 512, "ingotCobalt");

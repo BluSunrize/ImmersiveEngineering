@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static ArrayList<String> blueprintCategories = new ArrayList<String>();
 	public static ArrayListMultimap<String, BlueprintCraftingRecipe> recipeList = ArrayListMultimap.create();
-	public static HashMap<String, ItemStack> villagerPrices = new HashMap<String, ItemStack>();
+	public static HashMap<String, ItemStack> villagerPrices = new HashMap<>();
 
 	public String blueprintCategory;
 	public ItemStack output;
@@ -229,7 +228,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 				boolean isNew = true;
 				for(IngredientStack formatted : formattedInputs)
 				{
-					if(ingr.oreName!=null&&ingr.oreName.equals(formatted.oreName))
+					if(ingr.tag!=null&&ingr.tag.equals(formatted.tag))
 						isNew = false;
 					else if(ingr.stackList!=null&&formatted.stackList!=null)
 					{
@@ -248,8 +247,8 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 				}
 				if(isNew)
 				{
-					if(ingr.oreName!=null)
-						formattedInputs.add(new IngredientStack(ingr.oreName, ingr.inputSize));
+					if(ingr.tag!=null)
+						formattedInputs.add(new IngredientStack(ingr.tag, ingr.inputSize));
 					else if(ingr.stackList!=null)
 						formattedInputs.add(new IngredientStack(Lists.newArrayList(ingr.stackList), ingr.inputSize));
 					else if(!ingr.stack.isEmpty())

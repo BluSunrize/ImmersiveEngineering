@@ -90,8 +90,8 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 			{
 				IngredientStack ingr = inputList.get(i);
 				ArrayList list = new ArrayList();
-				if(ingr.oreName!=null)
-					for(ItemStack stack : OreDictionary.getOres(ingr.oreName))
+				if(ingr.tag!=null)
+					for(ItemStack stack : OreDictionary.getOres(ingr.tag))
 						list.add(ApiUtils.copyStackWithAmount(stack, ingr.inputSize));
 				else if(ingr.stackList!=null)
 					for(ItemStack stack : ingr.stackList)

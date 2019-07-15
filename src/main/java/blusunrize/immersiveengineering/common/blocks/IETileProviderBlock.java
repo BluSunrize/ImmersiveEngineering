@@ -21,10 +21,10 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -43,6 +43,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -68,7 +69,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 {
 	private boolean hasColours = false;
 
-	public IETileProviderBlock(String name, Block.Properties blockProps, Class<? extends ItemBlockIEBase> itemBlock,
+	public IETileProviderBlock(String name, Block.Properties blockProps, @Nullable Class<? extends ItemBlockIEBase> itemBlock,
 							   IProperty... stateProps)
 	{
 		super(name, blockProps, itemBlock, stateProps);
@@ -153,54 +154,13 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public abstract TileEntity createBasicTE(BlockState state);
 
 	@Override
-	public void getDrops(BlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
-	{
-		TileEntity tile = world.getTileEntity(pos);
-		DimensionBlockPos dpos = new DimensionBlockPos(pos, world.getDimension().getType());
-		if(tile==null&&tempTile.containsKey(dpos))
-			tile = tempTile.get(dpos);
-		if(tile!=null&&(!(tile instanceof ITileDrop)||!((ITileDrop)tile).preventInventoryDrop()))
-		{
-			if(tile instanceof IIEInventory&&((IIEInventory)tile).getDroppedItems()!=null)
-			{
-				for(ItemStack s : ((IIEInventory)tile).getDroppedItems())
-					if(!s.isEmpty())
-						drops.add(s);
-			}
-			else
-			{
-				LazyOptional<IItemHandler> itemHandler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-				itemHandler.ifPresent((h) ->
-				{
-					if(h instanceof IEInventoryHandler)
-						for(int i = 0; i < h.getSlots(); i++)
-							if(!h.getStackInSlot(i).isEmpty())
-							{
-								drops.add(h.getStackInSlot(i));
-								((IEInventoryHandler)h).setStackInSlot(i, ItemStack.EMPTY);
-							}
-				});
-			}
-		}
-		if(tile instanceof ITileDrop)
-		{
-			NonNullList<ItemStack> s = ((ITileDrop)tile).getTileDrops(harvesters.get(), state);
-			drops.addAll(s);
-		}
-		else
-			super.getDrops(state, drops, world, pos, fortune);
-
-		tempTile.remove(dpos);
-	}
-
-	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IHasDummyBlocks)
 			((IHasDummyBlocks)tile).breakDummies(pos, state);
 		Consumer<Connection> dropHandler;
-		if(world.getGameRules().getBoolean("doTileDrops"))
+		if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 			dropHandler = (c) -> {
 				if(!c.isInternal())
 				{
@@ -208,12 +168,35 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 					double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
 					double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
 					double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
-					world.spawnEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
+					world.addEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
 				}
 			};
 		else
 			dropHandler = c -> {
 			};
+		if(tile!=null&&(!(tile instanceof ITileDrop)||!((ITileDrop)tile).preventInventoryDrop()))
+		{
+			if(tile instanceof IIEInventory&&((IIEInventory)tile).getDroppedItems()!=null)
+				InventoryHelper.dropItems(world, pos, ((IIEInventory)tile).getDroppedItems());
+			else
+			{
+				LazyOptional<IItemHandler> itemHandler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+				itemHandler.ifPresent((h) ->
+				{
+					if(h instanceof IEInventoryHandler)
+					{
+						NonNullList<ItemStack> drops = NonNullList.create();
+						for(int i = 0; i < h.getSlots(); i++)
+							if(!h.getStackInSlot(i).isEmpty())
+							{
+								drops.add(h.getStackInSlot(i));
+								((IEInventoryHandler)h).setStackInSlot(i, ItemStack.EMPTY);
+							}
+						InventoryHelper.dropItems(world, pos, drops);
+					}
+				});
+			}
+		}
 		if(tile instanceof IImmersiveConnectable&&!world.isRemote)
 			for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
 				getNetwork(world).removeAllConnectionsAt(cp, dropHandler);

@@ -9,16 +9,18 @@
 package blusunrize.immersiveengineering.api;
 
 import com.google.common.collect.Lists;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -36,7 +38,7 @@ public class IEApi
 	/**
 	 * This map caches the preferred ores for the given OreDict name
 	 */
-	public static HashMap<String, ItemStack> oreOutputPreference = new HashMap<String, ItemStack>();
+	public static HashMap<ResourceLocation, ItemStack> oreOutputPreference = new HashMap<>();
 
 	/**
 	 * The TextureSheet id for the revolver's icons
@@ -68,46 +70,48 @@ public class IEApi
 	 */
 	public static List<Predicate<ItemStack>> forbiddenInCrates = new ArrayList<>();
 
-	public static ItemStack getPreferredOreStack(String oreName)
+	public static ItemStack getPreferredTagStack(ResourceLocation name)
 	{
-		if(!oreOutputPreference.containsKey(oreName))
+		return oreOutputPreference.computeIfAbsent(name, rl ->
 		{
-			ItemStack preferredStack = ApiUtils.isExistingOreName(oreName)?
-					getPreferredStackbyMod(OreDictionary.getOres(oreName)): ItemStack.EMPTY;
-			if(preferredStack.getMetadata()==OreDictionary.WILDCARD_VALUE)
-				preferredStack.setItemDamage(0);
-			oreOutputPreference.put(oreName, preferredStack);
-			return preferredStack;
-		}
-		ItemStack s = oreOutputPreference.get(oreName);
-		return s==null?ItemStack.EMPTY: s.copy();
+			if(ApiUtils.isNonemptyItemTag(name))
+				return new ItemStack(getPreferredStackbyMod(ItemTags.getCollection().get(name).getAllElements()));
+			else if(ApiUtils.isNonemptyBlockTag(name))
+				return new ItemStack(getPreferredStackbyMod(BlockTags.getCollection().get(name).getAllElements()));
+			else
+				return ItemStack.EMPTY;
+		});
 	}
 
-	public static ItemStack getPreferredStackbyMod(Collection<ItemStack> list)
+	public static <T extends IForgeRegistryEntry<T>> T getPreferredStackbyMod(Collection<T> list)
 	{
-		ItemStack preferredStack = ItemStack.EMPTY;
-		int lastPref = -1;
-		for(ItemStack stack : list)
-			if(!stack.isEmpty())
+		return getPreferredStackbyMod(list, T::getRegistryName);
+	}
+
+	public static <T> T getPreferredStackbyMod(Collection<T> list, Function<T, ResourceLocation> getName)
+	{
+		T preferredStack = null;
+		int currBest = modPreference.size();
+		for(T stack : list)
 			{
-				ResourceLocation rl = Item.REGISTRY.getNameForObject(stack.getItem());
+				ResourceLocation rl = getName.apply(stack);
 				if(rl!=null)
 				{
 					String modId = rl.getNamespace();
-					int idx = modId==null||modId.isEmpty()?-1: modPreference.indexOf(modId);
-					if(preferredStack.isEmpty()||(idx >= 0&&(lastPref < 0||idx < lastPref)))
+					int idx = modPreference.indexOf(modId);
+					if(idx >= 0&&idx < currBest)
 					{
 						preferredStack = stack;
-						lastPref = idx;
+						currBest = idx;
 					}
 				}
 			}
-		return preferredStack.copy();
+		return preferredStack;
 	}
 
 	public static ItemStack getPreferredStackbyMod(ItemStack[] array)
 	{
-		return getPreferredStackbyMod(Lists.newArrayList(array));
+		return getPreferredStackbyMod(Lists.newArrayList(array), stack -> stack.getItem().getRegistryName());
 	}
 
 	public static boolean isAllowedInCrate(ItemStack stack)

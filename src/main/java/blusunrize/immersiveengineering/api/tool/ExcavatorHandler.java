@@ -172,11 +172,11 @@ public class ExcavatorHandler
 			for(int i = 0; i < ores.length; i++)
 			{
 				String ore = ores[i];
-				if(replacementOres!=null&&!ApiUtils.isExistingOreName(ore)&&replacementOres.containsKey(ore))
+				if(replacementOres!=null&&!ApiUtils.isNonemptyItemTag(ore)&&replacementOres.containsKey(ore))
 					ore = replacementOres.get(ore);
-				if(ore!=null&&!ore.isEmpty()&&ApiUtils.isExistingOreName(ore))
+				if(ore!=null&&!ore.isEmpty()&&ApiUtils.isNonemptyItemTag(ore))
 				{
-					ItemStack preferredOre = IEApi.getPreferredOreStack(ore);
+					ItemStack preferredOre = IEApi.getPreferredTagStack(ore);
 					if(!preferredOre.isEmpty())
 					{
 						existing.add(preferredOre);

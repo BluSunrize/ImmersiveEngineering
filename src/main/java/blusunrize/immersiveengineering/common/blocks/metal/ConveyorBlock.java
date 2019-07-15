@@ -28,9 +28,11 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -74,6 +76,8 @@ public class ConveyorBlock extends IETileProviderBlock
 	public void onIEBlockPlacedBy(BlockItemUseContext context, BlockState state)
 	{
 		super.onIEBlockPlacedBy(context, state);
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof ConveyorBeltTileEntity&&!(tile instanceof ConveyorVerticalTileEntity))
 		{

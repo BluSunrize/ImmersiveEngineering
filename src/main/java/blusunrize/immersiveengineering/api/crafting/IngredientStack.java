@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -30,7 +31,7 @@ public class IngredientStack
 {
 	public ItemStack stack = ItemStack.EMPTY;
 	public List<ItemStack> stackList;
-	public String oreName;
+	public ResourceLocation tag;
 	public FluidStack fluid;
 	public int inputSize = 1;
 	public boolean useNBT;
@@ -41,15 +42,15 @@ public class IngredientStack
 		this.inputSize = stack.getCount();
 	}
 
-	public IngredientStack(String oreName, int inputSize)
+	public IngredientStack(ResourceLocation tag, int inputSize)
 	{
-		this.oreName = oreName;
+		this.tag = tag;
 		this.inputSize = inputSize;
 	}
 
-	public IngredientStack(String oreName)
+	public IngredientStack(ResourceLocation tag)
 	{
-		this(oreName, 1);
+		this(tag, 1);
 	}
 
 	public IngredientStack(List<ItemStack> stackList, int inputSize)
@@ -72,7 +73,7 @@ public class IngredientStack
 	{
 		this.stack = ingr.stack;
 		this.stackList = ingr.stackList;
-		this.oreName = ingr.oreName;
+		this.tag = ingr.tag;
 		this.fluid = ingr.fluid;
 		this.inputSize = ingr.inputSize;
 		this.useNBT = ingr.useNBT;
@@ -109,8 +110,8 @@ public class IngredientStack
 		}
 		else if(input instanceof String)
 		{
-			if(this.oreName!=null)
-				return this.oreName.equals(input);
+			if(this.tag!=null)
+				return this.tag.equals(input);
 			return ApiUtils.compareToOreName(stack, (String)input);
 		}
 		return false;
@@ -132,8 +133,8 @@ public class IngredientStack
 	{
 		if(stackList!=null)
 			return stackList;
-		if(oreName!=null)
-			return OreDictionary.getOres(oreName);
+		if(tag!=null)
+			return OreDictionary.getOres(tag);
 		if(fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
 			return Collections.singletonList(UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid()));
 		return Collections.singletonList(stack);
@@ -142,10 +143,10 @@ public class IngredientStack
 	public List<ItemStack> getSizedStackList()
 	{
 		List<ItemStack> list;
-		if(oreName!=null)
+		if(tag!=null)
 		{
 			list = new ArrayList<ItemStack>();
-			for(ItemStack stack : OreDictionary.getOres(oreName))
+			for(ItemStack stack : OreDictionary.getOres(tag))
 				list.add(ApiUtils.copyStackWithAmount(stack, inputSize));
 		}
 		else if(fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
@@ -162,9 +163,9 @@ public class IngredientStack
 		ItemStack ret = stack;
 		if(ret.isEmpty()&&stackList!=null&&stackList.size() > 0)
 			ret = stackList.get((int)(rand/20)%stackList.size());
-		if(ret.isEmpty()&&oreName!=null)
+		if(ret.isEmpty()&&tag!=null)
 		{
-			List<ItemStack> ores = OreDictionary.getOres(oreName);
+			List<ItemStack> ores = OreDictionary.getOres(tag);
 			if(ores!=null&&ores.size() > 0)
 				ret = ores.get((int)(rand/20)%ores.size());
 		}
@@ -178,9 +179,9 @@ public class IngredientStack
 		ItemStack ret = stack;
 		if(ret.isEmpty()&&stackList!=null&&stackList.size() > 0)
 			ret = stackList.get(0);
-		if(ret.isEmpty()&&oreName!=null)
+		if(ret.isEmpty()&&tag!=null)
 		{
-			List<ItemStack> ores = OreDictionary.getOres(oreName);
+			List<ItemStack> ores = OreDictionary.getOres(tag);
 			if(ores!=null&&ores.size() > 0)
 				ret = ores.get(0);
 		}
@@ -194,8 +195,8 @@ public class IngredientStack
 		Ingredient ret = stack!=null?Ingredient.fromStacks(stack): null;
 		if(ret==null&&stackList!=null&&stackList.size() > 0)
 			ret = ApiUtils.createIngredientFromList(stackList);
-		if(ret==null&&oreName!=null)
-			ret = new OreIngredient(oreName);
+		if(ret==null&&tag!=null)
+			ret = new OreIngredient(tag);
 		if(ret==null&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
 			ret = new IngredientFluidStack(fluid);
 		return ret;
@@ -211,8 +212,8 @@ public class IngredientStack
 			if(fs!=null&&fs.containsFluid(fluid))
 				return true;
 		}
-		if(this.oreName!=null)
-			return ApiUtils.compareToOreName(input, oreName)&&this.inputSize <= input.getCount();
+		if(this.tag!=null)
+			return ApiUtils.compareToOreName(input, tag)&&this.inputSize <= input.getCount();
 		if(this.stackList!=null)
 		{
 			for(ItemStack iStack : this.stackList)
@@ -242,8 +243,8 @@ public class IngredientStack
 			if(fs!=null&&fs.containsFluid(fluid))
 				return true;
 		}
-		if(this.oreName!=null)
-			return ApiUtils.compareToOreName(input, oreName);
+		if(this.tag!=null)
+			return ApiUtils.compareToOreName(input, tag);
 		if(this.stackList!=null)
 		{
 			for(ItemStack iStack : this.stackList)
@@ -271,8 +272,8 @@ public class IngredientStack
 		IngredientStack otherIngredient = (IngredientStack)object;
 		if(this.fluid!=null&&otherIngredient.fluid!=null)
 			return this.fluid.equals(otherIngredient.fluid);
-		if(this.oreName!=null&&otherIngredient.oreName!=null)
-			return this.oreName.equals(otherIngredient.oreName);
+		if(this.tag!=null&&otherIngredient.tag!=null)
+			return this.tag.equals(otherIngredient.tag);
 		if(this.stackList!=null&&otherIngredient.stackList!=null)
 		{
 			for(ItemStack iStack : this.stackList)
@@ -307,9 +308,9 @@ public class IngredientStack
 			nbt.putInt("fluidAmount", fluid.amount);
 			nbt.putInt("nbtType", 3);
 		}
-		else if(this.oreName!=null)
+		else if(this.tag!=null)
 		{
-			nbt.putString("oreName", oreName);
+			nbt.putString("tag", tag);
 			nbt.putInt("nbtType", 2);
 		}
 		else if(this.stackList!=null)
@@ -349,7 +350,7 @@ public class IngredientStack
 						stackList.add(new ItemStack(list.getCompound(i)));
 					return new IngredientStack(stackList, nbt.getInt("inputSize"));
 				case 2:
-					return new IngredientStack(nbt.getString("oreName"), nbt.getInt("inputSize"));
+					return new IngredientStack(nbt.getString("tag"), nbt.getInt("inputSize"));
 				case 3:
 					FluidStack fs = new FluidStack(FluidRegistry.getFluid(nbt.getString("fluid")), nbt.getInt("fluidAmount"));
 					return new IngredientStack(fs);

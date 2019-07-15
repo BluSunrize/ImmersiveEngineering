@@ -32,6 +32,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class IEBaseBlock extends Block
 	protected boolean notNormalBlock;
 	private boolean opaqueCube = false;
 
-	public IEBaseBlock(String name, Block.Properties blockProps, Class<? extends ItemBlockIEBase> itemBlock, IProperty... additionalProperties)
+	public IEBaseBlock(String name, Block.Properties blockProps, @Nullable Class<? extends ItemBlockIEBase> itemBlock, IProperty... additionalProperties)
 	{
 		super(setTempProperties(blockProps, additionalProperties));
 		this.name = name;
@@ -64,15 +65,18 @@ public class IEBaseBlock extends Block
 		//TODO this.adjustSound();
 
 		IEContent.registeredIEBlocks.add(this);
-		try
+		if(itemBlock!=null)
 		{
-			Item.Properties itemProps = new Item.Properties().group(ImmersiveEngineering.itemGroup);
-			IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class, Item.Properties.class)
-					.newInstance(this, itemProps));
-		} catch(Exception e)
-		{
-			//TODO e.printStackTrace();
-			throw new RuntimeException(e);
+			try
+			{
+				Item.Properties itemProps = new Item.Properties().group(ImmersiveEngineering.itemGroup);
+				IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class, Item.Properties.class)
+						.newInstance(this, itemProps));
+			} catch(Exception e)
+			{
+				//TODO e.printStackTrace();
+				throw new RuntimeException(e);
+			}
 		}
 		lightOpacity = 255;
 	}

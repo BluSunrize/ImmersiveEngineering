@@ -65,7 +65,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 			String[] type = ApiUtils.getMetalComponentTypeAndMetal(e.getKey(), "ingot");
 			if(type!=null)
 			{
-				ItemStack nuggets = IEApi.getPreferredOreStack("nugget"+type[1]);
+				ItemStack nuggets = IEApi.getPreferredTagStack("nugget"+type[1]);
 				outs.add(Utils.copyStackWithAmount(nuggets, nuggetOut));
 			}
 		}

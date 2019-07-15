@@ -8,10 +8,16 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -133,10 +139,10 @@ public final class IEBlocks
 		public static Block slopeSteel;
 		public static Block slopeAlu;
 		public static Block metalLadder;
-		public static Block[] steelScaffolding = new Block[3];
-		public static Block[] aluScaffolding = new Block[3];
-		public static Block[] steelScaffoldingStair = new Block[3];
-		public static Block[] aluScaffoldingStair = new Block[3];
+		public static Map<MetalScaffoldingType, Block> steelScaffolding = new EnumMap<>(MetalScaffoldingType.class);
+		public static Map<MetalScaffoldingType, Block> aluScaffolding = new EnumMap<>(MetalScaffoldingType.class);
+		public static Map<MetalScaffoldingType, Block> steelScaffoldingStair = new EnumMap<>(MetalScaffoldingType.class);
+		public static Map<MetalScaffoldingType, Block> aluScaffoldingStair = new EnumMap<>(MetalScaffoldingType.class);
 	}
 
 	public static final class MetalDevices
@@ -163,11 +169,12 @@ public final class IEBlocks
 		public static Block turretChem;
 		public static Block turretGun;
 		public static Block belljar;
-		public static Block conveyor;
+		public static final Map<ResourceLocation, Block> CONVEYORS = new HashMap<>();
 	}
 
 	public static final class Connectors
 	{
+		public static final BiMap<Pair<String, Boolean>, Block> ENERGY_CONNECTORS = HashBiMap.create();
 		public static Block connectorStructural;
 		public static Block transformer;
 		public static Block transformerHV;

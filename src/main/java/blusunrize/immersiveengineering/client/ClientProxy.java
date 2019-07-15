@@ -587,7 +587,7 @@ public class ClientProxy extends CommonProxy
 		if(!IERecipes.hammerCrushingList.isEmpty())
 		{
 			for(String ore : IERecipes.hammerCrushingList)
-				tempRecipeList.add(new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ore"+ore), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(IEApi.getPreferredOreStack("dust"+ore), 78, 0)});
+				tempRecipeList.add(new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ore"+ore), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(IEApi.getPreferredTagStack("dust"+ore), 78, 0)});
 			if(!tempRecipeList.isEmpty())
 				ManualHelper.addEntry("oreProcessing", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "oreProcessing0", (Object[])tempRecipeList.toArray(new PositionedItemStack[tempRecipeList.size()][3])));
 		}
@@ -1582,7 +1582,7 @@ public class ClientProxy extends CommonProxy
 			for(Entry<String, Integer> entry : sortedMapArray)
 			{
 				String item = entry.getKey();
-				if(ApiUtils.isExistingOreName(entry.getKey()))
+				if(ApiUtils.isNonemptyItemTag(entry.getKey()))
 				{
 					ItemStack is = OreDictionary.getOres(entry.getKey()).get(0);
 					if(!is.isEmpty())

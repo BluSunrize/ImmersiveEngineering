@@ -31,6 +31,7 @@ public class ItemIEBase extends Item implements IColouredItem
 {
 	public String itemName;
 	private int burnTime = -1;
+	private boolean isHidden = false;
 
 	public ItemIEBase(String name, Properties props)
 	{
@@ -95,5 +96,20 @@ public class ItemIEBase extends Item implements IColouredItem
 			return 0;
 		double max = (double)((IItemDamageableIE)this).getMaxDamageIE(stack);
 		return ((IItemDamageableIE)this).getItemDamageIE(stack)/max;
+	}
+
+	public boolean isHidden()
+	{
+		return isHidden;
+	}
+
+	public void hide()
+	{
+		isHidden = true;
+	}
+
+	public void unhide()
+	{
+		isHidden = false;
 	}
 }

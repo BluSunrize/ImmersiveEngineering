@@ -66,6 +66,8 @@ public final class IEItems
 		public static Item dustSulfur;
 		public static Item electronTube;
 		public static Item circuitBoard;
+		public static Item emptyCasing;
+		public static Item emptyShell;
 	}
 
 	public static final class Metals

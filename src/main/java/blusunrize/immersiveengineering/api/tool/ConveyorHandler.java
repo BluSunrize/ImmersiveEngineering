@@ -10,12 +10,14 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,6 +34,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 
 import javax.annotation.Nonnull;
@@ -56,7 +60,7 @@ public class ConveyorHandler
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<BiConsumer<Entity, IConveyorTile>>();
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<BiConsumer<Entity, IConveyorTile>>();
 
-	public static final Map<ResourceLocation, Block> conveyorBlocks = new HashMap<>();
+	public static final Map<ResourceLocation, Block> conveyorBlocks = MetalDevices.CONVEYORS;
 	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:blocks/conveyor_colour");
 
 	/**
@@ -100,7 +104,9 @@ public class ConveyorHandler
 	{
 		for(ResourceLocation rl : classRegistry.keySet())
 		{
-			TileEntityType<ConveyorBeltTileEntity> te = new TileEntityType<>(() -> new ConveyorBeltTileEntity(rl), null);
+			TileEntityType<ConveyorBeltTileEntity> te = new TileEntityType<>(() -> new ConveyorBeltTileEntity(rl),
+					ImmutableSet.of(conveyorBlocks.get(rl)),
+					null);
 			te.setRegistryName(rl);
 			tileEntities.put(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor_"
 					+rl.toString().replace(':', '_')), te);
@@ -328,7 +334,7 @@ public class ConveyorHandler
 
 			double vBase = 1.15;
 			double vX = 0.1*vBase*facing.getXOffset();
-			double vY = entity.motionY;
+			double vY = entity.getMotion().y;
 			double vZ = 0.1*vBase*facing.getZOffset();
 
 			if(conveyorDirection==ConveyorDirection.UP)
@@ -364,19 +370,20 @@ public class ConveyorHandler
 			BlockPos pos = tile.getPos();
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			float heightLimit = conveyorDirection==ConveyorDirection.HORIZONTAL?.25f: 1f;
-			if(entity!=null&&!entity.isDead&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.posY-pos.getY() >= 0&&entity.posY-pos.getY() < heightLimit)
+			if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.posY-pos.getY() >= 0&&entity.posY-pos.getY() < heightLimit)
 			{
 				Vec3d vec = this.getDirection(tile, entity, facing);
 				if(entity.fallDistance < 3)
 					entity.fallDistance = 0;
-				entity.motionX = vec.x;
-				entity.motionY = vec.y;
-				entity.motionZ = vec.z;
+				entity.setMotion(vec);
 				double distX = Math.abs(pos.offset(facing).getX()+.5-entity.posX);
 				double distZ = Math.abs(pos.offset(facing).getZ()+.5-entity.posZ);
 				double treshold = .9;
 				boolean contact = facing.getAxis()==Axis.Z?distZ < treshold: distX < treshold;
-				if(contact&&conveyorDirection==ConveyorDirection.UP&&!tile.getWorld().getBlockState(pos.offset(facing).up()).isFullBlock())
+				World w = tile.getWorld();
+				BlockPos upPos = pos.offset(facing).up();
+				if(contact&&conveyorDirection==ConveyorDirection.UP&&
+						!Block.doesSideFillSquare(w.getBlockState(upPos).getShape(w, upPos), Direction.DOWN))
 				{
 					double move = .4;
 					entity.setPosition(entity.posX+move*facing.getXOffset(), entity.posY+1*move, entity.posZ+move*facing.getZOffset());
@@ -427,7 +434,7 @@ public class ConveyorHandler
 					{
 						ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, facing.getOpposite());
 						if(ret.isEmpty())
-							entity.setDead();
+							entity.remove();
 						else if(ret.getCount() < stack.getCount())
 							entity.setItem(ret);
 					}

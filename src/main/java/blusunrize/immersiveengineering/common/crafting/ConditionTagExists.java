@@ -37,6 +37,6 @@ public class ConditionTagExists implements IConditionSerializer
 	{
 		String key = JSONUtils.getString(json, "tag");
 		boolean value = JSONUtils.getBoolean(json, "value", true);
-		return () -> ApiUtils.isExistingOreName(key)==value;
+		return () -> ApiUtils.isNonemptyItemTag(key)==value;
 	}
 }

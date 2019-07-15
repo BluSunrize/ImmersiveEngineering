@@ -51,7 +51,7 @@ public class Thermoelectric
 		@Override
 		public String describe()
 		{
-			return "Adding Thermoelectric temperature value for "+(ingredientStack.oreName!=null?ingredientStack.oreName: ingredientStack.getExampleStack().getDisplayName());
+			return "Adding Thermoelectric temperature value for "+(ingredientStack.tag!=null?ingredientStack.tag: ingredientStack.getExampleStack().getDisplayName());
 		}
 	}
 
@@ -86,7 +86,7 @@ public class Thermoelectric
 		@Override
 		public String describe()
 		{
-			return "Removing Thermoelectric temperature value for "+(ingredientStack.oreName!=null?ingredientStack.oreName: ingredientStack.getExampleStack().getDisplayName());
+			return "Removing Thermoelectric temperature value for "+(ingredientStack.tag!=null?ingredientStack.tag: ingredientStack.getExampleStack().getDisplayName());
 		}
 	}
 }

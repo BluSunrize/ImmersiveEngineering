@@ -14,12 +14,13 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class MiscConnectorBlock extends ConnectorBlock
 {
-	private final TileEntityType<?> tileType;
+	private final Supplier<TileEntityType<?>> tileType;
 
-	public MiscConnectorBlock(String name, TileEntityType<?> tileType, BlockRenderLayer... layers)
+	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, BlockRenderLayer... layers)
 	{
 		super(name);
 		this.tileType = tileType;
@@ -30,6 +31,6 @@ public class MiscConnectorBlock extends ConnectorBlock
 	@Override
 	public TileEntity createBasicTE(BlockState state)
 	{
-		return tileType.create();
+		return tileType.get().create();
 	}
 }
