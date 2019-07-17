@@ -60,5 +60,6 @@ public class InventoryBlueprint extends InventoryBasic
 		//Update remains
 		for(int i = 0; i < inputs.size(); i++)
 			inputInventory.setInventorySlotContents(i+1, inputs.get(i));
+		updateOutputs(inputInventory);
 	}
 }
