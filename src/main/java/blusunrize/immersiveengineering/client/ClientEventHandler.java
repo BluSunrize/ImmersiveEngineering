@@ -1233,21 +1233,35 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	}
 
 	private static ItemStack sampleDrill = ItemStack.EMPTY;
+	private static ItemStack coreSample = ItemStack.EMPTY;
+
 	@SubscribeEvent
 	public void onRenderWorldLastEvent(RenderWorldLastEvent event)
 	{
+		EntityPlayer player = ClientUtils.mc().player;
 		//Overlay renderer for the sample drill
-		boolean chunkBorders = false;
+		int[] chunkBorders = null;
 		if(sampleDrill.isEmpty())
 			sampleDrill = new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta());
+		if(coreSample.isEmpty())
+			coreSample = new ItemStack(IEContent.itemCoresample);
 		for(EnumHand hand : EnumHand.values())
-			if(OreDictionary.itemMatches(sampleDrill, ClientUtils.mc().player.getHeldItem(hand), true))
+			if(OreDictionary.itemMatches(sampleDrill, player.getHeldItem(hand), true))
 			{
-				chunkBorders = true;
+				chunkBorders = new int[]{(int)player.posX >> 4<<4, (int)player.posZ >> 4<<4};
 				break;
 			}
-		if(!chunkBorders&&ClientUtils.mc().objectMouseOver!=null&&ClientUtils.mc().objectMouseOver.typeOfHit==Type.BLOCK&&ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
-			chunkBorders = true;
+			else if(OreDictionary.itemMatches(coreSample, player.getHeldItem(hand), true))
+			{
+				int[] coords = ItemNBTHelper.getIntArray(player.getHeldItem(hand), "coords");
+				if(coords[0]==player.getEntityWorld().provider.getDimension())
+				{
+					chunkBorders = new int[]{coords[1]<<4, coords[2]<<4};
+					break;
+				}
+			}
+		if(chunkBorders==null&&ClientUtils.mc().objectMouseOver!=null&&ClientUtils.mc().objectMouseOver.typeOfHit==Type.BLOCK&&ClientUtils.mc().world.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
+			chunkBorders = new int[]{(int)player.posX >> 4<<4, (int)player.posZ >> 4<<4};
 
 		float partial = event.getPartialTicks();
 		if(!ParticleFractal.PARTICLE_FRACTAL_DEQUE.isEmpty())
@@ -1276,60 +1290,16 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			GlStateManager.enableTexture2D();
 		}
 
-		if(chunkBorders)
+		if(chunkBorders!=null)
 		{
-			EntityPlayer player = ClientUtils.mc().player;
-			double px = TileEntityRendererDispatcher.staticPlayerX;
-			double py = TileEntityRendererDispatcher.staticPlayerY;
-			double pz = TileEntityRendererDispatcher.staticPlayerZ;
-			int chunkX = (int)player.posX >> 4<<4;
-			int chunkZ = (int)player.posZ >> 4<<4;
-			int y = Math.min((int)player.posY-2, player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
-			float h = (float)Math.max(32, player.posY-y+4);
-			Tessellator tessellator = Tessellator.getInstance();
-			BufferBuilder BufferBuilder = tessellator.getBuffer();
-
-			GlStateManager.disableTexture2D();
-			GlStateManager.enableBlend();
-			GlStateManager.disableCull();
-			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-			GlStateManager.shadeModel(GL11.GL_SMOOTH);
-			float r = Lib.COLOUR_F_ImmersiveOrange[0];
-			float g = Lib.COLOUR_F_ImmersiveOrange[1];
-			float b = Lib.COLOUR_F_ImmersiveOrange[2];
-			BufferBuilder.setTranslation(chunkX-px, y+2-py, chunkZ-pz);
-			GlStateManager.glLineWidth(5f);
-			BufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-			BufferBuilder.pos(0, 0, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, h, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 0, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, h, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 0, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, h, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 0, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, h, 16).color(r, g, b, .375f).endVertex();
-
-			BufferBuilder.pos(0, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 2, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 2, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 16).color(r, g, b, .375f).endVertex();
-			tessellator.draw();
-			BufferBuilder.setTranslation(0, 0, 0);
-			GlStateManager.shadeModel(GL11.GL_FLAT);
-			GlStateManager.enableCull();
-			GlStateManager.disableBlend();
-			GlStateManager.enableTexture2D();
+			renderChunkBorders(player, chunkBorders[0], chunkBorders[1]);
 		}
 
 		if(!FAILED_CONNECTIONS.isEmpty())
 		{
 			Entity viewer = ClientUtils.mc().getRenderViewEntity();
 			if(viewer==null)
-				viewer = ClientUtils.mc().player;
+				viewer = player;
 			double dx = viewer.lastTickPosX+(viewer.posX-viewer.lastTickPosX)*partial;
 			double dy = viewer.lastTickPosY+(viewer.posY-viewer.lastTickPosY)*partial;
 			double dz = viewer.lastTickPosZ+(viewer.posZ-viewer.lastTickPosZ)*partial;
@@ -1376,6 +1346,53 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		}
 	}
 
+	private static void renderChunkBorders(EntityPlayer player, int chunkX, int chunkZ)
+	{
+		double px = TileEntityRendererDispatcher.staticPlayerX;
+		double py = TileEntityRendererDispatcher.staticPlayerY;
+		double pz = TileEntityRendererDispatcher.staticPlayerZ;
+
+		int y = Math.min((int)player.posY, player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight())-2;
+		float h = (float)Math.max(32, player.posY-y+4);
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder BufferBuilder = tessellator.getBuffer();
+
+		GlStateManager.disableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.disableCull();
+		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.shadeModel(GL11.GL_SMOOTH);
+		float r = Lib.COLOUR_F_ImmersiveOrange[0];
+		float g = Lib.COLOUR_F_ImmersiveOrange[1];
+		float b = Lib.COLOUR_F_ImmersiveOrange[2];
+		BufferBuilder.setTranslation(chunkX-px, y+2-py, chunkZ-pz);
+		GlStateManager.glLineWidth(5f);
+		BufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+		BufferBuilder.pos(0, 0, 0).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(0, h, 0).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(16, 0, 0).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(16, h, 0).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(16, 0, 16).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(16, h, 16).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(0, 0, 16).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(0, h, 16).color(r, g, b, .375f).endVertex();
+
+		BufferBuilder.pos(0, 2, 0).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(16, 2, 0).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(0, 2, 0).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(0, 2, 16).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(0, 2, 16).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(16, 2, 16).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(16, 2, 0).color(r, g, b, .375f).endVertex();
+		BufferBuilder.pos(16, 2, 16).color(r, g, b, .375f).endVertex();
+		tessellator.draw();
+		BufferBuilder.setTranslation(0, 0, 0);
+		GlStateManager.shadeModel(GL11.GL_FLAT);
+		GlStateManager.enableCull();
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture2D();
+
+	}
 	//	static void renderBoundingBox(AxisAlignedBB aabb, double offsetX, double offsetY, double offsetZ, float expand)
 	//	{
 	//		if(aabb instanceof AdvancedAABB && ((AdvancedAABB)aabb).drawOverride!=null && ((AdvancedAABB)aabb).drawOverride.length>0)
