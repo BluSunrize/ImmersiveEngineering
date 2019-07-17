@@ -34,6 +34,8 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nullable;
+
 public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityAlloySmelter> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
 {
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -134,7 +136,8 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 					}
 					markContainingBlockForUpdate(null);
 				}
-				burnTime--;
+				if(--burnTime%10==0)
+					markContainingBlockForUpdate(null);
 
 				if(process <= 0)
 				{
@@ -171,7 +174,7 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 					active = false;
 			}
 
-			if(burnTime <= 10&&getRecipe()!=null)
+			if(burnTime <= 10&&getRecipe()!=null&&(process > 10||processMax==0))
 			{
 				ItemStack fuel = inventory.get(2);
 				if(TileEntityFurnace.isItemFuel(fuel))
@@ -205,6 +208,7 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 		}
 	}
 
+	@Nullable
 	public AlloyRecipe getRecipe()
 	{
 		if(inventory.get(0).isEmpty()||inventory.get(1).isEmpty())
