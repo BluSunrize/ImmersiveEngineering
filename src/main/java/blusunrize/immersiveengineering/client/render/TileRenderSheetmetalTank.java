@@ -34,8 +34,10 @@ public class TileRenderSheetmetalTank extends TileEntitySpecialRenderer<TileEnti
 		float baseScale = .0625f;
 		GlStateManager.scale(baseScale, -baseScale, baseScale);
 
+		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(tile.getPos());
+		float offset = playerDistanceSq<64?.001f: playerDistanceSq<2304?.004f: .015f;
 		float xx = -.5f;
-		float zz = 1.5f-.004f;
+		float zz = 1.5f-offset;
 		xx /= baseScale;
 		zz /= baseScale;
 		for(int i = 0; i < 4; i++)
