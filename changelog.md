@@ -1,10 +1,14 @@
 ##### Version 0.12-90
-- Added a config option to disable fancy Blueprint rendering
+- Added a config option to disable fancy Blueprint rendering (BluSunrize)
 - Items on conveyors now despawn after the usual time when stuck against a block (Malte)
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
 - Fixed wires connecting to the transformer when clicking on the lower blocks (Malte)
 - Fixed some ghostloading issues (Malte, with help from Barteks2x)
 - Fixed the assembler not crafting recipes added using CraftTweaker (Malte)
+- Fixed Alloy Smelter consuming extra coal when no further processing is necessary (BluSunrize)
+- Fixed Blueprint recipes using the Wirecutter locking up after 1 crafting operation (BluSunrize)
+- Fixed ArcFurnace not consuming the correct number of ingredients (BluSunrize)
+- Fixed some visual glitches (BluSunrize)
 
 ##### Version 0.12-89 - BUILT
 - Added a covered dropping conveyor (BluSunrize)
