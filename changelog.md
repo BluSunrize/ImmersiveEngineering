@@ -2,6 +2,7 @@
 - Added a config option to disable fancy Blueprint rendering (BluSunrize)
 - Changed CoreSamples to draw a chunk overlay like the drill (BluSunrize)
 - Changed Wires to return only half an ingot worth of material when recycled (BluSunrize)
+- Changed Dragonsbreath cartridges to not fire an obscene amount of bullets anymore (BluSunrize)
 - Items on conveyors now despawn after the usual time when stuck against a block (Malte)
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
 - Fixed wires connecting to the transformer when clicking on the lower blocks (Malte)

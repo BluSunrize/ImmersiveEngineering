@@ -139,7 +139,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			@Override
 			public int getProjectileCount(EntityPlayer shooter)
 			{
-				return 30;
+				return 10;
 			}
 
 			@Override
