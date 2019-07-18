@@ -304,7 +304,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 								for(ItemStack b : bullets)
 									if(!b.isEmpty())
 										world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, b));
-								setBullets(revolver, ((ItemSpeedloader)stack.getItem()).getContainedItems(stack));
+								setBullets(revolver, ((ItemSpeedloader)stack.getItem()).getContainedItems(stack), true);
 								((ItemSpeedloader)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 								player.inventory.markDirty();
 								if(player instanceof EntityPlayerMP)
@@ -357,7 +357,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 						for(int i = 1; i < cycled.size(); i++)
 							cycled.set(i-1, bullets.get(i));
 						cycled.set(cycled.size()-1, bullets.get(0));
-						setBullets(revolver, cycled);
+						setBullets(revolver, cycled, false);
 						player.inventory.markDirty();
 						ItemNBTHelper.setInt(revolver, "cooldown", getMaxShootCooldown(revolver));
 						return new ActionResult(EnumActionResult.SUCCESS, revolver);
@@ -430,14 +430,18 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			return Utils.readInventory(ItemNBTHelper.getTag(revolver).getTagList("bullets", 10), getBulletCount(revolver));
 	}
 
-	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets)
+	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets, boolean ignoreExtendedMag)
 	{
 		IItemHandlerModifiable inv = (IItemHandlerModifiable)revolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		assert inv!=null;
 		for(int i = 0; i < 18; i++)
 			inv.setStackInSlot(i, ItemStack.EMPTY);
-		for(int i = 0; i < bullets.size(); i++)
-			inv.setStackInSlot(i, bullets.get(i));
+		if(ignoreExtendedMag && getUpgrades(revolver).getInteger("bullets")>0)
+			for(int i = 0; i < bullets.size(); i++)
+				inv.setStackInSlot(i<2?i:i+getUpgrades(revolver).getInteger("bullets"), bullets.get(i));
+		else
+			for(int i = 0; i < bullets.size(); i++)
+				inv.setStackInSlot(i, bullets.get(i));
 	}
 
 	@Override
