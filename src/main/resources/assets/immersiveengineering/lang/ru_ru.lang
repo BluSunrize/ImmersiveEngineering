@@ -1,3 +1,4 @@
+Translated 18.07.19
 # BLOCKS
 tile.immersiveengineering.ore.copper.name=Медная руда
 tile.immersiveengineering.ore.aluminum.name=Бокситовая руда
@@ -120,13 +121,13 @@ tile.immersiveengineering.metal_decoration0.heavy_engineering.name=Тяжёлы�
 tile.immersiveengineering.metal_decoration0.generator.name=Блок генератора
 tile.immersiveengineering.metal_decoration0.radiator.name=Блок радиатора
 tile.immersiveengineering.metal_decoration1.steel_fence.name=Стальной забор
-tile.immersiveengineering.metal_decoration1.steel_scaffolding_0.name=Стальные леса
-tile.immersiveengineering.metal_decoration1.steel_scaffolding_1.name=Стальные леса
-tile.immersiveengineering.metal_decoration1.steel_scaffolding_2.name=Стальные леса
-tile.immersiveengineering.metal_decoration1.aluminum_fence.name=Алюминиевые леса 
-tile.immersiveengineering.metal_decoration1.aluminum_scaffolding_0.name=Алюминиевые леса 
-tile.immersiveengineering.metal_decoration1.aluminum_scaffolding_1.name=Алюминиевые леса 
-tile.immersiveengineering.metal_decoration1.aluminum_scaffolding_2.name=Алюминиевые леса 
+tile.immersiveengineering.metal_decoration1.steel_scaffolding_0.name=Стальные леса (1)
+tile.immersiveengineering.metal_decoration1.steel_scaffolding_1.name=Стальные леса (2)
+tile.immersiveengineering.metal_decoration1.steel_scaffolding_2.name=Стальные леса (3)
+tile.immersiveengineering.metal_decoration1.aluminum_fence.name=Алюминиевый забор
+tile.immersiveengineering.metal_decoration1.aluminum_scaffolding_0.name=Алюминиевые леса (1)
+tile.immersiveengineering.metal_decoration1.aluminum_scaffolding_1.name=Алюминиевые леса (2)
+tile.immersiveengineering.metal_decoration1.aluminum_scaffolding_2.name=Алюминиевые леса (3)
 tile.immersiveengineering.metal_decoration2.steel_post.name=Стальной столб
 tile.immersiveengineering.metal_decoration2.steel_wallmount.name=Стальной настенный крепёж
 tile.immersiveengineering.metal_decoration2.aluminum_post.name=Стальной столб
@@ -134,8 +135,6 @@ tile.immersiveengineering.metal_decoration2.aluminum_wallmount.name=Алюмин
 tile.immersiveengineering.metal_decoration2.lantern.name=Фонарь
 tile.immersiveengineering.metal_decoration2.razor_wire.name=Колючая проволока
 tile.immersiveengineering.metal_decoration2.toolbox.name=Набор инструментов инженера
-tile.immersiveengineering.metal_decoration2.steel_slope.name=Стальная структурная опора
-tile.immersiveengineering.metal_decoration2.alu_slope.name=Алюминиевая структурная опора
 
 tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_0.name=Плита из стальных лесов
 tile.immersiveengineering.metal_decoration1_slab.steel_scaffolding_1.name=Плита из стальных лесов
@@ -174,6 +173,7 @@ tile.immersiveengineering.metal_device0.capacitor_lv.name=Низковольтн
 tile.immersiveengineering.metal_device0.capacitor_mv.name=Средневольтный конденсатор
 tile.immersiveengineering.metal_device0.capacitor_hv.name=Высоковольтный конденсатор
 tile.immersiveengineering.metal_device0.capacitor_creative.name=Творческий конденстор
+
 tile.immersiveengineering.metal_device0.barrel.name=Металлическая бочка
 tile.immersiveengineering.metal_device0.fluid_pump.name=Жидкостный насос
 tile.immersiveengineering.metal_device0.fluid_placer.name=Жидкостный клапан
@@ -229,10 +229,10 @@ tile.immersiveengineering.cloth_device.stripcurtain.name=Полосовая за
 tile.immersiveengineering.molten_uranium.name=Расплавленный уран
 tile.immersiveengineering.molten_constantan.name=Расплавленный константан
 
-tile.immersiveengineering.arb_solid.name=Любой твёрдый блок
+tile.immersiveengineering.arb_solid.name=Произвольный твердый блок
 
 #Hydraulicraft Compat
-tile.harvesterTrolley.ieCrop.name=Промышленный комбайн для сбора конопли
+tile.harvesterTrolley.ieCrop.name=Комбайн для сбора конопли
 
 tile.immersiveengineering.fluidCreosote.name=Креозотовое масло
 tile.immersiveengineering.fluidPlantoil.name=Растительное масло
@@ -295,7 +295,7 @@ item.immersiveengineering.material.stick_treated.name=Обработанная �
 item.immersiveengineering.material.stick_iron.name=Железный стержень
 item.immersiveengineering.material.stick_steel.name=Стальной стержень
 item.immersiveengineering.material.stick_aluminum.name=Алюминиевый стержень
-item.immersiveengineering.material.hemp_fiber.name=Пенька
+item.immersiveengineering.material.hemp_fiber.name=Волокно промышленной конопли
 item.immersiveengineering.material.hemp_fabric.name=Прочная ткань
 item.immersiveengineering.material.coal_coke.name=Коксовый уголь
 item.immersiveengineering.material.slag.name=Шлак
@@ -314,8 +314,8 @@ item.immersiveengineering.material.ingot_hop_graphite.name=Слиток HOP-гр
 item.immersiveengineering.material.wire_copper.name=Медный провод
 item.immersiveengineering.material.wire_electrum.name=Электрумовый провод
 item.immersiveengineering.material.wire_aluminum.name=Алюминиевый провод
-item.immersiveengineering.material.wire_steel.name=Стальной провод
-item.immersiveengineering.material.dust_saltpeter.name=Нитратный порошок
+item.immersiveengineering.material.wire_steel.name=Стальная проволока
+item.immersiveengineering.material.dust_saltpeter.name=Нитратная пыль
 item.immersiveengineering.material.dust_sulfur.name=Серная пыль
 item.immersiveengineering.material.electron_tube.name=Электронная лампа
 item.immersiveengineering.material.circuit_board.name=Монтажная плата
@@ -389,11 +389,10 @@ item.immersiveengineering.drillhead.steel.name=Стальной шнек бур�
 
 item.immersiveengineering.skyhook.name=Небесный крюк инженера
 
-
-item.immersiveengineering.toolupgrade.drill_waterproof.name=Резервуары для сжатого воздуха
+item.immersiveengineering.toolupgrade.drill_waterproof.name=Внутренний резервуар окислителя
 item.immersiveengineering.toolupgrade.drill_speed.name=Продвинутая смазочная система
 item.immersiveengineering.toolupgrade.drill_damage.name=Дополнительные шнеки
-item.immersiveengineering.toolupgrade.drill_capacity.name=Дополнительный резервуар
+item.immersiveengineering.toolupgrade.drill_capacity.name=Дополнительный бак
 item.immersiveengineering.toolupgrade.revolver_bayonet.name=Штык
 item.immersiveengineering.toolupgrade.revolver_magazine.name=Дополнительная обойма
 item.immersiveengineering.toolupgrade.revolver_electro.name=Электронный усилитель
@@ -407,8 +406,8 @@ item.immersiveengineering.toolupgrade.chemthrower_multitank.name=Резерву�
 
 item.immersiveengineering.blueprint.name=Чертёж инженера
 item.immersiveengineering.mold.plate.name=Металлическая пресс-форма: Пластина
-item.immersiveengineering.mold.gear.name=Металлическая пресс-форма: Шестерня
-item.immersiveengineering.mold.rod.name=Металлическая пресс-форма: Стержень
+item.immersiveengineering.mold.gear.name=Металлическая пресс-форма: Стержень
+item.immersiveengineering.mold.rod.name=Металлическая пресс-форма: Прут
 item.immersiveengineering.mold.bullet_casing.name=Металлическая пресс-форма: Патрон
 item.immersiveengineering.mold.wire.name=Металлическая пресс-форма: Провод
 item.immersiveengineering.mold.packing4.name=Металлическая пресс-форма: Упаковка 2x2
@@ -431,8 +430,6 @@ item.immersiveengineering.fluorescent_tube.name=Люминесцентная л�
 item.immersiveengineering.powerpack.name=Конденсаторный рюкзак
 item.immersiveengineering.shield.name=Тяжёлый покрытый щит
 item.immersiveengineering.maintenance_kit.name=Ремонтный комплект
-
-item.immersiveengineering.map_orevein.name=Карта месторождений полезных ископаемых
 
 #CREATIVE
 itemGroup.immersiveengineering=Immersive Engineering
@@ -580,7 +577,7 @@ fluid.uranium=Расплавленный уран
 fluid.constantan=Расплавленный константан
 material.treated_wood.name=Обработанная древесина
 material.constantan.name=Константан
-material.hemp.name=Пенька
+material.hemp.name=Волокно промышленной конопли
 modifier.thermalinversion.name=Термальная инверсия
 modifier.thermalinversion.desc=§oГорячий и Холодный!§r\nУдаряя врага в горячей или холодной окружающей среде охладит или сожжёт его.
 #BOTANIA COMPAT
@@ -596,8 +593,8 @@ entity.Villager.immersiveengineering.machinist=Механик
 entity.Villager.immersiveengineering.electrician=Электрик
 entity.Villager.immersiveengineering.outfitter=Экипировщик
 
-key.immersiveengineering.magnetEquip=Magnetic Shield Glove (doubletap)
-key.immersiveengineering.chemthrowerSwitch=Switch Chemthrower Tanks
+key.immersiveengineering.magnetEquip=Перчатка с магнитным щитом (двойной щелчок)
+key.immersiveengineering.chemthrowerSwitch=Переключить резервуар хим. метателя
 
 desc.immersiveengineering.info.attachedTo=Присоединяется от %1$s, %2$s, %3$s
 desc.immersiveengineering.info.attachedToDim=Присоединяется от %1$s, %2$s, %3$s в измерении %4$s
@@ -646,11 +643,11 @@ desc.immersiveengineering.info.oreDict.on=Словарь руд: Включён
 desc.immersiveengineering.info.mininglvl.-1=Нет
 desc.immersiveengineering.info.mininglvl.0=§7Камень
 desc.immersiveengineering.info.mininglvl.1=§4Железо
-desc.immersiveengineering.info.mininglvl.2=§cРедстоун
+desc.immersiveengineering.info.mininglvl.2=§cКрасный камень
 desc.immersiveengineering.info.mininglvl.3=§dОбсидиан
 desc.immersiveengineering.info.mininglvl.4=§9Кобальт
-desc.immersiveengineering.info.mininglvl.5=§5Маньюлин
-desc.immersiveengineering.info.mininglvl.6=§5Маньюлин§d+
+desc.immersiveengineering.info.mininglvl.5=§5Манулин
+desc.immersiveengineering.info.mininglvl.6=§5Манулин§d+
 
 desc.immersiveengineering.info.durability=Прочность: %1$s
 
@@ -693,7 +690,7 @@ desc.immersiveengineering.info.chance=Шанс:
 desc.immersiveengineering.info.blueprint.creates0=Созданные предметы: §6Нажмите Shift§r
 desc.immersiveengineering.info.blueprint.creates1=Созданные предметы:
 desc.immersiveengineering.info.blueprint.components=Компоненты для создания
-desc.immersiveengineering.info.blueprint.molds=Металлическая пресс-форма
+desc.immersiveengineering.info.blueprint.molds=Металлический пресс-форм
 desc.immersiveengineering.info.blueprint.bullet=Обычные патроны
 desc.immersiveengineering.info.blueprint.specialBullet=Особые патроны
 desc.immersiveengineering.info.blueprint.electrode=Электроды дуговой печи
@@ -712,20 +709,19 @@ desc.immersiveengineering.info.shader.immersiveengineering:minecart=Вагоне
 desc.immersiveengineering.info.shader.immersiveengineering:balloon=Воздушный шар
 desc.immersiveengineering.info.shader.set=§lНабор шейдеров§r:
 desc.immersiveengineering.info.shader.reference=§lСсылка на попкультуру§r:
-desc.immersiveengineering.info.shader.details=§lДополнительное инфо§r:
+desc.immersiveengineering.info.shader.details=§lДополнительная информация§r:
 
 desc.immersiveengineering.info.toolbox.food=Пища
 desc.immersiveengineering.info.toolbox.tool=Инструменты
 desc.immersiveengineering.info.toolbox.wire=Электропроводка
 desc.immersiveengineering.info.toolbox.any=Разное
 
-desc.immersiveengineering.info.fertFill=Количество удобрения: %1$s
+desc.immersiveengineering.info.fertFill=Количество удобрений: %1$s
 desc.immersiveengineering.info.fertMod=Модификатор роста: %1$s
 
 desc.immersiveengineering.info.redstoneChannel=Канал: %1$s
 desc.immersiveengineering.info.redstoneChannel.send=Канал отправки: %1$s
 desc.immersiveengineering.info.redstoneChannel.rec=Канал приёма: %1$s
-
 
 desc.immersiveengineering.info.multiblock.IE:AlloySmelter=Плавильная печь
 desc.immersiveengineering.info.multiblock.IE:ArcFurnace=Дуговая печь
@@ -787,7 +783,7 @@ desc.immersiveengineering.flavour.drill.headDamage=Состояние шнека
 desc.immersiveengineering.flavour.drill.fuel=Топливо:
 desc.immersiveengineering.flavour.drill.empty=Пусто
 
-desc.immersiveengineering.flavour.drillhead.size=Зона добычи: %1$sx%1$sx%2$s
+desc.immersiveengineering.flavour.drillhead.size=Область добычи: %1$sx%1$sx%2$s
 desc.immersiveengineering.flavour.drillhead.level=Уровень добычи: %1$s
 desc.immersiveengineering.flavour.drillhead.speed=Скорость добычи: %1$s
 desc.immersiveengineering.flavour.drillhead.damage=Урон: %1$s
@@ -795,7 +791,7 @@ desc.immersiveengineering.flavour.drillhead.damage=Урон: %1$s
 desc.immersiveengineering.flavour.skyhook=Новая форма путешествия
 
 desc.immersiveengineering.flavour.toolupgrade.drill_waterproof=Позволяет буру работать под водой
-desc.immersiveengineering.flavour.toolupgrade.drill_lube=Снижает урон, наносимый головке бура во время добычи
+desc.immersiveengineering.flavour.toolupgrade.drill_lube=Снижает урон, наносимый головке добывающего бура
 desc.immersiveengineering.flavour.toolupgrade.drill_damage=Увеличивает урон бура, складывается до 3-ёх
 desc.immersiveengineering.flavour.toolupgrade.drill_capacity=Увеличивает размер внутреннего резервуара шахтёрского бура и химического метателя
 desc.immersiveengineering.flavour.toolupgrade.revolver_bayonet=Добавляет револьверу рукопашный урон
@@ -829,21 +825,21 @@ gui.immersiveengineering.config.turret.blacklist=Черный список
 gui.immersiveengineering.config.turret.animals=Животные
 gui.immersiveengineering.config.turret.players=Игроки
 gui.immersiveengineering.config.turret.neutrals=Нейтральные
-gui.immersiveengineering.config.turret.ignite_fluid=Воспламенение жидкости
-gui.immersiveengineering.config.turret.expel_casings_on=Исключить гильзы
-gui.immersiveengineering.config.turret.expel_casings_off=Хранить гильзы
+gui.immersiveengineering.config.turret.ignite_fluid=Легковоспламеняющаяся жидкость
+gui.immersiveengineering.config.turret.expel_casings_on=Выталкивать патроны
+gui.immersiveengineering.config.turret.expel_casings_off=Сохранять патроны
 
-gui.immersiveengineering.config.mixer.outputSingle=Выход только нижняя жидкость
-gui.immersiveengineering.config.mixer.outputAll=Выход всех жидкостей
+gui.immersiveengineering.config.mixer.outputSingle=Извлекать только нижнию жидкость
+gui.immersiveengineering.config.mixer.outputAll=Извлекать все жидкости
 
 gui.immersiveengineering.config.assembler.clearRecipe=Очистить рецепт
 gui.immersiveengineering.config.assembler.recursiveIngredients=Рекурсивное использование ингредиентов
 gui.immersiveengineering.config.assembler.nonRecursiveIngredients=Нерекурсивное использование ингредиентов
 
 #CHAT
-chat.immersiveengineering.warning.wrongCable=Вы не можете прикрепить кабель здесь
+chat.immersiveengineering.warning.wrongCable=Вы не можете прикрепить провод здесь
 chat.immersiveengineering.warning.wrongDimension=Вы в неверном измерении
-chat.immersiveengineering.warning.sameConnection=Вы не можете прикрепить кабель к одинаковой точке
+chat.immersiveengineering.warning.sameConnection=Вы не можете прикрепить привод к одной и той же точке
 chat.immersiveengineering.warning.tooFar=Вы слишком далеко от предыдущего соединения
 chat.immersiveengineering.warning.cantSee=Соединение затруднено
 chat.immersiveengineering.warning.connectionExists=Соединение уже существует
@@ -896,7 +892,7 @@ subtitle.immersiveengineering.metalPressPiston=Поршень металличе
 subtitle.immersiveengineering.metalPressSmash=Удар металлического пресса
 subtitle.immersiveengineering.birthdayParty=О,да! Вечеринка!
 subtitle.immersiveengineering.revolverFire=Выстрел
-subtitle.immersiveengineering.revolverReload=Перезарядка
+subtitle.immersiveengineering.revolverReload=Перезагрузка
 subtitle.immersiveengineering.spray=Брызги жидкости
 subtitle.immersiveengineering.sprayFire=Горящие брызги жидкости
 subtitle.immersiveengineering.chargeFast=Зарядка конденсаторов
@@ -904,7 +900,7 @@ subtitle.immersiveengineering.chargeSlow=Зарядка конденсаторо
 subtitle.immersiveengineering.spark=Электрические искры
 subtitle.immersiveengineering.railgunFire=Обстрел рельсотрона
 subtitle.immersiveengineering.tesla=Выгорание Катушки Тесла
-subtitle.immersiveengineering.direSwitch=Direwolf20 имитирующий рубильник
+subtitle.immersiveengineering.direSwitch=Direwolf20, имитирующий рубильник
 subtitle.immersiveengineering.skyhook=Небесный крюк скользит по проводу
 
 #RECIPES
@@ -947,7 +943,7 @@ death.attack.ieWireShock=%1$s не был достаточно остороже�
 
 #ACHIEVEMENTS
 advancement.immersiveengineering:root=Immersive Engineering
-advancement.immersiveengineering:root.desc=Прочитай это проклятое руководство!
+advancement.immersiveengineering:root.desc=RTFM!
 advancement.immersiveengineering:openManual=Прочитай это проклятое руководство
 advancement.immersiveengineering:openManual.desc=Откройте руководство инженера
 advancement.immersiveengineering:craftHammer=МОЛОТ!
@@ -1014,7 +1010,7 @@ advancement.immersiveengineering:secret_drillbreak.desc=ЗА КОГО, ЧЕРТ 
 
 
 
-stat.skyhookOneCm=Дистанция на Небесном крюке
+stat.skyhookOneCm=Дистанция на крюке
 
 immersiveengineering.potion.flammable=Горючий
 immersiveengineering.potion.slippery=Скользкий
@@ -1025,12 +1021,9 @@ immersiveengineering.potion.concreteFeet=Бетоннае ноги
 immersiveengineering.potion.flashed=Вспышка
 
 #MANUAL
-ie.manual.currentVersion= - CURRENT
-ie.manual.newerVersion= - NEW
-#ie.manual.entry.name=
-#ie.manual.entry.subtext=
+#ie.manual.entry..name=
+#ie.manual.entry..subtext=
 #ie.manual.entry.=
-
 
 ie.manual.category.update.name=UPDATE NEWS!
 ie.manual.entry.updateNews_0.name=What's new in v0.6.0
@@ -1067,7 +1060,7 @@ ie.manual.category.heavymachines.name=Тяжёлое машиностроени�
 
 ie.manual.entry.introduction.name=Введение
 ie.manual.entry.introduction.subtext=Введение в инженерное дело
-ie.manual.entry.introduction0=Здравствуйте, товарищ инженер, добро пожаловать в Immersive Engineering (IE). Это руководство послужит вашим гидом, описывающим процесс создания и использование новых механизмов, которые предлагает эта модификация. Начнём с простого: IE строится вокруг концепции ретрофутуристической генерации и передачи энергии. Этот мод использует Redstone Flux - вид энергии, совместимый с большинством модификаций.
+ie.manual.entry.introduction0=Здравствуйте, товарищ инженер, добро пожаловать в Immersive Engineering (IE). Это руководство послужит вашим гидом, описывающим процесс создания и использование новых механизмов, которые предлагает эта модификация. Начнём с простого: IE строится вокруг концепции ретрофутуристической генерации и передачи энергии. Этот мод использует Redstone Flux - вид энергии, совместимый с большинством модификаций. Сокращения в тексте: КР - клавиша "Shift", ПКМ - правая кнопка мыши.
 ie.manual.entry.introduction1=Энергия передаётся между §lконнекторами§r с помощью §lпроводов§r. Провода могут преодолеть ограниченное расстояние между блоками, так что вам придётся устанавливать больше коннекторов, а также §lреле§r между проводами.<br>Вы можете выбрать один из трёх доступных типов проводов, которые отличаются в скорости передачи, <config;iA;wireTransferRate;l3> RF/t. Чтобы переключаться между разными типами проводов, вам понадобятся §lтрансформаторы§r.
 ie.manual.entry.introductionHammer=Молот инженера - самый важный инструмент на данный момент для вас. Он будет использоваться для формирования многоблочных конструкций, таких как коксовая и доменная печь<config;b;crushingOreRecipe;, дробить руды в пыль ; >или для настройки блоков, например, деревянных столбов.
 
@@ -1151,14 +1144,14 @@ ie.manual.entry.earmuffs1=Размещение наушников в <link;workb
 
 ie.manual.entry.shield.name=Тяжёлый металический щит
 ie.manual.entry.shield.subtext=One Man Phalanx
-ie.manual.entry.shield0=Тяжёлый металический щит - это обновление для обычных деревянных щитов, с которыми вы могли бы познакомиться. Аналогичным образом, этот щит блокирует большинство поступающих повреждений спереди, но его долговечность значительно увеличилась, и он обладает способностью к модернизации.
-ie.manual.entry.shield1=Обновление §6Фотовспышка§r добавляет яркую лампочку и экран отражателя к щиту. При атаке устройство будет создавать яркую ослепительную вспышку, дезориентируя всех перед игроком.
+ie.manual.entry.shield0=Тяжёлый металический щит - это улучшение для обычных деревянных щитов, с которыми вы могли бы познакомиться. Аналогичным образом, этот щит блокирует большинство поступающих повреждений спереди, но его долговечность значительно увеличилась, и он обладает способностью к модернизации.
+ie.manual.entry.shield1=Улучшение §6Фотовспышка§r добавляет яркую лампочку и экран отражателя к щиту. При атаке устройство будет создавать яркую ослепительную вспышку, дезориентируя всех перед игроком.
 ie.manual.entry.shield2=Добавление §6Шоковые излучатели§r на щит позволяет вам наносить урон атакующим врагам. Когда щит атакуют, он будет испускать шок, нанося небольшой урон агрессору. Кроме того, он будет отражать снаряды, а не просто останавливать их.
-ie.manual.entry.shield3=§6Магнитная перчатка§r служит для простого доступа к экрану при угрозе. С помощью этого обновления, просто дважды нажав клавишу В§l<keybind;key.immersiveengineering.magnetEquip>В§r, вы получите из своего инвентаря щит и поместите его в свой игровой отсек.
+ie.manual.entry.shield3=С помощью §6Магнитной перчатки§r, вы сможете легко снарядиться щитом при угрозе, просто дважды нажав клавишу В§l<keybind;key.immersiveengineering.magnetEquip>В§r, вы поместите щит в неведущую руку.
 
 ie.manual.entry.toolbox.name=Набор инструментов инженера
 ie.manual.entry.toolbox.subtext=Сумочка Инженера
-ie.manual.entry.toolbox0=Набор инструментов - простой контейнер, хранящий вещи, самые необходимые инженеру! Есть слоты 'Пища', 'Разное', 'Электропроводка' (для катушек, соединителей и т.п.), 'Инструменты' - инструменты IE и ванили.
+ie.manual.entry.toolbox0=Набор инструментов - простой контейнер, хранящий вещи, самые необходимые инженеру! Есть слоты 'Пища', 'Разное', 'Провода' (для катушек, соединителей и т.п.), 'Инструменты' - инструменты IE и ванили.
 ie.manual.entry.toolbox1=ПКМ+КР позволяет разместить набор инструментов как блок. При этом, доступ к его инвентарю можно получить с помощью ПКМ. ПКМ+КР - вы снова заберёте набор инструментов к себе.
 
 ie.manual.entry.graphite.name=Графит
@@ -1202,7 +1195,7 @@ ie.manual.entry.redstoneWires.name=Редстоуновые провода
 ie.manual.entry.redstoneWires.subtext=Интеграция и поглощение
 ie.manual.entry.redstoneWires0=Провода из редстоуновой пыли с алюминиевым покрытием. Полученные кабели обеспечивают простой способ передачи Редстоун сигнала на большие расстояния без потери силы сигнала.
 ie.manual.entry.redstoneWires1=Редстоуновые коннекторы работают как и любой другой коннектор провода с точки зрения их подключения, однако, редстоуновая проводка не требует реле; коннекторы и реле - один и тот же блок.<br>С помощью Молота инженера, коннекторы могут переключаться между режимами входа и выхода (ПКМ) и настроены на разные 16 цветных частот (КР+ПКМ).
-ie.manual.entry.redstoneWires2=§6Редстоуновый коннектор с датчиком§r имеют функциональность, частично сравнимую с редстоуновыми компораторами. Несмотря на то, что они не способны активно сравнивать сигналы, они могут читать инвентарь на сколько он заполнен.
+ie.manual.entry.redstoneWires2=§6Редстоуновый коннектор с датчиком§r имеют функциональность, частично сравнимую с редстоуновыми компораторами. Несмотря на то, что они не способны активно сравнивать сигналы, они могут считывать инвентарь на сколько он заполнен.
 ie.manual.entry.redstoneWires3=Кроме того, эти коннекторы могут работать на двух каналах, посылая их сигнал считывания на один и все еще получая сигналы на другом. Эти каналы могут быть изменены с помощью Молота инженера. Обратите внимание, что многие из мультиблоков IE обладают функцией-компаратором, как описано на следующих страницах. Там, где это возможно, контрольная поверхность красного мультиблока является назначенным местом для подключения компаратора.
 ie.manual.entry.redstoneWires4=§lРезервуар:§r Подробно описано в его <link;tank;§o§nРуководстве§r;1><br>§lБункер:§r Подробно описано в его <link;silo;§o§nРуководстве§r;2><br>§lСборщик:§r Выводит сигнал относительно заполнения инвентаря.<br>§lАвтоматический верстак:§r Выводит сигнал относительно заполнения инвентаря.<br>§lПромышленная маслобойня:§r Выводит сигнал относительно заполнения инвентаря.<br>§lБродильный аппарат:§r Выводит сигнал относительно заполнения инвентаря.
 ie.manual.entry.redstoneWires5=§lЭкскаватор:§r Выдаёт сигнал относительно оставшейся руды в жиле.<br>§lДуговая печь:§r Выдает сигнал относительно заполнения инвентаря.<br>Кроме того, соединение компаратора с электродами наверху отдаёт сигнал, основанный на их целостности.<br>§lСмешиватель:§r Выдает сигнал относительно заполнения инвентаря.<br>
@@ -1286,7 +1279,7 @@ ie.manual.entry.chargingStation1=Электронные трубки спере�
 ie.manual.entry.belljar.name=Садовая теплица
 ie.manual.entry.belljar.subtext=Местные тропики
 ie.manual.entry.belljar0=Садовая теплица, или дендрарий, является устройством, предназначенным для ускорения роста растений. Это позволяет инженерам с сельскохозяйственными потребностями легко выращивать и собирать урожай.
-ie.manual.entry.belljar1=Устройство принимает питание, жидкость и предметы через соответствующие порты. Вода и энергия всегда необходимы, различные удобрения являются необязательными. В графическом интерфейсе слоты что посередине для почвы и семян, для удобрения слева и выходные слоты справа. Люк на передней части теплицы является единственным автоматическим выходом. Каждое семя должно быть соединено с требуемой для его роста почвой, а земля автоматически распознаётся как пашня.
+ie.manual.entry.belljar1=Устройство принимает энергию, жидкость и предметы через соответствующие порты. Вода и энергия всегда необходимы, различные удобрения являются необязательными. В графическом интерфейсе слоты что посередине для почвы и семян, для удобрения слева и выходные слоты справа. Люк на передней части теплицы является единственным автоматическим выходом. Каждое семя должно быть соединено с требуемой для его роста почвой, а земля автоматически распознаётся как пашня.
 
 ie.manual.entry.highvoltage.name=Высокое напряжение
 ie.manual.entry.highvoltage.subtext=Вы не сможете перенести шок.
