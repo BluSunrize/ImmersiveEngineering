@@ -3,6 +3,7 @@
 - Changed CoreSamples to draw a chunk overlay like the drill (BluSunrize)
 - Changed Wires to return only half an ingot worth of material when recycled (BluSunrize)
 - Changed Dragonsbreath cartridges to not fire an obscene amount of bullets anymore (BluSunrize)
+- Changed pick-block to cycle through all possible wires for a connector (MalkContent)
 - Items on conveyors now despawn after the usual time when stuck against a block (Malte)
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
 - Fixed wires connecting to the transformer when clicking on the lower blocks (Malte)
@@ -11,7 +12,10 @@
 - Fixed Alloy Smelter consuming extra coal when no further processing is necessary (BluSunrize)
 - Fixed Blueprint recipes using the Wirecutter locking up after 1 crafting operation (BluSunrize)
 - Fixed ArcFurnace not consuming the correct number of ingredients (BluSunrize)
+- Fixed pipes disconnecting visually (MalkContent)
+- Fixed pipes consuming scaffolding to cover when in creative mode (MalkContent)
 - Fixed some visual glitches (BluSunrize)
+- Translations Added/Updated: jp_jp (karakufire), de_de(d-haus)
 
 ##### Version 0.12-89 - BUILT
 - Added a covered dropping conveyor (BluSunrize)
