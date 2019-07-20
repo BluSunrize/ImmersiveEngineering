@@ -61,7 +61,7 @@ public class ConveyorChute extends ConveyorVertical
 	private boolean diagonal = false;
 
 
-	public ConveyorChute(int sheetmetalType)
+	private ConveyorChute(int sheetmetalType)
 	{
 		this.sheetmetalType = sheetmetalType;
 	}
@@ -273,5 +273,34 @@ public class ConveyorChute extends ConveyorVertical
 		super.readConveyorNBT(nbt);
 		sheetmetalType = nbt.getInteger("sheetmetalType");
 		diagonal = nbt.getBoolean("diagonal");
+	}
+
+	public static class ConveyorChuteIron extends ConveyorChute
+	{
+		public ConveyorChuteIron()
+		{
+			super(BlockTypes_MetalsAll.IRON.getMeta());
+		}
+	}
+	public static class ConveyorChuteSteel extends ConveyorChute
+	{
+		public ConveyorChuteSteel()
+		{
+			super(BlockTypes_MetalsAll.STEEL.getMeta());
+		}
+	}
+	public static class ConveyorChuteAluminum extends ConveyorChute
+	{
+		public ConveyorChuteAluminum()
+		{
+			super(BlockTypes_MetalsAll.ALUMINUM.getMeta());
+		}
+	}
+	public static class ConveyorChuteCopper extends ConveyorChute
+	{
+		public ConveyorChuteCopper()
+		{
+			super(BlockTypes_MetalsAll.COPPER.getMeta());
+		}
 	}
 }

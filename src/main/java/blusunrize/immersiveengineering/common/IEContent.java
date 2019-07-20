@@ -30,6 +30,10 @@ import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFa
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteAluminum;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteCopper;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteIron;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteSteel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
@@ -493,10 +497,10 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
 		ConveyorHandler.registerSubstitute(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.IRON.getName()), ConveyorChute.class, (tileEntity) -> new ConveyorChute(BlockTypes_MetalsAll.IRON.getMeta()));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.STEEL.getName()), ConveyorChute.class, (tileEntity) -> new ConveyorChute(BlockTypes_MetalsAll.STEEL.getMeta()));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.ALUMINUM.getName()), ConveyorChute.class, (tileEntity) -> new ConveyorChute(BlockTypes_MetalsAll.ALUMINUM.getMeta()));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.COPPER.getName()), ConveyorChute.class, (tileEntity) -> new ConveyorChute(BlockTypes_MetalsAll.COPPER.getMeta()));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.IRON.getName()), ConveyorChuteIron.class, (tileEntity) -> new ConveyorChuteIron());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.STEEL.getName()), ConveyorChuteSteel.class, (tileEntity) -> new ConveyorChuteSteel());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.ALUMINUM.getName()), ConveyorChuteAluminum.class, (tileEntity) -> new ConveyorChuteAluminum());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.COPPER.getName()), ConveyorChuteCopper.class, (tileEntity) -> new ConveyorChuteCopper());
 
 		/*BULLETS*/
 		ItemBullet.initBullets();
