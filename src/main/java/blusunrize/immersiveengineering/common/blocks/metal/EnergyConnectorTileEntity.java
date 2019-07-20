@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTran
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -24,14 +25,15 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -46,7 +48,7 @@ import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 
 
 public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity implements IDirectionalTile,
-		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, ITickable
+		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, ITickableTileEntity
 {
 	public static final BiMap<Pair<String, Boolean>, TileEntityType<EnergyConnectorTileEntity>> DATA_TYPE_MAP = HashBiMap.create();
 
@@ -56,11 +58,12 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 			for(int b = 0; b < 2; ++b)
 			{
 				boolean relay = b!=0;
+				ImmutablePair<String, Boolean> key = new ImmutablePair<>(type, relay);
 				TileEntityType<EnergyConnectorTileEntity> teType = new TileEntityType<>(() -> new EnergyConnectorTileEntity(type, relay),
-						null);
+						ImmutableSet.of(Connectors.ENERGY_CONNECTORS.get(key)), null);
 				teType.setRegistryName(ImmersiveEngineering.MODID, type.toLowerCase()+"_"+(relay?"relay": "conn"));
 				event.getRegistry().register(teType);
-				DATA_TYPE_MAP.put(new ImmutablePair<>(type, relay), teType);
+				DATA_TYPE_MAP.put(key, teType);
 			}
 	}
 

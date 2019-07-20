@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
-import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
+import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundEventAccessor;
@@ -21,13 +21,13 @@ import javax.annotation.Nullable;
 
 public class SkyhookSound implements ITickableSound
 {
-	private final EntitySkylineHook hook;
+	private final SkylineHookEntity hook;
 	private final ResourceLocation soundLoc;
 	private Sound sound;
 	private float speed = .01F;
 
 
-	public SkyhookSound(EntitySkylineHook hook, ResourceLocation soundLoc)
+	public SkyhookSound(SkylineHookEntity hook, ResourceLocation soundLoc)
 	{
 		this.hook = hook;
 		this.soundLoc = soundLoc;
@@ -130,7 +130,7 @@ public class SkyhookSound implements ITickableSound
 	}
 
 	@Override
-	public boolean isPriority()
+	public boolean isGlobal()
 	{
 		return false;
 	}

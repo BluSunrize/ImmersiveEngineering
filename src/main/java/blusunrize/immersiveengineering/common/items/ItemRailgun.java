@@ -21,7 +21,7 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
+import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
@@ -231,7 +231,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 				{
 					Vec3d vec = user.getLookVec();
 					float speed = 20;
-					EntityRailgunShot shot = new EntityRailgunShot(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, Utils.copyStackWithAmount(ammo, 1));
+					RailgunShotEntity shot = new RailgunShotEntity(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, Utils.copyStackWithAmount(ammo, 1));
 					ammo.shrink(1);
 					if(ammo.getCount() <= 0)
 						((PlayerEntity)user).inventory.deleteStack(ammo);

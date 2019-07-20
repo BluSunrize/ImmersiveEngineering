@@ -10,18 +10,25 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
+import com.google.common.collect.ImmutableSet;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.EffectType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.Set;
 
 public class IEPotions
 {
@@ -35,13 +42,23 @@ public class IEPotions
 
 	public static void init()
 	{
-		flammable = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flammable"), true, 0x8f3f1f, 0, false, 0, true, true);
-		slippery = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "slippery"), true, 0x171003, 0, false, 1, true, true);
-		conductive = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "conductive"), true, 0x690000, 0, false, 2, true, true);
-		sticky = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "sticky"), true, 0x9c6800, 0, false, 3, true, true).registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.50000000298023224D, 2);
-		stunned = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "stunned"), true, 0x624a98, 0, false, 4, true, true);
-		concreteFeet = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "concreteFeet"), true, 0x624a98, 0, false, 5, true, true).registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, 2);
-		flashed = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flashed"), true, 0x624a98, 0, false, 6, true, true).registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15000000596046448D, 2);
+		flammable = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flammable"), EffectType.HARMFUL,
+				0x8f3f1f, 0, false, 0, true, true);
+		slippery = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "slippery"), EffectType.HARMFUL,
+				0x171003, 0, false, 1, true, true);
+		conductive = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "conductive"), EffectType.HARMFUL,
+				0x690000, 0, false, 2, true, true);
+		sticky = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "sticky"), EffectType.HARMFUL,
+				0x9c6800, 0, false, 3, true, true)
+				.addAttributesModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL);
+		stunned = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "stunned"), EffectType.HARMFUL,
+				0x624a98, 0, false, 4, true, true);
+		concreteFeet = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "concreteFeet"), EffectType.HARMFUL,
+				0x624a98, 0, false, 5, true, true)
+				.addAttributesModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL);
+		flashed = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flashed"), EffectType.HARMFUL,
+				0x624a98, 0, false, 6, true, true)
+				.addAttributesModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL);
 
 		IEApi.potions = new Effect[]{flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed};
 	}
@@ -53,17 +70,27 @@ public class IEPotions
 		final boolean halfTickRateWIthAmplifier;
 		boolean showInInventory = true;
 		boolean showInHud = true;
+		private final Set<Block> concrete;
 
-		public IEPotion(ResourceLocation resource, boolean isBad, int colour, int tick, boolean halveTick, int icon, boolean showInInventory, boolean showInHud)
+		public IEPotion(ResourceLocation resource, EffectType isBad, int colour, int tick, boolean halveTick, int icon, boolean showInInventory, boolean showInHud)
 		{
 			super(isBad, colour);
 			this.showInInventory = showInInventory;
 			this.showInHud = showInHud;
 			this.tickrate = tick;
 			this.halfTickRateWIthAmplifier = halveTick;
-			this.setIconIndex(icon%8, icon/8);
 
 			ForgeRegistries.POTIONS.register(this.setRegistryName(resource));
+			concrete = ImmutableSet.<Block>builder()
+					.add(StoneDecoration.concrete)
+					.add(StoneDecoration.concreteTile)
+					.add(StoneDecoration.concreteSprayed)
+					.add(StoneDecoration.concreteStairs)
+					.add(StoneDecoration.concreteThreeQuarter)
+					.add(StoneDecoration.concreteSheet)
+					.add(StoneDecoration.concreteQuarter)
+					.add(StoneDecoration.concreteLeaded)
+					.build();
 		}
 
 		@Override
@@ -85,13 +112,6 @@ public class IEPotions
 		}
 
 		@Override
-		public int getStatusIconIndex()
-		{
-			Minecraft.getInstance().getTextureManager().bindTexture(tex);
-			return super.getStatusIconIndex();
-		}
-
-		@Override
 		public boolean isReady(int duration, int amplifier)
 		{
 			if(tickrate < 0)
@@ -106,7 +126,7 @@ public class IEPotions
 			if(this==IEPotions.slippery)
 			{
 				if(living.onGround)
-					living.moveRelative(0, 0, 1, 0.005F);
+					living.moveRelative(0, new Vec3d(0, 1, 0.005));
 				EquipmentSlotType hand = living.getRNG().nextBoolean()?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND;
 				if(!living.world.isRemote&&living.getRNG().nextInt(300)==0&&!living.getItemStackFromSlot(hand).isEmpty())
 				{
@@ -118,7 +138,10 @@ public class IEPotions
 			else if(this==IEPotions.concreteFeet&&!living.world.isRemote)
 			{
 				BlockState state = living.world.getBlockState(living.getPosition());
-				if(state.getBlock()!=IEContent.blockStoneDecoration&&state.getBlock()!=IEContent.blockStoneDecorationSlabs&&state.getBlock()!=IEContent.blockStoneDevice)
+				if(!concrete.contains(state.getBlock())&&
+						concrete.stream()
+								.map(IEBlocks.toSlab::get)
+								.noneMatch(b -> b==state.getBlock()))
 					living.removeActivePotionEffect(this);
 			}
 		}

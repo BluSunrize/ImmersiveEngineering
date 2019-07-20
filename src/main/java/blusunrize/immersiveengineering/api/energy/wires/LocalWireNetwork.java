@@ -18,8 +18,8 @@ import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -42,17 +42,17 @@ public class LocalWireNetwork implements IWorldTickable
 	{
 		this(globalNet);
 		ListNBT proxies = subnet.getList("proxies", NBT.TAG_COMPOUND);
-		for(NBTBase b : proxies)
+		for(INBT b : proxies)
 		{
 			IICProxy proxy = IICProxy.readFromNBT(((CompoundNBT)b).getCompound("proxy"));
-			for(NBTBase p : ((CompoundNBT)b).getList("points", NBT.TAG_COMPOUND))
+			for(INBT p : ((CompoundNBT)b).getList("points", NBT.TAG_COMPOUND))
 			{
 				ConnectionPoint point = new ConnectionPoint((CompoundNBT)p);
 				loadConnector(point, proxy);
 			}
 		}
 		ListNBT wires = subnet.getList("wires", NBT.TAG_COMPOUND);
-		for(NBTBase b : wires)
+		for(INBT b : wires)
 		{
 			Connection wire = new Connection((CompoundNBT)b);
 			if(connectors.containsKey(wire.getEndA().getPosition())&&connectors.containsKey(wire.getEndB().getPosition()))

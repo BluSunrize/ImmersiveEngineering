@@ -8,12 +8,13 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -42,7 +43,7 @@ public class ItemCoresample extends ItemIEBase
 {
 	public ItemCoresample()
 	{
-		super("coresample", 1);
+		super("coresample", new Properties().group(ImmersiveEngineering.itemGroup));
 	}
 
 	@Override
@@ -61,7 +62,6 @@ public class ItemCoresample extends ItemIEBase
 			}
 			else
 				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.noMineral"));
-			boolean singleplayer = Minecraft.getInstance().isSingleplayer();
 			if(world==null||world.getDimension().getType()!=coords.dimension)
 			{
 				World clientWorld = Minecraft.getInstance().world;
@@ -111,15 +111,16 @@ public class ItemCoresample extends ItemIEBase
 			BlockPos pos = ctx.getPos();
 			Direction side = ctx.getFace();
 			BlockState state = world.getBlockState(pos);
-			if(!state.isReplaceable(new BlockItemUseContext(ctx)))
+			BlockItemUseContext blockCtx = new BlockItemUseContext(ctx);
+			if(!state.isReplaceable(blockCtx))
 				pos = pos.offset(side);
 
-			if(!stack.isEmpty()&&player.canPlayerEdit(pos, side, stack)&&world.mayPlace(IEContent.blockStoneDevice, pos, false, side, null))
+			if(!stack.isEmpty()&&player.canPlayerEdit(pos, side, stack)&&world.getBlockState(pos).isReplaceable(blockCtx))
 			{
-				BlockState toolbox = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CORESAMPLE.getMeta());
-				if(world.setBlockState(pos, toolbox, 3))
+				BlockState coresample = StoneDecoration.coresample.getDefaultState();
+				if(world.setBlockState(pos, coresample, 3))
 				{
-					IEContent.blockStoneDevice.onIEBlockPlacedBy(, world, toolbox);
+					((IEBaseBlock)StoneDecoration.coresample).onIEBlockPlacedBy(blockCtx, coresample);
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
 					stack.shrink(1);

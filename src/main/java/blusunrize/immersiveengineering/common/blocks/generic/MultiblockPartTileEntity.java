@@ -20,10 +20,10 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -42,7 +42,7 @@ import java.util.EnumMap;
 import java.util.Optional;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickable, IDirectionalTile, IBlockBounds, IGeneralMultiblock, IHammerInteraction
+		implements ITickableTileEntity, IDirectionalTile, IBlockBounds, IGeneralMultiblock, IHammerInteraction
 {
 	public boolean formed = false;
 	public int posInMultiblock = -1;
@@ -355,7 +355,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 						if(state!=null)
 						{
 							if(pos.equals(getPos()))
-								world.spawnEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s));
+								world.addEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s));
 							else
 								replaceStructureBlock(pos, state, s, yy, ll, ww);
 						}
@@ -381,8 +381,8 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 
 	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
 	{
-		if(state.getBlock()==this.getBlockState())
-			world.removeBlock(pos);
+		if(state.getBlock()==this.getBlockState().getBlock())
+			world.removeBlock(pos, false);
 		world.setBlockState(pos, state);
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof ITileDrop)

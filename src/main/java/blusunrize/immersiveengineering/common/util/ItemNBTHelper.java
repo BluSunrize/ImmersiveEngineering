@@ -239,7 +239,7 @@ public class ItemNBTHelper
 					switch(add.getTagId(key))
 					{
 						case 1: //Byte
-							target.setByte(key, (byte)(target.getByte(key)+add.getByte(key)));
+							target.putByte(key, (byte)(target.getByte(key)+add.getByte(key)));
 							break;
 						case 2: //Short
 							target.setShort(key, (short)(target.getShort(key)+add.getShort(key)));

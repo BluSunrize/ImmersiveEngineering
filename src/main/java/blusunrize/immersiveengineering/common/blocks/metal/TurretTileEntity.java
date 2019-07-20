@@ -32,10 +32,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -55,7 +55,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class TurretTileEntity extends IEBaseTileEntity implements ITickable, IIEInternalFluxHandler, IIEInventory,
+public abstract class TurretTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IIEInventory,
 		IHasDummyBlocks, ITileDrop, IDirectionalTile, IBlockBounds, IInteractionObjectIE, IEntityProof, IHammerInteraction, IHasObjProperty
 {
 	public boolean dummy = false;

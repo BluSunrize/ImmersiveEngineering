@@ -74,7 +74,7 @@ import static blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetH
 
 public class ApiUtils
 {
-	public static boolean compareToOreName(ItemStack stack, String oreName)
+	public static boolean compareToOreName(ItemStack stack, ResourceLocation oreName)
 	{
 		if(!isNonemptyItemTag(oreName))
 			return false;

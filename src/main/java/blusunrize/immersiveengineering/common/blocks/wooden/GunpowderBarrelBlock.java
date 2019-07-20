@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
+import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
@@ -31,7 +31,7 @@ public class GunpowderBarrelBlock extends TNTBlock
 	@Override
 	public void explode(World world, BlockPos pos, @Nullable LivingEntity igniter)
 	{
-		EntityIEExplosive explosive = new EntityIEExplosive(world, pos, igniter, world.getBlockState(pos), 4).setDropChance(1);
+		IEExplosiveEntity explosive = new IEExplosiveEntity(world, pos, igniter, world.getBlockState(pos), 4).setDropChance(1);
 		world.spawnEntity(explosive);
 		world.playSound(null, explosive.posX, explosive.posY, explosive.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		world.removeBlock(pos);

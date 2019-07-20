@@ -21,16 +21,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITickable, INeighbourChangeTile, IIEInternalFluxConnector
+public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITickableTileEntity, INeighbourChangeTile, IIEInternalFluxConnector
 {
 	public static TileEntityType<ThermoelectricGenTileEntity> TYPE;
 

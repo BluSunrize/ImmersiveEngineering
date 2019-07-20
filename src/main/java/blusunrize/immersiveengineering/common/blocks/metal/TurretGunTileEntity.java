@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -126,7 +126,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 							double cY = getPos().getY()+1.375;
 							double cZ = getPos().getZ()+.5;
 							Vec3d vCasing = vec.rotateYaw(-1.57f);
-							world.spawnParticle(RedstoneParticleData.REDSTONE_DUST, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0, 0, 0);
+							world.addParticle(RedstoneParticleData.REDSTONE_DUST, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0, 0, 0);
 							ItemEntity entCasing = new ItemEntity(world, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, casing.copy());
 							entCasing.motionX = 0;
 							entCasing.motionY = -0.01;
@@ -158,10 +158,10 @@ public class TurretGunTileEntity extends TurretTileEntity
 				new MessageTileSync(this, tag));
 	}
 
-	EntityRevolvershot getBulletEntity(World world, Vec3d vecDir, IBullet type)
+	RevolvershotEntity getBulletEntity(World world, Vec3d vecDir, IBullet type)
 	{
 		Vec3d gunPos = getGunPosition();
-		EntityRevolvershot bullet = new EntityRevolvershot(world, gunPos.x+vecDir.x, gunPos.y+vecDir.y, gunPos.z+vecDir.z, 0, 0, 0, type);
+		RevolvershotEntity bullet = new RevolvershotEntity(world, gunPos.x+vecDir.x, gunPos.y+vecDir.y, gunPos.z+vecDir.z, 0, 0, 0, type);
 		bullet.motionX = vecDir.x;
 		bullet.motionY = vecDir.y;
 		bullet.motionZ = vecDir.z;

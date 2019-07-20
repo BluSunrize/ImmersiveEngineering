@@ -8,12 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_Connector implements IStringSerializable, IEBaseBlock.IBlockEnum
+public enum BlockTypes_Connector implements IStringSerializable
 {
 	CONNECTOR_STRUCTURAL,
 	TRANSFORMER,
@@ -31,15 +30,4 @@ public enum BlockTypes_Connector implements IStringSerializable, IEBaseBlock.IBl
 		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
 
-	@Override
-	public int getMeta()
-	{
-		return ordinal();
-	}
-
-	@Override
-	public boolean listForCreative()
-	{
-		return this!=FEEDTHROUGH;
-	}
 }

@@ -26,7 +26,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Particles;
+import net.minecraft.util.ParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -39,7 +39,7 @@ import java.util.*;
 
 import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
-public class EntitySkylineHook extends Entity
+public class SkylineHookEntity extends Entity
 {
 	public static final double GRAVITY = 10;
 	private static final double MAX_SPEED = 2.5;
@@ -56,14 +56,14 @@ public class EntitySkylineHook extends Entity
 	private final Set<BlockPos> ignoreCollisions = new HashSet<>();
 
 
-	public EntitySkylineHook(World world)
+	public SkylineHookEntity(World world)
 	{
 		super(world);
 		this.setSize(.125f, .125f);
 		//		this.noClip=true;
 	}
 
-	public EntitySkylineHook(World world, Connection connection, double linePos, Hand hand, double horSpeed,
+	public SkylineHookEntity(World world, Connection connection, double linePos, Hand hand, double horSpeed,
 							 boolean limitSpeed)
 	{
 		this(world);
@@ -257,7 +257,7 @@ public class EntitySkylineHook extends Entity
 			for(int j = 0; j < 4; ++j)
 			{
 				float f3 = 0.25F;
-				this.world.spawnParticle(Particles.WATER_BUBBLE, this.posX-this.motionX*(double)f3, this.posY-this.motionY*(double)f3, this.posZ-this.motionZ*(double)f3, this.motionX, this.motionY, this.motionZ);
+				this.world.addParticle(ParticleTypes.WATER_BUBBLE, this.posX-this.motionX*(double)f3, this.posY-this.motionY*(double)f3, this.posZ-this.motionZ*(double)f3, this.motionX, this.motionY, this.motionZ);
 			}
 		}
 

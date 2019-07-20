@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
+import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import net.minecraft.client.Minecraft;
@@ -26,7 +26,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
-public class EntityRenderFluorescentTube extends EntityRenderer<EntityFluorescentTube>
+public class EntityRenderFluorescentTube extends EntityRenderer<FluorescentTubeEntity>
 {
 	static double sqrt2Half = Math.sqrt(2)/2;
 	public static final double[][] octagon = {
@@ -45,13 +45,13 @@ public class EntityRenderFluorescentTube extends EntityRenderer<EntityFluorescen
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityFluorescentTube entity)
+	protected ResourceLocation getEntityTexture(FluorescentTubeEntity entity)
 	{
 		return null;
 	}
 
 	@Override
-	public void doRender(EntityFluorescentTube entity, double x, double y, double z, float entityYaw,
+	public void doRender(FluorescentTubeEntity entity, double x, double y, double z, float entityYaw,
 						 float partialTicks)
 	{
 		Tessellator tes = Tessellator.getInstance();
@@ -63,8 +63,8 @@ public class EntityRenderFluorescentTube extends EntityRenderer<EntityFluorescen
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(0, 0, .03125);
 		GlStateManager.rotatef(entity.angleHorizontal, 1, 0, 0);
-		GlStateManager.translated(0, -entity.tubeLength/2, 0);
-		drawTube(entity.active, entity.rgb, entity.tubeLength, wr, tes);
+		GlStateManager.translated(0, -entity.TUBE_LENGTH/2, 0);
+		drawTube(entity.active, entity.rgb, entity.TUBE_LENGTH, wr, tes);
 		GlStateManager.popMatrix();
 		GlStateManager.translated(-0.25, -1, 0);
 		GlStateManager.color3f(1, 1, 1);

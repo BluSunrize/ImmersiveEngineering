@@ -60,9 +60,9 @@ public class IEMuffledSound implements ISound
 	}
 
 	@Override
-	public boolean isPriority()
+	public boolean isGlobal()
 	{
-		return originalSound.isPriority();
+		return originalSound.isGlobal();
 	}
 
 	@Override

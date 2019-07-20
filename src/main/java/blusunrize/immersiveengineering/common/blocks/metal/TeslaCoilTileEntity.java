@@ -35,11 +35,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -47,6 +47,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
@@ -55,7 +56,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickable, IIEInternalFluxHandler, IHasDummyBlocks,
+public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
 		IDirectionalTile, IBlockBounds, IHammerInteraction
 {
 	public static TileEntityType<TeslaCoilTileEntity> TYPE;
@@ -224,22 +225,22 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickable, 
 	{
 		CompoundNBT tag = new CompoundNBT();
 		tag.putInt("targetEntity", target.getEntityId());
-		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)), new MessageTileSync(this, tag));
+		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), new MessageTileSync(this, tag));
 	}
 
 	protected void sendFreePacket(double tL, double tH, double tV)
 	{
 		CompoundNBT tag = new CompoundNBT();
-		tag.setDouble("tL", tL);
-		tag.setDouble("tV", tV);
-		tag.setDouble("tH", tH);
-		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)), new MessageTileSync(this, tag));
+		tag.putDouble("tL", tL);
+		tag.putDouble("tV", tV);
+		tag.putDouble("tH", tH);
+		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), new MessageTileSync(this, tag));
 	}
 
 	@Override
 	public void receiveMessageFromServer(CompoundNBT message)
 	{
-		if(message.hasKey("targetEntity"))
+		if(message.contains("targetEntity", NBT.TAG_INT))
 		{
 			Entity target = world.getEntityByID(message.getInt("targetEntity"));
 			if(target instanceof LivingEntity)
@@ -291,7 +292,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickable, 
 				}
 			}
 		}
-		else if(message.hasKey("tL"))
+		else if(message.contains("tL", NBT.TAG_DOUBLE))
 			initFreeStreamer(message.getDouble("tL"), message.getDouble("tV"), message.getDouble("tH"));
 	}
 
@@ -341,7 +342,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickable, 
 
 	private void addAnimation(LightningAnimation ani)
 	{
-		Minecraft.getInstance().addScheduledTask(() -> effectMap.put(getPos(), ani));
+		Minecraft.getInstance().deferTask(() -> effectMap.put(getPos(), ani));
 	}
 
 	@Override
@@ -488,7 +489,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickable, 
 	{
 		for(int i = 0; i <= 1; i++)
 			if(world.getTileEntity(getPos().offset(facing, dummy?-1: 0).offset(facing, i)) instanceof TeslaCoilTileEntity)
-				world.removeBlock(getPos().offset(facing, dummy?-1: 0).offset(facing, i));
+				world.removeBlock(getPos().offset(facing, dummy?-1: 0).offset(facing, i), false);
 	}
 
 	@Nonnull

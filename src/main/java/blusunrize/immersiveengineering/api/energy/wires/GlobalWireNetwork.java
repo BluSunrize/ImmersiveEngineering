@@ -15,22 +15,24 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class GlobalWireNetwork implements ITickable
+public class GlobalWireNetwork implements ITickableTileEntity
 {
 	private Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
 	private WireCollisionData collisionData = new WireCollisionData(this);
@@ -39,9 +41,9 @@ public class GlobalWireNetwork implements ITickable
 	@Nonnull
 	public static GlobalWireNetwork getNetwork(World w)
 	{
-		if(!w.hasCapability(NetHandlerCapability.NET_CAPABILITY, null))
-			throw new RuntimeException("No net handler found for dimension "+w.provider.getDimension()+", remote: "+w.isRemote);
-		return Objects.requireNonNull(w.getCapability(NetHandlerCapability.NET_CAPABILITY, null));
+		if(!w.getCapability(NetHandlerCapability.NET_CAPABILITY).isPresent())
+			throw new RuntimeException("No net handler found for dimension "+w.getDimension().getType().getRegistryName()+", remote: "+w.isRemote);
+		return Objects.requireNonNull(w.getCapability(NetHandlerCapability.NET_CAPABILITY).orElse(null));
 	}
 
 	public GlobalWireNetwork(World w)
@@ -140,8 +142,8 @@ public class GlobalWireNetwork implements ITickable
 		double dx = dropAt.getX()+.5;
 		double dy = dropAt.getY()+.5;
 		double dz = dropAt.getZ()+.5;
-		if(world.getGameRules().getBoolean("doTileDrops"))
-			world.spawnEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
+		if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+			world.addEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
 	}
 
 	private void splitNet(LocalWireNetwork oldNet)
@@ -157,7 +159,7 @@ public class GlobalWireNetwork implements ITickable
 	{
 		localNets.clear();
 		ListNBT locals = nbt.getList("locals", NBT.TAG_COMPOUND);
-		for(NBTBase b : locals)
+		for(INBT b : locals)
 		{
 			CompoundNBT subnet = (CompoundNBT)b;
 			LocalWireNetwork localNet = new LocalWireNetwork(subnet, this);
@@ -276,7 +278,7 @@ public class GlobalWireNetwork implements ITickable
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		Set<LocalWireNetwork> ticked = new HashSet<>();
 		for(LocalWireNetwork net : localNets.values())
@@ -286,7 +288,8 @@ public class GlobalWireNetwork implements ITickable
 
 	private void validate()
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+		if(EffectiveSide.get()==LogicalSide.CLIENT)
+			return;
 		localNets.values().stream().distinct().forEach(
 				(local) -> {
 					Object2IntMap<ResourceLocation> handlers = new Object2IntOpenHashMap<>();

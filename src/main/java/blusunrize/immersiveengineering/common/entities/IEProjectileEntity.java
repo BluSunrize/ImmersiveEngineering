@@ -10,17 +10,17 @@ package blusunrize.immersiveengineering.common.entities;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.RayTraceContext.BlockMode;
+import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have to extend arrow or else it's all weird and broken >_>
+public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have to extend arrow or else it's all weird and broken >_>
 {
 	protected BlockPos stuckIn = null;
 	protected BlockState inBlockState;
@@ -43,32 +43,36 @@ public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have
 
 	private int tickLimit = 40;
 
-	public EntityIEProjectile(EntityType<? extends EntityIEProjectile> type, World world)
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world)
 	{
 		super(type, world);
-		this.setSize(.125f, .125f);
 		this.pickupStatus = PickupStatus.DISALLOWED;
 	}
 
-	public EntityIEProjectile(EntityType<? extends EntityIEProjectile> type, World world, double x, double y, double z, double ax, double ay, double az)
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, double x, double y, double z, double ax, double ay, double az)
 	{
 		this(type, world);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);
 	}
 
-	public EntityIEProjectile(EntityType<? extends EntityIEProjectile> type, World world, LivingEntity living, double ax, double ay, double az)
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double ax, double ay, double az)
 	{
 		this(type, world);
 		this.setLocationAndAngles(living.posX, living.posY+living.getEyeHeight(), living.posZ, living.rotationYaw, living.rotationPitch);
 		this.setPosition(this.posX, this.posY, this.posZ);
-		this.motionX = this.motionY = this.motionZ = 0.0D;
-		this.motionX = ax;
-		this.motionY = ay;
-		this.motionZ = az;
+		setMotion(ax, ay, az);
 		this.shootingEntity = living.getUniqueID();
 		this.setShooterSynced();
-		this.shoot(this.motionX, this.motionY, this.motionZ, 2*1.5F, 1.0F);
+		Vec3d motion = getMotion();
+		this.shoot(motion.x, motion.y, motion.z, 2*1.5F, 1.0F);
+	}
+
+	@Nonnull
+	@Override
+	public EntitySize getSize(Pose p_213305_1_)
+	{
+		return new EntitySize(.125f, .125f, true);
 	}
 
 	@Override
@@ -95,7 +99,7 @@ public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have
 		return s.orElse(null);
 	}
 
-	public UUID getShooter()
+	public UUID getShooterUUID()
 	{
 		return shootingEntity;
 	}
@@ -139,9 +143,7 @@ public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have
 			else
 			{
 				this.inGround = false;
-				this.motionX *= (double)(this.rand.nextFloat()*0.2F);
-				this.motionY *= (double)(this.rand.nextFloat()*0.2F);
-				this.motionZ *= (double)(this.rand.nextFloat()*0.2F);
+				setMotion(getMotion().scale(this.rand.nextFloat()/5));
 				this.ticksInGround = 0;
 				this.ticksInAir = 0;
 			}
@@ -157,21 +159,17 @@ public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have
 			}
 
 			Vec3d currentPos = new Vec3d(this.posX, this.posY, this.posZ);
-			Vec3d nextPos = new Vec3d(this.posX+this.motionX, this.posY+this.motionY, this.posZ+this.motionZ);
-			RayTraceResult mop = this.world.rayTraceBlocks(currentPos, nextPos, RayTraceFluidMode.NEVER,
-					true, false);
+			Vec3d nextPos = new Vec3d(this.posX, this.posY, this.posZ).add(getMotion());
+			RayTraceResult mop = this.world.rayTraceBlocks(new RayTraceContext(currentPos, nextPos, BlockMode.COLLIDER,
+					FluidMode.NONE, this));
 
-			currentPos = new Vec3d(this.posX, this.posY, this.posZ);
+			if(mop.getType()==Type.BLOCK)
+				nextPos = mop.getHitVec();
 
-			if(mop!=null)
-				nextPos = new Vec3d(mop.hitVec.x, mop.hitVec.y, mop.hitVec.z);
-			else
-				nextPos = new Vec3d(this.posX+this.motionX, this.posY+this.motionY, this.posZ+this.motionZ);
-
-			if(mop==null||mop.entity==null)
+			if(mop.getType()==Type.BLOCK)
 			{
 				Entity entity = null;
-				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1), Entity::canBeCollidedWith);
+				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
 				double d0 = 0.0D;
 				for(int i = 0; i < list.size(); ++i)
 				{
@@ -180,11 +178,11 @@ public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have
 					{
 						float f = 0.3F;
 						AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double)f, (double)f, (double)f);
-						RayTraceResult movingobjectposition1 = axisalignedbb.calculateIntercept(currentPos, nextPos);
+						Optional<Vec3d> movingobjectposition1 = axisalignedbb.rayTrace(currentPos, nextPos);
 
-						if(movingobjectposition1!=null)
+						if(movingobjectposition1.isPresent())
 						{
-							double d1 = currentPos.distanceTo(movingobjectposition1.hitVec);
+							double d1 = currentPos.distanceTo(movingobjectposition1.get());
 							if(d1 < d0||d0==0.0D)
 							{
 								entity = entity1;
@@ -194,51 +192,52 @@ public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have
 					}
 				}
 				if(entity!=null)
-					mop = new RayTraceResult(entity);
+					mop = new EntityRayTraceResult(entity);
 			}
 
-			if(mop!=null)
+			if(mop.getType()!=Type.MISS)
 			{
-				if(!this.isBurning()&&this.canIgnite()&&mop.entity!=null&&mop.entity.isBurning())
-					this.setFire(3);
-				if(mop.entity!=null)
+				if(mop.getType()==Type.ENTITY)
 				{
+					EntityRayTraceResult entityHit = (EntityRayTraceResult)mop;
+					if(!this.isBurning()&&this.canIgnite()&&entityHit.getEntity().isBurning())
+						this.setFire(3);
 					boolean allowHit = true;
-					PlayerEntity shooter = world.getPlayerEntityByUUID(shootingEntity);
-					if(shooter!=null&&mop.entity instanceof PlayerEntity)
-						allowHit = shooter.canAttackPlayer((PlayerEntity)mop.entity);
+					PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
+					if(shooter!=null&&entityHit.getEntity() instanceof PlayerEntity)
+						allowHit = shooter.canAttackPlayer((PlayerEntity)entityHit.getEntity());
 					if(allowHit)
 						this.onImpact(mop);
 					this.remove();
 				}
-				else if(mop.type==Type.BLOCK)
+				else if(mop.getType()==Type.BLOCK)
 				{
-					this.onImpact(mop);
-					this.stuckIn = mop.getBlockPos();
-					this.inBlockState = this.world.getBlockState(mop.getBlockPos());
-					this.motionX = mop.hitVec.x-this.posX;
-					this.motionY = mop.hitVec.y-this.posY;
-					this.motionZ = mop.hitVec.z-this.posZ;
-					float f2 = MathHelper.sqrt(this.motionX*this.motionX+this.motionY*this.motionY+this.motionZ*this.motionZ);
-					this.posX -= this.motionX/(double)f2*0.05;
-					this.posY -= this.motionY/(double)f2*0.05;
-					this.posZ -= this.motionZ/(double)f2*0.05;
+					BlockRayTraceResult blockHit = (BlockRayTraceResult)mop;
+					this.onImpact(blockHit);
+					this.stuckIn = blockHit.getPos();
+					this.inBlockState = this.world.getBlockState(blockHit.getPos());
+					setMotion(blockHit.getHitVec().subtract(getPositionVector()));
+					float f2 = (float)getMotion().length();
+					Vec3d motion = getMotion();
+					this.posX -= motion.x/(double)f2*0.05;
+					this.posY -= motion.y/(double)f2*0.05;
+					this.posZ -= motion.z/(double)f2*0.05;
 
 					this.inGround = true;
 					if(this.inBlockState.getMaterial()!=Material.AIR)
-						this.inBlockState.onEntityCollision(this.world, mop.getBlockPos(), this);
+						this.inBlockState.onEntityCollision(this.world, blockHit.getPos(), this);
 				}
 			}
 
-			this.posX += this.motionX;
-			this.posY += this.motionY;
-			this.posZ += this.motionZ;
+			this.posX += getMotion().x;
+			this.posY += getMotion().y;
+			this.posZ += getMotion().z;
 
-			float motion = MathHelper.sqrt(this.motionX*this.motionX+this.motionZ*this.motionZ);
-			this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ)*180.0D/Math.PI);
-
-			for(this.rotationPitch = (float)(Math.atan2(this.motionY, (double)motion)*180.0D/Math.PI); this.rotationPitch-this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F)
-				;
+			float absMotion = (float)getMotion().length();
+			this.rotationYaw = (float)(Math.atan2(getMotion().x, getMotion().z)*180.0D/Math.PI);
+			this.rotationPitch = (float)(Math.atan2(getMotion().y, (double)absMotion)*180.0D/Math.PI);
+			while(this.rotationPitch-this.prevRotationPitch < -180.0F)
+				this.prevRotationPitch -= 360.0F;
 			while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
 				this.prevRotationPitch += 360.0F;
 			while(this.rotationYaw-this.prevRotationYaw < -180.0F)
@@ -256,15 +255,17 @@ public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have
 				for(int j = 0; j < 4; ++j)
 				{
 					float f3 = 0.25F;
-					this.world.spawnParticle(Particles.BUBBLE, this.posX-this.motionX*(double)f3, this.posY-this.motionY*(double)f3, this.posZ-this.motionZ*(double)f3, this.motionX, this.motionY, this.motionZ);
+					this.world.addParticle(ParticleTypes.BUBBLE,
+							this.posX-getMotion().x*(double)f3,
+							this.posY-getMotion().y*(double)f3,
+							this.posZ-getMotion().z*(double)f3,
+							getMotion().x,
+							getMotion().y,
+							getMotion().z);
 				}
 				movementDecay *= 0.8F;
 			}
-
-			this.motionX *= movementDecay;
-			this.motionY *= movementDecay;
-			this.motionZ *= movementDecay;
-			this.motionY -= getGravity();
+			setMotion(getMotion().scale(movementDecay).add(0, -getGravity(), 0));
 			this.setPosition(this.posX, this.posY, this.posZ);
 			this.doBlockCollisions();
 		}
@@ -315,9 +316,9 @@ public abstract class EntityIEProjectile extends AbstractArrowEntity//Yes I have
 			nbt.put("inPos", NBTUtil.writeBlockPos(stuckIn));
 			nbt.put("inTile", NBTUtil.writeBlockState(inBlockState));
 		}
-		nbt.setByte("inGround", (byte)(this.inGround?1: 0));
+		nbt.putByte("inGround", (byte)(this.inGround?1: 0));
 		if(this.shootingEntity!=null)
-			nbt.setUniqueId("shootingEntity", this.shootingEntity);
+			nbt.putUniqueId("shootingEntity", this.shootingEntity);
 
 	}
 

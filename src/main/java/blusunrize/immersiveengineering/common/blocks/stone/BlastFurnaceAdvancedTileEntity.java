@@ -38,11 +38,11 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(BlockPos.ORIGIN.offset(facing, 2).add(0, -1, 0), facing.getOpposite()),
+			() -> new DirectionalBlockPos(BlockPos.ZERO.offset(facing, 2).add(0, -1, 0), facing.getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 	private CapabilityReference<IItemHandler> slag = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(BlockPos.ORIGIN.offset(facing, -2).add(0, -1, 0), facing.getOpposite()),
+			() -> new DirectionalBlockPos(BlockPos.ZERO.offset(facing, -2).add(0, -1, 0), facing.getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 

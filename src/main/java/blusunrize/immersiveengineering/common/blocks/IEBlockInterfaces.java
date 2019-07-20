@@ -14,12 +14,12 @@ import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -30,10 +30,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -283,11 +280,6 @@ public class IEBlockInterfaces
 		float[] getBlockBounds();
 	}
 
-	public interface IFaceShape
-	{
-		BlockFaceShape getFaceShape(Direction side);
-	}
-
 	public interface IAdvancedSelectionBounds extends IBlockBounds
 	{
 		List<AxisAlignedBB> getAdvancedSelectionBounds();
@@ -340,7 +332,7 @@ public class IEBlockInterfaces
 		HashMap<String, String> getTextureReplacements();
 	}
 
-	public interface IInteractionObjectIE extends IInteractionObject
+	public interface IInteractionObjectIE extends IContainerProvider
 	{
 		@Nullable
 		IInteractionObjectIE getGuiMaster();
@@ -350,35 +342,11 @@ public class IEBlockInterfaces
 		@Nonnull
 		ResourceLocation getGuiName();
 
-		@Override
-		default ITextComponent getName()
-		{
-			return new StringTextComponent("Unknown");
-		}
-
 		@Nullable
 		@Override
-		default ITextComponent getCustomName()
+		default Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity)
 		{
-			return null;
-		}
-
-		@Override
-		default boolean hasCustomName()
-		{
-			return false;
-		}
-
-		@Override
-		default String getGuiID()
-		{
-			return getGuiName().toString();
-		}
-
-		@Override
-		default Container createContainer(PlayerInventory inventoryPlayer, PlayerEntity entityPlayer)
-		{
-			return GuiHandler.createContainer(getGuiName(), inventoryPlayer, (TileEntity)this);
+			return GuiHandler.createContainer(getGuiName(), playerInventory, (TileEntity)this);
 		}
 	}
 

@@ -13,49 +13,50 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
 import blusunrize.immersiveengineering.common.Config.IEConfig.Tools;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class EntityRailgunShot extends EntityIEProjectile
+public class RailgunShotEntity extends IEProjectileEntity
 {
-	public static final EntityType<EntityRailgunShot> TYPE = new Builder<>(EntityRailgunShot.class, EntityRailgunShot::new)
+	public static final EntityType<RailgunShotEntity> TYPE = Builder
+			.<RailgunShotEntity>create(RailgunShotEntity::new, EntityClassification.MISC)
+			.size(.5F, .5F)
 			.build(ImmersiveEngineering.MODID+":railgun_shot");
 
 	private ItemStack ammo = ItemStack.EMPTY;
-	private static final DataParameter<ItemStack> dataMarker_ammo = EntityDataManager.createKey(EntityRailgunShot.class, DataSerializers.ITEM_STACK);
+	private static final DataParameter<ItemStack> dataMarker_ammo = EntityDataManager.createKey(RailgunShotEntity.class, DataSerializers.ITEMSTACK);
 	private RailgunProjectileProperties ammoProperties;
 
-	public EntityRailgunShot(World world)
+	public RailgunShotEntity(EntityType<RailgunShotEntity> type, World world)
 	{
-		super(TYPE, world);
-		this.setSize(.5f, .5f);
+		super(type, world);
 		this.pickupStatus = PickupStatus.ALLOWED;
 	}
 
-	public EntityRailgunShot(World world, double x, double y, double z, double ax, double ay, double az, ItemStack ammo)
+	public RailgunShotEntity(World world, double x, double y, double z, double ax, double ay, double az, ItemStack ammo)
 	{
 		super(TYPE, world, x, y, z, ax, ay, az);
-		this.setSize(.5f, .5f);
 		this.ammo = ammo;
 		this.setAmmoSynced();
 		this.pickupStatus = PickupStatus.ALLOWED;
 	}
 
-	public EntityRailgunShot(World world, LivingEntity living, double ax, double ay, double az, ItemStack ammo)
+	public RailgunShotEntity(World world, LivingEntity living, double ax, double ay, double az, ItemStack ammo)
 	{
 		super(TYPE, world, living, ax, ay, az);
-		this.setSize(.5f, .5f);
 		this.ammo = ammo;
 		this.setAmmoSynced();
 		this.pickupStatus = PickupStatus.ALLOWED;
@@ -113,11 +114,6 @@ public class EntityRailgunShot extends EntityIEProjectile
 	@Override
 	public void baseTick()
 	{
-		// For testign Desync
-		//		if(world instanceof WorldServer)
-		//			((WorldServer)world).func_147487_a("flame", posX,posY,posZ, 0, 0,0,0, 1);
-		//		else
-		//			world.spawnParticle("smoke", posX, posY, posZ, 0, 0, 0);
 		if(this.getAmmo().isEmpty()&&this.world.isRemote)
 			this.ammo = getAmmoSynced();
 		super.baseTick();
@@ -128,29 +124,18 @@ public class EntityRailgunShot extends EntityIEProjectile
 	{
 		if(!this.world.isRemote&&!getAmmo().isEmpty())
 		{
-			if(mop.entity!=null)
+			if(mop instanceof EntityRayTraceResult)
 			{
+				Entity hit = ((EntityRayTraceResult)mop).getEntity();
 				if(getAmmoProperties()!=null)
 				{
-					PlayerEntity shooter = world.getPlayerEntityByUUID(getShooter());
-					if(!getAmmoProperties().overrideHitEntity(mop.entity, shooter))
-						mop.entity.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, shooter), (float)getAmmoProperties().damage*Tools.railgun_damage);
+					Entity shooter = getShooter();
+					if(!getAmmoProperties().overrideHitEntity(hit, shooter))
+						hit.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, shooter), (float)getAmmoProperties().damage*Tools.railgun_damage);
 				}
 			}
 		}
 	}
-
-//	@Override
-//    public void onCollideWithPlayer(EntityPlayer player)
-//    {
-//        if(!this.world.isRemote && this.inGround && this.getAmmo()!=null)
-//            if(player.inventory.addItemStackToInventory(this.getAmmo().copy()))
-//            {
-//                this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-//                this.setDead();
-//            }
-//    }
-
 
 	@Override
 	public void writeAdditional(CompoundNBT nbt)

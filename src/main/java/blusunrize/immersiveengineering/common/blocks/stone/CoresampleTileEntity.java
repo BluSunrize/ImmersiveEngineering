@@ -149,7 +149,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IDirection
 					{
 						CompoundNBT tagCompound = new CompoundNBT();
 						tagCompound.putString("id", ident);
-						tagCompound.setByte("type", MapDecoration.Type.TARGET_POINT.getIcon());
+						tagCompound.putByte("type", MapDecoration.Type.TARGET_POINT.getIcon());
 						tagCompound.setDouble("x", sampleX);
 						tagCompound.setDouble("z", sampleZ);
 						tagCompound.setDouble("rot", 180.0);

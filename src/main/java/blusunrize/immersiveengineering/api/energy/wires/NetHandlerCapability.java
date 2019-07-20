@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,13 +31,13 @@ public class NetHandlerCapability
 		CapabilityManager.INSTANCE.register(GlobalWireNetwork.class, new Capability.IStorage<GlobalWireNetwork>()
 		{
 			@Override
-			public NBTBase writeNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side)
+			public INBT writeNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side)
 			{
 				return instance.writeToNBT();
 			}
 
 			@Override
-			public void readNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side, NBTBase nbt)
+			public void readNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side, INBT nbt)
 			{
 				instance.readFromNBT((CompoundNBT)nbt);
 			}

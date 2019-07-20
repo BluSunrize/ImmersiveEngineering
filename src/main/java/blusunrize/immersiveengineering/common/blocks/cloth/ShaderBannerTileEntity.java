@@ -63,7 +63,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putBoolean("wall", this.wall);
-		nbt.setByte("orientation", this.orientation);
+		nbt.putByte("orientation", this.orientation);
 		nbt.put("shader", shader.serializeNBT());
 	}
 

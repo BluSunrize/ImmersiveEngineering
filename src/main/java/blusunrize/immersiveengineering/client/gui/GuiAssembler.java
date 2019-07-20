@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.player.PlayerInventory;
@@ -42,12 +42,13 @@ public class GuiAssembler extends GuiIEContainerBase
 	}
 
 	@Override
-	public void initGui()
+	protected void init()
 	{
-		super.initGui();
+		super.init();
 		this.buttons.clear();
 		for(int i = 0; i < 3; ++i)
 		{
+			final int id = i;
 			this.buttons.add(new GuiButtonIE(i, guiLeft+11+i*59, guiTop+67, 10, 10, null, texture, 230, 50)
 			{
 				@Override
@@ -67,7 +68,7 @@ public class GuiAssembler extends GuiIEContainerBase
 			{
 				super.onClick(mX, mY);
 				tile.recursiveIngredients = !tile.recursiveIngredients;
-				initGui();
+				init();
 			}
 		});
 	}
@@ -101,7 +102,7 @@ public class GuiAssembler extends GuiIEContainerBase
 
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, xSize, -1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 
@@ -112,7 +113,7 @@ public class GuiAssembler extends GuiIEContainerBase
 	{
 		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture(texture);
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+187, guiTop+13+(46-stored), guiLeft+194, guiTop+59, 0xffb51500, 0xff600b00);
@@ -129,17 +130,17 @@ public class GuiAssembler extends GuiIEContainerBase
 				GlStateManager.translatef(0.0F, 0.0F, 32.0F);
 				GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 				RenderHelper.disableStandardItemLighting();
-				this.zLevel = 200.0F;
-				itemRender.zLevel = 200.0F;
+				this.blitOffset = 200;
+				itemRenderer.zLevel = 200.0F;
 				FontRenderer font = null;
 				if(!stack.isEmpty())
 					font = stack.getItem().getFontRenderer(stack);
 				if(font==null)
-					font = fontRenderer;
-				itemRender.renderItemAndEffectIntoGUI(stack, guiLeft+27+i*58, guiTop+64);
-				itemRender.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.getCount());
-				this.zLevel = 0.0F;
-				itemRender.zLevel = 0.0F;
+					font = this.font;
+				itemRenderer.renderItemAndEffectIntoGUI(stack, guiLeft+27+i*58, guiTop+64);
+				itemRenderer.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.getCount());
+				this.blitOffset = 0;
+				itemRenderer.zLevel = 0.0F;
 
 
 				GlStateManager.disableLighting();

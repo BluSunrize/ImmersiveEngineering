@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
+import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 
-public class EntityRenderRailgunShot extends EntityRenderer<EntityRailgunShot>
+public class EntityRenderRailgunShot extends EntityRenderer<RailgunShotEntity>
 {
 	public EntityRenderRailgunShot(EntityRendererManager renderManager)
 	{
@@ -31,7 +31,7 @@ public class EntityRenderRailgunShot extends EntityRenderer<EntityRailgunShot>
 	}
 
 	@Override
-	public void doRender(EntityRailgunShot entity, double x, double y, double z, float f0, float f1)
+	public void doRender(RailgunShotEntity entity, double x, double y, double z, float f0, float f1)
 	{
 		double yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*f1-90.0F;
 		double pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*f1;
@@ -155,7 +155,7 @@ public class EntityRenderRailgunShot extends EntityRenderer<EntityRailgunShot>
 
 
 	@Override
-	protected ResourceLocation getEntityTexture(@Nonnull EntityRailgunShot p_110775_1_)
+	protected ResourceLocation getEntityTexture(@Nonnull RailgunShotEntity p_110775_1_)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/white.png");
 	}

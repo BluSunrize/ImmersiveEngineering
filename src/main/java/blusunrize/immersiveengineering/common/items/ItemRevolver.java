@@ -23,7 +23,7 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
@@ -346,9 +346,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		return new ActionResult<>(ActionResultType.SUCCESS, revolver);
 	}
 
-	private EntityRevolvershot getBullet(PlayerEntity player, Vec3d vecSpawn, Vec3d vecDir, String type, ItemStack stack, boolean electro)
+	private RevolvershotEntity getBullet(PlayerEntity player, Vec3d vecSpawn, Vec3d vecDir, String type, ItemStack stack, boolean electro)
 	{
-		EntityRevolvershot bullet = new EntityRevolvershot(player.world, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
+		RevolvershotEntity bullet = new RevolvershotEntity(player.world, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
 		bullet.motionX = vecDir.x*2;
 		bullet.motionY = vecDir.y*2;
 		bullet.motionZ = vecDir.z*2;

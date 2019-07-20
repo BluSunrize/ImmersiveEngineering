@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
+import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
@@ -27,7 +27,7 @@ public class MessageSkyhookSync implements IMessage
 	private double linePos;
 	private double speed;
 
-	public MessageSkyhookSync(EntitySkylineHook entity)
+	public MessageSkyhookSync(SkylineHookEntity entity)
 	{
 		entityID = entity.getEntityId();
 		connection = entity.getConnection();
@@ -61,10 +61,10 @@ public class MessageSkyhookSync implements IMessage
 			if(world!=null)
 			{
 				Entity ent = world.getEntityByID(entityID);
-				if(ent instanceof EntitySkylineHook)
+				if(ent instanceof SkylineHookEntity)
 				{
 					connection.getSubVertices(world);
-					((EntitySkylineHook)ent).setConnectionAndPos(connection, linePos, speed);
+					((SkylineHookEntity)ent).setConnectionAndPos(connection, linePos, speed);
 				}
 			}
 		});

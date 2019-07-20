@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -101,7 +101,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	{
 		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
 		IngredientStack[] additives = null;
-		if(nbt.hasKey("additives"))
+		if(nbt.contains("additives", NBT.TAG_LIST))
 		{
 			ListNBT list = nbt.getList("additives", 10);
 			additives = new IngredientStack[list.size()];
@@ -235,12 +235,12 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public static List<ArcFurnaceRecipe> removeRecipes(ItemStack stack)
 	{
-		List<ArcFurnaceRecipe> list = new ArrayList();
+		List<ArcFurnaceRecipe> list = new ArrayList<>();
 		Iterator<ArcFurnaceRecipe> it = recipeList.iterator();
 		while(it.hasNext())
 		{
 			ArcFurnaceRecipe ir = it.next();
-			if(OreDictionary.itemMatches(ir.output, stack, true))
+			if(ItemStack.areItemStacksEqual(ir.output, stack))
 			{
 				list.add(ir);
 				it.remove();

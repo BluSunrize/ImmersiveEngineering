@@ -21,14 +21,14 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ITickable;
 
 import javax.annotation.Nonnull;
 
-public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickable, IIEInternalFluxHandler, IActiveState, IDirectionalTile
+public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IActiveState, IDirectionalTile
 {
 	public static TileEntityType<FurnaceHeaterTileEntity> TYPE;
 	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256, Math.max(IEConfig.Machines.heater_consumption, IEConfig.Machines.heater_speedupConsumption)));

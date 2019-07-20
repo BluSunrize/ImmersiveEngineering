@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.Too
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
+import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.gui.FontRenderer;
@@ -68,7 +68,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 				ItemStack stack = ctx.getItem();
 				Vec3d look = player.getLookVec();
 				float angle = (float)Math.toDegrees(Math.atan2(look.x, look.z));
-				EntityFluorescentTube tube = new EntityFluorescentTube(world, stack.copy(), angle);
+				FluorescentTubeEntity tube = new FluorescentTubeEntity(world, stack.copy(), angle);
 				BlockPos pos = ctx.getPos();
 				tube.setPosition(pos.getX()+ctx.getHitX(), pos.getY()+1.5, pos.getZ()+ctx.getHitZ());
 				world.spawnEntity(tube);

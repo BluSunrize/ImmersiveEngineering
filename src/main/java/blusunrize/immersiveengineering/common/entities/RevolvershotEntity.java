@@ -17,10 +17,8 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.EntityType;
+import net.minecraft.entity.*;
 import net.minecraft.entity.EntityType.Builder;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -29,17 +27,18 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-public class EntityRevolvershot extends EntityIEProjectile
+public class RevolvershotEntity extends IEProjectileEntity
 {
-	public static final EntityType<EntityRevolvershot> TYPE = new Builder<>(EntityRevolvershot.class, EntityRevolvershot::new)
+	public static final EntityType<RevolvershotEntity> TYPE = Builder
+			.<RevolvershotEntity>create(RevolvershotEntity::new, EntityClassification.MISC)
+			.size(0.125f, 0.125f)
 			.build(ImmersiveEngineering.MODID+":revolver_shot");
 
 	private IBullet bulletType;
@@ -48,43 +47,41 @@ public class EntityRevolvershot extends EntityIEProjectile
 	private float gravity;
 	private float movementDecay;
 
-	public EntityRevolvershot(EntityType<? extends EntityRevolvershot> type, World world)
+	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> type, World world)
 	{
 		super(type, world);
-		this.setSize(.125f, .125f);
 	}
 
-	public EntityRevolvershot(World world)
+	public RevolvershotEntity(World world)
 	{
 		this(TYPE, world);
 	}
 
-	public EntityRevolvershot(EntityType<? extends EntityRevolvershot> eType, World world, double x, double y, double z,
+	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> eType, World world, double x, double y, double z,
 							  double ax, double ay, double az, IBullet type)
 	{
 		super(eType, world, x, y, z, ax, ay, az);
-		this.setSize(.125f, .125f);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);
 		this.bulletType = type;
 	}
 
-	public EntityRevolvershot(World world, double x, double y, double z,
+	public RevolvershotEntity(World world, double x, double y, double z,
 							  double ax, double ay, double az, IBullet type)
 	{
 		this(TYPE, world, x, y, z, ax, ay, az, type);
 	}
 
-	public EntityRevolvershot(World world, LivingEntity living, double ax, double ay, double az, IBullet type)
+	public RevolvershotEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type)
 	{
 		this(world, living, ax, ay, az, BulletHandler.findRegistryName(type));
 	}
 
-	public EntityRevolvershot(World world, LivingEntity living, double ax, double ay, double az, String type)
+	public RevolvershotEntity(World world, LivingEntity living, double ax, double ay, double az, String type)
 	{
 		this(TYPE, world, living.posX+ax, living.posY+living.getEyeHeight()+ay, living.posZ+az, ax, ay, az, BulletHandler.getBullet(type));
 		setShooterSynced();
-		this.motionX = this.motionY = this.motionZ = 0.0D;
+		setMotion(Vec3d.ZERO);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -100,28 +97,37 @@ public class EntityRevolvershot extends EntityIEProjectile
 	public void onImpact(RayTraceResult mop)
 	{
 		boolean headshot = false;
-		if(mop.entity instanceof LivingEntity)
-			headshot = Utils.isVecInEntityHead((LivingEntity)mop.entity, new Vec3d(posX, posY, posZ));
+		if(mop instanceof EntityRayTraceResult)
+		{
+			Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
+			if(hitEntity instanceof LivingEntity)
+				headshot = Utils.isVecInEntityHead((LivingEntity)hitEntity, getPositionVec());
+		}
 
 		if(this.bulletType!=null)
 		{
 			bulletType.onHitTarget(world, mop, this.shootingEntity, this, headshot);
-			if(headshot&&mop.entity instanceof AgeableEntity&&((AgeableEntity)mop.entity).isChild()&&((LivingEntity)mop.entity).getHealth() <= 0)
+			if(mop instanceof EntityRayTraceResult)
 			{
-				PlayerEntity shooter = world.getPlayerEntityByUUID(shootingEntity);
-				if(shooter!=null)
-					Utils.unlockIEAdvancement(shooter, "main/secret_birthdayparty");
-				world.playSound(null, posX, posY, posZ, IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F/(this.rand.nextFloat()*0.2F+0.9F));
-				ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_ENTITY.with(() -> mop.entity), new MessageBirthdayParty((LivingEntity)mop.entity));
+				Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
+				if(headshot&&hitEntity instanceof AgeableEntity&&((AgeableEntity)hitEntity).isChild()&&((LivingEntity)hitEntity).getHealth() <= 0)
+				{
+					PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
+					if(shooter!=null)
+						Utils.unlockIEAdvancement(shooter, "main/secret_birthdayparty");
+					world.playSound(null, posX, posY, posZ, IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F/(this.rand.nextFloat()*0.2F+0.9F));
+					ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_ENTITY.with(() -> hitEntity), new MessageBirthdayParty((LivingEntity)hitEntity));
+				}
 			}
 		}
 		if(!this.world.isRemote)
 			this.secondaryImpact(mop);
-		if(mop.type==Type.BLOCK)
+		if(mop instanceof BlockRayTraceResult)
 		{
-			BlockState state = this.world.getBlockState(mop.getBlockPos());
+			BlockPos hitPos = ((BlockRayTraceResult)mop).getPos();
+			BlockState state = this.world.getBlockState(hitPos);
 			if(state.getBlock().getMaterial(state)!=Material.AIR)
-				state.getBlock().onEntityCollision(state, this.world, mop.getBlockPos(), this);
+				state.getBlock().onEntityCollision(state, this.world, hitPos, this);
 		}
 		this.remove();
 	}
@@ -129,14 +135,17 @@ public class EntityRevolvershot extends EntityIEProjectile
 
 	public void secondaryImpact(RayTraceResult mop)
 	{
-		if(bulletElectro&&mop.entity instanceof LivingEntity)
+		if(!(mop instanceof EntityRayTraceResult))
+			return;
+		Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
+		if(bulletElectro&&hitEntity instanceof LivingEntity)
 		{
-			PlayerEntity shooter = world.getPlayerEntityByUUID(shootingEntity);
+			PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
 			float percentualDrain = .15f/(bulletType==null?1: bulletType.getProjectileCount(shooter));
-			((LivingEntity)mop.entity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 15, 4));
+			((LivingEntity)hitEntity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 15, 4));
 			for(EquipmentSlotType slot : EquipmentSlotType.values())
 			{
-				ItemStack stack = ((LivingEntity)mop.entity).getItemStackFromSlot(slot);
+				ItemStack stack = ((LivingEntity)hitEntity).getItemStackFromSlot(slot);
 				if(EnergyHelper.isFluxReceiver(stack)&&EnergyHelper.getEnergyStored(stack) > 0)
 				{
 					int drain = (int)Math.max(EnergyHelper.getEnergyStored(stack), EnergyHelper.getMaxEnergyStored(stack)*percentualDrain);
@@ -167,7 +176,7 @@ public class EntityRevolvershot extends EntityIEProjectile
 	public void writeAdditional(CompoundNBT nbt)
 	{
 		super.writeAdditional(nbt);
-		nbt.setByte("inGround", (byte)(this.inGround?1: 0));
+		nbt.putByte("inGround", (byte)(this.inGround?1: 0));
 		nbt.putString("bulletType", BulletHandler.findRegistryName(this.bulletType));
 		if(!bulletPotion.isEmpty())
 			nbt.put("bulletPotion", bulletPotion.write(new CompoundNBT()));
@@ -178,7 +187,7 @@ public class EntityRevolvershot extends EntityIEProjectile
 	{
 		super.readAdditional(nbt);
 		this.bulletType = BulletHandler.getBullet(nbt.getString("bulletType"));
-		if(nbt.hasKey("bulletPotion"))
+		if(nbt.contains("bulletPotion", NBT.TAG_COMPOUND))
 			this.bulletPotion = ItemStack.read(nbt.getCompound("bulletPotion"));
 	}
 

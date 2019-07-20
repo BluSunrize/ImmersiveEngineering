@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.util.sound;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.ItemEarmuffs;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.audio.ITickableSound;
@@ -150,7 +150,7 @@ public class IETileSound implements ITickableSound
 	}
 
 	@Override
-	public boolean isPriority()
+	public boolean isGlobal()
 	{
 		return false;
 	}
@@ -161,13 +161,6 @@ public class IETileSound implements ITickableSound
 		return repeatDelay;
 	}
 
-	//	public void setPos(float x, float y, float z)
-	//	{
-	//		this.tileX=x;
-	//		this.tileY=y;
-	//		this.tileZ=z;
-	//	}
-
 	public void evaluateVolume()
 	{
 		volumeAjustment = 1f;
@@ -176,7 +169,7 @@ public class IETileSound implements ITickableSound
 			ItemStack stack = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
 			if(ItemNBTHelper.hasKey(stack, "IE:Earmuffs"))
 				stack = ItemNBTHelper.getItemStack(stack, "IE:Earmuffs");
-			if(!stack.isEmpty()&&IEContent.itemEarmuffs.equals(stack.getItem()))
+			if(!stack.isEmpty()&&Misc.earmuffs.equals(stack.getItem()))
 				volumeAjustment = ItemEarmuffs.getVolumeMod(stack);
 		}
 		//TODO uncomment when XU updates and maybe look for a better solution (API)

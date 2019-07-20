@@ -36,7 +36,7 @@ public abstract class CapabilityReference<T>
 
 	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, @Nonnull Direction side)
 	{
-		return forRelative(local, cap, BlockPos.ORIGIN.offset(side), side);
+		return forRelative(local, cap, BlockPos.ZERO.offset(side), side);
 	}
 
 	protected final Capability<T> cap;

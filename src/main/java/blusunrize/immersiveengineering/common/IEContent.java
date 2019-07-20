@@ -531,6 +531,7 @@ public class IEContent
 		registerTile(MixerTileEntity.class, event, Multiblocks.mixer);
 		//		registerTile(TileEntitySkycrateDispenser.class);
 		registerTile(FakeLightTileEntity.class, event, Misc.fakeLight);
+		EnergyConnectorTileEntity.registerConnectorTEs(event);
 	}
 
 	@SubscribeEvent
@@ -764,16 +765,16 @@ public class IEContent
 
 		/*ENTITIES*/
 		int i = 0;
-		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShot"), EntityRevolvershot.class, "revolverShot", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "skylineHook"), EntitySkylineHook.class, "skylineHook", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShot"), RevolvershotEntity.class, "revolverShot", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "skylineHook"), SkylineHookEntity.class, "skylineHook", i++, ImmersiveEngineering.instance, 64, 1, true);
 		//EntityRegistry.registerModEntity(EntitySkycrate.class, "skylineCrate", 2, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShotHoming"), EntityRevolvershotHoming.class, "revolverShotHoming", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShotWolfpack"), EntityWolfpackShot.class, "revolverShotWolfpack", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "chemthrowerShot"), EntityChemthrowerShot.class, "chemthrowerShot", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "railgunShot"), EntityRailgunShot.class, "railgunShot", i++, ImmersiveEngineering.instance, 64, 5, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShotFlare"), EntityRevolvershotFlare.class, "revolverShotFlare", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "explosive"), EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "fluorescentTube"), EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShotHoming"), RevolvershotHomingEntity.class, "revolverShotHoming", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShotWolfpack"), WolfpackShotEntity.class, "revolverShotWolfpack", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "chemthrowerShot"), ChemthrowerShotEntity.class, "chemthrowerShot", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "railgunShot"), RailgunShotEntity.class, "railgunShot", i++, ImmersiveEngineering.instance, 64, 5, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShotFlare"), RevolvershotFlareEntity.class, "revolverShotFlare", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "explosive"), IEExplosiveEntity.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "fluorescentTube"), FluorescentTubeEntity.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
 		CapabilityShader.register();
 		NetHandlerCapability.register();
 		CapabilitySkyhookData.register();
@@ -884,7 +885,7 @@ public class IEContent
 					if(!world.isAirBlock(pos))
 						return;
 					AxisAlignedBB aabb = new AxisAlignedBB(pos);
-					List<EntityChemthrowerShot> otherProjectiles = world.getEntitiesWithinAABB(EntityChemthrowerShot.class, aabb);
+					List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesWithinAABB(ChemthrowerShotEntity.class, aabb);
 					if(otherProjectiles.size() >= 8)
 						hit(world, pos, mop.sideHit);
 				}
@@ -898,8 +899,8 @@ public class IEContent
 			private void hit(World world, BlockPos pos, Direction side)
 			{
 				AxisAlignedBB aabb = new AxisAlignedBB(pos);
-				List<EntityChemthrowerShot> otherProjectiles = world.getEntitiesWithinAABB(EntityChemthrowerShot.class, aabb);
-				for(EntityChemthrowerShot shot : otherProjectiles)
+				List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesWithinAABB(ChemthrowerShotEntity.class, aabb);
+				for(ChemthrowerShotEntity shot : otherProjectiles)
 					shot.setDead();
 				world.setBlockState(pos, blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta()));
 				for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, aabb))

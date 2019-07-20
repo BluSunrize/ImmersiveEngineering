@@ -22,12 +22,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,7 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 
-public class WindmillTileEntity extends IEBaseTileEntity implements ITickable, IDirectionalTile, ITileDrop, IPlayerInteraction, IHasObjProperty
+public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IDirectionalTile, ITileDrop, IPlayerInteraction, IHasObjProperty
 {
 	public static TileEntityType<WindmillTileEntity> TYPE;
 	public Direction facing = Direction.NORTH;

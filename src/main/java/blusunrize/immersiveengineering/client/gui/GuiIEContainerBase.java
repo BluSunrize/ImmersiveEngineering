@@ -9,22 +9,24 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.util.text.StringTextComponent;
 
 /**
  * @author BluSunrize - 05.07.2017
  */
 public abstract class GuiIEContainerBase extends ContainerScreen
 {
-	public GuiIEContainerBase(Container inventorySlotsIn)
+	public GuiIEContainerBase(Container inventorySlotsIn, PlayerInventory inv)
 	{
-		super(inventorySlotsIn);
+		super(inventorySlotsIn, inv, new StringTextComponent(""));
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks)
 	{
-		this.drawDefaultBackground();
+		this.renderBackground();
 		super.render(mouseX, mouseY, partialTicks);
 		this.renderHoveredToolTip(mouseX, mouseY);
 	}

@@ -63,70 +63,13 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static ItemStack getTypedBlueprint(String type)
 	{
-		ItemStack stack = new ItemStack(itemBlueprint, 1, 0);
+		ItemStack stack = new ItemStack(itemBlueprint);
 		ItemNBTHelper.putString(stack, "blueprint", type);
 		return stack;
 	}
 
 	public boolean matchesRecipe(NonNullList<ItemStack> query)
 	{
-		//		ArrayList<Object> inputList = new ArrayList();
-		//		for(Object i : inputs)
-		//			if(i!=null)
-		//				inputList.add(i instanceof ItemStack? ((ItemStack)i).copy(): i);
-		//		ArrayList<ItemStack> queryList = new ArrayList();
-		//		for(ItemStack q : query)
-		//			if(q!=null)
-		//				queryList.add(q.copy());
-		//
-		//		Iterator inputIt = inputList.iterator();
-		//		while(inputIt.hasNext())
-		//		{
-		//			boolean match = false;
-		//			Object o = inputIt.next();
-		//			Iterator<ItemStack> queryIt = queryList.iterator();
-		//			while(queryIt.hasNext())
-		//			{
-		//				ItemStack stack = queryIt.next();
-		//				if(ApiUtils.stackMatchesObject(stack, o))
-		//				{
-		//					if(o instanceof ItemStack)
-		//					{
-		//						int taken = Math.min(stack.stackSize, ((ItemStack)o).stackSize);
-		//						stack.stackSize-=taken;
-		//						if(stack.stackSize<=0)
-		//						{
-		//							queryIt.remove();
-		//						}
-		//
-		//						((ItemStack)o).stackSize-=taken;
-		//						if(((ItemStack)o).stackSize<=0)
-		//						{
-		//							match = true;
-		//							inputIt.remove();
-		//							break;
-		//						}
-		//					}
-		//					else
-		//					{
-		//						stack.stackSize--;
-		//						if(stack.stackSize<=0)
-		//							queryIt.remove();
-		//
-		//						match = true;
-		//						inputIt.remove();
-		//						break;
-		//					}
-		//
-		//				}
-		//			}
-		//			if(!match)
-		//			{
-		//				return false;
-		//			}
-		//		}
-		//		if(inputList.isEmpty())
-		//			return true;
 		return getMaxCrafted(query) > 0;
 	}
 
@@ -138,7 +81,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 			{
 				boolean inc = false;
 				for(ItemStack key : queryAmount.keySet())
-					if(OreDictionary.itemMatches(q, key, true))
+					if(ItemStack.areItemStacksEqual(q, key))
 					{
 						queryAmount.put(key, queryAmount.get(key)+q.getCount());
 						inc = true;
@@ -234,13 +177,13 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 					{
 						for(ItemStack iStack : ingr.stackList)
 							for(ItemStack iStack2 : formatted.stackList)
-								if(OreDictionary.itemMatches(iStack, iStack2, false))
+								if(ItemStack.areItemsEqual(iStack, iStack2))
 								{
 									isNew = false;
 									break;
 								}
 					}
-					else if(!ingr.stack.isEmpty()&&OreDictionary.itemMatches(ingr.stack, formatted.stack, false))
+					else if(!ingr.stack.isEmpty()&&ItemStack.areItemsEqual(ingr.stack, formatted.stack))
 						isNew = false;
 					if(!isNew)
 						formatted.inputSize += ingr.inputSize;

@@ -23,12 +23,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickable, IDirectionalTile,
+public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IDirectionalTile,
 		IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride,
 		EnergyConnector
 {

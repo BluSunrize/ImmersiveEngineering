@@ -12,7 +12,7 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
+import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -75,7 +75,7 @@ public class SkylineHelper
 
 			double totalSpeed = playerMovement.dotProduct(extendedWire);
 			double horSpeed = totalSpeed/Math.sqrt(1+slopeAtPos*slopeAtPos);
-			EntitySkylineHook hook = new EntitySkylineHook(player.world, connection, linePos, hand, horSpeed, limitSpeed);
+			SkylineHookEntity hook = new SkylineHookEntity(player.world, connection, linePos, hand, horSpeed, limitSpeed);
 			IELogger.logger.info("Speed keeping: Player {}, wire {}, Pos: {}", playerMovement, extendedWire,
 					hook.getPositionVector());
 			if(hook.isValidPosition(hook.posX, hook.posY, hook.posZ, player))

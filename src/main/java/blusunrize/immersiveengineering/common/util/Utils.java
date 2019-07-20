@@ -607,7 +607,7 @@ public class Utils
 		int type = preType >= 0?preType: rand.nextInt(4);
 		if(preType < 0&&type==3)
 			type = 4;
-		expl.setByte("Type", (byte)type);
+		expl.putByte("Type", (byte)type);
 		ListNBT list = new ListNBT();
 		list.add(expl);
 		tag.put("Explosions", list);
@@ -1203,7 +1203,7 @@ public class Utils
 			if(!inv[i].isEmpty())
 			{
 				CompoundNBT itemTag = new CompoundNBT();
-				itemTag.setByte("Slot", (byte)i);
+				itemTag.putByte("Slot", (byte)i);
 				inv[i].write(itemTag);
 				invList.add(itemTag);
 			}
@@ -1220,7 +1220,7 @@ public class Utils
 			if(!s.isEmpty())
 			{
 				CompoundNBT itemTag = new CompoundNBT();
-				itemTag.setByte("Slot", slot);
+				itemTag.putByte("Slot", slot);
 				s.write(itemTag);
 				invList.add(itemTag);
 			}
@@ -1422,7 +1422,7 @@ public class Utils
 	{
 		IBlockReader w = getSingleBlockWorldAccess(state);
 		NonNullList<ItemStack> ret = NonNullList.create();
-		state.getBlock().getDrops(ret, w, BlockPos.ORIGIN, state, 0);
+		state.getBlock().getDrops(ret, w, BlockPos.ZERO, state, 0);
 		return ret;
 	}
 
@@ -1497,7 +1497,7 @@ public class Utils
 		@Override
 		public BlockState getBlockState(@Nonnull BlockPos pos)
 		{
-			return pos.equals(BlockPos.ORIGIN)?state: Blocks.AIR.getDefaultState();
+			return pos.equals(BlockPos.ZERO)?state: Blocks.AIR.getDefaultState();
 		}
 
 		@Nonnull

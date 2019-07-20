@@ -12,13 +12,14 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.ProtectionEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.init.Particles;
+import net.minecraft.item.ItemStack;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -27,7 +28,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootParameters;
 
 import java.util.Comparator;
 import java.util.List;
@@ -41,9 +45,9 @@ public class IEExplosion extends Explosion
 	public boolean isExplosionFinished = false;
 	private final World world;
 	private final float size;
-	private final boolean damagesTerrain;
+	private final Mode damagesTerrain;
 
-	public IEExplosion(World world, Entity igniter, double x, double y, double z, float size, boolean isFlaming, boolean damageTerrain)
+	public IEExplosion(World world, Entity igniter, double x, double y, double z, float size, boolean isFlaming, Mode damageTerrain)
 	{
 		super(world, igniter, x, y, z, size, isFlaming, damageTerrain);
 		this.dropChance = 1/size;
@@ -84,15 +88,23 @@ public class IEExplosion extends Explosion
 				d3 = d3*d7;
 				d4 = d4*d7;
 				d5 = d5*d7;
-				this.world.spawnParticle(Particles.EXPLOSION, (d0+getPosition().x*1.0D)/2.0D, (d1+getPosition().y*1.0D)/2.0D, (d2+getPosition().z*1.0D)/2.0D, d3, d4, d5);
-				this.world.spawnParticle(Particles.SMOKE, d0, d1, d2, d3, d4, d5);
+				this.world.addParticle(ParticleTypes.EXPLOSION, (d0+getPosition().x*1.0D)/2.0D, (d1+getPosition().y*1.0D)/2.0D, (d2+getPosition().z*1.0D)/2.0D, d3, d4, d5);
+				this.world.addParticle(ParticleTypes.SMOKE, d0, d1, d2, d3, d4, d5);
 			}
 
-			if(state.getMaterial()!=Material.AIR)
+			if(!state.isAir(world, pos))
 			{
-				if(block.canDropFromExplosion(this))
-					block.dropBlockAsItemWithChance(this.world.getBlockState(pos), this.world, pos, dropChance, 0);
-				block.onBlockExploded(world.getBlockState(pos), world, pos, this);
+				if(this.world instanceof ServerWorld&&state.canDropFromExplosion(this.world, pos, this))
+				{
+					TileEntity tile = state.hasTileEntity()?this.world.getTileEntity(pos): null;
+					LootContext.Builder lootCtx = new LootContext.Builder((ServerWorld)this.world)
+							.withRandom(this.world.rand).withParameter(LootParameters.POSITION, pos)
+							.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
+							.withNullableParameter(LootParameters.BLOCK_ENTITY, tile);
+					if(damagesTerrain==Explosion.Mode.DESTROY)
+						lootCtx.withParameter(LootParameters.EXPLOSION_RADIUS, this.size);
+					Block.spawnDrops(state, lootCtx);
+				}
 			}
 		}
 		if(blockDestroyInt >= this.getAffectedBlockPositions().size())
@@ -151,7 +163,8 @@ public class IEExplosion extends Explosion
 
 		this.getAffectedBlockPositions().addAll(set);
 		this.getAffectedBlockPositions().sort(
-				Comparator.comparingDouble(pos -> pos.distanceSq(getPosition().x, getPosition().y, getPosition().z)));
+				Comparator.comparingDouble(pos -> pos.distanceSq(getPosition().x, getPosition().y, getPosition().z, true))
+		);
 
 		float f3 = this.size*2.0F;
 		int k1 = MathHelper.floor(getPosition().x-(double)f3-1.0D);
@@ -169,7 +182,8 @@ public class IEExplosion extends Explosion
 			Entity entity = list.get(k2);
 			if(!entity.isImmuneToExplosions())
 			{
-				double d12 = entity.getDistance(getPosition().x, getPosition().y, getPosition().z)/(double)f3;
+				double d12 = entity.getPositionVec()
+						.squareDistanceTo(getPosition().x, getPosition().y, getPosition().z)/(double)f3;
 				if(d12 <= 1.0D)
 				{
 					double d5 = entity.posX-getPosition().x;
@@ -181,13 +195,13 @@ public class IEExplosion extends Explosion
 						d5 = d5/d13;
 						d7 = d7/d13;
 						d9 = d9/d13;
-						double d14 = world.getBlockDensity(vec3, entity.getBoundingBox());
+						double d14 = func_222259_a(vec3, entity);
 						double d10 = (1.0D-d12)*d14;
 						entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), (float)((int)((d10*d10+d10)/2.0D*8.0D*(double)f3+1.0D)));
 						double d11 = entity instanceof LivingEntity?ProtectionEnchantment.getBlastDamageReduction((LivingEntity)entity, d10): d10;
-						entity.motionX += d5*d11;
-						entity.motionY += d7*d11;
-						entity.motionZ += d9*d11;
+						entity.setMotion(entity.getMotion().add(d5*d11,
+								d7*d11,
+								d9*d11));
 						if(entity instanceof PlayerEntity&&!((PlayerEntity)entity).abilities.disableDamage)
 							this.getPlayerKnockbackMap().put((PlayerEntity)entity, new Vec3d(d5*d10, d7*d10, d9*d10));
 					}
@@ -202,10 +216,10 @@ public class IEExplosion extends Explosion
 		Vec3d pos = getPosition();
 		this.world.playSound(pos.x, pos.y, pos.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.NEUTRAL, 4.0F, (1.0F+(Utils.RAND.nextFloat()-Utils.RAND.nextFloat())*0.2F)*0.7F, true);
 
-		if(this.size >= 2.0F&&this.damagesTerrain)
-			this.world.spawnParticle(Particles.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
+		if(this.size >= 2.0F&&this.damagesTerrain!=Mode.NONE)
+			this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
 		else
-			this.world.spawnParticle(Particles.EXPLOSION, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
+			this.world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
 
 		EventHandler.currentExplosions.add(this);
 	}

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
+import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -22,7 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
-public class EntityRenderChemthrowerShot extends EntityRenderer<EntityChemthrowerShot>
+public class EntityRenderChemthrowerShot extends EntityRenderer<ChemthrowerShotEntity>
 {
 	public EntityRenderChemthrowerShot(EntityRendererManager renderManager)
 	{
@@ -30,7 +30,7 @@ public class EntityRenderChemthrowerShot extends EntityRenderer<EntityChemthrowe
 	}
 
 	@Override
-	public void doRender(EntityChemthrowerShot entity, double x, double y, double z, float f0, float f1)
+	public void doRender(ChemthrowerShotEntity entity, double x, double y, double z, float f0, float f1)
 	{
 		FluidStack f = entity.getFluid();
 		if(f==null)
@@ -77,7 +77,7 @@ public class EntityRenderChemthrowerShot extends EntityRenderer<EntityChemthrowe
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityChemthrowerShot p_110775_1_)
+	protected ResourceLocation getEntityTexture(ChemthrowerShotEntity p_110775_1_)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/bullet.png");
 	}

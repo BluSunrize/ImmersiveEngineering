@@ -266,7 +266,7 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, .125, .125).scale(.25, .25, .25)));
 		IEContent.itemShield.setTileEntityItemStackRenderer(ItemRendererIEOBJ.INSTANCE);
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new IRenderFactory<EntityRevolvershot>()
+		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.class, new IRenderFactory<RevolvershotEntity>()
 		{
 			@Override
 			public EntityRenderer createRenderFor(EntityRendererManager manager)
@@ -274,7 +274,7 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderRevolvershot(manager);
 			}
 		});
-		RenderingRegistry.registerEntityRenderingHandler(EntitySkylineHook.class, new IRenderFactory<EntitySkylineHook>()
+		RenderingRegistry.registerEntityRenderingHandler(SkylineHookEntity.class, new IRenderFactory<SkylineHookEntity>()
 		{
 			@Override
 			public EntityRenderer createRenderFor(EntityRendererManager manager)
@@ -282,7 +282,7 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderNone<>(manager);
 			}
 		});
-		RenderingRegistry.registerEntityRenderingHandler(EntityChemthrowerShot.class, new IRenderFactory<EntityChemthrowerShot>()
+		RenderingRegistry.registerEntityRenderingHandler(ChemthrowerShotEntity.class, new IRenderFactory<ChemthrowerShotEntity>()
 		{
 			@Override
 			public EntityRenderer createRenderFor(EntityRendererManager manager)
@@ -290,7 +290,7 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderChemthrowerShot(manager);
 			}
 		});
-		RenderingRegistry.registerEntityRenderingHandler(EntityRailgunShot.class, new IRenderFactory<EntityRailgunShot>()
+		RenderingRegistry.registerEntityRenderingHandler(RailgunShotEntity.class, new IRenderFactory<RailgunShotEntity>()
 		{
 			@Override
 			public EntityRenderer createRenderFor(EntityRendererManager manager)
@@ -298,7 +298,7 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderRailgunShot(manager);
 			}
 		});
-		RenderingRegistry.registerEntityRenderingHandler(EntityIEExplosive.class, new IRenderFactory<EntityIEExplosive>()
+		RenderingRegistry.registerEntityRenderingHandler(IEExplosiveEntity.class, new IRenderFactory<IEExplosiveEntity>()
 		{
 			@Override
 			public EntityRenderer createRenderFor(EntityRendererManager manager)
@@ -306,7 +306,7 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderIEExplosive(manager);
 			}
 		});
-		RenderingRegistry.registerEntityRenderingHandler(EntityFluorescentTube.class, new IRenderFactory<EntityFluorescentTube>()
+		RenderingRegistry.registerEntityRenderingHandler(FluorescentTubeEntity.class, new IRenderFactory<FluorescentTubeEntity>()
 		{
 			@Override
 			public EntityRenderer createRenderFor(EntityRendererManager manager)
@@ -1437,7 +1437,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnRedstoneFX(World world, double x, double y, double z, double mx, double my, double mz, float size, float r, float g, float b)
 	{
-		RedstoneParticle particle = (RedstoneParticle)ClientUtils.mc().effectRenderer.spawnEffectParticle(Particles.REDSTONE.getParticleID(), x, y, z, 0, 0, 0);
+		RedstoneParticle particle = (RedstoneParticle)ClientUtils.mc().effectRenderer.spawnEffectParticle(ParticleTypes.REDSTONE.getParticleID(), x, y, z, 0, 0, 0);
 		particle.motionX *= mx;
 		particle.motionY *= my;
 		particle.motionZ *= mz;
@@ -1635,7 +1635,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void removeStateFromSmartModelCache(IExtendedBlockState state)
+	public void removeStateFromSmartModelCache(BlockState state)
 	{
 		for(BlockRenderLayer r : BlockRenderLayer.values())
 			IESmartObjModel.modelCache.remove(new ExtBlockstateAdapter(state, r, ImmutableSet.of()));
@@ -1643,7 +1643,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void removeStateFromConnectionModelCache(IExtendedBlockState state)
+	public void removeStateFromConnectionModelCache(BlockState state)
 	{
 		for(BlockRenderLayer r : BlockRenderLayer.values())
 			ConnModelReal.cache.invalidate(new ExtBlockstateAdapter(state, r, ImmutableSet.of()));
@@ -1709,7 +1709,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void startSkyhookSound(EntitySkylineHook hook)
+	public void startSkyhookSound(SkylineHookEntity hook)
 	{
 		Minecraft.getInstance().getSoundHandler().playSound(new SkyhookSound(hook,
 				new ResourceLocation(ImmersiveEngineering.MODID, "skyhook")));

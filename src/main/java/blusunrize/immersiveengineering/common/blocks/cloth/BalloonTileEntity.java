@@ -22,13 +22,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorStructuralTileEntity;
-import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.init.Particles;
+import net.minecraft.init.ParticleTypes;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -230,13 +230,13 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(entity instanceof AbstractArrowEntity||entity instanceof EntityRevolvershot)
+		if(entity instanceof AbstractArrowEntity||entity instanceof RevolvershotEntity)
 		{
 			Vec3d pos = new Vec3d(getPos()).add(.5, .5, .5);
 			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST,
 					SoundCategory.BLOCKS, 1.5f, 0.7f);
 			world.removeBlock(getPos());
-			world.spawnParticle(Particles.EXPLOSION, pos.x, pos.y, pos.z, 0, .05, 0);
+			world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 0, .05, 0);
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(this.shader);
 			if(shader!=null)
 				shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), null, shader.getRight().getShaderType(), pos, null, .375f);

@@ -123,7 +123,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			for(int i = 0; i < 3; i++)
 				if(computerOn[i])
 					cOn |= 2<<i;
-			nbt.setByte("computerControlled", cOn);
+			nbt.putByte("computerControlled", cOn);
 		}
 	}
 
@@ -728,7 +728,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				if(!this.inv.get(i).isEmpty())
 				{
 					CompoundNBT itemTag = new CompoundNBT();
-					itemTag.setByte("Slot", (byte)i);
+					itemTag.putByte("Slot", (byte)i);
 					this.inv.get(i).write(itemTag);
 					list.add(itemTag);
 				}

@@ -16,12 +16,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootFunction;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 /**
  * @author BluSunrize - 16.08.2018
@@ -33,7 +32,7 @@ public class IELootFunctions
 		LootFunctionManager.registerFunction(new Bluprintz.Serializer());
 	}
 
-	public static class Bluprintz extends ILootFunction
+	public static class Bluprintz extends LootFunction
 	{
 		protected Bluprintz(ILootCondition[] conditionsIn)
 		{
@@ -41,14 +40,14 @@ public class IELootFunctions
 		}
 
 		@Override
-		public ItemStack apply(ItemStack stack, Random rand, LootContext context)
+		public ItemStack doApply(ItemStack stack, LootContext context)
 		{
 			stack.setDisplayName(new StringTextComponent("Super Special BluPrintz"));
 			ItemNBTHelper.setLore(stack, "Congratulations!", "You have found an easter egg!");
 			return stack;
 		}
 
-		public static class Serializer extends ILootFunction.Serializer<Bluprintz>
+		public static class Serializer extends LootFunction.Serializer<Bluprintz>
 		{
 			protected Serializer()
 			{

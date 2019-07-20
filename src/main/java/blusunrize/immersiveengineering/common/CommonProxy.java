@@ -18,8 +18,9 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
-import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
+import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -29,6 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.UUID;
 
@@ -145,18 +147,19 @@ public class CommonProxy
 
 	public String getNameFromUUID(String uuid)
 	{
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getMinecraftSessionService().fillProfileProperties(new GameProfile(UUID.fromString(uuid.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5")), null), false).getName();
+		return ServerLifecycleHooks.getCurrentServer().getMinecraftSessionService()
+				.fillProfileProperties(new GameProfile(UUID.fromString(uuid.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5")), null), false).getName();
 	}
 
 	public void reInitGui()
 	{
 	}
 
-	public void removeStateFromSmartModelCache(IExtendedBlockState state)
+	public void removeStateFromSmartModelCache(BlockState state)
 	{
 	}
 
-	public void removeStateFromConnectionModelCache(IExtendedBlockState state)
+	public void removeStateFromConnectionModelCache(BlockState state)
 	{
 	}
 
@@ -168,7 +171,7 @@ public class CommonProxy
 	{
 	}
 
-	public void startSkyhookSound(EntitySkylineHook hook)
+	public void startSkyhookSound(SkylineHookEntity hook)
 	{
 	}
 }

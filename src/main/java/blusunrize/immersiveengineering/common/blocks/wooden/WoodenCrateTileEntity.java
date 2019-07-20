@@ -112,7 +112,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 				if(toItem)
 					write = true;
 				CompoundNBT itemTag = new CompoundNBT();
-				itemTag.setByte("Slot", (byte)i);
+				itemTag.putByte("Slot", (byte)i);
 				this.inventory.get(i).write(itemTag);
 				invList.add(itemTag);
 			}

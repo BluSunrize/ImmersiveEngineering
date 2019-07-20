@@ -539,7 +539,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 					if(!this.filters[i][j].isEmpty())
 					{
 						CompoundNBT itemTag = new CompoundNBT();
-						itemTag.setByte("Slot", (byte)(i*filterSlotsPerSide+j));
+						itemTag.putByte("Slot", (byte)(i*filterSlotsPerSide+j));
 						this.filters[i][j].write(itemTag);
 						list.add(itemTag);
 					}

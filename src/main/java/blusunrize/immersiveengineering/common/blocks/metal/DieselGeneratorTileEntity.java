@@ -24,7 +24,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Particles;
+import net.minecraft.init.ParticleTypes;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -117,7 +117,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 				Direction fw = facing.rotateY();
 				if(mirrored)
 					fw = fw.getOpposite();
-				world.spawnParticle(Particles.LARGE_SMOKE,
+				world.addParticle(ParticleTypes.LARGE_SMOKE,
 						exhaust.getX()+.5+(fl.getXOffset()*.3125f)+(-fw.getXOffset()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getZOffset()*.3125f)+(-fw.getZOffset()*.3125f), 0, 0, 0);
 			}
 		}

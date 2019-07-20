@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 
-public class EntityRenderRevolvershot extends EntityRenderer<EntityRevolvershot>
+public class EntityRenderRevolvershot extends EntityRenderer<RevolvershotEntity>
 {
 	public EntityRenderRevolvershot(EntityRendererManager renderManager)
 	{
@@ -29,7 +29,7 @@ public class EntityRenderRevolvershot extends EntityRenderer<EntityRevolvershot>
 	}
 
 	@Override
-	public void doRender(@Nonnull EntityRevolvershot entity, double x, double y, double z, float f0, float f1)
+	public void doRender(@Nonnull RevolvershotEntity entity, double x, double y, double z, float f0, float f1)
 	{
 		GlStateManager.pushMatrix();
 		this.bindEntityTexture(entity);
@@ -71,7 +71,7 @@ public class EntityRenderRevolvershot extends EntityRenderer<EntityRevolvershot>
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(@Nonnull EntityRevolvershot p_110775_1_)
+	protected ResourceLocation getEntityTexture(@Nonnull RevolvershotEntity p_110775_1_)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/bullet.png");
 	}

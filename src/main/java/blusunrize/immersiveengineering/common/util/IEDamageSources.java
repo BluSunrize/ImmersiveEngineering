@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
-import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
-import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
+import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
@@ -85,56 +85,56 @@ public class IEDamageSources
 		}
 	}
 
-	public static DamageSource causeCasullDamage(EntityRevolvershot shot, Entity shooter)
+	public static DamageSource causeCasullDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_RevolverCasull);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverCasull, shot, shooter);
 	}
 
-	public static DamageSource causePiercingDamage(EntityRevolvershot shot, Entity shooter)
+	public static DamageSource causePiercingDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_RevolverAP).setDamageBypassesArmor();
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverAP, shot, shooter).setDamageBypassesArmor();
 	}
 
-	public static DamageSource causeBuckshotDamage(EntityRevolvershot shot, Entity shooter)
+	public static DamageSource causeBuckshotDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_RevolverBuck);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverBuck, shot, shooter);
 	}
 
-	public static DamageSource causeDragonsbreathDamage(EntityRevolvershot shot, Entity shooter)
+	public static DamageSource causeDragonsbreathDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_RevolverDragon).setFireDamage();
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverDragon, shot, shooter).setFireDamage();
 	}
 
-	public static DamageSource causeHomingDamage(EntityRevolvershot shot, Entity shooter)
+	public static DamageSource causeHomingDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_RevolverHoming);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverHoming, shot, shooter);
 	}
 
-	public static DamageSource causeWolfpackDamage(EntityRevolvershot shot, Entity shooter)
+	public static DamageSource causeWolfpackDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_RevolverWolfpack);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverWolfpack, shot, shooter);
 	}
 
-	public static DamageSource causeSilverDamage(EntityRevolvershot shot, Entity shooter)
+	public static DamageSource causeSilverDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_RevolverSilver);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverSilver, shot, shooter);
 	}
 
-	public static DamageSource causePotionDamage(EntityRevolvershot shot, Entity shooter)
+	public static DamageSource causePotionDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_RevolverPotion);
@@ -165,7 +165,7 @@ public class IEDamageSources
 		return new ElectricDamageSource(Lib.DMG_WireShock, source, amount);
 	}
 
-	public static DamageSource causeRailgunDamage(EntityRailgunShot shot, Entity shooter)
+	public static DamageSource causeRailgunDamage(RailgunShotEntity shot, Entity shooter)
 	{
 		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).setDamageBypassesArmor();
 	}

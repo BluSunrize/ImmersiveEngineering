@@ -14,15 +14,15 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nonnull;
 
-public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implements ITickable
+public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implements ITickableTileEntity
 {
 	public static TileEntityType<RedstoneBreakerTileEntity> TYPE;
 

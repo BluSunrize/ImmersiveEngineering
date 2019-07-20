@@ -117,7 +117,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		if(computerOn.isPresent())
 			nbt.putBoolean("computerOn", computerOn.get());
 		else
-			nbt.setByte("computerOn", (byte)2);
+			nbt.putByte("computerOn", (byte)2);
 	}
 
 	@Nullable

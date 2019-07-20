@@ -85,6 +85,6 @@ public class ItemBlockBalloon extends ItemBlockIEBase
 	{
 		CompoundNBT tag = s.getOrCreateTag();
 		byte offset = tag.getByte("offset");
-		tag.setByte("offset", (byte)((offset+1)%5));
+		tag.putByte("offset", (byte)((offset+1)%5));
 	}
 }

@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api.shader;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -157,7 +157,7 @@ public class CapabilityShader
 		CapabilityManager.INSTANCE.register(ShaderWrapper.class, new Capability.IStorage<ShaderWrapper>()
 		{
 			@Override
-			public NBTBase writeNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, Direction side)
+			public INBT writeNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, Direction side)
 			{
 				CompoundNBT nbt = new CompoundNBT();
 				ItemStack shader = instance.getShaderItem();
@@ -170,7 +170,7 @@ public class CapabilityShader
 			}
 
 			@Override
-			public void readNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, Direction side, NBTBase nbt)
+			public void readNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, Direction side, INBT nbt)
 			{
 				CompoundNBT tags = (CompoundNBT)nbt;
 				instance.setShaderType(tags.getString("IE:ShaderType"));

@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -22,7 +21,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -135,12 +133,6 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 		else if(id==254)
 		{
 			BlockState state = world.getBlockState(pos);
-			if(state instanceof IExtendedBlockState)
-			{
-				state = state.getBlock().getExtendedState(state, world, getPos());
-				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState)state);
-				ImmersiveEngineering.proxy.removeStateFromConnectionModelCache((IExtendedBlockState)state);
-			}
 			world.notifyBlockUpdate(pos, state, state, 3);
 			return true;
 		}

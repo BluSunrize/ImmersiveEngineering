@@ -9,31 +9,24 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeModContainer;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.UniversalBucket;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.OreIngredient;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class IngredientStack
 {
 	public ItemStack stack = ItemStack.EMPTY;
 	public List<ItemStack> stackList;
 	public ResourceLocation tag;
-	public FluidStack fluid;
-	public int inputSize = 1;
+	public int inputSize;
 	public boolean useNBT;
 
 	public IngredientStack(ItemStack stack)
@@ -64,17 +57,11 @@ public class IngredientStack
 		this(stackList, 1);
 	}
 
-	public IngredientStack(FluidStack fluid)
-	{
-		this.fluid = fluid;
-	}
-
 	public IngredientStack(IngredientStack ingr)
 	{
 		this.stack = ingr.stack;
 		this.stackList = ingr.stackList;
 		this.tag = ingr.tag;
-		this.fluid = ingr.fluid;
 		this.inputSize = ingr.inputSize;
 		this.useNBT = ingr.useNBT;
 	}
@@ -108,13 +95,13 @@ public class IngredientStack
 				if(this.matches(io))
 					return true;
 		}
-		else if(input instanceof String)
+		else if(input instanceof ResourceLocation)
 		{
 			if(this.tag!=null)
 				return this.tag.equals(input);
-			return ApiUtils.compareToOreName(stack, (String)input);
+			return ApiUtils.compareToOreName(stack, (ResourceLocation)input);
 		}
-		return false;
+		throw new UnsupportedOperationException("Can not match against object "+input+" of type "+input.getClass());
 	}
 
 	public IngredientStack copyWithSize(int size)
@@ -134,134 +121,62 @@ public class IngredientStack
 		if(stackList!=null)
 			return stackList;
 		if(tag!=null)
-			return OreDictionary.getOres(tag);
-		if(fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
-			return Collections.singletonList(UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid()));
+		{
+			List<ItemStack> ret = new ArrayList<>();
+			if(ItemTags.getCollection().getRegisteredTags().contains(tag))
+				ItemTags.getCollection().get(tag).getAllElements().stream().map(ItemStack::new).forEach(ret::add);
+			if(BlockTags.getCollection().getRegisteredTags().contains(tag))
+				BlockTags.getCollection().get(tag).getAllElements().stream().map(ItemStack::new).forEach(ret::add);
+			return ret;
+		}
 		return Collections.singletonList(stack);
 	}
 
 	public List<ItemStack> getSizedStackList()
 	{
-		List<ItemStack> list;
-		if(tag!=null)
-		{
-			list = new ArrayList<ItemStack>();
-			for(ItemStack stack : OreDictionary.getOres(tag))
-				list.add(ApiUtils.copyStackWithAmount(stack, inputSize));
-		}
-		else if(fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
-			list = Collections.singletonList(UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid()));
-		else if(stackList!=null)
-			list = stackList;
-		else
-			list = Collections.singletonList(ApiUtils.copyStackWithAmount(stack, inputSize));
-		return list;
+		return getStackList().stream()
+				.map(s -> ApiUtils.copyStackWithAmount(s, inputSize))
+				.collect(Collectors.toList());
 	}
 
 	public ItemStack getRandomizedExampleStack(long rand)
 	{
-		ItemStack ret = stack;
-		if(ret.isEmpty()&&stackList!=null&&stackList.size() > 0)
-			ret = stackList.get((int)(rand/20)%stackList.size());
-		if(ret.isEmpty()&&tag!=null)
-		{
-			List<ItemStack> ores = OreDictionary.getOres(tag);
-			if(ores!=null&&ores.size() > 0)
-				ret = ores.get((int)(rand/20)%ores.size());
-		}
-		if(ret.isEmpty()&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
-			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
-		return ret;
+		List<ItemStack> all = getStackList();
+		return all.get((int)(rand/20)%all.size());
 	}
 
 	public ItemStack getExampleStack()
 	{
-		ItemStack ret = stack;
-		if(ret.isEmpty()&&stackList!=null&&stackList.size() > 0)
-			ret = stackList.get(0);
-		if(ret.isEmpty()&&tag!=null)
-		{
-			List<ItemStack> ores = OreDictionary.getOres(tag);
-			if(ores!=null&&ores.size() > 0)
-				ret = ores.get(0);
-		}
-		if(ret.isEmpty()&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
-			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
-		return ret;
-	}
-
-	public Ingredient toRecipeIngredient()
-	{
-		Ingredient ret = stack!=null?Ingredient.fromStacks(stack): null;
-		if(ret==null&&stackList!=null&&stackList.size() > 0)
-			ret = ApiUtils.createIngredientFromList(stackList);
-		if(ret==null&&tag!=null)
-			ret = new OreIngredient(tag);
-		if(ret==null&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
-			ret = new IngredientFluidStack(fluid);
-		return ret;
+		return getStackList().get(0);
 	}
 
 	public boolean matchesItemStack(ItemStack input)
 	{
+		return matchesItemStack(input, inputSize);
+	}
+
+	private boolean matchesItemStack(ItemStack input, int minSize)
+	{
 		if(input.isEmpty())
 			return false;
-		if(this.fluid!=null)
-		{
-			FluidStack fs = FluidUtil.getFluidContained(input);
-			if(fs!=null&&fs.containsFluid(fluid))
-				return true;
-		}
 		if(this.tag!=null)
-			return ApiUtils.compareToOreName(input, tag)&&this.inputSize <= input.getCount();
+			return ApiUtils.compareToOreName(input, tag)&&minSize <= input.getCount();
 		if(this.stackList!=null)
 		{
 			for(ItemStack iStack : this.stackList)
-				if(OreDictionary.itemMatches(iStack, input, false)&&this.inputSize <= input.getCount())
+				if(ItemStack.areItemsEqual(iStack, input)&&minSize <= input.getCount())
 					return true;
 		}
-		if(!OreDictionary.itemMatches(stack, input, false)||this.inputSize > input.getCount())
+		if(!ItemStack.areItemsEqual(stack, input)||minSize > input.getCount())
 			return false;
 		if(this.useNBT)
-		{
-			if(this.stack.hasTagCompound()!=input.hasTagCompound())
-				return false;
-			if(!this.stack.hasTagCompound()&&!input.hasTagCompound())
-				return true;
-			return this.stack.getTagCompound().equals(input.getTagCompound());
-		}
+			return this.stack.getOrCreateTag().equals(input.getOrCreateTag());
 		return true;
 	}
 
 	public boolean matchesItemStackIgnoringSize(ItemStack input)
 	{
-		if(input.isEmpty())
-			return false;
-		if(this.fluid!=null)
-		{
-			FluidStack fs = FluidUtil.getFluidContained(input);
-			if(fs!=null&&fs.containsFluid(fluid))
-				return true;
-		}
-		if(this.tag!=null)
-			return ApiUtils.compareToOreName(input, tag);
-		if(this.stackList!=null)
-		{
-			for(ItemStack iStack : this.stackList)
-				if(OreDictionary.itemMatches(iStack, input, false))
-					return true;
-		}
-		if(!OreDictionary.itemMatches(stack, input, false))
-			return false;
-		if(this.useNBT)
-		{
-			if(this.stack.hasTagCompound()!=input.hasTagCompound())
-				return false;
-			if(!this.stack.hasTagCompound()&&!input.hasTagCompound())
-				return true;
-			return this.stack.getTagCompound().equals(input.getTagCompound());
-		}
-		return true;
+		return matchesItemStack(input, 0);
 	}
 
 	@Override
@@ -270,31 +185,23 @@ public class IngredientStack
 		if(!(object instanceof IngredientStack))
 			return false;
 		IngredientStack otherIngredient = (IngredientStack)object;
-		if(this.fluid!=null&&otherIngredient.fluid!=null)
-			return this.fluid.equals(otherIngredient.fluid);
 		if(this.tag!=null&&otherIngredient.tag!=null)
 			return this.tag.equals(otherIngredient.tag);
 		if(this.stackList!=null&&otherIngredient.stackList!=null)
 		{
 			for(ItemStack iStack : this.stackList)
 				for(ItemStack iStack2 : otherIngredient.stackList)
-					if(OreDictionary.itemMatches(iStack, iStack2, false))
+					if(ItemStack.areItemsEqual(iStack, iStack2))
 						return true;
 			return false;
 		}
 		if(!this.stack.isEmpty()&&!otherIngredient.stack.isEmpty())
 		{
 			ItemStack otherStack = otherIngredient.stack;
-			if(!OreDictionary.itemMatches(stack, otherStack, false))
+			if(!ItemStack.areItemsEqual(stack, otherStack))
 				return false;
 			if(this.useNBT)
-			{
-				if(this.stack.hasTagCompound()!=otherStack.hasTagCompound())
-					return false;
-				if(!this.stack.hasTagCompound()&&!otherStack.hasTagCompound())
-					return true;
-				return this.stack.getTagCompound().equals(otherStack.getTagCompound());
-			}
+				return stack.getOrCreateTag().equals(otherStack.getOrCreateTag());
 			return true;
 		}
 		return false;
@@ -302,15 +209,9 @@ public class IngredientStack
 
 	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		if(this.fluid!=null)
+		if(this.tag!=null)
 		{
-			nbt.putString("fluid", FluidRegistry.getFluidName(fluid));
-			nbt.putInt("fluidAmount", fluid.amount);
-			nbt.putInt("nbtType", 3);
-		}
-		else if(this.tag!=null)
-		{
-			nbt.putString("tag", tag);
+			nbt.putString("tag", tag.toString());
 			nbt.putInt("nbtType", 2);
 		}
 		else if(this.stackList!=null)
@@ -318,13 +219,13 @@ public class IngredientStack
 			ListNBT list = new ListNBT();
 			for(ItemStack stack : stackList)
 				if(!stack.isEmpty())
-					list.add(stack.writeToNBT(new CompoundNBT()));
+					list.add(stack.write(new CompoundNBT()));
 			nbt.put("stackList", list);
 			nbt.putInt("nbtType", 1);
 		}
 		else
 		{
-			nbt.put("stack", stack.writeToNBT(new CompoundNBT()));
+			nbt.put("stack", stack.write(new CompoundNBT()));
 			nbt.putInt("nbtType", 0);
 			nbt.putBoolean("useNBT", useNBT);
 		}
@@ -334,26 +235,23 @@ public class IngredientStack
 
 	public static IngredientStack readFromNBT(CompoundNBT nbt)
 	{
-		if(nbt.hasKey("nbtType"))
+		if(nbt.contains("nbtType"))
 			switch(nbt.getInt("nbtType"))
 			{
 				case 0:
-					ItemStack stack = new ItemStack(nbt.getCompound("stack"));
+					ItemStack stack = ItemStack.read(nbt.getCompound("stack"));
 					stack.setCount(nbt.getInt("inputSize"));
 					IngredientStack ingr = new IngredientStack(stack);
 					ingr.useNBT = nbt.getBoolean("useNBT");
 					return ingr;
 				case 1:
 					ListNBT list = nbt.getList("stackList", 10);
-					List<ItemStack> stackList = new ArrayList();
+					List<ItemStack> stackList = new ArrayList<>();
 					for(int i = 0; i < list.size(); i++)
-						stackList.add(new ItemStack(list.getCompound(i)));
+						stackList.add(ItemStack.read(list.getCompound(i)));
 					return new IngredientStack(stackList, nbt.getInt("inputSize"));
 				case 2:
-					return new IngredientStack(nbt.getString("tag"), nbt.getInt("inputSize"));
-				case 3:
-					FluidStack fs = new FluidStack(FluidRegistry.getFluid(nbt.getString("fluid")), nbt.getInt("fluidAmount"));
-					return new IngredientStack(fs);
+					return new IngredientStack(new ResourceLocation(nbt.getString("tag")), nbt.getInt("inputSize"));
 			}
 		return null;
 	}

@@ -19,11 +19,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -33,7 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class WatermillTileEntity extends IEBaseTileEntity implements ITickable, IDirectionalTile, IHasDummyBlocks, IHasObjProperty
+public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IDirectionalTile, IHasDummyBlocks, IHasObjProperty
 {
 	public static TileEntityType<WatermillTileEntity> TYPE;
 	public Direction facing = Direction.NORTH;

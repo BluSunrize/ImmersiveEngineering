@@ -244,7 +244,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		nbt.putIntArray("sideConfig", sideConfig);
 		if(!pipeCover.isEmpty())
 			nbt.put("pipeCover", (pipeCover.write(new CompoundNBT())));
-		nbt.setByte("connections", connections);
+		nbt.putByte("connections", connections);
 		if(color!=null)
 			nbt.putInt("color", color.getId());
 	}

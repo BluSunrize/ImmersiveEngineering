@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render;
 
-import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
+import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class EntityRenderIEExplosive extends EntityRenderer<EntityIEExplosive>
+public class EntityRenderIEExplosive extends EntityRenderer<IEExplosiveEntity>
 {
 	public EntityRenderIEExplosive(EntityRendererManager renderManager)
 	{
@@ -27,7 +27,7 @@ public class EntityRenderIEExplosive extends EntityRenderer<EntityIEExplosive>
 	}
 
 	@Override
-	public void doRender(EntityIEExplosive entity, double x, double y, double z, float entityYaw, float partialTicks)
+	public void doRender(IEExplosiveEntity entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
 		if(entity.block==null)
 			return;
@@ -74,7 +74,7 @@ public class EntityRenderIEExplosive extends EntityRenderer<EntityIEExplosive>
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityIEExplosive entity)
+	protected ResourceLocation getEntityTexture(IEExplosiveEntity entity)
 	{
 		return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
 	}

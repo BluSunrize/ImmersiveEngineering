@@ -15,11 +15,14 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,20 +30,20 @@ import java.util.Collection;
 
 public class IICProxy implements IImmersiveConnectable
 {
-	private int dim;
+	private DimensionType dim;
 	private BlockPos pos;
 
-	public IICProxy(int dimension, BlockPos _pos)
+	public IICProxy(DimensionType dimension, BlockPos pos)
 	{
 		dim = dimension;
-		pos = _pos;
+		this.pos = pos;
 	}
 
 	public IICProxy(TileEntity te)
 	{
 		if(!(te instanceof IImmersiveConnectable))
 			throw new IllegalArgumentException("Can't create an IICProxy for a null/non-IIC TileEntity");
-		dim = te.getWorld().provider.getDimension();
+		dim = te.getWorld().getDimension().getType();
 		pos = Utils.toCC(te);
 		//TODO save internal connections!
 	}
@@ -50,7 +53,7 @@ public class IICProxy implements IImmersiveConnectable
 		return pos;
 	}
 
-	public int getDimension()
+	public DimensionType getDimension()
 	{
 		return dim;
 	}
@@ -60,7 +63,7 @@ public class IICProxy implements IImmersiveConnectable
 	{
 		//TODO clean up
 		//this will load the chunk the TE is in for 1 tick since it needs to be notified about the removed wires
-		World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
+		World w = DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), dim, false, true);
 		if(w==null)
 		{
 			IELogger.warn("Tried to remove a wire in dimension "+dim+" which does not exist");
@@ -115,15 +118,15 @@ public class IICProxy implements IImmersiveConnectable
 
 	public static IICProxy readFromNBT(CompoundNBT nbt)
 	{
-		return new IICProxy(nbt.getInt("dim"),
-				NBTUtil.getPosFromTag(nbt.getCompound("pos")));
+		return new IICProxy(DimensionType.byName(new ResourceLocation(nbt.getString("dim"))),
+				NBTUtil.readBlockPos(nbt.getCompound("pos")));
 	}
 
 	public CompoundNBT writeToNBT()
 	{
 		CompoundNBT ret = new CompoundNBT();
-		ret.putInt("dim", dim);
-		ret.put("pos", NBTUtil.createPosTag(pos));
+		ret.putString("dim", dim.getRegistryName().toString());
+		ret.put("pos", NBTUtil.writeBlockPos(pos));
 		return ret;
 	}
 

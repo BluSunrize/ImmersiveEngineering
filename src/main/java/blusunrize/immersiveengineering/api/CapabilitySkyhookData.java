@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
+import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntNBT;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -32,7 +32,7 @@ public class CapabilitySkyhookData
 	{
 		private SkyhookStatus status = NONE;
 		@Nullable
-		public EntitySkylineHook hook = null;
+		public SkylineHookEntity hook = null;
 
 		public void release()
 		{
@@ -123,13 +123,13 @@ public class CapabilitySkyhookData
 		CapabilityManager.INSTANCE.register(SkyhookUserData.class, new Capability.IStorage<SkyhookUserData>()
 		{
 			@Override
-			public NBTBase writeNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side)
+			public INBT writeNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side)
 			{
 				return new IntNBT(instance.status.ordinal());
 			}
 
 			@Override
-			public void readNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side, NBTBase nbt)
+			public void readNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side, INBT nbt)
 			{
 				instance.status = SkyhookStatus.values()[((IntNBT)nbt).getInt()];
 			}
