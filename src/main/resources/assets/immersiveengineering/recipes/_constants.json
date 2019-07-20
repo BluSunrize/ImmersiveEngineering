@@ -457,6 +457,34 @@
   {
     "ingredient": {
       "type": "forge:ore_dict",
+      "ore": "blockSheetmetalIron"
+    },
+    "name": "blockSheetmetalIron"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "blockSheetmetalSteel"
+    },
+    "name": "blockSheetmetalSteel"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "blockSheetmetalAluminum"
+    },
+    "name": "blockSheetmetalAluminum"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "blockSheetmetalCopper"
+    },
+    "name": "blockSheetmetalCopper"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
       "ore": "slabSheetmetalIron"
     },
     "name": "slabSheetmetalIron"
