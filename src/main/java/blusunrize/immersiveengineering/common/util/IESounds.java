@@ -41,6 +41,7 @@ public class IESounds
 	public static SoundEvent crusher = registerSound("crusher");
 	public static SoundEvent dieselGenerator = registerSound("dieselGenerator");
 	public static SoundEvent direSwitch = registerSound("direSwitch");
+	public static SoundEvent chute = registerSound("chute");
 
 	private static SoundEvent registerSound(String name)
 	{

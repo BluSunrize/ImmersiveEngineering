@@ -493,6 +493,10 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
 		ConveyorHandler.registerSubstitute(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.IRON.getName()), ConveyorChute.class, (tileEntity) -> new ConveyorChute(BlockTypes_MetalsAll.IRON.getMeta()));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.STEEL.getName()), ConveyorChute.class, (tileEntity) -> new ConveyorChute(BlockTypes_MetalsAll.STEEL.getMeta()));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.ALUMINUM.getName()), ConveyorChute.class, (tileEntity) -> new ConveyorChute(BlockTypes_MetalsAll.ALUMINUM.getMeta()));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.COPPER.getName()), ConveyorChute.class, (tileEntity) -> new ConveyorChute(BlockTypes_MetalsAll.COPPER.getMeta()));
 
 		/*BULLETS*/
 		ItemBullet.initBullets();

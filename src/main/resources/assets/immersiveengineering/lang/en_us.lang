@@ -203,6 +203,10 @@ tile.immersiveengineering.conveyor.immersiveengineering:covered.name=Covered Con
 tile.immersiveengineering.conveyor.immersiveengineering:verticalcovered.name=Vertical Covered Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:extract.name=Extracting Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:extractcovered.name=Covered Extracting Conveyor Belt
+tile.immersiveengineering.conveyor.immersiveengineering:chute_iron.name=Sheetmetal Chute
+tile.immersiveengineering.conveyor.immersiveengineering:chute_steel.name=Sheetmetal Chute
+tile.immersiveengineering.conveyor.immersiveengineering:chute_aluminum.name=Sheetmetal Chute
+tile.immersiveengineering.conveyor.immersiveengineering:chute_copper.name=Sheetmetal Chute
 
 tile.immersiveengineering.metal_multiblock.metal_press.name=Metal Press
 tile.immersiveengineering.metal_multiblock.crusher.name=Crusher

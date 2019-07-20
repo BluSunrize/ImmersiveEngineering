@@ -1,104 +1,104 @@
 {
-	"dieselGenerator": {
-		"category": "block",
-		"sounds": [
-			"immersiveengineering:diesel_generator"
-		],
-		"subtitle": "subtitle.immersiveengineering.dieselGenerator"
-	},
-	"crusher": {
-		"category": "block",
-		"sounds": [
-			"immersiveengineering:crusher"
-		],
-		"subtitle": "subtitle.immersiveengineering.crusher"
-	},
-	"metalPressPiston": {
-		"category": "block",
-		"sounds": [
-			"immersiveengineering:metal_press_piston"
-		],
-		"subtitle": "subtitle.immersiveengineering.metalPressPiston"
-	},
-	"metalPressSmash": {
-		"category": "block",
-		"sounds": [
-			"immersiveengineering:metal_press_smash"
-		],
-		"subtitle": "subtitle.immersiveengineering.metalPressSmash"
-	},
-	"birthdayParty": {
-		"category": "neutral",
-		"sounds": [
-			"immersiveengineering:birthday_party"
-		],
-		"subtitle": "subtitle.immersiveengineering.birthdayParty"
-	},
-	"revolverFire": {
-		"category": "neutral",
-		"sounds": [
-			"immersiveengineering:revolver_fire"
-		],
-		"subtitle": "subtitle.immersiveengineering.revolverFire"
-	},
-	"revolverFireThump": {
-		"category": "neutral",
-		"sounds": [
-			"immersiveengineering:revolver_fire_thump"
-		],
-		"subtitle": "subtitle.immersiveengineering.revolverFire"
-	},
-	"revolverReload": {
-		"category": "neutral",
-		"sounds": [
-			"immersiveengineering:revolver_reload"
-		],
-		"subtitle": "subtitle.immersiveengineering.revolverReload"
-	},
-	"spray": {
-		"category": "player",
-		"sounds": [
-			"immersiveengineering:spray"
-		],
-		"subtitle": "subtitle.immersiveengineering.spray"
-	},
-	"spray_fire": {
-		"category": "player",
-		"sounds": [
-			"immersiveengineering:spray_fire"
-		],
-		"subtitle": "subtitle.immersiveengineering.sprayFire"
-	},
-	"chargeFast": {
-		"category": "neutral",
-		"sounds": [
-			"immersiveengineering:charge_fast"
-		],
-		"subtitle": "subtitle.immersiveengineering.chargeFast"
-	},
-	"chargeSlow": {
-		"category": "neutral",
-		"sounds": [
-			"immersiveengineering:charge_slow"
-		],
-		"subtitle": "subtitle.immersiveengineering.chargeSlow"
-	},
-	"spark": {
-		"category": "neutral",
-		"sounds": [
-			"immersiveengineering:spark0",
-			"immersiveengineering:spark1",
-			"immersiveengineering:spark2"
-		],
-		"subtitle": "subtitle.immersiveengineering.spark"
-	},
-	"railgunFire": {
-		"category": "neutral",
-		"sounds": [
-			"immersiveengineering:railgun_fire"
-		],
-		"subtitle": "subtitle.immersiveengineering.railgunFire"
-	},
+  "dieselGenerator": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:diesel_generator"
+    ],
+    "subtitle": "subtitle.immersiveengineering.dieselGenerator"
+  },
+  "crusher": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:crusher"
+    ],
+    "subtitle": "subtitle.immersiveengineering.crusher"
+  },
+  "metalPressPiston": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:metal_press_piston"
+    ],
+    "subtitle": "subtitle.immersiveengineering.metalPressPiston"
+  },
+  "metalPressSmash": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:metal_press_smash"
+    ],
+    "subtitle": "subtitle.immersiveengineering.metalPressSmash"
+  },
+  "birthdayParty": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:birthday_party"
+    ],
+    "subtitle": "subtitle.immersiveengineering.birthdayParty"
+  },
+  "revolverFire": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:revolver_fire"
+    ],
+    "subtitle": "subtitle.immersiveengineering.revolverFire"
+  },
+  "revolverFireThump": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:revolver_fire_thump"
+    ],
+    "subtitle": "subtitle.immersiveengineering.revolverFire"
+  },
+  "revolverReload": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:revolver_reload"
+    ],
+    "subtitle": "subtitle.immersiveengineering.revolverReload"
+  },
+  "spray": {
+    "category": "player",
+    "sounds": [
+      "immersiveengineering:spray"
+    ],
+    "subtitle": "subtitle.immersiveengineering.spray"
+  },
+  "spray_fire": {
+    "category": "player",
+    "sounds": [
+      "immersiveengineering:spray_fire"
+    ],
+    "subtitle": "subtitle.immersiveengineering.sprayFire"
+  },
+  "chargeFast": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:charge_fast"
+    ],
+    "subtitle": "subtitle.immersiveengineering.chargeFast"
+  },
+  "chargeSlow": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:charge_slow"
+    ],
+    "subtitle": "subtitle.immersiveengineering.chargeSlow"
+  },
+  "spark": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:spark0",
+      "immersiveengineering:spark1",
+      "immersiveengineering:spark2"
+    ],
+    "subtitle": "subtitle.immersiveengineering.spark"
+  },
+  "railgunFire": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:railgun_fire"
+    ],
+    "subtitle": "subtitle.immersiveengineering.railgunFire"
+  },
   "skyhook": {
     "category": "neutral",
     "sounds": [
@@ -106,18 +106,28 @@
     ],
     "subtitle": "subtitle.immersiveengineering.skyhook"
   },
-	"tesla": {
-		"category": "block",
-		"sounds": [
-			"immersiveengineering:tesla"
-		],
-		"subtitle": "subtitle.immersiveengineering.tesla"
-	},
-	"direSwitch": {
-		"category": "block",
-		"sounds": [
-			"immersiveengineering:dire_switch"
-		],
-		"subtitle": "subtitle.immersiveengineering.direSwitch"
-	}
+  "tesla": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:tesla"
+    ],
+    "subtitle": "subtitle.immersiveengineering.tesla"
+  },
+  "direSwitch": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:dire_switch"
+    ],
+    "subtitle": "subtitle.immersiveengineering.direSwitch"
+  },
+  "chute": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:chute0",
+      "immersiveengineering:chute1",
+      "immersiveengineering:chute2",
+      "immersiveengineering:chute3"
+    ],
+    "subtitle": "subtitle.immersiveengineering.chute"
+  }
 }
