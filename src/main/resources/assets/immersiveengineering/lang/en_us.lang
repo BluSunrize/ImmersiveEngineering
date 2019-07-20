@@ -1373,6 +1373,8 @@ ie.manual.entry.conveyor4=The Vertical Conveyor Belt is a belt meant to be mount
 ie.manual.entry.conveyor5=The Splitting Conveyor Belt alternates between redirecting Items and Entities left and right, plain and simple. This feature can be used to achieve a more equal distribution in your factories.
 ie.manual.entry.conveyor6=The Covered Conveyor Belt works just like a normal conveyor, however it is covered by a piece of scaffolding, which prevents players from picking up items from it.<br>You can rightclick it with other types of scaffold or glass to change the cover's appearance.
 ie.manual.entry.conveyor7=Similarly, the Dropping, Extracting and Vertical Conveyors can also be covered in scaffolding to achieve the same benefits of "pickup-prevention" while still functioning as they normally do.
+ie.manual.entry.conveyor8=Chutes are simple constructions made from sheetmetal that allow entities to drop down straight. They can insert into inventories below them and be inserted into by conveyors or similar devices. Items within them won't be picked up by players and should be immune to most forms of attraction, magnetic or magical.
+ie.manual.entry.conveyor9=Sneak + rightclick with an Engineer's Hammer to turn the chute into a corner piece that directs an entity to the side.
 
 ie.manual.entry.furnaceHeater.name=External Heater
 ie.manual.entry.furnaceHeater.subtext=Now you're cooking with flux!
