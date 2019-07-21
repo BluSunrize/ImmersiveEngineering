@@ -224,9 +224,8 @@ public class ConveyorChute extends ConveyorVertical
 						iModel.bake(new OBJState(ImmutableList.of("base"), true, ModelRotation.X0_Y90), DefaultVertexFormats.ITEM, textureGetter),
 						iModel.bake(new OBJState(ImmutableList.of("base"), true, ModelRotation.X0_Y270), DefaultVertexFormats.ITEM, textureGetter)
 				};
-			} catch(Exception e)
+			} catch(Exception ignored)
 			{
-				e.printStackTrace();
 			}
 
 		float[] colour = {1, 1, 1, 1};
