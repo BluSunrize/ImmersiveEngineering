@@ -82,9 +82,11 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.minecart.MinecartUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -262,6 +264,17 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
+	public void onFurnaceBurnTime(FurnaceFuelBurnTimeEvent event)
+	{
+		if(Utils.isFluidRelatedItemStack(event.getItemStack()))
+		{
+			FluidStack fs = FluidUtil.getFluidContained(event.getItemStack());
+			if(fs!=null&&fs.getFluid()==IEContent.fluidCreosote)
+				event.setBurnTime((int)(0.8*fs.amount));
+		}
+	}
+
+	@SubscribeEvent
 	public void onMinecartInteraction(MinecartInteractEvent event)
 	{
 		if(!event.getPlayer().world.isRemote&&!event.getItem().isEmpty()&&event.getItem().getItem() instanceof IShaderItem)
@@ -280,7 +293,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onMinecartUpdate(MinecartUpdateEvent event)
 	{
-		if(event.getMinecart().ticksExisted%3==0 && event.getMinecart().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		if(event.getMinecart().ticksExisted%3==0&&event.getMinecart().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 		{
 			ShaderWrapper wrapper = event.getMinecart().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 			if(wrapper!=null)
