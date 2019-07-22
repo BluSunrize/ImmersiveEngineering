@@ -108,6 +108,8 @@ public class Config
 		@Comment({"Set to false to disable the stencil buffer. This may be necessary on older GPUs."})
 		@RequiresMcRestart
 		public static boolean stencilBufferEnabled = true;
+		@Comment({"Set to false to have Coresamples not show the coordinates of the chunk."})
+		public static boolean coreSampleCoords = true;
 
 
 		@Comment({"A list of all mods that IE has integrated compatability for", "Setting any of these to false disables the respective compat"})

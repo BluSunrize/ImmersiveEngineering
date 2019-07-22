@@ -2,6 +2,7 @@
 - Added a config option to disable fancy Blueprint rendering (BluSunrize)
 - Added chutes, they drop entites straight down and sometimes to the side! (BluSunrize)
 - Added creosote buckets (and other containers) as valid fuel for a furnace (BluSunrize)
+- Added an option to not have coordinates display on a CoreSample (BluSunrize)
 - Changed CoreSamples to draw a chunk overlay like the drill (BluSunrize)
 - Changed Wires to return only half an ingot worth of material when recycled (BluSunrize)
 - Changed Dragonsbreath cartridges to not fire an obscene amount of bullets anymore (BluSunrize)
