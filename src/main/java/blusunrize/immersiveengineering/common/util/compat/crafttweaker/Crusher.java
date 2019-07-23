@@ -18,6 +18,7 @@ import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ZenClass("mods.immersiveengineering.Crusher")
@@ -121,6 +122,33 @@ public class Crusher
 		public String describe()
 		{
 			return "Removing Crusher Recipe for input: "+input.getDisplayName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		List<CrusherRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = new ArrayList<>(CrusherRecipe.recipeList);
+			CrusherRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Crusher Recipes";
 		}
 	}
 }

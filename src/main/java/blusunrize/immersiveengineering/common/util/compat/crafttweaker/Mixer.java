@@ -20,6 +20,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 @ZenClass("mods.immersiveengineering.Mixer")
 public class Mixer
@@ -99,6 +100,33 @@ public class Mixer
 		public String describe()
 		{
 			return "Removing Mixer Recipes for Fluid "+output.getLocalizedName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		List<MixerRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = new ArrayList<>(MixerRecipe.recipeList);
+			MixerRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Mixer Recipes";
 		}
 	}
 }

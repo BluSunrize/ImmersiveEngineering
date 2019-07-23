@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import com.google.common.collect.ArrayListMultimap;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -121,6 +122,33 @@ public class MetalPress
 		public String describe()
 		{
 			return "Removing Metal Press Recipes for Mold: "+mold.stack.getDisplayName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		ArrayListMultimap<ComparableItemStack, MetalPressRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = ArrayListMultimap.create(MetalPressRecipe.recipeList);
+			MetalPressRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Metal Press Recipes";
 		}
 	}
 }

@@ -19,6 +19,7 @@ import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -87,6 +88,32 @@ public class BlastFurnace
 		}
 	}
 
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		List<BlastFurnaceRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = new ArrayList<>(BlastFurnaceRecipe.recipeList);
+			BlastFurnaceRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Blast Furnace Recipes";
+		}
+	}
 
 	@ZenMethod
 	public static void addFuel(IIngredient input, int time)
