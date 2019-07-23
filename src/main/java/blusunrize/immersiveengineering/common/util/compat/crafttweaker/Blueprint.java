@@ -89,7 +89,7 @@ public class Blueprint
 				while(it.hasNext())
 				{
 					BlueprintCraftingRecipe ir = it.next();
-					if(OreDictionary.itemMatches(ir.output, output, true))
+					if(OreDictionary.itemMatches(ir.output, output, true) && ItemStack.areItemStackTagsEqual(ir.output, output))
 					{
 						removedRecipes.add(ir);
 //						CraftTweakerAPI.getIjeiRecipeRegistry().removeRecipe(ir);

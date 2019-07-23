@@ -3,6 +3,7 @@
 - Added chutes, they drop entites straight down and sometimes to the side! (BluSunrize)
 - Added creosote buckets (and other containers) as valid fuel for a furnace (BluSunrize)
 - Added an option to not have coordinates display on a CoreSample (BluSunrize)
+- Added a "removeAll" function to IE's crafttweaker integration (BluSunrize)
 - Changed CoreSamples to draw a chunk overlay like the drill (BluSunrize)
 - Changed Wires to return only half an ingot worth of material when recycled (BluSunrize)
 - Changed Dragonsbreath cartridges to not fire an obscene amount of bullets anymore (BluSunrize)
@@ -18,6 +19,7 @@
 - Fixed pipes disconnecting visually (MalkContent)
 - Fixed pipes consuming scaffolding to cover when in creative mode (MalkContent)
 - Fixed some visual glitches (BluSunrize)
+- Fixed Crafttweaker handler for Blueprints ignoring NBT (BluSunrize)
 - Translations Added/Updated: jp_jp (karakufire), de_de(d-haus)
 
 ##### Version 0.12-89 - BUILT
