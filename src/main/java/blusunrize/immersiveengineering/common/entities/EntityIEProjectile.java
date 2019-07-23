@@ -216,7 +216,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 				{
 					boolean allowHit = true;
 					if(this.shootingEntity instanceof EntityPlayer&&mop.entityHit instanceof EntityPlayer)
-						allowHit = ((EntityPlayer)this.shootingEntity).canAttackPlayer((EntityPlayer)mop.entityHit);
+						allowHit = ((EntityPlayer)this.shootingEntity).canAttackPlayer((EntityPlayer)mop.entityHit) || allowFriendlyFire((EntityPlayer)mop.entityHit);
 					if(allowHit)
 						this.onImpact(mop);
 					this.setDead();
@@ -319,6 +319,8 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 	}
 
 	public abstract void onImpact(RayTraceResult mop);
+
+	protected abstract boolean allowFriendlyFire(EntityPlayer target);
 
 	protected float getMotionDecayFactor()
 	{

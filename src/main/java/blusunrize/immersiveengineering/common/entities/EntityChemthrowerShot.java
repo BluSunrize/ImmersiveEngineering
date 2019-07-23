@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import com.google.common.base.Optional;
 import elucent.albedo.lighting.ILightProvider;
@@ -161,6 +162,18 @@ public class EntityChemthrowerShot extends EntityIEProjectile implements ILightP
 				}
 			}
 		}
+	}
+
+	@Override
+	protected boolean allowFriendlyFire(EntityPlayer target)
+	{
+		FluidStack fluidStack = getFluid();
+		if(fluidStack!=null)
+		{
+			ChemthrowerEffect effect = ChemthrowerHandler.getEffect(fluidStack.getFluid());
+			return effect instanceof ChemthrowerEffect_Potion&&!((ChemthrowerEffect_Potion)effect).getIsNegative();
+		}
+		return false;
 	}
 
 	@Nullable

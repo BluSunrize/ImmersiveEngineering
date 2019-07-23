@@ -8,6 +8,7 @@
 - Changed Wires to return only half an ingot worth of material when recycled (BluSunrize)
 - Changed Dragonsbreath cartridges to not fire an obscene amount of bullets anymore (BluSunrize)
 - Changed pick-block to cycle through all possible wires for a connector (MalkContent)
+- Changed Chemthrower to be able to affect teammates with beneficial effects (BluSunrize)
 - Items on conveyors now despawn after the usual time when stuck against a block (Malte)
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
 - Fixed wires connecting to the transformer when clicking on the lower blocks (Malte)
