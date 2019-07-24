@@ -24,11 +24,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -37,13 +34,15 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class WireCollisions implements IWorldEventListener
+//TODO IWorldEventListener seems to be gone/hardcoded now, so we need an ASM hook for notifyBlockUpdate as well now. Or
+// a Forge PR.
+public class WireCollisions
 {
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
 		if(!e.world.isRemote&&IEConfig.enableWireDamage&&e instanceof LivingEntity&&
-				!e.isEntityInvulnerable(IEDamageSources.wireShock)&&
-				!(e instanceof PlayerEntity&&((PlayerEntity)e).capabilities.disableDamage))
+				!e.isInvulnerableTo(IEDamageSources.wireShock)&&
+				!(e instanceof PlayerEntity&&((PlayerEntity)e).abilities.disableDamage))
 		{
 			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.world);
 			WireCollisionData wireData = global.getCollisionData();
@@ -59,10 +58,9 @@ public class WireCollisions implements IWorldEventListener
 		}
 	}
 
-	@Override
 	public void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, @Nonnull BlockState newState, int flags)
 	{
-		if(!worldIn.isRemote&&(flags&1)!=0&&newState.getBlock().canCollideCheck(newState, false))
+		if(!worldIn.isRemote&&(flags&1)!=0&&!newState.getCollisionShape(worldIn, pos).isEmpty())
 		{
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(worldIn);
 			Collection<CollisionInfo> data = globalNet.getCollisionData().getCollisionInfo(pos);
@@ -94,60 +92,5 @@ public class WireCollisions implements IWorldEventListener
 					globalNet.removeAndDropConnection(b.getLeft(), b.getRight());
 			}
 		}
-	}
-
-	@Override
-	public void notifyLightSet(@Nonnull BlockPos pos)
-	{
-	}
-
-	@Override
-	public void markBlockRangeForRenderUpdate(int x1, int y1, int z1, int x2, int y2, int z2)
-	{
-	}
-
-	@Override
-	public void playSoundToAllNearExcept(PlayerEntity player, @Nonnull SoundEvent soundIn, @Nonnull SoundCategory category, double x, double y, double z, float volume, float pitch)
-	{
-	}
-
-	@Override
-	public void playRecord(@Nonnull SoundEvent soundIn, @Nonnull BlockPos pos)
-	{
-	}
-
-	@Override
-	public void addParticle(int particleID, boolean ignoreRange, double xCoord, double yCoord, double zCoord, double xSpeed, double ySpeed, double zSpeed, @Nonnull int... parameters)
-	{
-	}
-
-	@Override
-	public void addParticle(int id, boolean ignoreRange, boolean p_190570_3_, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, @Nonnull int... parameters)
-	{
-	}
-
-	@Override
-	public void onEntityAdded(@Nonnull Entity entityIn)
-	{
-	}
-
-	@Override
-	public void onEntityRemoved(@Nonnull Entity entityIn)
-	{
-	}
-
-	@Override
-	public void broadcastSound(int soundID, @Nonnull BlockPos pos, int data)
-	{
-	}
-
-	@Override
-	public void playEvent(PlayerEntity player, int type, @Nonnull BlockPos blockPosIn, int data)
-	{
-	}
-
-	@Override
-	public void sendBlockBreakProgress(int breakerId, @Nonnull BlockPos pos, int progress)
-	{
 	}
 }

@@ -78,7 +78,7 @@ public class ComparableItemStack
 		if(this.oreID!=-1)
 			return this.oreID;
 		int hash = (stack.getItemDamage()&0xffff)*31+stack.getItem().hashCode()*31;
-		if(this.useNBT&&stack.hasTagCompound())
+		if(this.useNBT&&stack.hasTag())
 			hash += stack.getTagCompound().hashCode()*31;
 		return hash;
 	}

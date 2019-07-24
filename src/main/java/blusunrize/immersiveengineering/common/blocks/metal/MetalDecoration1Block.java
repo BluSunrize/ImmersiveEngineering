@@ -109,7 +109,7 @@ public class MetalDecoration1Block extends IELadderBlock<BlockTypes_MetalDecorat
 		state = super.getActualState(state, world, pos);
 		if(this.getMetaFromState(state)==STEEL_FENCE.getMeta()||this.getMetaFromState(state)==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
 			for(Direction f : Direction.HORIZONTALS)
-				state = state.with(f==Direction.NORTH?FenceBlock.NORTH: f==Direction.SOUTH?FenceBlock.SOUTH: f==Direction.WEST?FenceBlock.WEST: FenceBlock.EAST, Utils.canFenceConnectTo(world, pos, f, material));
+				state = state.with(f==Direction.NORTH?FenceBlock.NORTH: f==Direction.SOUTH?FenceBlock.SOUTH: f==Direction.WEST?FenceBlock.WEST: FenceBlock.EAST, Utils.canFenceConnectTo(world, pos, f));
 		return state;
 	}
 
@@ -139,7 +139,7 @@ public class MetalDecoration1Block extends IELadderBlock<BlockTypes_MetalDecorat
 	{
 		int meta = this.getMetaFromState(state);
 		if(meta==STEEL_FENCE.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
-			return new AxisAlignedBB(Utils.canFenceConnectTo(world, pos, Direction.WEST, material)?0: .375f, 0, Utils.canFenceConnectTo(world, pos, Direction.NORTH, material)?0: .375f, Utils.canFenceConnectTo(world, pos, Direction.EAST, material)?1: .625f, 1f, Utils.canFenceConnectTo(world, pos, Direction.SOUTH, material)?1: .625f);
+			return new AxisAlignedBB(Utils.canFenceConnectTo(world, pos, Direction.WEST)?0: .375f, 0, Utils.canFenceConnectTo(world, pos, Direction.NORTH)?0: .375f, Utils.canFenceConnectTo(world, pos, Direction.EAST)?1: .625f, 1f, Utils.canFenceConnectTo(world, pos, Direction.SOUTH)?1: .625f);
 		return super.getBoundingBox(state, world, pos);
 	}
 

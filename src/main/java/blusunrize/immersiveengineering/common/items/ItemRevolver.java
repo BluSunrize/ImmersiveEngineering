@@ -619,9 +619,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			else if(e.getValue() instanceof Integer)
 				baseUpgrades.putInt(e.getKey(), (Integer)e.getValue());
 			else if(e.getValue() instanceof Float)
-				baseUpgrades.setDouble(e.getKey(), (Float)e.getValue());
+				baseUpgrades.putDouble(e.getKey(), (Float)e.getValue());
 			else if(e.getValue() instanceof Double)
-				baseUpgrades.setDouble(e.getKey(), (Double)e.getValue());
+				baseUpgrades.putDouble(e.getKey(), (Double)e.getValue());
 			else if(e.getValue() instanceof String)
 				baseUpgrades.putString(e.getKey(), (String)e.getValue());
 		}

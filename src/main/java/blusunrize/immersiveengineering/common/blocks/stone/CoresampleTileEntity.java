@@ -132,7 +132,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IDirection
 						CompoundNBT tagCompound = (CompoundNBT)nbttaglist.get(i);
 						if(ident.equalsIgnoreCase(tagCompound.getString("id")))
 						{
-							nbttaglist.removeTag(i);
+							nbttaglist.remove(i);
 							mapTagCompound.put("Decorations", nbttaglist);
 							mapData.mapDecorations.remove(ident);
 							return true;
@@ -150,9 +150,9 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IDirection
 						CompoundNBT tagCompound = new CompoundNBT();
 						tagCompound.putString("id", ident);
 						tagCompound.putByte("type", MapDecoration.Type.TARGET_POINT.getIcon());
-						tagCompound.setDouble("x", sampleX);
-						tagCompound.setDouble("z", sampleZ);
-						tagCompound.setDouble("rot", 180.0);
+						tagCompound.putDouble("x", sampleX);
+						tagCompound.putDouble("z", sampleZ);
+						tagCompound.putDouble("rot", 180.0);
 
 						nbttaglist.add(tagCompound);
 						mapTagCompound.put("Decorations", nbttaglist);

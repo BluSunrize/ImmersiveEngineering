@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
@@ -31,8 +32,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FenceBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -42,11 +41,14 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -57,6 +59,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.RayTraceContext.BlockMode;
+import net.minecraft.util.math.RayTraceContext.FluidMode;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
@@ -66,7 +71,6 @@ import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.crafting.VanillaRecipeTypes;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -199,9 +203,9 @@ public class Utils
 		if(stack==null)
 			return null;
 		FluidStack fs = new FluidStack(stack, amount);
-		if(stripPressure&&fs.tag!=null&&fs.tag.hasKey("pressurized"))
+		if(stripPressure&&fs.tag!=null&&fs.tag.contains("pressurized"))
 		{
-			fs.tag.removeTag("pressurized");
+			fs.tag.remove("pressurized");
 			if(fs.tag.isEmpty())
 				fs.tag = null;
 		}
@@ -243,12 +247,11 @@ public class Utils
 		return state.getBlock().isIn(tag);
 	}
 
-	public static boolean canFenceConnectTo(IBlockReader world, BlockPos pos, Direction facing, Material material)
+	public static boolean canFenceConnectTo(IBlockReader world, BlockPos pos, Direction facing)
 	{
 		BlockPos other = pos.offset(facing);
 		BlockState state = world.getBlockState(other);
-		BlockFaceShape shape = state.getBlockFaceShape(world, other, facing.getOpposite());
-		return ((FenceBlock)Blocks.ACACIA_FENCE).attachesTo(state, shape);
+		return ((FenceBlock)Blocks.ACACIA_FENCE).func_220111_a(state, Block.hasSolidSide(state, world, pos, facing), facing);
 	}
 
 	public static String formatDouble(double d, String s)
@@ -343,13 +346,13 @@ public class Utils
 	}
 
 	public static RayTraceResult getMovingObjectPositionFromPlayer(World world, LivingEntity living, boolean bool,
-																   RayTraceFluidMode fluidMode)
+																   FluidMode fluidMode)
 	{
 		float f = 1.0F;
 		float f1 = living.prevRotationPitch+(living.rotationPitch-living.prevRotationPitch)*f;
 		float f2 = living.prevRotationYaw+(living.rotationYaw-living.prevRotationYaw)*f;
 		double d0 = living.prevPosX+(living.posX-living.prevPosX)*(double)f;
-		double d1 = living.prevPosY+(living.posY-living.prevPosY)*(double)f+(double)(world.isRemote?living.getEyeHeight()-(living instanceof PlayerEntity?((PlayerEntity)living).getDefaultEyeHeight(): 0): living.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
+		double d1 = living.prevPosY+(living.posY-living.prevPosY)*(double)f+(double)(world.isRemote?living.getEyeHeight()-(living instanceof PlayerEntity?((PlayerEntity)living).getEyeHeight(): 0): living.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
 		double d2 = living.prevPosZ+(living.posZ-living.prevPosZ)*(double)f;
 		Vec3d vec3 = new Vec3d(d0, d1, d2);
 		float f3 = MathHelper.cos(-f2*(float)Math.PI/180-(float)Math.PI);
@@ -363,7 +366,8 @@ public class Utils
 			d3 = living.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
 
 		Vec3d vec31 = vec3.add((double)f7*d3, (double)f6*d3, (double)f8*d3);
-		return world.rayTraceBlocks(vec3, vec31, fluidMode, !bool, false);
+		RayTraceContext ctx = new RayTraceContext(vec3, vec31, BlockMode.COLLIDER, fluidMode, living);
+		return world.rayTraceBlocks(ctx);
 	}
 
 	public static boolean canBlocksSeeOther(World world, BlockPos cc0, BlockPos cc1, Vec3d pos0, Vec3d pos1)
@@ -567,7 +571,7 @@ public class Utils
 
 	public static boolean isVecInEntityHead(LivingEntity entity, Vec3d vec)
 	{
-		if(entity.height/entity.width < 2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
+		if(entity.getHeight()/entity.getWidth() < 2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
 			return false;
 		double d = vec.y-(entity.posY+entity.getEyeHeight());
 		return Math.abs(d) < .25;
@@ -601,7 +605,7 @@ public class Utils
 				j++;
 			if(j > 6)
 				j += 2;
-			colors[i] = DyeColor.byId(j).func_196060_f();
+			colors[i] = DyeColor.byId(j).getFireworkColor();
 		}
 		expl.putIntArray("Colors", colors);
 		int type = preType >= 0?preType: rand.nextInt(4);
@@ -634,7 +638,7 @@ public class Utils
 				if(b.getMetaFromState(world.getBlockState(pos))==0)
 				{
 					if(doDrain)
-						world.removeBlock(pos);
+						world.removeBlock(pos, false);
 					return new FluidStack(f, 1000);
 				}
 				return null;
@@ -712,24 +716,20 @@ public class Utils
 		dropStackAtPos(world, pos, stack, pos.direction);
 	}
 
-	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack, Direction facing)
+	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack, @Nonnull Direction facing)
 	{
+
 		if(!stack.isEmpty())
 		{
 			ItemEntity ei = new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, stack.copy());
-			ei.motionY = 0.025;
-			if(facing!=null)
-			{
-				ei.motionX = (0.075F*facing.getXOffset());
-				ei.motionZ = (0.075F*facing.getZOffset());
-			}
-			world.spawnEntity(ei);
+			ei.setMotion(0.075*facing.getXOffset(), 0.025, 0.075*facing.getZOffset());
+			world.addEntity(ei);
 		}
 	}
 
 	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack)
 	{
-		dropStackAtPos(world, pos, stack, null);
+		InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
 	}
 
 	public static ItemStack addToEmptyInventorySlot(IInventory inventory, int slot, ItemStack stack)
@@ -768,7 +768,7 @@ public class Utils
 		if(result.isSuccess())
 		{
 			final ItemStack full = result.getResult();
-			if((containerOut.isEmpty()||OreDictionary.itemMatches(containerOut, full, true)))
+			if((containerOut.isEmpty()||ItemStack.areItemStacksEqual(containerOut, full)))
 			{
 				if(!containerOut.isEmpty()&&containerOut.getCount()+full.getCount() > containerOut.getMaxStackSize())
 					return ItemStack.EMPTY;
@@ -787,14 +787,14 @@ public class Utils
 		if(containerIn==null||containerIn.isEmpty())
 			return ItemStack.EMPTY;
 
-		if(containerIn.hasTagCompound()&&containerIn.getTagCompound().isEmpty())
-			containerIn.setTagCompound(null);
+		if(containerIn.hasTag()&&containerIn.getOrCreateTag().isEmpty())
+			containerIn.setTag(null);
 
 		FluidActionResult result = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
 		if(result.isSuccess())
 		{
 			ItemStack empty = result.getResult();
-			if((containerOut.isEmpty()||OreDictionary.itemMatches(containerOut, empty, true)))
+			if((containerOut.isEmpty()||ItemStack.areItemStacksEqual(containerOut, empty)))
 			{
 				if(!containerOut.isEmpty()&&containerOut.getCount()+empty.getCount() > containerOut.getMaxStackSize())
 					return ItemStack.EMPTY;
@@ -827,12 +827,12 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return false;
-		return stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+		return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
 	}
 
-	public static IRecipe findCraftingRecipe(CraftingInventory crafting, World world)
+	public static Optional<ICraftingRecipe> findCraftingRecipe(CraftingInventory crafting, World world)
 	{
-		return world.getRecipeManager().getRecipe(crafting, world, VanillaRecipeTypes.CRAFTING);
+		return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, crafting, world);
 	}
 
 	public static NonNullList<ItemStack> createNonNullItemStackListFromArray(ItemStack[] stacks)
@@ -973,7 +973,7 @@ public class Utils
 
 	public static class InventoryCraftingFalse extends CraftingInventory
 	{
-		private static final Container nullContainer = new Container()
+		private static final Container nullContainer = new Container(ContainerType.CRAFTING, 0)
 		{
 			@Override
 			public void onCraftMatrixChanged(IInventory paramIInventory)
@@ -1067,8 +1067,8 @@ public class Utils
 		{
 			BlockPos pos = new BlockPos(start);
 			BlockState state = world.getBlockState(pos);
-			Block b = state.getBlock();
-			if(b.isCollidable(state)&&Block.collisionRayTrace(state, world, pos, start, end)!=null)
+			RayTraceResult rtr = state.getCollisionShape(world, pos).rayTrace(start, end, pos);
+			if(rtr!=null&&rtr.getType()!=Type.MISS)
 				ret.add(pos);
 			checked.add(pos);
 			out.accept(pos);
@@ -1098,8 +1098,8 @@ public class Utils
 			if(!checked.contains(blockPos)&&i+lengthAdd+standartOff < dif)
 			{
 				state = world.getBlockState(blockPos);
-				b = state.getBlock();
-				if(b.isCollidable(state)&&Block.collisionRayTrace(state, world, blockPos, pos, posNext)!=null)
+				RayTraceResult rtr = state.getCollisionShape(world, blockPos).rayTrace(pos, posNext, blockPos);
+				if(rtr!=null&&rtr.getType()!=Type.MISS)
 					ret.add(blockPos);
 				//				if (place)
 				//					world.setBlockState(blockPos, tmp);
@@ -1110,8 +1110,8 @@ public class Utils
 			if(!checked.contains(blockPos)&&i+lengthAdd-standartOff < dif)
 			{
 				state = world.getBlockState(blockPos);
-				b = state.getBlock();
-				if(b.isCollidable(state)&&Block.collisionRayTrace(state, world, blockPos, posVeryPrev, posPrev)!=null)
+				RayTraceResult rtr = state.getCollisionShape(world, blockPos).rayTrace(posVeryPrev, posPrev, blockPos);
+				if(rtr!=null&&rtr.getType()!=Type.MISS)
 					ret.add(blockPos);
 				//				if (place)
 				//					world.setBlock(blockPos.posX, blockPos.posY, blockPos.posZ, tmp);
@@ -1138,10 +1138,7 @@ public class Utils
 		if(start.z!=end.z)
 			trace = findMinOrMax(trace, start.z > end.z, 0);
 		if(trace.size() > 0)
-		{
-			BlockPos ret = trace.iterator().next();
-			return ret;
-		}
+			return trace.iterator().next();
 		return null;
 	}
 
@@ -1295,7 +1292,12 @@ public class Utils
 		Collections.shuffle(stacks, rand);
 	}
 
-	private static final Gson GSON_INSTANCE = (new GsonBuilder()).registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer()).registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer()).registerTypeHierarchyAdapter(ILootGenerator.class, new ILootGenerator.Serializer()).registerTypeHierarchyAdapter(ILootFunction.class, new LootFunctionManager.Serializer()).registerTypeHierarchyAdapter(ILootCondition.class, new LootConditionManager.Serializer()).registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
+	private static final Gson GSON_INSTANCE = (new GsonBuilder()).registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer())
+			.registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer())
+			//TODO .registerTypeHierarchyAdapter(ILootGenerator.class, new ILootGenerator.Serializer())
+			.registerTypeHierarchyAdapter(ILootFunction.class, new LootFunctionManager.Serializer())
+			.registerTypeHierarchyAdapter(ILootCondition.class, new LootConditionManager.Serializer())
+			.registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
 
 	public static LootTable loadBuiltinLootTable(ResourceLocation resource, LootTableManager lootTableManager)
 	{
@@ -1317,7 +1319,8 @@ public class Utils
 
 			try
 			{
-				return net.minecraftforge.common.ForgeHooks.loadLootTable(GSON_INSTANCE, resource, s, false, lootTableManager);
+				return net.minecraftforge.common.ForgeHooks.loadLootTable(GSON_INSTANCE, resource, GSON_INSTANCE.fromJson(s, JsonObject.class),
+						false, lootTableManager);
 			} catch(JsonParseException jsonparseexception)
 			{
 //				IELogger.error(("Failed to load loot table " + resource.toString() + " from " + url.toString()));

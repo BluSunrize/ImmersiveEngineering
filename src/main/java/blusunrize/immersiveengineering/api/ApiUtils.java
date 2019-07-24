@@ -183,7 +183,7 @@ public class ApiUtils
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
 	{
-		return createComparableItemStack(stack, copy, stack.hasTagCompound()&&!stack.getTagCompound().isEmpty());
+		return createComparableItemStack(stack, copy, stack.hasTag()&&!stack.getTagCompound().isEmpty());
 	}
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
@@ -203,6 +203,11 @@ public class ApiUtils
 	{
 		Tag<Block> t = BlockTags.getCollection().getTagMap().get(name);
 		return t!=null&&!t.getAllElements().isEmpty();
+	}
+
+	public static boolean isNonemptyBlockOrItemTag(ResourceLocation name)
+	{
+		return isNonemptyBlockTag(name)||isNonemptyItemTag(name);
 	}
 
 	public static boolean isMetalComponent(ItemStack stack, String componentType)

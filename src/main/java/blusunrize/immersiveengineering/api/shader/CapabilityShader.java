@@ -70,7 +70,7 @@ public class CapabilityShader
 		@Override
 		public void setShaderItem(ItemStack shader)
 		{
-			if(!container.hasTagCompound())
+			if(!container.hasTag())
 				container.setTagCompound(new CompoundNBT());
 			if(!shader.isEmpty())
 			{
@@ -78,7 +78,7 @@ public class CapabilityShader
 				container.getTagCompound().put(SHADER_NBT_KEY, shaderTag);
 			}
 			else
-				container.getTagCompound().removeTag(SHADER_NBT_KEY);
+				container.getTagCompound().remove(SHADER_NBT_KEY);
 		}
 
 		@Override

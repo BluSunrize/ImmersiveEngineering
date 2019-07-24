@@ -50,7 +50,7 @@ public class ManualUtils
 				return false;
 			if(stack.getItemDamage()==OreDictionary.WILDCARD_VALUE)
 				return true;
-			if(((ItemStack)o).hasTagCompound())
+			if(((ItemStack)o).hasTag())
 				return ((ItemStack)o).getTagCompound().equals(stack.getTagCompound());
 			return true;
 		}

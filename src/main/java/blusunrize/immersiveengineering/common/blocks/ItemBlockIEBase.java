@@ -173,7 +173,7 @@ public class ItemBlockIEBase extends BlockItem
 			if(ret!=null)
 			{
 				ret = ret.copy();
-				ret.removeTag("inventory");
+				ret.remove("inventory");
 			}
 			return ret;
 		}

@@ -134,7 +134,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	public ItemStack createCoreSample(World world, int chunkX, int chunkZ, @Nullable MineralWorldInfo info)
 	{
 		ItemStack stack = new ItemStack(IEContent.itemCoresample);
-		ItemNBTHelper.setLong(stack, "timestamp", world.getGameTime());
+		ItemNBTHelper.putLong(stack, "timestamp", world.getGameTime());
 		ItemNBTHelper.putIntArray(stack, "coords", new int[]{world.getDimension(), chunkX, chunkZ});
 		if(info==null)
 			return stack;

@@ -10,46 +10,38 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SimpleSkyhookProvider;
-import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
-import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.RazorWireTileEntity;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.network.MessageMineralListSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
-import blusunrize.immersiveengineering.common.wires.WireCollisions;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -60,6 +52,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.loot.ILootGenerator;
@@ -68,29 +61,25 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
-import net.minecraftforge.event.entity.minecart.MinecartUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -98,7 +87,8 @@ import java.util.Map.Entry;
 
 public class EventHandler
 {
-	public static final ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
+	//TODO move to a capability
+	public static final Map<DimensionType, List<ISpawnInterdiction>> interdictionTiles = new HashMap<>();
 	public static boolean validateConnsNextTick = false;
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<DimensionType, BlockPos>> requestedBlockUpdates = new LinkedList<>();
@@ -107,45 +97,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
-		//		if(event.world.provider.dimensionId==0)
-		//		{
-		/*
-		 if(ImmersiveNetHandler.INSTANCE==null)
-		 ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
-		 if(!event.world.isRemote && !IESaveData.loaded)
-		 {
-		 IELogger.info("[ImEng] - world data loading, dimension "+event.world.provider.dimensionId);
-		 IESaveData worldData = (IESaveData) event.world.loadItemData(IESaveData.class, IESaveData.dataName);
-		 if(worldData==null)
-		 {
-		 IELogger.info("[ImEng] - No World Data Found");
-		 worldData = new IESaveData(IESaveData.dataName);
-		 //				worldData.dimension = event.world.provider.dimensionId;
-		 event.world.setItemData(IESaveData.dataName, worldData);
-		 }
-		 else
-		 IELogger.info("World Data Retrieved");
-		 IESaveData.setInstance(event.world.provider.dimensionId, worldData);
-		 IESaveData.loaded = true;
-		 }
-		 */
-		//		}
 		ImmersiveEngineering.proxy.onWorldLoad();
-		if(IEConfig.blocksBreakWires)
-			event.getWorld().addEventListener(new WireCollisions());
-	}
-
-	//transferPerTick
-	@SubscribeEvent
-	public void onSave(WorldEvent.Save event)
-	{
-		IESaveData.setDirty(0);
-	}
-
-	@SubscribeEvent
-	public void onUnload(WorldEvent.Unload event)
-	{
-		IESaveData.setDirty(0);
 	}
 
 	@SubscribeEvent
@@ -167,21 +119,24 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onMinecartInteraction(MinecartInteractEvent event)
+	public void onMinecartInteraction(EntityInteractSpecific event)
 	{
-		if(!event.getPlayer().world.isRemote&&!event.getItem().isEmpty()&&event.getItem().getItem() instanceof IShaderItem)
-			if(event.getMinecart().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		PlayerEntity player = event.getEntityPlayer();
+		ItemStack stack = event.getItemStack();
+		if(!(event.getEntity() instanceof MinecartEntity))
+			return;
+		MinecartEntity cart = (MinecartEntity)event.getEntity();
+		if(!player.world.isRemote&&!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
+			cart.getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
 			{
-				ShaderWrapper wrapper = event.getMinecart().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-				if(wrapper!=null)
-				{
-					wrapper.setShaderItem(Utils.copyStackWithAmount(event.getItem(), 1));
-					ImmersiveEngineering.packetHandler.sendTo(new MessageMinecartShaderSync(event.getMinecart(), wrapper), (ServerPlayerEntity)event.getPlayer());
-					event.setCanceled(true);
-				}
-			}
+				wrapper.setShaderItem(Utils.copyStackWithAmount(stack, 1));
+				ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
+						new MessageMinecartShaderSync(cart, wrapper));
+				event.setCanceled(true);
+			});
 	}
 
+	/*TODO re-add when the event exists again!
 	@SubscribeEvent
 	public void onMinecartUpdate(MinecartUpdateEvent event)
 	{
@@ -201,11 +156,14 @@ public class EventHandler
 				}
 			}
 		}
-	}
+	}*/
 
 
-	public static List<ResourceLocation> lootInjections = Arrays.asList(new ResourceLocation(ImmersiveEngineering.MODID, "chests/stronghold_library"), new ResourceLocation(ImmersiveEngineering.MODID, "chests/village_blacksmith"));
-	static Field f_lootEntries;
+	public static List<ResourceLocation> lootInjections = Arrays.asList(
+			new ResourceLocation(ImmersiveEngineering.MODID, "chests/stronghold_library"),
+			new ResourceLocation(ImmersiveEngineering.MODID, "chests/village_blacksmith")
+	);
+	private static Field f_lootEntries;
 
 	@SubscribeEvent
 	public void lootLoad(LootTableLoadEvent event)
@@ -240,84 +198,27 @@ public class EventHandler
 	@SubscribeEvent
 	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
 	{
-		if(event.getEntity().world.isRemote&&event.getEntity() instanceof AbstractMinecartEntity&&event.getEntity().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		if(event.getEntity().world.isRemote&&event.getEntity() instanceof AbstractMinecartEntity&&
+				event.getEntity().getCapability(CapabilityShader.SHADER_CAPABILITY).isPresent())
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity(), null));
 	}
-//	@SubscribeEvent
-//	public void onEntityInteract(EntityInteractEvent event)
-//	{
-//		if(event.target instanceof EntityLivingBase && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), event.entityPlayer.getCurrentEquippedItem(), false))
-//			event.setCanceled(true);
-//	}
-
 
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
 	{
-		if(event.phase==TickEvent.Phase.START&&validateConnsNextTick&&FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+		if(event.phase==TickEvent.Phase.START&&validateConnsNextTick&&!event.world.isRemote)
 		{
-			boolean validateConnections = IEConfig.validateConnections;
-			int invalidConnectionsDropped = 0;
-			for(int dim : ImmersiveNetHandler.INSTANCE.getRelevantDimensions())
-			{
-				if(!validateConnections)
-				{
-					continue;
-				}
-				World world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
-				if(world==null)
-				{
-					ImmersiveNetHandler.INSTANCE.directConnections.remove(dim);
-					continue;
-				}
-				for(ImmersiveNetHandler.Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(world))
-				{
-					if(!(world.getTileEntity(con.start) instanceof IImmersiveConnectable
-							&&world.getTileEntity(con.end) instanceof IImmersiveConnectable))
-					{
-						ImmersiveNetHandler.INSTANCE.removeConnection(world, con);
-						invalidConnectionsDropped++;
-					}
-				}
-				IELogger.info("removed "+invalidConnectionsDropped+" invalid connections from world");
-			}
-			int invalidProxies = 0;
-			Set<DimensionBlockPos> toRemove = new HashSet<>();
-			for(Entry<DimensionBlockPos, IICProxy> e : ImmersiveNetHandler.INSTANCE.proxies.entrySet())
-			{
-				if(!validateConnections)
-				{
-					continue;
-				}
-				DimensionBlockPos p = e.getKey();
-				World w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(p.dimension);
-				if(w!=null&&w.isBlockLoaded(p))
-					toRemove.add(p);
-				if(validateConnections&&w==null)
-				{
-					invalidProxies++;
-					toRemove.add(p);
-					continue;
-				}
-				if(validateConnections&&!(w.getTileEntity(p) instanceof IImmersiveConnectable))
-				{
-					invalidProxies++;
-					toRemove.add(p);
-				}
-			}
-			if(invalidProxies > 0)
-				IELogger.info("Removed "+invalidProxies+" invalid connector proxies (used to transfer power through unloaded chunks)");
-			validateConnsNextTick = false;
+			//TODO implement for the new system
 		}
-		if(event.phase==TickEvent.Phase.END&&FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+		if(event.phase==TickEvent.Phase.END&&!event.world.isRemote)
 		{
-			int dim = event.world.provider.getDimension();
-			GlobalWireNetwork.getNetwork(event.world).update();
+			DimensionType dim = event.world.getDimension().getType();
+			GlobalWireNetwork.getNetwork(event.world).tick();
 
 			if(!REMOVE_FROM_TICKING.isEmpty())
 			{
 				event.world.tickableTileEntities.removeAll(REMOVE_FROM_TICKING);
-				REMOVE_FROM_TICKING.removeIf((te) -> te.getWorld().provider.getDimension()==dim);
+				REMOVE_FROM_TICKING.removeIf((te) -> te.getWorld().getDimension().getType()==dim);
 			}
 		}
 		if(event.phase==TickEvent.Phase.START)
@@ -335,8 +236,9 @@ public class EventHandler
 			}
 			while(!requestedBlockUpdates.isEmpty())
 			{
-				Pair<Integer, BlockPos> curr = requestedBlockUpdates.poll();
-				World w = DimensionManager.getWorld(curr.getLeft());
+				Pair<DimensionType, BlockPos> curr = requestedBlockUpdates.poll();
+				World w = DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), curr.getLeft(),
+						false, false);
 				if(w!=null)
 				{
 					BlockState state = w.getBlockState(curr.getRight());
@@ -349,21 +251,22 @@ public class EventHandler
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onLogin(PlayerLoggedInEvent event)
 	{
-		ExcavatorHandler.allowPackets = true;
-		if(!event.player.world.isRemote)
+		ExcavatorHandler.allowPacketsToPlayer.add(event.getPlayer().getUniqueID());
+		if(!event.getPlayer().world.isRemote)
 		{
 			HashMap<MineralMix, Integer> packetMap = new HashMap<MineralMix, Integer>();
 			for(Entry<MineralMix, Integer> e : ExcavatorHandler.mineralList.entrySet())
 				if(e.getKey()!=null&&e.getValue()!=null)
 					packetMap.put(e.getKey(), e.getValue());
-			ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
+			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)event.getPlayer()),
+					new MessageMineralListSync(packetMap));
 		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onLogout(PlayerLoggedOutEvent event)
 	{
-		ExcavatorHandler.allowPackets = false;
+		ExcavatorHandler.allowPacketsToPlayer.remove(event.getPlayer().getUniqueID());
 	}
 
 	//	@SubscribeEvent
@@ -411,8 +314,7 @@ public class EventHandler
 			for(Class<? extends MobEntity> boring : listOfBoringBosses)
 				if(boring.isAssignableFrom(event.getEntityLiving().getClass()))
 					return;
-			ItemStack bag = new ItemStack(IEContent.itemShaderBag);
-			ItemNBTHelper.putString(bag, "rarity", r.toString());
+			ItemStack bag = new ItemStack(Misc.shaderBag.get(r));
 			event.getDrops().add(new ItemEntity(event.getEntityLiving().world, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
 		}
 	}
@@ -456,14 +358,12 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingJump(LivingJumpEvent event)
 	{
+		Vec3d motion = event.getEntity().getMotion();
 		if(event.getEntityLiving().getActivePotionEffect(IEPotions.sticky)!=null)
-			event.getEntityLiving().motionY -= (event.getEntityLiving().getActivePotionEffect(IEPotions.sticky).getAmplifier()+1)*0.3F;
+			motion = motion.subtract(0, (event.getEntityLiving().getActivePotionEffect(IEPotions.sticky).getAmplifier()+1)*0.3F, 0);
 		else if(event.getEntityLiving().getActivePotionEffect(IEPotions.concreteFeet)!=null)
-		{
-			event.getEntityLiving().motionX = 0;
-			event.getEntityLiving().motionY = 0;
-			event.getEntityLiving().motionZ = 0;
-		}
+			motion = Vec3d.ZERO;
+		event.getEntity().setMotion(motion);
 	}
 
 	@SubscribeEvent
@@ -473,34 +373,33 @@ public class EventHandler
 		{
 			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
-				powerpack.getItem().onArmorTick(event.getEntityLiving().getEntityWorld(), (PlayerEntity)event.getEntityLiving(), powerpack);
+				powerpack.getItem().onArmorTick(powerpack, event.getEntityLiving().getEntityWorld(), (PlayerEntity)event.getEntityLiving());
 		}
 	}
-
 
 	@SubscribeEvent
 	public void onEnderTeleport(EnderTeleportEvent event)
 	{
-		if(event.getEntityLiving().isCreatureType(EntityClassification.MONSTER, false))
+		if(event.getEntityLiving().getType().getClassification()==EntityClassification.MONSTER)
 		{
 			synchronized(interdictionTiles)
 			{
-				Iterator<ISpawnInterdiction> it = interdictionTiles.iterator();
+				Iterator<ISpawnInterdiction> it = interdictionTiles.get(event.getEntity().world.getDimension().getType()).iterator();
 				while(it.hasNext())
 				{
 					ISpawnInterdiction interdictor = it.next();
 					if(interdictor instanceof TileEntity)
 					{
-						if(((TileEntity)interdictor).isInvalid()||((TileEntity)interdictor).getWorld()==null)
+						if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 							it.remove();
-						else if(((TileEntity)interdictor).getWorld().provider.getDimension()==event.getEntity().world.provider.getDimension()&&((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ) <= interdictor.getInterdictionRangeSquared())
+						else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ) <= interdictor.getInterdictionRangeSquared())
 							event.setCanceled(true);
 					}
 					else if(interdictor instanceof Entity)
 					{
-						if(((Entity)interdictor).isDead||((Entity)interdictor).world==null)
+						if(!((Entity)interdictor).isAlive()||((Entity)interdictor).world==null)
 							it.remove();
-						else if(((Entity)interdictor).world.provider.getDimension()==event.getEntity().world.provider.getDimension()&&((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
+						else if(((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
 							event.setCanceled(true);
 					}
 				}
@@ -516,26 +415,27 @@ public class EventHandler
 		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY
 				||event.isSpawner())
 			return;
-		if(event.getEntityLiving().isCreatureType(EntityClassification.MONSTER, false))
+		if(event.getEntityLiving().getType().getClassification()==EntityClassification.MONSTER)
 		{
 			synchronized(interdictionTiles)
 			{
-				Iterator<ISpawnInterdiction> it = interdictionTiles.iterator();
+				DimensionType dimension = event.getEntity().world.getDimension().getType();
+				Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();
 				while(it.hasNext())
 				{
 					ISpawnInterdiction interdictor = it.next();
 					if(interdictor instanceof TileEntity)
 					{
-						if(((TileEntity)interdictor).isInvalid()||((TileEntity)interdictor).getWorld()==null)
+						if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 							it.remove();
-						else if(((TileEntity)interdictor).getWorld().provider.getDimension()==event.getEntity().world.provider.getDimension()&&((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ) <= interdictor.getInterdictionRangeSquared())
+						else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ) <= interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
 					else if(interdictor instanceof Entity)
 					{
-						if(((Entity)interdictor).isDead||((Entity)interdictor).world==null)
+						if(!((Entity)interdictor).isAlive()||((Entity)interdictor).world==null)
 							it.remove();
-						else if(((Entity)interdictor).world.provider.getDimension()==event.getEntity().world.provider.getDimension()&&((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
+						else if(((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
 				}
@@ -548,13 +448,13 @@ public class EventHandler
 	{
 		ItemStack current = event.getEntityPlayer().getHeldItem(Hand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
-		if(!current.isEmpty()&&current.getItem().equals(IEContent.itemDrill)&&current.getItemDamage()==0&&event.getEntityPlayer().isInsideOfMaterial(Material.WATER))
-			if(((ItemDrill)IEContent.itemDrill).getUpgrades(current).getBoolean("waterproof"))
+		if(!current.isEmpty()&&current.getItem()==Tools.drill&&event.getEntityPlayer().isInWater())
+			if(((ItemDrill)Tools.drill).getUpgrades(current).getBoolean("waterproof"))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
 				event.setCanceled(true);
-		if(event.getState().getBlock()==IEContent.blockMetalDecoration2&&IEContent.blockMetalDecoration2.getMetaFromState(event.getState())==BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())
-			if(!OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 1), current, false))
+		if(event.getState().getBlock()==MetalDevices.razorWire)
+			if(current.getItem()!=Tools.wirecutter)
 			{
 				event.setCanceled(true);
 				RazorWireTileEntity.applyDamage(event.getEntityLiving());
@@ -599,7 +499,7 @@ public class EventHandler
 					event.setCost(event.getCost()+5);
 					if(event.getLeft().hasDisplayName())
 						event.setCost(event.getCost()+2);
-					event.getOutput().setStackDisplayName(event.getName());
+					event.getOutput().setDisplayName(new StringTextComponent(event.getName()));
 				}
 			}
 		}
@@ -612,15 +512,7 @@ public class EventHandler
 		{
 			TileEntity te = event.getWorld().getTileEntity(event.getPos());
 			if(te instanceof MultiblockPartTileEntity)
-			{
-				((MultiblockPartTileEntity)te).onlyLocalDissassembly = event.getWorld().getGameTime();
-			}
+				((MultiblockPartTileEntity)te).onlyLocalDissassembly = event.getWorld().getWorldInfo().getGameTime();
 		}
-	}
-
-	@SubscribeEvent
-	public void remap(RegistryEvent.MissingMappings<?> ev)
-	{
-		NameRemapper.remap(ev);
 	}
 }

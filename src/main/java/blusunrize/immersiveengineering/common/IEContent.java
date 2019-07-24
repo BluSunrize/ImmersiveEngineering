@@ -641,7 +641,7 @@ public class IEContent
 			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
 				data.putBoolean(Lib.MAGNET_PREVENT_NBT, true);
 		}, (entity, iConveyorTile) -> {
-			entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
+			entity.getEntityData().remove(Lib.MAGNET_PREVENT_NBT);
 		});
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());

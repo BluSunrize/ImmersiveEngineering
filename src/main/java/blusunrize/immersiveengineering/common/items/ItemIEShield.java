@@ -135,7 +135,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				this.extractEnergy(stack, 20, false);
 				int cooldown = getUpgrades(stack).getInt("flash_cooldown");
 				if(--cooldown <= 0)
-					getUpgrades(stack).removeTag("flash_cooldown");
+					getUpgrades(stack).remove("flash_cooldown");
 				else
 					getUpgrades(stack).putInt("flash_cooldown", cooldown);
 			}
@@ -144,7 +144,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				this.extractEnergy(stack, 20, false);
 				int cooldown = getUpgrades(stack).getInt("shock_cooldown");
 				if(--cooldown <= 0)
-					getUpgrades(stack).removeTag("shock_cooldown");
+					getUpgrades(stack).remove("shock_cooldown");
 				else
 					getUpgrades(stack).putInt("shock_cooldown", cooldown);
 			}

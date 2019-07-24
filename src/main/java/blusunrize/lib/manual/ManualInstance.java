@@ -287,7 +287,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		int ret = ForgeRegistries.ITEMS.getKey(stack.getItem()).hashCode();
 		if(stack.getHasSubtypes())
 			ret = ret*31+stack.getMetadata();
-		if(stack.hasTagCompound())
+		if(stack.hasTag())
 		{
 			CompoundNBT nbt = stack.getTagCompound();
 			if(!nbt.isEmpty())

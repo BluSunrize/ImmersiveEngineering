@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
@@ -62,25 +61,23 @@ public class MessageMinecartShaderSync implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		if(context.get().getDirection().getReceptionSide()==LogicalSide.SERVER)
+		Context ctx = context.get();
+		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
 		{
-			ServerWorld world = Objects.requireNonNull(context.get().getSender()).getServerWorld();
-			world.addScheduledTask(() -> {
+			ServerWorld world = Objects.requireNonNull(ctx.getSender()).getServerWorld();
+			ctx.enqueueWork(() -> {
 				Entity entity = world.getEntityByID(entityID);
 				if(entity==null)
 					return;
 				LazyOptional<ShaderWrapper> cap = entity.getCapability(CapabilityShader.SHADER_CAPABILITY);
-				if(cap.isPresent())
-				{
-					ShaderWrapper handler = cap.orElse(null);
-					if(handler!=null)
+				cap.ifPresent(handler ->
 						ImmersiveEngineering.packetHandler.send(PacketDistributor.DIMENSION.with(world.getDimension()::getType),
-								new MessageMinecartShaderSync(entity, handler));
-				}
+								new MessageMinecartShaderSync(entity, handler))
+				);
 			});
 		}
 		else
-			Minecraft.getInstance().addScheduledTask(() -> {
+			ctx.enqueueWork(() -> {
 				World world = ImmersiveEngineering.proxy.getClientWorld();
 				if (world!=null) // This can happen if the task is scheduled right before leaving the world
 				{

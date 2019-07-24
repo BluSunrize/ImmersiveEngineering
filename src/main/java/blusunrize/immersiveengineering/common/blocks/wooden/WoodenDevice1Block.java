@@ -335,7 +335,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 	//						entityitem.motionX = Utils.RAND.nextGaussian()*.05;
 	//						entityitem.motionY = Utils.RAND.nextGaussian()*.05+.2;
 	//						entityitem.motionZ = Utils.RAND.nextGaussian()*.05;
-	//						if(stack.hasTagCompound())
+	//						if(stack.hasTag())
 	//							entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
 	//						world.spawnEntity(entityitem);
 	//					}

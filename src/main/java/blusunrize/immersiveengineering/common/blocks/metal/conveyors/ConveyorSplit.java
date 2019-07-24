@@ -115,7 +115,7 @@ public class ConveyorSplit extends ConveyorBasic
 			double treshold = .4;
 			boolean contact = distNext < treshold;
 			if(contact)
-				entity.getEntityData().removeTag(nbtKey);
+				entity.getEntityData().remove(nbtKey);
 		}
 	}
 

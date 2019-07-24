@@ -60,7 +60,7 @@ public class MessageMagnetEquip implements IMessage
 				ItemStack s = player.inventory.mainInventory.get(prevSlot);
 				player.inventory.mainInventory.set(prevSlot, held);
 				player.setHeldItem(Hand.OFF_HAND, s);
-				((ItemIEShield)held.getItem()).getUpgrades(held).removeTag("prevSlot");
+				((ItemIEShield)held.getItem()).getUpgrades(held).remove("prevSlot");
 			}
 		});
 	}

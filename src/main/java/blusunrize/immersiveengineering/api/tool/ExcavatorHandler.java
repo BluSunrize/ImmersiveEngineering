@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.network.MessageMineralListSync;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.util.NonNullList;
@@ -25,6 +26,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.*;
 
@@ -44,9 +46,9 @@ public class ExcavatorHandler
 	public static int mineralVeinCapacity = 0;
 	public static double mineralChance = 0;
 	public static Set<DimensionType> defaultDimensionBlacklist = new HashSet<>();
-	public static boolean allowPackets = false;
+	public static Set<UUID> allowPacketsToPlayer = new HashSet<>();
 
-	public static MineralMix addMineral(String name, int mineralWeight, float failChance, String[] ores, float[] chances)
+	public static MineralMix addMineral(String name, int mineralWeight, float failChance, ResourceLocation[] ores, float[] chances)
 	{
 		assert ores.length==chances.length;
 		MineralMix mix = new MineralMix(name, failChance, ores, chances);
@@ -59,13 +61,15 @@ public class ExcavatorHandler
 		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
 			e.getKey().recalculateChances();
 		dimensionPermittedMinerals.clear();
-		if(EffectiveSide.get()==LogicalSide.SERVER&&allowPackets&&!mutePackets)
+		if(EffectiveSide.get()==LogicalSide.SERVER&&!mutePackets)
 		{
 			HashMap<MineralMix, Integer> packetMap = new HashMap<MineralMix, Integer>();
 			for(Map.Entry<MineralMix, Integer> e : ExcavatorHandler.mineralList.entrySet())
 				if(e.getKey()!=null&&e.getValue()!=null)
 					packetMap.put(e.getKey(), e.getValue());
-			ImmersiveEngineering.packetHandler.send(PacketDistributor.ALL.with(null), new MessageMineralListSync(packetMap));
+			for(ServerPlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+				if(allowPacketsToPlayer.contains(p.getUniqueID()))
+					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> p), new MessageMineralListSync(packetMap));
 		}
 	}
 
@@ -135,7 +139,7 @@ public class ExcavatorHandler
 	{
 		public String name;
 		public float failChance;
-		public String[] ores;
+		public ResourceLocation[] ores;
 		public float[] chances;
 		public NonNullList<ItemStack> oreOutput;
 		public float[] recalculatedChances;
@@ -143,11 +147,11 @@ public class ExcavatorHandler
 		/**
 		 * Should an ore given to this mix not be present in the dictionary, it will attempt to draw a replacement from this list
 		 */
-		public HashMap<String, String> replacementOres;
+		public HashMap<ResourceLocation, ResourceLocation> replacementOres;
 		public Set<DimensionType> dimensionWhitelist = new HashSet<>();
 		public Set<DimensionType> dimensionBlacklist;
 
-		public MineralMix(String name, float failChance, String[] ores, float[] chances)
+		public MineralMix(String name, float failChance, ResourceLocation[] ores, float[] chances)
 		{
 			this.name = name;
 			this.failChance = failChance;
@@ -156,7 +160,7 @@ public class ExcavatorHandler
 			this.dimensionBlacklist = new HashSet<>(defaultDimensionBlacklist);
 		}
 
-		public MineralMix addReplacement(String original, String replacement)
+		public MineralMix addReplacement(ResourceLocation original, ResourceLocation replacement)
 		{
 			if(replacementOres==null)
 				replacementOres = new HashMap<>();
@@ -171,10 +175,10 @@ public class ExcavatorHandler
 			ArrayList<Double> reChances = new ArrayList<>();
 			for(int i = 0; i < ores.length; i++)
 			{
-				String ore = ores[i];
+				ResourceLocation ore = ores[i];
 				if(replacementOres!=null&&!ApiUtils.isNonemptyItemTag(ore)&&replacementOres.containsKey(ore))
 					ore = replacementOres.get(ore);
-				if(ore!=null&&!ore.isEmpty()&&ApiUtils.isNonemptyItemTag(ore))
+				if(ore!=null&&ApiUtils.isNonemptyBlockOrItemTag(ore))
 				{
 					ItemStack preferredOre = IEApi.getPreferredTagStack(ore);
 					if(!preferredOre.isEmpty())
@@ -224,8 +228,8 @@ public class ExcavatorHandler
 			tag.putString("name", this.name);
 			tag.putFloat("failChance", this.failChance);
 			ListNBT tagList = new ListNBT();
-			for(String ore : this.ores)
-				tagList.add(new StringNBT(ore));
+			for(ResourceLocation ore : this.ores)
+				tagList.add(new StringNBT(ore.toString()));
 			tag.put("ores", tagList);
 
 			tagList = new ListNBT();
@@ -271,9 +275,9 @@ public class ExcavatorHandler
 			float failChance = tag.getFloat("failChance");
 
 			ListNBT tagList = tag.getList("ores", 8);
-			String[] ores = new String[tagList.size()];
+			ResourceLocation[] ores = new ResourceLocation[tagList.size()];
 			for(int i = 0; i < ores.length; i++)
-				ores[i] = tagList.getString(i);
+				ores[i] = new ResourceLocation(tagList.getString(i));
 
 			tagList = tag.getList("chances", 5);
 			float[] chances = new float[tagList.size()];

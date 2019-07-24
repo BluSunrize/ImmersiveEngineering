@@ -118,7 +118,7 @@ public final class IEItems
 		public static Item blueprint;
 		public static Item skyhook;
 		public static Item shader;
-		public static Map<Rarity, Item> itemShaderBag = new EnumMap<>(Rarity.class);
+		public static Map<Rarity, Item> shaderBag = new EnumMap<>(Rarity.class);
 		public static Item earmuffs;
 		public static Item coresample;
 		public static Item graphiteElectrode;
