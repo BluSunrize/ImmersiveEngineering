@@ -897,7 +897,13 @@ public class ApiUtils
 		return amount <= 0;
 	}
 
+	@Deprecated
 	public static void consumePlayerIngredient(EntityPlayer player, IngredientStack ingredient)
+	{
+		consumePlayerIngredientAndConfirm(player, ingredient);
+	}
+
+	public static boolean consumePlayerIngredientAndConfirm(EntityPlayer player, IngredientStack ingredient)
 	{
 		int amount = ingredient.inputSize;
 		ItemStack itemstack;
@@ -912,7 +918,7 @@ public class ApiUtils
 				if(itemstack.getCount() <= 0)
 					player.setHeldItem(hand, ItemStack.EMPTY);
 				if(amount <= 0)
-					return;
+					return true;
 			}
 		}
 		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
@@ -926,9 +932,10 @@ public class ApiUtils
 				if(itemstack.getCount() <= 0)
 					player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 				if(amount <= 0)
-					return;
+					return true;
 			}
 		}
+		return amount <= 0;
 	}
 
 	public static Map<String, Integer> sortMap(Map<String, Integer> map, boolean inverse)

@@ -21,6 +21,8 @@
 - Fixed pipes consuming scaffolding to cover when in creative mode (MalkContent)
 - Fixed some visual glitches (BluSunrize)
 - Fixed Crafttweaker handler for Blueprints ignoring NBT (BluSunrize)
+- Fixed the "Aquire"-button for shaders not working outside of creative mode (Malte)
+- Probably fixed the floodlight not working below 0 and above 255 with Cubic Chunks (Malte)
 - Translations Added/Updated: jp_jp (karakufire), de_de(d-haus)
 
 ##### Version 0.12-89 - BUILT

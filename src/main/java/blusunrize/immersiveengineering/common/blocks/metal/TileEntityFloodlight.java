@@ -245,7 +245,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			double dist = (vec.x*i*vec.x*i)+(vec.y*i*vec.y*i)+(vec.z*i*vec.z*i);
 			if(dist > maxDistance)
 				break;
-			if(target.getY() > 255||target.getY() < 0)
+			if(world.isOutsideBuildHeight(target))
 				continue;
 			//&&world.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
 
