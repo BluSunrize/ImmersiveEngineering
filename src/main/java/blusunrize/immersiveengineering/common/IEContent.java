@@ -241,7 +241,7 @@ public class IEContent
 			WoodenDecoration.treatedWood.put(style, baseBlock);
 			addSlabFor(baseBlock);
 			WoodenDecoration.treatedStairs.put(style,
-					new IEStairsBlock("treated_wood_stairs0", baseBlock.getDefaultState())
+					new IEStairsBlock("treated_wood_stairs_"+style.name().toLowerCase(), baseBlock.getDefaultState(), standardWoodProperties)
 							.setHasFlavour(true));
 		}
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodProperties);

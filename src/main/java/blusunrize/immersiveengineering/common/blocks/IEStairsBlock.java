@@ -10,35 +10,28 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.*;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+
 
 public class IEStairsBlock extends StairsBlock
 {
 	public boolean hasFlavour = false;
 	public boolean isFlammable = false;
-	public String name;
-	float explosionResistance;
-	BlockRenderLayer renderLayer = BlockRenderLayer.SOLID;
 
-	public IEStairsBlock(String name, BlockState state)
+	public IEStairsBlock(String name, BlockState state, Block.Properties properties)
 	{
-		super(state);
-		this.name = name;
-		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.itemGroup);
-		this.useNeighborBrightness = true;
-		this.explosionResistance = this.blockResistance/5f;
-//		ImmersiveEngineering.registerBlock(this, ItemBlockIEStairs.class, name);
+		super(state, properties);
+		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, name));
 		IEContent.registeredIEBlocks.add(this);
-		IEContent.registeredIEItems.add(new ItemBlockIEStairs(this));
+		Item.Properties itemProps = new Item.Properties().group(ImmersiveEngineering.itemGroup);
+		IEContent.registeredIEItems.add(new BlockItem(this, itemProps));
 	}
 
+	// @todo: review required if this is needed.
 	public IEStairsBlock setFlammable(boolean b)
 	{
 		this.isFlammable = b;
@@ -49,38 +42,5 @@ public class IEStairsBlock extends StairsBlock
 	{
 		this.hasFlavour = hasFlavour;
 		return this;
-	}
-
-	@Override
-	public float getExplosionResistance(Entity exploder)
-	{
-		return explosionResistance;
-	}
-
-	public IEStairsBlock setExplosionResistance(float explosionResistance)
-	{
-		this.explosionResistance = explosionResistance;
-		return this;
-	}
-
-	@Override
-	public boolean doesSideBlockRendering(BlockState state, IBlockAccess world, BlockPos pos, Direction face)
-	{
-		if(this.renderLayer!=BlockRenderLayer.SOLID)
-			return false;
-		return super.doesSideBlockRendering(state, world, pos, face);
-	}
-
-	public IEStairsBlock setRenderLayer(BlockRenderLayer layer)
-	{
-		this.renderLayer = layer;
-		return this;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public BlockRenderLayer getRenderLayer()
-	{
-		return renderLayer;
 	}
 }
