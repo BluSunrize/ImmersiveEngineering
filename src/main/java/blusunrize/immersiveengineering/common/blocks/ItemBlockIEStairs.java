@@ -8,26 +8,33 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+/*
+import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
+*/
 
+//TODO This class should be obsolste by now. The tooltip can be handled in `IEStairsBlock`.
+// 		 Commented out for main author review/removal.
 public class ItemBlockIEStairs extends BlockItem
 {
-	public ItemBlockIEStairs(Block b)
+	public ItemBlockIEStairs(Block block, Item.Properties builder)
 	{
-		super(b);
+		super(block, builder);
 	}
 
+	/*
 	@Override
 	public int getMetadata(int damageValue)
 	{
@@ -48,9 +55,11 @@ public class ItemBlockIEStairs extends BlockItem
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag)
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
 		if(((IEStairsBlock)block).hasFlavour)
 			tooltip.add(I18n.format(Lib.DESC_FLAVOUR+((IEStairsBlock)block).name));
 	}
+	*/
 }
