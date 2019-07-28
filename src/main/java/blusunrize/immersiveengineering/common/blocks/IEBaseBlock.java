@@ -25,8 +25,10 @@ import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -132,13 +134,19 @@ public class IEBaseBlock extends Block
 
 	public IEBaseBlock setLightOpacity(int opacity)
 	{
+		// see getLightValue(state)
 		lightOpacity = opacity;
 		return this;
 	}
 
 	@Override
-	public int getLightValue(BlockState state, IWorldReader world, BlockPos pos)
+	public int getLightValue(BlockState state)
 	{
+		// @todo: double check. getLightValue() is a more tricky one now (at least at the present time).
+		//  			Light values are defined in the block properties at construction, and it seems that
+		//				values returned here must be 0 or exactly match that light value. Vanilla blocks with
+		//				switched light use something like: `return LIT ? super.getLightValue(state) : 0`.
+		//     -> So it might be good to drop `lightOpacity` and use the vanilla frame here.
 		return lightOpacity;
 	}
 
@@ -149,6 +157,7 @@ public class IEBaseBlock extends Block
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public PushReaction getPushReaction(BlockState state)
 	{
 		return mobilityFlag;
@@ -160,11 +169,12 @@ public class IEBaseBlock extends Block
 		return this;
 	}
 
-	@Override
-	public boolean isFullCube(BlockState state)
-	{
-		return notNormalBlock;
-	}
+	// @todo: review: this is now determined by shape data.
+	//	@Override
+	//	public boolean isFullCube(BlockState state)
+	//	{
+	//		return notNormalBlock;
+	//	}
 
 
 /*TODO does this still exist?	@Override
@@ -174,15 +184,17 @@ public class IEBaseBlock extends Block
 	}*/
 
 	@Override
-	public boolean causesSuffocation(BlockState state)
+	@SuppressWarnings("deprecation")
+	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
 		return !notNormalBlock;
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
 	{
-		return notNormalBlock;
+		return notNormalBlock; // @todo review: should this be `!notNormalBlock`?
 	}
 
 	@Override
@@ -198,6 +210,7 @@ public class IEBaseBlock extends Block
 		return this.stateContainer.getBaseState();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected <V extends Comparable<V>> BlockState applyProperty(BlockState in, IProperty<V> prop, Object val)
 	{
 		return in.with(prop, (V)val);
@@ -226,6 +239,7 @@ public class IEBaseBlock extends Block
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public boolean eventReceived(BlockState state, World worldIn, BlockPos pos, int eventID, int eventParam)
 	{
 		if(worldIn.isRemote&&eventID==255)
@@ -279,19 +293,19 @@ public class IEBaseBlock extends Block
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-									Direction side, float hitX, float hitY, float hitZ)
+																	BlockRayTraceResult hit)
 	{
 		ItemStack activeStack = player.getHeldItem(hand);
 		if(activeStack.getToolTypes().contains(IEContent.toolHammer))
-			return hammerUseSide(side, player, world, pos, hitX, hitY, hitZ);
-		return super.onBlockActivated(state, world, pos, player, hand, side, hitX, hitY, hitZ);
+			return hammerUseSide(hit.getFace(), player, world, pos, hit);
+		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
 
-	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos,
-								 float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
-
+		return false; // @todo: review: returning "event not handled" for now.
 	}
 
 	public abstract static class IELadderBlock extends IEBaseBlock
@@ -302,6 +316,11 @@ public class IEBaseBlock extends Block
 			super(name, material, itemBlock, additionalProperties);
 		}
 
+		/// @todo: review: actually not sure if this override is still needed
+		/// 			 It appears to handle the moment when players jump
+		///				 on a ladder, preventing fall damage, and limit
+		///				 the motion accordingly. This should be already
+		///				 the vanilla default by now.
 		@Override
 		public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
 		{
@@ -309,26 +328,17 @@ public class IEBaseBlock extends Block
 			if(entityIn instanceof LivingEntity&&!((LivingEntity)entityIn).isOnLadder()&&isLadder(state, worldIn, pos, (LivingEntity)entityIn))
 			{
 				float f5 = 0.15F;
-				if(entityIn.motionX < -f5)
-					entityIn.motionX = -f5;
-				if(entityIn.motionX > f5)
-					entityIn.motionX = f5;
-				if(entityIn.motionZ < -f5)
-					entityIn.motionZ = -f5;
-				if(entityIn.motionZ > f5)
-					entityIn.motionZ = f5;
-
+				final Vec3d motion = entityIn.getMotion();
+				double vx = MathHelper.clamp(motion.x, -f5, f5);
+				double vy = MathHelper.clamp(motion.y, -f5, f5);
+				double vz = MathHelper.clamp(motion.z, -f5, f5);
 				entityIn.fallDistance = 0.0F;
-				if(entityIn.motionY < -0.15D)
-					entityIn.motionY = -0.15D;
-
-				if(entityIn.motionY < 0&&entityIn instanceof PlayerEntity&&entityIn.isSneaking())
-				{
-					entityIn.motionY = 0;
-					return;
-				}
-				if(entityIn.collidedHorizontally)
-					entityIn.motionY = .2;
+				vy = Math.max(vy, -0.15D);
+				if(vy < 0&&entityIn instanceof PlayerEntity&&entityIn.isSneaking())
+					vy = 0;
+				else if(entityIn.collidedHorizontally)
+					vy = .2;
+				entityIn.setMotion(new Vec3d(vx,vy,vz));
 			}
 		}
 	}
