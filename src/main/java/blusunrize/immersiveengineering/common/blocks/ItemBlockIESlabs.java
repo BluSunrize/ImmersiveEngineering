@@ -9,21 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class ItemBlockIESlabs extends ItemBlockIEBase
 {
@@ -32,24 +17,31 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 		super(b);
 	}
 
+	//TODO: review: BlockIESlab is now a `SlabBlock`, `IESlabTileEntity` gone
+	// 			(due to flattening I suppose).
+	//      Vanilla onItemUse will invoke tryPlace, which referrs to the Block,
+	//			which is the SlabBlock. So snow layer replacements etc should be
+	//		  handled.
+	//   -> Proposal would be: testing first without overridden `onItemUse`.
+	/*
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag)
+	public ActionResultType onItemUse(ItemUseContext context)
 	{
-		super.addInformation(stack, world, tooltip, tooltipFlag);
-	}
-
-	@Override
-	public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ)
-	{
+		final BlockItemUseContext placementContext = new BlockItemUseContext(context);
+		final PlayerEntity player = context.getPlayer();
+		final Hand hand = context.getHand();
+		final World world = context.getWorld();
+		BlockPos pos = context.getPos();
+		Direction side = context.getFace();
 		ItemStack stack = player.getHeldItem(hand);
-		BlockState iblockstate = world.getBlockState(pos);
-		Block localBlock = iblockstate.getBlock();
+		BlockState localState = world.getBlockState(pos);
+		Block localBlock = localState.getBlock();
 		BlockPos posThere = pos;
 		BlockPos posOffset = pos.offset(side);
 
-		if(localBlock==Blocks.SNOW_LAYER&&localBlock.isReplaceable(world, pos))
+		if(localBlock==Blocks.SNOW&&localBlock.isReplaceable(localState, placementContext))
 			side = Direction.UP;
-		else if(!localBlock.isReplaceable(world, pos))
+		else if(!localBlock.isReplaceable(localState, placementContext))
 			pos = pos.offset(side);
 
 		IESlabTileEntity stackSlab = null;
@@ -102,4 +94,6 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 		}
 		return ret;
 	}
+
+	*/
 }

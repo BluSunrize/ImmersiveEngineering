@@ -142,10 +142,10 @@ public class IEBaseBlock extends Block
 	@Override
 	public int getLightValue(BlockState state)
 	{
-		// @todo: double check. getLightValue() is a more tricky one now (at least at the present time).
-		//  			Light values are defined in the block properties at construction, and it seems that
-		//				values returned here must be 0 or exactly match that light value. Vanilla blocks with
-		//				switched light use something like: `return LIT ? super.getLightValue(state) : 0`.
+		//TODO double check. getLightValue() is a more tricky one now (at least at the present time).
+		//  	 Light values are defined in the block properties at construction, and it seems that
+		//	 	 values returned here must be 0 or exactly match that light value. Vanilla blocks with
+		//		 switched light use something like: `return LIT ? super.getLightValue(state) : 0`.
 		//     -> So it might be good to drop `lightOpacity` and use the vanilla frame here.
 		return lightOpacity;
 	}
@@ -169,7 +169,7 @@ public class IEBaseBlock extends Block
 		return this;
 	}
 
-	// @todo: review: this is now determined by shape data.
+	//TODO review: this is now determined by shape data.
 	//	@Override
 	//	public boolean isFullCube(BlockState state)
 	//	{
@@ -194,7 +194,7 @@ public class IEBaseBlock extends Block
 	@SuppressWarnings("deprecation")
 	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
 	{
-		return notNormalBlock; // @todo review: should this be `!notNormalBlock`?
+		return notNormalBlock; //TODO review: should this be `!notNormalBlock`?
 	}
 
 	@Override
@@ -305,7 +305,7 @@ public class IEBaseBlock extends Block
 
 	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
-		return false; // @todo: review: returning "event not handled" for now.
+		return false; //TODO review: returning "event not handled" for now.
 	}
 
 	public abstract static class IELadderBlock extends IEBaseBlock
@@ -316,11 +316,11 @@ public class IEBaseBlock extends Block
 			super(name, material, itemBlock, additionalProperties);
 		}
 
-		/// @todo: review: actually not sure if this override is still needed
-		/// 			 It appears to handle the moment when players jump
-		///				 on a ladder, preventing fall damage, and limit
-		///				 the motion accordingly. This should be already
-		///				 the vanilla default by now.
+		//TODO review: actually not sure if this override is still needed
+		// 			  	It appears to handle the moment when players jump
+		//				  on a ladder, preventing fall damage, and limit
+		//				  the motion accordingly. This should be already
+		//				  the vanilla default by now.
 		@Override
 		public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
 		{

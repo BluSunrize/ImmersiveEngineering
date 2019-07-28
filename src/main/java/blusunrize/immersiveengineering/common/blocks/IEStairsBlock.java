@@ -31,7 +31,7 @@ public class IEStairsBlock extends StairsBlock
 		IEContent.registeredIEItems.add(new BlockItem(this, itemProps));
 	}
 
-	// @todo: review required if this is needed.
+	//TODO: review required if this is needed.
 	public IEStairsBlock setFlammable(boolean b)
 	{
 		this.isFlammable = b;
