@@ -173,6 +173,7 @@ public class IEContent
 			IEBlocks.Metals.sheetmetal.put(m, sheetmetal);
 		}
 		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10);
+		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180);
 
 		IEBlocks.StoneDecoration.cokebrick = new IEBaseBlock("cokebrick", stoneDecoProps, ItemBlockIEBase.class);
 		IEBlocks.StoneDecoration.blastbrick = new IEBaseBlock("blastbrick", stoneDecoProps, ItemBlockIEBase.class);
@@ -181,7 +182,7 @@ public class IEContent
 		IEBlocks.StoneDecoration.hempcrete = new IEBaseBlock("hempcrete", stoneDecoProps, ItemBlockIEBase.class);
 		IEBlocks.StoneDecoration.concrete = new IEBaseBlock("concrete", stoneDecoProps, ItemBlockIEBase.class);
 		IEBlocks.StoneDecoration.concreteTile = new IEBaseBlock("concrete_tile", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.concreteLeaded = new IEBaseBlock("concrete_leaded", Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180), ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.concreteLeaded = new IEBaseBlock("concrete_leaded", stoneDecoLeadedProps, ItemBlockIEBase.class);
 		IEBlocks.StoneDecoration.alloybrick = new IEBaseBlock("alloybrick", stoneDecoProps, ItemBlockIEBase.class);
 
 		IEBlocks.StoneDecoration.insulatingGlass = new IEBaseBlock("insulating_glass", stoneDecoProps, ItemBlockIEBase.class)
@@ -221,11 +222,10 @@ public class IEContent
 		addSlabFor(IEBlocks.StoneDecoration.concreteSprayed);
 		addSlabFor(IEBlocks.StoneDecoration.alloybrick);
 
-		StoneDecoration.hempcreteStairs = new IEStairsBlock("stone_decoration_stairs_hempcrete", StoneDecoration.hempcrete.getDefaultState());
-		StoneDecoration.concreteStairs[0] = new IEStairsBlock("stone_decoration_stairs_concrete", StoneDecoration.concrete.getDefaultState());
-		StoneDecoration.concreteStairs[1] = new IEStairsBlock("stone_decoration_stairs_concrete_tile", StoneDecoration.concreteTile.getDefaultState());
-		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stone_decoration_stairs_concrete_leaded", StoneDecoration.concreteLeaded.getDefaultState())
-				.setExplosionResistance(180f);
+		StoneDecoration.hempcreteStairs = new IEStairsBlock("stone_decoration_stairs_hempcrete", StoneDecoration.hempcrete.getDefaultState(), stoneDecoProps);
+		StoneDecoration.concreteStairs[0] = new IEStairsBlock("stone_decoration_stairs_concrete", StoneDecoration.concrete.getDefaultState(), stoneDecoProps);
+		StoneDecoration.concreteStairs[1] = new IEStairsBlock("stone_decoration_stairs_concrete_tile", StoneDecoration.concreteTile.getDefaultState(), stoneDecoProps);
+		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stone_decoration_stairs_concrete_leaded", StoneDecoration.concreteLeaded.getDefaultState(), stoneDecoLeadedProps);
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("coke_oven", () -> BlastFurnaceTileEntity.TYPE);
@@ -297,9 +297,9 @@ public class IEContent
 			MetalDecoration.steelScaffolding.put(type, steelBlock);
 			MetalDecoration.aluScaffolding.put(type, aluBlock);
 			MetalDecoration.steelScaffoldingStair.put(type, new IEStairsBlock("steel_scaffolding_stairs_"+name,
-					steelBlock.getDefaultState()));
+					steelBlock.getDefaultState(), defaultMetalProperties));
 			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("alu_scaffolding_stairs_"+name,
-					aluBlock.getDefaultState()));
+					aluBlock.getDefaultState(), defaultMetalProperties));
 			addSlabFor(steelBlock);
 			addSlabFor(aluBlock);
 		}
