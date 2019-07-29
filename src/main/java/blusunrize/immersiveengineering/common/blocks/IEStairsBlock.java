@@ -42,12 +42,6 @@ public class IEStairsBlock extends StairsBlock
 		IEContent.registeredIEItems.add(new BlockItem(this, itemProps));
 	}
 
-	//TODO: review required if this is needed.
-	public IEStairsBlock setFlammable(boolean b)
-	{
-		this.isFlammable = b;
-		return this;
-	}
 
 	public IEStairsBlock setHasFlavour(boolean hasFlavour)
 	{
@@ -55,16 +49,11 @@ public class IEStairsBlock extends StairsBlock
 		return this;
 	}
 
-	//TODO: review: added flavour information here, so that `ItemBlockIEStairs` can be removed.
+	//TODO review: review changes applied (explicit type checks removed)
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
-		super.addInformation(stack, world, tooltip, flag);
-		if((stack.getItem() instanceof BlockItem))
-		{
-			final Block block = ((BlockItem)stack.getItem()).getBlock();
-			if((block instanceof IEStairsBlock)&&((IEStairsBlock)block).hasFlavour)
-				tooltip.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+block.getRegistryName().getPath()));
-		}
+		if(hasFlavour)
+			tooltip.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+getRegistryName().getPath()));
 	}
 }

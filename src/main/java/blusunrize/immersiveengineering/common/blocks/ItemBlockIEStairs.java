@@ -25,7 +25,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 */
 
-//TODO This class should be obsolste by now. The tooltip can be handled in `IEStairsBlock`.
+//TODO: Marked for removal by main authors.
+//DONE: Review This class should be obsolste by now. The tooltip can be handled in `IEStairsBlock`.
 // 		 Commented out for main author review/removal.
 public class ItemBlockIEStairs extends BlockItem
 {

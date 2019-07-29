@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import net.minecraft.block.Block;
 
+//TODO: Marked for removal by main authors.
 public class ItemBlockIESlabs extends ItemBlockIEBase
 {
 	public ItemBlockIESlabs(Block b)
@@ -17,7 +18,7 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 		super(b);
 	}
 
-	//TODO: review: BlockIESlab is now a `SlabBlock`, `IESlabTileEntity` gone
+	// DONE: review: BlockIESlab is now a `SlabBlock`, `IESlabTileEntity` gone
 	// 			(due to flattening I suppose).
 	//      Vanilla onItemUse will invoke tryPlace, which referrs to the Block,
 	//			which is the SlabBlock. So snow layer replacements etc should be

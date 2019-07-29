@@ -70,7 +70,6 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 	@SuppressWarnings("deprecation")
 	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
 	{
-		//TODO review: Presuming the drop list has to be empty, as items are manually spawned in `onReplaced()` above.
 		return Collections.emptyList();
 	}
 

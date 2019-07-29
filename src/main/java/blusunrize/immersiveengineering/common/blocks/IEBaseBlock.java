@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.LadderBlock;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -29,6 +30,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -134,19 +136,15 @@ public class IEBaseBlock extends Block
 
 	public IEBaseBlock setLightOpacity(int opacity)
 	{
-		// see getLightValue(state)
 		lightOpacity = opacity;
 		return this;
 	}
 
+	//TODO review: Review correction applied: getLightValue(...) -> getOpacity(...)
 	@Override
-	public int getLightValue(BlockState state)
+	@SuppressWarnings("deprecation")
+	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
-		//TODO double check. getLightValue() is a more tricky one now (at least at the present time).
-		//  	 Light values are defined in the block properties at construction, and it seems that
-		//	 	 values returned here must be 0 or exactly match that light value. Vanilla blocks with
-		//		 switched light use something like: `return LIT ? super.getLightValue(state) : 0`.
-		//     -> So it might be good to drop `lightOpacity` and use the vanilla frame here.
 		return lightOpacity;
 	}
 
@@ -194,7 +192,7 @@ public class IEBaseBlock extends Block
 	@SuppressWarnings("deprecation")
 	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
 	{
-		return notNormalBlock; //TODO review: should this be `!notNormalBlock`?
+		return !notNormalBlock; //TODO review: Review acceptance applied.
 	}
 
 	@Override
@@ -295,7 +293,7 @@ public class IEBaseBlock extends Block
 	@Override
 	@SuppressWarnings("deprecation")
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-																	BlockRayTraceResult hit)
+									BlockRayTraceResult hit)
 	{
 		ItemStack activeStack = player.getHeldItem(hand);
 		if(activeStack.getToolTypes().contains(IEContent.toolHammer))
@@ -316,11 +314,21 @@ public class IEBaseBlock extends Block
 			super(name, material, itemBlock, additionalProperties);
 		}
 
-		//TODO review: actually not sure if this override is still needed
-		// 			  	It appears to handle the moment when players jump
-		//				  on a ladder, preventing fall damage, and limit
-		//				  the motion accordingly. This should be already
-		//				  the vanilla default by now.
+		//TODO review: Review changes applied. Notes: Suggestion to keep this class for "climbable" blocks
+		//			   like scaffolding, but change actual metal/tr.wood ladders to `mc::LadderBlock`s for
+		//			   compatibility reasons.
+		@Override
+		public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
+		{
+			return true;
+		}
+		/*
+		//TODO: Method marked for delete by main authors.
+		//  review: actually not sure if this override is still needed
+		// 	  		It appears to handle the moment when players jump
+		//			on a ladder, preventing fall damage, and limit
+		//			the motion accordingly. This should be already
+		//			the vanilla default by now.
 		@Override
 		public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
 		{
@@ -341,5 +349,6 @@ public class IEBaseBlock extends Block
 				entityIn.setMotion(new Vec3d(vx,vy,vz));
 			}
 		}
+		*/
 	}
 }

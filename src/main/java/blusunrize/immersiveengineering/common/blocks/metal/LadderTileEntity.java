@@ -19,7 +19,10 @@ import net.minecraft.util.Direction.Plane;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+
 //TODO can this be done with just blockstates now?
+// -> Review notes issue #3529:
+// 	  Suggestion to remove this TE class and inherit ladders from mc::LadderBlock.
 public class LadderTileEntity extends IEBaseTileEntity implements IDirectionalTile
 {
 	public static TileEntityType<LadderTileEntity> TYPE;

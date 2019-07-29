@@ -32,6 +32,10 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
+//
+//TODO: Review notes from issue #3529:
+// 		Suggestion to inherit from mc::LadderBlock for compat.
+//
 public class MetalLadderBlock extends IELadderBlock<BlockTypes_MetalLadder>
 {
 	protected static final AxisAlignedBB[] LADDER_AABB = {
