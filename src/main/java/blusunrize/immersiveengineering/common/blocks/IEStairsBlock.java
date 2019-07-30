@@ -42,14 +42,12 @@ public class IEStairsBlock extends StairsBlock
 		IEContent.registeredIEItems.add(new BlockItem(this, itemProps));
 	}
 
-
 	public IEStairsBlock setHasFlavour(boolean hasFlavour)
 	{
 		this.hasFlavour = hasFlavour;
 		return this;
 	}
 
-	//TODO review: review changes applied (explicit type checks removed)
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{

@@ -13,9 +13,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.LadderBlock;
 import net.minecraft.block.material.PushReaction;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -27,8 +25,6 @@ import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -140,7 +136,6 @@ public class IEBaseBlock extends Block
 		return this;
 	}
 
-	//TODO review: Review correction applied: getLightValue(...) -> getOpacity(...)
 	@Override
 	@SuppressWarnings("deprecation")
 	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos)
@@ -167,20 +162,6 @@ public class IEBaseBlock extends Block
 		return this;
 	}
 
-	//TODO review: this is now determined by shape data.
-	//	@Override
-	//	public boolean isFullCube(BlockState state)
-	//	{
-	//		return notNormalBlock;
-	//	}
-
-
-/*TODO does this still exist?	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return notNormalBlock;
-	}*/
-
 	@Override
 	@SuppressWarnings("deprecation")
 	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos)
@@ -192,7 +173,7 @@ public class IEBaseBlock extends Block
 	@SuppressWarnings("deprecation")
 	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
 	{
-		return !notNormalBlock; //TODO review: Review acceptance applied.
+		return !notNormalBlock;
 	}
 
 	@Override
@@ -303,7 +284,7 @@ public class IEBaseBlock extends Block
 
 	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
-		return false; //TODO review: returning "event not handled" for now.
+		return false;
 	}
 
 	public abstract static class IELadderBlock extends IEBaseBlock
@@ -314,41 +295,10 @@ public class IEBaseBlock extends Block
 			super(name, material, itemBlock, additionalProperties);
 		}
 
-		//TODO review: Review changes applied. Notes: Suggestion to keep this class for "climbable" blocks
-		//			   like scaffolding, but change actual metal/tr.wood ladders to `mc::LadderBlock`s for
-		//			   compatibility reasons.
 		@Override
 		public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
 		{
 			return true;
 		}
-		/*
-		//TODO: Method marked for delete by main authors.
-		//  review: actually not sure if this override is still needed
-		// 	  		It appears to handle the moment when players jump
-		//			on a ladder, preventing fall damage, and limit
-		//			the motion accordingly. This should be already
-		//			the vanilla default by now.
-		@Override
-		public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
-		{
-			super.onEntityCollision(state, worldIn, pos, entityIn);
-			if(entityIn instanceof LivingEntity&&!((LivingEntity)entityIn).isOnLadder()&&isLadder(state, worldIn, pos, (LivingEntity)entityIn))
-			{
-				float f5 = 0.15F;
-				final Vec3d motion = entityIn.getMotion();
-				double vx = MathHelper.clamp(motion.x, -f5, f5);
-				double vy = MathHelper.clamp(motion.y, -f5, f5);
-				double vz = MathHelper.clamp(motion.z, -f5, f5);
-				entityIn.fallDistance = 0.0F;
-				vy = Math.max(vy, -0.15D);
-				if(vy < 0&&entityIn instanceof PlayerEntity&&entityIn.isSneaking())
-					vy = 0;
-				else if(entityIn.collidedHorizontally)
-					vy = .2;
-				entityIn.setMotion(new Vec3d(vx,vy,vz));
-			}
-		}
-		*/
 	}
 }

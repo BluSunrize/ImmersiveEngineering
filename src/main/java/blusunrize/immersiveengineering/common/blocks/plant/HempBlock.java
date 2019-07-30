@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,6 +30,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.PlantType;
@@ -116,13 +119,12 @@ public class HempBlock extends BushBlock implements IGrowable
 		return shapes.getOrDefault(state.get(GROWTH), VoxelShapes.fullCube());
 	}
 
-	//TODO: Could not see a proper way to access a fortune values using the builder (e.g. luck scaling is -1024..1024)
-	//      -> added a concept loot table file data/immersiveengineering/loot_tables/blocks/hemp.json.
-	// 				 for experimenting with alternatives to overriding `getDrops()`.
 	@Override
+	@SuppressWarnings("deprecation")
 	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
 	{
-		final int fortune = 0;
+		ItemStack tool = builder.get(LootParameters.TOOL);
+		int fortune = (tool==null)?(0):(EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, tool));
 		EnumHempGrowth growth = state.get(GROWTH);
 		List<ItemStack> drops = new ArrayList<ItemStack>();
 		drops.add(new ItemStack(IEContent.itemSeeds, 1));
