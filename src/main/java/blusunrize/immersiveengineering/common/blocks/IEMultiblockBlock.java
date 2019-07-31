@@ -20,12 +20,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.loot.LootContext;
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 public abstract class IEMultiblockBlock extends IETileProviderBlock
 {
@@ -42,11 +46,11 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if(tileEntity instanceof MultiblockPartTileEntity&&world.getGameRules().getBoolean("doTileDrops"))
+		if(tileEntity instanceof MultiblockPartTileEntity&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 		{
 			MultiblockPartTileEntity tile = (MultiblockPartTileEntity)tileEntity;
 			if(!tile.formed&&tile.posInMultiblock==-1&&!tile.getOriginalBlock().isEmpty())
-				world.spawnEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, tile.getOriginalBlock().copy()));
+				world.addEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, tile.getOriginalBlock().copy()));
 
 			if(tile.formed&&tile instanceof IIEInventory)
 			{
@@ -54,7 +58,7 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 				if(master!=null&&(!(master instanceof ITileDrop)||!((ITileDrop)master).preventInventoryDrop())&&master.getDroppedItems()!=null)
 					for(ItemStack s : master.getDroppedItems())
 						if(!s.isEmpty())
-							world.spawnEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s.copy()));
+							world.addEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s.copy()));
 			}
 		}
 		if(tileEntity instanceof MultiblockPartTileEntity)
@@ -63,8 +67,10 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 	}
 
 	@Override
-	public void getDrops(BlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
+	@SuppressWarnings("deprecation")
+	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
 	{
+		return Collections.emptyList();
 	}
 
 	@Override

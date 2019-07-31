@@ -36,17 +36,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -154,6 +149,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public abstract TileEntity createBasicTE(BlockState state);
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		TileEntity tile = world.getTileEntity(pos);
@@ -238,7 +234,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			if(!s.isEmpty())
 				return s;
 		}
-		Item item = Item.getItemFromBlock(this);
+		Item item = this.asItem();
 		return item==Items.AIR?ItemStack.EMPTY: new ItemStack(item, 1);
 	}
 
@@ -336,9 +332,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		TileEntity tile = world.getTileEntity(pos);
 		PlayerEntity placer = context.getPlayer();
 		Direction side = context.getFace();
-		float hitX = context.getHitX();
-		float hitY = context.getHitY();
-		float hitZ = context.getHitZ();
+		float hitX = (float)context.getHitVec().x;
+		float hitY = (float)context.getHitVec().y;
+		float hitZ = (float)context.getHitVec().z;
 		ItemStack stack = context.getItem();
 
 		if(tile instanceof IDirectionalTile)
@@ -363,8 +359,12 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
 	{
+		final Direction side = hit.getFace();
+		final float hitX = (float)hit.getHitVec().x;
+		final float hitY = (float)hit.getHitVec().y;
+		final float hitZ = (float)hit.getHitVec().z;
 		ItemStack heldItem = player.getHeldItem(hand);
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IConfigurableSides&&Utils.isHammer(heldItem)&&!world.isRemote)
@@ -416,12 +416,13 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
+	@SuppressWarnings("deprecation")
+	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving)
 	{
 		if(!world.isRemote)
 		{
 			//Necessary to prevent ghostloading, see conversation in #immersive-engineering on Discord on 12/13 Mar 2019
-			Chunk posChunk = world.getChunk(pos);
+			Chunk posChunk = world.getChunkAt(pos);
 			//TODO figure out why this became a "future task"...
 			ApiUtils.addFutureServerTask(world, () ->
 			{
@@ -436,7 +437,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
-	public int getLightValue(BlockState state, IWorldReader world, BlockPos pos)
+	public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof ILightValue)
@@ -469,51 +470,8 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
-	public BlockFaceShape getBlockFaceShape(IBlockReader world, BlockState state, BlockPos pos, Direction side)
-	{
-		if(!notNormalBlock)
-			return BlockFaceShape.SOLID;
-		else if(side!=null)
-		{
-			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof IFaceShape)
-				return ((IFaceShape)te).getFaceShape(side);
-			else
-			{
-				//TODO nicer way?
-				AxisAlignedBB bb = getShape(state, world, pos).getBoundingBox();
-				double wMin = side.getAxis()==Axis.X?bb.minZ: bb.minX;
-				double wMax = side.getAxis()==Axis.X?bb.maxZ: bb.maxX;
-				double hMin = side.getAxis()==Axis.Y?bb.minZ: bb.minY;
-				double hMax = side.getAxis()==Axis.Y?bb.maxZ: bb.maxY;
-				if(wMin==0&&hMin==0&&wMax==1&&hMax==1)
-					return BlockFaceShape.SOLID;
-				else if(hMin==0&&hMax==1&&wMin==(1-wMax))
-				{
-					if(wMin > .375)
-						return BlockFaceShape.MIDDLE_POLE_THIN;
-					else if(wMin > .3125)
-						return BlockFaceShape.MIDDLE_POLE;
-					else
-						return BlockFaceShape.MIDDLE_POLE_THICK;
-				}
-				else if(hMin==wMin&&hMax==wMax)
-				{
-					if(wMin > .375)
-						return BlockFaceShape.CENTER_SMALL;
-					else if(wMin > .3125)
-						return BlockFaceShape.CENTER;
-					else
-						return BlockFaceShape.CENTER_BIG;
-				}
-				return BlockFaceShape.UNDEFINED;
-			}
-		}
-		return super.getBlockFaceShape(world, state, pos, side);
-	}
-
-	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos)
+	@SuppressWarnings("deprecation")
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
 	{
 		//TODO caching?
 		if(world.getBlockState(pos).getBlock()==this)
@@ -538,7 +496,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				return VoxelShapes.create(aabb);
 			}
 		}
-		return super.getShape(state, world, pos);
+		return super.getShape(state, world, pos, context);
 	}
 
 	@Nullable
@@ -555,11 +513,12 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				double minDist = Double.POSITIVE_INFINITY;
 				for(AxisAlignedBB aabb : list)
 				{
-					RayTraceResult mop = aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ())
-							.calculateIntercept(start, end, pos);
+					BlockRayTraceResult mop = VoxelShapes.create(aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()))
+																							 .rayTrace(start, end, pos);
 					if(mop!=null)
 					{
-						double dist = mop.hitVec.squareDistanceTo(start);
+						//double dist = mop.hitVec.squareDistanceTo(start);
+						double dist = mop.getHitVec().squareDistanceTo(start);
 						if(dist < minDist)
 						{
 							min = mop;
@@ -574,12 +533,14 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public boolean hasComparatorInputOverride(BlockState state)
 	{
 		return true;
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
@@ -590,6 +551,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public int getWeakPower(BlockState blockState, IBlockReader world, BlockPos pos, Direction side)
 	{
 		TileEntity te = world.getTileEntity(pos);
@@ -599,6 +561,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public int getStrongPower(BlockState blockState, IBlockReader world, BlockPos pos, Direction side)
 	{
 		TileEntity te = world.getTileEntity(pos);
@@ -608,6 +571,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public boolean canProvidePower(BlockState state)
 	{
 		return true;
@@ -623,6 +587,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
 	{
 		TileEntity te = world.getTileEntity(pos);
