@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,12 +32,12 @@ public class ThermoelectricHandler
 		temperatureMap.put(source, value);
 	}
 
-	public static void registerSourceInKelvin(String source, int value)
+	public static void registerSourceInKelvin(ResourceLocation source, int value)
 	{
 		registerSource(new IngredientStack(source), value);
 	}
 
-	public static void registerSourceInCelsius(String source, int value)
+	public static void registerSourceInCelsius(ResourceLocation source, int value)
 	{
 		registerSource(new IngredientStack(source), value+273);
 	}
@@ -44,7 +45,7 @@ public class ThermoelectricHandler
 	/**
 	 * 'murica!
 	 */
-	public static void registerSourceInFarenheit(String source, int value)
+	public static void registerSourceInFarenheit(ResourceLocation source, int value)
 	{
 		registerSource(new IngredientStack(source), (int)Math.round((value-32)/1.8D+273));
 	}
@@ -61,7 +62,7 @@ public class ThermoelectricHandler
 
 	public static Map<String, Integer> getThermalValuesSorted(boolean inverse)
 	{
-		HashMap<String, Integer> existingMap = new HashMap();
+		HashMap<String, Integer> existingMap = new HashMap<>();
 		for(IngredientStack ingr : temperatureMap.keySet())
 		{
 			ItemStack example = ingr.getExampleStack();

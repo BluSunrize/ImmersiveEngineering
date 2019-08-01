@@ -9,15 +9,15 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.common.property.IUnlistedProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,32 +28,7 @@ import java.util.Optional;
 //T must be ItemStack for Items or IBlockState for TileEntities implementing this
 public interface IOBJModelCallback<T>
 {
-	IUnlistedProperty<IOBJModelCallback> PROPERTY = new IUnlistedProperty<IOBJModelCallback>()
-	{
-		@Override
-		public String getName()
-		{
-			return "obj_model_callback";
-		}
-
-		@Override
-		public boolean isValid(IOBJModelCallback value)
-		{
-			return true;
-		}
-
-		@Override
-		public Class<IOBJModelCallback> getType()
-		{
-			return IOBJModelCallback.class;
-		}
-
-		@Override
-		public String valueToString(IOBJModelCallback value)
-		{
-			return value.toString();
-		}
-	};
+	ModelProperty<IOBJModelCallback> PROPERTY = new ModelProperty<>();
 
 	@OnlyIn(Dist.CLIENT)
 	default TextureAtlasSprite getTextureReplacement(T object, String material)

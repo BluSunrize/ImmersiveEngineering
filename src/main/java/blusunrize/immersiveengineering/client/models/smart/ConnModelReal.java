@@ -23,8 +23,8 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -71,7 +71,7 @@ public class ConnModelReal implements IBakedModel
 				if(te instanceof IEBlockInterfaces.ICacheData)
 					additional = ((IEBlockInterfaces.ICacheData)te).getCacheData();
 			}
-			ExtBlockstateAdapter ad = new ExtBlockstateAdapter(ext, null, ExtBlockstateAdapter.CONNS_OBJ_CALLBACK, additional);
+			RenderCacheKey ad = new RenderCacheKey(ext, null, RenderCacheKey.CONNS_OBJ_CALLBACK, additional);
 			Set<Connection.RenderData> data = new HashSet<>();
 			ConnectionModelData orig = ext.getValue(IEProperties.CONNECTIONS);
 			for(Connection c : orig.connections)
@@ -198,10 +198,10 @@ public class ConnModelReal implements IBakedModel
 	private class ModelKey
 	{
 		private final Set<Connection.RenderData> connections;
-		private final ExtBlockstateAdapter state;
+		private final RenderCacheKey state;
 		private final BlockPos here;//TODO include in equals?
 
-		private ModelKey(Set<RenderData> connections, ExtBlockstateAdapter state, BlockPos here)
+		private ModelKey(Set<RenderData> connections, RenderCacheKey state, BlockPos here)
 		{
 			this.connections = connections;
 			this.state = state;

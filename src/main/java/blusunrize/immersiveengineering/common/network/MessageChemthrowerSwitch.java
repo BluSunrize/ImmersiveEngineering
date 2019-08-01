@@ -40,9 +40,10 @@ public class MessageChemthrowerSwitch implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		ServerPlayerEntity player = context.get().getSender();
+		Context ctx = context.get();
+		ServerPlayerEntity player = ctx.getSender();
 		assert player!=null;
-		player.getServerWorld().addScheduledTask(() -> {
+		ctx.enqueueWork(() -> {
 			ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
 			if(equipped.getItem() instanceof ItemChemthrower&&((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
 				((ItemChemthrower)equipped.getItem()).switchTank(equipped, forward);

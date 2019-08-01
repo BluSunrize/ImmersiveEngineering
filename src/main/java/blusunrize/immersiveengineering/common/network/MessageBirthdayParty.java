@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.PacketBuffer;
@@ -42,7 +41,7 @@ public class MessageBirthdayParty implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		Minecraft.getInstance().addScheduledTask(() -> {
+		context.get().enqueueWork(() -> {
 			World world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null) // This can happen if the task is scheduled right before leaving the world
 			{

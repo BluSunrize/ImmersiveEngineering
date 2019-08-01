@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.client.ClientProxy;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -57,7 +56,7 @@ public class MessageMineralListSync implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		Minecraft.getInstance().addScheduledTask(this::onMessageMain);
+		context.get().enqueueWork(this::onMessageMain);
 	}
 
 	private void onMessageMain()

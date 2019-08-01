@@ -87,7 +87,7 @@ public class TileRenderArcFurnace extends TileEntityRenderer<ArcFurnaceTileEntit
 		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
 		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, blockPos, worldRenderer, true,
-				Utils.RAND, 0, new SinglePropertyModelData<>(objState, Model.objState));
+				Utils.RAND, 0, new SinglePropertyModelData<>(objState, Model.OBJ_STATE));
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 

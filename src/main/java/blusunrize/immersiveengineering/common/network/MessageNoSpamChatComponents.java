@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.util.ChatUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -44,6 +43,6 @@ public class MessageNoSpamChatComponents implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		Minecraft.getInstance().addScheduledTask(() -> ChatUtils.sendClientNoSpamMessages(chatMessages));
+		context.get().enqueueWork(() -> ChatUtils.sendClientNoSpamMessages(chatMessages));
 	}
 }

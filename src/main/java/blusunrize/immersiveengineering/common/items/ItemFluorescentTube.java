@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.Too
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.render.ItemRendererIEOBJ;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -52,7 +53,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 
 	public ItemFluorescentTube()
 	{
-		super("fluorescent_tube", new Properties().maxStackSize(1));
+		super("fluorescent_tube", new Properties().maxStackSize(1).setTEISR(() -> () -> ItemRendererIEOBJ.INSTANCE));
 	}
 
 	@Override

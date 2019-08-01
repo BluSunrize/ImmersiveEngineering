@@ -9,11 +9,10 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -24,8 +23,8 @@ import java.util.function.Supplier;
 
 public class MessageSpeedloaderSync implements IMessage
 {
-	int slot;
-	Hand hand;
+	private int slot;
+	private Hand hand;
 
 	public MessageSpeedloaderSync(int slot, Hand hand)
 	{
@@ -49,7 +48,7 @@ public class MessageSpeedloaderSync implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		Minecraft.getInstance().addScheduledTask(() -> {
+		context.get().enqueueWork(() -> {
 			PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 			if(player!=null)
 			{
@@ -58,7 +57,7 @@ public class MessageSpeedloaderSync implements IMessage
 					player.playSound(IESounds.revolverReload, 1f, 1f);
 					ItemNBTHelper.putInt(player.getHeldItem(hand), "reload", 60);
 				}
-				player.inventory.setInventorySlotContents(slot, new ItemStack(IEContent.itemSpeedloader));
+				player.inventory.setInventorySlotContents(slot, new ItemStack(Weapons.speedloader));
 			}
 		});
 	}

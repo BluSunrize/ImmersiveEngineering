@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.energy.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
@@ -82,7 +83,6 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeIngameGui;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.GuiScreenEvent.MouseScrollEvent;
@@ -95,7 +95,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.registries.GameData;
@@ -112,7 +111,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
-@EventBusSubscriber(Dist.CLIENT)
 public class ClientEventHandler implements ISelectiveResourceReloadListener
 {
 	private boolean shieldToggleButton = false;
@@ -132,7 +130,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 	}
 
-	public static Set<Connection> skyhookGrabableConnections = new HashSet<>();
 	public static final Map<Connection, Pair<BlockPos, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
 
 	@SubscribeEvent
@@ -232,7 +229,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				event.getToolTip().add(new StringTextComponent(s));
 	}
 
-	@SubscribeEvent()
+	@SubscribeEvent
 	public void onRenderTooltip(RenderTooltipEvent.PostText event)
 	{
 		ItemStack stack = event.getStack();
@@ -931,7 +928,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			}
 
 			World world = player.world;
-			if(!stack.isEmpty()&&MetalDevices.conveyor.equals(Block.getBlockFromItem(stack.getItem()))&&rtr.getFace().getAxis()==Axis.Y)
+			if(!stack.isEmpty()&&ConveyorHandler.conveyorBlocks.containsValue(Block.getBlockFromItem(stack.getItem()))&&rtr.getFace().getAxis()==Axis.Y)
 			{
 				Direction side = rtr.getFace();
 				BlockPos pos = rtr.getPos();

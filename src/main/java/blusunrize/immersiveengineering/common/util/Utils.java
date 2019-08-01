@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.items.ItemWirecutter;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
@@ -878,33 +877,16 @@ public class Utils
 		return ret;
 	}
 
-	public static int hashBlockstate(BlockState state, Set<Object> ignoredProperties)
+	public static int hashBlockstate(BlockState state)
 	{
 		int val = 0;
 		final int prime = 31;
 		for(IProperty<?> n : state.getProperties())
-			if(!ignoredProperties.contains(n))
 			{
 				Object o = state.get(n);
 				val = prime*val+Objects.hash(o);
 			}
 		return val;
-	}
-
-	public static boolean areStatesEqual(BlockState state, BlockState other, Set<Object> ignoredProperties, boolean includeExtended)
-	{
-		for(IProperty<?> i : state.getProperties())
-		{
-			if(!other.getProperties().contains(i))
-				return false;
-			if(ignoredProperties.contains(i))
-				continue;
-			Object valThis = state.get(i);
-			Object valOther = other.get(i);
-			if(!Objects.equals(valThis, valOther))
-				return false;
-		}
-		return true;
 	}
 
 	public static boolean areArraysEqualIncludingBlockstates(Object[] a, Object[] a2)
@@ -922,12 +904,7 @@ public class Utils
 		{
 			Object o1 = a[i];
 			Object o2 = a2[i];
-			if(o1 instanceof BlockState&&o2 instanceof BlockState)
-			{
-				if(!areStatesEqual((BlockState)o1, (BlockState)o2, ImmutableSet.of(), false))
-					return false;
-			}
-			else if(!(o1==null?o2==null: o1.equals(o2)))
+			if(!(o1==null?o2==null: o1.equals(o2)))
 				return false;
 		}
 		return true;

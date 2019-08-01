@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryE
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.render.ItemRendererIEOBJ;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
@@ -89,7 +90,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 
 	public ItemDrill()
 	{
-		super("drill", new Properties().maxStackSize(1), "DRILL");
+		super("drill", new Properties().maxStackSize(1).setTEISR(() -> () -> ItemRendererIEOBJ.INSTANCE), "DRILL");
 	}
 
 	@Override

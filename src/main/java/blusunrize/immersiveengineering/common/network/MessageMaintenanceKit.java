@@ -46,9 +46,10 @@ public class MessageMaintenanceKit implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		ServerPlayerEntity player = context.get().getSender();
+		Context ctx = context.get();
+		ServerPlayerEntity player = ctx.getSender();
 		assert player!=null;
-		player.getServerWorld().addScheduledTask(() -> {
+		ctx.enqueueWork(() -> {
 			if(player.openContainer instanceof ContainerMaintenanceKit)
 			{
 				ItemStack tool = ((ContainerMaintenanceKit)player.openContainer).inventorySlots.get(0).getStack();

@@ -23,6 +23,8 @@ import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -378,28 +380,28 @@ public class ClientUtils
 		return sound;
 	}
 
-	public static RendererModel[] copyModelRenderers(Model model, RendererModel... oldRenderers)
+	public static List<RendererModel> copyModelRenderers(Model model, List<RendererModel> oldRenderers)
 	{
-		RendererModel[] newRenderers = new RendererModel[oldRenderers.length];
-		for(int i = 0; i < newRenderers.length; i++)
-			if(oldRenderers[i]!=null)
+		List<RendererModel> newRenderers = new ArrayList<>(oldRenderers.size());
+		for(int i = 0; i < oldRenderers.size(); i++)
 			{
-				newRenderers[i] = new RendererModel(model, oldRenderers[i].boxName);
-				int toX = oldRenderers[i].textureOffsetX;
-				int toY = oldRenderers[i].textureOffsetY;
-				newRenderers[i].setTextureOffset(toX, toY);
-				newRenderers[i].mirror = oldRenderers[i].mirror;
-				ArrayList<ModelBox> newCubes = new ArrayList<>();
-				for(ModelBox cube : oldRenderers[i].cubeList)
-					newCubes.add(new ModelBox(newRenderers[i], toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
-				newRenderers[i].cubeList = newCubes;
-				newRenderers[i].setRotationPoint(oldRenderers[i].rotationPointX, oldRenderers[i].rotationPointY, oldRenderers[i].rotationPointZ);
-				newRenderers[i].rotateAngleX = oldRenderers[i].rotateAngleX;
-				newRenderers[i].rotateAngleY = oldRenderers[i].rotateAngleY;
-				newRenderers[i].rotateAngleZ = oldRenderers[i].rotateAngleZ;
-				newRenderers[i].offsetX = oldRenderers[i].offsetX;
-				newRenderers[i].offsetY = oldRenderers[i].offsetY;
-				newRenderers[i].offsetZ = oldRenderers[i].offsetZ;
+				RendererModel oldM = oldRenderers.get(i);
+				RendererModel newM = new RendererModel(model, oldM.boxName);
+				int toX = oldM.textureOffsetX;
+				int toY = oldM.textureOffsetY;
+				newM.setTextureOffset(toX, toY);
+				newM.mirror = oldM.mirror;
+				newM.cubeList.clear();
+				for(ModelBox cube : oldM.cubeList)
+					newM.cubeList.add(new ModelBox(newM, toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
+				newM.setRotationPoint(oldM.rotationPointX, oldM.rotationPointY, oldM.rotationPointZ);
+				newM.rotateAngleX = oldM.rotateAngleX;
+				newM.rotateAngleY = oldM.rotateAngleY;
+				newM.rotateAngleZ = oldM.rotateAngleZ;
+				newM.offsetX = oldM.offsetX;
+				newM.offsetY = oldM.offsetY;
+				newM.offsetZ = oldM.offsetZ;
+				newRenderers.add(newM);
 			}
 		return newRenderers;
 	}
@@ -1039,7 +1041,7 @@ public class ClientUtils
 					break;
 				case UV:
 					if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-						sprite = MissingTextureSprite.getSprite();
+						sprite = MissingTextureSprite.func_217790_a();
 					builder.put(e,
 							sprite.getInterpolatedU(u),
 							sprite.getInterpolatedV((v)),
@@ -1364,7 +1366,7 @@ public class ClientUtils
 	//Taken from TESR
 	public static void setLightmapDisabled(boolean disabled)
 	{
-		GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE1);
+		GlStateManager.activeTexture(GLX.GL_TEXTURE1);
 
 		if(disabled)
 		{
@@ -1375,7 +1377,7 @@ public class ClientUtils
 			GlStateManager.enableTexture();
 		}
 
-		GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE0);
+		GlStateManager.activeTexture(GLX.GL_TEXTURE0);
 	}
 
 	@Nullable
@@ -1383,7 +1385,7 @@ public class ClientUtils
 
 	public static void toggleLightmap(boolean pre, boolean disabled)
 	{
-		GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE1);
+		GlStateManager.activeTexture(GLX.GL_TEXTURE1);
 		if(pre)
 		{
 			lightmapState = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
@@ -1400,6 +1402,6 @@ public class ClientUtils
 				GlStateManager.disableTexture();
 			lightmapState = null;
 		}
-		GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE0);
+		GlStateManager.activeTexture(GLX.GL_TEXTURE0);
 	}
 }

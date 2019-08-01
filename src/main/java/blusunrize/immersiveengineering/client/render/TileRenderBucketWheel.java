@@ -103,9 +103,9 @@ public class TileRenderBucketWheel extends TileEntityRenderer<BucketWheelTileEnt
 		worldRenderer.setTranslation(-.5, -.5, -.5);
 		List<BakedQuad> quads;
 		if(model instanceof IESmartObjModel)
-			quads = ((IESmartObjModel)model).getQuads(state, null, 0, objState, texMap, true);
+			quads = ((IESmartObjModel)model).getQuads(state, null, 0, objState, texMap, true, );
 		else
-			quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(objState, Model.objState));
+			quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(objState, Model.OBJ_STATE));
 		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorld(), tile.getPos());
 		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();

@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,6 +22,7 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Collection;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class MessageShaderManual implements IMessage
@@ -74,23 +74,23 @@ public class MessageShaderManual implements IMessage
 		{
 			ServerPlayerEntity player = ctx.getSender();
 			assert player!=null;
-			String playerName = player.getScoreboardName();
-			player.getServerWorld().addScheduledTask(() -> {
+			UUID playerId = player.getUniqueID();
+			ctx.enqueueWork(() -> {
 				if(key==MessageType.SYNC)
 				{
-					Collection<String> received = ShaderRegistry.receivedShaders.get(playerName);
-					String[] ss = received.toArray(new String[received.size()]);
+					Collection<String> received = ShaderRegistry.receivedShaders.get(playerId);
+					String[] ss = received.toArray(new String[0]);
 					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> player),
 							new MessageShaderManual(MessageType.SYNC, ss));
 				}
 				else if(key==MessageType.UNLOCK&&args.length > 0)
 				{
-					ShaderRegistry.receivedShaders.put(playerName, args[0]);
+					ShaderRegistry.receivedShaders.put(playerId, args[0]);
 				}
 				else if(key==MessageType.SPAWN&&args.length > 0)
 				{
 					if(!player.abilities.isCreativeMode)
-						ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(playerName).replicationCost);
+						ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(args[0]).replicationCost);
 					ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
 					ItemNBTHelper.putString(shaderStack, "shader_name", args[0]);
 					ItemEntity entityitem = player.dropItem(shaderStack, false);
@@ -103,13 +103,13 @@ public class MessageShaderManual implements IMessage
 			});
 		}
 		else
-			Minecraft.getInstance().addScheduledTask(() -> {
+			ctx.enqueueWork(() -> {
 				if(key==MessageType.SYNC)
 				{
 					PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 					if(player!=null)
 					{
-						String name = player.getScoreboardName();
+						UUID name = player.getUniqueID();
 						for(String shader : args)
 							if(shader!=null)
 								ShaderRegistry.receivedShaders.put(name, shader);

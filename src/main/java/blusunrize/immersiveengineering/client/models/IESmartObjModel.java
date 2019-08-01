@@ -10,14 +10,14 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
-import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.smart.ExtBlockstateAdapter;
+import blusunrize.immersiveengineering.client.models.smart.RenderCacheKey;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -26,10 +26,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
@@ -39,6 +39,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.*;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
@@ -46,11 +47,13 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad.Builder;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
+import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -62,7 +65,7 @@ public class IESmartObjModel extends OBJBakedModel
 {
 	public static Cache<ComparableItemStack, IBakedModel> cachedBakedItemModels = CacheBuilder.newBuilder()
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
-	public static HashMap<ExtBlockstateAdapter, List<BakedQuad>> modelCache = new HashMap<>();
+	public static HashMap<RenderCacheKey, List<BakedQuad>> modelCache = new HashMap<>();
 	IBakedModel baseModel;
 	HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
 	ImmutableList<BakedQuad> bakedQuads;
@@ -134,10 +137,11 @@ public class IESmartObjModel extends OBJBakedModel
 		return overrideList;
 	}
 
-	ItemOverrideList overrideList = new ItemOverrideList(new ArrayList<>())
+	ItemOverrideList overrideList = new ItemOverrideList()
 	{
 		@Override
-		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
+		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
+												 @Nullable World world, @Nullable LivingEntity entity)
 		{
 			tempEntityStatic = entity;
 			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack, false, true);
@@ -152,31 +156,38 @@ public class IESmartObjModel extends OBJBakedModel
 
 					ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
 					builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
-					TextureAtlasSprite missing = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
+					TextureAtlasSprite missing = Minecraft.getInstance().getTextureMap()
+							.getAtlasSprite(new ResourceLocation("missingno").toString());
 
 					for(String s : newModel.getModel().getMatLib().getMaterialNames())
 					{
-						TextureAtlasSprite sprite = null;
-						if(stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+						TextureAtlasSprite sprite;
 						{
-							ShaderWrapper wrapper = stack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-							ItemStack shader = wrapper.getShaderItem();
-							if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+							LazyOptional<TextureAtlasSprite> tempSprite = stack.getCapability(CapabilityShader.SHADER_CAPABILITY).map(wrapper ->
 							{
-								ShaderCase sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
-								if(sCase!=null)
+								ItemStack shader = wrapper.getShaderItem();
+								if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
 								{
-									ResourceLocation rl = sCase.getReplacementSprite(shader, stack, s, 0);
-									sprite = ClientUtils.getSprite(rl);
+									ShaderCase sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
+									if(sCase!=null)
+									{
+										ResourceLocation rl = sCase.getReplacementSprite(shader, stack, s, 0);
+										return ClientUtils.getSprite(rl);
+									}
 								}
-							}
+								return missing;
+							})
+									.filter(t -> t!=missing);
+							if(tempSprite.isPresent())
+								sprite = tempSprite.orElse(missing);
+							else
+								sprite = null;
 						}
-						if(sprite==null&&stack.getItem() instanceof IOBJModelCallback)
+						if(sprite!=null&&stack.getItem() instanceof IOBJModelCallback)
 							sprite = ((IOBJModelCallback)stack.getItem()).getTextureReplacement(stack, s);
 						if(sprite==null)
-							sprite = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(newModel.getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
-						if(sprite==null)
-							sprite = missing;
+							sprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(
+									newModel.getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
 						builder.put(s, sprite);
 					}
 					builder.put("missingno", missing);
@@ -201,92 +212,76 @@ public class IESmartObjModel extends OBJBakedModel
 	};
 
 	@Override
-	public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand)
+	public List<BakedQuad> getQuads(BlockState blockState, Direction side, Random rand, IModelData modelData)
 	{
-		if (side!=null)
+		if(side!=null)
 			return ImmutableList.of();
 		OBJState objState = null;
 		Map<String, String> tex = null;
-		if(blockState instanceof IExtendedBlockState)
+		if(modelData.hasProperty(Properties.AnimationProperty))
 		{
-			IExtendedBlockState ext = (IExtendedBlockState)blockState;
-			if(ext.getUnlistedNames().contains(Properties.AnimationProperty))
-			{
-				IModelState modState = ext.getValue(Properties.AnimationProperty);
-				if(modState instanceof OBJState)
-					objState = (OBJState)modState;
-			}
-			if(ext.getUnlistedNames().contains(IEProperties.OBJ_TEXTURE_REMAP))
-				tex = ext.getValue(IEProperties.OBJ_TEXTURE_REMAP);
+			IModelState modState = modelData.getData(Properties.AnimationProperty);
+			if(modState instanceof OBJState)
+				objState = (OBJState)modState;
 		}
-		return getQuads(blockState, side, rand, objState, tex, false);
+		if(modelData.hasProperty(Model.TEXTURE_REMAP))
+			tex = modelData.getData(Model.TEXTURE_REMAP);
+		return getQuads(blockState, side, rand.nextLong(), objState, tex, false, modelData);
 	}
 
 	public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand, OBJState objstate, Map<String, String> tex,
-									boolean addAnimationAndTex)
+									boolean addAnimationAndTex, IModelData modelData)
 	{
 		texReplace = tex;
 		this.tempState = blockState;
-		if(blockState instanceof IExtendedBlockState)
+		RenderCacheKey adapter;
+		if(objstate!=null)
 		{
-			IExtendedBlockState exState = (IExtendedBlockState)blockState;
-			ExtBlockstateAdapter adapter;
-			if(objstate!=null)
-			{
-				if(objstate.parent==null||objstate.parent==TRSRTransformation.identity())
-					objstate.parent = this.getState();
-				if(objstate.getVisibilityMap().containsKey(Group.ALL)||objstate.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
-					this.updateStateVisibilityMap(objstate);
-			}
-			if(addAnimationAndTex)
-				adapter = new ExtBlockstateAdapter(exState, MinecraftForgeClient.getRenderLayer(),
-						ExtBlockstateAdapter.CONNS_OBJ_CALLBACK, new Object[]{objstate, tex});
-			else
-				adapter = new ExtBlockstateAdapter(exState, MinecraftForgeClient.getRenderLayer(),
-						ExtBlockstateAdapter.CONNS_OBJ_CALLBACK);
-			List<BakedQuad> quads = modelCache.get(adapter);
-			if(quads==null)
-			{
-				IESmartObjModel model = null;
-				if(objstate!=null)
-					model = new IESmartObjModel(baseModel, getModel(), objstate, getFormat(), getTextures(),
-							transformationMap, isDynamic);
-				if(model==null)
-					model = new IESmartObjModel(baseModel, getModel(), this.getState(), getFormat(), getTextures(),
-							transformationMap, isDynamic);
-				model.tempState = blockState;
-				model.texReplace = tex;
-				quads = model.buildQuads();
-				modelCache.put(adapter, quads);
-			}
-			return Collections.synchronizedList(Lists.newArrayList(quads));
+			if(objstate.parent==null||objstate.parent==TRSRTransformation.identity())
+				objstate.parent = this.getState();
+			if(objstate.getVisibilityMap().containsKey(Group.ALL)||objstate.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
+				this.updateStateVisibilityMap(objstate);
 		}
-		if(bakedQuads==null)
-			bakedQuads = buildQuads();
-		List<BakedQuad> quadList = Lists.newArrayList(bakedQuads);
-		return Collections.synchronizedList(quadList);
+		if(addAnimationAndTex)
+			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), objstate, tex);
+		else
+			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer());
+		List<BakedQuad> quads = modelCache.get(adapter);
+		if(quads==null)
+		{
+			IESmartObjModel model = null;
+			if(objstate!=null)
+				model = new IESmartObjModel(baseModel, getModel(), objstate, getFormat(), getTextures(),
+						transformationMap, isDynamic);
+			if(model==null)
+				model = new IESmartObjModel(baseModel, getModel(), this.getState(), getFormat(), getTextures(),
+						transformationMap, isDynamic);
+			model.tempState = blockState;
+			model.texReplace = tex;
+			quads = model.buildQuads(modelData);
+			modelCache.put(adapter, quads);
+		}
+		return Collections.synchronizedList(Lists.newArrayList(quads));
 	}
 
-	private ImmutableList<BakedQuad> buildQuads()
+	private ImmutableList<BakedQuad> buildQuads(IModelData data)
 	{
 		List<BakedQuad> quads = Lists.newArrayList();
 		ItemStack shader = ItemStack.EMPTY;
 		ShaderCase sCase = null;
 		IOBJModelCallback callback = null;
 		Object callbackObject = null;
-		if(!this.tempStack.isEmpty()&&tempStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		LazyOptional<ShaderWrapper> shaderOpt = tempStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+		if(shaderOpt.isPresent())
 		{
-			ShaderWrapper wrapper = tempStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			if(wrapper!=null)
-			{
-				shader = wrapper.getShaderItem();
-				if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-					sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
-			}
+			ShaderWrapper wrapper = shaderOpt.orElseThrow(NullPointerException::new);
+			shader = wrapper.getShaderItem();
+			if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
 		}
-		else if(this.tempState!=null&&this.tempState instanceof IExtendedBlockState&&((IExtendedBlockState)this.tempState).getUnlistedNames().contains(CapabilityShader.BLOCKSTATE_PROPERTY))
+		else if(data.hasProperty(CapabilityShader.BLOCKSTATE_PROPERTY))
 		{
-			ShaderWrapper wrapper = ((IExtendedBlockState)this.tempState).getValue(CapabilityShader.BLOCKSTATE_PROPERTY);
+			ShaderWrapper wrapper = data.getData(CapabilityShader.BLOCKSTATE_PROPERTY);
 			if(wrapper!=null)
 			{
 				shader = wrapper.getShaderItem();
@@ -300,9 +295,9 @@ public class IESmartObjModel extends OBJBakedModel
 			callback = (IOBJModelCallback)tempStack.getItem();
 			callbackObject = this.tempStack;
 		}
-		else if(this.tempState!=null&&this.tempState instanceof IExtendedBlockState&&((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
+		else if(data.hasProperty(IOBJModelCallback.PROPERTY))
 		{
-			callback = ((IExtendedBlockState)this.tempState).getValue(IOBJModelCallback.PROPERTY);
+			callback = data.getData(IOBJModelCallback.PROPERTY);
 			callbackObject = this.tempState;
 		}
 		for(String groupName : getModel().getMatLib().getGroups().keySet())
@@ -367,7 +362,7 @@ public class IESmartObjModel extends OBJBakedModel
 			for(int faceId = 0; faceId < faces.size(); faceId++)
 			{
 				Face f = faces.get(faceId);
-				TextureAtlasSprite tempSprite = null;
+				TextureAtlasSprite tempSprite = Minecraft.getInstance().getTextureMap().getAtlasSprite("missingno");
 				if(this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite()&&!"null".equals(f.getMaterialName()))
 				{
 					for(Vertex v : f.getVertices())
@@ -389,13 +384,11 @@ public class IESmartObjModel extends OBJBakedModel
 					{
 						String s = texReplace.get(groupName);
 						if(s!=null)
-							tempSprite = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(s);
+							tempSprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(s);
 					}
 					if(tempSprite==null&&!"null".equals(f.getMaterialName()))
-						tempSprite = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
+						tempSprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
 				}
-				if(tempSprite==null)
-					tempSprite = Minecraft.getInstance().getTextureMapBlocks().getMissingSprite();
 				if(tempSprite!=null)
 				{
 					Builder builder = new Builder(getFormat());
@@ -476,8 +469,6 @@ public class IESmartObjModel extends OBJBakedModel
 						builder.put(e, d*colour[0], d*colour[1], d*colour[2], 1*colour[3]);
 					break;
 				case UV:
-					if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-						sprite = Minecraft.getInstance().getTextureMapBlocks().getMissingSprite();
 					builder.put(e,
 							sprite.getInterpolatedU(texCoord.u*16),
 							sprite.getInterpolatedV((texCoord.v)*16),//v-flip used to be processed here but was moved because of shader layers
@@ -494,19 +485,6 @@ public class IESmartObjModel extends OBJBakedModel
 			}
 		}
 	}
-
-	static int getExtendedStateHash(IExtendedBlockState state)
-	{
-		return state.hashCode()*31+state.getUnlistedProperties().hashCode();
-	}
-
-	//	private final LoadingCache<Integer, IESmartObjModel> ieobjcache = CacheBuilder.newBuilder().maximumSize(20).build(new CacheLoader<Integer, IESmartObjModel>()
-	//	{
-	//		public IESmartObjModel load(IModelState state) throws Exception
-	//		{
-	//			return new IESmartObjModel(baseModel, getModel(), state, getFormat(), getTextures(), transformationMap);
-	//		}
-	//	});
 
 	protected void updateStateVisibilityMap(OBJState state)
 	{

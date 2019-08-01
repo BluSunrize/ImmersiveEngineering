@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -53,19 +52,17 @@ public class MessageTileSync implements IMessage
 	{
 		Context ctx = context.get();
 		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
-		{
-			ServerWorld world = Objects.requireNonNull(ctx.getSender()).getServerWorld();
-			world.addScheduledTask(() -> {
-				if(world.isBlockLoaded(pos))
+			ctx.enqueueWork(() -> {
+				ServerWorld world = Objects.requireNonNull(ctx.getSender()).getServerWorld();
+				if(world.isAreaLoaded(pos, 1))
 				{
 					TileEntity tile = world.getTileEntity(pos);
 					if(tile instanceof IEBaseTileEntity)
 						((IEBaseTileEntity)tile).receiveMessageFromClient(nbt);
 				}
 			});
-		}
 		else
-			Minecraft.getInstance().addScheduledTask(() -> {
+			ctx.enqueueWork(() -> {
 				World world = ImmersiveEngineering.proxy.getClientWorld();
 				if(world!=null) // This can happen if the task is scheduled right before leaving the world
 				{

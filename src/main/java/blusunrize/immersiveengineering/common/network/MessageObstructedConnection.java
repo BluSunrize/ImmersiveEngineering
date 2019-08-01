@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientEventHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -63,7 +62,7 @@ public class MessageObstructedConnection implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		Minecraft.getInstance().addScheduledTask(() -> {
+		context.get().enqueueWork(() -> {
 			Connection conn = new Connection(wireType, new ConnectionPoint(startB, 0),
 					new ConnectionPoint(endB, 0));
 			conn.generateCatenaryData(start, end);

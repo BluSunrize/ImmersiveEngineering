@@ -57,10 +57,11 @@ public class MessageSetGhostSlots implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		ServerPlayerEntity player = context.get().getSender();
+		Context ctx = context.get();
+		ServerPlayerEntity player = ctx.getSender();
 		assert player!=null;
 		ServerWorld world = player.getServerWorld();
-		world.addScheduledTask(() -> {
+		ctx.enqueueWork(() -> {
 			Container container = player.openContainer;
 			if(container!=null)
 				for(Entry<ItemStack> e : stacksToSet.int2ObjectEntrySet())

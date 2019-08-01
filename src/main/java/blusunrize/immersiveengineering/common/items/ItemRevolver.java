@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.render.ItemRendererIEOBJ;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
@@ -79,14 +80,14 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 {
 	public ItemRevolver()
 	{
-		super("revolver", new Properties().maxStackSize(1), "REVOLVER");
+		super("revolver", new Properties().maxStackSize(1).setTEISR(() -> () -> ItemRendererIEOBJ.INSTANCE), "REVOLVER");
 	}
 
 	public static UUID speedModUUID = Utils.generateNewUUID();
-	public HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap<>();
-	public TextureAtlasSprite revolverDefaultTexture;
+	public static HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap<>();
+	public static TextureAtlasSprite revolverDefaultTexture;
 
-	public void stichRevolverTextures(AtlasTexture map)
+	public static void stichRevolverTextures(AtlasTexture map)
 	{
 		revolverDefaultTexture = ApiUtils.getRegisterSprite(map, "immersiveengineering:revolvers/revolver");
 		for(String key : specialRevolversByTag.keySet())

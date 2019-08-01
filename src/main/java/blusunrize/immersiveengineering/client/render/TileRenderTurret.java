@@ -95,7 +95,7 @@ public class TileRenderTurret extends TileEntityRenderer<TurretTileEntity>
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, 0, -.5);
 		List<BakedQuad> quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(new OBJState(Arrays.asList(parts), true),
-				Model.objState));
+				Model.OBJ_STATE));
 		ClientUtils.renderModelTESRFancy(quads, worldRenderer, world, pos, !isFirst);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();

@@ -30,4 +30,10 @@ public abstract class GuiIEContainerBase extends ContainerScreen
 		super.render(mouseX, mouseY, partialTicks);
 		this.renderHoveredToolTip(mouseX, mouseY);
 	}
+
+	@Override
+	public void init()
+	{
+		super.init();
+	}
 }

@@ -12,11 +12,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
@@ -187,30 +187,5 @@ public class CapabilityShader
 		});
 	}
 
-	public static IUnlistedProperty<ShaderWrapper> BLOCKSTATE_PROPERTY = new IUnlistedProperty<ShaderWrapper>()
-	{
-		@Override
-		public String getName()
-		{
-			return "shaderwrapper";
-		}
-
-		@Override
-		public boolean isValid(ShaderWrapper value)
-		{
-			return true;
-		}
-
-		@Override
-		public Class<ShaderWrapper> getType()
-		{
-			return ShaderWrapper.class;
-		}
-
-		@Override
-		public String valueToString(ShaderWrapper value)
-		{
-			return value.toString();
-		}
-	};
+	public static ModelProperty<ShaderWrapper> BLOCKSTATE_PROPERTY = new ModelProperty<>();
 }

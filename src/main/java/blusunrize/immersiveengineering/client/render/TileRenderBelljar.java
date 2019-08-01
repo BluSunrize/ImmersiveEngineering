@@ -59,7 +59,7 @@ public class TileRenderBelljar extends TileEntityRenderer<BelljarTileEntity>
 				return;
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 			IModelData data = new SinglePropertyModelData<>(new OBJState(Collections.singletonList("glass"), true),
-					Model.objState);
+					Model.OBJ_STATE);
 			quads.put(tile.getFacing(), model.getQuads(state, null, Utils.RAND, data));
 		}
 		ClientUtils.bindAtlas();

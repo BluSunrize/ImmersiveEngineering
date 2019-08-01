@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
@@ -73,7 +72,7 @@ public class MessageWireSync implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		Minecraft.getInstance().addScheduledTask(() -> {
+		context.get().enqueueWork(() -> {
 			PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 			World w = player.world;
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);

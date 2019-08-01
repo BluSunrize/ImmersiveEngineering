@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.render.ItemRendererIEOBJ;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -61,7 +62,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 {
 	public ItemChemthrower()
 	{
-		super("chemthrower", new Item.Properties(), "CHEMTHROWER");
+		super("chemthrower", new Item.Properties().setTEISR(() -> () -> ItemRendererIEOBJ.INSTANCE), "CHEMTHROWER");
 	}
 
 	@Override

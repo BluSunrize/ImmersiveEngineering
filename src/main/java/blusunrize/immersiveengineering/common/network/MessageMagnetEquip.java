@@ -40,9 +40,10 @@ public class MessageMagnetEquip implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		ServerPlayerEntity player = context.get().getSender();
+		Context ctx = context.get();
+		ServerPlayerEntity player = ctx.getSender();
 		assert player!=null;
-		player.getServerWorld().addScheduledTask(() -> {
+		ctx.enqueueWork(() -> {
 			ItemStack held = player.getHeldItem(Hand.OFF_HAND);
 			if(fetchSlot >= 0)
 			{

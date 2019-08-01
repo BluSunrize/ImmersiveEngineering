@@ -36,7 +36,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags.Items;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ItemDrillhead extends ItemIEBase implements IDrillHead
 {
@@ -142,6 +144,8 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 
 	public static class DrillHeadPerm
 	{
+		public static final Set<DrillHeadPerm> ALL_PERMS = new HashSet<>();
+
 		final String name;
 		final Tag<Item> repairMaterial;
 		final int drillSize;
@@ -165,6 +169,8 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 			this.drillAttack = drillAttack;
 			this.maxDamage = maxDamage;
 			this.texture = texture;
+
+			ALL_PERMS.add(this);
 		}
 	}
 

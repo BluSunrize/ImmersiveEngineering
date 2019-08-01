@@ -8,19 +8,22 @@
 
 package blusunrize.immersiveengineering.client;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.resources.IFutureReloadListener;
+import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
 @OnlyIn(Dist.CLIENT)
-public class IEItemFontRender extends FontRenderer
+public class IEItemFontRender extends FontRenderer implements IFutureReloadListener
 {
-	static HashMap<Character, CharReplacement> unicodeReplacements = new HashMap();
+	static HashMap<Character, CharReplacement> unicodeReplacements = new HashMap<>();
 
 	static
 	{
@@ -41,7 +44,7 @@ public class IEItemFontRender extends FontRenderer
 			this.setUnicodeFlag(ClientUtils.mc().getLanguageManager().isCurrentLocaleUnicode());
 			this.setBidiFlag(ClientUtils.mc().getLanguageManager().isCurrentLanguageBidirectional());
 		}
-		((IReloadableResourceManager)ClientUtils.mc().getResourceManager()).registerReloadListener(this);
+		((IReloadableResourceManager)ClientUtils.mc().getResourceManager()).addReloadListener(this);
 		createColourBackup();
 	}
 
@@ -53,7 +56,6 @@ public class IEItemFontRender extends FontRenderer
 		this.backupColours = Arrays.copyOf(this.colorCode, 32);
 	}
 
-	@Override
 	public void renderStringAtPos(String text, boolean shadow)
 	{
 		int idx = -1;
@@ -249,26 +251,16 @@ public class IEItemFontRender extends FontRenderer
 		float replaceChar(float posX, float posY)
 		{
 			ClientUtils.bindTexture(textureSheet);
-//			int j = ch / 256;
-//			this.loadGlyphTexture(j);
-//			int k = i >>> 4;
-//			int l = i & 15;
-//			float f = (float)k;
-//			float f1 = (float)(l + 1);
-//			float f2 = (float)(ch % 16 * 88816) + f;
-//			float f3 = (float)((ch & 255) / 16 * 16);
-//			float f4 = f1 - f - 0.02F;
-//			float f5 = italic ? 1.0F : 0.0F;
-			GlStateManager.glBegin(5);
-			GlStateManager.glTexCoord2f(uMin, vMin);
-			GlStateManager.glVertex3f(posX, posY, 0.0F);
-			GlStateManager.glTexCoord2f(uMin, vMax);
-			GlStateManager.glVertex3f(posX, posY+7.99F, 0.0F);
-			GlStateManager.glTexCoord2f(uMax, vMin);
-			GlStateManager.glVertex3f(posX+7.99f, posY, 0.0F);
-			GlStateManager.glTexCoord2f(uMax, vMax);
-			GlStateManager.glVertex3f(posX+7.99f, posY+7.99F, 0.0F);
-			GlStateManager.glEnd();
+			GlStateManager.begin(5);
+			GlStateManager.texCoord2f(uMin, vMin);
+			GlStateManager.vertex3f(posX, posY, 0.0F);
+			GlStateManager.texCoord2f(uMin, vMax);
+			GlStateManager.vertex3f(posX, posY+7.99F, 0.0F);
+			GlStateManager.texCoord2f(uMax, vMin);
+			GlStateManager.vertex3f(posX+7.99f, posY, 0.0F);
+			GlStateManager.texCoord2f(uMax, vMax);
+			GlStateManager.vertex3f(posX+7.99f, posY+7.99F, 0.0F);
+			GlStateManager.end();
 			return 8.02f;
 		}
 	}

@@ -76,7 +76,7 @@ public class TileRenderSampleDrill extends TileEntityRenderer<SampleDrillTileEnt
 		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
 		IModelData data = new SinglePropertyModelData<>(new OBJState(Lists.newArrayList("drill"), true),
-				Model.objState);
+				Model.OBJ_STATE);
 		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer, true,
 				Utils.RAND, 0, data);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);

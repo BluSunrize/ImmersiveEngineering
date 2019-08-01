@@ -42,9 +42,10 @@ public class MessageRequestBlockUpdate implements IMessage
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		ServerWorld world = Objects.requireNonNull(context.get().getSender()).getServerWorld();
-		world.addScheduledTask(() -> {
-			if(world.isBlockLoaded(pos))
+		Context ctx = context.get();
+		ServerWorld world = Objects.requireNonNull(ctx.getSender()).getServerWorld();
+		ctx.enqueueWork(() -> {
+			if(world.isAreaLoaded(pos, 1))
 			{
 				DimensionType dim = world.getDimension().getType();
 				EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(dim, pos));

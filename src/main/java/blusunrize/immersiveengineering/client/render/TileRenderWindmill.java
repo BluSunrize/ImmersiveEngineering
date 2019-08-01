@@ -58,7 +58,7 @@ public class TileRenderWindmill extends TileEntityRenderer<WindmillTileEntity>
 			parts.add("base");
 			for(int i = 1; i <= tile.sails; i++)
 				parts.add("sail_"+i);
-			IModelData data = new SinglePropertyModelData<>(new OBJState(parts, true), IEProperties.Model.objState);
+			IModelData data = new SinglePropertyModelData<>(new OBJState(parts, true), IEProperties.Model.OBJ_STATE);
 			quads[tile.sails] = model.getQuads(state, null, Utils.RAND, data);
 		}
 		Tessellator tessellator = Tessellator.getInstance();

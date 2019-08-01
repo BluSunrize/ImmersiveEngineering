@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.models.ModelCoresample;
 import blusunrize.immersiveengineering.client.models.smart.FeedthroughModel;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -23,18 +23,20 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,19 +47,19 @@ public class ImmersiveModelRegistry
 {
 	public static ImmersiveModelRegistry instance = new ImmersiveModelRegistry();
 	private static final ImmutableMap<String, String> flipData = ImmutableMap.of("flip-v", String.valueOf(true));
-	private HashMap<ModelResourceLocation, ItemModelReplacement> itemModelReplacements = new HashMap<ModelResourceLocation, ItemModelReplacement>();
+	private HashMap<ModelResourceLocation, ItemModelReplacement> itemModelReplacements = new HashMap<>();
 
 	@SubscribeEvent
 	public void onModelBakeEvent(ModelBakeEvent event)
 	{
 		for(Map.Entry<ModelResourceLocation, ItemModelReplacement> entry : itemModelReplacements.entrySet())
 		{
-			IBakedModel object = event.getModelRegistry().getObject(entry.getKey());
+			IBakedModel object = event.getModelRegistry().get(entry.getKey());
 			if(object!=null)
 			{
 				try
 				{
-					event.getModelRegistry().putObject(entry.getKey(), entry.getValue().createBakedModel(object));
+					event.getModelRegistry().put(entry.getKey(), entry.getValue().createBakedModel(object));
 				} catch(Exception e)
 				{
 					e.printStackTrace();
@@ -65,16 +67,16 @@ public class ImmersiveModelRegistry
 			}
 		}
 
-		ModelResourceLocation mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", IEContent.itemCoresample.itemName), "inventory");
-		event.getModelRegistry().putObject(mLoc, new ModelCoresample());
+		ModelResourceLocation mLoc = new ModelResourceLocation(Misc.coresample.getRegistryName(), "inventory");
+		event.getModelRegistry().put(mLoc, new ModelCoresample(null));
 		IConveyorBelt belt = ConveyorHandler.getConveyor(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), null);
 		ModelConveyor modelConveyor = new ModelConveyor(belt);
 		mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", "conveyor"), "normal");
-		event.getModelRegistry().putObject(mLoc, modelConveyor);
+		event.getModelRegistry().put(mLoc, modelConveyor);
 		mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", "conveyor"), "inventory");
-		event.getModelRegistry().putObject(mLoc, modelConveyor);
+		event.getModelRegistry().put(mLoc, modelConveyor);
 		mLoc = new ModelResourceLocation(new ResourceLocation(ImmersiveEngineering.MODID, "connector"), "inventory,type=feedthrough");
-		event.getModelRegistry().putObject(mLoc, new FeedthroughModel());
+		event.getModelRegistry().put(mLoc, new FeedthroughModel());
 	}
 
 	public void registerCustomItemModel(ItemStack stack, ItemModelReplacement replacement)

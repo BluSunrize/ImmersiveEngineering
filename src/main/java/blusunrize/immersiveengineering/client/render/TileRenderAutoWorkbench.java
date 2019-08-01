@@ -317,7 +317,7 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<AutoWorkbenchTil
 
 	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, BlockState state, IBakedModel model, BlockPos pos, String... parts)
 	{
-		IModelData data = new SinglePropertyModelData<>(new OBJState(Arrays.asList(parts), true), Model.objState);
+		IModelData data = new SinglePropertyModelData<>(new OBJState(Arrays.asList(parts), true), Model.OBJ_STATE);
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
