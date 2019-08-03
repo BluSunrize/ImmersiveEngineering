@@ -22,9 +22,10 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.util.concurrent.ListenableFutureTask;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -45,23 +46,20 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.lwjgl.util.vector.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -1186,24 +1184,22 @@ public class ApiUtils
 
 	@OnlyIn(Dist.CLIENT)
 	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, @Nullable VertexFormat ignored,
-															   Function<Integer, Integer> colorMultiplier)
+															   Int2IntFunction colorMultiplier)
 	{
 		return new QuadTransformer(mat, colorMultiplier);
 	}
 
-	// Full class names to work around some sort of compiler bug (Only happens when building with gradle)
-	@net.minecraftforge.fml.relauncher.SideOnly(Side.CLIENT)
-	private static class QuadTransformer implements java.util.function.Function<net.minecraft.client.renderer.block.model.BakedQuad,
-			net.minecraft.client.renderer.block.model.BakedQuad>
+	@OnlyIn(Dist.CLIENT)
+	private static class QuadTransformer implements Function<BakedQuad, BakedQuad>
 	{
 		private final Matrix4 transform;
 		private final Matrix4 normalTransform;
 		@Nullable
-		private final Function<Integer, Integer> colorTransform;
+		private final Int2IntFunction colorTransform;
 		private UnpackedBakedQuad.Builder currentQuadBuilder;
 		private final Map<VertexFormat, IVertexConsumer> consumers = new HashMap<>();
 
-		private QuadTransformer(Matrix4 transform, @Nullable Function<Integer, Integer> colorTransform)
+		private QuadTransformer(Matrix4 transform, @Nullable Int2IntFunction colorTransform)
 		{
 			this.transform = transform;
 			this.colorTransform = colorTransform;
@@ -1227,11 +1223,11 @@ public class ApiUtils
 			int normPos = -1;
 			int colorPos = -1;
 			for(int i = 0; i < f.getElements().size(); i++)
-				if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.POSITION)
+				if(f.getElement(i).getUsage()==VertexFormatElement.Usage.POSITION)
 					posPos = i;
-				else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.NORMAL)
+				else if(f.getElement(i).getUsage()==VertexFormatElement.Usage.NORMAL)
 					normPos = i;
-				else if(f.getElement(i).getUsage()==VertexFormatElement.EnumUsage.COLOR)
+				else if(f.getElement(i).getUsage()==VertexFormatElement.Usage.COLOR)
 					colorPos = i;
 			if(posPos==-1)
 				return null;
@@ -1282,19 +1278,19 @@ public class ApiUtils
 				{
 					if(element==posPosFinal&&transform!=null)
 					{
-						Vector3f newPos = transform.apply(new Vector3f(data[0], data[1], data[2]));
+						Vec3d newPos = transform.apply(new Vec3d(data[0], data[1], data[2]));
 						data = new float[3];
-						data[0] = newPos.x;
-						data[1] = newPos.y;
-						data[2] = newPos.z;
+						data[0] = (float)newPos.x;
+						data[1] = (float)newPos.y;
+						data[2] = (float)newPos.z;
 					}
 					else if(element==normPosFinal&&normalTransform!=null)
 					{
-						Vector3f newNormal = normalTransform.apply(new Vector3f(data[0], data[1], data[2]));
+						Vec3d newNormal = normalTransform.apply(new Vec3d(data[0], data[1], data[2]));
 						data = new float[3];
-						data[0] = newNormal.x;
-						data[1] = newNormal.y;
-						data[2] = newNormal.z;
+						data[0] = (float)newNormal.x;
+						data[1] = (float)newNormal.y;
+						data[2] = (float)newNormal.z;
 					}
 					else if(element==colorPosFinal)
 					{

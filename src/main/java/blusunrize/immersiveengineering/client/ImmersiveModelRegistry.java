@@ -83,11 +83,7 @@ public class ImmersiveModelRegistry
 	{
 		if(stack.getItem() instanceof ItemIEBase)
 		{
-			ResourceLocation loc;
-			if(((ItemIEBase)stack.getItem()).getSubNames()!=null&&((ItemIEBase)stack.getItem()).getSubNames().length > 0)
-				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase)stack.getItem()).itemName+"/"+((ItemIEBase)stack.getItem()).getSubNames()[stack.getMetadata()]);
-			else
-				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase)stack.getItem()).itemName);
+			ResourceLocation loc = new ResourceLocation("immersiveengineering", ((ItemIEBase)stack.getItem()).itemName);
 			itemModelReplacements.put(new ModelResourceLocation(loc, "inventory"), replacement);
 		}
 	}
@@ -123,14 +119,8 @@ public class ImmersiveModelRegistry
 		{
 			try
 			{
-				Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>()
-				{
-					@Override
-					public TextureAtlasSprite apply(ResourceLocation location)
-					{
-						return Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(location.toString());
-					}
-				};
+				Function<ResourceLocation, TextureAtlasSprite> textureGetter =
+						location -> Minecraft.getInstance().getTextureMap().getAtlasSprite(location.toString());
 				ResourceLocation modelLocation = new ResourceLocation(objPath);
 				OBJModel objModel = (OBJModel)OBJLoader.INSTANCE.loadModel(modelLocation);
 				objModel = (OBJModel)objModel.process(flipData);

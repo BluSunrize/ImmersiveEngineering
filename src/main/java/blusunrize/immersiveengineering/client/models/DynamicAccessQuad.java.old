@@ -186,7 +186,7 @@ public class DynamicAccessQuad extends UnpackedBakedQuad
 				while(uve < format.getElementCount())
 				{
 					VertexFormatElement e = format.getElement(uve);
-					if(e.getUsage() == VertexFormatElement.EnumUsage.UV && e.getIndex() == 0)
+					if(e.getUsage() == VertexFormatElement.Usage.UV && e.getIndex() == 0)
 					{
 						break;
 					}

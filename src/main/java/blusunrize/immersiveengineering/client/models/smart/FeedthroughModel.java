@@ -9,53 +9,54 @@
 package blusunrize.immersiveengineering.client.models.smart;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.energy.wires.WireApi;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector;
-import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.FeedthroughData;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.*;
-import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import org.lwjgl.util.vector.Vector3f;
+import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
+import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.MIDDLE_STATE;
 import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.WIRE;
 import static net.minecraft.util.Direction.Axis.Y;
@@ -71,42 +72,44 @@ public class FeedthroughModel implements IBakedModel
 	{
 		//TODO find a better place to put this
 		Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter =
-				(rl) -> Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(rl.toString());
+				(rl) -> mc().getTextureMap().getAtlasSprite(rl.toString());
 		for(WireApi.FeedthroughModelInfo f : INFOS.values())
 			f.onResourceReload(bakedTextureGetter, DefaultVertexFormats.ITEM);
 	}
 
+	@Nonnull
+	@Override
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand)
+	{
+		return ImmutableList.of();
+	}
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
 		BlockState baseState = Blocks.STONE.getDefaultState();
 		WireType wire = WireType.COPPER;
 		Direction facing = Direction.NORTH;
 		int offset = 1;
-		BlockPos p = null;
-		World w = null;
-		if(state instanceof IExtendedBlockState)
-		{
-			TileEntity te = ((IExtendedBlockState)state).getValue(IEProperties.TILEENTITY_PASSTHROUGH);
-			if(te instanceof FeedthroughTileEntity)
+		Int2IntFunction colorMultiplier = i -> 0xffffffff;
+
+		if(extraData.hasProperty(Model.FEEDTHROUGH))
 			{
-				baseState = ((FeedthroughTileEntity)te).stateForMiddle;
-				wire = ((FeedthroughTileEntity)te).reference;
-				facing = ((FeedthroughTileEntity)te).getFacing();
-				offset = ((FeedthroughTileEntity)te).offset;
-				p = te.getPos();
-				w = te.getWorld();
+				FeedthroughData data = extraData.getData(Model.FEEDTHROUGH);
+				assert (data!=null);
+				baseState = data.baseState;
+				wire = data.wire;
+				facing = data.facing;
+				offset = data.offset;
+				colorMultiplier = data.colorMultiplier;
 			}
-		}
-		final BlockPos pFinal = p;
-		final World wFinal = w;
-		FeedthroughCacheKey key = new FeedthroughCacheKey(wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer());
+		final Int2IntFunction colorMultiplierFinal = colorMultiplier;
+		FeedthroughCacheKey key = new FeedthroughCacheKey(wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer(), colorMultiplier);
 		try
 		{
 			return CACHE.get(key,
-					() -> new SpecificFeedthroughModel(key, wFinal, pFinal)).getQuads(state, side, rand);
+					() -> new SpecificFeedthroughModel(key, colorMultiplierFinal)).getQuads(state, side, rand);
 		} catch(ExecutionException e)
 		{
 			e.printStackTrace();
@@ -174,17 +177,13 @@ public class FeedthroughModel implements IBakedModel
 				.build();
 
 
-		public FeedthroughItemOverride()
-		{
-			super(ImmutableList.of());
-		}
-
 		@Nonnull
 		@Override
-		public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
+		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, ItemStack stack,
+												 @Nullable World world, @Nullable LivingEntity entity)
 		{
-			Item connItem = Item.getItemFromBlock(IEContent.blockConnectors);
-			if(stack!=null&&stack.getItem()==connItem&&stack.getMetadata()==BlockTypes_Connector.FEEDTHROUGH.ordinal())
+			Item connItem = Item.getItemFromBlock(Connectors.feedthrough);
+			if(stack.getItem()==connItem)
 			{
 				try
 				{
@@ -207,6 +206,10 @@ public class FeedthroughModel implements IBakedModel
 		final int offset;
 		final Direction facing;
 		final BlockRenderLayer layer;
+		@Nullable
+		final Int2IntMap usedColorMultipliers;
+		@Nullable
+		final Int2IntFunction allColorMultipliers;
 
 		public FeedthroughCacheKey(WireType type, BlockState baseState, int offset, Direction facing,
 								   BlockRenderLayer layer)
@@ -216,6 +219,20 @@ public class FeedthroughModel implements IBakedModel
 			this.offset = offset;
 			this.facing = facing;
 			this.layer = layer;
+			this.allColorMultipliers = null;
+			this.usedColorMultipliers = new Int2IntOpenHashMap();
+		}
+
+		public FeedthroughCacheKey(WireType type, BlockState baseState, int offset, Direction facing,
+								   BlockRenderLayer layer, Int2IntFunction colorMultiplier)
+		{
+			this.type = type;
+			this.baseState = baseState;
+			this.offset = offset;
+			this.facing = facing;
+			this.layer = layer;
+			this.allColorMultipliers = colorMultiplier;
+			this.usedColorMultipliers = null;
 		}
 
 		@Override
@@ -226,9 +243,27 @@ public class FeedthroughModel implements IBakedModel
 			FeedthroughCacheKey that = (FeedthroughCacheKey)o;
 			return offset==that.offset&&
 					Objects.equals(type, that.type)&&
-					Utils.areStatesEqual(baseState, that.baseState, ImmutableSet.of(), false)&&
+					baseState.equals(that.baseState)&&
 					facing==that.facing&&
-					Objects.equals(layer, that.layer);
+					Objects.equals(layer, that.layer)&&
+					sameColorMultipliersAs(that);
+		}
+
+		private boolean sameColorMultipliersAs(FeedthroughCacheKey that)
+		{
+			if(that.usedColorMultipliers!=null&&this.usedColorMultipliers!=null)
+				return this.usedColorMultipliers.equals(that.usedColorMultipliers);
+			else if(that.usedColorMultipliers!=null&&this.allColorMultipliers!=null)
+			{
+				for(int i : that.usedColorMultipliers.keySet())
+					if(this.allColorMultipliers.get(i)!=that.usedColorMultipliers.get(i))
+						return false;
+				return true;
+			}
+			else if(that.allColorMultipliers!=null&&this.usedColorMultipliers!=null)
+				return that.sameColorMultipliersAs(this);
+			else
+				throw new IllegalStateException("Can't compare FeedthroughCacheKey's that use functions!");
 		}
 
 		@Override
@@ -242,40 +277,41 @@ public class FeedthroughModel implements IBakedModel
 	private static class SpecificFeedthroughModel extends FeedthroughModel
 	{
 		private static final float[] WHITE = {1, 1, 1, 1};
-		private static final Vector3f[] vertices = {
-				new Vector3f(.75F, .001F, .75F), new Vector3f(.75F, .001F, .25F),
-				new Vector3f(.25F, .001F, .25F), new Vector3f(.25F, .001F, .75F)
+		private static final Vec3d[] vertices = {
+				new Vec3d(.75F, .001F, .75F), new Vec3d(.75F, .001F, .25F),
+				new Vec3d(.25F, .001F, .25F), new Vec3d(.25F, .001F, .75F)
 		};
 		List<List<BakedQuad>> quads = new ArrayList<>(6);
 
 		public SpecificFeedthroughModel(ItemStack stack)
 		{
 			WireType w = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
-			BlockState state = Utils.stateFromNBT(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
-			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, Direction.NORTH, null), null, null);
+			BlockState state = NBTUtil.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
+			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, Direction.NORTH, null),
+					i -> mc().getItemColors().getColor(stack, i));
 		}
 
-		public SpecificFeedthroughModel(FeedthroughCacheKey key, World w, BlockPos p)
+		public SpecificFeedthroughModel(FeedthroughCacheKey key, Int2IntFunction colorMultiplier)
 		{
-			init(key, w, p);
+			init(key, colorMultiplier);
 		}
 
-		private void init(FeedthroughCacheKey k, @Nullable World world, @Nullable BlockPos pos)
+		private void init(FeedthroughCacheKey k, Int2IntFunction colorMultiplierBasic)
 		{
-			IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes()
-					.getModelForState(k.baseState);
-			Function<Integer, Integer> colorMultiplier = null;
-			if(world!=null&&pos!=null)
+			IBakedModel model = mc().getBlockRendererDispatcher().getBlockModelShapes()
+					.getModel(k.baseState);
+			if(colorMultiplierBasic==null)
 			{
-				BlockColors colors = Minecraft.getInstance().getBlockColors();
-				colorMultiplier = (i) -> colors.colorMultiplier(k.baseState, world, pos, i);
+				ItemColors colors = mc().getItemColors();
+				ItemStack stack = new ItemStack(k.baseState.getBlock(), 1);
+				colorMultiplierBasic = (i) -> colors.getColor(stack, i);
 			}
-			else
-			{
-				ItemColors colors = Minecraft.getInstance().getItemColors();
-				ItemStack stack = new ItemStack(k.baseState.getBlock(), 1, k.baseState.getBlock().getMetaFromState(k.baseState));
-				colorMultiplier = (i) -> colors.colorMultiplier(stack, i);
-			}
+			Int2IntFunction colorMultiplierFinal = colorMultiplierBasic;
+			Int2IntFunction colorMultiplier = i -> {
+				int ret = colorMultiplierFinal.get(i);
+				k.usedColorMultipliers.put(i, ret);
+				return ret;
+			};
 			for(int j = 0; j < 7; j++)
 			{
 				Direction side = j < 6?Direction.VALUES[j]: null;
@@ -287,7 +323,7 @@ public class FeedthroughModel implements IBakedModel
 						{
 							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(new Matrix4(),
 									DefaultVertexFormats.ITEM, colorMultiplier);
-							quads.add(model.getQuads(k.baseState, side, 0).stream().map(tintTransformer)
+							quads.add(model.getQuads(k.baseState, side, Utils.RAND).stream().map(tintTransformer)
 									.collect(Collectors.toCollection(ArrayList::new)));
 						}
 						break;
@@ -306,7 +342,7 @@ public class FeedthroughModel implements IBakedModel
 						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat));
 						Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(new Matrix4(),
 								DefaultVertexFormats.ITEM, colorMultiplier);
-						all.addAll(model.getQuads(k.baseState, side, 0).stream().map(tintTransformer)
+						all.addAll(model.getQuads(k.baseState, side, Utils.RAND).stream().map(tintTransformer)
 								.collect(Collectors.toCollection(ArrayList::new)));
 						quads.add(all);
 						break;
@@ -333,7 +369,7 @@ public class FeedthroughModel implements IBakedModel
 						rotateAround.getZOffset());
 			}
 			mat.translate(-.5, -.5, -.5);
-			List<BakedQuad> conn = new ArrayList<>(info.model.getQuads(null, side, 0));
+			List<BakedQuad> conn = new ArrayList<>(info.model.getQuads(null, side, Utils.RAND));
 			if(side==facing)
 				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
 			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(mat, null,
@@ -342,13 +378,6 @@ public class FeedthroughModel implements IBakedModel
 				return conn.stream().map(transf).collect(Collectors.toList());
 			else
 				return conn;
-		}
-
-		@Nonnull
-		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
-		{
-			return quads.get(side==null?6: side.getIndex());
 		}
 	}
 }

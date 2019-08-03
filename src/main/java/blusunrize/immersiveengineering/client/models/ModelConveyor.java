@@ -15,18 +15,17 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -39,9 +38,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.util.vector.Vec3d;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,9 +53,9 @@ public class ModelConveyor implements IBakedModel
 	public static ResourceLocation[] rl_casing = {new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_top"), new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_side"), new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_walls")};
 
 	@Nullable
-	final IConveyorBelt defaultBelt;
+	private final IConveyorBelt defaultBelt;
 
-	public ModelConveyor(IConveyorBelt defaultBelt)
+	public ModelConveyor(@Nullable IConveyorBelt defaultBelt)
 	{
 		this.defaultBelt = defaultBelt;
 	}
@@ -68,8 +65,9 @@ public class ModelConveyor implements IBakedModel
 		this(null);
 	}
 
+	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand)
 	{
 		return ImmutableList.of();
 	}
@@ -129,7 +127,7 @@ public class ModelConveyor implements IBakedModel
 												  TextureAtlasSprite tex_conveyor, boolean[] walls, boolean[] corners,
 												  TextureAtlasSprite tex_conveyor_colour, int stripeColour)
 	{
-		List<BakedQuad> quads = new ArrayList<BakedQuad>();
+		List<BakedQuad> quads = new ArrayList<>();
 
 		Vec3d[] vertices = {new Vec3d(.0625f, 0, 1-length), new Vec3d(.0625f, 0, 1), new Vec3d(.9375f, 0, 1), new Vec3d(.9375f, 0, 1-length)};
 		TextureAtlasSprite tex_casing0 = ClientUtils.getSprite(rl_casing[0]);
@@ -144,17 +142,20 @@ public class ModelConveyor implements IBakedModel
 		//Shift if up/down
 		for(int i = 0; i < 4; i++)
 			if((i==0||i==3)?conDir==ConveyorDirection.UP: conDir==ConveyorDirection.DOWN)
-				vertices[i].translate(0, length, 0);
+				vertices[i] = vertices[i].add(0, length, 0);
 		//Draw bottom
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), tex_conveyor, new double[]{1, 0, 15, length*16}, colour, true));
 		//Expand verts to side
-		for(Vec3d v : vertices)
-			v.setX(v.getX() < .5f?0: 1);
+		for(int i = 0; i < vertices.length; i++)
+		{
+			Vec3d v = vertices[i];
+			vertices[i] = new Vec3d(v.x < .5?0: 1, v.y, v.z);
+		}
 		//Draw bottom casing
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), tex_casing2, new double[]{0, 0, 16, length*16}, colour, true));
 		//Shift verts to top
-		for(Vec3d v : vertices)
-			v.translate(0, .125f, 0);
+		for(int i = 0; i < vertices.length; i++)
+			vertices[i] = vertices[i].add(0, .125, 0);
 		//Draw top
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_conveyor, new double[]{0, length*16, 16, 0}, colour, false));
 		if(corners[0])
@@ -162,7 +163,9 @@ public class ModelConveyor implements IBakedModel
 			vertices = new Vec3d[]{new Vec3d(0, .1875f, .9375f), new Vec3d(0, .1875f, 1), new Vec3d(1, .1875f, 1), new Vec3d(1, .1875f, .9375f)};
 			//Shift if up/down
 			for(int i = 0; i < 4; i++)
-				vertices[i].translate(0, i==0||i==3?(conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?length-.0625f: 0): (conDir==ConveyorDirection.DOWN?length: 0), 0);
+				vertices[i] = vertices[i].add(0,
+						i==0||i==3?(conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?length-.0625f: 0): (conDir==ConveyorDirection.DOWN?length: 0),
+						0);
 			//Draw top casing back
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_casing0, new double[]{0, 1, 16, 0}, colour, false));
 		}
@@ -171,7 +174,7 @@ public class ModelConveyor implements IBakedModel
 			vertices = new Vec3d[]{new Vec3d(0, .1875f, 1-length), new Vec3d(0, .1875f, 1.0625f-length), new Vec3d(1, .1875f, 1.0625f-length), new Vec3d(1, .1875f, 1-length)};
 			//Shift if up/down
 			for(int i = 0; i < 4; i++)
-				vertices[i].translate(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
+				vertices[i] = vertices[i].add(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
 			//Draw top casing front
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_casing0, new double[]{0, 1, 16, 0}, colour, false));
 		}
@@ -182,21 +185,30 @@ public class ModelConveyor implements IBakedModel
 		vertices = new Vec3d[]{new Vec3d(0, 0, 1-length), new Vec3d(0, 0, 1), new Vec3d(0, .125f, 1), new Vec3d(0, .125f, 1-length)};
 		for(int i = 0; i < 4; i++)
 			if((i==0||i==3)?conDir==ConveyorDirection.UP: conDir==ConveyorDirection.DOWN)
-				vertices[i].translate(0, length, 0);
+				vertices[i] = vertices[i].add(0, length, 0);
 		//Draw left side
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing1, new double[]{0, 0, 2, length*16}, colour, false));
 		//Shift upwards
 		for(int i = 0; i < 4; i++)
-			vertices[i].setY(vertices[i].getY()+((i==0||i==1)?.125f: .0625f));
+		{
+			Vec3d v = vertices[i];
+			vertices[i] = new Vec3d(v.x, v.y+((i==0||i==1)?.125f: .0625f), v.z);
+		}
 
 		//Shift back down and to the other side
 		for(int i = 0; i < 4; i++)
-			vertices[i].set(1, vertices[i].getY()-((i==0||i==1)?.125f: .0625f));
+		{
+			Vec3d v = vertices[i];
+			vertices[i] = new Vec3d(v.x, v.y-((i==0||i==1)?.125f: .0625f), v.z);
+		}
 		//Draw right side
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing1, new double[]{0, 0, 2, length*16}, colour, true));
 		//Shift upwards
 		for(int i = 0; i < 4; i++)
-			vertices[i].setY(vertices[i].getY()+((i==0||i==1)?.125f: .0625f));
+		{
+			Vec3d v = vertices[i];
+			vertices[i] = new Vec3d(v.x, v.y+((i==0||i==1)?.125f: .0625f), v.z);
+		}
 		/**
 		 * Corners
 		 */
@@ -205,19 +217,26 @@ public class ModelConveyor implements IBakedModel
 			vertices = new Vec3d[]{new Vec3d(0, .125f, .9375f), new Vec3d(0, .125f, 1), new Vec3d(0, .1875f, 1), new Vec3d(0, .1875f, .9375f)};
 			if(conDir!=ConveyorDirection.HORIZONTAL)
 				for(int i = 0; i < 4; i++)
-					vertices[i].translate(0, i==0||i==3?(conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?length-.0625f: 0): (conDir==ConveyorDirection.DOWN?length: 0), 0);
+					vertices[i] = vertices[i].add(0, i==0||i==3?(conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?length-.0625f: 0): (conDir==ConveyorDirection.DOWN?length: 0), 0);
 			//Back left
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, false));
-			for(Vec3d v : vertices)
-				v.translate(.0625f, 0, 0);
+			for(int i = 0; i < vertices.length; i++)
+			{
+				vertices[i] = vertices[i].add(.0625f, 0, 0);
+			}
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, true));
 			//Shift right
-			for(Vec3d v : vertices)
-				v.setX(1);
+			for(int i = 0; i < vertices.length; i++)
+			{
+				Vec3d tmp = vertices[i];
+				vertices[i] = new Vec3d(1, tmp.y, tmp.z);
+			}
 			//Back right
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, true));
-			for(Vec3d v : vertices)
-				v.translate(-.0625f, 0, 0);
+			for(int i = 0; i < vertices.length; i++)
+			{
+				vertices[i] = vertices[i].add(-.0625f, 0, 0);
+			}
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing0, new double[]{0, 0, 1, 1}, colour, false));
 		}
 		if(corners[1])
@@ -225,19 +244,26 @@ public class ModelConveyor implements IBakedModel
 			vertices = new Vec3d[]{new Vec3d(0, .125f, 1-length), new Vec3d(0, .125f, 1.0625f-length), new Vec3d(0, .1875f, 1.0625f-length), new Vec3d(0, .1875f, 1-length)};
 			if(conDir!=ConveyorDirection.HORIZONTAL)
 				for(int i = 0; i < 4; i++)
-					vertices[i].translate(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
+					vertices[i] = vertices[i].add(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
 			//Front left
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, false));
-			for(Vec3d v : vertices)
-				v.translate(.0625f, 0, 0);
+			for(int i = 0; i < vertices.length; i++)
+			{
+				vertices[i] = vertices[i].add(.0625f, 0, 0);
+			}
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, true));
 			//Shift right
-			for(Vec3d v : vertices)
-				v.setX(1);
+			for(int i = 0; i < vertices.length; i++)
+			{
+				Vec3d tmp = vertices[i];
+				vertices[i] = new Vec3d(1, tmp.y, tmp.z);
+			}
 			//Front right
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, true));
-			for(Vec3d v : vertices)
-				v.translate(-.0625f, 0, 0);
+			for(int i = 0; i < vertices.length; i++)
+			{
+				vertices[i] = vertices[i].add(-.0625f, 0, 0);
+			}
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, false));
 		}
 
@@ -248,40 +274,46 @@ public class ModelConveyor implements IBakedModel
 		vertices = new Vec3d[]{new Vec3d(.0625f, 0, 1-length), new Vec3d(.0625f, .125f, 1-length), new Vec3d(.9375f, .125f, 1-length), new Vec3d(.9375f, 0, 1-length)};
 		//Shift if up/down
 		if(conDir==ConveyorDirection.UP)
-			for(Vec3d v : vertices)
-				v.translate(0, length, 0);
+			for(int i = 0; i < vertices.length; i++)
+			{
+				vertices[i] = vertices[i].add(0, length, 0);
+			}
 		//Draw front
 		double frontUMax = (1-length)*16;
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_conveyor, new double[]{1, frontUMax+2, 15, frontUMax}, colour, false));
 		//Expand to side and up
 		for(int i = 0; i < 4; i++)
-			vertices[i].set(vertices[i].getX() < .5f?0: 1, vertices[i].getY()+(i==1||i==2?.0625f: 0));
+			vertices[i] = new Vec3d(vertices[i].getX() < .5f?0: 1, vertices[i].getY()+(i==1||i==2?.0625f: 0), vertices[i].z);
 		//Draw front casing
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing2, new double[]{0, 3, 16, 0}, colour, false));
-		for(Vec3d v : vertices)
-			v.translate(0, (conDir==ConveyorDirection.UP?-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0), .0625f);
+		for(int i = 0; i < vertices.length; i++)
+		{
+			vertices[i] = vertices[i].add(0, (conDir==ConveyorDirection.UP?-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0), .0625f);
+		}
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing2, new double[]{0, 3, 16, 0}, colour, true));
 		//Undo expand, shift if up/down, shift to back
 		for(int i = 0; i < 4; i++)
 		{
 			Vec3d v = vertices[i];
-			v.setX(v.getX() < .5f?.0625f: .9375f);
-			v.setY(v.getY()-(i==1||i==2?.0625f: 0));
+			v = new Vec3d(v.getX() < .5f?.0625f: .9375f, v.getY()-(i==1||i==2?.0625f: 0), v.z);
 			if(conDir==ConveyorDirection.UP)
-				v.translate(0, -(length-.0625f), 0);
+				v = v.add(0, -(length-.0625f), 0);
 			if(conDir==ConveyorDirection.DOWN)
-				v.translate(0, (length-.0625f), 0);
-			v.translate(0, 0, length-.0625f);
+				v = v.add(0, (length-.0625f), 0);
+			v = v.add(0, 0, length-.0625f);
+			vertices[i] = v;
 		}
 		//Draw back
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing.getOpposite(), tex_conveyor, new double[]{1, 0, 15, 2}, colour, true));
 		//Expand to side and up
 		for(int i = 0; i < 4; i++)
-			vertices[i].set(vertices[i].getX() < .5f?0: 1, vertices[i].getY()+(i==1||i==2?.0625f: 0));
+			vertices[i] = new Vec3d(vertices[i].getX() < .5f?0: 1, vertices[i].getY()+(i==1||i==2?.0625f: 0), vertices[i].z);
 		//Draw back casing
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing.getOpposite(), tex_casing2, new double[]{0, 0, 16, 3}, colour, true));
-		for(Vec3d v : vertices)
-			v.translate(0, conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?-.0625f: 0, -.0625f);
+		for(int i = 0; i < vertices.length; i++)
+		{
+			vertices[i] = vertices[i].add(0, conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?-.0625f: 0, -.0625f);
+		}
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing.getOpposite(), tex_casing2, new double[]{0, 0, 16, 3}, colour, false));
 
 		/**
@@ -296,10 +328,10 @@ public class ModelConveyor implements IBakedModel
 			if(conDir!=ConveyorDirection.HORIZONTAL)
 			{
 				float f = (i==0||i==3)?(conDir==ConveyorDirection.UP?length-.0625f: .0625f): (conDir==ConveyorDirection.UP?.0625f: length-.0625f);
-				vertices[i].translate(0, f, 0);
-				vertices2[i].translate(0, f, 0);
-				vertices3[i].translate(0, f, 0);
-				verticesColour[i].translate(0, f, 0);
+				vertices[i] = vertices[i].add(0, f, 0);
+				vertices2[i] = vertices2[i].add(0, f, 0);
+				vertices3[i] = vertices3[i].add(0, f, 0);
+				verticesColour[i] = verticesColour[i].add(0, f, 0);
 			}
 		//Draw left walls
 		if(walls[0])
@@ -312,10 +344,10 @@ public class ModelConveyor implements IBakedModel
 		}
 		for(int i = 0; i < 4; i++)
 		{
-			vertices[i].translate(.9375f, 0, 0);
-			vertices2[i].translate(.9375f, 0, 0);
-			vertices3[i].translate(.9375f, 0, 0);
-			verticesColour[i].translate(.9375f, 0, 0);
+			vertices[i] = vertices[i].add(.9375f, 0, 0);
+			vertices2[i] = vertices2[i].add(.9375f, 0, 0);
+			vertices3[i] = vertices3[i].add(.9375f, 0, 0);
+			verticesColour[i] = verticesColour[i].add(.9375f, 0, 0);
 		}
 		//Draw right walls
 		if(walls[1])
@@ -370,11 +402,12 @@ public class ModelConveyor implements IBakedModel
 		return overrideList;
 	}
 
-	static HashMap<String, IBakedModel> itemModelCache = new HashMap<String, IBakedModel>();
-	ItemOverrideList overrideList = new ItemOverrideList(new ArrayList())
+	static HashMap<String, IBakedModel> itemModelCache = new HashMap<>();
+	ItemOverrideList overrideList = new ItemOverrideList()
 	{
+		@Nullable
 		@Override
-		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
+		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable World world, @Nullable LivingEntity entity)
 		{
 			String key = ItemNBTHelper.getString(stack, "conveyorType");
 			IBakedModel model = itemModelCache.get(key);
@@ -387,7 +420,7 @@ public class ModelConveyor implements IBakedModel
 		}
 	};
 
-	static HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
+	static HashMap<TransformType, Matrix4> transformationMap = new HashMap<>();
 
 	static
 	{

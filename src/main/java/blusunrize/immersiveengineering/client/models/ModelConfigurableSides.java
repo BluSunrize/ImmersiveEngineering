@@ -9,42 +9,49 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
-import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import org.lwjgl.util.vector.Vector3f;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.resource.IResourceType;
+import net.minecraftforge.resource.VanillaResourceType;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Predicate;
+
+import static net.minecraft.util.Direction.*;
 
 public class ModelConfigurableSides implements IBakedModel
 {
 	private static final String MODEL_PREFIX = "conf_sides_";
 	private static final String RESOURCE_LOCATION = "models/block/smartmodel/"+MODEL_PREFIX;
 	//Holy shit, this type-chaining is messy. But I wanted to use lambdas!
-	private static HashMap<String, ITextureNamer> TYPES = new HashMap();
+	private static HashMap<String, ITextureNamer> TYPES = new HashMap<>();
 
 	static
 	{
@@ -105,63 +112,70 @@ public class ModelConfigurableSides implements IBakedModel
 		});
 	}
 
-	public static HashMap<String, List<BakedQuad>> modelCache = new HashMap<>();
+	public static Cache<ModelKey, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build();
 
 	final String name;
-	public TextureAtlasSprite[][] textures;
+	public Map<Direction, Map<SideConfig, TextureAtlasSprite>> textures;
 
-	public ModelConfigurableSides(String name, TextureAtlasSprite[][] textures)
+	public ModelConfigurableSides(String name, Map<Direction, Map<SideConfig, TextureAtlasSprite>> textures)
 	{
 		this.name = name;
 		this.textures = textures;
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)
 	{
-		TextureAtlasSprite[] tex = new TextureAtlasSprite[6];
-		for(int i = 0; i < tex.length; i++)
-			tex[i] = this.textures[i][0];
-		char[] keyArray = "000000".toCharArray();
-		if(state instanceof IExtendedBlockState)
-		{
-			IExtendedBlockState extended = (IExtendedBlockState)state;
-			for(int i = 0; i < IEProperties.SIDECONFIG.length; i++)
-				if(extended.getUnlistedNames().contains(IEProperties.SIDECONFIG[i]))
-				{
-					IEEnums.SideConfig config = extended.getValue(IEProperties.SIDECONFIG[i]);
-					if(config!=null)
-					{
-						int c = config.ordinal();
-						tex[i] = this.textures[i][c];
-						keyArray[i] = Character.forDigit(c, 10);
-					}
-				}
-		}
-		String key = name+String.copyValueOf(keyArray);
-		if(!modelCache.containsKey(key))
-			modelCache.put(key, bakeQuads(tex));
-		return modelCache.get(key);
+		return getQuads(state, side, rand, EmptyModelData.INSTANCE);
 	}
 
-	private static List<BakedQuad> bakeQuads(TextureAtlasSprite[] sprites)
+	@Nonnull
+	@Override
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+	{
+		Map<Direction, SideConfig> config;
+		if(extraData.hasProperty(Model.SIDECONFIG))
+			config = extraData.getData(Model.SIDECONFIG);
+		else
+		{
+			config = new EnumMap<>(Direction.class);
+			for(Direction d : Direction.VALUES)
+				config.put(d, SideConfig.NONE);
+		}
+		assert (config!=null);
+		ModelKey key = new ModelKey(name, config);
+		try
+		{
+			return modelCache.get(key, () -> {
+				Map<Direction, TextureAtlasSprite> tex = new EnumMap<>(Direction.class);
+				for(Direction d : Direction.VALUES)
+					tex.put(d, this.textures.get(d).get(config.get(d)));
+				return bakeQuads(tex);
+			});
+		} catch(ExecutionException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static List<BakedQuad> bakeQuads(Map<Direction, TextureAtlasSprite> sprites)
 	{
 		List<BakedQuad> quads = Lists.newArrayListWithExpectedSize(6);
 		float[] colour = {1, 1, 1, 1};
-		Vector3f[] vertices = {new Vector3f(0, 0, 0), new Vector3f(0, 0, 1), new Vector3f(1, 0, 1), new Vector3f(1, 0, 0)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.DOWN, sprites[0], new double[]{0, 16, 16, 0}, colour, true));
-		vertices = new Vector3f[]{new Vector3f(0, 1, 0), new Vector3f(0, 1, 1), new Vector3f(1, 1, 1), new Vector3f(1, 1, 0)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.UP, sprites[1], new double[]{0, 0, 16, 16}, colour, false));
+		Vec3d[] vertices = {new Vec3d(0, 0, 0), new Vec3d(0, 0, 1), new Vec3d(1, 0, 1), new Vec3d(1, 0, 0)};
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, DOWN, sprites.get(DOWN), new double[]{0, 16, 16, 0}, colour, true));
+		vertices = new Vec3d[]{new Vec3d(0, 1, 0), new Vec3d(0, 1, 1), new Vec3d(1, 1, 1), new Vec3d(1, 1, 0)};
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, UP, sprites.get(UP), new double[]{0, 0, 16, 16}, colour, false));
 
-		vertices = new Vector3f[]{new Vector3f(1, 0, 0), new Vector3f(1, 1, 0), new Vector3f(0, 1, 0), new Vector3f(0, 0, 0)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.NORTH, sprites[2], new double[]{0, 16, 16, 0}, colour, true));
-		vertices = new Vector3f[]{new Vector3f(1, 0, 1), new Vector3f(1, 1, 1), new Vector3f(0, 1, 1), new Vector3f(0, 0, 1)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.SOUTH, sprites[3], new double[]{16, 16, 0, 0}, colour, false));
+		vertices = new Vec3d[]{new Vec3d(1, 0, 0), new Vec3d(1, 1, 0), new Vec3d(0, 1, 0), new Vec3d(0, 0, 0)};
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, NORTH, sprites.get(NORTH), new double[]{0, 16, 16, 0}, colour, true));
+		vertices = new Vec3d[]{new Vec3d(1, 0, 1), new Vec3d(1, 1, 1), new Vec3d(0, 1, 1), new Vec3d(0, 0, 1)};
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, SOUTH, sprites.get(SOUTH), new double[]{16, 16, 0, 0}, colour, false));
 
-		vertices = new Vector3f[]{new Vector3f(0, 0, 0), new Vector3f(0, 1, 0), new Vector3f(0, 1, 1), new Vector3f(0, 0, 1)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.WEST, sprites[4], new double[]{0, 16, 16, 0}, colour, true));
-		vertices = new Vector3f[]{new Vector3f(1, 0, 0), new Vector3f(1, 1, 0), new Vector3f(1, 1, 1), new Vector3f(1, 0, 1)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.EAST, sprites[5], new double[]{16, 16, 0, 0}, colour, false));
+		vertices = new Vec3d[]{new Vec3d(0, 0, 0), new Vec3d(0, 1, 0), new Vec3d(0, 1, 1), new Vec3d(0, 0, 1)};
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, WEST, sprites.get(WEST), new double[]{0, 16, 16, 0}, colour, true));
+		vertices = new Vec3d[]{new Vec3d(1, 0, 0), new Vec3d(1, 1, 0), new Vec3d(1, 1, 1), new Vec3d(1, 0, 1)};
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, EAST, sprites.get(EAST), new double[]{16, 16, 0, 0}, colour, false));
 		return quads;
 	}
 
@@ -186,7 +200,7 @@ public class ModelConfigurableSides implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return this.textures[0][0];
+		return this.textures.get(DOWN).get(SideConfig.NONE);
 	}
 
 	static final ItemCameraTransforms defaultTransforms = new ItemCameraTransforms(
@@ -210,15 +224,23 @@ public class ModelConfigurableSides implements IBakedModel
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return ItemOverrideList.NONE;
+		return ItemOverrideList.EMPTY;
 	}
 
 	public static class Loader implements ICustomModelLoader
 	{
+
 		@Override
 		public void onResourceManagerReload(IResourceManager resourceManager)
 		{
-			modelCache.clear();
+			modelCache.invalidateAll();
+		}
+
+		@Override
+		public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
+		{
+			if(resourcePredicate.test(VanillaResourceType.MODELS)||resourcePredicate.test(VanillaResourceType.TEXTURES))
+				onResourceManagerReload(resourceManager);
 		}
 
 		@Override
@@ -228,7 +250,7 @@ public class ModelConfigurableSides implements IBakedModel
 		}
 
 		@Override
-		public IModel loadModel(ResourceLocation modelLocation)
+		public IUnbakedModel loadModel(ResourceLocation modelLocation)
 		{
 			String resourcePath = modelLocation.getPath();
 			int pos = resourcePath.indexOf(MODEL_PREFIX);
@@ -258,7 +280,7 @@ public class ModelConfigurableSides implements IBakedModel
 		}
 	}
 
-	private static class ConfigSidesModelBase implements IModel
+	private static class ConfigSidesModelBase implements IUnbakedModel
 	{
 		final String name;
 		final String type;
@@ -271,34 +293,42 @@ public class ModelConfigurableSides implements IBakedModel
 			this.textures = textures;
 		}
 
+		@Nonnull
 		@Override
 		public Collection<ResourceLocation> getDependencies()
 		{
 			return ImmutableList.of();
 		}
 
+		@Nonnull
 		@Override
-		public Collection<ResourceLocation> getTextures()
+		public Collection<ResourceLocation> getTextures(@Nonnull Function<ResourceLocation, IUnbakedModel> modelGetter,
+														@Nonnull Set<String> missingTextureErrors)
 		{
 			return textures.values();
 		}
 
+		@Nullable
 		@Override
-		public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
+		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
 		{
-			TextureAtlasSprite[][] tex = new TextureAtlasSprite[6][3];
+			Map<Direction, Map<SideConfig, TextureAtlasSprite>> tex = new EnumMap<>(Direction.class);
 			for(Direction f : Direction.VALUES)
+			{
+				Map<SideConfig, TextureAtlasSprite> forSide = new EnumMap<>(SideConfig.class);
 				for(SideConfig cfg : SideConfig.values())
 				{
 					ResourceLocation rl = textures.get(f.getName()+"_"+cfg.getTextureName());
 					if(rl!=null)
-						tex[f.ordinal()][cfg.ordinal()] = ApiUtils.getRegisterSprite(ClientUtils.mc().getTextureMapBlocks(), rl);
+						forSide.put(cfg, spriteGetter.apply(rl));
 				}
+				tex.put(f, forSide);
+			}
 			return new ModelConfigurableSides(name, tex);
 		}
 
 		@Override
-		public IModel retexture(ImmutableMap<String, String> textures)
+		public IUnbakedModel retexture(ImmutableMap<String, String> textures)
 		{
 			String newName = this.name;
 			ImmutableMap.Builder<String, ResourceLocation> builder = ImmutableMap.builder();
@@ -356,6 +386,36 @@ public class ModelConfigurableSides implements IBakedModel
 		default String nameFromCfg(Direction side, SideConfig cfg)
 		{
 			return cfg.getTextureName();
+		}
+	}
+
+	private static class ModelKey
+	{
+		@Nonnull
+		final String name;
+		@Nonnull
+		final Map<Direction, SideConfig> config;
+
+		private ModelKey(String name, Map<Direction, SideConfig> config)
+		{
+			this.name = name;
+			this.config = config;
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			ModelKey modelKey = (ModelKey)o;
+			return name.equals(modelKey.name)&&
+					config.equals(modelKey.config);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(name, config);
 		}
 	}
 }
