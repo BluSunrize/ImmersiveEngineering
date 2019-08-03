@@ -8,23 +8,22 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import gnu.trove.map.TIntObjectMap;
+import com.mojang.blaze3d.platform.GlStateManager;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.crash.ReportedException;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resources.IResource;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -48,7 +47,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 	private String subtext;
 	private final ResourceLocation location;
 	private List<String[]> linkData;
-	private TIntObjectMap<SpecialManualElement> specials;
+	private Int2ObjectMap<SpecialManualElement> specials;
 
 	private ManualEntry(ManualInstance m, TextSplitter splitter, Function<TextSplitter, String[]> getContent,
 						ResourceLocation location)
@@ -64,8 +63,6 @@ public class ManualEntry implements Comparable<ManualEntry>
 	{
 		try
 		{
-			boolean oldUni = manual.fontRenderer.getUnicodeFlag();
-			manual.fontRenderer.setUnicodeFlag(true);
 			manual.entryRenderPre();
 			splitter.clearSpecialByAnchor();
 			String[] parts = getContent.apply(splitter);
@@ -84,14 +81,13 @@ public class ManualEntry implements Comparable<ManualEntry>
 					special = NOT_SPECIAL;
 				pages.add(new ManualPage(text.get(i), special));
 			}
-			manual.fontRenderer.setUnicodeFlag(oldUni);
 			manual.entryRenderPost();
 		} catch(Throwable throwable)
 		{
 			CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Refreshing an IE manual entry");
 			CrashReportCategory crashreportcategory = crashreport.makeCategory("Entry being refreshed:");
-			crashreportcategory.addCrashSection("Entry name", location);
-			crashreportcategory.addCrashSection("Manual", manual.getManualName());
+			crashreportcategory.addDetail("Entry name", location);
+			crashreportcategory.addDetail("Manual", manual.getManualName());
 			throw new ReportedException(crashreport);
 		}
 	}
@@ -112,7 +108,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		ManualUtils.drawSplitString(manual.fontRenderer, toRender.renderText, x, y+offsetText,
 				manual.getTextColour());
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y+offsetSpecial, 0);
+		GlStateManager.translatef(x, y+offsetSpecial, 0);
 		toRender.special.render(gui, 0, 0, mouseX, mouseY);
 		GlStateManager.popMatrix();
 	}
@@ -122,20 +118,17 @@ public class ManualEntry implements Comparable<ManualEntry>
 		return title;
 	}
 
-	public TIntObjectMap<SpecialManualElement> getSpecials()
+	public Int2ObjectMap<SpecialManualElement> getSpecials()
 	{
 		return specials;
 	}
 
 	public void addButtons(GuiManual gui, int x, int y, int page, List<Button> pageButtons)
 	{
-		boolean uni = manual.fontRenderer.getUnicodeFlag();
-		manual.fontRenderer.setUnicodeFlag(true);
 		ManualPage p = pages.get(page);
 		p.renderText = new ArrayList<>(p.text);
 		ManualUtils.addLinks(this, manual, gui, p.renderText, x,
 				y+p.special.getPixelsTaken(), pageButtons, linkData);
-		manual.fontRenderer.setUnicodeFlag(uni);
 		List<Button> tempButtons = new ArrayList<>();
 		pages.get(gui.page).special.onOpened(gui, 0, 0, tempButtons);
 		for(Button btn : tempButtons)
@@ -172,15 +165,6 @@ public class ManualEntry implements Comparable<ManualEntry>
 			if(p.special.listForSearch(search))
 				return true;
 		return false;
-	}
-
-	//TODO range checks everywhere
-	public void buttonPressed(GuiManual gui, Button button)
-	{
-		if(button instanceof GuiButtonManualLink)
-			((GuiButtonManualLink)button).link.changePage(gui, true);
-		else
-			pages.get(gui.page).special.buttonPressed(gui, button);
 	}
 
 	public void mouseDragged(GuiManual gui, int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY,
@@ -261,7 +245,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 			location = name;
 			getContent = (splitter) -> {
 				ResourceLocation langLoc = new ResourceLocation(name.getNamespace(),
-						"manual/"+Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getLanguageCode()
+						"manual/"+Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getCode()
 								+"/"+name.getPath()+".txt");
 				ResourceLocation dataLoc = new ResourceLocation(name.getNamespace(),
 						"manual/"+name.getPath()+".json");
@@ -281,7 +265,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 					return new String[]{"ERROR", "This is not a good thing", "Could not find the file for "+name};
 				try
 				{
-					JsonObject json = JSONUtils.gsonDeserialize(GSON, new InputStreamReader(resData.getInputStream()),
+					JsonObject json = JSONUtils.fromJson(GSON, new InputStreamReader(resData.getInputStream()),
 							JsonObject.class, true);
 					byte[] bytesLang = IOUtils.toByteArray(resLang.getInputStream());
 					String content = new String(bytesLang);
@@ -351,13 +335,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 
 		@Override
-		public void buttonPressed(GuiManual gui, Button button)
-		{
-		}
-
-		@Override
-		public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY,
-								 Button button)
+		public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, Widget button)
 		{
 		}
 

@@ -14,8 +14,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 
 import javax.annotation.Nonnull;
@@ -33,7 +33,7 @@ public class ModelData
 	@Nonnull
 	public final ImmutableMap<String, String> textures;
 	@Nullable
-	private IModel model;
+	private IUnbakedModel model;
 
 	public ModelData(@Nonnull ResourceLocation location, @Nonnull JsonObject data, @Nonnull ImmutableMap<String, String> textures)
 	{
@@ -56,7 +56,7 @@ public class ModelData
 	}
 
 	@Nullable
-	public IModel getModel()
+	public IUnbakedModel getModel()
 	{
 		return model;
 	}

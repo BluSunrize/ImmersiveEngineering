@@ -16,24 +16,22 @@ import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.ArrayListMultimap;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-public class ManualPageBlueprint extends SpecialManualElements
+public class ManualElementBlueprint extends SpecialManualElements
 {
 	private ItemStack[] stacks;
 	private ArrayList<PositionedItemStack[]> recipes = new ArrayList();
 	private int recipePage;
 	private int yOff;
 
-	public ManualPageBlueprint(ManualInstance manual, ItemStack... stacks)
+	public ManualElementBlueprint(ManualInstance manual, ItemStack... stacks)
 	{
 		super(manual);
 		this.stacks = stacks;
@@ -81,8 +79,16 @@ public class ManualPageBlueprint extends SpecialManualElements
 	{
 		if(this.recipes.size() > 1)
 		{
-			pageButtons.add(new GuiButtonManualNavigation(gui, 100+0, x-2, y+yOff/2-3, 8, 10, 0));
-			pageButtons.add(new GuiButtonManualNavigation(gui, 100+1, x+122-16, y+yOff/2-3, 8, 10, 1));
+			pageButtons.add(new GuiButtonManualNavigation(gui, x-2, y+yOff/2-3, 8, 10, 0, btn -> {
+				--recipePage;
+				if(recipePage < 0)
+					recipePage = this.recipes.size()-1;
+			}));
+			pageButtons.add(new GuiButtonManualNavigation(gui, x+122-16, y+yOff/2-3, 8, 10, 1, btn -> {
+				++recipePage;
+				if(recipePage >= this.recipes.size())
+					recipePage = 0;
+			}));
 		}
 		super.onOpened(gui, x, y+yOff+2, pageButtons);
 	}
@@ -103,17 +109,14 @@ public class ManualPageBlueprint extends SpecialManualElements
 				{
 					if(pstack.x > maxX)
 						maxX = pstack.x;
-					gui.drawGradientRect(x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666, 0x33666666);
+					gui.blit(x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666, 0x33666666);
 				}
 			ManualUtils.bindTexture(manual.texture);
 			ManualUtils.drawTexturedRect(x+maxX-17, y+yOff/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
 
 		}
 
-		GlStateManager.translate(0, 0, 300);
-		boolean uni = manual.fontRenderer.getUnicodeFlag();
-		manual.fontRenderer.setUnicodeFlag(false);
-		/**RenderItem.getInstance().renderWithColor=true;*/
+		GlStateManager.translatef(0, 0, 300);
 		if(!recipes.isEmpty()&&recipePage >= 0&&recipePage < this.recipes.size())
 		{
 			for(PositionedItemStack pstack : recipes.get(recipePage))
@@ -128,66 +131,26 @@ public class ManualPageBlueprint extends SpecialManualElements
 					}
 		}
 
-		GlStateManager.translate(0, 0, -300);
+		GlStateManager.translatef(0, 0, -300);
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 
-		manual.fontRenderer.setUnicodeFlag(uni);
-
-		manual.fontRenderer.setUnicodeFlag(false);
 		if(!highlighted.isEmpty())
-			gui.renderToolTip(highlighted, mouseX, mouseY);
+			gui.renderTooltip(gui.getTooltipFromItem(highlighted), mouseX, mouseY);
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 	}
 
-	@Override
-	public void buttonPressed(GuiManual gui, Button button)
-	{
-		super.buttonPressed(gui, button);
-		if(button.id%100==0)
-			recipePage--;
-		else
-			recipePage++;
-
-		if(recipePage >= this.recipes.size())
-			recipePage = 0;
-		if(recipePage < 0)
-			recipePage = this.recipes.size()-1;
-	}
 
 	@Override
 	public boolean listForSearch(String searchTag)
 	{
 		for(PositionedItemStack[] recipe : this.recipes)
-			for(PositionedItemStack stack : recipe)
-			{
-				if(stack.stack instanceof ItemStack[])
-				{
-					for(ItemStack subStack : (ItemStack[])stack.stack)
-						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
-							return true;
-				}
-				else if(stack.stack instanceof List)
-					for(ItemStack subStack : (List<ItemStack>)stack.stack)
-					{
-						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
-							return true;
-					}
-				else if(stack.stack instanceof ItemStack)
-				{
-					if(((ItemStack)stack.stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
+			for(PositionedItemStack pStack : recipe)
+				for(ItemStack stack : pStack.displayList)
+					if(ManualUtils.listStack(searchTag, stack))
 						return true;
-				}
-				else if(stack.stack instanceof String)
-				{
-					if(ManualUtils.isExistingOreName((String)stack.stack))
-						for(ItemStack subStack : OreDictionary.getOres((String)stack.stack))
-							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
-								return true;
-				}
-			}
 		return false;
 	}
 

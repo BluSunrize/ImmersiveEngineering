@@ -30,7 +30,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.VanillaResourceType;
@@ -46,7 +45,7 @@ import java.util.function.Predicate;
 
 import static net.minecraft.util.Direction.*;
 
-public class ModelConfigurableSides implements IBakedModel
+public class ModelConfigurableSides extends BakedIEModel
 {
 	private static final String MODEL_PREFIX = "conf_sides_";
 	private static final String RESOURCE_LOCATION = "models/block/smartmodel/"+MODEL_PREFIX;
@@ -121,12 +120,6 @@ public class ModelConfigurableSides implements IBakedModel
 	{
 		this.name = name;
 		this.textures = textures;
-	}
-
-	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)
-	{
-		return getQuads(state, side, rand, EmptyModelData.INSTANCE);
 	}
 
 	@Nonnull

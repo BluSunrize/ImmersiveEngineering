@@ -9,8 +9,8 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 
 import java.util.List;
@@ -36,7 +36,6 @@ public class ManualElementTable extends SpecialManualElements
 	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
 	{
 		super.onOpened(gui, x, y, pageButtons);
-		manual.fontRenderer.setUnicodeFlag(true);
 		try
 		{
 			if(table!=null)
@@ -92,7 +91,6 @@ public class ManualElementTable extends SpecialManualElements
 		{
 			e.printStackTrace();
 		}
-		manual.fontRenderer.setUnicodeFlag(false);
 	}
 
 	@Override
@@ -101,7 +99,7 @@ public class ManualElementTable extends SpecialManualElements
 		if(localizedTable!=null)
 		{
 			int col = manual.getHighlightColour()|0xff000000;
-			gui.drawGradientRect(x, y-2, x+120, y-1, col, col);
+			gui.blit(x, y-2, x+120, y-1, col, col);
 
 			int yOff = 0;
 			for(String[] line : localizedTable)
@@ -113,7 +111,8 @@ public class ManualElementTable extends SpecialManualElements
 						{
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-							int lines = ManualUtils.drawSplitString(manual.fontRenderer, line[j], xx, y+yOff, w, manual.getTextColour());
+							manual.fontRenderer.drawSplitString(line[j], xx, y+yOff, w, manual.getTextColour());
+							int lines = manual.fontRenderer.listFormattedStringToWidth(line[j], w).size();
 							if(lines > height)
 								height = lines;
 						}
@@ -121,11 +120,11 @@ public class ManualElementTable extends SpecialManualElements
 					if(horizontalBars)
 					{
 						float scale = .5f;
-						GlStateManager.scale(1, scale, 1);
+						GlStateManager.scalef(1, scale, 1);
 						int barHeight = (int)((y+yOff+height*manual.fontRenderer.FONT_HEIGHT)/scale);
-						gui.drawGradientRect(x, barHeight, x+120, barHeight+1,
+						gui.blit(x, barHeight, x+120, barHeight+1,
 								manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
-						GlStateManager.scale(1, 1/scale, 1);
+						GlStateManager.scalef(1, 1/scale, 1);
 					}
 
 					yOff += height*(manual.fontRenderer.FONT_HEIGHT+1);
@@ -133,7 +132,7 @@ public class ManualElementTable extends SpecialManualElements
 
 			if(bars!=null)
 				for(int i = 0; i < bars.length; i++)
-					gui.drawGradientRect(textOff[i]-4, y-4, textOff[i]-3, y+yOff, col, col);
+					gui.blit(textOff[i]-4, y-4, textOff[i]-3, y+yOff, col, col);
 		}
 	}
 

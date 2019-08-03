@@ -8,16 +8,17 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
-import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.common.model.IModelState;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.function.Function;
 
@@ -34,22 +35,24 @@ public class IEOBJModel extends OBJModel
 		this.setCustomData(customData);
 	}
 
+	@Nullable
 	@Override
-	public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
+	public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
 	{
-		IBakedModel preBaked = super.bake(state, format, bakedTextureGetter);
-		return new IESmartObjModel(preBaked, this, state, format, IESmartObjModel.getTexturesForOBJModel(preBaked), null, false);//TODO possibly dynamic?
+		IBakedModel preBaked = super.bake(bakery, spriteGetter, sprite, format);
+		return new IESmartObjModel(preBaked, this, sprite.getState(), format,
+				IESmartObjModel.getTexturesForOBJModel(preBaked), null, false);//TODO possibly dynamic?
 	}
 
 	@Override
-	public IModel process(ImmutableMap<String, String> customData)
+	public IUnbakedModel process(ImmutableMap<String, String> customData)
 	{
 		IEOBJModel ret = new IEOBJModel(this.getMatLib(), getResourceLocation(), getCustomData());
 		return ret;
 	}
 
 	@Override
-	public IModel retexture(ImmutableMap<String, String> textures)
+	public IUnbakedModel retexture(ImmutableMap<String, String> textures)
 	{
 		IEOBJModel ret = new IEOBJModel(this.getMatLib().makeLibWithReplacements(textures), getResourceLocation(), getCustomData());
 		return ret;

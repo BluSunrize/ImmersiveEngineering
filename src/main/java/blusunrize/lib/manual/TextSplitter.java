@@ -1,10 +1,10 @@
 package blusunrize.lib.manual;
 
 
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
@@ -22,11 +22,11 @@ public class TextSplitter
 	private final int lineWidth;
 	private final int pixelsPerLine;
 	private final Map<String, Map<Integer, SpecialManualElement>> specialByAnchor = new HashMap<>();
-	private final TIntObjectMap<SpecialManualElement> specialByPage = new TIntObjectHashMap<>();
+	private final Int2ObjectMap<SpecialManualElement> specialByPage = new Int2ObjectOpenHashMap<>();
 	private final List<List<String>> entry = new ArrayList<>();
 	private final Function<String, String> tokenTransform;
 	private final int pixelsPerPage;
-	private TObjectIntMap<String> pageByAnchor = new TObjectIntHashMap<>();
+	private Object2IntMap<String> pageByAnchor = new Object2IntOpenHashMap<>();
 
 	public TextSplitter(Function<String, Integer> w, int lineWidthPixel, int pageHeightPixel,
 						int pixelsPerLine, Function<String, String> tokenTransform)
@@ -190,7 +190,7 @@ public class TextSplitter
 	{
 		if(specialByAnchor.containsKey(ref))
 		{
-			TIntObjectMap<SpecialManualElement> specialByPageTmp = new TIntObjectHashMap<>();
+			Int2ObjectMap<SpecialManualElement> specialByPageTmp = new Int2ObjectOpenHashMap<>();
 			for(Map.Entry<Integer, SpecialManualElement> entry : specialByAnchor.get(ref).entrySet())
 			{
 				int specialPage = page+entry.getKey();
@@ -269,7 +269,7 @@ public class TextSplitter
 		return entry;
 	}
 
-	public TIntObjectMap<SpecialManualElement> getSpecials()
+	public Int2ObjectMap<SpecialManualElement> getSpecials()
 	{
 		return specialByPage;
 	}

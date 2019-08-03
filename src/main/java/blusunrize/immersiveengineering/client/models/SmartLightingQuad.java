@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement.Type;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.Usage;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraftforge.client.model.pipeline.*;
 
 import java.lang.reflect.Field;
@@ -67,7 +67,7 @@ public class SmartLightingQuad extends BakedQuad
 	@Override
 	public void pipe(IVertexConsumer consumer)
 	{
-		IWorldReader world = null;
+		IEnviromentBlockReader world = null;
 		BlockInfo info = null;
 		if(consumer instanceof VertexLighterFlat)
 		{

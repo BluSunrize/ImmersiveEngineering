@@ -44,10 +44,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("deprecation")
-public class ModelCoresample implements IBakedModel
+public class ModelCoresample extends BakedIEModel
 {
 	private static final List<BakedQuad> EMPTY_QUADS = Lists.newArrayList();
 	private static final Cache<String, ModelCoresample> modelCache = CacheBuilder.newBuilder()
@@ -59,14 +60,6 @@ public class ModelCoresample implements IBakedModel
 	public ModelCoresample(MineralMix mineral)
 	{
 		this.mineral = mineral;
-	}
-
-
-	@Nonnull
-	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)
-	{
-		return EMPTY_QUADS;
 	}
 
 	@Nonnull
@@ -265,7 +258,7 @@ public class ModelCoresample implements IBakedModel
 	}
 
 
-	ItemOverrideList overrideList = new ItemOverrideList(new ArrayList())
+	ItemOverrideList overrideList = new ItemOverrideList()
 	{
 
 		@Nullable
@@ -275,14 +268,20 @@ public class ModelCoresample implements IBakedModel
 			if(ItemNBTHelper.hasKey(stack, "mineral"))
 			{
 				String name = ItemNBTHelper.getString(stack, "mineral");
-				if(name!=null&&!name.isEmpty())
+				if(!name.isEmpty())
 				{
-					return modelCache.get(name, () -> {
-						for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
-							if(name.equals(mix.name))
-								return new ModelCoresample(mix);
-						throw new RuntimeException("Invalid mineral mix: "+name);
-					});
+					try
+					{
+						return modelCache.get(name, () -> {
+							for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
+								if(name.equals(mix.name))
+									return new ModelCoresample(mix);
+							throw new RuntimeException("Invalid mineral mix: "+name);
+						});
+					} catch(ExecutionException e)
+					{
+						throw new RuntimeException(e);
+					}
 				}
 			}
 			return originalModel;

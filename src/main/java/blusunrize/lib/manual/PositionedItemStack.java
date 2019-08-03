@@ -10,10 +10,11 @@ package blusunrize.lib.manual;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.IItemProvider;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PositionedItemStack
@@ -37,47 +38,16 @@ public class PositionedItemStack
 		{
 			displayList = new ArrayList<ItemStack>();
 			if(stack instanceof ItemStack)
-			{
-				if(((ItemStack)stack).getItemDamage()==OreDictionary.WILDCARD_VALUE)
-				{
-					NonNullList<ItemStack> list = NonNullList.create();
-					((ItemStack)stack).getItem().getSubItems(((ItemStack)stack).getItem().getCreativeTab(), list);
-					if(list.size() > 0)
-						displayList.addAll(list);
-				}
-				else
-					displayList.add((ItemStack)stack);
-			}
+				displayList.add((ItemStack)stack);
 			else if(stack instanceof Ingredient)
-			{
-				for(ItemStack subStack : ((Ingredient)stack).getMatchingStacks())
-				{
-					if(subStack.getItemDamage()==OreDictionary.WILDCARD_VALUE)
-					{
-						NonNullList<ItemStack> list = NonNullList.create();
-						subStack.getItem().getSubItems(subStack.getItem().getCreativeTab(), list);
-						if(list.size() > 0)
-							displayList.addAll(list);
-					}
-					else
-						displayList.add(subStack);
-				}
-			}
+				displayList.addAll(Arrays.asList(((Ingredient)stack).getMatchingStacks()));
 			else if(stack instanceof List&&!((List)stack).isEmpty())
-			{
-				for(ItemStack subStack : (List<ItemStack>)this.stack)
-				{
-					if(subStack.getItemDamage()==OreDictionary.WILDCARD_VALUE)
-					{
-						NonNullList<ItemStack> list = NonNullList.create();
-						subStack.getItem().getSubItems(subStack.getItem().getCreativeTab(), list);
-						if(list.size() > 0)
-							displayList.addAll(list);
-					}
-					else
-						displayList.add(subStack);
-				}
-			}
+				displayList.addAll((List<ItemStack>)this.stack);
+			else if(stack instanceof Tag)
+				((Tag<?>)stack).getAllElements().stream()
+						.map(o -> ((IItemProvider)o).asItem())
+						.map(ItemStack::new)
+						.forEach(displayList::add);
 		}
 		if(displayList==null||displayList.isEmpty())
 			return ItemStack.EMPTY;

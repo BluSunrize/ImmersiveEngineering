@@ -9,8 +9,8 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
@@ -41,15 +41,15 @@ public class ManualElementImage extends SpecialManualElements
 		for(ManualImage image1 : images)
 		{
 			int xOff = 60-image1.uSize/2;
-			gui.drawGradientRect(x+xOff-2, y+yOff-2, x+xOff+image1.uSize+2, y+yOff+image1.vSize+2,
+			gui.blit(x+xOff-2, y+yOff-2, x+xOff+image1.uSize+2, y+yOff+image1.vSize+2,
 					0xffeaa74c, 0xfff6b059);
-			gui.drawGradientRect(x+xOff-1, y+yOff-1, x+xOff+image1.uSize+1, y+yOff+image1.vSize+1,
+			gui.blit(x+xOff-1, y+yOff-1, x+xOff+image1.uSize+1, y+yOff+image1.vSize+1,
 					0xffc68e46, 0xffbe8844);
 			yOff += image1.vSize+5;
 		}
 		String lastResource = "";
 		yOff = 0;
-		GlStateManager.color(1, 1, 1, 1);
+		GlStateManager.color3f(1, 1, 1);
 		for(ManualImage image : images)
 		{
 			if(!image.resource.equals(lastResource))

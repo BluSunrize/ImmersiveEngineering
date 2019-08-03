@@ -10,10 +10,10 @@ package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Collections;
@@ -26,9 +26,9 @@ public class GuiButtonManualLink extends Button
 	GuiManual gui;
 	public List<GuiButtonManualLink> otherParts = ImmutableList.of();
 
-	public GuiButtonManualLink(GuiManual gui, int id, int x, int y, int w, int h, ManualLink link, String localized)
+	public GuiButtonManualLink(GuiManual gui, int x, int y, int w, int h, ManualLink link, String localized)
 	{
-		super(id, x, y, w, h, "");
+		super(x, y, w, h, "", btn -> link.changePage(gui, true));
 		this.gui = gui;
 		this.link = link;
 		this.localized = localized;
@@ -37,16 +37,11 @@ public class GuiButtonManualLink extends Button
 	}
 
 	@Override
-	public boolean mousePressed(Minecraft mc, int mx, int my)
+	public void render(int mx, int my, float partialTicks)
 	{
-		return super.mousePressed(mc, mx, my);
-	}
-
-	@Override
-	public void drawButton(Minecraft mc, int mx, int my, float partialTicks)
-	{
-		this.hovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
-		if(hovered)
+		Minecraft mc = Minecraft.getInstance();
+		isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
+		if(isHovered)
 		{
 			drawHovered(mc, true, mx, my);
 			for(GuiButtonManualLink btn : otherParts)
@@ -59,12 +54,8 @@ public class GuiButtonManualLink extends Button
 	private void drawHovered(Minecraft mc, boolean mouse, int mx, int my)
 	{
 		FontRenderer font = mc.fontRenderer;
-		boolean uni = font.getUnicodeFlag();
-		font.setUnicodeFlag(true);
 		font.drawString(localized, x, y, gui.manual.getHighlightColour());
-		font.setUnicodeFlag(false);
-		gui.drawHoveringText(Collections.singletonList(gui.manual.formatLink(link)), mx+8, my+4, font);
-		font.setUnicodeFlag(uni);
+		gui.renderTooltip(Collections.singletonList(gui.manual.formatLink(link)), mx+8, my+4, font);
 		GlStateManager.disableLighting();
 	}
 }

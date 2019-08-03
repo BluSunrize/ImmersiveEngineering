@@ -16,20 +16,22 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.common.model.IModelState;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-public class MultiLayerModel implements IModel
+public class MultiLayerModel implements IUnbakedModel
 {
 	public static MultiLayerModel INSTANCE = new MultiLayerModel();
 
@@ -74,22 +76,22 @@ public class MultiLayerModel implements IModel
 
 	@Nonnull
 	@Override
-	public Collection<ResourceLocation> getTextures()
+	public Collection<ResourceLocation> getTextures(@Nonnull Function<ResourceLocation, IUnbakedModel> modelGetter,
+													@Nonnull Set<String> missingTextureErrors)
 	{
 		return subModels.values().stream().flatMap(List::stream).map(modelData -> {
 			modelData.attemptToLoad(false);
 			if(modelData.getModel()!=null)
-			{
-				return modelData.getModel().getTextures();
-			}
+				return modelData.getModel().getTextures(modelGetter, missingTextureErrors);
 			else
 				return ImmutableList.<ResourceLocation>of();
 		}).flatMap(Collection::stream).collect(ImmutableList.toImmutableList());
 	}
 
-	@Nonnull
+	@Nullable
 	@Override
-	public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format, @Nonnull Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
+	public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter,
+							ISprite sprite, VertexFormat format)
 	{
 		Map<BlockRenderLayer, List<IBakedModel>> baked = new HashMap<>();
 		for(BlockRenderLayer layer : subModels.keySet())
@@ -97,14 +99,14 @@ public class MultiLayerModel implements IModel
 			baked.put(layer, subModels.get(layer).stream().map(modelData -> {
 				modelData.attemptToLoad(false);
 				assert modelData.getModel()!=null;
-				return modelData.getModel().bake(state, format, bakedTextureGetter);
+				return modelData.getModel().bake(bakery, bakedTextureGetter, sprite, format);
 			}).collect(ImmutableList.toImmutableList()));
 		}
 		return new BakedMultiLayerModel(baked);
 	}
 	@Nonnull
 	@Override
-	public IModel process(ImmutableMap<String, String> customData)
+	public IUnbakedModel process(ImmutableMap<String, String> customData)
 	{
 		Map<BlockRenderLayer, List<ModelData>> newSubs = new HashMap<>();
 		JsonParser parser = new JsonParser();

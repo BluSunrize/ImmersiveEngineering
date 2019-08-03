@@ -14,6 +14,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.renderer.entity.model.MinecartModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ModelBox;
@@ -21,12 +23,11 @@ import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ShaderMinecartModel<T extends MinecartEntity> extends MinecartModel<T>
 {
-	public static HashMap<Integer, ItemStack> shadedCarts = new HashMap<Integer, ItemStack>();
+	public static Int2ObjectMap<ItemStack> shadedCarts = new Int2ObjectOpenHashMap<>();
 	public static boolean rendersReplaced = false;
 
 	public List<RendererModel> sideModelsMirrored;

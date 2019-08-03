@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.IEItemFontRender;
@@ -23,15 +22,11 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-import org.lwjgl.input.Keyboard;
 
-import java.util.Locale;
+import java.util.HashSet;
 import java.util.Set;
 
 public class IEManualInstance extends ManualInstance
@@ -42,15 +37,14 @@ public class IEManualInstance extends ManualInstance
 	{
 		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png",
 				120, 179-28, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
+		/*
+		TODO no longer easily possible?
 		this.fontRenderer.colorCode[0+6] = Lib.COLOUR_I_ImmersiveOrange;
 		this.fontRenderer.colorCode[16+6] = Lib.COLOUR_I_ImmersiveOrangeShadow;
+		 */
 		((IEItemFontRender)this.fontRenderer).createColourBackup();
 		if(Minecraft.getInstance().gameSettings.language!=null)
-		{
-			this.fontRenderer.setUnicodeFlag(ClientUtils.mc().getLanguageManager().isCurrentLocaleUnicode());
 			this.fontRenderer.setBidiFlag(ClientUtils.mc().getLanguageManager().isCurrentLanguageBidirectional());
-		}
-		((IReloadableResourceManager)ClientUtils.mc().getResourceManager()).registerReloadListener(this.fontRenderer);
 	}
 
 	@Override
@@ -93,24 +87,8 @@ public class IEManualInstance extends ManualInstance
 			String[] segment = rep.substring(0, rep.length()-1).split(splitKey);
 			if(segment.length < 2)
 				break;
-			String result = "";
-			try
-			{
-				int dim = Integer.parseInt(segment[1]);
-				World world = DimensionManager.getWorld(dim);
-				if(world!=null&&world.provider!=null)
-				{
-					String name = world.provider.getDimensionType().getName();
-					if(name.toLowerCase(Locale.ENGLISH).startsWith("the ")||name.toLowerCase(Locale.ENGLISH).startsWith("the_"))
-						name = name.substring(4, 5).toUpperCase()+name.substring(5);
-					result = name;
-				}
-				else
-					result = "Dimension "+dim;
-			} catch(Exception ex)
-			{
-				ex.printStackTrace();
-			}
+			String result = segment[1];
+			//TODO better dimension name creation
 			s = s.replaceFirst(rep, result);
 		}
 
@@ -127,7 +105,7 @@ public class IEManualInstance extends ManualInstance
 			for(KeyBinding kb : ClientUtils.mc().gameSettings.keyBindings)
 				if(segment[1].equalsIgnoreCase(kb.getKeyDescription()))
 				{
-					result = Utils.toCamelCase(Keyboard.getKeyName(kb.getKeyCode()));
+					result = Utils.toCamelCase(kb.getKey().toString());
 					break;
 				}
 			s = s.replaceFirst(rep, result);

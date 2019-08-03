@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
+import blusunrize.immersiveengineering.client.models.connection.ConnLoader;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;

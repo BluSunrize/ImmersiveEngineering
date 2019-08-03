@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.client.models.multilayer;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
 
 import javax.annotation.Nonnull;
 
@@ -34,7 +34,7 @@ public class MultiLayerLoader implements ICustomModelLoader
 
 	@Nonnull
 	@Override
-	public IModel loadModel(@Nonnull ResourceLocation modelLocation) throws Exception
+	public IUnbakedModel loadModel(@Nonnull ResourceLocation modelLocation) throws Exception
 	{
 		return MultiLayerModel.INSTANCE;
 	}

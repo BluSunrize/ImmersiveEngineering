@@ -9,6 +9,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
 
@@ -36,12 +37,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	}
 
 	@Override
-	public void buttonPressed(GuiManual gui, Button button)
-	{
-	}
-
-	@Override
-	public void mouseDragged(int x, int y, int clickX, int clickY, int mouseX, int mouseY, int lastX, int lastY, Button button)
+	public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, Widget button)
 	{
 	}
 

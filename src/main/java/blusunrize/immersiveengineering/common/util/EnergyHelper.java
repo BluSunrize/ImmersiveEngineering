@@ -98,6 +98,18 @@ public class EnergyHelper
 				.orElse(false);
 	}
 
+	public static boolean isFluxRelated(ICapabilityProvider tile)
+	{
+		return isFluxRelated(tile, null);
+	}
+
+	public static boolean isFluxRelated(ICapabilityProvider tile, @Nullable Direction facing)
+	{
+		if(tile==null)
+			return false;
+		return tile.getCapability(CapabilityEnergy.ENERGY, facing).isPresent();
+	}
+
 	public static int insertFlux(ICapabilityProvider tile, int energy, boolean simulate)
 	{
 		return insertFlux(tile, null, energy, simulate);

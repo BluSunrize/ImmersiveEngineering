@@ -9,7 +9,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -75,7 +75,7 @@ public class ManualElementItem extends SpecialManualElements
 		int length = stacks.size();
 		if(length > 0)
 		{
-			GlStateManager.scale(scale, scale, scale);
+			GlStateManager.scalef(scale, scale, scale);
 			for(int line = 0; line < lines; line++)
 			{
 				int perLine = line==lines-1?itemsLastLine: line%2==0?longLineLen: shortLineLen;
@@ -94,15 +94,14 @@ public class ManualElementItem extends SpecialManualElements
 						highlighted = stacks.get(item);
 				}
 			}
-			GlStateManager.scale(1/scale, 1/scale, 1/scale);
+			GlStateManager.scalef(1/scale, 1/scale, 1/scale);
 		}
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.enableBlend();
 
-		manual.fontRenderer.setUnicodeFlag(false);
 		if(!highlighted.isEmpty())
-			gui.renderToolTip(highlighted, mx, my);
+			gui.renderTooltip(gui.getTooltipFromItem(highlighted), mx, my);
 		RenderHelper.disableStandardItemLighting();
 	}
 
@@ -110,7 +109,7 @@ public class ManualElementItem extends SpecialManualElements
 	public boolean listForSearch(String searchTag)
 	{
 		for(ItemStack stack : stacks)
-			if(stack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
+			if(stack.getDisplayName().getFormattedText().toLowerCase(Locale.ENGLISH).contains(searchTag))
 				return true;
 		return false;
 	}

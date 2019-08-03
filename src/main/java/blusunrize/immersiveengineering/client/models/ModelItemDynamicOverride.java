@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
@@ -26,21 +26,22 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.ItemLayerModel;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * @author BluSunrize - 12.08.2016
  */
-public class ModelItemDynamicOverride implements IBakedModel
+public class ModelItemDynamicOverride extends BakedIEModel
 {
 	IBakedModel itemModel;
 	ImmutableList<BakedQuad> quads;
@@ -64,8 +65,9 @@ public class ModelItemDynamicOverride implements IBakedModel
 		}
 	}
 
+	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
 		if(quads!=null&&side==null)
 			return quads;
@@ -115,11 +117,11 @@ public class ModelItemDynamicOverride implements IBakedModel
 	}
 
 	public static final HashMap<String, IBakedModel> modelCache = new HashMap<>();
-	static ItemOverrideList dynamicOverrides = new ItemOverrideList(new ArrayList<>())
+	static ItemOverrideList dynamicOverrides = new ItemOverrideList()
 	{
-
+		@Nullable
 		@Override
-		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
+		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn)
 		{
 			if(!stack.isEmpty()&&stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
 			{
@@ -158,9 +160,8 @@ public class ModelItemDynamicOverride implements IBakedModel
 			this.quads = builder.build();
 		}
 
-		@Nonnull
 		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)
 		{
 			if(side==null)
 			{

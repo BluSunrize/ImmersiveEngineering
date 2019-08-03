@@ -9,14 +9,13 @@
 package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualUtils;
-import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 
-import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
-import static net.minecraft.client.renderer.GlStateManager.DestFactor.ZERO;
-import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
-import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class GuiButtonManual extends Button
 {
@@ -24,9 +23,9 @@ public class GuiButtonManual extends Button
 	public int[] colour = {0x33000000, 0x33cb7f32};
 	public int[] textColour = {0xffe0e0e0, 0xffffffa0};
 
-	public GuiButtonManual(GuiManual gui, int id, int x, int y, int w, int h, String text)
+	public GuiButtonManual(GuiManual gui, int x, int y, int w, int h, String text, IPressable handler)
 	{
-		super(id, x, y, w, h, text);
+		super(w, h, x, y, text, handler);
 		this.gui = gui;
 	}
 
@@ -43,25 +42,22 @@ public class GuiButtonManual extends Button
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mx, int my, float partialTicks)
+	public void render(int mx, int my, float partialTicks)
 	{
 		if(this.visible)
 		{
 			ManualUtils.bindTexture(gui.texture);
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			this.hovered = mx >= this.x&&mx < (this.x+this.width)&&my >= this.y&&my < (this.y+this.height);
+			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+			this.isHovered = mx >= this.x&&mx < (this.x+this.width)&&my >= this.y&&my < (this.y+this.height);
 			GlStateManager.enableBlend();
-			GlStateManager.tryBlendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
+			GlStateManager.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 
-			int col = colour[hovered?1: 0];
-			this.drawGradientRect(x, y, x+width, y+height, col, col);
-			int txtCol = textColour[hovered?1: 0];
-			boolean uni = gui.manual.fontRenderer.getUnicodeFlag();
-			gui.manual.fontRenderer.setUnicodeFlag(true);
-			int sw = gui.manual.fontRenderer.getStringWidth(displayString);
-			gui.manual.fontRenderer.drawString(displayString, x+width/2-sw/2, y+height/2-gui.manual.fontRenderer.FONT_HEIGHT/2, txtCol);
-			gui.manual.fontRenderer.setUnicodeFlag(uni);
-			this.mouseDragged(mc, mx, my);
+			int col = colour[isHovered?1: 0];
+			this.blit(x, y, x+width, y+height, col, col);
+			int txtCol = textColour[isHovered?1: 0];
+			int sw = gui.manual.fontRenderer.getStringWidth(getMessage());
+			gui.manual.fontRenderer.drawString(getMessage(), x+width/2-sw/2, y+height/2-gui.manual.fontRenderer.FONT_HEIGHT/2, txtCol);
+			//TODO this.mouseDragged(mc, mx, my);
 		}
 	}
 }

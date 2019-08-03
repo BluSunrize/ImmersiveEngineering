@@ -20,6 +20,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -93,47 +94,22 @@ public class ManualElementMultiblock extends SpecialManualElements
 			boolean canRenderFormed = multiblock.canRenderFormedStructure();
 
 			yOff = (int)(transY+scale*Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+renderInfo.structureWidth*renderInfo.structureWidth+renderInfo.structureLength*renderInfo.structureLength)/2);
-			pageButtons.add(new GuiButtonManualNavigation(gui, 100, x+4, (int)transY-(canRenderFormed?11: 5), 10, 10, 4)
-			{
-				@Override
-				public void onClick(double x, double y)
-				{
-					super.onClick(x, y);
-					canTick = !canTick;
-					type = type==4?5: 4;
-				}
-			});
+			pageButtons.add(new GuiButtonManualNavigation(gui, x+4, (int)transY-(canRenderFormed?11: 5), 10, 10, 4, btn -> {
+				GuiButtonManualNavigation btnNav = (GuiButtonManualNavigation)btn;
+				canTick = !canTick;
+				btnNav.type = btnNav.type==4?5: 4;
+			}));
 			if(this.renderInfo.structureHeight > 1)
 			{
-				pageButtons.add(new GuiButtonManualNavigation(gui, 101, x+4, (int)transY-(canRenderFormed?14: 8)-16, 10, 16, 3)
-				{
-					@Override
-					public void onClick(double x, double y)
-					{
-						super.onClick(x, y);
-						renderInfo.setShowLayer(Math.min(renderInfo.showLayer+1, renderInfo.structureHeight-1));
-					}
-				});
-				pageButtons.add(new GuiButtonManualNavigation(gui, 102, x+4, (int)transY+(canRenderFormed?14: 8), 10, 16, 2)
-				{
-					@Override
-					public void onClick(double x, double y)
-					{
-						super.onClick(x, y);
-						renderInfo.setShowLayer(Math.max(renderInfo.showLayer-1, -1));
-					}
-				});
+				pageButtons.add(new GuiButtonManualNavigation(gui, x+4, (int)transY-(canRenderFormed?14: 8)-16, 10, 16, 3,
+						btn -> renderInfo.setShowLayer(Math.min(renderInfo.showLayer+1, renderInfo.structureHeight-1))
+				));
+				pageButtons.add(new GuiButtonManualNavigation(gui, x+4, (int)transY+(canRenderFormed?14: 8), 10, 16, 2,
+						btn -> renderInfo.setShowLayer(Math.max(renderInfo.showLayer-1, -1))));
 			}
 			if(canRenderFormed)
-				pageButtons.add(new GuiButtonManualNavigation(gui, 103, x+4, (int)transY+1, 10, 10, 6)
-				{
-					@Override
-					public void onClick(double x, double y)
-					{
-						super.onClick(x, y);
-						showCompleted = !showCompleted;
-					}
-				});
+				pageButtons.add(new GuiButtonManualNavigation(gui, x+4, (int)transY+1, 10, 10, 6,
+						btn -> showCompleted = !showCompleted));
 		}
 
 		IngredientStack[] totalMaterials = this.multiblock.getTotalMaterials();
@@ -310,14 +286,14 @@ public class ManualElementMultiblock extends SpecialManualElements
 	}
 
 	@Override
-	public void mouseDragged(int x, int y, int clickX, int clickY, int mouseX, int mouseY, int lastX, int lastY, Button button)
+	public void mouseDragged(int x, int y, double clickX, double clickY, double mouseX, double mouseY, double lastX, double lastY, Widget button)
 	{
 		if((clickX >= 40&&clickX < 144&&mouseX >= 20&&mouseX < 164)&&(clickY >= 30&&clickY < 130&&mouseY >= 30&&mouseY < 180))
 		{
-			int dx = mouseX-lastX;
-			int dy = mouseY-lastY;
-			rotY = rotY+(dx/104f)*80;
-			rotX = rotX+(dy/100f)*80;
+			double dx = mouseX-lastX;
+			double dy = mouseY-lastY;
+			rotY = (float)(rotY+(dx/104f)*80);
+			rotX = (float)(rotX+(dy/100f)*80);
 		}
 	}
 

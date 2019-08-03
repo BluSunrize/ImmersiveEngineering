@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.models.smart;
+package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;

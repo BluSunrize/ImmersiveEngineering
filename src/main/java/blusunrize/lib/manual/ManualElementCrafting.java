@@ -10,24 +10,22 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.crafting.IShapedRecipe;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ManualElementCrafting extends SpecialManualElements
 {
@@ -64,26 +62,28 @@ public class ManualElementCrafting extends SpecialManualElements
 					if(subStack instanceof PositionedItemStack[])
 						addFixedRecipe(iStack, (PositionedItemStack[])subStack);
 					else
-						for(IRecipe recipe : CraftingManager.REGISTRY)
-							checkRecipe(recipe, subStack, iStack);
+						for(IRecipe<?> recipe : Minecraft.getInstance().world.getRecipeManager().getRecipes())
+							if(recipe.getType()==IRecipeType.CRAFTING)
+								checkRecipe(recipe, subStack, iStack);
 				}
 			else
-				for(IRecipe recipe : CraftingManager.REGISTRY)
+				for(IRecipe<?> recipe : Minecraft.getInstance().world.getRecipeManager().getRecipes())
+					if(recipe.getType()==IRecipeType.CRAFTING)
 					checkRecipe(recipe, stack, iStack);
 		}
 	}
 
-	private void checkRecipe(IRecipe rec, Object stack, int recipeIndex)
+	private void checkRecipe(IRecipe<?> rec, Object stack, int recipeIndex)
 	{
 		boolean matches = !rec.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack);
-		if(!matches&&stack instanceof ResourceLocation&&stack.equals(rec.getRegistryName()))
+		if(!matches&&stack instanceof ResourceLocation&&stack.equals(rec.getId()))
 			matches = true;
 		if(matches)
 		{
 			NonNullList<Ingredient> ingredientsPre = rec.getIngredients();
 			int recipeWidth;
 			int recipeHeight;
-			if(rec instanceof ShapelessRecipes||rec instanceof ShapelessOreRecipe)
+			if(rec instanceof ShapelessRecipe)
 			{
 				recipeWidth = MathHelper.clamp(ingredientsPre.size(), 1, 3);
 				recipeHeight = (ingredientsPre.size()-1)/3+1;
@@ -157,8 +157,17 @@ public class ManualElementCrafting extends SpecialManualElements
 		{
 			if(this.recipeLayout[i].size() > 1)
 			{
-				pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+100, x-2, y+recipeYOffset+heightPixels[i]/2-5, 8, 10, 0));
-				pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+101, x+122-16, y+recipeYOffset+heightPixels[i]/2-5, 8, 10, 1));
+				final int iFinal = i;
+				pageButtons.add(new GuiButtonManualNavigation(gui, x-2, y+recipeYOffset+heightPixels[i]/2-5, 8, 10, 0, btn -> {
+					recipePage[iFinal]--;
+					if(recipePage[iFinal] < 0)
+						recipePage[iFinal] = recipeLayout[iFinal].size()-1;
+				}));
+				pageButtons.add(new GuiButtonManualNavigation(gui, x+122-16, y+recipeYOffset+heightPixels[i]/2-5, 8, 10, 1, btn -> {
+					recipePage[iFinal]++;
+					if(recipePage[iFinal] >= recipeLayout[iFinal].size())
+						recipePage[iFinal] = 0;
+				}));
 			}
 			if(this.recipeLayout[i].size() > 0)
 				recipeYOffset += heightPixels[i]+8;
@@ -185,7 +194,7 @@ public class ManualElementCrafting extends SpecialManualElements
 					{
 						if(pstack.x > maxX)
 							maxX = pstack.x;
-						gui.drawGradientRect(x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666, 0x33666666);
+						gui.blit(x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666, 0x33666666);
 					}
 
 				ManualUtils.bindTexture(manual.texture);
@@ -196,11 +205,7 @@ public class ManualElementCrafting extends SpecialManualElements
 		}
 
 		totalYOff = 0;
-		GlStateManager.translate(0, 0, 300);
-		boolean uni = manual.fontRenderer.getUnicodeFlag();
-		manual.fontRenderer.setUnicodeFlag(false);
-		/*
-		 RenderItem.getInstance().renderWithColor=true;*/
+		GlStateManager.translatef(0, 0, 300);
 		for(int i = 0; i < recipeRows.length; i++)
 		{
 			List<PositionedItemStack[]> rList = this.recipeLayout[i];
@@ -219,38 +224,16 @@ public class ManualElementCrafting extends SpecialManualElements
 			}
 		}
 
-		GlStateManager.translate(0, 0, -300);
+		GlStateManager.translatef(0, 0, -300);
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 
-		manual.fontRenderer.setUnicodeFlag(uni);
-
-		manual.fontRenderer.setUnicodeFlag(false);
 		if(!highlighted.isEmpty())
-			gui.renderToolTip(highlighted, mx, my);
+			gui.renderTooltip(gui.getTooltipFromItem(highlighted), mx, my);
 		GlStateManager.enableBlend();
-		GlStateManager.enableAlpha();
+		GlStateManager.enableAlphaTest();
 		RenderHelper.disableStandardItemLighting();
-	}
-
-	@Override
-	public void buttonPressed(GuiManual gui, Button button)
-	{
-		super.buttonPressed(gui, button);
-		int r = button.id/100-1;
-		if(r >= 0&&r < recipeRows.length)
-		{
-			if(button.id%100==0)
-				recipePage[r]--;
-			else
-				recipePage[r]++;
-
-			if(recipePage[r] >= this.recipeLayout[r].size())
-				recipePage[r] = 0;
-			if(recipePage[r] < 0)
-				recipePage[r] = this.recipeLayout[r].size()-1;
-		}
 	}
 
 	@Override
@@ -261,22 +244,12 @@ public class ManualElementCrafting extends SpecialManualElements
 			if(stack instanceof Object[])
 			{
 				for(Object subStack : (Object[])stack)
-					if(subStack instanceof ItemStack&&
-							((ItemStack)subStack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
+					if(subStack instanceof ItemStack&&ManualUtils.listStack(searchTag, (ItemStack)subStack))
 						return true;
 			}
 			else if(stack instanceof ItemStack)
-			{
-				if(((ItemStack)stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
+				if(ManualUtils.listStack(searchTag, (ItemStack)stack))
 					return true;
-			}
-			else if(stack instanceof String)
-			{
-				if(ManualUtils.isExistingOreName((String)stack))
-					for(ItemStack subStack : OreDictionary.getOres((String)stack))
-						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
-							return true;
-			}
 		}
 		return false;
 	}

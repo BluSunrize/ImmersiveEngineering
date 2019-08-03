@@ -15,23 +15,21 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import gnu.trove.iterator.TIntIterator;
-import gnu.trove.map.TIntObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.resource.IResourceType;
-import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
-import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.resource.IResourceType;
+import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import net.minecraftforge.resource.VanillaResourceType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,7 +54,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		this.pageHeight = pageHeight;
 		this.pageWidth = pageWidth;
 		contentTree = new Tree<>(name);
-		((IReloadableResourceManager)Minecraft.getInstance().getResourceManager()).registerReloadListener(this);
+		((IReloadableResourceManager)Minecraft.getInstance().getResourceManager()).addReloadListener(this);
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "crafting"), s -> {
 			Object[] stacksAndRecipes;
 			if(JSONUtils.isJsonArray(s, "recipes"))
@@ -110,17 +108,14 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 				s -> {
 					JsonElement items = s.get("items");
 					NonNullList<ItemStack> stacks;
-					JsonContext ctx = new JsonContext(name.getNamespace());
 					if(items.isJsonObject())
-					{
-						stacks = NonNullList.withSize(1, CraftingHelper.getItemStack(items.getAsJsonObject(), ctx));
-					}
+						stacks = NonNullList.withSize(1, CraftingHelper.getItemStack(items.getAsJsonObject(), true));
 					else
 					{
 						JsonArray arr = items.getAsJsonArray();
 						stacks = NonNullList.withSize(arr.size(), ItemStack.EMPTY);
 						for(int i = 0; i < arr.size(); i++)
-							stacks.set(i, CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), ctx));
+							stacks.set(i, CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true));
 					}
 					return new ManualElementItem(this, stacks);
 				}
@@ -261,11 +256,9 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		itemLinks.clear();
 		getAllEntries().forEach((entry) ->
 		{
-			TIntObjectMap<SpecialManualElement> specials = entry.getSpecials();
-			TIntIterator it = specials.keySet().iterator();
-			while(it.hasNext())
+			Int2ObjectMap<SpecialManualElement> specials = entry.getSpecials();
+			for(int page : specials.keySet())
 			{
-				int page = it.next();
 				SpecialManualElement p = specials.get(page);
 				p.recalculateCraftingRecipes();
 				for(ItemStack s : p.getProvidedRecipes())
@@ -285,11 +278,9 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		if(stack.isEmpty())
 			return 0;
 		int ret = ForgeRegistries.ITEMS.getKey(stack.getItem()).hashCode();
-		if(stack.getHasSubtypes())
-			ret = ret*31+stack.getMetadata();
 		if(stack.hasTag())
 		{
-			CompoundNBT nbt = stack.getTagCompound();
+			CompoundNBT nbt = stack.getTag();
 			if(!nbt.isEmpty())
 				ret = ret*31+nbt.hashCode();
 		}
@@ -346,7 +337,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 				guiManual.previousSelectedEntry.push(new ManualLink(guiManual.getCurrentPage(), -1, guiManual.page));
 			guiManual.setCurrentNode(this.key.getTreeNode());
 			guiManual.page = getPage();
-			guiManual.initGui();
+			guiManual.init();
 		}
 
 		public int getPage()

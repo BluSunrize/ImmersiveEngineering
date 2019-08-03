@@ -6,13 +6,14 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.models.smart;
+package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.energy.wires.WireApi;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.BakedIEModel;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.FeedthroughData;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -61,7 +62,7 @@ import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTil
 import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.WIRE;
 import static net.minecraft.util.Direction.Axis.Y;
 
-public class FeedthroughModel implements IBakedModel
+public class FeedthroughModel extends BakedIEModel
 {
 	public static final Cache<FeedthroughCacheKey, SpecificFeedthroughModel> CACHE = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)
@@ -75,13 +76,6 @@ public class FeedthroughModel implements IBakedModel
 				(rl) -> mc().getTextureMap().getAtlasSprite(rl.toString());
 		for(WireApi.FeedthroughModelInfo f : INFOS.values())
 			f.onResourceReload(bakedTextureGetter, DefaultVertexFormats.ITEM);
-	}
-
-	@Nonnull
-	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand)
-	{
-		return ImmutableList.of();
 	}
 
 	@Nonnull

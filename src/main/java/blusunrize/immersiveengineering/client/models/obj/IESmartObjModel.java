@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.models;
+package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
@@ -17,7 +17,8 @@ import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.smart.RenderCacheKey;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.models.connection.RenderCacheKey;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -67,7 +68,7 @@ public class IESmartObjModel extends OBJBakedModel
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
 	public static HashMap<RenderCacheKey, List<BakedQuad>> modelCache = new HashMap<>();
 	IBakedModel baseModel;
-	HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
+	HashMap<TransformType, Matrix4> transformationMap;
 	ImmutableList<BakedQuad> bakedQuads;
 	ItemStack tempStack = ItemStack.EMPTY;
 	BlockState tempState;

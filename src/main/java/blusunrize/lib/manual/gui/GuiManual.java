@@ -83,7 +83,7 @@ public class GuiManual extends Screen
 	}
 
 	@Override
-	protected void init()
+	public void init()
 	{
 		if(mc.gameSettings.guiScale==1)
 		{
@@ -112,40 +112,30 @@ public class GuiManual extends Screen
 			for(AbstractNode<ResourceLocation, ManualEntry> node : currentNode.getChildren())
 				if(manual.showNodeInList(node))
 					children.add(node);
-			this.buttons.add(new GuiClickableList(this, 0, guiLeft+40, guiTop+20, 100, 168,
-					1f, children)
-			{
-				@Override
-				public void onClick(double x, double y)
+			this.buttons.add(new GuiClickableList(this, guiLeft+40, guiTop+20, 100, 168,
+					1f, children, btn -> {
+				GuiClickableList cl = (GuiClickableList)btn;
+				int sel = cl.selectedOption;
+				if(sel >= 0&&sel < cl.headers.length)
 				{
-					super.onClick(x, y);
-					int sel = selectedOption;
-					if(sel >= 0&&sel < headers.length)
-					{
-						previousSelectedEntry.clear();
-						setCurrentNode(nodes.get(sel));
-					}
-					selectedOption = -1;
-					GuiManual.this.init();
+					previousSelectedEntry.clear();
+					setCurrentNode(cl.nodes.get(sel));
 				}
-			});
+				cl.selectedOption = -1;
+				GuiManual.this.init();
+			}));
 			textField = true;
 		}
 		if(currentNode.getSuperNode()!=null)
-			this.buttons.add(new GuiButtonManualNavigation(this, 1, guiLeft+24, guiTop+10, 10, 10, 0)
-			{
-				@Override
-				public void onClick(double x, double y)
-				{
-					super.onClick(x, y);
-					if(currentNode.isLeaf()&&!previousSelectedEntry.isEmpty())
-						previousSelectedEntry.pop().changePage(GuiManual.this, false);
-					else if(currentNode.getSuperNode()!=null)
-						setCurrentNode(currentNode.getSuperNode());
-					page = 0;
-					GuiManual.this.init();
-				}
-			});
+			this.buttons.add(new GuiButtonManualNavigation(this, guiLeft+24, guiTop+10, 10, 10, 0,
+					btn -> {
+						if(currentNode.isLeaf()&&!previousSelectedEntry.isEmpty())
+							previousSelectedEntry.pop().changePage(GuiManual.this, false);
+						else if(currentNode.getSuperNode()!=null)
+							setCurrentNode(currentNode.getSuperNode());
+						page = 0;
+						GuiManual.this.init();
+					}));
 
 		if(textField)
 		{
@@ -441,12 +431,14 @@ public class GuiManual extends Screen
 						}
 					}
 
-				this.buttons.set(0, new GuiClickableList(this, 0, guiLeft+40, guiTop+20, 100, 148,
-						1f, lHeaders));
+				this.buttons.set(0, new GuiClickableList(this, guiLeft+40, guiTop+20, 100, 148,
+						1f, lHeaders, btn -> {
+				}));
 				if(!lCorrections.isEmpty())
 				{
-					GuiClickableList suggestions = new GuiClickableList(this, 11, guiLeft+180, guiTop+138, 100, 80, 1f,
-							lCorrections);
+					GuiClickableList suggestions = new GuiClickableList(this, guiLeft+180, guiTop+138, 100, 80, 1f,
+							lCorrections, btn -> {
+					});
 					if(hasSuggestions!=-1)
 						this.buttons.set(hasSuggestions, suggestions);
 					else
@@ -468,5 +460,4 @@ public class GuiManual extends Screen
 			return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
 		}
 	}
-
 }

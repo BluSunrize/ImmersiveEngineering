@@ -960,7 +960,7 @@ public class ApiUtils
 
 	public static Map<String, Integer> sortMap(Map<String, Integer> map, boolean inverse)
 	{
-		TreeMap<String, Integer> sortedMap = new TreeMap<String, Integer>(new ValueComparator(map, inverse));
+		TreeMap<String, Integer> sortedMap = new TreeMap<>(new ValueComparator(map, inverse));
 		sortedMap.putAll(map);
 		return sortedMap;
 	}

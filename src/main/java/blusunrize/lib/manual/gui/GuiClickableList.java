@@ -11,12 +11,10 @@ package blusunrize.lib.manual.gui;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree;
-import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Mouse;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -35,10 +33,11 @@ public class GuiClickableList extends Button
 
 	private long prevWheelNano = 0;
 
-	GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale,
-					 @Nonnull List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes)
+	GuiClickableList(GuiManual gui, int x, int y, int w, int h, float textScale,
+					 @Nonnull List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes,
+					 IPressable handler)
 	{
-		super(id, x, y, w, h, "");
+		super(x, y, w, h, "", handler);
 		this.gui = gui;
 		this.textScale = textScale;
 		this.nodes = nodes;
@@ -61,26 +60,24 @@ public class GuiClickableList extends Button
 	}
 
 	@Override
-	public void drawButton(@Nonnull Minecraft mc, int mx, int my, float partialTicks)
+	public void render(int mx, int my, float partialTicks)
 	{
 		FontRenderer fr = gui.manual.fontRenderer;
-		boolean uni = fr.getUnicodeFlag();
-		fr.setUnicodeFlag(true);
 
 		int mmY = my-this.y;
 		GlStateManager.pushMatrix();
-		GlStateManager.scale(textScale, textScale, textScale);
-		GlStateManager.translate(x/textScale, y/textScale, 0);
-		this.hovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
+		GlStateManager.scalef(textScale, textScale, textScale);
+		GlStateManager.translatef(x/textScale, y/textScale, 0);
+		isHovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		for(int i = 0; i < Math.min(perPage, headers.length); i++)
 		{
-			GlStateManager.color(1, 1, 1);
+			GlStateManager.color3f(1, 1, 1);
 			int col = gui.manual.getTextColour();
-			boolean currEntryHovered = hovered&&mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight();
+			boolean currEntryHovered = isHovered&&mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight();
 			if(currEntryHovered)
 				col = gui.manual.getHighlightColour();
 			if(i!=0)
-				GlStateManager.translate(0, getFontHeight(), 0);
+				GlStateManager.translatef(0, getFontHeight(), 0);
 			int j = offset+i;
 			if(j > headers.length-1)
 				j = headers.length-1;
@@ -89,51 +86,54 @@ public class GuiClickableList extends Button
 			{
 				ManualUtils.bindTexture(gui.texture);
 				GlStateManager.enableBlend();
-				this.drawTexturedModalRect(0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
+				this.blit(0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
 			}
-			fr.drawString(s, isCategory[j]?7: 0, 0, col, false);
+			fr.drawString(s, isCategory[j]?7: 0, 0, col);
 		}
-		GlStateManager.scale(1/textScale, 1/textScale, 1/textScale);
+		GlStateManager.scalef(1/textScale, 1/textScale, 1/textScale);
 		GlStateManager.popMatrix();
 		if(maxOffset > 0)
 		{
 			int h1 = offset*getFontHeight();
 			int h2 = height-8-maxOffset*getFontHeight();
-			this.drawGradientRect(x+width, y+h1, x+width+8, y+h1+h2, 0x0a000000, 0x0a000000);
-			this.drawGradientRect(x+width+1, y+h1, x+width+6, y+h1+h2, 0x28000000, 0x28000000);
+			this.blit(x+width, y+h1, x+width+8, y+h1+h2, 0x0a000000, 0x0a000000);
+			this.blit(x+width+1, y+h1, x+width+6, y+h1+h2, 0x28000000, 0x28000000);
 			if(offset > 0)
-				this.drawGradientRect(x+width, y, x+width+8, y+h1, 0x0a000000, 0x0a000000);
+				this.blit(x+width, y, x+width+8, y+h1, 0x0a000000, 0x0a000000);
 			if(offset < maxOffset)
 			{
 				int h3 = (maxOffset-offset)*getFontHeight();
-				this.drawGradientRect(x+width, y+height-8-h3, x+width+8, y+height-8, 0x0a000000, 0x11000000);
+				this.blit(x+width, y+height-8-h3, x+width+8, y+height-8, 0x0a000000, 0x11000000);
 			}
 		}
+	}
 
-		fr.setUnicodeFlag(uni);
-
-		//Handle DWheel
-		int mouseWheel = Mouse.getEventDWheel();
-		if(mouseWheel!=0&&maxOffset > 0&&Mouse.getEventNanoseconds()!=prevWheelNano)
+	@Override
+	public boolean mouseScrolled(double p_mouseScrolled_1_, double p_mouseScrolled_3_, double amount)
+	{
+		if(amount < 0&&offset < maxOffset)
 		{
-			prevWheelNano = Mouse.getEventNanoseconds();
-			if(mouseWheel < 0&&offset < maxOffset)
-				offset++;
-			if(mouseWheel > 0&&offset > 0)
-				offset--;
+			offset++;
+			return true;
 		}
+		if(amount > 0&&offset > 0)
+		{
+			offset--;
+			return true;
+		}
+		return false;
 	}
 
 	public int selectedOption = -1;
 
 	@Override
-	public boolean mousePressed(Minecraft mc, int mx, int my)
+	public boolean mouseClicked(double mx, double my, int btn)
 	{
-		boolean b = super.mousePressed(mc, mx, my);
+		boolean b = super.clicked(mx, my);
 		selectedOption = -1;
 		if(b)
 		{
-			int mmY = my-this.y;
+			double mmY = my-this.y;
 			for(int i = 0; i < Math.min(perPage, headers.length); i++)
 				if(mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight())
 					selectedOption = offset+i;

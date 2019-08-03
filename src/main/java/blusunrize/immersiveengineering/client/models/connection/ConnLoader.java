@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.models.smart;
+package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.models.ModelData;
@@ -17,16 +17,17 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.model.IModelState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,7 +56,7 @@ public class ConnLoader implements ICustomModelLoader
 
 	@Nonnull
 	@Override
-	public IModel loadModel(@Nonnull ResourceLocation modelLocation)
+	public IUnbakedModel loadModel(@Nonnull ResourceLocation modelLocation)
 	{
 		if(modelLocation.equals(DATA_BASED_LOC))
 			return new ConnModelBase();
@@ -77,7 +78,7 @@ public class ConnLoader implements ICustomModelLoader
 		return ModelLoaderRegistry.getMissingModel();
 	}
 
-	private static class ConnModelBase implements IModel
+	private static class ConnModelBase implements IUnbakedModel
 	{
 		private static final ResourceLocation WIRE_LOC = new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":blocks/wire");
 		@Nullable
@@ -132,14 +133,15 @@ public class ConnLoader implements ICustomModelLoader
 
 		@Nonnull
 		@Override
-		public Collection<ResourceLocation> getTextures()
+		public Collection<ResourceLocation> getTextures(@Nonnull Function<ResourceLocation, IUnbakedModel> modelGetter,
+														@Nonnull Set<String> missingTextureErrors)
 		{
 			if(baseData==null)
 				return ImmutableList.of();
 			baseData.attemptToLoad(false);
 			if(baseData.getModel()!=null)
 			{
-				List<ResourceLocation> ret = new ArrayList<>(baseData.getModel().getTextures());
+				List<ResourceLocation> ret = new ArrayList<>(baseData.getModel().getTextures(modelGetter, missingTextureErrors));
 				ret.add(WIRE_LOC);
 				return ret;
 			}
@@ -147,21 +149,22 @@ public class ConnLoader implements ICustomModelLoader
 				return ImmutableList.of(WIRE_LOC);
 		}
 
-		@Nonnull
+		@Nullable
 		@Override
-		public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format, @Nonnull Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
+		public IBakedModel bake(@Nonnull ModelBakery bakery, @Nonnull Function<ResourceLocation, TextureAtlasSprite> spriteGetter,
+								@Nonnull ISprite sprite, @Nonnull VertexFormat format)
 		{
 			assert baseData!=null;
 			baseData.attemptToLoad(true);
 			assert baseData.getModel()!=null;
-			return new ConnModelReal(baseData.getModel().bake(state, format, bakedTextureGetter), layers);
+			return new ConnModelReal(baseData.getModel().bake(bakery, spriteGetter, sprite, format), layers);
 		}
 
 		private static final ImmutableSet<String> ownKeys = ImmutableSet.of("base", "custom", "textures", "layers");
 
 		@Nonnull
 		@Override
-		public IModel process(ImmutableMap<String, String> customData)
+		public IUnbakedModel process(ImmutableMap<String, String> customData)
 		{
 			if(customData==null||customData.isEmpty()||!customData.containsKey("base"))
 				return this;
@@ -194,7 +197,7 @@ public class ConnLoader implements ICustomModelLoader
 
 		@Nonnull
 		@Override
-		public IModel retexture(ImmutableMap<String, String> textures)
+		public IUnbakedModel retexture(ImmutableMap<String, String> textures)
 		{
 			if(baseData!=null)
 			{

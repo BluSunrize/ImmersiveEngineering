@@ -46,7 +46,7 @@ import javax.vecmath.Matrix4f;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class ModelConveyor implements IBakedModel
+public class ModelConveyor extends BakedIEModel
 {
 	static List<BakedQuad> emptyQuads = Lists.newArrayList();
 	public static HashMap<String, List<BakedQuad>> modelCache = new HashMap<>();
@@ -63,13 +63,6 @@ public class ModelConveyor implements IBakedModel
 	public ModelConveyor()
 	{
 		this(null);
-	}
-
-	@Nonnull
-	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand)
-	{
-		return ImmutableList.of();
 	}
 
 	@Nonnull
