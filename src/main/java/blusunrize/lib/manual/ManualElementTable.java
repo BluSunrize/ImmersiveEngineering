@@ -10,6 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiManual;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 
@@ -99,7 +100,7 @@ public class ManualElementTable extends SpecialManualElements
 		if(localizedTable!=null)
 		{
 			int col = manual.getHighlightColour()|0xff000000;
-			gui.blit(x, y-2, x+120, y-1, col, col);
+			AbstractGui.fill(x, y-2, x+120, y-1, col);
 
 			int yOff = 0;
 			for(String[] line : localizedTable)
@@ -122,8 +123,8 @@ public class ManualElementTable extends SpecialManualElements
 						float scale = .5f;
 						GlStateManager.scalef(1, scale, 1);
 						int barHeight = (int)((y+yOff+height*manual.fontRenderer.FONT_HEIGHT)/scale);
-						gui.blit(x, barHeight, x+120, barHeight+1,
-								manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
+						AbstractGui.fill(x, barHeight, x+120, barHeight+1,
+								manual.getTextColour()|0xff000000);
 						GlStateManager.scalef(1, 1/scale, 1);
 					}
 
@@ -132,7 +133,7 @@ public class ManualElementTable extends SpecialManualElements
 
 			if(bars!=null)
 				for(int i = 0; i < bars.length; i++)
-					gui.blit(textOff[i]-4, y-4, textOff[i]-3, y+yOff, col, col);
+					AbstractGui.fill(textOff[i]-4, y-4, textOff[i]-3, y+yOff, col);
 		}
 	}
 

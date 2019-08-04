@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.common.gui.ContainerAutoWorkbench;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -27,23 +27,23 @@ import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 
-public class GuiAutoWorkbench extends GuiIEContainerBase
+public class AutoWorkbenchScreen extends IEContainerScreen
 {
 	AutoWorkbenchTileEntity tile;
 
-	public GuiAutoWorkbench(PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
+	public AutoWorkbenchScreen(PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
 	{
-		super(new ContainerAutoWorkbench(inventoryPlayer, tile));
+		super(new ContainerAutoWorkbench(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 		this.ySize = 184;
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
 		this.buttons.clear();
-		super.initGui();
-		Slot s = inventorySlots.getSlot(0);
+		super.init();
+		Slot s = container.getSlot(0);
 		if(s!=null&&s.getHasStack()&&s.getStack().getItem() instanceof ItemEngineersBlueprint)
 		{
 			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(s.getStack(), "blueprint"));
@@ -55,22 +55,18 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 				for(int i = 0; i < l; i++)
 					if(recipes[i]!=null&&!recipes[i].output.isEmpty())
 					{
-						this.buttons.add(new GuiButtonItem(i, xx+(i%3)*18, yy+(i/3)*18, recipes[i].output.copy(), i==tile.selectedRecipe)
-						{
-							@Override
-							public void onClick(double mouseX, double mouseY)
-							{
-								super.onClick(mouseX, mouseY);
-								if(id==tile.selectedRecipe)//disable
-									tile.selectedRecipe = -1;
-								else
-									tile.selectedRecipe = id;
-								CompoundNBT message = new CompoundNBT();
-								message.putInt("recipe", tile.selectedRecipe);
-								ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, message));
-								initGui();
-							}
-						});
+						final int id = i;
+						this.buttons.add(new GuiButtonItem(xx+(i%3)*18, yy+(i/3)*18, recipes[i].output.copy(), i==tile.selectedRecipe,
+								btn -> {
+									if(id==tile.selectedRecipe)//disable
+										tile.selectedRecipe = -1;
+									else
+										tile.selectedRecipe = id;
+									CompoundNBT message = new CompoundNBT();
+									message.putInt("recipe", tile.selectedRecipe);
+									ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, message));
+									init();
+								}));
 					}
 			}
 		}
@@ -87,7 +83,7 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}
@@ -98,7 +94,7 @@ public class GuiAutoWorkbench extends GuiIEContainerBase
 	{
 		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/auto_workbench.png");
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+80, guiTop+36+(46-stored), guiLeft+87, guiTop+82, 0xffb51500, 0xff600b00);

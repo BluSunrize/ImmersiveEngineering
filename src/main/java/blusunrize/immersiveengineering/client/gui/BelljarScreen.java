@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerBelljar;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -23,13 +23,13 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 
-public class GuiBelljar extends GuiIEContainerBase
+public class BelljarScreen extends IEContainerScreen
 {
 	BelljarTileEntity tile;
 
-	public GuiBelljar(PlayerInventory inventoryPlayer, BelljarTileEntity tile)
+	public BelljarScreen(PlayerInventory inventoryPlayer, BelljarTileEntity tile)
 	{
-		super(new ContainerBelljar(inventoryPlayer, tile));
+		super(new ContainerBelljar(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 	}
 
@@ -49,7 +49,7 @@ public class GuiBelljar extends GuiIEContainerBase
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}
@@ -61,7 +61,7 @@ public class GuiBelljar extends GuiIEContainerBase
 		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		GlStateManager.enableBlend();
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/belljar.png");
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 		GlStateManager.disableBlend();
 
 		ClientUtils.handleGuiTank(tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, "immersiveengineering:textures/gui/belljar.png", null);

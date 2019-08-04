@@ -8,20 +8,20 @@
 
 package blusunrize.immersiveengineering.client;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 
-import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE;
-import static net.minecraft.client.renderer.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
-import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
-import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ZERO;
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE;
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ZERO;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 public class IENixieFontRender extends FontRenderer

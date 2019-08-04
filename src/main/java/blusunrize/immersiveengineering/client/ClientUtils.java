@@ -534,6 +534,7 @@ public class ClientUtils
 		GlStateManager.enableTexture();
 	}
 
+	//TODO replace these methods with AbstractGui#fillGradient and (Abstract)Gui#blit, or figure out why that isn't possible
 	public static void drawGradientRect(int x0, int y0, int x1, int y1, int colour0, int colour1)
 	{
 		float alpha0 = (colour0 >> 24&255)/255.0F;

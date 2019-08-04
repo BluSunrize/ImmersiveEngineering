@@ -96,14 +96,14 @@ public class GuiClickableList extends Button
 		{
 			int h1 = offset*getFontHeight();
 			int h2 = height-8-maxOffset*getFontHeight();
-			this.blit(x+width, y+h1, x+width+8, y+h1+h2, 0x0a000000, 0x0a000000);
-			this.blit(x+width+1, y+h1, x+width+6, y+h1+h2, 0x28000000, 0x28000000);
+			fill(x+width, y+h1, x+width+8, y+h1+h2, 0x0a000000);
+			fill(x+width+1, y+h1, x+width+6, y+h1+h2, 0x28000000);
 			if(offset > 0)
-				this.blit(x+width, y, x+width+8, y+h1, 0x0a000000, 0x0a000000);
+				fill(x+width, y, x+width+8, y+h1, 0x0a000000);
 			if(offset < maxOffset)
 			{
 				int h3 = (maxOffset-offset)*getFontHeight();
-				this.blit(x+width, y+height-8-h3, x+width+8, y+height-8, 0x0a000000, 0x11000000);
+				fill(x+width, y+height-8-h3, x+width+8, y+height-8, 0x0a000000);
 			}
 		}
 	}

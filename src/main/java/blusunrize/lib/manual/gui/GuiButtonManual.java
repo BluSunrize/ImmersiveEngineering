@@ -53,7 +53,7 @@ public class GuiButtonManual extends Button
 			GlStateManager.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 
 			int col = colour[isHovered?1: 0];
-			this.blit(x, y, x+width, y+height, col, col);
+			fill(x, y, x+width, y+height, col);
 			int txtCol = textColour[isHovered?1: 0];
 			int sw = gui.manual.fontRenderer.getStringWidth(getMessage());
 			gui.manual.fontRenderer.drawString(getMessage(), x+width/2-sw/2, y+height/2-gui.manual.fontRenderer.FONT_HEIGHT/2, txtCol);

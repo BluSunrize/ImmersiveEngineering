@@ -16,9 +16,9 @@ import net.minecraft.util.text.StringTextComponent;
 /**
  * @author BluSunrize - 05.07.2017
  */
-public abstract class GuiIEContainerBase extends ContainerScreen
+public abstract class IEContainerScreen extends ContainerScreen
 {
-	public GuiIEContainerBase(Container inventorySlotsIn, PlayerInventory inv)
+	public IEContainerScreen(Container inventorySlotsIn, PlayerInventory inv)
 	{
 		super(inventorySlotsIn, inv, new StringTextComponent(""));
 	}

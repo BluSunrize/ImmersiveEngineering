@@ -9,24 +9,31 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+
+import javax.annotation.Nullable;
 
 /**
  * @author BluSunrize - 21.02.2017
  */
 @OnlyIn(Dist.CLIENT)
-public class ParticleFluidSplash extends Particle
+public class FluidSplashParticle extends SpriteTexturedParticle
 {
-	public ParticleFluidSplash(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn)
+	public FluidSplashParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn)
 	{
 		super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
 
@@ -38,13 +45,13 @@ public class ParticleFluidSplash extends Particle
 		this.particleBlue = 1.0F;
 		this.setSize(0.01F, 0.01F);
 		this.particleGravity = 0.06F;
-		this.particleMaxAge = (int)(8.0D/(Math.random()*0.8D+0.2D));
+		this.maxAge = (int)(8.0D/(Math.random()*0.8D+0.2D));
 		this.particleScale = .375f;
-		this.setParticleTexture(ClientUtils.getSprite(FluidRegistry.WATER.getStill()));
+		this.setFluidTexture(new FluidStack(FluidRegistry.WATER, 1000));
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
@@ -55,7 +62,7 @@ public class ParticleFluidSplash extends Particle
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;
 
-		if(this.particleMaxAge-- <= 0)
+		if(this.maxAge-- <= 0)
 			this.setExpired();
 
 		if(this.onGround)
@@ -73,10 +80,10 @@ public class ParticleFluidSplash extends Particle
 		if(material.isLiquid()||material.isSolid())
 		{
 			double d0;
-			if(iblockstate.getBlock() instanceof BlockLiquid)
+			/*TODO if(iblockstate.getBlock() instanceof BlockLiquid)
 				d0 = (double)(1.0F-BlockLiquid.getLiquidHeightPercent(iblockstate.getValue(BlockLiquid.LEVEL).intValue()));
-			else
-				d0 = iblockstate.getBoundingBox(this.world, blockpos).maxY;
+			else*/
+			d0 = iblockstate.getShape(this.world, blockpos).getEnd(Axis.Y);
 			double d1 = (double)MathHelper.floor(this.posY)+d0;
 			if(this.posY < d1)
 				this.setExpired();
@@ -85,7 +92,7 @@ public class ParticleFluidSplash extends Particle
 
 	public void setFluidTexture(FluidStack fluid)
 	{
-		this.setParticleTexture(ClientUtils.getSprite(fluid.getFluid().getStill(fluid)));
+		setSprite(ClientUtils.getSprite(fluid.getFluid().getStill(fluid)));
 		int argb = fluid.getFluid().getColor(fluid);
 		this.particleAlpha = ((argb >> 24)&255)/255f;
 		this.particleRed = ((argb >> 16)&255)/255f;
@@ -94,18 +101,19 @@ public class ParticleFluidSplash extends Particle
 	}
 
 	@Override
-	public int getFXLayer()
+	public IParticleRenderType getRenderType()
 	{
-		return 1;
+		return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static class Factory implements IParticleFactory
 	{
+		@Nullable
 		@Override
-		public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_)
+		public Particle makeParticle(IParticleData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
-			return new ParticleFluidSplash(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
+			return new FluidSplashParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
 		}
 	}
 }

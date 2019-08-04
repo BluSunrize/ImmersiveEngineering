@@ -14,8 +14,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerSorter;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,17 +30,17 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.minecraft.client.renderer.GlStateManager.DestFactor.ZERO;
-import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
-import static net.minecraft.client.renderer.GlStateManager.SourceFactor.SRC_ALPHA;
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
-public class GuiSorter extends GuiIEContainerBase
+public class SorterScreen extends IEContainerScreen
 {
 	SorterTileEntity tile;
 
-	public GuiSorter(PlayerInventory inventoryPlayer, SorterTileEntity tile)
+	public SorterScreen(PlayerInventory inventoryPlayer, SorterTileEntity tile)
 	{
-		super(new ContainerSorter(inventoryPlayer, tile));
+		super(new ContainerSorter(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 		this.ySize = 244;
 	}
@@ -48,7 +49,7 @@ public class GuiSorter extends GuiIEContainerBase
 	public void render(int mx, int my, float partial)
 	{
 		super.render(mx, my, partial);
-		for(Button button : this.buttons)
+		for(Widget button : this.buttons)
 		{
 			if(button instanceof ButtonSorter)
 				if(mx > button.x&&mx < button.x+18&&my > button.y&&my < button.y+18)
@@ -58,7 +59,7 @@ public class GuiSorter extends GuiIEContainerBase
 					String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"oreDict": type==1?"nbt": "fuzzy")).split("<br>");
 					for(int i = 0; i < split.length; i++)
 						tooltip.add(new StringTextComponent(split[i]).setStyle(new Style().setColor(i==0?TextFormatting.WHITE: TextFormatting.GRAY)));
-					ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
+					ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
 					RenderHelper.enableGUIStandardItemLighting();
 				}
 		}
@@ -70,7 +71,7 @@ public class GuiSorter extends GuiIEContainerBase
 	{
 		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 		for(int side = 0; side < 6; side++)
 		{
 			int x = guiLeft+30+(side/2)*58;
@@ -83,32 +84,27 @@ public class GuiSorter extends GuiIEContainerBase
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 		this.buttons.clear();
 		for(int side = 0; side < 6; side++)
-			for(int i = 0; i < 3; i++)
+			for(int bit = 0; bit < 3; bit++)
 			{
-				int x = guiLeft+3+(side/2)*58+i*18;
+				int x = guiLeft+3+(side/2)*58+bit*18;
 				int y = guiTop+3+(side%2)*76;
-				ButtonSorter b = new ButtonSorter(side*3+i, x, y, i)
-				{
-					@Override
-					public void onClick(double mX, double mY)
-					{
-						int side = id/3;
-						int bit = id%3;
-						int mask = (1<<bit);
-						tile.sideFilter[side] = tile.sideFilter[side]^mask;
+				final int bitFinal = bit;
+				final int sideFinal = side;
+				ButtonSorter b = new ButtonSorter(x, y, bit, btn -> {
+					int mask = (1<<bitFinal);
+					tile.sideFilter[sideFinal] = tile.sideFilter[sideFinal]^mask;
 
-						CompoundNBT tag = new CompoundNBT();
-						tag.putIntArray("sideConfig", tile.sideFilter);
-						ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
-						initGui();
-					}
-				};
-				b.active = i==0?this.tile.doOredict(side): i==1?this.tile.doNBT(side): this.tile.doFuzzy(side);
+					CompoundNBT tag = new CompoundNBT();
+					tag.putIntArray("sideConfig", tile.sideFilter);
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+					init();
+				});
+				b.active = bit==0?this.tile.doOredict(side): bit==1?this.tile.doNBT(side): this.tile.doFuzzy(side);
 				this.buttons.add(b);
 			}
 	}
@@ -118,9 +114,9 @@ public class GuiSorter extends GuiIEContainerBase
 		int type;
 		boolean active = false;
 
-		public ButtonSorter(int id, int x, int y, int type)
+		public ButtonSorter(int x, int y, int type, IPressable handler)
 		{
-			super(id, x, y, 18, 18, "");
+			super(x, y, 18, 18, "", handler);
 			this.type = type;
 		}
 
@@ -130,10 +126,10 @@ public class GuiSorter extends GuiIEContainerBase
 			if(this.visible)
 			{
 				GlStateManager.color3f(1.0F, 1.0F, 1.0F);
-				this.hovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
+				isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
 				GlStateManager.enableBlend();
 				GlStateManager.blendFuncSeparate(SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, ONE, ZERO);
-				this.drawTexturedModalRect(this.x, this.y, 176+type*18, (active?3: 21), this.width, this.height);
+				this.blit(this.x, this.y, 176+type*18, (active?3: 21), this.width, this.height);
 			}
 		}
 	}

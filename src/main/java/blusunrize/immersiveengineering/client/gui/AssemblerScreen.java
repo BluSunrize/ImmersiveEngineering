@@ -28,49 +28,39 @@ import net.minecraft.util.text.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiAssembler extends GuiIEContainerBase
+public class AssemblerScreen extends IEContainerScreen
 {
 	static final String texture = "immersiveengineering:textures/gui/assembler.png";
 	public AssemblerTileEntity tile;
 
-	public GuiAssembler(PlayerInventory inventoryPlayer, AssemblerTileEntity tile)
+	public AssemblerScreen(PlayerInventory inventoryPlayer, AssemblerTileEntity tile)
 	{
-		super(new ContainerAssembler(inventoryPlayer, tile));
+		super(new ContainerAssembler(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 		this.xSize = 230;
 		this.ySize = 218;
 	}
 
 	@Override
-	protected void init()
+	public void init()
 	{
 		super.init();
 		this.buttons.clear();
 		for(int i = 0; i < 3; ++i)
 		{
 			final int id = i;
-			this.buttons.add(new GuiButtonIE(i, guiLeft+11+i*59, guiTop+67, 10, 10, null, texture, 230, 50)
-			{
-				@Override
-				public void onClick(double mX, double mY)
-				{
-					super.onClick(mX, mY);
-					CompoundNBT tag = new CompoundNBT();
-					tag.putInt("buttonID", id);
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
-				}
-			}.setHoverOffset(0, 10));
+			this.buttons.add(new GuiButtonIE(guiLeft+11+i*59, guiTop+67, 10, 10, null, texture, 230, 50, btn -> {
+				CompoundNBT tag = new CompoundNBT();
+				tag.putInt("buttonID", id);
+				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+			})
+					.setHoverOffset(0, 10));
 		}
-		this.buttons.add(new GuiButtonState(3, guiLeft+162, guiTop+69, 16, 16, null, tile.recursiveIngredients, texture, 240, 66, 3)
-		{
-			@Override
-			public void onClick(double mX, double mY)
-			{
-				super.onClick(mX, mY);
-				tile.recursiveIngredients = !tile.recursiveIngredients;
-				init();
-			}
-		});
+		this.buttons.add(new GuiButtonState(guiLeft+162, guiTop+69, 16, 16, null, tile.recursiveIngredients, texture, 240, 66, 3,
+				btn -> {
+					tile.recursiveIngredients = !tile.recursiveIngredients;
+					init();
+				}));
 	}
 
 	@Override

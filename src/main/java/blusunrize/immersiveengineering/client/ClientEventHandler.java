@@ -22,9 +22,9 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
-import blusunrize.immersiveengineering.client.fx.ParticleFractal;
-import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
-import blusunrize.immersiveengineering.client.gui.GuiRevolver;
+import blusunrize.immersiveengineering.client.fx.FractalParticle;
+import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
+import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
 import blusunrize.immersiveengineering.common.Config;
@@ -214,7 +214,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			}
 		}
 		if(ClientUtils.mc().currentScreen!=null
-				&&ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
+				&&ClientUtils.mc().currentScreen instanceof BlastFurnaceScreen
 				&&BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
 			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack()))
 					.setStyle(gray));
@@ -250,7 +250,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				GlStateManager.translatef(currentX, currentY, 700);
 				GlStateManager.scalef(.5f, .5f, 1);
 
-				GuiRevolver.drawExternalGUI(bullets, bulletAmount);
+				RevolverScreen.drawExternalGUI(bullets, bulletAmount);
 
 				GlStateManager.disableRescaleNormal();
 				GlStateManager.popMatrix();
@@ -496,7 +496,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							GlStateManager.translated(dx, dy, 0);
 							GlStateManager.scalef(.5f, .5f, 1);
 
-							GuiRevolver.drawExternalGUI(bullets, bulletAmount);
+							RevolverScreen.drawExternalGUI(bullets, bulletAmount);
 
 							if(equipped.getItem() instanceof ItemRevolver)
 							{
@@ -1119,7 +1119,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			chunkBorders = true;
 
 		float partial = event.getPartialTicks();
-		if(!ParticleFractal.PARTICLE_FRACTAL_DEQUE.isEmpty())
+		if(!FractalParticle.PARTICLE_FRACTAL_DEQUE.isEmpty())
 		{
 			double px = TileEntityRendererDispatcher.staticPlayerX;
 			double py = TileEntityRendererDispatcher.staticPlayerY;
@@ -1134,8 +1134,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
 			tessellator.getBuffer().setTranslation(-px, -py, -pz);
-			ParticleFractal part;
-			while((part = ParticleFractal.PARTICLE_FRACTAL_DEQUE.pollFirst())!=null)
+			FractalParticle part;
+			while((part = FractalParticle.PARTICLE_FRACTAL_DEQUE.pollFirst())!=null)
 				part.render(tessellator, tessellator.getBuffer(), partial);
 			tessellator.getBuffer().setTranslation(0, 0, 0);
 

@@ -17,6 +17,7 @@ import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
 import com.google.common.collect.ArrayListMultimap;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -109,7 +110,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 				{
 					if(pstack.x > maxX)
 						maxX = pstack.x;
-					gui.blit(x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666, 0x33666666);
+					AbstractGui.fill(x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666);
 				}
 			ManualUtils.bindTexture(manual.texture);
 			ManualUtils.drawTexturedRect(x+maxX-17, y+yOff/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);

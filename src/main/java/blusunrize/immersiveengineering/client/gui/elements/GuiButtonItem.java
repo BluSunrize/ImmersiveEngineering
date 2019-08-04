@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -22,9 +22,9 @@ public class GuiButtonItem extends Button
 	public boolean state;
 	ItemStack item;
 
-	public GuiButtonItem(int buttonId, int x, int y, ItemStack stack, boolean state)
+	public GuiButtonItem(int x, int y, ItemStack stack, boolean state, IPressable handler)
 	{
-		super(buttonId, x, y, 18, 18, "");
+		super(x, y, 18, 18, "", handler);
 		this.state = state;
 		this.item = stack;
 	}
@@ -36,24 +36,24 @@ public class GuiButtonItem extends Button
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.5F);
-			this.hovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
+			this.isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			GlStateManager.enableBlend();
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
-			this.drawTexturedModalRect(x, y, 24+(state?18: 0), 128, width, height);
+			this.blit(x, y, 24+(state?18: 0), 128, width, height);
 			//TODO this.mouseDragged(mc, mouseX, mouseY);
 
 			if(!item.isEmpty())
 			{
 				Minecraft mc = Minecraft.getInstance();
-				this.zLevel = 200.0F;
+				this.blitOffset = 200;
 				ItemRenderer itemRender = mc.getItemRenderer();
 				itemRender.zLevel = 200.0F;
 				FontRenderer font = item.getItem().getFontRenderer(item);
 				if(font==null)
 					font = mc.fontRenderer;
 				itemRender.renderItemAndEffectIntoGUI(item, x+1, y+1);
-				this.zLevel = 0.0F;
+				this.blitOffset = 0;
 				itemRender.zLevel = 0.0F;
 
 				if(!state)

@@ -21,11 +21,10 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.client.fx.ParticleFluidSplash;
-import blusunrize.immersiveengineering.client.fx.ParticleFractal;
-import blusunrize.immersiveengineering.client.fx.ParticleIEBubble;
-import blusunrize.immersiveengineering.client.fx.ParticleSparks;
-import blusunrize.immersiveengineering.client.gui.GuiIEContainerBase;
+import blusunrize.immersiveengineering.client.fx.FluidSplashParticle;
+import blusunrize.immersiveengineering.client.fx.FractalParticle;
+import blusunrize.immersiveengineering.client.fx.SparksParticle;
+import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.connection.*;
@@ -1103,7 +1102,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
 	{
-		Particle particle = new ParticleSparks(world, x, y, z, mx, my, mz);
+		Particle particle = new SparksParticle(world, x, y, z, mx, my, mz);
 		Minecraft.getInstance().particles.addEffect(particle);
 	}
 
@@ -1116,7 +1115,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnFluidSplashFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
 	{
-		ParticleFluidSplash particle = new ParticleFluidSplash(world, x, y, z, mx, my, mz);
+		FluidSplashParticle particle = new FluidSplashParticle(world, x, y, z, mx, my, mz);
 		particle.setFluidTexture(fs);
 		mc().particles.addEffect(particle);
 	}
@@ -1124,7 +1123,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnBubbleFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
 	{
-		ParticleIEBubble particle = new ParticleIEBubble(world, x, y, z, mx, my, mz);
+		IEBubbleParticle particle = new IEBubbleParticle(world, x, y, z, mx, my, mz);
 		mc().particles.addEffect(particle);
 	}
 
@@ -1132,8 +1131,8 @@ public class ClientProxy extends CommonProxy
 	public void spawnFractalFX(World world, double x, double y, double z, Vec3d direction, double scale, int prefixColour, float[][] colour)
 	{
 		if(prefixColour >= 0)
-			colour = prefixColour==1?ParticleFractal.COLOUR_ORANGE: prefixColour==2?ParticleFractal.COLOUR_RED: ParticleFractal.COLOUR_LIGHTNING;
-		ParticleFractal particle = new ParticleFractal(world, x, y, z, direction, scale, colour[0], colour[1]);
+			colour = prefixColour==1?FractalParticle.COLOUR_ORANGE: prefixColour==2?FractalParticle.COLOUR_RED: FractalParticle.COLOUR_LIGHTNING;
+		FractalParticle particle = new FractalParticle(world, x, y, z, direction, scale, colour[0], colour[1]);
 		mc().particles.addEffect(particle);
 	}
 
@@ -1287,8 +1286,8 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void reInitGui()
 	{
-		if(mc().currentScreen instanceof GuiIEContainerBase)
-			((GuiIEContainerBase)mc().currentScreen).init();
+		if(mc().currentScreen instanceof IEContainerScreen)
+			((IEContainerScreen)mc().currentScreen).init();
 	}
 
 	@Override

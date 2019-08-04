@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.client.config.GuiSlider;
 
 public class GuiSliderIE extends GuiSlider
 {
-	public GuiSliderIE(int buttonId, int x, int y, int width, String name, float value)
+	public GuiSliderIE(int x, int y, int width, String name, float value, IPressable handler)
 	{
-		super(buttonId, x, y, width, 8, name+" ", "%", 0, 100, 100*value, false, true);
+		super(x, y, width, 8, name+" ", "%", 0, 100, 100*value, false, true, handler);
 	}
 
 	@Override
@@ -29,21 +29,21 @@ public class GuiSliderIE extends GuiSlider
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 			FontRenderer fontrenderer = Minecraft.getInstance().fontRenderer;
 			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
-			this.hovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
+			isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			GlStateManager.enableBlend();
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
-			this.drawTexturedModalRect(x, y, 8, 128, 4, height);
-			this.drawTexturedModalRect(x+width-4, y, 16, 128, 4, height);
+			this.blit(x, y, 8, 128, 4, height);
+			this.blit(x+width-4, y, 16, 128, 4, height);
 			for(int i = 0; i < width-8; i += 2)
-				this.drawTexturedModalRect(x+4+i, y, 13, 128, 2, height);
+				this.blit(x+4+i, y, 13, 128, 2, height);
 			//TODO this.mouseDragged(mc, mouseX, mouseY);
 			int color = 0xe0e0e0;
-			if(!this.enabled)
+			if(!this.active)
 				color = 0xa0a0a0;
-			else if(this.hovered)
+			else if(this.isHovered)
 				color = 0xffffa0;
-			this.drawCenteredString(fontrenderer, displayString, x+width/2, y-10+height/2-3, color);
+			this.drawCenteredString(fontrenderer, dispString, x+width/2, y-10+height/2-3, color);
 		}
 	}
 
@@ -58,7 +58,7 @@ public class GuiSliderIE extends GuiSlider
 				updateSlider();
 			}
 			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
-			this.drawTexturedModalRect(this.x+2+(int)(this.sliderValue*(float)(this.width-2))-2, this.y, 20, 128, 4, 8);
+			this.blit(this.x+2+(int)(this.sliderValue*(float)(this.width-2))-2, this.y, 20, 128, 4, 8);
 			return true;
 		}
 		else

@@ -460,4 +460,10 @@ public class GuiManual extends Screen
 			return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
 		}
 	}
+
+	@Override
+	public void fillGradient(int x1, int yA, int x2, int yB, int colorA, int colorB)
+	{
+		super.fillGradient(x1, yA, x2, yB, colorA, colorB);
+	}
 }

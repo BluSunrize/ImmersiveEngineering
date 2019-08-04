@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.SiloTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
 

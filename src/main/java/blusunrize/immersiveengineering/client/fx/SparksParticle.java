@@ -14,9 +14,9 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-public class ParticleSparks extends Particle
+public class SparksParticle extends Particle
 {
-	public ParticleSparks(World world, double x, double y, double z, double mx, double my, double mz)
+	public SparksParticle(World world, double x, double y, double z, double mx, double my, double mz)
 	{
 		super(world, x, y, z, mx, my, mz);
 		this.particleMaxAge = 16;

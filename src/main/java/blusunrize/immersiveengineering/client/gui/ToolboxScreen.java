@@ -10,24 +10,26 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.ToolboxTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerToolboxBlock;
-import net.minecraft.client.renderer.GlStateManager;
+import blusunrize.immersiveengineering.common.gui.ContainerToolbox;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public class GuiToolboxBlock extends GuiIEContainerBase
+public class ToolboxScreen extends IEContainerScreen
 {
-	public GuiToolboxBlock(PlayerInventory inventoryPlayer, ToolboxTileEntity toolbox)
+	public ToolboxScreen(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack toolbox)
 	{
-		super(new ContainerToolboxBlock(inventoryPlayer, toolbox));
+		super(new ContainerToolbox(inventoryPlayer, world, slot, toolbox), inventoryPlayer);
 		this.ySize = 238;
 	}
 
@@ -37,9 +39,9 @@ public class GuiToolboxBlock extends GuiIEContainerBase
 		super.render(mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		int slot = -1;
-		for(int i = 0; i < ((ContainerToolboxBlock)this.inventorySlots).slotCount; i++)
+		for(int i = 0; i < ((ContainerToolbox)this.container).internalSlots; i++)
 		{
-			Slot s = this.inventorySlots.inventorySlots.get(i);
+			Slot s = this.container.getSlot(i);
 			if(!s.getHasStack()&&mx > guiLeft+s.xPos&&mx < guiLeft+s.xPos+16&&my > guiTop+s.yPos&&my < guiTop+s.yPos+16)
 				slot = i;
 		}
@@ -50,7 +52,7 @@ public class GuiToolboxBlock extends GuiIEContainerBase
 			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss).setStyle(new Style().setColor(TextFormatting.GRAY)));
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}
@@ -60,7 +62,7 @@ public class GuiToolboxBlock extends GuiIEContainerBase
 	{
 		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/toolbox.png");
-		this.drawTexturedModalRect(guiLeft, guiTop-17, 0, 0, 176, ySize+17);
+		this.blit(guiLeft, guiTop-17, 0, 0, 176, ySize+17);
 	}
 
 }

@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerMixer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,34 +30,30 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiMixer extends GuiIEContainerBase
+public class MixerScreen extends IEContainerScreen
 {
 	MixerTileEntity tile;
 
-	public GuiMixer(PlayerInventory inventoryPlayer, MixerTileEntity tile)
+	public MixerScreen(PlayerInventory inventoryPlayer, MixerTileEntity tile)
 	{
-		super(new ContainerMixer(inventoryPlayer, tile));
+		super(new ContainerMixer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 		this.ySize = 167;
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 		this.buttons.clear();
-		this.buttons.add(new GuiButtonState(0, guiLeft+106, guiTop+61, 30, 16, null, tile.outputAll, "immersiveengineering:textures/gui/mixer.png", 176, 82, 1)
-		{
-			@Override
-			public void onClick(double mX, double mY)
-			{
-				CompoundNBT tag = new CompoundNBT();
-				tile.outputAll = state;
-				tag.putBoolean("outputAll", tile.outputAll);
-				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
-				initGui();
-			}
-		});
+		this.buttons.add(new GuiButtonState(guiLeft+106, guiTop+61, 30, 16, null, tile.outputAll, "immersiveengineering:textures/gui/mixer.png", 176, 82, 1,
+				btn -> {
+					CompoundNBT tag = new CompoundNBT();
+					tile.outputAll = ((GuiButtonState)btn).state;
+					tag.putBoolean("outputAll", tile.outputAll);
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+					init();
+				}));
 	}
 
 	@Override
@@ -100,7 +96,7 @@ public class GuiMixer extends GuiIEContainerBase
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx, my, fontRenderer, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}
@@ -110,7 +106,7 @@ public class GuiMixer extends GuiIEContainerBase
 	{
 		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/mixer.png");
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(MultiblockProcess process : tile.processQueue)
 			if(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInMachine)
@@ -119,7 +115,7 @@ public class GuiMixer extends GuiIEContainerBase
 				for(int slot : ((MultiblockProcessInMachine)process).getInputSlots())
 				{
 					int h = (int)Math.max(1, mod*16);
-					this.drawTexturedModalRect(guiLeft+24+slot%2*21, guiTop+7+slot/2*18+(16-h), 176, 16-h, 2, h);
+					this.blit(guiLeft+24+slot%2*21, guiTop+7+slot/2*18+(16-h), 176, 16-h, 2, h);
 				}
 			}
 

@@ -1,14 +1,17 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.api.Lib;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayDeque;
@@ -18,9 +21,9 @@ import java.util.Deque;
  * @author BluSunrize - 13.05.2018
  */
 @OnlyIn(Dist.CLIENT)
-public class ParticleFractal extends Particle
+public class FractalParticle extends Particle
 {
-	public static final Deque<ParticleFractal> PARTICLE_FRACTAL_DEQUE = new ArrayDeque<>();
+	public static final Deque<FractalParticle> PARTICLE_FRACTAL_DEQUE = new ArrayDeque<>();
 
 	public static final float[][] COLOUR_RED = {{.79f, .31f, .31f, .5f}, {1, .97f, .87f, .75f}};
 	public static final float[][] COLOUR_ORANGE = {{Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], .5f}, {1, .97f, .87f, .75f}};
@@ -32,10 +35,10 @@ public class ParticleFractal extends Particle
 //	private EntityLivingBase attachedEntity;
 //	private EnumHandSide attachedHand;
 
-	public ParticleFractal(World world, double x, double y, double z, double speedX, double speedY, double speedZ, Vec3d direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
+	public FractalParticle(World world, double x, double y, double z, double speedX, double speedY, double speedZ, Vec3d direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
 	{
 		super(world, x, y, z, speedX, speedY, speedZ);
-		this.particleMaxAge = maxAge;
+		this.maxAge = maxAge;
 		this.motionX *= .009f;
 		this.motionY *= .009f;
 		this.motionZ *= .009f;
@@ -61,30 +64,26 @@ public class ParticleFractal extends Particle
 		}
 	}
 
-	public ParticleFractal(World world, double x, double y, double z, Vec3d direction, double scale, float[] colourOut, float[] colourIn)
+	public FractalParticle(World world, double x, double y, double z, Vec3d direction, double scale, float[] colourOut, float[] colourIn)
 	{
 		this(world, x, y, z, 0, 0, 0, direction, scale, 10, 16, colourOut, colourIn);
 	}
 
 	@Override
-	public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ)
+	public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ)
 	{
 		PARTICLE_FRACTAL_DEQUE.add(this);
-//		if(attachedEntity!=null)
-//		{
-//			Vec3d pos = Utils.getLivingFrontPos(attachedEntity, .75, attachedEntity.height*.75, attachedHand)
-//		}
 	}
-//
-//	@Override
-//	public void onUpdate()
-//	{
-//		super.onUpdate();
-//	}
+
+	@Override
+	public IParticleRenderType getRenderType()
+	{
+		return IParticleRenderType.CUSTOM;
+	}
 
 	public void render(Tessellator tessellator, BufferBuilder buffer, float partialTicks)
 	{
-		float mod = (particleAge+partialTicks)/(float)particleMaxAge;
+		float mod = (age+partialTicks)/(float)maxAge;
 		int iStart = 0;
 		int iEnd = pointsList.length;
 		if(mod >= .76)
@@ -98,7 +97,7 @@ public class ParticleFractal extends Particle
 		Vec3d[] vectorsScaled = new Vec3d[iEnd];
 		Vec3d vecRender;
 
-		GlStateManager.glLineWidth(4f);
+		GlStateManager.lineWidth(4f);
 		buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
 		for(int i = iStart; i < iEnd; i++)
 		{
@@ -108,7 +107,7 @@ public class ParticleFractal extends Particle
 		}
 		tessellator.draw();
 
-		GlStateManager.glLineWidth(1f);
+		GlStateManager.lineWidth(1f);
 		buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
 		for(int i = iEnd-1; i >= iStart; i--)
 			buffer.pos(posX+vectorsScaled[i].x, posY+vectorsScaled[i].y, posZ+vectorsScaled[i].z).color(colourIn[0], colourIn[1], colourIn[2], colourIn[3]).endVertex();

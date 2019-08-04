@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.function.Function;
 
@@ -35,9 +35,9 @@ public class GuiReactiveList extends Button
 	private int targetEntry = -1;
 	private int hoverTimer = 0;
 
-	public GuiReactiveList(Screen gui, int id, int x, int y, int w, int h, String... entries)
+	public GuiReactiveList(Screen gui, int x, int y, int w, int h, IPressable handler, String... entries)
 	{
-		super(id, x, y, w, h, "");
+		super(x, y, w, h, "", handler);
 		this.gui = gui;
 		this.entries = entries;
 		recalculateEntries();
@@ -113,28 +113,28 @@ public class GuiReactiveList extends Button
 		if(needsSlider)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-			this.drawTexturedModalRect(x+width-6, y, 16, 136, 6, 4);
-			this.drawTexturedModalRect(x+width-6, y+height-4, 16, 144, 6, 4);
+			this.blit(x+width-6, y, 16, 136, 6, 4);
+			this.blit(x+width-6, y+height-4, 16, 144, 6, 4);
 			for(int i = 0; i < height-8; i += 2)
-				this.drawTexturedModalRect(x+width-6, y+4+i, 16, 141, 6, 2);
+				this.blit(x+width-6, y+4+i, 16, 141, 6, 2);
 
 			int sliderSize = Math.max(6, height-maxOffset*fr.FONT_HEIGHT);
 			float silderShift = (height-sliderSize)/(float)maxOffset*offset;
 
-			this.drawTexturedModalRect(x+width-5, y+silderShift+1, 20, 129, 4, 2);
-			this.drawTexturedModalRect(x+width-5, y+silderShift+sliderSize-4, 20, 132, 4, 3);
+			this.blit(x+width-5, (int)(y+silderShift+1), 20, 129, 4, 2);
+			this.blit(x+width-5, (int)(y+silderShift+sliderSize-4), 20, 132, 4, 3);
 			for(int i = 0; i < sliderSize-7; i++)
-				this.drawTexturedModalRect(x+width-5, y+silderShift+3+i, 20, 131, 4, 1);
+				this.blit(x+width-5, (int)(y+silderShift+3+i), 20, 131, 4, 1);
 		}
 
 		GlStateManager.scalef(textScale, textScale, 1);
-		this.hovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
+		this.isHovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		boolean hasTarget = false;
 		for(int i = 0; i < Math.min(perPage, entries.length); i++)
 		{
 			int j = offset+i;
 			int col = 0xE0E0E0;
-			boolean selectionHover = hovered&&mmY >= i*fr.FONT_HEIGHT&&mmY < (i+1)*fr.FONT_HEIGHT;
+			boolean selectionHover = isHovered&&mmY >= i*fr.FONT_HEIGHT&&mmY < (i+1)*fr.FONT_HEIGHT;
 			if(selectionHover)
 			{
 				hasTarget = true;
@@ -175,7 +175,7 @@ public class GuiReactiveList extends Button
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseWheel)
+	public boolean mouseScrolled(double mouseWheel, double p_mouseScrolled_3_, double p_mouseScrolled_5_)
 	{
 		if(mouseWheel!=0&&maxOffset > 0)
 		{
