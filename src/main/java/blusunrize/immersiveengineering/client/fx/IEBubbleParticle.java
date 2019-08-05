@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 @OnlyIn(Dist.CLIENT)
 public class IEBubbleParticle extends SpriteTexturedParticle
 {
-	private IEBubbleParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn)
+	public IEBubbleParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn)
 	{
 		super(worldIn, xCoordIn, yCoordIn, zCoordIn);
 		this.setSize(0.02F, 0.02F);

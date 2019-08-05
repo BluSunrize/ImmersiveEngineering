@@ -773,7 +773,7 @@ public class ClientUtils
 			((IEFluid)fluid.getFluid()).addTooltipInfo(fluid, null, tooltip);
 
 		if(mc().gameSettings.advancedItemTooltips&&fluid!=null)
-			if(!Screen.isShiftKeyDown())
+			if(!Screen.hasShiftDown())
 				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"holdShiftForInfo"));
 			else
 			{

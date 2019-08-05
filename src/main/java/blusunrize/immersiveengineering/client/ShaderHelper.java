@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.client.renderer.OpenGlHelper;
+import com.mojang.blaze3d.platform.GLX;
 import org.lwjgl.opengl.ARBFragmentShader;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.ARBVertexShader;
@@ -59,7 +59,7 @@ public class ShaderHelper
 		// TEMA: here's where you'd stick in any config option for enabling/disabling the shaders... don't know how it would interact with the shader mod, etc.
 
 		//return ConfigHandler.useShaders && OpenGlHelper.shadersSupported;
-		return OpenGlHelper.shadersSupported;
+		return GLX.usePostProcess;
 	}
 
 	// Most of the code taken from the LWJGL wiki

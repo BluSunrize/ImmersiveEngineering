@@ -62,6 +62,11 @@ public class ModelCoresample extends BakedIEModel
 		this.mineral = mineral;
 	}
 
+	public static void clearCache()
+	{
+		modelCache.invalidateAll();
+	}
+
 	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState coreState, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
