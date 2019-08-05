@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -59,11 +60,6 @@ public class ModelCoresample implements IBakedModel
 	}
 
 	public static final HashMap<String, ModelCoresample> modelCache = new HashMap<>();
-//	@Override
-//	public List<BakedQuad> getFaceQuads(EnumFacing p_177551_1_)
-//	{
-//		return emptyQuads;
-//	}
 
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState blockState, @Nullable EnumFacing side, long rand)
@@ -99,10 +95,10 @@ public class ModelCoresample implements IBakedModel
 				TextureAtlasSprite textureStone = ClientUtils.getSprite(new ResourceLocation("blocks/stone"));
 
 				Vector2f[] stoneUVs = {
-						new Vector2f(textureStone.getInterpolatedU(16*wOff), textureStone.getInterpolatedV(16*dOff)),
-						new Vector2f(textureStone.getInterpolatedU(16*wOff), textureStone.getInterpolatedV(16*(dOff+depth))),
-						new Vector2f(textureStone.getInterpolatedU(16*(wOff+width)), textureStone.getInterpolatedV(16*(dOff+depth))),
-						new Vector2f(textureStone.getInterpolatedU(16*(wOff+width)), textureStone.getInterpolatedV(16*dOff))};
+						new Vector2f(16*wOff, 16*dOff),
+						new Vector2f(16*wOff, 16*(dOff+depth)),
+						new Vector2f(16*(wOff+width), 16*(dOff+depth)),
+						new Vector2f(16*(wOff+width), 16*dOff)};
 
 				putVertexData(new Vector3f(0, -1, 0), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff+width, 0, dOff), new Vector3f(wOff+width, 0, dOff+depth), new Vector3f(wOff, 0, dOff+depth)}, stoneUVs, textureStone);
 				putVertexData(new Vector3f(0, 1, 0), new Vector3f[]{new Vector3f(wOff, 1, dOff), new Vector3f(wOff, 1, dOff+depth), new Vector3f(wOff+width, 1, dOff+depth), new Vector3f(wOff+width, 1, dOff)}, stoneUVs, textureStone);
@@ -111,10 +107,10 @@ public class ModelCoresample implements IBakedModel
 					Vector2f[][] uvs = new Vector2f[4][];
 					for(int j = 0; j < 4; j++)
 						uvs[j] = new Vector2f[]{
-								new Vector2f(textureStone.getInterpolatedU(j*4), textureStone.getInterpolatedV(0)),
-								new Vector2f(textureStone.getInterpolatedU(j*4), textureStone.getInterpolatedV(16)),
-								new Vector2f(textureStone.getInterpolatedU((j+1)*4), textureStone.getInterpolatedV(16)),
-								new Vector2f(textureStone.getInterpolatedU((j+1)*4), textureStone.getInterpolatedV(0))};
+								new Vector2f(j*4, 0),
+								new Vector2f(j*4, 16),
+								new Vector2f((j+1)*4, 16),
+								new Vector2f((j+1)*4, 0)};
 
 					putVertexData(new Vector3f(0, 0, -1), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff, 1, dOff), new Vector3f(wOff+width, 1, dOff), new Vector3f(wOff+width, 0, dOff)}, uvs[0], textureStone);
 					putVertexData(new Vector3f(0, 0, 1), new Vector3f[]{new Vector3f(wOff+width, 0, dOff+depth), new Vector3f(wOff+width, 1, dOff+depth), new Vector3f(wOff, 1, dOff+depth), new Vector3f(wOff, 0, dOff+depth)}, uvs[2], textureStone);
@@ -131,10 +127,10 @@ public class ModelCoresample implements IBakedModel
 						Vector2f[][] uvs = new Vector2f[4][];
 						for(int j = 0; j < 4; j++)
 							uvs[j] = new Vector2f[]{
-									new Vector2f(sprite.getInterpolatedU(j*4), sprite.getInterpolatedV(v)),
-									new Vector2f(sprite.getInterpolatedU(j*4), sprite.getInterpolatedV(v+weight)),
-									new Vector2f(sprite.getInterpolatedU((j+1)*4), sprite.getInterpolatedV(v+weight)),
-									new Vector2f(sprite.getInterpolatedU((j+1)*4), sprite.getInterpolatedV(v))};
+									new Vector2f(j*4, v),
+									new Vector2f(j*4, v+weight),
+									new Vector2f((j+1)*4, v+weight),
+									new Vector2f((j+1)*4, v)};
 
 						float h1 = weight/(float)pixelLength;
 						putVertexData(new Vector3f(0, 0, -1), new Vector3f[]{new Vector3f(wOff, h, dOff), new Vector3f(wOff, h+h1, dOff), new Vector3f(wOff+width, h+h1, dOff), new Vector3f(wOff+width, h, dOff)}, uvs[0], sprite);
@@ -162,15 +158,12 @@ public class ModelCoresample implements IBakedModel
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(DefaultVertexFormats.ITEM);
 		builder.setQuadOrientation(EnumFacing.getFacingFromVector(normal.x, normal.y, normal.z));
 		builder.setTexture(sprite);
-//		builder.setQuadColored();
+		Normal objNormal = new Normal(normal.x, normal.y, normal.z);
 		for(int i = 0; i < vertices.length; i++)
 		{
-			builder.put(0, vertices[i].x, vertices[i].y, vertices[i].z, 1);//Pos
 			float d = LightUtil.diffuseLight(normal.x, normal.y, normal.z);
-			builder.put(1, d, d, d, 1);//Colour
-			builder.put(2, uvs[i].x, uvs[i].y, 0, 1);//UV
-			builder.put(3, normal.x, normal.y, normal.z, 0);//Normal
-			builder.put(4);//padding
+			ClientUtils.putVertexData(builder.getVertexFormat(), builder, vertices[i], objNormal, uvs[i].x, uvs[i].y, sprite,
+					new float[]{d, d, d, 1}, 1);
 		}
 		bakedQuads.add(builder.build());
 	}
