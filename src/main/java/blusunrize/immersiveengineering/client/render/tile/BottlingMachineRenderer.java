@@ -6,17 +6,18 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.render;
+package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity.BottlingProcess;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -37,19 +38,19 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
 
-public class TileRenderBottlingMachine extends TileEntityRenderer<BottlingMachineTileEntity>
+public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineTileEntity>
 {
 	@Override
 	public void render(BottlingMachineTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
+		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos()))
 			return;
 
 		//Grab model + correct eextended state
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		BlockState state = getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=MetalMultiblocks.bottlingMachine)
+		if(state.getBlock()!=Multiblocks.bottlingMachine)
 			return;
 		state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
@@ -202,7 +203,7 @@ public class TileRenderBottlingMachine extends TileEntityRenderer<BottlingMachin
 					GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
 
 					GL11.glStencilMask(0xFF);
-					GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
+					GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT, true);
 
 					GlStateManager.rotatef(90.0F-ClientUtils.mc().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
 

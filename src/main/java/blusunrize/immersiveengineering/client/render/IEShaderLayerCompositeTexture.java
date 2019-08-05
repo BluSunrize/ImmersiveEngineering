@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.Texture;
-import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -136,7 +136,7 @@ public class IEShaderLayerCompositeTexture extends Texture
 
 				++layer;
 			}
-			TextureUtil.allocateTextureImpl(this.getGlTextureId(), 0, finalTexture.getWidth(), finalTexture.getHeight());
+			TextureUtil.prepareImage(this.getGlTextureId(), 0, finalTexture.getWidth(), finalTexture.getHeight());
 			finalTexture.uploadTextureSub(0, 0, 0, 0, 0, finalTexture.getWidth(), finalTexture.getHeight(), false, false, false);
 		} catch(IOException ioexception)
 		{

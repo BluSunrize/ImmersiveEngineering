@@ -20,7 +20,7 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.client.render.ItemRendererIEOBJ;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -67,7 +67,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 {
 	public ItemRailgun()
 	{
-		super("railgun", new Properties().maxStackSize(1).setTEISR(() -> () -> ItemRendererIEOBJ.INSTANCE), "RAILGUN");
+		super("railgun", new Properties().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "RAILGUN");
 	}
 
 	@Override

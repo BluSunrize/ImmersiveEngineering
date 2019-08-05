@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.render;
+package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler.IPlantHandler;
@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -40,7 +41,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class TileRenderBelljar extends TileEntityRenderer<BelljarTileEntity>
+public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 {
 	private static HashMap<Direction, List<BakedQuad>> quads = new HashMap<>();
 	private static HashMap<BlockState, List<BakedQuad>> plantQuads = new HashMap<>();
@@ -48,7 +49,7 @@ public class TileRenderBelljar extends TileEntityRenderer<BelljarTileEntity>
 	@Override
 	public void render(BelljarTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(tile.dummy!=0||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
+		if(tile.dummy!=0||!tile.getWorld().isBlockLoaded(tile.getPos()))
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();

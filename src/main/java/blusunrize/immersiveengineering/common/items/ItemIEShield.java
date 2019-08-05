@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.client.render.ItemRendererIEOBJ;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
@@ -60,7 +60,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 {
 	public ItemIEShield()
 	{
-		super("shield", new Properties().maxStackSize(1).defaultMaxDamage(1024).setTEISR(() -> () -> ItemRendererIEOBJ.INSTANCE), "SHIELD");
+		super("shield", new Properties().maxStackSize(1).defaultMaxDamage(1024).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
 		DispenserBlock.registerDispenseBehavior(this, ArmorItem.DISPENSER_BEHAVIOR);
 	}
 

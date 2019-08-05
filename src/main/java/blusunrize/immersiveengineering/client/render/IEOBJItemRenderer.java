@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
@@ -38,9 +40,9 @@ import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class ItemRendererIEOBJ extends ItemStackTileEntityRenderer
+public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 {
-	public static final ItemStackTileEntityRenderer INSTANCE = new ItemRendererIEOBJ();
+	public static final ItemStackTileEntityRenderer INSTANCE = new IEOBJItemRenderer();
 	private static FloatBuffer transform = GLAllocation.createDirectFloatBuffer(16);
 	private static final Matrix4 mat = new Matrix4();
 
@@ -85,13 +87,13 @@ public class ItemRendererIEOBJ extends ItemStackTileEntityRenderer
 				{
 					GlStateManager.pushMatrix();
 					Matrix4 mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
-							ItemRendererIEOBJ.mat, partialTicks);
-					GlStateManager.multMatrixf(mat.toFloatBuffer(transform));
+							IEOBJItemRenderer.mat, partialTicks);
+					GlStateManager.multMatrix(mat.toFloatBuffer(transform));
 					boolean wasLightmapEnabled, wasLightingEnabled;
 					{
-						GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE1);
+						GlStateManager.activeTexture(GLX.GL_TEXTURE1);
 						wasLightmapEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
-						GlStateManager.activeTexture(OpenGlHelper.GL_TEXTURE0);
+						GlStateManager.activeTexture(GLX.GL_TEXTURE0);
 						wasLightingEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
 					}
 					boolean bright = callback.areGroupsFullbright(stack, groups);

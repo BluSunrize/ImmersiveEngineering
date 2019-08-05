@@ -1,17 +1,18 @@
 /*
  * BluSunrize
- * Copyright (c) 2018
+ * Copyright (c) 2017
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.render;
+package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.IEShaderLayerCompositeTexture;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -24,18 +25,18 @@ import net.minecraft.util.math.MathHelper;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
-public class TileRenderShaderBanner extends TileEntityRenderer<ShaderBannerTileEntity>
+public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEntity>
 {
 	private final BannerModel bannerModel = new BannerModel();
 
 	@Override
 	public void render(ShaderBannerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		boolean flag = te.getWorld()!=null;
-		int orientation = flag?te.orientation: 0;
-		long time = flag?te.getWorld().getGameTime(): 0L;
+		te.getWorld();
+		int orientation = te.orientation;
+		long time = te.getWorld().getGameTime();
 		GlStateManager.pushMatrix();
-		float f = 0.6666667F;
+		float f = 2/3f;
 
 		if(!te.wall)
 		{

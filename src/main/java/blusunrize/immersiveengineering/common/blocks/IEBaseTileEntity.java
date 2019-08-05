@@ -33,6 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public abstract class IEBaseTileEntity extends TileEntity
@@ -210,5 +211,12 @@ public abstract class IEBaseTileEntity extends TileEntity
 		for(LazyOptional<?> cap : caps)
 			if(cap.isPresent())
 				cap.invalidate();
+	}
+
+	@Nonnull
+	@Override
+	public World getWorld()
+	{
+		return Objects.requireNonNull(super.getWorld());
 	}
 }

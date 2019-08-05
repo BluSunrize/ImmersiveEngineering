@@ -22,7 +22,7 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.client.render.ItemRendererIEOBJ;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
@@ -80,7 +80,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 {
 	public ItemRevolver()
 	{
-		super("revolver", new Properties().maxStackSize(1).setTEISR(() -> () -> ItemRendererIEOBJ.INSTANCE), "REVOLVER");
+		super("revolver", new Properties().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "REVOLVER");
 	}
 
 	public static UUID speedModUUID = Utils.generateNewUUID();

@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.render;
+package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
@@ -15,12 +15,12 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.Direction;
 
-public class TileRenderCoresample extends TileEntityRenderer<CoresampleTileEntity>
+public class CoresampleRenderer extends TileEntityRenderer<CoresampleTileEntity>
 {
 	@Override
 	public void render(CoresampleTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!tile.getWorld().isBlockLoaded(tile.getPos(), false)||tile.coresample==null)
+		if(!tile.getWorld().isBlockLoaded(tile.getPos())||tile.coresample==null)
 			return;
 
 		GlStateManager.pushMatrix();

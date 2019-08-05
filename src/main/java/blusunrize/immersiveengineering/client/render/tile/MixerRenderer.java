@@ -6,13 +6,14 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.render;
+package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -28,18 +29,18 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
-public class TileRenderMixer extends TileEntityRenderer<MixerTileEntity>
+public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 {
 	@Override
 	public void render(MixerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
+		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos()))
 			return;
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		BlockState state = getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=MetalMultiblocks.mixer)
+		if(state.getBlock()!=Multiblocks.mixer)
 			return;
 		state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);

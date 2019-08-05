@@ -25,8 +25,8 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
-import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
-import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
+import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
+import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -326,7 +326,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				{
 					int i = event.getEntityItemFrame().getRotation();
 					BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
-					BlueprintLines blueprint = recipe==null?null: TileRenderAutoWorkbench.getBlueprintDrawable(recipe, event.getEntityItemFrame().getEntityWorld());
+					BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, event.getEntityItemFrame().getEntityWorld());
 					if(blueprint!=null)
 					{
 						GlStateManager.rotatef(-i*45.0F, 0.0F, 0.0F, 1.0F);

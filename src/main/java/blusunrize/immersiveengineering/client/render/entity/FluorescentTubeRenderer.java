@@ -6,9 +6,10 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.render;
+package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
@@ -26,7 +27,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
-public class EntityRenderFluorescentTube extends EntityRenderer<FluorescentTubeEntity>
+public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntity>
 {
 	static double sqrt2Half = Math.sqrt(2)/2;
 	public static final double[][] octagon = {
@@ -37,7 +38,7 @@ public class EntityRenderFluorescentTube extends EntityRenderer<FluorescentTubeE
 	ResourceLocation modelLocation = new ResourceLocation("immersiveengineering:fluorescent_tube.obj");
 	TextureAtlasSprite tex;
 
-	public EntityRenderFluorescentTube(EntityRendererManager renderManager)
+	public FluorescentTubeRenderer(EntityRendererManager renderManager)
 	{
 		super(renderManager);
 		shadowOpaque = 0;
@@ -94,6 +95,6 @@ public class EntityRenderFluorescentTube extends EntityRenderer<FluorescentTubeE
 		GlStateManager.translated(-.5, .25, -.5);
 		ItemStack renderStack = active?tubeActive: tube;
 		ItemFluorescentTube.setRGB(renderStack, rgb);
-		ItemRendererIEOBJ.INSTANCE.renderByItem(renderStack);
+		IEOBJItemRenderer.INSTANCE.renderByItem(renderStack);
 	}
 }

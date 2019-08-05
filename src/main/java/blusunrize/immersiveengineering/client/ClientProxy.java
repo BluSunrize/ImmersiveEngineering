@@ -31,7 +31,9 @@ import blusunrize.immersiveengineering.client.models.connection.*;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
-import blusunrize.immersiveengineering.client.render.*;
+import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
+import blusunrize.immersiveengineering.client.render.entity.*;
+import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -258,12 +260,12 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GUI, new Matrix4().translate(-.375, .375, 0).scale(.75, .625, .75).rotate(-2.35619, 0, 1, 0).rotate(0.13089, 0, 0, 1))
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, .125, .125).scale(.25, .25, .25)));
 
-		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.class, EntityRenderRevolvershot::new);
-		RenderingRegistry.registerEntityRenderingHandler(SkylineHookEntity.class, EntityRenderNone::new);
-		RenderingRegistry.registerEntityRenderingHandler(ChemthrowerShotEntity.class, EntityRenderChemthrowerShot::new);
-		RenderingRegistry.registerEntityRenderingHandler(RailgunShotEntity.class, EntityRenderRailgunShot::new);
-		RenderingRegistry.registerEntityRenderingHandler(IEExplosiveEntity.class, EntityRenderIEExplosive::new);
-		RenderingRegistry.registerEntityRenderingHandler(FluorescentTubeEntity.class, EntityRenderFluorescentTube::new);
+		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.class, RevolvershotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(SkylineHookEntity.class, NoneRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ChemthrowerShotEntity.class, ChemthrowerShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(RailgunShotEntity.class, RailgunShotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(IEExplosiveEntity.class, IEExplosiveRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(FluorescentTubeEntity.class, FluorescentTubeRenderer::new);
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
 		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
@@ -316,31 +318,31 @@ public class ClientProxy extends CommonProxy
 		itemFont = new IEItemFontRender();
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 
-		ClientRegistry.bindTileEntitySpecialRenderer(ChargingStationTileEntity.class, new TileRenderChargingStation());
-		ClientRegistry.bindTileEntitySpecialRenderer(SampleDrillTileEntity.class, new TileRenderSampleDrill());
-		ClientRegistry.bindTileEntitySpecialRenderer(TeslaCoilTileEntity.class, new TileRenderTeslaCoil());
-		ClientRegistry.bindTileEntitySpecialRenderer(TurretTileEntity.class, new TileRenderTurret());
-		ClientRegistry.bindTileEntitySpecialRenderer(BelljarTileEntity.class, new TileRenderBelljar());
+		ClientRegistry.bindTileEntitySpecialRenderer(ChargingStationTileEntity.class, new ChargingStationRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(SampleDrillTileEntity.class, new SampleDrillRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TeslaCoilTileEntity.class, new TeslaCoilRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TurretTileEntity.class, new TurretRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(BelljarTileEntity.class, new BelljarRenderer());
 		// MULTIBLOCKS
-		ClientRegistry.bindTileEntitySpecialRenderer(MetalPressTileEntity.class, new TileRenderMetalPress());
-		ClientRegistry.bindTileEntitySpecialRenderer(CrusherTileEntity.class, new TileRenderCrusher());
-		ClientRegistry.bindTileEntitySpecialRenderer(SheetmetalTankTileEntity.class, new TileRenderSheetmetalTank());
-		ClientRegistry.bindTileEntitySpecialRenderer(SiloTileEntity.class, new TileRenderSilo());
-		ClientRegistry.bindTileEntitySpecialRenderer(SqueezerTileEntity.class, new TileRenderSqueezer());
-		ClientRegistry.bindTileEntitySpecialRenderer(DieselGeneratorTileEntity.class, new TileRenderDieselGenerator());
-		ClientRegistry.bindTileEntitySpecialRenderer(BucketWheelTileEntity.class, new TileRenderBucketWheel());
-		ClientRegistry.bindTileEntitySpecialRenderer(ArcFurnaceTileEntity.class, new TileRenderArcFurnace());
-		ClientRegistry.bindTileEntitySpecialRenderer(AutoWorkbenchTileEntity.class, new TileRenderAutoWorkbench());
-		ClientRegistry.bindTileEntitySpecialRenderer(BottlingMachineTileEntity.class, new TileRenderBottlingMachine());
-		ClientRegistry.bindTileEntitySpecialRenderer(MixerTileEntity.class, new TileRenderMixer());
+		ClientRegistry.bindTileEntitySpecialRenderer(MetalPressTileEntity.class, new MetalPressRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(CrusherTileEntity.class, new CrusherRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(SheetmetalTankTileEntity.class, new SheetmetalTankRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(SiloTileEntity.class, new SiloRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(SqueezerTileEntity.class, new SqueezerRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(DieselGeneratorTileEntity.class, new DieselGeneratorRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(BucketWheelTileEntity.class, new BucketWheelRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(ArcFurnaceTileEntity.class, new ArcFurnaceRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(AutoWorkbenchTileEntity.class, new AutoWorkbenchRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(BottlingMachineTileEntity.class, new BottlingMachineRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(MixerTileEntity.class, new MixerRenderer());
 		//WOOD
-		ClientRegistry.bindTileEntitySpecialRenderer(WatermillTileEntity.class, new TileRenderWatermill());
-		ClientRegistry.bindTileEntitySpecialRenderer(WindmillTileEntity.class, new TileRenderWindmill());
-		ClientRegistry.bindTileEntitySpecialRenderer(ModWorkbenchTileEntity.class, new TileRenderWorkbench());
+		ClientRegistry.bindTileEntitySpecialRenderer(WatermillTileEntity.class, new WatermillRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(WindmillTileEntity.class, new WindmillRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(ModWorkbenchTileEntity.class, new ModWorkbenchRenderer());
 		//STONE
-		ClientRegistry.bindTileEntitySpecialRenderer(CoresampleTileEntity.class, new TileRenderCoresample());
+		ClientRegistry.bindTileEntitySpecialRenderer(CoresampleTileEntity.class, new CoresampleRenderer());
 		//CLOTH
-		ClientRegistry.bindTileEntitySpecialRenderer(ShaderBannerTileEntity.class, new TileRenderShaderBanner());
+		ClientRegistry.bindTileEntitySpecialRenderer(ShaderBannerTileEntity.class, new ShaderBannerRenderer());
 
 
 		/*Colours*/
@@ -354,9 +356,9 @@ public class ClientProxy extends CommonProxy
 		/*Render Layers*/
 		Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
 		PlayerRenderer render = skinMap.get("default");
-		render.addLayer(new IEBipedLayerRenderer());
+		render.addLayer(new IEBipedLayerRenderer<>(render));
 		render = skinMap.get("slim");
-		render.addLayer(new IEBipedLayerRenderer());
+		render.addLayer(new IEBipedLayerRenderer<>(render));
 	}
 
 	@Override
@@ -1071,9 +1073,9 @@ public class ClientProxy extends CommonProxy
 		{
 			for(Object render : mc().getRenderManager().renderers.values())
 				if(BipedRenderer.class.isAssignableFrom(render.getClass()))
-					((BipedRenderer)render).addLayer(new IEBipedLayerRenderer());
+					((BipedRenderer)render).addLayer(new IEBipedLayerRenderer<>((BipedRenderer)render));
 				else if(ArmorStandRenderer.class.isAssignableFrom(render.getClass()))
-					((ArmorStandRenderer)render).addLayer(new IEBipedLayerRenderer());
+					((ArmorStandRenderer)render).addLayer(new IEBipedLayerRenderer<>((ArmorStandRenderer)render));
 			IEBipedLayerRenderer.rendersAssigned = true;
 		}
 	}
@@ -1336,9 +1338,9 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::clear);
 		IEApi.renderCacheClearers.add(FluidPipeTileEntity.cachedOBJStates::clear);
-		IEApi.renderCacheClearers.add(TileRenderBelljar::reset);
-		IEApi.renderCacheClearers.add(TileRenderWatermill::reset);
-		IEApi.renderCacheClearers.add(TileRenderWindmill::reset);
+		IEApi.renderCacheClearers.add(BelljarRenderer::reset);
+		IEApi.renderCacheClearers.add(WatermillRenderer::reset);
+		IEApi.renderCacheClearers.add(WindmillRenderer::reset);
 		IEApi.renderCacheClearers.add(ModelCoresample.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelItemDynamicOverride.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);

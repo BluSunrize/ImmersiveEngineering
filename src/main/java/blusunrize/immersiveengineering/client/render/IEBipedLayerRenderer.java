@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredIt
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
@@ -25,10 +26,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class IEBipedLayerRenderer implements LayerRenderer<LivingEntity>
+public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E>> extends LayerRenderer<E, M>
 {
 	public static boolean rendersAssigned = false;
 	public static Map<UUID, Pair<ItemStack, Integer>> POWERPACK_PLAYERS = new HashMap<>();
+
+	public IEBipedLayerRenderer(IEntityRenderer<E, M> entityRendererIn)
+	{
+		super(entityRendererIn);
+	}
 
 
 	@Override

@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.render;
+package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInWorld;
@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEnti
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.HashMultimap;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -39,6 +40,7 @@ import net.minecraft.resources.IResource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -51,19 +53,19 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 
-public class TileRenderAutoWorkbench extends TileEntityRenderer<AutoWorkbenchTileEntity>
+public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileEntity>
 {
 	@Override
 	public void render(AutoWorkbenchTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
+		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos()))
 			return;
 
 		//Grab model + correct eextended state
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		BlockState state = getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=MetalMultiblocks.autoWorkbench)
+		if(state.getBlock()!=Multiblocks.autoWorkbench)
 			return;
 		state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
@@ -286,7 +288,7 @@ public class TileRenderAutoWorkbench extends TileEntityRenderer<AutoWorkbenchTil
 			}
 
 		//Blueprint
-		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(blockPos);
+		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(new Vec3d(blockPos));
 
 		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{
