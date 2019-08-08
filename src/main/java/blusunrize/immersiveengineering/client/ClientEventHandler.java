@@ -27,8 +27,7 @@ import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
@@ -218,7 +217,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				&&BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
 			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack()))
 					.setStyle(gray));
-		if(IEConfig.oreTooltips&&event.getFlags().isAdvanced())
+		if(IEConfig.GENERAL.oreTooltips.get()&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
 				event.getToolTip().add(new StringTextComponent(oid.toString()).setStyle(gray));
@@ -278,7 +277,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				earmuffs = ItemNBTHelper.getItemStack(earmuffs, Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty()&&Misc.earmuffs.equals(earmuffs.getItem())&&!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
 			{
-				for(String blacklist : IEConfig.Tools.earDefenders_SoundBlacklist)
+				for(String blacklist : IEConfig.TOOLS.earDefenders_SoundBlacklist.get())
 					if(blacklist!=null&&blacklist.equalsIgnoreCase(event.getSound().getSoundLocation().toString()))
 						return;
 				if(event.getSound() instanceof ITickableSound)
@@ -544,7 +543,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						GlStateManager.pushMatrix();
 						GlStateManager.translated(scaledWidth-80, scaledHeight-30, 0);
 						GlStateManager.scalef(scale, scale, 1);
-						ClientProxy.nixieFont.drawString((chargeLevel < 10?"0": "")+chargeLevel, 0, 0, Lib.colour_nixieTubeText, false);
+						ClientProxy.nixieFont.drawString((chargeLevel < 10?"0": "")+chargeLevel, 0, 0, Lib.colour_nixieTubeText);
 						GlStateManager.scalef(1/scale, 1/scale, 1);
 						GlStateManager.popMatrix();
 					}
@@ -581,7 +580,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							if(!drill&&player.isHandActive()&&player.getActiveHand()==hand)
 							{
 								int use = player.getItemInUseMaxCount();
-								amount -= use*IEConfig.Tools.chemthrower_consumption;
+								amount -= use*IEConfig.TOOLS.chemthrower_consumption.get();
 							}
 							float cap = (float)capacity;
 							float angle = 83-(166*amount/cap);
@@ -686,7 +685,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							int storage = receiver.getEnergyStored(side);
 							if(maxStorage > 0)
 								text = I18n.format(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
-							int col = IEConfig.nixietubeFont?Lib.colour_nixieTubeText: 0xffffff;
+							int col = IEConfig.GENERAL.nixietubeFont.get()?Lib.colour_nixieTubeText: 0xffffff;
 							int i = 0;
 							for(String s : text)
 								if(s!=null)
@@ -838,7 +837,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						}
 					}
 				}
-				if(Config.IEConfig.Tools.chemthrower_scroll&&equipped.getItem() instanceof ItemChemthrower&&((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
+				if(IEConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof ItemChemthrower&&((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
 				{
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.getScrollDelta() < 0));
 					event.setCanceled(true);

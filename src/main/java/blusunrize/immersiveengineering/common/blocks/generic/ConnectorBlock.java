@@ -26,6 +26,7 @@ import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -79,9 +80,9 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 	*/
 
 	@Override
-	public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
+	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving)
 	{
-		super.neighborChanged(state, world, pos, blockIn, fromPos);
+		super.neighborChanged(state, world, pos, block, fromPos, isMoving);
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof EnergyConnectorTileEntity)
 		{
@@ -89,26 +90,24 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 			if(world.isAirBlock(pos.offset(connector.facing)))
 			{
 				spawnAsEntity(world, pos, new ItemStack(this));
-				connector.getWorld().removeBlock(pos);
+				connector.getWorld().removeBlock(pos, false);
 			}
 		}
 	}
 
 	@Override
-	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+	public ItemStack getPickBlock(BlockState state, RayTraceResult targetIn, IBlockReader world, BlockPos pos, PlayerEntity player)
 	{
 		//Select the wire if the player is sneaking
 		//TODO alternative to world instaceof World
-		if(player!=null&&player.isSneaking()&&world instanceof World)
+		if(player!=null&&player.isSneaking()&&world instanceof World&&targetIn instanceof BlockRayTraceResult)
 		{
+			BlockRayTraceResult target = (BlockRayTraceResult)targetIn;
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof ImmersiveConnectableTileEntity)
 			{
-				TargetingInfo subTarget = null;
-				if(target.hitVec!=null)
-					subTarget = new TargetingInfo(target.sideHit, (float)target.hitVec.x-pos.getX(), (float)target.hitVec.y-pos.getY(), (float)target.hitVec.z-pos.getZ());
-				else
-					subTarget = new TargetingInfo(target.sideHit, 0, 0, 0);
+				TargetingInfo subTarget = new TargetingInfo(target.getFace(), (float)target.getHitVec().x-pos.getX(),
+						(float)target.getHitVec().y-pos.getY(), (float)target.getHitVec().z-pos.getZ());
 				BlockPos masterPos = ((ImmersiveConnectableTileEntity)te).getConnectionMaster(null, subTarget);
 				if(masterPos!=pos)
 					te = world.getTileEntity(masterPos);
@@ -122,7 +121,7 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 				}
 			}
 		}
-		return super.getPickBlock(state, target, world, pos, player);
+		return super.getPickBlock(state, targetIn, world, pos, player);
 	}
 
 	@Override

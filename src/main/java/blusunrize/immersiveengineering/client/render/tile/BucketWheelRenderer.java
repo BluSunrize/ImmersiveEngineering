@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -95,7 +95,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		}
 		float dir = tile.facing==Direction.SOUTH?90: tile.facing==Direction.NORTH?-90: tile.facing==Direction.EAST?180: 0;
 		GlStateManager.rotatef(dir, 0, 1, 0);
-		float rot = tile.rotation+(float)(tile.active?IEConfig.Machines.excavator_speed*partialTicks: 0);
+		float rot = tile.rotation+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
 		GlStateManager.rotatef(rot, 1, 0, 0);
 
 		RenderHelper.disableStandardItemLighting();

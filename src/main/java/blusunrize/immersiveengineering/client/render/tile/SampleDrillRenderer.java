@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -63,7 +63,7 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		//		float rot = 360*tile.rotation-(!tile.canTurn||tile.rotation==0||tile.rotation-tile.prevRotation<4?0:tile.facing.getAxis()==Axis.X?-f:f);
 		//		GlStateManager.rotatef(rot, 0,0,1);
 
-		int max = IEConfig.Machines.coredrill_time;
+		int max = IEConfig.MACHINES.coredrill_time.get();
 		if(tile.process > 0&&tile.process < max)
 		{
 			GlStateManager.rotatef(((tile.process+partialTicks)*22.5f)%360f, 0, 1, 0);

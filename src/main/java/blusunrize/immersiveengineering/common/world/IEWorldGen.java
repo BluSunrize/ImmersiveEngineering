@@ -8,13 +8,12 @@
 
 package blusunrize.immersiveengineering.common.world;
 
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ArrayListMultimap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -33,18 +32,15 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
 
 @EventBusSubscriber
 public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?>> features = new HashMap<>();
 	//TODO
-	public static IntList oreDimBlacklist = new IntArrayList();
+	public static List<ResourceLocation> oreDimBlacklist = new ArrayList<>();
 	public static Map<String, Boolean> retrogenMap = new HashMap<>();
 
 	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence, int weight)
@@ -71,22 +67,22 @@ public class IEWorldGen
 	{
 		CompoundNBT nbt = new CompoundNBT();
 		event.getData().put("ImmersiveEngineering", nbt);
-		nbt.putBoolean(IEConfig.Ores.retrogen_key, true);
+		nbt.putBoolean(IEConfig.ORES.retrogen_key.get(), true);
 	}
 
 	@SubscribeEvent
 	public void chunkLoad(ChunkDataEvent.Load event)
 	{
 		DimensionType dimension = event.getWorld().getDimension().getType();
-		if((!event.getData().getCompound("ImmersiveEngineering").contains(IEConfig.Ores.retrogen_key))&&
-				(IEConfig.Ores.retrogen_copper||
-						IEConfig.Ores.retrogen_bauxite||
-						IEConfig.Ores.retrogen_lead||
-						IEConfig.Ores.retrogen_silver||
-						IEConfig.Ores.retrogen_nickel||
-						IEConfig.Ores.retrogen_uranium))
+		if((!event.getData().getCompound("ImmersiveEngineering").contains(IEConfig.ORES.retrogen_key.get()))&&
+				(IEConfig.ORES.ore_copper.retrogenEnabled.get()||
+						IEConfig.ORES.ore_bauxite.retrogenEnabled.get()||
+						IEConfig.ORES.ore_lead.retrogenEnabled.get()||
+						IEConfig.ORES.ore_silver.retrogenEnabled.get()||
+						IEConfig.ORES.ore_nickel.retrogenEnabled.get()||
+						IEConfig.ORES.ore_uranium.retrogenEnabled.get()))
 		{
-			if(IEConfig.Ores.retrogen_log_flagChunk)
+			if(IEConfig.ORES.retrogen_log_flagChunk.get())
 				IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");
 			retrogenChunks.put(dimension, event.getChunk().getPos());
 		}
@@ -118,7 +114,7 @@ public class IEWorldGen
 				this.generateOres(fmlRandom, loc.x, loc.z, event.world, false);
 				chunks.remove(0);
 			}
-		if(counter > 0&&IEConfig.Ores.retrogen_log_remaining)
+		if(counter > 0&&IEConfig.ORES.retrogen_log_remaining.get())
 			IELogger.info("Retrogen was performed on "+counter+" Chunks, "+Math.max(0, chunks.size())+" chunks remaining");
 	}
 }

@@ -41,7 +41,10 @@ import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.*;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -228,7 +231,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof ITileDrop)
+		if(tile instanceof ITileDrop&&target instanceof BlockRayTraceResult)
 		{
 			ItemStack s = ((ITileDrop)tile).getPickBlock(player, world.getBlockState(pos), target);
 			if(!s.isEmpty())

@@ -11,20 +11,22 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.loot.LootContext.Builder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class PostBlock extends IEBaseBlock
 {
@@ -37,8 +39,9 @@ public class PostBlock extends IEBaseBlock
 	}
 
 	@Override
-	public void getDrops(BlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune)
+	public List<ItemStack> getDrops(BlockState state, Builder builder)
 	{
+		return ImmutableList.of();
 	}
 
 	@Override
@@ -58,10 +61,7 @@ public class PostBlock extends IEBaseBlock
 		for(int hh = 1; hh <= 3; hh++)
 		{
 			BlockPos pos = startingPos.up(hh);
-			BlockItemUseContext dummyContext = new BlockItemUseContext(
-					context.getWorld(), context.getPlayer(), context.getItem(), pos, context.getFace(),
-					context.getHitX(), context.getHitY(), context.getHitZ()
-			);
+			BlockItemUseContext dummyContext = BlockItemUseContext.func_221536_a(context, pos, context.getFace());
 			if(World.isOutsideBuildHeight(pos)||
 					!world.getBlockState(pos).getBlock().isReplaceable(newState, dummyContext))
 				return false;

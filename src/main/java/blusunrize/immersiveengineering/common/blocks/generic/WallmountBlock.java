@@ -12,13 +12,14 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
@@ -53,7 +54,7 @@ public class WallmountBlock extends IEBaseBlock
 			ret = ret.with(ORIENTATION, Orientation.VERT_UP);
 		else if(side==Direction.DOWN)
 			ret = ret.with(ORIENTATION, Orientation.VERT_DOWN);
-		else if(context.getHitY() < .5)
+		else if(context.getHitVec().y < .5)
 			ret = ret.with(ORIENTATION, Orientation.SIDE_DOWN);
 		else
 			ret = ret.with(ORIENTATION, SIDE_UP);
@@ -61,7 +62,7 @@ public class WallmountBlock extends IEBaseBlock
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos)
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
 	{
 		Orientation orientation = state.get(ORIENTATION);
 		Direction facing = state.get(IEProperties.FACING_HORIZONTAL);
@@ -76,7 +77,7 @@ public class WallmountBlock extends IEBaseBlock
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		if(player.isSneaking())
 		{
@@ -102,22 +103,6 @@ public class WallmountBlock extends IEBaseBlock
 			Direction mountSide = state.get(IEProperties.FACING_HORIZONTAL);
 			Direction actualSide = o.attachedToSide()?mountSide: mountSide.getOpposite();
 			return fromSide==actualSide;
-		}
-	}
-
-	@Override
-	public BlockFaceShape getBlockFaceShape(IBlockReader w, BlockState state, BlockPos pos, Direction side)
-	{
-		Orientation o = state.get(ORIENTATION);
-		if(side==Direction.UP)
-			return o.touchesTop()?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
-		else if(side==Direction.DOWN)
-			return o.touchesTop()?BlockFaceShape.UNDEFINED: BlockFaceShape.CENTER;
-		else
-		{
-			Direction mountSide = state.get(IEProperties.FACING_HORIZONTAL);
-			Direction actualSide = o.attachedToSide()?mountSide: mountSide.getOpposite();
-			return side==actualSide?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
 		}
 	}
 

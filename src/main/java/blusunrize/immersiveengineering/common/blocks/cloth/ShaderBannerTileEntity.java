@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -17,17 +16,16 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.BannerTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -45,6 +43,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 	public ShaderBannerTileEntity()
 	{
 		super(TYPE);
+		reInitCapability();
 	}
 
 	@Override
@@ -52,7 +51,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 	{
 		this.wall = nbt.getBoolean("wall");
 		this.orientation = nbt.getByte("orientation");
-		if(nbt.hasKey("shader"))
+		if(nbt.contains("shader", NBT.TAG_COMPOUND))
 		{
 			shader = new ShaderWrapper_Direct("immersiveengineering:banner");
 			shader.deserializeNBT(nbt.getCompound("shader"));
@@ -92,12 +91,11 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 		return ImmutableList.of();
 	}
 
-
 	@Override
-	public NonNullList<ItemStack> getTileDrops(@Nullable PlayerEntity player, BlockState state)
+	public ItemStack getTileDrop(@Nullable Entity player, BlockState state)
 	{
-		return NonNullList.from(ItemStack.EMPTY,
-				new ItemStack(Items.WHITE_BANNER, 1), this.shader.getShaderItem());
+		//TODO drop white banner elsewhere
+		return this.shader.getShaderItem();
 	}
 
 	@Override
@@ -116,14 +114,21 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 		return super.receiveClientEvent(id, arg);
 	}
 
-	private final CapabilityHolder<ShaderWrapper> shaderCap = registerCap(CapabilityHolder.empty());
+	private LazyOptional<ShaderWrapper> shaderCap;
+
+	private void reInitCapability()
+	{
+		if(shaderCap!=null)
+			unregisterCap(shaderCap);
+		shaderCap = registerConstantCap(shader);
+	}
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityShader.SHADER_CAPABILITY)
-			return ApiUtils.constantOptional(shaderCap, shader);
+			return shaderCap.cast();
 		return super.getCapability(capability, facing);
 	}
 }

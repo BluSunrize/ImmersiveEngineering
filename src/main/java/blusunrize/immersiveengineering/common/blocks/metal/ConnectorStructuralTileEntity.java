@@ -43,6 +43,11 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 		super(TYPE);
 	}
 
+	public ConnectorStructuralTileEntity(TileEntityType<? extends ConnectorStructuralTileEntity> type)
+	{
+		super(type);
+	}
+
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{

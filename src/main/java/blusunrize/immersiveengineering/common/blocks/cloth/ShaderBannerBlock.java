@@ -9,8 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
@@ -24,8 +22,8 @@ public class ShaderBannerBlock extends IETileProviderBlock
 {
 	public ShaderBannerBlock()
 	{
-		super("shader_banner", Block.Properties.create(Material.CLOTH), ItemBlockIEBase.class,
-				IEProperties.FACING_ALL, IOBJModelCallback.PROPERTY, CapabilityShader.BLOCKSTATE_PROPERTY);
+		super("shader_banner", Block.Properties.create(Material.WOOL), ItemBlockIEBase.class,
+				IEProperties.FACING_ALL);
 	}
 
 	@Nullable

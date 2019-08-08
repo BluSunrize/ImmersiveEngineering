@@ -185,6 +185,12 @@ public abstract class IEBaseTileEntity extends TileEntity
 		return cap;
 	}
 
+	protected <T> void unregisterCap(LazyOptional<T> cap)
+	{
+		cap.invalidate();
+		caps.remove(cap);
+	}
+
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)

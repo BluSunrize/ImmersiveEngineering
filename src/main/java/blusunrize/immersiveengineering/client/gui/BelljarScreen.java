@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity;
 import blusunrize.immersiveengineering.common.gui.ContainerBelljar;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -41,7 +41,7 @@ public class BelljarScreen extends IEContainerScreen
 		ClientUtils.handleGuiTank(tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, "immersiveengineering:textures/gui/belljar.png", tooltip);
 		if(mx > guiLeft+30&&mx < guiLeft+37&&my > guiTop+22&&my < guiTop+68)
 		{
-			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fertFill", Utils.formatDouble(tile.fertilizerAmount/(float)IEConfig.Machines.belljar_fertilizer, "0.00")));
+			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fertFill", Utils.formatDouble(tile.fertilizerAmount/(float)IEConfig.MACHINES.belljar_fertilizer.get(), "0.00")));
 			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fertMod", Utils.formatDouble(tile.fertilizerMod, "0.00")));
 
 		}
@@ -65,7 +65,7 @@ public class BelljarScreen extends IEContainerScreen
 		GlStateManager.disableBlend();
 
 		ClientUtils.handleGuiTank(tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, "immersiveengineering:textures/gui/belljar.png", null);
-		int stored = (int)(46*(tile.fertilizerAmount/(float)IEConfig.Machines.belljar_fertilizer));
+		int stored = (int)(46*(tile.fertilizerAmount/(float)IEConfig.MACHINES.belljar_fertilizer.get()));
 		ClientUtils.drawGradientRect(guiLeft+30, guiTop+22+(46-stored), guiLeft+37, guiTop+68, 0xff95ed00, 0xff8a5a00);
 
 		stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));

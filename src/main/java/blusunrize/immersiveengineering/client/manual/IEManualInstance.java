@@ -11,9 +11,7 @@ package blusunrize.immersiveengineering.client.manual;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.IEItemFontRender;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual.MessageType;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -35,14 +33,14 @@ public class IEManualInstance extends ManualInstance
 
 	public IEManualInstance()
 	{
-		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png",
+		super(/*TODO new IEItemFontRender()*/ClientUtils.font(), "immersiveengineering:textures/gui/manual.png",
 				120, 179-28, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
 		/*
 		TODO no longer easily possible?
 		this.fontRenderer.colorCode[0+6] = Lib.COLOUR_I_ImmersiveOrange;
 		this.fontRenderer.colorCode[16+6] = Lib.COLOUR_I_ImmersiveOrangeShadow;
-		 */
 		((IEItemFontRender)this.fontRenderer).createColourBackup();
+		 */
 		if(Minecraft.getInstance().gameSettings.language!=null)
 			this.fontRenderer.setBidiFlag(ClientUtils.mc().getLanguageManager().isCurrentLanguageBidirectional());
 	}
@@ -126,6 +124,7 @@ public class IEManualInstance extends ManualInstance
 		return s;
 	}
 
+	/*TODO readd
 	@Override
 	public void openManual()
 	{
@@ -190,7 +189,7 @@ public class IEManualInstance extends ManualInstance
 			((IEItemFontRender)this.fontRenderer).customSpaceWidth = 1f;
 			((IEItemFontRender)this.fontRenderer).verticalBoldness = true;
 		}
-	}
+	}*/
 
 
 	@Override
@@ -232,7 +231,7 @@ public class IEManualInstance extends ManualInstance
 		ResourceLocation nodeLoc = node.isLeaf()?node.getLeafData().getLocation(): node.getNodeData();
 		if(ImmersiveEngineering.MODID.equals(nodeLoc.getNamespace())&&
 				nodeLoc.getPath().startsWith(ManualHelper.CAT_UPDATE))
-			return IEConfig.showUpdateNews;
+			return IEConfig.GENERAL.showUpdateNews.get();
 		return !nodeLoc.equals(SHADER_ENTRY);
 	}
 
@@ -289,13 +288,13 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public boolean allowGuiRescale()
 	{
-		return IEConfig.adjustManualScale;
+		return IEConfig.GENERAL.adjustManualScale.get();
 	}
 
 	@Override
 	public boolean improveReadability()
 	{
-		return IEConfig.badEyesight;
+		return IEConfig.GENERAL.badEyesight.get();
 	}
 
 	public String formatConfigEntry(String rep, String splitKey)
@@ -306,15 +305,15 @@ public class IEManualInstance extends ManualInstance
 		if(segment[1].equalsIgnoreCase("b"))
 		{
 			if(segment.length > 3)
-				return (Config.manual_bool.get(segment[2])?segment[3]: segment.length > 4?segment[4]: "");
+				return (IEConfig.ALL.get(segment[2])?segment[3]: segment.length > 4?segment[4]: "");
 			else
-				return ""+Config.manual_bool.get(segment[2]);
+				return ""+IEConfig.ALL.get(segment[2]);
 		}
 		else if(segment[1].equalsIgnoreCase("i"))
-			return ""+Config.manual_int.get(segment[2]);
+			return ""+IEConfig.ALL.get(segment[2]);
 		else if(segment[1].equalsIgnoreCase("iA"))
 		{
-			int[] iA = Config.manual_intA.get(segment[2]);
+			int[] iA = IEConfig.ALL.get(segment[2]);
 			if(segment.length > 3)
 				try
 				{
@@ -344,10 +343,10 @@ public class IEManualInstance extends ManualInstance
 			}
 		}
 		else if(segment[1].equalsIgnoreCase("d"))
-			return ""+Config.manual_double.get(segment[2]);
+			return ""+IEConfig.ALL.get(segment[2]);
 		else if(segment[1].equalsIgnoreCase("dA"))
 		{
-			double[] iD = Config.manual_doubleA.get(segment[2]);
+			double[] iD = IEConfig.ALL.get(segment[2]);
 			if(segment.length > 3)
 				try
 				{

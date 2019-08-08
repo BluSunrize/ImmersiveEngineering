@@ -130,7 +130,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		if(recipe!=null)
 			if(isInWorldProcessingMachine())
 				return new MultiblockProcessInWorld<>(recipe, tag.getFloat("process_transformationPoint"),
-						Utils.loadItemStacksFromNBT(tag.getTag("process_inputItem")));
+						Utils.loadItemStacksFromNBT(tag.get("process_inputItem")));
 			else
 				return new MultiblockProcessInMachine<>(recipe, tag.getIntArray("process_inputSlots"))
 						.setInputTanks(tag.getIntArray("process_inputTanks"));

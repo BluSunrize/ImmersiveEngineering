@@ -12,11 +12,7 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.network.*;
@@ -37,7 +33,9 @@ import net.minecraft.world.ServerWorld;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -51,7 +49,6 @@ import org.apache.logging.log4j.LogManager;
 import javax.annotation.Nonnull;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Arrays;
 
 @Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
@@ -78,6 +75,8 @@ public class ImmersiveEngineering
 		//TODO right bus?
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarting);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarted);
+		//TODO separate client/server config?
+		ModLoadingContext.get().registerConfig(Type.COMMON, IEConfig.ALL);
 	}
 
 	static
@@ -97,9 +96,9 @@ public class ImmersiveEngineering
 		IEAdvancements.preInit();
 
 
-		for(int b : IEConfig.Ores.oreDimBlacklist)
-			IEWorldGen.oreDimBlacklist.add(b);
-		IEApi.modPreference = Arrays.asList(IEConfig.preferredOres);
+		for(String b : IEConfig.ORES.oreDimBlacklist.get())
+			IEWorldGen.oreDimBlacklist.add(new ResourceLocation(b));
+		IEApi.modPreference = IEConfig.GENERAL.preferredOres.get();
 		IEApi.prefixToIngotMap.put("ingot", new Integer[]{1, 1});
 		IEApi.prefixToIngotMap.put("nugget", new Integer[]{1, 9});
 		IEApi.prefixToIngotMap.put("block", new Integer[]{9, 1});

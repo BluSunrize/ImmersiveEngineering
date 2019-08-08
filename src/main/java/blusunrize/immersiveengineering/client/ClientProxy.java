@@ -36,8 +36,7 @@ import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
@@ -150,8 +149,8 @@ public class ClientProxy extends CommonProxy
 	public static AtlasTexture revolverTextureMap;
 	public static final ResourceLocation revolverTextureResource = new ResourceLocation("textures/atlas/immersiveengineering/revolvers.png");
 	public static FontRenderer nixieFontOptional;
-	public static IENixieFontRender nixieFont;
-	public static IEItemFontRender itemFont;
+	public static FontRenderer nixieFont;
+	public static FontRenderer itemFont;
 	public static boolean stencilBufferEnabled = false;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.gameplay");
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", 0, "key.categories.gameplay");
@@ -314,9 +313,10 @@ public class ClientProxy extends CommonProxy
 		keybind_chemthrowerSwitch.setKeyConflictContext(KeyConflictContext.IN_GAME);
 		ClientRegistry.registerKeyBinding(keybind_chemthrowerSwitch);
 
-		nixieFontOptional = IEConfig.nixietubeFont?new IENixieFontRender(): ClientUtils.font();
-		nixieFont = new IENixieFontRender();
-		itemFont = new IEItemFontRender();
+		//TODO
+		nixieFontOptional = ClientUtils.font();
+		nixieFont = ClientUtils.font();
+		itemFont = ClientUtils.font();
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 
 		ClientRegistry.bindTileEntitySpecialRenderer(ChargingStationTileEntity.class, new ChargingStationRenderer());
@@ -1084,7 +1084,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnBucketWheelFX(BucketWheelTileEntity tile, ItemStack stack)
 	{
-		if(stack!=null&&Config.getBoolean("excavator_particles"))
+		if(stack!=null&&IEConfig.MACHINES.excavator_particles.get())
 		{
 			for(int i = 0; i < 16; i++)
 			{

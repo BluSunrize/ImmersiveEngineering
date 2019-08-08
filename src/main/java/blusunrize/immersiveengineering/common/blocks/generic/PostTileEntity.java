@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 import static net.minecraft.block.state.BlockFaceShape.*;
 
-public class PostTileEntity extends IEBaseTileEntity implements IPostBlock, IFaceShape, IHasDummyBlocks, IHasObjProperty, IBlockBounds, IHammerInteraction
+public class PostTileEntity extends IEBaseTileEntity implements IPostBlock, IHasDummyBlocks, IHasObjProperty, IBlockBounds, IHammerInteraction
 {
 	//TODO replace with blockstate property
 	public byte dummy;
@@ -104,16 +104,6 @@ public class PostTileEntity extends IEBaseTileEntity implements IPostBlock, IFac
 			}
 		}
 		return list;
-	}
-
-	@Override
-	public BlockFaceShape getFaceShape(Direction side)
-	{
-		if(dummy==0)
-			return side==Direction.DOWN?BlockFaceShape.CENTER_BIG: BlockFaceShape.UNDEFINED;
-		else if(dummy >= 3)
-			return (side==Direction.UP||(dummy > 3&&side==Direction.DOWN))?BlockFaceShape.CENTER_BIG: BlockFaceShape.UNDEFINED;
-		return BlockFaceShape.CENTER;
 	}
 
 	public boolean hasConnection(Direction dir)
@@ -191,7 +181,7 @@ public class PostTileEntity extends IEBaseTileEntity implements IPostBlock, IFac
 			for(int i = 0; i <= 3; i++)
 			{
 				if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof PostTileEntity)
-					world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0));
+					world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0), false);
 				if(i==3)
 				{
 					TileEntity te;
@@ -199,7 +189,7 @@ public class PostTileEntity extends IEBaseTileEntity implements IPostBlock, IFac
 					{
 						te = world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0).offset(facing));
 						if(te instanceof PostTileEntity&&((PostTileEntity)te).dummy==(3+facing.ordinal()))
-							world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0).offset(facing));
+							world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0).offset(facing), false);
 					}
 				}
 			}
@@ -230,7 +220,7 @@ public class PostTileEntity extends IEBaseTileEntity implements IPostBlock, IFac
 		else if(this.dummy > 3)
 		{
 			Direction f = Direction.byIndex(dummy-3).getOpposite();
-			this.world.removeBlock(getPos());
+			this.world.removeBlock(getPos(), false);
 			this.markBlockForUpdate(getPos().offset(f).add(0, -3, 0), null);
 		}
 		return false;

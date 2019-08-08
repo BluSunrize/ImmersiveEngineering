@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -23,12 +21,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -37,11 +37,18 @@ import java.util.List;
 public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IHammerInteraction,
 		IAdvancedCollisionBounds, IAdvancedDirectionalTile, IDualState, IColouredTile, ITileDrop
 {
+	public static TileEntityType<StripCurtainTileEntity> TYPE;
+
 	public Direction facing = Direction.NORTH;
 	public boolean ceilingAttached = false;
 	public int colour = 0xffffff;
 	private int redstoneSignal = 0;
 	private boolean strongSignal = false;
+
+	public StripCurtainTileEntity()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void tick()
@@ -195,12 +202,6 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
-	{
-		return IEProperties.BOOLEANS[0];
-	}
-
-	@Override
 	public int getRenderColour(int tintIndex)
 	{
 		if(tintIndex==1)
@@ -209,7 +210,7 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
+	public ItemStack getTileDrop(@Nullable Entity player, BlockState state)
 	{
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		if(colour!=0xffffff)

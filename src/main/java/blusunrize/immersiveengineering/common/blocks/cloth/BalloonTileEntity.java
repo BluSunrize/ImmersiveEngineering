@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -28,10 +27,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.init.ParticleTypes;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -41,6 +41,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.lang3.tuple.Triple;
@@ -50,10 +51,17 @@ import javax.annotation.Nullable;
 
 public class BalloonTileEntity extends ConnectorStructuralTileEntity implements ILightValue, IPlayerInteraction, IHammerInteraction
 {
+	public static TileEntityType<BalloonTileEntity> TYPE;
 	public int style = 0;
 	public int colour0 = 0xffffff;
 	public int colour1 = 0xffffff;
 	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct("immersiveengineering:balloon");
+
+	public BalloonTileEntity()
+	{
+		super(TYPE);
+		reInitCapability();
+	}
 
 	@Override
 	public int getLightValue()
@@ -65,18 +73,14 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		//to prevent old ballons from going black
-		int nbtVersion = nbt.getInt("nbtVersion");
-		if(nbtVersion >= 1)
-		{
-			style = nbt.getInt("style");
-			colour0 = nbt.getInt("colour0");
-			colour1 = nbt.getInt("colour1");
-		}
-		if(nbt.hasKey("shader"))
+		style = nbt.getInt("style");
+		colour0 = nbt.getInt("colour0");
+		colour1 = nbt.getInt("colour1");
+		if(nbt.contains("shader", NBT.TAG_COMPOUND))
 		{
 			shader = new ShaderWrapper_Direct("immersiveengineering:balloon");
 			shader.deserializeNBT(nbt.getCompound("shader"));
+			reInitCapability();
 		}
 	}
 
@@ -84,7 +88,6 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	public void writeCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("nbtVersion", 1);
 		nbt.putInt("style", style);
 		nbt.putInt("colour0", colour0);
 		nbt.putInt("colour1", colour1);
@@ -109,14 +112,21 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 		return super.receiveClientEvent(id, arg);
 	}
 
-	LazyOptional<ShaderWrapper> shaderCap = registerConstantCap(shader);//TODO deal with NBT reads
+	LazyOptional<ShaderWrapper> shaderCap;
+
+	private void reInitCapability()
+	{
+		if(shaderCap!=null)
+			unregisterCap(shaderCap);
+		shaderCap = registerConstantCap(shader);
+	}
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityShader.SHADER_CAPABILITY)
-			return ApiUtils.constantOptional(shaderCap, shader);
+			return shaderCap.cast();
 		return super.getCapability(capability, facing);
 	}
 
@@ -235,7 +245,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 			Vec3d pos = new Vec3d(getPos()).add(.5, .5, .5);
 			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST,
 					SoundCategory.BLOCKS, 1.5f, 0.7f);
-			world.removeBlock(getPos());
+			world.removeBlock(getPos(), false);
 			world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 0, .05, 0);
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(this.shader);
 			if(shader!=null)

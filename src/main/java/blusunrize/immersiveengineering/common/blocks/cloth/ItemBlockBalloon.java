@@ -8,15 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -48,7 +48,7 @@ public class ItemBlockBalloon extends ItemBlockIEBase
 			{
 				if(!worldIn.isRemote)
 				{
-					worldIn.setBlockState(bPos, IEContent.blockBalloon.getDefaultState());
+					worldIn.setBlockState(bPos, Cloth.balloon.getDefaultState());
 					itemStackIn.shrink(1);
 					if(itemStackIn.getCount() <= 0)
 						playerIn.setHeldItem(hand, ItemStack.EMPTY);
@@ -60,15 +60,16 @@ public class ItemBlockBalloon extends ItemBlockIEBase
 	}
 
 	@Override
-	public ActionResultType onItemUse(PlayerEntity playerIn, World worldIn, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ)
+	public ActionResultType onItemUse(ItemUseContext context)
 	{
-		ItemStack stack = playerIn.getHeldItem(hand);
-		if(playerIn.isSneaking())
+		PlayerEntity player = context.getPlayer();
+		if(player!=null&&player.isSneaking())
 		{
+			ItemStack stack = player.getHeldItem(context.getHand());
 			increaseOffset(stack);
 			return ActionResultType.SUCCESS;
 		}
-		return super.onItemUse(playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
+		return super.onItemUse(context);
 	}
 
 	@Override

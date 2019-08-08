@@ -20,7 +20,7 @@ public class CushionBlock extends IEBaseBlock
 {
 	public CushionBlock()
 	{
-		super("cushion", Block.Properties.create(Material.CLOTH).hardnessAndResistance(0.8F), ItemBlockIEBase.class);
+		super("cushion", Block.Properties.create(Material.WOOL).hardnessAndResistance(0.8F), ItemBlockIEBase.class);
 	}
 
 	@Override

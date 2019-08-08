@@ -571,7 +571,7 @@ public class IEConfig
 				.defineInRange(name, defaultVal, 1, Integer.MAX_VALUE);
 	}
 
-	static final ForgeConfigSpec ieConfig;
+	public static final ForgeConfigSpec ALL;
 	public static final Wires WIRES;
 	public static final General GENERAL;
 	public static final Machines MACHINES;
@@ -587,6 +587,6 @@ public class IEConfig
 		ORES = new Ores(builder);
 		TOOLS = new Tools(builder);
 
-		ieConfig = builder.build();
+		ALL = builder.build();
 	}
 }
