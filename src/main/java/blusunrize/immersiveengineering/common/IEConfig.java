@@ -12,14 +12,17 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Predicate;
 
+@SuppressWarnings("WeakerAccess")
 public class IEConfig
 {
 	//TODO replace fixed-length lists with push's/pop's
@@ -219,14 +222,83 @@ public class IEConfig
 			teslacoil_damage = builder
 					.comment("The amount of damage the Tesla Coil will do when shocking an entity")
 					.defineInRange("teslacoil_damage", 6D, 0, Integer.MAX_VALUE);
+			turret_consumption = addPositive(builder, "turret_consumption", 64, "The Flux per tick any turret consumes to monitor the area");
+			turret_chem_consumption = addPositive(builder, "turret_chem_consumption", 32, "The Flux per tick the chemthrower turret consumes to shoot");
+			turret_gun_consumption = addPositive(builder, "turret_gun_consumption", 32, "The Flux per tick the gun turret consumes to shoot");
+			belljar_consumption = addPositive(builder, "garden_cloche_consumption", 8, "The Flux per tick the belljar consumes to grow plants");
+			belljar_fertilizer = addPositive(builder, "garden_cloche_fertilizer", 6000, "The amount of ticks one dose of fertilizer lasts in the belljar");
+			belljar_fluid = addPositive(builder, "garden_cloche_fluid", 250, "The amount of fluid the belljar uses per dose of fertilizer");
+			belljar_growth_mod = builder
+					.comment("A modifier to apply to the belljars total growing speed")
+					.defineInRange("garden_cloche_growth_modifier", 1, 1e-3, 1e3);
+			belljar_solid_fertilizer_mod = builder
+					.comment("A base-modifier for all solid fertilizers in the belljar")
+					.defineInRange("garden_cloche_solid_fertilizer_mod", 1, 1e-3, 1e3);
+			belljar_fluid_fertilizer_mod = builder
+					.comment("A base-modifier for all fluid fertilizers in the belljar")
+					.defineInRange("garden_cloche_fluid_fertilizer_mod", 1, 1e-3, 1e3);
+			lantern_spawnPrevent = builder
+					.comment("Set this to false to disable the mob-spawn prevention of the Powered Lantern")
+					.worldRestart()
+					.define("lantern_SpawnPrevent", true);
+			lantern_energyDraw = addPositive(builder, "lantern_energyDraw", 1, "How much Flux the powered lantern draws per tick");
+			lantern_maximumStorage = addPositive(builder, "lantern_max_storage", 10, "How much Flux the powered lantern can hold (should be greater than the power draw)");
+			floodlight_spawnPrevent = builder
+					.comment("Set this to false to disable the mob-spawn prevention of the Floodlight")
+					.worldRestart()
+					.define("floodlight_spawnPrevent", true);
+			floodlight_energyDraw = addPositive(builder, "floodlight_energyDraw", 5, "How much Flux the floodlight draws per tick");
+			floodlight_maximumStorage = addPositive(builder, "floodlight_max_storage", 80, "How much Flux the floodlight can hold (must be at least 10x the power draw)");
+			metalPressConfig = addMachineEnergyTimeModifiers(builder, "metal press");
+			crusherConfig = addMachineEnergyTimeModifiers(builder, "crusher");
+			squeezerConfig = addMachineEnergyTimeModifiers(builder, "squeezer");
+			fermenterConfig = addMachineEnergyTimeModifiers(builder, "fermenter");
+			refineryConfig = addMachineEnergyTimeModifiers(builder, "refinery");
+			arcFurnaceConfig = addMachineEnergyTimeModifiers(builder, "arc furnace");
+			autoWorkbenchConfig = addMachineEnergyTimeModifiers(builder, "auto workbench");
+			bottlingMachineConfig = addMachineEnergyTimeModifiers(builder, "bottling machine");
+			mixerConfig = addMachineEnergyTimeModifiers(builder, "mixer");
+			arcfurnace_electrodeDamage = addPositive(builder, "arcfurnace_electrodeDamage", 96000, "The maximum amount of damage Graphite Electrodes can take. While the furnace is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days");
+			arcfurnace_electrodeCrafting = builder
+					.comment("Set this to true to make the blueprint for graphite electrodes craftable in addition to villager/dungeon loot")
+					.define("arcfurnace_electrodeCrafting", false);
+			arcfurnace_recycle = builder
+					.comment("Set this to false to disable the Arc Furnace's recycling of armors and tools")
+					.define("arcfurnace_recycle", true);
+
+			assembler_consumption = addPositive(builder, "assembler_consumption", 80, "The Flux the Assembler will consume to craft an item from a recipe");
+			excavator_consumption = addPositive(builder, "excavator_consumption", 4096, "The Flux per tick the Excavator will consume to dig");
+			excavator_speed = builder
+					.comment("The speed of the Excavator. Basically translates to how many degrees per tick it will turn.")
+					.defineInRange("excavator_speed", 1, 1e-3, 1e3);
+			excavator_particles = builder
+					.comment("Set this to false to disable the ridiculous amounts of particles the Excavator spawns")
+					.define("excavator_particles", true);
+			excavator_chance = builder
+					.comment("The chance that a given chunk will contain a mineral vein.")
+					.defineInRange("excavator_chance", .2, 1e-3, 1);
+			excavator_fail_chance = builder
+					.comment("The chance that the Excavator will not dig up an ore with the currently downward-facing bucket.")
+					.defineInRange("excavator_fail_chance", .05, 0, 1);
+			excavator_depletion = builder
+					.comment("The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite")
+					.defineInRange("excavator_depletion", 38400, -1, Integer.MAX_VALUE);
+			excavator_dimBlacklist = builder
+					.comment("List of dimensions that can't contain minerals. Default: The End.")
+					.define("excavator_dimBlacklist", ImmutableList.of(1));
 			builder.pop();
 		}
 
-		private IntValue addPositive(Builder builder, String name, int defaultVal, String... desc)
+		private MachineRecipeConfig addMachineEnergyTimeModifiers(Builder builder, String machine)
 		{
-			return builder
-					.comment(desc)
-					.defineInRange(name, defaultVal, 1, Integer.MAX_VALUE);
+			String pathName = machine.toLowerCase(Locale.ENGLISH).replace(' ', '_');
+			DoubleValue energy = builder
+					.comment("A modifier to apply to the energy costs of every "+machine+" recipe")
+					.defineInRange(pathName+"_energyModifier", 1, 1e-3, 1e3);
+			DoubleValue time = builder
+					.comment("A modifier to apply to the time of every "+machine+" recipe")
+					.defineInRange(pathName+"_timeModifier", 1, 1e-3, 1e3);
+			return new MachineRecipeConfig(energy, time);
 		}
 
 		private IntValue[] addCapacitorConfig(ForgeConfigSpec.Builder builder, String voltage, int defaultStorage, int defaultInput, int defaultOutput)
@@ -293,108 +365,227 @@ public class IEConfig
 		public final DoubleValue belljar_fluid_fertilizer_mod;
 
 		//Lights
-		public final BooleanValue lantern_spawnPrevent = true;
-		public final IntValue lantern_energyDraw = 1;
-		public final IntValue lantern_maximumStorage = 10;
-		public final BooleanValue floodlight_spawnPrevent = true;
-		public final IntValue floodlight_energyDraw = 5;
-		public final IntValue floodlight_maximumStorage = 80;
+		public final BooleanValue lantern_spawnPrevent;
+		public final IntValue lantern_energyDraw;
+		public final IntValue lantern_maximumStorage;
+		public final BooleanValue floodlight_spawnPrevent;
+		public final IntValue floodlight_energyDraw;
+		public final IntValue floodlight_maximumStorage;
 
 
 		//Multiblock Recipes
-		public final DoubleValue metalPress_energyModifier = 1;
-		public final DoubleValue metalPress_timeModifier = 1;
-		public final DoubleValue crusher_energyModifier = 1;
-		public final DoubleValue crusher_timeModifier = 1;
-		public final DoubleValue squeezer_energyModifier = 1;
-		public final DoubleValue squeezer_timeModifier = 1;
-		public final DoubleValue fermenter_energyModifier = 1;
-		public final DoubleValue fermenter_timeModifier = 1;
-		public final DoubleValue refinery_energyModifier = 1;
-		public final DoubleValue refinery_timeModifier = 1;
-		public final DoubleValue arcFurnace_energyModifier = 1;
-		public final DoubleValue arcFurnace_timeModifier = 1;
-		public final IntValue arcfurnace_electrodeDamage = 96000;
-		public final BooleanValue arcfurnace_electrodeCrafting = false;
-		public final BooleanValue arcfurnace_recycle = true;
-		public final DoubleValue autoWorkbench_energyModifier = 1;
-		public final DoubleValue autoWorkbench_timeModifier = 1;
-		public final DoubleValue bottlingMachine_energyModifier = 1;
-		public final DoubleValue bottlingMachine_timeModifier = 1;
-		public final DoubleValue mixer_energyModifier = 1;
-		public final DoubleValue mixer_timeModifier = 1;
+		public final MachineRecipeConfig metalPressConfig;
+		public final MachineRecipeConfig crusherConfig;
+		public final MachineRecipeConfig squeezerConfig;
+		public final MachineRecipeConfig fermenterConfig;
+		public final MachineRecipeConfig refineryConfig;
+		public final MachineRecipeConfig arcFurnaceConfig;
+		public final IntValue arcfurnace_electrodeDamage;
+		public final BooleanValue arcfurnace_electrodeCrafting;
+		public final BooleanValue arcfurnace_recycle;
+		public final MachineRecipeConfig autoWorkbenchConfig;
+		public final MachineRecipeConfig bottlingMachineConfig;
+		public final MachineRecipeConfig mixerConfig;
 
 		//Other Multiblock machines
-		public final IntValue assembler_consumption = 80;
-		public final IntValue excavator_consumption = 4096;
-		public final DoubleValue excavator_speed = 1d;
-		public final BooleanValue excavator_particles = true;
-		public final DoubleValue excavator_chance = .2d;
-		public final DoubleValue excavator_fail_chance = .05d;
-		public final IntValue excavator_depletion = 38400;
-		public final ConfigValue<List<Integer>> excavator_dimBlacklist = new int[]{1};
+		public final IntValue assembler_consumption;
+		public final IntValue excavator_consumption;
+		public final DoubleValue excavator_speed;
+		public final BooleanValue excavator_particles;
+		public final DoubleValue excavator_chance;
+		public final DoubleValue excavator_fail_chance;
+		public final IntValue excavator_depletion;
+		public final ConfigValue<List<Integer>> excavator_dimBlacklist;
 
+		public static class MachineRecipeConfig
+		{
+			public final DoubleValue energyModifier;
+			public final DoubleValue timeModifier;
+
+			public MachineRecipeConfig(DoubleValue energyModifier, DoubleValue timeModifier)
+			{
+				this.energyModifier = energyModifier;
+				this.timeModifier = timeModifier;
+			}
+		}
 	}
 
 	public static class Ores
 	{
-		public final ConfigValue<List<Integer>> ore_copper = new int[]{8, 40, 72, 8, 100};
-		public final ConfigValue<List<Integer>> ore_bauxite = new int[]{4, 40, 85, 8, 100};
-		public final ConfigValue<List<Integer>> ore_lead = new int[]{6, 8, 36, 4, 100};
-		public final ConfigValue<List<Integer>> ore_silver = new int[]{8, 8, 40, 4, 80};
-		public final ConfigValue<List<Integer>> ore_nickel = new int[]{6, 8, 24, 2, 100};
-		public final ConfigValue<List<Integer>> ore_uranium = new int[]{4, 8, 24, 2, 60};
-		public final ConfigValue<List<Integer>> oreDimBlacklist = new int[]{-1, 1};
-		public final BooleanValue retrogen_log_flagChunk = true;
-		public final BooleanValue retrogen_log_remaining = true;
-		public static String retrogen_key = "DEFAULT";
-		public final BooleanValue retrogen_copper = false;
-		public final BooleanValue retrogen_bauxite = false;
-		public final BooleanValue retrogen_lead = false;
-		public final BooleanValue retrogen_silver = false;
-		public final BooleanValue retrogen_nickel = false;
-		public final BooleanValue retrogen_uranium = false;
+		Ores(Builder builder)
+		{
+			builder.push("ores");
+			ore_copper = new OreConfig(builder, "copper", 8, 40, 7, 8, 1);
+			ore_bauxite = new OreConfig(builder, "bauxite", 4, 40, 85, 8, 1);
+			ore_lead = new OreConfig(builder, "lead", 6, 8, 36, 4, 1);
+			ore_silver = new OreConfig(builder, "silver", 8, 8, 40, 4, .8);
+			ore_nickel = new OreConfig(builder, "nickel", 6, 8, 24, 2, 1);
+			ore_uranium = new OreConfig(builder, "uranium", 4, 8, 24, 2, .6);
+			oreDimBlacklist = builder
+					.comment("A blacklist of dimensions in which IE ores won't spawn. By default this is Nether and End")
+					.define("dimension_blocklist", ImmutableList.of(DimensionType.THE_NETHER.getRegistryName().toString(), DimensionType.THE_END.getRegistryName().toString()));
+			retrogen_key = builder
+					.comment("The retrogeneration key. Basically IE checks if this key is saved in the chunks data. If it isn't, it will perform retrogen on all ores marked for retrogen.", "Change this in combination with the retrogen booleans to regen only some of the ores.")
+					.define("retrogen_key", "DEFAULT");
+			retrogen_log_flagChunk = builder
+					.comment("Set this to false to disable the logging of the chunks that were flagged for retrogen.")
+					.define("retrogen_log_flagChunk", true);
+			retrogen_log_remaining = builder
+					.comment("Set this to false to disable the logging of the chunks that are still left to retrogen.")
+					.define("retrogen_log_remaining", true);
+		}
+
+
+		public final OreConfig ore_copper;
+		public final OreConfig ore_bauxite;
+		public final OreConfig ore_lead;
+		public final OreConfig ore_silver;
+		public final OreConfig ore_nickel;
+		public final OreConfig ore_uranium;
+		public final ConfigValue<List<String>> oreDimBlacklist;
+		public final BooleanValue retrogen_log_flagChunk;
+		public final BooleanValue retrogen_log_remaining;
+		public final ConfigValue<String> retrogen_key;
+
+		public static class OreConfig
+		{
+			public final IntValue veinSize;
+			public final IntValue minY;
+			public final IntValue maxY;
+			public final IntValue veinsPerChunk;
+			public final DoubleValue spawnChance;
+			public final BooleanValue retrogenEnabled;
+
+			private OreConfig(Builder builder, String name, int defSize, int defMinY, int defMaxY, int defNumPerChunk, double defSpawnChance)
+			{
+				builder
+						.comment("Ore generation config - "+name)
+						.push("ore_"+name);
+				veinSize = builder
+						.comment("The maximum size of a vein. Set to 0 to disable generation")
+						.defineInRange("vein_size", defSize, 0, Integer.MAX_VALUE);
+				minY = builder
+						.comment("The minimum Y coordinate this ore can spawn at")
+						.defineInRange("min_y", defMinY, Integer.MIN_VALUE, Integer.MAX_VALUE);
+				maxY = builder
+						.comment("The maximum Y coordinate this ore can spawn at")
+						.defineInRange("max_y", defMaxY, Integer.MIN_VALUE, Integer.MAX_VALUE);
+				veinsPerChunk = builder
+						.comment("The average number of veins per chunk")
+						.defineInRange("veins_per_chunk", defNumPerChunk, 0, Integer.MAX_VALUE);
+				spawnChance = builder
+						.comment("The chance for a vein to spawn (relative to 1)")
+						.defineInRange("veins_per_chunk", defSpawnChance, 0, 1);
+				retrogenEnabled = builder
+						.comment("Set this to true to allow retro-generation of "+name+" Ore.")
+						.define("retrogen_enable", false);
+				builder.pop();
+			}
+		}
 	}
 
 	public static class Tools
 	{
-		public final BooleanValue disableHammerCrushing = false;
-		public final IntValue hammerDurabiliy = 100;
-		public final IntValue cutterDurabiliy = 250;
-		//		//public final BooleanValue hardmodeBulletRecipes = false;
-		public final DoubleValue bulletDamage_Casull = 10f;
-		public final DoubleValue bulletDamage_AP = 10f;
-		public final DoubleValue bulletDamage_Buck = 2f;
-		public final DoubleValue bulletDamage_Dragon = 3f;
-		public final DoubleValue bulletDamage_Homing = 10f;
-		public final DoubleValue bulletDamage_Wolfpack = 6f;
-		public final DoubleValue bulletDamage_WolfpackPart = 4f;
-		public final DoubleValue bulletDamage_Silver = 10f;
-		public final DoubleValue bulletDamage_Potion = 1f;
+		Tools(Builder builder)
+		{
+			builder.push("tools");
+			disableHammerCrushing = builder
+					.comment("Set this to true to completely disable the ore-crushing recipes with the Engineers Hammer")
+					.define("disable_hammer_crushing", false);
+			hammerDurabiliy = addPositive(builder, "hammer_durability", 100, "The maximum durability of the Engineer's Hammer. Used up when hammering ingots into plates.");
+			cutterDurabiliy = addPositive(builder, "cutter_durability", 250, "The maximum durability of the Wirecutter. Used up when cutting plates into wire.");
+			bulletDamage_Casull = addNonNegative(builder, "bulletDamage_casull", 10, "The amount of base damage a Casull Cartridge inflicts");
+			bulletDamage_AP = addNonNegative(builder, "bulletDamage_ap", 10, "The amount of base damage a armor piercing Cartridge inflicts");
+			bulletDamage_Buck = addNonNegative(builder, "bulletDamage_buck", 2, "The amount of base damage a single part of buckshot inflicts");
+			bulletDamage_Dragon = addNonNegative(builder, "bulletDamage_dragon", 3, "The amount of base damage a dragon breath cartridge inflicts");
+			bulletDamage_Homing = addNonNegative(builder, "bulletDamage_homing", 10, "The amount of base damage a homing cartridge inflicts");
+			bulletDamage_Wolfpack = addNonNegative(builder, "bulletDamage_wolfpack", 6, "The amount of base damage a wolfpack cartridge inflicts");
+			bulletDamage_WolfpackPart = addNonNegative(builder, "bulletDamage_wolfpack_part", 4, "The amount of base damage the sub-projectiles of a  wolfpack cartridge inflicts");
+			bulletDamage_Silver = addNonNegative(builder, "bulletDamage_silver", 10, "The amount of damage a silver bullet inflicts");
+			bulletDamage_Potion = addNonNegative(builder, "bulletDamage_phial", 1, "The amount of base damage a phial cartridge inflicts");
+			earDefenders_SoundBlacklist = builder
+					.comment("A list of sounds that should not be muffled by the Ear Defenders. Adding to this list requires knowledge of the correct sound resource names.")
+					.define("earDefenders_SoundBlacklist", ImmutableList.of());
+			chemthrower_consumption = addPositive(builder, "chemthrower_consumption", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage");
+			chemthrower_scroll = builder
+					.comment("Set this to false to disable the use of Sneak+Scroll to switch Chemthrower tanks.")
+					.define("chemthrower_scroll", true);
+			railgun_consumption = addPositive(builder, "railgun_consumption", 800, "The base amount of Flux consumed per shot by the Railgun");
+			railgun_damage = addNonNegative(builder, "railgun_damage_modifier", 1, "A modifier for the damage of all projectiles fired by the Railgun");
+			powerpack_whitelist = builder
+					.comment("A whitelist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]")
+					.define("powerpack_whitelist", ImmutableList.of());
+			powerpack_blacklist = builder
+					.comment("A blacklist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]. Whitelist has priority over this")
+					.define("powerpack_blacklist", ImmutableList.of("embers:ashen_cloak_chest", "ic2:batpack", "ic2:cf_pack", "ic2:energy_pack", "ic2:jetpack", "ic2:jetpack_electric", "ic2:lappack"));
+			toolbox_tools = builder
+					.comment("A whitelist of tools allowed in the toolbox, formatting: [mod id]:[item name]")
+					.define("toolbox_tools", ImmutableList.of());
+			toolbox_foods = builder
+					.comment("A whitelist of foods allowed in the toolbox, formatting: [mod id]:[item name]")
+					.define("toolbox_foods", ImmutableList.of());
+			toolbox_wiring = builder
+					.comment("A whitelist of wire-related allowed in the toolbox, formatting: [mod id]:[item name]")
+					.define("toolbox_wiring", ImmutableList.of());
+			builder.pop();
+		}
 
-		public final ConfigValue<List<String>> earDefenders_SoundBlacklist = new String[]{};
-		public final IntValue chemthrower_consumption = 10;
-		public final BooleanValue chemthrower_scroll = true;
-		public final IntValue railgun_consumption = 800;
-		public final DoubleValue railgun_damage = 1f;
-		public final ConfigValue<List<String>> powerpack_whitelist = new String[]{};
-		public final ConfigValue<List<String>> powerpack_blacklist = new String[]{"embers:ashen_cloak_chest", "ic2:batpack", "ic2:cf_pack", "ic2:energy_pack", "ic2:jetpack", "ic2:jetpack_electric", "ic2:lappack"};
+		private DoubleValue addNonNegative(Builder builder, String name, double defaultVal, String... desc)
+		{
+			return builder
+					.comment(desc)
+					.defineInRange(name, defaultVal, 0, Double.MAX_VALUE);
+		}
 
-		public final ConfigValue<List<String>> toolbox_tools = new String[]{};
-		public final ConfigValue<List<String>> toolbox_foods = new String[]{};
-		public final ConfigValue<List<String>> toolbox_wiring = new String[]{};
+		public final BooleanValue disableHammerCrushing;
+		public final IntValue hammerDurabiliy;
+		public final IntValue cutterDurabiliy;
+		public final DoubleValue bulletDamage_Casull;
+		public final DoubleValue bulletDamage_AP;
+		public final DoubleValue bulletDamage_Buck;
+		public final DoubleValue bulletDamage_Dragon;
+		public final DoubleValue bulletDamage_Homing;
+		public final DoubleValue bulletDamage_Wolfpack;
+		public final DoubleValue bulletDamage_WolfpackPart;
+		public final DoubleValue bulletDamage_Silver;
+		public final DoubleValue bulletDamage_Potion;
 
+		public final ConfigValue<List<String>> earDefenders_SoundBlacklist;
+		public final IntValue chemthrower_consumption;
+		public final BooleanValue chemthrower_scroll;
+		public final IntValue railgun_consumption;
+		public final DoubleValue railgun_damage;
+		public final ConfigValue<List<String>> powerpack_whitelist;
+		public final ConfigValue<List<String>> powerpack_blacklist;
+
+		public final ConfigValue<List<String>> toolbox_tools;
+		public final ConfigValue<List<String>> toolbox_foods;
+		public final ConfigValue<List<String>> toolbox_wiring;
+
+	}
+
+	private static IntValue addPositive(Builder builder, String name, int defaultVal, String... desc)
+	{
+		return builder
+				.comment(desc)
+				.defineInRange(name, defaultVal, 1, Integer.MAX_VALUE);
 	}
 
 	static final ForgeConfigSpec ieConfig;
 	public static final Wires WIRES;
 	public static final General GENERAL;
+	public static final Machines MACHINES;
+	public static final Ores ORES;
+	public static final Tools TOOLS;
 
 	static
 	{
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 		WIRES = new Wires(builder);
 		GENERAL = new General(builder);
+		MACHINES = new Machines(builder);
+		ORES = new Ores(builder);
+		TOOLS = new Tools(builder);
 
 		ieConfig = builder.build();
 	}
