@@ -75,6 +75,9 @@ public class ConveyorChute extends ConveyorVertical
 		key += "c"+getDyeColour();
 		key += "t"+sheetmetalType;
 		key += "d"+diagonal;
+		key += "w";
+		for(EnumFacing d : EnumFacing.HORIZONTALS)
+			key += renderWall(tile, d, facing)?"1": "0";
 		return key;
 	}
 
@@ -245,16 +248,21 @@ public class ConveyorChute extends ConveyorVertical
 			baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(0, 0, .9375f), new Vector3f(.0625f, 1, 1), matrix, facing, getSprite, colour));
 			baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.9375f, 0, 0), new Vector3f(1, 1, .0625f), matrix, facing, getSprite, colour));
 			baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.9375f, 0, .9375f), new Vector3f(1, 1, 1), matrix, facing, getSprite, colour));
-			if(tile==null||!isInwardConveyor(tile, Utils.rotateFacingTowardsDir(EnumFacing.NORTH, facing)))
+			if(renderWall(tile, EnumFacing.NORTH, facing))
 				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.0625f, 0, 0), new Vector3f(.9375f, 1, .0625f), matrix, facing, getSprite, colour));
-			if(tile==null||!isInwardConveyor(tile, Utils.rotateFacingTowardsDir(EnumFacing.SOUTH, facing)))
+			if(renderWall(tile, EnumFacing.SOUTH, facing))
 				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.0625f, 0, .9375f), new Vector3f(.9375f, 1, 1), matrix, facing, getSprite, colour));
-			if(tile==null||!isInwardConveyor(tile, Utils.rotateFacingTowardsDir(EnumFacing.WEST, facing)))
+			if(renderWall(tile, EnumFacing.WEST, facing))
 				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(0, 0, .0625f), new Vector3f(.0625f, 1, .9375f), matrix, facing, getSprite, colour));
-			if(tile==null||!isInwardConveyor(tile, Utils.rotateFacingTowardsDir(EnumFacing.EAST, facing)))
+			if(renderWall(tile, EnumFacing.EAST, facing))
 				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.9375f, 0, .0625f), new Vector3f(1, 1, .9375f), matrix, facing, getSprite, colour));
 		}
 		return baseModel;
+	}
+
+	private boolean renderWall(@Nullable TileEntity tile, EnumFacing direction, EnumFacing facing)
+	{
+		return tile==null||!isInwardConveyor(tile, Utils.rotateFacingTowardsDir(direction, facing));
 	}
 
 	@Override
@@ -281,6 +289,7 @@ public class ConveyorChute extends ConveyorVertical
 			super(BlockTypes_MetalsAll.IRON.getMeta());
 		}
 	}
+
 	public static class ConveyorChuteSteel extends ConveyorChute
 	{
 		public ConveyorChuteSteel()
@@ -288,6 +297,7 @@ public class ConveyorChute extends ConveyorVertical
 			super(BlockTypes_MetalsAll.STEEL.getMeta());
 		}
 	}
+
 	public static class ConveyorChuteAluminum extends ConveyorChute
 	{
 		public ConveyorChuteAluminum()
@@ -295,6 +305,7 @@ public class ConveyorChute extends ConveyorVertical
 			super(BlockTypes_MetalsAll.ALUMINUM.getMeta());
 		}
 	}
+
 	public static class ConveyorChuteCopper extends ConveyorChute
 	{
 		public ConveyorChuteCopper()

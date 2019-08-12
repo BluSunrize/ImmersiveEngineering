@@ -94,7 +94,9 @@ public class ConveyorVertical extends ConveyorBasic
 			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
 			if(sub!=null)
 				for(EnumFacing f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
-					if(f==f2.getOpposite())
+					if(f2==EnumFacing.UP)
+						break;
+					else if(f==f2.getOpposite())
 						return true;
 		}
 		te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0).offset(f));
