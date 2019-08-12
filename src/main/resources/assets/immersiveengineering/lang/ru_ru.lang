@@ -394,7 +394,7 @@ item.immersiveengineering.skyhook.name=Небесный крюк
 
 item.immersiveengineering.toolupgrade.drill_waterproof.name=Баллон со сжатым воздухом
 item.immersiveengineering.toolupgrade.drill_lube.name=Продвинутая смазочная система
-item.immersiveengineering.toolupgrade.drill_damage.name=Дополнительные долота
+item.immersiveengineering.toolupgrade.drill_damage.name=Дополнительные шнеки
 item.immersiveengineering.toolupgrade.drill_capacity.name=Большой баллон
 item.immersiveengineering.toolupgrade.revolver_bayonet.name=Штык
 item.immersiveengineering.toolupgrade.revolver_magazine.name=Расширенный магазин
@@ -1413,7 +1413,7 @@ ie.manual.entry.drill0=Ручной бур, работающий на топли
 ie.manual.entry.drill1=§6Буровое долото§r определяет базовый §oуровень добычи§r, §oскорость§r, §oдиаметр§r, а также §oсилу атаки§r.<br>При добыче руды долото теряет прочность, но его можно починить на наковальне.
 ie.manual.entry.drill2=Бур оборудован двигателем внутреннего сгорания, который не будет работать под водой, пока вы не установите §6Баллон со сжатым воздухом§r. Также с этим улучшением бур будет игнорировать уменьшение скорости добычи во время погружения.
 ie.manual.entry.drill3=§6Продвинутая смазочная система§r постоянно подаёт смазку в бур, уменьшая урон, получаемый долотом при бурении.
-ie.manual.entry.drill4=§6Дополнительные долота§r увеличивают разрушительный потенциал бура против живых существ, а также скорость работы. Улучшение складывается до 3-ёх раз и каждое добавляет дополнительный урон.
+ie.manual.entry.drill4=§6Дополнительные шнеки§r увеличивают разрушительный потенциал бура против живых существ, а также скорость работы. Улучшение складывается до 3-ёх раз и каждое добавляет дополнительный урон.
 ie.manual.entry.drill5=§6Большой баллон§r увеличивает максимальный запас топлива бура, продлевая время использования до заправки.
 
 ie.manual.entry.maintenanceKit.name=Комплект для обслуживания
