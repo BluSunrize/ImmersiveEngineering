@@ -55,7 +55,7 @@ tile.immersiveengineering.stone_decoration_stairs_concrete_leaded.name=Ступ�
 
 tile.immersiveengineering.stone_device.coke_oven.name=Коксовая печь
 tile.immersiveengineering.stone_device.blast_furnace.name=Доменная печь
-tile.immersiveengineering.stone_device.blast_furnace_advanced.name=Улучшение доменной печи
+tile.immersiveengineering.stone_device.blast_furnace_advanced.name=Продвинутая доменная печь
 tile.immersiveengineering.stone_device.concrete_sheet.name=Бетонный лист
 tile.immersiveengineering.stone_device.concrete_quarter.name=Бетонная панель
 tile.immersiveengineering.stone_device.concrete_threequarter.name=Бетонный кусок
@@ -641,7 +641,7 @@ desc.immersiveengineering.info.blockSide.connectFluid.1=Вывод жидкос�
 
 desc.immersiveengineering.info.filter.oreDict=Фильтр: По словарю руд<br>Направляет предметы на основе<br>их имён в словаре руд
 desc.immersiveengineering.info.filter.nbt=Фильтр: по данным NBT<br>Направляет предметы на основе<br>их данных NBT
-desc.immersiveengineering.info.filter.fuzzy=Фильтр: Повреждённые<br>Направляет предметы игнорируя<br>степень их повреждения
+desc.immersiveengineering.info.filter.fuzzy=Фильтр: Повреждённые<br>Направляет предметы, игнорируя<br>степень их повреждения
 
 desc.immersiveengineering.info.oreDict.off=Словарь руд: Отключён
 desc.immersiveengineering.info.oreDict.on=Словарь руд: Включён
