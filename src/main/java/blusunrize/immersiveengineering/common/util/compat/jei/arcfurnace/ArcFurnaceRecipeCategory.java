@@ -61,12 +61,12 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe,
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		int i = 0;
-		guiItemStacks.init(i++, true, 20, 0);
+		guiItemStacks.init(i++, true, 20, -2);
 		guiItemStacks.set(0, recipeWrapper.recipeInputs[0]);
 		for(int j = 0; j < recipeWrapper.recipeInputs.length-1; j++)
 			if(recipeWrapper.recipeInputs[i]!=null)
 			{
-				guiItemStacks.init(i, true, 12+j%2*18, 18+j/2*18);
+				guiItemStacks.init(i, true, 12+j%2*18, 16+j/2*18);
 				guiItemStacks.set(i, recipeWrapper.recipeInputs[i++]);
 			}
 		int outputSize = recipeWrapper.recipeOutputs.length;
@@ -74,13 +74,13 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe,
 		for(int j = 0; j < outputSize; j++)
 		{
 			int x = 122-(Math.min(outputSize-1, 2)*18)+j%3*18;
-			int y = (outputSize > 3?0: 18)+(j/3*18);
+			int y = (outputSize > 3?-2: 16)+(j/3*18);
 			guiItemStacks.init(i, false, x, y);
 			guiItemStacks.set(i++, recipeWrapper.recipeOutputs[j]);
 		}
 		if(hasSlag)
 		{
-			guiItemStacks.init(i, false, 122, 36);
+			guiItemStacks.init(i, false, 122, 34);
 			guiItemStacks.set(i++, recipeWrapper.getItemOut().get(recipeWrapper.getItemOut().size()-1));
 		}
 	}
@@ -88,12 +88,12 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe,
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
-		JEIHelper.slotDrawable.draw(minecraft, 20, 0);
+		JEIHelper.slotDrawable.draw(minecraft, 20, -2);
 		for(int j = 0; j < 4; j++)
-			JEIHelper.slotDrawable.draw(minecraft, 12+j%2*18, 18+j/2*18);
+			JEIHelper.slotDrawable.draw(minecraft, 12+j%2*18, 16+j/2*18);
 		for(int j = 0; j < 6; j++)
-			JEIHelper.slotDrawable.draw(minecraft, 86+j%3*18, 0+j/3*18);
-		JEIHelper.slotDrawable.draw(minecraft, 122, 36);
+			JEIHelper.slotDrawable.draw(minecraft, 86+j%3*18, -2+j/3*18);
+		JEIHelper.slotDrawable.draw(minecraft, 122, 34);
 	}
 
 	@Override

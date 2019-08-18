@@ -25,6 +25,7 @@
 - Probably fixed the floodlight not working below 0 and above 255 with Cubic Chunks (Malte)
 - Fixed coresamples not rendering when Optfine shaders are enabled (Malte)
 - Fixed UraniumSlabs combining into a Copper-looking block (BluSunrize)
+- Fixed a variety of issues with JEI integration (BluSunrize)
 - Translations Added/Updated: jp_jp (karakufire), de_de(d-haus)
 
 ##### Version 0.12-89 - BUILT

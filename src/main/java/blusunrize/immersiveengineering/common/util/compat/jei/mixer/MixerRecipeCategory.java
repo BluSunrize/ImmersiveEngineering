@@ -21,11 +21,11 @@ import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 
 public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MultiblockRecipeWrapper>
 {
@@ -46,11 +46,11 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, Multibloc
 	public void setRecipe(IRecipeLayout recipeLayout, MultiblockRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-		guiFluidStacks.init(0, true, 48, 3, 58, 47, 4000, false, null);
+		guiFluidStacks.init(0, true, 48, 3, 58, 47, 2000, false, null);
 		guiFluidStacks.set(0, recipeWrapper.getFluidIn());
 
-		guiFluidStacks.init(1, false, 138, 2, 16, 47, 4000, false, tankOverlay);
-		guiFluidStacks.set(1, ingredients.getOutputs(FluidStack.class).get(0));
+		guiFluidStacks.init(1, false, 138, 2, 16, 47, 2000, false, tankOverlay);
+		guiFluidStacks.set(1, ingredients.getOutputs(VanillaTypes.FLUID).get(0));
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();

@@ -18,6 +18,7 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -39,21 +40,23 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe, Ref
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, RefineryRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
-		List<List<FluidStack>> inputs = ingredients.getInputs(FluidStack.class);
+		List<List<FluidStack>> inputs = ingredients.getInputs(VanillaTypes.FLUID);
+		List<FluidStack> output = ingredients.getOutputs(VanillaTypes.FLUID).get(0);
+		int tankAmount = Math.max(inputs.get(0).get(0).amount,output.get(0).amount)*4;
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		if(inputs.size() > 0)
 		{
-			guiFluidStacks.init(0, true, 7, 10, 16, 47, 6000, false, tankOverlay);
+			guiFluidStacks.init(0, true, 7, 10, 16, 47, tankAmount, false, tankOverlay);
 			guiFluidStacks.set(0, inputs.get(0));
 
 			if(inputs.size() > 1)
 			{
-				guiFluidStacks.init(1, true, 55, 10, 16, 47, 6000, false, tankOverlay);
+				guiFluidStacks.init(1, true, 55, 10, 16, 47, tankAmount, false, tankOverlay);
 				guiFluidStacks.set(1, inputs.get(1));
 			}
 		}
-		guiFluidStacks.init(2, false, 103, 10, 16, 47, 6000, false, tankOverlay);
-		guiFluidStacks.set(2, ingredients.getOutputs(FluidStack.class).get(0));
+		guiFluidStacks.init(2, false, 103, 10, 16, 47, tankAmount, false, tankOverlay);
+		guiFluidStacks.set(2, output);
 
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}

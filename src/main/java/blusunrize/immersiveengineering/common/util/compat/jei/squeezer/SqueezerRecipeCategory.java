@@ -19,10 +19,13 @@ import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.List;
 
 public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe, SqueezerRecipeWrapper>
 {
@@ -39,18 +42,21 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe, Squ
 	public void setRecipe(IRecipeLayout recipeLayout, SqueezerRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
+		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		guiItemStacks.init(0, true, 1, 22);
 		guiItemStacks.init(1, false, 84, 40);
-		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
-		if(ingredients.getOutputs(ItemStack.class).size() > 0)
-			guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class).get(0));
-		if(ingredients.getOutputs(FluidStack.class).size() > 0)
+		guiItemStacks.set(0, ingredients.getInputs(VanillaTypes.ITEM).get(0));
+		if(ingredients.getOutputs(VanillaTypes.FLUID).size() > 0)
+			guiItemStacks.set(1, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
+		if(ingredients.getOutputs(VanillaTypes.FLUID).size() > 0)
 		{
-			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-			guiFluidStacks.init(0, false, 106, 9, 16, 47, 24000, false, tankOverlay);
-			guiFluidStacks.set(0, ingredients.getOutputs(FluidStack.class).get(0));
+			List<FluidStack> lfs = ingredients.getOutputs(VanillaTypes.FLUID).get(0);
+			guiFluidStacks.init(0, false, 106, 9, 16, 47, lfs.get(0).amount*4, false, tankOverlay);
+			guiFluidStacks.set(0, lfs);
 			guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 		}
+		else
+			guiFluidStacks.init(0, false, 106, 9, 16, 47, 4000, false, tankOverlay);
 	}
 
 	@Override
