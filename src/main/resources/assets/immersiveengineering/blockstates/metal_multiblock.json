@@ -11,7 +11,7 @@
 	"variants":
 	{
 		"inventory,type=tank": [{
-			"model": "immersiveengineering:metal_multiblock/tank.obj",
+			"model": "immersiveengineering:block/metal_multiblock/tank.obj",
 			"transform": {
 				"scale": 0.1875,
 				"rotation": [
@@ -30,7 +30,7 @@
 			}
 		}],
 		"inventory,type=silo": [{
-			"model": "immersiveengineering:metal_multiblock/silo.obj",
+			"model": "immersiveengineering:block/metal_multiblock/silo.obj",
 			"transform": {
 				"scale": 0.125,
 				"rotation": [
@@ -49,7 +49,7 @@
 			}
 		}],
 		"inventory,type=assembler": [{
-			"model": "immersiveengineering:metal_multiblock/assembler.obj",
+			"model": "immersiveengineering:block/metal_multiblock/assembler.obj",
 			"transform": {
 				"scale": 0.25,
 				"rotation": [
@@ -64,7 +64,7 @@
 			}
 		}],
 		"inventory,type=lightningrod": [{
-			"model": "immersiveengineering:metal_multiblock/lightningrod.obj",
+			"model": "immersiveengineering:block/metal_multiblock/lightningrod.obj",
 			"transform": {
 				"scale": 0.25,
 				"rotation": [
@@ -81,13 +81,13 @@
 		"type":
 		{
 			"tank": {
-				"model": "immersiveengineering:metal_multiblock/tank.obj"
+				"model": "immersiveengineering:block/metal_multiblock/tank.obj"
 			},
 			"silo": {
-				"model": "immersiveengineering:metal_multiblock/silo.obj"
+				"model": "immersiveengineering:block/metal_multiblock/silo.obj"
 			},
 			"assembler": {
-				"model": "immersiveengineering:metal_multiblock/assembler.obj"
+				"model": "immersiveengineering:block/metal_multiblock/assembler.obj"
 			},
 			"fermenter": {
 			},
@@ -96,7 +96,7 @@
 			"arc_furnace": {
 			},
 			"lightningrod": {
-				"model": "immersiveengineering:metal_multiblock/lightningrod.obj"
+				"model": "immersiveengineering:block/metal_multiblock/lightningrod.obj"
 			}
 		},
 		"facing":
@@ -118,7 +118,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty"
+				"model": "immersiveengineering:block/ie_empty"
 			}
 		},
 		"_1dynamicrender":

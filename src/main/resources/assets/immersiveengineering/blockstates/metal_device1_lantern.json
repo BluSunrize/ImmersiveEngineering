@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:smartmodel/connector",
+		"model": "immersiveengineering:block/smartmodel/connector",
 		"custom": {
 			"flip-v": true,
           "base": "immersiveengineering:block/metal_device/e_lantern.obj",
@@ -15,7 +15,7 @@
 	"variants":
 	{
 		"inventory,type=electric_lantern": [{
-		"model": "immersiveengineering:metal_device/e_lantern.obj"
+		"model": "immersiveengineering:block/metal_device/e_lantern.obj"
 		}],
 		"type":
 		{

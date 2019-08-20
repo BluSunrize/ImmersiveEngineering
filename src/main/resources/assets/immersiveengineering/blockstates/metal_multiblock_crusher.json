@@ -11,7 +11,7 @@
 	"variants":
 	{
 		"inventory,type=crusher": [{
-			"model": "immersiveengineering:metal_multiblock/crusher.obj",
+			"model": "immersiveengineering:block/metal_multiblock/crusher.obj",
 			"transform": {
 				"scale": 0.1875,
 				"rotation": [
@@ -47,18 +47,18 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty"
+				"model": "immersiveengineering:block/ie_empty"
 			}
 		},
 		"_1dynamicrender":
 		{
 			"false":{},
-			"true":{"model": "immersiveengineering:metal_multiblock/crusher_drum.obj"}
+			"true":{"model": "immersiveengineering:block/metal_multiblock/crusher_drum.obj"}
 		},
       "boolean0":
 		{
-			"false":{"model": "immersiveengineering:metal_multiblock/crusher.obj"},
-			"true":{"model": "immersiveengineering:metal_multiblock/crusher_mirrored.obj"}
+			"false":{"model": "immersiveengineering:block/metal_multiblock/crusher.obj"},
+			"true":{"model": "immersiveengineering:block/metal_multiblock/crusher_mirrored.obj"}
 		}
 	}
 }

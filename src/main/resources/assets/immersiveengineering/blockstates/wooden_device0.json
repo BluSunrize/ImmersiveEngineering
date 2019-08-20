@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:ie_pillar",
+		"model": "immersiveengineering:block/ie_pillar",
 		"custom": { "flip-v": true, "ambient":false },
 		"textures": {
 			"particle": "#side",
@@ -17,7 +17,7 @@
 		"inventory,type=crate": [{ "textures": { "side": "immersiveengineering:blocks/wooden_device_crate", "top": "immersiveengineering:blocks/wooden_device_crate", "bottom": "immersiveengineering:blocks/wooden_device_crate"} }],
 		"inventory,type=barrel": [{ "textures": { "side": "immersiveengineering:blocks/wooden_device_barrel_side", "bottom": "immersiveengineering:blocks/wooden_device_barrel_up_none", "top": "immersiveengineering:blocks/wooden_device_barrel_up_none"} }],
 		"inventory,type=workbench": [{
-			"model": "immersiveengineering:wooden_device/workbench.obj",
+			"model": "immersiveengineering:block/wooden_device/workbench.obj",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": 0.5,
@@ -31,7 +31,7 @@
 			}
 		}],
 		"inventory,type=sorter": [{ 
-				"model": "immersiveengineering:ie_six_sides",
+				"model": "immersiveengineering:block/ie_six_sides",
 				"textures": {
 					"particle": "immersiveengineering:blocks/wooden_device_sorter_0",
 					"bottom": "immersiveengineering:blocks/wooden_device_sorter_0",
@@ -46,7 +46,7 @@
 		"inventory,type=reinforced_crate": [{ "textures": { "side": "immersiveengineering:blocks/wooden_device_reinforced_crate", "top": "immersiveengineering:blocks/wooden_device_reinforced_crate", "bottom": "immersiveengineering:blocks/wooden_device_reinforced_crate"} }],
 		"inventory,type=turntable": [{ "textures": { "side": "immersiveengineering:blocks/wooden_device_turntable", "top": "immersiveengineering:blocks/wooden_device_turntable_top", "bottom": "immersiveengineering:blocks/wooden_device_turntable_bottom"} }],
 		"inventory,type=fluid_sorter": [{
-			"model": "immersiveengineering:ie_six_sides",
+			"model": "immersiveengineering:block/ie_six_sides",
 			"textures": {
 				"particle": "immersiveengineering:blocks/wooden_device_fluid_sorter_0",
 				"bottom": "immersiveengineering:blocks/wooden_device_fluid_sorter_0",
@@ -67,13 +67,13 @@
 				}
 			},
 			"barrel": {
-				"model": "immersiveengineering:smartmodel/conf_sides_v_wooden_device_barrel"
+				"model": "immersiveengineering:block/smartmodel/conf_sides_v_wooden_device_barrel"
 			},
 			"workbench": {
-				"model": "immersiveengineering:wooden_device/workbench.obj"
+				"model": "immersiveengineering:block/wooden_device/workbench.obj"
 			},
 			"sorter": {
-				"model": "immersiveengineering:ie_six_sides",
+				"model": "immersiveengineering:block/ie_six_sides",
 				"textures": {
 					"particle": "immersiveengineering:blocks/wooden_device_sorter_0",
 					"bottom": "immersiveengineering:blocks/wooden_device_sorter_0",
@@ -109,7 +109,7 @@
 				}
 			},
 			"fluid_sorter": {
-				"model": "immersiveengineering:ie_six_sides",
+				"model": "immersiveengineering:block/ie_six_sides",
 				"textures": {
 					"particle": "immersiveengineering:blocks/wooden_device_fluid_sorter_0",
 					"bottom": "immersiveengineering:blocks/wooden_device_fluid_sorter_0",
@@ -146,7 +146,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty",
+				"model": "immersiveengineering:block/ie_empty",
 				"textures": {"particle": "immersiveengineering:blocks/treated_wood_horizontal"}
 			}
 		}

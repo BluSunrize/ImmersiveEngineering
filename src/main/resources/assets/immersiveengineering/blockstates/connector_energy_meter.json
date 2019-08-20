@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-      "model": "immersiveengineering:smartmodel/connector",
+      "model": "immersiveengineering:block/smartmodel/connector",
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/e_meter.obj",
@@ -15,7 +15,7 @@
 	"variants":
 	{
 		"inventory,type=energy_meter": [{
-			"model": "immersiveengineering:connector/e_meter.obj",
+			"model": "immersiveengineering:block/connector/e_meter.obj",
 			"transform": {
 				"scale": [ 0.375, 0.375, 0.375 ],
 				"firstperson_righthand": { "translation": [ 0, 0.25, 0 ], "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 0 }] },
@@ -60,7 +60,7 @@
 		"_0multiblockslave":
 		{
 			"false":{
-				"model": "immersiveengineering:ie_empty"
+				"model": "immersiveengineering:block/ie_empty"
 			},
 			"true":{}
 		}

@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:ie_three_cubed",
+		"model": "immersiveengineering:block/ie_three_cubed",
 		"textures": {
 			"bottom": "immersiveengineering:blocks/stone_device_coke_oven",
 			"top": "#bottom",
@@ -21,7 +21,7 @@
 		"inventory,type=coke_oven": [{"textures": {"bottom": "immersiveengineering:blocks/stone_device_coke_oven","sideOff": "immersiveengineering:blocks/stone_device_coke_oven_off","north": "#sideOff","south": "#sideOff","west": "#sideOff","east": "#sideOff"},"transform": {"scale": 0.33}}],
 		"inventory,type=blast_furnace": [{"textures": {"bottom": "immersiveengineering:blocks/stone_device_blast_furnace","sideOff": "immersiveengineering:blocks/stone_device_blast_furnace_off","north": "#sideOff","south": "#sideOff","west": "#sideOff","east": "#sideOff"},"transform": {"scale": 0.33}}],
 		"inventory,type=blast_furnace_advanced": [{
-			"model": "immersiveengineering:blastfurnace_advanced.obj",
+			"model": "immersiveengineering:block/blastfurnace_advanced.obj",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": 0.25,
@@ -39,14 +39,14 @@
 			"model": "carpet",
 			"textures": { "wool": "immersiveengineering:blocks/stone_decoration_concrete","particle": "immersiveengineering:blocks/stone_decoration_concrete" }}],
 		"inventory,type=concrete_quarter": [{
-			"model": "immersiveengineering:ie_quarter_block",
+			"model": "immersiveengineering:block/ie_quarter_block",
 			"textures": { "texture": "immersiveengineering:blocks/stone_decoration_concrete", "particle": "immersiveengineering:blocks/stone_decoration_concrete" }}],
 		"inventory,type=concrete_threequarter": [{
-			"model": "immersiveengineering:ie_three_quarter_block",
+			"model": "immersiveengineering:block/ie_three_quarter_block",
 			"textures": { "texture": "immersiveengineering:blocks/stone_decoration_concrete", "particle": "immersiveengineering:blocks/stone_decoration_concrete" }}],
-		"inventory,type=coresample": [{"model": "immersiveengineering:coresample.obj"}],
+		"inventory,type=coresample": [{"model": "immersiveengineering:block/coresample.obj"}],
 		"inventory,type=alloy_smelter": [{
-			"model": "immersiveengineering:ie_two_cubed",
+			"model": "immersiveengineering:block/ie_two_cubed",
 			"textures": {"bottom": "immersiveengineering:blocks/stone_device_allloy_smelter_bottom", "top": "immersiveengineering:blocks/stone_device_allloy_smelter_top", "north": "immersiveengineering:blocks/stone_device_allloy_smelter_off", "south": "immersiveengineering:blocks/stone_device_allloy_smelter_off", "west": "immersiveengineering:blocks/stone_device_allloy_smelter_off", "east": "immersiveengineering:blocks/stone_device_allloy_smelter_off" },
 			"transform": {"scale": 0.5, "translation": [ 0.25, -0.25, 0 ]}
 		}],
@@ -65,7 +65,7 @@
 				"particle": "immersiveengineering:blocks/stone_device_blast_furnace"
 			}},
 			"blast_furnace_advanced": {
-				"model": "immersiveengineering:blastfurnace_advanced.obj",
+				"model": "immersiveengineering:block/blastfurnace_advanced.obj",
 				"custom": { "flip-v": true },
 				"particle": "immersiveengineering:blocks/stone_device_blast_furnace"
 			},
@@ -74,18 +74,18 @@
 				"textures": { "wool": "immersiveengineering:blocks/stone_decoration_concrete", "particle": "immersiveengineering:blocks/stone_decoration_concrete" }
 			},
 			"concrete_quarter": {
-				"model": "immersiveengineering:ie_quarter_block",
+				"model": "immersiveengineering:block/ie_quarter_block",
 				"textures": { "texture": "immersiveengineering:blocks/stone_decoration_concrete", "particle": "immersiveengineering:blocks/stone_decoration_concrete" }
 			},
 			"concrete_threequarter": {
-				"model": "immersiveengineering:ie_three_quarter_block",
+				"model": "immersiveengineering:block/ie_three_quarter_block",
 				"textures": { "texture": "immersiveengineering:blocks/stone_decoration_concrete", "particle": "immersiveengineering:blocks/stone_decoration_concrete" }
 			},
 			"coresample": {
-				"model": "immersiveengineering:coresample.obj"
+				"model": "immersiveengineering:block/coresample.obj"
 			},
 			"alloy_smelter": {
-				"model": "immersiveengineering:ie_two_cubed",
+				"model": "immersiveengineering:block/ie_two_cubed",
 				"textures": {
 					"bottom": "immersiveengineering:blocks/stone_device_allloy_smelter_bottom",
 					"top": "immersiveengineering:blocks/stone_device_allloy_smelter_top",
@@ -118,7 +118,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty"
+				"model": "immersiveengineering:block/ie_empty"
 			}
 		},
 		"boolean0":

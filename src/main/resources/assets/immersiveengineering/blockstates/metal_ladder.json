@@ -15,7 +15,7 @@
 				"texture": "immersiveengineering:blocks/metal_ladder"
 			}}],
 		"inventory,type=covered_steel": [{
-			"model": "immersiveengineering:ie_scaffoldladder",
+			"model": "immersiveengineering:block/ie_scaffoldladder",
 			"textures": {
 				"ladder": "immersiveengineering:blocks/metal_ladder",
 				"side": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding",
@@ -23,7 +23,7 @@
 				"bottom": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_open"
 			}}],
 		"inventory,type=covered_aluminum": [{
-			"model": "immersiveengineering:ie_scaffoldladder",
+			"model": "immersiveengineering:block/ie_scaffoldladder",
 			"textures": {
 				"ladder": "immersiveengineering:blocks/metal_ladder",
 				"side": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding",
@@ -33,14 +33,14 @@
 		"type":
 		{
 			"": {
-				"model": "immersiveengineering:ie_ladder",
+				"model": "immersiveengineering:block/ie_ladder",
 				"textures": {
 					"texture": "immersiveengineering:blocks/metal_ladder",
 					"particle": "immersiveengineering:blocks/metal_ladder"
 				}
 			},
 			"covered_steel": {
-				"model": "immersiveengineering:ie_scaffoldladder",
+				"model": "immersiveengineering:block/ie_scaffoldladder",
 				"textures": {
 					"ladder": "immersiveengineering:blocks/metal_ladder",
 					"side": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding",
@@ -49,7 +49,7 @@
 				}
 			},
 			"covered_aluminum": {
-				"model": "immersiveengineering:ie_scaffoldladder",
+				"model": "immersiveengineering:block/ie_scaffoldladder",
 				"textures": {
 					"ladder": "immersiveengineering:blocks/metal_ladder",
 					"side": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding",

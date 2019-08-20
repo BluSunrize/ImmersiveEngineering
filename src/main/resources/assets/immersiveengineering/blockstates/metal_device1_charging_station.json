@@ -13,11 +13,11 @@
 	"variants":
 	{
 		"":[{
-		 	"model": "immersiveengineering:metal_device/charging_station.obj",
+		 	"model": "immersiveengineering:block/metal_device/charging_station.obj",
 			"custom": {"flip-v": true}
 		}],
 		"glass":[{
-		 	"model": "immersiveengineering:metal_device/charging_station_glass.obj",
+		 	"model": "immersiveengineering:block/metal_device/charging_station_glass.obj",
 			"custom": {"flip-v": true}
 		}],
 		"inventory,type=charging_station": [{

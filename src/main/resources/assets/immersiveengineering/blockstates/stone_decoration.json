@@ -16,7 +16,7 @@
 		"inventory,type=concrete_tile": [{"textures": { "all": "immersiveengineering:blocks/stone_decoration_concrete_tile" }}],
 		"inventory,type=concrete_leaded": [{"textures": { "all": "immersiveengineering:blocks/stone_decoration_concrete_leaded" }}],
 		"inventory,type=insulating_glass": [{"textures": { "all": "immersiveengineering:blocks/stone_decoration_insulating_glass" }}],
-		"inventory,type=concrete_sprayed": [{"model": "immersiveengineering:sprayed_concrete.obj"}],
+		"inventory,type=concrete_sprayed": [{"model": "immersiveengineering:block/sprayed_concrete.obj"}],
 		"inventory,type=alloybrick": [{"textures": { "all": "immersiveengineering:blocks/stone_decoration_alloybrick" }}],
 		"type":
 		{
@@ -32,12 +32,12 @@
 			"alloybrick": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_alloybrick" }}
 		},
 		"type=concrete_sprayed": [
-			{"model": "immersiveengineering:sprayed_concrete.obj"},
-			{"model": "immersiveengineering:sprayed_concrete.obj", "x": 90},
-			{"model": "immersiveengineering:sprayed_concrete.obj", "x": 180},
-			{"model": "immersiveengineering:sprayed_concrete.obj", "x": 270},
-			{"model": "immersiveengineering:sprayed_concrete.obj", "y": 90},
-			{"model": "immersiveengineering:sprayed_concrete.obj", "y": 270}
+			{"model": "immersiveengineering:block/sprayed_concrete.obj"},
+			{"model": "immersiveengineering:block/sprayed_concrete.obj", "x": 90},
+			{"model": "immersiveengineering:block/sprayed_concrete.obj", "x": 180},
+			{"model": "immersiveengineering:block/sprayed_concrete.obj", "x": 270},
+			{"model": "immersiveengineering:block/sprayed_concrete.obj", "y": 90},
+			{"model": "immersiveengineering:block/sprayed_concrete.obj", "y": 270}
 		]
 	}
 }

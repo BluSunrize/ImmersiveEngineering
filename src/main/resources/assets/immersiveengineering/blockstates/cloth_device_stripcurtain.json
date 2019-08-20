@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:stripcurtain",
+		"model": "immersiveengineering:block/stripcurtain",
 		"textures": {
 			"metal": "immersiveengineering:blocks/conveyor_casing_side",
 			"side": "immersiveengineering:blocks/cloth_device_stripcurtain"
@@ -48,7 +48,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:stripcurtain_middle"
+				"model": "immersiveengineering:block/stripcurtain_middle"
 			}
 		}
 	}
