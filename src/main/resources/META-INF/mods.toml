@@ -1,24 +1,31 @@
-modLoader="javafml" #mandatory
-loaderVersion="[25,)" #mandatory (24 is current forge version)
+# @file mods.toml
+# @spec TOML v0.5.0 (https://github.com/toml-lang/toml)
+#
+modLoader="javafml"
+loaderVersion="[25,)"
 issueTrackerURL="https://github.com/BluSunrize/ImmersiveEngineering/issues"
+
 [[mods]]
 modId="immersiveengineering"
-#TODO does this work?
 version="${file.jarVersion}"
 displayName="Immersive Engineering"
-#TODO 1.13 branch might be better for now?
-updateJSONURL="https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/changelog.json"
-displayURL="https://minecraft.curseforge.com/projects/immersive-engineering"
-#TODO does this work?
-logoFile="assets/immersiveengineering/logo.png"
-#TODO maybe update?
-credits="All the great other Git Contributors, and the nerds on IRC!"
+description="A tech based mod focused on realism."
 authors="BluSunrize and Damien A.W. Hazard"
-#TODO what should go here? The CF description?
-description='''
-This is a long form description of the mod. You can write whatever you want here
+updateJSONURL="https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/1.14/changelog.json"
+displayURL="https://minecraft.curseforge.com/projects/immersive-engineering/"
+logoFile="logo.png"
+credits="All the great other Git Contributors, and the nerds on IRC!"
 
-Have some lorem ipsum.
+[[dependencies.immersiveengineering]]
+  modId="forge"
+  mandatory=true
+  versionRange="[25,)"
+  ordering="NONE"
+  side="BOTH"
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mollis lacinia magna. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed sagittis luctus odio eu tempus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque volutpat ligula eget lacus auctor sagittis. In hac habitasse platea dictumst. Nunc gravida elit vitae sem vehicula efficitur. Donec mattis ipsum et arcu lobortis, eleifend sagittis sem rutrum. Cras pharetra quam eget posuere fermentum. Sed id tincidunt justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-'''
+[[dependencies.immersiveengineering]]
+  modId="minecraft"
+  mandatory=true
+  versionRange="[1.14.4]"
+  ordering="NONE"
+  side="BOTH"
