@@ -6,7 +6,7 @@
 	},
 	"variants":
 	{
-		"normal": [{}],
+		"": [{}],
 		"inventory,type=conveyor": [{}],
 		"type":
 		{

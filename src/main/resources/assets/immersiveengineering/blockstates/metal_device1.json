@@ -11,7 +11,6 @@
 			"south": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
 			"west": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
 			"east": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
-
 			"side_off": "immersiveengineering:blocks/metal_device1_furnace_heater",
 			"overlay_off": "immersiveengineering:blocks/metal_device1_furnace_heater_overlay",
 			"side_on": "immersiveengineering:blocks/metal_device1_furnace_heater_active",

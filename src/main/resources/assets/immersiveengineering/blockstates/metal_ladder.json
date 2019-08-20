@@ -32,7 +32,7 @@
 			}}],
 		"type":
 		{
-			"normal": {
+			"": {
 				"model": "immersiveengineering:ie_ladder",
 				"textures": {
 					"texture": "immersiveengineering:blocks/metal_ladder",

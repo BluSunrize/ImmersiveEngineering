@@ -30,7 +30,6 @@
 			"concrete_leaded": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_concrete_leaded" }},
 			"insulating_glass": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_insulating_glass" }},
 			"alloybrick": {"textures": { "all": "immersiveengineering:blocks/stone_decoration_alloybrick" }}
-
 		},
 		"type=concrete_sprayed": [
 			{"model": "immersiveengineering:sprayed_concrete.obj"},

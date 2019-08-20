@@ -12,7 +12,7 @@
 	},
 	"variants":
 	{
-		"normal":[{
+		"":[{
 			"model": "immersiveengineering:metal_multiblock/bottling_machine.obj",
 			"custom": {"flip-v": true}
 		}],

@@ -12,7 +12,7 @@
 	},
 	"variants":
 	{
-		"normal":[{
+		"":[{
 		 	"model": "immersiveengineering:metal_device/charging_station.obj",
 			"custom": {"flip-v": true}
 		}],
