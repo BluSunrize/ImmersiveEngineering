@@ -105,9 +105,9 @@ public class ShaderCaseRailgun extends ShaderCase
 //	@Override
 //	public void stichTextures(TextureMap map, int sheetID)
 //	{
-//		i_railgunBase = ApiUtils.getRegisterSprite(map, "immersiveengineering:items/shaders/railgun_0");
+//		i_railgunBase = ApiUtils.getRegisterSprite(map, "immersiveengineering:item/shaders/railgun_0");
 //		i_railgunOverlay = ApiUtils.getRegisterSprite(map, this.baseTexturePath+"1_"+this.overlayType);
-//		i_railgunUncoloured = ApiUtils.getRegisterSprite(map, "immersiveengineering:items/shaders/railgun_uncoloured");
+//		i_railgunUncoloured = ApiUtils.getRegisterSprite(map, "immersiveengineering:item/shaders/railgun_uncoloured");
 //		if(this.additionalTexture!=null)
 //			i_railgunAdditional = ApiUtils.getRegisterSprite(map, this.baseTexturePath+additionalTexture);
 //	}

@@ -214,7 +214,7 @@ public abstract class IESlot extends Slot
 		{
 			super(container, inv, id, x, y);
 			this.tool = tool;
-			this.setBackgroundName("immersiveengineering:items/shader_slot");
+			this.setBackgroundName("immersiveengineering:item/shader_slot");
 		}
 
 		@Override

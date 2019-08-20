@@ -1,6 +1,6 @@
 {
 	"parent":"item/handheld",
 	"textures": {
-		"layer0":"immersiveengineering:items/tool_hammer"
+		"layer0":"immersiveengineering:item/tool_hammer"
 	}
 }

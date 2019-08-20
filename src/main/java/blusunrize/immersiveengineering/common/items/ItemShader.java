@@ -66,7 +66,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		//DEFAULT CUTOUTS
 		//whitestripe
 		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_whitestripe"), 0, 0, .25, .25);
-		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_whitestripe"), 0, 22/64d, .5, 54/64d);
+		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_whitestripe"), 0, 22/64d, .5, 54/64d);
 
 		//REGISTER SHADERS
 		addShader("Rosequartz", 0, Rarity.COMMON, 0xff412323, 0xffe6b4b4, 0xfff0cdcd, 0xffe6b4b4).setInfo(null, null, "rosequartz");
@@ -205,10 +205,10 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 	private static void addLayer(ShaderRegistryEntry entry, String texture, int colour)
 	{
 		entry.getCase("immersiveengineering:revolver").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour));
-		entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_"+texture), colour));
-		entry.getCase("immersiveengineering:chemthrower").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_"+texture), colour));
-		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_"+texture), colour));
-		entry.getCase("immersiveengineering:shield").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_"+texture), colour));
+		entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour));
+		entry.getCase("immersiveengineering:chemthrower").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+texture), colour));
+		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour));
+		entry.getCase("immersiveengineering:shield").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour));
 		entry.getCase("immersiveengineering:minecart").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour));
 		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+texture), colour));
 		entry.getCase("immersiveengineering:banner").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_"+texture), colour));
@@ -217,10 +217,10 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Integer, Integer> func_getColour, final BiConsumer<Boolean, Float> func_modifyRender)
 	{
 		entry.getCase("immersiveengineering:revolver").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase("immersiveengineering:drill").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase("immersiveengineering:chemthrower").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase("immersiveengineering:railgun").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase("immersiveengineering:shield").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:drill").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:chemthrower").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:railgun").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:shield").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour, func_getColour, func_modifyRender));
 		entry.getCase("immersiveengineering:minecart").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour, func_getColour, func_modifyRender));
 		entry.getCase("immersiveengineering:balloon").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+texture), colour, func_getColour, func_modifyRender));
 		entry.getCase("immersiveengineering:banner").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_"+texture), colour, func_getColour, func_modifyRender));
@@ -408,8 +408,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				return list;
 			}
 		}
-//		return Arrays.asList(new ResourceLocation("immersiveengineering:items/shader_0"));
-		return Arrays.asList(new ResourceLocation("immersiveengineering:items/shader_0"), new ResourceLocation("immersiveengineering:items/shader_1"), new ResourceLocation("immersiveengineering:items/shader_2"));
+//		return Arrays.asList(new ResourceLocation("immersiveengineering:item/shader_0"));
+		return Arrays.asList(new ResourceLocation("immersiveengineering:item/shader_0"), new ResourceLocation("immersiveengineering:item/shader_1"), new ResourceLocation("immersiveengineering:item/shader_2"));
 	}
 
 	private static class InternalDynamicShaderLayer extends DynamicShaderLayer

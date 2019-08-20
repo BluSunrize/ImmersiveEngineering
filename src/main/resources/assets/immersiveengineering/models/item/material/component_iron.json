@@ -1,6 +1,6 @@
 {
 	"parent":"immersiveengineering:item/ie_item_base",
 	"textures": {
-		"layer0":"immersiveengineering:items/material_component_iron"
+		"layer0":"immersiveengineering:item/material_component_iron"
 	}
 }
