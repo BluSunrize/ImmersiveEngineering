@@ -730,7 +730,7 @@ desc.immersiveengineering.info.redstoneChannel=Канал: %1$s
 desc.immersiveengineering.info.redstoneChannel.send=Канал отправки: %1$s
 desc.immersiveengineering.info.redstoneChannel.rec=Канал приёма: %1$s
 
-desc.immersiveengineering.info.multiblock.IE:AlloySmelter=Сплавная печь
+desc.immersiveengineering.info.multiblock.IE:AlloySmelter=Плавильная печь
 desc.immersiveengineering.info.multiblock.IE:ArcFurnace=Дуговая печь
 desc.immersiveengineering.info.multiblock.IE:Assembler=Автоверстак
 desc.immersiveengineering.info.multiblock.IE:AutoWorkbench=Сборочный конвейер
@@ -1121,7 +1121,7 @@ ie.manual.entry.cokeoven.subtext=Горячая штучка!
 ie.manual.entry.cokeoven0=Конструкция, которую нужно создать в первую очередь, чтобы начать развитие в IE. Она перерабатывает уголь или блоки угля нагревая их без подачи кислорода в топливо - угольный кокс. Что более важно, этот процесс создаёт §lкреозот§r - жидкость, которая используется для производства <link;treated_wood;§o§nобработанного §o§nдерева§r>. Также вы можете пережечь деревянные брёвна в древесный уголь в этой печи с меньшим выходом креозота. 
 ie.manual.entry.cokeovenBlock=Коксовая печь строится из 27 §lкирпичей коксовой печи§r в форме куба 3x3x3 блока. Формируется щелчком ПКМ на одном из центральных блоков с молотом инженера в руке.<br><br>Подробная диаграмма есть на следующей странице.
 
-ie.manual.entry.alloysmelter.name=Сплавная печь
+ie.manual.entry.alloysmelter.name=Плавильная печь
 ie.manual.entry.alloysmelter.subtext=Сплавляем металлы
 ie.manual.entry.alloysmelter0=Печь, изготовленная из жаростойкого песчаника и кирпича. Температура внутри неё достаточно высока, чтобы металлы могли плавиться и смешиваться, создавая такие важные <link;alloys;§o§nсплавы§r>, как Электрум и Константан, не требуя утомительного смешивания пыли.
 ie.manual.entry.alloysmelter1=Строится из 8 Печных кирпичей в кубе 2x2x2. Формируется щелчком ПКМ на одной из сторон с молотом инженера в руке.
