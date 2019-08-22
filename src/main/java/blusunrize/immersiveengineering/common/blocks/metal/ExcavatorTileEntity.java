@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
@@ -139,7 +139,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 				{
 					ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(world, wheelPos.getX() >> 4, wheelPos.getZ() >> 4);
 
-					int consumed = IEConfig.Machines.excavator_consumption;
+					int consumed = IEConfig.MACHINES.excavator_consumption.get();
 					int extracted = energyStorage.extractEnergy(consumed, true);
 					if(extracted >= consumed)
 					{
@@ -165,7 +165,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 									ItemStack ore = mineral.getRandomOre(Utils.RAND);
 									float configChance = Utils.RAND.nextFloat();
 									float failChance = Utils.RAND.nextFloat();
-									if(!ore.isEmpty()&&configChance > IEConfig.Machines.excavator_fail_chance&&failChance > mineral.failChance)
+									if(!ore.isEmpty()&&configChance > IEConfig.MACHINES.excavator_fail_chance.get()&&failChance > mineral.failChance)
 									{
 										wheel.digStacks.set(targetDown, ore);
 										wheel.markDirty();
@@ -191,7 +191,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 								packet.putInt("empty", target);
 							}
 							if(!packet.isEmpty())
-								ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)),
+								ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)),
 										new MessageTileSync(wheel, packet));
 						}
 					}

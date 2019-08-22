@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -76,7 +76,7 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 				if(temp0 > -1&&temp1 > -1)
 				{
 					int diff = Math.abs(temp0-temp1);
-					energy += (int)(Math.sqrt(diff)/2*IEConfig.Machines.thermoelectric_output);
+					energy += (int)(Math.sqrt(diff)/2*IEConfig.MACHINES.thermoelectric_output);
 				}
 			}
 		this.energyOutput = energy==0?-1: energy;

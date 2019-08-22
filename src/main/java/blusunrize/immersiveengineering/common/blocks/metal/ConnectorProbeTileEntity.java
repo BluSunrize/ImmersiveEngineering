@@ -70,7 +70,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 		BlockState state = world.getBlockState(pos);
 		if(state.hasComparatorInputOverride())
 			return state.getComparatorInputOverride(world, pos);
-		else if(state.isNormalCube())
+		else if(state.isNormalCube(world, pos))
 		{
 			pos = pos.offset(facing);
 			state = world.getBlockState(pos);

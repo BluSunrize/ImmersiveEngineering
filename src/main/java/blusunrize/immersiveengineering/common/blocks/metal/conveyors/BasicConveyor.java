@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import net.minecraft.item.DyeColor;
@@ -24,6 +25,8 @@ import javax.annotation.Nullable;
 //TODO support covers in here, rather than having to make a covered and a non-covered version of every belt?
 public class BasicConveyor implements IConveyorBelt
 {
+	public static final ResourceLocation NAME = new ResourceLocation(ImmersiveEngineering.MODID, "conveyor");
+
 	ConveyorDirection direction = ConveyorDirection.HORIZONTAL;
 	@Nullable
 	DyeColor dyeColour = null;

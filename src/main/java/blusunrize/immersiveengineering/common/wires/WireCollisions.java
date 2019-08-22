@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.api.energy.wires.WireCollisionData;
 import blusunrize.immersiveengineering.api.energy.wires.WireCollisionData.CollisionInfo;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.ICollisionHandler;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;

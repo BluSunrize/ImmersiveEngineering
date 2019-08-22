@@ -49,7 +49,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
-import static blusunrize.immersiveengineering.common.Config.IEConfig.Tools.hammerDurabiliy;
+import static blusunrize.immersiveengineering.common.IEConfig.Tools.hammerDurabiliy;
 
 public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 {

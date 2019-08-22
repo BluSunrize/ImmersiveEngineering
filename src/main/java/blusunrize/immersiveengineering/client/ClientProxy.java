@@ -639,7 +639,7 @@ public class ClientProxy extends CommonProxy
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())));
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
-		if(IEConfig.Machines.pump_infiniteWater||IEConfig.Machines.pump_placeCobble)
+		if(IEConfig.MACHINES.pump_infiniteWater||IEConfig.MACHINES.pump_placeCobble)
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes5", new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PLACER.getMeta())));
 		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES, pages.toArray(new IManualPage[pages.size()]));

@@ -11,10 +11,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IFaceShape;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
@@ -22,10 +21,9 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.ParticleTypes;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -42,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGeneratorTileEntity>
-		implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, ISoundTile, IFaceShape
+		implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, ISoundTile
 {
 	public static TileEntityType<DieselGeneratorTileEntity> TYPE;
 
@@ -131,7 +129,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 				if(burnTime > 0)
 				{
 					int fluidConsumed = 1000/burnTime;
-					int output = IEConfig.Machines.dieselGen_output;
+					int output = IEConfig.MACHINES.dieselGen_output.get();
 					int connected = 0;
 					TileEntity[] receivers = new TileEntity[3];
 					for(int i = 0; i < 3; i++)
@@ -370,17 +368,5 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	public boolean shoudlPlaySound(String sound)
 	{
 		return active;
-	}
-
-	@Override
-	public BlockFaceShape getFaceShape(Direction side)
-	{
-		if(posInMultiblock==0||posInMultiblock==2)
-			return side.getAxis()==facing.rotateY().getAxis()?BlockFaceShape.SOLID: BlockFaceShape.UNDEFINED;
-		else if(posInMultiblock >= 15&&posInMultiblock <= 17)
-			return side==Direction.UP?BlockFaceShape.SOLID: BlockFaceShape.UNDEFINED;
-		else if(posInMultiblock==23)
-			return side.getAxis()==facing.rotateY().getAxis()?BlockFaceShape.SOLID: BlockFaceShape.UNDEFINED;
-		return BlockFaceShape.UNDEFINED;
 	}
 }

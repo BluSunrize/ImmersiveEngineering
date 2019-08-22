@@ -88,7 +88,7 @@ import java.util.Map.Entry;
 public class EventHandler
 {
 	//TODO move to a capability
-	public static final Map<DimensionType, List<ISpawnInterdiction>> interdictionTiles = new HashMap<>();
+	public static final Map<DimensionType, Set<ISpawnInterdiction>> interdictionTiles = new HashMap<>();
 	public static boolean validateConnsNextTick = false;
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<DimensionType, BlockPos>> requestedBlockUpdates = new LinkedList<>();

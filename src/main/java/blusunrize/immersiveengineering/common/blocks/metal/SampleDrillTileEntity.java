@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -81,15 +81,15 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		final boolean prevActive = active;
 		if(!active&&powered)
 			active = true;
-		else if(active&&!powered&&process >= IEConfig.Machines.coredrill_time)
+		else if(active&&!powered&&process >= IEConfig.MACHINES.coredrill_time)
 			active = false;
 
 
-		if(active&&process < IEConfig.Machines.coredrill_time)
-			if(energyStorage.extractEnergy(IEConfig.Machines.coredrill_consumption, false)==IEConfig.Machines.coredrill_consumption)
+		if(active&&process < IEConfig.MACHINES.coredrill_time)
+			if(energyStorage.extractEnergy(IEConfig.MACHINES.coredrill_consumption, false)==IEConfig.MACHINES.coredrill_consumption)
 			{
 				process++;
-				if(process >= IEConfig.Machines.coredrill_time)
+				if(process >= IEConfig.MACHINES.coredrill_time)
 				{
 					int cx = getPos().getX() >> 4;
 					int cz = getPos().getZ() >> 4;
@@ -108,12 +108,12 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 
 	public float getSampleProgress()
 	{
-		return process/(float)IEConfig.Machines.coredrill_time;
+		return process/(float)IEConfig.MACHINES.coredrill_time;
 	}
 
 	public boolean isSamplingFinished()
 	{
-		return process >= IEConfig.Machines.coredrill_time;
+		return process >= IEConfig.MACHINES.coredrill_time;
 	}
 
 	public String getVein()
@@ -271,7 +271,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		}
 		else if(!this.active)
 		{
-			if(energyStorage.getEnergyStored() >= IEConfig.Machines.coredrill_consumption)
+			if(energyStorage.getEnergyStored() >= IEConfig.MACHINES.coredrill_consumption)
 			{
 				this.active = true;
 				markDirty();

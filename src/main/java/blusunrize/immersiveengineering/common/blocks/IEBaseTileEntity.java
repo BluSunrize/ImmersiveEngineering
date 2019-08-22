@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import net.minecraft.block.BlockState;
@@ -207,7 +206,7 @@ public abstract class IEBaseTileEntity extends TileEntity
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*
-				Config.IEConfig.increasedTileRenderdistance*Config.IEConfig.increasedTileRenderdistance;
+				IEConfig.increasedTileRenderdistance*IEConfig.increasedTileRenderdistance;
 	}
 
 	@Override

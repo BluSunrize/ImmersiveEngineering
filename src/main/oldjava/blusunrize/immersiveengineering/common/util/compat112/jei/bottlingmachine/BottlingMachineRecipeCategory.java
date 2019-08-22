@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util.compat112.jei.bottlingmachin
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat112.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat112.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;

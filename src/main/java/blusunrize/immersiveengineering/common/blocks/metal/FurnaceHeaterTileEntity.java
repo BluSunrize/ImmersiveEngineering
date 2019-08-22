@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IActiveState, IDirectionalTile
 {
 	public static TileEntityType<FurnaceHeaterTileEntity> TYPE;
-	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256, Math.max(IEConfig.Machines.heater_consumption, IEConfig.Machines.heater_speedupConsumption)));
+	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256, Math.max(IEConfig.MACHINES.heater_consumption, IEConfig.MACHINES.heater_speedupConsumption)));
 	//public int[] sockets = new int[6];
 	public boolean active = false;
 	public Direction facing = Direction.NORTH;

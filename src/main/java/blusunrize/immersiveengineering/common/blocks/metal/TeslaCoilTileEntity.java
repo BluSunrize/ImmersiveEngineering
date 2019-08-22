@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -94,7 +94,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			effectMap.get(pos).removeIf(LightningAnimation::tick);
 
 		int timeKey = getPos().getX()^getPos().getZ();
-		int energyDrain = IEConfig.Machines.teslacoil_consumption;
+		int energyDrain = IEConfig.MACHINES.teslacoil_consumption;
 		if(lowPower)
 			energyDrain /= 2;
 		if(!world.isRemote&&world.getGameTime()%32==(timeKey&31)&&canRun(energyDrain))
@@ -111,14 +111,14 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			LivingEntity target = null;
 			if(!targets.isEmpty())
 			{
-				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEConfig.Machines.teslacoil_damage, lowPower);
+				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEConfig.MACHINES.teslacoil_damage, lowPower);
 				int randomTarget = Utils.RAND.nextInt(targets.size());
 				target = (LivingEntity)targets.get(randomTarget);
 				if(target!=null)
 				{
 					if(!world.isRemote)
 					{
-						energyDrain = IEConfig.Machines.teslacoil_consumption_active;
+						energyDrain = IEConfig.MACHINES.teslacoil_consumption_active;
 						if(lowPower)
 							energyDrain /= 2;
 						if(energyStorage.extractEnergy(energyDrain, true)==energyDrain)
@@ -412,7 +412,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		}
 		if(player.isSneaking())
 		{
-			int energyDrain = IEConfig.Machines.teslacoil_consumption;
+			int energyDrain = IEConfig.MACHINES.teslacoil_consumption;
 			if(lowPower)
 				energyDrain /= 2;
 			if(canRun(energyDrain))

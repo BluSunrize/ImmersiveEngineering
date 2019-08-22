@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDynamicTexture;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
@@ -26,6 +26,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -52,10 +53,10 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	{
 		super.readCustomNBT(nbt, descPacket);
 		float nbtRot = nbt.getFloat("rotation");
-		rotation = (Math.abs(nbtRot-rotation) > 5*IEConfig.Machines.excavator_speed)?nbtRot: rotation; // avoid stuttering due to packet delays
+		rotation = (Math.abs(nbtRot-rotation) > 5*IEConfig.MACHINES.excavator_speed.get())?nbtRot: rotation; // avoid stuttering due to packet delays
 		digStacks = Utils.readInventory(nbt.getList("digStacks", 10), 8);
 		active = nbt.getBoolean("active");
-		particleStack = nbt.hasKey("particleStack")?ItemStack.read(nbt.getCompound("particleStack")): ItemStack.EMPTY;
+		particleStack = nbt.contains("particleStack", NBT.TAG_COMPOUND)?ItemStack.read(nbt.getCompound("particleStack")): ItemStack.EMPTY;
 	}
 
 	@Override
@@ -96,7 +97,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 
 		if(active)
 		{
-			rotation += IEConfig.Machines.excavator_speed;
+			rotation += IEConfig.MACHINES.excavator_speed.get();
 			rotation %= 360;
 		}
 
@@ -113,7 +114,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 			CompoundNBT nbt = new CompoundNBT();
 			nbt.putFloat("rotation", rotation);
 			MessageTileSync sync = new MessageTileSync(this, nbt);
-			ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)), sync);
+			ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), sync);
 		}
 	}
 
@@ -152,14 +153,14 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	{
 		synchronized(digStacks)
 		{
-			if(message.hasKey("fill"))
+			if(message.contains("fill", NBT.TAG_INT))
 				this.digStacks.set(message.getInt("fill"), ItemStack.read(message.getCompound("fillStack")));
-			if(message.hasKey("empty"))
+			if(message.contains("empty", NBT.TAG_INT))
 				this.digStacks.set(message.getInt("empty"), ItemStack.EMPTY);
-			if(message.hasKey("rotation"))
+			if(message.contains("rotation", NBT.TAG_INT))
 			{
 				int packetRotation = message.getInt("rotation");
-				if(Math.abs(packetRotation-rotation) > 5*IEConfig.Machines.excavator_speed)
+				if(Math.abs(packetRotation-rotation) > 5*IEConfig.MACHINES.excavator_speed.get())
 					rotation = packetRotation;
 			}
 		}

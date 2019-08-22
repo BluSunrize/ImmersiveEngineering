@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-import static blusunrize.immersiveengineering.common.Config.IEConfig.Tools.cutterDurabiliy;
+import static blusunrize.immersiveengineering.common.IEConfig.Tools.cutterDurabiliy;
 
 public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageableIE
 {

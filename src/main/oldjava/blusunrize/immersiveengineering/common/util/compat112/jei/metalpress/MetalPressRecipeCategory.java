@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util.compat112.jei.metalpress;
 
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat112.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat112.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;

@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -56,8 +56,8 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	public static TileEntityType<FloodlightTileEntity> TYPE;
 
 	public int energyStorage = 0;
-	private int energyDraw = IEConfig.Machines.floodlight_energyDraw;
-	private int maximumStorage = IEConfig.Machines.floodlight_maximumStorage;
+	private int energyDraw = IEConfig.MACHINES.floodlight_energyDraw;
+	private int maximumStorage = IEConfig.MACHINES.floodlight_maximumStorage;
 	public boolean active = false;
 	public boolean redstoneControlInverted = false;
 	public Direction facing = Direction.NORTH;

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -49,7 +49,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 	@Override
 	protected boolean canActivate()
 	{
-		return tank.getFluidAmount() > 0&&this.energyStorage.getEnergyStored() >= IEConfig.Machines.turret_chem_consumption;
+		return tank.getFluidAmount() > 0&&this.energyStorage.getEnergyStored() >= IEConfig.MACHINES.turret_chem_consumption;
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 		if(fs!=null&&fs.getFluid()!=null)
 		{
 			int consumed = IEConfig.Tools.chemthrower_consumption;
-			int energy = IEConfig.Machines.turret_chem_consumption;
+			int energy = IEConfig.MACHINES.turret_chem_consumption;
 			if(consumed <= fs.amount&&this.energyStorage.extractEnergy(energy, true) >= energy)
 			{
 				tank.drain(consumed, true);

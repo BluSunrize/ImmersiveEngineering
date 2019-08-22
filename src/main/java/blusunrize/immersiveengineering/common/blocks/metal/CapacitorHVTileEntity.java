@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import net.minecraft.tileentity.TileEntityType;
 
 public class CapacitorHVTileEntity extends CapacitorLVTileEntity
@@ -22,19 +22,19 @@ public class CapacitorHVTileEntity extends CapacitorLVTileEntity
 	@Override
 	public int getMaxStorage()
 	{
-		return IEConfig.Machines.capacitorHV_storage;
+		return IEConfig.MACHINES.capacitorHvStorage.get();
 	}
 
 	@Override
 	public int getMaxInput()
 	{
-		return IEConfig.Machines.capacitorHV_input;
+		return IEConfig.MACHINES.capacitorHvInput.get();
 	}
 
 	@Override
 	public int getMaxOutput()
 	{
-		return IEConfig.Machines.capacitorHV_output;
+		return IEConfig.MACHINES.capacitorHvOutput.get();
 	}
 
 }

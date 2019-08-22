@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -44,7 +44,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 
 	public int doSpeedup()
 	{
-		int consumed = IEConfig.Machines.preheater_consumption;
+		int consumed = IEConfig.MACHINES.preheater_consumption.get();
 		if(this.energyStorage.extractEnergy(consumed, true)==consumed)
 		{
 			if(!active)
@@ -85,7 +85,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	{
 		for(int i = 0; i <= 2; i++)
 			if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof BlastFurnacePreheaterTileEntity)
-				world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0));
+				world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0), false);
 	}
 
 	@Override

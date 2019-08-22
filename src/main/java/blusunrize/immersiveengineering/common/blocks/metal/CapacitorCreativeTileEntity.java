@@ -22,14 +22,14 @@ public class CapacitorCreativeTileEntity extends CapacitorLVTileEntity
 	public CapacitorCreativeTileEntity()
 	{
 		super(TYPE);
-		for(int i = 0; i < sideConfig.length; i++)
-			sideConfig[i] = SideConfig.OUTPUT;
+		for(Direction d : Direction.VALUES)
+			sideConfig.put(d, SideConfig.OUTPUT);
 	}
 
 	@Override
 	public int receiveEnergy(Direction from, int maxReceive, boolean simulate)
 	{
-		if(world.isRemote||from.ordinal() >= sideConfig.length||sideConfig[from.ordinal()]!=SideConfig.INPUT)
+		if(world.isRemote||sideConfig.get(from)!=SideConfig.INPUT)
 			return 0;
 		return maxReceive;
 	}
@@ -37,7 +37,7 @@ public class CapacitorCreativeTileEntity extends CapacitorLVTileEntity
 	@Override
 	public int extractEnergy(Direction from, int maxExtract, boolean simulate)
 	{
-		if(world.isRemote||from.ordinal() >= sideConfig.length||sideConfig[from.ordinal()]!=SideConfig.OUTPUT)
+		if(world.isRemote||sideConfig.get(from)!=SideConfig.OUTPUT)
 			return 0;
 		return maxExtract;
 	}
@@ -57,10 +57,9 @@ public class CapacitorCreativeTileEntity extends CapacitorLVTileEntity
 	@Override
 	protected void transferEnergy(Direction side)
 	{
-		if(sideConfig[side]!=SideConfig.OUTPUT)
+		if(sideConfig.get(side)!=SideConfig.OUTPUT)
 			return;
-		Direction to = Direction.byIndex(side);
-		TileEntity te = Utils.getExistingTileEntity(world, pos.offset(to));
-		EnergyHelper.insertFlux(te, to.getOpposite(), Integer.MAX_VALUE, false);
+		TileEntity te = Utils.getExistingTileEntity(world, pos.offset(side));
+		EnergyHelper.insertFlux(te, side.getOpposite(), Integer.MAX_VALUE, false);
 	}
 }

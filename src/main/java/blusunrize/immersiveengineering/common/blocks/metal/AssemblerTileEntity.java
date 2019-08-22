@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
@@ -36,9 +36,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -130,7 +129,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	@Override
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
-		if(message.hasKey("buttonID"))
+		if(message.contains("buttonID", NBT.TAG_INT))
 		{
 			int id = message.getInt("buttonID");
 			if(id >= 0&&id < patterns.length)
@@ -144,7 +143,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				recursiveIngredients = !recursiveIngredients;
 			}
 		}
-		else if(message.hasKey("patternSync"))
+		else if(message.contains("patternSync", NBT.TAG_INT))
 		{
 			int r = message.getInt("recipe");
 			ListNBT list = message.getList("patternSync", 10);
@@ -187,7 +186,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				for(ItemStack stack : this.inventory)
 					if(!stack.isEmpty())
 						availableStacks.add(stack);
-				int consumed = IEConfig.Machines.assembler_consumption;
+				int consumed = IEConfig.MACHINES.assembler_consumption.get();
 
 				AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
 				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
@@ -282,7 +281,8 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			AssemblerHandler.RecipeQuery recipeQuery = queries[i];
 			if(recipeQuery!=null&&recipeQuery.query!=null)
 			{
-				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query: (recipeQuery.query instanceof IngredientStack&&((IngredientStack)recipeQuery.query).fluid!=null)?((IngredientStack)recipeQuery.query).fluid: null;
+				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query:
+						(recipeQuery.query instanceof IngredientStack&&((IngredientStack)recipeQuery.query).fluid!=null)?((IngredientStack)recipeQuery.query).fluid: null;
 				int querySize = recipeQuery.querySize;
 				if(fs!=null)
 				{
@@ -665,28 +665,10 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		public void recalculateOutput()
 		{
 			CraftingInventory invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
-			this.recipe = Utils.findCraftingRecipe(invC, tile.getWorld());
+			this.recipe = Utils.findCraftingRecipe(invC, tile.getWorld()).orElse(null);
 			this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC): ItemStack.EMPTY);
 		}
 
-		@Nullable
-		@Override
-		public ITextComponent getCustomName()
-		{
-			return getName();
-		}
-
-		@Override
-		public ITextComponent getName()
-		{
-			return new StringTextComponent("IECrafterPattern");
-		}
-
-		@Override
-		public boolean hasCustomName()
-		{
-			return false;
-		}
 
 		@Override
 		public int getInventoryStackLimit()
@@ -744,29 +726,6 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 					this.inv.set(slot, ItemStack.read(itemTag));
 			}
 			recalculateOutput();
-		}
-
-		@Override
-		public ITextComponent getDisplayName()
-		{
-			return getName();
-		}
-
-		@Override
-		public int getField(int id)
-		{
-			return 0;
-		}
-
-		@Override
-		public void setField(int id, int value)
-		{
-		}
-
-		@Override
-		public int getFieldCount()
-		{
-			return 0;
 		}
 	}
 }

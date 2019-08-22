@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
@@ -74,7 +74,7 @@ public class FakeLightBlock extends IETileProviderBlock
 		public FakeLightTileEntity()
 		{
 			super(TYPE);
-			if(IEConfig.Machines.floodlight_spawnPrevent)
+			if(IEConfig.MACHINES.floodlight_spawnPrevent)
 				synchronized(EventHandler.interdictionTiles)
 				{
 					if(!EventHandler.interdictionTiles.contains(this))

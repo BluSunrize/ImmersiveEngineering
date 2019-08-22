@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -92,7 +92,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 						int out = this.outputFluid(drain, false);
 						handler.drain(out, true);
 					}
-					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)&&world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER&&IEConfig.Machines.pump_infiniteWater&&tank.fill(new FluidStack(FluidRegistry.WATER, 1000), false)==1000&&this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true) >= IEConfig.Machines.pump_consumption)
+					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)&&world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER&&IEConfig.MACHINES.pump_infiniteWater&&tank.fill(new FluidStack(FluidRegistry.WATER, 1000), false)==1000&&this.energyStorage.extractEnergy(IEConfig.MACHINES.pump_consumption, true) >= IEConfig.MACHINES.pump_consumption)
 					{
 						int connectedSources = 0;
 						for(Direction f2 : Direction.HORIZONTALS)
@@ -103,7 +103,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 						}
 						if(connectedSources > 1)
 						{
-							this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, false);
+							this.energyStorage.extractEnergy(IEConfig.MACHINES.pump_consumption, false);
 							this.tank.fill(new FluidStack(FluidRegistry.WATER, 1000), true);
 						}
 					}
@@ -119,9 +119,9 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					FluidStack fs = Utils.drainFluidBlock(world, pos, false);
 					if(fs==null)
 						closedList.remove(target);
-					else if(tank.fill(fs, false)==fs.amount&&this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true) >= IEConfig.Machines.pump_consumption)
+					else if(tank.fill(fs, false)==fs.amount&&this.energyStorage.extractEnergy(IEConfig.MACHINES.pump_consumption, true) >= IEConfig.MACHINES.pump_consumption)
 					{
-						this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, false);
+						this.energyStorage.extractEnergy(IEConfig.MACHINES.pump_consumption, false);
 						fs = Utils.drainFluidBlock(world, pos, true);
 						//						int rainbow = (closedList.size()%11)+1;
 						//						if(rainbow>6)
@@ -129,7 +129,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 						//						if(rainbow>9)
 						//							rainbow++;
 						//						world.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.stained_glass,rainbow, 0x3);
-						if(IEConfig.Machines.pump_placeCobble&&placeCobble)
+						if(IEConfig.MACHINES.pump_placeCobble&&placeCobble)
 							world.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
 						this.tank.fill(fs, true);
 						closedList.remove(target);
@@ -167,7 +167,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			if(!checked.contains(next))
 			{
 				Fluid fluid = Utils.getRelatedFluid(world, next);
-				if(fluid!=null&&(fluid!=FluidRegistry.WATER||!IEConfig.Machines.pump_infiniteWater)&&(searchFluid==null||fluid==searchFluid))
+				if(fluid!=null&&(fluid!=FluidRegistry.WATER||!IEConfig.MACHINES.pump_infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 				{
 					if(searchFluid==null)
 						searchFluid = fluid;
@@ -178,7 +178,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					{
 						BlockPos pos2 = next.offset(f);
 						fluid = Utils.getRelatedFluid(world, pos2);
-						if(!checked.contains(pos2)&&!closedList.contains(pos2)&&!openList.contains(pos2)&&fluid!=null&&(fluid!=FluidRegistry.WATER||!IEConfig.Machines.pump_infiniteWater)&&(searchFluid==null||fluid==searchFluid))
+						if(!checked.contains(pos2)&&!closedList.contains(pos2)&&!openList.contains(pos2)&&fluid!=null&&(fluid!=FluidRegistry.WATER||!IEConfig.MACHINES.pump_infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 							openList.add(pos2);
 					}
 				}
@@ -199,7 +199,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		if(canAccept <= 0)
 			return 0;
 
-		int accelPower = IEConfig.Machines.pump_consumption_accelerate;
+		int accelPower = IEConfig.MACHINES.pump_consumption_accelerate;
 		final int fluidForSort = canAccept;
 		int sum = 0;
 		HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<DirectionalFluidOutput, Integer>();
@@ -463,7 +463,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public boolean canOutputPressurized(boolean consumePower)
 	{
-		int accelPower = IEConfig.Machines.pump_consumption_accelerate;
+		int accelPower = IEConfig.MACHINES.pump_consumption_accelerate;
 		if(energyStorage.extractEnergy(accelPower, true) >= accelPower)
 		{
 			if(consumePower)
