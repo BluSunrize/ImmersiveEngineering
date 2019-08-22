@@ -32,7 +32,7 @@ public class GunpowderBarrelBlock extends TNTBlock
 	public void explode(World world, BlockPos pos, @Nullable LivingEntity igniter)
 	{
 		IEExplosiveEntity explosive = new IEExplosiveEntity(world, pos, igniter, world.getBlockState(pos), 4).setDropChance(1);
-		world.spawnEntity(explosive);
+		world.addEntity(explosive);
 		world.playSound(null, explosive.posX, explosive.posY, explosive.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		world.removeBlock(pos);
 	}

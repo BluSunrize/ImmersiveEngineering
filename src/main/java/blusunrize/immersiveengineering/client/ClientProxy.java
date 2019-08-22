@@ -42,10 +42,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColoured
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorSplit;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.DropConveyor;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConveyor;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.VerticalConveyor;
 import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
@@ -968,15 +968,15 @@ public class ClientProxy extends CommonProxy
 		for(ResourceLocation rl : ModelConveyor.rl_casing)
 			ApiUtils.getRegisterSprite(event.getMap(), rl);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorHandler.textureConveyorColour);
-		ApiUtils.getRegisterSprite(event.getMap(), ConveyorBasic.texture_off);
-		ApiUtils.getRegisterSprite(event.getMap(), ConveyorBasic.texture_on);
-		ApiUtils.getRegisterSprite(event.getMap(), ConveyorDrop.texture_off);
-		ApiUtils.getRegisterSprite(event.getMap(), ConveyorDrop.texture_on);
-		ApiUtils.getRegisterSprite(event.getMap(), ConveyorVertical.texture_off);
-		ApiUtils.getRegisterSprite(event.getMap(), ConveyorVertical.texture_on);
-		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_off);
-		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_on);
-		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_casing);
+		ApiUtils.getRegisterSprite(event.getMap(), BasicConveyor.texture_off);
+		ApiUtils.getRegisterSprite(event.getMap(), BasicConveyor.texture_on);
+		ApiUtils.getRegisterSprite(event.getMap(), DropConveyor.texture_off);
+		ApiUtils.getRegisterSprite(event.getMap(), DropConveyor.texture_on);
+		ApiUtils.getRegisterSprite(event.getMap(), VerticalConveyor.texture_off);
+		ApiUtils.getRegisterSprite(event.getMap(), VerticalConveyor.texture_on);
+		ApiUtils.getRegisterSprite(event.getMap(), SplitConveyor.texture_off);
+		ApiUtils.getRegisterSprite(event.getMap(), SplitConveyor.texture_on);
+		ApiUtils.getRegisterSprite(event.getMap(), SplitConveyor.texture_casing);
 
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/creosote_still");
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/creosote_flow");

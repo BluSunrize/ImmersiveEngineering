@@ -82,7 +82,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 						getPos().getZ()+.5, getTileDrop(player, world.getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
 				world.removeBlock(getPos());
-				world.spawnEntity(entityitem);
+				world.addEntity(entityitem);
 			}
 			return true;
 		}

@@ -10,9 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.Lists;
@@ -20,12 +19,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -33,8 +33,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.oredict.OreDictionary;
-import org.lwjgl.util.vector.Vector3f;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.GameRules;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -42,39 +45,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * @author BluSunrize - 29.03.2017
  */
-public class ConveyorCovered extends ConveyorBasic
+public class CoveredConveyor extends BasicConveyor
 {
-	public static ArrayList<com.google.common.base.Function<ItemStack, Boolean>> validCoveyorCovers = new ArrayList();
+	public static ArrayList<Predicate<ItemStack>> validCoveyorCovers = new ArrayList<>();
 
 	static
 	{
-		final ArrayList<ItemStack> scaffolds = Lists.newArrayList(
-				new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
-		validCoveyorCovers.add(new com.google.common.base.Function<ItemStack, Boolean>()
+		//TODO use blocks rather than itemstacks
+		final ArrayList<ItemStack> scaffolds = Lists.newArrayList(new ItemStack(WoodenDecoration.treatedScaffolding));
+		Stream.concat(
+				MetalDecoration.aluScaffolding.values().stream(),
+				MetalDecoration.steelScaffolding.values().stream()
+		)
+				.map(ItemStack::new)
+				.forEach(scaffolds::add);
+
+		validCoveyorCovers.add(input ->
 		{
-			@Nullable
-			@Override
-			public Boolean apply(@Nullable ItemStack input)
-			{
-				if(input==null)
-					return Boolean.FALSE;
-				for(ItemStack stack : scaffolds)
-					if(OreDictionary.itemMatches(stack, input, false))
-						return Boolean.TRUE;
-				return Boolean.FALSE;
-			}
+			if(input==null)
+				return false;
+			for(ItemStack stack : scaffolds)
+				if(ItemStack.areItemsEqual(stack, input))
+					return true;
+			return false;
 		});
-		validCoveyorCovers.add(input -> input==null?Boolean.FALSE: Utils.isInTag(input, "blockGlass"));
+		//TODO tag once one exists?
+		validCoveyorCovers.add(input -> input.getItem()==Item.getItemFromBlock(Blocks.GLASS));
 	}
 
 	public ItemStack cover = ItemStack.EMPTY;
@@ -98,11 +101,11 @@ public class ConveyorCovered extends ConveyorBasic
 	{
 		String key = super.getModelCacheKey(tile, facing);
 		if(!cover.isEmpty())
-			key += "s"+cover.getItem().getRegistryName()+cover.getMetadata();
+			key += "s"+cover.getItem().getRegistryName();
 		return key;
 	}
 
-	static final ItemStack defaultCover = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
+	static final ItemStack defaultCover = new ItemStack(Blocks.GLASS);
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -118,18 +121,18 @@ public class ConveyorCovered extends ConveyorBasic
 	{
 		ItemStack cover = !coverGet.get().isEmpty()?coverGet.get(): defaultCover;
 		Block b = Block.getBlockFromItem(cover.getItem());
-		BlockState state = !cover.isEmpty()?b.getStateFromMeta(cover.getMetadata()): Blocks.STONE.getDefaultState();
-		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+		BlockState state = !cover.isEmpty()?b.getDefaultState(): Blocks.STONE.getDefaultState();
+		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
 		if(model!=null)
 		{
 			TextureAtlasSprite sprite = model.getParticleTexture();
 			HashMap<Direction, TextureAtlasSprite> sprites = new HashMap<>();
 
 			for(Direction f : Direction.VALUES)
-				for(BakedQuad q : model.getQuads(state, f, 0))
+				for(BakedQuad q : model.getQuads(state, f, Utils.RAND))
 					if(q!=null&&q.getSprite()!=null)
 						sprites.put(f, q.getSprite());
-			for(BakedQuad q : model.getQuads(state, null, 0))
+			for(BakedQuad q : model.getQuads(state, null, Utils.RAND))
 				if(q!=null&&q.getSprite()!=null&&q.getFace()!=null)
 					sprites.put(q.getFace(), q.getSprite());
 
@@ -139,27 +142,27 @@ public class ConveyorCovered extends ConveyorBasic
 			float[] colour = {1, 1, 1, 1};
 			Matrix4 matrix = new Matrix4(facing);
 
-			Function<Vector3f[], Vector3f[]> vertexTransformer = conDir==ConveyorDirection.HORIZONTAL?vertices -> vertices: vertices -> {
-				Vector3f[] ret = new Vector3f[vertices.length];
+			Function<Vec3d[], Vec3d[]> vertexTransformer = conDir==ConveyorDirection.HORIZONTAL?vertices -> vertices: vertices -> {
+				Vec3d[] ret = new Vec3d[vertices.length];
 				for(int i = 0; i < ret.length; i++)
-					ret[i] = new Vector3f(vertices[i].x, vertices[i].y+(vertices[i].z==(conDir==ConveyorDirection.UP?0: 1)?1: 0), vertices[i].z);
+					ret[i] = new Vec3d(vertices[i].x, vertices[i].y+(vertices[i].z==(conDir==ConveyorDirection.UP?0: 1)?1: 0), vertices[i].z);
 				return ret;
 			};
 
-			baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(0, .75f, 0), new Vector3f(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
+			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(0, .75f, 0), new Vec3d(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
 			if(walls[0])
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(0, .1875f, 0), new Vector3f(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(0, .1875f, 0), new Vec3d(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 			else
 			{
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(0, .1875f, 0), new Vector3f(.0625f, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(0, .1875f, .9375f), new Vector3f(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(0, .1875f, 0), new Vec3d(.0625f, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(0, .1875f, .9375f), new Vec3d(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 			}
 			if(walls[1])
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.9375f, .1875f, 0), new Vector3f(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.9375f, .1875f, 0), new Vec3d(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 			else
 			{
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.9375f, .1875f, 0), new Vector3f(1, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.9375f, .1875f, .9375f), new Vector3f(1, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.9375f, .1875f, 0), new Vec3d(1, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.9375f, .1875f, .9375f), new Vec3d(1, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 			}
 		}
 	}
@@ -176,7 +179,7 @@ public class ConveyorCovered extends ConveyorBasic
 		final ItemStack cover = coverGet.get();
 		if(heldItem.isEmpty()&&player.isSneaking()&&!cover.isEmpty())
 		{
-			if(!tile.getWorld().isRemote&&tile.getWorld().getGameRules().getBoolean("doTileDrops"))
+			if(!tile.getWorld().isRemote&&tile.getWorld().getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 			{
 				ItemEntity entityitem = player.dropItem(cover.copy(), false);
 				if(entityitem!=null)
@@ -186,12 +189,12 @@ public class ConveyorCovered extends ConveyorBasic
 			return true;
 		}
 		else if(!heldItem.isEmpty()&&!player.isSneaking())
-			for(com.google.common.base.Function<ItemStack, Boolean> func : validCoveyorCovers)
-				if(func.apply(heldItem)==Boolean.TRUE)
+			for(Predicate<ItemStack> func : validCoveyorCovers)
+				if(func.test(heldItem))
 				{
-					if(!OreDictionary.itemMatches(cover, heldItem, true))
+					if(!ItemStack.areItemStacksEqual(cover, heldItem))
 					{
-						if(!tile.getWorld().isRemote&&!cover.isEmpty()&&tile.getWorld().getGameRules().getBoolean("doTileDrops"))
+						if(!tile.getWorld().isRemote&&!cover.isEmpty()&&tile.getWorld().getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 						{
 							ItemEntity entityitem = player.dropItem(cover.copy(), false);
 							if(entityitem!=null)
@@ -228,14 +231,13 @@ public class ConveyorCovered extends ConveyorBasic
 	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
 	{
 		if(getConveyorDirection()==ConveyorDirection.HORIZONTAL)
-			return Lists.newArrayList(Block.FULL_BLOCK_AABB);
+			return Lists.newArrayList(VoxelShapes.fullCube().getBoundingBox());
 		else
 		{
 			boolean up = getConveyorDirection()==ConveyorDirection.UP;
-			List<AxisAlignedBB> list = Lists.newArrayList(
+			return Lists.newArrayList(
 					new AxisAlignedBB((facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 0, .5, (facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 0, (facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 1, 2, (facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 1),
 					new AxisAlignedBB((facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 0, 0, (facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 0, (facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 1, 1.5, (facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 1));
-			return list;
 		}
 	}
 
@@ -244,7 +246,7 @@ public class ConveyorCovered extends ConveyorBasic
 	{
 		CompoundNBT nbt = super.writeConveyorNBT();
 		if(cover!=null)
-			nbt.put("cover", cover.writeToNBT(new CompoundNBT()));
+			nbt.put("cover", cover.write(new CompoundNBT()));
 		return nbt;
 	}
 
@@ -252,6 +254,6 @@ public class ConveyorCovered extends ConveyorBasic
 	public void readConveyorNBT(CompoundNBT nbt)
 	{
 		super.readConveyorNBT(nbt);
-		cover = new ItemStack(nbt.getCompound("cover"));
+		cover = ItemStack.read(nbt.getCompound("cover"));
 	}
 }

@@ -285,7 +285,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 						if(i!=0)
 						{
 							ItemEntity ei = new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, items.get(i).copy());
-							this.world.spawnEntity(ei);
+							this.world.addEntity(ei);
 						}
 					world.playEvent(2001, pos, Block.getStateId(blockstate));
 					if(items.size() > 0)

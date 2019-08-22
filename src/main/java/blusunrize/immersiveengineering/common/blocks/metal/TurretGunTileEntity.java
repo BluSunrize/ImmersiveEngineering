@@ -106,14 +106,14 @@ public class TurretGunTileEntity extends TurretTileEntity
 					if(count==1)
 					{
 						Entity entBullet = getBulletEntity(world, vec, bullet);
-						world.spawnEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
+						world.addEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
 					}
 					else
 						for(int i = 0; i < count; i++)
 						{
 							Vec3d vecDir = vec.add(Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1);
 							Entity entBullet = getBulletEntity(world, vecDir, bullet);
-							world.spawnEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
+							world.addEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
 						}
 					bulletStack.shrink(1);
 					if(bulletStack.getCount() <= 0)
@@ -131,7 +131,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 							entCasing.motionX = 0;
 							entCasing.motionY = -0.01;
 							entCasing.motionZ = 0;
-							world.spawnEntity(entCasing);
+							world.addEntity(entCasing);
 						}
 						else
 						{

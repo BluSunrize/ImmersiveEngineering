@@ -167,7 +167,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 					if(ignite)
 						chem.setFire(10);
 					if(!player.world.isRemote)
-						player.world.spawnEntity(chem);
+						player.world.addEntity(chem);
 				}
 				if(count%4==0)
 				{

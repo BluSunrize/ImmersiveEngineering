@@ -15,9 +15,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.item.ItemEntity;
@@ -31,11 +31,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import org.lwjgl.util.vector.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -44,14 +45,14 @@ import java.util.function.Function;
 /**
  * @author BluSunrize - 19.05.2017
  */
-public class ConveyorExtract extends ConveyorBasic
+public class ExtractConveyor extends BasicConveyor
 {
 	private Direction extractDirection;
 	private int transferCooldown = -1;
 	private int transferTickrate = 8;
 	private float extension = -1;
 
-	public ConveyorExtract(Direction conveyorDir)
+	public ExtractConveyor(Direction conveyorDir)
 	{
 		this.extractDirection = conveyorDir.getOpposite();
 	}
@@ -67,11 +68,6 @@ public class ConveyorExtract extends ConveyorBasic
 	{
 		return false;
 	}
-
-//	private static final TextureAtlasSprite texture_steel = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/storage_steel"));
-//	private static final TextureAtlasSprite texture_casing = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/wooden_device_turntable_bottom"));
-//	private static final TextureAtlasSprite texture_curtain = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/cloth_device_stripcurtain"));
-//	private static final TextureAtlasSprite texture_assembler = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/metal_multiblock_assembler"));
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -89,49 +85,49 @@ public class ConveyorExtract extends ConveyorBasic
 
 		Function<Direction, TextureAtlasSprite> getCasingSprite = enumFacing -> enumFacing.getAxis()==Axis.Z?texture_steel: texture_casing;
 
-		Function<Vector3f[], Vector3f[]> vertexTransformer = vertices -> {
+		Function<Vec3d[], Vec3d[]> vertexTransformer = vertices -> {
 			if(extend==0)
 				return vertices;
-			Vector3f[] ret = new Vector3f[vertices.length];
+			Vec3d[] ret = new Vec3d[vertices.length];
 			for(int i = 0; i < ret.length; i++)
-				ret[i] = new Vector3f(vertices[i].x, vertices[i].y, vertices[i].z-extend);
+				ret[i] = new Vec3d(vertices[i].x, vertices[i].y, vertices[i].z-extend);
 			return ret;
 		};
-		Function<Vector3f[], Vector3f[]> casingTransformer = vertices -> {
-			Vector3f[] ret = new Vector3f[vertices.length];
+		Function<Vec3d[], Vec3d[]> casingTransformer = vertices -> {
+			Vec3d[] ret = new Vec3d[vertices.length];
 			for(int i = 0; i < ret.length; i++)
-				ret[i] = new Vector3f(vertices[i].x, vertices[i].y-.25f, vertices[i].z-.625f-extend);
+				ret[i] = new Vec3d(vertices[i].x, vertices[i].y-.25f, vertices[i].z-.625f-extend);
 			return ret;
 		};
 
-		baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.0625f, .375f, .625f), new Vector3f(.1875f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
-		baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.8125f, .375f, .625f), new Vector3f(.9375f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
-		baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.1875f, .875f, .625f), new Vector3f(.8125f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
+		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.0625f, .375f, .625f), new Vec3d(.1875f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
+		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.8125f, .375f, .625f), new Vec3d(.9375f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
+		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.1875f, .875f, .625f), new Vec3d(.8125f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
 
 		if(tile!=null&&extend > 0)
 		{
-			TextureAtlasSprite tex_conveyor = ClientUtils.getSprite(isActive(tile)?ConveyorBasic.texture_on: ConveyorBasic.texture_off);
+			TextureAtlasSprite tex_conveyor = ClientUtils.getSprite(isActive(tile)?BasicConveyor.texture_on: BasicConveyor.texture_off);
 			Function<Direction, TextureAtlasSprite> getExtensionSprite = enumFacing -> enumFacing.getAxis()==Axis.Y?null: enumFacing.getAxis()==Axis.Z?texture_steel: texture_casing;
 
-			Vector3f[] vertices = {new Vector3f(.0625f, 0, -extend), new Vector3f(.0625f, 0, 0), new Vector3f(.9375f, 0, 0), new Vector3f(.9375f, 0, -extend)};
+			Vec3d[] vertices = {new Vec3d(.0625f, 0, -extend), new Vec3d(.0625f, 0, 0), new Vec3d(.9375f, 0, 0), new Vec3d(.9375f, 0, -extend)};
 			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), tex_conveyor, new double[]{15, extend*16, 1, 0}, colour, true));
-			for(Vector3f vec : vertices)
-				vec.setY(.125f);
+			for(int i = 0; i < vertices.length; i++)
+				vertices[i] = Utils.withCoordinate(vertices[i], Axis.Y, .125);
 			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_conveyor, new double[]{15, (1-extend)*16, 1, 16}, colour, false));
-			baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.0625f, .25f, .625f), new Vector3f(.9375f, .375f, .625f+extend), matrix, facing, casingTransformer, getExtensionSprite, colour));
+			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.0625f, .25f, .625f), new Vec3d(.9375f, .375f, .625f+extend), matrix, facing, casingTransformer, getExtensionSprite, colour));
 		}
 
 
-		Vector3f[] vertices = new Vector3f[]{new Vector3f(.8125f, .625f, .03125f), new Vector3f(.8125f, .125f, .03125f), new Vector3f(.1875f, .125f, .03125f), new Vector3f(.1875f, .625f, .03125f)};
+		Vec3d[] vertices = new Vec3d[]{new Vec3d(.8125f, .625f, .03125f), new Vec3d(.8125f, .125f, .03125f), new Vec3d(.1875f, .125f, .03125f), new Vec3d(.1875f, .625f, .03125f)};
 		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, facing), texture_assembler, new double[]{15.25, 13.25, 12.75, 15.25}, colour, false));
-		for(Vector3f vec : vertices)
-			vec.setZ(.0625f);
+		for(int i = 0; i < vertices.length; i++)
+			vertices[i] = Utils.withCoordinate(vertices[i], Axis.Z, .0625);
 		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), texture_assembler, new double[]{12.75, 13.25, 15.25, 15.25}, colour, true));
 
 		for(int i = 0; i < 5; i++)
 		{
 			float off = i*.125f;
-			baseModel.addAll(ClientUtils.createBakedBox(new Vector3f(.203125f+off, .1875f, .09375f), new Vector3f(.296875f+off, .625f, .125f), matrix, facing, vertexTransformer, (facing1) -> texture_curtain, colour));
+			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.203125f+off, .1875f, .09375f), new Vec3d(.296875f+off, .625f, .125f), matrix, facing, vertexTransformer, (facing1) -> texture_curtain, colour));
 		}
 		return baseModel;
 	}
@@ -164,10 +160,10 @@ public class ConveyorExtract extends ConveyorBasic
 		{
 			BlockState connected = world.getBlockState(neighbour);
 			TileEntity connectedTile = world.getTileEntity(neighbour);
-			if(connectedTile!=null&&connectedTile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite()))
-				if(connected.getBlockFaceShape(world, neighbour, this.extractDirection.getOpposite())!=BlockFaceShape.SOLID)
+			if(connectedTile!=null&&connectedTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite()).isPresent())
+				if(Block.doesSideFillSquare(connected.getShape(world, neighbour), this.extractDirection.getOpposite()))
 				{
-					AxisAlignedBB aabb = connected.getBoundingBox(world, neighbour);
+					AxisAlignedBB aabb = connected.getShape(world, neighbour).getBoundingBox();
 					switch(extractDirection)
 					{
 						case NORTH:
@@ -219,33 +215,35 @@ public class ConveyorExtract extends ConveyorBasic
 			{
 				this.transferCooldown--;
 			}
-			if(!isPowered(tile) && this.transferCooldown <= 0)
+			if(!isPowered(tile)&&this.transferCooldown <= 0)
 			{
 				World world = tile.getWorld();
 				BlockPos neighbour = tile.getPos().offset(this.extractDirection);
 				if(!world.isAirBlock(neighbour))
 				{
 					TileEntity neighbourTile = world.getTileEntity(neighbour);
-					if(neighbourTile!=null&&neighbourTile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite()))
-					{
-						IItemHandler itemHandler = neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite());
-						for(int i = 0; i < itemHandler.getSlots(); i++)
-						{
-							ItemStack extractItem = itemHandler.extractItem(i, 1, true);
-							if(!extractItem.isEmpty())
-							{
-								extractItem = itemHandler.extractItem(i, 1, false);
-								ItemEntity entity = new ItemEntity(world, tile.getPos().getX()+.5, tile.getPos().getY()+.1875, tile.getPos().getZ()+.5, extractItem);
-								entity.motionX = 0;
-								entity.motionY = 0;
-								entity.motionZ = 0;
-								world.spawnEntity(entity);
-								this.onItemDeployed(tile, entity, facing);
-								this.transferCooldown = this.transferTickrate;
-								return;
-							}
-						}
-					}
+					if(neighbourTile!=null)
+						neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite())
+								.ifPresent(itemHandler ->
+								{
+									for(int i = 0; i < itemHandler.getSlots(); i++)
+									{
+										ItemStack extractItem = itemHandler.extractItem(i, 1, true);
+										if(!extractItem.isEmpty())
+										{
+											extractItem = itemHandler.extractItem(i, 1, false);
+											ItemEntity entity = new ItemEntity(world,
+													tile.getPos().getX()+.5,
+													tile.getPos().getY()+.1875,
+													tile.getPos().getZ()+.5, extractItem);
+											entity.setMotion(Vec3d.ZERO);
+											world.addEntity(entity);
+											this.onItemDeployed(tile, entity, facing);
+											this.transferCooldown = this.transferTickrate;
+											return;
+										}
+									}
+								});
 				}
 			}
 		}

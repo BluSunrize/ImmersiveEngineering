@@ -239,7 +239,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 					user.world.playSound(null, user.posX, user.posY, user.posZ, IESounds.railgunFire, SoundCategory.PLAYERS, 1, .5f+(.5f*user.getRNG().nextFloat()));
 					this.extractEnergy(stack, energy, false);
 					if(!world.isRemote)
-						user.world.spawnEntity(shot);
+						user.world.addEntity(shot);
 
 					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 					if(shader!=null)

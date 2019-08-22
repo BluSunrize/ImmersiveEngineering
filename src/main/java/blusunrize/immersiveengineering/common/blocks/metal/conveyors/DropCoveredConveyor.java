@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2019
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -12,8 +12,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,21 +22,18 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * @author BluSunrize - 19.05.2017
+ * @author BluSunrize - 17.02.2019
  */
-public class ConveyorExtractCovered extends ConveyorExtract
+public class DropCoveredConveyor extends DropConveyor
 {
 	public ItemStack cover = ItemStack.EMPTY;
-
-	public ConveyorExtractCovered(Direction conveyorDir)
-	{
-		super(conveyorDir);
-	}
 
 	@Override
 	public void onEntityCollision(TileEntity tile, Entity entity, Direction facing)
@@ -59,7 +55,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
 	{
 		baseModel = super.modifyQuads(baseModel, tile, facing);
-		ConveyorCovered.addCoverToQuads(baseModel, tile, facing, () -> cover, ConveyorDirection.HORIZONTAL, new boolean[]{
+		CoveredConveyor.addCoverToQuads(baseModel, tile, facing, () -> cover, ConveyorDirection.HORIZONTAL, new boolean[]{
 				tile==null||this.renderWall(tile, facing, 0), tile==null||this.renderWall(tile, facing, 1)
 		});
 		return baseModel;
@@ -70,7 +66,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	{
 		String key = super.getModelCacheKey(tile, facing);
 		if(!cover.isEmpty())
-			key += "s"+cover.getItem().getRegistryName()+cover.getMetadata();
+			key += "s"+cover.getItem().getRegistryName();
 		return key;
 	}
 
@@ -80,7 +76,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	{
 		if(super.playerInteraction(tile, player, hand, heldItem, hitX, hitY, hitZ, side))
 			return true;
-		return ConveyorCovered.handleCoverInteraction(tile, player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
+		return CoveredConveyor.handleCoverInteraction(tile, player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
 	}
 
 	static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
@@ -96,7 +92,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	@Override
 	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
 	{
-		return Lists.newArrayList(Block.FULL_BLOCK_AABB);
+		return Lists.newArrayList(FULL_BLOCK);
 	}
 
 	@Override
@@ -104,7 +100,7 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	{
 		CompoundNBT nbt = super.writeConveyorNBT();
 		if(cover!=null)
-			nbt.put("cover", cover.writeToNBT(new CompoundNBT()));
+			nbt.put("cover", cover.write(new CompoundNBT()));
 		return nbt;
 	}
 
@@ -112,6 +108,6 @@ public class ConveyorExtractCovered extends ConveyorExtract
 	public void readConveyorNBT(CompoundNBT nbt)
 	{
 		super.readConveyorNBT(nbt);
-		cover = new ItemStack(nbt.getCompound("cover"));
+		cover = ItemStack.read(nbt.getCompound("cover"));
 	}
 }

@@ -88,7 +88,7 @@ public class SkylineHelper
 					player.fallDistance = 0;
 				}
 
-				player.world.spawnEntity(hook);
+				player.world.addEntity(hook);
 				SkyhookUserData data = Objects.requireNonNull(player.getCapability(SKYHOOK_USER_DATA, Direction.UP));
 				data.startRiding();
 				data.hook = hook;

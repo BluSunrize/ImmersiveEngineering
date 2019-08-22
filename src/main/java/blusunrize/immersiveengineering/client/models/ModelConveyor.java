@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -101,11 +102,11 @@ public class ModelConveyor extends BakedIEModel
 			boolean[] walls = conveyor!=null&&tile!=null?new boolean[]{conveyor.renderWall(tile, facing, 0), conveyor.renderWall(tile, facing, 1)}: new boolean[]{true, true};
 			TextureAtlasSprite tex_conveyor = MissingTextureSprite.func_217790_a();
 			TextureAtlasSprite tex_conveyor_colour = null;
-			int colourStripes = -1;
+			DyeColor colourStripes = null;
 			if(conveyor!=null)
 			{
 				tex_conveyor = ClientUtils.getSprite(tile!=null?(conveyor.isActive(tile)?conveyor.getActiveTexture(): conveyor.getInactiveTexture()): conveyor.getActiveTexture());
-				if((colourStripes = conveyor.getDyeColour()) >= 0)
+				if((colourStripes = conveyor.getDyeColour())!=null)
 					tex_conveyor_colour = ClientUtils.getSprite(conveyor.getColouredStripesTexture());
 			}
 			cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}, tex_conveyor_colour, colourStripes));
@@ -118,7 +119,7 @@ public class ModelConveyor extends BakedIEModel
 
 	public static List<BakedQuad> getBaseConveyor(Direction facing, float length, Matrix4 matrix, ConveyorDirection conDir,
 												  TextureAtlasSprite tex_conveyor, boolean[] walls, boolean[] corners,
-												  TextureAtlasSprite tex_conveyor_colour, int stripeColour)
+												  TextureAtlasSprite tex_conveyor_colour, DyeColor stripeColour)
 	{
 		List<BakedQuad> quads = new ArrayList<>();
 
@@ -127,7 +128,7 @@ public class ModelConveyor extends BakedIEModel
 		TextureAtlasSprite tex_casing1 = ClientUtils.getSprite(rl_casing[1]);
 		TextureAtlasSprite tex_casing2 = ClientUtils.getSprite(rl_casing[2]);
 		float[] colour = {1, 1, 1, 1};
-		float[] colourStripes = {(stripeColour >> 16&255)/255f, (stripeColour >> 8&255)/255f, (stripeColour&255)/255f, 1};
+		float[] colourStripes = stripeColour.getColorComponentValues();
 
 		/**
 		 * Bottom & Top
@@ -330,7 +331,7 @@ public class ModelConveyor extends BakedIEModel
 		if(walls[0])
 		{
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_casing2, new double[]{0, 15, 1, 1}, colour, false));
-			if(tex_conveyor_colour!=null&&stripeColour >= 0)
+			if(tex_conveyor_colour!=null&&stripeColour!=null)
 				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_conveyor_colour, new double[]{0, 15, 1, 1}, colourStripes, false));
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, false));
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, true));
@@ -346,7 +347,7 @@ public class ModelConveyor extends BakedIEModel
 		if(walls[1])
 		{
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_casing2, new double[]{15, 15, 16, 1}, colour, false));
-			if(tex_conveyor_colour!=null&&stripeColour >= 0)
+			if(tex_conveyor_colour!=null&&stripeColour!=null)
 				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_conveyor_colour, new double[]{15, 15, 16, 1}, colourStripes, false));
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, false));
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, true));

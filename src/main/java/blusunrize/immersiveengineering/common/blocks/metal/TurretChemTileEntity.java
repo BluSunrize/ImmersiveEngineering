@@ -107,7 +107,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 					if(ignite)
 						chem.setFire(10);
 					if(!world.isRemote)
-						world.spawnEntity(chem);
+						world.addEntity(chem);
 				}
 				if(tick%4==0)
 					if(ignite)

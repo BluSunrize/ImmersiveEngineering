@@ -286,7 +286,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 						entityareaeffectcloud.setPotion(potionType);
 						for(EffectInstance potioneffect : effects)
 							entityareaeffectcloud.addEffect(new EffectInstance(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
-						bullet.world.spawnEntity(entityareaeffectcloud);
+						bullet.world.addEntity(entityareaeffectcloud);
 					}
 					else if(bullet.bulletPotion.getItem() instanceof SplashPotionItem)
 					{
@@ -473,7 +473,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride
 				bullet.motionX = vecDir.x*.375;
 				bullet.motionY = vecDir.y*.375;
 				bullet.motionZ = vecDir.z*.375;
-				world.spawnEntity(bullet);
+				world.addEntity(bullet);
 			}
 		}
 

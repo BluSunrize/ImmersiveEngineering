@@ -14,14 +14,19 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants.NBT;
+
+import javax.annotation.Nullable;
 
 /**
  * @author BluSunrize - 20.08.2016
  */
-public class ConveyorBasic implements IConveyorBelt
+//TODO support covers in here, rather than having to make a covered and a non-covered version of every belt?
+public class BasicConveyor implements IConveyorBelt
 {
 	ConveyorDirection direction = ConveyorDirection.HORIZONTAL;
-	int dyeColour = -1;
+	@Nullable
+	DyeColor dyeColour = null;
 
 	@Override
 	public ConveyorDirection getConveyorDirection()
@@ -65,7 +70,7 @@ public class ConveyorBasic implements IConveyorBelt
 	}
 
 	@Override
-	public int getDyeColour()
+	public DyeColor getDyeColour()
 	{
 		return this.dyeColour;
 	}
@@ -75,7 +80,8 @@ public class ConveyorBasic implements IConveyorBelt
 	{
 		CompoundNBT nbt = new CompoundNBT();
 		nbt.putInt("direction", direction.ordinal());
-		nbt.putInt("dyeColour", dyeColour);
+		if(dyeColour!=null)
+			nbt.putInt("dyeColour", dyeColour.getId());
 		return nbt;
 	}
 
@@ -83,7 +89,11 @@ public class ConveyorBasic implements IConveyorBelt
 	public void readConveyorNBT(CompoundNBT nbt)
 	{
 		direction = ConveyorDirection.values()[nbt.getInt("direction")];
-		dyeColour = nbt.hasKey("dyeColour")?nbt.getInt("dyeColour"): -1;
+		if(nbt.contains("dyeColour", NBT.TAG_INT))
+			dyeColour = DyeColor.byId(nbt.getInt("dyeColour"));
+		else
+			dyeColour = null;
+
 	}
 
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor");

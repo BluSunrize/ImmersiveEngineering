@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 /**
  * @author BluSunrize - 20.08.2016
  */
-public class ConveyorDrop extends ConveyorBasic
+public class DropConveyor extends BasicConveyor
 {
 	@Override
 	public void handleInsertion(TileEntity tile, ItemEntity entity, Direction facing, ConveyorDirection conDir, double distX, double distZ)
@@ -44,7 +44,7 @@ public class ConveyorDrop extends ConveyorBasic
 				{
 					ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, Direction.UP);
 					if(ret.isEmpty())
-						entity.setDead();
+						entity.remove();
 					else if(ret.getCount() < stack.getCount())
 						entity.setItem(ret);
 				}
@@ -52,8 +52,7 @@ public class ConveyorDrop extends ConveyorBasic
 		}
 		else if(contact&&isEmptySpace(tile.getWorld(), posDown, inventoryTile))
 		{
-			entity.motionX = 0;
-			entity.motionZ = 0;
+			entity.setMotion(0, entity.getMotion().y, 0);
 			entity.setPosition(tile.getPos().getX()+.5, tile.getPos().getY()-.5, tile.getPos().getZ()+.5);
 			if(!(inventoryTile instanceof IConveyorTile))
 				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
@@ -70,7 +69,7 @@ public class ConveyorDrop extends ConveyorBasic
 			return true;
 		BlockState state = world.getBlockState(pos);
 		if(state.getBlock() instanceof TrapDoorBlock)
-			return state.getValue(TrapDoorBlock.OPEN).booleanValue();
+			return state.get(TrapDoorBlock.OPEN);
 		return false;
 	}
 

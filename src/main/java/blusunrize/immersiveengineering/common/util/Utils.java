@@ -948,6 +948,20 @@ public class Utils
 				vec3d.z <= pos.getZ()-offset.getZ()+1+eps;
 	}
 
+	public static Vec3d withCoordinate(Vec3d vertex, Axis axis, double value)
+	{
+		switch(axis)
+		{
+			case X:
+				return new Vec3d(value, vertex.y, vertex.z);
+			case Y:
+				return new Vec3d(vertex.x, value, vertex.z);
+			case Z:
+				return new Vec3d(vertex.x, vertex.y, value);
+		}
+		return vertex;
+	}
+
 	public static class InventoryCraftingFalse extends CraftingInventory
 	{
 		private static final Container nullContainer = new Container(ContainerType.CRAFTING, 0)

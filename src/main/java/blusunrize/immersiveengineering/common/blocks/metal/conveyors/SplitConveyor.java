@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -25,19 +25,23 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import org.lwjgl.util.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static blusunrize.immersiveengineering.common.util.Utils.withCoordinate;
+
 /**
  * @author BluSunrize - 20.08.2016
  */
-public class ConveyorSplit extends ConveyorBasic
+public class SplitConveyor extends BasicConveyor
 {
 	Direction outputFace = Direction.NORTH;
 
-	public ConveyorSplit(Direction startingOutputFace)
+	public SplitConveyor(Direction startingOutputFace)
 	{
 		this.outputFace = startingOutputFace.rotateY();
 	}
@@ -70,7 +74,7 @@ public class ConveyorSplit extends ConveyorBasic
 	public void handleInsertion(TileEntity tile, ItemEntity entity, Direction facing, ConveyorDirection conDir, double distX, double distZ)
 	{
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
-		if(entity.getEntityData().hasKey(nbtKey))
+		if(entity.getEntityData().contains(nbtKey, NBT.TAG_INT))
 		{
 			Direction redirect = Direction.values()[entity.getEntityData().getInt(nbtKey)];
 			BlockPos nextPos = tile.getPos().offset(redirect);
@@ -86,10 +90,10 @@ public class ConveyorSplit extends ConveyorBasic
 		if(!isActive(tile))
 			return;
 		Direction redirect = null;
-		if(entity!=null&&!entity.isDead)
+		if(entity!=null&&entity.isAlive())
 		{
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
-			if(entity.getEntityData().hasKey(nbtKey))
+			if(entity.getEntityData().contains(nbtKey, NBT.TAG_INT))
 				redirect = Direction.values()[entity.getEntityData().getInt(nbtKey)];
 			else
 			{
@@ -136,7 +140,7 @@ public class ConveyorSplit extends ConveyorBasic
 	{
 		Vec3d vec = super.getDirection(conveyorTile, entity, facing);
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(conveyorTile.getPos().hashCode());
-		if(!entity.getEntityData().hasKey(nbtKey))
+		if(!entity.getEntityData().contains(nbtKey, NBT.TAG_INT))
 			return vec;
 		Direction redirect = Direction.byIndex(entity.getEntityData().getInt(nbtKey));
 		BlockPos wallPos = conveyorTile.getPos().offset(facing);
@@ -190,22 +194,22 @@ public class ConveyorSplit extends ConveyorBasic
 		TextureAtlasSprite tex_casing0 = ClientUtils.getSprite(texture_casing);
 		Matrix4 matrix = new Matrix4(facing);
 		float[] colour = {1, 1, 1, 1};
-		Vector3f[] vertices = {new Vector3f(.0625f, .1875f, 0), new Vector3f(.0625f, .1875f, 1), new Vector3f(.9375f, .1875f, 1), new Vector3f(.9375f, .1875f, 0)};
+		Vec3d[] vertices = {new Vec3d(.0625f, .1875f, 0), new Vec3d(.0625f, .1875f, 1), new Vec3d(.9375f, .1875f, 1), new Vec3d(.9375f, .1875f, 0)};
 		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Direction.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
 
-		vertices = new Vector3f[]{new Vector3f(.0625f, 0, 0), new Vector3f(.0625f, .1875f, 0), new Vector3f(.9375f, .1875f, 0), new Vector3f(.9375f, 0, 0)};
+		vertices = new Vec3d[]{new Vec3d(.0625f, 0, 0), new Vec3d(.0625f, .1875f, 0), new Vec3d(.9375f, .1875f, 0), new Vec3d(.9375f, 0, 0)};
 		baseModel.set(15, ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));
 
-		vertices = new Vector3f[]{new Vector3f(.0625f, .125f, 0), new Vector3f(.0625f, .1875f, 0), new Vector3f(.9375f, .1875f, 0), new Vector3f(.9375f, .125f, 0)};
-		Vector3f[] vertices2 = new Vector3f[]{new Vector3f(.5f, .125f, 0), new Vector3f(.5f, .125f, .5f), new Vector3f(.5f, .1875f, .5f), new Vector3f(.5f, .1875f, 0)};
-		Vector3f[] vertices3 = new Vector3f[]{new Vector3f(.5f, .125f, 0), new Vector3f(.5f, .125f, .5f), new Vector3f(.5f, .1875f, .5f), new Vector3f(.5f, .1875f, 0)};
+		vertices = new Vec3d[]{new Vec3d(.0625f, .125f, 0), new Vec3d(.0625f, .1875f, 0), new Vec3d(.9375f, .1875f, 0), new Vec3d(.9375f, .125f, 0)};
+		Vec3d[] vertices2 = new Vec3d[]{new Vec3d(.5f, .125f, 0), new Vec3d(.5f, .125f, .5f), new Vec3d(.5f, .1875f, .5f), new Vec3d(.5f, .1875f, 0)};
+		Vec3d[] vertices3 = new Vec3d[]{new Vec3d(.5f, .125f, 0), new Vec3d(.5f, .125f, .5f), new Vec3d(.5f, .1875f, .5f), new Vec3d(.5f, .1875f, 0)};
 		for(int i = 0; i < 8; i++)
 		{
 			for(int iv = 0; iv < vertices.length; iv++)
 			{
-				vertices[iv].setZ((i+1)*.0625f);
-				vertices2[iv].setX(vertices2[iv].getX()+.0625f);
-				vertices3[iv].setX(vertices3[iv].getX()-.0625f);
+				vertices[iv] = withCoordinate(vertices[iv], Direction.Axis.Z, (i+1)*.0625f);
+				vertices2[iv] = vertices2[iv].add(.0625f, 0, 0);
+				vertices3[iv] = vertices3[iv].add(-.0625f, 0, 0);
 			}
 			double v = 16-i;
 			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing0, new double[]{1, v-1, 15, v}, colour, true));

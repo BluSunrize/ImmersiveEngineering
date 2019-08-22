@@ -85,7 +85,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 					BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
 					LightningBoltEntity entityLightningBolt = new LightningBoltEntity(world, pos.getX(), pos.getY(), pos.getZ(), true);
 					world.addWeatherEffect(entityLightningBolt);
-					world.spawnEntity(entityLightningBolt);
+					world.addEntity(entityLightningBolt);
 				}
 			}
 		}

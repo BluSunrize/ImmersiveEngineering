@@ -59,7 +59,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 		if(tileEntity instanceof PostTileEntity)
 		{
 			if(!((PostTileEntity)tileEntity).isDummy()&&!world.isRemote&&world.getGameRules().getBoolean("doTileDrops")&&!world.restoringBlockSnapshots)
-				world.spawnEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, new ItemStack(this, 1, this.getMetaFromState(state))));
+				world.addEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, new ItemStack(this, 1, this.getMetaFromState(state))));
 		}
 		super.breakBlock(world, pos, state);
 	}
@@ -193,7 +193,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 	//				((WoodenCrateTileEntity) te).writeInv(tag, true);
 	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.addEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//
 	//			if(te instanceof WoodenBarrelTileEntity)
@@ -203,7 +203,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 	//				((WoodenBarrelTileEntity) te).writeTank(tag, true);
 	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.addEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//		}
 	//	}
@@ -221,7 +221,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 	//				((WoodenCrateTileEntity) te).writeInv(tag, true);
 	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.addEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//
 	//			if(te instanceof WoodenBarrelTileEntity)
@@ -231,7 +231,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 	//				((WoodenBarrelTileEntity) te).writeTank(tag, true);
 	//				if(!tag.isEmpty())
 	//					stack.setTagCompound(tag);
-	//				world.spawnEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+	//				world.addEntity(new EntityItem(world, x+.5, y+.5, z+.5, stack));
 	//			}
 	//		}
 	//		super.onBlockExploded(world, x, y, z, explosion);
@@ -290,7 +290,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 	//				}
 	//			}
 	//			if(type==0 && !world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops") && !world.restoringBlockSnapshots)
-	//				world.spawnEntity(new EntityItem(world, x+.5,y+.5,z+.5, new ItemStack(this,1,0)));
+	//				world.addEntity(new EntityItem(world, x+.5,y+.5,z+.5, new ItemStack(this,1,0)));
 	//		}
 	//		if(tileEntity instanceof WatermillTileEntity)
 	//		{
@@ -337,7 +337,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 	//						entityitem.motionZ = Utils.RAND.nextGaussian()*.05;
 	//						if(stack.hasTag())
 	//							entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
-	//						world.spawnEntity(entityitem);
+	//						world.addEntity(entityitem);
 	//					}
 	//				}
 	//		}

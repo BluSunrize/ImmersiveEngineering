@@ -193,6 +193,7 @@ public class ConveyorHandler
 	/**
 	 * An interface for the external handling of conveyorbelts
 	 */
+	//TODO redesign the interface to make it either a singleton or obviously link each instance to a fixed TE
 	public interface IConveyorBelt
 	{
 		/**
@@ -260,9 +261,10 @@ public class ConveyorHandler
 		boolean setDyeColour(DyeColor colour);
 
 		/**
-		 * @return the dyed colour as a hex RGB
+		 * @return the dyed colour
 		 */
-		int getDyeColour();
+		@Nullable
+		DyeColor getDyeColour();
 
 		/**
 		 * when the player rightclicks the block, after direction changes or dye have been handled
@@ -454,6 +456,7 @@ public class ConveyorHandler
 
 		AxisAlignedBB conveyorBounds = new AxisAlignedBB(0, 0, 0, 1, .125f, 1);
 		AxisAlignedBB highConveyorBounds = new AxisAlignedBB(0, 0, 0, 1, 1.125f, 1);
+		AxisAlignedBB FULL_BLOCK = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 
 		default List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
 		{

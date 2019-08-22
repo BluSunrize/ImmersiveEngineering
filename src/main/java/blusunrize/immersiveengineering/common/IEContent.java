@@ -643,16 +643,16 @@ public class IEContent
 		}, (entity, iConveyorTile) -> {
 			entity.getEntityData().remove(Lib.MAGNET_PREVENT_NBT);
 		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extract"), ConveyorExtract.class, (tileEntity) -> new ConveyorExtract(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "droppercovered"), ConveyorDropCovered.class, (tileEntity) -> new ConveyorDropCovered());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "conveyor"), BasicConveyor.class, (tileEntity) -> new BasicConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), UncontrolledConveyor.class, (tileEntity) -> new UncontrolledConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "dropper"), DropConveyor.class, (tileEntity) -> new DropConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "vertical"), VerticalConveyor.class, (tileEntity) -> new VerticalConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "splitter"), SplitConveyor.class, (tileEntity) -> new SplitConveyor(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extract"), ExtractConveyor.class, (tileEntity) -> new ExtractConveyor(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "covered"), CoveredConveyor.class, (tileEntity) -> new CoveredConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "droppercovered"), DropCoveredConveyor.class, (tileEntity) -> new DropCoveredConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "verticalcovered"), VerticalCoveredConveyor.class, (tileEntity) -> new VerticalCoveredConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ExtractCoveredConveyor.class, (tileEntity) -> new ExtractCoveredConveyor(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
 		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
 
 		/*BULLETS*/

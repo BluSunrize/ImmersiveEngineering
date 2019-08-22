@@ -15,22 +15,21 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
-
-import static net.minecraft.block.state.BlockFaceShape.*;
 
 public class PostTileEntity extends IEBaseTileEntity implements IPostBlock, IHasDummyBlocks, IHasObjProperty, IBlockBounds, IHammerInteraction
 {
@@ -127,10 +126,19 @@ public class PostTileEntity extends IEBaseTileEntity implements IPostBlock, IHas
 			BlockState state = world.getBlockState(pos);
 			if(state.getMaterial().isReplaceable())
 				return false;
-			BlockFaceShape shape = state.getBlockFaceShape(world, pos, dir.getOpposite());
-			return shape==SOLID||shape==CENTER_SMALL||shape==CENTER_BIG||shape==CENTER;
+			VoxelShape shape = state.getShape(world, pos);
+			return shapeReachesBlockFace(shape, dir.getOpposite());
 		}
 		return false;
+	}
+
+	private boolean shapeReachesBlockFace(VoxelShape shape, Direction face)
+	{
+		//TODO is 1 and 0 correct? Or is that 1 pixel/0 pixels?
+		if(face.getAxisDirection()==AxisDirection.POSITIVE)
+			return shape.getEnd(face.getAxis())==1;
+		else
+			return shape.getStart(face.getAxis())==0;
 	}
 
 	@Override

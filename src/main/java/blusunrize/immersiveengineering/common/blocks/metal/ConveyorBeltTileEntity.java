@@ -10,18 +10,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorCovered;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorExtractCovered;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVerticalCovered;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -31,13 +25,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -50,7 +45,7 @@ import java.util.List;
 
 public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirectionalTile, IAdvancedCollisionBounds,
 		IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
-		ITickableTileEntity, IGeneralMultiblock, IFaceShape
+		ITickableTileEntity, IGeneralMultiblock
 {
 	public Direction facing = Direction.NORTH;
 	private final IConveyorBelt conveyorBeltSubtype;
@@ -79,7 +74,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		facing = Direction.byIndex(nbt.getInt("facing"));
-		if(nbt.hasKey("conveyorBeltSubtypeNBT"))
+		if(nbt.contains("conveyorBeltSubtypeNBT", NBT.TAG_COMPOUND))
 			conveyorBeltSubtype.readConveyorNBT(nbt.getCompound("conveyorBeltSubtypeNBT"));
 
 		if(descPacket&&world!=null)
@@ -255,27 +250,6 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 		return super.getCapability(cap, side);
 	}
 
-	@Override
-	public BlockFaceShape getFaceShape(Direction side)
-	{
-		IConveyorBelt subtype = this.getConveyorSubtype();
-		if(subtype==null)
-			return BlockFaceShape.UNDEFINED;
-		if(side==Direction.DOWN&&subtype.getConveyorDirection()==ConveyorDirection.HORIZONTAL)
-			return BlockFaceShape.SOLID;
-		if(subtype instanceof ConveyorVertical)
-		{
-			if(side==this.facing)
-				return BlockFaceShape.SOLID;
-			else if(side.getAxis()==Axis.Y)
-				return BlockFaceShape.UNDEFINED;
-		}
-		if(subtype instanceof ConveyorCovered||subtype instanceof ConveyorVerticalCovered||subtype instanceof ConveyorExtractCovered)
-			if(side.getAxis()!=facing.getAxis())
-				return BlockFaceShape.SOLID;
-		return BlockFaceShape.UNDEFINED;
-	}
-
 	public static class ConveyorInventoryHandler implements IItemHandlerModifiable
 	{
 		ConveyorBeltTileEntity conveyor;
@@ -303,10 +277,8 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 			if(!simulate)
 			{
 				ItemEntity entity = new ItemEntity(conveyor.getWorld(), conveyor.getPos().getX()+.5, conveyor.getPos().getY()+.1875, conveyor.getPos().getZ()+.5, stack.copy());
-				entity.motionX = 0;
-				entity.motionY = 0;
-				entity.motionZ = 0;
-				conveyor.getWorld().spawnEntity(entity);
+				entity.setMotion(Vec3d.ZERO);
+				conveyor.getWorld().addEntity(entity);
 				if(conveyor.conveyorBeltSubtype!=null)
 					conveyor.conveyorBeltSubtype.onItemDeployed(conveyor, entity, conveyor.facing);
 			}
