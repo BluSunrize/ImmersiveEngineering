@@ -19,6 +19,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public abstract class CapabilityReference<T>
@@ -47,7 +48,13 @@ public abstract class CapabilityReference<T>
 	}
 
 	@Nullable
-	public abstract T get();
+	public abstract T getNullable();
+
+	@Nonnull
+	public T get()
+	{
+		return Objects.requireNonNull(getNullable());
+	}
 
 	public abstract boolean isPresent();
 
@@ -69,7 +76,7 @@ public abstract class CapabilityReference<T>
 
 		@Nullable
 		@Override
-		public T get()
+		public T getNullable()
 		{
 			updateLazyOptional();
 			return currentCap.orElse(null);

@@ -18,9 +18,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -38,7 +38,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.LightType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -56,8 +55,8 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	public static TileEntityType<FloodlightTileEntity> TYPE;
 
 	public int energyStorage = 0;
-	private int energyDraw = IEConfig.MACHINES.floodlight_energyDraw;
-	private int maximumStorage = IEConfig.MACHINES.floodlight_maximumStorage;
+	private int energyDraw = IEConfig.MACHINES.floodlight_energyDraw.get();
+	private int maximumStorage = IEConfig.MACHINES.floodlight_maximumStorage.get();
 	public boolean active = false;
 	public boolean redstoneControlInverted = false;
 	public Direction facing = Direction.NORTH;
@@ -119,7 +118,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		{
 			this.markContainingBlockForUpdate(null);
 			updateFakeLights(true, active);
-			world.checkLightFor(LightType.BLOCK, getPos());
+			checkLight();
 		}
 		if(!active)
 		{
@@ -134,7 +133,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			{
 				BlockPos cc = it.next();
 				//				world.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
-				world.setBlockState(cc, IEContent.blockFakeLight.getDefaultState(), 2);
+				world.setBlockState(cc, Misc.fakeLight.getDefaultState(), 2);
 				TileEntity te = world.getTileEntity(cc);
 				if(te instanceof FakeLightTileEntity)
 					((FakeLightTileEntity)te).floodlightCoords = new int[]{getPos().getX(), getPos().getY(), getPos().getZ()};
@@ -146,7 +145,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			{
 				BlockPos cc = it.next();
 				if(Utils.getExistingTileEntity(world, cc) instanceof FakeLightTileEntity)
-					world.removeBlock(cc);
+					world.removeBlock(cc, false);
 				it.remove();
 			}
 		}
@@ -324,9 +323,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			computerOn = nbt.getBoolean("computerOn");
 		}
 		if(world!=null&&oldActive!=active)
-		{
-			world.checkLightFor(LightType.BLOCK, pos);
-		}
+			checkLight();
 	}
 
 	@Override
@@ -359,7 +356,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		if(id==1)
 		{
 			this.markContainingBlockForUpdate(null);
-			world.checkLightFor(LightType.BLOCK, getPos());
+			checkLight();
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);

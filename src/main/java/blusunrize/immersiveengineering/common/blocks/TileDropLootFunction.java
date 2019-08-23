@@ -34,7 +34,7 @@ public class TileDropLootFunction implements ILootFunction
 	{
 		TileEntity tile = lootContext.get(BLOCK_ENTITY);
 		if(tile instanceof ITileDrop)
-			return ((ITileDrop)tile).getTileDrop(lootContext.get(THIS_ENTITY), lootContext.get(BLOCK_STATE));
+			return ((ITileDrop)tile).getTileDrops(lootContext.get(THIS_ENTITY));
 		else
 			return ItemStack.EMPTY;
 	}

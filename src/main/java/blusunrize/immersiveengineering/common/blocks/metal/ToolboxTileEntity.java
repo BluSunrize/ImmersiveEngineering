@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.block.BlockState;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,8 +30,14 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
+
+import java.util.List;
 
 public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalTile, IBlockBounds, IIEInventory, IInteractionObjectIE, ITileDrop, IPlayerInteraction
 {
@@ -51,12 +57,12 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		facing = Direction.byIndex(nbt.getInt("facing"));
-		if(nbt.hasKey("name"))
+		if(nbt.contains("name", NBT.TAG_STRING))
 			this.name = ITextComponent.Serializer.fromJson(nbt.getString("name"));
-		if(nbt.hasKey("enchantments"))
-			this.enchantments = nbt.getList("enchantments", 10);
+		if(nbt.contains("enchantments", NBT.TAG_LIST))
+			this.enchantments = nbt.getList("enchantments", NBT.TAG_COMPOUND);
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), ItemToolbox.SLOT_COUNT);
+			inventory = Utils.readInventory(nbt.getList("inventory", NBT.TAG_COMPOUND), ItemToolbox.SLOT_COUNT);
 	}
 
 	@Override
@@ -79,9 +85,9 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 			if(!world.isRemote)
 			{
 				ItemEntity entityitem = new ItemEntity(world, getPos().getX()+.5, getPos().getY()+.5,
-						getPos().getZ()+.5, getTileDrop(player, world.getBlockState(getPos())));
+						getPos().getZ()+.5, getPickBlock(player, getBlockState(), new BlockRayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos, false)));
 				entityitem.setDefaultPickupDelay();
-				world.removeBlock(getPos());
+				world.removeBlock(getPos(), false);
 				world.addEntity(entityitem);
 			}
 			return true;
@@ -140,7 +146,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	}
 
 	@Override
-	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
+	public List<ItemStack> getTileDrops(Builder context)
 	{
 		ItemStack stack = new ItemStack(Tools.toolbox);
 		((ItemInternalStorage)Tools.toolbox).setContainedItems(stack, inventory);
@@ -148,7 +154,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 			stack.setDisplayName(this.name);
 		if(enchantments!=null)
 			stack.getOrCreateTag().put("ench", enchantments);
-		return stack;
+		return ImmutableList.of(stack);
 	}
 
 	@Override

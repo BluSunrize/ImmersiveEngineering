@@ -332,7 +332,7 @@ public class ImmersiveNetHandler
 			double dx = dropPos.getX()+.5;
 			double dy = dropPos.getY()+.5;
 			double dz = dropPos.getZ()+.5;
-			//if(world.getGameRules().getBoolean("doTileDrops"))
+			//if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 			//	world.addEntity(new EntityItem(world, dx, dy, dz, conn.cableType.getWireCoil(conn)));
 		}
 	}
@@ -361,7 +361,7 @@ public class ImmersiveNetHandler
 				double dx = node.getX()+.5+Math.signum(con.end.getX()-con.start.getX());
 				double dy = node.getY()+.5+Math.signum(con.end.getY()-con.start.getY());
 				double dz = node.getZ()+.5+Math.signum(con.end.getZ()-con.start.getZ());
-				//if(doDrops&&world.getGameRules().getBoolean("doTileDrops"))
+				//if(doDrops&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 				//	world.addEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
 			}
 		}
@@ -404,7 +404,7 @@ public class ImmersiveNetHandler
 				double dx = node.getX()+.5+Math.signum(con.end.getX()-con.start.getX());
 				double dy = node.getY()+.5+Math.signum(con.end.getY()-con.start.getY());
 				double dz = node.getZ()+.5+Math.signum(con.end.getZ()-con.start.getZ());
-				//if(world.getGameRules().getBoolean("doTileDrops"))
+				//if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 				//	world.addEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
 				ret = true;
 			}

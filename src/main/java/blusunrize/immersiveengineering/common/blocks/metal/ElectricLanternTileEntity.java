@@ -123,13 +123,6 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 		nbt.putBoolean("flipped", flipped);
 	}
 
-	private void checkLight()
-	{
-		world.getProfiler().startSection("queueCheckLight");
-		world.getChunkProvider().getLightManager().checkBlock(pos);
-		world.getProfiler().endSection();
-	}
-
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{

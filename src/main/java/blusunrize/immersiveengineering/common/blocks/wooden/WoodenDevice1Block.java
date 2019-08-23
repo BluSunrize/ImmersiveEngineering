@@ -58,7 +58,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity instanceof PostTileEntity)
 		{
-			if(!((PostTileEntity)tileEntity).isDummy()&&!world.isRemote&&world.getGameRules().getBoolean("doTileDrops")&&!world.restoringBlockSnapshots)
+			if(!((PostTileEntity)tileEntity).isDummy()&&!world.isRemote&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)&&!world.restoringBlockSnapshots)
 				world.addEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, new ItemStack(this, 1, this.getMetaFromState(state))));
 		}
 		super.breakBlock(world, pos, state);
@@ -289,7 +289,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 	//					}
 	//				}
 	//			}
-	//			if(type==0 && !world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops") && !world.restoringBlockSnapshots)
+	//			if(type==0 && !world.isRemote && world.getGameRules().getGameRuleBooleanValue(GameRules.DO_TILE_DROPS) && !world.restoringBlockSnapshots)
 	//				world.addEntity(new EntityItem(world, x+.5,y+.5,z+.5, new ItemStack(this,1,0)));
 	//		}
 	//		if(tileEntity instanceof WatermillTileEntity)
@@ -322,7 +322,7 @@ public class WoodenDevice1Block extends IETileProviderBlock<BlockTypes_WoodenDev
 	//
 	//			if(world.getTileEntity(xx, y, zz) instanceof ModWorkbenchTileEntity)
 	//				world.removeBlock(xx, y, zz);
-	//			if(!world.isRemote && !tile.dummy && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+	//			if(!world.isRemote && !tile.dummy && world.getGameRules().getGameRuleBooleanValue(GameRules.DO_TILE_DROPS))
 	//				for(int i=0; i<tile.getSizeInventory(); i++)
 	//				{
 	//					ItemStack stack = tile.getStackInSlot(i);

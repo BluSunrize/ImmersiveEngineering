@@ -87,11 +87,11 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	{
 		super.readCustomNBT(nbt, descPacket);
 		facing = Direction.byIndex(nbt.getInt("facing"));
-		if(nbt.hasKey("leftType"))
+		if(nbt.contains("leftType"))
 			leftType = ApiUtils.getWireTypeFromNBT(nbt, "leftType");
 		else
 			leftType = null;
-		if(nbt.hasKey("rightType"))
+		if(nbt.contains("rightType"))
 			rightType = ApiUtils.getWireTypeFromNBT(nbt, "rightType");
 		else
 			rightType = null;
@@ -360,7 +360,7 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 		if(onPost)
 			return;
 		for(int i = 0; i <= 2; i++)
-			world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0));
+			world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0), false);
 	}
 
 	@Override
@@ -409,7 +409,7 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
-		return box.grow(.002).contains(mop.hitVec);
+		return box.grow(.002).contains(mop.getHitVec());
 	}
 
 	@Override

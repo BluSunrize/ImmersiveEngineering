@@ -87,7 +87,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			{
 				int out = Math.min(40, tank.getFluidAmount());
 				CapabilityReference<IFluidHandler> capRef = neighbors.get(side);
-				IFluidHandler handler = capRef.get();
+				IFluidHandler handler = capRef.getNullable();
 				if(handler!=null)
 				{
 					int accepted = handler.fill(Utils.copyFluidStackWithAmount(tank.getFluid(), out, false), false);

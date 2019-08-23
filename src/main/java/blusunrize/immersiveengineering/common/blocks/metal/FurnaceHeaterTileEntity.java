@@ -31,7 +31,8 @@ import javax.annotation.Nonnull;
 public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IActiveState, IDirectionalTile
 {
 	public static TileEntityType<FurnaceHeaterTileEntity> TYPE;
-	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256, Math.max(IEConfig.MACHINES.heater_consumption, IEConfig.MACHINES.heater_speedupConsumption)));
+	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256,
+			Math.max(IEConfig.MACHINES.heater_consumption.get(), IEConfig.MACHINES.heater_speedupConsumption.get())));
 	//public int[] sockets = new int[6];
 	public boolean active = false;
 	public Direction facing = Direction.NORTH;

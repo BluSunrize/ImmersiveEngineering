@@ -31,6 +31,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -61,7 +62,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	@Override
 	protected boolean canActivate()
 	{
-		return this.energyStorage.getEnergyStored() >= IEConfig.MACHINES.turret_gun_consumption&&!inventory.get(0).isEmpty();
+		return this.energyStorage.getEnergyStored() >= IEConfig.MACHINES.turret_gun_consumption.get()&&!inventory.get(0).isEmpty();
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	@Override
 	protected void activate()
 	{
-		int energy = IEConfig.MACHINES.turret_gun_consumption;
+		int energy = IEConfig.MACHINES.turret_gun_consumption.get();
 		ItemStack bulletStack = inventory.get(0);
 		if(!bulletStack.isEmpty()&&this.energyStorage.extractEnergy(energy, true)==energy)
 		{
@@ -128,9 +129,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 							Vec3d vCasing = vec.rotateYaw(-1.57f);
 							world.addParticle(RedstoneParticleData.REDSTONE_DUST, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0, 0, 0);
 							ItemEntity entCasing = new ItemEntity(world, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, casing.copy());
-							entCasing.motionX = 0;
-							entCasing.motionY = -0.01;
-							entCasing.motionZ = 0;
+							entCasing.setMotion(0, -.01, 0);
 							world.addEntity(entCasing);
 						}
 						else
@@ -154,7 +153,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	{
 		CompoundNBT tag = new CompoundNBT();
 		tag.putBoolean("cycle", true);
-		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)),
+		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> getWorld().getChunkAt(pos)),
 				new MessageTileSync(this, tag));
 	}
 
@@ -162,9 +161,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	{
 		Vec3d gunPos = getGunPosition();
 		RevolvershotEntity bullet = new RevolvershotEntity(world, gunPos.x+vecDir.x, gunPos.y+vecDir.y, gunPos.z+vecDir.z, 0, 0, 0, type);
-		bullet.motionX = vecDir.x;
-		bullet.motionY = vecDir.y;
-		bullet.motionZ = vecDir.z;
+		bullet.setMotion(vecDir);
 		return bullet;
 	}
 
@@ -191,7 +188,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	@Override
 	public void receiveMessageFromServer(CompoundNBT message)
 	{
-		if(message.hasKey("cycle"))
+		if(message.contains("cycle"))
 			cycleRender = 5;
 	}
 
@@ -199,7 +196,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
 		super.receiveMessageFromClient(message);
-		if(message.hasKey("expelCasings"))
+		if(message.contains("expelCasings", NBT.TAG_BYTE))
 			expelCasings = message.getBoolean("expelCasings");
 	}
 

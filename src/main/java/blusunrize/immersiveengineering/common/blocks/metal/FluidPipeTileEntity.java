@@ -11,9 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.AdvancedAABB;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -31,6 +32,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -50,6 +52,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.Collections.newSetFromMap;
 
@@ -70,14 +73,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public static void initCovers()
 	{
-		final ArrayList<ItemStack> scaffolds = Lists.newArrayList(
-				new ItemStack(IEContent.blockWoodenScaffolding, 1),
-				new ItemStack(IEContent.blockSteelScaffolding0, 1),
-				new ItemStack(IEContent.blockSteelScaffolding1, 1),
-				new ItemStack(IEContent.blockSteelScaffolding2, 1),
-				new ItemStack(IEContent.blockAluScaffolding0, 1),
-				new ItemStack(IEContent.blockAluScaffolding1, 1),
-				new ItemStack(IEContent.blockAluScaffolding2, 1));
+		final ArrayList<ItemStack> scaffolds = Lists.newArrayList(new ItemStack(WoodenDecoration.treatedScaffolding));
+		Stream.concat(
+				MetalDecoration.aluScaffolding.values().stream(),
+				MetalDecoration.steelScaffolding.values().stream()
+		)
+				.map(ItemStack::new)
+				.forEach(scaffolds::add);
 		Function<ItemStack, Boolean> defaultMatch = (input) -> {
 			if(input.isEmpty())
 				return false;
@@ -193,27 +195,24 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 				}
 			if(!climb)
 				return;
-			float f5 = 0.15F;
-			if(entity.motionX < -f5)
-				entity.motionX = -f5;
-			if(entity.motionX > f5)
-				entity.motionX = f5;
-			if(entity.motionZ < -f5)
-				entity.motionZ = -f5;
-			if(entity.motionZ > f5)
-				entity.motionZ = f5;
+			double motionX = entity.getMotion().x;
+			double motionY = entity.getMotion().y;
+			double motionZ = entity.getMotion().z;
+			double maxSpeed = 0.15;
+			motionX = MathHelper.clamp(motionX, -maxSpeed, maxSpeed);
+			motionY = MathHelper.clamp(motionY, -maxSpeed, maxSpeed);
+			motionZ = MathHelper.clamp(motionZ, -maxSpeed, maxSpeed);
 
 			entity.fallDistance = 0f;
-			if(entity.motionY < -.15)
-				entity.motionY = -0.15D;
 
-			if(entity.motionY < 0&&entity instanceof PlayerEntity&&entity.isSneaking())
+			if(motionY < 0&&entity instanceof PlayerEntity&&entity.isSneaking())
 			{
-				entity.motionY = .05;
+				motionY = .05;
 				return;
 			}
 			if(entity.collidedHorizontally)
-				entity.motionY = .2;
+				motionY = .2;
+			entity.setMotion(motionX, motionY, motionZ);
 		}
 	}
 
@@ -416,7 +415,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 		private int getTranferrableAmount(FluidStack resource, DirectionalFluidOutput output)
 		{
-			return (resource.tag!=null&&resource.tag.hasKey("pressurized"))||
+			return (resource.tag!=null&&resource.tag.contains("pressurized"))||
 					pipe.canOutputPressurized(output.containingTile, false)
 					?1000: 50;
 		}
@@ -459,7 +458,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		connections &= ~mask;
 		if(sideConfig[i]==0&&neighbors.get(dir).isPresent())
 		{
-			IFluidHandler handler = neighbors.get(dir).get();
+			IFluidHandler handler = neighbors.get(dir).getNullable();
 			if(handler!=null)
 			{
 				tankInfo = handler.getTankProperties();
@@ -480,7 +479,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			mask >>= 1;
 			if(neighbors.get(dir).isPresent())
 			{
-				IFluidHandler handler = neighbors.get(dir).get();
+				IFluidHandler handler = neighbors.get(dir).getNullable();
 				if(handler!=null)
 				{
 					tankInfo = handler.getTankProperties();
@@ -620,7 +619,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		if(box instanceof AdvancedAABB)
 		{
-			if(box.grow(.002).contains(mop.hitVec))
+			if(box.grow(.002).contains(mop.getHitVec()))
 			{
 				AxisAlignedBB changedBox = ((AdvancedAABB)box).fd!=null?box.grow(((AdvancedAABB)box).fd.getXOffset()!=0?0: .03125, ((AdvancedAABB)box).fd.getYOffset()!=0?0: .03125, ((AdvancedAABB)box).fd.getZOffset()!=0?0: .03125): box;
 				list.add(changedBox);
@@ -956,7 +955,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		if(heldItem.isEmpty()&&player.isSneaking()&&!pipeCover.isEmpty())
 		{
-			if(!world.isRemote&&world.getGameRules().getBoolean("doTileDrops"))
+			if(!world.isRemote&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 			{
 				ItemEntity entityitem = player.dropItem(pipeCover.copy(), false);
 				if(entityitem!=null)
@@ -974,7 +973,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 				{
 					if(!ItemStack.areItemsEqual(pipeCover, heldItem))
 					{
-						if(!world.isRemote&&!pipeCover.isEmpty()&&world.getGameRules().getBoolean("doTileDrops"))
+						if(!world.isRemote&&!pipeCover.isEmpty()&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 						{
 							ItemEntity entityitem = player.dropItem(pipeCover.copy(), false);
 							if(entityitem!=null)

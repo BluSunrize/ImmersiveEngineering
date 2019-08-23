@@ -76,7 +76,7 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 				if(temp0 > -1&&temp1 > -1)
 				{
 					int diff = Math.abs(temp0-temp1);
-					energy += (int)(Math.sqrt(diff)/2*IEConfig.MACHINES.thermoelectric_output);
+					energy += (int)(Math.sqrt(diff)/2*IEConfig.MACHINES.thermoelectric_output.get());
 				}
 			}
 		this.energyOutput = energy==0?-1: energy;

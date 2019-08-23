@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import net.minecraft.block.BlockState;
@@ -205,8 +206,9 @@ public abstract class IEBaseTileEntity extends TileEntity
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
+		double increase = IEConfig.GENERAL.increasedTileRenderdistance.get();
 		return super.getMaxRenderDistanceSquared()*
-				IEConfig.increasedTileRenderdistance*IEConfig.increasedTileRenderdistance;
+				increase*increase;
 	}
 
 	@Override
@@ -223,5 +225,17 @@ public abstract class IEBaseTileEntity extends TileEntity
 	public World getWorld()
 	{
 		return Objects.requireNonNull(super.getWorld());
+	}
+
+	protected void checkLight()
+	{
+		checkLight(pos);
+	}
+
+	protected void checkLight(BlockPos pos)
+	{
+		getWorld().getProfiler().startSection("queueCheckLight");
+		getWorld().getChunkProvider().getLightManager().checkBlock(pos);
+		getWorld().getProfiler().endSection();
 	}
 }
