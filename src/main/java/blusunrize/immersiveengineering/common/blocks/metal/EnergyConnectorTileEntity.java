@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
@@ -72,7 +72,6 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	public Direction facing = Direction.DOWN;
 	public int currentTickToMachine = 0;
 	public int currentTickToNet = 0;
-	public static int[] connectorInputValues = Config.IEConfig.Machines.wireConnectorInput;
 	private FluxStorage storageToNet = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 	private FluxStorage storageToMachine = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 
@@ -281,12 +280,12 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 
 	public int getMaxInput()
 	{
-		return connectorInputValues[getVoltageIndex()];
+		return IEConfig.MACHINES.wireConnectorInput.get().get(getVoltageIndex());
 	}
 
 	public int getMaxOutput()
 	{
-		return connectorInputValues[getVoltageIndex()];
+		return IEConfig.MACHINES.wireConnectorInput.get().get(getVoltageIndex());
 	}
 
 	private static final Object2FloatMap<Pair<String, Boolean>> LENGTH = new Object2FloatAVLTreeMap<>();

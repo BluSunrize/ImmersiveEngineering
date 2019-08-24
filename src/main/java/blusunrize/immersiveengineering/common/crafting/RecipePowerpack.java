@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -122,10 +121,10 @@ public class RecipePowerpack implements IRecipe
 		if(stack.getItem()==IEContent.itemPowerpack)
 			return false;
 		String regName = stack.getItem().getRegistryName().toString();
-		for(String s : Config.IEConfig.Tools.powerpack_whitelist)
+		for(String s : IEConfig.Tools.powerpack_whitelist)
 			if(regName.equals(s))
 				return true;
-		for(String s : Config.IEConfig.Tools.powerpack_blacklist)
+		for(String s : IEConfig.Tools.powerpack_blacklist)
 			if(regName.equals(s))
 				return false;
 		return true;

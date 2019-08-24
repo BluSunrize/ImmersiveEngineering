@@ -37,6 +37,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -687,7 +688,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		if(recipe!=null)
 		{
 			MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, tag.getIntArray("process_inputSlots"));
-			if(tag.hasKey("process_inputAmounts"))
+			if(tag.contains("process_inputAmounts", NBT.TAG_INT_ARRAY))
 				process.setInputAmounts(tag.getIntArray("process_inputAmounts"));
 			return process;
 		}

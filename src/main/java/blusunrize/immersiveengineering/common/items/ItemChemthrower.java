@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
@@ -167,7 +167,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 					if(ignite)
 						chem.setFire(10);
 					if(!player.world.isRemote)
-						player.world.spawnEntity(chem);
+						player.world.addEntity(chem);
 				}
 				if(count%4==0)
 				{

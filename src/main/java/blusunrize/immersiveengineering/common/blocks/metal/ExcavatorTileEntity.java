@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
@@ -26,9 +26,9 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -41,6 +41,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.ServerWorld;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
@@ -139,7 +142,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 				{
 					ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(world, wheelPos.getX() >> 4, wheelPos.getZ() >> 4);
 
-					int consumed = IEConfig.Machines.excavator_consumption;
+					int consumed = IEConfig.MACHINES.excavator_consumption.get();
 					int extracted = energyStorage.extractEnergy(consumed, true);
 					if(extracted >= consumed)
 					{
@@ -165,7 +168,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 									ItemStack ore = mineral.getRandomOre(Utils.RAND);
 									float configChance = Utils.RAND.nextFloat();
 									float failChance = Utils.RAND.nextFloat();
-									if(!ore.isEmpty()&&configChance > IEConfig.Machines.excavator_fail_chance&&failChance > mineral.failChance)
+									if(!ore.isEmpty()&&configChance > IEConfig.MACHINES.excavator_fail_chance.get()&&failChance > mineral.failChance)
 									{
 										wheel.digStacks.set(targetDown, ore);
 										wheel.markDirty();
@@ -191,7 +194,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 								packet.putInt("empty", target);
 							}
 							if(!packet.isEmpty())
-								ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos)),
+								ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)),
 										new MessageTileSync(wheel, packet));
 						}
 					}
@@ -269,33 +272,27 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 			if(block.removedByPlayer(blockstate, world, pos, fakePlayer, true, blockstate.getFluidState()))
 			{
 				block.onPlayerDestroy(world, pos, blockstate);
-				if(block.canSilkHarvest(blockstate, world, pos, fakePlayer))
-				{
-					NonNullList<ItemStack> items = NonNullList.create();
-					Item bitem = Item.getItemFromBlock(block);
-					if(bitem==Items.AIR)
-						return ItemStack.EMPTY;
-					ItemStack itemstack = new ItemStack(bitem, 1);
-					if(!itemstack.isEmpty())
-						items.add(itemstack);
 
-					ForgeEventFactory.fireBlockHarvesting(items, world, pos, blockstate, 0, 1.0f, true, fakePlayer);
+				ItemStack tool = new ItemStack(Items.IRON_PICKAXE);
+				tool.addEnchantment(Enchantments.SILK_TOUCH, 1);
+				LootContext.Builder dropContext = new Builder((ServerWorld)world)
+						.withNullableParameter(LootParameters.POSITION, pos)
+						.withNullableParameter(LootParameters.TOOL, tool);
 
-					for(int i = 0; i < items.size(); i++)
-						if(i!=0)
-						{
-							ItemEntity ei = new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, items.get(i).copy());
-							this.world.spawnEntity(ei);
-						}
-					world.playEvent(2001, pos, Block.getStateId(blockstate));
-					if(items.size() > 0)
-						return items.get(0);
-				}
-				else
-				{
-					block.harvestBlock(world, fakePlayer, pos, blockstate, world.getTileEntity(pos), ItemStack.EMPTY);
-					world.playEvent(2001, pos, Block.getStateId(blockstate));
-				}
+				List<ItemStack> itemsNullable = blockstate.getDrops(dropContext);
+				NonNullList<ItemStack> items = NonNullList.create();
+				items.addAll(itemsNullable);
+				ForgeEventFactory.fireBlockHarvesting(items, world, pos, blockstate, 0, 1.0f, true, fakePlayer);
+
+				for(int i = 0; i < items.size(); i++)
+					if(i!=0)
+					{
+						ItemEntity ei = new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, items.get(i).copy());
+						this.world.addEntity(ei);
+					}
+				world.playEvent(2001, pos, Block.getStateId(blockstate));
+				if(items.size() > 0)
+					return items.get(0);
 			}
 		}
 		return ItemStack.EMPTY;

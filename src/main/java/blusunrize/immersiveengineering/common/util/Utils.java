@@ -65,6 +65,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.ILootFunction;
@@ -702,7 +703,7 @@ public class Utils
 
 	public static ItemStack insertStackIntoInventory(CapabilityReference<IItemHandler> ref, ItemStack stack, boolean simulate)
 	{
-		IItemHandler handler = ref.get();
+		IItemHandler handler = ref.getNullable();
 		if(handler!=null&&!stack.isEmpty())
 			return ItemHandlerHelper.insertItem(handler, stack.copy(), simulate);
 		else
@@ -946,6 +947,20 @@ public class Utils
 				vec3d.y <= pos.getY()-offset.getY()+1+eps&&
 				vec3d.z >= pos.getZ()-offset.getZ()-eps&&
 				vec3d.z <= pos.getZ()-offset.getZ()+1+eps;
+	}
+
+	public static Vec3d withCoordinate(Vec3d vertex, Axis axis, double value)
+	{
+		switch(axis)
+		{
+			case X:
+				return new Vec3d(value, vertex.y, vertex.z);
+			case Y:
+				return new Vec3d(vertex.x, value, vertex.z);
+			case Z:
+				return new Vec3d(vertex.x, vertex.y, value);
+		}
+		return vertex;
 	}
 
 	public static class InventoryCraftingFalse extends CraftingInventory
@@ -1398,11 +1413,19 @@ public class Utils
 	*/
 
 	//TODO getDrops wants a world now, how do we deal with that?
-	public static NonNullList<ItemStack> getDrops(BlockState state)
+	public static NonNullList<ItemStack> getDrops(BlockState state, Builder builder)
 	{
 		IBlockReader w = getSingleBlockWorldAccess(state);
 		NonNullList<ItemStack> ret = NonNullList.create();
 		state.getBlock().getDrops(ret, w, BlockPos.ZERO, state, 0);
+		return ret;
+	}
+
+	//TODO getDrops wants a world now, how do we deal with that?
+	public static ItemStack getPickBlock(BlockState state, RayTraceResult rtr, PlayerEntity player)
+	{
+		IBlockReader w = getSingleBlockWorldAccess(state);
+		state.getBlock().getPickBlock(state, rtr, w, BlockPos.ZERO, player);
 		return ret;
 	}
 

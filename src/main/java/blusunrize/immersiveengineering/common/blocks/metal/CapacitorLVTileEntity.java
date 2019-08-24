@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,11 +32,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.storage.loot.LootContext.Builder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
+import java.util.List;
 
 public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IBlockOverlayText,
 		IConfigurableSides, IComparatorOverride, ITileDrop
@@ -132,17 +134,17 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 
 	public int getMaxStorage()
 	{
-		return IEConfig.Machines.capacitorLV_storage;
+		return IEConfig.MACHINES.capacitorLvStorage.get();
 	}
 
 	public int getMaxInput()
 	{
-		return IEConfig.Machines.capacitorLV_input;
+		return IEConfig.MACHINES.capacitorLvInput.get();
 	}
 
 	public int getMaxOutput()
 	{
-		return IEConfig.Machines.capacitorLV_output;
+		return IEConfig.MACHINES.capacitorLvOutput.get();
 	}
 
 	@Override
@@ -190,15 +192,16 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer&&IEConfig.colourblindSupport)
+		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&mop instanceof BlockRayTraceResult)
 		{
-			SideConfig i = sideConfig.get(mop.sideHit);
-			SideConfig j = sideConfig.get(mop.sideHit.getOpposite());
+			BlockRayTraceResult bmop = (BlockRayTraceResult)mop;
+			SideConfig here = sideConfig.get(bmop.getFace());
+			SideConfig opposite = sideConfig.get(bmop.getFace().getOpposite());
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+i),
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+here),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+j)
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+opposite)
 			};
 		}
 		return null;
@@ -217,7 +220,7 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
-	public ItemStack getTileDrop(@Nullable PlayerEntity player, BlockState state)
+	public List<ItemStack> getTileDrops(Builder context)
 	{
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		writeCustomNBT(stack.getOrCreateTag(), false);

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
@@ -275,7 +275,7 @@ public class VillageEngineersHouse extends Village
 		e.setDisplayedItem(stack);
 		if(e.onValidSurface()&&world.getEntitiesWithinAABB(HangingEntity.class, new AxisAlignedBB(i1-.125, j1, k1-.125, i1+1.125, j1+1, k1+1.125)).isEmpty())
 			if(!world.isRemote)
-				world.spawnEntity(e);
+				world.addEntity(e);
 	}
 
 	@Override

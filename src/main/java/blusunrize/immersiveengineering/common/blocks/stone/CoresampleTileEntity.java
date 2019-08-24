@@ -111,7 +111,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IDirection
 				ItemEntity entityitem = new ItemEntity(world, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, world.getBlockState(getPos())));
 				entityitem.setDefaultPickupDelay();
 				world.removeBlock(getPos());
-				world.spawnEntity(entityitem);
+				world.addEntity(entityitem);
 			}
 			return true;
 		}

@@ -28,7 +28,6 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -366,8 +365,8 @@ public class IEContent
 		itemWireCoil = new ItemWireCoil();
 		WireType.ieWireCoil = itemWireCoil;
 		itemSeeds = new ItemIESeed(blockCrop, "hemp");
-		if(Config.IEConfig.hempSeedWeight > 0)
-			MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), Config.IEConfig.hempSeedWeight);
+		if(IEConfig.hempSeedWeight > 0)
+			MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), IEConfig.hempSeedWeight);
 		itemDrill = new ItemDrill();
 		itemDrillhead = new ItemDrillhead();
 		itemJerrycan = new ItemJerrycan();
@@ -550,9 +549,9 @@ public class IEContent
 		BelljarHandler.init();
 
 		/*EXCAVATOR*/
-		ExcavatorHandler.mineralVeinCapacity = IEConfig.Machines.excavator_depletion;
-		ExcavatorHandler.mineralChance = IEConfig.Machines.excavator_chance;
-		ExcavatorHandler.defaultDimensionBlacklist = IEConfig.Machines.excavator_dimBlacklist;
+		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion;
+		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance;
+		ExcavatorHandler.defaultDimensionBlacklist = IEConfig.MACHINES.excavator_dimBlacklist;
 		String sulfur = OreDictionary.doesOreNameExist("oreSulfur")?"oreSulfur": "dustSulfur";
 		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron", "oreNickel", "oreTin", "denseoreIron"}, new float[]{.5f, .25f, .20f, .05f});
 		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron", "oreGold"}, new float[]{.85f, .15f});
@@ -643,16 +642,16 @@ public class IEContent
 		}, (entity, iConveyorTile) -> {
 			entity.getEntityData().remove(Lib.MAGNET_PREVENT_NBT);
 		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), ConveyorUncontrolled.class, (tileEntity) -> new ConveyorUncontrolled());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extract"), ConveyorExtract.class, (tileEntity) -> new ConveyorExtract(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "covered"), ConveyorCovered.class, (tileEntity) -> new ConveyorCovered());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "droppercovered"), ConveyorDropCovered.class, (tileEntity) -> new ConveyorDropCovered());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
+		ConveyorHandler.registerConveyorHandler(BasicConveyor.NAME, BasicConveyor.class, (tileEntity) -> new BasicConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), UncontrolledConveyor.class, (tileEntity) -> new UncontrolledConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "dropper"), DropConveyor.class, (tileEntity) -> new DropConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "vertical"), VerticalConveyor.class, (tileEntity) -> new VerticalConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "splitter"), SplitConveyor.class, (tileEntity) -> new SplitConveyor(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extract"), ExtractConveyor.class, (tileEntity) -> new ExtractConveyor(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "covered"), CoveredConveyor.class, (tileEntity) -> new CoveredConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "droppercovered"), DropCoveredConveyor.class, (tileEntity) -> new DropCoveredConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "verticalcovered"), VerticalCoveredConveyor.class, (tileEntity) -> new VerticalCoveredConveyor());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ExtractCoveredConveyor.class, (tileEntity) -> new ExtractCoveredConveyor(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
 		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
 
 		/*BULLETS*/
@@ -732,7 +731,7 @@ public class IEContent
 	{
 
 		/*ARC FURNACE RECYCLING*/
-		if(IEConfig.Machines.arcfurnace_recycle)
+		if(IEConfig.MACHINES.arcfurnace_recycle)
 		{
 			arcRecycleThread = new ArcRecyclingThreadHandler();
 			arcRecycleThread.start();
@@ -931,8 +930,8 @@ public class IEContent
 		RailgunHandler.registerProjectileProperties(new IngredientStack("stickSteel"), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
 		RailgunHandler.registerProjectileProperties(new ItemStack(itemGraphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
 
-		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.Machines.heater_consumption;
-		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.Machines.heater_speedupConsumption;
+		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption;
+		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption;
 		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
 
 		BelljarHandler.DefaultPlantHandler hempBelljarHandler = new BelljarHandler.DefaultPlantHandler()

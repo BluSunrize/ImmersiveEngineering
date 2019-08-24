@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -42,7 +42,7 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 	{
 		if(side!=this.facing.getOpposite())
 			return;
-		int output = (int)(IEConfig.Machines.dynamo_output*rotation);
+		int output = (int)(IEConfig.MACHINES.dynamo_output.get()*rotation);
 		for(Direction fd : Direction.VALUES)
 		{
 			BlockPos outputPos = getPos().offset(fd);

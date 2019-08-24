@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
@@ -87,7 +87,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			{
 				int out = Math.min(40, tank.getFluidAmount());
 				CapabilityReference<IFluidHandler> capRef = neighbors.get(side);
-				IFluidHandler handler = capRef.get();
+				IFluidHandler handler = capRef.getNullable();
 				if(handler!=null)
 				{
 					int accepted = handler.fill(Utils.copyFluidStackWithAmount(tank.getFluid(), out, false), false);

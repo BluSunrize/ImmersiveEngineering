@@ -295,7 +295,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 					double dz = pos.getZ()+.5+ctx.getFace().getZOffset();
 					ItemEntity entityitem = new ItemEntity(world, dx, dy, dz, current.copy());
 					entityitem.setDefaultPickupDelay();
-					world.spawnEntity(entityitem);
+					world.addEntity(entityitem);
 				}
 				((ShaderBannerTileEntity)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
 				tile.markDirty();

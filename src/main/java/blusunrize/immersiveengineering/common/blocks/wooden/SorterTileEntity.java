@@ -181,7 +181,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 				if(side!=outputSide)
 				{
 					CapabilityReference<IItemHandler> capRef = neighborCaps.get(side);
-					IItemHandler itemHandler = capRef.get();
+					IItemHandler itemHandler = capRef.getNullable();
 					if(itemHandler!=null)
 					{
 						Predicate<ItemStack> concatFilter = null;

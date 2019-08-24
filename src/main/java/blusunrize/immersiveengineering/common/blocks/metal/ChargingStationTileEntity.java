@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
@@ -60,7 +60,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public void tick()
 	{
-		if(EnergyHelper.isFluxItem(inventory.get(0)))
+		if(EnergyHelper.isFluxReceiver(inventory.get(0)))
 		{
 			if(world.isRemote&&charging)
 			{
@@ -90,22 +90,19 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 					this.markContainingBlockForUpdate(null);
 					return;
 				}
-				if(EnergyHelper.isFluxItem(inventory.get(0)))
+				int stored = EnergyHelper.getEnergyStored(inventory.get(0));
+				int max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
+				int space = max-stored;
+				if(space > 0)
 				{
-					int stored = EnergyHelper.getEnergyStored(inventory.get(0));
-					int max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
-					int space = max-stored;
-					if(space > 0)
-					{
-						int energyDec = (10*stored)/max;
-						int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), IEConfig.Machines.charger_consumption));
-						int accepted = Math.min(EnergyHelper.insertFlux(inventory.get(0), insert, true), this.energyStorage.extractEnergy(insert, true));
-						if((accepted = this.energyStorage.extractEnergy(accepted, false)) > 0)
-							stored += EnergyHelper.insertFlux(inventory.get(0), accepted, false);
-						int energyDecNew = (10*stored)/max;
-						if(energyDec!=energyDecNew)
-							this.markContainingBlockForUpdate(null);
-					}
+					int energyDec = (10*stored)/max;
+					int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), IEConfig.MACHINES.charger_consumption.get()));
+					int accepted = Math.min(EnergyHelper.insertFlux(inventory.get(0), insert, true), this.energyStorage.extractEnergy(insert, true));
+					if((accepted = this.energyStorage.extractEnergy(accepted, false)) > 0)
+						stored += EnergyHelper.insertFlux(inventory.get(0), accepted, false);
+					int energyDecNew = (10*stored)/max;
+					if(energyDec!=energyDecNew)
+						this.markContainingBlockForUpdate(null);
 				}
 			}
 			else if(energyStorage.getEnergyStored() >= energyStorage.getMaxEnergyStored()*.95)
@@ -119,7 +116,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 		if(!world.isRemote&&world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
 		{
 			float charge = 0;
-			if(EnergyHelper.isFluxItem(inventory.get(0)))
+			if(EnergyHelper.isFluxReceiver(inventory.get(0)))
 			{
 				float max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
 				if(max > 0)
@@ -254,7 +251,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return EnergyHelper.isFluxItem(stack);
+		return EnergyHelper.isFluxReceiver(stack);
 	}
 
 	@Override
@@ -284,7 +281,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(EnergyHelper.isFluxItem(heldItem))
+		if(isStackValid(0, heldItem))
 		{
 			ItemStack stored = !inventory.get(0).isEmpty()?inventory.get(0).copy(): ItemStack.EMPTY;
 			inventory.set(0, heldItem.copy());

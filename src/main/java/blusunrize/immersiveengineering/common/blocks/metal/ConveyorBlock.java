@@ -79,7 +79,7 @@ public class ConveyorBlock extends IETileProviderBlock
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof ConveyorBeltTileEntity&&!(tile instanceof ConveyorVerticalTileEntity))
+		if(tile instanceof ConveyorBeltTileEntity)
 		{
 			ConveyorBeltTileEntity conveyor = (ConveyorBeltTileEntity)tile;
 			Direction f = conveyor.facing;

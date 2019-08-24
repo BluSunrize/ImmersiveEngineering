@@ -97,7 +97,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 			int rand = Utils.RAND.nextInt(lengthFiltered);
 			Direction currentSide = sides[rand];
 			CapabilityReference<IFluidHandler> capRef = neighborCaps.get(currentSide);
-			IFluidHandler fluidOut = capRef.get();
+			IFluidHandler fluidOut = capRef.getNullable();
 			if(fluidOut!=null)
 			{
 				int filledHere = fluidOut.fill(stack, doFill);

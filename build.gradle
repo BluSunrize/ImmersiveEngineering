@@ -36,8 +36,7 @@ minecraft {
     mappings channel: 'snapshot', version: '20190701-1.14.3'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
-    accessTransformer = file("$rootDir/src/main/resources/ImmersiveEngineering_at.cfg")
-    //accessTransformer = file('src/main/resources/main/META-INF/ImmersiveEngineering_at.cfg')
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.

@@ -15,7 +15,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -24,10 +24,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
@@ -71,8 +73,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		nbt.putBoolean(HAS_NEGATIVE, hasNegative);
 		nbt.putInt(FACING, facing.getIndex());
 		nbt.putInt(OFFSET, offset);
-		CompoundNBT stateNbt = new CompoundNBT();
-		Utils.stateToNBT(stateNbt, stateForMiddle);
+		CompoundNBT stateNbt = NBTUtil.writeBlockState(stateForMiddle);
 		nbt.put(MIDDLE_STATE, stateNbt);
 	}
 
@@ -86,7 +87,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		hasNegative = nbt.getBoolean(HAS_NEGATIVE);
 		facing = Direction.VALUES[nbt.getInt(FACING)];
 		offset = nbt.getInt(OFFSET);
-		stateForMiddle = Utils.stateFromNBT(nbt.getCompound(MIDDLE_STATE));
+		stateForMiddle = NBTUtil.readBlockState(nbt.getCompound(MIDDLE_STATE));
 	}
 
 	@Override
@@ -167,28 +168,15 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public NonNullList<ItemStack> getTileDrops(@Nullable PlayerEntity player, BlockState state)
+	public List<ItemStack> getTileDrops(Builder context)
 	{
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
-		if(info.canReplace())
-		{
-			if(offset==0)
-				return Utils.getDrops(stateForMiddle);
-			else
-			{
-				assert info.conn!=null;//If it's marked as replaceable it should have a state to replace with
-				return NonNullList.from(ItemStack.EMPTY,
-						new ItemStack(info.conn.getBlock(), 1));
-			}
-		}
+		if(offset==0)
+			return Utils.getDrops(stateForMiddle, context);
 		else
 		{
-			ItemStack stack = new ItemStack(state.getBlock(), 1);
-			stack.setTagInfo(WIRE, new StringNBT(reference.getUniqueName()));
-			CompoundNBT stateNbt = new CompoundNBT();
-			Utils.stateToNBT(stateNbt, stateForMiddle);
-			stack.setTagInfo(MIDDLE_STATE, stateNbt);
-			return NonNullList.from(ItemStack.EMPTY, stack);
+			return NonNullList.from(ItemStack.EMPTY,
+					new ItemStack(info.conn.getBlock(), 1));
 		}
 	}
 
@@ -196,25 +184,16 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	public ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
 	{
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
-		if(info.canReplace()&&offset==0)
-		{
-			//getPickBlock needs a proper World, not an IBlockAccess, which is hard to emulate quickly.
-			// "world, pos" won't have anything remotely like the state this expects, I hope it won't notice.
-			try
-			{
-				return stateForMiddle.getBlock().getPickBlock(stateForMiddle, rayRes, world, pos, player);
-			} catch(Exception x)// We can't predict what is going to happen with weird inputs. The block is mostly inert, so it shouldn't be too bad.
-			{
-			}                   // No output as WAILA etc call this every tick (every frame?)
-		}
-		return getTileDrop(player, state);
+		if(offset==0)
+			return Utils.getPickBlock(stateForMiddle, rayRes, player);
+		return ITileDrop.super.getPickBlock(player, state, rayRes);
 	}
 
 	@Override
 	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
 	{
 		reference = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
-		stateForMiddle = Utils.stateFromNBT(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
+		stateForMiddle = NBTUtil.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
 	}
 
 	@Override
@@ -268,7 +247,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 				((FeedthroughTileEntity)te).offset = i;
 				((FeedthroughTileEntity)te).reference = reference;
 				((FeedthroughTileEntity)te).stateForMiddle = stateForMiddle;
-				world.checkLight(tmp);
+				checkLight(tmp);
 			}
 		}
 	}
@@ -332,11 +311,9 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
 		int offsetLocal = toBreak-offset;
 		BlockPos replacePos = pos.offset(facing, offsetLocal);
-		if(!info.canReplace())
-			world.removeBlock(replacePos);
-		else if(toBreak!=offset)
+		if(toBreak!=offset)
 		{
-			TileEntity te = world.getTileEntity(replacePos);
+			TileEntity te = getWorld().getTileEntity(replacePos);
 			if(te instanceof FeedthroughTileEntity)
 				((FeedthroughTileEntity)te).formed = false;
 			BlockState newState = Blocks.AIR.getDefaultState();
@@ -352,7 +329,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 					newState = info.conn.with(IEProperties.FACING_ALL, facing.getOpposite());
 					break;
 			}
-			world.setBlockState(replacePos, newState);//TODO move wires properly
+			getWorld().setBlockState(replacePos, newState);//TODO move wires properly
 
 		}
 	}
@@ -407,7 +384,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	{
 		if(id==253)
 		{
-			world.checkLight(pos);
+			checkLight();
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);

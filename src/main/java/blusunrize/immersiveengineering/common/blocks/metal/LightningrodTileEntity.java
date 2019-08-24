@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningrod;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -27,6 +27,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,7 +42,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 {
 	public static TileEntityType<LightningrodTileEntity> TYPE;
 
-	FluxStorage energyStorage = new FluxStorage(IEConfig.Machines.lightning_output);
+	FluxStorage energyStorage = new FluxStorage(IEConfig.MACHINES.lightning_output.get());
 
 	@Nullable
 	private List<BlockPos> fenceNet = null;
@@ -81,11 +82,11 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 				int i = this.height+this.fenceNet.size();
 				if(Utils.RAND.nextInt(4096*world.getHeight()) < i*(getPos().getY()+i))
 				{
-					this.energyStorage.setEnergy(IEConfig.Machines.lightning_output);
+					this.energyStorage.setEnergy(IEConfig.MACHINES.lightning_output.get());
 					BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
 					LightningBoltEntity entityLightningBolt = new LightningBoltEntity(world, pos.getX(), pos.getY(), pos.getZ(), true);
-					world.addWeatherEffect(entityLightningBolt);
-					world.spawnEntity(entityLightningBolt);
+					((ServerWorld)world).addLightningBolt(entityLightningBolt);
+					world.addEntity(entityLightningBolt);
 				}
 			}
 		}
@@ -132,7 +133,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 
 	private boolean isFence(BlockPos pos)
 	{
-		return Utils.isBlockAt(world, pos, IEContent.blockSteelFence);
+		return Utils.isBlockAt(world, pos, MetalDecoration.steelFence);
 	}
 
 	@Override

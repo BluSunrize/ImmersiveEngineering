@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,9 +25,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.LightType;
 
 import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity implements ISpawnInterdiction, ITickableTileEntity,
 		IDirectionalTile, IHammerInteraction, IBlockBounds, IActiveState, ILightValue, EnergyConnector
@@ -35,8 +36,8 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	public static TileEntityType<ElectricLanternTileEntity> TYPE;
 
 	public int energyStorage = 0;
-	private int energyDraw = IEConfig.Machines.lantern_energyDraw;
-	private int maximumStorage = IEConfig.Machines.lantern_maximumStorage;
+	private int energyDraw = IEConfig.MACHINES.lantern_energyDraw.get();
+	private int maximumStorage = IEConfig.MACHINES.lantern_maximumStorage.get();
 	public boolean active = false;
 	private boolean interdictionList = false;
 	private boolean flipped = false;
@@ -51,12 +52,12 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	{
 		if(world.isRemote)
 			return;
-		if(!interdictionList&&IEConfig.Machines.lantern_spawnPrevent)
+		if(!interdictionList&&IEConfig.MACHINES.lantern_spawnPrevent.get())
 		{
 			synchronized(EventHandler.interdictionTiles)
 			{
-				if(!EventHandler.interdictionTiles.contains(this))
-					EventHandler.interdictionTiles.add(this);
+				Set<ISpawnInterdiction> tileForDim = EventHandler.interdictionTiles.computeIfAbsent(world.getDimension().getType(), k -> new HashSet<>());
+				tileForDim.add(this);
 			}
 			interdictionList = true;
 		}
@@ -73,7 +74,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 		if(active!=b)
 		{
 			this.markContainingBlockForUpdate(null);
-			world.checkLightFor(LightType.BLOCK, getPos());
+			checkLight();
 			world.addBlockEvent(getPos(), getBlockState().getBlock(), 1, 0);
 		}
 	}
@@ -128,7 +129,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 		if(id==1)
 		{
 			this.markContainingBlockForUpdate(null);
-			world.checkLightFor(LightType.BLOCK, getPos());
+			checkLight();
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);

@@ -9,17 +9,18 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -38,6 +39,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,17 +83,19 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 
 		boolean powered = world.getRedstonePowerFromNeighbors(getPos()) > 0;
 		final boolean prevActive = active;
+		int totalTime = IEConfig.MACHINES.coredrill_time.get();
+		int consumption = IEConfig.MACHINES.coredrill_consumption.get();
 		if(!active&&powered)
 			active = true;
-		else if(active&&!powered&&process >= IEConfig.Machines.coredrill_time)
+		else if(active&&!powered&&process >= totalTime)
 			active = false;
 
 
-		if(active&&process < IEConfig.Machines.coredrill_time)
-			if(energyStorage.extractEnergy(IEConfig.Machines.coredrill_consumption, false)==IEConfig.Machines.coredrill_consumption)
+		if(active&&process < totalTime)
+			if(energyStorage.extractEnergy(consumption, false)==consumption)
 			{
 				process++;
-				if(process >= IEConfig.Machines.coredrill_time)
+				if(process >= totalTime)
 				{
 					int cx = getPos().getX() >> 4;
 					int cz = getPos().getZ() >> 4;
@@ -108,12 +114,12 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 
 	public float getSampleProgress()
 	{
-		return process/(float)IEConfig.Machines.coredrill_time;
+		return process/(float)IEConfig.MACHINES.coredrill_time.get();
 	}
 
 	public boolean isSamplingFinished()
 	{
-		return process >= IEConfig.Machines.coredrill_time;
+		return process >= IEConfig.MACHINES.coredrill_time.get();
 	}
 
 	public String getVein()
@@ -133,9 +139,10 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	@Nonnull
 	public ItemStack createCoreSample(World world, int chunkX, int chunkZ, @Nullable MineralWorldInfo info)
 	{
-		ItemStack stack = new ItemStack(IEContent.itemCoresample);
+		ItemStack stack = new ItemStack(Misc.coresample);
 		ItemNBTHelper.putLong(stack, "timestamp", world.getGameTime());
-		ItemNBTHelper.putIntArray(stack, "coords", new int[]{world.getDimension(), chunkX, chunkZ});
+		DimensionChunkCoords dimCoords = new DimensionChunkCoords(world.dimension.getType(), chunkX, chunkZ);
+		ItemNBTHelper.setTagCompound(stack, "coords", dimCoords.writeToNBT());
 		if(info==null)
 			return stack;
 		if(info.mineralOverride!=null)
@@ -159,7 +166,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		nbt.putInt("process", process);
 		nbt.putBoolean("active", active);
 		if(!sample.isEmpty())
-			nbt.put("sample", sample.writeToNBT(new CompoundNBT()));
+			nbt.put("sample", sample.write(new CompoundNBT()));
 	}
 
 	@Override
@@ -169,8 +176,8 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		dummy = nbt.getInt("dummy");
 		process = nbt.getInt("process");
 		active = nbt.getBoolean("active");
-		if(nbt.hasKey("sample"))
-			sample = new ItemStack(nbt.getCompound("sample"));
+		if(nbt.contains("sample", NBT.TAG_COMPOUND))
+			sample = ItemStack.read(nbt.getCompound("sample"));
 
 	}
 
@@ -246,7 +253,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		for(int i = 0; i <= 2; i++)
 			if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof SampleDrillTileEntity)
-				world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0));
+				world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0), false);
 	}
 
 	@Override
@@ -271,7 +278,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		}
 		else if(!this.active)
 		{
-			if(energyStorage.getEnergyStored() >= IEConfig.Machines.coredrill_consumption)
+			if(energyStorage.getEnergyStored() >= IEConfig.MACHINES.coredrill_consumption.get())
 			{
 				this.active = true;
 				markDirty();
@@ -280,47 +287,6 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 			return true;
 		}
 		return false;
-		//		int off = ((SampleDrillTileEntity)te).pos;
-		//		TileEntity te2 = world.getTileEntity(x, y-off, z);
-		//		if(!world.isRemote && te2 instanceof SampleDrillTileEntity)
-		//		{
-		//			SampleDrillTileEntity drill = (SampleDrillTileEntity)te2;
-		//			int process = drill.process;
-		//			int chunkX = (x>>4);
-		//			int chunkZ = (z>>4);
-		//			String s0 = (chunkX*16)+", "+(chunkZ*16);
-		//			String s1 = (chunkX*16+16)+", "+(chunkZ*16+16);
-		//			player.sendMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"forChunk", s0,s1).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_GRAY)));
-		//			if(process<Config.getInt("coredrill_time"))
-		//			{
-		//				float f = process/(float)Config.getInt("coredrill_time");
-		//				player.sendMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.progress",(int)(f*100)+"%").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
-		//			}
-		//			else
-		//			{
-		//				ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(world, chunkX, chunkZ);
-		//				if(mineral==null)
-		//					player.sendMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.none").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
-		//				else
-		//				{
-		//					String name = Lib.DESC_INFO+"mineral."+mineral.name;
-		//					String localizedName = StatCollector.translateToLocal(name);
-		//					if(name.equals(localizedName))
-		//						localizedName = mineral.name;
-		//					MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, chunkX, chunkZ);
-		//					boolean deplOverride = info.depletion<0;
-		//					if(ExcavatorHandler.mineralVeinCapacity<0||deplOverride)
-		//						localizedName = StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite")+" "+localizedName;
-		//					player.sendMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",localizedName));
-		//					if(ExcavatorHandler.mineralVeinCapacity>0&&!deplOverride)
-		//					{
-		//						String f = Utils.formatDouble((Config.getInt("excavator_depletion")-info.depletion)/(float)Config.getInt("excavator_depletion")*100,"0.##")+"%";
-		//						player.sendMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.depl",f));
-		//					}
-		//				}
-		//			}
-		//		}
-		//		return true;
 	}
 
 	static ArrayList<String> displayList = Lists.newArrayList("drill_base");

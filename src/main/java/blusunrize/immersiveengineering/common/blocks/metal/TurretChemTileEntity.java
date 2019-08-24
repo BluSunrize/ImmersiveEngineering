@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -19,6 +19,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -49,7 +50,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 	@Override
 	protected boolean canActivate()
 	{
-		return tank.getFluidAmount() > 0&&this.energyStorage.getEnergyStored() >= IEConfig.Machines.turret_chem_consumption;
+		return tank.getFluidAmount() > 0&&this.energyStorage.getEnergyStored() >= IEConfig.MACHINES.turret_chem_consumption.get();
 	}
 
 	@Override
@@ -76,8 +77,8 @@ public class TurretChemTileEntity extends TurretTileEntity
 		FluidStack fs = this.tank.getFluid();
 		if(fs!=null&&fs.getFluid()!=null)
 		{
-			int consumed = IEConfig.Tools.chemthrower_consumption;
-			int energy = IEConfig.Machines.turret_chem_consumption;
+			int consumed = IEConfig.TOOLS.chemthrower_consumption.get();
+			int energy = IEConfig.MACHINES.turret_chem_consumption.get();
 			if(consumed <= fs.amount&&this.energyStorage.extractEnergy(energy, true) >= energy)
 			{
 				tank.drain(consumed, true);
@@ -101,13 +102,11 @@ public class TurretChemTileEntity extends TurretTileEntity
 					Vec3d throwerPos = getGunPosition();
 					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(world, throwerPos.x+v.x*0.875, throwerPos.y+v.y*0.875,
 							throwerPos.z+v.z*0.875, 0, 0, 0, fs);
-					chem.motionX = vecDir.x*range;
-					chem.motionY = vecDir.y*range;
-					chem.motionZ = vecDir.z*range;
+					chem.setMotion(vecDir.scale(range));
 					if(ignite)
 						chem.setFire(10);
 					if(!world.isRemote)
-						world.spawnEntity(chem);
+						world.addEntity(chem);
 				}
 				if(tick%4==0)
 					if(ignite)
@@ -123,7 +122,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
 		super.receiveMessageFromClient(message);
-		if(message.hasKey("ignite"))
+		if(message.contains("ignite", NBT.TAG_BYTE))
 			ignite = message.getBoolean("ignite");
 	}
 

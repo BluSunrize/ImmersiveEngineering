@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -31,6 +31,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -395,7 +396,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	{
 		public NonNullList<ItemStack> items;
 		public int processTick;
-		public int maxProcessTick = (int)(120*Config.IEConfig.Machines.bottlingMachine_timeModifier);
+		public int maxProcessTick = (int)(120*IEConfig.MACHINES.bottlingMachineConfig.timeModifier.get());
 		boolean processFinished = false;
 
 		public BottlingProcess(ItemStack input)
@@ -406,7 +407,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 
 		public boolean processStep(BottlingMachineTileEntity tile)
 		{
-			int energyExtracted = (int)(8*Config.IEConfig.Machines.bottlingMachine_energyModifier);
+			int energyExtracted = (int)(8*IEConfig.MACHINES.bottlingMachineConfig.energyModifier.get());
 			if(tile.energyStorage.extractEnergy(energyExtracted, true) >= energyExtracted)
 			{
 				tile.energyStorage.extractEnergy(energyExtracted, false);
@@ -456,7 +457,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		{
 			ItemStack input = ItemStack.read(nbt.getCompound("input"));
 			BottlingProcess process = new BottlingProcess(input);
-			if(nbt.hasKey("output"))
+			if(nbt.contains("output", NBT.TAG_COMPOUND))
 				process.items.set(1, ItemStack.read(nbt.getCompound("output")));
 			process.processTick = nbt.getInt("processTick");
 			return process;

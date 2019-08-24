@@ -46,6 +46,9 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootParameterSets;
+import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -596,5 +599,21 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBaseTileEntity)
 			((IEBaseTileEntity)te).onEntityCollision(world, entity);
+	}
+
+	@Override
+	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
+	{
+		List<ItemStack> ret = super.getDrops(state, builder);
+		LootContext ctx = builder.build(LootParameterSets.BLOCK);
+		if(ctx.has(LootParameters.BLOCK_ENTITY))
+		{
+			TileEntity te = ctx.get(LootParameters.BLOCK_ENTITY);
+			if(te instanceof ITileDrop)
+			{
+				ret.addAll(((ITileDrop)te).getTileDrops(builder));
+			}
+		}
+		return ret;
 	}
 }

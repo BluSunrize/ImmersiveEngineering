@@ -6,11 +6,11 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.state.IProperty;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,6 +19,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fml.common.Loader;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -132,7 +133,7 @@ public final class WireApi
 		public final float dmgPerEnergy;
 		public final float maxDmg;
 		public final Function<Float, Float> postProcessDmg;
-		@Nullable
+		@Nonnull
 		public BlockState conn;
 		@OnlyIn(Dist.CLIENT)
 		public IBakedModel model;
@@ -142,11 +143,9 @@ public final class WireApi
 		public final double[] uvs = new double[4];
 		public final double connLength;
 		public final double connOffset;
-		@Nullable
-		private Predicate<BlockState> matches;
 
 		public FeedthroughModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
-									double connLength, double connOffset, @Nullable Predicate<BlockState> matches,
+									double connLength, double connOffset, @Nonnull BlockState conn,
 									float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
 		{
 			modelLoc = model;
@@ -158,39 +157,18 @@ public final class WireApi
 			this.connOffset = connOffset;
 			this.dmgPerEnergy = dmgPerEnergy;
 			this.maxDmg = maxDmg;
-			this.matches = matches;
 			this.postProcessDmg = postProcessDmg;
-		}
-
-		public FeedthroughModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
-									double connLength, double connOffset, BlockState conn,
-									float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
-		{
-			this(model, texRepl, texLoc, uvs, connLength, connOffset, (Predicate<BlockState>)null, dmgPerEnergy, maxDmg, postProcessDmg);
 			this.conn = conn;
 		}
 
 		public boolean isValidConnector(BlockState state)
 		{
-			if(matches!=null)
-			{
-				return matches.test(state);
-			}
-			else
-			{
-				assert conn!=null;
-				if(state.getBlock()!=conn.getBlock())
+			if(state.getBlock()!=conn.getBlock())
+				return false;
+			for(IProperty<?> p : state.getProperties())
+				if(p!=IEProperties.FACING_ALL&&!state.get(p).equals(conn.get(p)))
 					return false;
-				for(IProperty<?> p : state.getProperties())
-					if(p!=IEProperties.FACING_ALL&&!state.getValue(p).equals(conn.getValue(p)))
-						return false;
-				return true;
-			}
-		}
-
-		public boolean canReplace()
-		{
-			return conn!=null;
+			return true;
 		}
 
 		@OnlyIn(Dist.CLIENT)

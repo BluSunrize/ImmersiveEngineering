@@ -265,7 +265,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 							{
 								for(ItemStack b : bullets)
 									if(!b.isEmpty())
-										world.spawnEntity(new ItemEntity(world, player.posX, player.posY, player.posZ, b));
+										world.addEntity(new ItemEntity(world, player.posX, player.posY, player.posZ, b));
 								setBullets(revolver, ((ItemSpeedloader)stack.getItem()).getContainedItems(stack));
 								((ItemSpeedloader)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 								player.inventory.markDirty();
@@ -292,14 +292,14 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 								if(count==1)
 								{
 									Entity entBullet = getBullet(player, vec, vec, key, bullets.get(0), electro);
-									player.world.spawnEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
+									player.world.addEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 								}
 								else
 									for(int i = 0; i < count; i++)
 									{
 										Vec3d vecDir = vec.add(player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1);
 										Entity entBullet = getBullet(player, vec, vecDir, key, bullets.get(0), electro);
-										player.world.spawnEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
+										player.world.addEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 									}
 								bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
 

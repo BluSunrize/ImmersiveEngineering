@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import com.google.common.collect.ImmutableSet;
@@ -332,8 +332,8 @@ public class ImmersiveNetHandler
 			double dx = dropPos.getX()+.5;
 			double dy = dropPos.getY()+.5;
 			double dz = dropPos.getZ()+.5;
-			//if(world.getGameRules().getBoolean("doTileDrops"))
-			//	world.spawnEntity(new EntityItem(world, dx, dy, dz, conn.cableType.getWireCoil(conn)));
+			//if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+			//	world.addEntity(new EntityItem(world, dx, dy, dz, conn.cableType.getWireCoil(conn)));
 		}
 	}
 
@@ -361,8 +361,8 @@ public class ImmersiveNetHandler
 				double dx = node.getX()+.5+Math.signum(con.end.getX()-con.start.getX());
 				double dy = node.getY()+.5+Math.signum(con.end.getY()-con.start.getY());
 				double dz = node.getZ()+.5+Math.signum(con.end.getZ()-con.start.getZ());
-				//if(doDrops&&world.getGameRules().getBoolean("doTileDrops"))
-				//	world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
+				//if(doDrops&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+				//	world.addEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
 			}
 		}
 		IESaveData.setDirty(world.provider.getDimension());
@@ -404,8 +404,8 @@ public class ImmersiveNetHandler
 				double dx = node.getX()+.5+Math.signum(con.end.getX()-con.start.getX());
 				double dy = node.getY()+.5+Math.signum(con.end.getY()-con.start.getY());
 				double dz = node.getZ()+.5+Math.signum(con.end.getZ()-con.start.getZ());
-				//if(world.getGameRules().getBoolean("doTileDrops"))
-				//	world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
+				//if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+				//	world.addEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
 				ret = true;
 			}
 		}

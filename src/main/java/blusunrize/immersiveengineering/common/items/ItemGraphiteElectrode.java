@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -27,7 +27,7 @@ public class ItemGraphiteElectrode extends ItemIEBase
 	public ItemGraphiteElectrode()
 	{
 		super("graphite_electrode", new Properties().maxStackSize(16));
-		electrodeMaxDamage = IEConfig.Machines.arcfurnace_electrodeDamage;
+		electrodeMaxDamage = IEConfig.MACHINES.arcfurnace_electrodeDamage;
 	}
 
 	@Override

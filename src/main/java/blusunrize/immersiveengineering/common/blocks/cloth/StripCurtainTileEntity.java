@@ -27,8 +27,8 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.loot.LootContext.Builder;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -210,7 +210,7 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public ItemStack getTileDrop(@Nullable Entity player, BlockState state)
+	public List<ItemStack> getTileDrops(Builder context)
 	{
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		if(colour!=0xffffff)

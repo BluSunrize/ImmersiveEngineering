@@ -182,7 +182,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	{
 		for(int i = 0; i <= 1; i++)
 			if(world.getTileEntity(getPos().add(0, !lower?-1: 0, 0).add(0, i, 0)) instanceof EnergyMeterTileEntity)
-				world.removeBlock(getPos().add(0, !lower?-1: 0, 0).add(0, i, 0));
+				world.removeBlock(getPos().add(0, !lower?-1: 0, 0).add(0, i, 0), false);
 	}
 
 	public int getAveragePower()

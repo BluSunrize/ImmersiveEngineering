@@ -13,14 +13,15 @@ import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity.DirectionalFluidOutput;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -29,14 +30,20 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -48,10 +55,15 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Map;
 
-public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IBlockBounds, IHasDummyBlocks, IConfigurableSides, IFluidPipe, IIEInternalFluxHandler, IBlockOverlayText
+public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IBlockBounds, IHasDummyBlocks,
+		IConfigurableSides, IFluidPipe, IIEInternalFluxHandler, IBlockOverlayText
 {
+	public static TileEntityType<FluidPumpTileEntity> TYPE;
+
 	public int[] sideConfig = new int[]{0, -1, -1, -1, -1, -1};
 	public boolean dummy = false;
 	public FluidTank tank = new FluidTank(4000);
@@ -60,12 +72,25 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	boolean checkingArea = false;
 	Fluid searchFluid = null;
-	ArrayList<BlockPos> openList = new ArrayList<BlockPos>();
-	ArrayList<BlockPos> closedList = new ArrayList<BlockPos>();
-	ArrayList<BlockPos> checked = new ArrayList<BlockPos>();
+	ArrayList<BlockPos> openList = new ArrayList<>();
+	ArrayList<BlockPos> closedList = new ArrayList<>();
+	ArrayList<BlockPos> checked = new ArrayList<>();
+
+	public FluidPumpTileEntity()
+	{
+		super(TYPE);
+	}
+
+	private Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = new EnumMap<>(Direction.class);
+
+	{
+		for(Direction neighbor : Direction.VALUES)
+			neighborFluids.put(neighbor,
+					CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, neighbor));
+	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(dummy||world.isRemote)
@@ -76,34 +101,38 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			tank.drain(i, true);
 		}
 
+		int consumption = IEConfig.MACHINES.pump_consumption.get();
 		if(world.getRedstonePowerFromNeighbors(getPos()) > 0||world.getRedstonePowerFromNeighbors(getPos().add(0, 1, 0)) > 0)
 		{
 			for(Direction f : Direction.values())
 				if(sideConfig[f.ordinal()]==0)
 				{
-					BlockPos output = getPos().offset(f);
-					TileEntity tile = Utils.getExistingTileEntity(world, output);
-					if(tile!=null&&tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
+					CapabilityReference<IFluidHandler> input = neighborFluids.get(f);
+					if(input.isPresent())
 					{
-						IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
+						IFluidHandler handler = input.getNullable();
 						FluidStack drain = handler.drain(500, false);
 						if(drain==null||drain.amount <= 0)
 							continue;
 						int out = this.outputFluid(drain, false);
 						handler.drain(out, true);
 					}
-					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)&&world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER&&IEConfig.Machines.pump_infiniteWater&&tank.fill(new FluidStack(FluidRegistry.WATER, 1000), false)==1000&&this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true) >= IEConfig.Machines.pump_consumption)
+					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)
+							&&world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER
+							&&IEConfig.MACHINES.pump_infiniteWater
+							&&tank.fill(new FluidStack(FluidRegistry.WATER, 1000), false)==1000
+							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
 					{
 						int connectedSources = 0;
-						for(Direction f2 : Direction.HORIZONTALS)
+						for(Direction f2 : Direction.BY_HORIZONTAL_INDEX)
 						{
-							BlockState waterState = world.getBlockState(getPos().offset(f).offset(f2));
-							if(waterState.getBlock()==Blocks.WATER&&Blocks.WATER.getMetaFromState(waterState)==0)
+							IFluidState waterState = world.getFluidState(getPos().offset(f).offset(f2));
+							if(waterState.getFluid()==Fluids.WATER&&waterState.isSource())
 								connectedSources++;
 						}
 						if(connectedSources > 1)
 						{
-							this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, false);
+							this.energyStorage.extractEnergy(consumption, false);
 							this.tank.fill(new FluidStack(FluidRegistry.WATER, 1000), true);
 						}
 					}
@@ -119,17 +148,12 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					FluidStack fs = Utils.drainFluidBlock(world, pos, false);
 					if(fs==null)
 						closedList.remove(target);
-					else if(tank.fill(fs, false)==fs.amount&&this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, true) >= IEConfig.Machines.pump_consumption)
+					else if(tank.fill(fs, false)==fs.amount
+							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
 					{
-						this.energyStorage.extractEnergy(IEConfig.Machines.pump_consumption, false);
+						this.energyStorage.extractEnergy(consumption, false);
 						fs = Utils.drainFluidBlock(world, pos, true);
-						//						int rainbow = (closedList.size()%11)+1;
-						//						if(rainbow>6)
-						//							rainbow+=2;
-						//						if(rainbow>9)
-						//							rainbow++;
-						//						world.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.stained_glass,rainbow, 0x3);
-						if(IEConfig.Machines.pump_placeCobble&&placeCobble)
+						if(IEConfig.MACHINES.pump_placeCobble.get()&&placeCobble)
 							world.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
 						this.tank.fill(fs, true);
 						closedList.remove(target);
@@ -157,6 +181,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public void checkAreaTick()
 	{
+		boolean infiniteWater = IEConfig.MACHINES.pump_infiniteWater.get();
 		BlockPos next = null;
 		final int closedListMax = 2048;
 		int timeout = 0;
@@ -166,8 +191,8 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			next = openList.get(0);
 			if(!checked.contains(next))
 			{
-				Fluid fluid = Utils.getRelatedFluid(world, next);
-				if(fluid!=null&&(fluid!=FluidRegistry.WATER||!IEConfig.Machines.pump_infiniteWater)&&(searchFluid==null||fluid==searchFluid))
+				Fluid fluid = Utils.getRelatedFluid(getWorld(), next);
+				if(fluid!=null&&(fluid!=FluidRegistry.WATER||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 				{
 					if(searchFluid==null)
 						searchFluid = fluid;
@@ -178,7 +203,8 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					{
 						BlockPos pos2 = next.offset(f);
 						fluid = Utils.getRelatedFluid(world, pos2);
-						if(!checked.contains(pos2)&&!closedList.contains(pos2)&&!openList.contains(pos2)&&fluid!=null&&(fluid!=FluidRegistry.WATER||!IEConfig.Machines.pump_infiniteWater)&&(searchFluid==null||fluid==searchFluid))
+						if(!checked.contains(pos2)&&!closedList.contains(pos2)&&!openList.contains(pos2)&&fluid!=null&&(fluid!=FluidRegistry.WATER
+								||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 							openList.add(pos2);
 					}
 				}
@@ -199,17 +225,18 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		if(canAccept <= 0)
 			return 0;
 
-		int accelPower = IEConfig.Machines.pump_consumption_accelerate;
+		int accelPower = IEConfig.MACHINES.pump_consumption_accelerate.get();
 		final int fluidForSort = canAccept;
 		int sum = 0;
-		HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<DirectionalFluidOutput, Integer>();
+		HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<>();
 		for(Direction f : Direction.values())
 			if(sideConfig[f.ordinal()]==1)
 			{
-				TileEntity tile = Utils.getExistingTileEntity(world, getPos().offset(f));
-				if(tile!=null&&tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
+				CapabilityReference<IFluidHandler> output = neighborFluids.get(f);
+				if(output.isPresent())
 				{
-					IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
+					TileEntity tile = getWorld().getTileEntity(pos.offset(f));
+					IFluidHandler handler = output.get();
 					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.amount, true);
 					if(tile instanceof FluidPipeTileEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 					{
@@ -260,7 +287,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		if(sideConfig==null||sideConfig.length!=6)
 			sideConfig = new int[]{0, -1, -1, -1, -1, -1};
 		dummy = nbt.getBoolean("dummy");
-		if(nbt.hasKey("placeCobble"))
+		if(nbt.contains("placeCobble", NBT.TAG_BYTE))
 			placeCobble = nbt.getBoolean("placeCobble");
 		tank.readFromNBT(nbt.getCompound("tank"));
 		energyStorage.readFromNBT(nbt);
@@ -281,20 +308,20 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public SideConfig getSideConfig(Direction side)
 	{
-		return (side >= 0&&side < 6)?SideConfig.values()[this.sideConfig[side]+1]: SideConfig.NONE;
+		return SideConfig.values()[this.sideConfig[side.ordinal()]+1];
 	}
 
 	@Override
 	public boolean toggleSide(Direction side, PlayerEntity p)
 	{
-		if(side!=1&&!dummy)
+		if(side!=Direction.UP&&!dummy)
 		{
-			sideConfig[side]++;
-			if(sideConfig[side] > 1)
-				sideConfig[side] = -1;
+			sideConfig[side.ordinal()]++;
+			if(sideConfig[side.ordinal()] > 1)
+				sideConfig[side.ordinal()] = -1;
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
-			world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
+			getWorld().addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
 			return true;
 		}
 		else if(p.isSneaking())
@@ -313,25 +340,17 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		return false;
 	}
 
-	SidedFluidHandler[] sidedFluidHandler = new SidedFluidHandler[6];
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable Direction facing)
-	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&!dummy)
-			return true;
-		return super.hasCapability(capability, facing);
-	}
+	private Map<Direction, LazyOptional<IFluidHandler>> sidedFluidHandler = new EnumMap<>(Direction.class);
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&!dummy)
 		{
-			if(sidedFluidHandler[facing.ordinal()]==null)
-				sidedFluidHandler[facing.ordinal()] = new SidedFluidHandler(this, facing);
-			return (T)sidedFluidHandler[facing.ordinal()];
+			if(!sidedFluidHandler.containsKey(facing))
+				sidedFluidHandler.put(facing, registerConstantCap(new SidedFluidHandler(this, facing)));
+			return sidedFluidHandler.get(facing).cast();
 		}
 		return super.getCapability(capability, facing);
 	}
@@ -339,10 +358,11 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer&&IEConfig.colourblindSupport&&!dummy)
+		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&!dummy&&mop instanceof BlockRayTraceResult)
 		{
-			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
-			int j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
+			BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
+			int i = sideConfig[Math.min(sideConfig.length-1, brtr.getFace().ordinal())];
+			int j = sideConfig[Math.min(sideConfig.length-1, brtr.getFace().getOpposite().ordinal())];
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
 							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i),
@@ -440,16 +460,19 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
 	{
-		world.setBlockState(pos.add(0, 1, 0), state);
-		((FluidPumpTileEntity)world.getTileEntity(pos.add(0, 1, 0))).dummy = true;
+		getWorld().setBlockState(pos.add(0, 1, 0), state);
+		TileEntity tile = getWorld().getTileEntity(pos.add(0, 1, 0));
+		if(tile instanceof FluidPumpTileEntity)
+			((FluidPumpTileEntity)tile).dummy = true;
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 1; i++)
-			if(Utils.isBlockAt(world, getPos().add(0, dummy?-1: 0, 0).add(0, i, 0), IEContent.blockMetalDevice0, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()))
-				world.removeBlock(getPos().add(0, dummy?-1: 0, 0).add(0, i, 0));
+			if(Utils.isBlockAt(world, getPos().add(0, dummy?-1: 0, 0).add(0, i, 0),
+					MetalDevices.fluidPump))
+				world.removeBlock(getPos().add(0, dummy?-1: 0, 0).add(0, i, 0), false);
 	}
 
 	@Override
@@ -463,7 +486,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public boolean canOutputPressurized(boolean consumePower)
 	{
-		int accelPower = IEConfig.Machines.pump_consumption_accelerate;
+		int accelPower = IEConfig.MACHINES.pump_consumption_accelerate.get();
 		if(energyStorage.extractEnergy(accelPower, true) >= accelPower)
 		{
 			if(consumePower)

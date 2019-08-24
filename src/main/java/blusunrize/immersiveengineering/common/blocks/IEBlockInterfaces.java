@@ -31,7 +31,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
@@ -194,11 +197,18 @@ public class IEBlockInterfaces
 
 	public interface ITileDrop
 	{
-		ItemStack getTileDrop(@Nullable Entity player, BlockState state);
+		List<ItemStack> getTileDrops(Builder context);
 
 		default ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
 		{
-			return getTileDrop(player, state);
+			TileEntity tile = (TileEntity)this;
+			ServerWorld world = (ServerWorld)tile.getWorld();
+			return getTileDrops(
+					new Builder(world)
+							.withNullableParameter(LootParameters.TOOL, ItemStack.EMPTY)
+							.withNullableParameter(LootParameters.BLOCK_STATE, world.getBlockState(tile.getPos()))
+							.withNullableParameter(LootParameters.POSITION, tile.getPos())
+			).get(0);
 		}
 
 		void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack);

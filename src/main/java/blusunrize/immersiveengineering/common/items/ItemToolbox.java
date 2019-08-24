@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
@@ -38,9 +37,9 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 	public ItemToolbox()
 	{
 		super("toolbox", new Properties().maxStackSize(1));
-		final Set<String> configTools = Sets.newHashSet(Config.IEConfig.Tools.toolbox_tools);
-		final Set<String> configFood = Sets.newHashSet(Config.IEConfig.Tools.toolbox_foods);
-		final Set<String> configWires = Sets.newHashSet(Config.IEConfig.Tools.toolbox_wiring);
+		final Set<String> configTools = Sets.newHashSet(IEConfig.Tools.toolbox_tools);
+		final Set<String> configFood = Sets.newHashSet(IEConfig.Tools.toolbox_foods);
+		final Set<String> configWires = Sets.newHashSet(IEConfig.Tools.toolbox_wiring);
 		ToolboxHandler.addToolType(stack -> configTools.contains(stack.getItem().getRegistryName().toString()));
 		ToolboxHandler.addFoodType(stack -> configFood.contains(stack.getItem().getRegistryName().toString()));
 		ToolboxHandler.addWiringType((stack, world) -> configWires.contains(stack.getItem().getRegistryName().toString()));

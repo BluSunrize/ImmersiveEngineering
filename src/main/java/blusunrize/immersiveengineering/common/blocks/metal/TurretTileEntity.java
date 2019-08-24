@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
@@ -20,13 +20,14 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -44,6 +45,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -135,7 +138,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		if(world.getGameTime()%64==((getPos().getX()^getPos().getZ())&63))
 			markContainingBlockForUpdate(null);
 
-		int energy = IEConfig.Machines.turret_consumption;
+		int energy = IEConfig.MACHINES.turret_consumption.get();
 		if(world.getRedstonePowerFromNeighbors(getPos()) > 0^redstoneControlInverted)
 		{
 			if(energyStorage.extractEnergy(energy, true)==energy)
@@ -188,7 +191,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		for(LivingEntity coll : potentialCollateral)
 		{
 			AxisAlignedBB entityBB = coll.getBoundingBox().grow(.125f/2+.4);//Add the range of a revolver bullet in all directions
-			if(!isValidTarget(coll, false)&&entityBB.calculateIntercept(start, end)!=null)
+			if(!isValidTarget(coll, false)&&entityBB.rayTrace(start, end).isPresent())
 				return false;
 		}
 		return true;
@@ -231,9 +234,9 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		if(whitelist^isListedName(targetList, entity.getName().getString()))
 			return false;
 		//Same as above but for the owner of the pet, to prevent shooting wolves
-		if(entity instanceof IEntityOwnable)
+		if(entity instanceof TameableEntity)
 		{
-			Entity entityOwner = ((IEntityOwnable)entity).getOwner();
+			Entity entityOwner = ((TameableEntity)entity).getOwner();
 			if(entityOwner!=null&&(whitelist^isListedName(targetList, entityOwner.getName().getString())))
 				return false;
 		}
@@ -242,10 +245,11 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			return false;
 		if(entity instanceof PlayerEntity&&!attackPlayers)
 			return false;
-		if(!(entity instanceof PlayerEntity)&&!(entity instanceof AnimalEntity)&&!entity.isCreatureType(EntityClassification.MONSTER, false)&&!attackNeutrals)
+		if(!(entity instanceof PlayerEntity)&&!(entity instanceof AnimalEntity)&&!(entity instanceof IMob)&&!attackNeutrals)
 			return false;
 
-		if(target==null||entity.getDistanceSq(getPos()) < target.getDistanceSq(getPos())) return true;
+		if(target==null||getPos().distanceSq(entity.getPositionVec(), true) < getPos().distanceSq(target.getPositionVec(), true))
+			return true;
 		return !checkCanShoot||canShootEntity(entity);
 	}
 
@@ -279,17 +283,17 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
-		if(message.hasKey("add"))
+		if(message.contains("add", NBT.TAG_STRING))
 			targetList.add(message.getString("add"));
-		if(message.hasKey("remove"))
+		if(message.contains("remove", NBT.TAG_INT))
 			targetList.remove(message.getInt("remove"));
-		if(message.hasKey("whitelist"))
+		if(message.contains("whitelist", NBT.TAG_BYTE))
 			whitelist = message.getBoolean("whitelist");
-		if(message.hasKey("attackAnimals"))
+		if(message.contains("attackAnimals", NBT.TAG_BYTE))
 			attackAnimals = message.getBoolean("attackAnimals");
-		if(message.hasKey("attackPlayers"))
+		if(message.contains("attackPlayers", NBT.TAG_BYTE))
 			attackPlayers = message.getBoolean("attackPlayers");
-		if(message.hasKey("attackNeutrals"))
+		if(message.contains("attackNeutrals", NBT.TAG_BYTE))
 			attackNeutrals = message.getBoolean("attackNeutrals");
 		target = null;
 		this.markDirty();
@@ -303,7 +307,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		facing = Direction.byIndex(nbt.getInt("facing"));
 		energyStorage.readFromNBT(nbt);
 
-		if(nbt.hasKey("owner"))
+		if(nbt.contains("owner", NBT.TAG_STRING))
 			owner = nbt.getString("owner");
 		ListNBT list = nbt.getList("targetList", 8);
 		targetList.clear();
@@ -510,12 +514,14 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		if(world.getTileEntity(dummy?getPos().down(): getPos().up()) instanceof TurretTileEntity)
-			world.removeBlock(dummy?getPos().down(): getPos().up());
+			world.removeBlock(dummy?getPos().down(): getPos().up(), false);
 	}
 
 	@Override
-	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
+	public List<ItemStack> getTileDrops(Builder context)
 	{
+		BlockState state = context.get(LootParameters.BLOCK_STATE);
+		Entity player = context.get(LootParameters.THIS_ENTITY);
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		TurretTileEntity turret = this;
 		if(dummy)
@@ -524,7 +530,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			if(t instanceof TurretTileEntity)
 				turret = (TurretTileEntity)t;
 			else
-				return stack;
+				return ImmutableList.of(stack);
 		}
 
 		CompoundNBT tag = new CompoundNBT();
@@ -550,8 +556,8 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			tag.putBoolean("redstoneControlInverted", turret.redstoneControlInverted);
 
 		if(!tag.isEmpty())
-			stack.put(tag);
-		return stack;
+			stack.setTag(tag);
+		return ImmutableList.of(stack);
 	}
 
 	@Override
@@ -560,11 +566,11 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		if(stack.hasTag())
 		{
 			CompoundNBT tag = stack.getOrCreateTag();
-			if(tag.hasKey("owner"))
+			if(tag.contains("owner", NBT.TAG_STRING))
 				this.owner = tag.getString("owner");
 			else if(placer!=null)
 				this.owner = placer.getName().getString();
-			if(tag.hasKey("targetList"))
+			if(tag.contains("targetList", NBT.TAG_LIST))
 			{
 				ListNBT list = tag.getList("targetList", 8);
 				targetList.clear();
@@ -573,15 +579,15 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			}
 			else if(owner!=null)
 				targetList.add(owner);
-			if(tag.hasKey("whitelist"))
+			if(tag.contains("whitelist", NBT.TAG_BYTE))
 				whitelist = tag.getBoolean("whitelist");
-			if(tag.hasKey("attackAnimals"))
+			if(tag.contains("attackAnimals", NBT.TAG_BYTE))
 				attackAnimals = tag.getBoolean("attackAnimals");
-			if(tag.hasKey("attackPlayers"))
+			if(tag.contains("attackPlayers", NBT.TAG_BYTE))
 				attackPlayers = tag.getBoolean("attackPlayers");
-			if(tag.hasKey("attackNeutrals"))
+			if(tag.contains("attackNeutrals", NBT.TAG_BYTE))
 				attackNeutrals = tag.getBoolean("attackNeutrals");
-			if(tag.hasKey("redstoneControlInverted"))
+			if(tag.contains("redstoneControlInverted", NBT.TAG_BYTE))
 				redstoneControlInverted = tag.getBoolean("redstoneControlInverted");
 		}
 		else if(placer!=null)
