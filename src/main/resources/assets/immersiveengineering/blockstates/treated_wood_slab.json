@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:ie_slab",
+		"model": "immersiveengineering:block/ie_slab",
 		"textures": {
 			"all": "immersiveengineering:blocks/treated_wood_horizontal",
 			"bottom": "#all",

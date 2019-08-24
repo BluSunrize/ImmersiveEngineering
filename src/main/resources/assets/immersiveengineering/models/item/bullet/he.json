@@ -1,6 +1,6 @@
 {
 	"parent":"immersiveengineering:item/ie_item_base",
 	"textures": {
-		"layer0":"immersiveengineering:items/bullet_he"
+		"layer0":"immersiveengineering:item/bullet_he"
 	}
 }

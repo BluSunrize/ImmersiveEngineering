@@ -42,7 +42,7 @@ public class BotaniaHelper extends IECompatModule
 	@Override
 	public void preInit()
 	{
-		BulletHandler.registerBullet("terrasteel", new HomingBullet(IEConfig.Tools.bulletDamage_Homing, new ResourceLocation("immersiveengineering:items/bullet_terrasteel")));
+		BulletHandler.registerBullet("terrasteel", new HomingBullet(IEConfig.Tools.bulletDamage_Homing, new ResourceLocation("immersiveengineering:item/bullet_terrasteel")));
 		BulletHandler.homingCartridges.add("terrasteel");
 	}
 

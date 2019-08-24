@@ -43,8 +43,8 @@ import java.util.Set;
 public class ItemDrillhead extends ItemIEBase implements IDrillHead
 {
 	//Maximal damage is slightly proportionate to pickaxes
-	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", "ingotSteel", 3, 1, 3, 10, 7, 10000, "immersiveengineering:items/drill_diesel");
-	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, 2, 9, 6, 6000, "immersiveengineering:items/drill_iron");
+	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", "ingotSteel", 3, 1, 3, 10, 7, 10000, "immersiveengineering:item/drill_diesel");
+	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, 2, 9, 6, 6000, "immersiveengineering:item/drill_iron");
 
 	public DrillHeadPerm perms;
 

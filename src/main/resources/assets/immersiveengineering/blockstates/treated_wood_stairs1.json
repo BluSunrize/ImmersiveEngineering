@@ -12,7 +12,6 @@
 		}
 	},
 	"variants": {
-		"inventory": [{}],
 		"facing=east,half=bottom,shape=straight":  { "model": "minecraft:stairs" },
 		"facing=west,half=bottom,shape=straight":  { "model": "minecraft:stairs", "y": 180, "uvlock": true },
 		"facing=south,half=bottom,shape=straight": { "model": "minecraft:stairs", "y": 90, "uvlock": true },

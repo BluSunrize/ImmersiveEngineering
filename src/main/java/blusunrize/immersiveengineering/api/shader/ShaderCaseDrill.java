@@ -120,9 +120,9 @@ public class ShaderCaseDrill extends ShaderCase
 //	@Override
 //	public void stichTextures(TextureMap map, int sheetID)
 //	{
-//		i_drillBase = ApiUtils.getRegisterSprite(map, "immersiveengineering:items/shaders/drill_diesel_0");
+//		i_drillBase = ApiUtils.getRegisterSprite(map, "immersiveengineering:item/shaders/drill_diesel_0");
 //		i_drillOverlay = ApiUtils.getRegisterSprite(map, this.baseTexturePath+"1_"+this.overlayType);
-//		i_drillUncoloured = ApiUtils.getRegisterSprite(map, "immersiveengineering:items/shaders/drill_diesel_uncoloured");
+//		i_drillUncoloured = ApiUtils.getRegisterSprite(map, "immersiveengineering:item/shaders/drill_diesel_uncoloured");
 //		if(this.additionalTexture!=null)
 //			i_drillAdditional = ApiUtils.getRegisterSprite(map, this.baseTexturePath+additionalTexture);
 //	}

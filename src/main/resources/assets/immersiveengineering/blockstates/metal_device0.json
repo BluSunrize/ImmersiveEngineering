@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:smartmodel/conf_sides_hud_metal_device0_capacitor_creative"
+		"model": "immersiveengineering:block/smartmodel/conf_sides_hud_metal_device0_capacitor_creative"
 	},
 	"variants":
 	{
@@ -20,10 +20,10 @@
 			"name": "immersiveengineering:blocks/metal_device0_capacitor_creative"}
 		}],
 		"inventory,type=barrel": [{
-			"model": "immersiveengineering:smartmodel/conf_sides_v_metal_device0_barrel"
+			"model": "immersiveengineering:block/smartmodel/conf_sides_v_metal_device0_barrel"
 		}],
 		"inventory,type=fluid_placer": [{
-			"model": "immersiveengineering:smartmodel/conf_sides_s_metal_device0_fluid_placer"
+			"model": "immersiveengineering:block/smartmodel/conf_sides_s_metal_device0_fluid_placer"
 		}],
 		"type":
 		{
@@ -40,10 +40,10 @@
 				"name": "immersiveengineering:blocks/metal_device0_capacitor_creative"
 			}},
 			"barrel": {
-				"model": "immersiveengineering:smartmodel/conf_sides_v_metal_device0_barrel"
+				"model": "immersiveengineering:block/smartmodel/conf_sides_v_metal_device0_barrel"
 			},
 			"fluid_placer": {
-				"model": "immersiveengineering:smartmodel/conf_sides_s_metal_device0_fluid_placer"
+				"model": "immersiveengineering:block/smartmodel/conf_sides_s_metal_device0_fluid_placer"
 			}
 		},
 		"_0multiblockslave":

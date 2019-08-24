@@ -1,6 +1,6 @@
 {
 	"parent":"immersiveengineering:item/ie_item_base",
 	"textures": {
-		"layer0":"immersiveengineering:items/maneuver_gear"
+		"layer0":"immersiveengineering:item/maneuver_gear"
 	}
 }

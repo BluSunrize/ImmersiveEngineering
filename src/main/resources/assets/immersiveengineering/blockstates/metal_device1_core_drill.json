@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:metal_device/core_drill.obj.ie",
+		"model": "immersiveengineering:block/metal_device/core_drill.obj.ie",
 		"custom": {"flip-v": true}
 	},
 	"variants":
@@ -37,7 +37,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty"
+				"model": "immersiveengineering:block/ie_empty"
 			}
 		},
 		"boolean0":

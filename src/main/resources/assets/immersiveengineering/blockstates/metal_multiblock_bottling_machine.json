@@ -12,16 +12,16 @@
 	},
 	"variants":
 	{
-		"normal":[{
-			"model": "immersiveengineering:metal_multiblock/bottling_machine.obj",
+		"":[{
+			"model": "immersiveengineering:block/metal_multiblock/bottling_machine.obj",
 			"custom": {"flip-v": true}
 		}],
 		"mirrored":[{
-			"model": "immersiveengineering:metal_multiblock/bottling_machine_mirrored.obj",
+			"model": "immersiveengineering:block/metal_multiblock/bottling_machine_mirrored.obj",
 			"custom": {"flip-v": true}
 		}],
 		"glass":[{
-			"model": "immersiveengineering:metal_multiblock/bottling_machine_glass.obj",
+			"model": "immersiveengineering:block/metal_multiblock/bottling_machine_glass.obj",
 			"custom": {"flip-v": true}
 		}],
 		"inventory,type=bottling_machine": [{
@@ -68,14 +68,14 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty"
+				"model": "immersiveengineering:block/ie_empty"
 			}
 		},
 		"_1dynamicrender":
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:metal_multiblock/bottling_machine_animated.obj.ie"
+				"model": "immersiveengineering:block/metal_multiblock/bottling_machine_animated.obj.ie"
 			}
 		},
       "boolean0":

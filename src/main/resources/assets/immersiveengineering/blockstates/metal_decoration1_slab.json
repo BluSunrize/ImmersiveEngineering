@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:ie_slab",
+		"model": "immersiveengineering:block/ie_slab",
 		"textures": {
 			"bottom": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_top",
 			"top": "immersiveengineering:blocks/metal_decoration1_steel_scaffolding_top",
@@ -36,10 +36,10 @@
 		{
 			"0": {},
 			"1": {
-				"model": "immersiveengineering:ie_slab_top"
+				"model": "immersiveengineering:block/ie_slab_top"
 			},
 			"2": {
-				"model": "immersiveengineering:ie_scaffolding"
+				"model": "immersiveengineering:block/ie_scaffolding"
 			}
 		}
 	}

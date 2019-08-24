@@ -2,7 +2,7 @@
 	"forge_marker": 1,
 	"defaults":
 	{
-		"model": "immersiveengineering:metal_multiblock/bucket_wheel.obj.ie",
+		"model": "immersiveengineering:block/metal_multiblock/bucket_wheel.obj.ie",
 		"transform": "forge:default-block",
 		"custom": { "flip-v": true },
 		"textures": {
@@ -12,7 +12,7 @@
 	"variants":
 	{
 		"inventory,type=bucket_wheel": [{
-			"model": "immersiveengineering:metal_multiblock/bucket_wheel.obj.ie",
+			"model": "immersiveengineering:block/metal_multiblock/bucket_wheel.obj.ie",
 			"transform": {
 				"scale": 0.15625,
 				"rotation": [
@@ -49,7 +49,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty"
+				"model": "immersiveengineering:block/ie_empty"
 			}
 		},
 		"_1dynamicrender":

@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-      "model": "immersiveengineering:smartmodel/connector",
+      "model": "immersiveengineering:block/smartmodel/connector",
       "custom": {
         "flip-v": true,
 		  "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
@@ -16,7 +16,7 @@
 	"variants":
 	{
 		"inventory,type=floodlight": [{
-			"model": "immersiveengineering:metal_device/floodlight.obj.ie",
+			"model": "immersiveengineering:block/metal_device/floodlight.obj.ie",
 			"transform": {
 				"translation": [ 0.1875, 0.375, 0.1875 ],
 				"scale": [ 0.375,0.375,0.375 ],

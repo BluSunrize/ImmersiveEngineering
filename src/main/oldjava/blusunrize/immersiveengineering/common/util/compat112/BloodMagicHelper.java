@@ -23,7 +23,7 @@ public class BloodMagicHelper extends IECompatModule
 	@Override
 	public void preInit()
 	{
-		BulletHandler.registerBullet("crystalwill", new HomingBullet(IEConfig.Tools.bulletDamage_Homing, new ResourceLocation("immersiveengineering:items/bullet_crystalwill")));
+		BulletHandler.registerBullet("crystalwill", new HomingBullet(IEConfig.Tools.bulletDamage_Homing, new ResourceLocation("immersiveengineering:item/bullet_crystalwill")));
 		BulletHandler.homingCartridges.add("crystalwill");
 	}
 

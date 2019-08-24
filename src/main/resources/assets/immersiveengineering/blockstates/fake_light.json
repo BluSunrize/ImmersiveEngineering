@@ -2,7 +2,7 @@
 	"forge_marker": 1,
 	"defaults":
 	{
-		"model": "immersiveengineering:ie_empty"
+		"model": "immersiveengineering:block/ie_empty"
 	},
 	"variants":
 	{

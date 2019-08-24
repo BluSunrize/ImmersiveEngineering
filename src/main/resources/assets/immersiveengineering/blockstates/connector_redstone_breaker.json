@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-      "model": "immersiveengineering:smartmodel/connector",
+      "model": "immersiveengineering:block/smartmodel/connector",
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
@@ -15,7 +15,7 @@
 	"variants":
 	{
 		"inventory,type=redstone_breaker": [{
-			"model": "immersiveengineering:connector/redstone_breaker.obj.ie",
+			"model": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
 			"transform": {
 				"scale": [ 0.375, 0.375, 0.375 ],
 				"firstperson_righthand": { "translation": [ 0, 0.125, 0 ], "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 180 }] },
@@ -63,7 +63,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty"
+				"model": "immersiveengineering:block/ie_empty"
 			}
 		}
 	}

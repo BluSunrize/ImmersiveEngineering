@@ -121,9 +121,9 @@ public class ShaderCaseChemthrower extends ShaderCase
 //	@Override
 //	public void stichTextures(TextureMap map, int sheetID)
 //	{
-//		i_chemthrowerBase = ApiUtils.getRegisterSprite(map, "immersiveengineering:items/shaders/chemthrower_0");
+//		i_chemthrowerBase = ApiUtils.getRegisterSprite(map, "immersiveengineering:item/shaders/chemthrower_0");
 //		i_chemthrowerOverlay = ApiUtils.getRegisterSprite(map, this.baseTexturePath+"1_"+this.overlayType);
-//		i_chemthrowerUncoloured = ApiUtils.getRegisterSprite(map, "immersiveengineering:items/shaders/chemthrower_uncoloured");
+//		i_chemthrowerUncoloured = ApiUtils.getRegisterSprite(map, "immersiveengineering:item/shaders/chemthrower_uncoloured");
 //		if(this.additionalTexture!=null)
 //			i_chemthrowerAdditional = ApiUtils.getRegisterSprite(map, this.baseTexturePath+additionalTexture);
 //	}

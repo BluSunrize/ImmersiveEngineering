@@ -3,12 +3,12 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:smartmodel/conf_sides_hv_metal_device0_fluid_pump"
+		"model": "immersiveengineering:block/smartmodel/conf_sides_hv_metal_device0_fluid_pump"
 	},
 	"variants":
 	{
 		"inventory,type=fluid_pump": [{
-			"model": "immersiveengineering:metal_device/fluid_pump_inv.obj",
+			"model": "immersiveengineering:block/metal_device/fluid_pump_inv.obj",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": [ 0.28125, 0.28125, 0.28125 ],
@@ -28,7 +28,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:metal_device/fluid_pump.obj",
+				"model": "immersiveengineering:block/metal_device/fluid_pump.obj",
 				"custom": { "flip-v": true }
 			}
 		}

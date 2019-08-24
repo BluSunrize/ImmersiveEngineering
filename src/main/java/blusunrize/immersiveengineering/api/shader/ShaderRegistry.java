@@ -121,9 +121,9 @@ public class ShaderRegistry
 	public static ShaderCaseItem registerShader_Item(String name, Rarity rarity, int colour0, int colour1, int colour2)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shader_0"), colour0));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shader_1"), colour1));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shader_2"), colour2));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shader_0"), colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shader_1"), colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shader_2"), colour2));
 		ShaderCaseItem shader = new ShaderCaseItem(list);
 		return registerShaderCase(name, shader, rarity);
 	}
@@ -175,15 +175,15 @@ public class ShaderRegistry
 	public static ShaderCaseChemthrower registerShader_Chemthrower(String name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_0"), colour0));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_0"), colour1));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_1_"+overlayType), colour2));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_0"), colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_0"), colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_1_"+overlayType), colour2));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:items/shaders/chemthrower_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_uncoloured"), 0xffffffff));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_uncoloured"), 0xffffffff));
 		ShaderCaseChemthrower shader = new ShaderCaseChemthrower(list);
 		return registerShaderCase(name, shader, rarity);
 	}
@@ -205,15 +205,15 @@ public class ShaderRegistry
 	public static ShaderCaseDrill registerShader_Drill(String name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_0"), colour0));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_0"), colour1));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_1_"+overlayType), colour2));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_0"), colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_0"), colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_1_"+overlayType), colour2));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_uncoloured"), 0xffffffff));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_uncoloured"), 0xffffffff));
 		list.add(new ShaderLayer(null, 0xffffffff));//final pass is for drill head and augers
 		ShaderCaseDrill shader = new ShaderCaseDrill(list);
 		return registerShaderCase(name, shader, rarity);
@@ -235,15 +235,15 @@ public class ShaderRegistry
 	public static ShaderCaseRailgun registerShader_Railgun(String name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_0"), colour0));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_0"), colour1));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_1_"+overlayType), colour2));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_0"), colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_0"), colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_1_"+overlayType), colour2));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:items/shaders/railgun_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:item/shaders/railgun_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_uncoloured"), 0xffffffff));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_uncoloured"), 0xffffffff));
 
 		ShaderCaseRailgun shader = new ShaderCaseRailgun(list);
 		return registerShaderCase(name, shader, rarity);
@@ -264,14 +264,14 @@ public class ShaderRegistry
 	public static ShaderCaseShield registerShader_Shield(String name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_0"), colour0));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_1_"+overlayType), colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_0"), colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_1_"+overlayType), colour1));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:items/shaders/shield_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:item/shaders/shield_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/shield_uncoloured"), 0xffffffff));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_uncoloured"), 0xffffffff));
 
 		ShaderCaseShield shader = new ShaderCaseShield(list);
 		return registerShaderCase(name, shader, rarity);

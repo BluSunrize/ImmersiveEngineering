@@ -11,7 +11,7 @@
 	"variants":
 	{
 		"inventory,type=steel_post": [{
-			"model": "immersiveengineering:wooden_device/wooden_post_inv.obj",
+			"model": "immersiveengineering:block/wooden_device/wooden_post_inv.obj",
 			"textures": {"#immersiveengineering:blocks/wooden_device_post": "immersiveengineering:blocks/metal_decoration2_steel_post"},
 			"custom": {"flip-v": true},
 			"transform": {
@@ -25,7 +25,7 @@
 			}
 		}],
 		"inventory,type=steel_wallmount": [{
-			"model": "immersiveengineering:wooden_device/wallmount.obj",
+			"model": "immersiveengineering:block/wooden_device/wallmount.obj",
 			"textures": {"#immersiveengineering:blocks/wooden_device_wallmount": "immersiveengineering:blocks/metal_decoration2_steel_wallmount"},
 			"custom": {"flip-v": true},
 			"transform": {
@@ -39,7 +39,7 @@
 			}
 		}],
 		"inventory,type=aluminum_post": [{
-			"model": "immersiveengineering:wooden_device/wooden_post_inv.obj",
+			"model": "immersiveengineering:block/wooden_device/wooden_post_inv.obj",
 			"textures": {"#immersiveengineering:blocks/wooden_device_post": "immersiveengineering:blocks/metal_decoration2_aluminum_post"},
 			"custom": {"flip-v": true},
 			"transform": {
@@ -53,7 +53,7 @@
 			}
 		}],
 		"inventory,type=aluminum_wallmount": [{
-			"model": "immersiveengineering:wooden_device/wallmount.obj",
+			"model": "immersiveengineering:block/wooden_device/wallmount.obj",
 			"textures": {"#immersiveengineering:blocks/wooden_device_wallmount": "immersiveengineering:blocks/metal_decoration2_aluminum_wallmount"},
 			"custom": {"flip-v": true},
 			"transform": {
@@ -67,7 +67,7 @@
 			}
 		}],
 		"inventory,type=lantern": [{
-			"model": "immersiveengineering:lantern_inventory.obj",
+			"model": "immersiveengineering:block/lantern_inventory.obj",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": [ 0.5, 0.5, 0.5 ],
@@ -80,7 +80,7 @@
 			}
 		}],
 		"inventory,type=razor_wire": [{
-			"model": "immersiveengineering:razor_wire.obj.ie",
+			"model": "immersiveengineering:block/razor_wire.obj.ie",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": [ 0.5, 0.5, 0.5 ],
@@ -94,7 +94,7 @@
 		}],
       "inventory,type=steel_slope": [
         {
-          "model": "immersiveengineering:slope.obj.ie",
+          "model": "immersiveengineering:block/slope.obj.ie",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": [ 0.5, 0.5, 0.5 ],
@@ -109,7 +109,7 @@
       ],
       "inventory,type=alu_slope": [
         {
-          "model": "immersiveengineering:slope.obj.ie",
+          "model": "immersiveengineering:block/slope.obj.ie",
 			"textures": {
               "#immersiveengineering:blocks/metal_decoration1_steel_scaffolding_noctm": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_noctm"
 			},
@@ -127,31 +127,31 @@
       ],
 		"inventory,type=toolbox": [{
 			"custom": {"flip-v": true},
-			"model": "immersiveengineering:toolbox.obj"
+			"model": "immersiveengineering:block/toolbox.obj"
 		}],
 		"type":
 		{
 			"steel_post": {
-				"model": "immersiveengineering:wooden_device/wooden_post.obj.ie",
+				"model": "immersiveengineering:block/wooden_device/wooden_post.obj.ie",
 				"textures": {"#immersiveengineering:blocks/wooden_device_post": "immersiveengineering:blocks/metal_decoration2_steel_post"}
 			},
 			"steel_wallmount": {
-				"model": "immersiveengineering:wooden_device/wallmount.obj",
+				"model": "immersiveengineering:block/wooden_device/wallmount.obj",
 				"textures": {"#immersiveengineering:blocks/wooden_device_wallmount": "immersiveengineering:blocks/metal_decoration2_steel_wallmount"}
 			},
 			"aluminum_post": {
-				"model": "immersiveengineering:wooden_device/wooden_post.obj.ie",
+				"model": "immersiveengineering:block/wooden_device/wooden_post.obj.ie",
 				"textures": {"#immersiveengineering:blocks/wooden_device_post": "immersiveengineering:blocks/metal_decoration2_aluminum_post"}
 			},
 			"aluminum_wallmount": {
-				"model": "immersiveengineering:wooden_device/wallmount.obj",
+				"model": "immersiveengineering:block/wooden_device/wallmount.obj",
 				"textures": {"#immersiveengineering:blocks/wooden_device_wallmount": "immersiveengineering:blocks/metal_decoration2_aluminum_wallmount"}
 			},
 			"lantern": {
-				"model": "immersiveengineering:lantern.obj.ie"
+				"model": "immersiveengineering:block/lantern.obj.ie"
 			},
 			"razor_wire": {
-              "model": "immersiveengineering:smartmodel/connector",
+              "model": "immersiveengineering:block/smartmodel/connector",
               "custom": {
 				  "base": "immersiveengineering:block/razor_wire.obj.ie",
 				  "layers": [
@@ -160,16 +160,16 @@
               }
 			},
 			"toolbox": {
-              "model": "immersiveengineering:toolbox.obj",
+              "model": "immersiveengineering:block/toolbox.obj",
               "custom": {
                 "flip-v": true
               }
 			},
 			"steel_slope": {
-              "model": "immersiveengineering:slope.obj.ie"
+              "model": "immersiveengineering:block/slope.obj.ie"
 			},
 			"alu_slope": {
-				"model": "immersiveengineering:slope.obj.ie",
+				"model": "immersiveengineering:block/slope.obj.ie",
 				"textures": {
                   "#immersiveengineering:blocks/metal_decoration1_steel_scaffolding_noctm": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_noctm"
 				}
@@ -196,7 +196,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty",
+				"model": "immersiveengineering:block/ie_empty",
 				"textures": {
 					"particle": "immersiveengineering:blocks/storage_steel"
 				}
@@ -206,13 +206,13 @@
 		{
           "0": {},
           "1": {
-            "model": "immersiveengineering:wooden_device/wallmount_inverted.obj"
+            "model": "immersiveengineering:block/wooden_device/wallmount_inverted.obj"
           },
           "2": {
-            "model": "immersiveengineering:wooden_device/wallmount_sideways.obj"
+            "model": "immersiveengineering:block/wooden_device/wallmount_sideways.obj"
           },
           "3": {
-            "model": "immersiveengineering:wooden_device/wallmount_sideways_inverted.obj"
+            "model": "immersiveengineering:block/wooden_device/wallmount_sideways_inverted.obj"
           }
 		}
 	}

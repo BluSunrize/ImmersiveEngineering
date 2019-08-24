@@ -1,6 +1,6 @@
 {
 	"parent":"immersiveengineering:item/ie_item_base",
 	"textures": {
-		"layer0":"immersiveengineering:items/skyhook"
+		"layer0":"immersiveengineering:item/skyhook"
 	}
 }

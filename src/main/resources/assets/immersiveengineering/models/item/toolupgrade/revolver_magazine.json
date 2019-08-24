@@ -1,6 +1,6 @@
 {
 	"parent":"immersiveengineering:item/ie_item_base",
 	"textures": {
-		"layer0":"immersiveengineering:items/toolupgrade_revolver_magazine"
+		"layer0":"immersiveengineering:item/toolupgrade_revolver_magazine"
 	}
 }

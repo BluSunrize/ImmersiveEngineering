@@ -3,7 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:ie_six_sides",
+		"model": "immersiveengineering:block/ie_six_sides",
 		"textures": {
 			"bottom": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_bottom",
 			"top": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_top",
@@ -11,7 +11,6 @@
 			"south": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
 			"west": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
 			"east": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side",
-
 			"side_off": "immersiveengineering:blocks/metal_device1_furnace_heater",
 			"overlay_off": "immersiveengineering:blocks/metal_device1_furnace_heater_overlay",
 			"side_on": "immersiveengineering:blocks/metal_device1_furnace_heater_active",
@@ -21,7 +20,7 @@
 	"variants":
 	{
 		"inventory,type=blast_furnace_preheater": [{
-			"model": "immersiveengineering:metal_device/blastfurnace_preheater.obj",
+			"model": "immersiveengineering:block/metal_device/blastfurnace_preheater.obj",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": [ 0.1875, 0.1875, 0.1875 ],
@@ -58,7 +57,7 @@
 			"east": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side"}
 		}],
 		"inventory,type=tesla_coil": [{
-			"model": "immersiveengineering:metal_device/teslacoil.obj",
+			"model": "immersiveengineering:block/metal_device/teslacoil.obj",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": [ 0.28125, 0.28125, 0.28125 ],
@@ -72,7 +71,7 @@
 			}
 		}],
 		"inventory,type=turret_chem": [{
-			"model": "immersiveengineering:metal_device/chem_turret_inv.obj",
+			"model": "immersiveengineering:block/metal_device/chem_turret_inv.obj",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": [ 0.25, 0.25, 0.25 ],
@@ -85,7 +84,7 @@
 			}
 		}],
 		"inventory,type=turret_gun": [{
-			"model": "immersiveengineering:metal_device/gun_turret_inv.obj",
+			"model": "immersiveengineering:block/metal_device/gun_turret_inv.obj",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": [ 0.25, 0.25, 0.25 ],
@@ -101,11 +100,11 @@
 		"type":
 		{
 			"blast_furnace_preheater": {
-				"model": "immersiveengineering:metal_device/blastfurnace_preheater.obj",
+				"model": "immersiveengineering:block/metal_device/blastfurnace_preheater.obj",
 				"custom": { "flip-v": true }
 			},
 			"furnace_heater": {
-				"model": "immersiveengineering:ie_six_sides_overlay",
+				"model": "immersiveengineering:block/ie_six_sides_overlay",
 				"textures": {
 					"side_off": "immersiveengineering:blocks/metal_device1_furnace_heater",
 					"side_on": "immersiveengineering:blocks/metal_device1_furnace_heater_active",
@@ -143,15 +142,15 @@
 				"east": "immersiveengineering:blocks/metal_device1_thermoelectric_gen_side"
 			}},
 			"tesla_coil": {
-				"model": "immersiveengineering:metal_device/teslacoil.obj",
+				"model": "immersiveengineering:block/metal_device/teslacoil.obj",
 				"custom": { "flip-v": true }
 			},
 			"turret_chem": {
-				"model": "immersiveengineering:metal_device/chem_turret.obj.ie",
+				"model": "immersiveengineering:block/metal_device/chem_turret.obj.ie",
 				"custom": { "flip-v": true }
 			},
 			"turret_gun": {
-				"model": "immersiveengineering:metal_device/gun_turret.obj.ie",
+				"model": "immersiveengineering:block/metal_device/gun_turret.obj.ie",
 				"custom": { "flip-v": true }
 			},
 			"turret_rail": {}
@@ -181,7 +180,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty"
+				"model": "immersiveengineering:block/ie_empty"
 			}
 		},
 		"boolean0":

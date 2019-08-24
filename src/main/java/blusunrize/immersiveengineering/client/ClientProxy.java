@@ -993,7 +993,7 @@ public class ClientProxy extends CommonProxy
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/hot_metal_still");
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/hot_metal_flow");
 
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:items/shader_slot");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:item/shader_slot");
 	}
 
 	@SubscribeEvent

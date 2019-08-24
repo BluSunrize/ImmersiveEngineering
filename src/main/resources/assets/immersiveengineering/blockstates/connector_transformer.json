@@ -2,7 +2,7 @@
 	"forge_marker": 1,
 	"defaults": {
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:smartmodel/connector",
+		"model": "immersiveengineering:block/smartmodel/connector",
 		"custom": {
 			"flip-v": true,
 			"base": "immersiveengineering:block/connector/transformer_mv_left.obj",
@@ -14,7 +14,7 @@
 	"variants":
 	{
 		"inventory,type=transformer": [{
-			"model": "immersiveengineering:connector/transformer_mv_left.obj",
+			"model": "immersiveengineering:block/connector/transformer_mv_left.obj",
 			"transform": {
 				"scale": [ 0.25, 0.25, 0.25 ],
 				"firstperson_righthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 180 }] },
@@ -68,7 +68,7 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:ie_empty"
+				"model": "immersiveengineering:block/ie_empty"
 			}
 		}
 	}
