@@ -17,10 +17,11 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -30,10 +31,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -56,8 +54,8 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	private static final int SLAG_SLOT = 22;
 	private static final int FIRST_OUT_SLOT = 16;
 	private static final int OUT_SLOT_COUNT = 6;
-	private static final int SLAG_OUT_POS = 22;
-	private static final int MAIN_OUT_POS = 2;
+	private static final BlockPos SLAG_OUT_POS = new BlockPos(4, 0, 2);
+	private static final BlockPos MAIN_OUT_POS = new BlockPos(0, 0, 2);
 	private static final int[] OUTPUT_SLOTS;
 
 	static
@@ -80,7 +78,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 
 	public ArcFurnaceTileEntity()
 	{
-		super(MultiblockArcFurnace.instance, 64000, true, TYPE);
+		super(IEMultiblocks.ARC_FURNACE, 64000, true, TYPE);
 	}
 
 	@Override
@@ -242,24 +240,28 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock==1||posInMultiblock==3)
+		if(ImmutableSet.of(
+				new BlockPos(0, 0, 1),
+				new BlockPos(0, 0, 3)
+		).contains(posInMultiblock))
 			return new float[]{facing==Direction.EAST?.4375f: 0, 0, facing==Direction.SOUTH?.4375f: 0, facing==Direction.WEST?.5625f: 1, .5f, facing==Direction.NORTH?.5625f: 1};
-		else if(posInMultiblock < 20&&posInMultiblock!=2)
+		else if(posInMultiblock.getY()==0&&posInMultiblock.getX() < 4&&!posInMultiblock.equals(new BlockPos(0, 0, 2)))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		else if(posInMultiblock==25)
+		else if(new BlockPos(4, 0, 2).equals(posInMultiblock))
 			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
-		else if((posInMultiblock >= 36&&posInMultiblock <= 38)||(posInMultiblock >= 41&&posInMultiblock <= 43))
+		else if(new MutableBoundingBox(2, 1, 1, 3, 1, 3)
+				.isVecInside(posInMultiblock))
 		{
 			Direction fw = facing.rotateY();
-			if(mirrored|posInMultiblock%5==3)
+			if(mirrored|posInMultiblock.getZ()==3)
 				fw = fw.getOpposite();
-			if(posInMultiblock%5==2)
+			if(posInMultiblock.getZ()==2)
 				fw = null;
 			float minX = fw==Direction.EAST?.125f: 0;
 			float maxX = fw==Direction.WEST?.875f: 1;
 			float minZ = fw==Direction.SOUTH?.125f: 0;
 			float maxZ = fw==Direction.NORTH?.875f: 1;
-			if(posInMultiblock <= 38)
+			if(posInMultiblock.getZ() < 4)
 			{
 				minX -= facing==Direction.EAST?.875f: 0;
 				maxX += facing==Direction.WEST?.875f: 0;
@@ -268,25 +270,35 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			}
 			return new float[]{minX, .5f, minZ, maxX, 1, maxZ};
 		}
-		else if(posInMultiblock==40||posInMultiblock==44)
+		else if(ImmutableSet.of(
+				new BlockPos(3, 1, 0),
+				new BlockPos(3, 1, 4)
+		).contains(posInMultiblock))
 		{
-			Direction fl = posInMultiblock==44?facing.getOpposite(): facing;
+			Direction fl = posInMultiblock.getZ()==4?facing.getOpposite(): facing;
 			return new float[]{fl==Direction.NORTH?.125f: fl==Direction.SOUTH?.625f: 0, .125f, fl==Direction.EAST?.125f: fl==Direction.WEST?.625f: 0, fl==Direction.SOUTH?.875f: fl==Direction.NORTH?.375f: 1, .375f, fl==Direction.WEST?.875f: fl==Direction.EAST?.375f: 1};
 		}
-		else if(posInMultiblock >= 46&&posInMultiblock <= 48)
+		else if(posInMultiblock.getX()==4&&posInMultiblock.getY()==1&&posInMultiblock.getZ() >= 1&&posInMultiblock.getZ() <= 3)
 			return new float[]{facing==Direction.WEST?.25f: 0, 0, facing==Direction.NORTH?.25f: 0, facing==Direction.EAST?.75f: 1, 1, facing==Direction.SOUTH?.75f: 1};
-		else if(posInMultiblock==97)
+		else if(new BlockPos(4, 3, 2).equals(posInMultiblock))
 			return new float[]{facing.getAxis()==Axis.X?.375f: 0, 0, facing.getAxis()==Axis.Z?.375f: 0, facing.getAxis()==Axis.X?.625f: 1, 1, facing.getAxis()==Axis.Z?.625f: 1};
-		else if(posInMultiblock==122)
+		else if(new BlockPos(4, 4, 2).equals(posInMultiblock))
 			return new float[]{facing==Direction.WEST?.3125f: 0, 0, facing==Direction.NORTH?.3125f: 0, facing==Direction.EAST?.6875f: 1, .9375f, facing==Direction.SOUTH?.6875f: 1};
-		else if(posInMultiblock==117)
+		else if(new BlockPos(3, 4, 2).equals(posInMultiblock))
 			return new float[]{0, .625f, 0, 1, .9375f, 1};
-		else if(posInMultiblock==112)
+		else if(new BlockPos(2, 4, 2).equals(posInMultiblock))
 			return new float[]{facing==Direction.EAST?.125f: 0, 0, facing==Direction.SOUTH?.125f: 0, facing==Direction.WEST?.875f: 1, .9375f, facing==Direction.NORTH?.875f: 1};
-		else if(posInMultiblock==51||posInMultiblock==53||posInMultiblock==96||posInMultiblock==98||posInMultiblock==121||posInMultiblock==123)
+		else if(ImmutableSet.of(
+				new BlockPos(0, 2, 1),
+				new BlockPos(0, 2, 3),
+				new BlockPos(4, 3, 1),
+				new BlockPos(4, 3, 3),
+				new BlockPos(4, 4, 1),
+				new BlockPos(4, 4, 3)
+		).contains(posInMultiblock))
 		{
 			Direction fw = facing.rotateY();
-			if(mirrored^posInMultiblock%5==3)
+			if(mirrored^posInMultiblock.getZ()==3)
 				fw = fw.getOpposite();
 			return new float[]{fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1};
 		}
@@ -296,13 +308,13 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		if(posInMultiblock%15==7)
-			return null;
+		//TODO this seems a bit nonsensical if(posInMultiblock%15==7)
+		//	return null;
 		Direction fl = facing;
 		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
-		if(posInMultiblock==0)
+		if(BlockPos.ZERO.equals(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
@@ -318,7 +330,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(posInMultiblock >= 46&&posInMultiblock <= 48)
+		else if(posInMultiblock.getX()==4&&posInMultiblock.getY()==1&&posInMultiblock.getZ() >= 1&&posInMultiblock.getZ() <= 3)
 		{
 			float minX = fl==Direction.WEST?.25f: 0;
 			float maxX = fl==Direction.EAST?.75f: 1;
@@ -333,25 +345,25 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			list.add(new AxisAlignedBB(minX, .25f, minZ, maxX, .75, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(posInMultiblock%25 >= 10&&(posInMultiblock%5==0||posInMultiblock%5==4))
+		else if(posInMultiblock.getX() >= 2&&(posInMultiblock.getZ()==0||posInMultiblock.getZ()==4))
 		{
-			List<AxisAlignedBB> list = posInMultiblock < 25?Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ())): new ArrayList(2);
-			if(posInMultiblock%5==4)
+			List<AxisAlignedBB> list = posInMultiblock.getY()==0?Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ())): new ArrayList(2);
+			if(posInMultiblock.getZ()==4)
 				fw = fw.getOpposite();
 			float minX = fw==Direction.EAST?.5f: 0;
 			float maxX = fw==Direction.WEST?.5f: 1;
 			float minZ = fw==Direction.SOUTH?.5f: 0;
 			float maxZ = fw==Direction.NORTH?.5f: 1;
-			if(posInMultiblock%25/5!=3)
-				list.add(new AxisAlignedBB(minX, posInMultiblock < 25?.5: 0, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock < 25)
+			if(posInMultiblock.getX()!=3)
+				list.add(new AxisAlignedBB(minX, posInMultiblock.getY()==0?.5: 0, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			if(posInMultiblock.getY()==0)
 			{
 				minX = fw==Direction.EAST?.125f: fw==Direction.WEST?.625f: fl==Direction.EAST?.375f: -1.625f;
 				maxX = fw==Direction.EAST?.375f: fw==Direction.WEST?.875f: fl==Direction.WEST?.625f: 2.625f;
 				minZ = fw==Direction.SOUTH?.125f: fw==Direction.NORTH?.625f: fl==Direction.SOUTH?.375f: -1.625f;
 				maxZ = fw==Direction.SOUTH?.375f: fw==Direction.NORTH?.875f: fl==Direction.NORTH?.625f: 2.625f;
 				AxisAlignedBB aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*posInMultiblock.getX()-2, 0, -fl.getZOffset()*posInMultiblock.getX()-2);
 				list.add(aabb);
 
 				minX = fw==Direction.EAST?.375f: fw==Direction.WEST?.5f: fl==Direction.EAST?.375f: .375f;
@@ -359,7 +371,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				minZ = fw==Direction.SOUTH?.375f: fw==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: .375f;
 				maxZ = fw==Direction.SOUTH?.5f: fw==Direction.NORTH?.625f: fl==Direction.NORTH?.625f: .625f;
 				aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*posInMultiblock.getX()-2, 0, -fl.getZOffset()*posInMultiblock.getX()-2);
 				list.add(aabb);
 
 				minX = fw==Direction.EAST?.375f: fw==Direction.WEST?.5f: fl==Direction.EAST?2.375f: -1.625f;
@@ -367,17 +379,17 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				minZ = fw==Direction.SOUTH?.375f: fw==Direction.NORTH?.5f: fl==Direction.SOUTH?2.375f: -1.625f;
 				maxZ = fw==Direction.SOUTH?.5f: fw==Direction.NORTH?.625f: fl==Direction.NORTH?-1.375f: 2.625f;
 				aabb = new AxisAlignedBB(minX, .6875, minZ, maxX, .9375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*posInMultiblock.getX()-2, 0, -fl.getZOffset()*posInMultiblock.getX()-2);
 				list.add(aabb);
 			}
-			else if(posInMultiblock < 50)
+			else if(posInMultiblock.getY()==1)
 			{
 				minX = fw==Direction.EAST?.125f: fw==Direction.WEST?.625f: fl==Direction.EAST?.375f: -1.625f;
 				maxX = fw==Direction.EAST?.375f: fw==Direction.WEST?.875f: fl==Direction.WEST?.625f: 2.625f;
 				minZ = fw==Direction.SOUTH?.125f: fw==Direction.NORTH?.625f: fl==Direction.SOUTH?.375f: -1.625f;
 				maxZ = fw==Direction.SOUTH?.375f: fw==Direction.NORTH?.875f: fl==Direction.NORTH?.625f: 2.625f;
 				AxisAlignedBB aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*posInMultiblock.getX()-2, 0, -fl.getZOffset()*posInMultiblock.getX()-2);
 				list.add(aabb);
 
 				minX = fw==Direction.EAST?.375f: fw==Direction.WEST?.5f: fl==Direction.EAST?.375f: .375f;
@@ -385,18 +397,18 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				minZ = fw==Direction.SOUTH?.375f: fw==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: .375f;
 				maxZ = fw==Direction.SOUTH?.5f: fw==Direction.NORTH?.625f: fl==Direction.NORTH?.625f: .625f;
 				aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
-				if(posInMultiblock%5==0)
+				aabb = aabb.offset(-fl.getXOffset()*posInMultiblock.getX()-2, 0, -fl.getZOffset()*posInMultiblock.getX()-2);
+				if(posInMultiblock.getZ()==0)
 					aabb = aabb.offset(0, .6875, 0);
 				list.add(aabb);
-				if(posInMultiblock%5==0)
+				if(posInMultiblock.getZ()==0)
 				{
 					minX = fw==Direction.EAST?.125f: fw==Direction.WEST?.625f: fl==Direction.EAST?.375f: .375f;
 					maxX = fw==Direction.EAST?.375f: fw==Direction.WEST?.875f: fl==Direction.WEST?.625f: .625f;
 					minZ = fw==Direction.SOUTH?.125f: fw==Direction.NORTH?.625f: fl==Direction.SOUTH?.375f: .375f;
 					maxZ = fw==Direction.SOUTH?.375f: fw==Direction.NORTH?.875f: fl==Direction.NORTH?.625f: .625f;
 					aabb = new AxisAlignedBB(minX, .375, minZ, maxX, 1.0625, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-					aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
+					aabb = aabb.offset(-fl.getXOffset()*posInMultiblock.getX()-2, 0, -fl.getZOffset()*posInMultiblock.getX()-2);
 					list.add(aabb);
 				}
 				minX = fw==Direction.EAST?.375f: fw==Direction.WEST?.5f: fl==Direction.EAST?2.375f: -1.625f;
@@ -404,10 +416,13 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				minZ = fw==Direction.SOUTH?.375f: fw==Direction.NORTH?.5f: fl==Direction.SOUTH?2.375f: -1.625f;
 				maxZ = fw==Direction.SOUTH?.5f: fw==Direction.NORTH?.625f: fl==Direction.NORTH?-1.375f: 2.625f;
 				aabb = new AxisAlignedBB(minX, .125, minZ, maxX, .375, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ());
-				aabb = aabb.offset(-fl.getXOffset()*(posInMultiblock%25-10)/5, 0, -fl.getZOffset()*(posInMultiblock%25-10)/5);
+				aabb = aabb.offset(-fl.getXOffset()*posInMultiblock.getX()-2, 0, -fl.getZOffset()*posInMultiblock.getX()-2);
 				list.add(aabb);
 			}
-			else if(posInMultiblock==60||posInMultiblock==64)
+			else if(ImmutableSet.of(
+					new BlockPos(2, 2, 0),
+					new BlockPos(2, 2, 4)
+			).contains(posInMultiblock))
 			{
 				minX = fw==Direction.EAST?.375f: fw==Direction.WEST?.5f: .25f;
 				maxX = fw==Direction.EAST?.5f: fw==Direction.WEST?.625f: .75f;
@@ -433,21 +448,27 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{46, 47, 48};
+		return ImmutableSet.of(
+				new BlockPos(4, 1, 1),
+				new BlockPos(4, 1, 2),
+				new BlockPos(4, 1, 3)
+		);
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{25};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 0)
+		);
 	}
 
 	@Override
 	public int getComparatorInputOverride()
 	{
-		if(posInMultiblock==112)
+		if(new BlockPos(2, 4, 2).equals(posInMultiblock))
 		{
 			ArcFurnaceTileEntity master = master();
 			if(master!=null)
@@ -660,9 +681,10 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				return master.outputHandler.cast();
 			else if(posInMultiblock==SLAG_OUT_POS)
 				return master.slagHandler.cast();
-			else if(posInMultiblock==(mirrored?88: 86))
+				//TODO are these swapped?
+			else if(new BlockPos(2, 3, 3).equals(posInMultiblock))
 				return master.inputHandler.cast();
-			else if(posInMultiblock==(mirrored?86: 88))
+			else if(new BlockPos(2, 3, 1).equals(posInMultiblock))
 				return master.additiveHandler.cast();
 		}
 		return super.getCapability(capability, facing);
@@ -695,10 +717,15 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		return null;
 	}
 
+	private static final Set<BlockPos> specialGuiPositions = ImmutableSet.of(
+			new BlockPos(0, 0, 2),
+			new BlockPos(0, 1, 0)
+	);
 	@Override
 	public boolean canUseGui(PlayerEntity player)
 	{
-		return formed&&(posInMultiblock==2||posInMultiblock==25||(posInMultiblock > 25&&posInMultiblock%5 > 0&&posInMultiblock%5 < 4&&posInMultiblock%25/5 < 4));
+		return formed&&(specialGuiPositions.contains(posInMultiblock)||
+				(posInMultiblock.getY() > 0&&posInMultiblock.getZ() > 0&&posInMultiblock.getZ() < 4&&posInMultiblock.getX() < 4));
 	}
 
 	@Nonnull

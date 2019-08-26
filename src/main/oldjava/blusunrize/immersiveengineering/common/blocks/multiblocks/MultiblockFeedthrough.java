@@ -27,13 +27,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Set;
 
-public class MultiblockFeedthrough implements IMultiblock
+public class MultiblockFeedthrough extends TemplateMultiblock
 {
 	public static MultiblockFeedthrough instance = new MultiblockFeedthrough();
 	static ItemStack[][][] structure = new ItemStack[1][1][3];
@@ -46,7 +49,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	}
 
 	@Override
-	public ItemStack[][][] getStructureManual()
+	public List<BlockInfo> getStructureManual()
 	{
 		return structure;
 	}
@@ -100,7 +103,7 @@ public class MultiblockFeedthrough implements IMultiblock
 	}
 
 	@Override
-	public String getUniqueName()
+	public ResourceLocation getUniqueName()
 	{
 		return "IE:Feedthrough";
 	}

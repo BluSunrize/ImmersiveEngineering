@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,6 +27,8 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootParameters;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Collections;
@@ -49,9 +52,6 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 		if(tileEntity instanceof MultiblockPartTileEntity&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 		{
 			MultiblockPartTileEntity tile = (MultiblockPartTileEntity)tileEntity;
-			if(!tile.formed&&tile.posInMultiblock==-1&&!tile.getOriginalBlock().isEmpty())
-				world.addEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, tile.getOriginalBlock().copy()));
-
 			if(tile.formed&&tile instanceof IIEInventory)
 			{
 				IIEInventory master = (IIEInventory)tile.master();
@@ -67,26 +67,25 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
 	{
+		TileEntity te = builder.get(LootParameters.BLOCK_ENTITY);
+		if(te instanceof MultiblockPartTileEntity)
+		{
+			MultiblockPartTileEntity<?> multiblockTile = (MultiblockPartTileEntity<?>)te;
+			return Utils.getDrops(multiblockTile.getOriginalBlock(), new Builder(builder.getWorld())
+					.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
+			);
+		}
 		return Collections.emptyList();
 	}
 
 	@Override
 	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
 	{
-		ItemStack stack = getOriginalBlock(world, pos);
-		if(!stack.isEmpty())
-			return stack;
-		return super.getPickBlock(state, target, world, pos, player);
-	}
-
-	public ItemStack getOriginalBlock(IBlockReader world, BlockPos pos)
-	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof MultiblockPartTileEntity)
-			return ((MultiblockPartTileEntity)te).getOriginalBlock();
+			return Utils.getPickBlock(((MultiblockPartTileEntity)te).getOriginalBlock(), target, player);
 		return ItemStack.EMPTY;
 	}
 }

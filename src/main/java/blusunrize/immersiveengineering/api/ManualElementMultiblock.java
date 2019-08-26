@@ -89,7 +89,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
 	{
 		int yOff = 0;
-		if(multiblock.getStructureManual()!=null)
+		if(multiblock.getStructure()!=null)
 		{
 			boolean canRenderFormed = multiblock.canRenderFormedStructure();
 
@@ -179,7 +179,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		int stackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
 		try
 		{
-			if(multiblock.getStructureManual()!=null)
+			if(multiblock.getStructure()!=null)
 			{
 				if(canTick&&++tick%20==0)
 					renderInfo.step();
@@ -410,7 +410,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		MultiblockRenderInfo(IMultiblock multiblock)
 		{
 			this.multiblock = multiblock;
-			init(multiblock.getStructureManual());
+			init(multiblock.getStructure());
 			maxBlockIndex = blockIndex = structureHeight*structureLength*structureWidth;
 		}
 

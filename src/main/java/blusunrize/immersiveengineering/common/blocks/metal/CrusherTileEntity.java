@@ -16,11 +16,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -33,9 +34,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -50,6 +49,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEntity, CrusherRecipe> implements ISoundTile, IAdvancedSelectionBounds, IAdvancedCollisionBounds
 {
@@ -61,7 +61,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 
 	public CrusherTileEntity()
 	{
-		super(MultiblockCrusher.instance, 32000, true, TYPE);
+		super(IEMultiblocks.CRUSHER, 32000, true, TYPE);
 	}
 
 	@Override
@@ -125,38 +125,50 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock==1||posInMultiblock==3||posInMultiblock==4||posInMultiblock==6||posInMultiblock==8||posInMultiblock==11||posInMultiblock==12||posInMultiblock==13||posInMultiblock==14||posInMultiblock==24)
+		Set<BlockPos> slabs = ImmutableSet.of(
+				new BlockPos(0, 0, 1),
+				new BlockPos(0, 0, 3),
+				new BlockPos(0, 0, 4),
+				new BlockPos(1, 0, 1),
+				new BlockPos(1, 0, 3),
+				new BlockPos(2, 0, 1),
+				new BlockPos(2, 0, 2),
+				new BlockPos(2, 0, 3),
+				new BlockPos(2, 0, 4),
+				new BlockPos(1, 1, 4)
+		);
+		if(slabs.contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(posInMultiblock==22)
+		if(new BlockPos(1, 1, 2).equals(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .75f, 1};
-		if(posInMultiblock==37)
+		if(new BlockPos(1, 2, 2).equals(posInMultiblock))
 			return new float[]{0, 0, 0, 0, 0, 0};
 
 		Direction fl = facing;
 		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
-		if(posInMultiblock > 15&&posInMultiblock%5 > 0&&posInMultiblock%5 < 4)
+		if(posInMultiblock.getY() > 0&&posInMultiblock.getZ() > 0&&posInMultiblock.getZ() < 4)
 		{
 			float minX = 0;
 			float maxX = 1;
 			float minZ = 0;
 			float maxZ = 1;
-			if(posInMultiblock%5==1)
+			if(posInMultiblock.getZ()==1)
 			{
 				minX = fw==Direction.EAST?.1875f: 0;
 				maxX = fw==Direction.WEST?.8125f: 1;
 				minZ = fw==Direction.SOUTH?.1875f: 0;
 				maxZ = fw==Direction.NORTH?.8125f: 1;
 			}
-			else if(posInMultiblock%5==3)
+			else if(posInMultiblock.getZ()==3)
 			{
 				minX = fw==Direction.WEST?.1875f: 0;
 				maxX = fw==Direction.EAST?.8125f: 1;
 				minZ = fw==Direction.NORTH?.1875f: 0;
 				maxZ = fw==Direction.SOUTH?.8125f: 1;
 			}
-			if((posInMultiblock%15)/5==0)
+			if(posInMultiblock.getX()==0)
 			{
 				if(fl==Direction.EAST)
 					minX = .1875f;
@@ -170,7 +182,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 
 			return new float[]{minX, 0, minZ, maxX, 1, maxZ};
 		}
-		if(posInMultiblock==19)
+		if(new BlockPos(0, 1, 4).equals(posInMultiblock))
 			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
 
 		return new float[]{0, 0, 0, 1, 1, 1};
@@ -179,13 +191,13 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		if(posInMultiblock%15==7)
+		if(posInMultiblock.getX()==1&&posInMultiblock.getZ()==2)
 			return null;
 		Direction fl = facing;
 		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
-		if(posInMultiblock==4)
+		if(new BlockPos(0, 0, 4).equals(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
@@ -201,60 +213,73 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		if((posInMultiblock > 20&&posInMultiblock < 24)||(posInMultiblock > 35&&posInMultiblock < 39))
+		if(new MutableBoundingBox(1, 1, 1, 1, 2, 3)
+				.isVecInside(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>(3);
+			List<AxisAlignedBB> list = new ArrayList<>(3);
 			float minY = .5f;
-			float minX = (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.4375f: 0;
-			float maxX = (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.5625f: 1;
-			float minZ = (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.4375f: 0;
-			float maxZ = (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.5625f: 1;
-			if(posInMultiblock > 20&&posInMultiblock < 24)
+			float minX = (posInMultiblock.getZ()==1&&fw==Direction.EAST)||(posInMultiblock.getZ()==3&&fw==Direction.WEST)?.4375f: 0;
+			float maxX = (posInMultiblock.getZ()==1&&fw==Direction.WEST)||(posInMultiblock.getZ()==3&&fw==Direction.EAST)?.5625f: 1;
+			float minZ = (posInMultiblock.getZ()==1&&fw==Direction.SOUTH)||(posInMultiblock.getZ()==3&&fw==Direction.NORTH)?.4375f: 0;
+			float maxZ = (posInMultiblock.getZ()==1&&fw==Direction.NORTH)||(posInMultiblock.getZ()==3&&fw==Direction.SOUTH)?.5625f: 1;
+			if(posInMultiblock.getY()==1)
 				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			else
 				minY = 0;
 
-			minX = (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.1875f: (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.5625f: 0;
-			maxX = (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.8125f: (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.4375f: 1;
-			minZ = (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.1875f: (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.5625f: 0;
-			maxZ = (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.8125f: (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.4375f: 1;
+			minX = (posInMultiblock.getZ()==1&&fw==Direction.EAST)||(posInMultiblock.getZ()==3&&fw==Direction.WEST)?.1875f: (posInMultiblock.getZ()==1&&fw==Direction.WEST)||(posInMultiblock.getZ()==3&&fw==Direction.EAST)?.5625f: 0;
+			maxX = (posInMultiblock.getZ()==1&&fw==Direction.WEST)||(posInMultiblock.getZ()==3&&fw==Direction.EAST)?.8125f: (posInMultiblock.getZ()==1&&fw==Direction.EAST)||(posInMultiblock.getZ()==3&&fw==Direction.WEST)?.4375f: 1;
+			minZ = (posInMultiblock.getZ()==1&&fw==Direction.SOUTH)||(posInMultiblock.getZ()==3&&fw==Direction.NORTH)?.1875f: (posInMultiblock.getZ()==1&&fw==Direction.NORTH)||(posInMultiblock.getZ()==3&&fw==Direction.SOUTH)?.5625f: 0;
+			maxZ = (posInMultiblock.getZ()==1&&fw==Direction.NORTH)||(posInMultiblock.getZ()==3&&fw==Direction.SOUTH)?.8125f: (posInMultiblock.getZ()==1&&fw==Direction.SOUTH)||(posInMultiblock.getZ()==3&&fw==Direction.NORTH)?.4375f: 1;
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		if((posInMultiblock > 15&&posInMultiblock < 19)||(posInMultiblock > 30&&posInMultiblock < 34)||(posInMultiblock > 25&&posInMultiblock < 29)||(posInMultiblock > 40&&posInMultiblock < 44))
+		if((posInMultiblock.getX()==0||posInMultiblock.getX()==2)&&posInMultiblock.getY() > 0&&posInMultiblock.getZ() > 0&&posInMultiblock.getZ() < 4)
 		{
-			if(posInMultiblock%15 > 9)
+			if(posInMultiblock.getX()==2)
 				fl = fl.getOpposite();
 			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>(3);
 			float minY = .5f;
-			float minX = (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.4375f: fl==Direction.EAST?.4375f: 0;
-			float maxX = (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.5625f: fl==Direction.WEST?.5625f: 1;
-			float minZ = (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.4375f: fl==Direction.SOUTH?.4375f: 0;
-			float maxZ = (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.5625f: fl==Direction.NORTH?.5625f: 1;
-			if((posInMultiblock > 15&&posInMultiblock < 19)||(posInMultiblock > 25&&posInMultiblock < 29))
+			float minX = (posInMultiblock.getZ()==1&&fw==Direction.EAST)||(posInMultiblock.getZ()==3&&fw==Direction.WEST)?.4375f: fl==Direction.EAST?.4375f: 0;
+			float maxX = (posInMultiblock.getZ()==1&&fw==Direction.WEST)||(posInMultiblock.getZ()==3&&fw==Direction.EAST)?.5625f: fl==Direction.WEST?.5625f: 1;
+			float minZ = (posInMultiblock.getZ()==1&&fw==Direction.SOUTH)||(posInMultiblock.getZ()==3&&fw==Direction.NORTH)?.4375f: fl==Direction.SOUTH?.4375f: 0;
+			float maxZ = (posInMultiblock.getZ()==1&&fw==Direction.NORTH)||(posInMultiblock.getZ()==3&&fw==Direction.SOUTH)?.5625f: fl==Direction.NORTH?.5625f: 1;
+			if(posInMultiblock.getY()==1)
 				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			else
 				minY = 0;
 
-			if(posInMultiblock/15 > 9)
-				fl = fl.getOpposite();
+			//TODO this doesn't make any sense? if(posInMultiblock/15 > 9)
+			//	fl = fl.getOpposite();
 
-			minX = (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.1875f: fl==Direction.EAST?.1875f: fl==Direction.WEST?.5625f: 0;
-			maxX = (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.8125f: fl==Direction.WEST?.8125f: fl==Direction.EAST?.4375f: 1;
-			minZ = (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.1875f: fl==Direction.SOUTH?.1875f: fl==Direction.NORTH?.5625f: 0;
-			maxZ = (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.8125f: fl==Direction.NORTH?.8125f: fl==Direction.SOUTH?.4375f: 1;
+			minX = (posInMultiblock.getZ()==1&&fw==Direction.EAST)||(posInMultiblock.getZ()==3&&fw==Direction.WEST)?.1875f: fl==Direction.EAST?.1875f: fl==Direction.WEST?.5625f: 0;
+			maxX = (posInMultiblock.getZ()==1&&fw==Direction.WEST)||(posInMultiblock.getZ()==3&&fw==Direction.EAST)?.8125f: fl==Direction.WEST?.8125f: fl==Direction.EAST?.4375f: 1;
+			minZ = (posInMultiblock.getZ()==1&&fw==Direction.SOUTH)||(posInMultiblock.getZ()==3&&fw==Direction.NORTH)?.1875f: fl==Direction.SOUTH?.1875f: fl==Direction.NORTH?.5625f: 0;
+			maxZ = (posInMultiblock.getZ()==1&&fw==Direction.NORTH)||(posInMultiblock.getZ()==3&&fw==Direction.SOUTH)?.8125f: fl==Direction.NORTH?.8125f: fl==Direction.SOUTH?.4375f: 1;
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock!=17&&posInMultiblock!=32&&posInMultiblock!=27&&posInMultiblock!=42)
+			if(!ImmutableSet.of(
+					new BlockPos(0, 1, 2),
+					new BlockPos(0, 2, 2),
+					new BlockPos(2, 1, 2),
+					new BlockPos(2, 2, 2)
+			).contains(posInMultiblock))
 			{
-				minX = (posInMultiblock%5==1&&fw==Direction.EAST)||(posInMultiblock%5==3&&fw==Direction.WEST)?.1875f: fl==Direction.EAST?.4375f: fl==Direction.WEST?0: .5625f;
-				maxX = (posInMultiblock%5==1&&fw==Direction.WEST)||(posInMultiblock%5==3&&fw==Direction.EAST)?.8125f: fl==Direction.WEST?.5625f: fl==Direction.EAST?1: .4375f;
-				minZ = (posInMultiblock%5==1&&fw==Direction.SOUTH)||(posInMultiblock%5==3&&fw==Direction.NORTH)?.1875f: fl==Direction.SOUTH?.4375f: fl==Direction.NORTH?0: .5625f;
-				maxZ = (posInMultiblock%5==1&&fw==Direction.NORTH)||(posInMultiblock%5==3&&fw==Direction.SOUTH)?.8125f: fl==Direction.NORTH?.5625f: fl==Direction.SOUTH?1: .4375f;
+				minX = (posInMultiblock.getZ()==1&&fw==Direction.EAST)||(posInMultiblock.getZ()==3&&fw==Direction.WEST)?.1875f: fl==Direction.EAST?.4375f: fl==Direction.WEST?0: .5625f;
+				maxX = (posInMultiblock.getZ()==1&&fw==Direction.WEST)||(posInMultiblock.getZ()==3&&fw==Direction.EAST)?.8125f: fl==Direction.WEST?.5625f: fl==Direction.EAST?1: .4375f;
+				minZ = (posInMultiblock.getZ()==1&&fw==Direction.SOUTH)||(posInMultiblock.getZ()==3&&fw==Direction.NORTH)?.1875f: fl==Direction.SOUTH?.4375f: fl==Direction.NORTH?0: .5625f;
+				maxZ = (posInMultiblock.getZ()==1&&fw==Direction.NORTH)||(posInMultiblock.getZ()==3&&fw==Direction.SOUTH)?.8125f: fl==Direction.NORTH?.5625f: fl==Direction.SOUTH?1: .4375f;
 				list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
-				if(posInMultiblock%15%10==1)
+				if(posInMultiblock.getZ()==1&&(posInMultiblock.getX()==0||posInMultiblock.getX()==2))
 					fw = fw.getOpposite();
-				if((posInMultiblock > 15&&posInMultiblock < 19)||(posInMultiblock > 25&&posInMultiblock < 29))
+				if(ImmutableSet.of(
+						new BlockPos(0, 1, 1),
+						new BlockPos(0, 1, 2),
+						new BlockPos(0, 1, 3),
+						new BlockPos(2, 1, 1),
+						new BlockPos(2, 1, 2),
+						new BlockPos(2, 1, 3)
+				).contains(posInMultiblock))
 				{
 					minX = fl==Direction.WEST?.5f: fl==Direction.EAST?.25f: fw==Direction.EAST?.5f: .25f;
 					maxX = fl==Direction.EAST?.5f: fl==Direction.WEST?.75f: fw==Direction.EAST?.75f: .5f;
@@ -265,12 +290,17 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			}
 			return list;
 		}
-		if(posInMultiblock==1||posInMultiblock==3||posInMultiblock==11||posInMultiblock==13)
+		if(ImmutableSet.of(
+				new BlockPos(0, 0, 1),
+				new BlockPos(0, 0, 3),
+				new BlockPos(2, 0, 1),
+				new BlockPos(2, 0, 3)
+		).contains(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock%15 > 9)
+			if(posInMultiblock.getX()==2)
 				fl = fl.getOpposite();
-			if(posInMultiblock%15%10==1)
+			if(posInMultiblock.getZ()==1&&(posInMultiblock.getX()==0||posInMultiblock.getX()==2))
 				fw = fw.getOpposite();
 			float minX = fl==Direction.WEST?.5f: fl==Direction.EAST?.25f: fw==Direction.EAST?.5f: .25f;
 			float maxX = fl==Direction.EAST?.5f: fl==Direction.WEST?.75f: fw==Direction.EAST?.75f: .5f;
@@ -298,7 +328,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 
 	private boolean isInInput()
 	{
-		return posInMultiblock > 15&&posInMultiblock < 30&&posInMultiblock%5 > 0&&posInMultiblock%5 < 4;
+		return posInMultiblock.getY()==1&&posInMultiblock.getZ() > 0&&posInMultiblock.getZ() < 4;
 	}
 
 	@Override
@@ -346,15 +376,19 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{20};
+		return ImmutableSet.of(
+				new BlockPos(1, 1, 0)
+		);
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{19};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 4)
+		);
 	}
 
 	@Override

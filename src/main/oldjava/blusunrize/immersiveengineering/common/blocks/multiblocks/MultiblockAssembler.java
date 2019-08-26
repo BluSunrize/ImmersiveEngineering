@@ -8,13 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.EnumMetals;
+import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -24,12 +26,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 
-public class MultiblockLightningrod implements IMultiblock
+import java.util.List;
+
+public class MultiblockAssembler extends TemplateMultiblock
 {
-	public static MultiblockLightningrod instance = new MultiblockLightningrod();
+	public static MultiblockAssembler instance = new MultiblockAssembler();
 	static ItemStack[][][] structure = new ItemStack[3][3][3];
 
 	static
@@ -38,29 +44,36 @@ public class MultiblockLightningrod implements IMultiblock
 			for(int l = 0; l < 3; l++)
 				for(int w = 0; w < 3; w++)
 				{
-					if(l==1&&w==1)
-						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.COIL_HV.getMeta());
-					else if(h==0)
+					if(h==0)
 					{
-						if(l==1|w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta());
+						if(l==1&&w!=1)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
+						else if(l==1&&w==1)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
 					else if(h==1)
 					{
-						if(l==1|w==1)
+						if(w==0||w==2)
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.IRON.getMeta());
+						else if(l==1)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.FENCE.getMeta());
+							structure[h][l][w] = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":conveyor");
 					}
 					else if(h==2)
-						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.COIL_LV.getMeta());
+					{
+						if(w==1)
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.IRON.getMeta());
+						else
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetalSlabs, 1, EnumMetals.IRON.getMeta());
+					}
 				}
 	}
 
 	@Override
-	public ItemStack[][][] getStructureManual()
+	public List<BlockInfo> getStructureManual()
 	{
 		return structure;
 	}
@@ -69,6 +82,8 @@ public class MultiblockLightningrod implements IMultiblock
 	@OnlyIn(Dist.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
+		if(iterator==10||iterator==16)
+			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", Direction.EAST);
 		return false;
 	}
 
@@ -87,7 +102,7 @@ public class MultiblockLightningrod implements IMultiblock
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
-			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.LIGHTNINGROD.getMeta());
+			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.ASSEMBLER.getMeta());
 		GlStateManager.translate(1.5, 1.5, 1.5);
 		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
@@ -104,15 +119,15 @@ public class MultiblockLightningrod implements IMultiblock
 	}
 
 	@Override
-	public String getUniqueName()
+	public ResourceLocation getUniqueName()
 	{
-		return "IE:Lightningrod";
+		return "IE:Assembler";
 	}
 
 	@Override
 	public boolean isBlockTrigger(BlockState state)
 	{
-		return state.getBlock()==IEContent.blockMetalDecoration0&&(state.getBlock().getMetaFromState(state)==BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+		return state.getBlock()==IEContent.blockConveyor;
 	}
 
 	@Override
@@ -131,16 +146,16 @@ public class MultiblockLightningrod implements IMultiblock
 					int ww = mirror?-w: w;
 					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
-					if(l==1&&w==0)
+					if(h==-1)
 					{
-						if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.COIL_HV.getMeta()))
-							return false;
-					}
-					else if(h==-1)
-					{
-						if(l==1|w==0)
+						if(l==1&&w!=0)
 						{
-							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDevice0, BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta()))
+							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()))
+								return false;
+						}
+						else if(l==1&&w==0)
+						{
+							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
 								return false;
 						}
 						else
@@ -151,25 +166,39 @@ public class MultiblockLightningrod implements IMultiblock
 					}
 					else if(h==0)
 					{
-						if(l==1|w==0)
+						if(w==-1||w==1)
+						{
+							if(!Utils.isOreBlockAt(world, pos2, "blockSheetmetalIron"))
+								return false;
+						}
+						else if(l==1)
 						{
 							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
 								return false;
 						}
 						else
 						{
-							if(!Utils.isOreBlockAt(world, pos2, "fenceTreatedWood"))
+							if(!ConveyorHandler.isConveyor(world, pos2, ImmersiveEngineering.MODID+":conveyor", null))
 								return false;
 						}
 					}
 					else if(h==1)
 					{
-						if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.COIL_LV.getMeta()))
-							return false;
+						if(w==0)
+						{
+							if(!Utils.isOreBlockAt(world, pos2, "blockSheetmetalIron"))
+								return false;
+						}
+						else
+						{
+							if(!Utils.isOreBlockAt(world, pos2, "slabSheetmetalIron"))
+								return false;
+						}
 					}
 				}
 
-		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.LIGHTNINGROD.getMeta());
+
+		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.ASSEMBLER.getMeta());
 		state = state.with(IEProperties.FACING_HORIZONTAL, side);
 		for(int l = 0; l < 3; l++)
 			for(int w = -1; w <= 1; w++)
@@ -180,11 +209,11 @@ public class MultiblockLightningrod implements IMultiblock
 
 					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
-					if(curr instanceof LightningrodTileEntity)
+					if(curr instanceof AssemblerTileEntity)
 					{
-						LightningrodTileEntity tile = (LightningrodTileEntity)curr;
+						AssemblerTileEntity tile = (AssemblerTileEntity)curr;
 						tile.formed = true;
-						tile.posInMultiblock = (h+1)*9+l*3+(w+1);
+						tile.pos = (h+1)*9+l*3+(w+1);
 						tile.offset = new int[]{(side==Direction.WEST?1-l: side==Direction.EAST?l-1: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?1-l: side==Direction.SOUTH?l-1: side==Direction.EAST?ww: -ww)};
 						tile.mirrored = mirror;
 						tile.markDirty();
@@ -195,12 +224,12 @@ public class MultiblockLightningrod implements IMultiblock
 	}
 
 	static final IngredientStack[] materials = new IngredientStack[]{
-			new IngredientStack("scaffoldingSteel", 4),
-			new IngredientStack(new ItemStack(IEContent.blockMetalDevice0, 4, BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta())),
-			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 4, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
-			new IngredientStack("fenceTreatedWood", 4),
-			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 3, BlockTypes_MetalDecoration0.COIL_HV.getMeta())),
-			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 8, BlockTypes_MetalDecoration0.COIL_LV.getMeta()))};
+			new IngredientStack("scaffoldingSteel", 6),
+			new IngredientStack("blockSheetmetalIron", 9),
+			new IngredientStack("slabSheetmetalIron", 6),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta())),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
+			new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":conveyor"), 2))};
 
 	@Override
 	public IngredientStack[] getTotalMaterials()

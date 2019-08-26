@@ -18,18 +18,25 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 
-public class MultiblockMixer implements IMultiblock
+import java.util.List;
+
+public class MultiblockFermenter extends TemplateMultiblock
 {
-	public static MultiblockMixer instance = new MultiblockMixer();
+	public static MultiblockFermenter instance = new MultiblockFermenter();
 
 	static ItemStack[][][] structure = new ItemStack[3][3][3];
 
@@ -42,31 +49,29 @@ public class MultiblockMixer implements IMultiblock
 					{
 						if(l==0&&w==0)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
-						else if((l < 2&&w==1)||(l==1&&w==0))
+						else if(l==1&&w > 0)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
 						else
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
 					else if(h==1)
 					{
-						if(l < 2&&w==0)
+						if(l==0&&w==0)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else if(l==0&&w==2)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
-						else if(l > 0&&w > 0)
-							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.IRON.getMeta());
+						else if(l > 0&&w < 2)
+							structure[h][l][w] = new ItemStack(Items.CAULDRON);
 					}
 					else if(h==2)
 					{
-						if(l==1&&w==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta());
-						else if(l==1&&w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+						if(l > 0&&w < 2)
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.IRON.getMeta());
 					}
 	}
 
 	@Override
-	public ItemStack[][][] getStructureManual()
+	public List<BlockInfo> getStructureManual()
 	{
 		return structure;
 	}
@@ -75,22 +80,30 @@ public class MultiblockMixer implements IMultiblock
 	@OnlyIn(Dist.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
-		if(iterator==1)
-		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000200");
-			return true;
-		}
-		if(iterator==3)
-		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000020");
-			return true;
-		}
 		if(iterator==4)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("022002");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("010010");
+			return true;
+		}
+		if(iterator==5)
+		{
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000001");
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public BlockState getBlockstateFromStack(int index, ItemStack stack)
+	{
+		if(!stack.isEmpty())
+		{
+			if(stack.getItem()==Items.CAULDRON)
+				return Blocks.CAULDRON.getDefaultState();
+			else if(stack.getItem() instanceof BlockItem)
+				return ((BlockItem)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
+		}
+		return null;
 	}
 
 	@Override
@@ -114,7 +127,7 @@ public class MultiblockMixer implements IMultiblock
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
-			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.MIXER.getMeta());
+			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.FERMENTER.getMeta());
 		GlStateManager.translate(1.5, 1.5, 1.5);
 		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
@@ -125,15 +138,15 @@ public class MultiblockMixer implements IMultiblock
 	}
 
 	@Override
-	public String getUniqueName()
+	public ResourceLocation getUniqueName()
 	{
-		return "IE:Mixer";
+		return "IE:Fermenter";
 	}
 
 	@Override
 	public boolean isBlockTrigger(BlockState state)
 	{
-		return Utils.isInTag(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)), "blockSheetmetalIron");
+		return state.getBlock()==Blocks.CAULDRON;
 	}
 
 	@Override
@@ -153,13 +166,13 @@ public class MultiblockMixer implements IMultiblock
 		if(!b)
 			return false;
 
-		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.MIXER.getMeta());
+		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.FERMENTER.getMeta());
 		state = state.with(IEProperties.FACING_HORIZONTAL, side);
 		for(int h = -1; h <= 1; h++)
 			for(int l = -1; l <= 1; l++)
 				for(int w = -1; w <= 1; w++)
 				{
-					if((h==0&&w==0&&l==-1)||(h==0&&w==-1&&l==1)||(h==1&&(l!=0||w > 0)))
+					if((h==0&&w==0&&l==-1)||(h==0&&w==1&&l > -1)||(h==1&&(l < 0||w > 0)))
 						continue;
 
 					int ww = mirror?-w: w;
@@ -167,9 +180,9 @@ public class MultiblockMixer implements IMultiblock
 
 					world.setBlockState(pos2, state);
 					TileEntity curr = world.getTileEntity(pos2);
-					if(curr instanceof MixerTileEntity)
+					if(curr instanceof FermenterTileEntity)
 					{
-						MixerTileEntity tile = (MixerTileEntity)curr;
+						FermenterTileEntity tile = (FermenterTileEntity)curr;
 						tile.formed = true;
 						tile.pos = (h+1)*9+(l+1)*3+(w+1);
 						tile.offset = new int[]{(side==Direction.WEST?-l: side==Direction.EAST?l: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?-l: side==Direction.SOUTH?l: side==Direction.EAST?ww: -ww)};
@@ -200,7 +213,7 @@ public class MultiblockMixer implements IMultiblock
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
 								return false;
 						}
-						else if((l < 1&&w==0)||(l==0&&w==-1))
+						else if(l==0&&w > -1)
 						{
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDevice1, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()))
 								return false;
@@ -213,7 +226,7 @@ public class MultiblockMixer implements IMultiblock
 					}
 					else if(h==0)
 					{
-						if(l < 1&&w==-1)
+						if(l==-1&&w==-1)
 						{
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
 								return false;
@@ -223,22 +236,17 @@ public class MultiblockMixer implements IMultiblock
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()))
 								return false;
 						}
-						else if(l > -1&&w > -1)
+						else if(l > -1&&w < 1)
 						{
-							if(!Utils.isOreBlockAt(world, pos, "blockSheetmetalIron"))
+							if(!Utils.isBlockAt(world, pos, Blocks.CAULDRON, 0))
 								return false;
 						}
 					}
 					else if(h==1)
 					{
-						if(l==0&&w==-1)
+						if(l > -1&&w < 1)
 						{
-							if(!Utils.isOreBlockAt(world, pos, "fenceSteel"))
-								return false;
-						}
-						else if(l==0&&w==0)
-						{
-							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
+							if(!Utils.isOreBlockAt(world, pos, "blockSheetmetalIron"))
 								return false;
 						}
 					}
@@ -247,12 +255,12 @@ public class MultiblockMixer implements IMultiblock
 	}
 
 	static final IngredientStack[] materials = new IngredientStack[]{
-			new IngredientStack("scaffoldingSteel", 5),
-			new IngredientStack(new ItemStack(IEContent.blockMetalDevice1, 3, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())),
+			new IngredientStack("scaffoldingSteel", 6),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDevice1, 2, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta())),
-			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 4, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
-			new IngredientStack("blockSheetmetalIron", 4),
-			new IngredientStack("fenceSteel", 1)};
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
+			new IngredientStack(new ItemStack(Items.CAULDRON, 4, 0)),
+			new IngredientStack("blockSheetmetalIron", 4)};
 
 	@Override
 	public IngredientStack[] getTotalMaterials()

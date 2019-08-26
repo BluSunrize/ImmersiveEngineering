@@ -18,11 +18,12 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttacha
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAutoWorkbench;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -43,6 +44,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Set;
 
 public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWorkbenchTileEntity, IMultiblockRecipe>
 		implements IInteractionObjectIE, IConveyorAttachable
@@ -51,7 +53,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 
 	public AutoWorkbenchTileEntity()
 	{
-		super(MultiblockAutoWorkbench.instance, 32000, true, TYPE);
+		super(IEMultiblocks.AUTO_WORKBENCH, 32000, true, TYPE);
 	}
 
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(17, ItemStack.EMPTY);
@@ -122,9 +124,20 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock < 10||posInMultiblock==12)
+		Set<BlockPos> highFullBlocks = ImmutableSet.of(
+				//TODO this block (10) is handled further down as well?
+				new BlockPos(0, 1, 1),
+				new BlockPos(1, 1, 0)
+		);
+		if(posInMultiblock.getY()==0||highFullBlocks.contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, 1, 1};
-		if(posInMultiblock >= 13&&posInMultiblock <= 16)
+		Set<BlockPos> conveyors = ImmutableSet.of(
+				new BlockPos(1, 1, 1),
+				new BlockPos(1, 1, 2),
+				new BlockPos(2, 1, 0),
+				new BlockPos(2, 1, 1)
+		);
+		if(conveyors.contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .125f, 1};
 		float xMin = 0;
 		float yMin = 0;
@@ -132,35 +145,40 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		float xMax = 1;
 		float yMax = 1;
 		float zMax = 1;
-		if(posInMultiblock==10||posInMultiblock==11)
+		if(ImmutableSet.of(
+				new BlockPos(0, 1, 1),
+				new BlockPos(0, 1, 2)
+		).contains(posInMultiblock))
 		{
+			//TODO more sensible name
+			boolean is11 = new BlockPos(0, 1, 2).equals(posInMultiblock);
 			yMax = .8125f;
 			if(facing==Direction.NORTH)
 			{
 				zMin = .1875f;
-				if(posInMultiblock==11)
+				if(is11)
 					xMax = .875f;
 			}
 			else if(facing==Direction.SOUTH)
 			{
 				zMax = .8125f;
-				if(posInMultiblock==11)
+				if(is11)
 					xMin = .125f;
 			}
 			else if(facing==Direction.WEST)
 			{
 				xMin = .1875f;
-				if(posInMultiblock==11)
+				if(is11)
 					zMin = .125f;
 			}
 			else if(facing==Direction.EAST)
 			{
 				xMax = .8125f;
-				if(posInMultiblock==11)
+				if(is11)
 					zMax = .875f;
 			}
 		}
-		if(posInMultiblock==17)
+		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
 		{
 			yMax = .3125f;
 			if(facing==Direction.NORTH)
@@ -188,15 +206,19 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{9};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 0)
+		);
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{1};
+		return ImmutableSet.of(
+				new BlockPos(0, 0, 1)
+		);
 	}
 
 	@Override
@@ -307,7 +329,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(posInMultiblock==9&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			AutoWorkbenchTileEntity master = master();
 			if(master!=null)
@@ -368,7 +390,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	@Override
 	public Direction[] sigOutputDirections()
 	{
-		if(posInMultiblock==14)
+		if(new BlockPos(1, 1, 2).equals(posInMultiblock))
 			return new Direction[]{this.facing.rotateY()};
 		return new Direction[0];
 	}

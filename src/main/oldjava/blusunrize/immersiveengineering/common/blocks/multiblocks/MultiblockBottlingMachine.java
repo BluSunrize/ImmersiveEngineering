@@ -15,10 +15,11 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
-import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.blocks.EnumMetals;
+import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,47 +27,58 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 
-public class MultiblockAutoWorkbench implements IMultiblock
+import java.util.List;
+
+public class MultiblockBottlingMachine extends TemplateMultiblock
 {
-	public static MultiblockAutoWorkbench instance = new MultiblockAutoWorkbench();
-	static ItemStack[][][] structure = new ItemStack[2][3][3];
+	public static MultiblockBottlingMachine instance = new MultiblockBottlingMachine();
+	static ItemStack[][][] structure = new ItemStack[3][2][3];
 
 	static
 	{
-		for(int h = 0; h < 2; h++)
-			for(int l = 0; l < 3; l++)
+		for(int h = 0; h < 3; h++)
+			for(int l = 0; l < 2; l++)
 				for(int w = 0; w < 3; w++)
 				{
 					if(h==0)
 					{
 						if(l==0&&w==1)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
-						else if(w==0&&l < 2)
+						else if(l==1&&w==0)
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.IRON.getMeta());
+						else if(l==1&&w==2)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
-						else if(w==2&&l==2)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 						else
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
 					else if(h==1)
 					{
-						if(w==0&&l < 2)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
-						else if(w==2&&l==2)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
-						else if(l==0)
-							structure[h][l][w] = new ItemStack(IEContent.blockTreatedWoodSlabs, 1, TreatedWoodStyles.HORIZONTAL.getMeta());
-						else
+						if(l==0)
 							structure[h][l][w] = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":conveyor");
+						else if(l==1&&w==0)
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal, 1, EnumMetals.IRON.getMeta());
+						else if(l==1&&w==2)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+						else
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
+					}
+					else if(h==2)
+					{
+						if(l==0&&w==1)
+							structure[h][l][w] = new ItemStack(Blocks.GLASS);
+						else if(l==1&&w==1)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
 					}
 				}
 	}
 
 	@Override
-	public ItemStack[][][] getStructureManual()
+	public List<BlockInfo> getStructureManual()
 	{
 		return structure;
 	}
@@ -75,10 +87,13 @@ public class MultiblockAutoWorkbench implements IMultiblock
 	@OnlyIn(Dist.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
-		if(iterator==13||iterator==14||iterator==15)
+		if(iterator==13)
+		{
+			ImmersiveEngineering.proxy.drawFluidPumpTop();
+			return true;
+		}
+		if(iterator >= 6&&iterator <= 8)
 			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", Direction.SOUTH);
-		if(iterator==16)
-			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", Direction.WEST);
 		return false;
 	}
 
@@ -97,8 +112,8 @@ public class MultiblockAutoWorkbench implements IMultiblock
 	public void renderFormedStructure()
 	{
 		if(renderStack.isEmpty())
-			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.AUTO_WORKBENCH.getMeta());
-		GlStateManager.translate(1.5, 1.5, 1.5);
+			renderStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta());
+		GlStateManager.translate(2.1875, 1.125, .8125);
 		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
 		GlStateManager.scale(4, 4, 4);
@@ -114,15 +129,15 @@ public class MultiblockAutoWorkbench implements IMultiblock
 	}
 
 	@Override
-	public String getUniqueName()
+	public ResourceLocation getUniqueName()
 	{
-		return "IE:AutoWorkbench";
+		return "IE:BottlingMachine";
 	}
 
 	@Override
 	public boolean isBlockTrigger(BlockState state)
 	{
-		return Utils.isInTag(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state)), "slabTreatedWood");
+		return state.getBlock()==IEContent.blockConveyor;
 	}
 
 	@Override
@@ -144,39 +159,41 @@ public class MultiblockAutoWorkbench implements IMultiblock
 
 		if(!b)
 			return false;
-		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.AUTO_WORKBENCH.getMeta());
+		BlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta());
 		state = state.with(IEProperties.FACING_HORIZONTAL, side);
-		for(int l = 0; l < 3; l++)
+		for(int l = 0; l < 2; l++)
 			for(int w = -1; w <= 1; w++)
-				for(int h = -1; h <= 0; h++)
-				{
-					int ww = mirrored?-w: w;
-					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
-
-					world.setBlockState(pos2, state);
-					TileEntity curr = world.getTileEntity(pos2);
-					if(curr instanceof AutoWorkbenchTileEntity)
+				for(int h = -1; h <= 1; h++)
+					if(h < 1||w==0)
 					{
-						AutoWorkbenchTileEntity tile = (AutoWorkbenchTileEntity)curr;
-						tile.formed = true;
-						tile.posInMultiblock = (h+1)*9+l*3+(w+1);
-						tile.offset = new int[]{(side==Direction.WEST?1-l: side==Direction.EAST?l-1: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?1-l: side==Direction.SOUTH?l-1: side==Direction.EAST?ww: -ww)};
-						tile.mirrored = mirrored;
-						tile.markDirty();
-						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
+						int ww = mirrored?-w: w;
+						BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
+
+						world.setBlockState(pos2, state);
+						TileEntity curr = world.getTileEntity(pos2);
+						if(curr instanceof BottlingMachineTileEntity)
+						{
+							BottlingMachineTileEntity tile = (BottlingMachineTileEntity)curr;
+							tile.formed = true;
+							tile.pos = (h+1)*6+l*3+(w+1);
+							tile.offset = new int[]{(side==Direction.WEST?1-l: side==Direction.EAST?l-1: side==Direction.NORTH?ww: -ww), h, (side==Direction.NORTH?1-l: side==Direction.SOUTH?l-1: side==Direction.EAST?ww: -ww)};
+							tile.mirrored = mirrored;
+							tile.markDirty();
+							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
+						}
 					}
-				}
 		return true;
 	}
 
 	boolean structureCheck(World world, BlockPos startPos, Direction dir, boolean mirror)
 	{
-		for(int l = 0; l < 3; l++)
-			for(int h = -1; h <= 0; h++)
+		Direction conveyorDir = mirror?dir.rotateYCCW(): dir.rotateY();
+		for(int l = 0; l < 2; l++)
+			for(int h = -1; h <= 1; h++)
 				for(int w = -1; w <= 1; w++)
 				{
-					int ww = mirror?-w: w;
-					BlockPos pos2 = startPos.offset(dir, l).offset(dir.rotateY(), ww).add(0, h, 0);
+					BlockPos pos2 = startPos.offset(dir, l).offset(conveyorDir, w).add(0, h, 0);
+
 
 					if(h==-1)
 					{
@@ -185,14 +202,14 @@ public class MultiblockAutoWorkbench implements IMultiblock
 							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()))
 								return false;
 						}
-						else if(w==-1&&l < 2)
+						else if(w==-1&&l==1)
 						{
-							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
+							if(!Utils.isOreBlockAt(world, pos2, "blockSheetmetalIron"))
 								return false;
 						}
-						else if(w==1&&l==2)
+						else if(w==1&&l==1)
 						{
-							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()))
+							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
 								return false;
 						}
 						else
@@ -203,38 +220,43 @@ public class MultiblockAutoWorkbench implements IMultiblock
 					}
 					else if(h==0)
 					{
-						if(w==-1&&l < 2)
+						if(l==0)
+						{
+							if(!ConveyorHandler.isConveyor(world, pos2, ImmersiveEngineering.MODID+":conveyor", conveyorDir))
+								return false;
+						}
+						else if(w==-1&&l==1)
+						{
+							if(!Utils.isOreBlockAt(world, pos2, "blockSheetmetalIron"))
+								return false;
+						}
+						else if(w==1&&l==1)
 						{
 							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
 								return false;
 						}
-						else if(w==1&&l==2)
-						{
-							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()))
-								return false;
-						}
-						else if(l==0)
-						{
-							if(!Utils.isOreBlockAt(world, pos2, "slabTreatedWood"))
-								return false;
-						}
 						else
 						{
-							if(!ConveyorHandler.isConveyor(world, pos2, ImmersiveEngineering.MODID+":conveyor", null))
+							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDevice0, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()))
 								return false;
 						}
 					}
+					else if(h==1&&w==0&&l==0)
+						if(!Utils.isOreBlockAt(world, pos2, "blockGlass"))
+							return false;
+
 				}
 		return true;
 	}
 
 	static final IngredientStack[] materials = new IngredientStack[]{
-			new IngredientStack("scaffoldingSteel", 5),
-			new IngredientStack("slabTreatedWood", 2),
+			new IngredientStack("scaffoldingSteel", 3),
+			new IngredientStack("blockSheetmetalIron", 2),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta())),
-			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 4, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
-			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta())),
-			new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":conveyor"), 4))};
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
+			new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":conveyor"), 3)),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())),
+			new IngredientStack("blockGlass", 1)};
 
 	@Override
 	public IngredientStack[] getTotalMaterials()

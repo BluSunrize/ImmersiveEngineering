@@ -15,10 +15,11 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -29,6 +30,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -41,10 +43,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTileEntity, FermenterRecipe> implements
 		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IInteractionObjectIE
@@ -55,7 +54,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 
 	public FermenterTileEntity()
 	{
-		super(MultiblockFermenter.instance, 16000, true, TYPE);
+		super(IEMultiblocks.FERMENTER, 16000, true, TYPE);
 	}
 
 	@Override
@@ -191,11 +190,10 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock > 0&&posInMultiblock < 9&&posInMultiblock!=5)
+		if(posInMultiblock.getY()==0&&!new BlockPos(1, 0, 2).equals(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(posInMultiblock==11)
+		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
 			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
-
 
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
@@ -207,7 +205,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
-		if(posInMultiblock==2)
+		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
@@ -223,12 +221,13 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		if(posInMultiblock==3||posInMultiblock==4||posInMultiblock==6||posInMultiblock==7)
+		if(new MutableBoundingBox(1, 0, 0, 2, 0, 1)
+				.isVecInside(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock > 5)
+			if(posInMultiblock.getX()==2)
 				fl = fl.getOpposite();
-			if(posInMultiblock%3==1)
+			if(posInMultiblock.getZ()==1)
 				fw = fw.getOpposite();
 			float minX = fl==Direction.WEST?.6875f: fl==Direction.EAST?.0625f: fw==Direction.EAST?.0625f: .6875f;
 			float maxX = fl==Direction.EAST?.3125f: fl==Direction.WEST?.9375f: fw==Direction.EAST?.3125f: .9375f;
@@ -236,7 +235,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 			float maxZ = fl==Direction.SOUTH?.3125f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?.3125f: .9375f;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1.1875f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
-			if(posInMultiblock==4)
+			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
 				minX = fl==Direction.WEST?.375f: fl==Direction.EAST?.625f: fw==Direction.WEST?-.125f: 0;
 				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.625f: fw==Direction.EAST?1.125f: 1;
@@ -259,15 +258,15 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 
 			return list;
 		}
-		if((posInMultiblock==12||posInMultiblock==13||posInMultiblock==15||posInMultiblock==16)||(posInMultiblock==21||posInMultiblock==22||posInMultiblock==24||posInMultiblock==25))
+		if(new MutableBoundingBox(1, 1, 0, 2, 2, 1).isVecInside(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>(2);
-			if(posInMultiblock%9 > 5)
+			if(posInMultiblock.getX()==2)
 				fl = fl.getOpposite();
-			if(posInMultiblock%3==1)
+			if(posInMultiblock.getZ()==1)
 				fw = fw.getOpposite();
-			float minY = posInMultiblock < 18?.1875f: -.8125f;
-			float maxY = posInMultiblock < 18?2: 1;
+			float minY = posInMultiblock.getY() < 2?.1875f: -.8125f;
+			float maxY = posInMultiblock.getY() < 2?2: 1;
 
 			float minX = fl==Direction.WEST?0: fl==Direction.EAST?.0625f: fw==Direction.EAST?.0625f: 0;
 			float maxX = fl==Direction.EAST?1: fl==Direction.WEST?.9375f: fw==Direction.EAST?1: .9375f;
@@ -292,15 +291,19 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{9};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 0)
+		);
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{11};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 2)
+		);
 	}
 
 	@Override
@@ -398,7 +401,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		FermenterTileEntity master = this.master();
-		if(master!=null&&posInMultiblock==5&&(side==null||side==(mirrored?facing.rotateYCCW(): facing.rotateY())))
+		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(mirrored?facing.rotateYCCW(): facing.rotateY())))
 			return master.tanks;
 		return new FluidTank[0];
 	}
@@ -433,16 +436,19 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if((posInMultiblock==15||posInMultiblock==13)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(ImmutableSet.of(
+				new BlockPos(1, 1, 1),
+				new BlockPos(2, 1, 0)
+		).contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			FermenterTileEntity master = master();
-			if(master==null)
-				return null;
-			if(posInMultiblock==15)
-				return master.insertionHandler.cast();
-			if(posInMultiblock==13)
-				return master.extractionHandler.cast();
-			return null;
+			if(master!=null)
+			{
+				if(posInMultiblock.getX()==2)
+					return master.insertionHandler.cast();
+				else
+					return master.extractionHandler.cast();
+			}
 		}
 		return super.getCapability(capability, facing);
 	}

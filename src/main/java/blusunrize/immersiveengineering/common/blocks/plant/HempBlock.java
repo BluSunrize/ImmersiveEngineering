@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.plant;
 
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -130,12 +132,12 @@ public class HempBlock extends BushBlock implements IGrowable
 		int fortune = (tool==null)?(0):(EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, tool));
 		EnumHempGrowth growth = state.get(GROWTH);
 		List<ItemStack> drops = new ArrayList<ItemStack>();
-		drops.add(new ItemStack(IEContent.itemSeeds, 1));
+		drops.add(new ItemStack(Misc.hempSeeds, 1));
 		if(growth==getMaxGrowth(growth))
 		{
 			for(int i = 0; i < 3+fortune; ++i)
 				if(Utils.RAND.nextInt(8) <= growth.ordinal())
-					drops.add(new ItemStack(IEContent.itemHempFiber, 1));
+					drops.add(new ItemStack(Ingredients.hempFiber, 1));
 		}
 		return drops;
 	}
@@ -143,7 +145,7 @@ public class HempBlock extends BushBlock implements IGrowable
 	@OnlyIn(Dist.CLIENT)
 	protected IItemProvider getSeedsItem()
 	{
-		return IEContent.itemSeeds;
+		return Misc.hempSeeds;
 	}
 
 	@Override

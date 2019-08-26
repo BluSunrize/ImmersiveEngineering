@@ -15,13 +15,14 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveSt
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAlloySmelter;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -29,6 +30,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
@@ -47,7 +49,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 
 	public AlloySmelterTileEntity()
 	{
-		super(MultiblockAlloySmelter.instance, TYPE, false);
+		super(IEMultiblocks.ALLOY_SMELTER, TYPE, false);
 	}
 
 	@Override
@@ -78,12 +80,6 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	public float[] getBlockBounds()
 	{
 		return null;
-	}
-
-	@Override
-	public boolean isDummy()
-	{
-		return offset[0]!=0||offset[1]!=0||offset[2]!=0;
 	}
 
 	@Override
@@ -163,9 +159,9 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 			if(burnTime <= 10&&getRecipe()!=null)
 			{
 				ItemStack fuel = inventory.get(2);
-				if(FurnaceTileEntity.isItemFuel(fuel))
+				if(FurnaceTileEntity.isFuel(fuel))
 				{
-					lastBurnTime = FurnaceTileEntity.getItemBurnTime(fuel);
+					lastBurnTime = getBurnTime(fuel);
 					burnTime += lastBurnTime;
 					Item itemFuel = fuel.getItem();
 					fuel.shrink(1);
@@ -276,7 +272,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0||slot==1&&FurnaceTileEntity.isItemFuel(stack);
+		return slot==0||slot==1&&FurnaceTileEntity.isFuel(stack);
 	}
 
 	@Override
@@ -311,6 +307,21 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	@Override
 	public BlockPos getOrigin()
 	{
-		return getPos().add(-offset[0], -offset[1], -offset[2]).offset(facing, -1).offset(facing.rotateYCCW());
+		return getPos().subtract(offsetToMaster).offset(facing, -1).offset(facing.rotateYCCW());
+	}
+
+	//Based on AbstractFurnaceTileEntity#getBurnTime, which is non-static protected now
+	private static int getBurnTime(ItemStack stack)
+	{
+		if(stack.isEmpty())
+			return 0;
+		else
+		{
+			Item item = stack.getItem();
+			int baseBurnTime = stack.getBurnTime();
+			if(baseBurnTime==-1)
+				baseBurnTime = AbstractFurnaceTileEntity.getBurnTimes().getOrDefault(item, 0);
+			return ForgeEventFactory.getItemBurnTime(stack, baseBurnTime);
+		}
 	}
 }

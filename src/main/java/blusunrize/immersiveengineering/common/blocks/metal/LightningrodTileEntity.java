@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningrod;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -50,14 +50,14 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 
 	public LightningrodTileEntity()
 	{
-		super(MultiblockLightningrod.instance, TYPE, false);
+		super(IEMultiblocks.LIGHTNING_ROD, TYPE, false);
 	}
 
 	@Override
 	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(!world.isRemote&&formed&&posInMultiblock==13)
+		if(!world.isRemote&&formed&&new BlockPos(1, 1, 1).equals(posInMultiblock))
 		{
 			if(energyStorage.getEnergyStored() > 0)
 			{
@@ -153,11 +153,12 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock==22)
+		if(new BlockPos(1, 2, 1).equals(posInMultiblock))
 			return new float[]{-.125f, 0, -.125f, 1.125f, 1, 1.125f};
-		if(posInMultiblock%9==4||(posInMultiblock < 18&&posInMultiblock%9%2==1))
+		if((posInMultiblock.getX()==1&&posInMultiblock.getZ()==1)
+				||(posInMultiblock.getY() < 2&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1))
 			return new float[]{0, 0, 0, 1, 1, 1};
-		if(posInMultiblock < 9)
+		if(posInMultiblock.getY()==0)
 			return new float[]{0, 0, 0, 1, .5f, 1};
 		float xMin = 0;
 		float xMax = 1;
@@ -165,35 +166,35 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 		float yMax = 1;
 		float zMin = 0;
 		float zMax = 1;
-		if(posInMultiblock%9==0||posInMultiblock%9==2||posInMultiblock%9==6||posInMultiblock%9==8)
+		if(posInMultiblock.getX()%2==0&&posInMultiblock.getZ()%2==0)
 		{
-			if(posInMultiblock < 18)
+			if(posInMultiblock.getY() < 2)
 			{
 				yMin = -.5f;
 				yMax = 1.25f;
-				xMin = (facing.getAxis()==Axis.X?(posInMultiblock%9 > 2^facing==Direction.EAST): (posInMultiblock%3==2^facing==Direction.NORTH))?.8125f: .4375f;
-				xMax = (facing.getAxis()==Axis.X?(posInMultiblock%9 < 3^facing==Direction.EAST): (posInMultiblock%3==0^facing==Direction.NORTH))?.1875f: .5625f;
-				zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==Direction.EAST): (posInMultiblock%9 < 3^facing==Direction.NORTH))?.8125f: .4375f;
-				zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==Direction.EAST): (posInMultiblock%9 > 2^facing==Direction.NORTH))?.1875f: .5625f;
+				xMin = (facing.getAxis()==Axis.X?(posInMultiblock.getX() > 0^facing==Direction.EAST): (posInMultiblock.getZ()==2^facing==Direction.NORTH))?.8125f: .4375f;
+				xMax = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==0^facing==Direction.EAST): (posInMultiblock.getZ()==0^facing==Direction.NORTH))?.1875f: .5625f;
+				zMin = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==2^facing==Direction.EAST): (posInMultiblock.getX()==0^facing==Direction.NORTH))?.8125f: .4375f;
+				zMax = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==0^facing==Direction.EAST): (posInMultiblock.getX() > 0^facing==Direction.NORTH))?.1875f: .5625f;
 			}
 			else
 			{
 				yMin = .25f;
 				yMax = .75f;
-				xMin = (facing.getAxis()==Axis.X?(posInMultiblock%9 > 2^facing==Direction.EAST): (posInMultiblock%3==2^facing==Direction.NORTH))?1: .625f;
-				xMax = (facing.getAxis()==Axis.X?(posInMultiblock%9 < 3^facing==Direction.EAST): (posInMultiblock%3==0^facing==Direction.NORTH))?0: .375f;
-				zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==Direction.EAST): (posInMultiblock%9 < 3^facing==Direction.NORTH))?1: .625f;
-				zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==Direction.EAST): (posInMultiblock%9 > 2^facing==Direction.NORTH))?0: .375f;
+				xMin = (facing.getAxis()==Axis.X?(posInMultiblock.getX() > 0^facing==Direction.EAST): (posInMultiblock.getZ()==2^facing==Direction.NORTH))?1: .625f;
+				xMax = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==0^facing==Direction.EAST): (posInMultiblock.getZ()==0^facing==Direction.NORTH))?0: .375f;
+				zMin = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==2^facing==Direction.EAST): (posInMultiblock.getX()==0^facing==Direction.NORTH))?1: .625f;
+				zMax = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==0^facing==Direction.EAST): (posInMultiblock.getX() > 0^facing==Direction.NORTH))?0: .375f;
 			}
 		}
-		else if(posInMultiblock > 17)
+		else if(posInMultiblock.getY() >= 2)
 		{
 			yMin = .25f;
 			yMax = .75f;
-			xMin = offset[0] < 0?.375f: 0;
-			xMax = offset[0] > 0?.625f: 1;
-			zMin = offset[2] < 0?.375f: 0;
-			zMax = offset[2] > 0?.625f: 1;
+			xMin = offsetToMaster.getX() < 0?.375f: 0;
+			xMax = offsetToMaster.getX() > 0?.625f: 1;
+			zMin = offsetToMaster.getZ() < 0?.375f: 0;
+			zMax = offsetToMaster.getZ() > 0?.625f: 1;
 		}
 		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
 	}
@@ -224,7 +225,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			if(posInMultiblock==4)
+			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 				renderAABB = new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 5, 2));
 			else
 				renderAABB = new AxisAlignedBB(getPos(), getPos());
@@ -260,6 +261,6 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 
 	private boolean isEnergyPos()
 	{
-		return posInMultiblock==10||posInMultiblock==12||posInMultiblock==14||posInMultiblock==16;
+		return posInMultiblock.getY()==1&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1;
 	}
 }

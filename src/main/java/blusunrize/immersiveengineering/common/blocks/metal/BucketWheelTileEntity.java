@@ -14,9 +14,10 @@ import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDynamicTexture;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -24,6 +25,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -45,7 +47,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 
 	public BucketWheelTileEntity()
 	{
-		super(MultiblockBucketWheel.instance, TYPE, false);
+		super(IEMultiblocks.BUCKET_WHEEL, TYPE, false);
 	}
 
 	@Override
@@ -92,7 +94,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(!formed||posInMultiblock!=24)
+		if(!formed||!new BlockPos(3, 3, 0).equals(posInMultiblock))
 			return;
 
 		if(active)
@@ -192,17 +194,31 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock==3||posInMultiblock==9||posInMultiblock==11)
+		if(ImmutableSet.of(
+				new BlockPos(3, 0, 0),
+				new BlockPos(2, 1, 0),
+				new BlockPos(4, 1, 0)
+		).contains(posInMultiblock))
 			return new float[]{0, .25f, 0, 1, 1, 1};
-		else if(posInMultiblock==45||posInMultiblock==37||posInMultiblock==39)
+		else if(ImmutableSet.of(
+				new BlockPos(3, 6, 0),
+				new BlockPos(2, 5, 0),
+				new BlockPos(4, 5, 0)
+		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .75f, 1};
-		else if(posInMultiblock==21)
+		else if(new BlockPos(0, 3, 0).equals(posInMultiblock))
 			return new float[]{facing==Direction.NORTH?.25f: 0, 0, facing==Direction.WEST?.25f: 0, facing==Direction.SOUTH?.75f: 1, 1, facing==Direction.EAST?.75f: 1};
-		else if(posInMultiblock==27)
+		else if(new BlockPos(6, 3, 0).equals(posInMultiblock))
 			return new float[]{facing==Direction.SOUTH?.25f: 0, 0, facing==Direction.EAST?.25f: 0, facing==Direction.NORTH?.75f: 1, 1, facing==Direction.WEST?.75f: 1};
-		else if(posInMultiblock==15||posInMultiblock==29)
+		else if(ImmutableSet.of(
+				new BlockPos(1, 2, 0),
+				new BlockPos(1, 4, 0)
+		).contains(posInMultiblock))
 			return new float[]{facing==Direction.NORTH?.25f: 0, 0, facing==Direction.WEST?.25f: 0, facing==Direction.SOUTH?.75f: 1, 1, facing==Direction.EAST?.75f: 1};
-		else if(posInMultiblock==19||posInMultiblock==33)
+		else if(ImmutableSet.of(
+				new BlockPos(5, 2, 0),
+				new BlockPos(5, 4, 0)
+		).contains(posInMultiblock))
 			return new float[]{facing==Direction.SOUTH?.25f: 0, 0, facing==Direction.EAST?.25f: 0, facing==Direction.NORTH?.75f: 1, 1, facing==Direction.WEST?.75f: 1};
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}

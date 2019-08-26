@@ -12,14 +12,16 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -27,6 +29,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,23 +43,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Optional;
+import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
 		implements ITickableTileEntity, IDirectionalTile, IBlockBounds, IGeneralMultiblock, IHammerInteraction
 {
 	public boolean formed = false;
-	public int posInMultiblock = -1;
-	public int[] offset = {0, 0, 0};
+	//Position of this block according to the BlockInfo's returned by IMultiblock#getStructure
+	public BlockPos posInMultiblock = BlockPos.ZERO;
+	//Offset from the master to this block (world coordinate system)
+	public BlockPos offsetToMaster = BlockPos.ZERO;
 	public boolean mirrored = false;
 	public Direction facing = Direction.NORTH;
 	private final IMultiblock multiblockInstance;
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
 	public long onlyLocalDissassembly = -1;
-	/**
-	 * H L W
-	 */
-	protected final int[] structureDimensions;
+	protected final Vec3i structureDimensions;
 	protected final boolean hasRedstoneControl;
 	protected boolean redstoneControlInverted = false;
 	//Absent means no controlling computers
@@ -114,8 +117,8 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		formed = nbt.getBoolean("formed");
-		posInMultiblock = nbt.getInt("pos");
-		offset = nbt.getIntArray("offset");
+		posInMultiblock = NBTUtil.readBlockPos(nbt.getCompound("posInMultiblock"));
+		offsetToMaster = NBTUtil.readBlockPos(nbt.getCompound("offset"));
 		mirrored = nbt.getBoolean("mirrored");
 		setFacing(Direction.byIndex(nbt.getInt("facing")));
 	}
@@ -124,8 +127,8 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putBoolean("formed", formed);
-		nbt.putInt("pos", posInMultiblock);
-		nbt.putIntArray("offset", offset);
+		nbt.put("posInMultiblock", NBTUtil.writeBlockPos(new BlockPos(offsetToMaster)));
+		nbt.put("offset", NBTUtil.writeBlockPos(new BlockPos(offsetToMaster)));
 		nbt.putBoolean("mirrored", mirrored);
 		nbt.putInt("facing", facing.ordinal());
 	}
@@ -273,9 +276,9 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	@Nullable
 	public T master()
 	{
-		if(offset[0]==0&&offset[1]==0&&offset[2]==0)
+		if(offsetToMaster.equals(Vec3i.NULL_VECTOR))
 			return (T)this;
-		BlockPos masterPos = getPos().add(-offset[0], -offset[1], -offset[2]);
+		BlockPos masterPos = getPos().subtract(offsetToMaster);
 		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
 		return this.getClass().isInstance(te)?(T)te: null;
 	}
@@ -293,7 +296,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 
 	public boolean isDummy()
 	{
-		return offset[0]!=0||offset[1]!=0||offset[2]!=0;
+		return !offsetToMaster.equals(Vec3i.NULL_VECTOR);
 	}
 
 	@Override
@@ -302,23 +305,12 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		return isDummy();
 	}
 
-	public ItemStack getOriginalBlock()
+	public BlockState getOriginalBlock()
 	{
-		if(posInMultiblock < 0)
-			return ItemStack.EMPTY;
-		ItemStack s = ItemStack.EMPTY;
-		try
-		{
-			int blocksPerLevel = structureDimensions[1]*structureDimensions[2];
-			int h = (posInMultiblock/blocksPerLevel);
-			int l = (posInMultiblock%blocksPerLevel/structureDimensions[2]);
-			int w = (posInMultiblock%structureDimensions[2]);
-			s = this.multiblockInstance.getStructureManual()[h][l][w];
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return s.copy();
+		for(BlockInfo block : multiblockInstance.getStructure())
+			if(block.pos.equals(posInMultiblock))
+				return block.state;
+		return Blocks.AIR.getDefaultState();
 	}
 
 	public void disassemble()
@@ -326,65 +318,31 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		if(formed&&!world.isRemote)
 		{
 			BlockPos startPos = getOrigin();
-			BlockPos masterPos = getPos().add(-offset[0], -offset[1], -offset[2]);
+			BlockPos masterPos = getPos().subtract(offsetToMaster);
 			long time = world.getGameTime();
-			for(int yy = 0; yy < structureDimensions[0]; yy++)
-				for(int ll = 0; ll < structureDimensions[1]; ll++)
-					for(int ww = 0; ww < structureDimensions[2]; ww++)
-					{
-						int w = mirrored?-ww: ww;
-						BlockPos pos = startPos.offset(facing, ll).offset(facing.rotateY(), w).add(0, yy, 0);
-						ItemStack s = ItemStack.EMPTY;
-
-						TileEntity te = world.getTileEntity(pos);
-						if(te instanceof MultiblockPartTileEntity)
-						{
-							MultiblockPartTileEntity part = (MultiblockPartTileEntity)te;
-							Vec3i diff = pos.subtract(masterPos);
-							if(part.offset[0]!=diff.getX()||part.offset[1]!=diff.getY()||part.offset[2]!=diff.getZ())
-								continue;
-							else if(time!=part.onlyLocalDissassembly)
-							{
-								s = part.getOriginalBlock();
-								part.formed = false;
-							}
-						}
-						if(pos.equals(getPos()))
-							s = this.getOriginalBlock();
-						BlockState state = Utils.getStateFromItemStack(s);
-						if(state!=null)
-						{
-							if(pos.equals(getPos()))
-								world.addEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s));
-							else
-								replaceStructureBlock(pos, state, s, yy, ll, ww);
-						}
-					}
+			multiblockInstance.disassemble(world, startPos, mirrored, facing);
+			world.removeBlock(pos, false);
 		}
 	}
 
 	public BlockPos getOrigin()
 	{
-		return getBlockPosForPos(0);
+		return TemplateMultiblock.withSettingsAndOffset(pos, BlockPos.ZERO.subtract(posInMultiblock),
+				mirrored, facing);
 	}
 
-	public BlockPos getBlockPosForPos(int targetPos)
+	public BlockPos getBlockPosForPos(BlockPos targetPos)
 	{
-		int blocksPerLevel = structureDimensions[1]*structureDimensions[2];
-		// dist = target position - current position
-		int distH = (targetPos/blocksPerLevel)-(posInMultiblock/blocksPerLevel);
-		int distL = (targetPos%blocksPerLevel/structureDimensions[2])-(posInMultiblock%blocksPerLevel/structureDimensions[2]);
-		int distW = (targetPos%structureDimensions[2])-(posInMultiblock%structureDimensions[2]);
-		int w = mirrored?-distW: distW;
-		return getPos().offset(facing, distL).offset(facing.rotateY(), w).add(0, distH, 0);
+		BlockPos origin = getOrigin();
+		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, mirrored, facing);
 	}
 
 	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
 	{
 		if(state.getBlock()==this.getBlockState().getBlock())
-			world.removeBlock(pos, false);
-		world.setBlockState(pos, state);
-		TileEntity tile = world.getTileEntity(pos);
+			getWorld().removeBlock(pos, false);
+		getWorld().setBlockState(pos, state);
+		TileEntity tile = getWorld().getTileEntity(pos);
 		if(tile instanceof ITileDrop)
 			((ITileDrop)tile).readOnPlacement(null, stack);
 	}
@@ -392,7 +350,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	//	=================================
 	//		REDSTONE CONTROL
 	//	=================================
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
 		throw new UnsupportedOperationException("Tried to get RS position for a multiblock without RS control!");
 	}
@@ -401,8 +359,8 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	{
 		if(!hasRedstoneControl||getRedstonePos()==null)
 			return false;
-		for(int i : getRedstonePos())
-			if(posInMultiblock==i)
+		for(BlockPos i : getRedstonePos())
+			if(posInMultiblock.equals(i))
 				return true;
 		return false;
 	}
@@ -429,15 +387,15 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	{
 		if(computerOn.isPresent())
 			return !computerOn.get();
-		int[] rsPositions = getRedstonePos();
-		if(rsPositions==null||rsPositions.length < 1)
+		Set<BlockPos> rsPositions = getRedstonePos();
+		if(rsPositions==null||rsPositions.isEmpty())
 			return false;
-		for(int rsPos : rsPositions)
+		for(BlockPos rsPos : rsPositions)
 		{
 			T tile = this.getTileForPos(rsPos);
 			if(tile!=null)
 			{
-				boolean b = world.getRedstonePowerFromNeighbors(tile.getPos()) > 0;
+				boolean b = getWorld().getRedstonePowerFromNeighbors(tile.getPos()) > 0;
 				return redstoneControlInverted!=b;
 			}
 		}
@@ -445,10 +403,10 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Nullable
-	public T getTileForPos(int targetPos)
+	public T getTileForPos(BlockPos targetPosInMB)
 	{
-		BlockPos target = getBlockPosForPos(targetPos);
-		TileEntity tile = Utils.getExistingTileEntity(world, target);
+		BlockPos target = getBlockPosForPos(targetPosInMB);
+		TileEntity tile = Utils.getExistingTileEntity(getWorld(), target);
 		if(this.getClass().isInstance(tile))
 			return (T)tile;
 		return null;

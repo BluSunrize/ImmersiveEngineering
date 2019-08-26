@@ -18,10 +18,11 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttacha
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
@@ -49,6 +50,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Set;
 
 //TODO powered MB or not?
 public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTileEntity, IMultiblockRecipe>
@@ -61,7 +63,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 
 	public AssemblerTileEntity()
 	{
-		super(MultiblockAssembler.instance, 32000, true, TYPE);
+		super(IEMultiblocks.ASSEMBLER, 32000, true, TYPE);
 	}
 
 	public FluidTank[] tanks = {new FluidTank(8000), new FluidTank(8000), new FluidTank(8000)};
@@ -354,7 +356,13 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock < 9||posInMultiblock==10||posInMultiblock==13||posInMultiblock==16||posInMultiblock==22)
+		Set<BlockPos> fullBlocks = ImmutableSet.of(
+				new BlockPos(0, 1, 1),
+				new BlockPos(1, 1, 1),
+				new BlockPos(2, 1, 1),
+				new BlockPos(1, 2, 1)
+		);
+		if(posInMultiblock.getY()==0||fullBlocks.contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, 1, 1};
 		float xMin = 0;
 		float yMin = 0;
@@ -362,35 +370,38 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		float xMax = 1;
 		float yMax = 1;
 		float zMax = 1;
-		if((posInMultiblock%9 < 3&&facing==Direction.SOUTH)||(posInMultiblock%9 >= 6&&facing==Direction.NORTH))
+		if((posInMultiblock.getX()==0&&facing==Direction.SOUTH)||(posInMultiblock.getX()==2&&facing==Direction.NORTH))
 			zMin = .25f;
-		else if((posInMultiblock%9 < 3&&facing==Direction.NORTH)||(posInMultiblock%9 >= 6&&facing==Direction.SOUTH))
+		else if((posInMultiblock.getX()==0&&facing==Direction.NORTH)||(posInMultiblock.getX()==2&&facing==Direction.SOUTH))
 			zMax = .75f;
-		else if((posInMultiblock%9 < 3&&facing==Direction.EAST)||(posInMultiblock%9 >= 6&&facing==Direction.WEST))
+		else if((posInMultiblock.getX()==0&&facing==Direction.EAST)||(posInMultiblock.getX()==2&&facing==Direction.WEST))
 			xMin = .25f;
-		else if((posInMultiblock%9 < 3&&facing==Direction.WEST)||(posInMultiblock%9 >= 6&&facing==Direction.EAST))
+		else if((posInMultiblock.getX()==0&&facing==Direction.WEST)||(posInMultiblock.getX()==2&&facing==Direction.EAST))
 			xMax = .75f;
-		if((posInMultiblock%3==0&&facing==Direction.EAST)||(posInMultiblock%3==2&&facing==Direction.WEST))
+		if((posInMultiblock.getZ()==0&&facing==Direction.EAST)||(posInMultiblock.getZ()==2&&facing==Direction.WEST))
 			zMin = .1875f;
-		else if((posInMultiblock%3==0&&facing==Direction.WEST)||(posInMultiblock%3==2&&facing==Direction.EAST))
+		else if((posInMultiblock.getZ()==0&&facing==Direction.WEST)||(posInMultiblock.getZ()==2&&facing==Direction.EAST))
 			zMax = .8125f;
-		else if((posInMultiblock%3==0&&facing==Direction.NORTH)||(posInMultiblock%3==2&&facing==Direction.SOUTH))
+		else if((posInMultiblock.getZ()==0&&facing==Direction.NORTH)||(posInMultiblock.getZ()==2&&facing==Direction.SOUTH))
 			xMin = .1875f;
-		else if((posInMultiblock%3==0&&facing==Direction.SOUTH)||(posInMultiblock%3==2&&facing==Direction.NORTH))
+		else if((posInMultiblock.getZ()==0&&facing==Direction.SOUTH)||(posInMultiblock.getZ()==2&&facing==Direction.NORTH))
 			xMax = .8125f;
 		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
 		return new int[]{22};
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{3, 5};
+		return ImmutableSet.of(
+				new BlockPos(1, 0, 0),
+				new BlockPos(1, 0, 2)
+		);
 	}
 
 	@Override
@@ -399,7 +410,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==1&&w==1&&l!=1)
 		{
-			TileEntity tile = world.getTileEntity(pos);
+			TileEntity tile = getWorld().getTileEntity(pos);
 			if(tile instanceof ConveyorBeltTileEntity)
 				((ConveyorBeltTileEntity)tile).setFacing(this.facing);
 		}
@@ -506,18 +517,21 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	private LazyOptional<IItemHandler> extractionHandler = registerConstantCap(
 			new IEInventoryHandler(3, this, 18, false, true));
 
+	private static final BlockPos inputPos = new BlockPos(0, 1, 1);
+	private static final BlockPos outputPos = new BlockPos(2, 1, 1);
+	private static final Set<BlockPos> itemConnections = ImmutableSet.of(inputPos, outputPos);
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 	{
-		if((posInMultiblock==10||posInMultiblock==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(itemConnections.contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			AssemblerTileEntity master = master();
 			if(master==null)
 				return LazyOptional.empty();
-			if(posInMultiblock==10&&facing==this.facing.getOpposite())
+			if(inputPos.equals(posInMultiblock)&&facing==this.facing.getOpposite())
 				return master.insertionHandler.cast();
-			if(posInMultiblock==16&&facing==this.facing)
+			if(outputPos.equals(posInMultiblock)&&facing==this.facing)
 				return master.extractionHandler.cast();
 			return LazyOptional.empty();
 		}
@@ -559,7 +573,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		AssemblerTileEntity master = master();
-		if(master!=null&&posInMultiblock==1&&(side==null||side==facing.getOpposite()))
+		if(master!=null&&/*TODO posInMultiblock==1&&*/(side==null||side==facing.getOpposite()))
 			return master.tanks;
 		return new FluidTank[0];
 	}
@@ -579,9 +593,9 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	@Override
 	public Direction[] sigOutputDirections()
 	{
-		if(posInMultiblock==16)
+		/*TODO if(posInMultiblock==16)*/
 			return new Direction[]{this.facing};
-		return new Direction[0];
+		//return new Direction[0];
 	}
 
 	public static class CrafterPatternInventory implements IInventory

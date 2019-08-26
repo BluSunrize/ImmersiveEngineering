@@ -15,10 +15,11 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -42,10 +43,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTileEntity, SqueezerRecipe> implements
 		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IInteractionObjectIE
@@ -61,7 +59,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 
 	public SqueezerTileEntity()
 	{
-		super(MultiblockSqueezer.instance, 16000, true, TYPE);
+		super(IEMultiblocks.SQUEEZER, 16000, true, TYPE);
 	}
 
 	@Override
@@ -214,11 +212,13 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock > 0&&posInMultiblock < 9&&posInMultiblock!=5)
+		if(posInMultiblock.getY()==0&&!ImmutableSet.of(
+				new BlockPos(0, 0, 0),
+				new BlockPos(1, 0, 2)
+		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(posInMultiblock==11)
+		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
 			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
-
 
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
@@ -230,7 +230,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
-		if(posInMultiblock==2)
+		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
@@ -246,12 +246,12 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		if(posInMultiblock==3||posInMultiblock==4||posInMultiblock==6||posInMultiblock==7)
+		if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() < 2)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock > 5)
+			if(posInMultiblock.getX()==2)
 				fl = fl.getOpposite();
-			if(posInMultiblock%3==1)
+			if(posInMultiblock.getZ()==1)
 				fw = fw.getOpposite();
 			float minX = fl==Direction.WEST?.6875f: fl==Direction.EAST?.0625f: fw==Direction.EAST?.0625f: .6875f;
 			float maxX = fl==Direction.EAST?.3125f: fl==Direction.WEST?.9375f: fw==Direction.EAST?.3125f: .9375f;
@@ -259,7 +259,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 			float maxZ = fl==Direction.SOUTH?.3125f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?.3125f: .9375f;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
-			if(posInMultiblock==4)
+			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
 				minX = fl==Direction.WEST?.375f: fl==Direction.EAST?.625f: fw==Direction.WEST?-.125f: 0;
 				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.625f: fw==Direction.EAST?1.125f: 1;
@@ -282,17 +282,17 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 
 			return list;
 		}
-		if((posInMultiblock==12||posInMultiblock==13||posInMultiblock==15||posInMultiblock==16)||(posInMultiblock==21||posInMultiblock==22||posInMultiblock==24||posInMultiblock==25))
+		if(posInMultiblock.getX() > 0&&posInMultiblock.getY() > 0&&posInMultiblock.getZ() < 2)
 		{
 			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>(2);
-			if(posInMultiblock < 18)
+			if(posInMultiblock.getY()==1)
 				list.add(new AxisAlignedBB(0, 0, 0, 1, .125f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock%9 > 5)
+			if(posInMultiblock.getX()==2)
 				fl = fl.getOpposite();
-			if(posInMultiblock%3==1)
+			if(posInMultiblock.getZ()==1)
 				fw = fw.getOpposite();
-			float minY = posInMultiblock < 18?.125f: -.875f;
-			float maxY = posInMultiblock < 18?1.125f: .125f;
+			float minY = posInMultiblock.getY()==1?.125f: -.875f;
+			float maxY = posInMultiblock.getY()==1?1.125f: .125f;
 
 			float minX = fl==Direction.WEST?.84375f: fl==Direction.EAST?0f: fw==Direction.EAST?0f: .84375f;
 			float maxX = fl==Direction.EAST?.15625f: fl==Direction.WEST?1f: fw==Direction.EAST?.15625f: 1;
@@ -312,7 +312,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 			maxZ = fl==Direction.SOUTH?.1875f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?1f: .84375f;
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
-			if(posInMultiblock > 18)
+			if(posInMultiblock.getY()==2)
 			{
 				minX = fl==Direction.WEST?-.25f: fl==Direction.EAST?1.25f: fw==Direction.EAST?.75f: -.25f;
 				maxX = fl==Direction.EAST?.75f: fl==Direction.WEST?.25f: fw==Direction.EAST?1.25f: .25f;
@@ -338,15 +338,19 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{9};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 0)
+		);
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{11};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 2)
+		);
 	}
 
 	@Override
@@ -444,7 +448,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		SqueezerTileEntity master = master();
-		if(master!=null&&posInMultiblock==5&&(side==null||side==(mirrored?facing.rotateYCCW(): facing.rotateY())))
+		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(mirrored?facing.rotateYCCW(): facing.rotateY())))
 			return master.tanks;
 		return new FluidTank[0];
 	}
@@ -475,18 +479,20 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 			new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true})
 	);
 
+	private static final BlockPos inputOffset = new BlockPos(2, 1, 0);
+	private static final BlockPos outputOffset = new BlockPos(1, 1, 1);
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if((posInMultiblock==15||posInMultiblock==13)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((inputOffset.equals(posInMultiblock)||outputOffset.equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			SqueezerTileEntity master = master();
 			if(master==null)
 				return LazyOptional.empty();
-			if(posInMultiblock==15)
+			if(inputOffset.equals(posInMultiblock))
 				return master.insertionHandler.cast();
-			if(posInMultiblock==13)
+			if(outputOffset.equals(posInMultiblock))
 				return master.extractionHandler.cast();
 			return LazyOptional.empty();
 		}

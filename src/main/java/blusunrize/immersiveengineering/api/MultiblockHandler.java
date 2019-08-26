@@ -11,18 +11,23 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.template.Template.BlockInfo;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.eventbus.api.Cancelable;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,8 +37,8 @@ import java.util.Map;
  */
 public class MultiblockHandler
 {
-	static ArrayList<IMultiblock> multiblocks = new ArrayList<IMultiblock>();
-	static Map<String, IMultiblock> byUniqueName = new HashMap<>();
+	static ArrayList<IMultiblock> multiblocks = new ArrayList<>();
+	static Map<ResourceLocation, IMultiblock> byUniqueName = new HashMap<>();
 
 	public static void registerMultiblock(IMultiblock multiblock)
 	{
@@ -47,7 +52,7 @@ public class MultiblockHandler
 	}
 
 	@Nullable
-	public static IMultiblock getByUniqueName(String name)
+	public static IMultiblock getByUniqueName(ResourceLocation name)
 	{
 		return byUniqueName.get(name);
 	}
@@ -55,9 +60,9 @@ public class MultiblockHandler
 	public interface IMultiblock
 	{
 		/**
-		 * returns name of the Multiblock. This is used for the interdiction NBT system on the hammer, so this name /must/ be unique.
+		 * @return name of the Multiblock. This is used for the interdiction NBT system on the hammer, so this name /must/ be unique.
 		 */
-		String getUniqueName();
+		ResourceLocation getUniqueName();
 
 		/**
 		 * Check whether the given block can be used to trigger the structure creation of the multiblock.<br>
@@ -73,20 +78,15 @@ public class MultiblockHandler
 		boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player);
 
 		/**
-		 * A three-dimensional array (height, length, width) of the structure to be rendered in the Engineers Manual
+		 * TODO
+		 * @return
 		 */
-		ItemStack[][][] getStructureManual();
-
-		default BlockState getBlockstateFromStack(int index, ItemStack stack)
-		{
-			if(!stack.isEmpty()&&stack.getItem() instanceof BlockItem)
-				return ((BlockItem)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
-			return null;
-		}
+		List<BlockInfo> getStructure();
 
 		/**
 		 * An array of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual
 		 */
+		@OnlyIn(Dist.CLIENT)
 		IngredientStack[] getTotalMaterials();
 
 		/**
@@ -112,7 +112,9 @@ public class MultiblockHandler
 		@OnlyIn(Dist.CLIENT)
 		void renderFormedStructure();
 
-		int[] getSize();
+		Vec3i getSize();
+
+		void disassemble(World world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation);
 	}
 
 	public static MultiblockFormEvent postMultiblockFormationEvent(PlayerEntity player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)

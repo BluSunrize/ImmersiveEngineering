@@ -17,11 +17,12 @@ import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -54,15 +55,17 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTileEntity, IMultiblockRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds
 {
 	public static TileEntityType<ExcavatorTileEntity> TYPE;
+	private static final BlockPos wheelCenterOffset = new BlockPos(4, 1, 1);
 	public boolean active = false;
 
 	public ExcavatorTileEntity()
 	{
-		super(MultiblockExcavator.instance, 64000, true, TYPE);
+		super(IEMultiblocks.EXCAVATOR, 64000, true, TYPE);
 	}
 
 
@@ -83,7 +86,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	{
 		if(!this.isRedstonePos())
 			return 0;
-		BlockPos wheelPos = this.getBlockPosForPos(31);
+		BlockPos wheelPos = this.getBlockPosForPos(wheelCenterOffset);
 		if(world.isBlockLoaded(wheelPos)&&world.getTileEntity(wheelPos) instanceof BucketWheelTileEntity)
 		{
 			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, wheelPos.getX() >> 4, wheelPos.getZ() >> 4);
@@ -101,7 +104,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		super.tick();
 		if(isDummy())
 			return;
-		BlockPos wheelPos = this.getBlockPosForPos(31);
+		BlockPos wheelPos = this.getBlockPosForPos(wheelCenterOffset);
 		if(!world.isRemote&&world.isBlockLoaded(wheelPos))
 		{
 			TileEntity center = world.getTileEntity(wheelPos);
@@ -306,25 +309,25 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		if(mirrored)
 			fw = fw.getOpposite();
 
-		if(posInMultiblock==45)
+		if(new BlockPos(3, 2, 0).equals(posInMultiblock))
 			return new float[]{fl==Direction.EAST?.5f: 0, 0, fl==Direction.SOUTH?.5f: 0, fl==Direction.WEST?.5f: 1, .5f, fl==Direction.NORTH?.5f: 1};
-		if(posInMultiblock==48)
+		if(new BlockPos(4, 2, 0).equals(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(posInMultiblock==51)
+		if(new BlockPos(5, 2, 0).equals(posInMultiblock))
 			return new float[]{fl==Direction.WEST?.5f: 0, 0, fl==Direction.NORTH?.5f: 0, fl==Direction.EAST?.5f: 1, .5f, fl==Direction.SOUTH?.5f: 1};
 
-		if(posInMultiblock==47)
+		if(new BlockPos(3, 2, 2).equals(posInMultiblock))
 			return new float[]{fl==Direction.EAST?.5f: fl==Direction.WEST?.375f: 0, 0, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.375f: 0, fl==Direction.WEST?.5f: fl==Direction.EAST?.625f: 1, 1, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.625f: 1};
-		if(posInMultiblock==50)
+		if(new BlockPos(4, 2, 2).equals(posInMultiblock))
 			return new float[]{fw==Direction.EAST?.875f: 0, 0, fw==Direction.SOUTH?.875f: 0, fw==Direction.WEST?.125f: 1, 1, fw==Direction.NORTH?.125f: 1};
-		if(posInMultiblock==53)
+		if(new BlockPos(5, 2, 2).equals(posInMultiblock))
 			return new float[]{fl==Direction.WEST?.5f: fl==Direction.EAST?.375f: 0, 0, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: 0, fl==Direction.EAST?.5f: fl==Direction.WEST?.625f: 1, 1, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.625f: 1};
 
-		if(posInMultiblock==5||posInMultiblock==23||posInMultiblock==41)
+		if(posInMultiblock.getX()==1&&posInMultiblock.getZ()==2)
 			return new float[]{fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1};
-		if(posInMultiblock==9||posInMultiblock==12||posInMultiblock==15)
+		if(posInMultiblock.getX() >= 3&&posInMultiblock.getY()==0&&posInMultiblock.getZ()==0)
 			return new float[]{fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1};
-		if(posInMultiblock==11||posInMultiblock==14||posInMultiblock==17)
+		if(posInMultiblock.getX() >= 3&&posInMultiblock.getY()==0&&posInMultiblock.getZ()==2)
 			return new float[]{fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1};
 
 
@@ -339,32 +342,32 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		if(mirrored)
 			fw = fw.getOpposite();
 
-		if(posInMultiblock==5||posInMultiblock==23||posInMultiblock==41)
+		if(posInMultiblock.getX()==1&&posInMultiblock.getZ()==2)
 		{
-			List list = Lists.newArrayList(new AxisAlignedBB(fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			list.add(new AxisAlignedBB(fw==Direction.EAST?.5f: fw==Direction.WEST?0: .25f, .25f, fw==Direction.SOUTH?.5f: fw==Direction.NORTH?0: .25f, fw==Direction.WEST?.5f: fw==Direction.EAST?1: .75f, .75f, fw==Direction.NORTH?.5f: fw==Direction.SOUTH?1: .75f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(posInMultiblock==9||posInMultiblock==12||posInMultiblock==15)
+		else if(posInMultiblock.getX() >= 3&&posInMultiblock.getY()==0&&posInMultiblock.getZ()==0)
 		{
-			List list = Lists.newArrayList(new AxisAlignedBB(fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock==9)
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			if(posInMultiblock.getX()==3)
 				list.add(new AxisAlignedBB(fw==Direction.WEST||fl==Direction.EAST?.5f: 0, .5f, fw==Direction.NORTH||fl==Direction.SOUTH?.5f: 0, fw==Direction.EAST||fl==Direction.WEST?.5f: 1, 1, fw==Direction.SOUTH||fl==Direction.NORTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			else if(posInMultiblock==12)
+			else if(posInMultiblock.getX()==4)
 				list.add(new AxisAlignedBB(fw==Direction.WEST?.5f: 0, .5f, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			else
 				list.add(new AxisAlignedBB(fw==Direction.WEST||fl==Direction.WEST?.5f: 0, .5f, fw==Direction.NORTH||fl==Direction.NORTH?.5f: 0, fw==Direction.EAST||fl==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH||fl==Direction.SOUTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(posInMultiblock==47)
+		else if(new BlockPos(3, 2, 2).equals(posInMultiblock))
 		{
-			List list = Lists.newArrayList(new AxisAlignedBB(fl==Direction.EAST?.5f: fl==Direction.WEST?.375f: 0, 0, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.375f: 0, fl==Direction.WEST?.5f: fl==Direction.EAST?.625f: 1, 1, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.625f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fl==Direction.EAST?.5f: fl==Direction.WEST?.375f: 0, 0, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.375f: 0, fl==Direction.WEST?.5f: fl==Direction.EAST?.625f: 1, 1, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.625f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			list.add(new AxisAlignedBB(fl==Direction.EAST?.625f: fw==Direction.EAST?.875f: 0, 0, fl==Direction.SOUTH?.625f: fw==Direction.SOUTH?.875f: 0, fl==Direction.WEST?.375f: fw==Direction.WEST?.125f: 1, 1, fl==Direction.NORTH?.375f: fw==Direction.NORTH?.125f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(posInMultiblock==53)
+		else if(new BlockPos(5, 2, 2).equals(posInMultiblock))
 		{
-			List list = Lists.newArrayList(new AxisAlignedBB(fl==Direction.WEST?.5f: fl==Direction.EAST?.375f: 0, 0, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: 0, fl==Direction.EAST?.5f: fl==Direction.WEST?.625f: 1, 1, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.625f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fl==Direction.WEST?.5f: fl==Direction.EAST?.375f: 0, 0, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: 0, fl==Direction.EAST?.5f: fl==Direction.WEST?.625f: 1, 1, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.625f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			list.add(new AxisAlignedBB(fl==Direction.WEST?.625f: fw==Direction.EAST?.875f: 0, 0, fl==Direction.NORTH?.625f: fw==Direction.SOUTH?.875f: 0, fl==Direction.EAST?.375f: fw==Direction.WEST?.125f: 1, 1, fl==Direction.SOUTH?.375f: fw==Direction.NORTH?.125f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
@@ -384,15 +387,21 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{5, 23, 41};
+		return ImmutableSet.of(
+				new BlockPos(1, 0, 2),
+				new BlockPos(1, 1, 2),
+				new BlockPos(1, 2, 2)
+		);
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{18};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 0)
+		);
 	}
 
 	@Override
@@ -525,7 +534,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	public void disassemble()
 	{
 		super.disassemble();
-		BlockPos wheelPos = this.getBlockPosForPos(31);
+		BlockPos wheelPos = this.getBlockPosForPos(wheelCenterOffset);
 		TileEntity center = world.getTileEntity(wheelPos);
 		if(center instanceof BucketWheelTileEntity)
 			world.addBlockEvent(center.getPos(), center.getBlockState().getBlock(), 0, 0);

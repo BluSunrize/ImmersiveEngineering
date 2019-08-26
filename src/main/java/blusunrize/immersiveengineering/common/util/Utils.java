@@ -1413,21 +1413,65 @@ public class Utils
 	*/
 
 	//TODO getDrops wants a world now, how do we deal with that?
-	public static NonNullList<ItemStack> getDrops(BlockState state, Builder builder)
+	public static List<ItemStack> getDrops(BlockState state, Builder builder)
 	{
-		IBlockReader w = getSingleBlockWorldAccess(state);
-		NonNullList<ItemStack> ret = NonNullList.create();
-		state.getBlock().getDrops(ret, w, BlockPos.ZERO, state, 0);
-		return ret;
+		ResourceLocation resourcelocation = state.getBlock().getLootTable();
+		if(resourcelocation==LootTables.EMPTY)
+		{
+			return Collections.emptyList();
+		}
+		else
+		{
+			LootContext lootcontext = builder.withParameter(LootParameters.BLOCK_STATE, state).build(LootParameterSets.BLOCK);
+			ServerWorld serverworld = lootcontext.getWorld();
+			LootTable loottable = serverworld.getServer().getLootTableManager().getLootTableFromLocation(resourcelocation);
+			return loottable.generate(lootcontext);
+		}
 	}
 
 	//TODO getDrops wants a world now, how do we deal with that?
 	public static ItemStack getPickBlock(BlockState state, RayTraceResult rtr, PlayerEntity player)
 	{
 		IBlockReader w = getSingleBlockWorldAccess(state);
-		state.getBlock().getPickBlock(state, rtr, w, BlockPos.ZERO, player);
-		return ret;
+		return state.getBlock().getPickBlock(state, rtr, w, BlockPos.ZERO, player);
 	}
+
+	public static Direction applyRotationToFacing(Rotation rot, Direction facing)
+	{
+		switch(rot)
+		{
+			case CLOCKWISE_90:
+				facing = facing.rotateY();
+				break;
+			case CLOCKWISE_180:
+				facing = facing.getOpposite();
+				break;
+			case COUNTERCLOCKWISE_90:
+				facing = facing.rotateYCCW();
+				break;
+		}
+		return facing;
+	}
+
+	public static Rotation getRotationBetweenFacings(Direction orig, Direction to)
+	{
+		if(to==orig)
+			return Rotation.NONE;
+		if(orig.getAxis()==Axis.Y||to.getAxis()==Axis.Y)
+			return null;
+		orig = orig.rotateY();
+		if(orig==to)
+			return Rotation.CLOCKWISE_90;
+		orig = orig.rotateY();
+		if(orig==to)
+			return Rotation.CLOCKWISE_180;
+		orig = orig.rotateY();
+		if(orig==to)
+			return Rotation.COUNTERCLOCKWISE_90;
+		return null;//This shouldn't ever happen
+	}
+
+
 
 	public static AxisAlignedBB transformAABB(AxisAlignedBB original, Direction facing)
 	{

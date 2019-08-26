@@ -14,8 +14,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSheetmetalTank;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -33,6 +34,8 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 
+import java.util.Set;
+
 public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<SheetmetalTankTileEntity>
 		implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride
 {
@@ -44,7 +47,7 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 
 	public SheetmetalTankTileEntity()
 	{
-		super(MultiblockSheetmetalTank.instance, TYPE, true);
+		super(IEMultiblocks.SHEETMETAL_TANK, TYPE, true);
 	}
 
 	@Override
@@ -96,9 +99,11 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{4};
+		return ImmutableSet.of(
+				new BlockPos(1, 0, 1)
+		);
 	}
 
 	@Override
@@ -119,24 +124,20 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock==9)
-			return new float[]{.375f, 0, .375f, .625f, 1, .625f};
-		if(posInMultiblock==0||posInMultiblock==2||posInMultiblock==6||posInMultiblock==8)
+		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ()%2==0)
 			return new float[]{.375f, 0, .375f, .625f, 1, .625f};
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
-	@Override
-	public BlockPos getOrigin()
-	{
-		return getPos().add(-offset[0], -offset[1], -offset[2]).offset(facing.rotateYCCW()).offset(facing.getOpposite());
-	}
+	private static final BlockPos ioTopOffset = new BlockPos(1, 4, 1);
+	private static final BlockPos ioBottomOffset = new BlockPos(1, 0, 1);
+	private static final Set<BlockPos> ioOffsets = ImmutableSet.of(ioTopOffset, ioBottomOffset);
 
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		SheetmetalTankTileEntity master = master();
-		if(master!=null&&(posInMultiblock==4||posInMultiblock==40))
+		if(master!=null&&ioOffsets.contains(posInMultiblock))
 			return new FluidTank[]{master.tank};
 		return new FluidTank[0];
 	}
@@ -144,13 +145,13 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	@Override
 	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
-		return posInMultiblock==4||posInMultiblock==40;
+		return ioOffsets.contains(posInMultiblock);
 	}
 
 	@Override
 	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
-		return posInMultiblock==4;
+		return ioBottomOffset.equals(posInMultiblock);
 	}
 
 	@Override
@@ -176,23 +177,25 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			if(posInMultiblock==4)
+		{
+			if(offsetToMaster.equals(BlockPos.ZERO))
 				renderAABB = new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 5, 2));
 			else
 				renderAABB = new AxisAlignedBB(getPos(), getPos());
+		}
 		return renderAABB;
 	}
 
 	@Override
 	public int getComparatorInputOverride()
 	{
-		if(posInMultiblock==4)
+		if(ioBottomOffset.equals(posInMultiblock))
 			return (15*tank.getFluidAmount())/tank.getCapacity();
 		SheetmetalTankTileEntity master = master();
-		if(offset[1] >= 1&&offset[1] <= 4&&master!=null)//4 layers of storage
+		if(offsetToMaster.getY() >= 1&&master!=null)//4 layers of storage
 		{
 			FluidTank t = master.tank;
-			int layer = offset[1]-1;
+			int layer = offsetToMaster.getY()-1;
 			int vol = t.getCapacity()/4;
 			int filled = t.getFluidAmount()-layer*vol;
 			return Math.min(15, Math.max(0, (15*filled)/vol));
@@ -216,6 +219,7 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 		int vol = tank.getCapacity()/6;
 		if((15*tank.getFluidAmount())/tank.getCapacity()!=masterCompOld)
 			world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
+		BlockPos masterPos = pos.subtract(offsetToMaster);
 		for(int i = 0; i < 4; i++)
 		{
 			int filled = tank.getFluidAmount()-i*vol;
@@ -225,7 +229,7 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 				for(int x = -1; x <= 1; x++)
 					for(int z = -1; z <= 1; z++)
 					{
-						BlockPos pos = getPos().add(-offset[0]+x, -offset[1]+i+1, -offset[2]+z);
+						BlockPos pos = masterPos.add(x, i+1, z);
 						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
 					}
 			}

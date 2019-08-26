@@ -14,8 +14,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -34,6 +35,7 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTileEntity, RefineryRecipe> implements
 		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IInteractionObjectIE
@@ -45,7 +47,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 
 	public RefineryTileEntity()
 	{
-		super(MultiblockRefinery.instance, 16000, true, TYPE);
+		super(IEMultiblocks.REFINERY, 16000, true, TYPE);
 	}
 
 	@Override
@@ -169,11 +171,15 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock==0||posInMultiblock==1||posInMultiblock==3)
+		if(ImmutableSet.of(
+				new BlockPos(0, 0, 0),
+				new BlockPos(0, 0, 1),
+				new BlockPos(0, 0, 3)
+		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(posInMultiblock==19)
+		if(new BlockPos(0, 1, 4).equals(posInMultiblock))
 			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
-		if(posInMultiblock==17)
+		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
 			return new float[]{.0625f, 0, .0625f, .9375f, 1, .9375f};
 
 		return new float[]{0, 0, 0, 1, 1, 1};
@@ -186,12 +192,12 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
-		if(posInMultiblock==0||posInMultiblock==4||posInMultiblock==10||posInMultiblock==14)
+		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ()%4==0)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock >= 10)
+			if(posInMultiblock.getX()==2)
 				fl = fl.getOpposite();
-			if(posInMultiblock%10==0)
+			if(posInMultiblock.getZ()==0)
 				fw = fw.getOpposite();
 
 			float minX = fl==Direction.WEST?0: fl==Direction.EAST?.75f: fw==Direction.WEST?.5f: .25f;
@@ -200,7 +206,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 			float maxZ = fl==Direction.SOUTH?1: fl==Direction.NORTH?.25f: fw==Direction.SOUTH?.5f: .75f;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1.375f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
-			if(posInMultiblock==4)
+			if(new BlockPos(0, 0, 4).equals(posInMultiblock))
 			{
 				minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
 				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .25f;
@@ -217,12 +223,12 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 
 			return list;
 		}
-		if(posInMultiblock==1||posInMultiblock==3||posInMultiblock==11||posInMultiblock==13)
+		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ()%2==1)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .0f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock >= 10)
+			if(posInMultiblock.getX()==2)
 				fl = fl.getOpposite();
-			if(posInMultiblock%10==1)
+			if(posInMultiblock.getZ()==1)
 				fw = fw.getOpposite();
 
 			float minX = fl==Direction.WEST?0: fl==Direction.EAST?.75f: fw==Direction.WEST?.75f: 0;
@@ -233,18 +239,18 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 			return list;
 		}
 
-		if((posInMultiblock==20||posInMultiblock==24||posInMultiblock==25||posInMultiblock==29)||(posInMultiblock==35||posInMultiblock==39||posInMultiblock==40||posInMultiblock==44))
+		if(posInMultiblock.getX() > 0&&posInMultiblock.getY() > 0&&posInMultiblock.getZ()%4==0)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList();
-			if(posInMultiblock%5==4)
+			if(posInMultiblock.getZ()==4)
 				fw = fw.getOpposite();
 			float minX = fl==Direction.WEST?-.25f: fl==Direction.EAST?-.25f: fw==Direction.WEST?-1f: .5f;
 			float maxX = fl==Direction.EAST?1.25f: fl==Direction.WEST?1.25f: fw==Direction.EAST?2: .5f;
 			float minZ = fl==Direction.NORTH?-.25f: fl==Direction.SOUTH?-.25f: fw==Direction.NORTH?-1f: .5f;
 			float maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?1.25f: fw==Direction.SOUTH?2: .5f;
-			float minY = posInMultiblock < 35?.5f: -.5f;
-			float maxY = posInMultiblock < 35?2f: 1f;
-			if(posInMultiblock%15 >= 10)
+			float minY = posInMultiblock.getY()==1?.5f: -.5f;
+			float maxY = posInMultiblock.getY()==1?2f: 1f;
+			if(posInMultiblock.getX()==2)
 			{
 				minX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
 				maxX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
@@ -254,18 +260,18 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		if((posInMultiblock==21||posInMultiblock==23||posInMultiblock==26||posInMultiblock==28)||(posInMultiblock==36||posInMultiblock==38||posInMultiblock==41||posInMultiblock==43))
+		if(posInMultiblock.getX() > 0&&posInMultiblock.getY() > 0&&posInMultiblock.getZ()%2==1)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList();
-			if(posInMultiblock%5==3)
+			if(posInMultiblock.getZ()==3)
 				fw = fw.getOpposite();
 			float minX = fl==Direction.WEST?-.25f: fl==Direction.EAST?-.25f: fw==Direction.WEST?0f: -.5f;
 			float maxX = fl==Direction.EAST?1.25f: fl==Direction.WEST?1.25f: fw==Direction.EAST?1f: 1.5f;
 			float minZ = fl==Direction.NORTH?-.25f: fl==Direction.SOUTH?-.25f: fw==Direction.NORTH?0: -.5f;
 			float maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?1.25f: fw==Direction.SOUTH?1f: 1.5f;
-			float minY = posInMultiblock < 35?.5f: -.5f;
-			float maxY = posInMultiblock < 35?2f: 1f;
-			if(posInMultiblock%15 >= 10)
+			float minY = posInMultiblock.getY()==1?.5f: -.5f;
+			float maxY = posInMultiblock.getY()==1?2f: 1f;
+			if(posInMultiblock.getX()==2)
 			{
 				minX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
 				maxX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
@@ -291,15 +297,19 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{27};
+		return ImmutableSet.of(
+				new BlockPos(2, 1, 2)
+		);
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{19};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 4)
+		);
 	}
 
 	@Override
@@ -385,15 +395,22 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		return tanks;
 	}
 
+
+	private static final BlockPos outputOffset = new BlockPos(0, 0, 2);
+	private static final Set<BlockPos> inputOffsets = ImmutableSet.of(
+			new BlockPos(1, 0, 0),
+			new BlockPos(1, 0, 4)
+	);
+
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		RefineryTileEntity master = this.master();
 		if(master!=null)
 		{
-			if(posInMultiblock==2&&(side==null||side==facing.getOpposite()))
+			if(outputOffset.equals(posInMultiblock)&&(side==null||side==facing.getOpposite()))
 				return new FluidTank[]{master.tanks[2]};
-			if((posInMultiblock==5||posInMultiblock==9)&&(side==null||side.getAxis()==facing.rotateYCCW().getAxis()))
+			if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==facing.rotateYCCW().getAxis()))
 				return new FluidTank[]{master.tanks[0], master.tanks[1]};
 		}
 		return tanks;
@@ -402,7 +419,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	@Override
 	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
-		if((posInMultiblock==5||posInMultiblock==9)&&(side==null||side.getAxis()==facing.rotateYCCW().getAxis()))
+		if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==facing.rotateYCCW().getAxis()))
 		{
 			RefineryTileEntity master = this.master();
 			if(master==null||master.tanks[iTank].getFluidAmount() >= master.tanks[iTank].getCapacity())
@@ -424,7 +441,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	@Override
 	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
-		return posInMultiblock==2&&(side==null||side==facing.getOpposite());
+		return outputOffset.equals(posInMultiblock)&&(side==null||side==facing.getOpposite());
 	}
 
 	@Override

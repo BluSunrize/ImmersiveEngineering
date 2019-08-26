@@ -13,11 +13,12 @@ import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
@@ -41,6 +42,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Set;
 
 public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPressTileEntity, MetalPressRecipe> implements
 		IPlayerInteraction, IConveyorAttachable
@@ -49,7 +51,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 
 	public MetalPressTileEntity()
 	{
-		super(MultiblockMetalPress.instance, 16000, true, TYPE);
+		super(IEMultiblocks.METAL_PRESS, 16000, true, TYPE);
 	}
 
 	public ItemStack mold = ItemStack.EMPTY;
@@ -129,7 +131,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock==3||posInMultiblock==5)
+		if(posInMultiblock.getY()==1&&posInMultiblock.getX()%2==0)
 			return new float[]{0, 0, 0, 1, .125f, 1};
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
@@ -149,7 +151,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(posInMultiblock==3&&!world.isRemote&&entity instanceof ItemEntity&&entity.isAlive()
+		if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&!world.isRemote&&entity instanceof ItemEntity&&entity.isAlive()
 				&&!((ItemEntity)entity).getItem().isEmpty())
 		{
 			MetalPressTileEntity master = master();
@@ -176,15 +178,19 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{7};
+		return ImmutableSet.of(
+				new BlockPos(1, 2, 0)
+		);
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{1};
+		return ImmutableSet.of(
+				new BlockPos(1, 0, 0)
+		);
 	}
 
 	@Override
@@ -326,7 +332,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			MetalPressTileEntity master = master();
 			if(master==null)
 				return LazyOptional.empty();
-			if(posInMultiblock==3&&facing==this.facing.getOpposite())
+			if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&facing==this.facing.getOpposite())
 				return master.insertionHandler.cast();
 			return LazyOptional.empty();
 		}
@@ -348,7 +354,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	@Override
 	public Direction[] sigOutputDirections()
 	{
-		if(posInMultiblock==5)
+		if(new BlockPos(2, 1, 0).equals(posInMultiblock))
 			return new Direction[]{this.facing};
 		return new Direction[0];
 	}

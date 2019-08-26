@@ -11,9 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSilo;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -36,6 +37,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
+import java.util.Set;
 
 public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> implements IComparatorOverride //IDeepStorageUnit
 {
@@ -51,7 +53,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 
 	public SiloTileEntity()
 	{
-		super(MultiblockSilo.instance, TYPE, true);
+		super(IEMultiblocks.SILO, TYPE, true);
 	}
 
 	private EnumMap<Direction, CapabilityReference<IItemHandler>> outputCaps = new EnumMap<>(Direction.class);
@@ -91,9 +93,11 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{4};
+		return ImmutableSet.of(
+				new BlockPos(1, 0, 1)
+		);
 	}
 
 	@Override
@@ -145,21 +149,15 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock==0||posInMultiblock==2||posInMultiblock==6||posInMultiblock==8)
+		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ()%2==0)
 		{
-			float xMin = (facing.getAxis()==Axis.X?(posInMultiblock > 2^facing==Direction.EAST): (posInMultiblock%3==2^facing==Direction.SOUTH))?.75f: 0;
-			float xMax = (facing.getAxis()==Axis.X?(posInMultiblock < 3^facing==Direction.EAST): (posInMultiblock%3==0^facing==Direction.SOUTH))?.25f: 1;
-			float zMin = (facing.getAxis()==Axis.X?(posInMultiblock%3==2^facing==Direction.EAST): (posInMultiblock < 3^facing==Direction.SOUTH))?.75f: 0;
-			float zMax = (facing.getAxis()==Axis.X?(posInMultiblock%3==0^facing==Direction.EAST): (posInMultiblock > 2^facing==Direction.SOUTH))?.25f: 1;
+			float xMin = (facing.getAxis()==Axis.X?(posInMultiblock.getX() > 0^facing==Direction.EAST): (posInMultiblock.getZ()==2^facing==Direction.SOUTH))?.75f: 0;
+			float xMax = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==0^facing==Direction.EAST): (posInMultiblock.getZ()==0^facing==Direction.SOUTH))?.25f: 1;
+			float zMin = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==2^facing==Direction.EAST): (posInMultiblock.getX()==0^facing==Direction.SOUTH))?.75f: 0;
+			float zMax = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==0^facing==Direction.EAST): (posInMultiblock.getX() > 0^facing==Direction.SOUTH))?.25f: 1;
 			return new float[]{xMin, 0, zMin, xMax, 1, zMax};
 		}
 		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
-	@Override
-	public BlockPos getOrigin()
-	{
-		return getPos().add(-offset[0], -offset[1], -offset[2]).offset(facing.rotateYCCW()).offset(facing.getOpposite());
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -170,7 +168,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			if(posInMultiblock==4)
+			if(offsetToMaster.equals(BlockPos.ZERO))
 				renderAABB = new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 7, 2));
 			else
 				renderAABB = new AxisAlignedBB(getPos(), getPos());
@@ -179,11 +177,15 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 
 	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new SiloInventoryHandler(this));
 
+	private static final BlockPos bottomIoOffset = new BlockPos(1, 0, 1);
+	private static final BlockPos topIoOffset = new BlockPos(1, 6, 1);
+	private static final Set<BlockPos> ioOffsets = ImmutableSet.of(bottomIoOffset, topIoOffset);
+
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if((posInMultiblock==4||posInMultiblock==58)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(ioOffsets.contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return insertionHandler.cast();
 		return super.getCapability(capability, facing);
 	}
@@ -280,12 +282,12 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	@Override
 	public int getComparatorInputOverride()
 	{
-		if(posInMultiblock==4)
+		if(bottomIoOffset.equals(posInMultiblock))
 			return (15*storageAmount)/MAX_STORAGE;
 		SiloTileEntity master = master();
-		if(offset[1] >= 1&&offset[1] <= 6&&master!=null) //6 layers of storage
+		if(offsetToMaster.getY() >= 1&&master!=null) //6 layers of storage
 		{
-			int layer = offset[1]-1;
+			int layer = offsetToMaster.getY()-1;
 			int vol = MAX_STORAGE/6;
 			int filled = master.storageAmount-layer*vol;
 			int ret = Math.min(15, Math.max(0, (15*filled)/vol));
@@ -310,6 +312,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 		int vol = MAX_STORAGE/6;
 		if((15*storageAmount)/MAX_STORAGE!=masterCompOld)
 			world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
+		BlockPos masterPos = pos.subtract(offsetToMaster);
 		for(int i = 0; i < 6; i++)
 		{
 			int filled = storageAmount-i*vol;
@@ -319,7 +322,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 				for(int x = -1; x <= 1; x++)
 					for(int z = -1; z <= 1; z++)
 					{
-						BlockPos pos = getPos().add(-offset[0]+x, -offset[1]+i+1, -offset[2]+z);
+						BlockPos pos = masterPos.add(x, i+1, z);
 						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
 					}
 			}

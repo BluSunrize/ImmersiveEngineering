@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveSt
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,7 +27,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
@@ -48,7 +47,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 
 	public BlastFurnaceTileEntity()
 	{
-		super(MultiblockBlastFurnace.instance, TYPE, false);
+		super(IEMultiblocks.BLAST_FURNACE, TYPE, false);
 	}
 
 	protected BlastFurnaceTileEntity(IMultiblock mb, TileEntityType<? extends BlastFurnaceTileEntity> type)
@@ -84,12 +83,6 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	public float[] getBlockBounds()
 	{
 		return null;
-	}
-
-	@Override
-	public boolean isDummy()
-	{
-		return offset[0]!=0||offset[1]!=0||offset[2]!=0;
 	}
 
 	@Override
@@ -279,12 +272,6 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 		{
 			nbt.put("inventory", Utils.writeInventory(inventory));
 		}
-	}
-
-	@Override
-	public BlockPos getOrigin()
-	{
-		return getPos().add(-offset[0], -offset[1]-1, -offset[2]).offset(facing.getOpposite()).offset(facing.rotateYCCW());
 	}
 
 	@Override

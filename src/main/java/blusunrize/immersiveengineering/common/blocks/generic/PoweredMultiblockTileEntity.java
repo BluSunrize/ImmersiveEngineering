@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvan
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -42,10 +43,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTileEntity<T, R>, R extends IMultiblockRecipe>
 		extends MultiblockPartTileEntity<T> implements IIEInventory, IIEInternalFluxHandler,
@@ -148,14 +146,11 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	//	=================================
 	//		ENERGY MANAGEMENT
 	//	=================================
-	public abstract int[] getEnergyPos();
+	public abstract Set<BlockPos> getEnergyPos();
 
 	public boolean isEnergyPos()
 	{
-		for(int i : getEnergyPos())
-			if(posInMultiblock==i)
-				return true;
-		return false;
+		return getEnergyPos().contains(posInMultiblock);
 	}
 
 
@@ -199,8 +194,9 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	{
 		if(!isDummy())
 		{
-			BlockPos nullPos = this.getBlockPosForPos(0);
-			return new AxisAlignedBB(nullPos, nullPos.offset(facing, structureDimensions[1]).offset(mirrored?facing.rotateYCCW(): facing.rotateY(), structureDimensions[2]).up(structureDimensions[0]));
+			BlockPos nullPos = this.getOrigin();
+			return new AxisAlignedBB(nullPos, TemplateMultiblock.withSettingsAndOffset(nullPos, new BlockPos(structureDimensions),
+					mirrored, facing));
 		}
 		return super.getRenderBoundingBox();
 	}

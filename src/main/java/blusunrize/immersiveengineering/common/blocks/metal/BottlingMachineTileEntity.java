@@ -14,9 +14,10 @@ import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
@@ -45,6 +46,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<BottlingMachineTileEntity, IMultiblockRecipe>
 		implements IConveyorAttachable
@@ -55,7 +57,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 
 	public BottlingMachineTileEntity()
 	{
-		super(MultiblockBottlingMachine.instance, 16000, true, TYPE);
+		super(IEMultiblocks.BOTTLING_MACHINE, 16000, true, TYPE);
 	}
 
 	@Override
@@ -92,7 +94,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {
 		Direction outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
-		return new DirectionalBlockPos(getBlockPosForPos(8).offset(outDir), outDir.getOpposite());
+		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(0, 1, 2)).offset(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
@@ -126,15 +128,15 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock==4)
+		if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(posInMultiblock < 6||posInMultiblock==11)
+		if(posInMultiblock.getY()==0||new BlockPos(1, 1, 2).equals(posInMultiblock))
 			return new float[]{0, 0, 0, 1, 1, 1};
-		if(posInMultiblock >= 6&&posInMultiblock <= 8)
+		if(posInMultiblock.getX()==0&&posInMultiblock.getY()==1)
 			return new float[]{0, 0, 0, 1, .125f, 1};
-		if(posInMultiblock==9)
+		if(new BlockPos(1, 1, 0).equals(posInMultiblock))
 			return new float[]{.0625f, 0, .0625f, .9375f, 1, .9375f};
-		if(posInMultiblock==10)
+		if(new BlockPos(1, 1, 1).equals(posInMultiblock))
 		{
 			Direction f = mirrored?facing.rotateYCCW(): facing.rotateY();
 			float xMin = f==Direction.EAST?-.0625f: f==Direction.WEST?.25f: facing==Direction.WEST?.125f: facing==Direction.EAST?.25f: 0;
@@ -143,7 +145,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			float zMax = facing==Direction.NORTH?.75f: facing==Direction.SOUTH?.875f: f==Direction.SOUTH?.75f: f==Direction.NORTH?1.0625f: 1;
 			return new float[]{xMin, .0625f, zMin, xMax, .6875f, zMax};
 		}
-		if(posInMultiblock==13)
+		if(new BlockPos(0, 2, 1).equals(posInMultiblock))
 		{
 			float xMin = facing==Direction.WEST?0: .21875f;
 			float zMin = facing==Direction.NORTH?0: .21875f;
@@ -151,7 +153,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			float zMax = facing==Direction.SOUTH?1: .78125f;
 			return new float[]{xMin, -.4375f, zMin, xMax, .5625f, zMax};
 		}
-		if(posInMultiblock==16)
+		if(new BlockPos(1, 2, 1).equals(posInMultiblock))
 		{
 			float xMin = facing==Direction.WEST?.8125f: facing==Direction.EAST?0: .125f;
 			float zMin = facing==Direction.NORTH?.8125f: facing==Direction.SOUTH?0: .125f;
@@ -163,15 +165,19 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{11};
+		return ImmutableSet.of(
+				new BlockPos(1, 1, 2)
+		);
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{1};
+		return ImmutableSet.of(
+				new BlockPos(0, 0, 1)
+		);
 	}
 
 
@@ -196,7 +202,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(posInMultiblock==6&&!world.isRemote&&entity!=null&&entity.isAlive()&&entity instanceof ItemEntity)
+		if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&!world.isRemote&&entity!=null&&entity.isAlive()&&entity instanceof ItemEntity)
 		{
 			BottlingMachineTileEntity master = master();
 			if(master==null)
@@ -348,7 +354,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			BottlingMachineTileEntity master = master();
 			if(master==null)
 				return null;
-			if(posInMultiblock==6&&facing==(mirrored?this.facing.rotateY(): this.facing.rotateYCCW()))
+			if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&facing==(mirrored?this.facing.rotateY(): this.facing.rotateYCCW()))
 				return master.insertionHandler.cast();
 			return LazyOptional.empty();
 		}
@@ -361,7 +367,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		BottlingMachineTileEntity master = this.master();
 		if(master!=null)
 		{
-			if(posInMultiblock==3&&(side==null||side.getAxis()!=Axis.Y))
+			if(new BlockPos(1, 0, 0).equals(posInMultiblock)&&(side==null||side.getAxis()!=Axis.Y))
 				return master.tanks;
 		}
 		return new FluidTank[0];
@@ -370,7 +376,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	@Override
 	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
-		if(posInMultiblock==3&&(side==null||side.getAxis()!=Axis.Y))
+		if(new BlockPos(1, 0, 0).equals(posInMultiblock)&&(side==null||side.getAxis()!=Axis.Y))
 		{
 			BottlingMachineTileEntity master = this.master();
 			return !(master==null||master.tanks[iTank].getFluidAmount() >= master.tanks[iTank].getCapacity());
@@ -387,7 +393,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	@Override
 	public Direction[] sigOutputDirections()
 	{
-		if(posInMultiblock==8)
+		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
 			return new Direction[]{mirrored?facing.rotateYCCW(): facing.rotateY()};
 		return new Direction[0];
 	}

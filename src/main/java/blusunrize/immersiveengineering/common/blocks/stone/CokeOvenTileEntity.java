@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveSt
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -28,7 +28,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -53,7 +52,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 
 	public CokeOvenTileEntity()
 	{
-		super(MultiblockCokeOven.instance, TYPE, false);
+		super(IEMultiblocks.COKE_OVEN, TYPE, false);
 	}
 
 
@@ -85,12 +84,6 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	public float[] getBlockBounds()
 	{
 		return null;
-	}
-
-	@Override
-	public boolean isDummy()
-	{
-		return offset[0]!=0||offset[1]!=0||offset[2]!=0;
 	}
 
 	@Override
@@ -261,12 +254,6 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 		{
 			nbt.put("inventory", Utils.writeInventory(inventory));
 		}
-	}
-
-	@Override
-	public BlockPos getOrigin()
-	{
-		return getPos().add(-offset[0], -offset[1]-1, -offset[2]).offset(facing.getOpposite()).offset(facing.rotateYCCW());
 	}
 
 	@Override

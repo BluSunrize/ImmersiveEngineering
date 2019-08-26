@@ -10,10 +10,11 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnaceAdvanced;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -27,6 +28,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Set;
 
 public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 {
@@ -34,7 +36,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 
 	public BlastFurnaceAdvancedTileEntity()
 	{
-		super(MultiblockBlastFurnaceAdvanced.instance, TYPE);
+		super(IEMultiblocks.ADVANCED_BLAST_FURNACE, TYPE);
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
@@ -70,7 +72,13 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock%9==4||posInMultiblock==1||posInMultiblock==10||posInMultiblock==31)
+		if((posInMultiblock.getX()==1&&posInMultiblock.getZ()==1)
+				//TODO double-check this. The values seem strange
+				||ImmutableSet.of(
+				new BlockPos(0, 0, 1),
+				new BlockPos(0, 1, 1),
+				new BlockPos(1, 3, 1)
+		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, 1, 1};
 
 		float xMin = 0;
@@ -80,7 +88,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 		float yMax = 1;
 		float zMax = 1;
 
-		if(posInMultiblock==7)
+		if(new BlockPos(2, 0, 1).equals(posInMultiblock))
 		{
 			xMin = facing.getAxis()==Axis.Z?.1875f: 0;
 			xMax = facing.getAxis()==Axis.Z?.8125f: 1;
@@ -91,20 +99,32 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 		else
 		{
 			float indent = 1;
-			if(posInMultiblock < 9)
-				indent = (posInMultiblock > 2&&posInMultiblock < 6)?.5f: .3125f;
-			else if(posInMultiblock < 18)
+			if(posInMultiblock.getY()==0)
+				indent = posInMultiblock.getX()==1?.5f: .3125f;
+			else if(posInMultiblock.getY()==1)
 				indent = .5f;
-			else if(posInMultiblock < 27)
+			else if(posInMultiblock.getY()==2)
 				indent = .375f;
 
-			if((posInMultiblock%9 < 3&&facing==Direction.WEST)||(posInMultiblock%9 > 5&&facing==Direction.EAST)||(posInMultiblock%3==2&&facing==Direction.SOUTH)||(posInMultiblock%3==0&&facing==Direction.NORTH))
+			if((posInMultiblock.getX()==0&&facing==Direction.WEST)||
+					(posInMultiblock.getX()==2&&facing==Direction.EAST)||
+					(posInMultiblock.getZ()==2&&facing==Direction.SOUTH)||
+					(posInMultiblock.getZ()==0&&facing==Direction.NORTH))
 				xMin = (1-indent);
-			if((posInMultiblock%9 < 3&&facing==Direction.EAST)||(posInMultiblock%9 > 5&&facing==Direction.WEST)||(posInMultiblock%3==2&&facing==Direction.NORTH)||(posInMultiblock%3==0&&facing==Direction.SOUTH))
+			if((posInMultiblock.getX()==0&&facing==Direction.EAST)||
+					(posInMultiblock.getX()==2&&facing==Direction.WEST)||
+					(posInMultiblock.getZ()==2&&facing==Direction.NORTH)||
+					(posInMultiblock.getZ()==0&&facing==Direction.SOUTH))
 				xMax = indent;
-			if((posInMultiblock%9 < 3&&facing==Direction.SOUTH)||(posInMultiblock%9 > 5&&facing==Direction.NORTH)||(posInMultiblock%3==2&&facing==Direction.EAST)||(posInMultiblock%3==0&&facing==Direction.WEST))
+			if((posInMultiblock.getX()==0&&facing==Direction.SOUTH)||
+					(posInMultiblock.getX()==2&&facing==Direction.NORTH)||
+					(posInMultiblock.getZ()==2&&facing==Direction.EAST)||
+					(posInMultiblock.getZ()==0&&facing==Direction.WEST))
 				zMin = (1-indent);
-			if((posInMultiblock%9 < 3&&facing==Direction.NORTH)||(posInMultiblock%9 > 5&&facing==Direction.SOUTH)||(posInMultiblock%3==2&&facing==Direction.WEST)||(posInMultiblock%3==0&&facing==Direction.EAST))
+			if((posInMultiblock.getX()==0&&facing==Direction.NORTH)||
+					(posInMultiblock.getX()==2&&facing==Direction.SOUTH)||
+					(posInMultiblock.getZ()==2&&facing==Direction.WEST)||
+					(posInMultiblock.getZ()==0&&facing==Direction.EAST))
 				zMax = indent;
 		}
 
@@ -139,20 +159,24 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 			new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true})
 	);
 
+	private static final BlockPos inputOffset = new BlockPos(0, 0, 1);
+	private static final BlockPos outputOffset = new BlockPos(2, 0, 1);
+	private static final BlockPos slagOutputOffset = new BlockPos(1, 3, 1);
+	private static final Set<BlockPos> ioOffsets = ImmutableSet.of(inputOffset, outputOffset, slagOutputOffset);
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if((posInMultiblock==1||posInMultiblock==7||posInMultiblock==31)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(ioOffsets.contains(posInMultiblock)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			BlastFurnaceAdvancedTileEntity master = (BlastFurnaceAdvancedTileEntity)master();
 			if(master==null)
 				return null;
-			if(posInMultiblock==31&&facing==Direction.UP)
+			if(inputOffset.equals(posInMultiblock)&&facing==Direction.UP)
 				return master.inputHandler.cast();
-			if(posInMultiblock==1&&facing==master.facing)
+			if(outputOffset.equals(posInMultiblock)&&facing==master.facing)
 				return master.outputHandler.cast();
-			if(posInMultiblock==7&&facing==master.facing.getOpposite())
+			if(slagOutputOffset.equals(posInMultiblock)&&facing==master.facing.getOpposite())
 				return master.slagHandler.cast();
 			return LazyOptional.empty();
 		}

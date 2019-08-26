@@ -16,12 +16,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMixer;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -61,7 +62,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 
 	public MixerTileEntity()
 	{
-		super(MultiblockMixer.instance, 16000, true, TYPE);
+		super(IEMultiblocks.MIXER, 16000, true, TYPE);
 	}
 
 	@Override
@@ -217,9 +218,16 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock > 1&&posInMultiblock < 9&&posInMultiblock!=3)
+		if(ImmutableSet.of(
+				new BlockPos(0, 0, 2),
+				new BlockPos(1, 0, 1),
+				new BlockPos(1, 0, 2),
+				new BlockPos(2, 0, 0),
+				new BlockPos(2, 0, 1),
+				new BlockPos(2, 0, 2)
+		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(posInMultiblock==11)
+		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
 			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
@@ -231,7 +239,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		Direction fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
-		if(posInMultiblock==2)
+		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
@@ -247,12 +255,12 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(posInMultiblock==4||posInMultiblock==5||posInMultiblock==7||posInMultiblock==8)
+		else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() > 0)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock > 5)
+			if(posInMultiblock.getX()==2)
 				fl = fl.getOpposite();
-			if(posInMultiblock%3==2)
+			if(posInMultiblock.getZ()==2)
 				fw = fw.getOpposite();
 			float minX = fl==Direction.WEST?.6875f: fl==Direction.EAST?.0625f: fw==Direction.EAST?.0625f: .6875f;
 			float maxX = fl==Direction.EAST?.3125f: fl==Direction.WEST?.9375f: fw==Direction.EAST?.3125f: .9375f;
@@ -260,7 +268,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 			float maxZ = fl==Direction.SOUTH?.3125f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?.3125f: .9375f;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 
-			if(posInMultiblock==4)
+			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
 				minX = fl==Direction.WEST?.375f: fl==Direction.EAST?.625f: fw==Direction.WEST?-.125f: 0;
 				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.625f: fw==Direction.EAST?1.125f: 1;
@@ -283,12 +291,12 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 
 			return list;
 		}
-		else if((posInMultiblock==13||posInMultiblock==14||posInMultiblock==16||posInMultiblock==17))
+		else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==1&&posInMultiblock.getZ() > 0)
 		{
 			List<AxisAlignedBB> list = new ArrayList<>(3);
-			if(posInMultiblock%9 > 5)
+			if(posInMultiblock.getX()==2)
 				fl = fl.getOpposite();
-			if(posInMultiblock%3==2)
+			if(posInMultiblock.getZ()==2)
 				fw = fw.getOpposite();
 			float minX = fl==Direction.WEST?0f: fl==Direction.EAST?.1875f: fw==Direction.EAST?.1875f: 0f;
 			float maxX = fl==Direction.EAST?1f: fl==Direction.WEST?.8125f: fw==Direction.EAST?1f: .8125f;
@@ -310,7 +318,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 
 			return list;
 		}
-		else if(posInMultiblock==21)
+		else if(new BlockPos(1, 2, 0).equals(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = new ArrayList<>(1);
 			float minX = fl==Direction.WEST?.1875f: fl==Direction.EAST?.3125f: fw==Direction.EAST?.1875f: 0f;
@@ -320,7 +328,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, .625f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			return list;
 		}
-		else if(posInMultiblock==22)
+		else if(new BlockPos(1, 2, 1).equals(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = new ArrayList<>(2);
 			float minX = fl==Direction.WEST?-.4375f: fl==Direction.EAST?.5625f: fw==Direction.EAST?.5625f: -.4375f;
@@ -353,15 +361,19 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	}
 
 	@Override
-	public int[] getEnergyPos()
+	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{9};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 0)
+		);
 	}
 
 	@Override
-	public int[] getRedstonePos()
+	public Set<BlockPos> getRedstonePos()
 	{
-		return new int[]{11};
+		return ImmutableSet.of(
+				new BlockPos(0, 1, 2)
+		);
 	}
 
 	@Override
@@ -462,7 +474,8 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		MixerTileEntity master = master();
-		if(master!=null&&((posInMultiblock==1&&(side==null||side==facing.getOpposite()))||(posInMultiblock==3&&(side==null||side==(mirrored?facing.rotateY(): facing.rotateYCCW())))))
+		if(master!=null&&((new BlockPos(0, 0, 1).equals(posInMultiblock)&&(side==null||side==facing.getOpposite()))
+				||(new BlockPos(1, 0, 0).equals(posInMultiblock)&&(side==null||side==(mirrored?facing.rotateY(): facing.rotateYCCW())))))
 			return master.getInternalTanks();
 		return new FluidTank[0];
 	}
@@ -494,7 +507,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if((facing==null||posInMultiblock==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((facing==null||new BlockPos(2, 1, 1).equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			MixerTileEntity master = master();
 			if(master!=null)
