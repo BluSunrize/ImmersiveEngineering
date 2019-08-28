@@ -20,6 +20,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerProvider;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -30,6 +32,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
@@ -309,7 +313,7 @@ public class IEBlockInterfaces
 	//TODO move a lot of this to block states!
 	public interface IHasDummyBlocks extends IGeneralMultiblock
 	{
-		void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ);
+		void placeDummies(BlockItemUseContext ctx, BlockState state);
 
 		void breakDummies(BlockPos pos, BlockState state);
 
@@ -346,7 +350,7 @@ public class IEBlockInterfaces
 		HashMap<String, String> getTextureReplacements();
 	}
 
-	public interface IInteractionObjectIE extends IContainerProvider
+	public interface IInteractionObjectIE extends INamedContainerProvider
 	{
 		@Nullable
 		IInteractionObjectIE getGuiMaster();
@@ -361,6 +365,12 @@ public class IEBlockInterfaces
 		default Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity)
 		{
 			return GuiHandler.createContainer(getGuiName(), playerInventory, (TileEntity)this);
+		}
+
+		@Override
+		default ITextComponent getDisplayName()
+		{
+			return new StringTextComponent("");
 		}
 	}
 

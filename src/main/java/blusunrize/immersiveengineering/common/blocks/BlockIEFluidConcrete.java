@@ -10,8 +10,6 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
-import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;

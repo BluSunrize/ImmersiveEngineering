@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;

@@ -31,7 +31,7 @@ public class FakeLightBlock extends IETileProviderBlock
 {
 	public FakeLightBlock()
 	{
-		super("fake_light", Properties.create(Material.AIR), ItemBlockIEBase.class);
+		super("fake_light", Properties.create(Material.AIR), BlockItemIE.class);
 		setNotNormalBlock();
 	}
 

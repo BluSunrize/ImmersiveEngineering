@@ -13,12 +13,15 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -119,7 +122,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		return true;
 	}
@@ -139,9 +142,9 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	@Override
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
-		if(message.hasKey("sideConfig"))
+		if(message.contains("sideConfig", NBT.TAG_BYTE_ARRAY))
 			this.sortWithNBT = message.getByteArray("sideConfig");
-		if(message.hasKey("filter_side"))
+		if(message.contains("filter_side", NBT.TAG_INT))
 		{
 			int side = message.getInt("filter_side");
 			int slot = message.getInt("filter_slot");
@@ -203,7 +206,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.setByteArray("sortWithNBT", sortWithNBT);
+		nbt.putByteArray("sortWithNBT", sortWithNBT);
 		for(int side = 0; side < 6; side++)
 		{
 			ListNBT filterList = new ListNBT();

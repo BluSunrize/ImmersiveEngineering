@@ -37,7 +37,7 @@ import java.util.List;
 public abstract class IEMultiblockBlock extends IETileProviderBlock
 {
 
-	public IEMultiblockBlock(String name, Block.Properties props, Class<? extends ItemBlockIEBase> itemBlock, IProperty<?>... additionalProperties)
+	public IEMultiblockBlock(String name, Block.Properties props, Class<? extends BlockItemIE> itemBlock, IProperty<?>... additionalProperties)
 	{
 		super(name, props, itemBlock,
 				ArrayUtils.addAll(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));

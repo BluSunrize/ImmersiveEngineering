@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -27,7 +27,7 @@ public class StoneMultiBlock extends IEMultiblockBlock
 	public StoneMultiBlock(String name, Supplier<TileEntityType<?>> type)
 	{
 		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20),
-				ItemBlockIEBase.class, IEProperties.ACTIVE);
+				BlockItemIE.class, IEProperties.ACTIVE);
 		this.type = type;
 	}
 

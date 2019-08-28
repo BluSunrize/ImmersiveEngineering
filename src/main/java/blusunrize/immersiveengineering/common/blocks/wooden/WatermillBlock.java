@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -23,7 +23,7 @@ public class WatermillBlock extends IETileProviderBlock
 	public WatermillBlock(String name)
 	{
 		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5),
-				ItemBlockIEBase.class, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
+				BlockItemIE.class, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
 		setNotNormalBlock();
 	}
 

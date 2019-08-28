@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -22,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ByteNBT;
@@ -33,6 +33,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -147,7 +148,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 			for(String key : message.keySet())
 			{
 				//TODO remove suffix whatever sends these
-				INBT tag = message.getTag(key);
+				INBT tag = message.get(key);
 				if(tag instanceof ByteNBT)
 					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key,
 							((ByteNBT)tag).getByte()!=0);
@@ -164,13 +165,16 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
-		Direction dummyDir = facing.getAxis()==Axis.X?(hitZ < .5?Direction.NORTH: Direction.SOUTH): (hitX < .5?Direction.WEST: Direction.EAST);
+		Direction dummyDir;
+		if(facing.getAxis()==Axis.X)
+			dummyDir = ctx.getHitVec().z < .5?Direction.NORTH: Direction.SOUTH;
+		else
+			dummyDir = ctx.getHitVec().x < .5?Direction.WEST: Direction.EAST;
 		boolean mirror;
 		BlockPos dummyPos = pos.offset(dummyDir);
-		if(!world.getBlockState(dummyPos).getBlock().isReplaceable(world, new BlockItemUseContext(world, null,
-				new ItemStack(IEContent.blockModWorkbench), dummyPos, side, hitX, hitY, hitZ)))
+		if(!world.getBlockState(dummyPos).isReplaceable(BlockItemUseContext.func_221536_a(ctx, dummyPos, dummyDir)))
 		{
 			dummyDir = dummyDir.getOpposite();
 			dummyPos = pos.offset(dummyDir);
@@ -188,11 +192,11 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		Direction dummyDir = dummy?facing.rotateYCCW(): facing.rotateY();
-		world.removeBlock(pos.offset(dummyDir));
+		world.removeBlock(pos.offset(dummyDir), false);
 	}
 
 	@Override
-	public boolean canUseGui(EntityPlayer player)
+	public boolean canUseGui(PlayerEntity player)
 	{
 		return true;
 	}
@@ -211,7 +215,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 		Direction dummyDir = facing.rotateYCCW();
 		TileEntity tileEntityModWorkbench = world.getTileEntity(pos.offset(dummyDir));
 		if(tileEntityModWorkbench instanceof ModWorkbenchTileEntity)
-			return tileEntityModWorkbench;
+			return (ModWorkbenchTileEntity)tileEntityModWorkbench;
 		return null;
 	}
 

@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -336,12 +337,12 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
 		if(state.get(IEProperties.IS_SECOND_STATE))
 		{
 			onPost = true;
-			facing = side.getOpposite();
+			facing = ctx.getFace().getOpposite();
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 		}

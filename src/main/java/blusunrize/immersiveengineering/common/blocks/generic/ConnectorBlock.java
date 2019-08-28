@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -39,7 +39,7 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 	{
 		super(name, Block.Properties.create(Material.IRON).
 						hardnessAndResistance(3.0F, 15.0F),
-				ItemBlockIEBase.class, ArrayUtils.add(additional, IEProperties.FACING_ALL));
+				BlockItemIE.class, ArrayUtils.add(additional, IEProperties.FACING_ALL));
 		lightOpacity = 0;
 		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setNotNormalBlock();

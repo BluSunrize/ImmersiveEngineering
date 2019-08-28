@@ -28,6 +28,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -239,7 +240,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
 		for(int i = 1; i <= 2; i++)
 		{

@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;

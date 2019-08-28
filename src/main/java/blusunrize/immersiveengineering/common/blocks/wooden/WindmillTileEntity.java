@@ -15,8 +15,11 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.items.IEItems;
+import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,10 +33,12 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IDirectionalTile, ITileDrop, IPlayerInteraction, IHasObjProperty
 {
@@ -210,7 +215,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	@Override
 	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(sails < 8&&heldItem.getItem()==IEContent.itemWindmillSail)
+		if(sails < 8&&heldItem.getItem()==Ingredients.windmillSail)
 		{
 			this.sails++;
 			heldItem.shrink(1);
@@ -220,12 +225,12 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	}
 
 	@Override
-	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
+	public List<ItemStack> getTileDrops(Builder context)
 	{
-		ItemStack stack = new ItemStack(state.getBlock());
+		ItemStack stack = new ItemStack(getBlockState().getBlock());
 		if(sails > 0)
 			ItemNBTHelper.putInt(stack, "sails", sails);
-		return stack;
+		return ImmutableList.of(stack);
 	}
 
 	@Override

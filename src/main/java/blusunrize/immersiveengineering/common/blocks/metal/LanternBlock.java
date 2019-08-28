@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
@@ -20,7 +20,7 @@ public class LanternBlock extends IETileProviderBlock
 {
 	public LanternBlock(String name)
 	{
-		super(name, Properties.create(Material.IRON).hardnessAndResistance(3, 15), ItemBlockIEBase.class);
+		super(name, Properties.create(Material.IRON).hardnessAndResistance(3, 15), BlockItemIE.class);
 	}
 
 	//TODO replace with states

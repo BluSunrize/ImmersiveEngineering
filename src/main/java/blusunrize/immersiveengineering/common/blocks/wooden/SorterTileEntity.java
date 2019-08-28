@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -146,7 +147,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	@Override
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
-		if(message.hasKey("sideConfig"))
+		if(message.contains("sideConfig", NBT.TAG_INT_ARRAY))
 			this.sideFilter = message.getIntArray("sideConfig");
 	}
 
@@ -290,8 +291,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 
 	public ItemStack outputItemToInv(ItemStack stack, Direction side, boolean simulate)
 	{
-		TileEntity inventory = Utils.getExistingTileEntity(world, getPos().offset(side));
-		return Utils.insertStackIntoInventory(inventory, stack, side.getOpposite(), simulate);
+		return Utils.insertStackIntoInventory(neighborCaps.get(side), stack, simulate);
 	}
 
 	@Override
@@ -474,28 +474,8 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 		@Override
 		public void clear()
 		{
-			for(int i = 0; i < filters.length; i++)
-				for(int j = 0; j < filters[i].length; j++)
-					filters[i][j] = ItemStack.EMPTY;
-		}
-
-		@Override
-		public ITextComponent getName()
-		{
-			return new StringTextComponent("IESorterLayout");
-		}
-
-		@Override
-		public boolean hasCustomName()
-		{
-			return false;
-		}
-
-		@Nullable
-		@Override
-		public ITextComponent getCustomName()
-		{
-			return null;
+			for(ItemStack[] itemStacks : filters)
+				Arrays.fill(itemStacks, ItemStack.EMPTY);
 		}
 
 		@Override
@@ -555,23 +535,6 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 				if(slot < getSizeInventory())
 					this.filters[slot/filterSlotsPerSide][slot%filterSlotsPerSide] = ItemStack.read(itemTag);
 			}
-		}
-
-		@Override
-		public int getField(int id)
-		{
-			return 0;
-		}
-
-		@Override
-		public void setField(int id, int value)
-		{
-		}
-
-		@Override
-		public int getFieldCount()
-		{
-			return 0;
 		}
 	}
 

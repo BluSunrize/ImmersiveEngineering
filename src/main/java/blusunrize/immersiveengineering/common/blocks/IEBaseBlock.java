@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.ItemHammer;
+import blusunrize.immersiveengineering.common.items.ItemWirecutter;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -53,7 +55,7 @@ public class IEBaseBlock extends Block
 	protected boolean notNormalBlock;
 	private boolean opaqueCube = false;
 
-	public IEBaseBlock(String name, Block.Properties blockProps, @Nullable Class<? extends ItemBlockIEBase> itemBlock, IProperty... additionalProperties)
+	public IEBaseBlock(String name, Block.Properties blockProps, @Nullable Class<? extends BlockItemIE> itemBlock, IProperty... additionalProperties)
 	{
 		super(setTempProperties(blockProps, additionalProperties));
 		this.name = name;
@@ -259,9 +261,9 @@ public class IEBaseBlock extends Block
 	@Override
 	public boolean isToolEffective(BlockState state, ToolType tool)
 	{
-		if(allowHammerHarvest(state)&&tool==IEContent.toolHammer)
+		if(allowHammerHarvest(state)&&tool==ItemHammer.HAMMER_TOOL)
 			return true;
-		if(allowWirecutterHarvest(state)&&IEContent.toolWireCutter)
+		if(allowWirecutterHarvest(state)&&tool==ItemWirecutter.CUTTER_TOOL)
 			return true;
 		return super.isToolEffective(state, tool);
 	}
@@ -277,7 +279,7 @@ public class IEBaseBlock extends Block
 									BlockRayTraceResult hit)
 	{
 		ItemStack activeStack = player.getHeldItem(hand);
-		if(activeStack.getToolTypes().contains(IEContent.toolHammer))
+		if(activeStack.getToolTypes().contains(ItemHammer.HAMMER_TOOL))
 			return hammerUseSide(hit.getFace(), player, world, pos, hit);
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
@@ -290,7 +292,7 @@ public class IEBaseBlock extends Block
 	public abstract static class IELadderBlock extends IEBaseBlock
 	{
 		public IELadderBlock(String name, Block.Properties material,
-							 Class<? extends ItemBlockIEBase> itemBlock, IProperty... additionalProperties)
+							 Class<? extends BlockItemIE> itemBlock, IProperty... additionalProperties)
 		{
 			super(name, material, itemBlock, additionalProperties);
 		}

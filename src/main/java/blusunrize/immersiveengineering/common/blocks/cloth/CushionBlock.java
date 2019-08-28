@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -20,7 +20,7 @@ public class CushionBlock extends IEBaseBlock
 {
 	public CushionBlock()
 	{
-		super("cushion", Block.Properties.create(Material.WOOL).hardnessAndResistance(0.8F), ItemBlockIEBase.class);
+		super("cushion", Block.Properties.create(Material.WOOL).hardnessAndResistance(0.8F), BlockItemIE.class);
 	}
 
 	@Override

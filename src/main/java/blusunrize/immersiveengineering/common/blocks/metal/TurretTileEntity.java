@@ -29,6 +29,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -503,7 +504,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
 		world.setBlockState(pos.up(), state);
 		((TurretTileEntity)world.getTileEntity(pos.up())).dummy = true;

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util.compat112.jei.cokeoven;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.util.compat112.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat112.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;

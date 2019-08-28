@@ -32,6 +32,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -458,7 +459,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
 		getWorld().setBlockState(pos.add(0, 1, 0), state);
 		TileEntity tile = getWorld().getTileEntity(pos.add(0, 1, 0));

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
@@ -34,8 +35,10 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
+import net.minecraft.world.storage.loot.LootContext.Builder;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Locale;
 
 public class CoresampleTileEntity extends IEBaseTileEntity implements IDirectionalTile, ITileDrop, IPlayerInteraction,
@@ -108,9 +111,10 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IDirection
 		{
 			if(!world.isRemote)
 			{
-				ItemEntity entityitem = new ItemEntity(world, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5, getTileDrop(player, world.getBlockState(getPos())));
+				ItemEntity entityitem = new ItemEntity(world, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5,
+						coresample);
 				entityitem.setDefaultPickupDelay();
-				world.removeBlock(getPos());
+				world.removeBlock(pos, false);
 				world.addEntity(entityitem);
 			}
 			return true;
@@ -124,7 +128,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IDirection
 				{
 					int[] coords = ItemNBTHelper.getIntArray(coresample, "coords");
 					String ident = "ie:coresample_"+coords[0]+";"+coords[1]+";"+coords[2];
-					CompoundNBT mapTagCompound = ItemNBTHelper.getTag(heldItem);
+					CompoundNBT mapTagCompound = heldItem.getOrCreateTag();
 					ListNBT nbttaglist = mapTagCompound.getList("Decorations", 10);
 
 					for(int i = 0; i < nbttaglist.size(); i++)
@@ -177,9 +181,9 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IDirection
 	}
 
 	@Override
-	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
+	public List<ItemStack> getTileDrops(Builder context)
 	{
-		return this.coresample;
+		return ImmutableList.of(this.coresample);
 	}
 
 	@Override

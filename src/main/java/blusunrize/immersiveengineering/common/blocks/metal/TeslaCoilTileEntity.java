@@ -33,6 +33,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -477,7 +478,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
 		world.setBlockState(pos.offset(facing), state);
 		((TeslaCoilTileEntity)world.getTileEntity(pos.offset(facing))).dummy = true;

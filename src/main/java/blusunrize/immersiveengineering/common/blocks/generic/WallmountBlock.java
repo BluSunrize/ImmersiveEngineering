@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -36,7 +36,7 @@ public class WallmountBlock extends IEBaseBlock
 
 	public WallmountBlock(String name, Properties blockProps)
 	{
-		super(name, blockProps, ItemBlockIEBase.class, IEProperties.FACING_HORIZONTAL,
+		super(name, blockProps, BlockItemIE.class, IEProperties.FACING_HORIZONTAL,
 				ORIENTATION);
 		setNotNormalBlock();
 		lightOpacity = 0;

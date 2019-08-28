@@ -31,7 +31,6 @@ import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFur
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
-import blusunrize.immersiveengineering.common.blocks.TileDropLootFunction.Serializer;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -141,15 +140,15 @@ public class IEContent
 			String name = m.name().toLowerCase();
 			Block storage;
 			Block ore;
-			Block sheetmetal = new IEBaseBlock("sheetmetal_"+name, sheetmetalProperties, ItemBlockIEBase.class)
+			Block sheetmetal = new IEBaseBlock("sheetmetal_"+name, sheetmetalProperties, BlockItemIE.class)
 					.setOpaque(true);
 			addSlabFor(sheetmetal);
 			if(!m.isVanillaMetal())
 			{
 				ore = new IEBaseBlock("ore_"+m.name().toLowerCase(), Block.Properties.create(Material.ROCK)
-						.hardnessAndResistance(3, 5), ItemBlockIEBase.class)
+						.hardnessAndResistance(3, 5), BlockItemIE.class)
 						.setOpaque(true);
-				storage = new IEBaseBlock("storage_"+m.name().toLowerCase(), storageProperties, ItemBlockIEBase.class)
+				storage = new IEBaseBlock("storage_"+m.name().toLowerCase(), storageProperties, BlockItemIE.class)
 						.setOpaque(true);
 				addSlabFor(storage);
 			}
@@ -174,17 +173,17 @@ public class IEContent
 		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10);
 		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180);
 
-		IEBlocks.StoneDecoration.cokebrick = new IEBaseBlock("cokebrick", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.blastbrick = new IEBaseBlock("blastbrick", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.blastbrickReinforced = new IEBaseBlock("blastbrick_reinforced", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.coke = new IEBaseBlock("coke", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.hempcrete = new IEBaseBlock("hempcrete", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.concrete = new IEBaseBlock("concrete", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.concreteTile = new IEBaseBlock("concrete_tile", stoneDecoProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.concreteLeaded = new IEBaseBlock("concrete_leaded", stoneDecoLeadedProps, ItemBlockIEBase.class);
-		IEBlocks.StoneDecoration.alloybrick = new IEBaseBlock("alloybrick", stoneDecoProps, ItemBlockIEBase.class);
+		IEBlocks.StoneDecoration.cokebrick = new IEBaseBlock("cokebrick", stoneDecoProps, BlockItemIE.class);
+		IEBlocks.StoneDecoration.blastbrick = new IEBaseBlock("blastbrick", stoneDecoProps, BlockItemIE.class);
+		IEBlocks.StoneDecoration.blastbrickReinforced = new IEBaseBlock("blastbrick_reinforced", stoneDecoProps, BlockItemIE.class);
+		IEBlocks.StoneDecoration.coke = new IEBaseBlock("coke", stoneDecoProps, BlockItemIE.class);
+		IEBlocks.StoneDecoration.hempcrete = new IEBaseBlock("hempcrete", stoneDecoProps, BlockItemIE.class);
+		IEBlocks.StoneDecoration.concrete = new IEBaseBlock("concrete", stoneDecoProps, BlockItemIE.class);
+		IEBlocks.StoneDecoration.concreteTile = new IEBaseBlock("concrete_tile", stoneDecoProps, BlockItemIE.class);
+		IEBlocks.StoneDecoration.concreteLeaded = new IEBaseBlock("concrete_leaded", stoneDecoLeadedProps, BlockItemIE.class);
+		IEBlocks.StoneDecoration.alloybrick = new IEBaseBlock("alloybrick", stoneDecoProps, BlockItemIE.class);
 
-		IEBlocks.StoneDecoration.insulatingGlass = new IEBaseBlock("insulating_glass", stoneDecoProps, ItemBlockIEBase.class)
+		IEBlocks.StoneDecoration.insulatingGlass = new IEBaseBlock("insulating_glass", stoneDecoProps, BlockItemIE.class)
 		{
 			@Override
 			public int getOpacity(BlockState p_200011_1_, IBlockReader p_200011_2_, BlockPos p_200011_3_)
@@ -194,7 +193,7 @@ public class IEContent
 		}
 				.setBlockLayer(BlockRenderLayer.TRANSLUCENT)
 				.setNotNormalBlock();
-		IEBlocks.StoneDecoration.concreteSprayed = new IEBaseBlock("concrete_sprayed", Block.Properties.create(Material.ROCK).hardnessAndResistance(.2F, 1), ItemBlockIEBase.class)
+		IEBlocks.StoneDecoration.concreteSprayed = new IEBaseBlock("concrete_sprayed", Block.Properties.create(Material.ROCK).hardnessAndResistance(.2F, 1), BlockItemIE.class)
 		{
 
 			@Override
@@ -234,7 +233,7 @@ public class IEContent
 		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5);
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
-			Block baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, ItemBlockIEBase.class)
+			Block baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, BlockItemIE.class)
 					.setOpaque(true)
 					.setHasFlavour(true);
 			WoodenDecoration.treatedWood.put(style, baseBlock);
@@ -270,14 +269,14 @@ public class IEContent
 
 
 		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15);
-		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, ItemBlockIEBase.class);
-		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, ItemBlockIEBase.class);
-		MetalDecoration.hvCoil = new IEBaseBlock("coil_hv", defaultMetalProperties, ItemBlockIEBase.class);
-		MetalDecoration.engineeringRS = new IEBaseBlock("rs_engineering", defaultMetalProperties, ItemBlockIEBase.class);
-		MetalDecoration.engineeringHeavy = new IEBaseBlock("heavy_engineering", defaultMetalProperties, ItemBlockIEBase.class);
-		MetalDecoration.engineeringLight = new IEBaseBlock("light_engineering", defaultMetalProperties, ItemBlockIEBase.class);
-		MetalDecoration.generator = new IEBaseBlock("generator", defaultMetalProperties, ItemBlockIEBase.class);
-		MetalDecoration.radiator = new IEBaseBlock("radiator", defaultMetalProperties, ItemBlockIEBase.class);
+		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, BlockItemIE.class);
+		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, BlockItemIE.class);
+		MetalDecoration.hvCoil = new IEBaseBlock("coil_hv", defaultMetalProperties, BlockItemIE.class);
+		MetalDecoration.engineeringRS = new IEBaseBlock("rs_engineering", defaultMetalProperties, BlockItemIE.class);
+		MetalDecoration.engineeringHeavy = new IEBaseBlock("heavy_engineering", defaultMetalProperties, BlockItemIE.class);
+		MetalDecoration.engineeringLight = new IEBaseBlock("light_engineering", defaultMetalProperties, BlockItemIE.class);
+		MetalDecoration.generator = new IEBaseBlock("generator", defaultMetalProperties, BlockItemIE.class);
+		MetalDecoration.radiator = new IEBaseBlock("radiator", defaultMetalProperties, BlockItemIE.class);
 		MetalDecoration.steelFence = new IEFenceBlock("steel_fence", defaultMetalProperties);
 		MetalDecoration.aluFence = new IEFenceBlock("steel_fence", defaultMetalProperties);
 		MetalDecoration.steelWallmount = new WallmountBlock("steel_wallmount", defaultMetalProperties);
@@ -787,8 +786,8 @@ public class IEContent
 		/*SMELTING*/
 		itemMaterial.setBurnTime(6, 3200);
 		Item itemBlockStoneDecoration = Item.getItemFromBlock(blockStoneDecoration);
-		if(itemBlockStoneDecoration instanceof ItemBlockIEBase)
-			((ItemBlockIEBase)itemBlockStoneDecoration).setBurnTime(3, 3200*10);
+		if(itemBlockStoneDecoration instanceof BlockItemIE)
+			((BlockItemIE)itemBlockStoneDecoration).setBurnTime(3, 3200*10);
 
 		/*BANNERS*/
 		addBanner("hammer", "hmr", new ItemStack(itemTool, 1, 0));

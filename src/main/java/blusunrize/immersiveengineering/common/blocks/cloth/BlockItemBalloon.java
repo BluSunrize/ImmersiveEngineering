@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -23,10 +23,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-public class ItemBlockBalloon extends ItemBlockIEBase
+public class BlockItemBalloon extends BlockItemIE
 {
 
-	public ItemBlockBalloon(Block b)
+	public BlockItemBalloon(Block b)
 	{
 		super(b);
 	}

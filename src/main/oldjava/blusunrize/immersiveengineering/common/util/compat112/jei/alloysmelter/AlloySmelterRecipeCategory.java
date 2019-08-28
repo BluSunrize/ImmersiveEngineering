@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util.compat112.jei.alloysmelter;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.util.compat112.jei.IERecipeCategory;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;

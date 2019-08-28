@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.PushReaction;
@@ -32,7 +32,7 @@ public class PostBlock extends IEBaseBlock
 {
 	public PostBlock(String name, Properties blockProps)
 	{
-		super(name, blockProps, ItemBlockIEBase.class, IEProperties.MULTIBLOCKSLAVE);
+		super(name, blockProps, BlockItemIE.class, IEProperties.MULTIBLOCKSLAVE);
 		setNotNormalBlock();
 		setMobility(PushReaction.BLOCK);
 		lightOpacity = 0;

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -70,7 +71,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
 		for(int i = 1; i <= 2; i++)
 		{

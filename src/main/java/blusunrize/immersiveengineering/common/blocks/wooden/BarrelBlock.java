@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -21,7 +21,7 @@ public class BarrelBlock extends IETileProviderBlock
 {
 	public BarrelBlock(String name, boolean metal)
 	{
-		super(name, getProperties(metal), ItemBlockIEBase.class);
+		super(name, getProperties(metal), BlockItemIE.class);
 	}
 
 	@Nullable

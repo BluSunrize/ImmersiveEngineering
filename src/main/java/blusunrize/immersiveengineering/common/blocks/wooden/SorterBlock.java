@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -24,7 +24,7 @@ public class SorterBlock extends IETileProviderBlock
 	public SorterBlock(String name, boolean fluid)
 	{
 		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2F, 5F),
-				ItemBlockIEBase.class);
+				BlockItemIE.class);
 		this.fluid = fluid;
 	}
 

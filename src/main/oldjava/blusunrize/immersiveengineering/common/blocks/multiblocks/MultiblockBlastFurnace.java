@@ -13,8 +13,6 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
-import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;

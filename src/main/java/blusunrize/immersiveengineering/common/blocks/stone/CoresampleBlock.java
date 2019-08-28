@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -22,7 +22,7 @@ public class CoresampleBlock extends IETileProviderBlock
 {
 	public CoresampleBlock(String name)
 	{
-		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20), ItemBlockIEBase.class,
+		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20), BlockItemIE.class,
 				IEProperties.FACING_HORIZONTAL);
 	}
 

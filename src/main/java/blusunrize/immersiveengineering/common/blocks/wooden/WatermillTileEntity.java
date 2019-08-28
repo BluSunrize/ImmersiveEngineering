@@ -15,9 +15,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -141,9 +142,9 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 			{
 				BlockPos pos = getPos().offset(fdW, 2).offset(fdY, 2);
 				BlockState state = world.getBlockState(pos);
-				if(state.getBlockFaceShape(world, pos, fdW.getOpposite())==BlockFaceShape.SOLID)
+				if(Block.doesSideFillSquare(state.getShape(world, pos), fdW.getOpposite()))
 					return true;
-				if(state.getBlockFaceShape(world, pos, fdY.getOpposite())==BlockFaceShape.SOLID)
+				if(Block.doesSideFillSquare(state.getShape(world, pos), fdY.getOpposite()))
 					return true;
 			}
 		return false;
@@ -307,7 +308,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public void placeDummies(BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ)
+	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
 		for(int hh = -2; hh <= 2; hh++)
 			for(int ww = -2; ww <= 2; ww++)
@@ -336,7 +337,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 					if(te instanceof WatermillTileEntity)
 					{
 						((WatermillTileEntity)te).formed = false;
-						world.removeBlock(pos2);
+						world.removeBlock(pos2, false);
 					}
 				}
 	}

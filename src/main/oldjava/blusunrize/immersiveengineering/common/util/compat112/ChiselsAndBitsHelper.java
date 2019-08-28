@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util.compat112;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import com.google.common.base.Function;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;

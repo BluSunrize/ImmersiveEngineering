@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,7 +30,7 @@ public class StripCurtainBlock extends IETileProviderBlock
 
 	public StripCurtainBlock()
 	{
-		super("strip_curtain", Block.Properties.create(Material.WOOL).hardnessAndResistance(0.8F), ItemBlockIEBase.class);
+		super("strip_curtain", Block.Properties.create(Material.WOOL).hardnessAndResistance(0.8F), BlockItemIE.class);
 		setLightOpacity(0);
 		setHasColours();
 		setNotNormalBlock();

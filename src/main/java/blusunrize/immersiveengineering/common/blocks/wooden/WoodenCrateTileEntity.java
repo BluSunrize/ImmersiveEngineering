@@ -18,10 +18,13 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -33,8 +36,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.ServerWorld;
-import net.minecraft.world.storage.loot.ILootContainer;
 import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootParameterSets;
+import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -48,7 +53,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInventory, IInteractionObjectIE, ITileDrop, IComparatorOverride, ILootContainer
+public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInventory, IInteractionObjectIE, ITileDrop, IComparatorOverride
 {
 	public static TileEntityType<WoodenCrateTileEntity> TYPE;
 	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
@@ -120,7 +125,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 			nbt.put("inventory", invList);
 	}
 
-	//TODO @Override
+	@Override
 	@Nullable
 	public ITextComponent getDisplayName()
 	{
@@ -153,36 +158,40 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 		return this;
 	}
 
+	@Nullable
 	@Override
-	public void onGuiOpened(PlayerEntity player, boolean clientside)
+	public Container createMenu(int data, PlayerInventory playerInventory, PlayerEntity player)
 	{
-		if(this.lootTable!=null&&!clientside)
+		if(this.lootTable!=null)
 		{
 			LootTable loottable = this.world.getServer().getLootTableManager()
 					.getLootTableFromLocation(this.lootTable);
 			this.lootTable = null;
 			LootContext.Builder contextBuilder = new LootContext.Builder((ServerWorld)this.world);
+			contextBuilder.withParameter(LootParameters.POSITION, pos);
 			if(player!=null)
 				contextBuilder.withLuck(player.getLuck());
-			LootContext context = contextBuilder.build();
+			LootContext context = contextBuilder.build(LootParameterSets.CHEST);
 			Random rand = new Random();
 
-			List<ItemStack> list = loottable.generateLootForPools(rand, context);
+			List<ItemStack> list = loottable.generate(context);
 			List<Integer> listSlots = Lists.newArrayList();
 			for(int i = 0; i < inventory.size(); i++)
 				if(inventory.get(i).isEmpty())
 					listSlots.add(i);
 			Collections.shuffle(listSlots, rand);
-			if(listSlots.isEmpty())
-				return;
-			Utils.shuffleLootItems(list, listSlots.size(), rand);
-			for(ItemStack itemstack : list)
+			if(!listSlots.isEmpty())
 			{
-				int slot = listSlots.remove(listSlots.size()-1);
-				inventory.set(slot, itemstack);
+				Utils.shuffleLootItems(list, listSlots.size(), rand);
+				for(ItemStack itemstack : list)
+				{
+					int slot = listSlots.remove(listSlots.size()-1);
+					inventory.set(slot, itemstack);
+				}
+				this.markDirty();
 			}
-			this.markDirty();
 		}
+		return IInteractionObjectIE.super.createMenu(data, playerInventory, player);
 	}
 
 	@Override
@@ -210,18 +219,18 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	}
 
 	@Override
-	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
+	public List<ItemStack> getTileDrops(Builder context)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(), 1);
+		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundNBT tag = new CompoundNBT();
 		writeInv(tag, true);
 		if(!tag.isEmpty())
-			stack.put(tag);
+			stack.setTag(tag);
 		if(this.name!=null)
 			stack.setDisplayName(new StringTextComponent(this.name));
 		if(enchantments!=null&&enchantments.size() > 0)
-			ItemNBTHelper.getTag(stack).put("ench", enchantments);
-		return stack;
+			stack.getOrCreateTag().put("ench", enchantments);
+		return ImmutableList.of(stack);
 	}
 
 	@Override
@@ -257,11 +266,5 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return insertionCap.cast();
 		return super.getCapability(capability, facing);
-	}
-
-	@Override
-	public ResourceLocation getLootTable()
-	{
-		return this.lootTable;
 	}
 }

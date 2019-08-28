@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 
@@ -17,7 +17,7 @@ public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 {
 	public ScaffoldingBlock(String name, Properties material)
 	{
-		super(name, material, ItemBlockIEBase.class);
+		super(name, material, BlockItemIE.class);
 		setNotNormalBlock();
 	}
 

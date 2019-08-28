@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -24,6 +23,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -53,6 +53,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -70,7 +71,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 {
 	private boolean hasColours = false;
 
-	public IETileProviderBlock(String name, Block.Properties blockProps, @Nullable Class<? extends ItemBlockIEBase> itemBlock,
+	public IETileProviderBlock(String name, Block.Properties blockProps, @Nullable Class<? extends BlockItemIE> itemBlock,
 							   IProperty... stateProps)
 	{
 		super(name, blockProps, itemBlock, stateProps);
@@ -356,7 +357,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		}
 		if(tile instanceof IHasDummyBlocks)
 		{
-			((IHasDummyBlocks)tile).placeDummies(pos, state, side, hitX, hitY, hitZ);
+			((IHasDummyBlocks)tile).placeDummies(context, state);
 		}
 		if(tile instanceof IPlacementInteraction)
 		{
@@ -415,7 +416,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			IInteractionObjectIE interaction = (IInteractionObjectIE)tile;
 			IInteractionObjectIE master = interaction.getGuiMaster();
 			if(!world.isRemote&&master!=null)
-				CommonProxy.openGuiForTile(player, (TileEntity & IInteractionObjectIE)master);
+				NetworkHooks.openGui((ServerPlayerEntity)player, master);
 			return true;
 		}
 		return false;

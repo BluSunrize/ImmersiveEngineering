@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -24,11 +24,11 @@ public class GenericTileBlock extends IETileProviderBlock
 
 	public GenericTileBlock(String name, Supplier<TileEntityType<?>> tileType, Properties blockProps, IProperty<?>... stateProps)
 	{
-		this(name, tileType, blockProps, ItemBlockIEBase.class, stateProps);
+		this(name, tileType, blockProps, BlockItemIE.class, stateProps);
 	}
 
 	public GenericTileBlock(String name, Supplier<TileEntityType<?>> tileType, Properties blockProps,
-							@Nullable Class<? extends ItemBlockIEBase> itemBlock, IProperty<?>... stateProps)
+							@Nullable Class<? extends BlockItemIE> itemBlock, IProperty<?>... stateProps)
 	{
 		super(name, blockProps, itemBlock, stateProps);
 		this.tileType = tileType;

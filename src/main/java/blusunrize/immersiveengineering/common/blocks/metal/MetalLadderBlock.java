@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -53,7 +53,7 @@ public class MetalLadderBlock extends IELadderBlock<BlockTypes_MetalLadder>
 
 	public MetalLadderBlock()
 	{
-		super("metal_ladder", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalLadder.class), ItemBlockIEBase.class, IEProperties.FACING_HORIZONTAL);
+		super("metal_ladder", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalLadder.class), BlockItemIE.class, IEProperties.FACING_HORIZONTAL);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);

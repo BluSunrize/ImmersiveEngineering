@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -28,7 +28,7 @@ public class MetalMultiblockBlock extends IEMultiblockBlock
 	public MetalMultiblockBlock(String name, TileEntityType<?> te, IProperty<?>... additionalProperties)
 	{
 		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15),
-				ItemBlockIEBase.class, ArrayUtils.addAll(additionalProperties,
+				BlockItemIE.class, ArrayUtils.addAll(additionalProperties,
 						IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED));
 		tileType = te;
 		setNotNormalBlock();

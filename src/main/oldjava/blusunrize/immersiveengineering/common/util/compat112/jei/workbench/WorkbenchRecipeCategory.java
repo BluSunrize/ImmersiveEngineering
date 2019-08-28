@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util.compat112.jei.workbench;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import blusunrize.immersiveengineering.common.util.compat112.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat112.jei.JEIHelper;
 import com.google.common.collect.Lists;

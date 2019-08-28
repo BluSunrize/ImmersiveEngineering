@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -45,7 +45,7 @@ public class ConveyorBlock extends IETileProviderBlock
 	{
 		super("conveyor_"+type.toString().replace(':', '_'),
 				Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
-				ItemBlockIEBase.class, IEProperties.FACING_ALL);
+				BlockItemIE.class, IEProperties.FACING_ALL);
 		this.typeName = type;
 		this.setBlockLayer(BlockRenderLayer.CUTOUT);
 		this.setNotNormalBlock();

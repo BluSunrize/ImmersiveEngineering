@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -28,7 +28,7 @@ public class CrateBlock extends IETileProviderBlock
 	public CrateBlock(String name, boolean reinforced)
 	{
 		super(name, Properties.create(Material.WOOD).hardnessAndResistance(2, 5),
-				ItemBlockIEBase.class);
+				BlockItemIE.class);
 		this.reinforced = reinforced;
 	}
 

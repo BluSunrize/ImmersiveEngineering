@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
@@ -29,8 +30,10 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -43,6 +46,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static blusunrize.immersiveengineering.api.IEEnums.SideConfig.NONE;
@@ -107,8 +111,11 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public String[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
 	{
+		if (!(rtr instanceof BlockRayTraceResult))
+			return new String[0];
+		BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
 		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
 		{
 			String s = null;
@@ -118,10 +125,10 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};
 		}
-		if(hammer&&IEConfig.colourblindSupport&&mop.sideHit.getAxis()==Axis.Y)
+		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&brtr.getFace().getAxis()==Axis.Y)
 		{
-			SideConfig side = sideConfig.getOrDefault(mop.sideHit, NONE);
-			SideConfig opposite = sideConfig.getOrDefault(mop.sideHit.getOpposite(), NONE);
+			SideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
+			SideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
 							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+side.getName()),
@@ -317,14 +324,14 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public ItemStack getTileDrop(PlayerEntity player, BlockState state)
+	public List<ItemStack> getTileDrops(Builder context)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(), 1);
+		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundNBT tag = new CompoundNBT();
 		writeTank(tag, true);
 		if(!tag.isEmpty())
-			stack.put(tag);
-		return stack;
+			stack.setTag(tag);
+		return ImmutableList.of(stack);
 	}
 
 	@Override
