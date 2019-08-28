@@ -93,7 +93,7 @@ public class MultiblockHandler
 		 * Use this to overwrite the rendering of a Multiblock's Component
 		 */
 		@OnlyIn(Dist.CLIENT)
-		boolean overwriteBlockRender(ItemStack stack, int iterator);
+		boolean overwriteBlockRender(BlockState state, int iterator);
 
 		/**
 		 * returns the scale modifier to be applied when rendering the structure in the IE manual

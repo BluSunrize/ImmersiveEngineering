@@ -38,13 +38,12 @@ import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ManualElementMultiblock extends SpecialManualElements
 {
@@ -222,14 +221,14 @@ public class ManualElementMultiblock extends SpecialManualElements
 							for(int w = 0; w < structureWidth; w++)
 							{
 								BlockPos pos = new BlockPos(l, h, w);
-								if(!blockAccess.getBlockState(pos).isAir(blockAccess, pos))
+								BlockState state = blockAccess.getBlockState(pos);
+								if(!state.isAir(blockAccess, pos))
 								{
 									GlStateManager.translatef(l, h, w);
-									boolean b = multiblock.overwriteBlockRender(renderInfo.data[h][l][w], idx++);
+									boolean b = multiblock.overwriteBlockRender(state, idx++);
 									GlStateManager.translatef(-l, -h, -w);
 									if(!b)
 									{
-										BlockState state = blockAccess.getBlockState(pos);
 										Tessellator tessellator = Tessellator.getInstance();
 										BufferBuilder buffer = tessellator.getBuffer();
 										buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
@@ -312,29 +311,10 @@ public class ManualElementMultiblock extends SpecialManualElements
 	static class MultiblockBlockAccess implements IEnviromentBlockReader
 	{
 		private final MultiblockRenderInfo data;
-		private final BlockState[][][] structure;
 
 		MultiblockBlockAccess(MultiblockRenderInfo data)
 		{
 			this.data = data;
-			final int[] index = {0};//Nasty workaround, but IDEA suggested it =P
-			this.structure = Arrays.stream(data.data).map(layer -> {
-				return Arrays.stream(layer).map(row -> {
-					return Arrays.stream(row).map(itemstack -> {
-						return convert(index[0]++, itemstack);
-					}).toArray(BlockState[]::new);
-				}).toArray(BlockState[][]::new);
-			}).toArray(BlockState[][][]::new);
-		}
-
-		private BlockState convert(int index, ItemStack itemstack)
-		{
-			if(itemstack==null)
-				return Blocks.AIR.getDefaultState();
-			BlockState state = data.multiblock.getBlockstateFromStack(index, itemstack);
-			if(state!=null)
-				return state;
-			return Blocks.AIR.getDefaultState();
 		}
 
 		@Nullable
@@ -354,18 +334,16 @@ public class ManualElementMultiblock extends SpecialManualElements
 		@Override
 		public BlockState getBlockState(BlockPos pos)
 		{
-			int x = pos.getX();
-			int y = pos.getY();
-			int z = pos.getZ();
 
-			if(y >= 0&&y < structure.length)
-				if(x >= 0&&x < structure[y].length)
-					if(z >= 0&&z < structure[y][x].length)
-					{
-						int index = y*(data.structureLength*data.structureWidth)+x*data.structureWidth+z;
-						if(index <= data.getLimiter())
-							return structure[y][x][z];
-					}
+			if(data.data.containsKey(pos))
+			{
+				int x = pos.getX();
+				int y = pos.getY();
+				int z = pos.getZ();
+				int index = y*(data.structureLength*data.structureWidth)+x*data.structureWidth+z;
+				if(index <= data.getLimiter())
+					return data.data.get(pos).state;
+			}
 			return Blocks.AIR.getDefaultState();
 		}
 
@@ -396,7 +374,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	static class MultiblockRenderInfo
 	{
 		public IMultiblock multiblock;
-		public ItemStack[][][] data;
+		public Map<BlockPos, BlockInfo> data = new HashMap<>();
 		int blockCount = 0;
 		int[] countPerLevel;
 		int structureHeight = 0;
@@ -414,30 +392,23 @@ public class ManualElementMultiblock extends SpecialManualElements
 			maxBlockIndex = blockIndex = structureHeight*structureLength*structureWidth;
 		}
 
-		public void init(ItemStack[][][] structure)
+		public void init(List<BlockInfo> structure)
 		{
-			data = structure;
-			structureHeight = structure.length;
+			structureHeight = 0;
 			structureWidth = 0;
 			structureLength = 0;
 
 			countPerLevel = new int[structureHeight];
-			blockCount = 0;
-			for(int h = 0; h < structure.length; h++)
+			blockCount = structure.size();
+			for(BlockInfo block : structure)
 			{
-				if(structure[h].length > structureLength)
-					structureLength = structure[h].length;
-				int perLvl = 0;
-				for(int l = 0; l < structure[h].length; l++)
-				{
-					if(structure[h][l].length > structureWidth)
-						structureWidth = structure[h][l].length;
-					for(ItemStack ss : structure[h][l])
-						if(ss!=null&&!ss.isEmpty())
-							perLvl++;
-				}
-				countPerLevel[h] = perLvl;
-				blockCount += perLvl;
+				structureHeight = Math.max(structureHeight, block.pos.getY()+1);
+				structureWidth = Math.max(structureWidth, block.pos.getZ()+1);
+				structureLength = Math.max(structureLength, block.pos.getX()+1);
+				if(structureHeight!=countPerLevel.length)
+					countPerLevel = Arrays.copyOf(countPerLevel, structureHeight);
+				++countPerLevel[block.pos.getY()];
+				data.put(block.pos, block);
 			}
 		}
 
@@ -473,8 +444,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			int x = r/structureWidth;
 			int z = r%structureWidth;
 
-			ItemStack stack = data[y][x][z];
-			return stack==null||stack.isEmpty();
+			return !data.containsKey(new BlockPos(x, y, z));
 		}
 
 		int getLimiter()

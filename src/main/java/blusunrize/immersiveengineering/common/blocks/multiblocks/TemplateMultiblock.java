@@ -18,7 +18,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -179,7 +178,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean overwriteBlockRender(ItemStack stack, int iterator)
+	public boolean overwriteBlockRender(BlockState state, int iterator)
 	{
 		return false;
 	}
@@ -220,7 +219,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		for(BlockInfo block : getStructure())
 		{
 			BlockPos actualPos = withSettingsAndOffset(origin, block.pos, mirror, rot);
-			world.setBlockState(actualPos, block.state)
+			world.setBlockState(actualPos, block.state);
 		}
 	}
 }
