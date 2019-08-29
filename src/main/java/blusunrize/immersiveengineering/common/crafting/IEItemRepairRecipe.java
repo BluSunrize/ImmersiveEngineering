@@ -11,36 +11,37 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeRepairItem;
+import net.minecraft.item.crafting.RepairItemRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class RecipeIEItemRepair extends RecipeRepairItem
+public class IEItemRepairRecipe extends RepairItemRecipe
 {
 	private Ingredient tool;
 
-	public RecipeIEItemRepair(ResourceLocation name, Ingredient tool)
+	public IEItemRepairRecipe(ResourceLocation name, Ingredient tool)
 	{
 		super(name);
 		this.tool = tool;
 	}
 
 	@Override
-	public boolean matches(IInventory inv, World worldIn)
+	public boolean matches(CraftingInventory inv, World worldIn)
 	{
 		return getRelevantStacks(inv)!=null;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(IInventory inv)
+	public ItemStack getCraftingResult(CraftingInventory inv)
 	{
 		int[] relevant = getRelevantStacks(inv);
 		if(relevant==null)
@@ -66,7 +67,7 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(IInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
 	{
 		NonNullList<ItemStack> ret = super.getRemainingItems(inv);
 		int[] relevantStacks = getRelevantStacks(inv);
@@ -111,6 +112,6 @@ public class RecipeIEItemRepair extends RecipeRepairItem
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return RecipeSerializerIEItemRepair.INSTANCE;
+		return IEItemRepairRecipeSerializer.INSTANCE;
 	}
 }

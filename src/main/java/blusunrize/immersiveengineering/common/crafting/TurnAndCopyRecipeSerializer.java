@@ -12,24 +12,26 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.RecipeSerializers;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-public class RecipeSerializerTurnAndCopy implements IRecipeSerializer<RecipeTurnAndCopy>
+public class TurnAndCopyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<TurnAndCopyRecipe>
 {
-	public static final IRecipeSerializer<RecipeTurnAndCopy> INSTANCE = RecipeSerializers.register(new RecipeSerializerTurnAndCopy());
+	public static final IRecipeSerializer<TurnAndCopyRecipe> INSTANCE = IRecipeSerializer.register(
+			ImmersiveEngineering.MODID+"turn_and_copy", new TurnAndCopyRecipeSerializer()
+	);
 
 	@Nonnull
 	@Override
-	public RecipeTurnAndCopy read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
+	public TurnAndCopyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
 	{
-		ShapedRecipe basic = RecipeSerializers.CRAFTING_SHAPED.read(recipeId, json);
-		RecipeTurnAndCopy recipe = new RecipeTurnAndCopy(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
+		ShapedRecipe basic = IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, json);
+		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
 				basic.getIngredients(), basic.getRecipeOutput());
 		if(JSONUtils.getBoolean(json, "quarter_turn", false))
 			recipe.allowQuarterTurn();
@@ -55,10 +57,10 @@ public class RecipeSerializerTurnAndCopy implements IRecipeSerializer<RecipeTurn
 
 	@Nonnull
 	@Override
-	public RecipeTurnAndCopy read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public TurnAndCopyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
 	{
-		ShapedRecipe basic = RecipeSerializers.CRAFTING_SHAPED.read(recipeId, buffer);
-		RecipeTurnAndCopy recipe = new RecipeTurnAndCopy(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
+		ShapedRecipe basic = IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, buffer);
+		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
 				basic.getIngredients(), basic.getRecipeOutput());
 		if(buffer.readBoolean())
 			recipe.allowQuarterTurn();
@@ -76,9 +78,9 @@ public class RecipeSerializerTurnAndCopy implements IRecipeSerializer<RecipeTurn
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull RecipeTurnAndCopy recipe)
+	public void write(@Nonnull PacketBuffer buffer, @Nonnull TurnAndCopyRecipe recipe)
 	{
-		RecipeSerializers.CRAFTING_SHAPED.write(buffer, recipe);
+		IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe);
 		buffer.writeBoolean(recipe.isQuarterTurn());
 		buffer.writeBoolean(recipe.isEightTurn());
 		int[] copying = recipe.getCopyTargets();
@@ -95,11 +97,5 @@ public class RecipeSerializerTurnAndCopy implements IRecipeSerializer<RecipeTurn
 			else
 				buffer.writeBoolean(false);
 		}
-	}
-
-	@Override
-	public ResourceLocation getName()
-	{
-		return new ResourceLocation(ImmersiveEngineering.MODID, "turn_and_copy");
 	}
 }

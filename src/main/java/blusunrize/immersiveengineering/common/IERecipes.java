@@ -156,11 +156,6 @@ public class IERecipes
 		BlueprintCraftingRecipe.addVillagerTrade("electrode", new ItemStack(Items.EMERALD, 1));
 	}
 
-	private static ResourceLocation getNugget(String type)
-	{
-		return new ResourceLocation("forge", "nuggets/"+type);
-	}
-
 	public static void initFurnaceRecipes()
 	{
 		//TODO JSONs
@@ -281,34 +276,39 @@ public class IERecipes
 		//}
 	}
 
-	private static ResourceLocation getGem(String type)
+	public static ResourceLocation getGem(String type)
 	{
 		return new ResourceLocation("forge", "gems/"+type);
 	}
 
-	private static ResourceLocation getDust(String type)
+	public static ResourceLocation getDust(String type)
 	{
 		return new ResourceLocation("forge", "dusts/"+type);
 	}
 
-	private static ResourceLocation getIngot(String type)
+	public static ResourceLocation getIngot(String type)
 	{
 		return new ResourceLocation("forge", "ingots/"+type);
 	}
 
-	private static ResourceLocation getStick(String type)
+	public static ResourceLocation getStick(String type)
 	{
 		return new ResourceLocation("forge", "sticks/"+type);
 	}
 
-	private static ResourceLocation getRod(String type)
+	public static ResourceLocation getRod(String type)
 	{
 		return new ResourceLocation("forge", "rods/"+type);
 	}
 
-	private static ResourceLocation getOre(String type)
+	public static ResourceLocation getOre(String type)
 	{
 		return new ResourceLocation("forge", "ores/"+type);
+	}
+
+	public static ResourceLocation getNugget(String type)
+	{
+		return new ResourceLocation("forge", "nuggets/"+type);
 	}
 
 	public static void postInitOreDictRecipes()

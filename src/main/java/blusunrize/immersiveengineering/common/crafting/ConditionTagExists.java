@@ -35,7 +35,7 @@ public class ConditionTagExists implements IConditionSerializer
 	@Override
 	public BooleanSupplier parse(@Nonnull JsonObject json)
 	{
-		String key = JSONUtils.getString(json, "tag");
+		ResourceLocation key = new ResourceLocation(JSONUtils.getString(json, "tag"));
 		boolean value = JSONUtils.getBoolean(json, "value", true);
 		return () -> ApiUtils.isNonemptyItemTag(key)==value;
 	}

@@ -12,12 +12,11 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.client.util.RecipeItemHelper;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,17 +51,7 @@ public class IngredientIngrStack extends Ingredient
 
 			List<ItemStack> list2 = new ArrayList<>(list.size());
 			for(ItemStack stack : list)
-			{
-				if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
-				{
-					NonNullList<ItemStack> lst = NonNullList.create();
-					stack.getItem().fillItemGroup(CreativeTabs.SEARCH, lst);
-					for(ItemStack item : lst)
-						list2.add(item);
-				}
-				else
-					list2.add(stack);
-			}
+				list2.add(stack);
 			this.array = list2.toArray(new ItemStack[list2.size()]);
 		}
 		return this.array;
@@ -81,26 +70,15 @@ public class IngredientIngrStack extends Ingredient
 
 			this.itemIds = new IntArrayList(list.size());
 			for(ItemStack stack : list)
-			{
-				if(stack.getMetadata()==OreDictionary.WILDCARD_VALUE)
-				{
-					NonNullList<ItemStack> lst = NonNullList.create();
-					stack.getItem().fillItemGroup(CreativeTabs.SEARCH, lst);
-					for(ItemStack item : lst)
-						this.itemIds.add(RecipeItemHelper.pack(item));
-				}
-				else
-					this.itemIds.add(RecipeItemHelper.pack(stack));
-			}
+				this.itemIds.add(RecipeItemHelper.pack(stack));
 			this.itemIds.sort(IntComparators.NATURAL_COMPARATOR);
 		}
 
 		return this.itemIds;
 	}
 
-
 	@Override
-	public boolean apply(@Nullable ItemStack input)
+	public boolean test(@Nullable ItemStack input)
 	{
 		if(input==null)
 			return false;

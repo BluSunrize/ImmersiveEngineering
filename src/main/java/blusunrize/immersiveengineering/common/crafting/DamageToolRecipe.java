@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
@@ -23,9 +23,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RecipeDamageTool extends ShapelessRecipe
+public class DamageToolRecipe extends ShapelessRecipe
 {
-	public RecipeDamageTool(ResourceLocation id, String group, ItemStack result, Ingredient tool, NonNullList<Ingredient> input)
+	public DamageToolRecipe(ResourceLocation id, String group, ItemStack result, Ingredient tool, NonNullList<Ingredient> input)
 	{
 		super(id, group, result, addTo(tool, input));
 	}
@@ -38,7 +38,7 @@ public class RecipeDamageTool extends ShapelessRecipe
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(IInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
 	{
 		NonNullList<ItemStack> remains = super.getRemainingItems(inv);
 		for(int i = 0; i < remains.size(); i++)
@@ -69,7 +69,7 @@ public class RecipeDamageTool extends ShapelessRecipe
 	}
 
 	@Override
-	public boolean matches(IInventory matrix, World world)
+	public boolean matches(CraftingInventory matrix, World world)
 	{
 		List<Ingredient> required = new LinkedList<>(getIngredients());
 
@@ -101,7 +101,7 @@ public class RecipeDamageTool extends ShapelessRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return RecipeSerializerDamageTool.INSTANCE;
+		return DamageToolRecipeSerializer.INSTANCE;
 	}
 
 	public Ingredient getTool()

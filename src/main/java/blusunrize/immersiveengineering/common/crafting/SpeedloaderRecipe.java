@@ -9,36 +9,35 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.ItemSpeedloader;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeSerializers;
-import net.minecraft.item.crafting.RecipeSerializers.SimpleSerializer;
 import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-public class RecipeSpeedloader extends ShapedRecipe
+public class SpeedloaderRecipe extends ShapedRecipe
 {
-	public static final IRecipeSerializer<RecipeSpeedloader> SERIALIZER = RecipeSerializers.register(
-			new SimpleSerializer<>(ImmersiveEngineering.MODID+":speedloader", RecipeSpeedloader::new)
+	public static final IRecipeSerializer<SpeedloaderRecipe> SERIALIZER = IRecipeSerializer.register(
+			ImmersiveEngineering.MODID+":speedloader", new SpecialRecipeSerializer<>(SpeedloaderRecipe::new)
 	);
 
-	public RecipeSpeedloader(ResourceLocation id)
+	public SpeedloaderRecipe(ResourceLocation id)
 	{
-		super(id, null, 3, 3, getPattern(), new ItemStack(IEContent.itemSpeedloader));
+		super(id, null, 3, 3, getPattern(), new ItemStack(Weapons.speedloader));
 	}
 
 	private static NonNullList<Ingredient> getPattern()
 	{
-		Ingredient bullet = Ingredient.fromItems(IEContent.itemBullet);
-		Ingredient speedloader = Ingredient.fromItems(IEContent.itemSpeedloader);
+		Ingredient bullet = Ingredient.fromItems(Weapons.bullet);
+		Ingredient speedloader = Ingredient.fromItems(Weapons.speedloader);
 		return NonNullList.from(Ingredient.EMPTY,
 				bullet, bullet, bullet,
 				bullet, speedloader, bullet,
@@ -47,7 +46,7 @@ public class RecipeSpeedloader extends ShapedRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(IInventory matrix)
+	public ItemStack getCraftingResult(CraftingInventory matrix)
 	{
 		ItemStack speedloader = matrix.getStackInSlot(4);
 

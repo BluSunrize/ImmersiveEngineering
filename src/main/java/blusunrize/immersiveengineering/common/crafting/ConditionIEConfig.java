@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEConfig;
 import com.google.gson.JsonObject;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
@@ -37,6 +37,6 @@ public class ConditionIEConfig implements IConditionSerializer
 	{
 		String key = JSONUtils.getString(json, "key");
 		boolean value = JSONUtils.getBoolean(json, "value", true);
-		return () -> Config.manual_bool.get(key)==value;
+		return () -> IEConfig.ALL.<Boolean>get(key)==value;
 	}
 }

@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
@@ -27,7 +27,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import javax.annotation.Nonnull;
 import java.util.regex.Pattern;
 
-public class RecipeTurnAndCopy extends ShapedRecipe
+public class TurnAndCopyRecipe extends ShapedRecipe
 {
 	private NonNullList<Ingredient> ingredientsQuarterTurn;
 	private NonNullList<Ingredient> ingredientsEighthTurn;
@@ -37,7 +37,7 @@ public class RecipeTurnAndCopy extends ShapedRecipe
 	private int lastStartX = 0;
 	private int lastStartY = 0;
 
-	public RecipeTurnAndCopy(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingr,
+	public TurnAndCopyRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingr,
 							 ItemStack output)
 	{
 		super(id, group, width, height, ingr, output);
@@ -80,7 +80,7 @@ public class RecipeTurnAndCopy extends ShapedRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(IInventory matrix)
+	public ItemStack getCraftingResult(CraftingInventory matrix)
 	{
 		if(nbtCopyTargetSlot!=null)
 		{
@@ -100,7 +100,7 @@ public class RecipeTurnAndCopy extends ShapedRecipe
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(IInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
 	{
 		NonNullList<ItemStack> remains = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 		for(int yy = 0; yy < this.getRecipeHeight(); yy++)
@@ -127,7 +127,7 @@ public class RecipeTurnAndCopy extends ShapedRecipe
 	}
 
 	@Override
-	protected boolean checkMatch(IInventory inv, int startX, int startY, boolean mirror)
+	public boolean checkMatch(CraftingInventory inv, int startX, int startY, boolean mirror)
 	{
 		if(checkMatchDo(inv, getIngredients(), startX, startY, mirror, false))
 		{
@@ -153,7 +153,7 @@ public class RecipeTurnAndCopy extends ShapedRecipe
 		return false;
 	}
 
-	private boolean checkMatchDo(IInventory inv, NonNullList<Ingredient> ingredients, int startX, int startY, boolean mirror, boolean rotate)
+	private boolean checkMatchDo(CraftingInventory inv, NonNullList<Ingredient> ingredients, int startX, int startY, boolean mirror, boolean rotate)
 	{
 		for(int x = 0; x < inv.getWidth(); x++)
 			for(int y = 0; y < inv.getHeight(); y++)
@@ -190,7 +190,7 @@ public class RecipeTurnAndCopy extends ShapedRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return RecipeSerializerTurnAndCopy.INSTANCE;
+		return TurnAndCopyRecipeSerializer.INSTANCE;
 	}
 
 	public boolean isQuarterTurn()

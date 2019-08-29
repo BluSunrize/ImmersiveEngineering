@@ -62,8 +62,9 @@ public class IngredientFluidStack extends Ingredient
 		}
 		else
 		{
-			FluidStack fs = FluidUtil.getFluidContained(stack);
-			return fs==null&&this.fluid==null||fs!=null&&fs.containsFluid(fluid);
+			return FluidUtil.getFluidContained(stack)
+					.map(fs -> fs.containsFluid(fluid))
+					.orElse(false);
 		}
 	}
 

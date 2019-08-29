@@ -14,11 +14,10 @@ import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.crafting.VanillaRecipeTypes;
 
 import java.util.HashMap;
 
@@ -119,9 +118,9 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 	public static ItemStack getPackedOutput(int gridSize, int totalAmount, ItemStack stack, World world)
 	{
 		CraftingInventory invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(gridSize, gridSize, NonNullList.withSize(totalAmount, stack.copy()));
-		IRecipe recipe = world.getRecipeManager().getRecipe(invC, world, VanillaRecipeTypes.CRAFTING);
-		if(recipe!=null)
-			return recipe.getCraftingResult(invC);
-		return ItemStack.EMPTY;
+		return world.getRecipeManager()
+				.getRecipe(IRecipeType.CRAFTING, invC, world)
+				.map(recipe -> recipe.getCraftingResult(invC))
+				.orElse(ItemStack.EMPTY);
 	}
 }

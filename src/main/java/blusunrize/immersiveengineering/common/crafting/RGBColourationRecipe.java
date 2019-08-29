@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
@@ -23,13 +23,13 @@ import net.minecraftforge.common.util.Constants.NBT;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class RecipeRGBColouration implements IRecipe
+public class RGBColourationRecipe implements ICraftingRecipe
 {
 	private final Ingredient target;
 	private final String colorKey;
 	private final ResourceLocation id;
 
-	public RecipeRGBColouration(Ingredient target, String colorKey, ResourceLocation id)
+	public RGBColourationRecipe(Ingredient target, String colorKey, ResourceLocation id)
 	{
 
 		this.target = target;
@@ -38,7 +38,7 @@ public class RecipeRGBColouration implements IRecipe
 	}
 
 	@Override
-	public boolean matches(IInventory inv, @Nonnull World world)
+	public boolean matches(CraftingInventory inv, @Nonnull World world)
 	{
 		ItemStack itemToColour = ItemStack.EMPTY;
 		List<ItemStack> list = Lists.newArrayList();
@@ -60,7 +60,7 @@ public class RecipeRGBColouration implements IRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(IInventory inv)
+	public ItemStack getCraftingResult(CraftingInventory inv)
 	{
 		int[] colourArray = new int[3];
 		int j = 0;
@@ -143,7 +143,7 @@ public class RecipeRGBColouration implements IRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return RecipeSerializerRGB.INSTANCE;
+		return RGBRecipeSerializer.INSTANCE;
 	}
 
 	public Ingredient getTarget()

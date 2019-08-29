@@ -12,44 +12,39 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeSerializers;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
 //TODO is this stll needed?
-public class RecipeSerializerIEItemRepair implements IRecipeSerializer<RecipeIEItemRepair>
+public class IEItemRepairRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<IEItemRepairRecipe>
 {
-	public static final RecipeSerializerIEItemRepair INSTANCE = RecipeSerializers.register(new RecipeSerializerIEItemRepair());
+	public static final IEItemRepairRecipeSerializer INSTANCE = IRecipeSerializer.register(
+			ImmersiveEngineering.MODID+":repair", new IEItemRepairRecipeSerializer()
+	);
 
 	@Nonnull
 	@Override
-	public RecipeIEItemRepair read(@Nonnull ResourceLocation recipeId, JsonObject json)
+	public IEItemRepairRecipe read(@Nonnull ResourceLocation recipeId, JsonObject json)
 	{
 		Ingredient ingred = CraftingHelper.getIngredient(json.get("tool"));
-		return new RecipeIEItemRepair(recipeId, ingred);
+		return new IEItemRepairRecipe(recipeId, ingred);
 	}
 
 	@Nonnull
 	@Override
-	public RecipeIEItemRepair read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public IEItemRepairRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
 	{
-		Ingredient ingred = Ingredient.fromBuffer(buffer);
-		return new RecipeIEItemRepair(recipeId, ingred);
+		Ingredient ingred = Ingredient.read(buffer);
+		return new IEItemRepairRecipe(recipeId, ingred);
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull RecipeIEItemRepair recipe)
+	public void write(@Nonnull PacketBuffer buffer, @Nonnull IEItemRepairRecipe recipe)
 	{
 		CraftingHelper.write(buffer, recipe.getToolIngredient());
-	}
-
-	@Nonnull
-	@Override
-	public ResourceLocation getName()
-	{
-		return new ResourceLocation(ImmersiveEngineering.MODID, "repair");
 	}
 }

@@ -10,35 +10,35 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.RecipeSerializers;
-import net.minecraft.item.crafting.RecipeSerializers.SimpleSerializer;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class RecipePowerpack implements IRecipe
+public class PowerpackRecipe implements ICraftingRecipe
 {
-	public static final IRecipeSerializer<RecipePowerpack> SERIALIZER = RecipeSerializers.register(
-			new SimpleSerializer<>(ImmersiveEngineering.MODID+":powerpack", RecipePowerpack::new)
+	public static final IRecipeSerializer<PowerpackRecipe> SERIALIZER = IRecipeSerializer.register(
+			ImmersiveEngineering.MODID+":powerpack", new SpecialRecipeSerializer<>(PowerpackRecipe::new)
 	);
 
 	private final ResourceLocation id;
 
-	public RecipePowerpack(ResourceLocation id)
+	public PowerpackRecipe(ResourceLocation id)
 	{
 		this.id = id;
 	}
 
 	@Override
-	public boolean matches(IInventory inv, World world)
+	public boolean matches(CraftingInventory inv, World world)
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
@@ -46,7 +46,7 @@ public class RecipePowerpack implements IRecipe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(powerpack.isEmpty()&&IEContent.itemPowerpack.equals(stackInSlot.getItem()))
+				if(powerpack.isEmpty()&&Misc.powerpack.equals(stackInSlot.getItem()))
 					powerpack = stackInSlot;
 				else if(armor.isEmpty()&&isValidArmor(stackInSlot))
 					armor = stackInSlot;
@@ -59,7 +59,7 @@ public class RecipePowerpack implements IRecipe
 	}
 
 	@Override
-	public ItemStack getCraftingResult(IInventory inv)
+	public ItemStack getCraftingResult(CraftingInventory inv)
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
@@ -67,7 +67,7 @@ public class RecipePowerpack implements IRecipe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(powerpack.isEmpty()&&IEContent.itemPowerpack.equals(stackInSlot.getItem()))
+				if(powerpack.isEmpty()&&Misc.powerpack.equals(stackInSlot.getItem()))
 					powerpack = stackInSlot;
 				else if(armor.isEmpty()&&isValidArmor(stackInSlot))
 					armor = stackInSlot;
@@ -98,13 +98,13 @@ public class RecipePowerpack implements IRecipe
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return new ItemStack(IEContent.itemPowerpack, 1);
+		return new ItemStack(Misc.powerpack, 1);
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(IInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
 	{
-		NonNullList<ItemStack> remaining = IRecipe.super.getRemainingItems(inv);
+		NonNullList<ItemStack> remaining = ICraftingRecipe.super.getRemainingItems(inv);
 		for(int i = 0; i < remaining.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
@@ -118,13 +118,13 @@ public class RecipePowerpack implements IRecipe
 	{
 		if(!(stack.getItem() instanceof ArmorItem)||((ArmorItem)stack.getItem()).getEquipmentSlot()!=EquipmentSlotType.CHEST)
 			return false;
-		if(stack.getItem()==IEContent.itemPowerpack)
+		if(stack.getItem()==Misc.powerpack)
 			return false;
 		String regName = stack.getItem().getRegistryName().toString();
-		for(String s : IEConfig.Tools.powerpack_whitelist)
+		for(String s : IEConfig.TOOLS.powerpack_whitelist.get())
 			if(regName.equals(s))
 				return true;
-		for(String s : IEConfig.Tools.powerpack_blacklist)
+		for(String s : IEConfig.TOOLS.powerpack_blacklist.get())
 			if(regName.equals(s))
 				return false;
 		return true;
