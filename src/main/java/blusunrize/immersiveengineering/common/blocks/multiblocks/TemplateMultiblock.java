@@ -66,7 +66,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 			try
 			{
 				template = StaticTemplateManager.loadStaticTemplate(loc);
-				List<Template.BlockInfo> blocks = template.blocks;
+				List<Template.BlockInfo> blocks = template.blocks.get(0);
 				for(int i = 0; i < blocks.size(); i++)
 				{
 					Template.BlockInfo info = blocks.get(i);
@@ -119,7 +119,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 			PlacementSettings placeSet = new PlacementSettings().setMirror(mirror).setRotation(rot);
 			BlockPos origin = pos.subtract(Template.transformedBlockPos(placeSet, triggerFromOrigin));
 			IELogger.info(rot+", "+mirror+", "+origin);
-			for(Template.BlockInfo info : template.blocks)
+			for(Template.BlockInfo info : template.blocks.get(0))
 			{
 				BlockPos realRelPos = Template.transformedBlockPos(placeSet, info.pos);
 				BlockPos here = origin.add(realRelPos);
@@ -167,7 +167,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	@Override
 	public final List<BlockInfo> getStructure()
 	{
-		return getTemplate().blocks;
+		return getTemplate().blocks.get(0);
 	}
 
 	@Override

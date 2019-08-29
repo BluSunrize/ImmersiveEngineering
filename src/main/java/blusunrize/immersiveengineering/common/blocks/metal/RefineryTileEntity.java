@@ -29,9 +29,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,11 +123,11 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[2].getFluid(), Math.min(this.tanks[2].getFluidAmount(), 80), false);
 				BlockPos outputPos = this.getPos().add(0, -1, 0).offset(facing.getOpposite());
 				update |= FluidUtil.getFluidHandler(world, outputPos, facing).map(output -> {
-					int accepted = output.fill(out, false);
+					int accepted = output.fill(out, FluidAction.SIMULATE);
 					if(accepted > 0)
 					{
-						int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
-						this.tanks[2].drain(drained, true);
+						int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+						this.tanks[2].drain(drained, FluidAction.EXECUTE);
 						return true;
 					}
 					return false;

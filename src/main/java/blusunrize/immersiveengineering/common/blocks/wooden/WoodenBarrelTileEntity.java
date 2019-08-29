@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,10 +36,10 @@ import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,7 +61,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			Direction.DOWN, OUTPUT,
 			Direction.UP, SideConfig.INPUT
 	));
-	public FluidTank tank = new FluidTank(12000);
+	public FluidTank tank = new FluidTank(12000, this::isFluidValid);
 
 	public WoodenBarrelTileEntity(TileEntityType<? extends WoodenBarrelTileEntity> type)
 	{
@@ -94,11 +93,11 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 				IFluidHandler handler = capRef.getNullable();
 				if(handler!=null)
 				{
-					int accepted = handler.fill(Utils.copyFluidStackWithAmount(tank.getFluid(), out, false), false);
-					FluidStack drained = this.tank.drain(accepted, true);
-					if(drained!=null)
+					int accepted = handler.fill(Utils.copyFluidStackWithAmount(tank.getFluid(), out, false), FluidAction.SIMULATE);
+					FluidStack drained = this.tank.drain(accepted, FluidAction.EXECUTE);
+					if(!drained.isEmpty())
 					{
-						handler.fill(drained, true);
+						handler.fill(drained, FluidAction.EXECUTE);
 						update = true;
 					}
 				}
@@ -119,8 +118,8 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
 		{
 			String s = null;
-			if(tank.getFluid()!=null)
-				s = tank.getFluid().getLocalizedName()+": "+tank.getFluidAmount()+"mB";
+			if(!tank.getFluid().isEmpty())
+				s = tank.getFluid().getDisplayName().getFormattedText()+": "+tank.getFluidAmount()+"mB";
 			else
 				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};
@@ -210,7 +209,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		}
 
 		@Override
-		public int fill(FluidStack resource, boolean doFill)
+		public int fill(FluidStack resource, FluidAction doFill)
 		{
 			if(resource==null||(facing!=null&&barrel.sideConfig.get(facing)!=SideConfig.INPUT)||!barrel.isFluidValid(resource))
 				return 0;
@@ -225,20 +224,20 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		}
 
 		@Override
-		public FluidStack drain(FluidStack resource, boolean doDrain)
+		public FluidStack drain(FluidStack resource, FluidAction doDrain)
 		{
 			if(resource==null)
-				return null;
-			return this.drain(resource.amount, doDrain);
+				return FluidStack.EMPTY;
+			return this.drain(resource.getAmount(), doDrain);
 		}
 
 		@Override
-		public FluidStack drain(int maxDrain, boolean doDrain)
+		public FluidStack drain(int maxDrain, FluidAction doDrain)
 		{
 			if(facing!=null&&barrel.sideConfig.get(facing)!=OUTPUT)
-				return null;
+				return FluidStack.EMPTY;
 			FluidStack f = barrel.tank.drain(maxDrain, doDrain);
-			if(f!=null&&f.amount > 0)
+			if(!f.isEmpty())
 			{
 				barrel.markDirty();
 				barrel.markContainingBlockForUpdate(null);
@@ -247,17 +246,36 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		}
 
 		@Override
-		public IFluidTankProperties[] getTankProperties()
+		public int getTanks()
 		{
-			return barrel.tank.getTankProperties();
+			return 1;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack getFluidInTank(int tank)
+		{
+			return barrel.tank.getFluidInTank(tank);
+		}
+
+		@Override
+		public int getTankCapacity(int tank)
+		{
+			return barrel.tank.getTankCapacity(tank);
+		}
+
+		@Override
+		public boolean isFluidValid(int tank, @Nonnull FluidStack stack)
+		{
+			return barrel.tank.isFluidValid(tank, stack);
 		}
 	}
 
 	public boolean isFluidValid(FluidStack fluid)
 	{
-		return fluid!=null&&fluid.getFluid()!=null
-				&&fluid.getFluid().getTemperature(fluid) < IGNITION_TEMPERATURE
-				&&!fluid.getFluid().isGaseous(fluid);
+		return !fluid.isEmpty()&&fluid.getFluid()!=null
+				&&fluid.getFluid().getAttributes().getTemperature(fluid) < IGNITION_TEMPERATURE
+				&&!fluid.getFluid().getAttributes().isGaseous(fluid);
 	}
 
 	@Override
@@ -297,12 +315,12 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		if(!metal)
 		{
 			LazyOptional<Boolean> ret = fOptional.map((f) -> {
-				if(f.getFluid().isGaseous(f))
+				if(f.getFluid().getAttributes().isGaseous(f))
 				{
 					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"noGasAllowed"));
 					return true;
 				}
-				else if(f.getFluid().getTemperature(f) >= WoodenBarrelTileEntity.IGNITION_TEMPERATURE)
+				else if(f.getFluid().getAttributes().getTemperature(f) >= WoodenBarrelTileEntity.IGNITION_TEMPERATURE)
 				{
 					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"tooHot"));
 					return true;

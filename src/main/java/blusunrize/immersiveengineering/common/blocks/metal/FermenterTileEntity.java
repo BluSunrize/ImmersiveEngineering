@@ -35,9 +35,10 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -133,11 +134,11 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 				BlockPos outputPos = this.getPos().add(0, -1, 0).offset(fw, 2);
 				update |= FluidUtil.getFluidHandler(world, outputPos, fw.getOpposite())
 						.map(output -> {
-					int accepted = output.fill(out, false);
+							int accepted = output.fill(out, FluidAction.SIMULATE);
 					if(accepted > 0)
 					{
-						int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
-						this.tanks[0].drain(drained, true);
+						int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+						this.tanks[0].drain(drained, FluidAction.EXECUTE);
 						return true;
 					}
 							return false;

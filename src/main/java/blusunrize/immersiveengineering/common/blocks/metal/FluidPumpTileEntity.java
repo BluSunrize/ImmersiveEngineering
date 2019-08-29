@@ -30,6 +30,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
@@ -45,13 +46,11 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -98,8 +97,8 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			return;
 		if(tank.getFluidAmount() > 0)
 		{
-			int i = outputFluid(tank.getFluid(), false);
-			tank.drain(i, true);
+			int i = outputFluid(tank.getFluid(), FluidAction.SIMULATE);
+			tank.drain(i, FluidAction.EXECUTE);
 		}
 
 		int consumption = IEConfig.MACHINES.pump_consumption.get();
@@ -111,17 +110,17 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					CapabilityReference<IFluidHandler> input = neighborFluids.get(f);
 					if(input.isPresent())
 					{
-						IFluidHandler handler = input.getNullable();
-						FluidStack drain = handler.drain(500, false);
-						if(drain==null||drain.amount <= 0)
+						IFluidHandler handler = input.get();
+						FluidStack drain = handler.drain(500, FluidAction.SIMULATE);
+						if(drain.isEmpty())
 							continue;
-						int out = this.outputFluid(drain, false);
-						handler.drain(out, true);
+						int out = this.outputFluid(drain, FluidAction.EXECUTE);
+						handler.drain(out, FluidAction.EXECUTE);
 					}
 					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)
 							&&world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER
-							&&IEConfig.MACHINES.pump_infiniteWater
-							&&tank.fill(new FluidStack(FluidRegistry.WATER, 1000), false)==1000
+							&&IEConfig.MACHINES.pump_infiniteWater.get()
+							&&tank.fill(new FluidStack(Fluids.WATER, 1000), FluidAction.SIMULATE)==1000
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
 					{
 						int connectedSources = 0;
@@ -134,7 +133,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 						if(connectedSources > 1)
 						{
 							this.energyStorage.extractEnergy(consumption, false);
-							this.tank.fill(new FluidStack(FluidRegistry.WATER, 1000), true);
+							this.tank.fill(new FluidStack(Fluids.WATER, 1000), FluidAction.EXECUTE);
 						}
 					}
 				}
@@ -149,14 +148,14 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					FluidStack fs = Utils.drainFluidBlock(world, pos, false);
 					if(fs==null)
 						closedList.remove(target);
-					else if(tank.fill(fs, false)==fs.amount
+					else if(tank.fill(fs, FluidAction.SIMULATE)==fs.getAmount()
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
 					{
 						this.energyStorage.extractEnergy(consumption, false);
 						fs = Utils.drainFluidBlock(world, pos, true);
 						if(IEConfig.MACHINES.pump_placeCobble.get()&&placeCobble)
 							world.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
-						this.tank.fill(fs, true);
+						this.tank.fill(fs, FluidAction.EXECUTE);
 						closedList.remove(target);
 					}
 				}
@@ -193,7 +192,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			if(!checked.contains(next))
 			{
 				Fluid fluid = Utils.getRelatedFluid(getWorld(), next);
-				if(fluid!=null&&(fluid!=FluidRegistry.WATER||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
+				if((fluid!=Fluids.WATER||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 				{
 					if(searchFluid==null)
 						searchFluid = fluid;
@@ -204,7 +203,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					{
 						BlockPos pos2 = next.offset(f);
 						fluid = Utils.getRelatedFluid(world, pos2);
-						if(!checked.contains(pos2)&&!closedList.contains(pos2)&&!openList.contains(pos2)&&fluid!=null&&(fluid!=FluidRegistry.WATER
+						if(!checked.contains(pos2)&&!closedList.contains(pos2)&&!openList.contains(pos2)&&(fluid!=Fluids.WATER
 								||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 							openList.add(pos2);
 					}
@@ -217,12 +216,12 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			checkingArea = false;
 	}
 
-	public int outputFluid(FluidStack fs, boolean simulate)
+	public int outputFluid(FluidStack fs, FluidAction action)
 	{
-		if(fs==null)
+		if(fs.isEmpty())
 			return 0;
 
-		int canAccept = fs.amount;
+		int canAccept = fs.getAmount();
 		if(canAccept <= 0)
 			return 0;
 
@@ -238,13 +237,10 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 				{
 					TileEntity tile = getWorld().getTileEntity(pos.offset(f));
 					IFluidHandler handler = output.get();
-					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.amount, true);
+					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
 					if(tile instanceof FluidPipeTileEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
-					{
-						insertResource.tag = new CompoundNBT();
-						insertResource.tag.putBoolean("pressurized", true);
-					}
-					int temp = handler.fill(insertResource, false);
+						insertResource.getOrCreateTag().putBoolean("pressurized", true);
+					int temp = handler.fill(insertResource, FluidAction.SIMULATE);
 					if(temp > 0)
 					{
 						sorting.put(new DirectionalFluidOutput(handler, tile, f), temp);
@@ -266,10 +262,9 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 				if(output.containingTile instanceof FluidPipeTileEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 				{
 					this.energyStorage.extractEnergy(accelPower, false);
-					insertResource.tag = new CompoundNBT();
-					insertResource.tag.putBoolean("pressurized", true);
+					insertResource.getOrCreateTag().putBoolean("pressurized", true);
 				}
-				int r = output.output.fill(insertResource, !simulate);
+				int r = output.output.fill(insertResource, action);
 				f += r;
 				canAccept -= r;
 				if(canAccept <= 0)
@@ -392,33 +387,52 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		}
 
 		@Override
-		public int fill(FluidStack resource, boolean doFill)
+		public int getTanks()
 		{
-			if(resource==null||pump.sideConfig[facing.ordinal()]!=0)
-				return 0;
-			return pump.tank.fill(resource, doFill);
+			return pump.tank.getTanks();
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack getFluidInTank(int tank)
+		{
+			return pump.tank.getFluidInTank(tank);
 		}
 
 		@Override
-		public FluidStack drain(FluidStack resource, boolean doDrain)
+		public int getTankCapacity(int tank)
 		{
-			if(resource==null)
-				return null;
-			return this.drain(resource.amount, doDrain);
+			return pump.tank.getTankCapacity(tank);
 		}
 
 		@Override
-		public FluidStack drain(int maxDrain, boolean doDrain)
+		public boolean isFluidValid(int tank, @Nonnull FluidStack stack)
 		{
 			if(pump.sideConfig[facing.ordinal()]!=1)
-				return null;
-			return pump.tank.drain(maxDrain, doDrain);
+				return false;
+			return pump.tank.isFluidValid(tank, stack);
 		}
 
 		@Override
-		public IFluidTankProperties[] getTankProperties()
+		public int fill(FluidStack resource, FluidAction action)
 		{
-			return pump.tank.getTankProperties();
+			if(resource.isEmpty()||pump.sideConfig[facing.ordinal()]!=0)
+				return 0;
+			return pump.tank.fill(resource, action);
+		}
+
+		@Override
+		public FluidStack drain(FluidStack resource, FluidAction action)
+		{
+			return this.drain(resource.getAmount(), action);
+		}
+
+		@Override
+		public FluidStack drain(int maxDrain, FluidAction action)
+		{
+			if(pump.sideConfig[facing.ordinal()]!=1)
+				return FluidStack.EMPTY;
+			return pump.tank.drain(maxDrain, action);
 		}
 	}
 

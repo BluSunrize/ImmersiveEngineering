@@ -37,6 +37,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -439,7 +440,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 					IFluidTank[] tanks = multiblock.getInternalTanks();
 					int[] outputTanks = multiblock.getOutputTanks();
 					for(FluidStack output : fluidOutputs)
-						if(output!=null&&output.amount > 0)
+						if(output!=null&&output.getAmount() > 0)
 						{
 							boolean canOutput = false;
 							if(tanks==null||outputTanks==null)
@@ -447,7 +448,8 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 							else
 							{
 								for(int iOutputTank : outputTanks)
-									if(iOutputTank >= 0&&iOutputTank < tanks.length&&tanks[iOutputTank]!=null&&tanks[iOutputTank].fill(output, false)==output.amount)
+									if(iOutputTank >= 0&&iOutputTank < tanks.length&&tanks[iOutputTank]!=null
+											&&tanks[iOutputTank].fill(output, FluidAction.SIMULATE)==output.getAmount())
 									{
 										canOutput = true;
 										break;
@@ -525,16 +527,17 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 				IFluidTank[] tanks = multiblock.getInternalTanks();
 				int[] outputTanks = multiblock.getOutputTanks();
 				for(FluidStack output : fluidOutputs)
-					if(output!=null&&output.amount > 0)
+					if(output!=null&&output.getAmount() > 0)
 					{
 						if(tanks==null||outputTanks==null)
 							multiblock.doProcessFluidOutput(output);
 						else
 						{
 							for(int iOutputTank : outputTanks)
-								if(iOutputTank >= 0&&iOutputTank < tanks.length&&tanks[iOutputTank]!=null&&tanks[iOutputTank].fill(output, false)==output.amount)
+								if(iOutputTank >= 0&&iOutputTank < tanks.length&&tanks[iOutputTank]!=null
+										&&tanks[iOutputTank].fill(output, FluidAction.SIMULATE)==output.getAmount())
 								{
-									tanks[iOutputTank].fill(output, true);
+									tanks[iOutputTank].fill(output, FluidAction.EXECUTE);
 									break;
 								}
 						}
@@ -656,24 +659,23 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			List<FluidStack> fluidInputList = this.getRecipeFluidInputs(multiblock);
 			if(tanks!=null&&this.inputTanks!=null&&fluidInputList!=null)
 			{
-				Iterator<FluidStack> iterator = new ArrayList<>(fluidInputList).iterator();
-				while(iterator.hasNext())
+				for(FluidStack ingr : new ArrayList<>(fluidInputList))
 				{
-					FluidStack ingr = iterator.next();
-					int ingrSize = ingr.amount;
+					int ingrSize = ingr.getAmount();
 					for(int tank : this.inputTanks)
 						if(tanks[tank]!=null)
 						{
-							if(tanks[tank] instanceof IFluidHandler&&((IFluidHandler)tanks[tank]).drain(ingr, false)!=null)
+							if(tanks[tank] instanceof IFluidHandler&&
+									!((IFluidHandler)tanks[tank]).drain(ingr, FluidAction.SIMULATE).isEmpty())
 							{
-								FluidStack taken = ((IFluidHandler)tanks[tank]).drain(ingr, true);
-								if((ingrSize -= taken.amount) <= 0)
+								FluidStack taken = ((IFluidHandler)tanks[tank]).drain(ingr, FluidAction.EXECUTE);
+								if((ingrSize -= taken.getAmount()) <= 0)
 									break;
 							}
-							else if(tanks[tank].getFluid()!=null&&tanks[tank].getFluid().isFluidEqual(ingr))
+							else if(!tanks[tank].getFluid().isEmpty()&&tanks[tank].getFluid().isFluidEqual(ingr))
 							{
 								int taken = Math.min(tanks[tank].getFluidAmount(), ingrSize);
-								tanks[tank].drain(taken, true);
+								tanks[tank].drain(taken, FluidAction.EXECUTE);
 								if((ingrSize -= taken) <= 0)
 									break;
 							}

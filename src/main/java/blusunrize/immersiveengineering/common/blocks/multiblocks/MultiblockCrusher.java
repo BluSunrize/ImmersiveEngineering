@@ -80,7 +80,7 @@ public class MultiblockCrusher extends TemplateMultiblock
 			CrusherTileEntity tile = (CrusherTileEntity)curr;
 			tile.formed = true;
 			tile.posInMultiblock =
-					tile.offsetToMaster = offsetFromMaster;
+					tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.mirrored = mirrored;
 			tile.markDirty();
 			world.addBlockEvent(actualPos, crusherState.getBlock(), 255, 0);

@@ -41,8 +41,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -284,7 +285,8 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			if(recipeQuery!=null&&recipeQuery.query!=null)
 			{
 				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query:
-						(recipeQuery.query instanceof IngredientStack&&((IngredientStack)recipeQuery.query).fluid!=null)?((IngredientStack)recipeQuery.query).fluid: null;
+						(recipeQuery.query instanceof IngredientStack
+								&&((IngredientStack)recipeQuery.query).fluid!=null)?((IngredientStack)recipeQuery.query).fluid: null;
 				int querySize = recipeQuery.querySize;
 				if(fs!=null)
 				{
@@ -294,7 +296,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 						{
 							hasFluid = true;
 							if(doConsume)
-								tank.drain(fs.amount, true);
+								tank.drain(fs.getAmount(), FluidAction.EXECUTE);
 							break;
 						}
 					if(hasFluid)
@@ -392,7 +394,9 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	@Override
 	public Set<BlockPos> getEnergyPos()
 	{
-		return new int[]{22};
+		return ImmutableSet.of(
+				new BlockPos(1, 2, 1)
+		);
 	}
 
 	@Override

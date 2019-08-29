@@ -30,9 +30,10 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.Set;
 
@@ -59,7 +60,7 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 			FluidStack fs = master!=null?master.tank.getFluid(): this.tank.getFluid();
 			String s = null;
 			if(fs!=null)
-				s = fs.getLocalizedName()+": "+fs.amount+"mB";
+				s = fs.getDisplayName().getFormattedText()+": "+fs.getAmount()+"mB";
 			else
 				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};
@@ -86,11 +87,11 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 					BlockPos outputPos = getPos().offset(f);
 					FluidUtil.getFluidHandler(world, outputPos, f.getOpposite()).ifPresent(output ->
 					{
-						int accepted = output.fill(out, false);
+						int accepted = output.fill(out, FluidAction.SIMULATE);
 						if(accepted > 0)
 						{
-							int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
-							this.tank.drain(drained, true);
+							int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+							this.tank.drain(drained, FluidAction.EXECUTE);
 							this.markContainingBlockForUpdate(null);
 							updateComparatorValuesPart2();
 						}

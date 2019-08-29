@@ -32,8 +32,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelterTileEntity> implements IIEInventory,
 		IActiveState, IInteractionObjectIE, IProcessTile

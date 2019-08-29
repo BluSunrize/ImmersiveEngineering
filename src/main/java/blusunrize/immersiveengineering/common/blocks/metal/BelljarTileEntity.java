@@ -55,10 +55,11 @@ import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -89,7 +90,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		}
 
 		@Override
-		public boolean canFillFluidType(FluidStack fluid)
+		public boolean isFluidValid(FluidStack stack)
 		{
 			return BelljarHandler.getFluidFertilizerHandler(fluid)!=null;
 		}
@@ -226,7 +227,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 					if(fluidFert!=null)
 					{
 						fertilizerMod = fluidFert.getGrowthMultiplier(tank.getFluid(), seed, soil, this);
-						tank.drain(fluidConsumption, true);
+						tank.drain(fluidConsumption, FluidAction.EXECUTE);
 						ItemStack fertilizer = inventory.get(SLOT_FERTILIZER);
 						if(!fertilizer.isEmpty())
 						{
@@ -557,7 +558,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 			}
 		}
 		if(rl==null&&!soil.isEmpty()&&Utils.isFluidRelatedItemStack(soil))
-			rl = FluidUtil.getFluidContained(soil).map(fs -> fs.getFluid().getStill(fs)).orElse(rl);
+			rl = FluidUtil.getFluidContained(soil).map(fs -> fs.getFluid().getAttributes().getStill(fs)).orElse(rl);
 		return rl;
 	}
 

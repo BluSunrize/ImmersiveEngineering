@@ -46,7 +46,7 @@ public class HarvestcraftHelper extends IECompatModule
 			if(!(o instanceof OreIngredient))
 				return null;
 			if(((OreIngredient)o).apply(waterBucket))
-				return new RecipeQuery(new FluidStack(FluidRegistry.WATER, 1000), 1000);
+				return new RecipeQuery(new FluidStack(Fluids.WATER, 1000), 1000);
 			return null;
 		});
 		final Fluid milk = FluidRegistry.getFluid("milk");

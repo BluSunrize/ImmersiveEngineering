@@ -22,9 +22,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,14 +80,14 @@ public class TurretChemTileEntity extends TurretTileEntity
 		{
 			int consumed = IEConfig.TOOLS.chemthrower_consumption.get();
 			int energy = IEConfig.MACHINES.turret_chem_consumption.get();
-			if(consumed <= fs.amount&&this.energyStorage.extractEnergy(energy, true) >= energy)
+			if(consumed <= fs.getAmount()&&this.energyStorage.extractEnergy(energy, true) >= energy)
 			{
-				tank.drain(consumed, true);
+				tank.drain(consumed, FluidAction.EXECUTE);
 				this.energyStorage.extractEnergy(energy, false);
 				Vec3d v = getGunToTargetVec(target).normalize();
 
 				int split = 8;
-				boolean isGas = fs.getFluid().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
+				boolean isGas = fs.getFluid().getAttributes().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
 
 				float scatter = isGas?.15f: .05f;
 				float range = isGas?.5f: 1f;

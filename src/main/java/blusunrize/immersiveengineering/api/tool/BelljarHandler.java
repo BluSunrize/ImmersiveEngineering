@@ -23,7 +23,6 @@ import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -417,7 +416,7 @@ public class BelljarHandler
 			@Override
 			public boolean isValid(@Nullable FluidStack fertilizer)
 			{
-				return fertilizer!=null&&fertilizer.getFluid()==FluidRegistry.WATER;
+				return fertilizer!=null&&fertilizer.getFluid()==Fluids.WATER;
 			}
 
 			@Override

@@ -12,15 +12,14 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -73,24 +72,10 @@ public class MixerRecipePotion extends MixerRecipe
 	public static FluidStack getFluidStackForType(Potion type, int amount)
 	{
 		if(type==Potions.WATER||type==null)
-			return new FluidStack(FluidRegistry.WATER, amount);
+			return new FluidStack(Fluids.WATER, amount);
 		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
-		stack.tag = new CompoundNBT();
-		stack.tag.putString("Potion", type.getRegistryName().toString());
+		stack.getOrCreateTag().putString("Potion", type.getRegistryName().toString());
 		return stack;
-	}
-
-	@Override
-	public FluidStack getFluidOutput(FluidStack input, NonNullList<ItemStack> components)
-	{
-//		if(components.size()!=1)
-//			return input;
-//		if(input!=null)
-//			for(PotionHelper.MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
-//				if(mixPredicate.input==this.inputPotionType&&mixPredicate.reagent.apply(components.get(0)))
-//					return getFluidStackForType(mixPredicate.output, input.amount);
-//		return input;
-		return super.getFluidOutput(input, components);
 	}
 
 	@Override

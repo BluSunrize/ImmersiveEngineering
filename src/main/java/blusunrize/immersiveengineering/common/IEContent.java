@@ -35,7 +35,7 @@ import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
@@ -65,6 +65,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -93,7 +94,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
@@ -605,9 +605,9 @@ public class IEContent
 
 		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel, 16), new FluidStack(fluidPlantoil, 8), new FluidStack(fluidEthanol, 8), 80);
 
-		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(FluidRegistry.WATER, 500), new Object[]{"sand", "sand", Items.CLAY_BALL, "gravel"}, 3200);
+		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(Fluids.WATER, 500), new Object[]{"sand", "sand", Items.CLAY_BALL, "gravel"}, 3200);
 
-		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE, 1, 1), new ItemStack(Blocks.SPONGE, 1, 0), new FluidStack(FluidRegistry.WATER, 1000));
+		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE, 1, 1), new ItemStack(Blocks.SPONGE, 1, 0), new FluidStack(Fluids.WATER, 1000));
 
 		IECompatModule.doModulesRecipes();
 
@@ -824,7 +824,7 @@ public class IEContent
 		blockFluidBiodiesel.setPotionEffects(new EffectInstance(IEPotions.flammable, 100, 1));
 		blockFluidConcrete.setPotionEffects(new EffectInstance(Effects.SLOWNESS, 20, 3, false, false));
 
-		ChemthrowerHandler.registerEffect(FluidRegistry.WATER, new ChemthrowerEffect_Extinguish());
+		ChemthrowerHandler.registerEffect(Fluids.WATER, new ChemthrowerEffect_Extinguish());
 
 		ChemthrowerHandler.registerEffect(fluidPotion, new ChemthrowerEffect()
 		{

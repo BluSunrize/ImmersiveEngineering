@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -222,9 +223,9 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public List<ItemStack> getTileDrops(Builder context)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(), 1);
+		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		writeCustomNBT(stack.getOrCreateTag(), false);
-		return stack;
+		return ImmutableList.of(stack);
 	}
 
 	@Override

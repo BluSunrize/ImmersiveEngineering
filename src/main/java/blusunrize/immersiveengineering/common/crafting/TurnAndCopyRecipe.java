@@ -22,6 +22,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import javax.annotation.Nonnull;
@@ -116,7 +117,7 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 					handlerLazy.ifPresent(handler ->
 					{
 						FluidStack fluid = ((IngredientFluidStack)matchedIngr.get(i)).getFluid();
-						handler.drain(fluid.amount, true);
+						handler.drain(fluid.getAmount(), FluidAction.EXECUTE);
 						remains.set(transposedI, handler.getContainer().copy());
 					});
 					if(!handlerLazy.isPresent())

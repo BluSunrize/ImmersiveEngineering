@@ -208,6 +208,22 @@ public class ApiUtils
 		return isNonemptyBlockTag(name)||isNonemptyItemTag(name);
 	}
 
+	public static NonNullList<ItemStack> getItemsInTag(ResourceLocation name)
+	{
+		NonNullList<ItemStack> ret = NonNullList.create();
+		addItemsInTag(ret, ItemTags.getCollection().get(name));
+		addItemsInTag(ret, BlockTags.getCollection().get(name));
+		return ret;
+	}
+
+	private static <T extends IItemProvider> void addItemsInTag(NonNullList<ItemStack> out, Tag<T> in)
+	{
+		if(in!=null)
+			in.getAllElements().stream()
+					.map(ItemStack::new)
+					.forEach(out::add);
+	}
+
 	public static boolean isMetalComponent(ItemStack stack, String componentType)
 	{
 		return getMetalComponentType(stack, componentType)!=null;

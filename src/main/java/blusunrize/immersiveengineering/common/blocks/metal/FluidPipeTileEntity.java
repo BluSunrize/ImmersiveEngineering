@@ -43,9 +43,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -132,8 +130,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 										CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite());
 								handlerOptional.ifPresent(handler ->
 								{
-									IFluidTankProperties[] tankInfo = handler.getTankProperties();
-									if(tankInfo!=null&&tankInfo.length > 0)
+									if(handler.getTanks() > 0)
 										fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
 								});
 							}
@@ -347,19 +344,36 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		}
 
 		@Override
-		public IFluidTankProperties[] getTankProperties()
+		public int getTanks()
 		{
-			return new IFluidTankProperties[]{new FluidTankProperties(null, 1000, true, false)};
+			return 1;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack getFluidInTank(int tank)
+		{
+			return FluidStack.EMPTY;
 		}
 
 		@Override
-		public int fill(FluidStack resource, boolean doFill)
+		public int getTankCapacity(int tank)
 		{
-//		if(resource==null || from==null || sideConfig[from.ordinal()]!=0 || world.isRemote)
-//			return 0;
+			return 1000;
+		}
+
+		@Override
+		public boolean isFluidValid(int tank, @Nonnull FluidStack stack)
+		{
+			return tank==0;
+		}
+
+		@Override
+		public int fill(FluidStack resource, FluidAction doFill)
+		{
 			if(resource==null)
 				return 0;
-			int canAccept = resource.amount;
+			int canAccept = resource.getAmount();
 			if(canAccept <= 0)
 				return 0;
 			ArrayList<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
@@ -377,7 +391,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 				{
 					int limit = getTranferrableAmount(resource, output);
 					int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
-					int temp = output.output.fill(Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid, true), false);
+					int temp = output.output.fill(Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid, true), FluidAction.SIMULATE);
 					if(temp > 0)
 					{
 						sorting.put(output, temp);
@@ -391,13 +405,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 				for(DirectionalFluidOutput output : sorting.keySet())
 				{
 					int amount = sorting.get(output);
-					if(sum > resource.amount)
+					if(sum > resource.getAmount())
 					{
 						int limit = getTranferrableAmount(resource, output);
 						int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
 						float prio = amount/(float)sum;
 						amount = (int)Math.ceil(MathHelper.clamp(amount, 1,
-								Math.min(resource.amount*prio, tileSpecificAcceptedFluid)));
+								Math.min(resource.getAmount()*prio, tileSpecificAcceptedFluid)));
 						amount = Math.min(amount, canAccept);
 					}
 					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
@@ -415,23 +429,23 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 		private int getTranferrableAmount(FluidStack resource, DirectionalFluidOutput output)
 		{
-			return (resource.tag!=null&&resource.tag.contains("pressurized"))||
+			return (resource.getOrCreateTag().contains("pressurized"))||
 					pipe.canOutputPressurized(output.containingTile, false)
 					?1000: 50;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
-		public FluidStack drain(FluidStack resource, boolean doDrain)
+		public FluidStack drain(FluidStack resource, FluidAction doDrain)
 		{
-			return null;
+			return FluidStack.EMPTY;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
-		public FluidStack drain(int maxDrain, boolean doDrain)
+		public FluidStack drain(int maxDrain, FluidAction doDrain)
 		{
-			return null;
+			return FluidStack.EMPTY;
 		}
 	}
 
@@ -451,20 +465,15 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public boolean updateConnectionByte(Direction dir)
 	{
-		IFluidTankProperties[] tankInfo;
 		final byte oldConn = connections;
 		int i = dir.getIndex();
 		int mask = 1<<i;
 		connections &= ~mask;
 		if(sideConfig[i]==0&&neighbors.get(dir).isPresent())
 		{
-			IFluidHandler handler = neighbors.get(dir).getNullable();
-			if(handler!=null)
-			{
-				tankInfo = handler.getTankProperties();
-				if(tankInfo!=null&&tankInfo.length > 0)
-					connections |= mask;
-			}
+			IFluidHandler handler = neighbors.get(dir).get();
+			if(handler.getTanks() > 0)
+				connections |= mask;
 		}
 		return oldConn!=connections;
 	}
@@ -472,20 +481,15 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	public byte getAvailableConnectionByte()
 	{
 		byte connections = 0;
-		IFluidTankProperties[] tankInfo;
 		int mask = 1<<6;
 		for(Direction dir : Direction.VALUES)
 		{
 			mask >>= 1;
 			if(neighbors.get(dir).isPresent())
 			{
-				IFluidHandler handler = neighbors.get(dir).getNullable();
-				if(handler!=null)
-				{
-					tankInfo = handler.getTankProperties();
-					if(tankInfo!=null&&tankInfo.length > 0)
-						connections |= mask;
-				}
+				IFluidHandler handler = neighbors.get(dir).get();
+				if(handler.getTanks() > 0)
+					connections |= mask;
 			}
 		}
 		return connections;

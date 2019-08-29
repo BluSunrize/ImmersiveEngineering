@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import javax.annotation.Nonnull;
@@ -56,9 +57,9 @@ public class JerrycanRecipe implements ICraftingRecipe
 		{
 			IFluidHandler handler = FluidUtil.getFluidHandler(container)
 					.orElseThrow(RuntimeException::new);
-			FluidStack fs = handler.drain(Integer.MAX_VALUE, false);
-			return fs==null||(fs.amount < handler.getTankProperties()[0].getCapacity()
-					&&fs.isFluidEqual(FluidUtil.getFluidContained(jerrycan).orElseThrow(RuntimeException::new)));
+			FluidStack fs = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+			return fs.getAmount() < handler.getTankCapacity(0)&&
+					fs.isFluidEqual(FluidUtil.getFluidContained(jerrycan).orElseThrow(RuntimeException::new));
 		}
 		return false;
 	}
@@ -82,10 +83,10 @@ public class JerrycanRecipe implements ICraftingRecipe
 		{
 			ItemStack newContainer = Utils.copyStackWithAmount(container, 1);
 			IFluidHandlerItem handler = FluidUtil.getFluidHandler(newContainer).orElseThrow(RuntimeException::new);
-			int accepted = handler.fill(fs, false);
+			int accepted = handler.fill(fs, FluidAction.SIMULATE);
 			if(accepted > 0)
 			{
-				handler.fill(fs, true);
+				handler.fill(fs, FluidAction.EXECUTE);
 				newContainer = handler.getContainer();// Because buckets are silly
 //				FluidUtil.getFluidHandler(jerrycan).drain(accepted,true);
 				ItemNBTHelper.putInt(jerrycan, "jerrycanDrain", accepted);

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -212,10 +213,10 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	@Override
 	public List<ItemStack> getTileDrops(Builder context)
 	{
-		ItemStack stack = new ItemStack(state.getBlock(), 1);
+		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		if(colour!=0xffffff)
 			ItemNBTHelper.putInt(stack, "colour", colour);
-		return stack;
+		return ImmutableList.of(stack);
 	}
 
 	@Override

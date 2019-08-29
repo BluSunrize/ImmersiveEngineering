@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.energy;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.fluid.Fluid;
 
 import java.util.HashMap;
 import java.util.HashSet;

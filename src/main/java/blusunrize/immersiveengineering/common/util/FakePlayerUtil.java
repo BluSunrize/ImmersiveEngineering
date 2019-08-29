@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.util;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.world.WorldEvent;

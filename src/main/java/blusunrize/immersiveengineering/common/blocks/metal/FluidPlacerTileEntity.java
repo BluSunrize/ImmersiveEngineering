@@ -15,21 +15,23 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,72 +64,28 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 		{
 			if(tickCount%512==0)//Initial placement
 				prepareAreaCheck();
-			if(tank.getFluidAmount() >= Fluid.BUCKET_VOLUME&&tank.getFluid().getFluid().getBlock()!=null&&!layeredPlacementQueue.isEmpty())
+			if(tank.getFluidAmount() >= FluidAttributes.BUCKET_VOLUME&&
+					!layeredPlacementQueue.isEmpty())
 			{
 				Queue<BlockPos> lowestLayer = layeredPlacementQueue.firstEntry().getValue();
 				if(lowestLayer==null||lowestLayer.isEmpty())
 					layeredPlacementQueue.pollFirstEntry();
 				else
 				{
-					BlockPos targetPos = lowestLayer.poll();
+					BlockPos targetPos = lowestLayer.peek();
 					BlockState state = world.getBlockState(targetPos);
-					if((state.getBlock().isAir(state, world, targetPos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(targetPos, state))
-						if(tryPlaceFluid(null, world, tank.getFluid(), targetPos))
+					if(((state.getBlock().isAir(state, world, targetPos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(targetPos, state))
+							&&tank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, targetPos, tank.getFluid()))
+						if(FluidUtil.tryPlaceFluid(null, world, Hand.MAIN_HAND, targetPos, tank, tank.getFluid()))
 						{
-							tank.drain(Fluid.BUCKET_VOLUME, true);
 							addConnectedSpaces(targetPos);
 							handleTempFluids();
+							lowestLayer.poll();
 						}
 				}
 			}
 		}
 		tickCount++;
-	}
-
-	//FIXME: Blatantly stolen from Forge. I'm going to do a PR to return this method back to forge, but for now...
-	//Forge changed this method to require an ItemStack which isn't appropriate here.
-	//Mezz reported he was doing further work in this space for us, we should be able to remove this soon.
-	public static boolean tryPlaceFluid(@Nullable PlayerEntity player, World worldIn, FluidStack fluidStack, BlockPos pos)
-	{
-		if(worldIn==null||fluidStack==null||pos==null)
-		{
-			return false;
-		}
-
-		Fluid fluid = fluidStack.getFluid();
-		if(fluid==null||!fluid.canBePlacedInWorld())
-		{
-			return false;
-		}
-
-		// check that we can place the fluid at the destination
-		BlockState destBlockState = worldIn.getBlockState(pos);
-		Material destMaterial = destBlockState.getMaterial();
-		boolean isDestNonSolid = !destMaterial.isSolid();
-		boolean isDestReplaceable = destBlockState.getBlock().isReplaceable(worldIn, pos);
-		if(!worldIn.isAirBlock(pos)&&!isDestNonSolid&&!isDestReplaceable)
-		{
-			return false; // Non-air, solid, unreplacable block. We can't put fluid here.
-		}
-
-		if(worldIn.getDimension().doesWaterVaporize()&&fluid.doesVaporize(fluidStack))
-		{
-			fluid.vaporize(player, worldIn, pos, fluidStack);
-		}
-		else
-		{
-			if(!worldIn.isRemote&&(isDestNonSolid||isDestReplaceable)&&!destMaterial.isLiquid())
-			{
-				worldIn.destroyBlock(pos, true);
-			}
-
-			SoundEvent soundevent = fluid.getEmptySound(fluidStack);
-			worldIn.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
-
-			BlockState fluidBlockState = fluid.getBlock().getDefaultState();
-			worldIn.setBlockState(pos, fluidBlockState, 11);
-		}
-		return true;
 	}
 
 	private void prepareAreaCheck()
@@ -166,7 +124,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 					if(world.isBlockLoaded(pos))
 					{
 						BlockState state = world.getBlockState(pos);
-						if(tank.getFluid()!=null&&tank.getFluid().getFluid()==FluidRegistry.lookupFluidForBlock(state.getBlock()))
+						if(tank.getFluid().getFluid()==state.getFluidState().getFluid())
 							tempFluids.add(pos);
 						if((state.getBlock().isAir(state, world, pos)||!state.getMaterial().isSolid())&&!isFullFluidBlock(pos, state))
 							getQueueForYLevel(pos.getY()).add(pos);
@@ -183,18 +141,14 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	private boolean isFullFluidBlock(BlockPos pos, BlockState state)
 	{
-		if(state.getBlock() instanceof IFluidBlock)
-			return Math.abs(((IFluidBlock)state.getBlock()).getFilledPercentage(world, pos))==1;
-		else if(state.getBlock() instanceof BlockLiquid)
-			return state.getBlock().getMetaFromState(state)==0;
-		return false;
+		return state.getFluidState().isSource();
 	}
 
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		sideConfig = nbt.getIntArray("sideConfig");
-		if(sideConfig==null||sideConfig.length!=6)
+		if(sideConfig.length!=6)
 			sideConfig = new int[]{1, 0, 1, 1, 1, 1};
 		tank.readFromNBT(nbt.getCompound("tank"));
 		if(descPacket)
@@ -211,46 +165,41 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public SideConfig getSideConfig(Direction side)
 	{
-		return SideConfig.values()[this.sideConfig[side]+1];
+		return SideConfig.values()[this.sideConfig[side.ordinal()]+1];
 	}
 
 	@Override
 	public boolean toggleSide(Direction side, PlayerEntity p)
 	{
-		sideConfig[side]++;
-		if(sideConfig[side] > 1)
-			sideConfig[side] = -1;
+		sideConfig[side.ordinal()]++;
+		if(sideConfig[side.ordinal()] > 1)
+			sideConfig[side.ordinal()] = -1;
 		prepareAreaCheck();
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockState(), 0, 0);
+		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
 		return true;
 	}
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable Direction facing)
-	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||sideConfig[facing.ordinal()]==0))
-			return true;
-		return super.hasCapability(capability, facing);
-	}
+	private LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
 
 	@Nonnull
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||sideConfig[facing.ordinal()]==0))
-			return (T)tank;
+			return tankCap.cast();
 		return super.getCapability(capability, facing);
 	}
 
 	@Override
-	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public String[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
 	{
-		if(hammer&&IEConfig.colourblindSupport)
+		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&rtr instanceof BlockRayTraceResult)
 		{
-			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
-			int j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
+			BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
+			int i = sideConfig[Math.min(sideConfig.length-1, brtr.getFace().ordinal())];
+			int j = sideConfig[Math.min(sideConfig.length-1, brtr.getFace().getOpposite().ordinal())];
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
 							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i),

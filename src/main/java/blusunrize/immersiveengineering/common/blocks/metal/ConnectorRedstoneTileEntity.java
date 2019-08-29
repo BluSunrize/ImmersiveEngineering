@@ -247,7 +247,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public int getRenderColour(BlockState object, String group)
 	{
 		if("coloured".equals(group))
-			return 0xff000000|redstoneChannel.func_196057_c();
+			return 0xff000000|redstoneChannel.colorValue;
 		return 0xffffffff;
 	}
 

@@ -24,9 +24,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,7 +61,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 			neighborCaps.put(f, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, f));
 	}
 
-	public int routeFluid(Direction inputSide, FluidStack stack, boolean doFill)
+	public int routeFluid(Direction inputSide, FluidStack stack, FluidAction doFill)
 	{
 		int ret = 0;
 		if(!world.isRemote&&canRoute())
@@ -91,11 +90,11 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 		return first;
 	}
 
-	private int doInsert(FluidStack stack, Direction[] sides, boolean doFill)
+	private int doInsert(FluidStack stack, Direction[] sides, FluidAction doFill)
 	{
 		int ret = 0;
 		int lengthFiltered = sides.length;
-		while(lengthFiltered > 0&&stack.amount>0)
+		while(lengthFiltered > 0&&stack.getAmount() > 0)
 		{
 			int rand = Utils.RAND.nextInt(lengthFiltered);
 			Direction currentSide = sides[rand];
@@ -104,7 +103,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 			if(fluidOut!=null)
 			{
 				int filledHere = fluidOut.fill(stack, doFill);
-				stack.amount -= filledHere;
+				stack.shrink(filledHere);
 				ret += filledHere;
 			}
 			sides[rand] = sides[lengthFiltered-1];
@@ -253,29 +252,48 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 		}
 
 		@Override
-		public int fill(FluidStack resource, boolean doFill)
+		public int fill(FluidStack resource, FluidAction action)
 		{
 			if(resource==null)
 				return 0;
-			return tile.routeFluid(facing, resource, doFill);
+			return tile.routeFluid(facing, resource, action);
 		}
 
 		@Override
-		public FluidStack drain(FluidStack resource, boolean doDrain)
+		public FluidStack drain(FluidStack resource, FluidAction doDrain)
 		{
-			return null;
+			return FluidStack.EMPTY;
 		}
 
 		@Override
-		public FluidStack drain(int maxDrain, boolean doDrain)
+		public FluidStack drain(int maxDrain, FluidAction doDrain)
 		{
-			return null;
+			return FluidStack.EMPTY;
 		}
 
 		@Override
-		public IFluidTankProperties[] getTankProperties()
+		public int getTanks()
 		{
-			return new IFluidTankProperties[]{new FluidTankProperties(null, 0)};
+			return 1;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack getFluidInTank(int tank)
+		{
+			return FluidStack.EMPTY;
+		}
+
+		@Override
+		public int getTankCapacity(int tank)
+		{
+			return 1000;
+		}
+
+		@Override
+		public boolean isFluidValid(int tank, @Nonnull FluidStack stack)
+		{
+			return true;
 		}
 	}
 }

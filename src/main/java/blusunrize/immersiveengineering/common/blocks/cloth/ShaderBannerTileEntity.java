@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.BannerTileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -93,8 +94,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 	@Override
 	public List<ItemStack> getTileDrops(Builder context)
 	{
-		//TODO drop white banner elsewhere
-		return this.shader.getShaderItem();
+		return ImmutableList.of(new ItemStack(Items.WHITE_BANNER, 1), this.shader.getShaderItem());
 	}
 
 	@Override

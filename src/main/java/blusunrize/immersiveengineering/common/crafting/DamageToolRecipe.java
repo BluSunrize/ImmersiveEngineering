@@ -16,7 +16,6 @@ import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.UniversalBucket;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -57,12 +56,6 @@ public class DamageToolRecipe extends ShapelessRecipe
 				if(tool.getDamage() > tool.getMaxDamage())
 					tool = ItemStack.EMPTY;
 				remains.set(i, tool);
-			}
-			if(!s.isEmpty()&&remain.isEmpty()&&s.getItem() instanceof UniversalBucket)
-			{
-				ItemStack empty = ((UniversalBucket)s.getItem()).getEmpty();
-				if(!empty.isEmpty())
-					remains.set(i, empty.copy());
 			}
 		}
 		return remains;

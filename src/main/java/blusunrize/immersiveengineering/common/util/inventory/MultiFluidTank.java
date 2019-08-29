@@ -13,11 +13,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -66,12 +65,12 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		return fluids.size();
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public FluidStack getFluid()
 	{
 		//grabbing the last fluid, for output reasons
-		return fluids.size() > 0?fluids.get(fluids.size()-1): null;
+		return fluids.size() > 0?fluids.get(fluids.size()-1): FluidStack.EMPTY;
 	}
 
 	@Override
@@ -79,7 +78,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 	{
 		int sum = 0;
 		for(FluidStack fs : fluids)
-			sum += fs.amount;
+			sum += fs.getAmount();
 		return sum;
 	}
 
@@ -90,32 +89,51 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 	}
 
 	@Override
-	public FluidTankInfo getInfo()
+	public boolean isFluidValid(FluidStack stack)
 	{
-		FluidStack fs = getFluid();
-		int capacity = this.capacity-getFluidAmount();
-		if(fs!=null)
-			capacity += fs.amount;
-		return new FluidTankInfo(fs, capacity);
+		return true;
 	}
 
 	@Override
-	public IFluidTankProperties[] getTankProperties()
+	public int getTanks()
 	{
-		return new IFluidTankProperties[0];
+		return fluids.size()+1;
+	}
+
+	@Nonnull
+	@Override
+	public FluidStack getFluidInTank(int tank)
+	{
+		if(tank < fluids.size())
+			return fluids.get(tank);
+		return FluidStack.EMPTY;
 	}
 
 	@Override
-	public int fill(FluidStack resource, boolean doFill)
+	public int getTankCapacity(int tank)
+	{
+		if(tank < fluids.size())
+			return fluids.get(tank).getAmount();
+		return this.capacity-getFluidAmount();
+	}
+
+	@Override
+	public boolean isFluidValid(int tank, @Nonnull FluidStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public int fill(FluidStack resource, FluidAction action)
 	{
 		int space = this.capacity-getFluidAmount();
-		int toFill = Math.min(resource.amount, space);
-		if(!doFill)
+		int toFill = Math.min(resource.getAmount(), space);
+		if(action.simulate())
 			return toFill;
 		for(FluidStack fs : this.fluids)
 			if(fs.isFluidEqual(resource))
 			{
-				fs.amount += toFill;
+				fs.grow(toFill);
 				return toFill;
 			}
 		this.fluids.add(Utils.copyFluidStackWithAmount(resource, toFill, true));
@@ -123,38 +141,38 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain)
+	public FluidStack drain(FluidStack resource, FluidAction action)
 	{
 		if(this.fluids.isEmpty())
-			return null;
+			return FluidStack.EMPTY;
 		Iterator<FluidStack> it = this.fluids.iterator();
 		while(it.hasNext())
 		{
 			FluidStack fs = it.next();
 			if(fs.isFluidEqual(resource))
 			{
-				int amount = Math.min(resource.amount, fs.amount);
-				if(doDrain)
+				int amount = Math.min(resource.getAmount(), fs.getAmount());
+				if(action.execute())
 				{
-					fs.amount -= amount;
-					if(fs.amount <= 0)
+					fs.shrink(amount);
+					if(fs.getAmount() <= 0)
 						it.remove();
 				}
 				return Utils.copyFluidStackWithAmount(resource, amount, true);
 			}
 		}
-		return null;
+		return FluidStack.EMPTY;
 	}
 
-	public static FluidStack drain(int remove, FluidStack removeFrom, Iterator<FluidStack> removeIt, boolean doDrain)
+	public static FluidStack drain(int remove, FluidStack removeFrom, Iterator<FluidStack> removeIt, FluidAction action)
 	{
-		int amount = Math.min(remove, removeFrom.amount);
-		if(doDrain)
+		int amount = Math.min(remove, removeFrom.getAmount());
+		if(action.execute())
 		{
-			removeFrom.amount -= amount;
-			if(removeFrom.amount <= 0)
+			removeFrom.shrink(amount);
+			if(removeFrom.isEmpty())
 				removeIt.remove();
 		}
 		return Utils.copyFluidStackWithAmount(removeFrom, amount, true);
@@ -162,7 +180,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 
 	@Nullable
 	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain)
+	public FluidStack drain(int maxDrain, FluidAction doDrain)
 	{
 		if(this.fluids.isEmpty())
 			return null;

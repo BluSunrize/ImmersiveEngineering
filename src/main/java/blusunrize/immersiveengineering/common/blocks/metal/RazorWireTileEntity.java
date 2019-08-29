@@ -17,8 +17,8 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -108,8 +108,8 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	{
 		if(entity instanceof LivingEntity)
 		{
-			entity.motionX *= 0.2D;
-			entity.motionZ *= 0.2D;
+			Vec3d motion = entity.getMotion();
+			entity.setMotion(motion.getX()/5, motion.getY(), motion.getZ()/5);
 			applyDamage((LivingEntity)entity);
 		}
 	}
@@ -151,13 +151,13 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 		if(world.getTileEntity(neighbourPos) instanceof RazorWireTileEntity)
 			return false;
 		BlockState neighbour = world.getBlockState(neighbourPos);
-		return neighbour.getBlockFaceShape(world, neighbourPos, dir)!=BlockFaceShape.SOLID;
+		return !Block.doesSideFillSquare(neighbour.getShape(world, neighbourPos), dir);
 	}
 
 	private boolean isOnGround()
 	{
 		BlockPos down = getPos().down();
-		return world.getBlockState(down).getBlockFaceShape(world, down, Direction.UP)==BlockFaceShape.SOLID;
+		return Block.doesSideFillSquare(world.getBlockState(down).getShape(world, down), Direction.UP);
 	}
 
 	private boolean isStacked()

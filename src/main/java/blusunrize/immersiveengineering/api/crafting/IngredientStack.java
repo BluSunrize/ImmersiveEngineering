@@ -12,20 +12,23 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static net.minecraftforge.registries.ForgeRegistries.FLUIDS;
+
 public class IngredientStack
 {
 	public ItemStack stack = ItemStack.EMPTY;
 	public List<ItemStack> stackList;
 	public ResourceLocation tag;
+	public FluidStack fluid;
 	public int inputSize;
 	public boolean useNBT;
 
@@ -57,11 +60,17 @@ public class IngredientStack
 		this(stackList, 1);
 	}
 
+	public IngredientStack(FluidStack fluid)
+	{
+		this.fluid = fluid;
+	}
+
 	public IngredientStack(IngredientStack ingr)
 	{
 		this.stack = ingr.stack;
 		this.stackList = ingr.stackList;
 		this.tag = ingr.tag;
+		this.fluid = ingr.fluid;
 		this.inputSize = ingr.inputSize;
 		this.useNBT = ingr.useNBT;
 	}
@@ -121,14 +130,10 @@ public class IngredientStack
 		if(stackList!=null)
 			return stackList;
 		if(tag!=null)
-		{
-			List<ItemStack> ret = new ArrayList<>();
-			if(ItemTags.getCollection().getRegisteredTags().contains(tag))
-				ItemTags.getCollection().get(tag).getAllElements().stream().map(ItemStack::new).forEach(ret::add);
-			if(BlockTags.getCollection().getRegisteredTags().contains(tag))
-				BlockTags.getCollection().get(tag).getAllElements().stream().map(ItemStack::new).forEach(ret::add);
-			return ret;
-		}
+			return ApiUtils.getItemsInTag(tag);
+		//TODO
+		//if(fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
+		//	return Collections.singletonList(UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid()));
 		return Collections.singletonList(stack);
 	}
 
@@ -159,6 +164,12 @@ public class IngredientStack
 	{
 		if(input.isEmpty())
 			return false;
+		if(this.fluid!=null)
+		{
+			return FluidUtil.getFluidContained(input)
+					.map(fs -> fs.containsFluid(fluid))
+					.orElse(false);
+		}
 		if(this.tag!=null)
 			return ApiUtils.compareToOreName(input, tag)&&minSize <= input.getCount();
 		if(this.stackList!=null)
@@ -185,6 +196,8 @@ public class IngredientStack
 		if(!(object instanceof IngredientStack))
 			return false;
 		IngredientStack otherIngredient = (IngredientStack)object;
+		if(this.fluid!=null&&otherIngredient.fluid!=null)
+			return this.fluid.equals(otherIngredient.fluid);
 		if(this.tag!=null&&otherIngredient.tag!=null)
 			return this.tag.equals(otherIngredient.tag);
 		if(this.stackList!=null&&otherIngredient.stackList!=null)
@@ -209,7 +222,13 @@ public class IngredientStack
 
 	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		if(this.tag!=null)
+		if(this.fluid!=null)
+		{
+			nbt.putString("fluid", FLUIDS.getKey(fluid.getFluid()).toString());
+			nbt.putInt("fluidAmount", fluid.getAmount());
+			nbt.putInt("nbtType", 3);
+		}
+		else if(this.tag!=null)
 		{
 			nbt.putString("tag", tag.toString());
 			nbt.putInt("nbtType", 2);
@@ -220,11 +239,13 @@ public class IngredientStack
 			for(ItemStack stack : stackList)
 				if(!stack.isEmpty())
 					list.add(stack.write(new CompoundNBT()));
+			list.add(stack.write(new CompoundNBT()));
 			nbt.put("stackList", list);
 			nbt.putInt("nbtType", 1);
 		}
 		else
 		{
+			nbt.put("stack", stack.write(new CompoundNBT()));
 			nbt.put("stack", stack.write(new CompoundNBT()));
 			nbt.putInt("nbtType", 0);
 			nbt.putBoolean("useNBT", useNBT);
@@ -252,6 +273,9 @@ public class IngredientStack
 					return new IngredientStack(stackList, nbt.getInt("inputSize"));
 				case 2:
 					return new IngredientStack(new ResourceLocation(nbt.getString("tag")), nbt.getInt("inputSize"));
+				case 3:
+					FluidStack fs = new FluidStack(FLUIDS.getValue(new ResourceLocation(nbt.getString("fluid"))), nbt.getInt("fluidAmount"));
+					return new IngredientStack(fs);
 			}
 		return null;
 	}

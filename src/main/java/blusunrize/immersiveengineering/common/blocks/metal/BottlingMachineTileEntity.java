@@ -35,8 +35,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -425,10 +426,10 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 						BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(items.get(0), fs);
 						if(recipe!=null)
 						{
-							if(tile.tanks[0].drainInternal(recipe.fluidInput, false).amount==recipe.fluidInput.amount)
+							if(tile.tanks[0].drain(recipe.fluidInput, FluidAction.SIMULATE).getAmount()==recipe.fluidInput.getAmount())
 							{
 								items.set(1, recipe.getActualItemOutputs(tile).get(0));
-								tile.tanks[0].drainInternal(recipe.fluidInput, true);
+								tile.tanks[0].drain(recipe.fluidInput, FluidAction.EXECUTE);
 							}
 						}
 						else

@@ -40,9 +40,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -171,12 +172,13 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 						FluidStack inTank = this.tank.getFluid();
 						if(inTank!=null)
 						{
-							FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.amount, 80), false);
-							int accepted = output.fill(out, false);
+							FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.getAmount(), 80), false);
+							int accepted = output.fill(out, FluidAction.SIMULATE);
 							if(accepted > 0)
 							{
-								int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
-								this.tank.drain(drained, true);
+								int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false),
+										FluidAction.EXECUTE);
+								this.tank.drain(drained, FluidAction.EXECUTE);
 								ret = true;
 							}
 						}
@@ -190,12 +192,12 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 							FluidStack fs = it.next();
 							if(fs!=null)
 							{
-								FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.amount, 80-totalOut), false);
-								int accepted = output.fill(out, false);
+								FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.getAmount(), 80-totalOut), false);
+								int accepted = output.fill(out, FluidAction.SIMULATE);
 								if(accepted > 0)
 								{
-									int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
-									MultiFluidTank.drain(drained, fs, it, true);
+									int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+									MultiFluidTank.drain(drained, fs, it, FluidAction.EXECUTE);
 									totalOut += drained;
 									ret = true;
 								}
@@ -564,7 +566,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 			MixerTileEntity mixer = (MixerTileEntity)multiblock;
 			// we don't need to check filling since after draining 1 mB of input fluid there will be space for 1 mB of output fluid
 			return mixer.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick&&
-					mixer.tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), false)!=null;
+					!mixer.tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), FluidAction.SIMULATE).isEmpty();
 		}
 
 		@Override
@@ -583,16 +585,16 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 						amount++;
 					}
 				}
-				FluidStack drained = ((MixerTileEntity)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, amount, false), true);
-				if(drained!=null)
+				FluidStack drained = ((MixerTileEntity)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, amount, false), FluidAction.SIMULATE);
+				if(!drained.isEmpty())
 				{
 					NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
 					for(int i = 0; i < components.size(); i++)
 						components.set(i, multiblock.getInventory().get(this.inputSlots[i]));
 					FluidStack output = this.recipe.getFluidOutput(drained, components);
 
-					FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.amount, false);
-					((MixerTileEntity)multiblock).tank.fill(fs, true);
+					FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.getAmount(), false);
+					((MixerTileEntity)multiblock).tank.fill(fs, FluidAction.EXECUTE);
 				}
 			}
 			super.doProcessTick(multiblock);

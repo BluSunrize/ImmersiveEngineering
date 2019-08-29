@@ -37,6 +37,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
@@ -62,8 +63,8 @@ import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
@@ -71,7 +72,10 @@ import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -649,8 +653,7 @@ public class Utils
 
 	public static Fluid getRelatedFluid(World w, BlockPos pos)
 	{
-		Block b = w.getBlockState(pos).getBlock();
-		return FluidRegistry.lookupFluidForBlock(b);
+		return w.getBlockState(pos).getFluidState().getFluid();
 	}
 
 	public static boolean placeFluidBlock(World world, BlockPos pos, FluidStack fluid)

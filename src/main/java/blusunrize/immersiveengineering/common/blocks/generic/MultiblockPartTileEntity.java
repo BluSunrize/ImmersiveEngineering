@@ -35,9 +35,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -174,19 +172,32 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		}
 
 		@Override
-		public IFluidTankProperties[] getTankProperties()
+		public int getTanks()
 		{
-			if(!this.multiblock.formed)
-				return new IFluidTankProperties[0];
-			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
-			IFluidTankProperties[] array = new IFluidTankProperties[tanks.length];
-			for(int i = 0; i < tanks.length; i++)
-				array[i] = new FluidTankProperties(tanks[i].getFluid(), tanks[i].getCapacity());
-			return array;
+			return multiblock.getAccessibleFluidTanks(side).length;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack getFluidInTank(int tank)
+		{
+			return multiblock.getAccessibleFluidTanks(side)[tank].getFluid();
 		}
 
 		@Override
-		public int fill(FluidStack resource, boolean doFill)
+		public int getTankCapacity(int tank)
+		{
+			return multiblock.getAccessibleFluidTanks(side)[tank].getCapacity();
+		}
+
+		@Override
+		public boolean isFluidValid(int tank, @Nonnull FluidStack stack)
+		{
+			return multiblock.getAccessibleFluidTanks(side)[tank].isFluidValid(stack);
+		}
+
+		@Override
+		public int fill(FluidStack resource, FluidAction doFill)
 		{
 			if(!this.multiblock.formed||resource==null)
 				return 0;
@@ -215,17 +226,17 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 				}
 			if(fill > 0)
 				this.multiblock.updateMasterBlock(null, true);
-			return fill < 0?0: fill;
+			return Math.max(fill, 0);
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
-		public FluidStack drain(FluidStack resource, boolean doDrain)
+		public FluidStack drain(FluidStack resource, FluidAction doDrain)
 		{
 			if(!this.multiblock.formed||resource==null)
-				return null;
+				return FluidStack.EMPTY;
 			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
-			FluidStack drain = null;
+			FluidStack drain = FluidStack.EMPTY;
 			for(int i = 0; i < tanks.length; i++)
 			{
 				IFluidTank tank = tanks[i];
@@ -234,35 +245,35 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 					if(tank instanceof IFluidHandler)
 						drain = ((IFluidHandler)tank).drain(resource, doDrain);
 					else
-						drain = tank.drain(resource.amount, doDrain);
-					if(drain!=null)
+						drain = tank.drain(resource.getAmount(), doDrain);
+					if(!drain.isEmpty())
 						break;
 				}
 			}
-			if(drain!=null)
+			if(!drain.isEmpty())
 				this.multiblock.updateMasterBlock(null, true);
 			return drain;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
-		public FluidStack drain(int maxDrain, boolean doDrain)
+		public FluidStack drain(int maxDrain, FluidAction doDrain)
 		{
 			if(!this.multiblock.formed||maxDrain==0)
-				return null;
+				return FluidStack.EMPTY;
 			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
-			FluidStack drain = null;
+			FluidStack drain = FluidStack.EMPTY;
 			for(int i = 0; i < tanks.length; i++)
 			{
 				IFluidTank tank = tanks[i];
 				if(tank!=null&&this.multiblock.canDrainTankFrom(i, side))
 				{
 					drain = tank.drain(maxDrain, doDrain);
-					if(drain!=null)
+					if(!drain.isEmpty())
 						break;
 				}
 			}
-			if(drain!=null)
+			if(!drain.isEmpty())
 				this.multiblock.updateMasterBlock(null, true);
 			return drain;
 		}
