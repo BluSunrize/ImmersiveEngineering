@@ -18,14 +18,20 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
+import net.minecraftforge.common.util.Constants.NBT;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class FakeLightBlock extends IETileProviderBlock
 {
@@ -42,7 +48,7 @@ public class FakeLightBlock extends IETileProviderBlock
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos)
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
 	{
 		return VoxelShapes.empty();
 	}
@@ -69,16 +75,17 @@ public class FakeLightBlock extends IETileProviderBlock
 	{
 		public static TileEntityType<FakeLightTileEntity> TYPE;
 
-		public int[] floodlightCoords = {-1, -1, -1};
+		public BlockPos floodlightCoords = null;
 
 		public FakeLightTileEntity()
 		{
 			super(TYPE);
-			if(IEConfig.MACHINES.floodlight_spawnPrevent)
+			if(IEConfig.MACHINES.floodlight_spawnPrevent.get())
 				synchronized(EventHandler.interdictionTiles)
 				{
-					if(!EventHandler.interdictionTiles.contains(this))
-						EventHandler.interdictionTiles.add(this);
+					Set<ISpawnInterdiction> forDim = EventHandler.interdictionTiles.computeIfAbsent(world.getDimension().getType(), x -> new HashSet<>());
+					if(!forDim.contains(this))
+						forDim.add(this);
 				}
 		}
 
@@ -87,13 +94,12 @@ public class FakeLightBlock extends IETileProviderBlock
 		{
 			if(world.getGameTime()%256==((getPos().getX()^getPos().getZ())&255))
 			{
-				if(floodlightCoords==null||floodlightCoords.length < 3)
+				if(floodlightCoords==null)
 				{
 					world.removeBlock(getPos(), false);
 					return;
 				}
-				BlockPos floodlightPos = new BlockPos(floodlightCoords[0], floodlightCoords[1], floodlightCoords[2]);
-				TileEntity tile = Utils.getExistingTileEntity(world, floodlightPos);
+				TileEntity tile = Utils.getExistingTileEntity(world, floodlightCoords);
 				if(!(tile instanceof FloodlightTileEntity)||!((FloodlightTileEntity)tile).active)
 				{
 					world.removeBlock(getPos(), false);
@@ -138,14 +144,17 @@ public class FakeLightBlock extends IETileProviderBlock
 		@Override
 		public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 		{
-			floodlightCoords = nbt.getIntArray("floodlightCoords");
+			if(nbt.contains("floodlightCoords", NBT.TAG_COMPOUND))
+				floodlightCoords = NBTUtil.readBlockPos(nbt.getCompound("floodlightCoords"));
+			else
+				floodlightCoords = null;
 		}
 
 		@Override
 		public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 		{
-			nbt.putIntArray("floodlightCoords", floodlightCoords);
-
+			if(floodlightCoords!=null)
+				nbt.put("floodlightCoords", NBTUtil.writeBlockPos(floodlightCoords));
 		}
 	}
 }

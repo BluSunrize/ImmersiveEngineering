@@ -12,22 +12,25 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.IEExplosion;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.init.ParticleTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.Explosion.Mode;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nonnull;
@@ -35,12 +38,13 @@ import java.util.Optional;
 
 public class IEExplosiveEntity extends TNTEntity
 {
-	public static final EntityType<IEExplosiveEntity> TYPE = new Builder<>(IEExplosiveEntity.class, IEExplosiveEntity::new)
+	public static final EntityType<IEExplosiveEntity> TYPE = Builder
+			.<IEExplosiveEntity>create(IEExplosiveEntity::new, EntityClassification.MISC)
 			.build(ImmersiveEngineering.MODID+":explosive");
 
-	private float explosionPower;
-	private boolean explosionSmoke = true;
-	private boolean explosionFire = false;
+	private float size;
+	private Explosion.Mode mode = Mode.DESTROY;
+	private boolean isFlaming = false;
 	private float explosionDropChance;
 	public BlockState block;
 	private ITextComponent name;
@@ -48,34 +52,42 @@ public class IEExplosiveEntity extends TNTEntity
 	private static final DataParameter<Optional<BlockState>> dataMarker_block = EntityDataManager.createKey(IEExplosiveEntity.class, DataSerializers.OPTIONAL_BLOCK_STATE);
 	private static final DataParameter<Integer> dataMarker_fuse = EntityDataManager.createKey(IEExplosiveEntity.class, DataSerializers.VARINT);
 
-	public IEExplosiveEntity(World world)
+	public IEExplosiveEntity(EntityType<IEExplosiveEntity> type, World world)
 	{
-		super(world);
+		super(type, world);
 	}
 
-	public IEExplosiveEntity(World world, double x, double y, double z, LivingEntity igniter, BlockState blockstate, float explosionPower)
+	public IEExplosiveEntity(World world, double x, double y, double z, LivingEntity igniter, BlockState blockstate, float size)
 	{
-		super(world, x, y, z, igniter);
-		this.explosionPower = explosionPower;
+		super(TYPE, world);
+		this.setPosition(x, y, z);
+		double jumpingDirection = world.rand.nextDouble()*2*Math.PI;
+		this.setMotion(-Math.sin(jumpingDirection)*0.02D, 0.2, -Math.cos(jumpingDirection)*0.02D);
+		this.setFuse(80);
+		this.prevPosX = x;
+		this.prevPosY = y;
+		this.prevPosZ = z;
+		this.tntPlacedBy = igniter;
+		this.size = size;
 		this.block = blockstate;
-		this.explosionDropChance = 1/explosionPower;
+		this.explosionDropChance = 1/size;
 		this.setBlockSynced();
 	}
 
-	public IEExplosiveEntity(World world, BlockPos pos, LivingEntity igniter, BlockState blockstate, float explosionPower)
+	public IEExplosiveEntity(World world, BlockPos pos, LivingEntity igniter, BlockState blockstate, float size)
 	{
-		this(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, igniter, blockstate, explosionPower);
+		this(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, igniter, blockstate, size);
 	}
 
-	public IEExplosiveEntity setSmoking(boolean smoke)
+	public IEExplosiveEntity setMode(Mode smoke)
 	{
-		this.explosionSmoke = smoke;
+		this.mode = smoke;
 		return this;
 	}
 
 	public IEExplosiveEntity setFlaming(boolean fire)
 	{
-		this.explosionFire = fire;
+		this.isFlaming = fire;
 		return this;
 	}
 
@@ -127,9 +139,9 @@ public class IEExplosiveEntity extends TNTEntity
 	protected void writeAdditional(CompoundNBT tagCompound)
 	{
 		super.writeAdditional(tagCompound);
-		tagCompound.putFloat("explosionPower", explosionPower);
-		tagCompound.putBoolean("explosionSmoke", explosionSmoke);
-		tagCompound.putBoolean("explosionFire", explosionFire);
+		tagCompound.putFloat("explosionPower", size);
+		tagCompound.putInt("explosionSmoke", mode.ordinal());
+		tagCompound.putBoolean("explosionFire", isFlaming);
 		if(this.block!=null)
 			tagCompound.putInt("block", Block.getStateId(this.block));
 	}
@@ -138,10 +150,10 @@ public class IEExplosiveEntity extends TNTEntity
 	protected void readAdditional(CompoundNBT tagCompound)
 	{
 		super.readAdditional(tagCompound);
-		explosionPower = tagCompound.getFloat("explosionPower");
-		explosionSmoke = tagCompound.getBoolean("explosionSmoke");
-		explosionFire = tagCompound.getBoolean("explosionFire");
-		if(tagCompound.hasKey("block"))
+		size = tagCompound.getFloat("explosionPower");
+		mode = Mode.values()[tagCompound.getInt("explosionSmoke")];
+		isFlaming = tagCompound.getBoolean("explosionFire");
+		if(tagCompound.contains("block", NBT.TAG_INT))
 			this.block = Block.getStateById(tagCompound.getInt("block"));
 	}
 
@@ -155,17 +167,16 @@ public class IEExplosiveEntity extends TNTEntity
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
-		this.motionY -= 0.03999999910593033D;
-		this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-		this.motionX *= 0.9800000190734863D;
-		this.motionY *= 0.9800000190734863D;
-		this.motionZ *= 0.9800000190734863D;
+		if(!this.hasNoGravity())
+		{
+			this.setMotion(this.getMotion().add(0.0D, -0.04D, 0.0D));
+		}
 
+		this.move(MoverType.SELF, this.getMotion());
+		this.setMotion(this.getMotion().scale(0.98D));
 		if(this.onGround)
 		{
-			this.motionX *= 0.699999988079071D;
-			this.motionZ *= 0.699999988079071D;
-			this.motionY *= -0.5D;
+			this.setMotion(this.getMotion().mul(0.7D, -0.5D, 0.7D));
 		}
 		int newFuse = this.getFuse()-1;
 		this.setFuse(newFuse);
@@ -175,7 +186,8 @@ public class IEExplosiveEntity extends TNTEntity
 
 			if(!this.world.isRemote)
 			{
-				Explosion explosion = new IEExplosion(world, this, posX, posY+(height/16f), posZ, explosionPower, explosionFire, explosionSmoke).setDropChance(explosionDropChance);
+				Explosion explosion = new IEExplosion(world, this, posX, posY+(getHeight()/16f), posZ, size, isFlaming, mode)
+						.setDropChance(explosionDropChance);
 				if(!ForgeEventFactory.onExplosionStart(world, explosion))
 				{
 					explosion.doExplosionA();

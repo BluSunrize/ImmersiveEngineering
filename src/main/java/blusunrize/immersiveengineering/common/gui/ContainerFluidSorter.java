@@ -22,6 +22,7 @@ public class ContainerFluidSorter extends Container
 
 	public ContainerFluidSorter(PlayerInventory inventoryPlayer, FluidSorterTileEntity tile)
 	{
+		super()
 		this.tile = tile;
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

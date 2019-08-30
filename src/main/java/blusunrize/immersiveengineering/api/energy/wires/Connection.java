@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.energy.wires;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -173,6 +174,16 @@ public class Connection
 		return basic.add(add);
 	}
 
+	public double getSlope(double pos, ConnectionPoint from)
+	{
+		if(endB.equals(from))
+			pos = 1-pos;
+		double slope = catData.getSlope(pos);
+		if(endB.equals(from))
+			slope *= -1;
+		return slope;
+	}
+
 	public ConnectionPoint getEndFor(BlockPos pos)
 	{
 		return endA.getPosition().equals(pos)?endA: endB;
@@ -290,6 +301,15 @@ public class Connection
 			return ret;
 		}
 
+		public double getSlope(double pos)
+		{
+			pos = MathHelper.clamp(pos, 0, 1);
+			if(isVertical)
+				return Double.POSITIVE_INFINITY;
+			else
+				return Math.sinh((pos*horLength-offsetX)/a);
+		}
+
 		public Vec3d getPoint(double pos)
 		{
 			if(pos==1)
@@ -397,6 +417,11 @@ public class Connection
 			result = 31*result+(int)(temp^(temp >>> 32));
 			result = 31*result+vecA.hashCode();
 			return result;
+		}
+
+		public Vec3d getDelta()
+		{
+			return new Vec3d(deltaX, deltaY, deltaZ);
 		}
 	}
 }

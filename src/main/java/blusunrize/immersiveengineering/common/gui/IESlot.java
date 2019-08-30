@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.*;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
@@ -24,13 +24,14 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -71,6 +72,31 @@ public abstract class IESlot extends Slot
 		}
 	}
 
+	public static class IEFurnaceSFuelSlot extends IESlot
+	{
+
+		public IEFurnaceSFuelSlot(Container container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+
+		public boolean isItemValid(ItemStack p_75214_1_)
+		{
+			return AbstractFurnaceTileEntity.isFuel(p_75214_1_)||isBucket(p_75214_1_);
+		}
+
+		public int getItemStackLimit(ItemStack p_178170_1_)
+		{
+			return isBucket(p_178170_1_)?1: super.getItemStackLimit(p_178170_1_);
+		}
+
+		public static boolean isBucket(ItemStack p_178173_0_)
+		{
+			return p_178173_0_.getItem()==Items.BUCKET;
+		}
+
+	}
+
 	public static class FluidContainer extends IESlot
 	{
 		int filter; //0 = any, 1 = empty, 2 = full
@@ -86,16 +112,13 @@ public abstract class IESlot extends Slot
 		{
 			LazyOptional<IFluidHandlerItem> handlerCap = FluidUtil.getFluidHandler(itemStack);
 			return handlerCap.map(handler -> {
-				if(handler.getTankProperties()==null)
-					return false;
-				IFluidTankProperties[] tank = handler.getTankProperties();
-				if(tank==null||tank.length < 1||tank[0]==null)
+				if(handler.getTanks() <= 0)
 					return false;
 
 				if(filter==1)
-					return tank[0].getContents()==null;
+					return handler.getFluidInTank(0).isEmpty();
 				else if(filter==2)
-					return tank[0].getContents()!=null;
+					return !handler.getFluidInTank(0).isEmpty();
 				return true;
 			}).orElse(false);
 		}
@@ -506,7 +529,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return !itemStack.isEmpty()&&IEContent.itemGraphiteElectrode.equals(itemStack.getItem());
+			return !itemStack.isEmpty()&&Misc.graphiteElectrode.equals(itemStack.getItem());
 		}
 	}
 

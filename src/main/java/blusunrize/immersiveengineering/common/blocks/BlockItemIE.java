@@ -82,7 +82,7 @@ public class BlockItemIE extends BlockItem
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
 				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fluidStored",
-						fs.getLocalizedName(), fs.amount));
+						fs.getDisplayName(), fs.getAmount()));
 		}
 	}
 

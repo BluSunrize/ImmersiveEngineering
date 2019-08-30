@@ -19,7 +19,6 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
@@ -71,9 +70,8 @@ public class IEBaseBlock extends Block
 		{
 			try
 			{
-				Item.Properties itemProps = new Item.Properties().group(ImmersiveEngineering.itemGroup);
-				IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class, Item.Properties.class)
-						.newInstance(this, itemProps));
+				IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class)
+						.newInstance(this));
 			} catch(Exception e)
 			{
 				//TODO e.printStackTrace();

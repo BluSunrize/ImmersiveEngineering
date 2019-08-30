@@ -109,16 +109,6 @@ public final class IEBlocks
 		public static Block treatedWallmount;
 	}
 
-	public static final class Fluids
-	{
-
-		public static BlockIEFluid creosote;
-		public static BlockIEFluid plantoil;
-		public static BlockIEFluid ethanol;
-		public static BlockIEFluid biodiesel;
-		public static BlockIEFluid concrete;
-	}
-
 	public static final class MetalDecoration
 	{
 		public static Block lvCoil;

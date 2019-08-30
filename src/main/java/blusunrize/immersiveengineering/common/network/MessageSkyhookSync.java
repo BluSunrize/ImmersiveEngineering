@@ -64,7 +64,7 @@ public class MessageSkyhookSync implements IMessage
 				if(ent instanceof SkylineHookEntity)
 				{
 					connection.getSubVertices(world);
-					((SkylineHookEntity)ent).setConnectionAndPos(connection, linePos, speed);
+					((SkylineHookEntity)ent).setConnectionAndPos(connection, , linePos, speed);
 				}
 			}
 		});

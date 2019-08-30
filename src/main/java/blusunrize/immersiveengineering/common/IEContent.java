@@ -286,7 +286,7 @@ public class IEContent
 		MetalDecoration.lantern = new LanternBlock("lantern");
 		MetalDecoration.slopeSteel = new StructuralArmBlock("steel_slope");
 		MetalDecoration.slopeAlu = new StructuralArmBlock("alu_slope");
-		MetalDecoration.metalLadder = new MetalLadderBlock();
+		MetalDecoration.metalLadder = new IELadderBlock();
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
 			String name = type.name().toLowerCase();
@@ -442,7 +442,7 @@ public class IEContent
 
 	private static Block addSlabFor(Block b)
 	{
-		BlockIESlab ret = new BlockIESlab("slab_"+b.getRegistryName().getPath(), Block.Properties.from(b), ItemBlockIESlabs.class);
+		BlockIESlab ret = new BlockIESlab("slab_"+b.getRegistryName().getPath(), Block.Properties.from(b), BlockItemIE.class);
 		IEBlocks.toSlab.put(b, ret);
 		return ret;
 	}
