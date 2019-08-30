@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.AdvancedAABB;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
@@ -364,7 +365,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		@Override
 		public IFluidTankProperties[] getTankProperties()
 		{
-			return new IFluidTankProperties[]{new FluidTankProperties(null, 1000, true, false)};
+			return new IFluidTankProperties[]{new FluidTankProperties(null, IEConfig.Machines.pipe_transferrate_pressurized, true, false)};
 		}
 
 		@Override
@@ -416,7 +417,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 						amount = Math.min(amount, canAccept);
 					}
 					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
-					if(r > 50)
+					if(r > IEConfig.Machines.pipe_transferrate)
 						pipe.canOutputPressurized(output.containingTile, true);
 					f += r;
 					canAccept -= r;
@@ -432,7 +433,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 			return (resource.tag!=null&&resource.tag.hasKey("pressurized"))||
 					pipe.canOutputPressurized(output.containingTile, false)
-					?1000: 50;
+					?IEConfig.Machines.pipe_transferrate_pressurized: IEConfig.Machines.pipe_transferrate;
 		}
 
 		@Nullable

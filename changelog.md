@@ -4,6 +4,7 @@
 - Added creosote buckets (and other containers) as valid fuel for a furnace (BluSunrize)
 - Added an option to not have coordinates display on a CoreSample (BluSunrize)
 - Added a "removeAll" function to IE's crafttweaker integration (BluSunrize)
+- Added a config option for the transferrates of the Fluid Pipe (BluSunrize)
 - Changed CoreSamples to draw a chunk overlay like the drill (BluSunrize)
 - Changed Wires to return only half an ingot worth of material when recycled (BluSunrize)
 - Changed Dragonsbreath cartridges to not fire an obscene amount of bullets anymore (BluSunrize)
