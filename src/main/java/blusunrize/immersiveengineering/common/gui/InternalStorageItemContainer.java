@@ -17,11 +17,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-public abstract class ContainerInternalStorageItem extends ContainerItem
+public abstract class InternalStorageItemContainer extends ItemContainer
 {
 	public IItemHandler inv;
 
-	public ContainerInternalStorageItem(int id, PlayerInventory iinventory, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
+	public InternalStorageItemContainer(int id, PlayerInventory iinventory, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
 	{
 		super(id, iinventory, world, entityEquipmentSlot, heldItem);
 		this.inv = heldItem.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(RuntimeException::new);

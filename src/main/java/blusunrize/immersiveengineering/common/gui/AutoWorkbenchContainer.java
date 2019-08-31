@@ -18,11 +18,11 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class ContainerAutoWorkbench extends ContainerIEBase<AutoWorkbenchTileEntity>
+public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEntity>
 {
 	public PlayerInventory inventoryPlayer;
 
-	public ContainerAutoWorkbench(int id, PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
+	public AutoWorkbenchContainer(int id, PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 

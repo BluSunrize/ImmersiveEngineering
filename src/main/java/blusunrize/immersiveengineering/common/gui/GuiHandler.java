@@ -34,7 +34,7 @@ public class GuiHandler
 	private static final Map<Class<? extends Item>, ItemContainer<?>> ITEM_CONTAINERS = new HashMap<>();
 
 	//TODO dedicated server?
-	public static <T extends TileEntity, C extends ContainerIEBase<T>, S extends Screen & IHasContainer<C>>
+	public static <T extends TileEntity, C extends IEBaseContainer<T>, S extends Screen & IHasContainer<C>>
 	void register(Class<T> tileClass, ResourceLocation name,
 				  IScreenFactory<C, S> gui,
 				  TileContainerConstructor<T, C> container)
@@ -50,7 +50,7 @@ public class GuiHandler
 		ScreenManager.registerFactory(type, gui);
 	}
 
-	public static <C extends ContainerIEBase<?>, S extends Screen & IHasContainer<C>>
+	public static <C extends IEBaseContainer<?>, S extends Screen & IHasContainer<C>>
 	void register(Class<? extends Item> itemClass, ResourceLocation name, IScreenFactory<C, S> gui,
 				  ItemContainerConstructor<C> container)
 	{
@@ -91,12 +91,12 @@ public class GuiHandler
 		C construct(int windowId, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack stack);
 	}
 
-	public interface TileContainerConstructor<T extends TileEntity, C extends ContainerIEBase<T>>
+	public interface TileContainerConstructor<T extends TileEntity, C extends IEBaseContainer<T>>
 	{
 		C construct(int windowId, PlayerInventory inventoryPlayer, T te);
 	}
 
-	private static class TileContainer<T extends TileEntity, C extends ContainerIEBase<T>>
+	private static class TileContainer<T extends TileEntity, C extends IEBaseContainer<T>>
 	{
 		final ContainerType<C> type;
 		final TileContainerConstructor<T, C> factory;

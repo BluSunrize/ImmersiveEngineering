@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerBelljar;
+import blusunrize.immersiveengineering.common.gui.BelljarContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -29,7 +29,7 @@ public class BelljarScreen extends IEContainerScreen
 
 	public BelljarScreen(PlayerInventory inventoryPlayer, BelljarTileEntity tile)
 	{
-		super(new ContainerBelljar(inventoryPlayer, tile), inventoryPlayer);
+		super(new BelljarContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 	}
 

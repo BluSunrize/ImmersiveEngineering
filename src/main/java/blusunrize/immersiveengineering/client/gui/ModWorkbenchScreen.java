@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerModWorkbench;
+import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -43,7 +43,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen
 
 	public ModWorkbenchScreen(PlayerInventory inventoryPlayer, World world, ModWorkbenchTileEntity tile)
 	{
-		super(new ContainerModWorkbench(inventoryPlayer, world, tile), inventoryPlayer);
+		super(new ModWorkbenchContainer(inventoryPlayer, world, tile), inventoryPlayer);
 		workbench = tile;
 		this.ySize = 168;
 	}
@@ -58,7 +58,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen
 	public void render(int mx, int my, float partial)
 	{
 		super.render(mx, my, partial);
-		for(int i = 0; i < ((ContainerModWorkbench)container).slotCount; i++)
+		for(int i = 0; i < ((ModWorkbenchContainer)container).slotCount; i++)
 		{
 			Slot s = container.getSlot(i);
 			if(s instanceof IESlot.BlueprintOutput&&!s.getHasStack())
@@ -106,7 +106,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 
-		for(int i = 0; i < ((ContainerModWorkbench)container).slotCount; i++)
+		for(int i = 0; i < ((ModWorkbenchContainer)container).slotCount; i++)
 		{
 			Slot s = container.getSlot(i);
 			ClientUtils.drawColouredRect(guiLeft+s.xPos-1, guiTop+s.yPos-1, 17, 1, 0x77222222);
@@ -117,7 +117,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen
 		}
 
 		ItemRenderer itemRender = mc().getItemRenderer();
-		for(int i = 0; i < ((ContainerModWorkbench)container).slotCount; i++)
+		for(int i = 0; i < ((ModWorkbenchContainer)container).slotCount; i++)
 		{
 			Slot s = container.getSlot(i);
 			if(s instanceof IESlot.BlueprintOutput&&!s.getHasStack())

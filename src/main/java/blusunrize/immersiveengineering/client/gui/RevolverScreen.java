@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
+import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -30,13 +30,13 @@ public class RevolverScreen extends IEContainerScreen
 
 	public RevolverScreen(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack revolver)
 	{
-		super(new ContainerRevolver(inventoryPlayer, world, slot, revolver), inventoryPlayer);
+		super(new RevolverContainer(inventoryPlayer, world, slot, revolver), inventoryPlayer);
 		if(!revolver.isEmpty()&&revolver.getItem() instanceof IBulletContainer)
 			this.bullets[0] = ((IBulletContainer)revolver.getItem()).getBulletCount(revolver);
-		this.otherRevolver = !((ContainerRevolver)this.container).secondRevolver.isEmpty();
+		this.otherRevolver = !((RevolverContainer)this.container).secondRevolver.isEmpty();
 		if(this.otherRevolver)
 		{
-			this.bullets[1] = ((IBulletContainer)((ContainerRevolver)this.container).secondRevolver.getItem()).getBulletCount(((ContainerRevolver)this.container).secondRevolver);
+			this.bullets[1] = ((IBulletContainer)((RevolverContainer)this.container).secondRevolver.getItem()).getBulletCount(((RevolverContainer)this.container).secondRevolver);
 			this.offset = ((bullets[0] >= 18?150: bullets[0] > 8?136: 74)+(bullets[1] >= 18?150: bullets[1] > 8?136: 74)+4-176)/2;
 			if(this.offset > 0)
 				this.xSize += this.offset*2;
@@ -83,7 +83,7 @@ public class RevolverScreen extends IEContainerScreen
 		GlStateManager.enableDepthTest();
 
 		ItemRenderer ir = ClientUtils.mc().getItemRenderer();
-		int[][] slots = ContainerRevolver.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
+		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
 		for(int i = 0; i < bulletAmount; i++)
 		{
 			ItemStack b = bullets.get(i);

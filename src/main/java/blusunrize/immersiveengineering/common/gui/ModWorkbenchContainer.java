@@ -26,14 +26,14 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class ContainerModWorkbench extends ContainerIEBase<ModWorkbenchTileEntity>
+public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntity>
 {
 	private final World world;
 	public PlayerInventory inventoryPlayer;
-	private InventoryBlueprint inventoryBPoutput;
-	public InventoryShader shaderInv;
+	private BlueprintInventory inventoryBPoutput;
+	public ShaderInventory shaderInv;
 
-	public ContainerModWorkbench(int id, PlayerInventory inventoryPlayer, World world, ModWorkbenchTileEntity tile)
+	public ModWorkbenchContainer(int id, PlayerInventory inventoryPlayer, World world, ModWorkbenchTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 		this.world = world;
@@ -81,7 +81,7 @@ public class ContainerModWorkbench extends ContainerIEBase<ModWorkbenchTileEntit
 
 			tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null).ifPresent(wrapper ->
 			{
-					this.shaderInv = new InventoryShader(this, wrapper);
+					this.shaderInv = new ShaderInventory(this, wrapper);
 					this.addSlot(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
 					slotCount++;
 					this.shaderInv.shader = wrapper.getShaderItem();
@@ -95,7 +95,7 @@ public class ContainerModWorkbench extends ContainerIEBase<ModWorkbenchTileEntit
 				//Init the output inventory
 				blueprint = true;
 				BlueprintCraftingRecipe[] recipes = ((ItemEngineersBlueprint)tool.getItem()).getRecipes(tool);
-				inventoryBPoutput = new InventoryBlueprint(this, recipes);
+				inventoryBPoutput = new BlueprintInventory(this, recipes);
 
 				//Add output slots
 				for(int i = 0; i < recipes.length; i++)

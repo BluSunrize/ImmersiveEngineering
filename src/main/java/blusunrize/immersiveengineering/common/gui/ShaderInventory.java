@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class InventoryShader implements IInventory
+public class ShaderInventory implements IInventory
 {
 	private ShaderWrapper wrapper;
 	private Container container;
@@ -24,7 +24,7 @@ public class InventoryShader implements IInventory
 	public ItemStack shader;
 	private String name;
 
-	public InventoryShader(Container par1Container, ShaderWrapper wrapper)
+	public ShaderInventory(Container par1Container, ShaderWrapper wrapper)
 	{
 		this.container = par1Container;
 		this.wrapper = wrapper;

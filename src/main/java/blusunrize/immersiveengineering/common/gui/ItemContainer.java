@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public abstract class ContainerItem extends Container implements Supplier<World>
+public abstract class ItemContainer extends Container implements Supplier<World>
 {
 	protected final PlayerInventory inventoryPlayer;
 	protected final World world;
@@ -31,7 +31,7 @@ public abstract class ContainerItem extends Container implements Supplier<World>
 	protected final PlayerEntity player;
 	public int internalSlots;
 
-	public ContainerItem(int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
+	public ItemContainer(int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
 	{
 		super(GuiHandler.getContainerTypeFor(heldItem), id);
 		this.inventoryPlayer = inventoryPlayer;

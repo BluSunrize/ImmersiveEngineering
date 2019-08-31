@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerCrate;
+import blusunrize.immersiveengineering.common.gui.CrateContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.tileentity.TileEntity;
@@ -19,14 +19,14 @@ public class CrateScreen extends IEContainerScreen
 {
 	public CrateScreen(PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile)
 	{
-		super(new ContainerCrate(inventoryPlayer, tile), inventoryPlayer);
+		super(new CrateContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.ySize = 168;
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		TileEntity te = ((ContainerCrate)container).tile;
+		TileEntity te = ((CrateContainer)container).tile;
 		this.font.drawString(((WoodenCrateTileEntity)te).getDisplayName().getFormattedText(),
 				8, 6, 0x0a0a0a);
 	}

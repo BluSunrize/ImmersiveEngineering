@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
-import blusunrize.immersiveengineering.common.gui.ContainerMaintenanceKit;
+import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -50,9 +50,9 @@ public class MessageMaintenanceKit implements IMessage
 		ServerPlayerEntity player = ctx.getSender();
 		assert player!=null;
 		ctx.enqueueWork(() -> {
-			if(player.openContainer instanceof ContainerMaintenanceKit)
+			if(player.openContainer instanceof MaintenanceKitContainer)
 			{
-				ItemStack tool = ((ContainerMaintenanceKit)player.openContainer).inventorySlots.get(0).getStack();
+				ItemStack tool = ((MaintenanceKitContainer)player.openContainer).inventorySlots.get(0).getStack();
 				if(!tool.isEmpty()&&tool.getItem() instanceof IConfigurableTool)
 					for(String key : nbt.keySet())
 					{

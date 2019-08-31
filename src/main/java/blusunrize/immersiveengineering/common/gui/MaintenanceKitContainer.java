@@ -22,12 +22,12 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class ContainerMaintenanceKit extends ContainerItem
+public class MaintenanceKitContainer extends ItemContainer
 {
 	private final IInventory inv = new Inventory(ItemStack.EMPTY);
 	private boolean wasUsed = false;
 
-	public ContainerMaintenanceKit(int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
+	public MaintenanceKitContainer(int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
 	{
 		super(id, inventoryPlayer, world, slot, item);
 		updateSlots();

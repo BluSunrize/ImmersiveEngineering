@@ -16,12 +16,12 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class ContainerFluidSorter extends ContainerIEBase<FluidSorterTileEntity>
+public class FluidSorterContainer extends IEBaseContainer<FluidSorterTileEntity>
 {
 	FluidSorterTileEntity tile;
 	int slotCount;
 
-	public ContainerFluidSorter(int id, PlayerInventory inventoryPlayer, FluidSorterTileEntity tile)
+	public FluidSorterContainer(int id, PlayerInventory inventoryPlayer, FluidSorterTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 		this.tile = tile;

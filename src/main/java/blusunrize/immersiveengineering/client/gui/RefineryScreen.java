@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.RefineryTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerRefinery;
+import blusunrize.immersiveengineering.common.gui.RefineryContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
@@ -25,7 +25,7 @@ public class RefineryScreen extends IEContainerScreen
 
 	public RefineryScreen(PlayerInventory inventoryPlayer, RefineryTileEntity tile)
 	{
-		super(new ContainerRefinery(inventoryPlayer, tile), inventoryPlayer);
+		super(new RefineryContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 	}
 

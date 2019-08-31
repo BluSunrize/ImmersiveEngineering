@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerAlloySmelter;
+import blusunrize.immersiveengineering.common.gui.AlloySmelterContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -20,7 +20,7 @@ public class AlloySmelterScreen extends IEContainerScreen
 
 	public AlloySmelterScreen(PlayerInventory inventoryPlayer, AlloySmelterTileEntity tile)
 	{
-		super(new ContainerAlloySmelter(inventoryPlayer, tile), inventoryPlayer);
+		super(new AlloySmelterContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 	}
 

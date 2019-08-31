@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
 import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerFluidSorter;
+import blusunrize.immersiveengineering.common.gui.FluidSorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.widget.Widget;
@@ -39,7 +39,7 @@ public class FluidSorterScreen extends IEContainerScreen
 
 	public FluidSorterScreen(PlayerInventory inventoryPlayer, FluidSorterTileEntity tile)
 	{
-		super(new ContainerFluidSorter(inventoryPlayer, tile), inventoryPlayer);
+		super(new FluidSorterContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 		this.playerInventory = inventoryPlayer;
 		this.ySize = 244;

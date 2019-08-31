@@ -261,7 +261,7 @@ public abstract class IESlot extends Slot
 	{
 		int size;
 
-		public ModWorkbench(ContainerModWorkbench container, IInventory inv, int id, int x, int y, int size)
+		public ModWorkbench(ModWorkbenchContainer container, IInventory inv, int id, int x, int y, int size)
 		{
 			super(container, inv, id, x, y);
 			this.size = size;
@@ -291,8 +291,8 @@ public abstract class IESlot extends Slot
 		public void onSlotChanged()
 		{
 			super.onSlotChanged();
-			if(container instanceof ContainerModWorkbench)
-				((ContainerModWorkbench)container).rebindSlots();
+			if(container instanceof ModWorkbenchContainer)
+				((ModWorkbenchContainer)container).rebindSlots();
 		}
 
 		@Override
@@ -317,7 +317,7 @@ public abstract class IESlot extends Slot
 
 	public static class Maintenance extends IESlot
 	{
-		public Maintenance(ContainerMaintenanceKit container, IInventory inv, int id, int x, int y)
+		public Maintenance(MaintenanceKitContainer container, IInventory inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
@@ -338,8 +338,8 @@ public abstract class IESlot extends Slot
 		public void onSlotChanged()
 		{
 			super.onSlotChanged();
-			if(container instanceof ContainerMaintenanceKit)
-				((ContainerMaintenanceKit)container).updateSlots();
+			if(container instanceof MaintenanceKitContainer)
+				((MaintenanceKitContainer)container).updateSlots();
 		}
 
 		@Override
@@ -381,7 +381,7 @@ public abstract class IESlot extends Slot
 		public void onSlotChanged()
 		{
 			super.onSlotChanged();
-			if(container instanceof ContainerAutoWorkbench)
+			if(container instanceof AutoWorkbenchContainer)
 				ImmersiveEngineering.proxy.reInitGui();
 //				((ContainerAutoWorkbench)container).rebindSlots();
 		}
@@ -435,9 +435,9 @@ public abstract class IESlot extends Slot
 
 	public static class BlueprintInput extends IESlot
 	{
-		private final InventoryBlueprint outputInventory;
+		private final BlueprintInventory outputInventory;
 
-		public BlueprintInput(Container container, IInventory inv, InventoryBlueprint outputInventory, int id, int x, int y)
+		public BlueprintInput(Container container, IInventory inv, BlueprintInventory outputInventory, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 			this.outputInventory = outputInventory;
@@ -456,7 +456,7 @@ public abstract class IESlot extends Slot
 		private final IInventory inputInventory;
 		public final BlueprintCraftingRecipe recipe;
 
-		public BlueprintOutput(Container container, InventoryBlueprint inv, IInventory inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
+		public BlueprintOutput(Container container, BlueprintInventory inv, IInventory inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
 		{
 			super(container, inv, id, x, y);
 			this.inputInventory = inputInventory;
@@ -480,7 +480,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public ItemStack onTake(PlayerEntity player, ItemStack stack)
 		{
-			((InventoryBlueprint)this.inventory).reduceIputs(this.inputInventory, recipe, stack);
+			((BlueprintInventory)this.inventory).reduceIputs(this.inputInventory, recipe, stack);
 			return super.onTake(player, stack);
 		}
 	}

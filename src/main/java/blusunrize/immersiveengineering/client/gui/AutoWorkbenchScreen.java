@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonItem;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerAutoWorkbench;
+import blusunrize.immersiveengineering.common.gui.AutoWorkbenchContainer;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -33,7 +33,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen
 
 	public AutoWorkbenchScreen(PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
 	{
-		super(new ContainerAutoWorkbench(inventoryPlayer, tile), inventoryPlayer);
+		super(new AutoWorkbenchContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 		this.ySize = 184;
 	}

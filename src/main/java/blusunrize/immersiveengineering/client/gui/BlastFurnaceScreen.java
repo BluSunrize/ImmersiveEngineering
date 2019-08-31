@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerBlastFurnace;
+import blusunrize.immersiveengineering.common.gui.BlastFurnaceContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -20,7 +20,7 @@ public class BlastFurnaceScreen extends IEContainerScreen
 
 	public BlastFurnaceScreen(PlayerInventory inventoryPlayer, BlastFurnaceTileEntity tile)
 	{
-		super(new ContainerBlastFurnace(inventoryPlayer, tile), inventoryPlayer);
+		super(new BlastFurnaceContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 	}
 

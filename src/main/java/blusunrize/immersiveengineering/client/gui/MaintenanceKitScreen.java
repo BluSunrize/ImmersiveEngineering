@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.gui.ContainerMaintenanceKit;
+import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import blusunrize.immersiveengineering.common.network.MessageMaintenanceKit;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,14 +24,14 @@ public class MaintenanceKitScreen extends ToolModificationScreen
 {
 	public MaintenanceKitScreen(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
 	{
-		super(new ContainerMaintenanceKit(inventoryPlayer, world, slot, item), inventoryPlayer);
+		super(new MaintenanceKitContainer(inventoryPlayer, world, slot, item), inventoryPlayer);
 		this.xSize = 195;
 	}
 
 	@Override
 	protected void sendMessage(CompoundNBT data)
 	{
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageMaintenanceKit(((ContainerMaintenanceKit)container).getEquipmentSlot(), data));
+		ImmersiveEngineering.packetHandler.sendToServer(new MessageMaintenanceKit(((MaintenanceKitContainer)container).getEquipmentSlot(), data));
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class MaintenanceKitScreen extends ToolModificationScreen
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/maintenance_kit.png");
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		for(int i = 0; i < ((ContainerMaintenanceKit)container).internalSlots; i++)
+		for(int i = 0; i < ((MaintenanceKitContainer)container).internalSlots; i++)
 		{
 			Slot s = container.getSlot(i);
 			ClientUtils.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x44);

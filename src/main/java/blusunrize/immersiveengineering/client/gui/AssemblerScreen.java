@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
+import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.FontRenderer;
@@ -35,7 +35,7 @@ public class AssemblerScreen extends IEContainerScreen
 
 	public AssemblerScreen(PlayerInventory inventoryPlayer, AssemblerTileEntity tile)
 	{
-		super(new ContainerAssembler(inventoryPlayer, tile), inventoryPlayer);
+		super(new AssemblerContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 		this.xSize = 230;
 		this.ySize = 218;

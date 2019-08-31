@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.FermenterTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerFermenter;
+import blusunrize.immersiveengineering.common.gui.FermenterContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
@@ -25,7 +25,7 @@ public class FermenterScreen extends IEContainerScreen
 
 	public FermenterScreen(PlayerInventory inventoryPlayer, FermenterTileEntity tile)
 	{
-		super(new ContainerFermenter(inventoryPlayer, tile), inventoryPlayer);
+		super(new FermenterContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 	}
 

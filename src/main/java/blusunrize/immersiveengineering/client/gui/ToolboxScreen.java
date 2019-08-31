@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.gui.ContainerToolbox;
+import blusunrize.immersiveengineering.common.gui.ToolboxContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,7 +29,7 @@ public class ToolboxScreen extends IEContainerScreen
 {
 	public ToolboxScreen(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack toolbox)
 	{
-		super(new ContainerToolbox(inventoryPlayer, world, slot, toolbox), inventoryPlayer);
+		super(new ToolboxContainer(inventoryPlayer, world, slot, toolbox), inventoryPlayer);
 		this.ySize = 238;
 	}
 
@@ -39,7 +39,7 @@ public class ToolboxScreen extends IEContainerScreen
 		super.render(mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		int slot = -1;
-		for(int i = 0; i < ((ContainerToolbox)this.container).internalSlots; i++)
+		for(int i = 0; i < ((ToolboxContainer)this.container).internalSlots; i++)
 		{
 			Slot s = this.container.getSlot(i);
 			if(!s.getHasStack()&&mx > guiLeft+s.xPos&&mx < guiLeft+s.xPos+16&&my > guiTop+s.yPos&&my < guiTop+s.yPos+16)

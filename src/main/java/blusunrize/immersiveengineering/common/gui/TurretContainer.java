@@ -18,9 +18,9 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class ContainerTurret extends ContainerIEBase<TurretTileEntity>
+public class TurretContainer extends IEBaseContainer<TurretTileEntity>
 {
-	public ContainerTurret(int id, PlayerInventory inventoryPlayer, TurretTileEntity tile)
+	public TurretContainer(int id, PlayerInventory inventoryPlayer, TurretTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 		this.tile = tile;

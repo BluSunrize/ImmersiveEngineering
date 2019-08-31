@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerCokeOven;
+import blusunrize.immersiveengineering.common.gui.CokeOvenContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,7 +24,7 @@ public class CokeOvenScreen extends IEContainerScreen
 
 	public CokeOvenScreen(PlayerInventory inventoryPlayer, CokeOvenTileEntity tile)
 	{
-		super(new ContainerCokeOven(inventoryPlayer, tile), inventoryPlayer);
+		super(new CokeOvenContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 	}
 

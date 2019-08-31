@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerSorter;
+import blusunrize.immersiveengineering.common.gui.SorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.widget.Widget;
@@ -40,7 +40,7 @@ public class SorterScreen extends IEContainerScreen
 
 	public SorterScreen(PlayerInventory inventoryPlayer, SorterTileEntity tile)
 	{
-		super(new ContainerSorter(inventoryPlayer, tile), inventoryPlayer);
+		super(new SorterContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 		this.ySize = 244;
 	}

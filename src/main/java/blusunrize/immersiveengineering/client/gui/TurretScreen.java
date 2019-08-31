@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiReactiveList;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretChemTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerTurret;
+import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -42,7 +42,7 @@ public class TurretScreen extends IEContainerScreen
 
 	public TurretScreen(PlayerInventory inventoryPlayer, TurretTileEntity tile)
 	{
-		super(new ContainerTurret(inventoryPlayer, tile), inventoryPlayer);
+		super(new TurretContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 		this.ySize = 190;
 	}

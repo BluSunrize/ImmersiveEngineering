@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerSqueezer;
+import blusunrize.immersiveengineering.common.gui.SqueezerContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,7 +26,7 @@ public class SqueezerScreen extends IEContainerScreen
 
 	public SqueezerScreen(PlayerInventory inventoryPlayer, SqueezerTileEntity tile)
 	{
-		super(new ContainerSqueezer(inventoryPlayer, tile), inventoryPlayer);
+		super(new SqueezerContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 	}
 

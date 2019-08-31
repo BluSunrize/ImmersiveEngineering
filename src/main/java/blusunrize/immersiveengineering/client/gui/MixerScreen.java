@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerMixer;
+import blusunrize.immersiveengineering.common.gui.MixerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -36,7 +36,7 @@ public class MixerScreen extends IEContainerScreen
 
 	public MixerScreen(PlayerInventory inventoryPlayer, MixerTileEntity tile)
 	{
-		super(new ContainerMixer(inventoryPlayer, tile), inventoryPlayer);
+		super(new MixerContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.tile = tile;
 		this.ySize = 167;
 	}

@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntit
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 
-public class ContainerAlloySmelter extends ContainerIEBase<AlloySmelterTileEntity>
+public class AlloySmelterContainer extends IEBaseContainer<AlloySmelterTileEntity>
 {
-	public ContainerAlloySmelter(int id, PlayerInventory inventoryPlayer, AlloySmelterTileEntity tile)
+	public AlloySmelterContainer(int id, PlayerInventory inventoryPlayer, AlloySmelterTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 

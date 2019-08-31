@@ -16,11 +16,11 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public class InventoryBlueprint extends Inventory
+public class BlueprintInventory extends Inventory
 {
 	private final BlueprintCraftingRecipe[] recipes;
 
-	public InventoryBlueprint(Container container, BlueprintCraftingRecipe[] recipes)
+	public BlueprintInventory(Container container, BlueprintCraftingRecipe[] recipes)
 	{
 		super(recipes.length);
 		this.recipes = recipes;

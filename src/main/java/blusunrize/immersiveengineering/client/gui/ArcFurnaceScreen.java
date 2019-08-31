@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerArcFurnace;
+import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
@@ -36,7 +36,7 @@ public class ArcFurnaceScreen extends IEContainerScreen
 
 	public ArcFurnaceScreen(PlayerInventory inventoryPlayer, ArcFurnaceTileEntity tile)
 	{
-		super(new ContainerArcFurnace(inventoryPlayer, tile), inventoryPlayer);
+		super(new ArcFurnaceContainer(inventoryPlayer, tile), inventoryPlayer);
 		this.ySize = 207;
 		this.tile = tile;
 	}

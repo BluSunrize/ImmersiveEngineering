@@ -22,19 +22,19 @@ import net.minecraft.tileentity.TileEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ContainerIEBase<T extends TileEntity> extends Container
+public class IEBaseContainer<T extends TileEntity> extends Container
 {
 	public T tile;
 	@Nullable
 	public IInventory inv;
 	public int slotCount;
 
-	public ContainerIEBase(PlayerInventory inventoryPlayer, T tile, int id)
+	public IEBaseContainer(PlayerInventory inventoryPlayer, T tile, int id)
 	{
 		super(GuiHandler.getContainerTypeFor(tile), id);
 		this.tile = tile;
 		if(tile instanceof IIEInventory)
-			this.inv = new InventoryTile(tile);
+			this.inv = new TileInventory(tile);
 	}
 
 	@Override

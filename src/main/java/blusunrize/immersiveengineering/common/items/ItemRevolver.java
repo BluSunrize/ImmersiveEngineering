@@ -25,7 +25,7 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
-import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
+import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
@@ -516,7 +516,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 					else
 						perspective.translate((f-1.95f)*2, 0, 0).rotate(2.64*(1.95-f), 0, 0, left?-1: 1);
 			}
-			else if(((PlayerEntity)entity).openContainer instanceof ContainerRevolver)
+			else if(((PlayerEntity)entity).openContainer instanceof RevolverContainer)
 				perspective.translate(left?.4: -.4, .4, 0).rotate(.87266, 0, 0, left?-1: 1);
 		}
 		return perspective;
@@ -563,7 +563,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				else if(f > 2.5&&f < 2.9)
 					return mat.setIdentity().translate(0, .6875, 0).rotate(-15.70795*(f-2.5), left?-1: 1, 0, 0);
 			}
-			else if("frame".equals(groups[0])&&((PlayerEntity)entity).openContainer instanceof ContainerRevolver)
+			else if("frame".equals(groups[0])&&((PlayerEntity)entity).openContainer instanceof RevolverContainer)
 				return matOpen;
 		}
 		return "frame".equals(groups[0])?matClose: matCylinder;
