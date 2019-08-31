@@ -18,19 +18,18 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
 public class ContainerMaintenanceKit extends ContainerItem
 {
-	private final IInventory inv = new Inventory(new StringTextComponent("MaintenanceKit"), 1);
+	private final IInventory inv = new Inventory(ItemStack.EMPTY);
 	private boolean wasUsed = false;
 
-	public ContainerMaintenanceKit(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
+	public ContainerMaintenanceKit(int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
 	{
-		super(inventoryPlayer, world, slot, item);
+		super(id, inventoryPlayer, world, slot, item);
 		updateSlots();
 	}
 
@@ -142,7 +141,8 @@ public class ContainerMaintenanceKit extends ContainerItem
 	{
 		if(wasUsed)
 		{
-			this.heldItem.damageItem(1, this.player);
+			this.heldItem.damageItem(1, this.player, player -> {
+			});
 			player.setItemStackToSlot(this.equipmentSlot, this.heldItem);
 		}
 		super.onContainerClosed(par1EntityPlayer);

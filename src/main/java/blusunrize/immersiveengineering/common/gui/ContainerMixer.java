@@ -22,9 +22,9 @@ import net.minecraftforge.items.IItemHandler;
 //TODO custom subclass of ItemStackHandler for markDirty etc
 public class ContainerMixer extends ContainerIEBase<MixerTileEntity> implements ICallbackContainer
 {
-	public ContainerMixer(PlayerInventory inventoryPlayer, MixerTileEntity tile)
+	public ContainerMixer(int id, PlayerInventory inventoryPlayer, MixerTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 
 		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);

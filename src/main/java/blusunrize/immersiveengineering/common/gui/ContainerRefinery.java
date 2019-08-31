@@ -20,9 +20,9 @@ import java.util.List;
 
 public class ContainerRefinery extends ContainerIEBase<RefineryTileEntity>
 {
-	public ContainerRefinery(PlayerInventory inventoryPlayer, RefineryTileEntity tile)
+	public ContainerRefinery(int id, PlayerInventory inventoryPlayer, RefineryTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 
 		final RefineryTileEntity tileF = tile;
 		this.addSlot(new IESlot.FluidContainer(this, this.inv, 0, 37, 15, 2)
@@ -32,10 +32,10 @@ public class ContainerRefinery extends ContainerIEBase<RefineryTileEntity>
 			{
 				return itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
 						.map(h -> {
-							if(h.getTankProperties().length==0)
+							if(h.getTanks() <= 0)
 								return false;
-							FluidStack fs = h.getTankProperties()[0].getContents();
-							if(fs==null)
+							FluidStack fs = h.getFluidInTank(0);
+							if(fs.isEmpty())
 								return false;
 							if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
 								return false;
@@ -57,10 +57,10 @@ public class ContainerRefinery extends ContainerIEBase<RefineryTileEntity>
 			{
 				return itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
 						.map(h -> {
-							if(h.getTankProperties().length==0)
+							if(h.getTanks() <= 0)
 								return false;
-							FluidStack fs = h.getTankProperties()[0].getContents();
-							if(fs==null)
+							FluidStack fs = h.getFluidInTank(0);
+							if(fs.isEmpty())
 								return false;
 							if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
 								return false;

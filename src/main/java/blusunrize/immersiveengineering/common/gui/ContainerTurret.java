@@ -20,9 +20,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class ContainerTurret extends ContainerIEBase<TurretTileEntity>
 {
-	public ContainerTurret(PlayerInventory inventoryPlayer, TurretTileEntity tile)
+	public ContainerTurret(int id, PlayerInventory inventoryPlayer, TurretTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 		this.tile = tile;
 
 		if(tile instanceof TurretGunTileEntity)

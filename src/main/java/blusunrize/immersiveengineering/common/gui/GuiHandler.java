@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -26,57 +27,96 @@ import net.minecraftforge.fml.network.IContainerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 public class GuiHandler
 {
-	private static final Map<ResourceLocation, BiFunction<PlayerInventory, TileEntity, Container>> TILE_CONTAINERS = new HashMap<>();
-	private static final Map<ResourceLocation, ItemContainerConstructor<? extends Container>> ITEM_CONTAINERS = new HashMap<>();
+	private static final Map<Class<? extends TileEntity>, TileContainer<?, ?>> TILE_CONTAINERS = new HashMap<>();
+	private static final Map<Class<? extends Item>, ItemContainer<?>> ITEM_CONTAINERS = new HashMap<>();
 
 	//TODO dedicated server?
-	public static <T, C extends Container, S extends Screen & IHasContainer<C>>
-	void register(ResourceLocation name,
+	public static <T extends TileEntity, C extends ContainerIEBase<T>, S extends Screen & IHasContainer<C>>
+	void register(Class<T> tileClass, ResourceLocation name,
 				  IScreenFactory<C, S> gui,
-				  BiFunction<PlayerInventory, T, C> container)
+				  TileContainerConstructor<T, C> container)
 	{
-		TILE_CONTAINERS.put(name, (inv, te) -> container.apply(inv, (T)te));
 		ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
 			World world = Minecraft.getInstance().world;
 			BlockPos pos = data.readBlockPos();
 			TileEntity te = world.getTileEntity(pos);
-			return container.apply(inv, (T)te);
+			return container.construct(windowId, inv, (T)te);
 		});
+		type.setRegistryName(name);
+		TILE_CONTAINERS.put(tileClass, new TileContainer<>(type, container));
 		ScreenManager.registerFactory(type, gui);
 	}
 
-	public static <T, C extends Container, S extends Screen & IHasContainer<C>>
-	void register(ResourceLocation name, IScreenFactory<C, S> gui,
+	public static <C extends ContainerIEBase<?>, S extends Screen & IHasContainer<C>>
+	void register(Class<? extends Item> itemClass, ResourceLocation name, IScreenFactory<C, S> gui,
 				  ItemContainerConstructor<C> container)
 	{
-		ITEM_CONTAINERS.put(name, container);
 		ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
 			World world = Minecraft.getInstance().world;
 			int slotOrdinal = data.readInt();
 			EquipmentSlotType slot = EquipmentSlotType.values()[slotOrdinal];
 			ItemStack stack = Minecraft.getInstance().player.getItemStackFromSlot(slot);
-			return container.construct(inv, world, slot, stack);
-
+			return container.construct(windowId, inv, world, slot, stack);
 		});
+		type.setRegistryName(name);
+		ITEM_CONTAINERS.put(itemClass, new ItemContainer<>(type, container));
 		ScreenManager.registerFactory(type, gui);
 	}
 
-	public static Container createContainer(ResourceLocation rl, PlayerInventory inv, TileEntity te)
+	public static <T extends TileEntity> Container createContainer(PlayerInventory inv, T te, int id)
 	{
-		return TILE_CONTAINERS.get(rl).apply(inv, te);
+		return ((TileContainer<T, ?>)TILE_CONTAINERS.get(te.getClass())).factory.construct(id, inv, te);
 	}
 
-	public static Container createContainer(ResourceLocation rl, PlayerInventory inv, World w, EquipmentSlotType slot, ItemStack stack)
+	public static Container createContainer(PlayerInventory inv, World w, EquipmentSlotType slot, ItemStack stack, int id)
 	{
-		return ITEM_CONTAINERS.get(rl).construct(inv, w, slot, stack);
+		return ITEM_CONTAINERS.get(stack.getItem().getClass()).factory.construct(id, inv, w, slot, stack);
 	}
 
-	public interface ItemContainerConstructor<T>
+	public static ContainerType<?> getContainerTypeFor(TileEntity te)
 	{
-		T construct(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack stack);
+		return TILE_CONTAINERS.get(te.getClass()).type;
+	}
+
+	public static ContainerType<?> getContainerTypeFor(ItemStack stack)
+	{
+		return ITEM_CONTAINERS.get(stack.getItem().getClass()).type;
+	}
+
+	public interface ItemContainerConstructor<C extends Container>
+	{
+		C construct(int windowId, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack stack);
+	}
+
+	public interface TileContainerConstructor<T extends TileEntity, C extends ContainerIEBase<T>>
+	{
+		C construct(int windowId, PlayerInventory inventoryPlayer, T te);
+	}
+
+	private static class TileContainer<T extends TileEntity, C extends ContainerIEBase<T>>
+	{
+		final ContainerType<C> type;
+		final TileContainerConstructor<T, C> factory;
+
+		private TileContainer(ContainerType<C> type, TileContainerConstructor<T, C> factory)
+		{
+			this.type = type;
+			this.factory = factory;
+		}
+	}
+
+	private static class ItemContainer<C extends Container>
+	{
+		final ContainerType<C> type;
+		final ItemContainerConstructor<C> factory;
+
+		private ItemContainer(ContainerType<C> type, ItemContainerConstructor factory)
+		{
+			this.type = type;
+			this.factory = factory;
+		}
 	}
 }

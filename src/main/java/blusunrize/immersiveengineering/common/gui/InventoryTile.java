@@ -14,11 +14,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-
-import javax.annotation.Nullable;
 
 public class InventoryTile implements IInventory
 {
@@ -32,31 +27,6 @@ public class InventoryTile implements IInventory
 		this.inv = (IIEInventory)tile;
 		this.name = tile.getClass().getName();
 		this.name = "IE"+(name.substring(name.lastIndexOf("TileEntity")+"TileEntity".length()));
-	}
-
-	@Override
-	public ITextComponent getName()
-	{
-		return new TranslationTextComponent(this.name);
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName()
-	{
-		return new StringTextComponent(this.name);
-	}
-
-	@Nullable
-	@Override
-	public ITextComponent getCustomName()
-	{
-		return new StringTextComponent(this.name);
 	}
 
 	@Override
@@ -150,23 +120,6 @@ public class InventoryTile implements IInventory
 	public boolean isItemValidForSlot(int index, ItemStack stack)
 	{
 		return inv.isStackValid(index, stack);
-	}
-
-	@Override
-	public int getField(int id)
-	{
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value)
-	{
-	}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
 	}
 
 	@Override

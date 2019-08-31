@@ -24,9 +24,9 @@ public class ContainerToolboxBlock extends ContainerIEBase implements ICallbackC
 {
 	IItemHandler inv;
 
-	public ContainerToolboxBlock(PlayerInventory inventoryPlayer, ToolboxTileEntity tile)
+	public ContainerToolboxBlock(int id, PlayerInventory inventoryPlayer, ToolboxTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 		this.tile = tile;
 		inv = new ItemStackHandler(tile.getInventory());
 		if(inv instanceof IEItemStackHandler)

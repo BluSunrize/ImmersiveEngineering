@@ -361,9 +361,9 @@ public class IEBlockInterfaces
 
 		@Nullable
 		@Override
-		default Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity)
+		default Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity)
 		{
-			return GuiHandler.createContainer(getGuiName(), playerInventory, (TileEntity)this);
+			return GuiHandler.createContainer(playerInventory, (TileEntity)this, id);
 		}
 
 		@Override

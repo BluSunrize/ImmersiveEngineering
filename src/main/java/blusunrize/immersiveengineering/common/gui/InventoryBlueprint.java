@@ -15,7 +15,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.StringTextComponent;
 
 public class InventoryBlueprint extends Inventory
 {
@@ -23,7 +22,7 @@ public class InventoryBlueprint extends Inventory
 
 	public InventoryBlueprint(Container container, BlueprintCraftingRecipe[] recipes)
 	{
-		super(new StringTextComponent("BlueprintOutput"), recipes.length);
+		super(recipes.length);
 		this.recipes = recipes;
 	}
 

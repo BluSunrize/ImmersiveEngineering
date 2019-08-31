@@ -57,9 +57,9 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 	public ItemStack secondRevolver;//NonNull after addSlots is called in the super constructor
 	private int offset = 0;
 
-	public ContainerRevolver(PlayerInventory iinventory, World world, EquipmentSlotType slot, ItemStack revolver)
+	public ContainerRevolver(int id, PlayerInventory iinventory, World world, EquipmentSlotType slot, ItemStack revolver)
 	{
-		super(iinventory, world, slot, revolver);
+		super(id, iinventory, world, slot, revolver);
 	}
 
 	@Override

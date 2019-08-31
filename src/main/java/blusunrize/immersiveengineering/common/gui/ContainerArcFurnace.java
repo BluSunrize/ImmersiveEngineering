@@ -18,9 +18,9 @@ import javax.annotation.Nonnull;
 
 public class ContainerArcFurnace extends ContainerIEBase<ArcFurnaceTileEntity>
 {
-	public ContainerArcFurnace(PlayerInventory inventoryPlayer, ArcFurnaceTileEntity tile)
+	public ContainerArcFurnace(int id, PlayerInventory inventoryPlayer, ArcFurnaceTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 		this.tile = tile;
 		for(int i = 0; i < 12; i++)
 			this.addSlot(new IESlot.ArcInput(this, this.inv, i, 10+i%3*21, 34+i/3*18));

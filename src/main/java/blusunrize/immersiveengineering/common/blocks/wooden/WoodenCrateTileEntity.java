@@ -158,7 +158,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 
 	@Nullable
 	@Override
-	public Container createMenu(int data, PlayerInventory playerInventory, PlayerEntity player)
+	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player)
 	{
 		if(this.lootTable!=null)
 		{
@@ -189,7 +189,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 				this.markDirty();
 			}
 		}
-		return IInteractionObjectIE.super.createMenu(data, playerInventory, player);
+		return IInteractionObjectIE.super.createMenu(id, playerInventory, player);
 	}
 
 	@Override

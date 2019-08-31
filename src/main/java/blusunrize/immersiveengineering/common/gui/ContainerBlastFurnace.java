@@ -16,9 +16,9 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerBlastFurnace extends ContainerIEBase<BlastFurnaceTileEntity>
 {
-	public ContainerBlastFurnace(PlayerInventory inventoryPlayer, BlastFurnaceTileEntity tile)
+	public ContainerBlastFurnace(int id, PlayerInventory inventoryPlayer, BlastFurnaceTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 
 		this.addSlot(new IESlot(this, this.inv, 0, 52, 17)
 		{

@@ -16,9 +16,9 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerCokeOven extends ContainerIEBase<CokeOvenTileEntity>
 {
-	public ContainerCokeOven(PlayerInventory inventoryPlayer, CokeOvenTileEntity tile)
+	public ContainerCokeOven(int id, PlayerInventory inventoryPlayer, CokeOvenTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 
 		this.addSlot(new IESlot(this, this.inv, 0, 30, 35)
 		{

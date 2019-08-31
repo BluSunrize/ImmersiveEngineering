@@ -14,9 +14,9 @@ import net.minecraft.inventory.container.Slot;
 
 public class ContainerFermenter extends ContainerIEBase<FermenterTileEntity>
 {
-	public ContainerFermenter(PlayerInventory inventoryPlayer, FermenterTileEntity tile)
+	public ContainerFermenter(int id, PlayerInventory inventoryPlayer, FermenterTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 
 		for(int i = 0; i < 8; i++)
 			this.addSlot(new Slot(this.inv, i, 8+(i%4)*18, 19+(i/4)*18));

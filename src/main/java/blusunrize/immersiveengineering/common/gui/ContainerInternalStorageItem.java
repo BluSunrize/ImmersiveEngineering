@@ -21,10 +21,10 @@ public abstract class ContainerInternalStorageItem extends ContainerItem
 {
 	public IItemHandler inv;
 
-	public ContainerInternalStorageItem(PlayerInventory iinventory, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
+	public ContainerInternalStorageItem(int id, PlayerInventory iinventory, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
 	{
-		super(iinventory, world, entityEquipmentSlot, heldItem);
-		this.inv = heldItem.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		super(id, iinventory, world, entityEquipmentSlot, heldItem);
+		this.inv = heldItem.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(RuntimeException::new);
 		if(inv instanceof IEItemStackHandler)
 			((IEItemStackHandler)inv).setInventoryForUpdate(iinventory);
 		updateSlots();

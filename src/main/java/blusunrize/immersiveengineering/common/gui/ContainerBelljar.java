@@ -16,9 +16,9 @@ import static blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEnt
 
 public class ContainerBelljar extends ContainerIEBase
 {
-	public ContainerBelljar(PlayerInventory inventoryPlayer, BelljarTileEntity tile)
+	public ContainerBelljar(int id, PlayerInventory inventoryPlayer, BelljarTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 		this.addSlot(new IESlot.Belljar(SLOT_SOIL, this, this.inv, SLOT_SOIL, 62, 54));
 		this.addSlot(new IESlot.Belljar(SLOT_SEED, this, this.inv, SLOT_SEED, 62, 34));
 		this.addSlot(new IESlot.Belljar(SLOT_FERTILIZER, this, this.inv, SLOT_FERTILIZER, 8, 59));

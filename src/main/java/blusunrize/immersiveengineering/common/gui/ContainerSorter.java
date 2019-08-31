@@ -20,9 +20,9 @@ public class ContainerSorter extends ContainerIEBase<SorterTileEntity>
 {
 	int slotCount;
 
-	public ContainerSorter(PlayerInventory inventoryPlayer, SorterTileEntity tile)
+	public ContainerSorter(int windowId, PlayerInventory inventoryPlayer, SorterTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, windowId);
 		this.tile = tile;
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < SorterTileEntity.filterSlotsPerSide; i++)

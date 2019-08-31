@@ -18,9 +18,9 @@ import net.minecraft.item.ItemStack;
 @ChestContainer
 public class ContainerCrate extends ContainerIEBase
 {
-	public ContainerCrate(PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile)
+	public ContainerCrate(int id, PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 		for(int i = 0; i < tile.getInventory().size(); i++)
 			this.addSlot(new Slot(this.inv, i, 8+(i%9)*18, 18+(i/9)*18)
 			{

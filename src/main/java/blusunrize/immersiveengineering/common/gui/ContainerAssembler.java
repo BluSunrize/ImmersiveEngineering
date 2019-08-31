@@ -18,9 +18,9 @@ import javax.annotation.Nonnull;
 
 public class ContainerAssembler extends ContainerIEBase<AssemblerTileEntity>
 {
-	public ContainerAssembler(PlayerInventory inventoryPlayer, AssemblerTileEntity tile)
+	public ContainerAssembler(int id, PlayerInventory inventoryPlayer, AssemblerTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 		this.tile = tile;
 		for(int i = 0; i < tile.patterns.length; i++)
 		{

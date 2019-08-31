@@ -19,9 +19,9 @@ import net.minecraft.world.World;
 
 public class ContainerToolbox extends ContainerInternalStorageItem implements ICallbackContainer
 {
-	public ContainerToolbox(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack toolbox)
+	public ContainerToolbox(int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack toolbox)
 	{
-		super(inventoryPlayer, world, slot, toolbox);
+		super(id, inventoryPlayer, world, slot, toolbox);
 	}
 
 	@Override

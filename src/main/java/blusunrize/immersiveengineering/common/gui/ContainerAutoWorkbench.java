@@ -22,9 +22,9 @@ public class ContainerAutoWorkbench extends ContainerIEBase<AutoWorkbenchTileEnt
 {
 	public PlayerInventory inventoryPlayer;
 
-	public ContainerAutoWorkbench(PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
+	public ContainerAutoWorkbench(int id, PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 
 		this.inventoryPlayer = inventoryPlayer;
 		this.addSlot(new IESlot.AutoBlueprint(this, this.inv, 0, 102, 69));

@@ -14,9 +14,9 @@ import net.minecraft.inventory.container.Slot;
 
 public class ContainerAlloySmelter extends ContainerIEBase<AlloySmelterTileEntity>
 {
-	public ContainerAlloySmelter(PlayerInventory inventoryPlayer, AlloySmelterTileEntity tile)
+	public ContainerAlloySmelter(int id, PlayerInventory inventoryPlayer, AlloySmelterTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 
 		this.addSlot(new Slot(this.inv, 0, 38, 17));
 		this.addSlot(new Slot(this.inv, 1, 66, 17));

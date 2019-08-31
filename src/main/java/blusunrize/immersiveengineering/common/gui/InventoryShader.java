@@ -13,12 +13,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class InventoryShader implements IInventory
 {
@@ -102,31 +98,6 @@ public class InventoryShader implements IInventory
 	}
 
 	@Override
-	public ITextComponent getName()
-	{
-		return new TranslationTextComponent("container."+name);
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName()
-	{
-		return this.hasCustomName()?this.getCustomName(): this.getName();
-	}
-
-	@Nullable
-	@Override
-	public ITextComponent getCustomName()
-	{
-		return new StringTextComponent(name);
-	}
-
-	@Override
 	public int getInventoryStackLimit()
 	{
 		return 64;
@@ -159,24 +130,6 @@ public class InventoryShader implements IInventory
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		return true;
-	}
-
-
-	@Override
-	public int getField(int id)
-	{
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value)
-	{
-	}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
 	}
 
 	@Override

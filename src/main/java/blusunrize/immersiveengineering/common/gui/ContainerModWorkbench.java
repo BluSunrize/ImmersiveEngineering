@@ -33,9 +33,9 @@ public class ContainerModWorkbench extends ContainerIEBase<ModWorkbenchTileEntit
 	private InventoryBlueprint inventoryBPoutput;
 	public InventoryShader shaderInv;
 
-	public ContainerModWorkbench(PlayerInventory inventoryPlayer, World world, ModWorkbenchTileEntity tile)
+	public ContainerModWorkbench(int id, PlayerInventory inventoryPlayer, World world, ModWorkbenchTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 		this.world = world;
 		this.inventoryPlayer = inventoryPlayer;
 		rebindSlots();

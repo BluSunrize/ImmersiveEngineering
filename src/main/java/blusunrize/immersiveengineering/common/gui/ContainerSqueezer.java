@@ -14,9 +14,9 @@ import net.minecraft.inventory.container.Slot;
 
 public class ContainerSqueezer extends ContainerIEBase<SqueezerTileEntity>
 {
-	public ContainerSqueezer(PlayerInventory inventoryPlayer, SqueezerTileEntity tile)
+	public ContainerSqueezer(int id, PlayerInventory inventoryPlayer, SqueezerTileEntity tile)
 	{
-		super(inventoryPlayer, tile);
+		super(inventoryPlayer, tile, id);
 
 		for(int i = 0; i < 8; i++)
 			this.addSlot(new Slot(this.inv, i, 8+(i%4)*18, 35+(i/4)*18));

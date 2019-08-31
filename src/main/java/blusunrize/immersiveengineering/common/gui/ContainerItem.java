@@ -31,8 +31,9 @@ public abstract class ContainerItem extends Container implements Supplier<World>
 	protected final PlayerEntity player;
 	public int internalSlots;
 
-	public ContainerItem(PlayerInventory inventoryPlayer, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
+	public ContainerItem(int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
 	{
+		super(GuiHandler.getContainerTypeFor(heldItem), id);
 		this.inventoryPlayer = inventoryPlayer;
 		this.world = world;
 		this.player = inventoryPlayer.player;
