@@ -45,6 +45,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.network.MessageChemthrowerSwitch;
 import blusunrize.immersiveengineering.common.util.network.MessageMagnetEquip;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
+import blusunrize.immersiveengineering.common.util.network.MessageRevolverRotate;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
@@ -959,6 +960,11 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				if(Config.IEConfig.Tools.chemthrower_scroll&&equipped.getItem() instanceof ItemChemthrower&&((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
 				{
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.getDwheel() < 0));
+					event.setCanceled(true);
+				}
+				if(equipped.getItem() instanceof ItemRevolver)
+				{
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageRevolverRotate(event.getDwheel() < 0));
 					event.setCanceled(true);
 				}
 			}

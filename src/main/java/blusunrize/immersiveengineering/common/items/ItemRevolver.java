@@ -97,6 +97,22 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			}
 	}
 
+	public void rotateCylinder(ItemStack revolver, EntityPlayer player, boolean forward, NonNullList<ItemStack> bullets)
+	{
+		NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletCount(revolver), ItemStack.EMPTY);
+		int offset = forward?-1:1;
+		for(int i = 0; i < cycled.size(); i++)
+			cycled.set((i+offset+cycled.size())%cycled.size(), bullets.get(i));
+		setBullets(revolver, cycled, false);
+		player.inventory.markDirty();
+	}
+
+	public void rotateCylinder(ItemStack revolver, EntityPlayer player, boolean forward)
+	{
+		NonNullList<ItemStack> bullets = getBullets(revolver);
+		rotateCylinder(revolver, player, forward, bullets);
+	}
+
 	@Override
 	public int getSlotCount(ItemStack stack)
 	{
@@ -353,12 +369,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 						else
 							world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_HAT, SoundCategory.PLAYERS, 1f, 1f);
 
-						NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletCount(revolver), ItemStack.EMPTY);
-						for(int i = 1; i < cycled.size(); i++)
-							cycled.set(i-1, bullets.get(i));
-						cycled.set(cycled.size()-1, bullets.get(0));
-						setBullets(revolver, cycled, false);
-						player.inventory.markDirty();
+						rotateCylinder(revolver, player, true, bullets);
 						ItemNBTHelper.setInt(revolver, "cooldown", getMaxShootCooldown(revolver));
 						return new ActionResult(EnumActionResult.SUCCESS, revolver);
 					}
