@@ -12,12 +12,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -32,7 +29,6 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Set;
 
 public class ItemVoltmeter extends ItemIEBase implements ITool
 {
@@ -106,10 +102,11 @@ public class ItemVoltmeter extends ItemIEBase implements ITool
 					IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
 					if(nodeLink!=null)
 					{
-						Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world, true);
-						for(AbstractConnection con : connections)
-							if(Utils.toCC(nodeHere).equals(con.end))
-								player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"averageLoss", Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
+						//TODO
+						//Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world, true);
+						//for(AbstractConnection con : connections)
+						//	if(Utils.toCC(nodeHere).equals(con.end))
+						//		player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"averageLoss", Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
 					}
 				}
 				ItemNBTHelper.remove(stack, "linkingPos");

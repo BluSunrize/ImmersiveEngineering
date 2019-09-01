@@ -28,10 +28,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import javax.annotation.Nonnull;
@@ -52,8 +54,9 @@ public class ItemJerrycan extends ItemIEBase
 		LazyOptional<FluidStack> fsCap = FluidUtil.getFluidContained(stack);
 		fsCap.ifPresent(fs ->
 		{
-			TextFormatting rarity = fs.getFluid().getRarity()==Rarity.COMMON?TextFormatting.GRAY: fs.getFluid().getRarity().color;
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fs.amount, 10000)
+			FluidAttributes attr = fs.getFluid().getAttributes();
+			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY: attr.getRarity().color;
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fs.getAmount(), 10000)
 					.setStyle(new Style().setColor(rarity)));
 		});
 		if(!fsCap.isPresent())
@@ -73,8 +76,6 @@ public class ItemJerrycan extends ItemIEBase
 			FluidStack fs = FluidUtil.getFluidContained(stack).orElseThrow(RuntimeException::new);
 			if(Utils.placeFluidBlock(world, pos.offset(ctx.getFace()), fs))
 			{
-				if(fs.amount <= 0)
-					fs = null;
 				ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 				return ActionResultType.SUCCESS;
 			}
@@ -95,15 +96,15 @@ public class ItemJerrycan extends ItemIEBase
 		{
 			ItemStack ret = stack.copy();
 			IFluidHandler handler = FluidUtil.getFluidHandler(ret).orElseThrow(RuntimeException::new);
-			handler.drain(ItemNBTHelper.getInt(ret, "jerrycanDrain"), true);
+			handler.drain(ItemNBTHelper.getInt(ret, "jerrycanDrain"), FluidAction.EXECUTE);
 			ItemNBTHelper.remove(ret, "jerrycanDrain");
 			return ret;
 		}
-		else if(FluidUtil.getFluidContained(stack)!=null)
+		else if(FluidUtil.getFluidContained(stack).isPresent())
 		{
 			ItemStack ret = stack.copy();
 			IFluidHandler handler = FluidUtil.getFluidHandler(ret).orElseThrow(RuntimeException::new);
-			handler.drain(1000, true);
+			handler.drain(1000, FluidAction.EXECUTE);
 			return ret;
 		}
 		return stack;

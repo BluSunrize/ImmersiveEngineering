@@ -26,7 +26,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -148,16 +147,9 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		if(data.getStatus()!=SkyhookStatus.HOLDING_CONNECTING)
 			return;
 		World world = player.world;
-		TileEntity connector = null;
-		Connection line = null;
 		Connection con = ApiUtils.getConnectionMovedThrough(world, player);
 		if(con!=null)
-		{
-			connector = world.getTileEntity(con.start);
-			line = con;
-		}
-		if(line!=null&&connector!=null)
-			SkylineHelper.spawnHook(player, connector, line, player.getActiveHand(), shouldLimitSpeed(stack));
+			SkylineHelper.spawnHook(player, con, player.getActiveHand(), shouldLimitSpeed(stack));
 	}
 
 	@Override

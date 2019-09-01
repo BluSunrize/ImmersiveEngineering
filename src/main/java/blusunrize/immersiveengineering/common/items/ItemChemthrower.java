@@ -47,6 +47,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -85,10 +86,11 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	{
 		if(fs!=null)
 		{
-			TextFormatting rarity = fs.getFluid().getRarity()==Rarity.COMMON?TextFormatting.GRAY:
-					fs.getFluid().getRarity().color;
-			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"chemthrower.fluidStack", fs.getLocalizedName(),
-					fs.amount, capacity).setStyle(new Style().setColor(rarity));
+			FluidAttributes attr = fs.getFluid().getAttributes();
+			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY:
+					attr.getRarity().color;
+			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"chemthrower.fluidStack", attr.getDisplayName(fs),
+					fs.getAmount(), capacity).setStyle(new Style().setColor(rarity));
 		}
 		else
 			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty");
@@ -131,12 +133,12 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		if(fs!=null&&fs.getFluid()!=null)
 		{
 			int duration = getUseDuration(stack)-count;
-			int consumed = IEConfig.Tools.chemthrower_consumption;
-			if(consumed*duration <= fs.amount)
+			int consumed = IEConfig.TOOLS.chemthrower_consumption.get();
+			if(consumed*duration <= fs.getAmount())
 			{
 				Vec3d v = player.getLookVec();
 				int split = 8;
-				boolean isGas = fs.getFluid().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
+				boolean isGas = fs.getFluid().getAttributes().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
 
 				float scatter = isGas?.15f: .05f;
 				float range = isGas?.5f: 1f;
@@ -153,17 +155,11 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(player.world, player, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fs);
 
 					// Apply momentum from the player.
-					chem.motionX = player.motionX+vecDir.x*range;
-					chem.motionY = player.motionY+vecDir.y*range;
-					chem.motionZ = player.motionZ+vecDir.z*range;
+					chem.setMotion(player.getMotion().add(vecDir.scale(range)));
 
 					// Apply a small amount of backforce.
 					if(!player.onGround)
-					{
-						player.motionX -= vecDir.x*0.0025*range;
-						player.motionY -= vecDir.y*0.0025*range;
-						player.motionZ -= vecDir.z*0.0025*range;
-					}
+						player.setMotion(player.getMotion().subtract(vecDir.scale(0.0025*range)));
 					if(ignite)
 						chem.setFire(10);
 					if(!player.world.isRemote)
@@ -191,8 +187,8 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		if(fs!=null)
 		{
 			int duration = getUseDuration(stack)-timeLeft;
-			fs.amount -= IEConfig.Tools.chemthrower_consumption*duration;
-			if(fs.amount <= 0)
+			fs.shrink(IEConfig.TOOLS.chemthrower_consumption.get()*duration);
+			if(fs.getAmount() <= 0)
 				ItemNBTHelper.remove(stack, FluidHandlerItemStack.FLUID_NBT_KEY);
 			else
 				ItemNBTHelper.setFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fs);
@@ -232,9 +228,9 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	public void finishUpgradeRecalculation(ItemStack stack)
 	{
 		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.amount > getCapacity(stack, 2000))
+		if(fs!=null&&fs.getAmount() > getCapacity(stack, 2000))
 		{
-			fs.amount = getCapacity(stack, 2000);
+			fs.setAmount(getCapacity(stack, 2000));
 			ItemNBTHelper.setFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fs);
 		}
 	}

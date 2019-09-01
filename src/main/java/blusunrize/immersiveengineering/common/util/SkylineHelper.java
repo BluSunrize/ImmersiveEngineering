@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookUserData;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import com.google.common.collect.Lists;
@@ -18,7 +19,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -40,7 +40,7 @@ public class SkylineHelper
 {
 	private static final double LN_0_98 = Math.log(.98);
 
-	public static void spawnHook(LivingEntity player, TileEntity start, Connection connection, Hand hand,
+	public static void spawnHook(LivingEntity player, Connection connection, Hand hand,
 								 boolean limitSpeed)
 	{
 

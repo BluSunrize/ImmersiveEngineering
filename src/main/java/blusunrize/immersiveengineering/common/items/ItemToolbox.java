@@ -8,13 +8,10 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
-import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import com.google.common.collect.Sets;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -28,27 +25,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import java.util.Set;
 
-public class ItemToolbox extends ItemInternalStorage implements IGuiItem
+public class ItemToolbox extends ItemInternalStorage
 {
 	public static final int SLOT_COUNT = 23;
 
 	public ItemToolbox()
 	{
 		super("toolbox", new Properties().maxStackSize(1));
-		final Set<String> configTools = Sets.newHashSet(IEConfig.Tools.toolbox_tools);
-		final Set<String> configFood = Sets.newHashSet(IEConfig.Tools.toolbox_foods);
-		final Set<String> configWires = Sets.newHashSet(IEConfig.Tools.toolbox_wiring);
-		ToolboxHandler.addToolType(stack -> configTools.contains(stack.getItem().getRegistryName().toString()));
-		ToolboxHandler.addFoodType(stack -> configFood.contains(stack.getItem().getRegistryName().toString()));
-		ToolboxHandler.addWiringType((stack, world) -> configWires.contains(stack.getItem().getRegistryName().toString()));
-	}
-
-	@Override
-	public int getGuiID(ItemStack stack)
-	{
-		return Lib.GUIID_Toolbox;
+		ToolboxHandler.addToolType(stack -> IEConfig.TOOLS.toolbox_tools.get().contains(stack.getItem().getRegistryName().toString()));
+		ToolboxHandler.addFoodType(stack -> IEConfig.TOOLS.toolbox_foods.get().contains(stack.getItem().getRegistryName().toString()));
+		ToolboxHandler.addWiringType((stack, world) -> IEConfig.TOOLS.toolbox_wiring.get().contains(stack.getItem().getRegistryName().toString()));
 	}
 
 	@Nonnull
@@ -57,7 +44,7 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
-			CommonProxy.openGuiForItem(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+			openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}
 
@@ -78,10 +65,10 @@ public class ItemToolbox extends ItemInternalStorage implements IGuiItem
 
 			if(stack.getCount()!=0&&player.canPlayerEdit(pos, side, stack))//TODO &&world.mayPlace(IEContent.blockToolbox, pos, false, side, null))
 			{
-				BlockState toolbox = IEContent.blockToolbox.getDefaultState();
+				BlockState toolbox = MetalDevices.toolbox.getDefaultState();
 				if(world.setBlockState(pos, toolbox, 3))
 				{
-					((IEBaseBlock)IEContent.blockToolbox).onIEBlockPlacedBy(new BlockItemUseContext(ctx), toolbox);
+					((IEBaseBlock)MetalDevices.toolbox).onIEBlockPlacedBy(new BlockItemUseContext(ctx), toolbox);
 
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);

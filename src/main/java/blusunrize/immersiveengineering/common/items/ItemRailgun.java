@@ -185,7 +185,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
-		int energy = IEConfig.Tools.railgun_consumption;
+		int energy = IEConfig.TOOLS.railgun_consumption.get();
 		float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
 		energy = (int)(energy*energyMod);
 		if(this.extractEnergy(stack, energy, true)==energy&&!findAmmo(player).isEmpty())
@@ -207,7 +207,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
-				Vec3d pos = Utils.getLivingFrontPos(user, .4375, user.height*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+				Vec3d pos = Utils.getLivingFrontPos(user, .4375, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
 				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, null, .0625f);
 			}
 		}
@@ -222,7 +222,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 			ItemNBTHelper.remove(stack, "inUse");
 			if(inUse < getChargeTime(stack))
 				return;
-			int energy = IEConfig.Tools.railgun_consumption;
+			int energy = IEConfig.TOOLS.railgun_consumption.get();
 			float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
 			energy = (int)(energy*energyMod);
 			if(this.extractEnergy(stack, energy, true)==energy)
@@ -244,7 +244,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 					if(shader!=null)
 					{
-						Vec3d pos = Utils.getLivingFrontPos(user, .75, user.height*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+						Vec3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
 						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, user.getForward(), .125f);
 					}
 				}

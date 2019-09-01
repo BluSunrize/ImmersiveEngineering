@@ -19,6 +19,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -83,12 +85,7 @@ public abstract class WireType implements ILocalHandlerProvider
 
 	public abstract int getMaxLength();
 
-	public abstract ItemStack getWireCoil();
-
-	public ItemStack getWireCoil(Connection c)
-	{
-		return getWireCoil();
-	}
+	public abstract ItemStack getWireCoil(Connection con);
 
 	public abstract double getRenderDiameter();
 
@@ -223,7 +220,7 @@ public abstract class WireType implements ILocalHandlerProvider
 		}
 
 		@Override
-		public ItemStack getWireCoil()
+		public ItemStack getWireCoil(Connection con)
 		{
 			return new ItemStack(ieWireCoil, 1, ordinal);
 		}

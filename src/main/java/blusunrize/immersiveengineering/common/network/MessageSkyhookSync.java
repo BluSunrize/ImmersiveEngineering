@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -23,7 +23,8 @@ import java.util.function.Supplier;
 public class MessageSkyhookSync implements IMessage
 {
 	private int entityID;
-	private ImmersiveNetHandler.Connection connection;
+	private Connection connection;
+	private ConnectionPoint start;
 	private double linePos;
 	private double speed;
 
@@ -32,6 +33,7 @@ public class MessageSkyhookSync implements IMessage
 		entityID = entity.getEntityId();
 		connection = entity.getConnection();
 		linePos = entity.linePos;
+		start = entity.start;
 		speed = entity.horizontalSpeed;
 	}
 
@@ -39,32 +41,34 @@ public class MessageSkyhookSync implements IMessage
 	{
 		entityID = buf.readInt();
 		CompoundNBT tag = buf.readCompoundTag();
-		connection = ImmersiveNetHandler.Connection.readFromNBT(tag);
+		connection = new Connection(tag);
 		linePos = buf.readDouble();
 		speed = buf.readDouble();
+		start = new ConnectionPoint(buf.readCompoundTag());
 	}
 
 	@Override
 	public void toBytes(PacketBuffer buf)
 	{
 		buf.writeInt(entityID);
-		buf.writeCompoundTag(connection.writeToNBT());
+		buf.writeCompoundTag(connection.toNBT());
 		buf.writeDouble(linePos);
 		buf.writeDouble(speed);
+		buf.writeCompoundTag(start.createTag());
 	}
 
 	@Override
 	public void process(Supplier<Context> context)
 	{
-		Minecraft.getInstance().addScheduledTask(() -> {
+		context.get().enqueueWork(() -> {
 			World world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null)
 			{
 				Entity ent = world.getEntityByID(entityID);
 				if(ent instanceof SkylineHookEntity)
 				{
-					connection.getSubVertices(world);
-					((SkylineHookEntity)ent).setConnectionAndPos(connection, , linePos, speed);
+					connection.generateCatenaryData(world);
+					((SkylineHookEntity)ent).setConnectionAndPos(connection, start, linePos, speed);
 				}
 			}
 		});

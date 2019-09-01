@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -19,11 +20,19 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.enchantment.UnbreakingEnchantment;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
@@ -111,5 +120,26 @@ public class ItemIEBase extends Item implements IColouredItem
 	public void unhide()
 	{
 		isHidden = false;
+	}
+
+	protected void openGui(PlayerEntity player, EquipmentSlotType slot)
+	{
+		ItemStack stack = player.getItemStackFromSlot(slot);
+		NetworkHooks.openGui((ServerPlayerEntity)player, new INamedContainerProvider()
+		{
+			@Nonnull
+			@Override
+			public ITextComponent getDisplayName()
+			{
+				return new StringTextComponent("");
+			}
+
+			@Nullable
+			@Override
+			public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity)
+			{
+				return GuiHandler.createContainer(playerInventory, playerEntity.world, slot, stack, i);
+			}
+		}, buffer -> buffer.writeInt(slot.ordinal()));
 	}
 }

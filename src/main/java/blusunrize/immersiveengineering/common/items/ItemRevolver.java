@@ -23,12 +23,10 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
-import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
-import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.network.MessageSpeedloaderSync;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -46,6 +44,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -64,6 +63,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -76,7 +76,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallback<ItemStack>, ITool, IGuiItem, IBulletContainer
+public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallback<ItemStack>, ITool, IBulletContainer
 {
 	public ItemRevolver()
 	{
@@ -190,16 +190,16 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		if(slot==EquipmentSlotType.MAINHAND)
 		{
 			if(getUpgrades(stack).getBoolean("fancyAnimation"))
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, 0));
+				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, Operation.ADDITION));
 			double melee = getUpgrades(stack).getDouble("melee");
 			if(melee!=0)
 			{
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, 0));
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
+				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, Operation.ADDITION));
+				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
 			}
 			double speed = getUpgrades(stack).getDouble("speed");
 			if(speed!=0)
-				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, 1));
+				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
 		}
 		return multimap;
 	}
@@ -243,7 +243,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		{
 			if(player.isSneaking())
 			{
-				CommonProxy.openGuiForItem(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+				openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
 				return new ActionResult<>(ActionResultType.SUCCESS, revolver);
 			}
 			else if(player.getCooledAttackStrength(1) >= 1)
@@ -338,7 +338,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(revolver);
 				if(shader!=null)
 				{
-					Vec3d pos = Utils.getLivingFrontPos(player, .75, player.height*.75, hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite(), false, 1);
+					Vec3d pos = Utils.getLivingFrontPos(player, .75, player.getHeight()*.75, hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite(), false, 1);
 					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver, shader.getRight().getShaderType(), pos, player.getForward(), .125f);
 				}
 			}
@@ -350,9 +350,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	private RevolvershotEntity getBullet(PlayerEntity player, Vec3d vecSpawn, Vec3d vecDir, String type, ItemStack stack, boolean electro)
 	{
 		RevolvershotEntity bullet = new RevolvershotEntity(player.world, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
-		bullet.motionX = vecDir.x*2;
-		bullet.motionY = vecDir.y*2;
-		bullet.motionZ = vecDir.z*2;
+		bullet.setMotion(vecDir.scale(2));
 		bullet.bulletElectro = electro;
 		return bullet;
 	}
@@ -391,7 +389,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		if(!remote)
 			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
 		else
-			return Utils.readInventory(ItemNBTHelper.getTag(revolver).getList("bullets", 10), getBulletCount(revolver));
+			return Utils.readInventory(revolver.getOrCreateTag().getList("bullets", NBT.TAG_COMPOUND), getBulletCount(revolver));
 	}
 
 	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets)
@@ -667,13 +665,6 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();
 	public static final Map<String, SpecialRevolver> specialRevolversByTag = new HashMap<String, SpecialRevolver>();
-
-	@Override
-	public int getGuiID(ItemStack stack)
-	{
-		return Lib.GUIID_Revolver;
-	}
-
 
 	public static class SpecialRevolver
 	{

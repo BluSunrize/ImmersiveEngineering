@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -45,7 +44,7 @@ public class ItemShaderBag extends ItemIEBase
 	@Override
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
-		return ClientUtils.getFormattingColour(rarity.color);
+		return rarity.color.getColor();
 	}
 
 	@Override

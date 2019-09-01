@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.google.common.util.concurrent.ListenableFutureTask;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -42,6 +41,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.concurrent.ThreadTaskExecutor;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -53,6 +53,8 @@ import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -1074,39 +1076,29 @@ public class ApiUtils
 		}
 
 		return ret.get();
+		 */
 	}
 
-	public static Connection getConnectionMovedThrough(World world, EntityLivingBase e)
+	public static Connection getConnectionMovedThrough(World world, LivingEntity e)
 	{
-		Vec3d start = e.getPositionEyes(0);
-		Vec3d end = e.getPositionEyes(1);
+		Vec3d start = e.getEyePosition(0);
+		Vec3d end = e.getEyePosition(1);
 		return raytraceWires(world, start, end, null);
 	}
 
-	public static Connection getTargetConnection(World world, EntityPlayer player, Connection ignored, double maxDistance)
+	public static Connection getTargetConnection(World world, PlayerEntity player, Connection ignored, double maxDistance)
 	{
 		Vec3d look = player.getLookVec();
-		Vec3d start = player.getPositionEyes(1);
+		Vec3d start = player.getEyePosition(1);
 		Vec3d end = start.add(look.scale(maxDistance));
-		Connection ret = raytraceWires(world, start, end, ignored);
-		if(ret!=null)
-		{
-			Vec3d across = new Vec3d(ret.end).subtract(new Vec3d(ret.start));
-			if(across.dotProduct(player.getLookVec()) < 0)
-				ret = ImmersiveNetHandler.INSTANCE.getReverseConnection(world.provider.getDimension(), ret);
-		}
-		return retConn;
-		*/
+		return raytraceWires(world, start, end, ignored);
 	}
 
 	public static void addFutureServerTask(World world, Runnable task)
 	{
-		if(world.getMinecraftServer()!=null)
-			synchronized(world.getMinecraftServer().futureTaskQueue)
-			{
-				world.getMinecraftServer().futureTaskQueue.add(ListenableFutureTask.create(
-						task, null));
-			}
+		LogicalSide side = world.isRemote?LogicalSide.CLIENT: LogicalSide.SERVER;
+		ThreadTaskExecutor<?> tmp = LogicalSidedProvider.WORKQUEUE.get(side);
+		tmp.deferTask(task);
 	}
 
 	public static void moveConnectionEnd(Connection conn, ConnectionPoint currEnd, ConnectionPoint newEnd, World world)

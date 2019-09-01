@@ -45,6 +45,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -131,7 +132,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 		boolean blocking = ent instanceof LivingEntity&&((LivingEntity)ent).isActiveItemStackBlocking();
 		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
-			if(getUpgrades(stack).hasKey("flash_cooldown")&&this.extractEnergy(stack, 20, true)==20)
+			if(getUpgrades(stack).contains("flash_cooldown", NBT.TAG_INT)&&this.extractEnergy(stack, 20, true)==20)
 			{
 				this.extractEnergy(stack, 20, false);
 				int cooldown = getUpgrades(stack).getInt("flash_cooldown");
@@ -140,7 +141,7 @@ public class ItemIEShield extends ItemUpgradeableTool implements IIEEnergyItem, 
 				else
 					getUpgrades(stack).putInt("flash_cooldown", cooldown);
 			}
-			if(getUpgrades(stack).hasKey("shock_cooldown")&&this.extractEnergy(stack, 20, true)==20)
+			if(getUpgrades(stack).contains("shock_cooldown", NBT.TAG_INT)&&this.extractEnergy(stack, 20, true)==20)
 			{
 				this.extractEnergy(stack, 20, false);
 				int cooldown = getUpgrades(stack).getInt("shock_cooldown");

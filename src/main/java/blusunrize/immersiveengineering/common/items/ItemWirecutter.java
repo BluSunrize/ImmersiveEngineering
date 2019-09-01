@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -38,8 +39,7 @@ import net.minecraftforge.common.ToolType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
-
-import static blusunrize.immersiveengineering.common.IEConfig.Tools.cutterDurabiliy;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageableIE
 {
@@ -68,7 +68,7 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 	@Override
 	public int getMaxDamageIE(ItemStack stack)
 	{
-		return cutterDurabiliy;
+		return IEConfig.TOOLS.cutterDurabiliy.get();
 	}
 
 	@Override
@@ -110,7 +110,10 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		TileEntity tileEntity = world.getTileEntity(pos);
-		TargetingInfo target = new TargetingInfo(context.getFace(), context.getHitX(), context.getHitY(), context.getHitZ());
+		TargetingInfo target = new TargetingInfo(context.getFace(),
+				(float)context.getHitVec().x,
+				(float)context.getHitVec().y,
+				(float)context.getHitVec().z);
 		ItemStack stack = context.getItem();
 		PlayerEntity player = context.getPlayer();
 		if(player!=null&&tileEntity instanceof IImmersiveConnectable)
@@ -123,12 +126,17 @@ public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageable
 			if(!world.isRemote)
 			{
 				IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
-				boolean cut = ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, target);
-				IESaveData.setDirty(world.getDimension().getType());
-				if(cut)
+				GlobalWireNetwork net = GlobalWireNetwork.getNetwork(world);
+				AtomicBoolean cut = new AtomicBoolean(false);
+				net.removeAllConnectionsAt(nodeHere, conn -> {
+					ItemStack coil = conn.type.getWireCoil(conn);
+					world.addEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), coil));
+					cut.set(true);
+				});
+				if(cut.get())
 				{
 					int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;
-					if(nbtDamage < cutterDurabiliy)
+					if(nbtDamage < IEConfig.TOOLS.cutterDurabiliy.get())
 						ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, nbtDamage);
 					else
 					{

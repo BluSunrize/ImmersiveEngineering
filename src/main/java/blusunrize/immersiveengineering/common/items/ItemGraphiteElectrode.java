@@ -22,12 +22,9 @@ import java.util.List;
 
 public class ItemGraphiteElectrode extends ItemIEBase
 {
-	public static int electrodeMaxDamage;
-
 	public ItemGraphiteElectrode()
 	{
 		super("graphite_electrode", new Properties().maxStackSize(16));
-		electrodeMaxDamage = IEConfig.MACHINES.arcfurnace_electrodeDamage;
 	}
 
 	@Override
@@ -46,13 +43,13 @@ public class ItemGraphiteElectrode extends ItemIEBase
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return ItemNBTHelper.getInt(stack, "graphDmg")/(double)electrodeMaxDamage;
+		return ItemNBTHelper.getInt(stack, "graphDmg")/(double)IEConfig.MACHINES.arcfurnace_electrodeDamage.get();
 	}
 
 	@Override
 	public int getMaxDamage(ItemStack stack)
 	{
-		return electrodeMaxDamage;
+		return IEConfig.MACHINES.arcfurnace_electrodeDamage.get();
 	}
 
 	@Override

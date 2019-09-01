@@ -58,7 +58,7 @@ public class SkylineHookEntity extends Entity
 	public static final double MOVE_SPEED_HOR = .25;
 	public static final double MOVE_SPEED_VERT = .1;
 	private Connection connection;
-	private ConnectionPoint start;
+	public ConnectionPoint start;
 	public double linePos;//Start is 0, end is 1
 	public double horizontalSpeed;//Blocks per tick, vertical iff the connection is vertical
 	private double angle;

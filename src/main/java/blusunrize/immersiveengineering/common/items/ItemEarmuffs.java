@@ -28,8 +28,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.IDyeableArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -41,7 +41,7 @@ import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-public class ItemEarmuffs extends IDyeableArmorItem implements IConfigurableTool, ITool, IColouredItem
+public class ItemEarmuffs extends DyeableArmorItem implements IConfigurableTool, ITool, IColouredItem
 {
 	public ItemEarmuffs()
 	{

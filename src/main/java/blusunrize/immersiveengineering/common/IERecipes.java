@@ -313,7 +313,7 @@ public class IERecipes
 
 	public static void postInitOreDictRecipes()
 	{
-		boolean allowHammerCrushing = !IEConfig.Tools.disableHammerCrushing;
+		boolean allowHammerCrushing = !IEConfig.TOOLS.disableHammerCrushing;
 		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(moldPlate), false);
 		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(moldGear), false);
 		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(moldRod), false);

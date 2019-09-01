@@ -69,6 +69,6 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
 		return ApiUtils.doCoilUse(this, ctx.getPlayer(), ctx.getWorld(), ctx.getPos(), ctx.getItem(), ctx.getFace(),
-				ctx.getHitX(), ctx.getHitY(), ctx.getHitZ());
+				(float)ctx.getHitVec().x, (float)ctx.getHitVec().y, (float)ctx.getHitVec().z);
 	}
 }

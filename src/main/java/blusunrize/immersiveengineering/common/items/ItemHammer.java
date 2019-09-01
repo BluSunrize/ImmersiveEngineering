@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -38,6 +39,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.IWorldReader;
@@ -48,8 +50,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
-
-import static blusunrize.immersiveengineering.common.IEConfig.Tools.hammerDurabiliy;
 
 public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 {
@@ -63,7 +63,7 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 	@Override
 	public int getMaxDamageIE(ItemStack stack)
 	{
-		return hammerDurabiliy;
+		return IEConfig.TOOLS.hammerDurabiliy.get();
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 
 	private void addInfo(List<ITextComponent> list, String s, ListNBT tagList)
 	{
-		if(!Screen.isShiftKeyDown())
+		if(!Screen.hasShiftDown())
 			list.add(new TranslationTextComponent(Lib.DESC_INFO+"holdShift", s));
 		else
 		{
@@ -118,29 +118,29 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 		BlockPos pos = context.getPos();
 		PlayerEntity player = context.getPlayer();
 		Direction side = context.getFace();
-		String[] permittedMultiblocks = null;
-		String[] interdictedMultiblocks = null;
+		ResourceLocation[] permittedMultiblocks = null;
+		ResourceLocation[] interdictedMultiblocks = null;
 		if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
 		{
 			ListNBT list = stack.getOrCreateTag().getList("multiblockPermission", 8);
-			permittedMultiblocks = new String[list.size()];
+			permittedMultiblocks = new ResourceLocation[list.size()];
 			for(int i = 0; i < permittedMultiblocks.length; i++)
-				permittedMultiblocks[i] = list.getString(i);
+				permittedMultiblocks[i] = new ResourceLocation(list.getString(i));
 		}
 		if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
 		{
 			ListNBT list = stack.getOrCreateTag().getList("multiblockInterdiction", 8);
-			interdictedMultiblocks = new String[list.size()];
+			interdictedMultiblocks = new ResourceLocation[list.size()];
 			for(int i = 0; i < interdictedMultiblocks.length; i++)
-				interdictedMultiblocks[i] = list.getString(i);
+				interdictedMultiblocks[i] = new ResourceLocation(list.getString(i));
 		}
 		for(MultiblockHandler.IMultiblock mb : MultiblockHandler.getMultiblocks())
 			if(mb.isBlockTrigger(world.getBlockState(pos)))
 			{
 				boolean b = permittedMultiblocks==null;
 				if(permittedMultiblocks!=null)
-					for(String s : permittedMultiblocks)
-						if(mb.getUniqueName().equalsIgnoreCase(s))
+					for(ResourceLocation s : permittedMultiblocks)
+						if(mb.getUniqueName().equals(s))
 						{
 							b = true;
 							break;
@@ -148,8 +148,8 @@ public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
 				if(!b)
 					break;
 				if(interdictedMultiblocks!=null)
-					for(String s : interdictedMultiblocks)
-						if(mb.getUniqueName().equalsIgnoreCase(s))
+					for(ResourceLocation s : interdictedMultiblocks)
+						if(mb.getUniqueName().equals(s))
 						{
 							b = false;
 							break;

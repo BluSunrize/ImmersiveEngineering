@@ -8,11 +8,8 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -30,7 +27,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiItem, IBulletContainer
+public class ItemSpeedloader extends ItemInternalStorage implements ITool, IBulletContainer
 {
 	public ItemSpeedloader()
 	{
@@ -49,7 +46,7 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiI
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
-			CommonProxy.openGuiForItem(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+			openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}
 
@@ -65,12 +62,6 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IGuiI
 			}
 			return true;
 		}).orElse(true);
-	}
-
-	@Override
-	public int getGuiID(ItemStack stack)
-	{
-		return Lib.GUIID_Revolver;
 	}
 
 	@Override

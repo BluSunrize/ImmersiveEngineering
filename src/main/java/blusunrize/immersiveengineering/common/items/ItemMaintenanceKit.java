@@ -8,9 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -21,26 +18,20 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class ItemMaintenanceKit extends ItemIEBase implements IGuiItem
+public class ItemMaintenanceKit extends ItemIEBase
 {
 	public ItemMaintenanceKit()
 	{
 		super("maintenance_kit", new Properties().maxStackSize(1).defaultMaxDamage(50));
 	}
 
-	@Override
-	public int getGuiID(ItemStack stack)
-	{
-		return Lib.GUIID_MaintenanceKit;
-	}
-
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
-		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
-			CommonProxy.openGuiForItem(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+			openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+		ItemStack stack = player.getHeldItem(hand);
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}
 }

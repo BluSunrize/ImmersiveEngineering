@@ -71,7 +71,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 				float angle = (float)Math.toDegrees(Math.atan2(look.x, look.z));
 				FluorescentTubeEntity tube = new FluorescentTubeEntity(world, stack.copy(), angle);
 				BlockPos pos = ctx.getPos();
-				tube.setPosition(pos.getX()+ctx.getHitX(), pos.getY()+1.5, pos.getZ()+ctx.getHitZ());
+				tube.setPosition(pos.getX()+ctx.getHitVec().x, pos.getY()+1.5, pos.getZ()+ctx.getHitVec().z);
 				world.addEntity(tube);
 				stack.split(1);
 				if(stack.getCount() > 0)
@@ -204,10 +204,10 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	}
 
 	@Override
-	public void onStrike(ItemStack s, EquipmentSlotType eqSlot, LivingEntity p, Map<String, Object> cache, DamageSource dmg,
+	public void onStrike(ItemStack equipped, EquipmentSlotType eqSlot, LivingEntity owner, Map<String, Object> cache, DamageSource dmg,
 						 ElectricSource eSource)
 	{
-		setLit(s, eSource.level);
+		setLit(equipped, eSource.level);
 	}
 
 	@Override

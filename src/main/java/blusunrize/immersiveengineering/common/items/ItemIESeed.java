@@ -18,8 +18,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.PlantType;
 
 import javax.annotation.Nonnull;
 
@@ -61,7 +61,7 @@ public class ItemIESeed extends ItemIEBase implements IPlantable
 	}
 
 	@Override
-	public EnumPlantType getPlantType(IBlockReader world, BlockPos pos)
+	public PlantType getPlantType(IBlockReader world, BlockPos pos)
 	{
 		return ((IPlantable)cropBlock).getPlantType(world, pos);
 	}

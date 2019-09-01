@@ -25,9 +25,9 @@ public interface ITeslaEquipment extends IElectricEquipment
 	void onStrike(ItemStack s, EquipmentSlotType eqSlot, LivingEntity p, Map<String, Object> cache, DamageSource dmg);
 
 	@Override
-	default void onStrike(ItemStack s, EquipmentSlotType eqSlot, LivingEntity p, Map<String, Object> cache, @Nullable DamageSource dmg, ElectricSource desc)
+	default void onStrike(ItemStack equipped, EquipmentSlotType eqSlot, LivingEntity owner, Map<String, Object> cache, @Nullable DamageSource dmg, ElectricSource desc)
 	{
 		if(dmg!=null)
-			onStrike(s, eqSlot, p, cache, dmg);
+			onStrike(equipped, eqSlot, owner, cache, dmg);
 	}
 }

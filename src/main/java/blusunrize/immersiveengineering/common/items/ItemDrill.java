@@ -40,6 +40,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -54,6 +55,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -72,6 +74,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -86,7 +89,8 @@ import java.util.function.Supplier;
 
 public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
 {
-	public static Material[] validMaterials = {Material.ANVIL, Material.CLAY, Material.GLASS, Material.GRASS, Material.GROUND, Material.ICE, Material.IRON, Material.PACKED_ICE, Material.PISTON, Material.ROCK, Material.SAND, Material.SNOW};
+	public static Material[] validMaterials = {Material.ANVIL, Material.CLAY, Material.GLASS, Material.ORGANIC, Material.EARTH,
+			Material.ICE, Material.IRON, Material.PACKED_ICE, Material.PISTON, Material.ROCK, Material.SAND, Material.SNOW};
 
 	public ItemDrill()
 	{
@@ -124,9 +128,9 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	{
 		super.recalculateUpgrades(stack, w);
 		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.amount > this.getCapacity(stack, 2000))
+		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, 2000))
 		{
-			fs.amount = this.getCapacity(stack, 2000);
+			fs.setAmount(this.getCapacity(stack, 2000));
 			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 		}
 	}
@@ -135,9 +139,9 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public void finishUpgradeRecalculation(ItemStack stack)
 	{
 		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.amount > getCapacity(stack, 2000))
+		if(fs!=null&&fs.getAmount() > getCapacity(stack, 2000))
 		{
-			fs.amount = getCapacity(stack, 2000);
+			fs.setAmount(getCapacity(stack, 2000));
 			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 		}
 	}
@@ -147,7 +151,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	{
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.fuel", fs.amount, getCapacity(stack, 2000)));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.fuel", fs.getAmount(), getCapacity(stack, 2000)));
 		else
 			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty"));
 		if(getHead(stack).isEmpty())
@@ -360,7 +364,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 
 	public boolean isDrillBroken(ItemStack stack)
 	{
-		return getHeadDamage(stack) >= getMaxHeadDamage(stack)||getFluid(stack)==null||getFluid(stack).amount < 1;
+		return getHeadDamage(stack) >= getMaxHeadDamage(stack)||getFluid(stack)==null||getFluid(stack).isEmpty();
 	}
 
 	@Override
@@ -388,7 +392,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 					((IDrillHead)head.getItem()).damageHead(head, dmg);
 				this.setHead(stack, head);
 				IFluidHandler handler = FluidUtil.getFluidHandler(stack).orElseThrow(RuntimeException::new);
-				handler.drain(1, true);
+				handler.drain(1, FluidAction.EXECUTE);
 
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 				if(shader!=null)
@@ -414,8 +418,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty())
 			{
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage"), 0));
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, 0));
+				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage"), Operation.ADDITION));
+				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
 			}
 		}
 		return multimap;
@@ -479,7 +483,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 		World world = player.world;
 		if(player.isSneaking()||world.isRemote||!(player instanceof ServerPlayerEntity))
 			return false;
-		RayTraceResult mop = this.rayTrace(world, player, true);
+		RayTraceResult mop = this.rayTrace(world, player, FluidMode.NONE);
 		ItemStack head = getHead(stack);
 		if(mop==null||head.isEmpty()||this.isDrillBroken(stack))
 			return false;

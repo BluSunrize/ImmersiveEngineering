@@ -16,18 +16,18 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase.DynamicShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualUtils;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BannerBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.WallBannerBlock;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
@@ -109,16 +109,17 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		addDynamicLayer(entry, "circuit", 0xffefa117,
 				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 40, .15f, 1f),
 				(pre, partialTick) -> {
+					//TODO are push/pop Attributes broken?
 					if(pre)
 					{
-						GlStateManager.pushLightingAttrib();
+						GlStateManager.pushLightingAttributes();
 						GL11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(.5f, .2f, 0, .5f));
 						ClientUtils.toggleLightmap(true, true);
 					}
 					else
 					{
 						ClientUtils.toggleLightmap(false, true);
-						GlStateManager.popAttrib();
+						GlStateManager.popAttributes();
 					}
 				});
 		addLayer(entry, "1_4", 0xff5f646a);
@@ -273,7 +274,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				{
 					boolean wall = blockState.getBlock() instanceof WallBannerBlock;
 					int orientation = wall?blockState.get(WallBannerBlock.HORIZONTAL_FACING).getIndex(): blockState.get(BannerBlock.ROTATION);
-					world.setBlockState(pos, IEContent.blockShaderBanner.getDefaultState().with(IEProperties.FACING_ALL, Direction.SOUTH));
+					world.setBlockState(pos, Cloth.shaderBanner.getDefaultState().with(IEProperties.FACING_ALL, Direction.SOUTH));
 					tile = world.getTileEntity(pos);
 					if(tile instanceof ShaderBannerTileEntity)
 					{
@@ -312,7 +313,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 	{
 		//TODO proper translation
 		list.add(new StringTextComponent("Level: "+this.getRarity(stack).color+this.getRarity(stack).name()));
-		if(!Screen.isShiftKeyDown())
+		if(!Screen.hasShiftDown())
 			list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.applyTo")
 					.appendText(" ")
 					.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"holdShift")));

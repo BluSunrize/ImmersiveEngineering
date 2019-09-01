@@ -39,7 +39,7 @@ public class ItemFaradaySuit extends ArmorItem implements IElectricEquipment
 	}
 
 	@Override
-	public void onStrike(ItemStack s, EquipmentSlotType eqSlot, LivingEntity p, Map<String, Object> cache,
+	public void onStrike(ItemStack equipped, EquipmentSlotType eqSlot, LivingEntity owner, Map<String, Object> cache,
 						 @Nullable DamageSource dSource, ElectricSource eSource)
 	{
 		if(!(dSource instanceof ElectricDamageSource))
@@ -48,18 +48,18 @@ public class ItemFaradaySuit extends ArmorItem implements IElectricEquipment
 		if(dmg.source.level < 1.75)
 		{
 			if(cache.containsKey("faraday"))
-				cache.put("faraday", (1<<armorType.getIndex())|((Integer)cache.get("faraday")));
+				cache.put("faraday", (1<<this.slot.getIndex())|((Integer)cache.get("faraday")));
 			else
-				cache.put("faraday", 1<<armorType.getIndex());
+				cache.put("faraday", 1<<this.slot.getIndex());
 			if(cache.containsKey("faraday")&&(Integer)cache.get("faraday")==(1<<4)-1)
 				dmg.dmg = 0;
 		}
 		else
 		{
 			dmg.dmg *= 1.2;
-			if((!(p instanceof PlayerEntity)||!((PlayerEntity)p).abilities.isCreativeMode)&&
-					s.attemptDamageItem(2, Item.random, (dmg.getTrueSource() instanceof ServerPlayerEntity)?(ServerPlayerEntity)dmg.getTrueSource(): null))
-				p.setItemStackToSlot(eqSlot, ItemStack.EMPTY);
+			if((!(owner instanceof PlayerEntity)||!((PlayerEntity)owner).abilities.isCreativeMode)&&
+					equipped.attemptDamageItem(2, Item.random, (dmg.getTrueSource() instanceof ServerPlayerEntity)?(ServerPlayerEntity)dmg.getTrueSource(): null))
+				owner.setItemStackToSlot(eqSlot, ItemStack.EMPTY);
 		}
 	}
 
