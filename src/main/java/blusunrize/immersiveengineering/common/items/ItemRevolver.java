@@ -97,22 +97,6 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			}
 	}
 
-	public void rotateCylinder(ItemStack revolver, EntityPlayer player, boolean forward, NonNullList<ItemStack> bullets)
-	{
-		NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletCount(revolver), ItemStack.EMPTY);
-		int offset = forward?-1:1;
-		for(int i = 0; i < cycled.size(); i++)
-			cycled.set((i+offset+cycled.size())%cycled.size(), bullets.get(i));
-		setBullets(revolver, cycled, false);
-		player.inventory.markDirty();
-	}
-
-	public void rotateCylinder(ItemStack revolver, EntityPlayer player, boolean forward)
-	{
-		NonNullList<ItemStack> bullets = getBullets(revolver);
-		rotateCylinder(revolver, player, forward, bullets);
-	}
-
 	@Override
 	public int getSlotCount(ItemStack stack)
 	{
@@ -453,6 +437,22 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		else
 			for(int i = 0; i < bullets.size(); i++)
 				inv.setStackInSlot(i, bullets.get(i));
+	}
+
+	public void rotateCylinder(ItemStack revolver, EntityPlayer player, boolean forward, NonNullList<ItemStack> bullets)
+	{
+		NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletCount(revolver), ItemStack.EMPTY);
+		int offset = forward?-1:1;
+		for(int i = 0; i < cycled.size(); i++)
+			cycled.set((i+offset+cycled.size())%cycled.size(), bullets.get(i));
+		setBullets(revolver, cycled, false);
+		player.inventory.markDirty();
+	}
+
+	public void rotateCylinder(ItemStack revolver, EntityPlayer player, boolean forward)
+	{
+		NonNullList<ItemStack> bullets = getBullets(revolver);
+		rotateCylinder(revolver, player, forward, bullets);
 	}
 
 	@Override
