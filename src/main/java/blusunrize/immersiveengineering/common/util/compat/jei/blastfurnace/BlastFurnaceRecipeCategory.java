@@ -16,6 +16,7 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -36,7 +37,7 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 		guiItemStacks.init(0, true, 43, 8);
 		guiItemStacks.init(1, false, 103, 8);
 		guiItemStacks.init(2, false, 103, 44);
-		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
+		guiItemStacks.set(0, ingredients.getInputs(VanillaTypes.ITEM).get(0));
 		guiItemStacks.set(1, recipeWrapper.getSmeltingOutput());
 		guiItemStacks.set(2, recipeWrapper.getSlagOutput());
 	}

@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.AdvancedAABB;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
@@ -171,21 +171,20 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	public void validate()
+	public void onLoad()
 	{
-		super.validate();
+		super.onLoad();
 		if(!world.isRemote)
-			ApiUtils.addFutureServerTask(world, () ->
+		{
+			boolean changed = false;
+			for(EnumFacing f : EnumFacing.VALUES)
+				changed |= updateConnectionByte(f);
+			if(changed)
 			{
-				boolean changed = false;
-				for(EnumFacing f : EnumFacing.VALUES)
-					changed |= updateConnectionByte(f);
-				if(changed)
-				{
-					world.notifyNeighborsOfStateChange(pos, getBlockType(), false);
-					markContainingBlockForUpdate(null);
-				}
-			});
+				world.notifyNeighborsOfStateChange(pos, getBlockType(), false);
+				markContainingBlockForUpdate(null);
+			}
+		}
 	}
 
 	@Override
@@ -366,7 +365,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		@Override
 		public IFluidTankProperties[] getTankProperties()
 		{
-			return new IFluidTankProperties[]{new FluidTankProperties(null, 1000, true, false)};
+			return new IFluidTankProperties[]{new FluidTankProperties(null, IEConfig.Machines.pipe_transferrate_pressurized, true, false)};
 		}
 
 		@Override
@@ -418,7 +417,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 						amount = Math.min(amount, canAccept);
 					}
 					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
-					if(r > 50)
+					if(r > IEConfig.Machines.pipe_transferrate)
 						pipe.canOutputPressurized(output.containingTile, true);
 					f += r;
 					canAccept -= r;
@@ -434,7 +433,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 			return (resource.tag!=null&&resource.tag.hasKey("pressurized"))||
 					pipe.canOutputPressurized(output.containingTile, false)
-					?1000: 50;
+					?IEConfig.Machines.pipe_transferrate_pressurized: IEConfig.Machines.pipe_transferrate;
 		}
 
 		@Nullable
@@ -546,6 +545,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			connected.markDirty();
 			world.addBlockEvent(getPos().offset(fd), getBlockType(), 0, 0);
 		}
+		updateConnectionByte(EnumFacing.byIndex(side));
 		world.addBlockEvent(getPos(), getBlockType(), 0, 0);
 	}
 
@@ -992,7 +992,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	{
 		if(heldItem.isEmpty()&&player.isSneaking()&&!pipeCover.isEmpty())
 		{
-			if(!world.isRemote&&world.getGameRules().getBoolean("doTileDrops"))
+			if(!world.isRemote&&world.getGameRules().getBoolean("doTileDrops")&&!player.capabilities.isCreativeMode)
 			{
 				EntityItem entityitem = player.dropItem(pipeCover.copy(), false);
 				if(entityitem!=null)
@@ -1017,7 +1017,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 								entityitem.setNoPickupDelay();
 						}
 						pipeCover = Utils.copyStackWithAmount(heldItem, 1);
-						heldItem.shrink(1);
+						if(!player.capabilities.isCreativeMode)
+							heldItem.shrink(1);
 						this.markContainingBlockForUpdate(null);
 						world.addBlockEvent(getPos(), getBlockType(), 255, 0);
 						return true;

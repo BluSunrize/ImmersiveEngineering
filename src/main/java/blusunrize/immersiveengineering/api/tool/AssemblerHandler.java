@@ -9,12 +9,23 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
+import blusunrize.immersiveengineering.common.util.Utils.InventoryCraftingFalse;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.fluids.FluidUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -28,23 +39,66 @@ public class AssemblerHandler
 {
 	private static final HashMap<Class<? extends IRecipe>, IRecipeAdapter> registry = new LinkedHashMap<Class<? extends IRecipe>, IRecipeAdapter>();
 	private static final List<Function<Object, RecipeQuery>> specialQueryConverters = new ArrayList<>();
+	public static final IRecipeAdapter<IRecipe> defaultAdapter = new IRecipeAdapter<IRecipe>()
+	{
+		@Override
+		public RecipeQuery[] getQueriedInputs(IRecipe recipe, NonNullList<ItemStack> input)
+		{
+			NonNullList<Ingredient> ingred = recipe.getIngredients();
+			InventoryCrafting verificationInv = InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input);
+			boolean matches;
+			ForgeHooks.setCraftingPlayer(FakePlayerUtil.getAnyFakePlayer());
+			if(recipe instanceof IShapedRecipe)
+			{
+				IShapedRecipe shapedInput = (IShapedRecipe)recipe;
+				ShapedRecipes verify = new ShapedRecipes("temp", shapedInput.getRecipeWidth(), shapedInput.getRecipeHeight(),
+						ingred, new ItemStack(Items.GUNPOWDER));
+				matches = verify.matches(verificationInv, null);
+			}
+			else
+			{
+				ShapelessRecipes verify = new ShapelessRecipes("temp", new ItemStack(Blocks.DIRT), ingred);
+				matches = verify.matches(verificationInv, null);
+			}
+			ForgeHooks.setCraftingPlayer(null);
+			if(!matches)
+				return null;
+			RecipeQuery[] query = new RecipeQuery[ingred.size()];
+			for(int i = 0; i < query.length; i++)
+			{
+				query[i] = AssemblerHandler.createQuery(ingred.get(i));
+			}
+			return query;
+		}
+	};
+
+	static
+	{
+		AssemblerHandler.registerRecipeAdapter(IRecipe.class, defaultAdapter);
+	}
 
 	public static void registerRecipeAdapter(Class<? extends IRecipe> recipeClass, IRecipeAdapter adapter)
 	{
 		registry.put(recipeClass, adapter);
 	}
 
+	@Nonnull
 	public static IRecipeAdapter findAdapterForClass(Class<? extends IRecipe> recipeClass)
 	{
 		IRecipeAdapter adapter = registry.get(recipeClass);
-		if(adapter==null&&recipeClass!=IRecipe.class&&recipeClass.getSuperclass()!=Object.class)
+		boolean isSuperIRecipe = IRecipe.class.isAssignableFrom(recipeClass.getSuperclass());
+		if(adapter==null)
 		{
-			adapter = findAdapterForClass((Class<? extends IRecipe>)recipeClass.getSuperclass());
+			if(recipeClass!=IRecipe.class&&isSuperIRecipe)
+				adapter = findAdapterForClass((Class<? extends IRecipe>)recipeClass.getSuperclass());
+			else
+				adapter = defaultAdapter;
 			registry.put(recipeClass, adapter);
 		}
 		return adapter;
 	}
 
+	@Nonnull
 	public static IRecipeAdapter findAdapter(IRecipe recipe)
 	{
 		return findAdapterForClass(recipe.getClass());
@@ -57,8 +111,13 @@ public class AssemblerHandler
 
 	public interface IRecipeAdapter<R extends IRecipe>
 	{
-		RecipeQuery[] getQueriedInputs(R recipe);
+		@Nullable
+		default RecipeQuery[] getQueriedInputs(R recipe)
+		{
+			return getQueriedInputs(recipe, NonNullList.create());
+		}
 
+		@Nullable
 		default RecipeQuery[] getQueriedInputs(R recipe, NonNullList<ItemStack> input)
 		{
 			return getQueriedInputs(recipe);

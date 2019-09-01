@@ -47,6 +47,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
@@ -446,15 +447,20 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
 	{
 		if(!world.isRemote)
+		{
+			//Necessary to prevent ghostloading, see conversation in #immersive-engineering on Discord on 12/13 Mar 2019
+			Chunk posChunk = world.getChunk(pos);
+			//TODO figure out why this became a "future task"...
 			ApiUtils.addFutureServerTask(world, () ->
 			{
-				if(world.isBlockLoaded(pos))
+				if(world.isBlockLoaded(pos)&&!posChunk.unloadQueued)
 				{
 					TileEntity tile = world.getTileEntity(pos);
 					if(tile instanceof INeighbourChangeTile&&!tile.getWorld().isRemote)
 						((INeighbourChangeTile)tile).onNeighborBlockChange(fromPos);
 				}
 			});
+		}
 	}
 
 	@Override

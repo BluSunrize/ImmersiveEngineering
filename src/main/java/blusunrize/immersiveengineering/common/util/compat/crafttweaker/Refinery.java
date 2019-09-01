@@ -18,6 +18,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 @ZenClass("mods.immersiveengineering.Refinery")
 public class Refinery
@@ -94,6 +95,33 @@ public class Refinery
 		public String describe()
 		{
 			return "Removing Refinery Recipes for "+output.getLocalizedName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		List<RefineryRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = new ArrayList<>(RefineryRecipe.recipeList);
+			RefineryRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Refinery Recipes";
 		}
 	}
 }

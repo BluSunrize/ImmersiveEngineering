@@ -18,6 +18,7 @@ import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ZenClass("mods.immersiveengineering.ArcFurnace")
@@ -90,6 +91,33 @@ public class ArcFurnace
 		public String describe()
 		{
 			return "Removing ArcFurnace Recipe for "+output.getDisplayName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		List<ArcFurnaceRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = new ArrayList<>(ArcFurnaceRecipe.recipeList);
+			ArcFurnaceRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all ArcFurnace Recipes";
 		}
 	}
 }

@@ -94,7 +94,9 @@ public class ConveyorVertical extends ConveyorBasic
 			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
 			if(sub!=null)
 				for(EnumFacing f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
-					if(f==f2.getOpposite())
+					if(f2==EnumFacing.UP)
+						break;
+					else if(f==f2.getOpposite())
 						return true;
 		}
 		te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0).offset(f));
@@ -217,21 +219,29 @@ public class ConveyorVertical extends ConveyorBasic
 
 			if(entity instanceof EntityItem)
 			{
-				((EntityItem)entity).setNoDespawn();
-				TileEntity inventoryTile;
-				inventoryTile = tile.getWorld().getTileEntity(tile.getPos().add(0, 1, 0));
-				if(!tile.getWorld().isRemote)
+				EntityItem item = (EntityItem)entity;
+				if(!contact)
 				{
-					if(contact&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
+					if(item.getAge() > item.lifespan-60*20)
+						item.setAgeToCreativeDespawnTime();
+				}
+				else
+				{
+					TileEntity inventoryTile;
+					inventoryTile = tile.getWorld().getTileEntity(tile.getPos().add(0, 1, 0));
+					if(!tile.getWorld().isRemote)
 					{
-						ItemStack stack = ((EntityItem)entity).getItem();
-						if(!stack.isEmpty())
+						if(inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
 						{
-							ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.DOWN);
-							if(ret.isEmpty())
-								entity.setDead();
-							else if(ret.getCount() < stack.getCount())
-								((EntityItem)entity).setItem(ret);
+							ItemStack stack = item.getItem();
+							if(!stack.isEmpty())
+							{
+								ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.DOWN);
+								if(ret.isEmpty())
+									entity.setDead();
+								else if(ret.getCount() < stack.getCount())
+									item.setItem(ret);
+							}
 						}
 					}
 				}

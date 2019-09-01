@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectile
 import blusunrize.immersiveengineering.common.Config.IEConfig.Tools;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -127,6 +128,12 @@ public class EntityRailgunShot extends EntityIEProjectile
 				}
 			}
 		}
+	}
+
+	@Override
+	protected boolean allowFriendlyFire(EntityPlayer target)
+	{
+		return false;
 	}
 
 //	@Override

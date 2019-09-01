@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ZenClass("mods.immersiveengineering.CokeOven")
@@ -81,6 +82,33 @@ public class CokeOven
 		public String describe()
 		{
 			return "Removing Coke Oven Recipe for "+output.getDisplayName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		List<CokeOvenRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = new ArrayList<>(CokeOvenRecipe.recipeList);
+			CokeOvenRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Coke Oven Recipes";
 		}
 	}
 }

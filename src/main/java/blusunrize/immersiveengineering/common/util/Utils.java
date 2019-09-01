@@ -1476,7 +1476,7 @@ public class Utils
 	 */
 	public static TileEntity getExistingTileEntity(World world, BlockPos pos)
 	{
-		if(world.isBlockLoaded(pos))
+		if(world!=null && world.isBlockLoaded(pos))
 			return world.getTileEntity(pos);
 		return null;
 	}

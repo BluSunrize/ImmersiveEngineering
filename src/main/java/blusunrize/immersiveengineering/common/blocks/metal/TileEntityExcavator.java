@@ -261,7 +261,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 	{
 		if(!(world instanceof WorldServer))
 			return ItemStack.EMPTY;
-		FakePlayer fakePlayer = FakePlayerUtil.getFakePlayer((WorldServer)world);
+		FakePlayer fakePlayer = FakePlayerUtil.getFakePlayer(world);
 		IBlockState blockstate = world.getBlockState(pos);
 		Block block = blockstate.getBlock();
 		if(block!=null&&!world.isAirBlock(pos)&&blockstate.getPlayerRelativeBlockHardness(fakePlayer, world, pos)!=0)

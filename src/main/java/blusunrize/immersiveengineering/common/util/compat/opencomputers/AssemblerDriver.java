@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.opencomputers;
 
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
+import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import li.cil.oc.api.machine.Arguments;
@@ -71,13 +72,14 @@ public class AssemblerDriver extends DriverSidedTileEntity
 				throw new IllegalArgumentException("The requested recipe is invalid");
 			TileEntityAssembler.CrafterPatternInventory pattern = master.patterns[recipe-1];
 			AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-			if(adapter==null)
-				throw new IllegalArgumentException("The Assembler cannot craft this recipe");
 			ArrayList<ItemStack> queryList = new ArrayList<>();
 			for(ItemStack stack : master.inventory)
 				if(!stack.isEmpty())
 					queryList.add(stack.copy());
-			return new Object[]{master.consumeIngredients(adapter.getQueriedInputs(pattern.recipe, pattern.inv), queryList, false, null)};
+			RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
+			if(queries==null)
+				throw new IllegalArgumentException("The Assembler cannot craft this recipe");
+			return new Object[]{master.consumeIngredients(queries, queryList, false, null)};
 		}
 
 		@Callback(doc = "function(recipe:int):table -- get the recipe in the specified position")

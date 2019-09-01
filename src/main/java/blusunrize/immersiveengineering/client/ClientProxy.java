@@ -868,7 +868,9 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor4", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":vertical")),
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor5", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":splitter")),
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor6", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":covered")),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "conveyor7", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":droppercovered"), ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":extractcovered"), ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":verticalcovered")));
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "conveyor7", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":droppercovered"), ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":extractcovered"), ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":verticalcovered")),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "conveyor8", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":chute_iron"), ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":chute_steel"), ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":chute_aluminum"), ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID+":chute_copper")),
+				new ManualPages.Image(ManualHelper.getManual(), "conveyor9", "immersiveengineering:textures/misc/wiring.png;0;190;110;60"));
 		ManualHelper.addEntry("furnaceHeater", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "furnaceHeater1"),

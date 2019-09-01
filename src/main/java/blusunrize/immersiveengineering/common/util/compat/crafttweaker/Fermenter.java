@@ -22,6 +22,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 @ZenClass("mods.immersiveengineering.Fermenter")
 public class Fermenter
@@ -177,6 +178,33 @@ public class Fermenter
 		public String describe()
 		{
 			return "Removing Fermenter Recipes for input "+input.getDisplayName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		List<FermenterRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = new ArrayList<>(FermenterRecipe.recipeList);
+			FermenterRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Fermenter Recipes";
 		}
 	}
 }

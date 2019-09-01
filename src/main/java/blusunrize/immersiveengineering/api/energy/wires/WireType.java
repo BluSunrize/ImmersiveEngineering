@@ -8,14 +8,18 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -138,6 +142,15 @@ public abstract class WireType
 
 	public static void init()
 	{
+		ModContainer currentMod = Loader.instance().activeModContainer();
+		if(currentMod!=null&&!ImmersiveEngineering.MODID.equals(currentMod.getModId()))
+		{
+			IELogger.error("WireType#init was called by "+currentMod.getName()+" ("+currentMod.getModId()+")!");
+			IELogger.error("The method should only be called by Immersive Engineering, calls from other mods will cause many "+
+					"hard-to-debug issues and are therefore forbidden!");
+			IELogger.error("Please report this as a bug to "+currentMod.getName());
+			return;
+		}
 		COPPER = new IEBASE(0);
 		ELECTRUM = new IEBASE(1);
 		STEEL = new IEBASE(2);

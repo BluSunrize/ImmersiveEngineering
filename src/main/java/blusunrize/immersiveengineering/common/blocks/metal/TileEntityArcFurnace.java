@@ -146,7 +146,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 									this.addProcessToQueue(process, false);
 									int[] consumedAdditives = recipe.getConsumedAdditives(additives, true);
 									if(consumedAdditives!=null)
-										process.setInputAmounts(1, consumedAdditives[0], consumedAdditives[1], consumedAdditives[2], consumedAdditives[3]);
+										process.setInputAmounts(recipe.input.inputSize, consumedAdditives[0], consumedAdditives[1], consumedAdditives[2], consumedAdditives[3]);
 									//							update = true;
 								}
 							}

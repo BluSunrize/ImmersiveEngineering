@@ -16,6 +16,7 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -36,10 +37,10 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe, Al
 		guiItemStacks.init(0, true, 29, 3);
 		guiItemStacks.init(1, false, 57, 3);
 		guiItemStacks.init(2, false, 111, 21);
-		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
-		guiItemStacks.set(1, ingredients.getInputs(ItemStack.class).get(1));
-		if(ingredients.getOutputs(ItemStack.class).size() > 0)
-			guiItemStacks.set(2, ingredients.getOutputs(ItemStack.class).get(0));
+		guiItemStacks.set(0, ingredients.getInputs(VanillaTypes.ITEM).get(0));
+		guiItemStacks.set(1, ingredients.getInputs(VanillaTypes.ITEM).get(1));
+		if(ingredients.getOutputs(VanillaTypes.ITEM).size() > 0)
+			guiItemStacks.set(2, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
 	}
 
 	@Override

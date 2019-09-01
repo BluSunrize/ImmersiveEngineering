@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import com.google.common.collect.ArrayListMultimap;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -88,7 +89,7 @@ public class Blueprint
 				while(it.hasNext())
 				{
 					BlueprintCraftingRecipe ir = it.next();
-					if(OreDictionary.itemMatches(ir.output, output, true))
+					if(OreDictionary.itemMatches(ir.output, output, true) && ItemStack.areItemStackTagsEqual(ir.output, output))
 					{
 						removedRecipes.add(ir);
 //						CraftTweakerAPI.getIjeiRecipeRegistry().removeRecipe(ir);
@@ -104,6 +105,33 @@ public class Blueprint
 		public String describe()
 		{
 			return "Removing Blueprint Recipe for "+output.getDisplayName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		ArrayListMultimap<String, BlueprintCraftingRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = ArrayListMultimap.create(BlueprintCraftingRecipe.recipeList);
+			BlueprintCraftingRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Blueprint Recipes";
 		}
 	}
 }

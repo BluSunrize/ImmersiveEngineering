@@ -32,7 +32,6 @@ import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -181,10 +180,13 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 		return EnumAction.NONE;
 	}
 
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
+	private EnumHandSide getActiveSide(EntityLivingBase user)
 	{
-		super.onUpdate(stack, world, ent, slot, inHand);
+		EnumHandSide ret = user.getPrimaryHand();
+		if(user.getActiveHand()!=EnumHand.MAIN_HAND)
+			ret = ret==EnumHandSide.LEFT?EnumHandSide.RIGHT: EnumHandSide.LEFT;
+		return ret;
+
 	}
 
 	@Override
@@ -213,7 +215,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
-				Vec3d pos = Utils.getLivingFrontPos(user, .4375, user.height*.75, user.getActiveHand()==EnumHand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+				Vec3d pos = Utils.getLivingFrontPos(user, .4375, user.height*.75, getActiveSide(user), false, 1);
 				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, null, .0625f);
 			}
 		}
@@ -250,8 +252,8 @@ public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, I
 					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 					if(shader!=null)
 					{
-						Vec3d pos = Utils.getLivingFrontPos(user, .75, user.height*.75, user.getActiveHand()==EnumHand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
-						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, user.getForward(), .125f);
+						Vec3d pos = Utils.getLivingFrontPos(user, .75, user.height*.75, getActiveSide(user), false, 1);
+						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, user.getLookVec(), .125f);
 					}
 				}
 			}

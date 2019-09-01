@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "immersiveengineering:conveyor",
+  "result": {
+    "item": "immersiveengineering:conveyor",
+    "nbt": {
+      "conveyorType": "immersiveengineering:chute_aluminum"
+    },
+    "count": 12
+  },
+  "pattern": [
+    "S S",
+    "S S",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "#blockSheetmetalAluminum"
+    }
+  }
+}

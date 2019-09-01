@@ -196,6 +196,7 @@ tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=ベルト�
 tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.name=ベルトコンベア - 赤石無効
 tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.flavour=レッドストーンによる制御を無視します
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=ドロップコンベア
+tile.immersiveengineering.conveyor.immersiveengineering:droppercovered.name=フレーム付きドロップコンベア
 tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=垂直コンベア
 tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=分岐コンベア
 tile.immersiveengineering.conveyor.immersiveengineering:covered.name=フレームつきコンベア
@@ -431,6 +432,7 @@ item.immersiveengineering.faraday_suit_feet.name=ファラデーケージのブ�
 item.immersiveengineering.fluorescent_tube.name=蛍光管
 item.immersiveengineering.powerpack.name=キャパシターバックパック
 item.immersiveengineering.shield.name=ヘビィプレートシールド
+item.immersiveengineering.maintenance_kit.name=メンテナンスキット
 
 item.immersiveengineering.map_orevein.name=鉱脈の地図
 
@@ -585,10 +587,10 @@ modifier.thermalinversion.name=冷熱反転
 modifier.thermalinversion.desc=§oHot & Cold!§r\n敵MOBを寒い場所、熱い場所で攻撃すると燃えたり凍らせたりします
 #BOTANIA COMPAT
 item.immersiveengineering.bullet.terrasteel.name=ホーミング弾
-ie.manual.entry.bullets_terrasteel=§lホーミング弾§rは "弾丸_スペシャル"のブループリント作成できます。魔法の金属 "テラスチール"を素材とし、このテラスチールは最も近いターゲットを追尾する能力をもたらします。
+ie.manual.entry.bullets_terrasteel=§lホーミング弾§rは "弾丸_スペシャル"のブループリントで作成できます。魔法の金属 "テラスチール"を素材とし、このテラスチールは最も近いターゲットを追尾する能力をもたらします。
 #BLOODMAGIC COMPAT
-item.immersiveengineering.bullet.crystalwill.name=結晶化された弾
-ie.manual.entry.bullets_crystalwill=§lCrystalized §lWill §lCartridges§r are created with the "Specialized Projectiles" blueprint and using pieces of Demon Will Crystal. The small quantities of demonic will contained within force the projectiles to seek out nearby targets and chase them relentlessly.
+item.immersiveengineering.bullet.crystalwill.name=ウィル結晶弾
+ie.manual.entry.bullets_crystalwill=§lウィル結晶弾§rは"弾丸_スペシャル"のブループリントで作成できます。デーモンウィル結晶のかけらを素材とし、これが近くの目標を自動補足し、容赦なく追跡します。
 
 #DESCRIPTIONS
 entity.Villager.immersiveengineering.engineer=構造技術者
@@ -794,6 +796,8 @@ desc.immersiveengineering.flavour.drillhead.speed=採掘速度: %1$s
 desc.immersiveengineering.flavour.drillhead.damage=攻撃力: %1$s
 
 desc.immersiveengineering.flavour.skyhook=新しい旅の方法
+desc.immersiveengineering.flavour.skyhook.speedLimit=速度制限
+desc.immersiveengineering.flavour.skyhook.noLimit=速度無制限
 
 desc.immersiveengineering.flavour.toolupgrade.drill_waterproof=採掘ドリルを水中での作業ができる様にします
 desc.immersiveengineering.flavour.toolupgrade.drill_lube=ドリルヘッド使用時の損耗を軽減します
@@ -841,6 +845,8 @@ gui.immersiveengineering.config.assembler.clearRecipe=レシピを初期化
 gui.immersiveengineering.config.assembler.recursiveIngredients=原料、材料の再使用の許可
 gui.immersiveengineering.config.assembler.nonRecursiveIngredients=原料、材料の再使用の不許可
 
+gui.immersiveengineering.config.arcfurnace.distribute=分配搬入
+
 #CHAT
 chat.immersiveengineering.warning.wrongCable=ワイヤーはここに接続できません
 chat.immersiveengineering.warning.wrongDimension=居るディメンションがおかしいです
@@ -849,6 +855,8 @@ chat.immersiveengineering.warning.tooFar=接続ポイントが遠すぎます
 chat.immersiveengineering.warning.cantSee=接続ポイントが遮られています
 chat.immersiveengineering.warning.connectionExists=既に接続がなされています
 chat.immersiveengineering.warning.invalidPoint=接続ポイントの一部が無効です
+chat.immersiveengineering.info.skyhookLimited=スカイフックは自動的に速度を制限します
+chat.immersiveengineering.info.skyhookUnlimited=スカイフックの速度は無制限です
 chat.immersiveengineering.info.averageLoss=2点間平均損失率: %1$s%%
 chat.immersiveengineering.info.energyStorage=貯蓄エネルギー: %1$s/%2$s RF
 chat.immersiveengineering.info.tooHot=この液体はコンテナに対して温度が高すぎます
@@ -907,6 +915,7 @@ subtitle.immersiveengineering.spark=電気の火花
 subtitle.immersiveengineering.railgunFire=レールガンの発射
 subtitle.immersiveengineering.tesla=テスラコイルの急襲
 subtitle.immersiveengineering.direSwitch=Direwolf20の見習ったナイフスイッチ
+subtitle.immersiveengineering.skyhook=スカイフックはワイヤーに沿って滑ります
 
 #RECIPES
 recipe.immersiveengineering.hammerCrushing=工業用粉砕機
@@ -1109,7 +1118,7 @@ ie.manual.entry.hemp3=シートカーテンはフレームコンベアやその�
 
 ie.manual.entry.cokeoven.name=コークス炉
 ie.manual.entry.cokeoven.subtext=ホットな話題です!
-ie.manual.entry.cokeoven0=コークス炉はImmersive_Engineeringを進行させるために最初に作成しなければならない重要な設備です。その機能はシンプルで、石炭や石炭ブロックを酸素を絶った状態で加熱(乾留)し、炭素成分豊富な燃料である石炭コークスを生産します。さらに重要なこととして、このプロセスによって§lクレオソートオイル§rが生成され、これは<link;treated_wood;§o§n木材用防腐剤§r>として使用します。また、この炉で原木を乾留して木炭を作ることでも、少量のクレオソートオイルを得ることができます。
+ie.manual.entry.cokeoven0=コークス炉はImmersive_Engineeringを進行させるために最初に作成しなければならない重要な設備です。その機能はシンプルで、石炭や石炭ブロックを酸素を絶った状態で加熱(乾留)し、炭素成分豊富な燃料である石炭コークスを生産します。さらに重要なこととして、このプロセスによって§lクレオソートオイル§rが生成され、これは<link;treatedwood;§o§n木材用防腐剤§r>として使用します。また、この炉で原木を乾留して木炭を作ることでも、少量のクレオソートオイルを得ることができます。
 ie.manual.entry.cokeovenBlock=コークス炉を形成するには、これらのブロックを27個用意して3x3x3の立方体に配置し、エンジニア・ハンマーで側面中央のブロックを右クリックします。<br>次のページを参照してください。
 
 ie.manual.entry.alloysmelter.name=合金窯
@@ -1181,7 +1190,8 @@ ie.manual.entry.wiringTransformer0=§l変圧器§rを使えば異なる種類の
 ie.manual.entry.wiringTransformer1=4ページ目の2枚目の画像のように、<link;wiring;§o§n変圧器を支柱に§r;4>付属させることができます。<br>高電圧変圧器ではこうした配置を行うことはできません。
 ie.manual.entry.wiringCutters=§lワイヤカッター§rでブロック(接続端子,継電器など)を右クリックすると、ブロックに接続されているすべてのワイヤを取り外すことができます。
 ie.manual.entry.wiringVoltmeter=§l電圧計§rは流れている電気を測定をするために使用します。<br>任意のエネルギーストレージに向ける、またはそれを右クリックすることで現在の貯蔵量を知ることができるでしょう。<br>2つの接続端子をスニーク-右クリックして、それらの間の平均損失を算出することもできます。
-ie.manual.entry.wiringFeedthrough=外壁の穴を用意する必要はありません。貫通端子はブロックの片面から他の面へと配線を通します。§l通常§rの§l個体§rのブロックであればどんなものもそこに組み込めます。<br>使用する一対の接続端子(電源およびレッドストーン)によって、それぞれに対応する種類のワイヤーを通すことができます。
+ie.manual.entry.wiringFeedthrough0=絶縁フィードスルーを用いると、壁を通して配線を行うことができます。これは、所謂「普通」の個体ブロックに対して作ることができます。<br>低圧～高圧及びレッドストーンコネクタを使用し、<br>そのワイヤー用の絶縁フィードスルーを作成できます。
+ie.manual.entry.wiringFeedthrough1=コネクタの片方をハンマーで右クリックして、マルチブロックを完成させます。
 
 ie.manual.entry.generator.name=発電
 ie.manual.entry.generator.subtext=
@@ -1299,14 +1309,15 @@ ie.manual.entry.multiblocks.name=マルチブロックの構造体
 ie.manual.entry.multiblocks.subtext=私のレンチはどこへいった？
 ie.manual.entry.multiblocks0=複雑な機械を単一の1x1x1のキューブにまとめるには、<br>魔法あるいは縮小光線を使用する他なく、難易度の高い課題のようです。<br>したがって、より複雑なマシンを作成するにはコンポーネントブロックが必要です。<br>最も一般的なものは次のページでリストにされています。
 
-ie.manual.entry.workbench.name=技師の工具台
-ie.manual.entry.workbench.subtext=最高潮だ
-ie.manual.entry.workbench0=エンジニアリングの仕事の中で、最適化や改造が可能なツールを扱うことがあります。<br>こうしたカスタマイズを行うためには、適切に配置された技師の工具台を使用します。<br>右クリックで工具台のGUIを開き、アイテムをスロットに挿入したら該当するアップグレードを新しいスロットに挿入します。
+ie.manual.entry.workbench.name=技師の工具台とブループリント
+ie.manual.entry.workbench.subtext=常に散らかってるもの
+ie.manual.entry.workbench0=技師の工具台は教育を受けたエンジニアの為の、専門の作業台です。<br><link;blueprints;§o§n技師のブループリント§r>に記載されたアイテムを作成するために広く用いられます。<br>それぞれのページに載っている通り、様々なブループリントは作成できますが、一部は自分で見つけ出したり、村人から買うことになります。
+ie.manual.entry.workbench1=技師の工具台でブループリントの使用方法は、GUIの左側スロットに置き、中央6スロットに材料を並べることです。完成品は右のスロットから取得できます。これら完成品スロットにカーソルを合わせると、必要な材料を示してくれます。
+ie.manual.entry.workbench2=技師の工具台のもう一つの機能は、複雑なツール・ガジェットの改造と設定です。<br><link;drill;§o§n採掘ドリル§r>や<br><link;shield;§o§nヘビィプレートシールド§r>、<br><link;revolver;§o§nリボルバー§r>がいい例です。<br>技師の工具台のメインスロットに置くとでてくるスロットにアップグレードアイテムを配置し、ツールを改造することができます。
 
 ie.manual.entry.blueprints.name=技師のブループリント
 ie.manual.entry.blueprints.subtext=この素晴らしきマニュアルを読め
-ie.manual.entry.blueprints0=非常に複雑なクラフトには、グリッドが付いた単なる木材ブロック以上のものが必要です。そうしたアイテムは<link;workbench;§o§n技師§r><br><link;workbench;§o§nの工具台§r>で、ブループリントの正しい指示に従って作成する必要があります。<br><br>技師のブループリントを見つけた(または自身で作成した)のであれば、技師の工具台のスロットに配置することができます。
-ie.manual.entry.blueprints1=技師のブループリントに記載されているアイテムを作成するには、必要な素材を中央の6つのスロットに挿入し、右側の出力スロットから完成品を取得します。<br>これらの出力スロットにマウスを移動させると、各アイテムに必要な材料が正確にわかります。
+ie.manual.entry.blueprints0=このページでは作成できる技師のブループリントについての説明を行います。<br>他の技師のブループリントは村人から、あるいはどこかで見つけ出す必要があるかもしれません。<br>これらを<link;workbench;§o§n技師の工具台§r>で使って、記載されたアイテムを作ることができます。
 
 ie.manual.entry.mixer.name=工業用撹拌機
 ie.manual.entry.mixer.subtext=クッキー生地のたらい!
@@ -1405,6 +1416,11 @@ ie.manual.entry.drill3=§6改良注油システム§rは機関部分へ定期的
 ie.manual.entry.drill4=§6オーガー§r(らせん刃)を追加することで、ブロックや生物に対するドリルの破壊性能(採掘速度)が向上します。<br>アップグレードは最大3つまでスタックして積むことができます。
 ie.manual.entry.drill5=§6大容量タンク§rはドリル内部により多くの燃料を貯蔵することを可能にし、補給の前に使用できる時間を延長します。
 
+ie.manual.entry.maintenanceKit.name=メンテナンスキット
+ie.manual.entry.maintenanceKit.subtext=出先の修理
+ie.manual.entry.maintenanceKit0=ワールドでの旅や、鉱山にてたくさんの時間を費やしているエンジニア達に共通して、一つの問題が浮き彫りになります。彼らの振るうツールは常にメンテナンスを必要としていますが、工具台をまるまる持ち運ぶのは現実的ではないでしょう。<br>幸いにも簡単な修理や再設定のほとんどはメンテナンスキットでできます。
+ie.manual.entry.maintenanceKit1=頑丈な麻布でまとめられたツール一式です。<br>メンテナンスキットでは、<br><link;workbench;§o§n技師の工具台§r>と同じようにツールを改造できます。<br>採掘ドリルのヘッドを交換したり、イヤーマフを弄ったりするために、わざわざ拠点に戻る必要はもうありません。メンテナンスキットを使えばすべてここで解決できます。
+
 ie.manual.entry.revolver.name=リボルバー拳銃
 ie.manual.entry.revolver.subtext=お尋ね者:生死問わず
 ie.manual.entry.revolver0=文明的な時代であっても常に優雅な武器でありつづけるリボルバーは、知られざる技巧の賜物です。この銃は12ゲージチャンバー仕様ですが、ここでは相対的に小さなものです。掘削ドリルと同様に、リボルバーは<link;workbench;§o§n技師用工具台§r>でカスタマイズが可能です。後のページで詳しく解説します。
@@ -1414,7 +1430,7 @@ ie.manual.entry.revolver3=§6追加マガジン§rは、6発の弾丸を追加�
 ie.manual.entry.revolver4=§6増幅真空管§rは発射する弾に感電効果を付与します。<br>この衝撃はターゲットに命中する(それがどんな仕組みかは聞かないで)と発動します。<br>ターゲットは数秒間スタン状態になり、対象の使用しているすべての動力機器からわずかな放電が行われます。
 
 ie.manual.entry.bullets.name=リボルバーの弾丸
-
+ie.manual.entry.bullets.subtext=
 ie.manual.entry.bullets0=弾丸は技師の工具台で、特定の<link;blueprints;§oブループリント§r>を使用して製造できます。<br>通常の弾丸のブループリントはあなた自身で作ることができますが、より高度な種類の弾丸は他の誰かから適切な設計図を購入する必要があります。
 ie.manual.entry.bullets1=§l空の薬莢§rと§l空の実包§rは全ての弾丸の元となるものです。<br>空の薬莢は<link;metalPress;§o§n金属プレス機§r>において適切な金型を使用することで、より安いコストで製造することができます。
 ie.manual.entry.bullets_casull=§lカスール弾§rは"弾丸_コモン"<br>のブループリントで製造できます。<br>堅実な鉛の弾丸であり、中程度のダメージを与えます。

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
+import blusunrize.immersiveengineering.common.crafting.MixerPotionHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -39,13 +39,14 @@ public class InspirationsHelper extends IECompatModule
 			{
 				ItemStack splashBottle = new ItemStack(ITEM_MATERIAL, 1, 2);
 				ItemStack lingeringBottle = new ItemStack(ITEM_MATERIAL, 1, 3);
-				for(PotionType potionType : MixerRecipePotion.REGISTERED.keySet())
-				{
-					BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potionType),
-							splashBottle, MixerRecipePotion.getFluidStackForType(potionType, 250));
-					BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.LINGERING_POTION), potionType),
-							lingeringBottle, MixerRecipePotion.getFluidStackForType(potionType, 250));
-				}
+				for(PotionType potionType : PotionType.REGISTRY)
+					if(!MixerPotionHelper.BLACKLIST.contains(potionType.getRegistryName().toString()))
+					{
+						BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potionType),
+								splashBottle, MixerPotionHelper.getFluidStackForType(potionType, 250));
+						BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.LINGERING_POTION), potionType),
+								lingeringBottle, MixerPotionHelper.getFluidStackForType(potionType, 250));
+					}
 			}
 		}
 	}

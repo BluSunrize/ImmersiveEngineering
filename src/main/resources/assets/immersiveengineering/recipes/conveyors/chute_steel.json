@@ -1,0 +1,21 @@
+{
+  "type": "forge:ore_shaped",
+  "group": "immersiveengineering:conveyor",
+  "result": {
+    "item": "immersiveengineering:conveyor",
+    "nbt": {
+      "conveyorType": "immersiveengineering:chute_steel"
+    },
+    "count": 12
+  },
+  "pattern": [
+    "S S",
+    "S S",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "#blockSheetmetalSteel"
+    }
+  }
+}

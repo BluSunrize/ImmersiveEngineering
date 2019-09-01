@@ -180,6 +180,7 @@ public class ChemthrowerHandler
 	{
 		PotionEffect[] potionEffects;
 		float[] effectChances;
+		boolean isNegative = false;
 
 		public ChemthrowerEffect_Potion(DamageSource source, float damage, PotionEffect... effects)
 		{
@@ -187,7 +188,11 @@ public class ChemthrowerHandler
 			this.potionEffects = effects;
 			this.effectChances = new float[potionEffects.length];
 			for(int i = 0; i < this.effectChances.length; i++)
+			{
 				this.effectChances[i] = 1;
+				if(this.potionEffects[i]!=null && this.potionEffects[i].getPotion()!=null)
+					this.isNegative |= this.potionEffects[i].getPotion().isBadEffect();
+			}
 		}
 
 		public ChemthrowerEffect_Potion(DamageSource source, float damage, Potion potion, int duration, int amplifier)
@@ -200,6 +205,11 @@ public class ChemthrowerHandler
 			if(effectIndex >= 0&&effectIndex < this.effectChances.length)
 				this.effectChances[effectIndex] = chance;
 			return this;
+		}
+
+		public boolean getIsNegative()
+		{
+			return this.isNegative;
 		}
 
 		@Override

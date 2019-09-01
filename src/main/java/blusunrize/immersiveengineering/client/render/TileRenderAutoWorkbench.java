@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAutoWorkbench;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
@@ -283,7 +284,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 		//Blueprint
 		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(blockPos);
 
-		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
+		if(!Config.IEConfig.disableFancyBlueprints&&!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{
 			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(blueprintStack, "blueprint"));
 			BlueprintCraftingRecipe recipe = (te.selectedRecipe < 0||te.selectedRecipe >= recipes.length)?null: recipes[te.selectedRecipe];
@@ -355,6 +356,8 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 		try
 		{
 			IBakedModel ibakedmodel = ClientUtils.mc().getRenderItem().getItemModelWithOverrides(stack, world, player);
+			if(ibakedmodel==null||ibakedmodel.isGui3d())
+				return new BlueprintLinesEmpty();
 			HashSet<String> textures = new HashSet();
 			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, 0);
 			for(BakedQuad quad : quads)
@@ -371,6 +374,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 			}
 		} catch(Exception e)
 		{
+			e.printStackTrace();
 		}
 		if(images.isEmpty())
 			return null;
@@ -530,6 +534,19 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 						style.drawShading(pixel);
 				GlStateManager.glEnd();
 			}
+		}
+	}
+
+	public static class BlueprintLinesEmpty extends BlueprintLines
+	{
+		BlueprintLinesEmpty()
+		{
+			super(0, null, null);
+		}
+
+		@Override
+		public void draw(float lineWidth)
+		{
 		}
 	}
 

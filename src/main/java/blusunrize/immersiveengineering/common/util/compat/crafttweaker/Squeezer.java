@@ -22,6 +22,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 @ZenClass("mods.immersiveengineering.Squeezer")
 public class Squeezer
@@ -177,6 +178,33 @@ public class Squeezer
 		public String describe()
 		{
 			return "Removing Squeezer Recipes for input "+input.getDisplayName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		List<SqueezerRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = new ArrayList<>(SqueezerRecipe.recipeList);
+			SqueezerRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Squeezer Recipes";
 		}
 	}
 }

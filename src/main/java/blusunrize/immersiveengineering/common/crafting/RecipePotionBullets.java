@@ -16,9 +16,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 
 public class RecipePotionBullets extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
@@ -31,12 +29,14 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty()&&IEContent.itemBullet.equals(stackInSlot.getItem())&&"potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+			{
+				if(bullet.isEmpty()&&isPotionBullet(stackInSlot))
 					bullet = stackInSlot;
 				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof ItemPotion)
 					potion = stackInSlot;
 				else
 					return false;
+			}
 		}
 		return !bullet.isEmpty()&&!potion.isEmpty();
 	}
@@ -50,10 +50,12 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty()&&IEContent.itemBullet.equals(stackInSlot.getItem())&&"potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+			{
+				if(bullet.isEmpty()&&isPotionBullet(stackInSlot))
 					bullet = stackInSlot;
 				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof ItemPotion)
 					potion = stackInSlot;
+			}
 		}
 		ItemStack newBullet = Utils.copyStackWithAmount(bullet, 1);
 		ItemNBTHelper.setItemStack(newBullet, "potion", potion.copy());
@@ -72,9 +74,8 @@ public class RecipePotionBullets extends net.minecraftforge.registries.IForgeReg
 		return BulletHandler.getBulletStack("potion");
 	}
 
-	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public static boolean isPotionBullet(ItemStack stack)
 	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		return IEContent.itemBullet.equals(stack.getItem())&&"potion".equals(ItemNBTHelper.getString(stack, "bullet"));
 	}
 }

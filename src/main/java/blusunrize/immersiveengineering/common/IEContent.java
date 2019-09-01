@@ -30,6 +30,10 @@ import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFa
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteAluminum;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteCopper;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteIron;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteSteel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
@@ -64,11 +68,10 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.*;
@@ -103,8 +106,6 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 import javax.annotation.Nullable;
@@ -496,6 +497,10 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "verticalcovered"), ConveyorVerticalCovered.class, (tileEntity) -> new ConveyorVerticalCovered());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "extractcovered"), ConveyorExtractCovered.class, (tileEntity) -> new ConveyorExtractCovered(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): EnumFacing.NORTH));
 		ConveyorHandler.registerSubstitute(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), new ResourceLocation(ImmersiveEngineering.MODID, "uncontrolled"));
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.IRON.getName()), ConveyorChuteIron.class, (tileEntity) -> new ConveyorChuteIron());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.STEEL.getName()), ConveyorChuteSteel.class, (tileEntity) -> new ConveyorChuteSteel());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.ALUMINUM.getName()), ConveyorChuteAluminum.class, (tileEntity) -> new ConveyorChuteAluminum());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_"+BlockTypes_MetalsAll.COPPER.getName()), ConveyorChuteCopper.class, (tileEntity) -> new ConveyorChuteCopper());
 
 		/*BULLETS*/
 		ItemBullet.initBullets();
@@ -742,77 +747,37 @@ public class IEContent
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
 		AssemblerHandler.registerSpecialQueryConverters((o) ->
-				o instanceof IngredientFluidStack?new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount): null);
-		//Shaped
-		AssemblerHandler.registerRecipeAdapter(ShapedRecipes.class, new IRecipeAdapter<ShapedRecipes>()
 		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(ShapedRecipes recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.recipeItems.size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.recipeItems.get(i));
-				return query;
-			}
+			if(o instanceof IngredientFluidStack)
+				return new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount);
+			else return null;
 		});
-		//Shapeless
-		AssemblerHandler.registerRecipeAdapter(ShapelessRecipes.class, new IRecipeAdapter<ShapelessRecipes>()
+		//Potion bullets
+		AssemblerHandler.registerRecipeAdapter(RecipePotionBullets.class, new IRecipeAdapter<RecipePotionBullets>()
 		{
+			@Nullable
 			@Override
-			public RecipeQuery[] getQueriedInputs(ShapelessRecipes recipe)
+			public RecipeQuery[] getQueriedInputs(RecipePotionBullets recipe, NonNullList<ItemStack> input)
 			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.recipeItems.size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.recipeItems.get(i));
-				return query;
-			}
-		});
-		//ShapedOre
-		AssemblerHandler.registerRecipeAdapter(ShapedOreRecipe.class, new IRecipeAdapter<ShapedOreRecipe>()
-		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(ShapedOreRecipe recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
-				return query;
-			}
-		});
-		//ShapelessOre
-		AssemblerHandler.registerRecipeAdapter(ShapelessOreRecipe.class, new IRecipeAdapter<ShapelessOreRecipe>()
-		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(ShapelessOreRecipe recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
-				return query;
-			}
-		});
-		//ShapedIngredient
-		AssemblerHandler.registerRecipeAdapter(RecipeShapedIngredient.class, new IRecipeAdapter<RecipeShapedIngredient>()
-		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(RecipeShapedIngredient recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
-				return query;
-			}
-		});
-		//ShapelessIngredient
-		AssemblerHandler.registerRecipeAdapter(RecipeShapelessIngredient.class, new IRecipeAdapter<RecipeShapelessIngredient>()
-		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(RecipeShapelessIngredient recipe)
-			{
-				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
-				for(int i = 0; i < query.length; i++)
-					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
-				return query;
+				RecipeQuery bullet = null;
+				RecipeQuery potion = null;
+				for(int i = 0; i < input.size()-1; ++i)
+				{
+					ItemStack s = input.get(i);
+					if(!s.isEmpty())
+					{
+						if(bullet==null&&RecipePotionBullets.isPotionBullet(s))
+							bullet = AssemblerHandler.createQueryFromItemStack(s);
+						else if(potion==null&&s.getItem() instanceof ItemPotion)
+							potion = AssemblerHandler.createQuery(
+									MixerPotionHelper.getFluidStackForType(PotionUtils.getPotionFromItem(s), 250));
+						else
+							return null;
+					}
+				}
+				if(bullet==null||potion==null)
+					return null;
+				return new RecipeQuery[]{bullet, potion};
 			}
 		});
 
@@ -1053,7 +1018,7 @@ public class IEContent
 			input.setAccessible(true);
 			for(Object mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
 				//noinspection unchecked
-				MixerRecipePotion.registerPotionRecipe(((IRegistryDelegate<PotionType>)output.get(mixPredicate)).get(),
+				MixerPotionHelper.registerPotionRecipe(((IRegistryDelegate<PotionType>)output.get(mixPredicate)).get(),
 						((IRegistryDelegate<PotionType>)input.get(mixPredicate)).get(),
 						ApiUtils.createIngredientStack(reagent.get(mixPredicate)));
 		} catch(Exception x)
@@ -1067,7 +1032,7 @@ public class IEContent
 				ItemStack input = ((AbstractBrewingRecipe)recipe).getInput();
 				ItemStack output = ((AbstractBrewingRecipe)recipe).getOutput();
 				if(input.getItem()==Items.POTIONITEM&&output.getItem()==Items.POTIONITEM)
-					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input), ingredientStack);
+					MixerPotionHelper.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input), ingredientStack);
 			}
 		if(arcRecycleThread!=null)
 		{

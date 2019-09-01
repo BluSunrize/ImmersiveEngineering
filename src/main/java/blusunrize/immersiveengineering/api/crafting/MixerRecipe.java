@@ -53,7 +53,7 @@ public class MixerRecipe extends MultiblockRecipe
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
 	}
 
-	public static ArrayList<MixerRecipe> recipeList = new ArrayList();
+	public static ArrayList<MixerRecipe> recipeList = new ArrayList<>();
 
 	public static MixerRecipe addRecipe(FluidStack fluidOutput, FluidStack fluidInput, Object[] itemInput, int energy)
 	{

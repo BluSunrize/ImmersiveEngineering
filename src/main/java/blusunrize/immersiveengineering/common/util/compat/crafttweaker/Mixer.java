@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
-import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
+import blusunrize.immersiveengineering.common.crafting.MixerPotionHelper;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.api.item.IIngredient;
@@ -20,6 +20,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 @ZenClass("mods.immersiveengineering.Mixer")
 public class Mixer
@@ -92,13 +93,40 @@ public class Mixer
 				}
 			}
 			if(this.output.tag!=null&&this.output.tag.hasKey("Potion"))
-				MixerRecipePotion.BLACKLIST.add(this.output.tag.getString("Potion"));
+				MixerPotionHelper.BLACKLIST.add(this.output.tag.getString("Potion"));
 		}
 
 		@Override
 		public String describe()
 		{
 			return "Removing Mixer Recipes for Fluid "+output.getLocalizedName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		List<MixerRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = new ArrayList<>(MixerRecipe.recipeList);
+			MixerRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Mixer Recipes";
 		}
 	}
 }

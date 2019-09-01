@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace;
 
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import org.objectweb.asm.ClassWriter;
@@ -40,9 +41,9 @@ public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
 		String s = energy+" IF/t";
-		minecraft.fontRenderer.drawString(s, 54, 38, 0x777777);
-		s = time+" ticks";
-		minecraft.fontRenderer.drawString(s, 54, 48, 0x777777);
+		minecraft.fontRenderer.drawString(s, 54, 35, 0x777777);
+		s = Utils.formatDouble(time/20f, "0.##")+" Seconds";
+		minecraft.fontRenderer.drawString(s, 54, 44, 0x777777);
 	}
 
 	public static ArcFurnaceRecipeWrapper getWrapper(ArcFurnaceRecipe recipe)

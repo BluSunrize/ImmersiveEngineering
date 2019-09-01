@@ -366,8 +366,11 @@ public class ConveyorHandler
 				// In the first tick this could be an entity the conveyor belt just dropped, causing #3023
 				if(entity instanceof EntityItem&&entity.ticksExisted > 1)
 				{
-					((EntityItem)entity).setNoDespawn();
-					handleInsertion(tile, (EntityItem)entity, facing, conveyorDirection, distX, distZ);
+					EntityItem item = (EntityItem)entity;
+					if(!contact)
+						item.setNoDespawn(); //misnamed, actually sets despawn timer to 10 minutes
+					else
+						handleInsertion(tile, item, facing, conveyorDirection, distX, distZ);
 				}
 			}
 		}

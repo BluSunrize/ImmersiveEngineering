@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -73,12 +74,13 @@ public class ItemCoresample extends ItemIEBase
 				String name = world.provider.getDimensionType().getName();
 				if(name.toLowerCase(Locale.ENGLISH).startsWith("the "))
 					name = name.substring(4);
-				s2 = name;
+				s2 = name.substring(0, 1).toUpperCase(Locale.ENGLISH)+name.substring(1);
 			}
 			else
 				s2 = "Dimension "+coords[0];
 			list.add(s2);
-			list.add(I18n.format(Lib.CHAT_INFO+"coresample.pos", s0, s1, ""));
+			if(IEConfig.coreSampleCoords)
+				list.add(I18n.format(Lib.CHAT_INFO+"coresample.pos", s0, s1, ""));
 
 			if(ItemNBTHelper.hasKey(stack, "infinite"))
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.infinite"));

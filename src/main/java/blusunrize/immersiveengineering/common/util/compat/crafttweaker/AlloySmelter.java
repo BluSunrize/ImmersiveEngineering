@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ZenClass("mods.immersiveengineering.AlloySmelter")
@@ -81,6 +82,33 @@ public class AlloySmelter
 		public String describe()
 		{
 			return "Removing Alloy Smelter Recipe for "+output.getDisplayName();
+		}
+	}
+
+	@ZenMethod
+	public static void removeAll()
+	{
+		CraftTweakerAPI.apply(new RemoveAll());
+	}
+
+	private static class RemoveAll implements IAction
+	{
+		List<AlloyRecipe> removedRecipes;
+
+		public RemoveAll(){
+		}
+
+		@Override
+		public void apply()
+		{
+			removedRecipes = new ArrayList<>(AlloyRecipe.recipeList);
+			AlloyRecipe.recipeList.clear();
+		}
+
+		@Override
+		public String describe()
+		{
+			return "Removing all Alloy Smelter Recipes";
 		}
 	}
 }

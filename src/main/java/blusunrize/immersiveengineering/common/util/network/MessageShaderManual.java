@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import io.netty.buffer.ByteBuf;
@@ -82,7 +83,7 @@ public class MessageShaderManual implements IMessage
 				if(message.key==MessageType.SYNC)
 				{
 					Collection<String> received = ShaderRegistry.receivedShaders.get(playerName);
-					String[] ss = received.toArray(new String[received.size()]);
+					String[] ss = received.toArray(new String[0]);
 					ImmersiveEngineering.packetHandler.sendTo(new MessageShaderManual(MessageType.SYNC, ss), player);
 				}
 				else if(message.key==MessageType.UNLOCK&&message.args.length > 0)
@@ -91,15 +92,18 @@ public class MessageShaderManual implements IMessage
 				}
 				else if(message.key==MessageType.SPAWN&&message.args.length > 0)
 				{
-					if(!player.capabilities.isCreativeMode)
-						ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(playerName).replicationCost);
-					ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
-					ItemNBTHelper.setString(shaderStack, "shader_name", message.args[0]);
-					EntityItem entityitem = player.dropItem(shaderStack, false);
-					if(entityitem!=null)
+					IngredientStack cost = ShaderRegistry.shaderRegistry.get(message.args[0]).replicationCost;
+					if(player.capabilities.isCreativeMode
+							||ApiUtils.consumePlayerIngredientAndConfirm(player, cost))
 					{
-						entityitem.setNoPickupDelay();
-						entityitem.setOwner(player.getName());
+						ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
+						ItemNBTHelper.setString(shaderStack, "shader_name", message.args[0]);
+						EntityItem entityitem = player.dropItem(shaderStack, false);
+						if(entityitem!=null)
+						{
+							entityitem.setNoPickupDelay();
+							entityitem.setOwner(player.getName());
+						}
 					}
 				}
 			});

@@ -47,8 +47,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
 import net.minecraft.util.Timer;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -1532,7 +1532,7 @@ public class ClientUtils
 		vertices = new Vector3f[]{new Vector3f(to.x, to.y, from.z), new Vector3f(to.x, from.y, from.z), new Vector3f(from.x, from.y, from.z), new Vector3f(from.x, to.y, from.z)};
 		sprite = textureGetter.apply(EnumFacing.NORTH);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.NORTH, facing), sprite, new double[]{from.x*16, 16-to.y*16, to.x*16, 16-from.y*16}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(EnumFacing.NORTH, facing), sprite, new double[]{16-to.x*16, 16-to.y*16, 16-from.x*16, 16-from.y*16}, colour, false));
 
 		for(Vector3f v : vertices)
 			v.setZ(to.z);
