@@ -97,6 +97,7 @@ import static java.lang.Math.min;
 public class Utils
 {
 	public static final Random RAND = new Random();
+	public static final DecimalFormat DECIMALFORMAT_PREFIXED = new DecimalFormat("+#.##;-#.##");
 
 	public static boolean compareToOreName(ItemStack stack, String oreName)
 	{
@@ -526,7 +527,7 @@ public class Utils
 		float f1 = MathHelper.sin(-yaw*0.017453292F-(float)Math.PI);
 		float f2 = -MathHelper.cos(-pitch*0.017453292F);
 		float f3 = MathHelper.sin(-pitch*0.017453292F);
-		return new Vec3d((double)(f1*f2), (double)f3, (double)(f*f2));
+		return new Vec3d(f1*f2, f3, f*f2);
 	}
 
 	public static void attractEnemies(EntityLivingBase target, float radius)
@@ -602,14 +603,14 @@ public class Utils
 					if(j >= 0)
 					{
 						int k = j-(i-8);
-						vec3 = vec3.add((double)((blockpos.getX()-pos.getX())*k), (double)((blockpos.getY()-pos.getY())*k), (double)((blockpos.getZ()-pos.getZ())*k));
+						vec3 = vec3.add((blockpos.getX()-pos.getX())*k, (blockpos.getY()-pos.getY())*k, (blockpos.getZ()-pos.getZ())*k);
 					}
 				}
 			}
 			else if(j >= 0)
 			{
 				int l = j-i;
-				vec3 = vec3.add((double)((blockpos.getX()-pos.getX())*l), (double)((blockpos.getY()-pos.getY())*l), (double)((blockpos.getZ()-pos.getZ())*l));
+				vec3 = vec3.add((blockpos.getX()-pos.getX())*l, (blockpos.getY()-pos.getY())*l, (blockpos.getZ()-pos.getZ())*l);
 			}
 		}
 

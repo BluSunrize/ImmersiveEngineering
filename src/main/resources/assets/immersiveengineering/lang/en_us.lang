@@ -708,6 +708,10 @@ desc.immersiveengineering.info.blueprint.electrode=Arc Furnace Electrodes
 
 desc.immersiveengineering.info.electrodeIntegrity=Integrity
 
+desc.immersiveengineering.info.revolver.perk.cooldown=Firerate: %1$s%%
+desc.immersiveengineering.info.revolver.perk.noise=Noise: %1$s%%
+desc.immersiveengineering.info.revolver.perk.luck=Luck: %1$s
+
 desc.immersiveengineering.info.bullet.flareColour=Flare Colour: %1$s
 
 desc.immersiveengineering.info.shader.applyTo=Can be applied to:

@@ -37,6 +37,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -53,6 +54,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EntityEquipmentSlot.Type;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -71,7 +73,10 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+import java.util.function.DoublePredicate;
+import java.util.function.Function;
 
 public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallback<ItemStack>, ITool, IGuiItem, IBulletContainer
 {
@@ -81,6 +86,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	}
 
 	public static UUID speedModUUID = Utils.generateNewUUID();
+	public static UUID luckModUUID = Utils.generateNewUUID();
 	public HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap<>();
 	public TextureAtlasSprite revolverDefaultTexture;
 
@@ -221,6 +227,14 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 //				list.add(TextFormatting.DARK_GRAY+shader.getDisplayName());
 //				ShaderCase sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, shader, getShaderType());
 //			}
+
+		NBTTagCompound perks = getPerks(stack);
+		for(String key : perks.getKeySet())
+		{
+			RevolverPerk perk = RevolverPerk.get(key);
+			if(perk!=null)
+				list.add(" "+perk.getDisplayString(perks.getDouble(key)));
+		}
 	}
 
 	@Override
@@ -229,13 +243,13 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	{
 		if(this.isInCreativeTab(tab))
 			list.add(new ItemStack(this));
-		//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
-		//		{
-		//			ItemStack stack = new ItemStack(this,1,0);
-		//			applySpecialCrafting(stack, e.getValue());
-		//			this.recalculateUpgrades(stack);
-		//			list.add(stack);
-		//		}
+				for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
+				{
+					ItemStack stack = new ItemStack(this,1,0);
+					applySpecialCrafting(stack, e.getValue());
+					this.recalculateUpgrades(stack);
+					list.add(stack);
+				}
 	}
 
 	/* ------------- ATTRIBUTES, UPDATE, RIGHTCLICK ------------- */
@@ -248,15 +262,22 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		{
 			if(getUpgrades(stack).getBoolean("fancyAnimation"))
 				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, 0));
-			double melee = getUpgrades(stack).getDouble("melee");
+			double melee = getUpgradeValue_d(stack, "melee");
 			if(melee!=0)
 			{
 				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, 0));
 				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
 			}
-			double speed = getUpgrades(stack).getDouble("speed");
+		}
+		if(slot.getSlotType()==Type.HAND)
+		{
+			double speed = getUpgradeValue_d(stack, "speed");
 			if(speed!=0)
 				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, 1));
+
+			double luck = getUpgradeValue_d(stack, RevolverPerk.LUCK.getNBTKey());
+			if(luck!=0)
+				multimap.put(SharedMonsterAttributes.LUCK.getName(), new AttributeModifier(luckModUUID, "Weapon modifier", luck, 1));
 		}
 		return multimap;
 	}
@@ -358,7 +379,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 									}
 								bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
 
-								float noise = 1;
+								float noise = (float)getUpgradeValue_d(revolver, RevolverPerk.NOISE.getNBTKey());
 								Utils.attractEnemies(player, 64*noise);
 								SoundEvent sound = bullet.getSound();
 								if(sound==null)
@@ -404,6 +425,8 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 	public int getMaxShootCooldown(ItemStack stack)
 	{
+		if(hasUpgradeValue(stack, RevolverPerk.COOLDOWN.getNBTKey()))
+			return (int)Math.ceil(15*getUpgradeValue_d(stack, RevolverPerk.COOLDOWN.getNBTKey()));
 		return 15;
 	}
 
@@ -503,6 +526,22 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		}
 		return "";
 	}
+
+	public NBTTagCompound getPerks(ItemStack stack)
+	{
+		return ItemNBTHelper.getTagCompound(stack, "perks");
+	}
+
+	public boolean hasUpgradeValue(ItemStack stack, String key)
+	{
+		return getUpgrades(stack).hasKey(key)||getPerks(stack).hasKey(key);
+	}
+
+	public double getUpgradeValue_d(ItemStack stack, String key)
+	{
+		return getUpgrades(stack).getDouble(key)+getPerks(stack).getDouble(key);
+	}
+
 
 	/* ------------- CRAFTING ------------- */
 
@@ -661,10 +700,11 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				float f = ((EntityPlayer)entity).getCooledAttackStrength(ClientUtils.mc().timer.renderPartialTicks);
 				if(f < 1)
 				{
-					float angle = f*-6.28318f;
+					float angle = 3.14159f+f*-9.42477f;
 					if(left)
 						angle *= -1;
-					perspective.translate(0, 1.5-f, 0);
+					if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)
+						perspective.translate(0, 2-f, 0);
 					perspective.rotate(angle, 0, 0, 1);
 				}
 			}
@@ -759,6 +799,51 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			this.flavour = flavour;
 			this.baseUpgrades = baseUpgrades;
 			this.renderAdditions = renderAdditions;
+		}
+	}
+
+	@ParametersAreNonnullByDefault
+	public enum RevolverPerk
+	{
+		COOLDOWN(f -> f > 1, f -> Utils.DECIMALFORMAT_PREFIXED.format((1-f)*100)),
+		NOISE(f -> f > 1, f -> Utils.DECIMALFORMAT_PREFIXED.format((f-1)*100)),
+		LUCK(f -> f < 0, Utils.DECIMALFORMAT_PREFIXED::format);
+
+		private final DoublePredicate isBadValue;
+		private final Function<Double, String> valueFormatter;
+
+		RevolverPerk(DoublePredicate isBadValue, Function<Double, String> valueFormatter)
+		{
+			this.isBadValue = isBadValue;
+			this.valueFormatter = valueFormatter;
+		}
+
+		public String getNBTKey()
+		{
+			return name().toLowerCase();
+		}
+
+		public String getDisplayString(double value)
+		{
+			String key = Lib.DESC_INFO+"revolver.perk."+this.toString();
+			return (isBadValue.test(value)?ChatFormatting.RED: ChatFormatting.BLUE)+I18n.format(key, valueFormatter.apply(value));
+		}
+
+		@Override
+		public String toString()
+		{
+			return this.name().toLowerCase();
+		}
+
+		public static RevolverPerk get(String name)
+		{
+			try
+			{
+				return valueOf(name.toUpperCase());
+			} catch(Exception e)
+			{
+				return null;
+			}
 		}
 	}
 }
