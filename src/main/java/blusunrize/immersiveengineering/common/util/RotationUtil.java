@@ -16,6 +16,7 @@ import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -73,8 +74,14 @@ public class RotationUtil
 					if(!pred.test(tile))
 						return false;
 		}
-		//TODO what did this become?
-		return state.getBlock().rotateBlock(world, pos, axis);
+		BlockState newState = state.rotate(world, pos, Rotation.CLOCKWISE_90);
+		if(newState!=state)
+		{
+			world.setBlockState(pos, newState);
+			return true;
+		}
+		else
+			return false;
 	}
 
 	public static boolean rotateEntity(Entity entity, PlayerEntity player)

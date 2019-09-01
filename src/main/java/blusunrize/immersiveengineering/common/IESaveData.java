@@ -9,8 +9,6 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
-import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
@@ -36,26 +34,6 @@ public class IESaveData extends WorldSavedData
 	@Override
 	public void read(CompoundNBT nbt)
 	{
-		//Load new info from NBT
-		int[] savedDimensions = nbt.getIntArray("savedDimensions");
-		for(int dim : savedDimensions)
-		{
-			ListNBT connectionList = nbt.getList("connectionList"+dim, 10);
-			for(int i = 0; i < connectionList.size(); i++)
-			{
-				CompoundNBT conTag = connectionList.getCompound(i);
-				ImmersiveNetHandler.Connection con = ImmersiveNetHandler.Connection.readFromNBT(conTag);
-				if(con!=null)
-				{
-					ImmersiveNetHandler.INSTANCE.addConnection(dim, con.start, con);
-				}
-			}
-		}
-
-		ListNBT proxies = nbt.getList("iicProxies", 10);
-		for(int i = 0; i < proxies.size(); i++)
-			ImmersiveNetHandler.INSTANCE.addProxy(IICProxy.readFromNBT(proxies.getCompound(i)));
-
 		EventHandler.validateConnsNextTick = true;
 
 		ListNBT mineralList = nbt.getList("mineralDepletion", 10);
@@ -93,27 +71,6 @@ public class IESaveData extends WorldSavedData
 	@Override
 	public CompoundNBT write(@Nonnull CompoundNBT nbt)
 	{
-		Integer[] relDim = ImmersiveNetHandler.INSTANCE.getRelevantDimensions().toArray(new Integer[0]);
-		int[] savedDimensions = new int[relDim.length];
-		for(int ii = 0; ii < relDim.length; ii++)
-			savedDimensions[ii] = relDim[ii];
-
-		nbt.putIntArray("savedDimensions", savedDimensions);
-		for(int dim : savedDimensions)
-		{
-			ListNBT connectionList = new ListNBT();
-			for(ImmersiveNetHandler.Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(dim))
-			{
-				connectionList.add(con.writeToNBT());
-			}
-			nbt.put("connectionList"+dim, connectionList);
-		}
-
-		ListNBT proxies = new ListNBT();
-		for(IICProxy iic : ImmersiveNetHandler.INSTANCE.proxies.values())
-			proxies.add(iic.writeToNBT());
-		nbt.put("iicProxies", proxies);
-
 		ListNBT mineralList = new ListNBT();
 		for(Map.Entry<DimensionChunkCoords, MineralWorldInfo> e : ExcavatorHandler.mineralCache.entrySet())
 			if(e.getKey()!=null&&e.getValue()!=null)

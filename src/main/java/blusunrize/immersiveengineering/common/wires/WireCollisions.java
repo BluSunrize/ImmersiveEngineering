@@ -40,7 +40,7 @@ public class WireCollisions
 {
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if(!e.world.isRemote&&IEConfig.enableWireDamage&&e instanceof LivingEntity&&
+		if(!e.world.isRemote&&IEConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity&&
 				!e.isInvulnerableTo(IEDamageSources.wireShock)&&
 				!(e instanceof PlayerEntity&&((PlayerEntity)e).abilities.disableDamage))
 		{

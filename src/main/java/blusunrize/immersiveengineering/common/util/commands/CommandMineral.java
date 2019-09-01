@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
-import blusunrize.immersiveengineering.common.IESaveData;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -29,6 +28,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.ColumnPosArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.math.ColumnPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -73,10 +73,10 @@ public class CommandMineral
 			getMineral(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
 			return Command.SINGLE_SUCCESS;
 		}).then(
-				Commands.argument("location", ColumnPosArgument.func_212603_a())
+				Commands.argument("location", ColumnPosArgument.columnPos())
 						.executes(command -> {
-							ColumnPosArgument.ColumnPos pos = command.getArgument("location", ColumnPosArgument.ColumnPos.class);
-							getMineral(command, pos.field_212600_a, pos.field_212601_b);
+							ColumnPos pos = command.getArgument("location", ColumnPos.class);
+							getMineral(command, pos.x, pos.z);
 							return Command.SINGLE_SUCCESS;
 						})
 		);
@@ -103,10 +103,10 @@ public class CommandMineral
 			setMineral(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
 			return Command.SINGLE_SUCCESS;
 		}).then(
-				Commands.argument("location", ColumnPosArgument.func_212603_a())
+				Commands.argument("location", ColumnPosArgument.columnPos())
 						.executes(command -> {
-							ColumnPosArgument.ColumnPos pos = command.getArgument("location", ColumnPosArgument.ColumnPos.class);
-							setMineral(command, pos.field_212600_a, pos.field_212601_b);
+							ColumnPos pos = command.getArgument("location", ColumnPos.class);
+							setMineral(command, pos.x, pos.z);
 							return Command.SINGLE_SUCCESS;
 						})
 		);
@@ -117,14 +117,12 @@ public class CommandMineral
 	private static void setMineral(CommandContext<CommandSource> context, int xChunk, int zChunk)
 	{
 		CommandSource sender = context.getSource();
-		//TODO getWorld for commands send from the server?
 		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(),
 				xChunk, zChunk);
 		MineralMix mineral = context.getArgument("mineral", MineralMix.class);
 		info.mineralOverride = mineral;
 		sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
 				"mineral.set.sucess", mineral.name), true);
-		IESaveData.setDirty(sender.getWorld().getDimension().getType());
 	}
 
 	private static LiteralArgumentBuilder<CommandSource> setMineralDepletion()
@@ -137,10 +135,10 @@ public class CommandMineral
 			setMineralDepletion(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
 			return Command.SINGLE_SUCCESS;
 		}).then(
-				Commands.argument("location", ColumnPosArgument.func_212603_a())
+				Commands.argument("location", ColumnPosArgument.columnPos())
 						.executes(command -> {
-							ColumnPosArgument.ColumnPos pos = command.getArgument("location", ColumnPosArgument.ColumnPos.class);
-							setMineralDepletion(command, pos.field_212600_a, pos.field_212601_b);
+							ColumnPos pos = command.getArgument("location", ColumnPos.class);
+							setMineralDepletion(command, pos.x, pos.z);
 							return Command.SINGLE_SUCCESS;
 						})
 		);
@@ -156,7 +154,6 @@ public class CommandMineral
 		info.depletion = depl;
 		//sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+CommandMineral.this.getName()+".setDepletion.sucess",
 		//TODO localization on the server?		(depl < 0?I18n.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"): Integer.toString(depl))));
-		IESaveData.setDirty(sender.getWorld().getDimension().getType());
 	}
 
 	private static class MineralArgument implements ArgumentType<MineralMix>
@@ -165,7 +162,7 @@ public class CommandMineral
 				(input) -> new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.invalid", input));
 
 		@Override
-		public <S> MineralMix parse(StringReader reader) throws CommandSyntaxException
+		public MineralMix parse(StringReader reader) throws CommandSyntaxException
 		{
 			String name = reader.readQuotedString();//TODO does this work properly?
 			for(MineralMix mm : ExcavatorHandler.mineralList.keySet())

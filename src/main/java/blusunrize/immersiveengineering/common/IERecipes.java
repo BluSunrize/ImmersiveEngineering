@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.crafting.MetalPressUnpackingRecipe
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -200,7 +199,7 @@ public class IERecipes
 
 		//Damaged Graphite Electrodes
 		ItemStack shoddyElectrode = new ItemStack(Misc.graphiteElectrode);
-		shoddyElectrode.setDamage(ItemGraphiteElectrode.electrodeMaxDamage/2);
+		shoddyElectrode.setDamage(IEConfig.MACHINES.arcfurnace_electrodeDamage.get()/2);
 		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(moldRod), 4800).setInputSize(4);
 
 		//Slicing Melons
@@ -313,7 +312,7 @@ public class IERecipes
 
 	public static void postInitOreDictRecipes()
 	{
-		boolean allowHammerCrushing = !IEConfig.TOOLS.disableHammerCrushing;
+		boolean allowHammerCrushing = !IEConfig.TOOLS.disableHammerCrushing.get();
 		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(moldPlate), false);
 		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(moldGear), false);
 		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(moldRod), false);
@@ -418,7 +417,7 @@ public class IERecipes
 								getIngot(ore), compMoldWire, 2400);
 				}
 			}
-		Config.manual_bool.put("crushingOreRecipe", !hammerCrushingList.isEmpty());
+		//TODO Config.manual_bool.put("crushingOreRecipe", !hammerCrushingList.isEmpty());
 	}
 
 	public static CrusherRecipe addCrusherRecipe(ItemStack output, Object input, int energy, Object... secondary)

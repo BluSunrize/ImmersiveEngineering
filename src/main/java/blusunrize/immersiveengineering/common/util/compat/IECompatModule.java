@@ -8,9 +8,11 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.fml.ModList;
 
 import java.util.HashMap;
@@ -82,8 +84,8 @@ public abstract class IECompatModule
 					if("ic2".equals(e.getKey())&&ModList.get().isLoaded("ic2-classic-spmod"))
 						continue;
 
-					Boolean enabled = IEConfig.compat.get(e.getKey());
-					if(enabled==null||!enabled)
+					BooleanValue enabled = IEConfig.GENERAL.compat.get(e.getKey());
+					if(enabled==null||!enabled.get())
 						continue;
 					IECompatModule m = e.getValue().newInstance();
 					modules.add(m);

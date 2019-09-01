@@ -39,7 +39,6 @@ import java.util.Map.Entry;
 public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?>> features = new HashMap<>();
-	//TODO
 	public static List<ResourceLocation> oreDimBlacklist = new ArrayList<>();
 	public static Map<String, Boolean> retrogenMap = new HashMap<>();
 
@@ -55,7 +54,7 @@ public class IEWorldGen
 
 	public void generateOres(Random random, int chunkX, int chunkZ, World world, boolean newGeneration)
 	{
-		//if(!oreDimBlacklist.contains(world.provider.getDimension()))
+		if(!oreDimBlacklist.contains(world.getDimension().getType().getRegistryName()))
 		for(Entry<String, ConfiguredFeature<?>> gen : features.entrySet())
 			if(newGeneration||retrogenMap.get("retrogen_"+gen.getKey()))
 				gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(),

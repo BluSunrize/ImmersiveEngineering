@@ -27,17 +27,17 @@ import com.google.gson.JsonParseException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FenceBlock;
+import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
@@ -52,7 +52,9 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.IProperty;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
@@ -75,11 +77,10 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -207,11 +208,12 @@ public class Utils
 		if(stack==null)
 			return null;
 		FluidStack fs = new FluidStack(stack, amount);
-		if(stripPressure&&fs.tag!=null&&fs.tag.contains("pressurized"))
+		if(stripPressure&&fs.hasTag()&&fs.getOrCreateTag().contains("pressurized"))
 		{
-			fs.tag.remove("pressurized");
-			if(fs.tag.isEmpty())
-				fs.tag = null;
+			CompoundNBT tag = fs.getOrCreateTag();
+			tag.remove("pressurized");
+			if(tag.isEmpty())
+				fs.setTag(null);
 		}
 		return fs;
 	}
@@ -623,32 +625,18 @@ public class Utils
 		return tag;
 	}
 
-	public static FluidStack drainFluidBlock(World world, BlockPos pos, boolean doDrain)
+	public static FluidStack drainFluidBlock(World world, BlockPos pos, FluidAction action)
 	{
-		Block b = world.getBlockState(pos).getBlock();
-		Fluid f = FluidRegistry.lookupFluidForBlock(b);
+		BlockState b = world.getBlockState(pos);
+		IFluidState f = b.getFluidState();
 
-		if(f!=null)
+		if(f.isSource()&&b.getBlock() instanceof IBucketPickupHandler)
 		{
-			if(b instanceof IFluidBlock)
-			{
-				if(((IFluidBlock)b).canDrain(world, pos))
-					return ((IFluidBlock)b).drain(world, pos, doDrain);
-				else
-					return null;
-			}
-			else
-			{
-				if(b.getMetaFromState(world.getBlockState(pos))==0)
-				{
-					if(doDrain)
-						world.removeBlock(pos, false);
-					return new FluidStack(f, 1000);
-				}
-				return null;
-			}
+			if(action.execute())
+				((IBucketPickupHandler)b.getBlock()).pickupFluid(world, pos, b);
+			return new FluidStack(f.getFluid(), 1000);
 		}
-		return null;
+		return FluidStack.EMPTY;
 	}
 
 	public static Fluid getRelatedFluid(World w, BlockPos pos)
@@ -656,36 +644,45 @@ public class Utils
 		return w.getBlockState(pos).getFluidState().getFluid();
 	}
 
-	public static boolean placeFluidBlock(World world, BlockPos pos, FluidStack fluid)
+	//Stolen from BucketItem
+	public static boolean placeFluidBlock(World worldIn, BlockPos posIn, FluidStack fluidStack)
 	{
-		if(fluid==null||fluid.getFluid()==null)
+		Fluid fluid = fluidStack.getFluid();
+		if(!(fluid instanceof FlowingFluid)||fluidStack.getAmount() < 1000)
 			return false;
-		BlockState state = world.getBlockState(pos);
-		Block b = state.getBlock();
-		Block fluidBlock = fluid.getFluid().getBlock();
-
-		if(Blocks.WATER.equals(fluidBlock))
-			fluidBlock = Blocks.FLOWING_WATER;
-		else if(Blocks.LAVA.equals(fluidBlock))
-			fluidBlock = Blocks.FLOWING_LAVA;
-
-		boolean canPlace = b==null||b.isAir(state, world, pos)||b.isReplaceable(world, pos);
-
-		if(fluidBlock!=null&&canPlace&&fluid.amount >= 1000)
+		else
 		{
-			boolean placed = false;
-			if((fluidBlock instanceof BlockFluidBase))
+			BlockState blockstate = worldIn.getBlockState(posIn);
+			Material material = blockstate.getMaterial();
+			boolean flag = !material.isSolid();
+			boolean flag1 = material.isReplaceable();
+			if(worldIn.isAirBlock(posIn)||flag||flag1||blockstate.getBlock() instanceof ILiquidContainer&&((ILiquidContainer)blockstate.getBlock()).canContainFluid(worldIn, posIn, blockstate, fluid))
 			{
-				BlockFluidBase blockFluid = (BlockFluidBase)fluidBlock;
-				placed = world.setBlockState(pos, fluidBlock.getStateFromMeta(blockFluid.getMaxRenderHeightMeta()));
+				if(worldIn.dimension.doesWaterVaporize()&&fluid.isIn(FluidTags.WATER))
+				{
+					int i = posIn.getX();
+					int j = posIn.getY();
+					int k = posIn.getZ();
+					worldIn.playSound(null, posIn, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F+(worldIn.rand.nextFloat()-worldIn.rand.nextFloat())*0.8F);
+
+					for(int l = 0; l < 8; ++l)
+						worldIn.addParticle(ParticleTypes.LARGE_SMOKE, i+Math.random(), j+Math.random(), k+Math.random(), 0.0D, 0.0D, 0.0D);
+				}
+				else if(blockstate.getBlock() instanceof ILiquidContainer&&fluid==Fluids.WATER)
+					((ILiquidContainer)blockstate.getBlock()).receiveFluid(worldIn, posIn, blockstate, ((FlowingFluid)fluid).getStillFluidState(false));
+				else
+				{
+					if(!worldIn.isRemote&&(flag||flag1)&&!material.isLiquid())
+						worldIn.destroyBlock(posIn, true);
+
+					worldIn.setBlockState(posIn, fluid.getDefaultState().getBlockState(), 11);
+				}
+				fluidStack.shrink(1000);
+				return true;
 			}
 			else
-				placed = world.setBlockState(pos, fluidBlock.getDefaultState());
-			if(placed)
-				fluid.amount -= 1000;
-			return placed;
+				return false;
 		}
-		return false;
 	}
 
 	public static BlockState getStateFromItemStack(ItemStack stack)
@@ -814,16 +811,14 @@ public class Utils
 
 	public static boolean isFluidContainerFull(ItemStack stack)
 	{
-		if(stack.isEmpty())
-			return false;
-		IFluidHandlerItem handler = FluidUtil.getFluidHandler(stack);
-		if(handler==null)
-			return false;
-		IFluidTankProperties[] tank = handler.getTankProperties();
-		for(IFluidTankProperties prop : tank)
-			if(prop.getContents()==null||prop.getContents().amount < prop.getCapacity())
-				return false;
-		return true;
+		return FluidUtil.getFluidHandler(stack)
+				.map(handler -> {
+					for(int t = 0; t < handler.getTanks(); ++t)
+						if(handler.getFluidInTank(t).getAmount() < handler.getTankCapacity(t))
+							return false;
+					return true;
+				})
+				.orElse(false);
 	}
 
 	public static boolean isFluidRelatedItemStack(ItemStack stack)
@@ -1371,58 +1366,31 @@ public class Utils
 		HashMap<String, Object> ret = new HashMap<>();
 		if(tank!=null&&tank.getFluid()!=null)
 		{
-			ret.put("name", tank.getFluid().getFluid().getUnlocalizedName());
+			ret.put("name", tank.getFluid().getDisplayName().getFormattedText());
 			ret.put("amount", tank.getFluidAmount());
 			ret.put("capacity", tank.getCapacity());
-			ret.put("hasTag", tank.getFluid().tag!=null);
+			ret.put("hasTag", tank.getFluid().hasTag());
 		}
 		return ret;
 	}
 
-	public static Map<String, Object> saveFluidStack(FluidStack tank)
+	public static Map<String, Object> saveFluidStack(FluidStack stack)
 	{
 		HashMap<String, Object> ret = new HashMap<>();
-		if(tank!=null&&tank.getFluid()!=null)
+		if(!stack.isEmpty())
 		{
-			ret.put("name", tank.getFluid().getUnlocalizedName());
-			ret.put("amount", tank.amount);
-			ret.put("hasTag", tank.tag!=null);
+			ret.put("name", stack.getDisplayName().getFormattedText());
+			ret.put("amount", stack.getAmount());
+			ret.put("hasTag", stack.hasTag());
 		}
 		return ret;
 	}
 
-	/*TODO use NBTUtil instead!
-	public static void stateToNBT(NBTTagCompound out, IBlockState state)
-	{
-		out.putString("block", state.getBlock().getRegistryName().toString());
-		for(IProperty<?> prop : state.getProperties())
-			saveProp(state, prop, out);
-	}
-
-	public static IBlockState stateFromNBT(NBTTagCompound in)
-	{
-		Block b = Block.getBlockFromName(in.getString("block"));
-		if(b==null)
-			return Blocks.BOOKSHELF.getDefaultState();
-		IBlockState ret = b.getDefaultState();
-		for(IProperty<?> prop : ret.getProperties())
-		{
-			String name = prop.getName();
-			if(in.hasKey(name, Constants.NBT.TAG_STRING))
-				ret = setProp(ret, prop, in.getString(name));
-		}
-		return ret;
-	}
-	*/
-
-	//TODO getDrops wants a world now, how do we deal with that?
 	public static List<ItemStack> getDrops(BlockState state, Builder builder)
 	{
 		ResourceLocation resourcelocation = state.getBlock().getLootTable();
 		if(resourcelocation==LootTables.EMPTY)
-		{
 			return Collections.emptyList();
-		}
 		else
 		{
 			LootContext lootcontext = builder.withParameter(LootParameters.BLOCK_STATE, state).build(LootParameterSets.BLOCK);
@@ -1432,7 +1400,6 @@ public class Utils
 		}
 	}
 
-	//TODO getDrops wants a world now, how do we deal with that?
 	public static ItemStack getPickBlock(BlockState state, RayTraceResult rtr, PlayerEntity player)
 	{
 		IBlockReader w = getSingleBlockWorldAccess(state);

@@ -17,7 +17,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.fml.common.Loader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,7 +25,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public final class WireApi
 {
@@ -38,35 +36,10 @@ public final class WireApi
 												  @Nullable ImmutableMap<String, String> texReplacement)
 	{
 		if(ConnLoader.baseModels.containsKey(key))
-			IELogger.warn("Tried to register connector model for "+key+" twice. Active mod: "+Loader.instance().activeModContainer().getModId());
+			IELogger.warn("Tried to register connector model for "+key+" twice");//TODO . Active mod: "+Loader.instance().activeModContainer().getModId());
 		ConnLoader.baseModels.put(key, baseModel);
 		if(texReplacement!=null)
 			ConnLoader.textureReplacements.put(key, texReplacement);
-	}
-
-	@Deprecated
-	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-													  ResourceLocation texLoc, float[] uvs, double connLength, Predicate<BlockState> matches,
-													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
-	{
-		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connLength, matches, dmgPerEnergy, maxDmg, postProcessDmg));
-	}
-
-	@Deprecated
-	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-													  ResourceLocation texLoc, float[] uvs, double connLength, double connOffset,
-													  Predicate<BlockState> matches,
-													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
-	{
-		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connOffset, matches, dmgPerEnergy, maxDmg, postProcessDmg));
-	}
-
-	@Deprecated
-	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ResourceLocation texLoc, float[] uvs,
-													  double connLength, Predicate<BlockState> matches,
-													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
-	{
-		INFOS.put(w, new FeedthroughModelInfo(model, ImmutableMap.of(), texLoc, uvs, connLength, connLength, matches, dmgPerEnergy, maxDmg, postProcessDmg));
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,

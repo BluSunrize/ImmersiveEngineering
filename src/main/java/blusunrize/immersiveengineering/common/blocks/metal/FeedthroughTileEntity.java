@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -30,6 +29,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -102,12 +102,6 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		return offset.getX()*facing.getXOffset()+
 				offset.getY()*facing.getYOffset()+
 				offset.getZ()*facing.getZOffset() > 0;
-	}
-
-	@Override
-	public Vec3d getConnectionOffset(ImmersiveNetHandler.Connection con, TargetingInfo target, Vec3i offsetLink)
-	{
-		return getOffset(isPositive(offsetLink));
 	}
 
 	private Vec3d getOffset(boolean positive)
@@ -269,14 +263,14 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		}
 		disassembleBlock(-1);
 		disassembleBlock(1);
-		Set<ImmersiveNetHandler.Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(world, masterPos);
+		Collection<Connection> conns = globalNet.getLocalNet(masterPos).getConnections(masterPos);
 		if(conns!=null)
 		{
 			if(master!=null)
-				for(ImmersiveNetHandler.Connection c : conns)
+				for(Connection c : conns)
 				{
 					BlockPos newPos = null;
-					if(c.end.equals(master.connPositive))
+					if(master.connPositive!=null&&c.isPositiveEnd(master.connPositive))
 					{
 						if(offset!=1)
 							newPos = masterPos.offset(facing);

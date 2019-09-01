@@ -55,28 +55,24 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.storage.loot.ILootGenerator;
-import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Pair;
@@ -165,6 +161,7 @@ public class EventHandler
 	);
 	private static Field f_lootEntries;
 
+	/*TODO I think this can be done data-driven now?
 	@SubscribeEvent
 	public void lootLoad(LootTableLoadEvent event)
 	{
@@ -179,7 +176,7 @@ public class EventHandler
 						{
 							if(f_lootEntries==null)
 							{
-								f_lootEntries = LootPool.class.getDeclaredField(ObfuscationReflectionHelper.remapFieldNames(LootPool.class.getName(), "field_186453_a")[0]);//field_186453_a is srg for lootEntries
+								f_lootEntries = LootPool.class.getDeclaredField(ObfuscationReflectionHelper.findField(LootPool.class.getName(), "field_186453_a"));//field_186453_a is srg for lootEntries
 								f_lootEntries.setAccessible(true);
 							}
 							if(f_lootEntries!=null)
@@ -194,6 +191,7 @@ public class EventHandler
 						}
 				}
 	}
+	 */
 
 	@SubscribeEvent
 	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
@@ -268,17 +266,6 @@ public class EventHandler
 	{
 		ExcavatorHandler.allowPacketsToPlayer.remove(event.getPlayer().getUniqueID());
 	}
-
-	//	@SubscribeEvent
-	//	public void bloodMagicTeleposer(TeleposeEvent event)
-	//	{
-	//		TileEntity tI = event.initialWorld.getTileEntity(event.initialX, event.initialY, event.initialZ);
-	//		TileEntity tF = event.finalWorld.getTileEntity(event.finalX, event.finalY, event.finalZ);
-	//		if(tI instanceof ImmersiveConnectableTileEntity || tF instanceof ImmersiveConnectableTileEntity)
-	//			event.setCanceled(true);
-	//		if(tI instanceof MultiblockPartTileEntity || tF instanceof MultiblockPartTileEntity)
-	//			event.setCanceled(true);
-	//	}
 
 	public static HashMap<UUID, CrusherTileEntity> crusherMap = new HashMap<UUID, CrusherTileEntity>();
 	public static HashSet<Class<? extends MobEntity>> listOfBoringBosses = new HashSet();

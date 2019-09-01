@@ -32,7 +32,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -81,7 +80,7 @@ public class ImmersiveEngineering
 
 	static
 	{
-		FluidRegistry.enableUniversalBucket();
+		//TODO FluidRegistry.enableUniversalBucket();
 	}
 
 	public void setup(FMLCommonSetupEvent event)

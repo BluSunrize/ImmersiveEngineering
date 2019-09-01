@@ -46,11 +46,11 @@ import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
-import blusunrize.immersiveengineering.common.util.IEFluid;
-import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
+import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
+import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import com.google.common.collect.ImmutableSet;
@@ -105,9 +105,10 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 @Mod.EventBusSubscriber
 public class IEContent
 {
-	public static ArrayList<Block> registeredIEBlocks = new ArrayList<Block>();
-	public static ArrayList<Item> registeredIEItems = new ArrayList<Item>();
+	public static List<Block> registeredIEBlocks = new ArrayList<Block>();
+	public static List<Item> registeredIEItems = new ArrayList<Item>();
 	public static List<Class<? extends TileEntity>> registeredIETiles = new ArrayList<>();
+	public static List<Fluid> registeredIEFluids = new ArrayList<>();
 
 	public static Fluid fluidCreosote;
 	public static Fluid fluidPlantoil;
@@ -126,7 +127,7 @@ public class IEContent
 		fluidEthanol = setupFluid(new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000));
 		fluidBiodiesel = setupFluid(new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000));
 		fluidConcrete = setupFluid(new Fluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow")).setDensity(2400).setViscosity(4000));
-		fluidPotion = setupFluid(new FluidPotion("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow")));
+		fluidPotion = setupFluid(new PotionFluid("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow")));
 
 		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);

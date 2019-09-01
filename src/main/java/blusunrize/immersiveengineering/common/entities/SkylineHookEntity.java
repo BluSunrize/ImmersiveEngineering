@@ -34,6 +34,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -351,23 +354,26 @@ public class SkylineHookEntity extends Entity
 		double playerHeight = playerBB.maxY-playerBB.minY;
 		AxisAlignedBB feet = new AxisAlignedBB(playerBB.minX, playerBB.minY, playerBB.minZ,
 				playerBB.maxX, playerBB.minY+.05*playerHeight, playerBB.maxZ);
-		List<AxisAlignedBB> boxes = SkylineHelper.getCollisionBoxes(player, playerBB, world, ignoreCollisions);
+		List<VoxelShape> shapes = SkylineHelper.getCollisionBoxes(player, playerBB, world, ignoreCollisions);
 		// Heuristic to prevent dragging players through blocks too much, but also keep most setups working
 		// Allow positions where the intersection is less than 10% of the player BB volume
 		double totalCollisionVolume = 0;
 		double totalCollisionArea = 0;
-		double playerVolume = getVolume(playerBB);
+		VoxelShape playerShape = VoxelShapes.create(playerBB);
+		double playerVolume = getVolume(playerShape);
 		double playerArea = playerVolume/playerHeight;
-		for(AxisAlignedBB box : boxes)
+		VoxelShape feetShape = VoxelShapes.create(feet);
+		for(VoxelShape shape : shapes)
 		{
-			AxisAlignedBB intersection = box.intersect(playerBB);
+			VoxelShape intersection = VoxelShapes.combine(playerShape, shape, IBooleanFunction.AND);
 			totalCollisionVolume += getVolume(intersection);
 			if(totalCollisionVolume*tolerance > playerVolume)
 				return false;
-			if(!connection.catData.isVertical()&&box.intersects(feet))
+			if(!connection.catData.isVertical()&&VoxelShapes.compare(feetShape, shape, IBooleanFunction.AND))
 			{
-				AxisAlignedBB feetIntersect = box.intersect(feet);
-				totalCollisionArea += (feetIntersect.maxX-feetIntersect.minX)*(feetIntersect.maxZ-feetIntersect.minZ);
+				VoxelShape feetIntersectShape = VoxelShapes.combine(feetShape, shape, IBooleanFunction.AND);
+				for(AxisAlignedBB feetIntersect : feetIntersectShape.toBoundingBoxList())
+					totalCollisionArea += (feetIntersect.maxX-feetIntersect.minX)*(feetIntersect.maxZ-feetIntersect.minZ);
 				if(totalCollisionArea > .5*playerArea)
 					return false;
 			}
@@ -375,9 +381,13 @@ public class SkylineHookEntity extends Entity
 		return true;
 	}
 
-	private double getVolume(AxisAlignedBB box)
+	private double getVolume(VoxelShape shape)
 	{
-		return (box.maxX-box.minX)*(box.maxY-box.minY)*(box.maxZ-box.minZ);
+		return shape
+				.toBoundingBoxList()
+				.stream()
+				.mapToDouble(box -> (box.maxX-box.minX)*(box.maxY-box.minY)*(box.maxZ-box.minZ))
+				.sum();
 	}
 
 	@Override
