@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -79,7 +80,13 @@ public class TConstructHelper extends IECompatModule
 				new HandleMaterialStats(1.0f, 35),
 				new ExtraMaterialStats(20));
 		TinkerRegistry.addMaterialStats(treatedWood, new BowMaterialStats(1f, 1.125f, 0), new ArrowShaftMaterialStats(1.2f, 0));
-		TinkerRegistry.integrate(treatedWood, "plankTreatedWood").preInit();
+		try
+		{
+			TinkerRegistry.integrate(treatedWood, "plankTreatedWood").preInit();
+		} catch(Exception e)
+		{
+			IELogger.logger.error("[TCon] Material 'treatedWood' has already been registered");
+		}
 
 		TinkerRegistry.addMaterialStats(hemp, new BowStringMaterialStats(1f));
 		TinkerRegistry.integrate(hemp).preInit();
@@ -89,8 +96,13 @@ public class TConstructHelper extends IECompatModule
 				new HandleMaterialStats(0.8f, 60),
 				new ExtraMaterialStats(60));
 		TinkerRegistry.addMaterialStats(constantan, new BowMaterialStats(.55f, 1.5f, 5f));
-		TinkerRegistry.integrate(constantan, fluidConstantan, "Constantan").toolforge().preInit();
-
+		try
+		{
+			TinkerRegistry.integrate(constantan, fluidConstantan, "Constantan").toolforge().preInit();
+		} catch(Exception e)
+		{
+			IELogger.logger.error("[TCon] Material 'constantan' has already been registered");
+		}
 		ToolboxHandler.addToolType((s) -> (s.getItem() instanceof TinkersItem));
 	}
 

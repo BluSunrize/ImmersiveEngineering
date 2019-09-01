@@ -28,6 +28,7 @@
 - Fixed UraniumSlabs combining into a Copper-looking block (BluSunrize)
 - Fixed a variety of issues with JEI integration (BluSunrize)
 - Fixed a potential memory leak (BluSunrize)
+- Fixed a TCon API error propagating (BluSunrize)
 - Translations Added/Updated: jp_jp (karakufire), de_de(d-haus)
 
 ##### Version 0.12-89 - BUILT
