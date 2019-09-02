@@ -58,7 +58,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -617,19 +616,9 @@ public class EventHandler
 				{
 					EntityPlayer player = event.getPlayer();
 					Random random = player.getRNG();
+
 					ItemNBTHelper.remove(output, "generatePerks");
-
-					ItemRevolver.RevolverPerk goodPerk = ItemRevolver.RevolverPerk.getRandom(random);
-					ItemRevolver.RevolverPerk badPerk = ItemRevolver.RevolverPerk.getRandom(random);
-					double val = goodPerk.generateValue(player, random, false);
-
-					NBTTagCompound perkCompound = new NBTTagCompound();
-					if(goodPerk==badPerk)
-						val = (val+badPerk.generateValue(player, random, true))/2;
-					else
-						perkCompound.setDouble(badPerk.getNBTKey(), badPerk.generateValue(player, random, true));
-					perkCompound.setDouble(goodPerk.getNBTKey(), val);
-					ItemNBTHelper.setTagCompound(output, "perks", perkCompound);
+					ItemNBTHelper.setTagCompound(output, "perks", ItemRevolver.RevolverPerk.generatePerkSet(random, player.getLuck()));
 				}
 				//Make recipe Unusable
 				else if(output.getItem() == IEContent.itemMaterial && ItemNBTHelper.hasKey(output, "perks") && recipe.getToolUses()>=1 && recipe.getMaxTradeUses()>0)

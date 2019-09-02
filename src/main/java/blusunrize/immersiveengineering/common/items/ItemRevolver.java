@@ -864,9 +864,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			return rarity.color+name;
 		}
 
-		public double generateValue(@Nullable EntityPlayer player, Random rand, boolean isBad)
+		public double generateValue(Random rand, boolean isBad, float luck)
 		{
-			double d = Utils.generatePlayerInfluencedDouble(generate_median, generate_deviation, player, rand, isBad, generate_luckScale);
+			double d = Utils.generateLuckInfluencedDouble(generate_median, generate_deviation, luck, rand, isBad, generate_luckScale);
 			int i = (int)(d*100);
 			d = i/100d;
 			return d;
@@ -893,6 +893,22 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		{
 			int i = rand.nextInt(values().length);
 			return values()[i];
+		}
+
+		public static NBTTagCompound generatePerkSet(Random rand, float luck)
+		{
+			RevolverPerk goodPerk = RevolverPerk.getRandom(rand);
+			RevolverPerk badPerk = RevolverPerk.getRandom(rand);
+			double val = goodPerk.generateValue(rand, false, luck);
+
+			NBTTagCompound perkCompound = new NBTTagCompound();
+			if(goodPerk==badPerk)
+				val = (val+badPerk.generateValue(rand, true, luck))/2;
+			else
+				perkCompound.setDouble(badPerk.getNBTKey(), badPerk.generateValue(rand, true, luck));
+			perkCompound.setDouble(goodPerk.getNBTKey(), val);
+
+			return perkCompound;
 		}
 	}
 }

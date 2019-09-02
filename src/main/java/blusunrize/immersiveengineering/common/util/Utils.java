@@ -283,13 +283,12 @@ public class Utils
 		return median+Math.min(number, deviation);
 	}
 
-	public static double generatePlayerInfluencedDouble(double median, double deviation, @Nullable EntityPlayer player, Random rng, boolean isBad, double luckScale)
+	public static double generateLuckInfluencedDouble(double median, double deviation, double luck, Random rng, boolean isBad, double luckScale)
 	{
 		double number = rng.nextDouble()*deviation;
 		if(isBad)
 			number = -number;
-		if(player!=null)
-			number += luckScale*player.getEntityAttribute(SharedMonsterAttributes.LUCK).getAttributeValue();
+		number += luckScale*luck;
 		if(deviation < 0)
 			number = Math.max(number, deviation);
 		else
