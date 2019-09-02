@@ -58,6 +58,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -605,23 +606,25 @@ public class EventHandler
 	@SubscribeEvent
 	public void onMerchantTrade(MerchantTradeOffersEvent event)
 	{
-		if(event.getMerchant() instanceof EntityVillager && ((EntityVillager)event.getMerchant()).getProfessionForge() == IEVillagerHandler.PROF_ENGINEER && event.getList()!=null)
+		if(event.getMerchant() instanceof EntityVillager&&((EntityVillager)event.getMerchant()).getProfessionForge()==IEVillagerHandler.PROF_ENGINEER&&event.getList()!=null)
 		{
 			Iterator<MerchantRecipe> iterator = event.getList().iterator();
 			while(iterator.hasNext())
 			{
 				MerchantRecipe recipe = iterator.next();
 				ItemStack output = recipe.getItemToSell();
-				if(output.getItem() == IEContent.itemMaterial && ItemNBTHelper.hasKey(output, "generatePerks"))
+				if(output.getItem()==IEContent.itemMaterial&&ItemNBTHelper.hasKey(output, "generatePerks"))
 				{
 					EntityPlayer player = event.getPlayer();
 					Random random = player.getRNG();
-
 					ItemNBTHelper.remove(output, "generatePerks");
-					ItemNBTHelper.setTagCompound(output, "perks", ItemRevolver.RevolverPerk.generatePerkSet(random, player.getLuck()));
+					NBTTagCompound perksTag = ItemRevolver.RevolverPerk.generatePerkSet(random, player.getLuck());
+					ItemNBTHelper.setTagCompound(output, "perks", perksTag);
+					int tier = Math.max(1, ItemRevolver.RevolverPerk.calculateTier(perksTag));
+					recipe.getItemToBuy().setCount(5*tier+random.nextInt(5));
 				}
 				//Make recipe Unusable
-				else if(output.getItem() == IEContent.itemMaterial && ItemNBTHelper.hasKey(output, "perks") && recipe.getToolUses()>=1 && recipe.getMaxTradeUses()>0)
+				else if(output.getItem()==IEContent.itemMaterial&&ItemNBTHelper.hasKey(output, "perks")&&recipe.getToolUses() >= 1&&recipe.getMaxTradeUses() > 0)
 					recipe.increaseMaxTradeUses(Integer.MIN_VALUE);
 			}
 		}

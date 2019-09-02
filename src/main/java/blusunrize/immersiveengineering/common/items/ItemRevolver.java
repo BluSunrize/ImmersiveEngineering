@@ -864,6 +864,19 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			return rarity.color+name;
 		}
 
+		public static int calculateTier(NBTTagCompound perksTag)
+		{
+			double averageTier = 0;
+			for(String key : perksTag.getKeySet())
+			{
+				ItemRevolver.RevolverPerk perk = ItemRevolver.RevolverPerk.get(key);
+				double value = perksTag.getDouble(key);
+				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
+				averageTier += dTier;
+			}
+			return (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
+		}
+
 		public double generateValue(Random rand, boolean isBad, float luck)
 		{
 			double d = Utils.generateLuckInfluencedDouble(generate_median, generate_deviation, luck, rand, isBad, generate_luckScale);
