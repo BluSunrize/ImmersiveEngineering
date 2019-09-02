@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
@@ -116,12 +116,12 @@ public class FermenterRecipe extends MultiblockRecipe
 
 	public static Map<String, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
 	{
-		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		HashMap<String, Integer> map = new HashMap<>();
 		for(FermenterRecipe recipe : recipeList)
 			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f)
 			{
 				ItemStack is = recipe.input.getExampleStack();
-				map.put(is.getDisplayName(), recipe.fluidOutput.amount);
+				map.put(is.getDisplayName().getFormattedText(), recipe.fluidOutput.getAmount());
 			}
 		return ApiUtils.sortMap(map, inverse);
 	}

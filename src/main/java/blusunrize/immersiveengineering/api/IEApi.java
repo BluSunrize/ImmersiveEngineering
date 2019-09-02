@@ -75,20 +75,25 @@ public class IEApi
 		return oreOutputPreference.computeIfAbsent(name, rl ->
 		{
 			if(ApiUtils.isNonemptyItemTag(name))
-				return new ItemStack(getPreferredStackbyMod(ItemTags.getCollection().get(name).getAllElements()));
+				return new ItemStack(getPreferredElementbyMod(ItemTags.getCollection().get(name).getAllElements()));
 			else if(ApiUtils.isNonemptyBlockTag(name))
-				return new ItemStack(getPreferredStackbyMod(BlockTags.getCollection().get(name).getAllElements()));
+				return new ItemStack(getPreferredElementbyMod(BlockTags.getCollection().get(name).getAllElements()));
 			else
 				return ItemStack.EMPTY;
 		});
 	}
 
-	public static <T extends IForgeRegistryEntry<T>> T getPreferredStackbyMod(Collection<T> list)
+	public static <T extends IForgeRegistryEntry<T>> T getPreferredElementbyMod(Collection<T> list)
 	{
-		return getPreferredStackbyMod(list, T::getRegistryName);
+		return getPreferredElementbyMod(list, T::getRegistryName);
 	}
 
-	public static <T> T getPreferredStackbyMod(Collection<T> list, Function<T, ResourceLocation> getName)
+	public static ItemStack getPreferredStackbyMod(Collection<ItemStack> list)
+	{
+		return getPreferredElementbyMod(list, e -> e.getItem().getRegistryName());
+	}
+
+	public static <T> T getPreferredElementbyMod(Collection<T> list, Function<T, ResourceLocation> getName)
 	{
 		T preferredStack = null;
 		int currBest = modPreference.size();
@@ -111,7 +116,7 @@ public class IEApi
 
 	public static ItemStack getPreferredStackbyMod(ItemStack[] array)
 	{
-		return getPreferredStackbyMod(Lists.newArrayList(array), stack -> stack.getItem().getRegistryName());
+		return getPreferredElementbyMod(Lists.newArrayList(array), stack -> stack.getItem().getRegistryName());
 	}
 
 	public static boolean isAllowedInCrate(ItemStack stack)

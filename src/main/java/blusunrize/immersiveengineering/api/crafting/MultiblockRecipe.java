@@ -13,7 +13,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,13 +84,13 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 		if(inputList!=null)
 		{
 			this.jeiItemInputList = new ArrayList[inputList.size()];
-			this.jeiTotalItemInputList = new ArrayList();
+			this.jeiTotalItemInputList = new ArrayList<>();
 			for(int i = 0; i < inputList.size(); i++)
 			{
 				IngredientStack ingr = inputList.get(i);
-				ArrayList list = new ArrayList();
+				ArrayList<ItemStack> list = new ArrayList<>();
 				if(ingr.tag!=null)
-					for(ItemStack stack : OreDictionary.getOres(ingr.tag))
+					for(ItemStack stack : ApiUtils.getItemsInTag(ingr.tag))
 						list.add(ApiUtils.copyStackWithAmount(stack, ingr.inputSize));
 				else if(ingr.stackList!=null)
 					for(ItemStack stack : ingr.stackList)
@@ -108,7 +107,7 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 		if(outputList!=null)
 		{
 			this.jeiItemOutputList = new ArrayList[outputList.size()];
-			this.jeiTotalItemOutputList = new ArrayList();
+			this.jeiTotalItemOutputList = new ArrayList<>();
 			for(int i = 0; i < outputList.size(); i++)
 			{
 				ItemStack s = outputList.get(i);
@@ -121,7 +120,7 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 			this.jeiTotalItemOutputList = Collections.emptyList();
 		if(fluidInputList!=null)
 		{
-			this.jeiFluidInputList = new ArrayList();
+			this.jeiFluidInputList = new ArrayList<>();
 			for(int i = 0; i < fluidInputList.size(); i++)
 			{
 				FluidStack fs = fluidInputList.get(i);
@@ -133,7 +132,7 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 			this.jeiFluidInputList = Collections.emptyList();
 		if(fluidOutputList!=null)
 		{
-			this.jeiFluidOutputList = new ArrayList();
+			this.jeiFluidOutputList = new ArrayList<>();
 			for(int i = 0; i < fluidOutputList.size(); i++)
 			{
 				FluidStack fs = fluidOutputList.get(i);

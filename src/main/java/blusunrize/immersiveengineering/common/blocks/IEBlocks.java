@@ -15,6 +15,7 @@ import com.google.common.collect.HashBiMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.EnumMap;
@@ -186,6 +187,11 @@ public final class IEBlocks
 		public static Block connectorRedstone;
 		public static Block connectorProbe;
 		public static Block feedthrough;
+
+		public static Block getEnergyConnector(String cat, boolean relay)
+		{
+			return ENERGY_CONNECTORS.get(new ImmutablePair<>(cat, relay));
+		}
 	}
 
 	public static final class Cloth

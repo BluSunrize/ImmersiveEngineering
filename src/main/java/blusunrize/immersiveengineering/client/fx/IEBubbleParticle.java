@@ -69,7 +69,7 @@ public class IEBubbleParticle extends SpriteTexturedParticle
 		public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			IEBubbleParticle bubbleparticle = new IEBubbleParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
-			bubbleparticle.func_217568_a(this.texture);
+			bubbleparticle.selectSpriteRandomly(this.texture);
 			return bubbleparticle;
 		}
 	}

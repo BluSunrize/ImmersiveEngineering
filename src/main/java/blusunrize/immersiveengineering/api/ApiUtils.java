@@ -976,9 +976,9 @@ public class ApiUtils
 		}
 	}
 
-	public static Map<String, Integer> sortMap(Map<String, Integer> map, boolean inverse)
+	public static <T extends Comparable<T>> Map<T, Integer> sortMap(Map<T, Integer> map, boolean inverse)
 	{
-		TreeMap<String, Integer> sortedMap = new TreeMap<>(new ValueComparator(map, inverse));
+		TreeMap<T, Integer> sortedMap = new TreeMap<>(new ValueComparator<T>(map, inverse));
 		sortedMap.putAll(map);
 		return sortedMap;
 	}
@@ -1126,34 +1126,30 @@ public class ApiUtils
 		return new LazyOptional<>(()->val);
 	}
 
-	public static class ValueComparator implements java.util.Comparator<String>
+	public static class ValueComparator<T extends Comparable<T>> implements java.util.Comparator<T>
 	{
-		Map<String, Integer> base;
+		Map<T, Integer> base;
 		boolean inverse;
 
-		public ValueComparator(Map<String, Integer> base, boolean inverse)
+		public ValueComparator(Map<T, Integer> base, boolean inverse)
 		{
 			this.base = base;
 			this.inverse = inverse;
 		}
 
 		@Override
-		public int compare(String s0, String s1)//Cant return equal to keys separate
+		public int compare(T s0, T s1)//Cant return equal to keys separate
 		{
-			if(inverse)
-			{
-				if(base.get(s0) <= base.get(s1))
-					return -1;
-				else
-					return 1;
-			}
+			int v0 = base.get(s0);
+			int v1 = base.get(s1);
+			int ret;
+			if(v0 > v1)
+				ret = -1;
+			else if(v0 < v1)
+				ret = 1;
 			else
-			{
-				if(base.get(s0) >= base.get(s1))
-					return -1;
-				else
-					return 1;
-			}
+				ret = s0.compareTo(s1);
+			return ret*(inverse?-1: 1);
 		}
 
 		@Override

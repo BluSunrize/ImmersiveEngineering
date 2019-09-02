@@ -86,16 +86,16 @@ import net.minecraftforge.client.ForgeIngameGui;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.GuiScreenEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -565,18 +565,18 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						ClientUtils.drawTexturedRect(-24, -68, w, h, uMin, uMax, vMin, vMax);
 
 						GlStateManager.translated(-23, -37, 0);
-						IFluidHandler handler = FluidUtil.getFluidHandler(equipped);
+						LazyOptional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(equipped);
 						int capacity = -1;
-						if(handler!=null)
+						if(handlerOpt.isPresent())
 						{
-							IFluidTankProperties[] props = handler.getTankProperties();
-							if(props!=null&&props.length > 0)
-								capacity = props[0].getCapacity();
+							IFluidHandlerItem handler = handlerOpt.orElseThrow(RuntimeException::new);
+							if(handler.getTanks() > 0)
+								capacity = handler.getTankCapacity(0);
 						}
-						if(capacity > -1)
+						if(capacity >= 0)
 						{
-							FluidStack fuel = FluidUtil.getFluidContained(equipped);
-							int amount = fuel!=null?fuel.amount: 0;
+							FluidStack fuel = FluidUtil.getFluidContained(equipped).orElse(FluidStack.EMPTY);
+							int amount = fuel.getAmount();
 							if(!drill&&player.isHandActive()&&player.getActiveHand()==hand)
 							{
 								int use = player.getItemInUseMaxCount();
@@ -587,13 +587,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							GlStateManager.rotatef(angle, 0, 0, 1);
 							ClientUtils.drawTexturedRect(6, -2, 24, 4, 91/256f, 123/256f, 80/256f, 87/256f);
 							GlStateManager.rotatef(-angle, 0, 0, 1);
-							//					for(int i=0; i<=8; i++)
-							//					{
-							//						float angle = 83-(166/8f)*i;
-							//						GL11.glRotatef(angle, 0, 0, 1);
-							//						ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
-							//						GL11.glRotatef(-angle, 0, 0, 1);
-							//					}
 							GlStateManager.translated(23, 37, 0);
 							if(drill)
 							{
@@ -614,9 +607,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								ClientUtils.drawTexturedRect(-32, -43, 12, 12, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
 
 								ClientUtils.drawTexturedRect(-100, -20, 64, 16, 0/256f, 64/256f, 76/256f, 92/256f);
-								if(fuel!=null)
+								if(!fuel.isEmpty())
 								{
-									String name = ClientUtils.font().trimStringToWidth(fuel.getLocalizedName(), 50).trim();
+									String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
 									ClientUtils.font().drawString(name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0);
 								}
 							}
@@ -712,7 +705,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(text.length > 0)
 						{
 							FontRenderer font = useNixie?ClientProxy.nixieFontOptional: ClientUtils.font();
-							int col = (useNixie&&IEConfig.nixietubeFont)?Lib.colour_nixieTubeText: 0xffffff;
+							int col = (useNixie&&IEConfig.GENERAL.nixietubeFont.get())?Lib.colour_nixieTubeText: 0xffffff;
 							int i = 0;
 							for(String s : text)
 								if(s!=null)

@@ -12,19 +12,21 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.*;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.IntegerProperty;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -98,7 +100,7 @@ public class BelljarHandler
 			@Override
 			public boolean isValid(@Nullable ItemStack fertilizer)
 			{
-				return OreDictionary.itemMatches(stack, fertilizer, false);
+				return ItemStack.areItemsEqual(stack, fertilizer);
 			}
 
 			@Override
@@ -252,14 +254,14 @@ public class BelljarHandler
 						}
 						else
 						{
-							for(IProperty prop : states[i].getProperties())
+							for(IProperty<?> prop : states[i].getProperties())
 								if("age".equals(prop.getName())&&prop instanceof IntegerProperty)
 								{
 									int max = 0;
 									for(Integer allowed : ((IntegerProperty)prop).getAllowedValues())
 										if(allowed!=null&&allowed > max)
 											max = allowed;
-									ret[i] = states[i].with(prop, Math.min(max, Math.round(max*growth)));
+									ret[i] = states[i].with((IntegerProperty)prop, Math.min(max, Math.round(max*growth)));
 								}
 							if(ret[i]==null)
 								ret[i] = states[i];
@@ -313,13 +315,13 @@ public class BelljarHandler
 			BlockState[] renderStates = seedRenderMap.get(comp);
 			if(renderStates.length > 0&&renderStates[0]!=null&&renderStates[0].getBlock() instanceof StemBlock)
 			{
-				GlStateManager.rotate(-90, 0, 1, 0);
+				GlStateManager.rotatef(-90, 0, 1, 0);
 				StemBlock stem = (StemBlock)renderStates[0].getBlock();
 				BlockState state = stem.getDefaultState().with(StemBlock.AGE, (int)(growth >= .5?7: 2*growth*7));
 				if(growth >= .5)
-					state = state.with(StemBlock.FACING, Direction.NORTH);
+					state = state.with(HorizontalBlock.HORIZONTAL_FACING, Direction.NORTH);
 				IBakedModel model = blockRenderer.getModelForState(state);
-				GlStateManager.translate(.25f, .0625f, 0);
+				GlStateManager.translatef(.25f, .0625f, 0);
 				GlStateManager.pushMatrix();
 				blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
 				GlStateManager.popMatrix();
@@ -335,8 +337,8 @@ public class BelljarHandler
 							model = blockRenderer.getModelForState(state);
 							GlStateManager.pushMatrix();
 							float scale = (growth-.5f)*.5f;
-							GlStateManager.translate(-scale/2, .5-scale, -.5+scale/2);
-							GlStateManager.scale(scale, scale, scale);
+							GlStateManager.translated(-scale/2, .5-scale, -.5+scale/2);
+							GlStateManager.scalef(scale, scale, scale);
 							blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
 							GlStateManager.popMatrix();
 						}
@@ -382,7 +384,7 @@ public class BelljarHandler
 		{
 			BlockState[] states = seedRenderMap.get(new ComparableItemStack(seed, false, false));
 			if(states!=null)
-				GlStateManager.translate(0, (-1+growth)*(states.length-1), 0);
+				GlStateManager.translatef(0, (-1+growth)*(states.length-1), 0);
 			return false;
 		}
 	};
@@ -401,13 +403,13 @@ public class BelljarHandler
 		cropHandler.register(new ItemStack(Items.NETHER_WART), new ItemStack[]{new ItemStack(Items.NETHER_WART, 2)}, new ItemStack(Blocks.SOUL_SAND), Blocks.NETHER_WART.getDefaultState());
 
 		stemHandler.register(new ItemStack(Items.PUMPKIN_SEEDS), new ItemStack[]{new ItemStack(Blocks.PUMPKIN)}, new ItemStack(Blocks.DIRT), Blocks.PUMPKIN_STEM.getDefaultState());
-		stemHandler.register(new ItemStack(Items.MELON_SEEDS), new ItemStack[]{new ItemStack(Blocks.MELON_BLOCK)}, new ItemStack(Blocks.DIRT), Blocks.MELON_STEM.getDefaultState());
+		stemHandler.register(new ItemStack(Items.MELON_SEEDS), new ItemStack[]{new ItemStack(Blocks.MELON)}, new ItemStack(Blocks.DIRT), Blocks.MELON_STEM.getDefaultState());
 
-		stackingHandler.register(new ItemStack(Items.REEDS), new ItemStack[]{new ItemStack(Items.REEDS, 2)}, "sand", Blocks.REEDS.getDefaultState(), Blocks.REEDS.getDefaultState());
+		stackingHandler.register(new ItemStack(Items.SUGAR_CANE), new ItemStack[]{new ItemStack(Items.SUGAR_CANE, 2)}, "sand", Blocks.SUGAR_CANE.getDefaultState(), Blocks.SUGAR_CANE.getDefaultState());
 		stackingHandler.register(new ItemStack(Blocks.CACTUS), new ItemStack[]{new ItemStack(Blocks.CACTUS, 2)}, "sand", Blocks.CACTUS.getDefaultState(), Blocks.CACTUS.getDefaultState());
 		stackingHandler.register(new ItemStack(Blocks.CHORUS_FLOWER), new ItemStack[]{new ItemStack(Items.CHORUS_FRUIT, 1)}, new ItemStack(Blocks.END_STONE), Blocks.CHORUS_PLANT.getDefaultState().with(ChorusPlantBlock.DOWN, true).with(ChorusPlantBlock.UP, true), Blocks.CHORUS_PLANT.getDefaultState().with(ChorusPlantBlock.DOWN, true).with(ChorusPlantBlock.UP, true), Blocks.CHORUS_FLOWER.getDefaultState());
 
-		IngredientStack shroomSoil = new IngredientStack(ImmutableList.of(new ItemStack(Blocks.MYCELIUM), new ItemStack(Blocks.DIRT, 1, 2)));
+		IngredientStack shroomSoil = new IngredientStack(ImmutableList.of(new ItemStack(Blocks.MYCELIUM), new ItemStack(Blocks.PODZOL)));
 		cropHandler.register(new ItemStack(Blocks.RED_MUSHROOM), new ItemStack[]{new ItemStack(Blocks.RED_MUSHROOM, 2)}, shroomSoil, Blocks.RED_MUSHROOM.getDefaultState());
 		cropHandler.register(new ItemStack(Blocks.BROWN_MUSHROOM), new ItemStack[]{new ItemStack(Blocks.BROWN_MUSHROOM, 2)}, shroomSoil, Blocks.BROWN_MUSHROOM.getDefaultState());
 
@@ -427,12 +429,12 @@ public class BelljarHandler
 		});
 		registerItemFertilizer(new ItemFertilizerHandler()
 		{
-			final ItemStack bonemeal = new ItemStack(Items.DYE, 1, 15);
+			final ItemStack bonemeal = new ItemStack(Items.BONE_MEAL, 1);
 
 			@Override
 			public boolean isValid(ItemStack fertilizer)
 			{
-				return !fertilizer.isEmpty()&&OreDictionary.itemMatches(bonemeal, fertilizer, true);
+				return !fertilizer.isEmpty()&&ItemStack.areItemsEqual(bonemeal, fertilizer);
 			}
 
 			@Override

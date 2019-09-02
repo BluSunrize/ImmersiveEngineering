@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.world.World;
@@ -32,14 +31,13 @@ public class ToolboxHandler
 	{
 		tools.add((s) -> (s.getItem() instanceof ITool&&((ITool)s.getItem()).isTool(s)));
 		tools.add((s) -> (s.getItem() instanceof ToolItem));
-		foods.add((s) -> (s.getItem() instanceof ItemFood));
+		foods.add((s) -> (s.getItem().isFood()));
 		wiring.add((s, w) -> (s.getItem() instanceof IWireCoil));
 		wiring.add((s, w) ->
 				{
 					Block b = Block.getBlockFromItem(s.getItem());
-					int meta = s.getItemDamage();
-					BlockState defaultState = b==null?null: b.getStateFromMeta(meta);
-					return b!=null&&b.hasTileEntity(defaultState)&&(b.createTileEntity(w, defaultState) instanceof IImmersiveConnectable);
+					BlockState defaultState = b.getDefaultState();
+					return b.hasTileEntity(defaultState)&&b.createTileEntity(defaultState, w) instanceof IImmersiveConnectable;
 				}
 		);
 	}

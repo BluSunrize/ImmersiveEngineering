@@ -20,9 +20,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.Optional;
 
 public class WireDamageHandler extends LocalNetworkHandler implements ICollisionHandler
 {
@@ -46,12 +46,12 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		AxisAlignedBB eAabb = e.getBoundingBox();
 		AxisAlignedBB includingExtra = eAabb.grow(extra).offset(-pos.getX(), -pos.getY(), -pos.getZ());
 		boolean endpointsInEntity = includingExtra.contains(info.intersectA)||includingExtra.contains(info.intersectB);
-		RayTraceResult rayRes;
+		Optional<Vec3d> rayRes;
 		if(endpointsInEntity)
-			rayRes = null;
+			rayRes = Optional.empty();
 		else
-			rayRes = includingExtra.calculateIntercept(info.intersectA, info.intersectB);
-		if(endpointsInEntity||(rayRes!=null&&rayRes.type==Type.BLOCK))
+			rayRes = includingExtra.rayTrace(info.intersectA, info.intersectB);
+		if(endpointsInEntity||rayRes.isPresent())
 		{
 			//TODO proper damage calculations
 			float damage = 5;

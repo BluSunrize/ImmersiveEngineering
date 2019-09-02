@@ -10,12 +10,15 @@ package blusunrize.immersiveengineering.api.shader;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
+import blusunrize.immersiveengineering.common.IERecipes;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
@@ -69,7 +72,7 @@ public class ShaderRegistry
 	/**
 	 * The deafault cost for replicating a shader. Prices are multiplied with 10-rarity level. Prices can be adjusted for every registry entry
 	 */
-	public static IngredientStack defaultReplicationCost = new IngredientStack("dustSilver");
+	public static IngredientStack defaultReplicationCost = new IngredientStack(IERecipes.getDust("silver"));
 	/**
 	 * A HashMap to set default texture bounds for the additional layers of a shadercase. Saves you the trouble of redfining them for every shader. See {@link ShaderLayer#setTextureBounds(double... bounds)}.
 	 */
@@ -568,13 +571,8 @@ public class ShaderRegistry
 
 	public static Triple<ItemStack, ShaderRegistryEntry, ShaderCase> getStoredShaderAndCase(ItemStack itemStack)
 	{
-		if(!itemStack.isEmpty()&&itemStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
-		{
-			CapabilityShader.ShaderWrapper wrapper = itemStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
-			if(wrapper!=null)
-				return getStoredShaderAndCase(wrapper);
-		}
-		return null;
+		LazyOptional<ShaderWrapper> shaderCap = itemStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+		return shaderCap.map(ShaderRegistry::getStoredShaderAndCase).orElse(null);
 	}
 
 	public static Triple<ItemStack, ShaderRegistryEntry, ShaderCase> getStoredShaderAndCase(CapabilityShader.ShaderWrapper wrapper)

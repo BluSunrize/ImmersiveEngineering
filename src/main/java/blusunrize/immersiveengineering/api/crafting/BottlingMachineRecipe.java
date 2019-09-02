@@ -14,7 +14,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,7 +41,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		this.outputList = ListUtils.fromItem(this.output);
 	}
 
-	public static ArrayList<BottlingMachineRecipe> recipeList = new ArrayList<BottlingMachineRecipe>();
+	public static ArrayList<BottlingMachineRecipe> recipeList = new ArrayList<>();
 
 	public static void addRecipe(ItemStack output, Object input, FluidStack fluidInput)
 	{
@@ -62,12 +61,12 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 	public static List<BottlingMachineRecipe> removeRecipes(ItemStack stack)
 	{
-		List<BottlingMachineRecipe> list = new ArrayList();
+		List<BottlingMachineRecipe> list = new ArrayList<>();
 		Iterator<BottlingMachineRecipe> it = recipeList.iterator();
 		while(it.hasNext())
 		{
 			BottlingMachineRecipe ir = it.next();
-			if(OreDictionary.itemMatches(ir.output, stack, true))
+			if(ItemStack.areItemsEqual(ir.output, stack))
 			{
 				list.add(ir);
 				it.remove();

@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.api.energy.wires.localhandlers.ILocalHand
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.WireDamageHandler.IShockingWire;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector.*;
+import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
 
 /**
  * @author BluSunrize - 08.03.2015<br>
@@ -106,7 +106,6 @@ public abstract class WireType implements ILocalHandlerProvider
 	public static int[] wireTransferRate;
 	public static int[] wireColouration;
 	public static int[] wireLength;
-	public static Item ieWireCoil;
 	public static double[] renderDiameter = {.03125, .03125, .0625, .0625, .0625, .03125};
 	@OnlyIn(Dist.CLIENT)
 	public static TextureAtlasSprite iconDefaultWire;
@@ -132,19 +131,19 @@ public abstract class WireType implements ILocalHandlerProvider
 		ELECTRUM_INSULATED = new IEBASE(7);
 		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
-				.5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_LV.getMeta()),
+				.5, Connectors.getEnergyConnector(LV_CATEGORY, false).getDefaultState(),
 				8*2F/COPPER.getTransferRate(), 2, (f) -> f);
 		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
-				.5625, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_MV.getMeta()),
+				.5625, Connectors.getEnergyConnector(MV_CATEGORY, false).getDefaultState(),
 				8*5F/ELECTRUM.getTransferRate(), 5, (f) -> f);
 		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
-				.75, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_HV.getMeta()),
+				.75, Connectors.getEnergyConnector(HV_CATEGORY, false).getDefaultState(),
 				8*15F/STEEL.getTransferRate(), 15, (f) -> f);
 		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
 				ImmutableMap.of(), new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
-				.5625, .5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_REDSTONE.getMeta()),
+				.5625, .5, Connectors.connectorRedstone.getDefaultState(),
 				0, 0, (f) -> f);
 	}
 
@@ -222,7 +221,7 @@ public abstract class WireType implements ILocalHandlerProvider
 		@Override
 		public ItemStack getWireCoil(Connection con)
 		{
-			return new ItemStack(ieWireCoil, 1, ordinal);
+			return new ItemStack(Misc.wireCoils.get(this), 1);
 		}
 
 		@Override

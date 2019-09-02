@@ -17,9 +17,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -83,14 +83,14 @@ public class CrusherRecipe extends MultiblockRecipe
 			if(outputs[i*2]!=null)
 			{
 				Object o = ApiUtils.convertToValidRecipeInput(outputs[i*2]);
-				ItemStack ss = o instanceof ItemStack?(ItemStack)o: o instanceof List?IEApi.getPreferredStackbyMod((List<ItemStack>)o): ItemStack.EMPTY;
+				ItemStack ss = o instanceof ItemStack?(ItemStack)o: o instanceof List?IEApi.getPreferredStackbyMod((Collection<ItemStack>)o): ItemStack.EMPTY;
 				if(!ss.isEmpty())
 				{
 					newSecondaryOutput.add(ss);
 					newSecondaryChance.add((Float)outputs[i*2+1]);
 				}
 			}
-		secondaryOutput = newSecondaryOutput.toArray(new ItemStack[newSecondaryOutput.size()]);
+		secondaryOutput = newSecondaryOutput.toArray(new ItemStack[0]);
 		secondaryChance = new float[newSecondaryChance.size()];
 		int i = 0;
 		for(Float f : newSecondaryChance)
@@ -125,12 +125,12 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public static List<CrusherRecipe> removeRecipesForOutput(ItemStack stack)
 	{
-		List<CrusherRecipe> list = new ArrayList();
+		List<CrusherRecipe> list = new ArrayList<>();
 		Iterator<CrusherRecipe> it = recipeList.iterator();
 		while(it.hasNext())
 		{
 			CrusherRecipe ir = it.next();
-			if(OreDictionary.itemMatches(ir.output, stack, true))
+			if(ItemStack.areItemsEqual(ir.output, stack))
 			{
 				list.add(ir);
 				it.remove();
@@ -141,7 +141,7 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public static List<CrusherRecipe> removeRecipesForInput(ItemStack stack)
 	{
-		List<CrusherRecipe> list = new ArrayList();
+		List<CrusherRecipe> list = new ArrayList<>();
 		Iterator<CrusherRecipe> it = recipeList.iterator();
 		while(it.hasNext())
 		{

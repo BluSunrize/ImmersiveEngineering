@@ -15,13 +15,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * @author BluSunrize - 12.08.2016
@@ -142,22 +142,19 @@ public class BulletHandler
 
 	public static class DamagingBullet implements IBullet
 	{
-		/**
-		 * The entities in the array are Projectile, Shooter, Target
-		 */
-		final Function<Entity[], DamageSource> damageSourceGetter;
+		final DamageSourceProvider damageSourceGetter;
 		final float damage;
 		boolean resetHurt = false;
 		boolean setFire = false;
 		ItemStack casing;
 		ResourceLocation[] textures;
 
-		public DamagingBullet(Function<Entity[], DamageSource> damageSourceGetter, float damage, ItemStack casing, ResourceLocation... textures)
+		public DamagingBullet(DamageSourceProvider damageSourceGetter, float damage, ItemStack casing, ResourceLocation... textures)
 		{
 			this(damageSourceGetter, damage, false, false, casing, textures);
 		}
 
-		public DamagingBullet(Function<Entity[], DamageSource> damageSourceGetter, float damage, boolean resetHurt, boolean setFire, ItemStack casing, ResourceLocation... textures)
+		public DamagingBullet(DamageSourceProvider damageSourceGetter, float damage, boolean resetHurt, boolean setFire, ItemStack casing, ResourceLocation... textures)
 		{
 			this.damageSourceGetter = damageSourceGetter;
 			this.damage = damage;
@@ -173,15 +170,19 @@ public class BulletHandler
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, @Nullable UUID shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult rtr, @Nullable UUID shooter, Entity projectile, boolean headshot)
 		{
-			if(!world.isRemote&&target.entity!=null&&damageSourceGetter!=null)
-				if(target.entity.attackEntityFrom(damageSourceGetter.apply(new Entity[]{projectile, shooter, target.entity}), getDamage(headshot)))
+			if(!(rtr instanceof EntityRayTraceResult))
+				return;
+			EntityRayTraceResult target = (EntityRayTraceResult)rtr;
+			Entity hitEntity = target.getEntity();
+			if(!world.isRemote&&hitEntity!=null&&damageSourceGetter!=null)
+				if(hitEntity.attackEntityFrom(damageSourceGetter.getSource(projectile, shooter, hitEntity), getDamage(headshot)))
 				{
 					if(resetHurt)
-						target.entity.hurtResistantTime = 0;
+						hitEntity.hurtResistantTime = 0;
 					if(setFire)
-						target.entity.setFire(3);
+						hitEntity.setFire(3);
 				}
 		}
 
@@ -207,6 +208,11 @@ public class BulletHandler
 		public boolean isValidForTurret()
 		{
 			return true;
+		}
+
+		interface DamageSourceProvider
+		{
+			DamageSource getSource(Entity projectile, UUID shooter, Entity hit);
 		}
 	}
 }

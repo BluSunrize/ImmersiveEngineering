@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class ComparableItemStack
 {

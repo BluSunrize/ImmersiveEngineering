@@ -19,11 +19,9 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,9 +35,9 @@ import java.util.HashSet;
 
 public class ChemthrowerHandler
 {
-	public static HashMap<String, ChemthrowerEffect> effectMap = new HashMap<String, ChemthrowerEffect>();
-	public static HashSet<String> flammableList = new HashSet<String>();
-	public static HashSet<String> gasList = new HashSet<String>();
+	public static HashMap<ResourceLocation, ChemthrowerEffect> effectMap = new HashMap<>();
+	public static HashSet<ResourceLocation> flammableList = new HashSet<>();
+	public static HashSet<ResourceLocation> gasList = new HashSet<>();
 
 	/**
 	 * registers a special effect to a fluid. Fluids without an effect simply do damage based on temperature
@@ -47,13 +45,13 @@ public class ChemthrowerHandler
 	public static void registerEffect(Fluid fluid, ChemthrowerEffect effect)
 	{
 		if(fluid!=null)
-			registerEffect(fluid.getName(), effect);
+			registerEffect(fluid.getRegistryName(), effect);
 	}
 
 	/**
 	 * registers a special effect to a fluid. Fluids without an effect simply do damage based on temperature
 	 */
-	public static void registerEffect(String fluidName, ChemthrowerEffect effect)
+	public static void registerEffect(ResourceLocation fluidName, ChemthrowerEffect effect)
 	{
 		effectMap.put(fluidName, effect);
 	}
@@ -61,11 +59,11 @@ public class ChemthrowerHandler
 	public static ChemthrowerEffect getEffect(Fluid fluid)
 	{
 		if(fluid!=null)
-			return getEffect(fluid.getName());
+			return getEffect(fluid.getRegistryName());
 		return null;
 	}
 
-	public static ChemthrowerEffect getEffect(String fluidName)
+	public static ChemthrowerEffect getEffect(ResourceLocation fluidName)
 	{
 		return effectMap.get(fluidName);
 	}
@@ -76,13 +74,13 @@ public class ChemthrowerHandler
 	public static void registerFlammable(Fluid fluid)
 	{
 		if(fluid!=null)
-			registerFlammable(fluid.getName());
+			registerFlammable(fluid.getRegistryName());
 	}
 
 	/**
 	 * registers a fluid to allow the chemical thrower to ignite it upon dispersal
 	 */
-	public static void registerFlammable(String fluidName)
+	public static void registerFlammable(ResourceLocation fluidName)
 	{
 		flammableList.add(fluidName);
 	}
@@ -90,11 +88,11 @@ public class ChemthrowerHandler
 	public static boolean isFlammable(Fluid fluid)
 	{
 		if(fluid!=null)
-			return flammableList.contains(fluid.getName());
+			return flammableList.contains(fluid.getRegistryName());
 		return false;
 	}
 
-	public static boolean isFlammable(String fluidName)
+	public static boolean isFlammable(ResourceLocation fluidName)
 	{
 		return flammableList.contains(fluidName);
 	}
@@ -105,13 +103,13 @@ public class ChemthrowerHandler
 	public static void registerGas(Fluid fluid)
 	{
 		if(fluid!=null)
-			registerGas(fluid.getName());
+			registerGas(fluid.getRegistryName());
 	}
 
 	/**
 	 * registers a fluid to be dispersed like a gas. This is only necessary if the fluid itself isn't designated as a gas
 	 */
-	public static void registerGas(String fluidName)
+	public static void registerGas(ResourceLocation fluidName)
 	{
 		gasList.add(fluidName);
 	}
@@ -119,11 +117,11 @@ public class ChemthrowerHandler
 	public static boolean isGas(Fluid fluid)
 	{
 		if(fluid!=null)
-			return gasList.contains(fluid.getName());
+			return gasList.contains(fluid.getRegistryName());
 		return false;
 	}
 
-	public static boolean isGas(String fluidName)
+	public static boolean isGas(ResourceLocation fluidName)
 	{
 		return gasList.contains(fluidName);
 	}
@@ -165,7 +163,7 @@ public class ChemthrowerHandler
 				{
 					target.hurtResistantTime = (int)(target.hurtResistantTime*.75);
 					if(source.isFireDamage()&&!target.isImmuneToFire())
-						target.setFire(fluid.isGaseous()?2: 5);
+						target.setFire(fluid.getAttributes().isGaseous()?2: 5);
 				}
 			}
 		}
@@ -241,9 +239,12 @@ public class ChemthrowerHandler
 		@Override
 		public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 		{
-			Block b = world.getBlockState(mop.getBlockPos().offset(mop.sideHit)).getBlock();
+			if(!(mop instanceof BlockRayTraceResult))
+				return;
+			BlockRayTraceResult rtr = (BlockRayTraceResult)mop;
+			Block b = world.getBlockState(rtr.getPos().offset(rtr.getFace())).getBlock();
 			if(b instanceof FireBlock)
-				world.removeBlock(mop.getBlockPos().offset(mop.sideHit));
+				world.removeBlock(rtr.getPos().offset(rtr.getFace()), false);
 		}
 	}
 
@@ -272,7 +273,7 @@ public class ChemthrowerHandler
 					if(MinecraftForge.EVENT_BUS.post(event))
 						return;
 					target.setPositionAndUpdate(event.getTargetX(), event.getTargetY(), event.getTargetZ());
-					target.world.playSound(target.posX, target.posY, target.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F, false);
+					target.world.playSound(target.posX, target.posY, target.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F, false);
 				}
 			}
 		}

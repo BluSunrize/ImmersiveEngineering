@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
@@ -40,21 +41,21 @@ public class MixerRecipe extends MultiblockRecipe
 	public MixerRecipe(FluidStack fluidOutput, FluidStack fluidInput, Object[] itemInputs, int energy)
 	{
 		this.fluidOutput = fluidOutput;
-		this.fluidAmount = fluidOutput.amount;
+		this.fluidAmount = fluidOutput.getAmount();
 		this.fluidInput = fluidInput;
 		this.itemInputs = new IngredientStack[itemInputs==null?0: itemInputs.length];
 		if(itemInputs!=null)
 			for(int i = 0; i < itemInputs.length; i++)
 				this.itemInputs[i] = ApiUtils.createIngredientStack(itemInputs[i]);
 		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
-		this.totalProcessTime = (int)Math.floor(fluidOutput.amount*timeModifier);
+		this.totalProcessTime = (int)Math.floor(fluidOutput.getAmount()*timeModifier);
 
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);
 		this.inputList = Lists.newArrayList(this.itemInputs);
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
 	}
 
-	public static ArrayList<MixerRecipe> recipeList = new ArrayList();
+	public static ArrayList<MixerRecipe> recipeList = new ArrayList<>();
 
 	public static MixerRecipe addRecipe(FluidStack fluidOutput, FluidStack fluidInput, Object[] itemInput, int energy)
 	{
@@ -173,9 +174,9 @@ public class MixerRecipe extends MultiblockRecipe
 	{
 		FluidStack fluidInput = FluidStack.loadFluidStackFromNBT(nbt.getCompound("fluidInput"));
 		IngredientStack[] itemInputs = null;
-		if(nbt.hasKey("itemInputs"))
+		if(nbt.contains("itemInputs", NBT.TAG_LIST))
 		{
-			ListNBT list = nbt.getList("itemInputs", 10);
+			ListNBT list = nbt.getList("itemInputs", NBT.TAG_COMPOUND);
 			itemInputs = new IngredientStack[list.size()];
 			for(int i = 0; i < itemInputs.length; i++)
 				itemInputs[i] = IngredientStack.readFromNBT(list.getCompound(i));

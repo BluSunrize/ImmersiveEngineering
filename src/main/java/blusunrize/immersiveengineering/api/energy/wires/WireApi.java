@@ -9,11 +9,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.model.BasicState;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJModel;
@@ -145,7 +147,7 @@ public final class WireApi
 		}
 
 		@OnlyIn(Dist.CLIENT)
-		public void onResourceReload(Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter, VertexFormat format)
+		public void onModelBake(ModelBakeEvent evt)
 		{
 			IModel model;
 			try
@@ -162,8 +164,17 @@ public final class WireApi
 				obj = (OBJModel)obj.retexture(texReplacements);
 				model = obj.process(ImmutableMap.of("flip-v", "true"));
 			}
-			this.model = model.bake(model.getDefaultState(), format, bakedTextureGetter);
-			tex = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(texLoc.toString());
+			//TODO why doesn't this work with a lambda???
+			this.model = model.bake(evt.getModelLoader(), new Function<ResourceLocation, TextureAtlasSprite>()
+					{
+						@Override
+						public TextureAtlasSprite apply(ResourceLocation rl)
+						{
+							return Minecraft.getInstance().getTextureMap().getSprite(rl);
+						}
+					},
+					new BasicState(model.getDefaultState(), false), DefaultVertexFormats.ITEM);
+			tex = Minecraft.getInstance().getTextureMap().getSprite(texLoc);
 		}
 	}
 }

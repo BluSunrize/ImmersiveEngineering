@@ -16,7 +16,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.*;
 import java.util.function.Function;
@@ -101,15 +101,15 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	public static List<MetalPressRecipe> removeRecipes(ItemStack output)
 	{
-		List<MetalPressRecipe> list = new ArrayList();
-		Set<ComparableItemStack> keySet = new HashSet<ComparableItemStack>(recipeList.keySet());
+		List<MetalPressRecipe> list = new ArrayList<>();
+		Set<ComparableItemStack> keySet = new HashSet<>(recipeList.keySet());
 		for(ComparableItemStack mold : keySet)
 		{
 			Iterator<MetalPressRecipe> it = recipeList.get(mold).iterator();
 			while(it.hasNext())
 			{
 				MetalPressRecipe ir = it.next();
-				if(OreDictionary.itemMatches(ir.output, output, true))
+				if(ItemStack.areItemsEqual(ir.output, output))
 				{
 					list.add(ir);
 					it.remove();
@@ -144,7 +144,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	public static MetalPressRecipe loadFromNBT(CompoundNBT nbt)
 	{
-		if(nbt.hasKey("type")&&deserializers.containsKey(nbt.getString("type")))
+		if(nbt.contains("type", NBT.TAG_STRING)&&deserializers.containsKey(nbt.getString("type")))
 			return deserializers.get(nbt.getString("type")).apply(nbt);
 		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
 		ComparableItemStack mold = ComparableItemStack.readFromNBT(nbt.getCompound("mold"));

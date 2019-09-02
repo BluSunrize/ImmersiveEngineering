@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -17,7 +18,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -71,24 +74,24 @@ public class CapabilityShader
 		public void setShaderItem(ItemStack shader)
 		{
 			if(!container.hasTag())
-				container.setTagCompound(new CompoundNBT());
+				container.setTag(new CompoundNBT());
 			if(!shader.isEmpty())
 			{
-				CompoundNBT shaderTag = shader.writeToNBT(new CompoundNBT());
-				container.getTagCompound().put(SHADER_NBT_KEY, shaderTag);
+				CompoundNBT shaderTag = shader.write(new CompoundNBT());
+				container.getOrCreateTag().put(SHADER_NBT_KEY, shaderTag);
 			}
 			else
-				container.getTagCompound().remove(SHADER_NBT_KEY);
+				container.getOrCreateTag().remove(SHADER_NBT_KEY);
 		}
 
 		@Override
-		@Nullable
+		@Nonnull
 		public ItemStack getShaderItem()
 		{
-			CompoundNBT tagCompound = container.getTagCompound();
-			if(tagCompound==null||!tagCompound.hasKey(SHADER_NBT_KEY))
+			CompoundNBT tagCompound = container.getOrCreateTag();
+			if(!tagCompound.contains(SHADER_NBT_KEY, NBT.TAG_COMPOUND))
 				return ItemStack.EMPTY;
-			return new ItemStack(tagCompound.getCompound(SHADER_NBT_KEY));
+			return ItemStack.read(tagCompound.getCompound(SHADER_NBT_KEY));
 		}
 	}
 
@@ -115,18 +118,14 @@ public class CapabilityShader
 			return this.shader;
 		}
 
-		@Override
-		public boolean hasCapability(Capability<?> capability, @Nullable Direction facing)
-		{
-			return capability==SHADER_CAPABILITY;
-		}
+		private LazyOptional<ShaderWrapper> opt = ApiUtils.constantOptional(this);
 
 		@Override
-		public <T> T getCapability(Capability<T> capability, @Nullable Direction facing)
+		public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing)
 		{
 			if(capability==SHADER_CAPABILITY)
-				return (T)this;
-			return null;
+				return opt.cast();
+			return LazyOptional.empty();
 		}
 
 		@Override
@@ -135,7 +134,7 @@ public class CapabilityShader
 			CompoundNBT nbt = new CompoundNBT();
 			ItemStack shader = getShaderItem();
 			if(!shader.isEmpty())
-				shader.writeToNBT(nbt);
+				shader.write(nbt);
 			else
 				nbt.putString("IE:NoShader", "");
 			nbt.putString("IE:ShaderType", getShaderType());
@@ -147,8 +146,8 @@ public class CapabilityShader
 		{
 			CompoundNBT tags = nbt;
 			setShaderType(tags.getString("IE:ShaderType"));
-			if(!tags.hasKey("IE:NoShader"))
-				setShaderItem(new ItemStack(tags));
+			if(!tags.contains("IE:NoShader"))
+				setShaderItem(ItemStack.read(tags));
 		}
 	}
 
@@ -162,7 +161,7 @@ public class CapabilityShader
 				CompoundNBT nbt = new CompoundNBT();
 				ItemStack shader = instance.getShaderItem();
 				if(!shader.isEmpty())
-					shader.writeToNBT(nbt);
+					shader.write(nbt);
 				else
 					nbt.putString("IE:NoShader", "");
 				nbt.putString("IE:ShaderType", instance.getShaderType());
@@ -174,8 +173,8 @@ public class CapabilityShader
 			{
 				CompoundNBT tags = (CompoundNBT)nbt;
 				instance.setShaderType(tags.getString("IE:ShaderType"));
-				if(!tags.hasKey("IE:NoShader"))
-					instance.setShaderItem(new ItemStack(tags));
+				if(!tags.contains("IE:NoShader"))
+					instance.setShaderItem(ItemStack.read(tags));
 			}
 		}, new Callable<ShaderWrapper>()
 		{

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -17,6 +18,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,25 +50,21 @@ public class NetHandlerCapability
 	public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundNBT>
 	{
 		private final GlobalWireNetwork net;
+		private final LazyOptional<GlobalWireNetwork> netOpt;
 
 		public Provider(World w)
 		{
 			net = new GlobalWireNetwork(w);
+			netOpt = ApiUtils.constantOptional(net);
 		}
 
+		@Nonnull
 		@Override
-		public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable Direction facing)
-		{
-			return capability==NET_CAPABILITY;
-		}
-
-		@Nullable
-		@Override
-		public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 		{
 			if (capability==NET_CAPABILITY)
-				return NET_CAPABILITY.cast(net);
-			return null;
+				return netOpt.cast();
+			return LazyOptional.empty();
 		}
 
 		@Override

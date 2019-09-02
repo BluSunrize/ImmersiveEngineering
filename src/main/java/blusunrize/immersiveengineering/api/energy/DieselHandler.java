@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.energy;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,8 +24,8 @@ import java.util.Set;
  */
 public class DieselHandler
 {
-	static final HashMap<String, Integer> dieselGenBurnTime = new HashMap<String, Integer>();
-	static final Set<Fluid> drillFuel = new HashSet<Fluid>();
+	static final HashMap<ResourceLocation, Integer> dieselGenBurnTime = new HashMap<>();
+	static final Set<Fluid> drillFuel = new HashSet<>();
 
 	/**
 	 * @param fuel the fluid to be used as fuel
@@ -33,14 +34,14 @@ public class DieselHandler
 	public static void registerFuel(Fluid fuel, int time)
 	{
 		if(fuel!=null)
-			dieselGenBurnTime.put(fuel.getName(), time);
+			dieselGenBurnTime.put(fuel.getRegistryName(), time);
 	}
 
 	public static int getBurnTime(Fluid fuel)
 	{
 		if(fuel!=null)
 		{
-			String s = fuel.getName();
+			ResourceLocation s = fuel.getRegistryName();
 			if(dieselGenBurnTime.containsKey(s))
 				return dieselGenBurnTime.get(s);
 		}
@@ -50,16 +51,16 @@ public class DieselHandler
 	public static boolean isValidFuel(Fluid fuel)
 	{
 		if(fuel!=null)
-			return dieselGenBurnTime.containsKey(fuel.getName());
+			return dieselGenBurnTime.containsKey(fuel.getRegistryName());
 		return false;
 	}
 
-	public static HashMap<String, Integer> getFuelValues()
+	public static HashMap<ResourceLocation, Integer> getFuelValues()
 	{
 		return dieselGenBurnTime;
 	}
 
-	public static Map<String, Integer> getFuelValuesSorted(boolean inverse)
+	public static Map<ResourceLocation, Integer> getFuelValuesSorted(boolean inverse)
 	{
 		return ApiUtils.sortMap(dieselGenBurnTime, inverse);
 	}
@@ -78,9 +79,7 @@ public class DieselHandler
 	public static void removeFuel(Fluid fuel)
 	{
 		if(fuel!=null)
-		{
-			dieselGenBurnTime.remove(fuel.getName());
-		}
+			dieselGenBurnTime.remove(fuel.getRegistryName());
 	}
 
 	public static void removeDrillFuel(Fluid fuel)

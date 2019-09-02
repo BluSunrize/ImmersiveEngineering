@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -59,12 +58,12 @@ public class BlastFurnaceRecipe
 
 	public static List<BlastFurnaceRecipe> removeRecipes(ItemStack stack)
 	{
-		List<BlastFurnaceRecipe> list = new ArrayList();
+		List<BlastFurnaceRecipe> list = new ArrayList<>();
 		Iterator<BlastFurnaceRecipe> it = recipeList.iterator();
 		while(it.hasNext())
 		{
 			BlastFurnaceRecipe ir = it.next();
-			if(OreDictionary.itemMatches(ir.output, stack, true))
+			if(ItemStack.areItemsEqual(ir.output, stack))
 			{
 				list.add(ir);
 				it.remove();
@@ -73,7 +72,7 @@ public class BlastFurnaceRecipe
 		return list;
 	}
 
-	public static ArrayList<BlastFurnaceFuel> blastFuels = new ArrayList();
+	public static List<BlastFurnaceFuel> blastFuels = new ArrayList<>();
 
 	public static class BlastFurnaceFuel
 	{

@@ -98,6 +98,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ItemParticleData;
@@ -501,7 +502,7 @@ public class ClientProxy extends CommonProxy
 		ManualInstance ieMan = ManualHelper.getManual();
 		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
 				s -> new ManualElementMultiblock(ieMan,
-						MultiblockHandler.getByUniqueName(JSONUtils.getString(s, "name"))));
+						MultiblockHandler.getByUniqueName(new ResourceLocation(JSONUtils.getString(s, "name")))));
 		Tree.Node<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
 				ManualHelper.CAT_ENERGY), 1);
 		Tree.Node<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
@@ -1204,7 +1205,7 @@ public class ClientProxy extends CommonProxy
 		{
 			GlStateManager.pushMatrix();
 			List<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL,
-					ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, 0);
+					ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, DyeColor.WHITE);
 //			GlStateManager.translate(0, 0, 1);
 			ClientUtils.renderQuads(quads, 1, 1, 1, 1);
 			GlStateManager.popMatrix();

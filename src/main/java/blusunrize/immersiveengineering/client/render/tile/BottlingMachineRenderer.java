@@ -141,10 +141,10 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 
 		float scale = .0625f;
 		FluidStack fs = te.tanks[0].getFluid();
-		if(fs!=null)
+		if(!fs.isEmpty())
 		{
 			GlStateManager.pushMatrix();
-			float level = fs.amount/(float)te.tanks[0].getCapacity();
+			float level = fs.getAmount()/(float)te.tanks[0].getCapacity();
 			GlStateManager.translated(-.21875, .376, 1.21875);
 			GlStateManager.scalef(scale, scale, scale);
 			float h = level*9;

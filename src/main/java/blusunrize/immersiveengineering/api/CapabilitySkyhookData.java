@@ -16,6 +16,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,7 +45,7 @@ public class CapabilitySkyhookData
 		{
 			if(hook!=null)
 			{
-				hook.setDead();
+				hook.remove();
 				hook = null;
 			}
 			if(status.dismount!=null)
@@ -70,20 +71,15 @@ public class CapabilitySkyhookData
 	public static class SimpleSkyhookProvider implements ICapabilityProvider
 	{
 		SkyhookUserData data = new SkyhookUserData();
+		LazyOptional<SkyhookUserData> opt = ApiUtils.constantOptional(data);
 
+		@Nonnull
 		@Override
-		public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable Direction facing)
+		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 		{
-			return capability==SKYHOOK_USER_DATA&&facing==Direction.UP;
-		}
-
-		@Nullable
-		@Override
-		public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
-		{
-			if(capability==SKYHOOK_USER_DATA&&facing==Direction.UP)
-				return SKYHOOK_USER_DATA.cast(data);
-			return null;
+			if(capability==SKYHOOK_USER_DATA)
+				return opt.cast();
+			return LazyOptional.empty();
 		}
 	}
 

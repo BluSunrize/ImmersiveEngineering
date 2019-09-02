@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,12 +54,12 @@ public class AlloyRecipe
 
 	public static List<AlloyRecipe> removeRecipes(ItemStack stack)
 	{
-		List<AlloyRecipe> list = new ArrayList();
+		List<AlloyRecipe> list = new ArrayList<>();
 		Iterator<AlloyRecipe> it = recipeList.iterator();
 		while(it.hasNext())
 		{
 			AlloyRecipe ir = it.next();
-			if(OreDictionary.itemMatches(ir.output, stack, true))
+			if(ItemStack.areItemsEqual(ir.output, stack))
 			{
 				list.add(ir);
 				it.remove();

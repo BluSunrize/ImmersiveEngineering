@@ -8,17 +8,16 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FurnaceBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.crafting.AbstractCookingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class ExternalHeaterHandler
 {
@@ -86,7 +85,7 @@ public class ExternalHeaterHandler
 		return adapter;
 	}
 
-
+	//TODO FurnaceTE or AbstractFurnaceTE?
 	public static class DefaultFurnaceAdapter extends HeatableAdapter<FurnaceTileEntity>
 	{
 		boolean canCook(FurnaceTileEntity tileEntity)
@@ -94,16 +93,18 @@ public class ExternalHeaterHandler
 			ItemStack input = tileEntity.getStackInSlot(0);
 			if(input.isEmpty())
 				return false;
-			ItemStack output = FurnaceRecipes.instance().getSmeltingResult(input);
-			if(output.isEmpty())
+			IRecipeType<? extends AbstractCookingRecipe> type = tileEntity.recipeType;
+			Optional<? extends AbstractCookingRecipe> output = tileEntity.getWorld().getRecipeManager().getRecipe(type, tileEntity, tileEntity.getWorld());
+			if(!output.isPresent())
 				return false;
 			ItemStack existingOutput = tileEntity.getStackInSlot(2);
 			if(existingOutput.isEmpty())
 				return true;
-			if(!existingOutput.isItemEqual(output))
+			ItemStack outStack = output.get().getRecipeOutput();
+			if(!existingOutput.isItemEqual(outStack))
 				return false;
-			int stackSize = existingOutput.getCount()+output.getCount();
-			return stackSize <= tileEntity.getInventoryStackLimit()&&stackSize <= output.getMaxStackSize();
+			int stackSize = existingOutput.getCount()+outStack.getCount();
+			return stackSize <= tileEntity.getInventoryStackLimit()&&stackSize <= outStack.getMaxStackSize();
 		}
 
 		@Override
@@ -113,8 +114,9 @@ public class ExternalHeaterHandler
 			boolean canCook = canCook(tileEntity);
 			if(canCook||redstone)
 			{
-				boolean burning = tileEntity.isBurning();
-				int burnTime = tileEntity.getField(0);
+				BlockState tileState = tileEntity.getWorld().getBlockState(tileEntity.getPos());
+				boolean burning = tileState.get(AbstractFurnaceBlock.LIT);
+				int burnTime = tileEntity.furnaceData.get(0);
 				if(burnTime < 200)
 				{
 					int heatAttempt = 4;
@@ -123,19 +125,19 @@ public class ExternalHeaterHandler
 					int heat = energyToUse/heatEnergyRatio;
 					if(heat > 0)
 					{
-						tileEntity.setField(0, burnTime+heat);
+						tileEntity.furnaceData.set(0, burnTime+heat);
 						energyConsumed += heat*heatEnergyRatio;
 						if(!burning)
-							updateFurnace(tileEntity, tileEntity.getField(0) > 0);
+							updateFurnace(tileEntity, tileEntity.furnaceData.get(0) > 0);
 					}
 				}
-				if(canCook&&tileEntity.getField(0) >= 200&&tileEntity.getField(2) < 199)
+				if(canCook&&tileEntity.furnaceData.get(0) >= 200&&tileEntity.furnaceData.get(2) < 199)
 				{
 					int energyToUse = defaultFurnaceSpeedupCost;
 					if(energyAvailable-energyConsumed > energyToUse)
 					{
 						energyConsumed += energyToUse;
-						tileEntity.setField(2, tileEntity.getField(2)+1);
+						tileEntity.furnaceData.set(2, tileEntity.furnaceData.get(2)+1);
 					}
 				}
 			}
@@ -144,20 +146,8 @@ public class ExternalHeaterHandler
 
 		public void updateFurnace(TileEntity tileEntity, boolean active)
 		{
-			Block containing = tileEntity.getBlockState();
-			if(containing==Blocks.FURNACE)
-				FurnaceBlock.setState(active, tileEntity.getWorld(), tileEntity.getPos());
-//			else
-			{
-				//Fix for Natura, might work on other furnaces that extend the vanilla one and use the variable name "active". Let's hope. xD
-				CompoundNBT nbt = new CompoundNBT();
-				tileEntity.writeToNBT(nbt);
-				nbt.putBoolean("active", active);
-				nbt.putBoolean("Active", active);
-				tileEntity.readFromNBT(nbt);
-				BlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
-				tileEntity.getWorld().notifyBlockUpdate(tileEntity.getPos(), state, state, 3);
-			}
+			BlockState oldState = tileEntity.getWorld().getBlockState(tileEntity.getPos());
+			tileEntity.getWorld().setBlockState(tileEntity.getPos(), oldState.with(AbstractFurnaceBlock.LIT, active));
 		}
 	}
 }

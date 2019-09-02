@@ -15,6 +15,7 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
@@ -91,8 +92,8 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 
 	public void setFluidTexture(FluidStack fluid)
 	{
-		setSprite(ClientUtils.getSprite(fluid.getFluid().getStill(fluid)));
-		int argb = fluid.getFluid().getColor(fluid);
+		setSprite(ClientUtils.getSprite(fluid.getFluid().getAttributes().getStill(fluid)));
+		int argb = fluid.getFluid().getAttributes().getColor(fluid);
 		this.particleAlpha = ((argb >> 24)&255)/255f;
 		this.particleRed = ((argb >> 16)&255)/255f;
 		this.particleRed = ((argb >> 8&255))/255f;

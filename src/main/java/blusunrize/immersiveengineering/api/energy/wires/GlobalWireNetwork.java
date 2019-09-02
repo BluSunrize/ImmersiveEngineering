@@ -190,7 +190,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	{
 		return localNets.computeIfAbsent(pos, p -> {
 			LocalWireNetwork ret = new LocalWireNetwork(this);
-			ret.loadConnector(pos, new IICProxy(0, pos.getPosition()));
+			ret.loadConnector(pos, new IICProxy(world.dimension.getType(), pos.getPosition()));
 			return ret;
 		});
 	}

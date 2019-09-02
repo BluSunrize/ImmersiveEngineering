@@ -59,7 +59,6 @@ import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import org.apache.commons.compress.utils.IOUtils;
@@ -585,8 +584,8 @@ public class ClientUtils
 	public static void drawRepeatedFluidSprite(FluidStack fluid, float x, float y, float w, float h)
 	{
 		bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE.toString());
-		TextureAtlasSprite sprite = getSprite(fluid.getFluid().getStill(fluid));
-		int col = fluid.getFluid().getColor(fluid);
+		TextureAtlasSprite sprite = getSprite(fluid.getFluid().getAttributes().getStill(fluid));
+		int col = fluid.getFluid().getAttributes().getColor(fluid);
 		GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
 		int iW = sprite.getWidth();
 		int iH = sprite.getHeight();
@@ -747,7 +746,7 @@ public class ClientUtils
 		{
 			if(fluid!=null&&fluid.getFluid()!=null)
 			{
-				int fluidHeight = (int)(h*(fluid.amount/(float)capacity));
+				int fluidHeight = (int)(h*(fluid.getAmount()/(float)capacity));
 				drawRepeatedFluidSprite(fluid, x, y+h-fluidHeight, w, fluidHeight);
 				bindTexture(originalTexture);
 				GlStateManager.color3f(1, 1, 1);
@@ -765,32 +764,35 @@ public class ClientUtils
 
 	public static void addFluidTooltip(FluidStack fluid, List<ITextComponent> tooltip, int tankCapacity)
 	{
-		if(fluid!=null&&fluid.getFluid()!=null)
-			tooltip.add(new TranslationTextComponent(fluid.getUnlocalizedName()).setStyle(new Style().setColor(fluid.getFluid().getRarity(fluid).color)));
+		if(!fluid.isEmpty())
+			tooltip.add(fluid.getDisplayName().setStyle(
+					new Style().setColor(fluid.getFluid().getAttributes().getRarity(fluid).color)));
 		else
 			tooltip.add(new TranslationTextComponent("gui.immersiveengineering.empty"));
-		if(fluid!=null&&fluid.getFluid() instanceof IEFluid)
+		if(fluid.getFluid() instanceof IEFluid)
 			((IEFluid)fluid.getFluid()).addTooltipInfo(fluid, null, tooltip);
 
-		if(mc().gameSettings.advancedItemTooltips&&fluid!=null)
+		if(mc().gameSettings.advancedItemTooltips&&!fluid.isEmpty())
+		{
 			if(!Screen.hasShiftDown())
 				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"holdShiftForInfo"));
 			else
 			{
 				Style darkGray = new Style().setColor(TextFormatting.DARK_GRAY);
 				//TODO translation keys
-				tooltip.add(new StringTextComponent("Fluid Registry: "+FluidRegistry.getFluidName(fluid)).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("Density: "+fluid.getFluid().getDensity(fluid)).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("Temperature: "+fluid.getFluid().getTemperature(fluid)).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("Viscosity: "+fluid.getFluid().getViscosity(fluid)).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("NBT Data: "+fluid.tag).setStyle(darkGray));
+				tooltip.add(new StringTextComponent("Fluid Registry: "+fluid.getFluid().getRegistryName()).setStyle(darkGray));
+				tooltip.add(new StringTextComponent("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)).setStyle(darkGray));
+				tooltip.add(new StringTextComponent("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)).setStyle(darkGray));
+				tooltip.add(new StringTextComponent("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)).setStyle(darkGray));
+				tooltip.add(new StringTextComponent("NBT Data: "+fluid.getTag()).setStyle(darkGray));
 			}
+		}
 
 		Style gray = new Style().setColor(TextFormatting.GRAY);
 		if(tankCapacity > 0)
-			tooltip.add(new StringTextComponent((fluid!=null?fluid.amount: 0)+"/"+tankCapacity+"mB").setStyle(gray));
+			tooltip.add(new StringTextComponent(fluid.getAmount()+"/"+tankCapacity+"mB").setStyle(gray));
 		else
-			tooltip.add(new StringTextComponent((fluid!=null?fluid.amount: 0)+"mB").setStyle(gray));
+			tooltip.add(new StringTextComponent(fluid.getAmount()+"mB").setStyle(gray));
 	}
 
 	public static Quat4d degreeToQuaterion(double x, double y, double z)
