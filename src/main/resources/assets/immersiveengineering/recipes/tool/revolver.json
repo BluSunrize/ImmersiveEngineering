@@ -1,5 +1,8 @@
 {
-  "type": "forge:ore_shaped",
+  "type": "immersiveengineering:ingredient_shaped",
+  "copy_nbt": [3,4,5],
+  "copy_nbt_predicate" : "perks",
+  "copy_nbt_multiply_decimals": true,
   "result": {
     "item": "immersiveengineering:revolver",
     "data": 0

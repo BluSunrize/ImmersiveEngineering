@@ -57,9 +57,11 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.EntityEquipmentSlot.Type;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -243,13 +245,13 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	{
 		if(this.isInCreativeTab(tab))
 			list.add(new ItemStack(this));
-				for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
-				{
-					ItemStack stack = new ItemStack(this,1,0);
-					applySpecialCrafting(stack, e.getValue());
-					this.recalculateUpgrades(stack);
-					list.add(stack);
-				}
+//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
+//		{
+//			ItemStack stack = new ItemStack(this, 1, 0);
+//			applySpecialCrafting(stack, e.getValue());
+//			this.recalculateUpgrades(stack);
+//			list.add(stack);
+//		}
 	}
 
 	/* ------------- ATTRIBUTES, UPDATE, RIGHTCLICK ------------- */
@@ -379,7 +381,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 									}
 								bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
 
-								float noise = (float)getUpgradeValue_d(revolver, RevolverPerk.NOISE.getNBTKey());
+								float noise = 0.5f;
+								if(hasUpgradeValue(revolver, RevolverPerk.NOISE.getNBTKey()))
+									noise *= (float)getUpgradeValue_d(revolver, RevolverPerk.NOISE.getNBTKey());
 								Utils.attractEnemies(player, 64*noise);
 								SoundEvent sound = bullet.getSound();
 								if(sound==null)
@@ -805,17 +809,29 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	@ParametersAreNonnullByDefault
 	public enum RevolverPerk
 	{
-		COOLDOWN(f -> f > 1, f -> Utils.DECIMALFORMAT_PREFIXED.format((1-f)*100)),
-		NOISE(f -> f > 1, f -> Utils.DECIMALFORMAT_PREFIXED.format((f-1)*100)),
-		LUCK(f -> f < 0, Utils.DECIMALFORMAT_PREFIXED::format);
+		COOLDOWN(f -> f > 1,
+				f -> Utils.NUMBERFORMAT_PREFIXED.format((1-f)*100),
+				1, -0.75, -0.05),
+		NOISE(f -> f > 1,
+				f -> Utils.NUMBERFORMAT_PREFIXED.format((f-1)*100),
+				1, -.9, -0.1),
+		LUCK(f -> f < 0,
+				f -> Utils.NUMBERFORMAT_PREFIXED.format(f*100),
+				0, 3, 0.5);
 
 		private final DoublePredicate isBadValue;
 		private final Function<Double, String> valueFormatter;
+		private final double generate_median;
+		private final double generate_deviation;
+		private final double generate_luckScale;
 
-		RevolverPerk(DoublePredicate isBadValue, Function<Double, String> valueFormatter)
+		RevolverPerk(DoublePredicate isBadValue, Function<Double, String> valueFormatter, double generate_median, double generate_deviation, double generate_luckScale)
 		{
 			this.isBadValue = isBadValue;
 			this.valueFormatter = valueFormatter;
+			this.generate_median = generate_median;
+			this.generate_deviation = generate_deviation;
+			this.generate_luckScale = generate_luckScale;
 		}
 
 		public String getNBTKey()
@@ -827,6 +843,33 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		{
 			String key = Lib.DESC_INFO+"revolver.perk."+this.toString();
 			return (isBadValue.test(value)?ChatFormatting.RED: ChatFormatting.BLUE)+I18n.format(key, valueFormatter.apply(value));
+		}
+
+		public static String getFormattedName(String name, NBTTagCompound perksTag)
+		{
+			double averageTier = 0;
+			for(String key : perksTag.getKeySet())
+			{
+				ItemRevolver.RevolverPerk perk = ItemRevolver.RevolverPerk.get(key);
+				double value = perksTag.getDouble(key);
+				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
+				averageTier += dTier;
+				int iTier = (int)(dTier < 0?Math.floor(dTier): Math.ceil(dTier));
+				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase()+".tier"+iTier;
+				name = I18n.format(translate, name);
+			}
+
+			int rarityTier = (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
+			EnumRarity rarity = rarityTier==5?Lib.RARITY_Masterwork: rarityTier==4?EnumRarity.EPIC: rarityTier==3?EnumRarity.RARE: rarityTier==2?EnumRarity.UNCOMMON: EnumRarity.COMMON;
+			return rarity.color+name;
+		}
+
+		public double generateValue(@Nullable EntityPlayer player, Random rand, boolean isBad)
+		{
+			double d = Utils.generatePlayerInfluencedDouble(generate_median, generate_deviation, player, rand, isBad, generate_luckScale);
+			int i = (int)(d*100);
+			d = i/100d;
+			return d;
 		}
 
 		@Override
@@ -844,6 +887,12 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			{
 				return null;
 			}
+		}
+
+		public static RevolverPerk getRandom(Random rand)
+		{
+			int i = rand.nextInt(values().length);
+			return values()[i];
 		}
 	}
 }

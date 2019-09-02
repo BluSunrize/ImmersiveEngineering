@@ -93,6 +93,8 @@ public class RecipeFactoryShapedIngredient implements IRecipeFactory
 			recipe.allowQuarterTurn();
 		if(JsonUtils.getBoolean(json, "eighth_turn", false))
 			recipe.allowEighthTurn();
+		if(JsonUtils.hasField(json, "copy_nbt_multiply_decimals"))
+			recipe.setNBTCopyMultiplyDecimals(JsonUtils.getBoolean(json, "copy_nbt_multiply_decimals"));
 		if(JsonUtils.hasField(json, "copy_nbt"))
 		{
 			if(JsonUtils.isJsonArray(json, "copy_nbt"))

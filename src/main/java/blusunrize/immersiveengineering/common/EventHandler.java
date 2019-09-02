@@ -37,6 +37,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRazorWire;
 import blusunrize.immersiveengineering.common.crafting.MixerPotionHelper;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemIEShield;
+import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
@@ -49,6 +50,7 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -56,6 +58,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -64,6 +67,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.village.MerchantRecipe;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootEntry;
@@ -83,6 +87,7 @@ import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.minecart.MinecartUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
+import net.minecraftforge.event.village.MerchantTradeOffersEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -598,6 +603,40 @@ public class EventHandler
 		}
 	}
 
+	@SubscribeEvent
+	public void onMerchantTrade(MerchantTradeOffersEvent event)
+	{
+		if(event.getMerchant() instanceof EntityVillager && ((EntityVillager)event.getMerchant()).getProfessionForge() == IEVillagerHandler.PROF_ENGINEER && event.getList()!=null)
+		{
+			Iterator<MerchantRecipe> iterator = event.getList().iterator();
+			while(iterator.hasNext())
+			{
+				MerchantRecipe recipe = iterator.next();
+				ItemStack output = recipe.getItemToSell();
+				if(output.getItem() == IEContent.itemMaterial && ItemNBTHelper.hasKey(output, "generatePerks"))
+				{
+					EntityPlayer player = event.getPlayer();
+					Random random = player.getRNG();
+					ItemNBTHelper.remove(output, "generatePerks");
+
+					ItemRevolver.RevolverPerk goodPerk = ItemRevolver.RevolverPerk.getRandom(random);
+					ItemRevolver.RevolverPerk badPerk = ItemRevolver.RevolverPerk.getRandom(random);
+					double val = goodPerk.generateValue(player, random, false);
+
+					NBTTagCompound perkCompound = new NBTTagCompound();
+					if(goodPerk==badPerk)
+						val = (val+badPerk.generateValue(player, random, true))/2;
+					else
+						perkCompound.setDouble(badPerk.getNBTKey(), badPerk.generateValue(player, random, true));
+					perkCompound.setDouble(goodPerk.getNBTKey(), val);
+					ItemNBTHelper.setTagCompound(output, "perks", perkCompound);
+				}
+				//Make recipe Unusable
+				else if(output.getItem() == IEContent.itemMaterial && ItemNBTHelper.hasKey(output, "perks") && recipe.getToolUses()>=1 && recipe.getMaxTradeUses()>0)
+					recipe.increaseMaxTradeUses(Integer.MIN_VALUE);
+			}
+		}
+	}
 
 	@SubscribeEvent
 	public void onEnderTeleport(EnderTeleportEvent event)

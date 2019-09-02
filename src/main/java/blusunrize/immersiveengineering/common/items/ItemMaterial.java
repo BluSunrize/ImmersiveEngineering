@@ -8,8 +8,10 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -33,7 +35,26 @@ public class ItemMaterial extends ItemIEBase
 	}
 
 	@Override
+	public String getItemStackDisplayName(ItemStack stack)
+	{
+		String name = super.getItemStackDisplayName(stack);
+		if(ItemNBTHelper.hasKey(stack, "perks"))
+			return ItemRevolver.RevolverPerk.getFormattedName(name, ItemNBTHelper.getTagCompound(stack, "perks"));
+		return name;
+	}
+
+	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
 	{
+		if(stack.getMetadata()>=14 && stack.getMetadata()<=16 && ItemNBTHelper.hasKey(stack, "perks"))
+		{
+			NBTTagCompound perks = ItemNBTHelper.getTagCompound(stack, "perks");
+			for(String key : perks.getKeySet())
+			{
+				ItemRevolver.RevolverPerk perk = ItemRevolver.RevolverPerk.get(key);
+				if(perk!=null)
+					list.add(" "+perk.getDisplayString(perks.getDouble(key)));
+			}
+		}
 	}
 }

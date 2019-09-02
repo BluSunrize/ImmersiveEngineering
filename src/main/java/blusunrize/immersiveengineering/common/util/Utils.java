@@ -34,6 +34,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,7 +98,7 @@ import static java.lang.Math.min;
 public class Utils
 {
 	public static final Random RAND = new Random();
-	public static final DecimalFormat DECIMALFORMAT_PREFIXED = new DecimalFormat("+#.##;-#.##");
+	public static final DecimalFormat NUMBERFORMAT_PREFIXED = new DecimalFormat("+#;-#");
 
 	public static boolean compareToOreName(ItemStack stack, String oreName)
 	{
@@ -272,6 +273,29 @@ public class Utils
 		return isExceptBlockForAttachWithPiston(block)||block==Blocks.BARRIER||block==Blocks.MELON_BLOCK||block==Blocks.PUMPKIN||block==Blocks.LIT_PUMPKIN;
 	}
 
+	public static int generatePlayerInfluencedInt(int median, int deviation, EntityPlayer player, boolean isBad, double luckScale)
+	{
+		int number = player.getRNG().nextInt(deviation);
+		if(isBad)
+			number = -number;
+		number += (int)(luckScale*player.getEntityAttribute(SharedMonsterAttributes.LUCK).getAttributeValue());
+
+		return median+Math.min(number, deviation);
+	}
+
+	public static double generatePlayerInfluencedDouble(double median, double deviation, @Nullable EntityPlayer player, Random rng, boolean isBad, double luckScale)
+	{
+		double number = rng.nextDouble()*deviation;
+		if(isBad)
+			number = -number;
+		if(player!=null)
+			number += luckScale*player.getEntityAttribute(SharedMonsterAttributes.LUCK).getAttributeValue();
+		if(deviation < 0)
+			number = Math.max(number, deviation);
+		else
+			number = Math.min(number, deviation);
+		return median+number;
+	}
 
 	public static String formatDouble(double d, String s)
 	{
@@ -1477,7 +1501,7 @@ public class Utils
 	 */
 	public static TileEntity getExistingTileEntity(World world, BlockPos pos)
 	{
-		if(world!=null && world.isBlockLoaded(pos))
+		if(world!=null&&world.isBlockLoaded(pos))
 			return world.getTileEntity(pos);
 		return null;
 	}

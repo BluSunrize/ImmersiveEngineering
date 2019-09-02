@@ -233,7 +233,7 @@ public class ItemNBTHelper
 		return stack;
 	}
 
-	public static NBTTagCompound combineTags(NBTTagCompound target, NBTTagCompound add, Pattern pattern)
+	public static NBTTagCompound combineTags(NBTTagCompound target, NBTTagCompound add, Pattern pattern, boolean multiplyDecimals)
 	{
 		if(target==null||target.isEmpty())
 			return add.copy();
@@ -258,10 +258,16 @@ public class ItemNBTHelper
 							target.setLong(key, (target.getLong(key)+add.getLong(key)));
 							break;
 						case 5: //Float
-							target.setFloat(key, (target.getFloat(key)+add.getFloat(key)));
+							if(multiplyDecimals)
+								target.setFloat(key, (target.getFloat(key)*add.getFloat(key)));
+							else
+								target.setFloat(key, (target.getFloat(key)+add.getFloat(key)));
 							break;
 						case 6: //Double
-							target.setDouble(key, (target.getDouble(key)+add.getDouble(key)));
+							if(multiplyDecimals)
+								target.setDouble(key, (target.getDouble(key)*add.getDouble(key)));
+							else
+								target.setDouble(key, (target.getDouble(key)+add.getDouble(key)));
 							break;
 						case 7: //ByteArray
 							byte[] bytesTarget = target.getByteArray(key);
@@ -282,7 +288,7 @@ public class ItemNBTHelper
 							target.setTag(key, listTarget);
 							break;
 						case 10: //Compound
-							combineTags(target.getCompoundTag(key), add.getCompoundTag(key), null);
+							combineTags(target.getCompoundTag(key), add.getCompoundTag(key), null, multiplyDecimals);
 							break;
 						case 11: //IntArray
 							int[] intsTarget = target.getIntArray(key);
