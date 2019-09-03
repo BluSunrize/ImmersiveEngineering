@@ -37,10 +37,10 @@ public class FluidSorterScreen extends IEContainerScreen
 	public FluidSorterTileEntity tile;
 	PlayerInventory playerInventory;
 
-	public FluidSorterScreen(PlayerInventory inventoryPlayer, FluidSorterTileEntity tile)
+	public FluidSorterScreen(FluidSorterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new FluidSorterContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 		this.playerInventory = inventoryPlayer;
 		this.ySize = 244;
 	}
@@ -89,8 +89,10 @@ public class FluidSorterScreen extends IEContainerScreen
 				int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 				if(mouseX > x&&mouseX < x+16&&mouseY > y&&mouseY < y+16)
 				{
-					FluidStack fs = FluidUtil.getFluidContained(playerInventory.getItemStack());
-					setFluidInSlot(side, i, fs);
+					int finalSide = side;
+					int finalI = i;
+					FluidUtil.getFluidContained(playerInventory.getItemStack())
+							.ifPresent(fs -> setFluidInSlot(finalSide, finalI, fs));
 					return true;
 				}
 			}
@@ -109,12 +111,12 @@ public class FluidSorterScreen extends IEContainerScreen
 			for(int i = 0; i < 8; i++)
 				if(tile.filters[side][i]!=null)
 				{
-					TextureAtlasSprite sprite = ClientUtils.getSprite(tile.filters[side][i].getFluid().getStill(tile.filters[side][i]));
+					TextureAtlasSprite sprite = ClientUtils.getSprite(tile.filters[side][i].getFluid().getAttributes().getStill(tile.filters[side][i]));
 					if(sprite!=null)
 					{
 						int x = guiLeft+4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
 						int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
-						int col = tile.filters[side][i].getFluid().getColor(tile.filters[side][i]);
+						int col = tile.filters[side][i].getFluid().getAttributes().getColor(tile.filters[side][i]);
 						GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
 						ClientUtils.drawTexturedRect(x, y, 16, 16, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
 					}
@@ -138,19 +140,15 @@ public class FluidSorterScreen extends IEContainerScreen
 			int x = guiLeft+21+(side/2)*58;
 			int y = guiTop+3+(side%2)*76;
 			final int sideFinal = side;
-			ButtonSorter b = new ButtonSorter(side, x, y, 1)
+			ButtonSorter b = new ButtonSorter(x, y, 1, btn ->
 			{
-				@Override
-				public void onClick(double mX, double mY)
-				{
-					tile.sortWithNBT[sideFinal] = (byte)(tile.sortWithNBT[sideFinal]==1?0: 1);
+				tile.sortWithNBT[sideFinal] = (byte)(tile.sortWithNBT[sideFinal]==1?0: 1);
 
-					CompoundNBT tag = new CompoundNBT();
-					tag.putByteArray("sideConfig", tile.sortWithNBT);
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
-					init();
-				}
-			};
+				CompoundNBT tag = new CompoundNBT();
+				tag.putByteArray("sideConfig", tile.sortWithNBT);
+				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+				init();
+			});
 			b.active = this.tile.doNBT(side);
 			this.buttons.add(b);
 		}

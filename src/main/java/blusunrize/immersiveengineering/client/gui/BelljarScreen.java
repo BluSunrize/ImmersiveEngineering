@@ -27,10 +27,10 @@ public class BelljarScreen extends IEContainerScreen
 {
 	BelljarTileEntity tile;
 
-	public BelljarScreen(PlayerInventory inventoryPlayer, BelljarTileEntity tile)
+	public BelljarScreen(BelljarContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new BelljarContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 	}
 
 	@Override

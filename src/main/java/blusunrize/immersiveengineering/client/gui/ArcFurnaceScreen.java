@@ -34,11 +34,11 @@ public class ArcFurnaceScreen extends IEContainerScreen
 	ArcFurnaceTileEntity tile;
 	private GuiButtonIE distributeButton;
 
-	public ArcFurnaceScreen(PlayerInventory inventoryPlayer, ArcFurnaceTileEntity tile)
+	public ArcFurnaceScreen(ArcFurnaceContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new ArcFurnaceContainer(inventoryPlayer, tile), inventoryPlayer);
+		super(container, inventoryPlayer, title);
 		this.ySize = 207;
-		this.tile = tile;
+		this.tile = container.tile;
 	}
 
 	@Override

@@ -40,10 +40,10 @@ public class TurretScreen extends IEContainerScreen
 	public TurretTileEntity tile;
 	private TextFieldWidget nameField;
 
-	public TurretScreen(PlayerInventory inventoryPlayer, TurretTileEntity tile)
+	public TurretScreen(TurretContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new TurretContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 		this.ySize = 190;
 	}
 

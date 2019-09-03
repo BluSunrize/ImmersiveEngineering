@@ -23,10 +23,10 @@ public class RefineryScreen extends IEContainerScreen
 {
 	RefineryTileEntity tile;
 
-	public RefineryScreen(PlayerInventory inventoryPlayer, RefineryTileEntity tile)
+	public RefineryScreen(RefineryContainer container, PlayerInventory inventoryPlayer, ITextComponent component)
 	{
-		super(new RefineryContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, component);
+		this.tile = container.tile;
 	}
 
 	@Override

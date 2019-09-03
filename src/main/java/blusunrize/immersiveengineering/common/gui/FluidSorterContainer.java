@@ -18,13 +18,11 @@ import javax.annotation.Nonnull;
 
 public class FluidSorterContainer extends IEBaseContainer<FluidSorterTileEntity>
 {
-	FluidSorterTileEntity tile;
 	int slotCount;
 
 	public FluidSorterContainer(int id, PlayerInventory inventoryPlayer, FluidSorterTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
-		this.tile = tile;
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 163+i*18));

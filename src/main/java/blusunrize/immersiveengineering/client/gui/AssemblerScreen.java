@@ -33,10 +33,10 @@ public class AssemblerScreen extends IEContainerScreen
 	static final String texture = "immersiveengineering:textures/gui/assembler.png";
 	public AssemblerTileEntity tile;
 
-	public AssemblerScreen(PlayerInventory inventoryPlayer, AssemblerTileEntity tile)
+	public AssemblerScreen(AssemblerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new AssemblerContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 		this.xSize = 230;
 		this.ySize = 218;
 	}

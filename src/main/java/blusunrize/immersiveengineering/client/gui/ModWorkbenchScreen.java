@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
-import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -29,7 +29,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -41,10 +40,10 @@ public class ModWorkbenchScreen extends ToolModificationScreen
 {
 	ModWorkbenchTileEntity workbench;
 
-	public ModWorkbenchScreen(PlayerInventory inventoryPlayer, World world, ModWorkbenchTileEntity tile)
+	public ModWorkbenchScreen(ModWorkbenchContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new ModWorkbenchContainer(inventoryPlayer, world, tile), inventoryPlayer);
-		workbench = tile;
+		super(container, inventoryPlayer, title);
+		workbench = container.tile;
 		this.ySize = 168;
 	}
 

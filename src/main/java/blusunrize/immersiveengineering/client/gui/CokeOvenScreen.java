@@ -22,10 +22,10 @@ public class CokeOvenScreen extends IEContainerScreen
 {
 	CokeOvenTileEntity tile;
 
-	public CokeOvenScreen(PlayerInventory inventoryPlayer, CokeOvenTileEntity tile)
+	public CokeOvenScreen(CokeOvenContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new CokeOvenContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 	}
 
 	@Override

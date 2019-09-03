@@ -177,7 +177,7 @@ public class BulletHandler
 			EntityRayTraceResult target = (EntityRayTraceResult)rtr;
 			Entity hitEntity = target.getEntity();
 			if(!world.isRemote&&hitEntity!=null&&damageSourceGetter!=null)
-				if(hitEntity.attackEntityFrom(damageSourceGetter.getSource(projectile, shooter, hitEntity), getDamage(headshot)))
+				if(hitEntity.attackEntityFrom(damageSourceGetter.getSource(projectile, world.getPlayerByUuid(shooter), hitEntity), getDamage(headshot)))
 				{
 					if(resetHurt)
 						hitEntity.hurtResistantTime = 0;
@@ -210,9 +210,9 @@ public class BulletHandler
 			return true;
 		}
 
-		interface DamageSourceProvider
+		public interface DamageSourceProvider
 		{
-			DamageSource getSource(Entity projectile, UUID shooter, Entity hit);
+			DamageSource getSource(Entity projectile, Entity shooter, Entity hit);
 		}
 	}
 }

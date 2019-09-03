@@ -14,17 +14,15 @@ import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import blusunrize.immersiveengineering.common.network.MessageMaintenanceKit;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
+import net.minecraft.util.text.ITextComponent;
 
 public class MaintenanceKitScreen extends ToolModificationScreen
 {
-	public MaintenanceKitScreen(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
+	public MaintenanceKitScreen(MaintenanceKitContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new MaintenanceKitContainer(inventoryPlayer, world, slot, item), inventoryPlayer);
+		super(container, inventoryPlayer, title);
 		this.xSize = 195;
 	}
 

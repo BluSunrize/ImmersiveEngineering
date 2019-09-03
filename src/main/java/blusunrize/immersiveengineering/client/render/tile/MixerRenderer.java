@@ -105,10 +105,10 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 			FluidStack fs = te.tank.fluids.get(i);
 			if(fs!=null&&fs.getFluid()!=null)
 			{
-				int col = fs.getFluid().getColor(fs);
+				int col = fs.getFluid().getAttributes().getColor(fs);
 				GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
 
-				float yy = fs.amount/(float)te.tank.getCapacity()*1.125f;
+				float yy = fs.getAmount()/(float)te.tank.getCapacity()*1.125f;
 				GlStateManager.translated(0, 0, -yy);
 				float w = (i < te.tank.getFluidTypes()-1||yy >= .125)?26: 16+yy/.0125f;
 				ClientUtils.drawRepeatedFluidSprite(fs, -w/2, -w/2, w, w);

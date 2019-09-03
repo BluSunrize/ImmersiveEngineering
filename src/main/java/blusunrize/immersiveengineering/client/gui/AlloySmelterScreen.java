@@ -13,15 +13,16 @@ import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntit
 import blusunrize.immersiveengineering.common.gui.AlloySmelterContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class AlloySmelterScreen extends IEContainerScreen
 {
 	AlloySmelterTileEntity tile;
 
-	public AlloySmelterScreen(PlayerInventory inventoryPlayer, AlloySmelterTileEntity tile)
+	public AlloySmelterScreen(AlloySmelterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new AlloySmelterContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 	}
 
 

@@ -31,10 +31,10 @@ public class AutoWorkbenchScreen extends IEContainerScreen
 {
 	AutoWorkbenchTileEntity tile;
 
-	public AutoWorkbenchScreen(PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
+	public AutoWorkbenchScreen(AutoWorkbenchContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new AutoWorkbenchContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 		this.ySize = 184;
 	}
 

@@ -14,22 +14,19 @@ import blusunrize.immersiveengineering.common.gui.ToolboxContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
 public class ToolboxScreen extends IEContainerScreen
 {
-	public ToolboxScreen(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack toolbox)
+	public ToolboxScreen(ToolboxContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new ToolboxContainer(inventoryPlayer, world, slot, toolbox), inventoryPlayer);
+		super(container, inventoryPlayer, title);
 		this.ySize = 238;
 	}
 

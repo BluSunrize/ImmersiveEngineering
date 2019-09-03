@@ -22,7 +22,7 @@ public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTil
 	@Override
 	public void render(SheetmetalTankTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!tile.formed||tile.posInMultiblock!=4||!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(!tile.formed||tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos()))
 			return;
 		GlStateManager.pushMatrix();
 
@@ -62,7 +62,7 @@ public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTil
 
 			if(fs!=null)
 			{
-				float h = fs.amount/(float)tile.tank.getCapacity();
+				float h = fs.getAmount()/(float)tile.tank.getCapacity();
 				GlStateManager.depthMask(false);
 				GlStateManager.translated(0, 0, .004f);
 				ClientUtils.drawRepeatedFluidSprite(fs, 0, 0+(1-h)*16, 16, h*16);

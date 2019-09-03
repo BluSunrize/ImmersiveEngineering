@@ -23,10 +23,10 @@ public class FermenterScreen extends IEContainerScreen
 {
 	FermenterTileEntity tile;
 
-	public FermenterScreen(PlayerInventory inventoryPlayer, FermenterTileEntity tile)
+	public FermenterScreen(FermenterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new FermenterContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 	}
 
 	@Override

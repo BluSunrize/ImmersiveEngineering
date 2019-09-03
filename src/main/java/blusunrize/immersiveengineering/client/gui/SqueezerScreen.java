@@ -24,10 +24,10 @@ public class SqueezerScreen extends IEContainerScreen
 {
 	SqueezerTileEntity tile;
 
-	public SqueezerScreen(PlayerInventory inventoryPlayer, SqueezerTileEntity tile)
+	public SqueezerScreen(SqueezerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new SqueezerContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 	}
 
 	@Override

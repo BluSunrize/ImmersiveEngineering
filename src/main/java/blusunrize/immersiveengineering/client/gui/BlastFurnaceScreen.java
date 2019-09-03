@@ -13,15 +13,16 @@ import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntit
 import blusunrize.immersiveengineering.common.gui.BlastFurnaceContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class BlastFurnaceScreen extends IEContainerScreen
 {
 	BlastFurnaceTileEntity tile;
 
-	public BlastFurnaceScreen(PlayerInventory inventoryPlayer, BlastFurnaceTileEntity tile)
+	public BlastFurnaceScreen(BlastFurnaceContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new BlastFurnaceContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 	}
 
 

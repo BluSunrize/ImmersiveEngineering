@@ -38,7 +38,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -68,15 +67,6 @@ public class FeedthroughModel extends BakedIEModel
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
 			.build();
-
-	public FeedthroughModel()
-	{
-		//TODO find a better place to put this
-		Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter =
-				(rl) -> mc().getTextureMap().getAtlasSprite(rl.toString());
-		for(WireApi.FeedthroughModelInfo f : INFOS.values())
-			f.onResourceReload(bakedTextureGetter, DefaultVertexFormats.ITEM);
-	}
 
 	@Nonnull
 	@Override

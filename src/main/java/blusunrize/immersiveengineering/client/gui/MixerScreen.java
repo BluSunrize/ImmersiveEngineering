@@ -34,10 +34,10 @@ public class MixerScreen extends IEContainerScreen
 {
 	MixerTileEntity tile;
 
-	public MixerScreen(PlayerInventory inventoryPlayer, MixerTileEntity tile)
+	public MixerScreen(MixerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new MixerContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 		this.ySize = 167;
 	}
 
@@ -78,7 +78,7 @@ public class MixerScreen extends IEContainerScreen
 					FluidStack fs = tile.tank.fluids.get(i);
 					if(fs!=null&&fs.getFluid()!=null)
 					{
-						fluidUpToNow += fs.amount;
+						fluidUpToNow += fs.getAmount();
 						int newY = (int)(47*(fluidUpToNow/capacity));
 						if(myRelative >= lastY&&myRelative < newY)
 						{
@@ -130,7 +130,7 @@ public class MixerScreen extends IEContainerScreen
 			FluidStack fs = tile.tank.fluids.get(i);
 			if(fs!=null&&fs.getFluid()!=null)
 			{
-				fluidUpToNow += fs.amount;
+				fluidUpToNow += fs.getAmount();
 				int newY = (int)(47*(fluidUpToNow/capacity));
 				ClientUtils.drawRepeatedFluidSprite(fs, guiLeft+76, guiTop+58-newY, 58, newY-lastY);
 				lastY = newY;

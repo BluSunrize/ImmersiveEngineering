@@ -11,16 +11,16 @@ package blusunrize.immersiveengineering.client.gui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * @author BluSunrize - 05.07.2017
  */
 public abstract class IEContainerScreen extends ContainerScreen
 {
-	public IEContainerScreen(Container inventorySlotsIn, PlayerInventory inv)
+	public IEContainerScreen(Container inventorySlotsIn, PlayerInventory inv, ITextComponent title)
 	{
-		super(inventorySlotsIn, inv, new StringTextComponent(""));
+		super(inventorySlotsIn, inv, title);
 	}
 
 	@Override

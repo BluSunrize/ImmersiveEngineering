@@ -145,14 +145,14 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 				{
 					int target = closedList.size()-1;
 					BlockPos pos = closedList.get(target);
-					FluidStack fs = Utils.drainFluidBlock(world, pos, false);
+					FluidStack fs = Utils.drainFluidBlock(world, pos, FluidAction.SIMULATE);
 					if(fs==null)
 						closedList.remove(target);
 					else if(tank.fill(fs, FluidAction.SIMULATE)==fs.getAmount()
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
 					{
 						this.energyStorage.extractEnergy(consumption, false);
-						fs = Utils.drainFluidBlock(world, pos, true);
+						fs = Utils.drainFluidBlock(world, pos, FluidAction.EXECUTE);
 						if(IEConfig.MACHINES.pump_placeCobble.get()&&placeCobble)
 							world.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
 						this.tank.fill(fs, FluidAction.EXECUTE);
@@ -197,7 +197,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					if(searchFluid==null)
 						searchFluid = fluid;
 
-					if(Utils.drainFluidBlock(world, next, false)!=null)
+					if(!Utils.drainFluidBlock(world, next, FluidAction.SIMULATE).isEmpty())
 						closedList.add(next);
 					for(Direction f : Direction.values())
 					{

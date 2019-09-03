@@ -16,11 +16,10 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.util.text.ITextComponent;
 
 public class RevolverScreen extends IEContainerScreen
 {
@@ -28,9 +27,10 @@ public class RevolverScreen extends IEContainerScreen
 	private boolean otherRevolver = false;
 	private int offset = 0;
 
-	public RevolverScreen(PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack revolver)
+	public RevolverScreen(RevolverContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new RevolverContainer(inventoryPlayer, world, slot, revolver), inventoryPlayer);
+		super(container, inventoryPlayer, title);
+		ItemStack revolver = inventoryPlayer.player.getItemStackFromSlot(container.entityEquipmentSlot);
 		if(!revolver.isEmpty()&&revolver.getItem() instanceof IBulletContainer)
 			this.bullets[0] = ((IBulletContainer)revolver.getItem()).getBulletCount(revolver);
 		this.otherRevolver = !((RevolverContainer)this.container).secondRevolver.isEmpty();

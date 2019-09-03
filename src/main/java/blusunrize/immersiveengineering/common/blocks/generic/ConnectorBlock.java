@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveConnectableTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
+import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -117,7 +117,7 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 					if(cp!=null)
 						for(Connection c : GlobalWireNetwork.getNetwork((World)world).getLocalNet(cp).getConnections(cp))
 							if(!c.isInternal())
-								return c.type.getWireCoil();
+								return c.type.getWireCoil(c);
 				}
 			}
 		}

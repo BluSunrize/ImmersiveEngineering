@@ -38,10 +38,10 @@ public class SorterScreen extends IEContainerScreen
 {
 	SorterTileEntity tile;
 
-	public SorterScreen(PlayerInventory inventoryPlayer, SorterTileEntity tile)
+	public SorterScreen(SorterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new SorterContainer(inventoryPlayer, tile), inventoryPlayer);
-		this.tile = tile;
+		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 		this.ySize = 244;
 	}
 

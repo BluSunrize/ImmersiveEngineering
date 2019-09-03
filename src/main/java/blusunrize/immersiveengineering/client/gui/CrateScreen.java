@@ -14,12 +14,13 @@ import blusunrize.immersiveengineering.common.gui.CrateContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 
 public class CrateScreen extends IEContainerScreen
 {
-	public CrateScreen(PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile)
+	public CrateScreen(CrateContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new CrateContainer(inventoryPlayer, tile), inventoryPlayer);
+		super(container, inventoryPlayer, title);
 		this.ySize = 168;
 	}
 

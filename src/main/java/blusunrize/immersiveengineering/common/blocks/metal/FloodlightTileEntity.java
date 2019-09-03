@@ -136,7 +136,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 				world.setBlockState(cc, Misc.fakeLight.getDefaultState(), 2);
 				TileEntity te = world.getTileEntity(cc);
 				if(te instanceof FakeLightTileEntity)
-					((FakeLightTileEntity)te).floodlightCoords = new int[]{getPos().getX(), getPos().getY(), getPos().getZ()};
+					((FakeLightTileEntity)te).floodlightCoords = getPos();
 				fakeLights.add(cc);
 				it.remove();
 			}

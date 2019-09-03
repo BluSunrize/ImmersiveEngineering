@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.ToolboxTileEntity;
 import blusunrize.immersiveengineering.common.gui.ToolboxBlockContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -25,9 +24,9 @@ import java.util.ArrayList;
 
 public class ToolboxBlockScreen extends IEContainerScreen
 {
-	public ToolboxBlockScreen(PlayerInventory inventoryPlayer, ToolboxTileEntity toolbox)
+	public ToolboxBlockScreen(ToolboxBlockContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(new ToolboxBlockContainer(inventoryPlayer, toolbox), inventoryPlayer);
+		super(container, inventoryPlayer, title);
 		this.ySize = 238;
 	}
 

@@ -92,7 +92,7 @@ public class ItemPowerpack extends ArmorItem implements IIEEnergyItem
 		{
 			int pre = energy;
 			for(EquipmentSlotType slot : EquipmentSlotType.values())
-				if(EnergyHelper.isFluxItem(player.getItemStackFromSlot(slot))&&!(player.getItemStackFromSlot(slot).getItem() instanceof ItemPowerpack))
+				if(EnergyHelper.isFluxReceiver(player.getItemStackFromSlot(slot))&&!(player.getItemStackFromSlot(slot).getItem() instanceof ItemPowerpack))
 					energy -= EnergyHelper.insertFlux(player.getItemStackFromSlot(slot), Math.min(energy, 256), false);
 			if(pre!=energy)
 				EnergyHelper.extractFlux(itemStack, pre-energy, false);
@@ -114,11 +114,11 @@ public class ItemPowerpack extends ArmorItem implements IIEEnergyItem
 				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = ApiUtils.constantOptional(
 						new EnergyHelper.ItemEnergyStorage(stack));
 
-				@Nullable
+				@Nonnull
 				@Override
 				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 				{
-					return capability==CapabilityEnergy.ENERGY?energyStorage.cast(): null;
+					return capability==CapabilityEnergy.ENERGY?energyStorage.cast(): LazyOptional.empty();
 				}
 			};
 		else

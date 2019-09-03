@@ -52,8 +52,8 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 		GlStateManager.rotatef(180.0F-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
 		GlStateManager.rotatef(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 
-		TextureAtlasSprite sprite = ClientUtils.mc().getTextureMap().getAtlasSprite(f.getFluid().getStill(f).toString());
-		int colour = f.getFluid().getColor(f);
+		TextureAtlasSprite sprite = ClientUtils.mc().getTextureMap().getAtlasSprite(f.getFluid().getAttributes().getStill(f).toString());
+		int colour = f.getFluid().getAttributes().getColor(f);
 		float a = (colour >> 24&255)/255f;
 		float r = (colour >> 16&255)/255f;
 		float g = (colour >> 8&255)/255f;

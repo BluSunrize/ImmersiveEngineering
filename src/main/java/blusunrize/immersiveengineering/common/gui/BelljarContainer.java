@@ -14,7 +14,7 @@ import net.minecraft.inventory.container.Slot;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity.*;
 
-public class BelljarContainer extends IEBaseContainer
+public class BelljarContainer extends IEBaseContainer<BelljarTileEntity>
 {
 	public BelljarContainer(int id, PlayerInventory inventoryPlayer, BelljarTileEntity tile)
 	{

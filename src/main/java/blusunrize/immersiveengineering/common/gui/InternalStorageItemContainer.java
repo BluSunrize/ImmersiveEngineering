@@ -19,11 +19,13 @@ import net.minecraftforge.items.IItemHandler;
 
 public abstract class InternalStorageItemContainer extends ItemContainer
 {
+	public final EquipmentSlotType entityEquipmentSlot;
 	public IItemHandler inv;
 
 	public InternalStorageItemContainer(int id, PlayerInventory iinventory, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
 	{
 		super(id, iinventory, world, entityEquipmentSlot, heldItem);
+		this.entityEquipmentSlot = entityEquipmentSlot;
 		this.inv = heldItem.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(RuntimeException::new);
 		if(inv instanceof IEItemStackHandler)
 			((IEItemStackHandler)inv).setInventoryForUpdate(iinventory);
