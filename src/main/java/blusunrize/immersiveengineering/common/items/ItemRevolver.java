@@ -77,6 +77,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
 import java.util.function.Function;
 
@@ -811,24 +812,29 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	{
 		COOLDOWN(f -> f > 1,
 				f -> Utils.NUMBERFORMAT_PREFIXED.format((1-f)*100),
+				(l, r) -> l*r,
 				1, -0.75, -0.05),
 		NOISE(f -> f > 1,
 				f -> Utils.NUMBERFORMAT_PREFIXED.format((f-1)*100),
+				(l, r) -> l*r,
 				1, -.9, -0.1),
 		LUCK(f -> f < 0,
 				f -> Utils.NUMBERFORMAT_PREFIXED.format(f*100),
+				(l, r) -> l+r,
 				0, 3, 0.5);
 
 		private final DoublePredicate isBadValue;
 		private final Function<Double, String> valueFormatter;
+		private final DoubleBinaryOperator valueConcat;
 		private final double generate_median;
 		private final double generate_deviation;
 		private final double generate_luckScale;
 
-		RevolverPerk(DoublePredicate isBadValue, Function<Double, String> valueFormatter, double generate_median, double generate_deviation, double generate_luckScale)
+		RevolverPerk(DoublePredicate isBadValue, Function<Double, String> valueFormatter, DoubleBinaryOperator valueConcat, double generate_median, double generate_deviation, double generate_luckScale)
 		{
 			this.isBadValue = isBadValue;
 			this.valueFormatter = valueFormatter;
+			this.valueConcat = valueConcat;
 			this.generate_median = generate_median;
 			this.generate_deviation = generate_deviation;
 			this.generate_luckScale = generate_luckScale;
@@ -877,6 +883,11 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			return (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
 		}
 
+		public double concat(double left, double right)
+		{
+			return this.valueConcat.applyAsDouble(left, right);
+		}
+
 		public double generateValue(Random rand, boolean isBad, float luck)
 		{
 			double d = Utils.generateLuckInfluencedDouble(generate_median, generate_deviation, luck, rand, isBad, generate_luckScale);
@@ -911,7 +922,8 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 		public static NBTTagCompound generatePerkSet(Random rand, float luck)
 		{
 			RevolverPerk goodPerk = RevolverPerk.getRandom(rand);
-			RevolverPerk badPerk = RevolverPerk.getRandom(rand);
+			RevolverPerk badPerk = RevolverPerk.LUCK;
+			//RevolverPerk.getRandom(rand);
 			double val = goodPerk.generateValue(rand, false, luck);
 
 			NBTTagCompound perkCompound = new NBTTagCompound();

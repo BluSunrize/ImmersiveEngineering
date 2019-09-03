@@ -6,7 +6,8 @@
   "recipes": {
     "ingredient_shapeless": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryShapelessIngredient",
     "ingredient_shaped": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryShapedIngredient",
-    "ie_item_repair": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryIEItemRepair"
+    "ie_item_repair": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryIEItemRepair",
+    "revolver_assembly": "blusunrize.immersiveengineering.common.crafting.RecipeFactoryRevolverAssembly"
   },
   "conditions": {
     "ore_exists": "blusunrize.immersiveengineering.common.crafting.ConditionFactoryOreExists",

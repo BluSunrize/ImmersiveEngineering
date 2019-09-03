@@ -1,5 +1,5 @@
 {
-  "type": "immersiveengineering:ingredient_shaped",
+  "type": "immersiveengineering:revolver_assembly",
   "copy_nbt": [3,4,5],
   "copy_nbt_predicate" : "perks",
   "copy_nbt_multiply_decimals": true,
