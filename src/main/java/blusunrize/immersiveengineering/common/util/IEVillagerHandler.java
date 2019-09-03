@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -103,24 +104,19 @@ public class IEVillagerHandler
 		career_machinist.addTrade(2,
 				new EmeraldForItemstack(new ItemStack(IEContent.itemMetal, 1, 0), new EntityVillager.PriceInfo(4, 6)),
 				new EmeraldForItemstack(new ItemStack(IEContent.itemMetal, 1, 1), new EntityVillager.PriceInfo(4, 6)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 9), new EntityVillager.PriceInfo(1, 3)),
-				new RevolverPieceForEmeralds()
+				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 9), new EntityVillager.PriceInfo(1, 3))
 		);
 		career_machinist.addTrade(3,
 				new ItemstackForEmerald(new ItemStack(IEContent.itemToolbox, 1, 0), new EntityVillager.PriceInfo(6, 8)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 10), new EntityVillager.PriceInfo(1, 3)),
-				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9)),
-				new RevolverPieceForEmeralds()
+				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 10), new EntityVillager.PriceInfo(1, 3))
 		);
 		career_machinist.addTrade(4,
 				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 1), new EntityVillager.PriceInfo(28, 40)),
-				new ItemstackForEmerald(IEContent.itemEarmuffs, new EntityVillager.PriceInfo(4, 9)),
-				new RevolverPieceForEmeralds()
+				new ItemstackForEmerald(IEContent.itemEarmuffs, new EntityVillager.PriceInfo(4, 9))
 		);
 		career_machinist.addTrade(5,
 				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 0), new EntityVillager.PriceInfo(32, 48)),
-				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24)),
-				new RevolverPieceForEmeralds()
+				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
 		);
 
 		/* Electrician
@@ -171,6 +167,38 @@ public class IEVillagerHandler
 		);
 		career_outfitter.addTrade(3,
 				new ItemstackForEmerald(bag_rare, new EntityVillager.PriceInfo(16, 24))
+		);
+
+		/* Gunsmith
+		 * Sells ammunition, blueprints and revolver parts
+		 */
+		VillagerRegistry.VillagerCareer career_gunsmith = new VillagerRegistry.VillagerCareer(PROF_ENGINEER, ImmersiveEngineering.MODID+".gunsmith");
+
+		career_gunsmith.addTrade(1,
+				new EmeraldForItemstack(BulletHandler.emptyCasing, new EntityVillager.PriceInfo(6, 12)),
+				new EmeraldForItemstack(BulletHandler.emptyShell, new EntityVillager.PriceInfo(6, 12)),
+				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 13), new EntityVillager.PriceInfo(2, 4))
+		);
+		career_gunsmith.addTrade(2,
+				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("bullet"), new EntityVillager.PriceInfo(3, 6)),
+				new ItemstackForEmerald(BulletHandler.getBulletStack("casull"), new EntityVillager.PriceInfo(-4, -2)),
+				new RevolverPieceForEmeralds()
+		);
+		career_gunsmith.addTrade(3,
+				new RevolverPieceForEmeralds(),
+				new ItemstackForEmerald(BulletHandler.getBulletStack("buckshot"), new EntityVillager.PriceInfo(-6, -2)),
+				new ItemstackForEmerald(BulletHandler.getBulletStack("flare"), new EntityVillager.PriceInfo(-2, -1)),
+				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9))
+		);
+		career_gunsmith.addTrade(4,
+				new RevolverPieceForEmeralds(),
+				new ItemstackForEmerald(BulletHandler.getBulletStack("silver"), new EntityVillager.PriceInfo(-4, -1)),
+				new ItemstackForEmerald(BulletHandler.getBulletStack("he"), new EntityVillager.PriceInfo(2, 4))
+		);
+		career_gunsmith.addTrade(5,
+				new RevolverPieceForEmeralds(),
+				new RevolverPieceForEmeralds(),
+				new RevolverPieceForEmeralds()
 		);
 	}
 

@@ -1,5 +1,7 @@
 ##### Version 0.12-91
- - Fixed a crash with vertical conveyors on dedicated servers (Malte)
+- Added the Gunsmith villager, who sells ammunition, blueprints and revolver pieces (BluSunrize)
+- Fixed a crash with vertical conveyors on dedicated servers (Malte)
+- Fixed two negative luck perks combining into a positive (BluSunrize)
 
 ##### Version 0.12-90 - BUILT
 - Added a config option to disable fancy Blueprint rendering (BluSunrize)

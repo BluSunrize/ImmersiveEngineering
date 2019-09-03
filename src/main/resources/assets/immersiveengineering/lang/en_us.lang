@@ -601,6 +601,7 @@ entity.Villager.immersiveengineering.engineer=Structural Engineer
 entity.Villager.immersiveengineering.machinist=Machinist
 entity.Villager.immersiveengineering.electrician=Electrician
 entity.Villager.immersiveengineering.outfitter=Outfitter
+entity.Villager.immersiveengineering.gunsmith=Gunsmith
 
 key.immersiveengineering.magnetEquip=Magnetic Shield Glove (doubletap)
 key.immersiveengineering.chemthrowerSwitch=Switch Chemthrower Tanks
