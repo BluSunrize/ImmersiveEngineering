@@ -6,6 +6,10 @@
 - Added a "removeAll" function to IE's crafttweaker integration (BluSunrize)
 - Added a config option for the transferrates of the Fluid Pipe (BluSunrize)
 - Added the ability to Sneak + Scroll to cycle the revolver manually (DaveArndt)
+- Added perks to the Revolver!
+  - You can find components (barrel, drum, hammer) with perks in crates or on villagers
+  - Crafting a revolver with these components gives the perks to the revolver
+  - This augments its fire-rate, the noise it makes and the luck (for opening chests) of the wielder
 - Changed CoreSamples to draw a chunk overlay like the drill (BluSunrize)
 - Changed Wires to return only half an ingot worth of material when recycled (BluSunrize)
 - Changed Dragonsbreath cartridges to not fire an obscene amount of bullets anymore (BluSunrize)

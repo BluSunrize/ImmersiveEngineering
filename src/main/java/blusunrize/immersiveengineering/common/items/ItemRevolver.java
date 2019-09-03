@@ -854,7 +854,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				double value = perksTag.getDouble(key);
 				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
 				averageTier += dTier;
-				int iTier = (int)(dTier < 0?Math.floor(dTier): Math.ceil(dTier));
+				int iTier = (int)MathHelper.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
 				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase()+".tier"+iTier;
 				name = I18n.format(translate, name);
 			}
