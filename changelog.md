@@ -1,4 +1,4 @@
-##### Version 0.12-90
+##### Version 0.12-90 - BUILT
 - Added a config option to disable fancy Blueprint rendering (BluSunrize)
 - Added chutes, they drop entites straight down and sometimes to the side! (BluSunrize)
 - Added creosote buckets (and other containers) as valid fuel for a furnace (BluSunrize)
