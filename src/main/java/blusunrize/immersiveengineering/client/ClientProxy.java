@@ -141,6 +141,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 @SuppressWarnings("deprecation")
@@ -500,21 +501,21 @@ public class ClientProxy extends CommonProxy
 
 		*/
 		ManualInstance ieMan = ManualHelper.getManual();
-		ieMan.registerSpecialElement(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock"),
+		ieMan.registerSpecialElement(new ResourceLocation(MODID, "multiblock"),
 				s -> new ManualElementMultiblock(ieMan,
 						MultiblockHandler.getByUniqueName(new ResourceLocation(JSONUtils.getString(s, "name")))));
-		Tree.Node<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+		Tree.Node<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_ENERGY), 1);
-		Tree.Node<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+		Tree.Node<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_GENERAL), 0);
 
-		ieMan.addEntry(energyCat.getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
-				"test"), 1), new ResourceLocation(ImmersiveEngineering.MODID, "wiring"));
-		ieMan.addEntry(generalCat, new ResourceLocation(ImmersiveEngineering.MODID, "ores"));
+		ieMan.addEntry(energyCat.getOrCreateSubnode(new ResourceLocation(MODID,
+				"test"), 1), new ResourceLocation(MODID, "wiring"));
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "ores"));
 		String[][] table = formatToTable_ItemIntHashmap(ThermoelectricHandler.getThermalValuesSorted(true), "K");
 		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 		builder.addSpecialElement("values", 0, new ManualElementTable(ieMan, table, false));
-		builder.readFromFile(new ResourceLocation(ImmersiveEngineering.MODID, "thermoelectric"));
+		builder.readFromFile(new ResourceLocation(MODID, "thermoelectric"));
 		ieMan.addEntry(energyCat, builder.create());
 
 		addChangelogToManual();
@@ -889,7 +890,7 @@ public class ClientProxy extends CommonProxy
 		SortedMap<ComparableVersion, ManualEntry> allChanges = new TreeMap<>(Comparator.reverseOrder());
 		ComparableVersion currIEVer = new ComparableVersion(ImmersiveEngineering.VERSION);
 		//Included changelog
-		try(InputStream in = Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(ImmersiveEngineering.MODID,
+		try(InputStream in = Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(MODID,
 				"changelog.json")).getInputStream())
 		{
 			JsonElement ele = new JsonParser().parse(new InputStreamReader(in));
@@ -913,7 +914,7 @@ public class ClientProxy extends CommonProxy
 				allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
 
 		ManualInstance ieMan = ManualHelper.getManual();
-		Tree.Node<ResourceLocation, ManualEntry> updateCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(ImmersiveEngineering.MODID,
+		Tree.Node<ResourceLocation, ManualEntry> updateCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_UPDATE), -1);
 		for(ManualEntry entry : allChanges.values())
 			ManualHelper.getManual().addEntry(updateCat, entry);
@@ -936,7 +937,7 @@ public class ClientProxy extends CommonProxy
 		String text = changes.replace("\t", "  ");
 		ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ManualHelper.getManual());
 		builder.setContent(title, "", text);
-		builder.setLocation(new ResourceLocation(ImmersiveEngineering.MODID, "changelog_"+version.toString()));
+		builder.setLocation(new ResourceLocation(MODID, "changelog_"+version.toString()));
 		return builder.create();
 	}
 
@@ -949,58 +950,62 @@ public class ClientProxy extends CommonProxy
 	public void textureStichPre(TextureStitchEvent.Pre event)
 	{
 		IELogger.info("Stitching Revolver Textures!");
-		ItemRevolver.stichRevolverTextures(event.getMap());
+		ItemRevolver.addRevolverTextures(event);
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
 			for(ShaderCase sCase : entry.getCases())
 				if(sCase.stitchIntoSheet())
 					for(ShaderLayer layer : sCase.getLayers())
 						if(layer.getTexture()!=null)
-							ApiUtils.getRegisterSprite(event.getMap(), layer.getTexture());
+							event.addSprite(layer.getTexture());
 
 		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
-			p.sprite = ApiUtils.getRegisterSprite(event.getMap(), p.texture);
-		WireType.iconDefaultWire = ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/wire");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/shaders/greyscale_fire");
+			event.addSprite(new ResourceLocation(p.texture));
+		event.addSprite(new ResourceLocation(MODID, "blocks/wire"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/shaders/greyscale_fire"));
 
 		for(BulletHandler.IBullet bullet : BulletHandler.registry.values())
 			for(ResourceLocation rl : bullet.getTextures())
-				ApiUtils.getRegisterSprite(event.getMap(), rl);
+				event.addSprite(rl);
 
 		for(ResourceLocation rl : ModelConveyor.rl_casing)
-			ApiUtils.getRegisterSprite(event.getMap(), rl);
-		ApiUtils.getRegisterSprite(event.getMap(), ConveyorHandler.textureConveyorColour);
-		ApiUtils.getRegisterSprite(event.getMap(), BasicConveyor.texture_off);
-		ApiUtils.getRegisterSprite(event.getMap(), BasicConveyor.texture_on);
-		ApiUtils.getRegisterSprite(event.getMap(), DropConveyor.texture_off);
-		ApiUtils.getRegisterSprite(event.getMap(), DropConveyor.texture_on);
-		ApiUtils.getRegisterSprite(event.getMap(), VerticalConveyor.texture_off);
-		ApiUtils.getRegisterSprite(event.getMap(), VerticalConveyor.texture_on);
-		ApiUtils.getRegisterSprite(event.getMap(), SplitConveyor.texture_off);
-		ApiUtils.getRegisterSprite(event.getMap(), SplitConveyor.texture_on);
-		ApiUtils.getRegisterSprite(event.getMap(), SplitConveyor.texture_casing);
+			event.addSprite(rl);
+		event.addSprite(ConveyorHandler.textureConveyorColour);
+		event.addSprite(BasicConveyor.texture_off);
+		event.addSprite(BasicConveyor.texture_on);
+		event.addSprite(DropConveyor.texture_off);
+		event.addSprite(DropConveyor.texture_on);
+		event.addSprite(VerticalConveyor.texture_off);
+		event.addSprite(VerticalConveyor.texture_on);
+		event.addSprite(SplitConveyor.texture_off);
+		event.addSprite(SplitConveyor.texture_on);
+		event.addSprite(SplitConveyor.texture_casing);
 
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/creosote_still");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/creosote_flow");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/plantoil_still");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/plantoil_flow");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/ethanol_still");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/ethanol_flow");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/biodiesel_still");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/biodiesel_flow");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/concrete_still");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/concrete_flow");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/potion_still");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/potion_flow");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/hot_metal_still");
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/fluid/hot_metal_flow");
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/creosote_still"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/creosote_flow"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/plantoil_still"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/plantoil_flow"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/ethanol_still"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/ethanol_flow"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/biodiesel_still"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/biodiesel_flow"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/concrete_still"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/concrete_flow"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/potion_still"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/potion_flow"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/hot_metal_still"));
+		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/hot_metal_flow"));
 
-		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:item/shader_slot");
+		event.addSprite(new ResourceLocation(MODID, "item/shader_slot"));
 	}
 
 	@SubscribeEvent
 	public void textureStichPost(TextureStitchEvent.Post event)
 	{
 		clearRenderCaches();
+		ItemRevolver.retrieveRevolverTextures(event.getMap());
+		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
+			p.sprite = event.getMap().getAtlasSprite(p.texture);
+		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "blocks/wire"));
 	}
 
 	public void registerItemModel(Item item, String path, String renderCase)
@@ -1361,6 +1366,6 @@ public class ClientProxy extends CommonProxy
 	public void startSkyhookSound(SkylineHookEntity hook)
 	{
 		Minecraft.getInstance().getSoundHandler().play(new SkyhookSound(hook,
-				new ResourceLocation(ImmersiveEngineering.MODID, "skyhook")));
+				new ResourceLocation(MODID, "skyhook")));
 	}
 }

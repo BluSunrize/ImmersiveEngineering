@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler;
@@ -28,77 +27,87 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
+import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
-import blusunrize.immersiveengineering.common.entities.*;
+import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
+import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
+import blusunrize.immersiveengineering.common.util.IELootFunctions.Bluprintz.Serializer;
 import blusunrize.immersiveengineering.common.util.IEPotions;
-import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
-import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.CropsBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.potion.*;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.state.IProperty;
-import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.*;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootTables;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.IRegistryDelegate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -118,16 +127,24 @@ public class IEContent
 
 	public static Fluid fluidPotion;
 
+	private static Consumer<FluidAttributes.Builder> createBuilder(int density, int viscosity)
+	{
+		return builder -> {
+			builder.viscosity(viscosity)
+					.density(density);
+		};
+	}
+
 	static
 	{
 		LootFunctionManager.registerFunction(new Serializer());
 
-		fluidCreosote = setupFluid(new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(1100).setViscosity(3000));
-		fluidPlantoil = setupFluid(new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000));
-		fluidEthanol = setupFluid(new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000));
-		fluidBiodiesel = setupFluid(new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000));
-		fluidConcrete = setupFluid(new Fluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow")).setDensity(2400).setViscosity(4000));
-		fluidPotion = setupFluid(new PotionFluid("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow")));
+		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow"), createBuilder(1100, 3000));
+		fluidPlantoil = new IEFluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow"), createBuilder(925, 2000));
+		fluidEthanol = new IEFluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow"), createBuilder(789, 1000));
+		fluidBiodiesel = new IEFluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow"), createBuilder(789, 1000));
+		fluidConcrete = new IEFluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow"), createBuilder(2400, 4000));
+		fluidPotion = new PotionFluid("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow"));
 
 		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);
@@ -243,7 +260,7 @@ public class IEContent
 
 
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
-		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
+		//TODO WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
 		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
 		WoodenDevices.turntable = new TurntableBlock("turntable");
 		WoodenDevices.crate = new CrateBlock("crate", false);
@@ -282,7 +299,8 @@ public class IEContent
 		MetalDecoration.lantern = new LanternBlock("lantern");
 		MetalDecoration.slopeSteel = new StructuralArmBlock("steel_slope");
 		MetalDecoration.slopeAlu = new StructuralArmBlock("alu_slope");
-		MetalDecoration.metalLadder = new IELadderBlock();
+		for(CoverType t : CoverType.values())
+			MetalDecoration.metalLadder.put(t, new MetalLadderBlock(t));
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
 			String name = type.name().toLowerCase();
@@ -343,25 +361,29 @@ public class IEContent
 		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties);
 
-		blockMetalMultiblock = new MetalMultiblocksBlock();
-
+		/*TODO
 		blockFluidCreosote = new BlockIEFluid("fluidCreosote", fluidCreosote, Material.WATER).setFlammability(40, 400);
 		blockFluidPlantoil = new BlockIEFluid("fluidPlantoil", fluidPlantoil, Material.WATER);
 		blockFluidEthanol = new BlockIEFluid("fluidEthanol", fluidEthanol, Material.WATER).setFlammability(60, 600);
 		blockFluidBiodiesel = new BlockIEFluid("fluidBiodiesel", fluidBiodiesel, Material.WATER).setFlammability(60, 200);
 		blockFluidConcrete = new BlockIEFluidConcrete("fluidConcrete", fluidConcrete, Material.WATER);
+		 */
 
-		itemTool = new ItemWirecutter();
+		Tools.wirecutter = new ItemWirecutter();
+		Tools.hammer = new ItemHammer();
+		Tools.voltmeter = new ItemVoltmeter();
+		Tools.manual = new ItemManual();
 		IEItems.Tools.steelPick = IETools.createPickaxe(Lib.MATERIAL_Steel, "pickaxe_steel");
 		IEItems.Tools.steelShovel = IETools.createShovel(Lib.MATERIAL_Steel, "shovel_steel");
 		IEItems.Tools.steelAxe = IETools.createAxe(Lib.MATERIAL_Steel, "axe_steel");
 		IEItems.Tools.steelSword = IETools.createSword(Lib.MATERIAL_Steel, "sword_steel");
-		itemToolbox = new ItemToolbox();
-		itemWireCoil = new ItemWireCoil();
-		WireType.ieWireCoil = itemWireCoil;
-		itemSeeds = new ItemIESeed(blockCrop, "hemp");
+		Tools.toolbox = new ItemToolbox();
+		for(WireType t : WireType.getIEWireTypes())
+			IEItems.Misc.wireCoils.put(t, new ItemWireCoil(t));
+		/*TODO
+		IEItems.Misc.hempSeeds = new ItemIESeed(blockCrop, "hemp");
 		if(IEConfig.hempSeedWeight > 0)
-			MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), IEConfig.hempSeedWeight);
+			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
 		itemDrill = new ItemDrill();
 		itemDrillhead = new ItemDrillhead();
 		itemJerrycan = new ItemJerrycan();
@@ -394,6 +416,7 @@ public class IEContent
 			{
 			}
 		};
+		 */
 	}
 
 	@SubscribeEvent
@@ -411,6 +434,13 @@ public class IEContent
 			event.getRegistry().register(item.setRegistryName(createRegistryName(item.getTranslationKey())));
 
 		registerOres();
+	}
+
+	@SubscribeEvent
+	public static void registerFluids(RegistryEvent.Register<Fluid> event)
+	{
+		for(Fluid fluid : registeredIEFluids)
+			event.getRegistry().register(fluid);
 	}
 
 	@SubscribeEvent
@@ -438,7 +468,7 @@ public class IEContent
 
 	private static Block addSlabFor(Block b)
 	{
-		BlockIESlab ret = new BlockIESlab("slab_"+b.getRegistryName().getPath(), Block.Properties.from(b), BlockItemIE.class);
+		BlockIESlab ret = new BlockIESlab("slab_"+b.getRegistryName().getPath(), Block.Properties.from(b), BlockItemIE.class, true);
 		IEBlocks.toSlab.put(b, ret);
 		return ret;
 	}
@@ -469,7 +499,6 @@ public class IEContent
 		registerTile(PostTileEntity.class, event, WoodenDevices.treatedPost, MetalDecoration.aluPost,
 				MetalDecoration.steelPost);
 
-		registerTile(LadderTileEntity.class, event, MetalDecoration.metalLadder);
 		registerTile(LanternTileEntity.class, event, MetalDecoration.lantern);
 		registerTile(RazorWireTileEntity.class, event, MetalDevices.razorWire);
 		registerTile(ToolboxTileEntity.class, event, MetalDevices.toolbox);
@@ -528,11 +557,11 @@ public class IEContent
 		EnergyConnectorTileEntity.registerConnectorTEs(event);
 	}
 
-	@SubscribeEvent
-	public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
+	//TODO @SubscribeEvent
+	public static void registerRecipes()//TODO RegistryEvent.Register<IRecipe> event)
 	{
 		/*CRAFTING*/
-		IERecipes.initCraftingRecipes(event.getRegistry());
+		//IERecipes.initCraftingRecipes(event.getRegistry());
 
 		/*FURNACE*/
 		IERecipes.initFurnaceRecipes();
@@ -544,9 +573,11 @@ public class IEContent
 		BelljarHandler.init();
 
 		/*EXCAVATOR*/
-		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion;
-		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance;
-		ExcavatorHandler.defaultDimensionBlacklist = IEConfig.MACHINES.excavator_dimBlacklist;
+		//TODO remove
+		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion.get();
+		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance.get();
+		ExcavatorHandler.defaultDimensionBlacklist = ImmutableSet.of();//IEConfig.MACHINES.excavator_dimBlacklist.get();
+		/*TODO
 		String sulfur = OreDictionary.doesOreNameExist("oreSulfur")?"oreSulfur": "dustSulfur";
 		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron", "oreNickel", "oreTin", "denseoreIron"}, new float[]{.5f, .25f, .20f, .05f});
 		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron", "oreGold"}, new float[]{.85f, .15f});
@@ -568,11 +599,11 @@ public class IEContent
 		ExcavatorHandler.addMineral("Cinnabar", 15, .1f, new String[]{"oreRedstone", "denseoreRedstone", "oreRuby", "oreCinnabar", sulfur}, new float[]{.75f, .05f, .05f, .1f, .05f});
 		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal", "denseoreCoal", "oreDiamond", "oreEmerald"}, new float[]{.92f, .1f, .015f, .015f});
 		ExcavatorHandler.addMineral("Silt", 25, .05f, new String[]{"blockClay", "sand", "gravel"}, new float[]{.5f, .3f, .2f});
-
+		*/
 		/*MULTIBLOCK RECIPES*/
-		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial, 1, 6), new ItemStack(Items.COAL), 1800, 500);
-		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration, 1, 3), "blockCoal", 1800*9, 5000);
-		CokeOvenRecipe.addRecipe(new ItemStack(Items.COAL, 1, 1), "logWood", 900, 250);
+		CokeOvenRecipe.addRecipe(new ItemStack(Ingredients.coalCoke), new ItemStack(Items.COAL), 1800, 500);
+		CokeOvenRecipe.addRecipe(new ItemStack(StoneDecoration.coke), "blockCoal", 1800*9, 5000);
+		CokeOvenRecipe.addRecipe(new ItemStack(Items.CHARCOAL), "logWood", 900, 250);
 
 		IERecipes.initBlastFurnaceRecipes();
 
@@ -588,13 +619,15 @@ public class IEContent
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 60), ItemStack.EMPTY, Items.BEETROOT_SEEDS, 6400);
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 40), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 20), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, itemSeeds, 6400);
-		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial, 1, 18), new ItemStack(itemMaterial, 8, 17), 19200);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, IEItems.Misc.hempSeeds, 6400);
+		SqueezerRecipe.addRecipe(null, new ItemStack(Ingredients.dustHopGraphite, 1), new ItemStack(Ingredients.dustCoke, 8), 19200);
+		/* TODO
 		Fluid fluidBlood = FluidRegistry.getFluid("blood");
 		if(fluidBlood!=null)
 			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood, 5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
+		 */
 
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.REEDS, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.SUGAR_CANE, 6400);
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.MELON, 6400);
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.APPLE, 6400);
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, "cropPotato", 6400);
@@ -603,7 +636,7 @@ public class IEContent
 
 		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(Fluids.WATER, 500), new Object[]{"sand", "sand", Items.CLAY_BALL, "gravel"}, 3200);
 
-		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE, 1, 1), new ItemStack(Blocks.SPONGE, 1, 0), new FluidStack(Fluids.WATER, 1000));
+		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.WET_SPONGE, 1), new ItemStack(Blocks.SPONGE, 1), new FluidStack(Fluids.WATER, 1000));
 
 		IECompatModule.doModulesRecipes();
 
@@ -616,14 +649,6 @@ public class IEContent
 		unlocalized = unlocalized.substring(unlocalized.indexOf("immersive"));
 		unlocalized = unlocalized.replaceFirst("\\.", ":");
 		return new ResourceLocation(unlocalized);
-	}
-
-	public static Fluid setupFluid(Fluid fluid)
-	{
-		FluidRegistry.addBucketForFluid(fluid);
-		if(!FluidRegistry.registerFluid(fluid))
-			return FluidRegistry.getFluid(fluid.getName());
-		return fluid;
 	}
 
 	public static void preInit()
@@ -670,6 +695,7 @@ public class IEContent
 	public static void registerOres()
 	{
 		/*ORE DICTIONARY*/
+		/*TODO
 		registerToOreDict("ore", blockOre);
 		registerToOreDict("block", blockStorage);
 		registerToOreDict("slab", blockStorageSlabs);
@@ -718,6 +744,7 @@ public class IEContent
 		OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.CRAFTING_TABLE));
 		OreDictionary.registerOre("rodBlaze", new ItemStack(Items.BLAZE_ROD));
 		OreDictionary.registerOre("charcoal", new ItemStack(Items.COAL, 1, 1));
+		 */
 	}
 
 	private static ArcRecyclingThreadHandler arcRecycleThread;
@@ -726,19 +753,22 @@ public class IEContent
 	{
 
 		/*ARC FURNACE RECYCLING*/
-		if(IEConfig.MACHINES.arcfurnace_recycle)
+		/*TODO move to world loading?
+		if(IEConfig.MACHINES.arcfurnace_recycle.get())
 		{
 			arcRecycleThread = new ArcRecyclingThreadHandler();
 			arcRecycleThread.start();
 		}
+		 */
 
 		/*MINING LEVELS*/
-		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.COPPER.getMeta()));
-		blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.ALUMINUM.getMeta()));
-		blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.LEAD.getMeta()));
-		blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.SILVER.getMeta()));
-		blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.NICKEL.getMeta()));
-		blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.URANIUM.getMeta()));
+		/*TODO
+		Metals.ores.get(EnumMetals.COPPER).setHarvestLevel("pickaxe", 1);
+		Metals.ores.get(EnumMetals.ALUMINUM).setHarvestLevel("pickaxe", 1);
+		Metals.ores.get(EnumMetals.LEAD).setHarvestLevel("pickaxe", 2);
+		Metals.ores.get(EnumMetals.SILVER).setHarvestLevel("pickaxe", 2);
+		Metals.ores.get(EnumMetals.NICKEL).setHarvestLevel("pickaxe", 2);
+		Metals.ores.get(EnumMetals.URANIUM).setHarvestLevel("pickaxe", 2);
 		blockStorage.setHarvestLevel("pickaxe", 1, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.COPPER.getMeta()));
 		blockStorage.setHarvestLevel("pickaxe", 1, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ALUMINUM.getMeta()));
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.LEAD.getMeta()));
@@ -748,17 +778,19 @@ public class IEContent
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.CONSTANTAN.getMeta()));
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ELECTRUM.getMeta()));
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.STEEL.getMeta()));
+		 */
 
 		/*WORLDGEN*/
-		addConfiguredWorldgen(blockOre.getStateFromMeta(0), "copper", IEConfig.Ores.ore_copper);
-		addConfiguredWorldgen(blockOre.getStateFromMeta(1), "bauxite", IEConfig.Ores.ore_bauxite);
-		addConfiguredWorldgen(blockOre.getStateFromMeta(2), "lead", IEConfig.Ores.ore_lead);
-		addConfiguredWorldgen(blockOre.getStateFromMeta(3), "silver", IEConfig.Ores.ore_silver);
-		addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel", IEConfig.Ores.ore_nickel);
-		addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium", IEConfig.Ores.ore_uranium);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.COPPER), "copper", IEConfig.ORES.ore_copper);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEConfig.ORES.ore_bauxite);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.LEAD), "lead", IEConfig.ORES.ore_lead);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.SILVER), "silver", IEConfig.ORES.ore_silver);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEConfig.ORES.ore_nickel);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEConfig.ORES.ore_uranium);
 
 		/*ENTITIES*/
 		int i = 0;
+		/*TODO
 		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShot"), RevolvershotEntity.class, "revolverShot", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "skylineHook"), SkylineHookEntity.class, "skylineHook", i++, ImmersiveEngineering.instance, 64, 1, true);
 		//EntityRegistry.registerModEntity(EntitySkycrate.class, "skylineCrate", 2, ImmersiveEngineering.instance, 64, 1, true);
@@ -769,28 +801,31 @@ public class IEContent
 		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "revolverShotFlare"), RevolvershotFlareEntity.class, "revolverShotFlare", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "explosive"), IEExplosiveEntity.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "fluorescentTube"), FluorescentTubeEntity.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
+		 */
 		CapabilityShader.register();
 		NetHandlerCapability.register();
 		CapabilitySkyhookData.register();
-		ShaderRegistry.itemShader = IEContent.itemShader;
-		ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
-		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRevolver));
-		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemDrill));
-		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemChemthrower));
-		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRailgun));
+		ShaderRegistry.itemShader = IEItems.Misc.shader;
+		ShaderRegistry.itemShaderBag = IEItems.Misc.shaderBag;
+		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.revolver));
+		ShaderRegistry.itemExamples.add(new ItemStack(Tools.drill));
+		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.chemthrower));
+		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.railgun));
 
 		/*SMELTING*/
-		itemMaterial.setBurnTime(6, 3200);
+		/*TODO
+		Ingredients.coalCoke.setBurnTime(3200);
 		Item itemBlockStoneDecoration = Item.getItemFromBlock(blockStoneDecoration);
 		if(itemBlockStoneDecoration instanceof BlockItemIE)
 			((BlockItemIE)itemBlockStoneDecoration).setBurnTime(3, 3200*10);
+		 */
 
 		/*BANNERS*/
-		addBanner("hammer", "hmr", new ItemStack(itemTool, 1, 0));
+		addBanner("hammer", "hmr", new ItemStack(Tools.hammer));
 		addBanner("bevels", "bvl", "plateIron");
 		addBanner("ornate", "orn", "dustSilver");
 		addBanner("treated_wood", "twd", "plankTreatedWood");
-		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(blockWoodenDevice1, 1, BlockTypes_WoodenDevice1.WINDMILL.getMeta())});
+		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(WoodenDevices.windmill)});
 		if(!BulletHandler.homingCartridges.isEmpty())
 		{
 			ItemStack wolfpackCartridge = BulletHandler.getBulletStack("wolfpack");
@@ -804,14 +839,15 @@ public class IEContent
 		AssemblerHandler.registerSpecialQueryConverters((o) ->
 		{
 			if(o instanceof IngredientFluidStack)
-				return new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().amount);
+				return new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().getAmount());
 			else return null;
 		});
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
+		DieselHandler.registerDrillFuel(fluidBiodiesel);
+/*TODO
 		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);
-		DieselHandler.registerDrillFuel(fluidBiodiesel);
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("fuel"));
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
 
@@ -819,6 +855,7 @@ public class IEContent
 		blockFluidEthanol.setPotionEffects(new EffectInstance(Effects.NAUSEA, 40, 0));
 		blockFluidBiodiesel.setPotionEffects(new EffectInstance(IEPotions.flammable, 100, 1));
 		blockFluidConcrete.setPotionEffects(new EffectInstance(Effects.SLOWNESS, 20, 3, false, false));
+ */
 
 		ChemthrowerHandler.registerEffect(Fluids.WATER, new ChemthrowerEffect_Extinguish());
 
@@ -827,13 +864,13 @@ public class IEContent
 			@Override
 			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
 			{
-				if(fluid.tag!=null)
+				if(fluid.hasTag())
 				{
-					List<EffectInstance> effects = PotionUtils.getEffectsFromTag(fluid.tag);
+					List<EffectInstance> effects = PotionUtils.getEffectsFromTag(fluid.getOrCreateTag());
 					for(EffectInstance e : effects)
 					{
 						EffectInstance newEffect = new EffectInstance(e.getPotion(), (int)Math.ceil(e.getDuration()*.05), e.getAmplifier());
-						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
+						newEffect.setCurativeItems(new ArrayList<>(e.getCurativeItems()));
 						target.addPotionEffect(newEffect);
 					}
 				}
@@ -872,16 +909,19 @@ public class IEContent
 			@Override
 			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
 			{
-				BlockState hit = world.getBlockState(mop.getBlockPos());
-				if(hit.getBlock()!=blockStoneDecoration||hit.getBlock().getMetaFromState(hit)!=BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta())
+				if(!(mop instanceof BlockRayTraceResult))
+					return;
+				BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
+				BlockState hit = world.getBlockState(brtr.getPos());
+				if(hit.getBlock()!=StoneDecoration.concreteSprayed)
 				{
-					BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
+					BlockPos pos = brtr.getPos().offset(brtr.getFace());
 					if(!world.isAirBlock(pos))
 						return;
 					AxisAlignedBB aabb = new AxisAlignedBB(pos);
 					List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesWithinAABB(ChemthrowerShotEntity.class, aabb);
 					if(otherProjectiles.size() >= 8)
-						hit(world, pos, mop.sideHit);
+						hit(world, pos, brtr.getFace());
 				}
 			}
 
@@ -895,8 +935,8 @@ public class IEContent
 				AxisAlignedBB aabb = new AxisAlignedBB(pos);
 				List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesWithinAABB(ChemthrowerShotEntity.class, aabb);
 				for(ChemthrowerShotEntity shot : otherProjectiles)
-					shot.setDead();
-				world.setBlockState(pos, blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_SPRAYED.getMeta()));
+					shot.remove();
+				world.setBlockState(pos, StoneDecoration.concreteSprayed.getDefaultState());
 				for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, aabb))
 					living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet, Integer.MAX_VALUE));
 			}
@@ -907,6 +947,7 @@ public class IEContent
 		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 1));
 		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
 		ChemthrowerHandler.registerFlammable(fluidEthanol);
+		/*TODO
 		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null, 0, new EffectInstance(IEPotions.flammable, 140, 0), new EffectInstance(Effects.BLINDNESS, 80, 1)));
 		ChemthrowerHandler.registerFlammable("oil");
 		ChemthrowerHandler.registerEffect("fuel", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 100, 1));
@@ -919,14 +960,17 @@ public class IEContent
 		ChemthrowerHandler.registerFlammable("biofuel");
 		ChemthrowerHandler.registerEffect("rocket_fuel", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 60, 2));
 		ChemthrowerHandler.registerFlammable("rocket_fuel");
+		 */
 
+		/*TODO
 		RailgunHandler.registerProjectileProperties(new IngredientStack("stickIron"), 15, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
 		RailgunHandler.registerProjectileProperties(new IngredientStack("stickAluminum"), 13, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
 		RailgunHandler.registerProjectileProperties(new IngredientStack("stickSteel"), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(itemGraphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
+		 */
+		RailgunHandler.registerProjectileProperties(new ItemStack(IEItems.Misc.graphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
 
-		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption;
-		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption;
+		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
+		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();
 		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
 
 		BelljarHandler.DefaultPlantHandler hempBelljarHandler = new BelljarHandler.DefaultPlantHandler()
@@ -945,8 +989,11 @@ public class IEContent
 			{
 				int age = Math.min(4, Math.round(growth*4));
 				if(age==4)
-					return new BlockState[]{blockCrop.getStateFromMeta(age), blockCrop.getStateFromMeta(age+1)};
-				return new BlockState[]{blockCrop.getStateFromMeta(age)};
+					return new BlockState[]{
+							Misc.crop.getDefaultState().with(CropsBlock.AGE, age),
+							Misc.crop.getDefaultState().with(CropsBlock.AGE, age)
+					};
+				return new BlockState[]{Misc.crop.getDefaultState().with(CropsBlock.AGE, age)};
 			}
 
 			@Override
@@ -957,8 +1004,9 @@ public class IEContent
 			}
 		};
 		BelljarHandler.registerHandler(hempBelljarHandler);
-		hempBelljarHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemMaterial, 4, 4), new ItemStack(itemSeeds, 2)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
+		hempBelljarHandler.register(new ItemStack(IEItems.Misc.hempSeeds), new ItemStack[]{new ItemStack(Ingredients.hempFiber), new ItemStack(IEItems.Misc.hempSeeds, 2)}, new ItemStack(Blocks.DIRT), Misc.crop.getDefaultState());
 
+		/*TODO
 		ThermoelectricHandler.registerSource(new IngredientStack(new ItemStack(Blocks.MAGMA)), 1300);
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
 		ThermoelectricHandler.registerSourceInKelvin("blockPackedIce", 200);
@@ -966,49 +1014,48 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin("blockYellorium", 2000);
 		ThermoelectricHandler.registerSourceInKelvin("blockPlutonium", 4000);
 		ThermoelectricHandler.registerSourceInKelvin("blockBlutonium", 4000);
+		 */
 
 		/*MULTIBLOCKS*/
-		MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);
-		MultiblockHandler.registerMultiblock(MultiblockAlloySmelter.instance);
-		MultiblockHandler.registerMultiblock(MultiblockBlastFurnace.instance);
-		MultiblockHandler.registerMultiblock(MultiblockBlastFurnaceAdvanced.instance);
-		MultiblockHandler.registerMultiblock(MultiblockMetalPress.instance);
-		MultiblockHandler.registerMultiblock(MultiblockCrusher.instance);
-		MultiblockHandler.registerMultiblock(MultiblockSheetmetalTank.instance);
-		MultiblockHandler.registerMultiblock(MultiblockSilo.instance);
-		MultiblockHandler.registerMultiblock(MultiblockAssembler.instance);
-		MultiblockHandler.registerMultiblock(MultiblockAutoWorkbench.instance);
-		MultiblockHandler.registerMultiblock(MultiblockBottlingMachine.instance);
-		MultiblockHandler.registerMultiblock(MultiblockSqueezer.instance);
-		MultiblockHandler.registerMultiblock(MultiblockFermenter.instance);
-		MultiblockHandler.registerMultiblock(MultiblockRefinery.instance);
-		MultiblockHandler.registerMultiblock(MultiblockDieselGenerator.instance);
-		MultiblockHandler.registerMultiblock(MultiblockExcavator.instance);
-		MultiblockHandler.registerMultiblock(MultiblockBucketWheel.instance);
-		MultiblockHandler.registerMultiblock(MultiblockArcFurnace.instance);
-		MultiblockHandler.registerMultiblock(MultiblockLightningrod.instance);
-		MultiblockHandler.registerMultiblock(MultiblockMixer.instance);
-		MultiblockHandler.registerMultiblock(MultiblockFeedthrough.instance);
+		/*TODO MultiblockHandler.registerMultiblock(IEMultiblocks.COKE_OVEN);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.ALLOY_SMELTER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.BLAST_FURNACE);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.METAL_PRESS);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.SHEETMETAL_TANK);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.SILO);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.ASSEMBLER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.AUTO_WORKBENCH);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.BOTTLING_MACHINE);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.SQUEEZER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.FERMENTER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.REFINERY);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.DIESEL_GENERATOR);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.EXCAVATOR);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.BUCKET_WHEEL);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.ARC_FURNACE);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.LIGHTNING_ROD);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.MIXER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.FEEDTHROUGH);
+		*/
+		MultiblockHandler.registerMultiblock(IEMultiblocks.CRUSHER);
 
 		/*VILLAGE*/
+		/*TODO
 		IEVillagerHandler.initIEVillagerHouse();
 		IEVillagerHandler.initIEVillagerTrades();
+		 */
 
 		/*LOOT*/
+		/*TODO
 		if(IEConfig.villagerHouse)
 			LootTables.register(VillageEngineersHouse.woodenCrateLoot);
 		for(ResourceLocation rl : EventHandler.lootInjections)
 			LootTables.register(rl);
-
-		//		//Railcraft Compat
-		//		if(Loader.isModLoaded("Railcraft"))
-		//		{
-		//			Block rcCube = GameRegistry.findBlock("Railcraft", "cube");
-		//			if(rcCube!=null)
-		//				OreDictionary.registerOre("blockFuelCoke", new ItemStack(rcCube,1,0));
-		//		}
+		*/
 
 		/*BLOCK ITEMS FROM CRATES*/
+		/*TODO
 		IEApi.forbiddenInCrates.add((stack) -> {
 			if(stack.getItem()==IEContent.itemToolbox)
 				return true;
@@ -1020,9 +1067,10 @@ public class IEContent
 				return true;
 			return stack.getItem() instanceof ItemShulkerBox;
 		});
+		 */
+
 
 		FluidPipeTileEntity.initCovers();
-		IEDataFixers.register();
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler.class);
 		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class);
 		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler.class);
@@ -1033,6 +1081,7 @@ public class IEContent
 		/*POTIONS*/
 		try
 		{
+			/*TODO
 			//Blame Forge for this mess. They stopped ATs from working on MixPredicate and its fields by modifying them with patches
 			//without providing a usable way to look up the vanilla potion recipes
 			String mixPredicateName = "net.minecraft.potion.PotionHelper$MixPredicate";
@@ -1051,18 +1100,19 @@ public class IEContent
 				MixerRecipePotion.registerPotionRecipe(((IRegistryDelegate<Potion>)output.get(mixPredicate)).get(),
 						((IRegistryDelegate<Potion>)input.get(mixPredicate)).get(),
 						ApiUtils.createIngredientStack(reagent.get(mixPredicate)));
+			 */
 		} catch(Exception x)
 		{
 			x.printStackTrace();
 		}
 		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
-			if(recipe instanceof AbstractBrewingRecipe)
+			if(recipe instanceof BrewingRecipe)
 			{
-				IngredientStack ingredientStack = ApiUtils.createIngredientStack(((AbstractBrewingRecipe)recipe).getIngredient());
-				ItemStack input = ((AbstractBrewingRecipe)recipe).getInput();
-				ItemStack output = ((AbstractBrewingRecipe)recipe).getOutput();
-				if(input.getItem()==Items.POTIONITEM&&output.getItem()==Items.POTIONITEM)
-					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input), ingredientStack);
+				IngredientStack ingredientStack = ApiUtils.createIngredientStack(((BrewingRecipe)recipe).getIngredient());
+				Ingredient input = ((BrewingRecipe)recipe).getInput();
+				ItemStack output = ((BrewingRecipe)recipe).getOutput();
+				if(/*TODO input.getItem()==Items.POTIONITEM&&*/output.getItem()==Items.POTION)
+					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input.getMatchingStacks()[0]), ingredientStack);
 			}
 		if(arcRecycleThread!=null)
 		{
@@ -1079,16 +1129,19 @@ public class IEContent
 
 	public static void refreshFluidReferences()
 	{
+		/*TODO
 		fluidCreosote = FluidRegistry.getFluid("creosote");
 		fluidPlantoil = FluidRegistry.getFluid("plantoil");
 		fluidEthanol = FluidRegistry.getFluid("ethanol");
 		fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
 		fluidConcrete = FluidRegistry.getFluid("concrete");
 		fluidPotion = FluidRegistry.getFluid("potion");
+		 */
 	}
 
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
 	{
+		/*TODO
 		if(metas==null||metas.length < 1)
 		{
 			for(int meta = 0; meta < item.getSubNames().length; meta++)
@@ -1113,6 +1166,7 @@ public class IEContent
 					OreDictionary.registerOre(type+name, new ItemStack(item, 1, meta));
 				}
 		}
+		 */
 	}
 
 	private static String createOreDictName(String name)
@@ -1138,54 +1192,6 @@ public class IEContent
 			}
 		}
 		return sb.toString();
-	}
-
-	public static void registerToOreDict(String type, IEBaseBlock item, int... metas)
-	{
-		if(metas==null||metas.length < 1)
-		{
-			for(int meta = 0; meta < item.getMetaEnums().length; meta++)
-				if(!item.isMetaHidden(meta))
-				{
-					String name = item.getMetaEnums()[meta].toString();
-					if(type!=null&&!type.isEmpty())
-						name = name.substring(0, 1).toUpperCase(Locale.ENGLISH)+name.substring(1).toLowerCase(Locale.ENGLISH);
-					OreDictionary.registerOre(type+name, new ItemStack(item, 1, meta));
-				}
-		}
-		else
-		{
-			for(int meta : metas)
-				if(!item.isMetaHidden(meta))
-				{
-					String name = item.getMetaEnums()[meta].toString();
-					if(type!=null&&!type.isEmpty())
-						name = name.substring(0, 1).toUpperCase(Locale.ENGLISH)+name.substring(1).toLowerCase(Locale.ENGLISH);
-					OreDictionary.registerOre(type+name, new ItemStack(item, 1, meta));
-				}
-		}
-	}
-
-	public static void registerOre(String type, ItemStack ore, ItemStack ingot, ItemStack dust, ItemStack nugget, ItemStack plate, ItemStack block, ItemStack slab, ItemStack sheet, ItemStack slabSheet)
-	{
-		if(!ore.isEmpty())
-			OreDictionary.registerOre("ore"+type, ore);
-		if(!ingot.isEmpty())
-			OreDictionary.registerOre("ingot"+type, ingot);
-		if(!dust.isEmpty())
-			OreDictionary.registerOre("dust"+type, dust);
-		if(!nugget.isEmpty())
-			OreDictionary.registerOre("nugget"+type, nugget);
-		if(!plate.isEmpty())
-			OreDictionary.registerOre("plate"+type, plate);
-		if(!block.isEmpty())
-			OreDictionary.registerOre("block"+type, block);
-		if(!slab.isEmpty())
-			OreDictionary.registerOre("slab"+type, slab);
-		if(!sheet.isEmpty())
-			OreDictionary.registerOre("blockSheetmetal"+type, sheet);
-		if(!slabSheet.isEmpty())
-			OreDictionary.registerOre("slabSheetmetal"+type, slabSheet);
 	}
 
 	public static <T extends TileEntity> void registerTile(Class<T> tile, Register<TileEntityType<?>> event, Block... valid)
@@ -1216,10 +1222,14 @@ public class IEContent
 		registeredIETiles.add(tile);
 	}
 
-	public static void addConfiguredWorldgen(BlockState state, String name, int[] config)
+	public static void addConfiguredWorldgen(Block state, String name, OreConfig config)
 	{
-		if(config!=null&&config.length >= 5&&config[0] > 0)
-			IEWorldGen.addOreGen(name, state, config[0], config[1], config[2], config[3], config[4]);
+		if(config!=null&&config.veinSize.get() > 0)
+			IEWorldGen.addOreGen(name, state.getDefaultState(), config.veinSize.get(),
+					config.minY.get(),
+					config.maxY.get(),
+					config.veinsPerChunk.get(),
+					config.spawnChance.get());
 	}
 
 	public static void addBanner(String name, String id, Object item, int... offset)
@@ -1229,8 +1239,11 @@ public class IEContent
 		ItemStack craftingStack = ItemStack.EMPTY;
 		if(item instanceof ItemStack&&(offset==null||offset.length < 1))
 			craftingStack = (ItemStack)item;
+		/*TODO
 		BannerPattern e = EnumHelper.addEnum(BannerPattern.class, name.toUpperCase(), new Class[]{String.class, String.class, ItemStack.class}, name, id, craftingStack);
 		if(craftingStack.isEmpty())
 			RecipeBannerAdvanced.addAdvancedPatternRecipe(e, ApiUtils.createIngredientStack(item), offset);
+
+		 */
 	}
 }

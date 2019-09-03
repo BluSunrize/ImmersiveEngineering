@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -97,8 +96,8 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		{
 			if(hotMetal_flow==null)
 			{
-				hotMetal_still = ApiUtils.getRegisterSprite(ClientUtils.mc().getTextureMap(), "immersiveengineering:blocks/fluid/hot_metal_still");
-				hotMetal_flow = ApiUtils.getRegisterSprite(ClientUtils.mc().getTextureMap(), "immersiveengineering:blocks/fluid/hot_metal_flow");
+				hotMetal_still = ClientUtils.mc().getTextureMap().getAtlasSprite("immersiveengineering:blocks/fluid/hot_metal_still");
+				hotMetal_flow = ClientUtils.mc().getTextureMap().getAtlasSprite("immersiveengineering:blocks/fluid/hot_metal_flow");
 			}
 			GlStateManager.rotatef(-te.facing.getHorizontalAngle()+180, 0, 1, 0);
 			int process = 40;

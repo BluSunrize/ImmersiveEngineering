@@ -8,7 +8,10 @@
 
 package blusunrize.immersiveengineering.api;
 
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -43,6 +46,11 @@ public class DimensionBlockPos extends BlockPos
 	public DimensionBlockPos(TileEntity te)
 	{
 		this(te.getPos(), te.getWorld());
+	}
+
+	public DimensionBlockPos(CompoundNBT nbt)
+	{
+		this(NBTUtil.readBlockPos(nbt), DimensionType.byName(new ResourceLocation(nbt.getString("dimension"))));
 	}
 
 	@Override
@@ -81,5 +89,13 @@ public class DimensionBlockPos extends BlockPos
 	public String toString()
 	{
 		return "Dimension: "+dimension+" Pos: "+super.toString();
+	}
+
+	public CompoundNBT toNBT()
+	{
+		CompoundNBT ret = new CompoundNBT();
+		NBTUtil.writeBlockPos(this);
+		ret.putString("dimension", dimension.getRegistryName().toString());
+		return ret;
 	}
 }

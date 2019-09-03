@@ -8,14 +8,22 @@
 
 package blusunrize.immersiveengineering.api;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants.NBT;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 public class ComparableItemStack
 {
 	public ItemStack stack;
 	public boolean useNBT;
-	public int oreID = -1;
+	public Collection<ResourceLocation> tags;
 
 	public ComparableItemStack(ItemStack stack)
 	{
@@ -34,12 +42,12 @@ public class ComparableItemStack
 		this.stack = stack;
 		if(copy)
 			copy();
-		if(matchOre)
-		{
-			int[] oids = OreDictionary.getOreIDs(stack);
-			if(oids!=null&&oids.length > 0)
-				this.oreID = oids[0];
-		}
+		tags = ImmutableList.copyOf(ApiUtils.getMatchingTagNames(stack));
+	}
+
+	public ComparableItemStack(Collection<ResourceLocation> tags)
+	{
+		this.tags = tags;
 	}
 
 	public void copy()
@@ -47,10 +55,10 @@ public class ComparableItemStack
 		stack = stack.copy();
 	}
 
-	public ComparableItemStack(String oreName)
+	public ComparableItemStack(ResourceLocation tag)
 	{
-		this(IEApi.getPreferredTagStack(oreName), true, false);
-		this.oreID = OreDictionary.getOreID(oreName);
+		this(IEApi.getPreferredTagStack(tag), true, false);
+		tags = ImmutableList.of(tag);
 	}
 
 	public ComparableItemStack setUseNBT(boolean useNBT)
@@ -59,26 +67,20 @@ public class ComparableItemStack
 		return this;
 	}
 
-	public ComparableItemStack setOreID(int oid)
-	{
-		this.oreID = oid;
-		return this;
-	}
-
 	@Override
 	public String toString()
 	{
-		return "ComparableStack: {"+this.stack.toString()+"}; oreID: "+this.oreID+"; checkNBT: "+this.useNBT;
+		return "ComparableStack: {"+this.stack.toString()+"}; tags: "+this.tags+"; checkNBT: "+this.useNBT;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		if(this.oreID!=-1)
-			return this.oreID;
-		int hash = (stack.getItemDamage()&0xffff)*31+stack.getItem().hashCode()*31;
+		if(this.tags!=null)
+			return this.tags.hashCode();
+		int hash = stack.getItem().hashCode();
 		if(this.useNBT&&stack.hasTag())
-			hash += stack.getTagCompound().hashCode()*31;
+			hash += stack.getOrCreateTag().hashCode()*31;
 		return hash;
 	}
 
@@ -88,11 +90,11 @@ public class ComparableItemStack
 		if(!(object instanceof ComparableItemStack))
 			return false;
 
-		if(this.oreID!=-1&&((ComparableItemStack)object).oreID!=-1)
-			return this.oreID==((ComparableItemStack)object).oreID;
+		if(this.tags!=null&&((ComparableItemStack)object).tags!=null)
+			return this.tags.equals(((ComparableItemStack)object).tags);
 
 		ItemStack otherStack = ((ComparableItemStack)object).stack;
-		if(!OreDictionary.itemMatches(stack, otherStack, false))
+		if(!ItemStack.areItemsEqual(stack, otherStack))
 			return false;
 		if(this.useNBT)
 			return ItemStack.areItemStackTagsEqual(stack, otherStack);
@@ -102,11 +104,16 @@ public class ComparableItemStack
 
 	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		if(this.oreID!=-1)
-			nbt.putString("oreID", OreDictionary.getOreName(oreID));
+		if(this.tags!=null)
+		{
+			ListNBT tagList = new ListNBT();
+			for(ResourceLocation rl : tags)
+				tagList.add(new StringNBT(rl.toString()));
+			nbt.put("tags", tagList);
+		}
 		else
 		{
-			nbt.put("stack", stack.writeToNBT(new CompoundNBT()));
+			nbt.put("stack", stack.write(new CompoundNBT()));
 			nbt.putBoolean("useNBT", useNBT);
 		}
 		return nbt;
@@ -114,11 +121,17 @@ public class ComparableItemStack
 
 	public static ComparableItemStack readFromNBT(CompoundNBT nbt)
 	{
-		if(nbt.hasKey("oreID"))
-			return new ComparableItemStack(nbt.getString("oreID"));
-		else if(nbt.hasKey("stack"))
+		if(nbt.contains("tags", NBT.TAG_LIST))
 		{
-			ComparableItemStack comp = new ComparableItemStack(new ItemStack(nbt.getCompound("stack")), true, false);
+			Collection<ResourceLocation> tags = new HashSet<>();
+			ListNBT list = nbt.getList("tags", NBT.TAG_STRING);
+			for(int i = 0; i < list.size(); ++i)
+				tags.add(new ResourceLocation(list.getString(i)));
+			return new ComparableItemStack(tags);
+		}
+		else if(nbt.contains("stack", NBT.TAG_COMPOUND))
+		{
+			ComparableItemStack comp = new ComparableItemStack(ItemStack.read(nbt.getCompound("stack")), true, false);
 			comp.useNBT = nbt.getBoolean("useNBT");
 			return comp;
 		}

@@ -29,9 +29,14 @@ import java.util.List;
 
 public class PotionFluid extends IEFluid
 {
+	public PotionFluid(String fluidName, ResourceLocation still, ResourceLocation flowing)
+	{
+		super(fluidName, still, flowing, null);
+	}
+
 	public PotionFluid(String fluidName, ResourceLocation still, ResourceLocation flowing, boolean isSource)
 	{
-		super(fluidName, still, flowing, null, isSource);
+		super(fluidName, still, flowing, null, null, isSource);
 	}
 
 	@Override

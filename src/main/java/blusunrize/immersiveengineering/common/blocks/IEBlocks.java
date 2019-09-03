@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import com.google.common.collect.BiMap;
@@ -112,7 +113,7 @@ public final class IEBlocks
 	}
 
 
-	public static final class Fluids
+	public static final class FluidBlocks
 	{
 		public static FlowingFluidBlock creosote;
 		public static FlowingFluidBlock plantoil;
@@ -141,7 +142,7 @@ public final class IEBlocks
 		public static Block lantern;
 		public static Block slopeSteel;
 		public static Block slopeAlu;
-		public static Block metalLadder;
+		public static Map<CoverType, Block> metalLadder = new EnumMap<>(CoverType.class);
 		public static Map<MetalScaffoldingType, Block> steelScaffolding = new EnumMap<>(MetalScaffoldingType.class);
 		public static Map<MetalScaffoldingType, Block> aluScaffolding = new EnumMap<>(MetalScaffoldingType.class);
 		public static Map<MetalScaffoldingType, Block> steelScaffoldingStair = new EnumMap<>(MetalScaffoldingType.class);

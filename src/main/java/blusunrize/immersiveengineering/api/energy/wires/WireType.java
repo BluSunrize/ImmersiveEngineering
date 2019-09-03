@@ -119,6 +119,20 @@ public abstract class WireType implements ILocalHandlerProvider
 	public static WireType COPPER_INSULATED;
 	public static WireType ELECTRUM_INSULATED;
 
+	public static Collection<WireType> getIEWireTypes()
+	{
+		return ImmutableList.of(
+				COPPER,
+				ELECTRUM,
+				STEEL,
+				STRUCTURE_ROPE,
+				STRUCTURE_STEEL,
+				REDSTONE,
+				COPPER_INSULATED,
+				ELECTRUM_INSULATED
+		);
+	}
+
 	public static void init()
 	{
 		COPPER = new IEBASE(0);

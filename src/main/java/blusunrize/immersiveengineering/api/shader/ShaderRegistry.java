@@ -407,7 +407,7 @@ public class ShaderRegistry
 	}
 
 	public static Item itemShader;
-	public static Item itemShaderBag;
+	public static Map<Rarity, Item> itemShaderBag;
 	/**
 	 * List of example items for shader manual entries
 	 */

@@ -12,9 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.api.energy.wires.Connection.CatenaryData;
-import blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -24,8 +22,8 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -35,15 +33,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.concurrent.ThreadTaskExecutor;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -55,8 +54,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -70,7 +69,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static blusunrize.immersiveengineering.api.energy.wires.old.ImmersiveNetHandler.Connection.vertices;
+import static blusunrize.immersiveengineering.common.IERecipes.getIngot;
 
 public class ApiUtils
 {
@@ -78,10 +77,13 @@ public class ApiUtils
 	{
 		if(!isNonemptyItemTag(oreName))
 			return false;
-		List<ItemStack> s = OreDictionary.getOres(oreName);
-		for(ItemStack st : s)
-			if(OreDictionary.itemMatches(st, stack, false))
-				return true;
+		if(ItemTags.getCollection().get(oreName).getAllElements().contains(stack.getItem()))
+			return true;
+		if(BlockTags.getCollection().get(oreName).getAllElements()
+				.stream()
+				.map(IItemProvider::asItem)
+				.anyMatch(i -> stack.getItem()==i))
+			return true;
 		return false;
 	}
 
@@ -93,11 +95,12 @@ public class ApiUtils
 	public static boolean stackMatchesObject(ItemStack stack, Object o, boolean checkNBT)
 	{
 		if(o instanceof ItemStack)
-			return OreDictionary.itemMatches((ItemStack)o, stack, false)&&(!checkNBT||((ItemStack)o).getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT((ItemStack)o, stack));
+			return ItemStack.areItemsEqual((ItemStack)o, stack)&&
+					(!checkNBT||Utils.compareItemNBT((ItemStack)o, stack));
 		else if(o instanceof Collection)
 		{
 			for(Object io : (Collection)o)
-				if(io instanceof ItemStack&&OreDictionary.itemMatches((ItemStack)io, stack, false)&&(!checkNBT||((ItemStack)io).getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT((ItemStack)io, stack)))
+				if(stackMatchesObject(stack, io, checkNBT))
 					return true;
 		}
 		else if(o instanceof IngredientStack)
@@ -105,16 +108,17 @@ public class ApiUtils
 		else if(o instanceof ItemStack[])
 		{
 			for(ItemStack io : (ItemStack[])o)
-				if(OreDictionary.itemMatches(io, stack, false)&&(!checkNBT||io.getItemDamage()==OreDictionary.WILDCARD_VALUE||Utils.compareItemNBT(io, stack)))
+				if(ItemStack.areItemsEqual(io, stack)&&(!checkNBT||Utils.compareItemNBT(io, stack)))
 					return true;
 		}
 		else if(o instanceof FluidStack)
-		{
-			FluidStack fs = FluidUtil.getFluidContained(stack);
-			return fs!=null&&fs.containsFluid((FluidStack)o);
-		}
-		else if(o instanceof String)
-			return compareToOreName(stack, (String)o);
+			return FluidUtil.getFluidContained(stack)
+					.map(fs -> fs.containsFluid((FluidStack)o))
+					.orElse(false);
+		else if(o instanceof ResourceLocation)
+			return compareToOreName(stack, (ResourceLocation)o);
+		else
+			throw new IllegalArgumentException("Comparisong object "+o+" of class "+o.getClass()+" is invalid!");
 		return false;
 	}
 
@@ -183,7 +187,7 @@ public class ApiUtils
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
 	{
-		return createComparableItemStack(stack, copy, stack.hasTag()&&!stack.getTagCompound().isEmpty());
+		return createComparableItemStack(stack, copy, stack.hasTag()&&!stack.getOrCreateTag().isEmpty());
 	}
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
@@ -233,42 +237,43 @@ public class ApiUtils
 
 	public static String getMetalComponentType(ItemStack stack, String... componentTypes)
 	{
-		int[] ids = OreDictionary.getOreIDs(stack);
-		String[] oreNames = OreDictionary.getOreNames();
-		for(int id : ids)
+		for(ResourceLocation name : getMatchingTagNames(stack))
 		{
-			String oreName = oreNames[id];
 			for(String componentType : componentTypes)
-				if(oreName.startsWith(componentType))
+				if(name.getPath().startsWith(componentType))
 					return componentType;
 		}
 		return null;
 	}
 
+	public static Collection<ResourceLocation> getMatchingTagNames(ItemStack stack)
+	{
+		Collection<ResourceLocation> ret = new HashSet<>(stack.getItem().getTags());
+		Block b = Block.getBlockFromItem(stack.getItem());
+		if(b!=Blocks.AIR)
+			ret.addAll(b.getTags());
+		return ret;
+	}
+
 	public static String[] getMetalComponentTypeAndMetal(ItemStack stack, String... componentTypes)
 	{
-		int[] ids = OreDictionary.getOreIDs(stack);
-		String[] oreNames = OreDictionary.getOreNames();
-		for(int id : ids)
+		for(ResourceLocation name : getMatchingTagNames(stack))
 		{
-			String oreName = oreNames[id];
 			for(String componentType : componentTypes)
-			{
-				if(oreName.startsWith(componentType))
-					return new String[]{componentType, oreName.substring(componentType.length())};
-			}
+				if(name.getPath().startsWith(componentType))
+					return new String[]{componentType, name.getPath().substring(componentType.length())};
 		}
 		return null;
 	}
 
 	public static boolean isIngot(ItemStack stack)
 	{
-		return isMetalComponent(stack, "ingot");
+		return isMetalComponent(stack, "ingots/");
 	}
 
 	public static boolean isPlate(ItemStack stack)
 	{
-		return isMetalComponent(stack, "plate");
+		return isMetalComponent(stack, "plates/");
 	}
 
 	public static int getComponentIngotWorth(ItemStack stack)
@@ -297,7 +302,7 @@ public class ApiUtils
 			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
-				return copyStackWithAmount(IEApi.getPreferredTagStack("ingot"+type[1]), (int)val);
+				return copyStackWithAmount(IEApi.getPreferredTagStack(getIngot(type[1])), (int)val);
 			}
 		}
 		return ItemStack.EMPTY;
@@ -313,7 +318,7 @@ public class ApiUtils
 			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
-				return new ImmutablePair<>(IEApi.getPreferredTagStack("ingot"+type[1]), val);
+				return new ImmutablePair<>(IEApi.getPreferredTagStack(getIngot(type[1])), val);
 			}
 		}
 		return null;
@@ -321,33 +326,41 @@ public class ApiUtils
 
 	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side)
 	{
-		if(!stack.isEmpty()&&inventory!=null&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(!stack.isEmpty()&&inventory!=null)
 		{
-			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
-			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
-			return temp.isEmpty()||temp.getCount() < stack.getCount();
+			return inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)
+					.map(handler -> {
+						ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
+						return temp.isEmpty()||temp.getCount() < stack.getCount();
+					})
+					.orElse(false);
 		}
 		return false;
 	}
 
 	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side)
 	{
-		if(!stack.isEmpty()&&inventory!=null&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(!stack.isEmpty()&&inventory!=null)
 		{
-			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
-			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
-			if(temp.isEmpty()||temp.getCount() < stack.getCount())
-				return ItemHandlerHelper.insertItem(handler, stack, false);
+			return inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)
+					.map(handler -> {
+						ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
+						if(temp.isEmpty()||temp.getCount() < stack.getCount())
+							return ItemHandlerHelper.insertItem(handler, stack, false);
+						return stack;
+					})
+					.orElse(stack);
 		}
 		return stack;
 	}
 
 	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side, boolean simulate)
 	{
-		if(inventory!=null&&!stack.isEmpty()&&inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		if(inventory!=null&&!stack.isEmpty())
 		{
-			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
-			return ItemHandlerHelper.insertItem(handler, stack.copy(), simulate);
+			return inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)
+					.map(handler -> ItemHandlerHelper.insertItem(handler, stack.copy(), simulate))
+					.orElse(stack);
 		}
 		return stack;
 	}
@@ -376,18 +389,9 @@ public class ApiUtils
 			return (IImmersiveConnectable)object;
 		else if(object instanceof BlockPos)
 		{
-			if(world!=null&&world.isBlockLoaded((BlockPos)object))
-			{
-				TileEntity te = world.getTileEntity((BlockPos)object);
-				if(te instanceof IImmersiveConnectable)
-					return (IImmersiveConnectable)te;
-			}
-			if(allowProxies)
-			{
-				DimensionBlockPos pos = new DimensionBlockPos((BlockPos)object, world);
-				if(ImmersiveNetHandler.INSTANCE.proxies.containsKey(pos))
-					return ImmersiveNetHandler.INSTANCE.proxies.get(pos);
-			}
+			BlockPos pos = (BlockPos)object;
+			if(world!=null&&(allowProxies||world.isBlockLoaded(pos)))
+				return GlobalWireNetwork.getNetwork(world).getLocalNet(pos).getConnector(pos);
 		}
 		return null;
 	}
@@ -408,19 +412,6 @@ public class ApiUtils
 		return offset;
 	}
 
-	//TODO remove
-	public static Vec3d getVecForIICAt(LocalWireNetwork net, BlockPos pos, ImmersiveNetHandler.Connection conn)
-	{
-		Vec3d offset = Vec3d.ZERO;
-		//Force loading
-		IImmersiveConnectable iicPos = net.getConnector(pos);
-		if(pos.equals(conn.end))
-			offset = offset.add(conn.end.getX()-conn.start.getX(),
-					conn.end.getY()-conn.start.getY(),
-					conn.end.getZ()-conn.start.getZ());
-		return offset;
-	}
-
 	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
 		return vec0.add(vec1.x, vec1.y, vec1.z);
@@ -432,19 +423,9 @@ public class ApiUtils
 		return Math.log(x+Math.sqrt(x+1)*Math.sqrt(x-1));
 	}
 
-	//TODO remove
-	public static Vec3d[] getConnectionCatenary(ImmersiveNetHandler.Connection connection, Vec3d start, Vec3d end)
-	{
-		connection.vertical = end.x==start.x&&end.z==start.z;
-		Vec3d[] ret = new Vec3d[vertices+1];
-		double height = end.y-start.y;
-		for(int i = 0; i < vertices+1; i++)
-			ret[i] = new Vec3d(start.x, start.y+i*height/vertices, start.z);
-		return ret;
-	}
-
 	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack)
 	{
+		final int vertices = 17;
 		double dx = (end.x)-(start.x);
 		double dy = (end.y)-(start.y);
 		double dz = (end.z)-(start.z);
@@ -655,17 +636,10 @@ public class ApiUtils
 
 	public static WireType getWireTypeFromNBT(CompoundNBT tag, String key)
 	{
-		//Legacy code for old save data, where types used to be integers
-		if(tag.getTag(key) instanceof IntNBT)
-		{
-			int i = tag.getInt(key);
-			return i==1?WireType.ELECTRUM: i==2?WireType.STEEL: i==3?WireType.STRUCTURE_ROPE: i==4?WireType.STRUCTURE_STEEL: WireType.COPPER;
-		}
-		else
-			return WireType.getValue(tag.getString(key));
+		return WireType.getValue(tag.getString(key));
 	}
 
-	public static ActionResultType doCoilUse(IWireCoil coil, PlayerEntity player, World world, BlockPos pos, ItemStack hand, Direction side, float hitX, float hitY, float hitZ)
+	public static ActionResultType doCoilUse(IWireCoil coil, PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity instanceof IImmersiveConnectable&&((IImmersiveConnectable)tileEntity).canConnect())
@@ -674,7 +648,7 @@ public class ApiUtils
 			TargetingInfo targetHere = new TargetingInfo(side, hitX, hitY, hitZ);
 			WireType wire = coil.getWireType(stack);
 			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, targetHere);
-			Vec3i offsetHere = pos.subtract(masterPos);
+			BlockPos offsetHere = pos.subtract(masterPos);
 			tileEntity = world.getTileEntity(masterPos);
 			if(!(tileEntity instanceof IImmersiveConnectable)||!((IImmersiveConnectable)tileEntity).canConnect())
 				return ActionResultType.PASS;
@@ -692,24 +666,25 @@ public class ApiUtils
 			if(!world.isRemote)
 				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 				{
-					ItemNBTHelper.putIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(), masterPos.getX(), masterPos.getY(), masterPos.getZ(),
-							offsetHere.getX(), offsetHere.getY(), offsetHere.getZ()});
+					DimensionBlockPos linkingPos = new DimensionBlockPos(masterPos, world);
+					CompoundNBT linkingNBT = new CompoundNBT();
+					linkingNBT.put("master", linkingPos.toNBT());
+					linkingNBT.put("offset", NBTUtil.writeBlockPos(offsetHere));
+					stack.getOrCreateTag().put("linkingPos", linkingNBT);
 					CompoundNBT targetNbt = new CompoundNBT();
 					targetHere.writeToNBT(targetNbt);
 					ItemNBTHelper.setTagCompound(stack, "targettingInfo", targetNbt);
 				}
 				else
 				{
-					int[] array = ItemNBTHelper.getIntArray(stack, "linkingPos");
-					BlockPos linkPos = new BlockPos(array[1], array[2], array[3]);
-					Vec3i offsetLink = BlockPos.NULL_VECTOR;
-					if(array.length==7)
-						offsetLink = new Vec3i(array[4], array[5], array[6]);
+					CompoundNBT linkNBT = stack.getOrCreateTag().getCompound("linkingPos");
+					DimensionBlockPos linkPos = new DimensionBlockPos(linkNBT.getCompound("master"));
+					BlockPos offsetLink = NBTUtil.readBlockPos(linkNBT.getCompound("offset"));
 					TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
 					int distanceSq = (int)Math.ceil(linkPos.distanceSq(masterPos));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
-					if(array[0]!=world.provider.getDimension())
+					if(linkPos.dimension!=world.getDimension().getType())
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongDimension"), true);
 					else if(linkPos.equals(masterPos))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"sameConnection"), true);
@@ -777,26 +752,26 @@ public class ApiUtils
 
 										iicHere.connectCable(wire, cpHere, iicLink, cpLink);
 										iicLink.connectCable(wire, cpLink, iicHere, cpHere);
-										IESaveData.setDirty(world.provider.getDimension());
 										Utils.unlockIEAdvancement(player, "main/connect_wire");
 
-										if(!player.capabilities.isCreativeMode)
+										if(!player.abilities.isCreativeMode)
 											coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
 										((TileEntity)iicHere).markDirty();
-										world.addBlockEvent(masterPos, ((TileEntity)iicHere).getBlockState(), -1, 0);
+										//TODO is this needed with the new sync system?
+										world.addBlockEvent(masterPos, ((TileEntity)iicHere).getBlockState().getBlock(), -1, 0);
 										BlockState state = world.getBlockState(masterPos);
 										world.notifyBlockUpdate(masterPos, state, state, 3);
 										((TileEntity)iicLink).markDirty();
-										world.addBlockEvent(linkPos, ((TileEntity)iicLink).getBlockState(), -1, 0);
+										world.addBlockEvent(linkPos, ((TileEntity)iicLink).getBlockState().getBlock(), -1, 0);
 										state = world.getBlockState(linkPos);
 										world.notifyBlockUpdate(linkPos, state, state, 3);
 									}
 									else
 									{
 										player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"cantSee"), true);
-										ImmersiveEngineering.packetHandler.sendToAllAround(new MessageObstructedConnection(tempConn, failedReason, player.world),
-												new NetworkRegistry.TargetPoint(player.world.provider.getDimension(), player.posX, player.posY, player.posZ,
-														64));
+										ImmersiveEngineering.packetHandler.send(
+												PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(failedReason)),
+												new MessageObstructedConnection(tempConn, failedReason, player.world));
 									}
 								}
 							}
@@ -820,38 +795,26 @@ public class ApiUtils
 			return new ItemStack((Block)input);
 		else if(input instanceof List)
 			return input;
-		else if(input instanceof String)
+		else if(input instanceof ResourceLocation)
 		{
-			if(!ApiUtils.isNonemptyItemTag((String)input))
-				return null;
-			List<ItemStack> l = OreDictionary.getOres((String)input);
-			if(!l.isEmpty())
-				return l;
-			else
-				return null;
+			if(!ApiUtils.isNonemptyItemTag((ResourceLocation)input))
+				return getItemsInTag((ResourceLocation)input);
+			return null;
 		}
 		else
-			throw new RuntimeException("Recipe Inputs must always be ItemStack, Item, Block or String (OreDictionary name), "+input+" is invalid");
+			throw new RuntimeException("Recipe Inputs must always be ItemStack, Item, Block or ResourceLocation (tag name), "+input+" is invalid");
 	}
 
-	public static IngredientStack createIngredientStack(Object input, boolean preferWildcard)
+	public static IngredientStack createIngredientStack(Object input)
 	{
 		if(input instanceof IngredientStack)
 			return (IngredientStack)input;
 		else if(input instanceof ItemStack)
 			return new IngredientStack((ItemStack)input);
 		else if(input instanceof Item)
-		{
-			if(preferWildcard)
-				return new IngredientStack(new ItemStack((Item)input, 1, OreDictionary.WILDCARD_VALUE));
 			return new IngredientStack(new ItemStack((Item)input));
-		}
 		else if(input instanceof Block)
-		{
-			if(preferWildcard)
-				return new IngredientStack(new ItemStack((Block)input, 1, OreDictionary.WILDCARD_VALUE));
 			return new IngredientStack(new ItemStack((Block)input));
-		}
 		else if(input instanceof Ingredient)
 			return new IngredientStack(Arrays.asList(((Ingredient)input).getMatchingStacks()));
 		else if(input instanceof List)
@@ -860,11 +823,11 @@ public class ApiUtils
 			{
 				if(((List)input).get(0) instanceof ItemStack)
 					return new IngredientStack(((List<ItemStack>)input));
-				else if(((List)input).get(0) instanceof String)
+				else if(((List)input).get(0) instanceof ResourceLocation)
 				{
-					ArrayList<ItemStack> itemList = new ArrayList();
-					for(String s : ((List<String>)input))
-						itemList.addAll(OreDictionary.getOres(s));
+					List<ItemStack> itemList = new ArrayList<>();
+					for(ResourceLocation s : ((List<ResourceLocation>)input))
+						itemList.addAll(getItemsInTag(s));
 					return new IngredientStack(itemList);
 				}
 			}
@@ -873,23 +836,18 @@ public class ApiUtils
 		}
 		else if(input instanceof ItemStack[])
 			return new IngredientStack(Arrays.asList((ItemStack[])input));
-		else if(input instanceof String[])
+		else if(input instanceof ResourceLocation[])
 		{
-			ArrayList<ItemStack> itemList = new ArrayList();
-			for(String s : ((String[])input))
-				itemList.addAll(OreDictionary.getOres(s));
+			ArrayList<ItemStack> itemList = new ArrayList<>();
+			for(ResourceLocation s : ((ResourceLocation[])input))
+				itemList.addAll(getItemsInTag(s));
 			return new IngredientStack(itemList);
 		}
-		else if(input instanceof String)
-			return new IngredientStack((String)input);
+		else if(input instanceof ResourceLocation)
+			return new IngredientStack((ResourceLocation)input);
 		else if(input instanceof FluidStack)
 			return new IngredientStack((FluidStack)input);
 		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, String (OreDictionary name) or FluidStack; "+input+" is invalid");
-	}
-
-	public static IngredientStack createIngredientStack(Object input)
-	{
-		return createIngredientStack(input, false);
 	}
 
 	public static ItemStack getItemStackFromObject(Object o)
@@ -902,11 +860,11 @@ public class ApiUtils
 			return new ItemStack((Block)o);
 		else if(o instanceof List)
 			return ((List<ItemStack>)o).get(0);
-		else if(o instanceof String)
+		else if(o instanceof ResourceLocation)
 		{
-			if(!isNonemptyItemTag((String)o))
+			if(!isNonemptyItemTag((ResourceLocation)o))
 				return ItemStack.EMPTY;
-			List<ItemStack> l = OreDictionary.getOres((String)o);
+			List<ItemStack> l = getItemsInTag((ResourceLocation)o);
 			if(!l.isEmpty())
 				return l.get(0);
 			else
@@ -991,20 +949,11 @@ public class ApiUtils
 
 	public static boolean preventsConnection(World worldIn, BlockPos pos, BlockState state, Vec3d a, Vec3d b)
 	{
-		if(state.getBlock().canCollideCheck(state, false))
+		for(AxisAlignedBB aabb : state.getCollisionShape(worldIn, pos).toBoundingBoxList())
 		{
-			List<AxisAlignedBB> aabbs = new ArrayList<>(1);
-			state.addCollisionBoxToList(worldIn, pos, Block.FULL_BLOCK_AABB.offset(pos),
-					aabbs, null, false);
-			for(AxisAlignedBB aabb : aabbs)
-			{
-				aabb = aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()).grow(1e-5);
-				if(aabb.contains(a)||aabb.contains(b))
-					return true;
-			}
-			RayTraceResult rayResult = state.collisionRayTrace(worldIn, pos, a.add(pos.getX(), pos.getY(), pos.getZ()),
-					b.add(pos.getX(), pos.getY(), pos.getZ()));
-			return rayResult!=null&&rayResult.type==Type.BLOCK;
+			aabb = aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()).grow(1e-5);
+			if(aabb.contains(a)||aabb.contains(b))
+				return true;
 		}
 		return false;
 	}
@@ -1013,22 +962,12 @@ public class ApiUtils
 	public static void knockbackNoSource(LivingEntity entity, double strength, double xRatio, double zRatio)
 	{
 		entity.isAirBorne = true;
-		float factor = MathHelper.sqrt(xRatio*xRatio+zRatio*zRatio);
-		entity.motionX /= 2;
-		entity.motionZ /= 2;
-		entity.motionX -= xRatio/(double)factor*strength;
-		entity.motionZ -= zRatio/(double)factor*strength;
-
-		if(entity.onGround)
-		{
-			entity.motionY /= 2;
-			entity.motionY += strength;
-
-			if(entity.motionY > 0.4)
-			{
-				entity.motionY = 0.4;
-			}
-		}
+		Vec3d motionOld = entity.getMotion();
+		Vec3d toAdd = (new Vec3d(xRatio, 0.0D, zRatio)).normalize().scale(strength);
+		entity.setMotion(
+				motionOld.x/2.0D-toAdd.x,
+				entity.onGround?Math.min(0.4D, motionOld.y/2.0D+strength): motionOld.y,
+				motionOld.z/2.0D-toAdd.z);
 	}
 
 	public static Connection raytraceWires(World world, Vec3d start, Vec3d end, @Nullable Connection ignored)
@@ -1123,7 +1062,7 @@ public class ApiUtils
 
 	public static <T> LazyOptional<T> constantOptional(T val)
 	{
-		return new LazyOptional<>(()->val);
+		return LazyOptional.of(() -> val);
 	}
 
 	public static class ValueComparator<T extends Comparable<T>> implements java.util.Comparator<T>
@@ -1160,30 +1099,6 @@ public class ApiUtils
 			ValueComparator other = (ValueComparator)obj;
 			return other.base==base&&other.inverse==inverse;
 		}
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public static TextureAtlasSprite getRegisterSprite(AtlasTexture map, String path)
-	{
-		TextureAtlasSprite sprite = map.getTextureExtry(path);
-		if(sprite==null)
-		{
-			map.registerSprite(new ResourceLocation(path));
-			sprite = map.getTextureExtry(path);
-		}
-		return sprite;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public static TextureAtlasSprite getRegisterSprite(AtlasTexture map, ResourceLocation path)
-	{
-		TextureAtlasSprite sprite = map.getTextureExtry(path.toString());
-		if(sprite==null)
-		{
-			map.registerSprite(path);
-			sprite = map.getTextureExtry(path.toString());
-		}
-		return sprite;
 	}
 
 	@OnlyIn(Dist.CLIENT)

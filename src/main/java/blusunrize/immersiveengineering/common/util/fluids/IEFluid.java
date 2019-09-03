@@ -41,6 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -54,13 +55,31 @@ public class IEFluid extends FlowingFluid
 	protected Fluid flowing;
 	protected Fluid source;
 	@Nullable
+	private final Consumer<FluidAttributes.Builder> buildAttributes;
+	@Nullable
 	protected final Supplier<Block> block;
 
-	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Supplier<Block> block, boolean isSource)
+	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex)
+	{
+		this(fluidName, stillTex, flowingTex, null);
+	}
+
+	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
+	{
+		this(fluidName, stillTex, flowingTex, buildAttributes, null);
+	}
+
+	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes, @Nullable Supplier<Block> block)
+	{
+		this(fluidName, stillTex, flowingTex, buildAttributes, block, false);
+	}
+
+	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes, @Nullable Supplier<Block> block, boolean isSource)
 	{
 		this.fluidName = fluidName;
 		this.stillTex = stillTex;
 		this.flowingTex = flowingTex;
+		this.buildAttributes = buildAttributes;
 		this.block = block;
 		IEContent.registeredIEFluids.add(this);
 		if(!isSource)
@@ -148,7 +167,10 @@ public class IEFluid extends FlowingFluid
 	@Override
 	protected FluidAttributes createAttributes(Fluid p_createAttributes_1_)
 	{
-		return FluidAttributes.builder(fluidName, stillTex, flowingTex).build();
+		FluidAttributes.Builder builder = FluidAttributes.builder(fluidName, stillTex, flowingTex);
+		if(buildAttributes!=null)
+			buildAttributes.accept(builder);
+		return builder.build();
 	}
 
 	@Nonnull
@@ -192,7 +214,7 @@ public class IEFluid extends FlowingFluid
 
 	protected Fluid createSourceVariant()
 	{
-		IEFluid ret = new IEFluid(fluidName+"_source", stillTex, flowingTex, block, true);
+		IEFluid ret = new IEFluid(fluidName+"_source", stillTex, flowingTex, buildAttributes, block, true);
 		ret.flowing = this;
 		return ret;
 	}

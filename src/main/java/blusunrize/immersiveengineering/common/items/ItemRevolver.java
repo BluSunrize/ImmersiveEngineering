@@ -61,6 +61,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -87,16 +88,29 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	public static HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap<>();
 	public static TextureAtlasSprite revolverDefaultTexture;
 
-	public static void stichRevolverTextures(AtlasTexture map)
+	public static void addRevolverTextures(TextureStitchEvent.Pre evt)
 	{
-		revolverDefaultTexture = ApiUtils.getRegisterSprite(map, "immersiveengineering:revolvers/revolver");
+		evt.addSprite(new ResourceLocation(ImmersiveEngineering.MODID, "revolvers/revolver"));
 		for(String key : specialRevolversByTag.keySet())
 			if(!key.isEmpty()&&!specialRevolversByTag.get(key).tag.isEmpty())
 			{
 				int split = key.lastIndexOf("_");
 				if(split < 0)
 					split = key.length();
-				revolverIcons.put(key, ApiUtils.getRegisterSprite(map, "immersiveengineering:revolvers/revolver_"+key.substring(0, split).toLowerCase()));
+				evt.addSprite(new ResourceLocation(ImmersiveEngineering.MODID, "revolvers/revolver_"+key.substring(0, split).toLowerCase()));
+			}
+	}
+
+	public static void retrieveRevolverTextures(AtlasTexture map)
+	{
+		revolverDefaultTexture = map.getAtlasSprite("immersiveengineering:revolvers/revolver");
+		for(String key : specialRevolversByTag.keySet())
+			if(!key.isEmpty()&&!specialRevolversByTag.get(key).tag.isEmpty())
+			{
+				int split = key.lastIndexOf("_");
+				if(split < 0)
+					split = key.length();
+				revolverIcons.put(key, map.getAtlasSprite("immersiveengineering:revolvers/revolver_"+key.substring(0, split).toLowerCase()));
 			}
 	}
 

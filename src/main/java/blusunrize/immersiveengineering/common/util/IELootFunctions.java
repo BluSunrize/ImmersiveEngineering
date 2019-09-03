@@ -49,7 +49,7 @@ public class IELootFunctions
 
 		public static class Serializer extends LootFunction.Serializer<Bluprintz>
 		{
-			protected Serializer()
+			public Serializer()
 			{
 				super(new ResourceLocation(ImmersiveEngineering.MODID, "secret_bluprintz"), Bluprintz.class);
 			}
