@@ -134,10 +134,9 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 		{
 			LootTable loottable = this.world.getLootTableManager().getLootTableFromLocation(this.lootTable);
 			this.lootTable = null;
-			Random random;
 			LootContext.Builder contextBuilder = new LootContext.Builder((WorldServer)this.world);
 			if(player!=null)
-				contextBuilder.withLuck(player.getLuck());
+				contextBuilder.withLuck(player.getLuck()).withPlayer(player);
 			LootContext context = contextBuilder.build();
 			Random rand = new Random();
 

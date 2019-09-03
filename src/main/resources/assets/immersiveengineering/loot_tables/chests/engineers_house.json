@@ -1,8 +1,11 @@
 {
   "pools": [
     {
-      "name": "immersiveengineering:engineers_village_house",
-      "rolls": 4,
+      "name": "immersiveengineering:engineers_village_house_0",
+      "rolls": {
+        "min": 2,
+        "max": 4
+      },
       "entries": [
         {
           "type": "item",
@@ -76,7 +79,6 @@
             }
           ]
         },
-
         {
           "type": "item",
           "entryName": "hemp_fabric",
@@ -115,7 +117,6 @@
             }
           ]
         },
-
         {
           "type": "item",
           "entryName": "iron_component",
@@ -154,7 +155,6 @@
             }
           ]
         },
-
         {
           "type": "item",
           "name": "minecraft:iron_ingot",
@@ -259,13 +259,18 @@
               }
             }
           ]
-        },
-
+        }
+      ]
+    },
+    {
+      "name": "immersiveengineering:engineers_village_house_1",
+      "rolls": 1,
+      "entries": [
         {
           "type": "item",
           "entryName": "blueprint_bullets",
           "name": "immersiveengineering:blueprint",
-          "weight": 4,
+          "weight": 3,
           "functions": [
             {
               "function": "set_nbt",
@@ -287,6 +292,7 @@
           "entryName": "blueprint_specialBullets",
           "name": "immersiveengineering:blueprint",
           "weight": 2,
+          "quality": 3,
           "functions": [
             {
               "function": "set_nbt",
@@ -308,6 +314,7 @@
           "entryName": "blueprint_electrode",
           "name": "immersiveengineering:blueprint",
           "weight": 1,
+          "quality": 2,
           "functions": [
             {
               "function": "set_nbt",
@@ -323,6 +330,88 @@
               ]
             }
           ]
+        },
+        {
+          "type": "item",
+          "entryName": "revolver_barrel",
+          "name": "immersiveengineering:material",
+          "weight": 2,
+          "quality": 2,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 14
+            },
+            {
+              "function": "immersiveengineering:revolver_perks"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "revolver_drum",
+          "name": "immersiveengineering:material",
+          "weight": 2,
+          "quality": 2,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 15
+            },
+            {
+              "function": "immersiveengineering:revolver_perks"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "revolver_hammer",
+          "name": "immersiveengineering:material",
+          "weight": 2,
+          "quality": 2,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 16
+            },
+            {
+              "function": "immersiveengineering:revolver_perks"
+            }
+          ]
+        },
+        {
+          "type": "empty",
+          "weight": 5
+        }
+      ]
+    },
+    {
+      "name": "immersiveengineering:engineers_village_house_2",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "immersiveengineering:pickaxe_steel",
+          "weight": 5
+        },
+        {
+          "type": "item",
+          "name": "immersiveengineering:shovel_steel",
+          "weight": 5
+        },
+        {
+          "type": "item",
+          "name": "immersiveengineering:axe_steel",
+          "weight": 5
+        },
+        {
+          "type": "item",
+          "name": "immersiveengineering:sword_steel",
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "weight": 4
         }
       ]
     }

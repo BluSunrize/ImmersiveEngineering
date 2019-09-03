@@ -34,6 +34,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,6 +98,7 @@ import static java.lang.Math.min;
 public class Utils
 {
 	public static final Random RAND = new Random();
+	public static final DecimalFormat NUMBERFORMAT_PREFIXED = new DecimalFormat("+#;-#");
 
 	public static boolean compareToOreName(ItemStack stack, String oreName)
 	{
@@ -271,6 +273,28 @@ public class Utils
 		return isExceptBlockForAttachWithPiston(block)||block==Blocks.BARRIER||block==Blocks.MELON_BLOCK||block==Blocks.PUMPKIN||block==Blocks.LIT_PUMPKIN;
 	}
 
+	public static int generatePlayerInfluencedInt(int median, int deviation, EntityPlayer player, boolean isBad, double luckScale)
+	{
+		int number = player.getRNG().nextInt(deviation);
+		if(isBad)
+			number = -number;
+		number += (int)(luckScale*player.getEntityAttribute(SharedMonsterAttributes.LUCK).getAttributeValue());
+
+		return median+Math.min(number, deviation);
+	}
+
+	public static double generateLuckInfluencedDouble(double median, double deviation, double luck, Random rng, boolean isBad, double luckScale)
+	{
+		double number = rng.nextDouble()*deviation;
+		if(isBad)
+			number = -number;
+		number += luckScale*luck;
+		if(deviation < 0)
+			number = Math.max(number, deviation);
+		else
+			number = Math.min(number, deviation);
+		return median+number;
+	}
 
 	public static String formatDouble(double d, String s)
 	{
@@ -526,7 +550,7 @@ public class Utils
 		float f1 = MathHelper.sin(-yaw*0.017453292F-(float)Math.PI);
 		float f2 = -MathHelper.cos(-pitch*0.017453292F);
 		float f3 = MathHelper.sin(-pitch*0.017453292F);
-		return new Vec3d((double)(f1*f2), (double)f3, (double)(f*f2));
+		return new Vec3d(f1*f2, f3, f*f2);
 	}
 
 	public static void attractEnemies(EntityLivingBase target, float radius)
@@ -602,14 +626,14 @@ public class Utils
 					if(j >= 0)
 					{
 						int k = j-(i-8);
-						vec3 = vec3.add((double)((blockpos.getX()-pos.getX())*k), (double)((blockpos.getY()-pos.getY())*k), (double)((blockpos.getZ()-pos.getZ())*k));
+						vec3 = vec3.add((blockpos.getX()-pos.getX())*k, (blockpos.getY()-pos.getY())*k, (blockpos.getZ()-pos.getZ())*k);
 					}
 				}
 			}
 			else if(j >= 0)
 			{
 				int l = j-i;
-				vec3 = vec3.add((double)((blockpos.getX()-pos.getX())*l), (double)((blockpos.getY()-pos.getY())*l), (double)((blockpos.getZ()-pos.getZ())*l));
+				vec3 = vec3.add((blockpos.getX()-pos.getX())*l, (blockpos.getY()-pos.getY())*l, (blockpos.getZ()-pos.getZ())*l);
 			}
 		}
 
@@ -1476,7 +1500,7 @@ public class Utils
 	 */
 	public static TileEntity getExistingTileEntity(World world, BlockPos pos)
 	{
-		if(world!=null && world.isBlockLoaded(pos))
+		if(world!=null&&world.isBlockLoaded(pos))
 			return world.getTileEntity(pos);
 		return null;
 	}

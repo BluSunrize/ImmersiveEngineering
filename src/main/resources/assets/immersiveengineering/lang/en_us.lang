@@ -708,6 +708,28 @@ desc.immersiveengineering.info.blueprint.electrode=Arc Furnace Electrodes
 
 desc.immersiveengineering.info.electrodeIntegrity=Integrity
 
+desc.immersiveengineering.info.revolver.perk.cooldown=Firerate: %1$s%%
+desc.immersiveengineering.info.revolver.perk.cooldown.tier-3=Slow %1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier-2=Stuttering %1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier-1=Squeaky %1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier1=Fanned %1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier2=Selfrepeating %1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier3=Autococking %1$s
+desc.immersiveengineering.info.revolver.perk.noise=Noise: %1$s%%
+desc.immersiveengineering.info.revolver.perk.noise.tier-3=Bellowing %1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier-2=Loud %1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier-1=Noisy %1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier1=Whisper %1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier2=Silenced %1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier3=Muted %1$s
+desc.immersiveengineering.info.revolver.perk.luck=Luck: %1$s%%
+desc.immersiveengineering.info.revolver.perk.luck.tier-3=Tough %1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier-2=Unlucky %1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier-1=Inauspicious %1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier1=Fortunate %1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier2=Lucky %1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier3=Gamblers %1$s
+
 desc.immersiveengineering.info.bullet.flareColour=Flare Colour: %1$s
 
 desc.immersiveengineering.info.shader.applyTo=Can be applied to:
@@ -1431,10 +1453,11 @@ ie.manual.entry.maintenanceKit1=A set of tools, wrapped in sturdy hemp cloth, th
 ie.manual.entry.revolver.name=Revolver
 ie.manual.entry.revolver.subtext=Wanted: Dead or Alive
 ie.manual.entry.revolver0=The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.<br>Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>, as detailed on the last pages.
-ie.manual.entry.revolver1=There are different <link;bullets;§o§ntypes §o§nof §o§nammunition§r;> the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.<br>A loaded Speedloader in your inventory will be used to refill the revolver after you've fired your last shot.
+ie.manual.entry.revolver1=There are different <link;bullets;§o§ntypes §o§nof §o§nammunition§r;> the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.<br>A loaded Speedloader in your inventory will be used to refill the revolver after you've fired your last shot.<br><br>Note that firing the revolver is quite noisy, and will attract the attention of hostile mobs in the area!
 ie.manual.entry.revolver2=By attaching a §6bayonet§r to the revolver, you outfit it with close-quarter-combat capabilities, allowing for melee damage as powerful as an Iron Sword.
 ie.manual.entry.revolver3=The §6Extended Magazine§r allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.
 ie.manual.entry.revolver4=The §6Amplifying Electron Tubes§r apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.
+ie.manual.entry.revolver5=Rarely, when exploring villages and trading with the local engineers, you may find special crafting components for the revolver. These components come with certain intrinsic perks and when used to craft a revolver, they will imbue those perks into it, affecting the §ofirerate§r, the amount of §onoise§r it makes and augmenting the wielder's §oluck§r.
 
 ie.manual.entry.bullets.name=Revolver Cartridges
 ie.manual.entry.bullets.subtext=

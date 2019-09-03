@@ -32,6 +32,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	NonNullList<Ingredient> ingredientsEighthTurn;
 	int[] nbtCopyTargetSlot = null;
 	Pattern nbtCopyPredicate = null;
+	boolean nbtCopyMultiplyDecimals = false;
 	int lastMatch = 0;
 	int lastStartX = 0;
 	int lastStartY = 0;
@@ -96,6 +97,12 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		return this;
 	}
 
+	public RecipeShapedIngredient setNBTCopyMultiplyDecimals(boolean multiply)
+	{
+		this.nbtCopyMultiplyDecimals = multiply;
+		return this;
+	}
+
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting matrix)
 	{
@@ -107,7 +114,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 			{
 				ItemStack s = matrix.getStackInSlot(targetSlot);
 				if(!s.isEmpty()&&s.hasTagCompound())
-					tag = ItemNBTHelper.combineTags(tag, s.getTagCompound(), nbtCopyPredicate);
+					tag = ItemNBTHelper.combineTags(tag, s.getTagCompound(), nbtCopyPredicate, nbtCopyMultiplyDecimals);
 			}
 			if(!tag.isEmpty())
 				out.setTagCompound(tag);

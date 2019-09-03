@@ -624,12 +624,12 @@ public class ClientProxy extends CommonProxy
 			for(String ore : IERecipes.hammerCrushingList)
 				tempRecipeList.add(new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ore"+ore), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(IEApi.getPreferredOreStack("dust"+ore), 78, 0)});
 			if(!tempRecipeList.isEmpty())
-				ManualHelper.addEntry("oreProcessing", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "oreProcessing0", (Object[])tempRecipeList.toArray(new PositionedItemStack[tempRecipeList.size()][3])));
+				ManualHelper.addEntry("oreProcessing", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "oreProcessing0", tempRecipeList.toArray(new PositionedItemStack[tempRecipeList.size()][3])));
 		}
-		ManualHelper.addEntry("alloys", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "alloys0", (Object[])new PositionedItemStack[][]{
+		ManualHelper.addEntry("alloys", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "alloys0", new PositionedItemStack[][]{
 				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"), 24, 0), new PositionedItemStack(OreDictionary.getOres("dustNickel"), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 2, 15), 78, 0)},
 				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"), 24, 0), new PositionedItemStack(OreDictionary.getOres("dustSilver"), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 2, 16), 78, 0)}}));
-		ManualHelper.addEntry("plates", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "plates0", (Object[])new PositionedItemStack[][]{
+		ManualHelper.addEntry("plates", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "plates0", new PositionedItemStack[][]{
 				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotIron"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 39), 78, 0)},
 				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotAluminum"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 31), 78, 0)},
 				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotLead"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 32), 78, 0)},
@@ -812,7 +812,7 @@ public class ClientProxy extends CommonProxy
 			tempItemList.add(ItemNBTHelper.stackWithData(new ItemStack(IEContent.itemEarmuffs), "IE:EarmuffColour", EnumDyeColor.byDyeDamage(i).getColorValue()));
 		ManualHelper.addEntry("earmuffs", ManualHelper.CAT_TOOLS,
 				new ManualPages.Crafting(ManualHelper.getManual(), "earmuffs0", new ItemStack(IEContent.itemEarmuffs)),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "earmuffs1", (Object[])new PositionedItemStack[][]{
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "earmuffs1", new PositionedItemStack[][]{
 						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs), 24, 0), new PositionedItemStack(new ItemStack(Items.DYE, 1, OreDictionary.WILDCARD_VALUE), 42, 0), new PositionedItemStack(tempItemList, 78, 0)},
 						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs), 24, 0), new PositionedItemStack(Lists.newArrayList(new ItemStack(Items.LEATHER_HELMET), new ItemStack(Items.IRON_HELMET)), 42, 0), new PositionedItemStack(Lists.newArrayList(ItemNBTHelper.stackWithData(new ItemStack(Items.LEATHER_HELMET), "IE:Earmuffs", true), ItemNBTHelper.stackWithData(new ItemStack(Items.IRON_HELMET), "IE:Earmuffs", true)), 78, 0)}}));
 		ManualHelper.addEntry("toolbox", ManualHelper.CAT_TOOLS, new ManualPages.Crafting(ManualHelper.getManual(), "toolbox0", new ItemStack(IEContent.itemToolbox)), new ManualPages.Text(ManualHelper.getManual(), "toolbox1"));
@@ -830,12 +830,20 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("maintenanceKit", ManualHelper.CAT_TOOLS,
 				new ManualPages.Crafting(ManualHelper.getManual(), "maintenanceKit0", new ItemStack(IEContent.itemMaintenanceKit, 1, 0)),
 				new ManualPages.Text(ManualHelper.getManual(), "maintenanceKit1"));
+		ItemStack barrel_perked = new ItemStack(IEContent.itemMaterial, 1, 14);
+		ItemStack drum_perked = new ItemStack(IEContent.itemMaterial, 1, 15);
+		ItemStack hammer_perked = new ItemStack(IEContent.itemMaterial, 1, 16);
+		Random rand = new Random();
+		ItemNBTHelper.setTagCompound(barrel_perked, "perks", ItemRevolver.RevolverPerk.generatePerkSet(rand, 2));
+		ItemNBTHelper.setTagCompound(drum_perked, "perks", ItemRevolver.RevolverPerk.generatePerkSet(rand, 2));
+		ItemNBTHelper.setTagCompound(hammer_perked, "perks", ItemRevolver.RevolverPerk.generatePerkSet(rand, 2));
 		ManualHelper.addEntry("revolver", ManualHelper.CAT_TOOLS,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver0", new ItemStack(IEContent.itemRevolver, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 13), new ItemStack(IEContent.itemMaterial, 1, 14), new ItemStack(IEContent.itemMaterial, 1, 15), new ItemStack(IEContent.itemMaterial, 1, 16)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver1", new ItemStack(IEContent.itemRevolver, 1, 1)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "revolver2", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.REVOLVER_BAYONET.ordinal())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "revolver3", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.REVOLVER_MAGAZINE.ordinal())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "revolver4", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.REVOLVER_ELECTRO.ordinal())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "revolver4", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.REVOLVER_ELECTRO.ordinal())),
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "revolver5", barrel_perked,drum_perked,hammer_perked));
 		pages = new ArrayList<IManualPage>();
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "bullets0", BlueprintCraftingRecipe.getTypedBlueprint("bullet")));
 		pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet, 1, 0), new ItemStack(IEContent.itemBullet, 1, 1), new ItemStack(IEContent.itemMold, 1, 3)));

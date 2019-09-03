@@ -103,20 +103,24 @@ public class IEVillagerHandler
 		career_machinist.addTrade(2,
 				new EmeraldForItemstack(new ItemStack(IEContent.itemMetal, 1, 0), new EntityVillager.PriceInfo(4, 6)),
 				new EmeraldForItemstack(new ItemStack(IEContent.itemMetal, 1, 1), new EntityVillager.PriceInfo(4, 6)),
-				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 9), new EntityVillager.PriceInfo(1, 3))
+				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 9), new EntityVillager.PriceInfo(1, 3)),
+				new RevolverPieceForEmeralds()
 		);
 		career_machinist.addTrade(3,
 				new ItemstackForEmerald(new ItemStack(IEContent.itemToolbox, 1, 0), new EntityVillager.PriceInfo(6, 8)),
 				new ItemstackForEmerald(new ItemStack(IEContent.itemMaterial, 1, 10), new EntityVillager.PriceInfo(1, 3)),
-				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9))
+				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9)),
+				new RevolverPieceForEmeralds()
 		);
 		career_machinist.addTrade(4,
 				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 1), new EntityVillager.PriceInfo(28, 40)),
-				new ItemstackForEmerald(IEContent.itemEarmuffs, new EntityVillager.PriceInfo(4, 9))
+				new ItemstackForEmerald(IEContent.itemEarmuffs, new EntityVillager.PriceInfo(4, 9)),
+				new RevolverPieceForEmeralds()
 		);
 		career_machinist.addTrade(5,
 				new ItemstackForEmerald(new ItemStack(IEContent.itemDrillhead, 1, 0), new EntityVillager.PriceInfo(32, 48)),
-				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
+				new ItemstackForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24)),
+				new RevolverPieceForEmeralds()
 		);
 
 		/* Electrician
@@ -263,7 +267,7 @@ public class IEVillagerHandler
 					return;
 				}
 				BlockPos blockPos = new BlockPos(chunkCoords.getXStart()+8, 64, chunkCoords.getZStart()+8);
-				ItemStack itemstack = ItemMap.setupNewMap(world, (double)blockPos.getX(), (double)blockPos.getZ(), (byte)1, true, true);
+				ItemStack itemstack = ItemMap.setupNewMap(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
 				ItemMap.renderBiomePreviewMap(world, itemstack);
 				MapData.addTargetDecoration(itemstack, blockPos, "ie:coresample_treasure", Type.TARGET_POINT);
 				itemstack.setTranslatableName("item.immersiveengineering.map_orevein.name");
@@ -271,6 +275,21 @@ public class IEVillagerHandler
 
 				recipeList.add(new MerchantRecipe(new ItemStack(Items.EMERALD, 8+random.nextInt(8)), new ItemStack(IEContent.itemMetal), itemstack));
 			}
+		}
+	}
+
+	private static class RevolverPieceForEmeralds implements EntityVillager.ITradeList
+	{
+		public RevolverPieceForEmeralds()
+		{
+		}
+
+		@Override
+		public void addMerchantRecipe(IMerchant merchant, MerchantRecipeList recipeList, Random random)
+		{
+			ItemStack stack = new ItemStack(IEContent.itemMaterial, 1, 14+random.nextInt(3));
+			ItemNBTHelper.setBoolean(stack, "generatePerks", true);
+			recipeList.add(new MerchantRecipe(new ItemStack(Items.EMERALD, 1), ItemStack.EMPTY, stack, 0, 1));
 		}
 	}
 }
