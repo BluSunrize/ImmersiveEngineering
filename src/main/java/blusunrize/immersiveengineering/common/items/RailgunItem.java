@@ -63,9 +63,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class ItemRailgun extends ItemUpgradeableTool implements IIEEnergyItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
+public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
 {
-	public ItemRailgun()
+	public RailgunItem()
 	{
 		super("railgun", new Properties().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "RAILGUN");
 	}

@@ -28,11 +28,11 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
-public class ItemToolUpgrade extends ItemIEBase implements IUpgrade
+public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 {
 	private final ToolUpgrade type;
 
-	public ItemToolUpgrade(ToolUpgrade type)
+	public ToolUpgradeItem(ToolUpgrade type)
 	{
 		super("toolupgrade_"+type.name().toLowerCase(), new Properties().maxStackSize(1));
 		this.type = type;

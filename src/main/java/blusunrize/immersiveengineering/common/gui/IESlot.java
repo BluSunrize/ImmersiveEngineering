@@ -15,9 +15,9 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.*;
+import blusunrize.immersiveengineering.common.items.BulletItem;
+import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.ItemBullet;
-import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -151,7 +151,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return !itemStack.isEmpty()&&itemStack.getItem() instanceof ItemBullet;
+			return !itemStack.isEmpty()&&itemStack.getItem() instanceof BulletItem;
 		}
 
 		@Override
@@ -272,7 +272,7 @@ public abstract class IESlot extends Slot
 		{
 			if(itemStack.isEmpty())
 				return false;
-			if(itemStack.getItem() instanceof ItemEngineersBlueprint)
+			if(itemStack.getItem() instanceof EngineersBlueprintItem)
 				return true;
 			if(itemStack.getItem() instanceof IUpgradeableTool)
 				return ((IUpgradeableTool)itemStack.getItem()).canModify(itemStack);
@@ -368,7 +368,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return !itemStack.isEmpty()&&itemStack.getItem() instanceof ItemEngineersBlueprint;
+			return !itemStack.isEmpty()&&itemStack.getItem() instanceof EngineersBlueprintItem;
 		}
 
 		@Override

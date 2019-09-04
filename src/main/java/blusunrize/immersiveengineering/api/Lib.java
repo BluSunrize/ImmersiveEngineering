@@ -47,28 +47,28 @@ public class Lib
 	 * Gui IDs
 	 */
 	//Tiles
-	public static final ResourceLocation GUIID_CokeOven = new ResourceLocation(MODID, ":cokeoven");
-	public static final ResourceLocation GUIID_AlloySmelter = new ResourceLocation(MODID, ":alloysmelter");
-	public static final ResourceLocation GUIID_BlastFurnace = new ResourceLocation(MODID, ":blastfurnace");
-	public static final ResourceLocation GUIID_WoodenCrate = new ResourceLocation(MODID, ":woodencrate");
-	public static final ResourceLocation GUIID_Workbench = new ResourceLocation(MODID, ":workbench");
-	public static final ResourceLocation GUIID_Assembler = new ResourceLocation(MODID, ":assembler");
-	public static final ResourceLocation GUIID_Sorter = new ResourceLocation(MODID, ":sorter");
-	public static final ResourceLocation GUIID_Squeezer = new ResourceLocation(MODID, ":squeezer");
-	public static final ResourceLocation GUIID_Fermenter = new ResourceLocation(MODID, ":fermenter");
-	public static final ResourceLocation GUIID_Refinery = new ResourceLocation(MODID, ":refinery");
-	public static final ResourceLocation GUIID_ArcFurnace = new ResourceLocation(MODID, ":arcfurnace");
-	public static final ResourceLocation GUIID_AutoWorkbench = new ResourceLocation(MODID, ":autoworkbench");
-	public static final ResourceLocation GUIID_Mixer = new ResourceLocation(MODID, ":mixer");
-	public static final ResourceLocation GUIID_Turret = new ResourceLocation(MODID, ":turret");
-	public static final ResourceLocation GUIID_FluidSorter = new ResourceLocation(MODID, ":fluidsorter");
-	public static final ResourceLocation GUIID_Belljar = new ResourceLocation(MODID, ":belljar");
-	public static final ResourceLocation GUIID_ToolboxBlock = new ResourceLocation(MODID, ":toolboxblock");
+	public static final ResourceLocation GUIID_CokeOven = new ResourceLocation(MODID, "cokeoven");
+	public static final ResourceLocation GUIID_AlloySmelter = new ResourceLocation(MODID, "alloysmelter");
+	public static final ResourceLocation GUIID_BlastFurnace = new ResourceLocation(MODID, "blastfurnace");
+	public static final ResourceLocation GUIID_WoodenCrate = new ResourceLocation(MODID, "woodencrate");
+	public static final ResourceLocation GUIID_Workbench = new ResourceLocation(MODID, "workbench");
+	public static final ResourceLocation GUIID_Assembler = new ResourceLocation(MODID, "assembler");
+	public static final ResourceLocation GUIID_Sorter = new ResourceLocation(MODID, "sorter");
+	public static final ResourceLocation GUIID_Squeezer = new ResourceLocation(MODID, "squeezer");
+	public static final ResourceLocation GUIID_Fermenter = new ResourceLocation(MODID, "fermenter");
+	public static final ResourceLocation GUIID_Refinery = new ResourceLocation(MODID, "refinery");
+	public static final ResourceLocation GUIID_ArcFurnace = new ResourceLocation(MODID, "arcfurnace");
+	public static final ResourceLocation GUIID_AutoWorkbench = new ResourceLocation(MODID, "autoworkbench");
+	public static final ResourceLocation GUIID_Mixer = new ResourceLocation(MODID, "mixer");
+	public static final ResourceLocation GUIID_Turret = new ResourceLocation(MODID, "turret");
+	public static final ResourceLocation GUIID_FluidSorter = new ResourceLocation(MODID, "fluidsorter");
+	public static final ResourceLocation GUIID_Belljar = new ResourceLocation(MODID, "belljar");
+	public static final ResourceLocation GUIID_ToolboxBlock = new ResourceLocation(MODID, "toolboxblock");
 	//Items
-	public static final ResourceLocation GUIID_Manual = new ResourceLocation(MODID, ":manual");
-	public static final ResourceLocation GUIID_Revolver = new ResourceLocation(MODID, ":revolver");
-	public static final ResourceLocation GUIID_Toolbox = new ResourceLocation(MODID, ":toolbox");
-	public static final ResourceLocation GUIID_MaintenanceKit = new ResourceLocation(MODID, ":maintenancekit");
+	public static final ResourceLocation GUIID_Manual = new ResourceLocation(MODID, "manual");
+	public static final ResourceLocation GUIID_Revolver = new ResourceLocation(MODID, "revolver");
+	public static final ResourceLocation GUIID_Toolbox = new ResourceLocation(MODID, "toolbox");
+	public static final ResourceLocation GUIID_MaintenanceKit = new ResourceLocation(MODID, "maintenancekit");
 
 	public static final String NBT_Earmuffs = "IE:Earmuffs";
 	public static final String NBT_EarmuffColour = "IE:EarmuffColour";

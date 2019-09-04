@@ -140,6 +140,6 @@
   },
   "feedthrough": {
     "type": "multiblock",
-    "name": "IE:Feedthrough"
+    "name": "immersiveengineering:feedthrough"
   }
 }

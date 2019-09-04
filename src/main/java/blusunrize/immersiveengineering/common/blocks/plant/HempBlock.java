@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.plant;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -19,8 +21,6 @@ import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer.Builder;
@@ -54,8 +54,9 @@ public class HempBlock extends BushBlock implements IGrowable
 	{
 		super(Block.Properties.create(Material.PLANTS).hardnessAndResistance(0));
 		this.name = name;
+		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEBlocks.add(this);
-		IEContent.registeredIEItems.add(new BlockItem(this, new Item.Properties()));
+		IEContent.registeredIEItems.add(new BlockItemIE(this));
 	}
 
 	@Override

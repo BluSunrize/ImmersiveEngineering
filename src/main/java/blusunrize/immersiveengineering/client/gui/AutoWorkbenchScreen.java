@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonItem;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.AutoWorkbenchContainer;
-import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
+import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -44,7 +44,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen
 		this.buttons.clear();
 		super.init();
 		Slot s = container.getSlot(0);
-		if(s!=null&&s.getHasStack()&&s.getStack().getItem() instanceof ItemEngineersBlueprint)
+		if(s!=null&&s.getHasStack()&&s.getStack().getItem() instanceof EngineersBlueprintItem)
 		{
 			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(s.getStack(), "blueprint"));
 			if(recipes!=null&&recipes.length > 0)

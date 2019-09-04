@@ -26,13 +26,13 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 
-public class ItemWireCoil extends ItemIEBase implements IWireCoil
+public class WireCoilItem extends IEBaseItem implements IWireCoil
 {
 
 	@Nonnull
 	private final WireType type;
 
-	public ItemWireCoil(WireType type)
+	public WireCoilItem(WireType type)
 	{
 		super("wirecoil_"+type.getUniqueName().toLowerCase(), new Properties());
 		this.type = type;

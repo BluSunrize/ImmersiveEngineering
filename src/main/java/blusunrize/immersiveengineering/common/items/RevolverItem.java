@@ -77,9 +77,9 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallback<ItemStack>, ITool, IBulletContainer
+public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallback<ItemStack>, ITool, IBulletContainer
 {
-	public ItemRevolver()
+	public RevolverItem()
 	{
 		super("revolver", new Properties().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "REVOLVER");
 	}
@@ -275,13 +275,13 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 						for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 						{
 							ItemStack stack = player.inventory.getStackInSlot(i);
-							if(stack.getItem() instanceof ItemSpeedloader&&!((ItemSpeedloader)stack.getItem()).isEmpty(stack))
+							if(stack.getItem() instanceof SpeedloaderItem&&!((SpeedloaderItem)stack.getItem()).isEmpty(stack))
 							{
 								for(ItemStack b : bullets)
 									if(!b.isEmpty())
 										world.addEntity(new ItemEntity(world, player.posX, player.posY, player.posZ, b));
-								setBullets(revolver, ((ItemSpeedloader)stack.getItem()).getContainedItems(stack));
-								((ItemSpeedloader)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
+								setBullets(revolver, ((SpeedloaderItem)stack.getItem()).getContainedItems(stack));
+								((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 								player.inventory.markDirty();
 								if(player instanceof ServerPlayerEntity)
 									ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
@@ -294,7 +294,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 
 					if(!ItemNBTHelper.hasKey(revolver, "reload"))
 					{
-						if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof ItemBullet&&ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
+						if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem&&ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
 						{
 							String key = ItemNBTHelper.getString(bullets.get(0), "bullet");
 							IBullet bullet = BulletHandler.getBullet(key);
@@ -347,7 +347,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
 				return new ActionResult<>(ActionResultType.PASS, revolver);
 			NonNullList<ItemStack> bullets = getBullets(revolver);
-			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof ItemBullet&&ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
+			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem&&ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
 			{
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(revolver);
 				if(shader!=null)
@@ -386,7 +386,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			for(int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack b = inv.getStackInSlot(i);
-				if(!b.isEmpty()&&b.getItem() instanceof ItemBullet&&(allowCasing||ItemNBTHelper.hasKey(b, "bullet")))
+				if(!b.isEmpty()&&b.getItem() instanceof BulletItem&&(allowCasing||ItemNBTHelper.hasKey(b, "bullet")))
 					return false;
 			}
 			return true;

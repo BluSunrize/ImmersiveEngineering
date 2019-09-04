@@ -45,13 +45,13 @@ import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackBullet;
+import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackPartBullet;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
-import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
-import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
-import blusunrize.immersiveengineering.common.util.IELootFunctions.Bluprintz.Serializer;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
@@ -89,7 +89,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -102,6 +101,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import javax.annotation.Nullable;
@@ -111,11 +112,11 @@ import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class IEContent
 {
-	public static List<Block> registeredIEBlocks = new ArrayList<Block>();
-	public static List<Item> registeredIEItems = new ArrayList<Item>();
+	public static List<Block> registeredIEBlocks = new ArrayList<>();
+	public static List<Item> registeredIEItems = new ArrayList<>();
 	public static List<Class<? extends TileEntity>> registeredIETiles = new ArrayList<>();
 	public static List<Fluid> registeredIEFluids = new ArrayList<>();
 
@@ -137,8 +138,6 @@ public class IEContent
 
 	static
 	{
-		LootFunctionManager.registerFunction(new Serializer());
-
 		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow"), createBuilder(1100, 3000));
 		fluidPlantoil = new IEFluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow"), createBuilder(925, 2000));
 		fluidEthanol = new IEFluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow"), createBuilder(789, 1000));
@@ -186,15 +185,18 @@ public class IEContent
 		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10);
 		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180);
 
-		IEBlocks.StoneDecoration.cokebrick = new IEBaseBlock("cokebrick", stoneDecoProps, BlockItemIE.class);
-		IEBlocks.StoneDecoration.blastbrick = new IEBaseBlock("blastbrick", stoneDecoProps, BlockItemIE.class);
-		IEBlocks.StoneDecoration.blastbrickReinforced = new IEBaseBlock("blastbrick_reinforced", stoneDecoProps, BlockItemIE.class);
-		IEBlocks.StoneDecoration.coke = new IEBaseBlock("coke", stoneDecoProps, BlockItemIE.class);
-		IEBlocks.StoneDecoration.hempcrete = new IEBaseBlock("hempcrete", stoneDecoProps, BlockItemIE.class);
-		IEBlocks.StoneDecoration.concrete = new IEBaseBlock("concrete", stoneDecoProps, BlockItemIE.class);
-		IEBlocks.StoneDecoration.concreteTile = new IEBaseBlock("concrete_tile", stoneDecoProps, BlockItemIE.class);
-		IEBlocks.StoneDecoration.concreteLeaded = new IEBaseBlock("concrete_leaded", stoneDecoLeadedProps, BlockItemIE.class);
-		IEBlocks.StoneDecoration.alloybrick = new IEBaseBlock("alloybrick", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.cokebrick = new IEBaseBlock("cokebrick", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.blastbrick = new IEBaseBlock("blastbrick", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.blastbrickReinforced = new IEBaseBlock("blastbrick_reinforced", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.coke = new IEBaseBlock("coke", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.hempcrete = new IEBaseBlock("hempcrete", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.concrete = new IEBaseBlock("concrete", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.concreteTile = new IEBaseBlock("concrete_tile", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.concreteLeaded = new IEBaseBlock("concrete_leaded", stoneDecoLeadedProps, BlockItemIE.class);
+		StoneDecoration.alloybrick = new IEBaseBlock("alloybrick", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.concreteThreeQuarter = new IEBaseBlock("concrete_three_quarter", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.concreteSheet = new IEBaseBlock("concrete_sheet", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.concreteQuarter = new IEBaseBlock("concrete_quarter", stoneDecoProps, BlockItemIE.class);
 
 		IEBlocks.StoneDecoration.insulatingGlass = new IEBaseBlock("insulating_glass", stoneDecoProps, BlockItemIE.class)
 		{
@@ -239,9 +241,9 @@ public class IEContent
 		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stone_decoration_stairs_concrete_leaded", StoneDecoration.concreteLeaded.getDefaultState(), stoneDecoLeadedProps);
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
-		Multiblocks.blastFurnace = new StoneMultiBlock("coke_oven", () -> BlastFurnaceTileEntity.TYPE);
-		Multiblocks.alloySmelter = new StoneMultiBlock("coke_oven", () -> AlloySmelterTileEntity.TYPE);
-		Multiblocks.blastFurnaceAdv = new StoneMultiBlock("coke_oven", () -> BlastFurnaceAdvancedTileEntity.TYPE);
+		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
+		Multiblocks.alloySmelter = new StoneMultiBlock("alloay_smelter", () -> AlloySmelterTileEntity.TYPE);
+		Multiblocks.blastFurnaceAdv = new StoneMultiBlock("advanced_blast_furnace", () -> BlastFurnaceAdvancedTileEntity.TYPE);
 
 		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5);
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
@@ -291,7 +293,7 @@ public class IEContent
 		MetalDecoration.generator = new IEBaseBlock("generator", defaultMetalProperties, BlockItemIE.class);
 		MetalDecoration.radiator = new IEBaseBlock("radiator", defaultMetalProperties, BlockItemIE.class);
 		MetalDecoration.steelFence = new IEFenceBlock("steel_fence", defaultMetalProperties);
-		MetalDecoration.aluFence = new IEFenceBlock("steel_fence", defaultMetalProperties);
+		MetalDecoration.aluFence = new IEFenceBlock("alu_fence", defaultMetalProperties);
 		MetalDecoration.steelWallmount = new WallmountBlock("steel_wallmount", defaultMetalProperties);
 		MetalDecoration.aluWallmount = new WallmountBlock("alu_wallmount", defaultMetalProperties);
 		MetalDecoration.steelPost = new PostBlock("steel_post", defaultMetalProperties);
@@ -339,7 +341,7 @@ public class IEContent
 		MetalDevices.capacitorLV = new GenericTileBlock("capacitor_lv", () -> CapacitorLVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorMV = new GenericTileBlock("capacitor_mv", () -> CapacitorMVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorHV = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
-		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_creative", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.barrel = new BarrelBlock("barrel", false);
 		//MetalDevices.fluidPump = ;
 		//MetalDevices.fluidPlacer = ;
@@ -369,17 +371,15 @@ public class IEContent
 		blockFluidConcrete = new BlockIEFluidConcrete("fluidConcrete", fluidConcrete, Material.WATER);
 		 */
 
-		Tools.wirecutter = new ItemWirecutter();
-		Tools.hammer = new ItemHammer();
-		Tools.voltmeter = new ItemVoltmeter();
-		Tools.manual = new ItemManual();
+		Tools.wirecutter = new WirecutterItem();
+		Tools.hammer = new HammerItem();
+		Tools.voltmeter = new VoltmeterItem();
+		Tools.manual = new ManualItem();
 		IEItems.Tools.steelPick = IETools.createPickaxe(Lib.MATERIAL_Steel, "pickaxe_steel");
 		IEItems.Tools.steelShovel = IETools.createShovel(Lib.MATERIAL_Steel, "shovel_steel");
 		IEItems.Tools.steelAxe = IETools.createAxe(Lib.MATERIAL_Steel, "axe_steel");
 		IEItems.Tools.steelSword = IETools.createSword(Lib.MATERIAL_Steel, "sword_steel");
-		Tools.toolbox = new ItemToolbox();
-		for(WireType t : WireType.getIEWireTypes())
-			IEItems.Misc.wireCoils.put(t, new ItemWireCoil(t));
+		Tools.toolbox = new ToolboxItem();
 		/*TODO
 		IEItems.Misc.hempSeeds = new ItemIESeed(blockCrop, "hemp");
 		if(IEConfig.hempSeedWeight > 0)
@@ -423,22 +423,37 @@ public class IEContent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
 		ConveyorHandler.registerConveyorBlocks(event);
+		checkNonNullNames(registeredIEBlocks);
 		for(Block block : registeredIEBlocks)
-			event.getRegistry().register(block.setRegistryName(createRegistryName(block.getTranslationKey())));
+			event.getRegistry().register(block);
 	}
 
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
+		checkNonNullNames(registeredIEItems);
 		for(Item item : registeredIEItems)
-			event.getRegistry().register(item.setRegistryName(createRegistryName(item.getTranslationKey())));
-
+			event.getRegistry().register(item);
 		registerOres();
+	}
+
+	private static <T extends IForgeRegistryEntry<T>> void checkNonNullNames(Collection<T> coll)
+	{
+		int numNull = 0;
+		for(T b : coll)
+			if(b.getRegistryName()==null)
+			{
+				IELogger.logger.info("Null name for {} (class {})", b, b.getClass());
+				++numNull;
+			}
+		if(numNull > 0)
+			System.exit(1);
 	}
 
 	@SubscribeEvent
 	public static void registerFluids(RegistryEvent.Register<Fluid> event)
 	{
+		checkNonNullNames(registeredIEFluids);
 		for(Fluid fluid : registeredIEFluids)
 			event.getRegistry().register(fluid);
 	}
@@ -644,16 +659,11 @@ public class IEContent
 		IERecipes.postInitOreDictRecipes();
 	}
 
-	private static ResourceLocation createRegistryName(String unlocalized)
-	{
-		unlocalized = unlocalized.substring(unlocalized.indexOf("immersive"));
-		unlocalized = unlocalized.replaceFirst("\\.", ":");
-		return new ResourceLocation(unlocalized);
-	}
-
 	public static void preInit()
 	{
 		WireType.init();
+		for(WireType t : WireType.getIEWireTypes())
+			IEItems.Misc.wireCoils.put(t, new WireCoilItem(t));
 		/*CONVEYORS*/
 		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
 			CompoundNBT data = entity.getEntityData();
@@ -675,7 +685,7 @@ public class IEContent
 		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
 
 		/*BULLETS*/
-		ItemBullet.initBullets();
+		BulletItem.initBullets();
 
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
@@ -1139,7 +1149,7 @@ public class IEContent
 		 */
 	}
 
-	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
+	public static void registerToOreDict(String type, IEBaseItem item, int... metas)
 	{
 		/*TODO
 		if(metas==null||metas.length < 1)

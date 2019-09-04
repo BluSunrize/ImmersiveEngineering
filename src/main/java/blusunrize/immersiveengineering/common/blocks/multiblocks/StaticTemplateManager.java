@@ -49,7 +49,8 @@ public class StaticTemplateManager
 
 	public static Template loadStaticTemplate(ResourceLocation loc) throws IOException
 	{
-		Optional<InputStream> optStream = getModResource(ResourcePackType.SERVER_DATA, loc);
+		Optional<InputStream> optStream = getModResource(ResourcePackType.SERVER_DATA,
+				new ResourceLocation(loc.getNamespace(), loc.getPath()+".nbt"));
 		if(!optStream.isPresent())
 			throw new RuntimeException("Mod resource not found: "+loc);
 		return loadTemplate(optStream.get());

@@ -27,9 +27,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ItemSpeedloader extends ItemInternalStorage implements ITool, IBulletContainer
+public class SpeedloaderItem extends InternalStorageItem implements ITool, IBulletContainer
 {
-	public ItemSpeedloader()
+	public SpeedloaderItem()
 	{
 		super("speedloader", new Properties().maxStackSize(1));
 	}
@@ -57,7 +57,7 @@ public class ItemSpeedloader extends ItemInternalStorage implements ITool, IBull
 			for(int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack b = inv.getStackInSlot(i);
-				if(!b.isEmpty()&&b.getItem() instanceof ItemBullet&&ItemNBTHelper.hasKey(b, "bullet"))
+				if(!b.isEmpty()&&b.getItem() instanceof BulletItem&&ItemNBTHelper.hasKey(b, "bullet"))
 					return false;
 			}
 			return true;

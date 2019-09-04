@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
-import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
+import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -43,7 +43,7 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 		boolean showIngredients = true;
 		if(!stack.isEmpty())
 		{
-			if(stack.getItem() instanceof ItemEngineersBlueprint)
+			if(stack.getItem() instanceof EngineersBlueprintItem)
 			{
 				GlStateManager.pushMatrix();
 				double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(new Vec3d(te.getPos()));

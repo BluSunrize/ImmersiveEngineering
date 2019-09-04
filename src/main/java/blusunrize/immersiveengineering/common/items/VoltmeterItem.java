@@ -30,9 +30,9 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemVoltmeter extends ItemIEBase implements ITool
+public class VoltmeterItem extends IEBaseItem implements ITool
 {
-	public ItemVoltmeter()
+	public VoltmeterItem()
 	{
 		super("voltmeter", new Properties().maxStackSize(1));
 	}

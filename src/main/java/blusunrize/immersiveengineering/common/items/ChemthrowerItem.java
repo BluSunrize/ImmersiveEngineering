@@ -59,9 +59,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
+public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
 {
-	public ItemChemthrower()
+	public ChemthrowerItem()
 	{
 		super("chemthrower", new Item.Properties().setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "CHEMTHROWER");
 	}

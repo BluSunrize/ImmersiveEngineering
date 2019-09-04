@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.client.render.entity;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
+import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -90,11 +90,11 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		if(tubeActive.isEmpty())
 		{
 			tubeActive = new ItemStack(Misc.fluorescentTube);
-			ItemFluorescentTube.setLit(tubeActive, 1);
+			FluorescentTubeItem.setLit(tubeActive, 1);
 		}
 		GlStateManager.translated(-.5, .25, -.5);
 		ItemStack renderStack = active?tubeActive: tube;
-		ItemFluorescentTube.setRGB(renderStack, rgb);
+		FluorescentTubeItem.setRGB(renderStack, rgb);
 		IEOBJItemRenderer.INSTANCE.renderByItem(renderStack);
 	}
 }

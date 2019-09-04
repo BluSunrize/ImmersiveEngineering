@@ -14,33 +14,39 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SPlaySoundEffectPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+
 /**
  * @author BluSunrize - 03.07.2016
  */
+@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class IESounds
 {
 	static Set<SoundEvent> registeredEvents = new HashSet<>();
-	public static SoundEvent metalpress_piston = registerSound("metalPressPiston");
-	public static SoundEvent metalpress_smash = registerSound("metalPressSmash");
-	public static SoundEvent birthdayParty = registerSound("birthdayParty");
-	public static SoundEvent revolverFire = registerSound("revolverFire");
-	public static SoundEvent revolverFireThump = registerSound("revolverFireThump");
-	public static SoundEvent revolverReload = registerSound("revolverReload");
+	public static SoundEvent metalpress_piston = registerSound("metal_press_piston");
+	public static SoundEvent metalpress_smash = registerSound("metal_press_smash");
+	public static SoundEvent birthdayParty = registerSound("birthday_party");
+	public static SoundEvent revolverFire = registerSound("revolver_fire");
+	public static SoundEvent revolverFireThump = registerSound("revolver_fire_thump");
+	public static SoundEvent revolverReload = registerSound("revolver_reload");
 	public static SoundEvent spray = registerSound("spray");
 	public static SoundEvent sprayFire = registerSound("spray_fire");
-	public static SoundEvent chargeFast = registerSound("chargeFast");
-	public static SoundEvent chargeSlow = registerSound("chargeSlow");
+	public static SoundEvent chargeFast = registerSound("charge_fast");
+	public static SoundEvent chargeSlow = registerSound("charge_slow");
 	public static SoundEvent spark = registerSound("spark");
-	public static SoundEvent railgunFire = registerSound("railgunFire");
+	public static SoundEvent railgunFire = registerSound("railgun_fire");
 	public static SoundEvent tesla = registerSound("tesla");
 	public static SoundEvent crusher = registerSound("crusher");
-	public static SoundEvent dieselGenerator = registerSound("dieselGenerator");
-	public static SoundEvent direSwitch = registerSound("direSwitch");
+	public static SoundEvent dieselGenerator = registerSound("diesel_generator");
+	public static SoundEvent direSwitch = registerSound("dire_switch");
 
 	private static SoundEvent registerSound(String name)
 	{
@@ -50,10 +56,11 @@ public class IESounds
 		return event;
 	}
 
-	public static void init()
+	@SubscribeEvent
+	public static void registerSounds(RegistryEvent.Register<SoundEvent> evt)
 	{
 		for(SoundEvent event : registeredEvents)
-			ForgeRegistries.SOUND_EVENTS.register(event);
+			evt.getRegistry().register(event);
 	}
 
 	public static void PlaySoundForPlayer(Entity player, SoundEvent sound, float volume, float pitch)

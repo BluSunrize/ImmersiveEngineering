@@ -41,11 +41,11 @@ import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ItemWirecutter extends ItemIEBase implements ITool, IItemDamageableIE
+public class WirecutterItem extends IEBaseItem implements ITool, IItemDamageableIE
 {
-	public static final ToolType CUTTER_TOOL = ToolType.get(ImmersiveEngineering.MODID+":cutter");
+	public static final ToolType CUTTER_TOOL = ToolType.get(ImmersiveEngineering.MODID+"_cutter");
 
-	public ItemWirecutter()
+	public WirecutterItem()
 	{
 		super("wirecutter", new Properties().maxStackSize(1).setNoRepair());
 	}

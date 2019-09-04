@@ -26,10 +26,10 @@ import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.RazorWireTileEntity;
+import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.items.ItemDrill;
-import blusunrize.immersiveengineering.common.items.ItemIEShield;
+import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.network.MessageMineralListSync;
 import blusunrize.immersiveengineering.common.util.*;
@@ -313,10 +313,10 @@ public class EventHandler
 		{
 			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 			ItemStack activeStack = player.getActiveItemStack();
-			if(!activeStack.isEmpty()&&activeStack.getItem() instanceof ItemIEShield&&event.getAmount() >= 3&&Utils.canBlockDamageSource(player, event.getSource()))
+			if(!activeStack.isEmpty()&&activeStack.getItem() instanceof IEShieldItem&&event.getAmount() >= 3&&Utils.canBlockDamageSource(player, event.getSource()))
 			{
 				float amount = event.getAmount();
-				((ItemIEShield)activeStack.getItem()).hitShield(activeStack, player, event.getSource(), amount, event);
+				((IEShieldItem)activeStack.getItem()).hitShield(activeStack, player, event.getSource(), amount, event);
 			}
 		}
 	}
@@ -338,7 +338,7 @@ public class EventHandler
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
-		if(!event.isCanceled()&&!event.getEntityLiving().isNonBoss()&&event.getAmount() >= event.getEntityLiving().getHealth()&&event.getSource().getTrueSource() instanceof PlayerEntity&&((PlayerEntity)event.getSource().getTrueSource()).getHeldItem(Hand.MAIN_HAND).getItem() instanceof ItemDrill)
+		if(!event.isCanceled()&&!event.getEntityLiving().isNonBoss()&&event.getAmount() >= event.getEntityLiving().getHealth()&&event.getSource().getTrueSource() instanceof PlayerEntity&&((PlayerEntity)event.getSource().getTrueSource()).getHeldItem(Hand.MAIN_HAND).getItem() instanceof DrillItem)
 			Utils.unlockIEAdvancement((PlayerEntity)event.getSource().getTrueSource(), "main/secret_drillbreak");
 	}
 
@@ -407,23 +407,26 @@ public class EventHandler
 			synchronized(interdictionTiles)
 			{
 				DimensionType dimension = event.getEntity().world.getDimension().getType();
-				Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();
-				while(it.hasNext())
+				if(interdictionTiles.containsKey(dimension))
 				{
-					ISpawnInterdiction interdictor = it.next();
-					if(interdictor instanceof TileEntity)
+					Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();
+					while(it.hasNext())
 					{
-						if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
-							it.remove();
-						else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ) <= interdictor.getInterdictionRangeSquared())
-							event.setResult(Event.Result.DENY);
-					}
-					else if(interdictor instanceof Entity)
-					{
-						if(!((Entity)interdictor).isAlive()||((Entity)interdictor).world==null)
-							it.remove();
-						else if(((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
-							event.setResult(Event.Result.DENY);
+						ISpawnInterdiction interdictor = it.next();
+						if(interdictor instanceof TileEntity)
+						{
+							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
+								it.remove();
+							else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ) <= interdictor.getInterdictionRangeSquared())
+								event.setResult(Event.Result.DENY);
+						}
+						else if(interdictor instanceof Entity)
+						{
+							if(!((Entity)interdictor).isAlive()||((Entity)interdictor).world==null)
+								it.remove();
+							else if(((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
+								event.setResult(Event.Result.DENY);
+						}
 					}
 				}
 			}
@@ -436,7 +439,7 @@ public class EventHandler
 		ItemStack current = event.getEntityPlayer().getHeldItem(Hand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
 		if(!current.isEmpty()&&current.getItem()==Tools.drill&&event.getEntityPlayer().isInWater())
-			if(((ItemDrill)Tools.drill).getUpgrades(current).getBoolean("waterproof"))
+			if(((DrillItem)Tools.drill).getUpgrades(current).getBoolean("waterproof"))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
 				event.setCanceled(true);

@@ -15,7 +15,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
@@ -35,9 +34,8 @@ public class BlockIESlab extends SlabBlock
 		IEContent.registeredIEBlocks.add(this);
 		try
 		{
-			Item.Properties itemProps = new Item.Properties().group(ImmersiveEngineering.itemGroup);
-			IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class, Item.Properties.class)
-					.newInstance(this, itemProps));
+			IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class)
+					.newInstance(this));
 		} catch(Exception e)
 		{
 			//TODO e.printStackTrace();

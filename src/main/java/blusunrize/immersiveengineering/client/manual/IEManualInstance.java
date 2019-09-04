@@ -18,13 +18,17 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
+import com.electronwill.nightconfig.core.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class IEManualInstance extends ManualInstance
@@ -299,21 +303,32 @@ public class IEManualInstance extends ManualInstance
 
 	public String formatConfigEntry(String rep, String splitKey)
 	{
+		//TODO forge PR or wait for Lex to fix this
+		Config actualCfg;
+		try
+		{
+			Field childConfig = ForgeConfigSpec.class.getDeclaredField("childConfig");
+			childConfig.setAccessible(true);
+			actualCfg = (Config)childConfig.get(IEConfig.ALL);
+		} catch(IllegalAccessException|NoSuchFieldException e)
+		{
+			throw new RuntimeException(e);
+		}
 		String[] segment = rep.substring(0, rep.length()-1).split(splitKey);
 		if(segment.length < 3)
 			return "~ERROR0~";
 		if(segment[1].equalsIgnoreCase("b"))
 		{
 			if(segment.length > 3)
-				return (IEConfig.ALL.get(segment[2])?segment[3]: segment.length > 4?segment[4]: "");
+				return (actualCfg.get(segment[2])?segment[3]: segment.length > 4?segment[4]: "");
 			else
-				return ""+IEConfig.ALL.get(segment[2]);
+				return ""+actualCfg.get(segment[2]);
 		}
 		else if(segment[1].equalsIgnoreCase("i"))
-			return ""+IEConfig.ALL.get(segment[2]);
+			return ""+actualCfg.get(segment[2]);
 		else if(segment[1].equalsIgnoreCase("iA"))
 		{
-			int[] iA = IEConfig.ALL.get(segment[2]);
+			List<Integer> iA = actualCfg.get(segment[2]);
 			if(segment.length > 3)
 				try
 				{
@@ -322,13 +337,13 @@ public class IEManualInstance extends ManualInstance
 						int limiter = Integer.parseInt(segment[3].substring(1));
 						StringBuilder result = new StringBuilder();
 						for(int i = 0; i < limiter; i++)
-							result.append(i > 0?", ": "").append(iA[i]);
+							result.append(i > 0?", ": "").append(iA.get(i));
 						return result.toString();
 					}
 					else
 					{
 						int idx = Integer.parseInt(segment[3]);
-						return ""+iA[idx];
+						return ""+iA.get(idx);
 					}
 				} catch(Exception ex)
 				{
@@ -337,16 +352,16 @@ public class IEManualInstance extends ManualInstance
 			else
 			{
 				StringBuilder result = new StringBuilder();
-				for(int i = 0; i < iA.length; i++)
-					result.append(i > 0?", ": "").append(iA[i]);
+				for(int i = 0; i < iA.size(); i++)
+					result.append(i > 0?", ": "").append(iA.get(i));
 				return result.toString();
 			}
 		}
 		else if(segment[1].equalsIgnoreCase("d"))
-			return ""+IEConfig.ALL.get(segment[2]);
+			return ""+actualCfg.get(segment[2]);
 		else if(segment[1].equalsIgnoreCase("dA"))
 		{
-			double[] iD = IEConfig.ALL.get(segment[2]);
+			double[] iD = actualCfg.get(segment[2]);
 			if(segment.length > 3)
 				try
 				{

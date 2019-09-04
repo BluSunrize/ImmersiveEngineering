@@ -48,6 +48,7 @@ public class BlockItemIE extends BlockItem
 	public BlockItemIE(Block b)
 	{
 		super(b, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		setRegistryName(b.getRegistryName());
 	}
 
 	@Override
@@ -67,11 +68,15 @@ public class BlockItemIE extends BlockItem
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag advanced)
 	{
-		if(getBlock().hasFlavour())
+		if(getBlock() instanceof IEBaseBlock)
 		{
-			String flavourKey = Lib.DESC_FLAVOUR+getBlock().name;
-			//TODO color
-			tooltip.add(new TranslationTextComponent(I18n.format(flavourKey)));
+			IEBaseBlock ieBlock = (IEBaseBlock)getBlock();
+			if(ieBlock.hasFlavour())
+			{
+				String flavourKey = Lib.DESC_FLAVOUR+ieBlock.name;
+				//TODO color
+				tooltip.add(new TranslationTextComponent(I18n.format(flavourKey)));
+			}
 		}
 		super.addInformation(stack, world, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
@@ -102,12 +107,19 @@ public class BlockItemIE extends BlockItem
 	@Override
 	protected boolean placeBlock(BlockItemUseContext context, BlockState newState)
 	{
-		if(!getBlock().canIEBlockBePlaced(newState, context))
-			return false;
-		boolean ret = super.placeBlock(context, newState);
-		if(ret)
-			getBlock().onIEBlockPlacedBy(context, newState);
-		return ret;
+		Block b = getBlock();
+		if(b instanceof IEBaseBlock)
+		{
+			IEBaseBlock ieBlock = (IEBaseBlock)b;
+			if(!ieBlock.canIEBlockBePlaced(newState, context))
+				return false;
+			boolean ret = super.placeBlock(context, newState);
+			if(ret)
+				ieBlock.onIEBlockPlacedBy(context, newState);
+			return ret;
+		}
+		else
+			return super.placeBlock(context, newState);
 	}
 
 	@Override
@@ -153,12 +165,6 @@ public class BlockItemIE extends BlockItem
 			pos = pos.offset(side);
 		//TODO more accurate shape?
 		return worldIn.checkNoEntityCollision(null, VoxelShapes.fullCube().withOffset(pos.getX(), pos.getY(), pos.getZ()));
-	}
-
-	@Override
-	public IEBaseBlock getBlock()
-	{
-		return (IEBaseBlock)super.getBlock();
 	}
 
 	public static class BlockItemIENoInventory extends BlockItemIE

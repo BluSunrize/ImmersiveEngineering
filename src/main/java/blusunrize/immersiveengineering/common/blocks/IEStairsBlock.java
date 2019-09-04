@@ -11,13 +11,12 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.block.*;
-import net.minecraft.block.BlockState;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -38,8 +37,7 @@ public class IEStairsBlock extends StairsBlock
 		super(state, properties);
 		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, name));
 		IEContent.registeredIEBlocks.add(this);
-		Item.Properties itemProps = new Item.Properties().group(ImmersiveEngineering.itemGroup);
-		IEContent.registeredIEItems.add(new BlockItem(this, itemProps));
+		IEContent.registeredIEItems.add(new BlockItemIE(this));
 	}
 
 	public IEStairsBlock setHasFlavour(boolean hasFlavour)

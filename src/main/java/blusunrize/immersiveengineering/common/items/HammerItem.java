@@ -51,11 +51,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public class ItemHammer extends ItemIEBase implements IItemDamageableIE, ITool
+public class HammerItem extends IEBaseItem implements IItemDamageableIE, ITool
 {
-	public static final ToolType HAMMER_TOOL = ToolType.get(ImmersiveEngineering.MODID+":hammer");
+	public static final ToolType HAMMER_TOOL = ToolType.get(ImmersiveEngineering.MODID+"_hammer");
 
-	public ItemHammer()
+	public HammerItem()
 	{
 		super("hammer", new Properties().maxStackSize(1).setNoRepair());
 	}

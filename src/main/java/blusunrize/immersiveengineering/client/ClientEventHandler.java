@@ -33,10 +33,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableTileEntity;
+import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.network.MessageChemthrowerSwitch;
 import blusunrize.immersiveengineering.common.network.MessageMagnetEquip;
 import blusunrize.immersiveengineering.common.network.MessageRequestBlockUpdate;
@@ -147,10 +147,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					{
 						PlayerEntity player = event.player;
 						ItemStack held = player.getHeldItem(Hand.OFF_HAND);
-						if(!held.isEmpty()&&held.getItem() instanceof ItemIEShield)
+						if(!held.isEmpty()&&held.getItem() instanceof IEShieldItem)
 						{
-							if(((ItemIEShield)held.getItem()).getUpgrades(held).getBoolean("magnet")&&
-									((ItemIEShield)held.getItem()).getUpgrades(held).contains("prevSlot"))
+							if(((IEShieldItem)held.getItem()).getUpgrades(held).getBoolean("magnet")&&
+									((IEShieldItem)held.getItem()).getUpgrades(held).contains("prevSlot"))
 								ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(-1));
 						}
 						else
@@ -158,7 +158,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							for(int i = 0; i < player.inventory.mainInventory.size(); i++)
 							{
 								ItemStack s = player.inventory.mainInventory.get(i);
-								if(!s.isEmpty()&&s.getItem() instanceof ItemIEShield&&((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
+								if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
 									ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(i));
 							}
 						}
@@ -170,7 +170,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				if(ClientProxy.keybind_chemthrowerSwitch.isPressed())
 				{
 					ItemStack held = event.player.getHeldItem(Hand.MAIN_HAND);
-					if(held.getItem() instanceof ItemChemthrower&&((ItemChemthrower)held.getItem()).getUpgrades(held).getBoolean("multitank"))
+					if(held.getItem() instanceof ChemthrowerItem&&((ChemthrowerItem)held.getItem()).getUpgrades(held).getBoolean("multitank"))
 						ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(true));
 				}
 			}
@@ -314,7 +314,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onRenderItemFrame(RenderItemInFrameEvent event)
 	{
-		if(!event.getItem().isEmpty()&&event.getItem().getItem() instanceof ItemEngineersBlueprint)
+		if(!event.getItem().isEmpty()&&event.getItem().getItem() instanceof EngineersBlueprintItem)
 		{
 			double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(event.getEntityItemFrame());
 
@@ -475,11 +475,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					}
 					else if(equipped.getItem()==Misc.fluorescentTube)
 					{
-						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+ItemFluorescentTube.hexColorString(equipped));
+						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+FluorescentTubeItem.hexColorString(equipped));
 						ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2,
-								scaledHeight-ForgeIngameGui.left_height-20, ItemFluorescentTube.getRGBInt(equipped, 1));
+								scaledHeight-ForgeIngameGui.left_height-20, FluorescentTubeItem.getRGBInt(equipped, 1));
 					}
-					else if(equipped.getItem() instanceof ItemRevolver||equipped.getItem() instanceof ItemSpeedloader)
+					else if(equipped.getItem() instanceof RevolverItem||equipped.getItem() instanceof SpeedloaderItem)
 					{
 						NonNullList<ItemStack> bullets = ((IBulletContainer)equipped.getItem()).getBullets(equipped, true);
 						if(bullets!=null)
@@ -497,10 +497,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 							RevolverScreen.drawExternalGUI(bullets, bulletAmount);
 
-							if(equipped.getItem() instanceof ItemRevolver)
+							if(equipped.getItem() instanceof RevolverItem)
 							{
-								int cd = ((ItemRevolver)equipped.getItem()).getShootCooldown(equipped);
-								float cdMax = ((ItemRevolver)equipped.getItem()).getMaxShootCooldown(equipped);
+								int cd = ((RevolverItem)equipped.getItem()).getShootCooldown(equipped);
+								float cdMax = ((RevolverItem)equipped.getItem()).getMaxShootCooldown(equipped);
 								float cooldown = 1-cd/cdMax;
 								if(cooldown > 0)
 								{
@@ -534,10 +534,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						}
 
 					}
-					else if(equipped.getItem() instanceof ItemRailgun)
+					else if(equipped.getItem() instanceof RailgunItem)
 					{
 						int duration = 72000-(player.isHandActive()&&player.getActiveHand()==hand?player.getItemInUseCount(): 0);
-						int chargeTime = ((ItemRailgun)equipped.getItem()).getChargeTime(equipped);
+						int chargeTime = ((RailgunItem)equipped.getItem()).getChargeTime(equipped);
 						int chargeLevel = duration < 72000?Math.min(99, (int)(duration/(float)chargeTime*100)): 0;
 						float scale = 2f;
 						GlStateManager.pushMatrix();
@@ -547,9 +547,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						GlStateManager.scalef(1/scale, 1/scale, 1);
 						GlStateManager.popMatrix();
 					}
-					else if(equipped.getItem() instanceof ItemDrill||equipped.getItem() instanceof ItemChemthrower)
+					else if(equipped.getItem() instanceof DrillItem||equipped.getItem() instanceof ChemthrowerItem)
 					{
-						boolean drill = equipped.getItem() instanceof ItemDrill;
+						boolean drill = equipped.getItem() instanceof DrillItem;
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 						GlStateManager.color3f(1, 1, 1);
 						float dx = scaledWidth-16;
@@ -592,7 +592,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							{
 								ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
 								ItemRenderer ir = ClientUtils.mc().getItemRenderer();
-								ItemStack head = ((ItemDrill)equipped.getItem()).getHead(equipped);
+								ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
 								if(!head.isEmpty())
 								{
 									ir.renderItemIntoGUI(head, -51, -45);
@@ -616,9 +616,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						}
 						GlStateManager.popMatrix();
 					}
-					else if(equipped.getItem() instanceof ItemIEShield)
+					else if(equipped.getItem() instanceof IEShieldItem)
 					{
-						CompoundNBT upgrades = ((ItemIEShield)equipped.getItem()).getUpgrades(equipped);
+						CompoundNBT upgrades = ((IEShieldItem)equipped.getItem()).getUpgrades(equipped);
 						if(!upgrades.isEmpty())
 						{
 							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
@@ -830,7 +830,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						}
 					}
 				}
-				if(IEConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof ItemChemthrower&&((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
+				if(IEConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof ChemthrowerItem&&((ChemthrowerItem)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
 				{
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.getScrollDelta() < 0));
 					event.setCanceled(true);
@@ -984,10 +984,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				GlStateManager.disableBlend();
 			}
 
-			if(!stack.isEmpty()&&stack.getItem() instanceof ItemDrill&&
-					((ItemDrill)stack.getItem()).isEffective(world.getBlockState(rtr.getPos()).getMaterial()))
+			if(!stack.isEmpty()&&stack.getItem() instanceof DrillItem&&
+					((DrillItem)stack.getItem()).isEffective(world.getBlockState(rtr.getPos()).getMaterial()))
 			{
-				ItemStack head = ((ItemDrill)stack.getItem()).getHead(stack);
+				ItemStack head = ((DrillItem)stack.getItem()).getHead(stack);
 				if(!head.isEmpty()&&player instanceof PlayerEntity)
 				{
 					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world,

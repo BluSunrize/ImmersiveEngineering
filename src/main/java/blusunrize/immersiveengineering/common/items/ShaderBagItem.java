@@ -24,12 +24,12 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class ItemShaderBag extends ItemIEBase
+public class ShaderBagItem extends IEBaseItem
 {
 	@Nonnull
 	private final Rarity rarity;
 
-	public ItemShaderBag(Rarity rarity)
+	public ShaderBagItem(Rarity rarity)
 	{
 		super("shader_bag_"+rarity.name().toLowerCase(), new Properties());
 		this.rarity = rarity;

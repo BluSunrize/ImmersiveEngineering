@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.inventory;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
+import blusunrize.immersiveengineering.common.items.InternalStorageItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -82,7 +82,7 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 	{
 		if(first)
 		{
-			int idealSize = ((ItemInternalStorage)stack.getItem()).getSlotCount(stack);
+			int idealSize = ((InternalStorageItem)stack.getItem()).getSlotCount(stack);
 			NonNullList<ItemStack> newList = NonNullList.withSize(idealSize, ItemStack.EMPTY);
 			for(int i = 0; i < Math.min(stacks.size(), idealSize); i++)
 				newList.set(i, stacks.get(i));

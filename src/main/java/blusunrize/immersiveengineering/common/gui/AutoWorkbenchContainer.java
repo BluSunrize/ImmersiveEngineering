@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
-import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
+import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -70,7 +70,7 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEnt
 			}
 			else if(!stackInSlot.isEmpty())
 			{
-				if(stackInSlot.getItem() instanceof ItemEngineersBlueprint)
+				if(stackInSlot.getItem() instanceof EngineersBlueprintItem)
 				{
 					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;

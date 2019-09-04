@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.fluids;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -86,9 +87,13 @@ public class IEFluid extends FlowingFluid
 		{
 			flowing = this;
 			source = createSourceVariant();
+			setRegistryName(ImmersiveEngineering.MODID, fluidName+"_flowing");
 		}
 		else
+		{
 			source = this;
+			setRegistryName(ImmersiveEngineering.MODID, fluidName+"_source");
+		}
 	}
 
 	@Override

@@ -24,11 +24,11 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.function.Supplier;
 
-public abstract class ItemUpgradeableTool extends ItemInternalStorage implements IUpgradeableTool
+public abstract class UpgradeableToolItem extends InternalStorageItem implements IUpgradeableTool
 {
 	private String upgradeType;
 
-	public ItemUpgradeableTool(String name, Item.Properties props, String upgradeType)
+	public UpgradeableToolItem(String name, Item.Properties props, String upgradeType)
 	{
 		super(name, props.maxStackSize(1));
 		this.upgradeType = upgradeType;

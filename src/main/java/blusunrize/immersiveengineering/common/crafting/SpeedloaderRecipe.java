@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
-import blusunrize.immersiveengineering.common.items.ItemSpeedloader;
+import blusunrize.immersiveengineering.common.items.SpeedloaderItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -50,7 +50,7 @@ public class SpeedloaderRecipe extends ShapedRecipe
 	{
 		ItemStack speedloader = matrix.getStackInSlot(4);
 
-		if(!speedloader.isEmpty()&&speedloader.getItem() instanceof ItemSpeedloader&&((ItemSpeedloader)speedloader.getItem()).isEmpty(speedloader))
+		if(!speedloader.isEmpty()&&speedloader.getItem() instanceof SpeedloaderItem&&((SpeedloaderItem)speedloader.getItem()).isEmpty(speedloader))
 		{
 			ItemStack out = speedloader.copy();
 			NonNullList<ItemStack> fill = NonNullList.withSize(8, ItemStack.EMPTY);
@@ -59,7 +59,7 @@ public class SpeedloaderRecipe extends ShapedRecipe
 				int j = i >= 4?i+1: i;
 				fill.set(i, Utils.copyStackWithAmount(matrix.getStackInSlot(j), 1));
 			}
-			((ItemSpeedloader)out.getItem()).setContainedItems(out, fill);
+			((SpeedloaderItem)out.getItem()).setContainedItems(out, fill);
 			return out;
 		}
 		else

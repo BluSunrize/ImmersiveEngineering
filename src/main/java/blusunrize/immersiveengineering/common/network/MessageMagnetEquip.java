@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.common.items.ItemIEShield;
+import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -48,20 +48,20 @@ public class MessageMagnetEquip implements IMessage
 			if(fetchSlot >= 0)
 			{
 				ItemStack s = player.inventory.mainInventory.get(fetchSlot);
-				if(!s.isEmpty()&&s.getItem() instanceof ItemIEShield&&((ItemIEShield)s.getItem()).getUpgrades(s).getBoolean("magnet"))
+				if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
 				{
-					((ItemIEShield)s.getItem()).getUpgrades(s).putInt("prevSlot", fetchSlot);
+					((IEShieldItem)s.getItem()).getUpgrades(s).putInt("prevSlot", fetchSlot);
 					player.inventory.mainInventory.set(fetchSlot, held);
 					player.setHeldItem(Hand.OFF_HAND, s);
 				}
 			}
 			else
 			{
-				int prevSlot = ((ItemIEShield)held.getItem()).getUpgrades(held).getInt("prevSlot");
+				int prevSlot = ((IEShieldItem)held.getItem()).getUpgrades(held).getInt("prevSlot");
 				ItemStack s = player.inventory.mainInventory.get(prevSlot);
 				player.inventory.mainInventory.set(prevSlot, held);
 				player.setHeldItem(Hand.OFF_HAND, s);
-				((ItemIEShield)held.getItem()).getUpgrades(held).remove("prevSlot");
+				((IEShieldItem)held.getItem()).getUpgrades(held).remove("prevSlot");
 			}
 		});
 	}

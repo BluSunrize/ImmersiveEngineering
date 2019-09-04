@@ -40,9 +40,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemJerrycan extends ItemIEBase
+public class JerrycanItem extends IEBaseItem
 {
-	public ItemJerrycan()
+	public JerrycanItem()
 	{
 		super("jerrycan", new Properties().maxStackSize(1));
 	}

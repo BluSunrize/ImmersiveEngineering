@@ -42,7 +42,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ItemDrillhead extends ItemIEBase implements IDrillHead
+public class DrillheadItem extends IEBaseItem implements IDrillHead
 {
 	//Maximal damage is slightly proportionate to pickaxes
 	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.STEEL_INGOTS, 3, 1, 3, 10, 7, 10000, "immersiveengineering:item/drill_diesel");
@@ -50,7 +50,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 
 	public DrillHeadPerm perms;
 
-	public ItemDrillhead(DrillHeadPerm perms)
+	public DrillheadItem(DrillHeadPerm perms)
 	{
 		super("drillhead_"+perms.name, new Properties().maxStackSize(1));
 		this.perms = perms;
@@ -223,7 +223,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 					block = state.getBlock();
 					float h = state.getPlayerRelativeBlockHardness(player, world, pos);
 					boolean canHarvest = block.canHarvestBlock(world.getBlockState(pos), world, pos, player);
-					boolean drillMat = ((ItemDrill)Tools.drill).isEffective(state.getMaterial());
+					boolean drillMat = ((DrillItem)Tools.drill).isEffective(state.getMaterial());
 					boolean hardness = h > maxHardness;
 					if(canHarvest&&drillMat&&hardness)
 						b.add(pos);

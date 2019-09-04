@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,7 +52,7 @@ public class MessageSpeedloaderSync implements IMessage
 			PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 			if(player!=null)
 			{
-				if(player.getHeldItem(hand).getItem() instanceof ItemRevolver)
+				if(player.getHeldItem(hand).getItem() instanceof RevolverItem)
 				{
 					player.playSound(IESounds.revolverReload, 1f, 1f);
 					ItemNBTHelper.putInt(player.getHeldItem(hand), "reload", 60);

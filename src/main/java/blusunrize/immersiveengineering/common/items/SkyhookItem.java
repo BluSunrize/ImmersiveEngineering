@@ -45,9 +45,9 @@ import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
-public class ItemSkyhook extends ItemUpgradeableTool implements ITool
+public class SkyhookItem extends UpgradeableToolItem implements ITool
 {
-	public ItemSkyhook()
+	public SkyhookItem()
 	{
 		super("skyhook", new Properties().maxStackSize(1), "SKYHOOK");
 	}

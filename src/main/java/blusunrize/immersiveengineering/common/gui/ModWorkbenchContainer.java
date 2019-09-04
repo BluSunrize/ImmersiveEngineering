@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
-import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
+import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -90,11 +90,11 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 		else if(!(tool.getItem() instanceof IConfigurableTool))
 		{
 			boolean blueprint = false;
-			if(tool.getItem() instanceof ItemEngineersBlueprint)
+			if(tool.getItem() instanceof EngineersBlueprintItem)
 			{
 				//Init the output inventory
 				blueprint = true;
-				BlueprintCraftingRecipe[] recipes = ((ItemEngineersBlueprint)tool.getItem()).getRecipes(tool);
+				BlueprintCraftingRecipe[] recipes = ((EngineersBlueprintItem)tool.getItem()).getRecipes(tool);
 				inventoryBPoutput = new BlueprintInventory(this, recipes);
 
 				//Add output slots
@@ -138,7 +138,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 			}
 			else if(!stackInSlot.isEmpty())
 			{
-				if(stackInSlot.getItem() instanceof ItemEngineersBlueprint)
+				if(stackInSlot.getItem() instanceof EngineersBlueprintItem)
 				{
 					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;

@@ -58,9 +58,9 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverride
+public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverride
 {
-	public ItemShader()
+	public ShaderItem()
 	{
 		super("shader", new Properties().maxStackSize(1));
 		//DEFAULT CUTOUTS

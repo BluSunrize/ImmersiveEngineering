@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2018
+ * Copyright (c) 2017
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -18,20 +18,20 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class ItemMaintenanceKit extends ItemIEBase
+public class ManualItem extends IEBaseItem
 {
-	public ItemMaintenanceKit()
+	public ManualItem()
 	{
-		super("maintenance_kit", new Properties().maxStackSize(1).defaultMaxDamage(50));
+		super("manual", new Properties().maxStackSize(1));
 	}
+
 
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
-		if(!world.isRemote)
+		if(world.isRemote)
 			openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
-		ItemStack stack = player.getHeldItem(hand);
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
 }

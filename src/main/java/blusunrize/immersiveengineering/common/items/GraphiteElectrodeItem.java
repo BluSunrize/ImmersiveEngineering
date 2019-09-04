@@ -20,9 +20,9 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemGraphiteElectrode extends ItemIEBase
+public class GraphiteElectrodeItem extends IEBaseItem
 {
-	public ItemGraphiteElectrode()
+	public GraphiteElectrodeItem()
 	{
 		super("graphite_electrode", new Properties().maxStackSize(16));
 	}

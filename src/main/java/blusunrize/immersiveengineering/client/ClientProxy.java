@@ -51,12 +51,12 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEnti
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
 import blusunrize.immersiveengineering.common.entities.*;
+import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
-import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
@@ -82,12 +82,8 @@ import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.ArmorStandRenderer;
-import net.minecraft.client.renderer.entity.BipedRenderer;
-import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.MinecartModel;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -128,7 +124,6 @@ import net.minecraftforge.fml.VersionChecker.Status;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.lwjgl.glfw.GLFW;
@@ -950,7 +945,7 @@ public class ClientProxy extends CommonProxy
 	public void textureStichPre(TextureStitchEvent.Pre event)
 	{
 		IELogger.info("Stitching Revolver Textures!");
-		ItemRevolver.addRevolverTextures(event);
+		RevolverItem.addRevolverTextures(event);
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
 			for(ShaderCase sCase : entry.getCases())
 				if(sCase.stitchIntoSheet())
@@ -1002,7 +997,7 @@ public class ClientProxy extends CommonProxy
 	public void textureStichPost(TextureStitchEvent.Post event)
 	{
 		clearRenderCaches();
-		ItemRevolver.retrieveRevolverTextures(event.getMap());
+		RevolverItem.retrieveRevolverTextures(event.getMap());
 		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
 			p.sprite = event.getMap().getAtlasSprite(p.texture);
 		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "blocks/wire"));
@@ -1064,6 +1059,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void onWorldLoad()
 	{
+		/*TODO
 		if(!ShaderMinecartModel.rendersReplaced)
 		{
 			for(Object render : mc().getRenderManager().renderers.values())
@@ -1084,7 +1080,7 @@ public class ClientProxy extends CommonProxy
 				else if(ArmorStandRenderer.class.isAssignableFrom(render.getClass()))
 					((ArmorStandRenderer)render).addLayer(new IEBipedLayerRenderer<>((ArmorStandRenderer)render));
 			IEBipedLayerRenderer.rendersAssigned = true;
-		}
+		}*/
 	}
 
 	@Override

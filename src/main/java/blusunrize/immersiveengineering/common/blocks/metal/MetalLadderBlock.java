@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
-import blusunrize.immersiveengineering.common.items.ItemHammer;
+import blusunrize.immersiveengineering.common.items.HammerItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.block.material.Material;
@@ -86,7 +86,7 @@ public class MetalLadderBlock extends LadderBlock
 	@Override
 	public boolean isToolEffective(BlockState state, ToolType tool)
 	{
-		return super.isToolEffective(state, tool)||tool==ItemHammer.HAMMER_TOOL;
+		return super.isToolEffective(state, tool)||tool==HammerItem.HAMMER_TOOL;
 	}
 
 	@Nullable

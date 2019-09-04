@@ -47,11 +47,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool, IElectricEquipment,
+public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool, IElectricEquipment,
 		IOBJModelCallback<ItemStack>
 {
 
-	public ItemFluorescentTube()
+	public FluorescentTubeItem()
 	{
 		super("fluorescent_tube", new Properties().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE));
 	}

@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.models.ModelCoresample;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.common.items.IEBaseItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Function;
@@ -81,9 +81,9 @@ public class ImmersiveModelRegistry
 
 	public void registerCustomItemModel(ItemStack stack, ItemModelReplacement replacement)
 	{
-		if(stack.getItem() instanceof ItemIEBase)
+		if(stack.getItem() instanceof IEBaseItem)
 		{
-			ResourceLocation loc = new ResourceLocation("immersiveengineering", ((ItemIEBase)stack.getItem()).itemName);
+			ResourceLocation loc = new ResourceLocation("immersiveengineering", ((IEBaseItem)stack.getItem()).itemName);
 			itemModelReplacements.put(new ModelResourceLocation(loc, "inventory"), replacement);
 		}
 	}

@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.items.ItemHammer;
-import blusunrize.immersiveengineering.common.items.ItemWirecutter;
+import blusunrize.immersiveengineering.common.items.HammerItem;
+import blusunrize.immersiveengineering.common.items.WirecutterItem;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -259,9 +259,9 @@ public class IEBaseBlock extends Block
 	@Override
 	public boolean isToolEffective(BlockState state, ToolType tool)
 	{
-		if(allowHammerHarvest(state)&&tool==ItemHammer.HAMMER_TOOL)
+		if(allowHammerHarvest(state)&&tool==HammerItem.HAMMER_TOOL)
 			return true;
-		if(allowWirecutterHarvest(state)&&tool==ItemWirecutter.CUTTER_TOOL)
+		if(allowWirecutterHarvest(state)&&tool==WirecutterItem.CUTTER_TOOL)
 			return true;
 		return super.isToolEffective(state, tool);
 	}
@@ -277,7 +277,7 @@ public class IEBaseBlock extends Block
 									BlockRayTraceResult hit)
 	{
 		ItemStack activeStack = player.getHeldItem(hand);
-		if(activeStack.getToolTypes().contains(ItemHammer.HAMMER_TOOL))
+		if(activeStack.getToolTypes().contains(HammerItem.HAMMER_TOOL))
 			return hammerUseSide(hit.getFace(), player, world, pos, hit);
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}

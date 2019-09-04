@@ -21,10 +21,10 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 
-public abstract class ItemInternalStorage extends ItemIEBase
+public abstract class InternalStorageItem extends IEBaseItem
 {
 
-	public ItemInternalStorage(String name, Properties props)
+	public InternalStorageItem(String name, Properties props)
 	{
 		super(name, props);
 	}

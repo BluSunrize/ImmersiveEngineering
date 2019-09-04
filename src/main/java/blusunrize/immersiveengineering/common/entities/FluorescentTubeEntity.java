@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
+import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -61,7 +61,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	{
 		this(TYPE, world);
 		rotationYaw = angleVert;
-		rgb = ItemFluorescentTube.getRGB(tube);
+		rgb = FluorescentTubeItem.getRGB(tube);
 	}
 
 	public FluorescentTubeEntity(EntityType<FluorescentTubeEntity> type, World world)
@@ -154,7 +154,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 		if(isAlive()&&!world.isRemote)
 		{
 			ItemStack tube = new ItemStack(Misc.fluorescentTube);
-			ItemFluorescentTube.setRGB(tube, rgb);
+			FluorescentTubeItem.setRGB(tube, rgb);
 			ItemEntity ent = new ItemEntity(world, posX, posY, posZ, tube);
 			world.addEntity(ent);
 			remove();

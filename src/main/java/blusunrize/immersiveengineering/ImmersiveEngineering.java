@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
@@ -32,6 +32,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -55,9 +56,10 @@ public class ImmersiveEngineering
 	public static final String MODID = "immersiveengineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
-	public static final int DATA_FIXER_VERSION = 1;
 	public static final String NETWORK_VERSION = "1";
-	public static CommonProxy proxy;
+	@SuppressWarnings("Convert2MethodRef")
+	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(),
+			() -> () -> new CommonProxy());
 
 	public static final SimpleChannel packetHandler = NetworkRegistry.ChannelBuilder
 			.named(new ResourceLocation(MODID, "main"))
@@ -68,6 +70,7 @@ public class ImmersiveEngineering
 
 	public ImmersiveEngineering()
 	{
+		IELogger.logger = LogManager.getLogger(MODID);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
@@ -86,8 +89,6 @@ public class ImmersiveEngineering
 	public void setup(FMLCommonSetupEvent event)
 	{
 		//Previously in PREINIT
-		IELogger.logger = LogManager.getLogger(MODID);
-		//TODO Config.preInit(event);
 
 		IEContent.preInit();
 		proxy.preInit();
@@ -123,8 +124,6 @@ public class ImmersiveEngineering
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		//TODO NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 		proxy.init();
-
-		IESounds.init();
 
 		IECompatModule.doModulesInit();
 		proxy.initEnd();
@@ -260,13 +259,13 @@ public class ImmersiveEngineering
 					try
 					{
 						JsonElement je = parser.next();
-						ItemRevolver.SpecialRevolver revolver = gson.fromJson(je, ItemRevolver.SpecialRevolver.class);
+						RevolverItem.SpecialRevolver revolver = gson.fromJson(je, RevolverItem.SpecialRevolver.class);
 						if(revolver!=null)
 						{
 							if(revolver.uuid!=null)
 								for(String uuid : revolver.uuid)
-									ItemRevolver.specialRevolvers.put(uuid, revolver);
-							ItemRevolver.specialRevolversByTag.put(!revolver.tag.isEmpty()?revolver.tag: revolver.flavour, revolver);
+									RevolverItem.specialRevolvers.put(uuid, revolver);
+							RevolverItem.specialRevolversByTag.put(!revolver.tag.isEmpty()?revolver.tag: revolver.flavour, revolver);
 						}
 					} catch(Exception excepParse)
 					{

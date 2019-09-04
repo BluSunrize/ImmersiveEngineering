@@ -10,9 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.FenceBlock;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 public class IEFenceBlock extends FenceBlock
@@ -22,7 +21,6 @@ public class IEFenceBlock extends FenceBlock
 		super(properties);
 		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, name));
 		IEContent.registeredIEBlocks.add(this);
-		Item.Properties itemProps = new Item.Properties().group(ImmersiveEngineering.itemGroup);
-		IEContent.registeredIEItems.add(new BlockItem(this, itemProps));
+		IEContent.registeredIEItems.add(new BlockItemIE(this));
 	}
 }

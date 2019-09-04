@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
-import blusunrize.immersiveengineering.common.items.ItemToolbox;
+import blusunrize.immersiveengineering.common.items.InternalStorageItem;
+import blusunrize.immersiveengineering.common.items.ToolboxItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
@@ -42,8 +42,8 @@ import java.util.List;
 public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalTile, IBlockBounds, IIEInventory, IInteractionObjectIE, ITileDrop, IPlayerInteraction
 {
 	public static TileEntityType<ToolboxTileEntity> TYPE;
-	
-	NonNullList<ItemStack> inventory = NonNullList.withSize(ItemToolbox.SLOT_COUNT, ItemStack.EMPTY);
+
+	NonNullList<ItemStack> inventory = NonNullList.withSize(ToolboxItem.SLOT_COUNT, ItemStack.EMPTY);
 	public ITextComponent name;
 	private Direction facing = Direction.NORTH;
 	private ListNBT enchantments;
@@ -62,7 +62,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 		if(nbt.contains("enchantments", NBT.TAG_LIST))
 			this.enchantments = nbt.getList("enchantments", NBT.TAG_COMPOUND);
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getList("inventory", NBT.TAG_COMPOUND), ItemToolbox.SLOT_COUNT);
+			inventory = Utils.readInventory(nbt.getList("inventory", NBT.TAG_COMPOUND), ToolboxItem.SLOT_COUNT);
 	}
 
 	@Override
@@ -149,7 +149,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	public List<ItemStack> getTileDrops(Builder context)
 	{
 		ItemStack stack = new ItemStack(Tools.toolbox);
-		((ItemInternalStorage)Tools.toolbox).setContainedItems(stack, inventory);
+		((InternalStorageItem)Tools.toolbox).setContainedItems(stack, inventory);
 		if(this.name!=null)
 			stack.setDisplayName(this.name);
 		if(enchantments!=null)
@@ -160,7 +160,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	@Override
 	public void readOnPlacement(LivingEntity placer, ItemStack stack)
 	{
-		if(stack.getItem() instanceof ItemInternalStorage)
+		if(stack.getItem() instanceof InternalStorageItem)
 		{
 			stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(inv ->
 			{

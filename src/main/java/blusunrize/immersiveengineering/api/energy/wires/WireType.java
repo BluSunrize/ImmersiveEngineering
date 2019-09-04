@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
+import static blusunrize.immersiveengineering.common.IEConfig.WIRES;
 
 /**
  * @author BluSunrize - 08.03.2015<br>
@@ -102,10 +103,6 @@ public abstract class WireType implements ILocalHandlerProvider
 	//THESE VALUES ARE FOR IE's OWN WIRES!
 	public static String[] uniqueNames = {"COPPER", "ELECTRUM", "STEEL", "STRUCTURE_ROPE", "STRUCTURE_STEEL", "REDSTONE",
 			"COPPER_INS", "ELECTRUM_INS"};
-	public static double[] wireLossRatio;
-	public static int[] wireTransferRate;
-	public static int[] wireColouration;
-	public static int[] wireLength;
 	public static double[] renderDiameter = {.03125, .03125, .0625, .0625, .0625, .03125};
 	@OnlyIn(Dist.CLIENT)
 	public static TextureAtlasSprite iconDefaultWire;
@@ -186,13 +183,13 @@ public abstract class WireType implements ILocalHandlerProvider
 		@Override
 		public double getLossRatio()
 		{
-			return Math.abs(wireLossRatio[ordinal%6]);
+			return Math.abs(WIRES.wireLossRatio.get().get(ordinal%6));
 		}
 
 		@Override
 		public int getTransferRate()
 		{
-			return Math.abs(wireTransferRate[ordinal%6]);
+			return Math.abs(WIRES.wireTransferRate.get().get(ordinal%6));
 		}
 
 		@Override
@@ -210,7 +207,7 @@ public abstract class WireType implements ILocalHandlerProvider
 		@Override
 		public int getColour(Connection connection)
 		{
-			return wireColouration[ordinal];
+			return WIRES.wireColouration.get().get(ordinal);
 		}
 
 		@Override
@@ -229,7 +226,7 @@ public abstract class WireType implements ILocalHandlerProvider
 		@Override
 		public int getMaxLength()
 		{
-			return wireLength[ordinal%6];
+			return WIRES.wireLength.get().get(ordinal%6);
 		}
 
 		@Override

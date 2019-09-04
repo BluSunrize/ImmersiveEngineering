@@ -54,9 +54,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class ItemBullet extends ItemIEBase implements ITextureOverride
+public class BulletItem extends IEBaseItem implements ITextureOverride
 {
-	public ItemBullet()
+	public BulletItem()
 	{
 		super("bullet", new Properties());
 

@@ -1,5 +1,5 @@
 {
-	"dieselGenerator": {
+  "diesel_generator": {
 		"category": "block",
 		"sounds": [
 			"immersiveengineering:diesel_generator"
@@ -13,42 +13,42 @@
 		],
 		"subtitle": "subtitle.immersiveengineering.crusher"
 	},
-	"metalPressPiston": {
+  "metal_press_piston": {
 		"category": "block",
 		"sounds": [
 			"immersiveengineering:metal_press_piston"
 		],
 		"subtitle": "subtitle.immersiveengineering.metalPressPiston"
 	},
-	"metalPressSmash": {
+  "metal_press_smash": {
 		"category": "block",
 		"sounds": [
 			"immersiveengineering:metal_press_smash"
 		],
 		"subtitle": "subtitle.immersiveengineering.metalPressSmash"
 	},
-	"birthdayParty": {
+  "birthday_party": {
 		"category": "neutral",
 		"sounds": [
 			"immersiveengineering:birthday_party"
 		],
 		"subtitle": "subtitle.immersiveengineering.birthdayParty"
 	},
-	"revolverFire": {
+  "revolver_fire": {
 		"category": "neutral",
 		"sounds": [
 			"immersiveengineering:revolver_fire"
 		],
 		"subtitle": "subtitle.immersiveengineering.revolverFire"
 	},
-	"revolverFireThump": {
+  "revolver_fire_thump": {
 		"category": "neutral",
 		"sounds": [
 			"immersiveengineering:revolver_fire_thump"
 		],
 		"subtitle": "subtitle.immersiveengineering.revolverFire"
 	},
-	"revolverReload": {
+  "revolver_reload": {
 		"category": "neutral",
 		"sounds": [
 			"immersiveengineering:revolver_reload"
@@ -69,14 +69,14 @@
 		],
 		"subtitle": "subtitle.immersiveengineering.sprayFire"
 	},
-	"chargeFast": {
+  "charge_fast": {
 		"category": "neutral",
 		"sounds": [
 			"immersiveengineering:charge_fast"
 		],
 		"subtitle": "subtitle.immersiveengineering.chargeFast"
 	},
-	"chargeSlow": {
+  "charge_slow": {
 		"category": "neutral",
 		"sounds": [
 			"immersiveengineering:charge_slow"
@@ -92,7 +92,7 @@
 		],
 		"subtitle": "subtitle.immersiveengineering.spark"
 	},
-	"railgunFire": {
+  "railgun_fire": {
 		"category": "neutral",
 		"sounds": [
 			"immersiveengineering:railgun_fire"
@@ -113,7 +113,7 @@
 		],
 		"subtitle": "subtitle.immersiveengineering.tesla"
 	},
-	"direSwitch": {
+  "dire_switch": {
 		"category": "block",
 		"sounds": [
 			"immersiveengineering:dire_switch"

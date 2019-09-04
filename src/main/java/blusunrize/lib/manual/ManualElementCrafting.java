@@ -50,6 +50,9 @@ public class ManualElementCrafting extends SpecialManualElements
 	@Override
 	public void recalculateCraftingRecipes()
 	{
+		if(Minecraft.getInstance().world==null)
+			return;
+		//TODO is this called on/after world loads?
 		this.providedItems.clear();
 		for(int iStack = 0; iStack < recipeRows.length; iStack++)
 		{

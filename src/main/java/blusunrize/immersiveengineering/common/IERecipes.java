@@ -17,10 +17,10 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipe;
 import blusunrize.immersiveengineering.common.crafting.MetalPressUnpackingRecipe;
+import blusunrize.immersiveengineering.common.items.IEBaseItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
@@ -94,7 +94,7 @@ public class IERecipes
 				moldPacking4,
 				moldPacking9,
 				moldUnpacking})
-			if(!((ItemIEBase)curr).isHidden())
+			if(!((IEBaseItem)curr).isHidden())
 				BlueprintCraftingRecipe.addRecipe("molds", new ItemStack(curr),
 						"plateSteel", "plateSteel", "plateSteel", "plateSteel", "plateSteel", new ItemStack(Tools.hammer));
 
@@ -395,7 +395,7 @@ public class IERecipes
 				}
 				else if(path.startsWith("gears/"))
 				{
-					((ItemIEBase)moldGear).unhide();
+					((IEBaseItem)moldGear).unhide();
 					String ore = path.substring("gears/".length());
 					if(ApiUtils.isNonemptyItemTag(getIngot(ore)))
 						MetalPressRecipe.addRecipe(IEApi.getPreferredTagStack(tag.getKey()), getIngot(ore), compMoldGear, 2400).setInputSize(4);

@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
-import blusunrize.immersiveengineering.common.items.ItemHammer;
-import blusunrize.immersiveengineering.common.items.ItemWirecutter;
+import blusunrize.immersiveengineering.common.items.HammerItem;
+import blusunrize.immersiveengineering.common.items.WirecutterItem;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
@@ -517,14 +517,14 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return false;
-		return stack.getItem().getToolTypes(stack).contains(ItemHammer.HAMMER_TOOL);
+		return stack.getItem().getToolTypes(stack).contains(HammerItem.HAMMER_TOOL);
 	}
 
 	public static boolean isWirecutter(ItemStack stack)
 	{
 		if(stack.isEmpty())
 			return false;
-		return stack.getItem().getToolTypes(stack).contains(ItemWirecutter.CUTTER_TOOL);
+		return stack.getItem().getToolTypes(stack).contains(WirecutterItem.CUTTER_TOOL);
 	}
 
 	public static boolean canBlockDamageSource(LivingEntity entity, DamageSource damageSourceIn)

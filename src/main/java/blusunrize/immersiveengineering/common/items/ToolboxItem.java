@@ -26,11 +26,11 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class ItemToolbox extends ItemInternalStorage
+public class ToolboxItem extends InternalStorageItem
 {
 	public static final int SLOT_COUNT = 23;
 
-	public ItemToolbox()
+	public ToolboxItem()
 	{
 		super("toolbox", new Properties().maxStackSize(1));
 		ToolboxHandler.addToolType(stack -> IEConfig.TOOLS.toolbox_tools.get().contains(stack.getItem().getRegistryName().toString()));

@@ -28,9 +28,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemEngineersBlueprint extends ItemIEBase
+public class EngineersBlueprintItem extends IEBaseItem
 {
-	public ItemEngineersBlueprint()
+	public EngineersBlueprintItem()
 	{
 		super("blueprint", new Properties().maxStackSize(1));
 	}

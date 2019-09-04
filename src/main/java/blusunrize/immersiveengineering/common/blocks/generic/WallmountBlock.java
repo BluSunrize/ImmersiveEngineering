@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -118,7 +118,7 @@ public class WallmountBlock extends IEBaseBlock
 		@Override
 		public String getName()
 		{
-			return name();
+			return name().toLowerCase();
 		}
 
 		public boolean attachedToSide()
