@@ -12,5 +12,5 @@ public enum MetalScaffoldingType
 {
 	STANDARD,
 	GRATE_TOP,
-	WODDEN_TOP
+	WOODEN_TOP
 }

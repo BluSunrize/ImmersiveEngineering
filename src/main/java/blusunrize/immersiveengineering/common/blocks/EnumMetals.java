@@ -16,31 +16,49 @@ public enum EnumMetals
 	SILVER,
 	NICKEL,
 	URANIUM,
-	CONSTANTAN,
-	ELECTRUM,
-	STEEL,
-	IRON(true),
-	GOLD(true);
+	CONSTANTAN(Type.IE_ALLOY),
+	ELECTRUM(Type.IE_ALLOY),
+	STEEL(Type.IE_ALLOY),
+	IRON(Type.VANILLA),
+	GOLD(Type.VANILLA);
 
-	private final boolean isVanilla;
+	private final Type type;
 
-	EnumMetals(boolean isVanilla)
+	EnumMetals(Type t)
 	{
-		this.isVanilla = isVanilla;
+		this.type = t;
 	}
 
 	EnumMetals()
 	{
-		this.isVanilla = false;
+		this.type = Type.IE_PURE;
 	}
 
 	public boolean isVanillaMetal()
 	{
-		return isVanilla;
+		return type==Type.VANILLA;
 	}
+
+	public boolean isAlloy()
+	{
+		return type==Type.IE_ALLOY;
+	}
+
+	public boolean shouldAddOre()
+	{
+		return !isVanillaMetal()&&!isAlloy();
+	}
+
 
 	public String tagName()
 	{
 		return name().toLowerCase();
+	}
+
+	private enum Type
+	{
+		VANILLA,
+		IE_PURE,
+		IE_ALLOY
 	}
 }

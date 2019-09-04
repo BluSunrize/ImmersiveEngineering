@@ -1,6 +1,3 @@
 {
-	"parent":"immersiveengineering:item/ie_item_base",
-	"textures": {
-		"layer0":"immersiveengineering:item/toolbox"
-	}
+	"model": "immersiveengineering:item/toolbox.obj"
 }
