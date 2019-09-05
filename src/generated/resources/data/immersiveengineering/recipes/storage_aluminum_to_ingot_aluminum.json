@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:storage_aluminum"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:ingot_aluminum",
+    "count": 9
+  }
+}

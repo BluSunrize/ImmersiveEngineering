@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:ingot_steel"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:nugget_steel",
+    "count": 9
+  }
+}

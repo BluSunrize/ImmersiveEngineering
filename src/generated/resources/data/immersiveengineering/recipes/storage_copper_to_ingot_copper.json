@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:storage_copper"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:ingot_copper",
+    "count": 9
+  }
+}

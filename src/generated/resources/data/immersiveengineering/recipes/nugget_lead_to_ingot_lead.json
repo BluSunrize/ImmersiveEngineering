@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "sss",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:nugget_lead"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:ingot_lead"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "sss",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:ingot_nickel"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:storage_nickel"
+  }
+}

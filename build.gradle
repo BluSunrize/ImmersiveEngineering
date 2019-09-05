@@ -86,7 +86,7 @@ minecraft {
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/')
 
             mods {
-                examplemod {
+                immersiveengineering {
                     source sourceSets.main
                 }
             }
