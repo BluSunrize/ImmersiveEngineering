@@ -290,6 +290,11 @@ public class IERecipes
 		return new ResourceLocation("forge", "ingots/"+type);
 	}
 
+	public static ResourceLocation getPlate(String type)
+	{
+		return new ResourceLocation("forge", "plates/"+type);
+	}
+
 	public static ResourceLocation getStick(String type)
 	{
 		return new ResourceLocation("forge", "sticks/"+type);
@@ -303,6 +308,11 @@ public class IERecipes
 	public static ResourceLocation getOre(String type)
 	{
 		return new ResourceLocation("forge", "ores/"+type);
+	}
+
+	public static ResourceLocation getStorageBlock(String type)
+	{
+		return new ResourceLocation("forge", "storage_blocks/"+type);
 	}
 
 	public static ResourceLocation getNugget(String type)

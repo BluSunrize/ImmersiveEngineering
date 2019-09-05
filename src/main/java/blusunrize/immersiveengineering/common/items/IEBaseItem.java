@@ -42,6 +42,10 @@ public class IEBaseItem extends Item implements IColouredItem
 	private int burnTime = -1;
 	private boolean isHidden = false;
 
+	public IEBaseItem(String name)
+	{
+		this(name, new Properties());
+	}
 	public IEBaseItem(String name, Properties props)
 	{
 		super(props.group(ImmersiveEngineering.itemGroup));

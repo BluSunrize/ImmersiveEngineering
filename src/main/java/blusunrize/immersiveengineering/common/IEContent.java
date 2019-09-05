@@ -149,41 +149,54 @@ public class IEContent
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);
 		for(EnumMetals m : EnumMetals.values())
 		{
-			String name = m.name().toLowerCase();
+			String name = m.tagName();
 			Block storage;
 			Block ore = null;
+			Item nugget;
+			Item ingot;
+			Item plate = new IEBaseItem("plate_"+name);
+			Item dust = new IEBaseItem("dust_"+name);
 			Block sheetmetal = new IEBaseBlock("sheetmetal_"+name, sheetmetalProperties, BlockItemIE.class)
 					.setOpaque(true);
 			addSlabFor(sheetmetal);
 			if(m.shouldAddOre())
 			{
-				ore = new IEBaseBlock("ore_"+m.name().toLowerCase(), Block.Properties.create(Material.ROCK)
+				ore = new IEBaseBlock("ore_"+name, Block.Properties.create(Material.ROCK)
 						.hardnessAndResistance(3, 5), BlockItemIE.class)
 						.setOpaque(true);
 			}
 			if(!m.isVanillaMetal())
 			{
-				storage = new IEBaseBlock("storage_"+m.name().toLowerCase(), storageProperties, BlockItemIE.class)
+				storage = new IEBaseBlock("storage_"+name, storageProperties, BlockItemIE.class)
 						.setOpaque(true);
+				nugget = new IEBaseItem("nugget_"+name);
+				ingot = new IEBaseItem("ingot_"+name);
 				addSlabFor(storage);
 			}
 			else if(m==EnumMetals.IRON)
 			{
 				storage = Blocks.IRON_BLOCK;
 				ore = Blocks.IRON_ORE;
+				nugget = Items.IRON_NUGGET;
+				ingot = Items.IRON_INGOT;
 			}
 			else if(m==EnumMetals.GOLD)
 			{
 				storage = Blocks.GOLD_BLOCK;
 				ore = Blocks.GOLD_ORE;
+				nugget = Items.GOLD_NUGGET;
+				ingot = Items.GOLD_INGOT;
 			}
 			else
-			{
 				throw new RuntimeException("Unkown vanilla metal: "+m.name());
-			}
 			IEBlocks.Metals.storage.put(m, storage);
-			IEBlocks.Metals.ores.put(m, ore);
+			if(ore!=null)
+				IEBlocks.Metals.ores.put(m, ore);
 			IEBlocks.Metals.sheetmetal.put(m, sheetmetal);
+			IEItems.Metals.plates.put(m, plate);
+			IEItems.Metals.nuggets.put(m, nugget);
+			IEItems.Metals.ingots.put(m, ingot);
+			IEItems.Metals.dusts.put(m, dust);
 		}
 		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10);
 		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180);

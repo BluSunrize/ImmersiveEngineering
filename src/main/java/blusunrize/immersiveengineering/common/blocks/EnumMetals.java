@@ -10,27 +10,30 @@ package blusunrize.immersiveengineering.common.blocks;
 
 public enum EnumMetals
 {
-	COPPER,
-	ALUMINUM,
-	LEAD,
-	SILVER,
-	NICKEL,
-	URANIUM,
-	CONSTANTAN(Type.IE_ALLOY),
-	ELECTRUM(Type.IE_ALLOY),
-	STEEL(Type.IE_ALLOY),
-	IRON(Type.VANILLA),
-	GOLD(Type.VANILLA);
+	COPPER(0.3f),
+	ALUMINUM(0.3F),
+	LEAD(0.7F),
+	SILVER(1.0F),
+	NICKEL(1.0F),
+	URANIUM(1.0F),
+	CONSTANTAN(Type.IE_ALLOY, Float.NaN),
+	ELECTRUM(Type.IE_ALLOY, Float.NaN),
+	STEEL(Type.IE_ALLOY, Float.NaN),
+	IRON(Type.VANILLA, 0.7F),
+	GOLD(Type.VANILLA, 1);
 
 	private final Type type;
+	public final float smeltingXP;
 
-	EnumMetals(Type t)
+	EnumMetals(Type t, float xp)
 	{
 		this.type = t;
+		this.smeltingXP = xp;
 	}
 
-	EnumMetals()
+	EnumMetals(float xp)
 	{
+		smeltingXP = xp;
 		this.type = Type.IE_PURE;
 	}
 
@@ -48,7 +51,6 @@ public enum EnumMetals
 	{
 		return !isVanillaMetal()&&!isAlloy();
 	}
-
 
 	public String tagName()
 	{

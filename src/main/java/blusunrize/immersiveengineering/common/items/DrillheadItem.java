@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -45,7 +46,7 @@ import java.util.Set;
 public class DrillheadItem extends IEBaseItem implements IDrillHead
 {
 	//Maximal damage is slightly proportionate to pickaxes
-	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.STEEL_INGOTS, 3, 1, 3, 10, 7, 10000, "immersiveengineering:item/drill_diesel");
+	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.getTagsFor(EnumMetals.STEEL).ingot, 3, 1, 3, 10, 7, 10000, "immersiveengineering:item/drill_diesel");
 	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, 2, 9, 6, 6000, "immersiveengineering:item/drill_iron");
 
 	public DrillHeadPerm perms;
