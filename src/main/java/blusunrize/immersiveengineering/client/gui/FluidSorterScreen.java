@@ -32,10 +32,10 @@ import net.minecraftforge.fluids.FluidUtil;
 
 import java.util.ArrayList;
 
-public class FluidSorterScreen extends IEContainerScreen
+public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 {
 	public FluidSorterTileEntity tile;
-	PlayerInventory playerInventory;
+	private PlayerInventory playerInventory;
 
 	public FluidSorterScreen(FluidSorterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{

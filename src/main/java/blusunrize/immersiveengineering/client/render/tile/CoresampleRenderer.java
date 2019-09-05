@@ -20,7 +20,7 @@ public class CoresampleRenderer extends TileEntityRenderer<CoresampleTileEntity>
 	@Override
 	public void render(CoresampleTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!tile.getWorld().isBlockLoaded(tile.getPos())||tile.coresample==null)
+		if(!tile.getWorldNonnull().isBlockLoaded(tile.getPos())||tile.coresample==null)
 			return;
 
 		GlStateManager.pushMatrix();

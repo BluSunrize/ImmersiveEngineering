@@ -27,9 +27,9 @@ import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 
-public class AutoWorkbenchScreen extends IEContainerScreen
+public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContainer>
 {
-	AutoWorkbenchTileEntity tile;
+	private AutoWorkbenchTileEntity tile;
 
 	public AutoWorkbenchScreen(AutoWorkbenchContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{

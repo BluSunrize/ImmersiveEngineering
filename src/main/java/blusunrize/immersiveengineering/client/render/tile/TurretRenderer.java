@@ -40,7 +40,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 	@Override
 	public void render(TurretTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
 
 		//Grab model + correct eextended state
@@ -61,7 +61,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 		GlStateManager.rotatef(tile.rotationYaw, 0, 1, 0);
 		GlStateManager.rotatef(tile.rotationPitch, tile.facing.getZOffset(), 0, -tile.facing.getXOffset());
 
-		renderModelPart(tessellator, worldRenderer, tile.getWorld(), state, model, tile.getPos(), true, "gun");
+		renderModelPart(tessellator, worldRenderer, tile.getWorldNonnull(), state, model, tile.getPos(), true, "gun");
 		if(tile instanceof TurretGunTileEntity)
 		{
 			if(((TurretGunTileEntity)tile).cycleRender > 0)
@@ -74,7 +74,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 
 				GlStateManager.translated(-tile.facing.getXOffset()*cycle*.3125, 0, -tile.facing.getZOffset()*cycle*.3125);
 			}
-			renderModelPart(tessellator, worldRenderer, tile.getWorld(), state, model, tile.getPos(), false, "action");
+			renderModelPart(tessellator, worldRenderer, tile.getWorldNonnull(), state, model, tile.getPos(), false, "action");
 		}
 
 		GlStateManager.popMatrix();

@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class TurretScreen extends IEContainerScreen
+public class TurretScreen extends IEContainerScreen<TurretContainer>
 {
 	public TurretTileEntity tile;
 	private TextFieldWidget nameField;

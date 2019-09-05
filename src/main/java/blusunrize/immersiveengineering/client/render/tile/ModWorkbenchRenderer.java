@@ -27,7 +27,7 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 	@Override
 	public void render(ModWorkbenchTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(te.dummy||!te.getWorld().isBlockLoaded(te.getPos()))
+		if(te.dummy||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 
 		GlStateManager.pushMatrix();
@@ -63,7 +63,7 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 					for(int i = 0; i < l; )
 					{
 						BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
-						BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, te.getWorld());
+						BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, te.getWorldNonnull());
 						if(blueprint!=null)
 						{
 							double dX = i < perRow?(.93725/scale-perRow*16.6)+i*16.6: (.70375/scale-i%perRow*16.6);

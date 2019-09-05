@@ -34,7 +34,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 	@Override
 	public void render(MixerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos()))
+		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
@@ -71,7 +71,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, blockPos, worldRenderer, true,
+		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, worldRenderer, true,
 				Utils.RAND, 0, EmptyModelData.INSTANCE);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();

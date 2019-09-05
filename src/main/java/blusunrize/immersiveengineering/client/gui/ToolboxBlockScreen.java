@@ -22,7 +22,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 
-public class ToolboxBlockScreen extends IEContainerScreen
+public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 {
 	public ToolboxBlockScreen(ToolboxBlockContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{

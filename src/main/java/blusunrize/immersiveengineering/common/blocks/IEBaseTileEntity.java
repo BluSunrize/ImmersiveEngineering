@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,10 +32,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public abstract class IEBaseTileEntity extends TileEntity
 {
@@ -167,7 +165,7 @@ public abstract class IEBaseTileEntity extends TileEntity
 	}
 
 	private final Set<LazyOptional<?>> caps = new HashSet<>();
-	private final EnumMap<Direction, LazyOptional<IEnergyStorage>> energyCaps = new EnumMap<>(Direction.class);
+	private final Map<Direction, LazyOptional<IEnergyStorage>> energyCaps = new HashMap<>();
 
 	protected <T> LazyOptional<T> registerConstantCap(T val)
 	{
@@ -196,10 +194,19 @@ public abstract class IEBaseTileEntity extends TileEntity
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
 		if(cap==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
+		{
+			if(!energyCaps.containsKey(side))
+			{
+				IEForgeEnergyWrapper wrapper = ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(side);
+				if(wrapper!=null)
+					energyCaps.put(side, registerConstantCap(wrapper));
+				else
+					energyCaps.put(side, LazyOptional.empty());
+			}
 			return energyCaps
-					.computeIfAbsent(side, (f) ->
-							registerCap(() -> ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(f)))
+					.get(side)
 					.cast();
+		}
 		return super.getCapability(cap, side);
 	}
 
@@ -221,8 +228,7 @@ public abstract class IEBaseTileEntity extends TileEntity
 	}
 
 	@Nonnull
-	@Override
-	public World getWorld()
+	public World getWorldNonnull()
 	{
 		return Objects.requireNonNull(super.getWorld());
 	}
@@ -234,8 +240,8 @@ public abstract class IEBaseTileEntity extends TileEntity
 
 	protected void checkLight(BlockPos pos)
 	{
-		getWorld().getProfiler().startSection("queueCheckLight");
-		getWorld().getChunkProvider().getLightManager().checkBlock(pos);
-		getWorld().getProfiler().endSection();
+		getWorldNonnull().getProfiler().startSection("queueCheckLight");
+		getWorldNonnull().getChunkProvider().getLightManager().checkBlock(pos);
+		getWorldNonnull().getProfiler().endSection();
 	}
 }

@@ -43,7 +43,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 	@Override
 	public void render(BottlingMachineTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos()))
+		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 
 		//Grab model + correct eextended state
@@ -118,7 +118,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		GlStateManager.pushMatrix();
 
 		GlStateManager.translated(0, lift, 0);
-		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "lift");
+		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "lift");
 		GlStateManager.translated(0, -lift, 0);
 
 		RenderHelper.enableStandardItemLighting();

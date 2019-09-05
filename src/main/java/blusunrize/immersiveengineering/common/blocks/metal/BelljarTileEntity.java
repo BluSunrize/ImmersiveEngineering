@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler.FluidFertilizerHandler;
@@ -140,7 +139,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 						double partX = getPos().getX()+.5;
 						double partY = getPos().getY()+2.6875;
 						double partZ = getPos().getZ()+.5;
-						ImmersiveEngineering.proxy.spawnRedstoneFX(getWorld(), partX, partY, partZ, .25, .25, .25, 1f, .55f, .1f, .1f);
+						ImmersiveEngineering.proxy.spawnRedstoneFX(getWorldNonnull(), partX, partY, partZ, .25, .25, .25, 1f, .55f, .1f, .1f);
 					}
 				}
 			}
@@ -478,12 +477,6 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	public boolean canUseGui(PlayerEntity player)
 	{
 		return true;
-	}
-
-	@Override
-	public ResourceLocation getGuiName()
-	{
-		return Lib.GUIID_Belljar;
 	}
 
 	@Override

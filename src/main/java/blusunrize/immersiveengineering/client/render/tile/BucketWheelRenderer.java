@@ -50,10 +50,10 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 	@Override
 	public void render(BucketWheelTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!tile.formed||!tile.getWorld().isBlockLoaded(tile.getPos())||tile.isDummy())
+		if(!tile.formed||!tile.getWorldNonnull().isBlockLoaded(tile.getPos())||tile.isDummy())
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockState state = tile.getWorld().getBlockState(tile.getPos());
+		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
 		if(state.getBlock()!=Multiblocks.bucketWheel)
 			return;
 		if(model==null)
@@ -110,7 +110,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 					modelData);
 		else
 			quads = model.getQuads(state, null, Utils.RAND, modelData);
-		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorld(), tile.getPos());
+		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorldNonnull(), tile.getPos());
 		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();
 		GlStateManager.popMatrix();

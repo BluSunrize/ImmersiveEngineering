@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -30,7 +29,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -620,12 +618,6 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	public boolean canUseGui(PlayerEntity player)
 	{
 		return formed;
-	}
-
-	@Override
-	public ResourceLocation getGuiName()
-	{
-		return Lib.GUIID_Mixer;
 	}
 
 	@Override

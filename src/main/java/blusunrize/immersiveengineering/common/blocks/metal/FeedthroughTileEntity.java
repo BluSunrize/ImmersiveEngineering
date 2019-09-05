@@ -308,7 +308,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		BlockPos replacePos = pos.offset(facing, offsetLocal);
 		if(toBreak!=offset)
 		{
-			TileEntity te = getWorld().getTileEntity(replacePos);
+			TileEntity te = getWorldNonnull().getTileEntity(replacePos);
 			if(te instanceof FeedthroughTileEntity)
 				((FeedthroughTileEntity)te).formed = false;
 			BlockState newState = Blocks.AIR.getDefaultState();
@@ -324,7 +324,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 					newState = info.conn.with(IEProperties.FACING_ALL, facing.getOpposite());
 					break;
 			}
-			getWorld().setBlockState(replacePos, newState);//TODO move wires properly
+			getWorldNonnull().setBlockState(replacePos, newState);//TODO move wires properly
 
 		}
 	}

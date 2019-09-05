@@ -15,9 +15,9 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class BlastFurnaceScreen extends IEContainerScreen
+public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 {
-	BlastFurnaceTileEntity tile;
+	private BlastFurnaceTileEntity tile;
 
 	public BlastFurnaceScreen(BlastFurnaceContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{

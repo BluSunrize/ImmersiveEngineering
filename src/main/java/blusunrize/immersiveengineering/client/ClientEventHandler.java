@@ -800,10 +800,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onMouseEvent(MouseScrollEvent event)
 	{
-		if(event.getScrollDelta()!=0)
+		if(event.getScrollDelta()!=0&&ClientUtils.mc().currentScreen==null)
 		{
 			PlayerEntity player = ClientUtils.mc().player;
-			if(!player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&player.isSneaking())
+			if(player!=null&&!player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&player.isSneaking())
 			{
 				ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
 

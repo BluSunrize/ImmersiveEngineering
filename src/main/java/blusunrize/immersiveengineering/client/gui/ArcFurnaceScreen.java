@@ -28,10 +28,10 @@ import java.util.ArrayList;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class ArcFurnaceScreen extends IEContainerScreen
+public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 {
 	static final String texture = "immersiveengineering:textures/gui/arc_furnace.png";
-	ArcFurnaceTileEntity tile;
+	private ArcFurnaceTileEntity tile;
 	private GuiButtonIE distributeButton;
 
 	public ArcFurnaceScreen(ArcFurnaceContainer container, PlayerInventory inventoryPlayer, ITextComponent title)

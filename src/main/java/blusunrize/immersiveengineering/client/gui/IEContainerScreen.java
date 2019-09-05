@@ -16,9 +16,9 @@ import net.minecraft.util.text.ITextComponent;
 /**
  * @author BluSunrize - 05.07.2017
  */
-public abstract class IEContainerScreen extends ContainerScreen
+public abstract class IEContainerScreen<C extends Container> extends ContainerScreen<C>
 {
-	public IEContainerScreen(Container inventorySlotsIn, PlayerInventory inv, ITextComponent title)
+	public IEContainerScreen(C inventorySlotsIn, PlayerInventory inv, ITextComponent title)
 	{
 		super(inventorySlotsIn, inv, title);
 	}

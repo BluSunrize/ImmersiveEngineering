@@ -21,7 +21,7 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 
-public class RevolverScreen extends IEContainerScreen
+public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 {
 	private int[] bullets = new int[2];
 	private boolean otherRevolver = false;
@@ -33,10 +33,10 @@ public class RevolverScreen extends IEContainerScreen
 		ItemStack revolver = inventoryPlayer.player.getItemStackFromSlot(container.entityEquipmentSlot);
 		if(!revolver.isEmpty()&&revolver.getItem() instanceof IBulletContainer)
 			this.bullets[0] = ((IBulletContainer)revolver.getItem()).getBulletCount(revolver);
-		this.otherRevolver = !((RevolverContainer)this.container).secondRevolver.isEmpty();
+		this.otherRevolver = !this.container.secondRevolver.isEmpty();
 		if(this.otherRevolver)
 		{
-			this.bullets[1] = ((IBulletContainer)((RevolverContainer)this.container).secondRevolver.getItem()).getBulletCount(((RevolverContainer)this.container).secondRevolver);
+			this.bullets[1] = ((IBulletContainer)this.container.secondRevolver.getItem()).getBulletCount(this.container.secondRevolver);
 			this.offset = ((bullets[0] >= 18?150: bullets[0] > 8?136: 74)+(bullets[1] >= 18?150: bullets[1] > 8?136: 74)+4-176)/2;
 			if(this.offset > 0)
 				this.xSize += this.offset*2;

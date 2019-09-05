@@ -16,7 +16,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 @ChestContainer
-public class CrateContainer extends IEBaseContainer
+public class CrateContainer extends IEBaseContainer<WoodenCrateTileEntity>
 {
 	public CrateContainer(int id, PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile)
 	{

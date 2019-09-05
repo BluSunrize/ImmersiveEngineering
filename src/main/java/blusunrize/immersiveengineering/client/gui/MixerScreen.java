@@ -30,9 +30,9 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MixerScreen extends IEContainerScreen
+public class MixerScreen extends IEContainerScreen<MixerContainer>
 {
-	MixerTileEntity tile;
+	private MixerTileEntity tile;
 
 	public MixerScreen(MixerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{

@@ -130,7 +130,7 @@ public class BlockItemIE extends BlockItem
 		World world = context.getWorld();
 		if(player==null)
 			return ActionResultType.FAIL;
-		Hand hand = player.getActiveHand();//TODO is this correct?
+		Hand hand = context.getHand();
 		ItemStack stack = player.getHeldItem(hand);
 		BlockState currState = world.getBlockState(pos);
 		Block block = currState.getBlock();

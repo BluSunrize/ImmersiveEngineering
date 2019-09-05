@@ -276,9 +276,9 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 		{
 			if(!simulate)
 			{
-				ItemEntity entity = new ItemEntity(conveyor.getWorld(), conveyor.getPos().getX()+.5, conveyor.getPos().getY()+.1875, conveyor.getPos().getZ()+.5, stack.copy());
+				ItemEntity entity = new ItemEntity(conveyor.getWorldNonnull(), conveyor.getPos().getX()+.5, conveyor.getPos().getY()+.1875, conveyor.getPos().getZ()+.5, stack.copy());
 				entity.setMotion(Vec3d.ZERO);
-				conveyor.getWorld().addEntity(entity);
+				conveyor.getWorldNonnull().addEntity(entity);
 				if(conveyor.conveyorBeltSubtype!=null)
 					conveyor.conveyorBeltSubtype.onItemDeployed(conveyor, entity, conveyor.facing);
 			}

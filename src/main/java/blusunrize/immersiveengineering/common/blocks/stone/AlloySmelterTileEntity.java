@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -28,7 +27,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
@@ -62,12 +60,6 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	public boolean canUseGui(PlayerEntity player)
 	{
 		return formed;
-	}
-
-	@Override
-	public ResourceLocation getGuiName()
-	{
-		return Lib.GUIID_AlloySmelter;
 	}
 
 	@Override

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -33,7 +32,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -199,12 +197,6 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	public boolean canUseGui(PlayerEntity player)
 	{
 		return true;
-	}
-
-	@Override
-	public ResourceLocation getGuiName()
-	{
-		return Lib.GUIID_Workbench;
 	}
 
 	@Override

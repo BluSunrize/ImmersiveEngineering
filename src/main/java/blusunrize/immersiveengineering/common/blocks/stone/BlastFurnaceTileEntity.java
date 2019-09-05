@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
@@ -26,7 +25,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -65,12 +63,6 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	public boolean canUseGui(PlayerEntity player)
 	{
 		return formed;
-	}
-
-	@Override
-	public ResourceLocation getGuiName()
-	{
-		return Lib.GUIID_BlastFurnace;
 	}
 
 	@Override

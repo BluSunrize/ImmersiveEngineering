@@ -20,7 +20,7 @@ public class SiloRenderer extends TileEntityRenderer<SiloTileEntity>
 	@Override
 	public void render(SiloTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!tile.formed||tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(!tile.formed||tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
 		GlStateManager.pushMatrix();
 

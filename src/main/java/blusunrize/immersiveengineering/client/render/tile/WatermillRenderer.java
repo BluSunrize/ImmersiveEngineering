@@ -37,12 +37,12 @@ public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 	@Override
 	public void render(WatermillTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
 		if(quads==null)
 		{
 			final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-			BlockState state = tile.getWorld().getBlockState(tile.getPos());
+			BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
 			if(state.getBlock()!=WoodenDevices.watermill)
 				return;
 			state = state.with(IEProperties.FACING_ALL, Direction.NORTH);
@@ -64,7 +64,7 @@ public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
-		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorld(), tile.getPos());
+		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorldNonnull(), tile.getPos());
 		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();
 		GlStateManager.popMatrix();

@@ -27,7 +27,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -42,7 +41,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -355,9 +353,6 @@ public class IEBlockInterfaces
 		IInteractionObjectIE getGuiMaster();
 
 		boolean canUseGui(PlayerEntity player);
-
-		@Nonnull
-		ResourceLocation getGuiName();
 
 		@Nullable
 		@Override

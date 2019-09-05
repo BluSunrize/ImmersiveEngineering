@@ -153,7 +153,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	{
 		CompoundNBT tag = new CompoundNBT();
 		tag.putBoolean("cycle", true);
-		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> getWorld().getChunkAt(pos)),
+		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> getWorldNonnull().getChunkAt(pos)),
 				new MessageTileSync(this, tag));
 	}
 

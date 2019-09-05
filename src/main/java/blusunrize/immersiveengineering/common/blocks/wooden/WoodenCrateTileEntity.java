@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -124,7 +123,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	}
 
 	@Override
-	@Nullable
+	@Nonnull
 	public ITextComponent getDisplayName()
 	{
 		if(name!=null)
@@ -132,9 +131,9 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 		else
 		{
 			if(reinforced)
-				return new TranslationTextComponent("tile.immersiveengineering.wooden_device0.reinforced_crate.name");
+				return new TranslationTextComponent("block.immersiveengineering.reinforced_crate");
 			else
-				return new TranslationTextComponent("tile.immersiveengineering.wooden_device0.crate.name");
+				return new TranslationTextComponent("block.immersiveengineering.crate");
 		}
 	}
 
@@ -142,12 +141,6 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	public boolean canUseGui(PlayerEntity player)
 	{
 		return true;
-	}
-
-	@Override
-	public ResourceLocation getGuiName()
-	{
-		return Lib.GUIID_WoodenCrate;
 	}
 
 	@Override

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -30,7 +29,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -728,13 +726,6 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				(posInMultiblock.getY() > 0&&posInMultiblock.getZ() > 0&&posInMultiblock.getZ() < 4&&posInMultiblock.getX() < 4));
 	}
 
-	@Nonnull
-	@Override
-	public ResourceLocation getGuiName()
-	{
-		return Lib.GUIID_ArcFurnace;
-	}
-
 	@Override
 	public IInteractionObjectIE getGuiMaster()
 	{
@@ -768,7 +759,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		protected void processFinish(PoweredMultiblockTileEntity<?, ArcFurnaceRecipe> te)
 		{
 			super.processFinish(te);
-			te.getWorld().addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 0, 40);
+			te.getWorldNonnull().addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 0, 40);
 		}
 	}
 

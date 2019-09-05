@@ -16,7 +16,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 
-public class CrateScreen extends IEContainerScreen
+public class CrateScreen extends IEContainerScreen<CrateContainer>
 {
 	public CrateScreen(CrateContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -27,7 +27,7 @@ public class CrateScreen extends IEContainerScreen
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		TileEntity te = ((CrateContainer)container).tile;
+		TileEntity te = container.tile;
 		this.font.drawString(((WoodenCrateTileEntity)te).getDisplayName().getFormattedText(),
 				8, 6, 0x0a0a0a);
 	}

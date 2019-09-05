@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
@@ -35,7 +34,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -414,7 +412,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==1&&w==1&&l!=1)
 		{
-			TileEntity tile = getWorld().getTileEntity(pos);
+			TileEntity tile = getWorldNonnull().getTileEntity(pos);
 			if(tile instanceof ConveyorBeltTileEntity)
 				((ConveyorBeltTileEntity)tile).setFacing(this.facing);
 		}
@@ -562,12 +560,6 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public ResourceLocation getGuiName()
-	{
-		return Lib.GUIID_Assembler;
-	}
-
-	@Override
 	public IInteractionObjectIE getGuiMaster()
 	{
 		return master();
@@ -683,7 +675,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		public void recalculateOutput()
 		{
 			CraftingInventory invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
-			this.recipe = Utils.findCraftingRecipe(invC, tile.getWorld()).orElse(null);
+			this.recipe = Utils.findCraftingRecipe(invC, tile.getWorldNonnull()).orElse(null);
 			this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC): ItemStack.EMPTY);
 		}
 

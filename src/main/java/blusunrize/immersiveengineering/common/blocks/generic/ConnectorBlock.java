@@ -90,7 +90,7 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 			if(world.isAirBlock(pos.offset(connector.facing)))
 			{
 				spawnAsEntity(world, pos, new ItemStack(this));
-				connector.getWorld().removeBlock(pos, false);
+				connector.getWorldNonnull().removeBlock(pos, false);
 			}
 		}
 	}

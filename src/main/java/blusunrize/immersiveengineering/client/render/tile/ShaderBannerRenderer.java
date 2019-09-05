@@ -32,9 +32,9 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 	@Override
 	public void render(ShaderBannerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		te.getWorld();
+		te.getWorldNonnull();
 		int orientation = te.orientation;
-		long time = te.getWorld().getGameTime();
+		long time = te.getWorldNonnull().getGameTime();
 		GlStateManager.pushMatrix();
 		float f = 2/3f;
 

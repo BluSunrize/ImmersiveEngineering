@@ -28,7 +28,7 @@ import net.minecraft.util.text.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssemblerScreen extends IEContainerScreen
+public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 {
 	static final String texture = "immersiveengineering:textures/gui/assembler.png";
 	public AssemblerTileEntity tile;

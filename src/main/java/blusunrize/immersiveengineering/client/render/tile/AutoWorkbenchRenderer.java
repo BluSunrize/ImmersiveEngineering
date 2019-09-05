@@ -58,7 +58,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 	@Override
 	public void render(AutoWorkbenchTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos()))
+		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 
 		//Grab model + correct eextended state
@@ -179,11 +179,11 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		GlStateManager.pushMatrix();
 		ItemStack blueprintStack = te.inventory.get(0);
 		if(!blueprintStack.isEmpty())
-			renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "blueprint");
+			renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "blueprint");
 
 
 		GlStateManager.translated(0, lift, 0);
-		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "lift");
+		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "lift");
 		GlStateManager.translated(0, -lift, 0);
 
 		Direction f = te.getFacing();
@@ -191,7 +191,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		float tz = f==Direction.NORTH?-.9375f: f==Direction.SOUTH?.9375f: 0;
 		GlStateManager.translated(tx, 0, tz);
 		GlStateManager.rotatef(drill, 0, 1, 0);
-		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "drill");
+		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "drill");
 		GlStateManager.rotatef(-drill, 0, 1, 0);
 		GlStateManager.translated(-tx, 0, -tz);
 
@@ -199,12 +199,12 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		tz = f==Direction.NORTH?-.59375f: f==Direction.SOUTH?.59375f: 0;
 		GlStateManager.translated(tx, -.21875, tz);
 		GlStateManager.rotatef(press*90, -f.getZOffset(), 0, f.getXOffset());
-		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "press");
+		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "press");
 		GlStateManager.rotatef(-press*90, -f.getZOffset(), 0, f.getXOffset());
 		GlStateManager.translated(-tx, .21875, -tz);
 
 		GlStateManager.translated(0, liftPress, 0);
-		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorld(), state, model, blockPos, "pressLift");
+		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "pressLift");
 		GlStateManager.translated(0, -liftPress, 0);
 
 		RenderHelper.enableStandardItemLighting();
@@ -294,7 +294,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		{
 			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(blueprintStack, "blueprint"));
 			BlueprintCraftingRecipe recipe = (te.selectedRecipe < 0||te.selectedRecipe >= recipes.length)?null: recipes[te.selectedRecipe];
-			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, te.getWorld());
+			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, te.getWorldNonnull());
 			if(blueprint!=null)
 			{
 				//Width depends on distance

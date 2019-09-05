@@ -34,7 +34,7 @@ import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
 import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE;
 import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
-public class SorterScreen extends IEContainerScreen
+public class SorterScreen extends IEContainerScreen<SorterContainer>
 {
 	SorterTileEntity tile;
 

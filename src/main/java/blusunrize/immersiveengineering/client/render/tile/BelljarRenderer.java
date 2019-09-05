@@ -49,7 +49,7 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 	@Override
 	public void render(BelljarTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(tile.dummy!=0||!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(tile.dummy!=0||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
@@ -108,7 +108,7 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 					}
 					GlStateManager.pushMatrix();
 					worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-					ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorld(), blockPos, false);
+					ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorldNonnull(), blockPos, false);
 					Tessellator.getInstance().draw();
 					GlStateManager.popMatrix();
 					GlStateManager.translated(0, 1, 0);
@@ -119,7 +119,7 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 
 		GlStateManager.depthMask(false);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		ClientUtils.renderModelTESRFast(quads.get(tile.getFacing()), worldRenderer, tile.getWorld(), blockPos);
+		ClientUtils.renderModelTESRFast(quads.get(tile.getFacing()), worldRenderer, tile.getWorldNonnull(), blockPos);
 		Tessellator.getInstance().draw();
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();

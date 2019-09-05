@@ -19,9 +19,9 @@ import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 
-public class FermenterScreen extends IEContainerScreen
+public class FermenterScreen extends IEContainerScreen<FermenterContainer>
 {
-	FermenterTileEntity tile;
+	private FermenterTileEntity tile;
 
 	public FermenterScreen(FermenterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{

@@ -33,7 +33,7 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 	@Override
 	public void render(CrusherTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos()))
+		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();

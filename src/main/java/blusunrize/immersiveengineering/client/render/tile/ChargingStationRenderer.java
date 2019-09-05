@@ -19,7 +19,7 @@ public class ChargingStationRenderer extends TileEntityRenderer<ChargingStationT
 	@Override
 	public void render(ChargingStationTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(te.getWorld()!=null&&te.getWorld().isBlockLoaded(te.getPos()))
+		if(te.getWorldNonnull()!=null&&te.getWorldNonnull().isBlockLoaded(te.getPos()))
 		{
 			GlStateManager.pushMatrix();
 			GlStateManager.translated(x+.5, y+.3125, z+.5);

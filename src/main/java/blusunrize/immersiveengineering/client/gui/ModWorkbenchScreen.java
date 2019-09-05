@@ -36,9 +36,9 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class ModWorkbenchScreen extends ToolModificationScreen
+public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchContainer>
 {
-	ModWorkbenchTileEntity workbench;
+	private ModWorkbenchTileEntity workbench;
 
 	public ModWorkbenchScreen(ModWorkbenchContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{

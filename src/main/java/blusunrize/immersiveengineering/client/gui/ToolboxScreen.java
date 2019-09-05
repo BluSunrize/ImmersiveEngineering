@@ -22,7 +22,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 
-public class ToolboxScreen extends IEContainerScreen
+public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 {
 	public ToolboxScreen(ToolboxContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -36,7 +36,7 @@ public class ToolboxScreen extends IEContainerScreen
 		super.render(mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		int slot = -1;
-		for(int i = 0; i < ((ToolboxContainer)this.container).internalSlots; i++)
+		for(int i = 0; i < this.container.internalSlots; i++)
 		{
 			Slot s = this.container.getSlot(i);
 			if(!s.getHasStack()&&mx > guiLeft+s.xPos&&mx < guiLeft+s.xPos+16&&my > guiTop+s.yPos&&my < guiTop+s.yPos+16)

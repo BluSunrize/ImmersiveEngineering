@@ -20,9 +20,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class ToolboxBlockContainer extends IEBaseContainer implements ICallbackContainer
+public class ToolboxBlockContainer extends IEBaseContainer<ToolboxTileEntity> implements ICallbackContainer
 {
-	IItemHandler inv;
+	private IItemHandler inv;
 
 	public ToolboxBlockContainer(int id, PlayerInventory inventoryPlayer, ToolboxTileEntity tile)
 	{

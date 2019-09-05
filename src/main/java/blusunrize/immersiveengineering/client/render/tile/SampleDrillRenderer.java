@@ -36,11 +36,11 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 	@Override
 	public void render(SampleDrillTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockState state = tile.getWorld().getBlockState(tile.getPos());
+		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
 		IBakedModel model = blockRenderer.getModelForState(state);
 		if(state.getBlock()!=MetalDevices.sampleDrill)
@@ -78,7 +78,7 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		worldRenderer.color(255, 255, 255, 255);
 		IModelData data = new SinglePropertyModelData<>(new OBJState(Lists.newArrayList("drill"), true),
 				Model.OBJ_STATE);
-		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer, true,
+		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorldNonnull(), model, state, tile.getPos(), worldRenderer, true,
 				Utils.RAND, 0, data);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();

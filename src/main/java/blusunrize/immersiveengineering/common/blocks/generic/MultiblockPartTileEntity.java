@@ -351,9 +351,9 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
 	{
 		if(state.getBlock()==this.getBlockState().getBlock())
-			getWorld().removeBlock(pos, false);
-		getWorld().setBlockState(pos, state);
-		TileEntity tile = getWorld().getTileEntity(pos);
+			getWorldNonnull().removeBlock(pos, false);
+		getWorldNonnull().setBlockState(pos, state);
+		TileEntity tile = getWorldNonnull().getTileEntity(pos);
 		if(tile instanceof ITileDrop)
 			((ITileDrop)tile).readOnPlacement(null, stack);
 	}
@@ -406,7 +406,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 			T tile = this.getTileForPos(rsPos);
 			if(tile!=null)
 			{
-				boolean b = getWorld().getRedstonePowerFromNeighbors(tile.getPos()) > 0;
+				boolean b = getWorldNonnull().getRedstonePowerFromNeighbors(tile.getPos()) > 0;
 				return redstoneControlInverted!=b;
 			}
 		}
@@ -417,7 +417,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public T getTileForPos(BlockPos targetPosInMB)
 	{
 		BlockPos target = getBlockPosForPos(targetPosInMB);
-		TileEntity tile = Utils.getExistingTileEntity(getWorld(), target);
+		TileEntity tile = Utils.getExistingTileEntity(getWorldNonnull(), target);
 		if(this.getClass().isInstance(tile))
 			return (T)tile;
 		return null;

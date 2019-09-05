@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -18,7 +17,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -124,12 +122,6 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	public boolean canUseGui(PlayerEntity player)
 	{
 		return true;
-	}
-
-	@Override
-	public ResourceLocation getGuiName()
-	{
-		return Lib.GUIID_FluidSorter;
 	}
 
 	@Override

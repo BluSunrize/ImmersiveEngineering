@@ -18,9 +18,9 @@ import net.minecraft.util.text.ITextComponent;
 
 import java.util.ArrayList;
 
-public class CokeOvenScreen extends IEContainerScreen
+public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 {
-	CokeOvenTileEntity tile;
+	private CokeOvenTileEntity tile;
 
 	public CokeOvenScreen(CokeOvenContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -55,13 +55,6 @@ public class CokeOvenScreen extends IEContainerScreen
 			this.blit(guiLeft+59, guiTop+37+12-h, 179, 1+12-h, 9, h);
 		}
 
-//		if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
-//		{
-//			int h = (int)(47*(tile.tank.getFluid().amount/(float)tile.tank.getCapacity()));
-//			ClientUtils.drawRepeatedFluidIcon(tile.tank.getFluid().getFluid(), guiLeft+129,guiTop+20+47-h, 16, h);
-//			ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");
-//		}
-//		this.blit(guiLeft+127,guiTop+18, 176,31, 20,51);
 		ClientUtils.handleGuiTank(tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/coke_oven.png", null);
 
 	}

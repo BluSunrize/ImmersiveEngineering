@@ -23,9 +23,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 
-public class BelljarScreen extends IEContainerScreen
+public class BelljarScreen extends IEContainerScreen<BelljarContainer>
 {
-	BelljarTileEntity tile;
+	private BelljarTileEntity tile;
 
 	public BelljarScreen(BelljarContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{

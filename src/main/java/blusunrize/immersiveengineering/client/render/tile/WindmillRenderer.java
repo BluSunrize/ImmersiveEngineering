@@ -44,7 +44,7 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 	@Override
 	public void render(WindmillTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
@@ -80,7 +80,7 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
-		ClientUtils.renderModelTESRFast(quads[tile.sails], worldRenderer, tile.getWorld(), blockPos);
+		ClientUtils.renderModelTESRFast(quads[tile.sails], worldRenderer, tile.getWorldNonnull(), blockPos);
 		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();
 		GlStateManager.popMatrix();

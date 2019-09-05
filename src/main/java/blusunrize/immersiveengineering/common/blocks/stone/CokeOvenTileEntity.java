@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
@@ -27,7 +26,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -67,12 +65,6 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	public boolean canUseGui(PlayerEntity player)
 	{
 		return formed;
-	}
-
-	@Override
-	public ResourceLocation getGuiName()
-	{
-		return Lib.GUIID_CokeOven;
 	}
 
 	@Override

@@ -18,7 +18,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 
-public class MaintenanceKitScreen extends ToolModificationScreen
+public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitContainer>
 {
 	public MaintenanceKitScreen(MaintenanceKitContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -29,7 +29,7 @@ public class MaintenanceKitScreen extends ToolModificationScreen
 	@Override
 	protected void sendMessage(CompoundNBT data)
 	{
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageMaintenanceKit(((MaintenanceKitContainer)container).getEquipmentSlot(), data));
+		ImmersiveEngineering.packetHandler.sendToServer(new MessageMaintenanceKit(container.getEquipmentSlot(), data));
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class MaintenanceKitScreen extends ToolModificationScreen
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/maintenance_kit.png");
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		for(int i = 0; i < ((MaintenanceKitContainer)container).internalSlots; i++)
+		for(int i = 0; i < container.internalSlots; i++)
 		{
 			Slot s = container.getSlot(i);
 			ClientUtils.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x44);

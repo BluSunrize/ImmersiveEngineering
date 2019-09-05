@@ -44,6 +44,7 @@ import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
+import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackPartBullet;
@@ -147,6 +148,7 @@ public class IEContent
 
 		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);
+		GuiHandler.init();
 		for(EnumMetals m : EnumMetals.values())
 		{
 			String name = m.tagName();
@@ -503,6 +505,7 @@ public class IEContent
 		return ret;
 	}
 
+	@SubscribeEvent
 	public static void registerTEs(RegistryEvent.Register<TileEntityType<?>> event)
 	{
 		EnergyConnectorTileEntity.registerConnectorTEs(event);
@@ -582,9 +585,7 @@ public class IEContent
 		registerTile(ArcFurnaceTileEntity.class, event, Multiblocks.arcFurnace);
 		registerTile(LightningrodTileEntity.class, event, Multiblocks.lightningrod);
 		registerTile(MixerTileEntity.class, event, Multiblocks.mixer);
-		//		registerTile(TileEntitySkycrateDispenser.class);
 		registerTile(FakeLightTileEntity.class, event, Misc.fakeLight);
-		EnergyConnectorTileEntity.registerConnectorTEs(event);
 	}
 
 	//TODO @SubscribeEvent
@@ -1222,7 +1223,7 @@ public class IEContent
 	public static <T extends TileEntity> void registerTile(Class<T> tile, Register<TileEntityType<?>> event, Block... valid)
 	{
 		String s = tile.getSimpleName();
-		s = s.substring(s.indexOf("TileEntity")+"TileEntity".length());
+		s = s.substring(0, s.indexOf("TileEntity")).toLowerCase(Locale.ENGLISH);
 		Set<Block> validSet = new HashSet<>(Arrays.asList(valid));
 		TileEntityType<T> type = new TileEntityType<>(() -> {
 			try

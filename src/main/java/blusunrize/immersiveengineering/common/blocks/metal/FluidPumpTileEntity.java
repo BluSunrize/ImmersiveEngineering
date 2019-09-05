@@ -191,7 +191,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			next = openList.get(0);
 			if(!checked.contains(next))
 			{
-				Fluid fluid = Utils.getRelatedFluid(getWorld(), next);
+				Fluid fluid = Utils.getRelatedFluid(getWorldNonnull(), next);
 				if((fluid!=Fluids.WATER||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 				{
 					if(searchFluid==null)
@@ -235,7 +235,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 				CapabilityReference<IFluidHandler> output = neighborFluids.get(f);
 				if(output.isPresent())
 				{
-					TileEntity tile = getWorld().getTileEntity(pos.offset(f));
+					TileEntity tile = getWorldNonnull().getTileEntity(pos.offset(f));
 					IFluidHandler handler = output.get();
 					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
 					if(tile instanceof FluidPipeTileEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
@@ -317,7 +317,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 				sideConfig[side.ordinal()] = -1;
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
-			getWorld().addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
+			getWorldNonnull().addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
 			return true;
 		}
 		else if(p.isSneaking())
@@ -475,8 +475,8 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
-		getWorld().setBlockState(pos.add(0, 1, 0), state);
-		TileEntity tile = getWorld().getTileEntity(pos.add(0, 1, 0));
+		getWorldNonnull().setBlockState(pos.add(0, 1, 0), state);
+		TileEntity tile = getWorldNonnull().getTileEntity(pos.add(0, 1, 0));
 		if(tile instanceof FluidPumpTileEntity)
 			((FluidPumpTileEntity)tile).dummy = true;
 	}

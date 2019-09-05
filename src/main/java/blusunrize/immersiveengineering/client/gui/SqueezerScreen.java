@@ -20,9 +20,9 @@ import net.minecraft.util.text.StringTextComponent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SqueezerScreen extends IEContainerScreen
+public class SqueezerScreen extends IEContainerScreen<SqueezerContainer>
 {
-	SqueezerTileEntity tile;
+	private SqueezerTileEntity tile;
 
 	public SqueezerScreen(SqueezerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
