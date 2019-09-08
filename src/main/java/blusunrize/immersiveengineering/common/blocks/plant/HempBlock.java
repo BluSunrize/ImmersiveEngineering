@@ -11,21 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.plant;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
-import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BushBlock;
-import net.minecraft.block.IGrowable;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -34,15 +23,9 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.PlantType;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Random;
 
 public class HempBlock extends BushBlock implements IGrowable
@@ -74,7 +57,7 @@ public class HempBlock extends BushBlock implements IGrowable
 			return EnumHempGrowth.BOTTOM0;
 	}
 
-	public EnumHempGrowth getMaxGrowth(EnumHempGrowth current)
+	public static EnumHempGrowth getMaxGrowth(EnumHempGrowth current)
 	{
 		if(current==EnumHempGrowth.TOP0)
 			return EnumHempGrowth.TOP0;
@@ -88,7 +71,7 @@ public class HempBlock extends BushBlock implements IGrowable
 		boolean b = super.isValidPosition(state, world, pos);
 		if(state.get(GROWTH)==EnumHempGrowth.TOP0)
 		{
-			BlockState stateBelow = world.getBlockState(pos.add(0, -1, 0));
+			BlockState stateBelow = world.getBlockState(pos.down());
 			b = stateBelow.getBlock().equals(this)&&stateBelow.get(GROWTH)==getMaxGrowth(EnumHempGrowth.BOTTOM0);
 		}
 		return b;
@@ -97,7 +80,8 @@ public class HempBlock extends BushBlock implements IGrowable
 	@Override
 	protected boolean isValidGround(BlockState state, IBlockReader world, BlockPos pos)
 	{
-		return state.canSustainPlant(world, pos, Direction.UP, this);
+		//TODO improve once CropsBlock is improved
+		return state.getBlock()==Blocks.FARMLAND;
 	}
 
 	@Override
@@ -123,30 +107,6 @@ public class HempBlock extends BushBlock implements IGrowable
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
 	{
 		return shapes.getOrDefault(state.get(GROWTH), VoxelShapes.fullCube());
-	}
-
-	@Override
-	@SuppressWarnings("deprecation")
-	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
-	{
-		ItemStack tool = builder.get(LootParameters.TOOL);
-		int fortune = (tool==null)?(0):(EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, tool));
-		EnumHempGrowth growth = state.get(GROWTH);
-		List<ItemStack> drops = new ArrayList<ItemStack>();
-		drops.add(new ItemStack(Misc.hempSeeds, 1));
-		if(growth==getMaxGrowth(growth))
-		{
-			for(int i = 0; i < 3+fortune; ++i)
-				if(Utils.RAND.nextInt(8) <= growth.ordinal())
-					drops.add(new ItemStack(Ingredients.hempFiber, 1));
-		}
-		return drops;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	protected IItemProvider getSeedsItem()
-	{
-		return Misc.hempSeeds;
 	}
 
 	@Override

@@ -205,7 +205,7 @@ public final class IEBlocks
 
 	public static final class Misc
 	{
-		public static Block crop;
+		public static Block hempPlant;
 		public static Block fakeLight;
 	}
 }

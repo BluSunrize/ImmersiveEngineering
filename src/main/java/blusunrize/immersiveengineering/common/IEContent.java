@@ -290,7 +290,7 @@ public class IEContent
 		WoodenDevices.watermill = new WatermillBlock("watermill");
 		WoodenDevices.treatedPost = new PostBlock("treated_post", standardWoodProperties);
 		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodProperties);
-		IEBlocks.Misc.crop = new HempBlock("hemp");
+		IEBlocks.Misc.hempPlant = new HempBlock("hemp");
 
 		Cloth.cushion = new CushionBlock();
 		Cloth.balloon = new BalloonBlock();
@@ -397,8 +397,38 @@ public class IEContent
 		IEItems.Tools.steelAxe = IETools.createAxe(Lib.MATERIAL_Steel, "axe_steel");
 		IEItems.Tools.steelSword = IETools.createSword(Lib.MATERIAL_Steel, "sword_steel");
 		Tools.toolbox = new ToolboxItem();
+		IEItems.Misc.hempSeeds = new IESeedItem(Misc.hempPlant);
+		IEItems.Ingredients.stickTreated = new IEBaseItem("stick_treated");
+		IEItems.Ingredients.stickIron = new IEBaseItem("stick_iron");
+		IEItems.Ingredients.stickSteel = new IEBaseItem("stick_steel");
+		IEItems.Ingredients.stickAluminum = new IEBaseItem("stick_aluminum");
+		IEItems.Ingredients.hempFiber = new IEBaseItem("hemp_fiber");
+		IEItems.Ingredients.hempFabric = new IEBaseItem("hemp_fabric");
+		IEItems.Ingredients.coalCoke = new IEBaseItem("coal_coke");
+		IEItems.Ingredients.slag = new IEBaseItem("slag");
+		IEItems.Ingredients.componentIron = new IEBaseItem("component_iron");
+		IEItems.Ingredients.componentSteel = new IEBaseItem("component_steel");
+		IEItems.Ingredients.waterwheelSegment = new IEBaseItem("waterwheel_segment");
+		IEItems.Ingredients.windmillBlade = new IEBaseItem("windmill_blade");
+		IEItems.Ingredients.windmillSail = new IEBaseItem("windmill_sail");
+		IEItems.Ingredients.woodenGrip = new IEBaseItem("wooden_grip");
+		IEItems.Ingredients.gunpartBarrel = new IEBaseItem("gunpart_barrel");
+		IEItems.Ingredients.gunpartDrum = new IEBaseItem("gunpart_drum");
+		IEItems.Ingredients.gunpartHammer = new IEBaseItem("gunpart_hammer");
+		IEItems.Ingredients.dustCoke = new IEBaseItem("dust_coke");
+		IEItems.Ingredients.dustHopGraphite = new IEBaseItem("dust_hop_graphite");
+		IEItems.Ingredients.ingotHopGraphite = new IEBaseItem("ingot_hop_graphite");
+		IEItems.Ingredients.wireCopper = new IEBaseItem("wire_copper");
+		IEItems.Ingredients.wireElectrum = new IEBaseItem("wire_electrum");
+		IEItems.Ingredients.wireAluminum = new IEBaseItem("wire_aluminum");
+		IEItems.Ingredients.wireSteel = new IEBaseItem("wire_steel");
+		IEItems.Ingredients.dustSaltpeter = new IEBaseItem("dust_saltpeter");
+		IEItems.Ingredients.dustSulfur = new IEBaseItem("dust_sulfur");
+		IEItems.Ingredients.electronTube = new IEBaseItem("electron_tube");
+		IEItems.Ingredients.circuitBoard = new IEBaseItem("circuit_board");
+		IEItems.Ingredients.emptyCasing = new IEBaseItem("empty_casing");
+		IEItems.Ingredients.emptyShell = new IEBaseItem("empty_shell");
 		/*TODO
-		IEItems.Misc.hempSeeds = new ItemIESeed(blockCrop, "hemp");
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
 		itemDrill = new ItemDrill();
@@ -1016,10 +1046,10 @@ public class IEContent
 				int age = Math.min(4, Math.round(growth*4));
 				if(age==4)
 					return new BlockState[]{
-							Misc.crop.getDefaultState().with(CropsBlock.AGE, age),
-							Misc.crop.getDefaultState().with(CropsBlock.AGE, age)
+							Misc.hempPlant.getDefaultState().with(CropsBlock.AGE, age),
+							Misc.hempPlant.getDefaultState().with(CropsBlock.AGE, age)
 					};
-				return new BlockState[]{Misc.crop.getDefaultState().with(CropsBlock.AGE, age)};
+				return new BlockState[]{Misc.hempPlant.getDefaultState().with(CropsBlock.AGE, age)};
 			}
 
 			@Override
@@ -1030,7 +1060,7 @@ public class IEContent
 			}
 		};
 		BelljarHandler.registerHandler(hempBelljarHandler);
-		hempBelljarHandler.register(new ItemStack(IEItems.Misc.hempSeeds), new ItemStack[]{new ItemStack(Ingredients.hempFiber), new ItemStack(IEItems.Misc.hempSeeds, 2)}, new ItemStack(Blocks.DIRT), Misc.crop.getDefaultState());
+		hempBelljarHandler.register(new ItemStack(IEItems.Misc.hempSeeds), new ItemStack[]{new ItemStack(Ingredients.hempFiber), new ItemStack(IEItems.Misc.hempSeeds, 2)}, new ItemStack(Blocks.DIRT), Misc.hempPlant.getDefaultState());
 
 		/*TODO
 		ThermoelectricHandler.registerSource(new IngredientStack(new ItemStack(Blocks.MAGMA)), 1300);
