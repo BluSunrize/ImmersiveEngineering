@@ -19,11 +19,11 @@ import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class GuiButtonManual extends Button
 {
-	public GuiManual gui;
+	public ManualScreen gui;
 	public int[] colour = {0x33000000, 0x33cb7f32};
 	public int[] textColour = {0xffe0e0e0, 0xffffffa0};
 
-	public GuiButtonManual(GuiManual gui, int x, int y, int w, int h, String text, IPressable handler)
+	public GuiButtonManual(ManualScreen gui, int x, int y, int w, int h, String text, IPressable handler)
 	{
 		super(w, h, x, y, text, handler);
 		this.gui = gui;

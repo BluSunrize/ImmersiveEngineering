@@ -78,6 +78,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -925,8 +926,10 @@ public class ClientProxy extends CommonProxy
 			int cmp = currVer.compareTo(version);
 			if(cmp==0)
 				title += I18n.format("ie.manual.currentVersion");
-			else if(cmp < 0)
-				return null;
+			//TODO what are these supposed to do???
+
+			//else if(cmp < 0)
+			//	return null;
 		}
 
 		String text = changes.replace("\t", "  ");
@@ -1291,8 +1294,9 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void reInitGui()
 	{
-		if(mc().currentScreen instanceof IEContainerScreen)
-			((IEContainerScreen)mc().currentScreen).init();
+		Screen currentScreen = mc().currentScreen;
+		if(currentScreen instanceof IEContainerScreen)
+			currentScreen.init(mc(), currentScreen.width, currentScreen.height);
 	}
 
 	@Override

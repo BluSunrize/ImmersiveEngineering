@@ -9,7 +9,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -154,7 +154,7 @@ public class ManualElementCrafting extends SpecialManualElements
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
+	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
 	{
 		int recipeYOffset = 0;
 		for(int i = 0; i < this.recipeRows.length; i++)
@@ -180,7 +180,7 @@ public class ManualElementCrafting extends SpecialManualElements
 	}
 
 	@Override
-	public void render(GuiManual gui, int x, int y, int mx, int my)
+	public void render(ManualScreen gui, int x, int y, int mx, int my)
 	{
 		GlStateManager.enableRescaleNormal();
 		RenderHelper.enableGUIStandardItemLighting();

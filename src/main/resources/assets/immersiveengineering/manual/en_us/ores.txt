@@ -1,14 +1,14 @@
 Ores
 Diggy diggy hole
-<&copper>§lCopper Ore§r is found in the world between layers <config;iA;ore_copper;1> and <config;iA;ore_copper;2>, and requires a Stone Pickaxe to harvest.
+<&copper>§lCopper Ore§r is found in the world between layers <config;i;ores.copper.min_y> and <config;i;ores.copper.max_y>, and requires a Stone Pickaxe to harvest.
 The ore will smelt into copper ingots, which are used in crafting basic copper wires, coils, and other integral parts of the IE architecture.
-<&alu>§lBauxite Ore§r is found in the world between layers <config;iA;ore_bauxite;1> and <config;iA;ore_bauxite;2>, and requires a Stone Pickaxe to harvest.
+<&alu>§lBauxite Ore§r is found in the world between layers <config;i;ores.bauxite.min_y> and <config;i;ores.bauxite.max_y>, and requires a Stone Pickaxe to harvest.
 The ore will smelt into aluminium ingots, which, together with steel, are used to create high-voltage wires.
-<&lead>§lLead Ore§r is found in the world between layers <config;iA;ore_lead;1> and <config;iA;ore_lead;2>, and requires an Iron Pickaxe to harvest.
+<&lead>§lLead Ore§r is found in the world between layers <config;i;ores.lead.min_y> and <config;i;ores.lead.max_y>, and requires an Iron Pickaxe to harvest.
 The ore will smelt into lead ingots, which are used in creating capacitors.
-<&silver>§lSilver Ore§r is found in the world between layers <config;iA;ore_silver;1> and <config;iA;ore_silver;2>, and requires an Iron Pickaxe to harvest.
+<&silver>§lSilver Ore§r is found in the world between layers <config;i;ores.silver.min_y> and <config;i;ores.silver.max_y>, and requires an Iron Pickaxe to harvest.
 The ore will smelt into silver ingots, which alloy with gold to create electrum, a far more effective conductor.
-<&nickel>§lNickel Ore§r is found in the world between layers <config;iA;ore_nickel;1> and <config;iA;ore_nickel;2>, and requires an Iron Pickaxe to harvest.
-The ore will smelt into nickel ingots, which alloy with copper to create constantan, a heat resistant conductor used in the creation of <link;generator;§o§nThermoelectric §o§nGenerators§r;1>.
-<&uranium>§lUranium Ore§r is found in the world between layers <config;iA;ore_uranium;1> and <config;iA;ore_uranium;2>, and requires an Iron Pickaxe to harvest.
-The ore will smelt into uranium ingots, but there are currently not many uses for the metal. A uranium block can serve as a heatsource for the <link;generator;§o§nThermoelectric §o§nGenerator§r;1> and the metal will be used in future endeavours.
+<&nickel>§lNickel Ore§r is found in the world between layers <config;i;ores.nickel.min_y> and <config;i;ores.nickel.max_y>, and requires an Iron Pickaxe to harvest.
+The ore will smelt into nickel ingots, which alloy with copper to create constantan, a heat resistant conductor used in the creation of <link;thermoelectric;§o§nThermoelectric §o§nGenerators§r;start>.
+<&uranium>§lUranium Ore§r is found in the world between layers <config;i;ores.uranium.min_y> and <config;i;ores.uranium.max_y>, and requires an Iron Pickaxe to harvest.
+The ore will smelt into uranium ingots, but there are currently not many uses for the metal. A uranium block can serve as a heatsource for the <link;thermoelectric;§o§nThermoelectric §o§nGenerator§r;start> and the metal will be used in future endeavours.

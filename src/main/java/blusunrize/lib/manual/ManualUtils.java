@@ -10,7 +10,8 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -189,7 +190,7 @@ public class ManualUtils
 		return repList;
 	}
 
-	public static void addLinks(ManualEntry entry, ManualInstance helper, GuiManual gui, List<String> text, int x, int y,
+	public static void addLinks(ManualEntry entry, ManualInstance manual, ManualScreen gui, List<String> text, int x, int y,
 								List<Button> pageButtons, List<String[]> repList)
 	{
 		for(int linkIndex = 0; linkIndex < repList.size(); linkIndex++)
@@ -207,31 +208,34 @@ public class ManualUtils
 					if((start = s.indexOf(rep[0].trim())) >= 0)
 					{
 						String formatIdent = rep[0].substring(0, 2);
-						String element = rep[0].substring(2);
+						String linkText = rep[0].substring(2);
 						if(!s.substring(start).startsWith(rep[0]))//This can happen when whitespace is cut off at the end of a line
-							element = element.trim();
-						int bx = helper.fontRenderer.getStringWidth(s.substring(0, start));
-						int by = line*helper.fontRenderer.FONT_HEIGHT;
-						ResourceLocation bkey = THIS.equals(element)?new ResourceLocation(rep[1]): entry.getLocation();
-						int bw = helper.fontRenderer.getStringWidth(element);
-						int bAnchor = -1;
+							linkText = linkText.trim();
+						int bx = manual.fontRenderer.getStringWidth(s.substring(0, start));
+						int by = line*manual.fontRenderer.FONT_HEIGHT;
+						ResourceLocation bkey = THIS.equals(rep[1])?entry.getLocation(): getLocationForManual(rep[1], manual);
+						int bw = manual.fontRenderer.getStringWidth(linkText);
+						String bAnchor = TextSplitter.START;
 						int bOffset = 0;
 						try
 						{
 							if(rep[2].contains("+"))
 							{
 								int plus = rep[2].indexOf('+');
-								bAnchor = Integer.parseInt(rep[2].substring(0, plus));
+								bAnchor = rep[2].substring(0, plus);
 								bOffset = Integer.parseInt(rep[2].substring(plus+1));
 							}
 							else
-								bAnchor = Integer.parseInt(rep[2]);
+								bAnchor = rep[2];
 						} catch(Exception e)
 						{
 							e.printStackTrace();
+							throw new RuntimeException(e);
 						}
-						GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(helper.fontRenderer.FONT_HEIGHT*1.5),
-								new ManualInstance.ManualLink(Objects.requireNonNull(helper.getEntry(bkey), bkey+" is not a known entry!"), bAnchor, bOffset), element);
+						ManualEntry bEntry = Objects.requireNonNull(manual.getEntry(bkey), bkey+" is not a known entry!");
+						Preconditions.checkArgument(bEntry.hasAnchor(bAnchor), "Entry "+bkey+" does not contain anchor "+bAnchor);
+						GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(manual.fontRenderer.FONT_HEIGHT*1.5),
+								new ManualInstance.ManualLink(bEntry, bAnchor, bOffset), linkText);
 						parts.add(btn);
 						pageButtons.add(btn);
 						s = s.replaceFirst(formatIdent, "");

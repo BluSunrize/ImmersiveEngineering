@@ -16,7 +16,7 @@ import java.util.function.Function;
 @SuppressWarnings("WeakerAccess")
 public class TextSplitter
 {
-	private static final String START = "start";
+	public static final String START = "start";
 
 	private final Function<String, Integer> width;
 	private final int lineWidth;
@@ -274,8 +274,13 @@ public class TextSplitter
 		return specialByPage;
 	}
 
-	public int getPageForAnchor(int anchor)
+	public int getPageForAnchor(String anchor)
 	{
-		return pageByAnchor.get(anchor);
+		return pageByAnchor.getInt(anchor);
+	}
+
+	public boolean hasAnchor(String anchor)
+	{
+		return pageByAnchor.containsKey(anchor);
 	}
 }

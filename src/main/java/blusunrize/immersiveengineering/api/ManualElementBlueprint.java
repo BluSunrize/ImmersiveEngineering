@@ -14,7 +14,7 @@ import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.PositionedItemStack;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.collect.ArrayListMultimap;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.AbstractGui;
@@ -76,7 +76,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
+	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
 	{
 		if(this.recipes.size() > 1)
 		{
@@ -95,7 +95,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 	}
 
 	@Override
-	public void render(GuiManual gui, int x, int y, int mouseX, int mouseY)
+	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		GlStateManager.enableRescaleNormal();
 		RenderHelper.enableGUIStandardItemLighting();

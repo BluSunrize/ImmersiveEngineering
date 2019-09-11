@@ -11,47 +11,41 @@ package blusunrize.lib.manual.gui;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree;
+import blusunrize.lib.manual.Tree.AbstractNode;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class GuiClickableList extends Button
+public class ClickableList extends Button
 {
-	String[] headers;
-	boolean[] isCategory;
+	private String[] headers;
+	private boolean[] isCategory;
 	@Nonnull
-	List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes;
+	private List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes = new ArrayList<>();
 	private float textScale;
+	private final Consumer<AbstractNode<ResourceLocation, ManualEntry>> handler;
 	private int offset;
 	private int maxOffset;
-	int perPage;
-	private GuiManual gui;
+	private int perPage;
+	private ManualScreen gui;
 
-	private long prevWheelNano = 0;
-
-	GuiClickableList(GuiManual gui, int x, int y, int w, int h, float textScale,
-					 @Nonnull List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes,
-					 IPressable handler)
+	ClickableList(ManualScreen gui, int x, int y, int w, int h, float textScale,
+				  @Nonnull List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes,
+				  Consumer<Tree.AbstractNode<ResourceLocation, ManualEntry>> handler)
 	{
-		super(x, y, w, h, "", handler);
+		super(x, y, w, h, "", btn -> {
+		});
 		this.gui = gui;
 		this.textScale = textScale;
-		this.nodes = nodes;
-		headers = new String[nodes.size()];
-		isCategory = new boolean[nodes.size()];
-		for(int i = 0; i < nodes.size(); i++)
-		{
-			headers[i] = ManualUtils.getTitleForNode(nodes.get(i), gui.manual);
-			isCategory[i] = !nodes.get(i).isLeaf();
-		}
-
-		perPage = (h-8)/getFontHeight();
-		if(perPage < headers.length)
-			maxOffset = headers.length-perPage;
+		this.handler = handler;
+		setEntries(nodes);
 	}
 
 	int getFontHeight()
@@ -124,20 +118,45 @@ public class GuiClickableList extends Button
 		return false;
 	}
 
-	public int selectedOption = -1;
+
+	@Nullable
+	public AbstractNode<ResourceLocation, ManualEntry> getSelected(double mx, double my)
+	{
+		if(!super.clicked(mx, my))
+			return null;
+		double mmY = my-this.y;
+		for(int i = 0; i < Math.min(perPage, headers.length); i++)
+			if(mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight())
+				return nodes.get(offset+i);
+		return null;
+	}
 
 	@Override
-	public boolean mouseClicked(double mx, double my, int btn)
+	public void onClick(double mx, double my)
 	{
-		boolean b = super.clicked(mx, my);
-		selectedOption = -1;
-		if(b)
+		handler.accept(getSelected(mx, my));
+	}
+
+	@Override
+	protected boolean clicked(double mx, double my)
+	{
+		return getSelected(mx, my)!=null;
+	}
+
+	public void setEntries(List<AbstractNode<ResourceLocation, ManualEntry>> nodes)
+	{
+		this.nodes = nodes;
+		headers = new String[nodes.size()];
+		isCategory = new boolean[nodes.size()];
+		for(int i = 0; i < nodes.size(); i++)
 		{
-			double mmY = my-this.y;
-			for(int i = 0; i < Math.min(perPage, headers.length); i++)
-				if(mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight())
-					selectedOption = offset+i;
+			headers[i] = ManualUtils.getTitleForNode(nodes.get(i), gui.manual);
+			isCategory[i] = !nodes.get(i).isLeaf();
 		}
-		return selectedOption!=-1;
+
+		perPage = (height-8)/getFontHeight();
+		if(perPage < headers.length)
+			maxOffset = headers.length-perPage;
+		height = getFontHeight()*Math.min(perPage, headers.length);
 	}
 }

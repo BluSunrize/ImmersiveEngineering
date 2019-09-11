@@ -18,16 +18,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
@@ -49,6 +47,8 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	private final BlockPos triggerFromOrigin;
 	@Nullable
 	private Template template;
+	@Nullable
+	private IngredientStack[] materials;
 	private BlockState trigger = Blocks.AIR.getDefaultState();
 
 	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin)
@@ -78,6 +78,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 						i--;
 					}
 				}
+				materials = null;
 			} catch(IOException e)
 			{
 				throw new RuntimeException(e);
@@ -203,12 +204,28 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	@Override
 	public final IngredientStack[] getTotalMaterials()
 	{
-		List<BlockInfo> structure = getStructure();
-		List<IngredientStack> ret = new ArrayList<>(structure.size());
-		for(BlockInfo info : structure)
-			ret.add(new IngredientStack(Utils.getPickBlock(info.state, new BlockRayTraceResult(Vec3d.ZERO, Direction.DOWN, BlockPos.ZERO, false),
-					Minecraft.getInstance().player)));
-		return ret.toArray(new IngredientStack[0]);
+		if(materials==null)
+		{
+			List<BlockInfo> structure = getStructure();
+			List<IngredientStack> ret = new ArrayList<>(structure.size());
+			RayTraceResult rtr = new BlockRayTraceResult(Vec3d.ZERO, Direction.DOWN, BlockPos.ZERO, false);
+			for(BlockInfo info : structure)
+			{
+				ItemStack picked = Utils.getPickBlock(info.state, rtr, Minecraft.getInstance().player);
+				boolean added = false;
+				for(IngredientStack existing : ret)
+					if(existing.matchesItemStackIgnoringSize(picked))
+					{
+						++existing.inputSize;
+						added = true;
+						break;
+					}
+				if(!added)
+					ret.add(new IngredientStack(picked));
+			}
+			materials = ret.toArray(new IngredientStack[0]);
+		}
+		return materials;
 	}
 
 	@Override

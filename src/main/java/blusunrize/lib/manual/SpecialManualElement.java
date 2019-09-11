@@ -8,7 +8,7 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
@@ -20,9 +20,9 @@ public abstract class SpecialManualElement
 	//The number of vertical pixels this element occupies.
 	public abstract int getPixelsTaken();
 
-	public abstract void onOpened(GuiManual gui, int x, int y, List<Button> buttons);
+	public abstract void onOpened(ManualScreen gui, int x, int y, List<Button> buttons);
 
-	public abstract void render(GuiManual gui, int x, int y, int mouseX, int mouseY);
+	public abstract void render(ManualScreen gui, int x, int y, int mouseX, int mouseY);
 
 	public abstract void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX,
 									  double lastY, Widget button);

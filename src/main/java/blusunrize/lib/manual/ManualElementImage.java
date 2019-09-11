@@ -8,7 +8,7 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
@@ -29,13 +29,13 @@ public class ManualElementImage extends SpecialManualElements
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
+	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
 	{
 		super.onOpened(gui, x, y, pageButtons);
 	}
 
 	@Override
-	public void render(GuiManual gui, int x, int y, int mx, int my)
+	public void render(ManualScreen gui, int x, int y, int mx, int my)
 	{
 		int yOff = 0;
 		for(ManualImage image1 : images)

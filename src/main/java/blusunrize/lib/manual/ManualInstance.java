@@ -10,7 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.lib.manual.ManualElementImage.ManualImage;
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -220,11 +220,11 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	{
 	}
 
-	public GuiManual getGui()
+	public ManualScreen getGui()
 	{
-		if(GuiManual.activeManual!=null&&GuiManual.activeManual.getManual()==this)
-			return GuiManual.activeManual;
-		return new GuiManual(this, texture);
+		if(ManualScreen.activeManual!=null&&ManualScreen.activeManual.getManual()==this)
+			return ManualScreen.activeManual;
+		return new ManualScreen(this, texture);
 	}
 
 	public final Tree<ResourceLocation, ManualEntry> contentTree;
@@ -262,7 +262,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 				SpecialManualElement p = specials.get(page);
 				p.recalculateCraftingRecipes();
 				for(ItemStack s : p.getProvidedRecipes())
-					itemLinks.put(getItemHash(s), new ManualLink(entry, -1, page));
+					itemLinks.put(getItemHash(s), new ManualLink(entry, TextSplitter.START, page));
 			}
 		});
 	}
@@ -305,10 +305,10 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	{
 		@Nonnull
 		private final ManualEntry key;
-		private final int anchor;
+		private final String anchor;
 		private final int offset;
 
-		public ManualLink(@Nonnull ManualEntry key, int anchor, int offset)
+		public ManualLink(@Nonnull ManualEntry key, String anchor, int offset)
 		{
 			this.key = key;
 			this.anchor = anchor;
@@ -321,7 +321,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 			return key;
 		}
 
-		public int getAnchor()
+		public String getAnchor()
 		{
 			return anchor;
 		}
@@ -331,13 +331,13 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 			return offset;
 		}
 
-		public void changePage(GuiManual guiManual, boolean addCurrentToStack)
+		public void changePage(ManualScreen manualScreen, boolean addCurrentToStack)
 		{
 			if(addCurrentToStack)// && guiManual.getCurrentPage()!=key)
-				guiManual.previousSelectedEntry.push(new ManualLink(guiManual.getCurrentPage(), -1, guiManual.page));
-			guiManual.setCurrentNode(this.key.getTreeNode());
-			guiManual.page = getPage();
-			guiManual.init();
+				manualScreen.previousSelectedEntry.push(new ManualLink(manualScreen.getCurrentPage(), TextSplitter.START, manualScreen.page));
+			manualScreen.setCurrentNode(this.key.getTreeNode());
+			manualScreen.page = getPage();
+			manualScreen.fullInit();
 		}
 
 		public int getPage()

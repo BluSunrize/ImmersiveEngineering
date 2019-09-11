@@ -21,7 +21,7 @@ import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
@@ -66,7 +66,7 @@ public class ManualPageShader extends SpecialManualElements
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<Button> buttons)
+	public void onOpened(ManualScreen gui, int x, int y, List<Button> buttons)
 	{
 		PlayerEntity player = mc().player;
 		UUID uuid = player.getUniqueID();
@@ -127,7 +127,7 @@ public class ManualPageShader extends SpecialManualElements
 					btn -> {
 						if(ApiUtils.hasPlayerIngredient(mc().player, replicationCost)||mc().player.abilities.isCreativeMode)
 							ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN, shader.getName()));
-						gui.init();
+						gui.fullInit();
 					})
 					.setTextColour(gui.getManual().getTextColour(), gui.getManual().getHighlightColour()));
 		}
@@ -141,7 +141,7 @@ public class ManualPageShader extends SpecialManualElements
 							UUID playerId = mc().player.getUniqueID();
 							ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.UNLOCK, shader.getName()));
 							ShaderRegistry.receivedShaders.put(playerId, shader.getName());
-							gui.init();
+							gui.fullInit();
 						})
 						.setTextColour(gui.getManual().getTextColour(), gui.getManual().getHighlightColour())
 				);
@@ -149,7 +149,7 @@ public class ManualPageShader extends SpecialManualElements
 	}
 
 	@Override
-	public void render(GuiManual gui, int x, int y, int mouseX, int mouseY)
+	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		RenderHelper.enableGUIStandardItemLighting();

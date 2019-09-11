@@ -20,9 +20,9 @@ import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 public class GuiButtonManualNavigation extends Button
 {
 	public int type;
-	public GuiManual gui;
+	public ManualScreen gui;
 
-	public GuiButtonManualNavigation(GuiManual gui, int x, int y, int w, int h, int type, IPressable handler)
+	public GuiButtonManualNavigation(ManualScreen gui, int x, int y, int w, int h, int type, IPressable handler)
 	{
 		super(x, y, type >= 4?10: Math.min(type < 2?16: 10, w), type >= 4?10: Math.min(type < 2?10: 16, h), "", handler);
 		this.gui = gui;
@@ -30,10 +30,8 @@ public class GuiButtonManualNavigation extends Button
 	}
 
 	@Override
-	public void render(int mx, int my, float partialTicks)
+	public void renderButton(int mx, int my, float partial)
 	{
-		if(this.visible)
-		{
 			ManualUtils.bindTexture(gui.texture);
 			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 			isHovered = mx >= this.x&&mx < (this.x+this.width)&&my >= this.y&&my < (this.y+this.height);
@@ -44,7 +42,5 @@ public class GuiButtonManualNavigation extends Button
 			if(isHovered)
 				v += 20;
 			this.blit(this.x, this.y, u, v, width, height);
-			//TODO this.mouseDragged(Minecraft.getInstance(), mx, my);
-		}
 	}
 }

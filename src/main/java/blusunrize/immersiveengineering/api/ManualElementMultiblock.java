@@ -16,7 +16,7 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -64,6 +64,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 	private MultiblockBlockAccess blockAccess;
 	private int yOffTotal;
 
+	private long lastStep = -1;
+
 	public ManualElementMultiblock(ManualInstance manual, IMultiblock multiblock)
 	{
 		super(manual);
@@ -89,7 +91,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			.appendSibling(new StringTextComponent(" "));
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
+	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
 	{
 		int yOff = 0;
 		if(multiblock.getStructure()!=null)
@@ -100,6 +102,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			pageButtons.add(new GuiButtonManualNavigation(gui, x+4, (int)transY-(canRenderFormed?11: 5), 10, 10, 4, btn -> {
 				GuiButtonManualNavigation btnNav = (GuiButtonManualNavigation)btn;
 				canTick = !canTick;
+				lastStep = -1;
 				btnNav.type = btnNav.type==4?5: 4;
 			}));
 			if(this.renderInfo.structureHeight > 1)
@@ -176,7 +179,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	}
 
 	@Override
-	public void render(GuiManual gui, int x, int y, int mouseX, int mouseY)
+	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		boolean openBuffer = false;
 		int stackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
@@ -184,8 +187,14 @@ public class ManualElementMultiblock extends SpecialManualElements
 		{
 			if(multiblock.getStructure()!=null)
 			{
-				if(canTick&&++tick%20==0)
+				long currentTime = System.currentTimeMillis();
+				if(lastStep < 0)
+					lastStep = currentTime;
+				else if(canTick&&currentTime-lastStep > 500)
+				{
 					renderInfo.step();
+					lastStep = currentTime;
+				}
 
 				int structureLength = renderInfo.structureLength;
 				int structureWidth = renderInfo.structureWidth;

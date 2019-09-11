@@ -8,7 +8,7 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -92,7 +92,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 	}
 
-	public void renderPage(GuiManual gui, int x, int y, int mouseX, int mouseY)
+	public void renderPage(ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		int page = gui.page;
 		ManualPage toRender = pages.get(page);
@@ -123,7 +123,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		return specials;
 	}
 
-	public void addButtons(GuiManual gui, int x, int y, int page, List<Button> pageButtons)
+	public void addButtons(ManualScreen gui, int x, int y, int page, List<Button> pageButtons)
 	{
 		ManualPage p = pages.get(page);
 		p.renderText = new ArrayList<>(p.text);
@@ -167,15 +167,20 @@ public class ManualEntry implements Comparable<ManualEntry>
 		return false;
 	}
 
-	public void mouseDragged(GuiManual gui, int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY,
+	public void mouseDragged(ManualScreen gui, int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY,
 							 Widget button)
 	{
 		pages.get(gui.page).special.mouseDragged(x, y, clickX, clickY, mx, my, lastX, lastY, button);
 	}
 
-	public int getPageForAnchor(int anchor)
+	public int getPageForAnchor(String anchor)
 	{
 		return splitter.getPageForAnchor(anchor);
+	}
+
+	public boolean hasAnchor(String anchor)
+	{
+		return splitter.hasAnchor(anchor);
 	}
 
 	public Tree.AbstractNode<ResourceLocation, ManualEntry> getTreeNode()
@@ -319,7 +324,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 	{
 
 		@Override
-		public void onOpened(GuiManual m, int x, int y, List<Button> buttons)
+		public void onOpened(ManualScreen m, int x, int y, List<Button> buttons)
 		{
 		}
 
@@ -330,7 +335,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 
 		@Override
-		public void render(GuiManual m, int x, int y, int mouseX, int mouseY)
+		public void render(ManualScreen m, int x, int y, int mouseX, int mouseY)
 		{
 		}
 

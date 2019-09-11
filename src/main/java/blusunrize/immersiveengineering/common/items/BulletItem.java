@@ -56,13 +56,10 @@ import java.util.UUID;
 
 public class BulletItem extends IEBaseItem implements ITextureOverride
 {
+	//TODO separate items for each bullet type?
 	public BulletItem()
 	{
 		super("bullet", new Properties());
-
-		//TODO "basic" items for empty shells/casings
-		//BulletHandler.emptyCasing = new ItemStack(this, 1, 0);
-		//BulletHandler.emptyShell = new ItemStack(this, 1, 1);
 		BulletHandler.basicCartridge = new ItemStack(this, 1);
 	}
 

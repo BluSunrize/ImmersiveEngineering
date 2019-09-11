@@ -8,7 +8,7 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -67,7 +67,7 @@ public class ManualElementItem extends SpecialManualElements
 	}
 
 	@Override
-	public void render(GuiManual gui, int x, int y, int mx, int my)
+	public void render(ManualScreen gui, int x, int y, int mx, int my)
 	{
 		GlStateManager.enableRescaleNormal();
 		RenderHelper.enableGUIStandardItemLighting();

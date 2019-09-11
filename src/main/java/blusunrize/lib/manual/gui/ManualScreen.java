@@ -8,6 +8,7 @@
 
 package blusunrize.lib.manual.gui;
 
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
@@ -28,7 +29,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-public class GuiManual extends Screen
+public class ManualScreen extends Screen
 {
 	private Minecraft mc = Minecraft.getInstance();
 	private int xSize = 186;
@@ -42,17 +43,18 @@ public class GuiManual extends Screen
 	public AbstractNode<ResourceLocation, ManualEntry> currentNode;
 	public Stack<ManualLink> previousSelectedEntry = new Stack<>();
 	public int page;
-	public static GuiManual activeManual;
+	public static ManualScreen activeManual;
 
 	ManualInstance manual;
 	String texture;
 	private double[] lastClick;
 	private double[] lastDrag;
 	private TextFieldWidget searchField;
-	private int hasSuggestions = -1;
 	private int prevGuiScale = -1;
+	private ClickableList entryList;
+	private ClickableList suggestionList;
 
-	public GuiManual(ManualInstance manual, String texture)
+	public ManualScreen(ManualInstance manual, String texture)
 	{
 		super(new StringTextComponent("manual"));
 		this.manual = manual;
@@ -98,13 +100,12 @@ public class GuiManual extends Screen
 		guiTop = (this.height-this.ySize)/2;
 		boolean textField = false;
 
-		this.buttons.clear();
 		this.pageButtons.clear();
-		hasSuggestions = -1;
 		if(currentNode.isLeaf())
 		{
 			currentNode.getLeafData().addButtons(this, guiLeft+32, guiTop+28, page, pageButtons);
-			buttons.addAll(pageButtons);
+			for(Button b : pageButtons)
+				addButton(b);
 		}
 		else
 		{
@@ -112,29 +113,32 @@ public class GuiManual extends Screen
 			for(AbstractNode<ResourceLocation, ManualEntry> node : currentNode.getChildren())
 				if(manual.showNodeInList(node))
 					children.add(node);
-			this.buttons.add(new GuiClickableList(this, guiLeft+40, guiTop+20, 100, 168,
-					1f, children, btn -> {
-				GuiClickableList cl = (GuiClickableList)btn;
-				int sel = cl.selectedOption;
-				if(sel >= 0&&sel < cl.headers.length)
+			entryList = new ClickableList(this, guiLeft+40, guiTop+20, 100, 168,
+					1f, children, sel -> {
+				if(sel!=null)
 				{
 					previousSelectedEntry.clear();
-					setCurrentNode(cl.nodes.get(sel));
+					setCurrentNode(sel);
+					ManualScreen.this.fullInit();
 				}
-				cl.selectedOption = -1;
-				GuiManual.this.init();
-			}));
+			});
+			addButton(entryList);
+			suggestionList = new ClickableList(this, guiLeft+180, guiTop+138, 100, 80, 1f,
+					new ArrayList<>(), sel -> {
+			});
+			suggestionList.visible = false;
+			addButton(suggestionList);
 			textField = true;
 		}
 		if(currentNode.getSuperNode()!=null)
-			this.buttons.add(new GuiButtonManualNavigation(this, guiLeft+24, guiTop+10, 10, 10, 0,
+			addButton(new GuiButtonManualNavigation(this, guiLeft+24, guiTop+10, 10, 10, 0,
 					btn -> {
 						if(currentNode.isLeaf()&&!previousSelectedEntry.isEmpty())
-							previousSelectedEntry.pop().changePage(GuiManual.this, false);
+							previousSelectedEntry.pop().changePage(ManualScreen.this, false);
 						else if(currentNode.getSuperNode()!=null)
 							setCurrentNode(currentNode.getSuperNode());
 						page = 0;
-						GuiManual.this.init();
+						ManualScreen.this.fullInit();
 					}));
 
 		if(textField)
@@ -152,6 +156,11 @@ public class GuiManual extends Screen
 			searchField = null;
 	}
 
+	public void fullInit()
+	{
+		super.init(minecraft, width, height);
+	}
+
 	@Override
 	public void render(int mouseX, int mouseY, float f)
 	{
@@ -166,10 +175,10 @@ public class GuiManual extends Screen
 			int l = searchField.getText().length()*6;
 			if(l > 20)
 				this.blit(guiLeft+166, guiTop+74, 136+(120-l), 238, l, 18);
-			if(this.hasSuggestions!=-1&&this.hasSuggestions < this.buttons.size())
+			if(suggestionList.visible)
 			{
 				this.blit(guiLeft+174, guiTop+100, 214, 212, 16, 26);
-				int h = ((GuiClickableList)this.buttons.get(hasSuggestions)).getFontHeight()*Math.min(((GuiClickableList)this.buttons.get(hasSuggestions)).perPage, ((GuiClickableList)this.buttons.get(hasSuggestions)).headers.length);
+				int h = suggestionList.getHeight();
 				int w = 76;
 				this.blit(guiLeft+174, guiTop+116, 230, 212, 16, 16);//Top Left
 				this.blit(guiLeft+174, guiTop+132+h, 230, 228, 16, 10);//Bottom Left
@@ -230,7 +239,7 @@ public class GuiManual extends Screen
 		if(this.searchField!=null)
 		{
 			this.searchField.render(mouseX, mouseY, f);
-			if(this.hasSuggestions!=-1&&this.hasSuggestions < this.buttons.size())
+			if(suggestionList.visible)
 				//TODO translation
 				manual.fontRenderer.drawString("It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
 		}
@@ -300,13 +309,13 @@ public class GuiManual extends Screen
 			if(wheel > 0&&page > 0)
 			{
 				page--;
-				this.init();
+				this.fullInit();
 				return true;
 			}
 			else if(wheel < 0&&page < currentNode.getLeafData().getPageCount()-1)
 			{
 				page++;
-				this.init();
+				this.fullInit();
 				return true;
 			}
 		}
@@ -316,22 +325,21 @@ public class GuiManual extends Screen
 	@Override
 	public boolean mouseClicked(double mx, double my, int button)
 	{
-		super.mouseClicked(mx, my, button);
 		if(button==0&&currentNode.isLeaf())
 		{
 			ManualEntry selectedEntry = currentNode.getLeafData();
-			mx -= guiLeft;
-			my -= guiTop;
-			if(page > 0&&mx > 32&&mx < 32+17&&my > 179&&my < 179+10)
+			double mxRelative = mx-guiLeft;
+			double myRelative = my-guiTop;
+			if(page > 0&&mxRelative > 32&&mxRelative < 32+17&&myRelative > 179&&myRelative < 179+10)
 			{
 				page--;
-				this.init();
+				this.fullInit();
 				return true;
 			}
-			else if(page < selectedEntry.getPageCount()-1&&mx > 135&&mx < 135+17&&my > 179&&my < 179+10)
+			else if(page < selectedEntry.getPageCount()-1&&mxRelative > 135&&mxRelative < 135+17&&myRelative > 179&&myRelative < 179+10)
 			{
 				page++;
-				this.init();
+				this.fullInit();
 				return true;
 			}
 			else
@@ -354,13 +362,16 @@ public class GuiManual extends Screen
 				previousSelectedEntry.pop().changePage(this, false);
 			else if(currentNode.getSuperNode()!=null)
 			{
+				IELogger.logger.info("Changing to super node {}", currentNode.getSuperNode());
 				setCurrentNode(currentNode.getSuperNode());
 				page = 0;
 			}
-			this.init();
+			this.fullInit();
 			return true;
 		}
-		lastClick = new double[]{mx, my};
+		lastClick = new double[]{mx-guiLeft, my-guiTop};
+		if(super.mouseClicked(mx, my, button))
+			return true;
 		if(this.searchField!=null)
 			this.searchField.mouseClicked(mx, my, button);
 		return false;
@@ -397,8 +408,8 @@ public class GuiManual extends Screen
 			String search = searchField.getText();
 			if(search.trim().isEmpty())
 			{
-				hasSuggestions = -1;
-				this.init();
+				suggestionList.visible = false;
+				this.fullInit();
 			}
 			else
 			{
@@ -431,27 +442,11 @@ public class GuiManual extends Screen
 						}
 					}
 
-				this.buttons.set(0, new GuiClickableList(this, guiLeft+40, guiTop+20, 100, 148,
-						1f, lHeaders, btn -> {
-				}));
+				//TODO is this correct?
+				entryList.setEntries(lHeaders);
 				if(!lCorrections.isEmpty())
-				{
-					GuiClickableList suggestions = new GuiClickableList(this, guiLeft+180, guiTop+138, 100, 80, 1f,
-							lCorrections, btn -> {
-					});
-					if(hasSuggestions!=-1)
-						this.buttons.set(hasSuggestions, suggestions);
-					else
-					{
-						hasSuggestions = this.buttons.size();
-						this.buttons.add(suggestions);
-					}
-				}
-				else if(hasSuggestions!=-1)
-				{
-					this.buttons.remove(hasSuggestions);
-					hasSuggestions = -1;
-				}
+					suggestionList.setEntries(lCorrections);
+				suggestionList.visible = !lCorrections.isEmpty();
 			}
 			return true;
 		}

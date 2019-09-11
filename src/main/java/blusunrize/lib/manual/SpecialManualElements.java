@@ -8,7 +8,7 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
@@ -31,7 +31,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
+	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
 	{
 		highlighted = ItemStack.EMPTY;
 	}

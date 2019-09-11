@@ -8,7 +8,7 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.lib.manual.gui.GuiManual;
+import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
@@ -34,7 +34,7 @@ public class ManualElementTable extends SpecialManualElements
 	}
 
 	@Override
-	public void onOpened(GuiManual gui, int x, int y, List<Button> pageButtons)
+	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
 	{
 		super.onOpened(gui, x, y, pageButtons);
 		try
@@ -95,7 +95,7 @@ public class ManualElementTable extends SpecialManualElements
 	}
 
 	@Override
-	public void render(GuiManual gui, int x, int y, int mx, int my)
+	public void render(ManualScreen gui, int x, int y, int mx, int my)
 	{
 		if(localizedTable!=null)
 		{

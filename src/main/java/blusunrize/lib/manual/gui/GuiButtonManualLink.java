@@ -23,10 +23,10 @@ public class GuiButtonManualLink extends Button
 {
 	public String localized;
 	public ManualLink link;
-	GuiManual gui;
+	ManualScreen gui;
 	public List<GuiButtonManualLink> otherParts = ImmutableList.of();
 
-	public GuiButtonManualLink(GuiManual gui, int x, int y, int w, int h, ManualLink link, String localized)
+	public GuiButtonManualLink(ManualScreen gui, int x, int y, int w, int h, ManualLink link, String localized)
 	{
 		super(x, y, w, h, "", btn -> link.changePage(gui, true));
 		this.gui = gui;

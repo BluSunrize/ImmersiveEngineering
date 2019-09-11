@@ -179,7 +179,7 @@ public class IEConfig
 				capacitorMvStorage = temp[0];
 				capacitorMvInput = temp[1];
 				capacitorMvOutput = temp[2];
-				temp = addCapacitorConfig(builder, "low", 4000000, 4096, 4096);
+				temp = addCapacitorConfig(builder, "high", 4000000, 4096, 4096);
 				capacitorHvStorage = temp[0];
 				capacitorHvInput = temp[1];
 				capacitorHvOutput = temp[2];
@@ -415,7 +415,7 @@ public class IEConfig
 		Ores(Builder builder)
 		{
 			builder.push("ores");
-			ore_copper = new OreConfig(builder, "copper", 8, 40, 7, 8, 1);
+			ore_copper = new OreConfig(builder, "copper", 8, 40, 72, 8, 1);
 			ore_bauxite = new OreConfig(builder, "bauxite", 4, 40, 85, 8, 1);
 			ore_lead = new OreConfig(builder, "lead", 6, 8, 36, 4, 1);
 			ore_silver = new OreConfig(builder, "silver", 8, 8, 40, 4, .8);
@@ -460,7 +460,7 @@ public class IEConfig
 			{
 				builder
 						.comment("Ore generation config - "+name)
-						.push("ore_"+name);
+						.push(name);
 				veinSize = builder
 						.comment("The maximum size of a vein. Set to 0 to disable generation")
 						.defineInRange("vein_size", defSize, 0, Integer.MAX_VALUE);
