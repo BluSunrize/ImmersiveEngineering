@@ -59,7 +59,7 @@ public class ManualElementTable extends SpecialManualElements
 					}
 					for(int j = 0; j < table[i].length-1; j++)
 					{
-						int fl = manual.fontRenderer.getStringWidth(localizedTable[i][j]);
+						int fl = manual.fontRenderer().getStringWidth(localizedTable[i][j]);
 						if(fl > bars[j])
 							bars[j] = fl;
 					}
@@ -82,9 +82,9 @@ public class ManualElementTable extends SpecialManualElements
 							if(localizedTable[i][j]!=null)
 							{
 								int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-								int l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
+								int l = manual.fontRenderer().listFormattedStringToWidth(localizedTable[i][j], w).size();
 								if(j!=0)
-									yOff += l*(manual.fontRenderer.FONT_HEIGHT+1);
+									yOff += l*(manual.fontRenderer().FONT_HEIGHT+1);
 							}
 				height = yOff;
 			}
@@ -112,8 +112,8 @@ public class ManualElementTable extends SpecialManualElements
 						{
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-							manual.fontRenderer.drawSplitString(line[j], xx, y+yOff, w, manual.getTextColour());
-							int lines = manual.fontRenderer.listFormattedStringToWidth(line[j], w).size();
+							manual.fontRenderer().drawSplitString(line[j], xx, y+yOff, w, manual.getTextColour());
+							int lines = manual.fontRenderer().listFormattedStringToWidth(line[j], w).size();
 							if(lines > height)
 								height = lines;
 						}
@@ -122,13 +122,13 @@ public class ManualElementTable extends SpecialManualElements
 					{
 						float scale = .5f;
 						GlStateManager.scalef(1, scale, 1);
-						int barHeight = (int)((y+yOff+height*manual.fontRenderer.FONT_HEIGHT)/scale);
+						int barHeight = (int)((y+yOff+height*manual.fontRenderer().FONT_HEIGHT)/scale);
 						AbstractGui.fill(x, barHeight, x+120, barHeight+1,
 								manual.getTextColour()|0xff000000);
 						GlStateManager.scalef(1, 1/scale, 1);
 					}
 
-					yOff += height*(manual.fontRenderer.FONT_HEIGHT+1);
+					yOff += height*(manual.fontRenderer().FONT_HEIGHT+1);
 				}
 
 			if(bars!=null)

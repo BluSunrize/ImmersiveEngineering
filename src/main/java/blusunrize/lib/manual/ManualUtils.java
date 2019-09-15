@@ -211,10 +211,10 @@ public class ManualUtils
 						String linkText = rep[0].substring(2);
 						if(!s.substring(start).startsWith(rep[0]))//This can happen when whitespace is cut off at the end of a line
 							linkText = linkText.trim();
-						int bx = manual.fontRenderer.getStringWidth(s.substring(0, start));
-						int by = line*manual.fontRenderer.FONT_HEIGHT;
+						int bx = manual.fontRenderer().getStringWidth(s.substring(0, start));
+						int by = line*manual.fontRenderer().FONT_HEIGHT;
 						ResourceLocation bkey = THIS.equals(rep[1])?entry.getLocation(): getLocationForManual(rep[1], manual);
-						int bw = manual.fontRenderer.getStringWidth(linkText);
+						int bw = manual.fontRenderer().getStringWidth(linkText);
 						String bAnchor = TextSplitter.START;
 						int bOffset = 0;
 						try
@@ -234,7 +234,7 @@ public class ManualUtils
 						}
 						ManualEntry bEntry = Objects.requireNonNull(manual.getEntry(bkey), bkey+" is not a known entry!");
 						Preconditions.checkArgument(bEntry.hasAnchor(bAnchor), "Entry "+bkey+" does not contain anchor "+bAnchor);
-						GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(manual.fontRenderer.FONT_HEIGHT*1.5),
+						GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(manual.fontRenderer().FONT_HEIGHT*1.5),
 								new ManualInstance.ManualLink(bEntry, bAnchor, bOffset), linkText);
 						parts.add(btn);
 						pageButtons.add(btn);

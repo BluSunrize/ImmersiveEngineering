@@ -10,6 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.lib.manual.ManualElementImage.ManualImage;
+import blusunrize.lib.manual.Tree.InnerNode;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
@@ -41,15 +42,17 @@ import java.util.stream.Stream;
 
 public abstract class ManualInstance implements ISelectiveResourceReloadListener
 {
-	public FontRenderer fontRenderer;
 	public String texture;
 	private Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
+	public final Tree<ResourceLocation, ManualEntry> contentTree;
+	public Map<ResourceLocation, ManualEntry> contentsByName = new HashMap<>();
 	public final int pageWidth;
 	public final int pageHeight;
 
-	public ManualInstance(FontRenderer fontRenderer, String texture, int pageWidth, int pageHeight, ResourceLocation name)
+	private boolean initialized = false;
+
+	public ManualInstance(String texture, int pageWidth, int pageHeight, ResourceLocation name)
 	{
-		this.fontRenderer = fontRenderer;
 		this.texture = texture;
 		this.pageHeight = pageHeight;
 		this.pageWidth = pageWidth;
@@ -224,19 +227,19 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	{
 		if(ManualScreen.activeManual!=null&&ManualScreen.activeManual.getManual()==this)
 			return ManualScreen.activeManual;
+		if(!initialized)
+			onResourceManagerReload(Minecraft.getInstance().getResourceManager(), t -> true);
 		return new ManualScreen(this, texture);
 	}
 
-	public final Tree<ResourceLocation, ManualEntry> contentTree;
-	public Map<ResourceLocation, ManualEntry> contentsByName = new HashMap<>();
-
-	public void addEntry(Tree.Node<ResourceLocation, ManualEntry> node, ManualEntry entry)
+	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry)
 	{
 		node.addNewLeaf(entry);
 		contentsByName.put(entry.getLocation(), entry);
+		initialized = false;
 	}
 
-	public void addEntry(Tree.Node<ResourceLocation, ManualEntry> node, ResourceLocation source)
+	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source)
 	{
 		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 		builder.readFromFile(source);
@@ -295,11 +298,15 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, @Nonnull Predicate<IResourceType> resourcePredicate)
 	{
-		if(resourcePredicate.test(VanillaResourceType.LANGUAGES))
+		if(resourcePredicate.test(VanillaResourceType.LANGUAGES)||resourcePredicate.test(VanillaResourceType.TEXTURES))
 		{
 			getAllEntries().forEach(ManualEntry::refreshPages);
+			contentTree.sortAll();
+			indexRecipes();
 		}
 	}
+
+	public abstract FontRenderer fontRenderer();
 
 	public static class ManualLink
 	{

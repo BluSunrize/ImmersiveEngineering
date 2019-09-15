@@ -264,7 +264,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 
 				if(componentTooltip!=null)
 				{
-					manual.fontRenderer.drawString("?", 116, yOffTotal/2-4, manual.getTextColour());
+					manual.fontRenderer().drawString("?", 116, yOffTotal/2-4, manual.getTextColour());
 					if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
 					{
 						List<String> asStrings = new ArrayList<>();
@@ -273,7 +273,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 							String formattedText = iTextComponent.getFormattedText();
 							asStrings.add(formattedText);
 						}
-						gui.renderTooltip(asStrings, mouseX, mouseY, manual.fontRenderer);
+						gui.renderTooltip(asStrings, mouseX, mouseY, manual.fontRenderer());
 					}
 				}
 			}

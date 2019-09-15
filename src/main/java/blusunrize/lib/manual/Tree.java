@@ -8,20 +8,22 @@
 
 package blusunrize.lib.manual;
 
-import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nullable;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
 public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 {
-	private Node<NT, LT> root;
+	private InnerNode<NT, LT> root;
 
 	public Tree(NT root)
 	{
-		this.root = new Node<>(root, null, 0);
+		this.root = new InnerNode<>(root, null, 0);
 	}
 
 	public Stream<LT> leafStream()
@@ -31,7 +33,7 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 		return b.build().map(AbstractNode::getLeafData);
 	}
 
-	public Node<NT, LT> getRoot()
+	public InnerNode<NT, LT> getRoot()
 	{
 		return root;
 	}
@@ -43,13 +45,18 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 		return b.build();
 	}
 
+	public void sortAll()
+	{
+		root.sortChildren();
+	}
+
 	public static abstract class AbstractNode<NT extends Comparable<NT>, LT extends Comparable<LT>>
 	{
 		@Nullable
-		private Node<NT, LT> superNode;
+		private InnerNode<NT, LT> superNode;
 		final int weight;
 
-		AbstractNode(@Nullable Node<NT, LT> superNode, int weight)
+		AbstractNode(@Nullable InnerNode<NT, LT> superNode, int weight)
 		{
 			this.superNode = superNode;
 			this.weight = weight;
@@ -67,13 +74,13 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 			return null;
 		}
 
-		public SortedSet<AbstractNode<NT, LT>> getChildren()
+		public List<AbstractNode<NT, LT>> getChildren()
 		{
-			return ImmutableSortedSet.of();
+			return ImmutableList.of();
 		}
 
 		@Nullable
-		public Node<NT, LT> getSuperNode()
+		public InnerNode<NT, LT> getSuperNode()
 		{
 			return superNode;
 		}
@@ -81,9 +88,11 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 		protected abstract void stream(Stream.Builder<AbstractNode<NT, LT>> builder, boolean leafStream);
 	}
 
-	public static class Node<NT extends Comparable<NT>, LT extends Comparable<LT>> extends AbstractNode<NT, LT>
+	public static class InnerNode<NT extends Comparable<NT>, LT extends Comparable<LT>> extends AbstractNode<NT, LT>
 	{
-		private final SortedSet<AbstractNode<NT, LT>> children = new TreeSet<>((n1, n2) -> {
+		private final List<AbstractNode<NT, LT>> children = new ArrayList<>();
+
+		private Comparator<AbstractNode<NT, LT>> compare = (n1, n2) -> {
 			if(n1.isLeaf()&&!n2.isLeaf())
 				return 1;
 			else if(!n1.isLeaf()&&n2.isLeaf())
@@ -94,17 +103,17 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 				return n1.getLeafData().compareTo(n2.getLeafData());
 			else
 				return n1.getNodeData().compareTo(n2.getNodeData());
-		});
+		};
 		private NT data;
 
-		public Node(NT data, @Nullable Node<NT, LT> superNode, int weight)
+		public InnerNode(NT data, @Nullable InnerNode<NT, LT> superNode, int weight)
 		{
 			super(superNode, weight);
 			this.data = data;
 		}
 
 		@Override
-		public SortedSet<AbstractNode<NT, LT>> getChildren()
+		public List<AbstractNode<NT, LT>> getChildren()
 		{
 			return children;
 		}
@@ -121,25 +130,25 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 			return data;
 		}
 
-		public Node<NT, LT> addNewSubnode(NT data, int weight)
+		public InnerNode<NT, LT> addNewSubnode(NT data, int weight)
 		{
-			Node<NT, LT> newNode = new Node<>(data, this, weight);
+			InnerNode<NT, LT> newNode = new InnerNode<>(data, this, weight);
 			children.add(newNode);
 			return newNode;
 		}
 
-		public Node<NT, LT> getOrCreateSubnode(NT data)
+		public InnerNode<NT, LT> getOrCreateSubnode(NT data)
 		{
 			return getOrCreateSubnode(data, 0);
 		}
 
-		public Node<NT, LT> getOrCreateSubnode(NT data, int weight)
+		public InnerNode<NT, LT> getOrCreateSubnode(NT data, int weight)
 		{
 			for(AbstractNode<NT, LT> child : children)
 			{
 				if(!child.isLeaf()&&data.equals(child.getNodeData()))
 				{
-					return (Node<NT, LT>)child;
+					return (InnerNode<NT, LT>)child;
 				}
 			}
 			return addNewSubnode(data, weight);
@@ -156,7 +165,15 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 			children.add(newLeaf);
 		}
 
-		protected void stream(Stream.Builder<AbstractNode<NT, LT>> builder, boolean leafStream)
+		public void sortChildren()
+		{
+			children.sort(compare);
+			for(AbstractNode<NT, LT> c : children)
+				if(c instanceof InnerNode)
+					((InnerNode<NT, LT>)c).sortChildren();
+		}
+
+		protected void stream(Builder<AbstractNode<NT, LT>> builder, boolean leafStream)
 		{
 			if(!leafStream)
 			{
@@ -173,7 +190,7 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 	{
 		LT data;
 
-		Leaf(LT data, @Nullable Node<NT, LT> superNode, int weight)
+		Leaf(LT data, @Nullable InnerNode<NT, LT> superNode, int weight)
 		{
 			super(superNode, weight);
 			this.data = data;

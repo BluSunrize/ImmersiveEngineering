@@ -50,13 +50,13 @@ public class ClickableList extends Button
 
 	int getFontHeight()
 	{
-		return (int)(gui.manual.fontRenderer.FONT_HEIGHT*textScale);
+		return (int)(gui.manual.fontRenderer().FONT_HEIGHT*textScale);
 	}
 
 	@Override
 	public void render(int mx, int my, float partialTicks)
 	{
-		FontRenderer fr = gui.manual.fontRenderer;
+		FontRenderer fr = gui.manual.fontRenderer();
 
 		int mmY = my-this.y;
 		GlStateManager.pushMatrix();

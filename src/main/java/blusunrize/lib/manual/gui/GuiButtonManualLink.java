@@ -53,7 +53,7 @@ public class GuiButtonManualLink extends Button
 
 	private void drawHovered(Minecraft mc, boolean mouse, int mx, int my)
 	{
-		FontRenderer font = mc.fontRenderer;
+		FontRenderer font = gui.manual.fontRenderer();
 		font.drawString(localized, x, y, gui.manual.getHighlightColour());
 		gui.renderTooltip(Collections.singletonList(gui.manual.formatLink(link)), mx+8, my+4, font);
 		GlStateManager.disableLighting();

@@ -216,11 +216,11 @@ public class ManualScreen extends Screen
 
 			manual.titleRenderPre();
 			//Title
-			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD+selectedEntry.getTitle(), guiLeft+xSize/2, guiTop+14, manual.getTitleColour(), 1, true);
-			this.drawCenteredStringScaled(manual.fontRenderer, manual.formatEntrySubtext(selectedEntry.getSubtext()), guiLeft+xSize/2,
+			this.drawCenteredStringScaled(manual.fontRenderer(), TextFormatting.BOLD+selectedEntry.getTitle(), guiLeft+xSize/2, guiTop+14, manual.getTitleColour(), 1, true);
+			this.drawCenteredStringScaled(manual.fontRenderer(), manual.formatEntrySubtext(selectedEntry.getSubtext()), guiLeft+xSize/2,
 					guiTop+22, manual.getSubTitleColour(), 1, true);
 			//Page Number
-			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2, guiTop+183, manual.getPagenumberColour(), 1, false);
+			this.drawCenteredStringScaled(manual.fontRenderer(), TextFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2, guiTop+183, manual.getPagenumberColour(), 1, false);
 			manual.titleRenderPost();
 
 			GL11.glColor3f(1, 1, 1);
@@ -233,7 +233,7 @@ public class ManualScreen extends Screen
 		{
 			String title = ManualUtils.getTitleForNode(currentNode, manual);
 			manual.titleRenderPre();
-			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD+title, guiLeft+xSize/2, guiTop+12, manual.getTitleColour(), 1, true);
+			this.drawCenteredStringScaled(manual.fontRenderer(), TextFormatting.BOLD+title, guiLeft+xSize/2, guiTop+12, manual.getTitleColour(), 1, true);
 			manual.titleRenderPost();
 		}
 		if(this.searchField!=null)
@@ -241,7 +241,7 @@ public class ManualScreen extends Screen
 			this.searchField.render(mouseX, mouseY, f);
 			if(suggestionList.visible)
 				//TODO translation
-				manual.fontRenderer.drawString("It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
+				manual.fontRenderer().drawString("It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
 		}
 		for(Button btn : pageButtons)
 			btn.render(mouseX, mouseY, f);

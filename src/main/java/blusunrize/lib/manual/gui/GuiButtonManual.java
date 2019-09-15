@@ -55,8 +55,8 @@ public class GuiButtonManual extends Button
 			int col = colour[isHovered?1: 0];
 			fill(x, y, x+width, y+height, col);
 			int txtCol = textColour[isHovered?1: 0];
-			int sw = gui.manual.fontRenderer.getStringWidth(getMessage());
-			gui.manual.fontRenderer.drawString(getMessage(), x+width/2-sw/2, y+height/2-gui.manual.fontRenderer.FONT_HEIGHT/2, txtCol);
+			int sw = gui.manual.fontRenderer().getStringWidth(getMessage());
+			gui.manual.fontRenderer().drawString(getMessage(), x+width/2-sw/2, y+height/2-gui.manual.fontRenderer().FONT_HEIGHT/2, txtCol);
 			//TODO this.mouseDragged(mc, mx, my);
 		}
 	}

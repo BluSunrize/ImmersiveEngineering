@@ -12,15 +12,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.IntSupplier;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("WeakerAccess")
 public class TextSplitter
 {
 	public static final String START = "start";
+	public static final Pattern LINEBREAK = Pattern.compile("[\\n\\r]+");
 
 	private final Function<String, Integer> width;
 	private final int lineWidth;
-	private final int pixelsPerLine;
+	private final IntSupplier pixelsPerLine;
 	private final Map<String, Map<Integer, SpecialManualElement>> specialByAnchor = new HashMap<>();
 	private final Int2ObjectMap<SpecialManualElement> specialByPage = new Int2ObjectOpenHashMap<>();
 	private final List<List<String>> entry = new ArrayList<>();
@@ -29,7 +32,7 @@ public class TextSplitter
 	private Object2IntMap<String> pageByAnchor = new Object2IntOpenHashMap<>();
 
 	public TextSplitter(Function<String, Integer> w, int lineWidthPixel, int pageHeightPixel,
-						int pixelsPerLine, Function<String, String> tokenTransform)
+						IntSupplier pixelsPerLine, Function<String, String> tokenTransform)
 	{
 		width = w;
 		this.lineWidth = lineWidthPixel;
@@ -40,12 +43,12 @@ public class TextSplitter
 
 	public TextSplitter(ManualInstance m)
 	{
-		this(m.fontRenderer::getStringWidth, m.pageWidth, m.pageHeight, m.fontRenderer.FONT_HEIGHT, (s) -> s);
+		this(m, (s) -> s);
 	}
 
 	public TextSplitter(ManualInstance m, Function<String, String> tokenTransform)
 	{
-		this(m.fontRenderer::getStringWidth, m.pageWidth, m.pageHeight, m.fontRenderer.FONT_HEIGHT, tokenTransform);
+		this(s -> m.fontRenderer().getStringWidth(s), m.pageWidth, m.pageHeight, () -> m.fontRenderer().FONT_HEIGHT, tokenTransform);
 	}
 
 	public void clearSpecialByPage()
@@ -104,7 +107,7 @@ public class TextSplitter
 							page.add(line);
 							break page;
 						}
-						else if(token.equals("\n"))
+						else if(LINEBREAK.matcher(token).matches())
 						{
 							break line;
 						}
@@ -183,7 +186,7 @@ public class TextSplitter
 		{
 			pixels = pixelsPerPage-specialByPage.get(id).getPixelsTaken();
 		}
-		return Math.max(0, MathHelper.floor(pixels/(double)pixelsPerLine));
+		return Math.max(0, MathHelper.floor(pixels/(double)pixelsPerLine.getAsInt()));
 	}
 
 	private boolean updateSpecials(String ref, int page)

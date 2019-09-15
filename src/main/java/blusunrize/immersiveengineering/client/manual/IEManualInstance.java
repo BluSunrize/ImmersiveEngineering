@@ -20,6 +20,7 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 import com.electronwill.nightconfig.core.Config;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +38,7 @@ public class IEManualInstance extends ManualInstance
 
 	public IEManualInstance()
 	{
-		super(/*TODO new IEItemFontRender()*/ClientUtils.font(), "immersiveengineering:textures/gui/manual.png",
+		super("immersiveengineering:textures/gui/manual.png",
 				120, 179-28, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
 		/*
 		TODO no longer easily possible?
@@ -45,8 +46,6 @@ public class IEManualInstance extends ManualInstance
 		this.fontRenderer.colorCode[16+6] = Lib.COLOUR_I_ImmersiveOrangeShadow;
 		((IEItemFontRender)this.fontRenderer).createColourBackup();
 		 */
-		if(Minecraft.getInstance().gameSettings.language!=null)
-			this.fontRenderer.setBidiFlag(ClientUtils.mc().getLanguageManager().isCurrentLanguageBidirectional());
 	}
 
 	@Override
@@ -195,6 +194,14 @@ public class IEManualInstance extends ManualInstance
 		}
 	}*/
 
+	@Override
+	public FontRenderer fontRenderer()
+	{
+		FontRenderer ret = /*TODO new IEItemFontRender()*/ClientUtils.unicodeFontRender();
+		if(Minecraft.getInstance().gameSettings.language!=null)
+			ret.setBidiFlag(ClientUtils.mc().getLanguageManager().isCurrentLanguageBidirectional());
+		return ret;
+	}
 
 	@Override
 	public String getManualName()

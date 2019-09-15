@@ -220,7 +220,7 @@ public class ManualElementCrafting extends SpecialManualElements
 						if(!pstack.getStack().isEmpty())
 						{
 							ManualUtils.renderItem().renderItemAndEffectIntoGUI(pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y);
-							ManualUtils.renderItem().renderItemOverlayIntoGUI(manual.fontRenderer, pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y, null);
+							ManualUtils.renderItem().renderItemOverlayIntoGUI(manual.fontRenderer(), pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y, null);
 							if(mx >= x+pstack.x&&mx < x+pstack.x+16&&my >= y+totalYOff+pstack.y&&my < y+totalYOff+pstack.y+16)
 								highlighted = pstack.getStack();
 						}

@@ -170,10 +170,10 @@ public class ManualPageShader extends SpecialManualElements
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
 		String name = "§l"+shader.getName();
-		int w = manual.fontRenderer.getStringWidth(name);
-		manual.fontRenderer.drawString(name, x+60-w/2, y+24, manual.getTextColour());
+		int w = manual.fontRenderer().getStringWidth(name);
+		manual.fontRenderer().drawString(name, x+60-w/2, y+24, manual.getTextColour());
 		if(localizedText!=null&&!localizedText.isEmpty())
-			manual.fontRenderer.drawSplitString(localizedText, x, y+38, 120, manual.getTextColour());
+			manual.fontRenderer().drawSplitString(localizedText, x, y+38, 120, manual.getTextColour());
 
 	}
 

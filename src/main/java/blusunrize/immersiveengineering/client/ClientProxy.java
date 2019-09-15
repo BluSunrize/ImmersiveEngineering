@@ -66,7 +66,7 @@ import blusunrize.lib.manual.ManualElementTable;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.Tree;
+import blusunrize.lib.manual.Tree.InnerNode;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -500,9 +500,9 @@ public class ClientProxy extends CommonProxy
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "multiblock"),
 				s -> new ManualElementMultiblock(ieMan,
 						MultiblockHandler.getByUniqueName(new ResourceLocation(JSONUtils.getString(s, "name")))));
-		Tree.Node<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_ENERGY), 1);
-		Tree.Node<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_GENERAL), 0);
 
 		ieMan.addEntry(energyCat.getOrCreateSubnode(new ResourceLocation(MODID,
@@ -747,7 +747,6 @@ public class ClientProxy extends CommonProxy
 			{
 				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
 			}
-		ManualHelper.getManual().indexRecipes();
 	}
 
 	static ManualEntry mineralEntry;
@@ -882,7 +881,6 @@ public class ClientProxy extends CommonProxy
 
 	public void addChangelogToManual()
 	{
-		FontRenderer fr = ManualHelper.getManual().fontRenderer;
 		SortedMap<ComparableVersion, ManualEntry> allChanges = new TreeMap<>(Comparator.reverseOrder());
 		ComparableVersion currIEVer = new ComparableVersion(ImmersiveEngineering.VERSION);
 		//Included changelog
@@ -910,7 +908,7 @@ public class ClientProxy extends CommonProxy
 				allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
 
 		ManualInstance ieMan = ManualHelper.getManual();
-		Tree.Node<ResourceLocation, ManualEntry> updateCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> updateCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_UPDATE), -1);
 		for(ManualEntry entry : allChanges.values())
 			ManualHelper.getManual().addEntry(updateCat, entry);
@@ -1333,8 +1331,7 @@ public class ClientProxy extends CommonProxy
 	public void reloadManual()
 	{
 		if(ManualHelper.getManual()!=null)
-			ManualHelper.getManual().getAllEntries()
-					.forEach(ManualEntry::refreshPages);
+			ManualHelper.getManual().onResourceManagerReload(Minecraft.getInstance().getResourceManager(), type -> true);
 	}
 
 	static

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.Connection.RenderData;
@@ -312,6 +313,11 @@ public class ClientUtils
 		}
 
 		return bufferedimage;
+	}
+
+	public static FontRenderer unicodeFontRender()
+	{
+		return mc().getFontResourceManager().getFontRenderer(new ResourceLocation(ImmersiveEngineering.MODID, "unicode"));
 	}
 
 	public enum TimestampFormat

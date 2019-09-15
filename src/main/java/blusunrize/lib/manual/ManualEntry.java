@@ -56,7 +56,6 @@ public class ManualEntry implements Comparable<ManualEntry>
 		this.splitter = splitter;
 		this.getContent = getContent;
 		this.location = location;
-		refreshPages();
 	}
 
 	public void refreshPages()
@@ -68,7 +67,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 			String[] parts = getContent.apply(splitter);
 			title = parts[0];
 			subtext = parts[1];
-			String[] tmp = {parts[2]};//I want pointers... They would make this easier
+			String[] tmp = {parts[2]};//I want pointers/references... They would make this easier
 			linkData = ManualUtils.prepareEntryForLinks(tmp);
 			splitter.split(manual.formatText(tmp[0]));
 			specials = splitter.getSpecials();
@@ -97,7 +96,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		int page = gui.page;
 		ManualPage toRender = pages.get(page);
 		int offsetText = 0;
-		int offsetSpecial = ((toRender.renderText.size()*manual.fontRenderer.FONT_HEIGHT+1)+
+		int offsetSpecial = ((toRender.renderText.size()*manual.fontRenderer().FONT_HEIGHT+1)+
 				manual.pageHeight-toRender.special.getPixelsTaken())/2;
 		ManualInstance manual = gui.getManual();
 		if(toRender.special.isAbove())
@@ -105,7 +104,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 			offsetText = toRender.special.getPixelsTaken();
 			offsetSpecial = 0;
 		}
-		ManualUtils.drawSplitString(manual.fontRenderer, toRender.renderText, x, y+offsetText,
+		ManualUtils.drawSplitString(manual.fontRenderer(), toRender.renderText, x, y+offsetText,
 				manual.getTextColour());
 		GlStateManager.pushMatrix();
 		GlStateManager.translatef(x, y+offsetSpecial, 0);
@@ -279,11 +278,11 @@ public class ManualEntry implements Comparable<ManualEntry>
 					assert json!=null;
 					ManualUtils.parseSpecials(json, splitter, manual);
 					int titleEnd = content.indexOf('\n');
-					String title = content.substring(0, titleEnd);
-					content = content.substring(titleEnd+1);
+					String title = content.substring(0, titleEnd).trim();
+					content = content.substring(titleEnd+1).trim();
 					int subtitleEnd = content.indexOf('\n');
-					String subtext = content.substring(0, subtitleEnd);
-					content = content.substring(subtitleEnd+1);
+					String subtext = content.substring(0, subtitleEnd).trim();
+					content = content.substring(subtitleEnd+1).trim();
 					String rawText = content;
 					return new String[]{title, subtext, rawText};
 				} catch(IOException e)
