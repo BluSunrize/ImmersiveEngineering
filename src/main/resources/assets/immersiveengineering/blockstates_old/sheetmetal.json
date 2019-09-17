@@ -1,0 +1,37 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"textures": {"all": "immersiveengineering:blocks/sheetmetal_copper" },
+		"model": "cube_all"
+	},
+	"variants":
+	{
+		"inventory,type=copper": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_copper"}}],
+		"inventory,type=aluminum": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_aluminum"}}],
+		"inventory,type=lead": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_lead"}}],
+		"inventory,type=silver": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_silver"}}],
+		"inventory,type=nickel": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_nickel"}}],
+		"inventory,type=uranium": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_uranium"}}],
+		"inventory,type=constantan": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_constantan"}}],
+		"inventory,type=electrum": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_electrum"}}],
+		"inventory,type=steel": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_steel"}}],
+		"inventory,type=iron": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_iron"}}],
+		"inventory,type=gold": [{"textures": {"all": "immersiveengineering:blocks/sheetmetal_gold"}}],
+		"type":
+		{
+			"copper": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_copper" }},
+			"aluminum": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_aluminum" }},
+			"lead": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_lead" }},
+			"silver": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_silver" }},
+			"nickel": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_nickel" }},
+			"uranium": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_uranium" }},
+			"constantan": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_constantan" }},
+			"electrum": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_electrum" }},
+			"steel": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_steel" }},
+			"iron": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_iron" }},
+			"gold": {"textures": { "all": "immersiveengineering:blocks/sheetmetal_gold" }}
+		}
+	}
+}

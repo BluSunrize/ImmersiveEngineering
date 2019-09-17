@@ -1,0 +1,27 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "crop",
+		"textures": {"crop": "immersiveengineering:blocks/hemp_b0"}
+	},
+	"variants":
+	{
+		"inventory,type=bottom0": [{"textures": {"all": "immersiveengineering:blocks/hemp_b0"}}],
+		"inventory,type=bottom1": [{"textures": {"all": "immersiveengineering:blocks/hemp_b1"}}],
+		"inventory,type=bottom2": [{"textures": {"all": "immersiveengineering:blocks/hemp_b2"}}],
+		"inventory,type=bottom3": [{"textures": {"all": "immersiveengineering:blocks/hemp_b3"}}],
+		"inventory,type=bottom4": [{"textures": {"all": "immersiveengineering:blocks/hemp_b4"}}],
+		"inventory,type=top0": [{"textures": {"all": "immersiveengineering:blocks/hemp_t0"}}],
+		"type":
+		{
+			"bottom0": {"textures": {"crop": "immersiveengineering:blocks/hemp_b0"}},
+			"bottom1":	{"textures": {"crop": "immersiveengineering:blocks/hemp_b1"}},
+			"bottom2": {"textures": {"crop": "immersiveengineering:blocks/hemp_b2"}},
+			"bottom3": {"textures": {"crop": "immersiveengineering:blocks/hemp_b3"}},
+			"bottom4": {"textures": {"crop": "immersiveengineering:blocks/hemp_b4"}},
+			"top0": {"textures": {"crop": "immersiveengineering:blocks/hemp_t0"}}
+		}
+	}
+}

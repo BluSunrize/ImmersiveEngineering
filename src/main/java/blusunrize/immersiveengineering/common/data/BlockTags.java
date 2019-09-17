@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import net.minecraft.block.Block;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
@@ -27,7 +29,12 @@ class BlockTags extends BlockTagsProvider
 	@Override
 	protected void registerTags()
 	{
-
+		getBuilder(net.minecraft.tags.BlockTags.FENCES)
+				.add(MetalDecoration.aluFence)
+				.add(MetalDecoration.steelFence)
+				.add(WoodenDecoration.treatedFence);
+		getBuilder(net.minecraft.tags.BlockTags.WOODEN_FENCES)
+				.add(WoodenDecoration.treatedFence);
 		for(EnumMetals metal : EnumMetals.values())
 			if(!metal.isVanillaMetal())
 			{
