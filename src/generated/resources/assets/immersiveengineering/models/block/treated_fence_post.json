@@ -1,0 +1,6 @@
+{
+  "parent": "block/fence_post",
+  "textures": {
+    "texture": "immersiveengineering:block/treated_wood_horizontal"
+  }
+}
