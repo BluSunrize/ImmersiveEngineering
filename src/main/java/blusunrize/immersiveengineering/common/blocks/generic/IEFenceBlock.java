@@ -12,7 +12,11 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.FenceBlock;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Map;
 
 public class IEFenceBlock extends FenceBlock
 {
@@ -22,5 +26,10 @@ public class IEFenceBlock extends FenceBlock
 		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, name));
 		IEContent.registeredIEBlocks.add(this);
 		IEContent.registeredIEItems.add(new BlockItemIE(this));
+	}
+
+	public Map<Direction, BooleanProperty> getFacingStateMap()
+	{
+		return FACING_TO_PROPERTY_MAP;
 	}
 }

@@ -1,0 +1,261 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
+package blusunrize.immersiveengineering.common.data.blockstate;
+
+import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DirectoryCache;
+import net.minecraft.data.IDataProvider;
+import net.minecraft.state.IProperty;
+import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.function.BiConsumer;
+
+public abstract class BlockstateGenerator implements IDataProvider
+{
+	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
+	private final DataGenerator gen;
+
+	public BlockstateGenerator(DataGenerator gen)
+	{
+		this.gen = gen;
+	}
+
+	private Set<ResourceLocation> generatedStates;
+	private Set<ResourceLocation> generatedModels;
+	private DirectoryCache cache;
+
+	@Override
+	public void act(@Nonnull DirectoryCache cache) throws IOException
+	{
+		generatedStates = new HashSet<>();
+		generatedModels = new HashSet<>();
+		this.cache = cache;
+		registerStates(this::createVariantModel, this::createMultipartModel);
+	}
+
+	private void createVariantModel(Block block, IVariantModelGenerator out)
+	{
+		ResourceLocation blockName = Preconditions.checkNotNull(block.getRegistryName());
+		Preconditions.checkArgument(generatedStates.add(blockName));
+		JsonObject variants = new JsonObject();
+		for(BlockState b : block.getStateContainer().getValidStates())
+		{
+			Model model = out.getModel(b);
+			Preconditions.checkNotNull(model);
+			StringBuilder name = new StringBuilder();
+			for(IProperty<?> prop : block.getStateContainer().getProperties())
+			{
+				if(name.length() > 0)
+					name.append(",");
+				name.append(prop.getName())
+						.append("=")
+						.append(b.get(prop));
+			}
+			variants.add(name.toString(), model.toJSON());
+			model.createModel(gen.getOutputFolder(), cache, generatedModels);
+		}
+		JsonObject main = new JsonObject();
+		main.add("variants", variants);
+		BlockstateGenerator.this.saveBlockState(main, block);
+	}
+
+	private void createMultipartModel(Block block, List<MultiPart> parts)
+	{
+		JsonArray variants = new JsonArray();
+		for(MultiPart part : parts)
+		{
+			Preconditions.checkArgument(part.canApplyTo(block));
+			variants.add(part.toJson());
+			part.model.createModel(gen.getOutputFolder(), cache, generatedModels);
+		}
+		JsonObject main = new JsonObject();
+		main.add("multipart", variants);
+		saveBlockState(main, block);
+	}
+
+	protected abstract void registerStates(BiConsumer<Block, IVariantModelGenerator> variantBased, BiConsumer<Block, List<MultiPart>> multipartBased);
+
+	private void saveBlockState(JsonObject stateJson, Block owner)
+	{
+		ResourceLocation blockName = Preconditions.checkNotNull(owner.getRegistryName());
+		Path mainOutput = gen.getOutputFolder();
+		String pathSuffix = "assets/"+blockName.getNamespace()+"/blockstates/"+blockName.getPath()+".json";
+		Path outputPath = mainOutput.resolve(pathSuffix);
+		saveJSON(cache, stateJson, outputPath);
+	}
+
+	private static void saveJSON(DirectoryCache cache, JsonObject data, Path target)
+	{
+		try
+		{
+			String jsonString = GSON.toJson(data);
+			String hash = HASH_FUNCTION.hashUnencodedChars(jsonString).toString();
+			if(!Objects.equals(cache.getPreviousHash(target), hash)||!Files.exists(target))
+			{
+				Files.createDirectories(target.getParent());
+
+				try(BufferedWriter writer = Files.newBufferedWriter(target))
+				{
+					writer.write(jsonString);
+				}
+			}
+
+			cache.func_208316_a(target, hash);
+		} catch(IOException x)
+		{
+			IELogger.logger.error("Couldn't save data to {}", target, x);
+		}
+	}
+
+	@Nonnull
+	@Override
+	public String getName()
+	{
+		return "blockstates";
+	}
+
+	public interface IVariantModelGenerator
+	{
+		Model getModel(BlockState state);
+	}
+
+	public static final class Model
+	{
+		public final ResourceLocation name;
+		public final int rotationX;
+		public final int rotationY;
+		public final boolean uvLock;
+		@Nullable
+		public final JsonObject modelJson;
+
+		public Model(ResourceLocation name, int rotationX, int rotationY, boolean uvLock, @Nullable JsonObject modelJson)
+		{
+			this.name = name;
+			this.rotationX = rotationX;
+			this.rotationY = rotationY;
+			this.uvLock = uvLock;
+			this.modelJson = modelJson;
+		}
+
+		public Model(ResourceLocation name, @Nullable JsonObject modelJson)
+		{
+			this(name, 0, 0, false, modelJson);
+		}
+
+		public Model(ResourceLocation name)
+		{
+			this(name, null);
+		}
+
+		public JsonObject toJSON()
+		{
+			JsonObject modelJson = new JsonObject();
+			modelJson.addProperty("model", name.toString());
+			if(rotationX!=0)
+				modelJson.addProperty("x", rotationX);
+			if(rotationY!=0)
+				modelJson.addProperty("y", rotationY);
+			if(uvLock)
+				modelJson.addProperty("uvlock", uvLock);
+			return modelJson;
+		}
+
+		public void createModel(Path basePath, DirectoryCache cache, Set<ResourceLocation> generatedModels)
+		{
+			if(modelJson==null)
+				return;
+			//TODO only check whether the models differ Preconditions.checkArgument(generatedModels.add(name));
+			String suffix = "assets/"+name.getNamespace()+"/models/"+name.getPath()+".json";
+			saveJSON(cache, modelJson, basePath.resolve(suffix));
+		}
+	}
+
+	public static final class PropertyWithValues<T extends Comparable<T>>
+	{
+		public final IProperty<T> prop;
+		public final List<T> values;
+
+		public PropertyWithValues(IProperty<T> prop, T... values)
+		{
+			this.prop = prop;
+			this.values = Arrays.asList(values);
+		}
+	}
+
+	public static final class MultiPart
+	{
+		public final Model model;
+		public final boolean useOr;
+		public final List<PropertyWithValues> conditions;
+
+		public MultiPart(Model model, boolean useOr, PropertyWithValues... conditionsArray)
+		{
+			conditions = Arrays.asList(conditionsArray);
+			Preconditions.checkArgument(conditions.size()==conditions.stream()
+					.map(pwv -> pwv.prop)
+					.distinct()
+					.count());
+			Preconditions.checkArgument(conditions.stream().noneMatch(pwv -> pwv.values.isEmpty()));
+			this.model = model;
+			this.useOr = useOr;
+		}
+
+		public JsonObject toJson()
+		{
+			JsonObject out = new JsonObject();
+			if(!conditions.isEmpty())
+			{
+				JsonObject when = new JsonObject();
+				for(PropertyWithValues<?> prop : conditions)
+				{
+					StringBuilder activeString = new StringBuilder();
+					for(Object val : prop.values)
+					{
+						if(activeString.length() > 0)
+							activeString.append("|");
+						activeString.append(val.toString());
+					}
+					when.addProperty(prop.prop.getName(), activeString.toString());
+				}
+				if(useOr)
+				{
+					JsonObject innerWhen = when;
+					when = new JsonObject();
+					when.add("OR", innerWhen);
+				}
+				out.add("when", when);
+			}
+			out.add("apply", model.toJSON());
+			return out;
+		}
+
+		public boolean canApplyTo(Block b)
+		{
+			for(PropertyWithValues<?> p : conditions)
+				if(!b.getStateContainer().getProperties().contains(p.prop))
+					return false;
+			return true;
+		}
+	}
+}

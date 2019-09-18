@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
@@ -92,7 +93,7 @@ public final class IEBlocks
 	{
 		public static Map<TreatedWoodStyles, Block> treatedWood = new EnumMap<>(TreatedWoodStyles.class);
 		public static Map<TreatedWoodStyles, Block> treatedStairs = new EnumMap<>(TreatedWoodStyles.class);
-		public static Block treatedFence;
+		public static IEFenceBlock treatedFence;
 		public static Block treatedScaffolding;
 	}
 
@@ -133,8 +134,8 @@ public final class IEBlocks
 		public static Block engineeringLight;
 		public static Block generator;
 		public static Block radiator;
-		public static Block steelFence;
-		public static Block aluFence;
+		public static IEFenceBlock steelFence;
+		public static IEFenceBlock aluFence;
 		public static Block steelWallmount;
 		public static Block aluWallmount;
 		public static Block steelPost;
