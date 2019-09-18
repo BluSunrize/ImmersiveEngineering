@@ -845,6 +845,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 			return name().toLowerCase();
 		}
 
+		@SideOnly(Side.CLIENT)
 		public String getDisplayString(double value)
 		{
 			String key = Lib.DESC_INFO+"revolver.perk."+this.toString();
@@ -862,7 +863,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 				averageTier += dTier;
 				int iTier = (int)MathHelper.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
 				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase()+".tier"+iTier;
-				name = I18n.format(translate, name);
+				name = net.minecraft.util.text.translation.I18n.translateToLocalFormatted(translate, name);
 			}
 
 			int rarityTier = (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);

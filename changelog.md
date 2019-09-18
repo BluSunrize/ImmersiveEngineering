@@ -1,3 +1,6 @@
+##### Version 0.12-92
+- Fixed client only translation reference crashing on servers (BluSunrize)
+
 ##### Version 0.12-91 - BUILT
 - Added the Gunsmith villager, who sells ammunition, blueprints and revolver pieces (BluSunrize)
 - Fixed a crash with vertical conveyors on dedicated servers (Malte)
