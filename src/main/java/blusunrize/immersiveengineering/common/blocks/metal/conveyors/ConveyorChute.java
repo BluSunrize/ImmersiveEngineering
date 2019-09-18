@@ -199,19 +199,23 @@ public class ConveyorChute extends ConveyorVertical
 		return list;
 	}
 
+	@SideOnly(Side.CLIENT)
 	private static final IBakedModel[][] chuteModel = new IBakedModel[BlockTypes_MetalsAll.values().length][];
+	@SideOnly(Side.CLIENT)
 	private static final Function<ResourceLocation, TextureAtlasSprite>[] TEXTURE_GETTERS = new Function[BlockTypes_MetalsAll.values().length];
-
-	static
-	{
-		for(BlockTypes_MetalsAll metal : BlockTypes_MetalsAll.values())
-			TEXTURE_GETTERS[metal.getMeta()] = rl -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("immersiveengineering:blocks/sheetmetal_"+metal.getName());
-	}
+	@SideOnly(Side.CLIENT)
+	private static boolean initTextures = false;
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
 	{
+		if(!initTextures)
+		{
+			for(BlockTypes_MetalsAll metal : BlockTypes_MetalsAll.values())
+				TEXTURE_GETTERS[metal.getMeta()] = rl -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("immersiveengineering:blocks/sheetmetal_"+metal.getName());
+			initTextures = true;
+		}
 		if(this.sheetmetalType < 0||this.sheetmetalType >= TEXTURE_GETTERS.length)
 			return baseModel;
 
