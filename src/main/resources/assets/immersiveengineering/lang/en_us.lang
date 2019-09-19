@@ -437,6 +437,10 @@ item.immersiveengineering.fluorescent_tube.name=Fluorescent Tube
 item.immersiveengineering.powerpack.name=Capacitor Backpack
 item.immersiveengineering.shield.name=Heavy Plated Shield
 item.immersiveengineering.maintenance_kit.name=Maintenance Kit
+item.immersiveengineering.steel_armor_head.name=Steel Helmet
+item.immersiveengineering.steel_armor_chest.name=Steel Chestplate
+item.immersiveengineering.steel_armor_legs.name=Steel Leggings
+item.immersiveengineering.steel_armor_feet.name=Steel Boots
 
 item.immersiveengineering.map_orevein.name=Mineral Deposit Map
 

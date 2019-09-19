@@ -1,4 +1,5 @@
 ##### Version 0.12-92
+- Added Steel Armor, crafted from steel plates! (BluSunrize)
 - Fixed client only translation reference crashing on servers (BluSunrize)
 - Fixed client only references in Chutes (BluSunrize)
 

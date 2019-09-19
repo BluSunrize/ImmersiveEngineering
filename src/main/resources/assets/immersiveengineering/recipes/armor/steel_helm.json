@@ -1,0 +1,15 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:steel_armor_head"
+  },
+  "pattern": [
+    "AAA",
+    "A A"
+  ],
+  "key": {
+    "A": {
+      "item": "#plateSteel"
+    }
+  }
+}

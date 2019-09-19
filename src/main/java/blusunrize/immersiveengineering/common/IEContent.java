@@ -198,6 +198,7 @@ public class IEContent
 	public static Item itemPowerpack;
 	public static ItemIEBase itemShield;
 	public static ItemIEBase itemMaintenanceKit;
+	public static ItemSteelArmor[] itemsSteelArmor = new ItemSteelArmor[4];
 
 	public static ItemIEBase itemFakeIcons;
 
@@ -321,13 +322,16 @@ public class IEContent
 		itemEarmuffs = new ItemEarmuffs();
 		itemCoresample = new ItemCoresample();
 		itemGraphiteElectrode = new ItemGraphiteElectrode();
-		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("faradayChains", "immersiveengineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0);
+		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("IMMERSIVEENGINEERING:FARADAY", "immersiveengineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0);
 		for(int i = 0; i < itemsFaradaySuit.length; i++)
 			itemsFaradaySuit[i] = new ItemFaradaySuit(EntityEquipmentSlot.values()[2+i]);
 		itemFluorescentTube = new ItemFluorescentTube();
 		itemPowerpack = new ItemPowerpack();
 		itemShield = new ItemIEShield();
 		itemMaintenanceKit = new ItemMaintenanceKit();
+		ItemSteelArmor.mat = EnumHelper.addArmorMaterial("IMMERSIVEENGINEERING:STEEL", "immersiveengineering:steelArmor", 21, new int[]{2, 6, 7, 2}, 10, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 1.0f).setRepairItem(new ItemStack(itemMetal,1,8));
+		for(int i = 0; i < itemsSteelArmor.length; i++)
+			itemsSteelArmor[i] = new ItemSteelArmor(EntityEquipmentSlot.values()[2+i]);
 
 		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky", "drillbreak")
 		{
