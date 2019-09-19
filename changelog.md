@@ -2,6 +2,7 @@
 - Added Steel Armor, crafted from steel plates! (BluSunrize)
 - Fixed client only translation reference crashing on servers (BluSunrize)
 - Fixed client only references in Chutes (BluSunrize)
+- Fixed Coresamples without coordinates resulting in a client crash (BluSunrize)
 
 ##### Version 0.12-91 - BUILT
 - Added the Gunsmith villager, who sells ammunition, blueprints and revolver pieces (BluSunrize)
