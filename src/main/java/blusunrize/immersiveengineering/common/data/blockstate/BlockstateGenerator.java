@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.data.blockstate;
 
+import blusunrize.immersiveengineering.common.data.model.ModelFile;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
@@ -23,7 +24,6 @@ import net.minecraft.state.IProperty;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,14 +42,12 @@ public abstract class BlockstateGenerator implements IDataProvider
 	}
 
 	private Set<ResourceLocation> generatedStates;
-	private Set<ResourceLocation> generatedModels;
 	private DirectoryCache cache;
 
 	@Override
 	public void act(@Nonnull DirectoryCache cache) throws IOException
 	{
 		generatedStates = new HashSet<>();
-		generatedModels = new HashSet<>();
 		this.cache = cache;
 		registerStates(this::createVariantModel, this::createMultipartModel);
 	}
@@ -61,7 +59,7 @@ public abstract class BlockstateGenerator implements IDataProvider
 		JsonObject variants = new JsonObject();
 		for(BlockState b : block.getStateContainer().getValidStates())
 		{
-			Model model = out.getModel(b);
+			ConfiguredModel model = out.getModel(b);
 			Preconditions.checkNotNull(model);
 			StringBuilder name = new StringBuilder();
 			for(IProperty<?> prop : block.getStateContainer().getProperties())
@@ -73,7 +71,6 @@ public abstract class BlockstateGenerator implements IDataProvider
 						.append(b.get(prop));
 			}
 			variants.add(name.toString(), model.toJSON());
-			model.createModel(gen.getOutputFolder(), cache, generatedModels);
 		}
 		JsonObject main = new JsonObject();
 		main.add("variants", variants);
@@ -87,7 +84,6 @@ public abstract class BlockstateGenerator implements IDataProvider
 		{
 			Preconditions.checkArgument(part.canApplyTo(block));
 			variants.add(part.toJson());
-			part.model.createModel(gen.getOutputFolder(), cache, generatedModels);
 		}
 		JsonObject main = new JsonObject();
 		main.add("multipart", variants);
@@ -105,7 +101,8 @@ public abstract class BlockstateGenerator implements IDataProvider
 		saveJSON(cache, stateJson, outputPath);
 	}
 
-	private static void saveJSON(DirectoryCache cache, JsonObject data, Path target)
+	//TODO move somewhere else
+	public static void saveJSON(DirectoryCache cache, JsonObject data, Path target)
 	{
 		try
 		{
@@ -132,46 +129,38 @@ public abstract class BlockstateGenerator implements IDataProvider
 	@Override
 	public String getName()
 	{
-		return "blockstates";
+		return "Block States";
 	}
 
 	public interface IVariantModelGenerator
 	{
-		Model getModel(BlockState state);
+		ConfiguredModel getModel(BlockState state);
 	}
 
-	public static final class Model
+	public static final class ConfiguredModel
 	{
-		public final ResourceLocation name;
+		public final ModelFile name;
 		public final int rotationX;
 		public final int rotationY;
 		public final boolean uvLock;
-		@Nullable
-		public final JsonObject modelJson;
 
-		public Model(ResourceLocation name, int rotationX, int rotationY, boolean uvLock, @Nullable JsonObject modelJson)
+		public ConfiguredModel(ModelFile name, int rotationX, int rotationY, boolean uvLock)
 		{
 			this.name = name;
 			this.rotationX = rotationX;
 			this.rotationY = rotationY;
 			this.uvLock = uvLock;
-			this.modelJson = modelJson;
 		}
 
-		public Model(ResourceLocation name, @Nullable JsonObject modelJson)
+		public ConfiguredModel(ModelFile name)
 		{
-			this(name, 0, 0, false, modelJson);
-		}
-
-		public Model(ResourceLocation name)
-		{
-			this(name, null);
+			this(name, 0, 0, false);
 		}
 
 		public JsonObject toJSON()
 		{
 			JsonObject modelJson = new JsonObject();
-			modelJson.addProperty("model", name.toString());
+			modelJson.addProperty("model", name.getLocation().toString());
 			if(rotationX!=0)
 				modelJson.addProperty("x", rotationX);
 			if(rotationY!=0)
@@ -179,15 +168,6 @@ public abstract class BlockstateGenerator implements IDataProvider
 			if(uvLock)
 				modelJson.addProperty("uvlock", uvLock);
 			return modelJson;
-		}
-
-		public void createModel(Path basePath, DirectoryCache cache, Set<ResourceLocation> generatedModels)
-		{
-			if(modelJson==null)
-				return;
-			//TODO only check whether the models differ Preconditions.checkArgument(generatedModels.add(name));
-			String suffix = "assets/"+name.getNamespace()+"/models/"+name.getPath()+".json";
-			saveJSON(cache, modelJson, basePath.resolve(suffix));
 		}
 	}
 
@@ -205,11 +185,11 @@ public abstract class BlockstateGenerator implements IDataProvider
 
 	public static final class MultiPart
 	{
-		public final Model model;
+		public final ConfiguredModel model;
 		public final boolean useOr;
 		public final List<PropertyWithValues> conditions;
 
-		public MultiPart(Model model, boolean useOr, PropertyWithValues... conditionsArray)
+		public MultiPart(ConfiguredModel model, boolean useOr, PropertyWithValues... conditionsArray)
 		{
 			conditions = Arrays.asList(conditionsArray);
 			Preconditions.checkArgument(conditions.size()==conditions.stream()

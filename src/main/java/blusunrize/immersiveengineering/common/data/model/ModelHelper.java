@@ -6,8 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.data.blockstate;
+package blusunrize.immersiveengineering.common.data.model;
 
+import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
 
@@ -17,7 +18,12 @@ public class ModelHelper
 	{
 	}
 
-	public static JsonObject createBasicCube(ResourceLocation texture)
+	public static GeneratedModelFile createBasicCube(ResourceLocation texture)
+	{
+		return createBasicCube(texture, texture);
+	}
+
+	public static GeneratedModelFile createBasicCube(ResourceLocation texture, ResourceLocation modelName)
 	{
 		assertTextureExists(texture);
 		JsonObject model = new JsonObject();
@@ -25,10 +31,11 @@ public class ModelHelper
 		JsonObject textures = new JsonObject();
 		textures.addProperty("all", texture.toString());
 		model.add("textures", textures);
-		return model;
+		return new GeneratedModelFile(modelName, model);
 	}
 
-	public static JsonObject createBasicCube(ResourceLocation sides, ResourceLocation top, ResourceLocation bottom)
+	public static GeneratedModelFile createBasicCube(ResourceLocation sides, ResourceLocation top,
+													 ResourceLocation bottom, ResourceLocation modelName)
 	{
 		assertTextureExists(sides);
 		assertTextureExists(top);
@@ -40,10 +47,10 @@ public class ModelHelper
 		textures.addProperty("bottom", bottom.toString());
 		textures.addProperty("side", sides.toString());
 		model.add("textures", textures);
-		return model;
+		return new GeneratedModelFile(modelName, model);
 	}
 
-	public static JsonObject createFencePost(ResourceLocation texture)
+	public static GeneratedModelFile createFencePost(ResourceLocation texture, ResourceLocation modelName)
 	{
 		assertTextureExists(texture);
 		JsonObject model = new JsonObject();
@@ -51,10 +58,10 @@ public class ModelHelper
 		JsonObject textures = new JsonObject();
 		textures.addProperty("texture", texture.toString());
 		model.add("textures", textures);
-		return model;
+		return new GeneratedModelFile(modelName, model);
 	}
 
-	public static JsonObject createFenceSide(ResourceLocation texture)
+	public static GeneratedModelFile createFenceSide(ResourceLocation texture, ResourceLocation modelName)
 	{
 		assertTextureExists(texture);
 		JsonObject model = new JsonObject();
@@ -62,7 +69,7 @@ public class ModelHelper
 		JsonObject textures = new JsonObject();
 		textures.addProperty("texture", texture.toString());
 		model.add("textures", textures);
-		return model;
+		return new GeneratedModelFile(modelName, model);
 	}
 
 	private static void assertTextureExists(ResourceLocation name)

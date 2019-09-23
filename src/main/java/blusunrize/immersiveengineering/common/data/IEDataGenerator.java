@@ -30,7 +30,9 @@ public class IEDataGenerator
 			gen.addProvider(new ItemTags(gen));
 			gen.addProvider(new BlockTags(gen));
 			gen.addProvider(new BlockLoot(gen));
-			gen.addProvider(new BlockStates(gen));
+			Models models = new Models(gen);
+			gen.addProvider(models);
+			gen.addProvider(new BlockStates(gen, models));
 		}
 	}
 

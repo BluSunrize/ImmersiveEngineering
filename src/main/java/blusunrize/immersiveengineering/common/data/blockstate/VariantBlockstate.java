@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.data.blockstate;
 
-import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.Model;
+import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -20,16 +20,16 @@ import java.util.function.Predicate;
 
 public class VariantBlockstate implements BlockstateGenerator.IVariantModelGenerator
 {
-	private final Map<BlockState, Model> models;
+	private final Map<BlockState, ConfiguredModel> models;
 
-	private VariantBlockstate(Map<BlockState, Model> models)
+	private VariantBlockstate(Map<BlockState, ConfiguredModel> models)
 	{
 
 		this.models = models;
 	}
 
 	@Override
-	public Model getModel(BlockState state)
+	public ConfiguredModel getModel(BlockState state)
 	{
 		return models.get(state);
 	}
@@ -37,14 +37,14 @@ public class VariantBlockstate implements BlockstateGenerator.IVariantModelGener
 	public static class Builder
 	{
 		private final Block b;
-		private final Map<BlockState, Model> models = new HashMap<>();
+		private final Map<BlockState, ConfiguredModel> models = new HashMap<>();
 
 		public Builder(Block b)
 		{
 			this.b = b;
 		}
 
-		public Builder setModel(BlockState state, Model model)
+		public Builder setModel(BlockState state, ConfiguredModel model)
 		{
 			Preconditions.checkNotNull(state);
 			Preconditions.checkNotNull(model);
@@ -54,7 +54,7 @@ public class VariantBlockstate implements BlockstateGenerator.IVariantModelGener
 			return this;
 		}
 
-		public Builder setForAllMatching(Predicate<BlockState> matches, Model model)
+		public Builder setForAllMatching(Predicate<BlockState> matches, ConfiguredModel model)
 		{
 			Preconditions.checkNotNull(matches);
 			for(BlockState state : b.getStateContainer().getValidStates())
@@ -63,7 +63,7 @@ public class VariantBlockstate implements BlockstateGenerator.IVariantModelGener
 			return this;
 		}
 
-		public <T extends Comparable<T>> Builder setForAllWithState(IProperty<T> prop, T value, Model model)
+		public <T extends Comparable<T>> Builder setForAllWithState(IProperty<T> prop, T value, ConfiguredModel model)
 		{
 			Preconditions.checkNotNull(prop);
 			Preconditions.checkNotNull(value);
