@@ -1,8 +1,0 @@
-{
-  "parent": "immersiveengineering:block/ie_pillar",
-  "textures": {
-    "top": "immersiveengineering:block/storage_uranium_top",
-    "bottom": "immersiveengineering:block/storage_uranium_top",
-    "side": "immersiveengineering:block/storage_uranium_side"
-  }
-}

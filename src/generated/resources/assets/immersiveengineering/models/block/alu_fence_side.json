@@ -1,6 +1,6 @@
 {
   "parent": "block/fence_side",
   "textures": {
-    "texture": "immersiveengineering:block/storage_aluminum"
+    "texture": "immersiveengineering:block/metal/storage_aluminum"
   }
 }

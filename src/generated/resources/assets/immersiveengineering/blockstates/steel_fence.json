@@ -30,8 +30,7 @@
         "north": "true"
       },
       "apply": {
-        "model": "immersiveengineering:block/steel_fence_side",
-        "uvlock": true
+        "model": "immersiveengineering:block/steel_fence_side"
       }
     },
     {
