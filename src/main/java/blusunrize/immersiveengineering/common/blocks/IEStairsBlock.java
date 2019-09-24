@@ -16,6 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -30,8 +31,7 @@ import java.util.List;
 public class IEStairsBlock extends StairsBlock
 {
 	public boolean hasFlavour = false;
-	public boolean isFlammable = false;
-
+	private BlockRenderLayer layer = BlockRenderLayer.SOLID;
 	public IEStairsBlock(String name, BlockState state, Block.Properties properties)
 	{
 		super(state, properties);
@@ -46,10 +46,22 @@ public class IEStairsBlock extends StairsBlock
 		return this;
 	}
 
+	public IEStairsBlock setRenderLayer(BlockRenderLayer layer)
+	{
+		this.layer = layer;
+		return this;
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
 		if(hasFlavour)
 			tooltip.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+getRegistryName().getPath()));
+	}
+
+	@Override
+	public BlockRenderLayer getRenderLayer()
+	{
+		return layer;
 	}
 }

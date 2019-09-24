@@ -33,7 +33,7 @@ import java.util.function.BiConsumer;
 
 public abstract class BlockstateGenerator implements IDataProvider
 {
-	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
+	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 	private final DataGenerator gen;
 
 	public BlockstateGenerator(DataGenerator gen)
@@ -165,7 +165,7 @@ public abstract class BlockstateGenerator implements IDataProvider
 				modelJson.addProperty("x", rotationX);
 			if(rotationY!=0)
 				modelJson.addProperty("y", rotationY);
-			if(uvLock)
+			if(uvLock&&(rotationX!=0||rotationY!=0))
 				modelJson.addProperty("uvlock", uvLock);
 			return modelJson;
 		}

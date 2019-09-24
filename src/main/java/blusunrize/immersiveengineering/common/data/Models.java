@@ -9,13 +9,21 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
+import blusunrize.immersiveengineering.common.data.model.ModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelGenerator;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper;
+import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
+import com.google.common.base.Preconditions;
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -24,17 +32,20 @@ import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 public class Models extends ModelGenerator
 {
 	final Map<EnumMetals, MetalModels> metalModels = new HashMap<>();
-	final GeneratedModelFile treatedFencePost = ModelHelper.createFencePost(rl("block/treated_wood_horizontal"),
-			rl("block/treated_fence_post"));
-	final GeneratedModelFile steelFencePost = ModelHelper.createFencePost(rl("block/storage_steel"),
+	final Map<Block, ModelFile> simpleBlocks = new HashMap<>();
+	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> aluScaffoldingStairs = new HashMap<>();
+	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> steelScaffoldingStairs = new HashMap<>();
+	final GeneratedModelFile treatedFencePost = ModelHelper.createFencePost(rl("block/wooden_decoration/treated_wood_horizontal"),
+			rl("block/wooden_decoration/treated_fence_post"));
+	final GeneratedModelFile steelFencePost = ModelHelper.createFencePost(rl("block/metal/storage_steel"),
 			rl("block/steel_fence_post"));
-	final GeneratedModelFile aluFencePost = ModelHelper.createFencePost(rl("block/storage_aluminum"),
+	final GeneratedModelFile aluFencePost = ModelHelper.createFencePost(rl("block/metal/storage_aluminum"),
 			rl("block/alu_fence_post"));
-	final GeneratedModelFile treatedFenceSide = ModelHelper.createFenceSide(rl("block/treated_wood_horizontal"),
-			rl("block/treated_fence_side"));
-	final GeneratedModelFile steelFenceSide = ModelHelper.createFenceSide(rl("block/storage_steel"),
+	final GeneratedModelFile treatedFenceSide = ModelHelper.createFenceSide(rl("block/wooden_decoration/treated_wood_horizontal"),
+			rl("block/wooden_decoration/treated_fence_side"));
+	final GeneratedModelFile steelFenceSide = ModelHelper.createFenceSide(rl("block/metal/storage_steel"),
 			rl("block/steel_fence_side"));
-	final GeneratedModelFile aluFenceSide = ModelHelper.createFenceSide(rl("block/storage_aluminum"),
+	final GeneratedModelFile aluFenceSide = ModelHelper.createFenceSide(rl("block/metal/storage_aluminum"),
 			rl("block/alu_fence_side"));
 
 	public Models(DataGenerator gen)
@@ -55,6 +66,76 @@ public class Models extends ModelGenerator
 		out.accept(steelFenceSide);
 		out.accept(aluFencePost);
 		out.accept(aluFenceSide);
+
+		addSimpleBlockModel(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"), out);
+		addSimpleBlockModel(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"), out);
+		addSimpleBlockModel(StoneDecoration.blastbrickReinforced, rl("block/stone_decoration/blastbrick_reinforced"), out);
+		addSimpleBlockModel(StoneDecoration.coke, rl("block/stone_decoration/coke"), out);
+		addSimpleBlockModel(StoneDecoration.concrete, rl("block/stone_decoration/concrete"), out);
+		addSimpleBlockModel(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"), out);
+		addSimpleBlockModel(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"), out);
+		addSimpleBlockModel(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"), out);
+		addSimpleBlockModel(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"), out);
+
+		addSimpleBlockModel(MetalDecoration.lvCoil, rl("block/metal_decoration/coil_lv_side"), rl("block/metal_decoration/coil_lv_top"), out);
+		addSimpleBlockModel(MetalDecoration.mvCoil, rl("block/metal_decoration/coil_mv_side"), rl("block/metal_decoration/coil_mv_top"), out);
+		addSimpleBlockModel(MetalDecoration.hvCoil, rl("block/metal_decoration/coil_hv_side"), rl("block/metal_decoration/coil_hv_top"), out);
+		addSimpleBlockModel(MetalDecoration.engineeringRS, rl("block/metal_decoration/redstone_engineering"), out);
+		addSimpleBlockModel(MetalDecoration.engineeringHeavy, rl("block/metal_decoration/heavy_engineering"), out);
+		addSimpleBlockModel(MetalDecoration.engineeringLight, rl("block/metal_decoration/light_engineerign"), out);
+		addSimpleBlockModel(MetalDecoration.generator, rl("block/metal_decoration/generator"), out);
+		addSimpleBlockModel(MetalDecoration.radiator, rl("block/metal_decoration/radiator"), out);
+		ResourceLocation aluSide = rl("block/metal_decoration/aluminum_scaffolding");
+		ResourceLocation steelSide = rl("block/metal_decoration/steel_scaffolding");
+		for(MetalScaffoldingType type : MetalScaffoldingType.values())
+		{
+			String suffix = "_"+type.name().toLowerCase(Locale.ENGLISH);
+			ResourceLocation aluTop = rl("block/metal_decoration/aluminum_scaffolding_top"+suffix);
+			ResourceLocation steelTop = rl("block/metal_decoration/steel_scaffolding_top"+suffix);
+			addSimpleBlockModel(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop, aluSide, out);
+			addSimpleBlockModel(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, steelSide, out);
+			Map<BasicStairsShape, ModelFile> aluStairs = new HashMap<>();
+			Map<BasicStairsShape, ModelFile> steelStairs = new HashMap<>();
+			for(BasicStairsShape s : BasicStairsShape.values())
+			{
+				String stairSuffix = suffix+"_"+s.name().toLowerCase(Locale.ENGLISH);
+				GeneratedModelFile aluModel = ModelHelper.createStairs(s, aluSide, aluTop,
+						aluSide, rl("block/metal_decoration/aluminum_scaffolding_stairs"+stairSuffix));
+				aluStairs.put(s, aluModel);
+				out.accept(aluModel);
+				GeneratedModelFile steelModel = ModelHelper.createStairs(s, steelSide, steelTop,
+						steelSide, rl("block/metal_decoration/steel_scaffolding_stairs"+stairSuffix));
+				steelStairs.put(s, steelModel);
+				out.accept(steelModel);
+			}
+			aluScaffoldingStairs.put(type, aluStairs);
+			steelScaffoldingStairs.put(type, steelStairs);
+		}
+	}
+
+	private void addSimpleBlockModel(Block b, ResourceLocation side, ResourceLocation topAndBottom,
+									 Consumer<GeneratedModelFile> out)
+	{
+		addSimpleBlockModel(b, side, topAndBottom, topAndBottom, out);
+	}
+
+	private void addSimpleBlockModel(Block b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom,
+									 Consumer<GeneratedModelFile> out)
+	{
+		GeneratedModelFile model = ModelHelper.createBasicCube(side, top, bottom, b.getRegistryName());
+		addSimpleBlockModel(b, model, out);
+	}
+
+	private void addSimpleBlockModel(Block b, ResourceLocation texture, Consumer<GeneratedModelFile> out)
+	{
+		GeneratedModelFile model = ModelHelper.createBasicCube(texture);
+		addSimpleBlockModel(b, model, out);
+	}
+
+	private void addSimpleBlockModel(Block b, GeneratedModelFile model, Consumer<GeneratedModelFile> out)
+	{
+		out.accept(model);
+		Preconditions.checkState(simpleBlocks.put(b, model)==null);
 	}
 
 	public static class MetalModels
@@ -67,20 +148,20 @@ public class Models extends ModelGenerator
 		{
 			String name = metal.tagName();
 			if(metal.shouldAddOre())
-				ore = ModelHelper.createBasicCube(rl("block/ore_"+name));
+				ore = ModelHelper.createBasicCube(rl("block/metal/ore_"+name));
 			if(!metal.isVanillaMetal())
 			{
-				ResourceLocation defaultName = rl("block/storage_"+name);
+				ResourceLocation defaultName = rl("block/metal/storage_"+name);
 				if(metal==EnumMetals.URANIUM)
 				{
-					ResourceLocation side = rl("block/storage_"+name+"_side");
-					ResourceLocation top = rl("block/storage_"+name+"_top");
+					ResourceLocation side = rl("block/metal/storage_"+name+"_side");
+					ResourceLocation top = rl("block/metal/storage_"+name+"_top");
 					storage = ModelHelper.createBasicCube(side, top, top, defaultName);
 				}
 				else
 					storage = ModelHelper.createBasicCube(defaultName);
 			}
-			sheetmetal = ModelHelper.createBasicCube(rl("block/sheetmetal_"+name));
+			sheetmetal = ModelHelper.createBasicCube(rl("block/metal/sheetmetal_"+name));
 		}
 
 		void register(Consumer<GeneratedModelFile> out)

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.data.model;
 
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import com.google.gson.JsonObject;
+import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.ResourceLocation;
 
 public class ModelHelper
@@ -50,6 +51,32 @@ public class ModelHelper
 		return new GeneratedModelFile(modelName, model);
 	}
 
+	public static GeneratedModelFile createStairs(BasicStairsShape s, ResourceLocation sides, ResourceLocation top, ResourceLocation bottom, ResourceLocation modelName)
+	{
+		assertTextureExists(sides);
+		assertTextureExists(top);
+		assertTextureExists(bottom);
+		JsonObject model = new JsonObject();
+		switch(s)
+		{
+			case STRAIGHT:
+				model.addProperty("parent", "block/stairs");
+				break;
+			case INNER:
+				model.addProperty("parent", "block/inner_stairs");
+				break;
+			case OUTER:
+				model.addProperty("parent", "block/outer_stairs");
+				break;
+		}
+		JsonObject textures = new JsonObject();
+		textures.addProperty("side", sides.toString());
+		textures.addProperty("top", top.toString());
+		textures.addProperty("bottom", bottom.toString());
+		model.add("textures", textures);
+		return new GeneratedModelFile(modelName, model);
+	}
+
 	public static GeneratedModelFile createFencePost(ResourceLocation texture, ResourceLocation modelName)
 	{
 		assertTextureExists(texture);
@@ -75,5 +102,42 @@ public class ModelHelper
 	private static void assertTextureExists(ResourceLocation name)
 	{
 		//TODO implement
+	}
+
+	public enum BasicStairsShape
+	{
+		STRAIGHT,
+		INNER,
+		OUTER;
+
+		public StairsShape getExample()
+		{
+			switch(this)
+			{
+				case STRAIGHT:
+					return StairsShape.STRAIGHT;
+				case INNER:
+					return StairsShape.INNER_LEFT;
+				case OUTER:
+					return StairsShape.OUTER_LEFT;
+			}
+			throw new NullPointerException();
+		}
+
+		public static BasicStairsShape toBasicShape(StairsShape exact)
+		{
+			switch(exact)
+			{
+				case STRAIGHT:
+					return STRAIGHT;
+				case INNER_LEFT:
+				case INNER_RIGHT:
+					return INNER;
+				case OUTER_LEFT:
+				case OUTER_RIGHT:
+					return OUTER;
+			}
+			throw new NullPointerException();
+		}
 	}
 }

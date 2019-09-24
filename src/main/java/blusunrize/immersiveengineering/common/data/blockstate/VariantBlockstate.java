@@ -63,12 +63,16 @@ public class VariantBlockstate implements BlockstateGenerator.IVariantModelGener
 			return this;
 		}
 
-		public <T extends Comparable<T>> Builder setForAllWithState(IProperty<T> prop, T value, ConfiguredModel model)
+		public <T extends Comparable<T>> Builder setForAllWithState(Map<IProperty<?>, ?> partialState, ConfiguredModel model)
 		{
-			Preconditions.checkNotNull(prop);
-			Preconditions.checkNotNull(value);
-			Preconditions.checkArgument(b.getStateContainer().getProperties().contains(prop));
-			return setForAllMatching(state -> state.get(prop)==value, model);
+			Preconditions.checkNotNull(partialState);
+			Preconditions.checkArgument(b.getStateContainer().getProperties().containsAll(partialState.keySet()));
+			return setForAllMatching(blockState -> {
+				for(IProperty<?> prop : partialState.keySet())
+					if(blockState.get(prop)!=partialState.get(prop))
+						return false;
+				return true;
+			}, model);
 		}
 
 		public VariantBlockstate build()

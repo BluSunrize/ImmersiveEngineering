@@ -13,19 +13,29 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.data.Models.MetalModels;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator;
 import blusunrize.immersiveengineering.common.data.blockstate.VariantBlockstate.Builder;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
+import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.properties.Half;
+import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
 public class BlockStates extends BlockstateGenerator
@@ -43,7 +53,6 @@ public class BlockStates extends BlockstateGenerator
 	{
 		for(EnumMetals m : EnumMetals.values())
 		{
-			String name = m.tagName();
 			MetalModels metalModels = models.metalModels.get(m);
 			if(!m.isVanillaMetal())
 			{
@@ -56,6 +65,15 @@ public class BlockStates extends BlockstateGenerator
 		createFenceBlock(WoodenDecoration.treatedFence, models.treatedFencePost, models.treatedFenceSide, multipartBased);
 		createFenceBlock(MetalDecoration.steelFence, models.steelFencePost, models.steelFenceSide, multipartBased);
 		createFenceBlock(MetalDecoration.aluFence, models.aluFencePost, models.aluFenceSide, multipartBased);
+		for(Entry<Block, ModelFile> entry : models.simpleBlocks.entrySet())
+			createBasicBlock(entry.getKey(), entry.getValue(), variantBased);
+		for(MetalScaffoldingType type : MetalScaffoldingType.values())
+		{
+			createStairsBlock(MetalDecoration.aluScaffoldingStair.get(type), models.aluScaffoldingStairs.get(type),
+					StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
+			createStairsBlock(MetalDecoration.steelScaffoldingStair.get(type), models.steelScaffoldingStairs.get(type),
+					StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
+		}
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -72,6 +90,35 @@ public class BlockStates extends BlockstateGenerator
 		out.accept(block, gen);
 	}
 
+	private void createStairsBlock(Block block, Map<BasicStairsShape, ModelFile> baseModels, EnumProperty<Direction> facingProp,
+								   EnumProperty<Half> halfProp, EnumProperty<StairsShape> shapeProp, BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		Builder b = new Builder(block);
+		for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
+		{
+			for(Half half : Half.values())
+			{
+				for(StairsShape shape : StairsShape.values())
+				{
+					Map<IProperty<?>, ?> partialState = ImmutableMap.<IProperty<?>, Object>builder()
+							.put(facingProp, dir)
+							.put(halfProp, half)
+							.put(shapeProp, shape)
+							.build();
+					ModelFile base = baseModels.get(BasicStairsShape.toBasicShape(shape));
+					int xRot = 0;
+					if(half==Half.TOP)
+						xRot = 180;
+					int yRot = getAngle(dir, 90);
+					if(shape==StairsShape.INNER_LEFT||shape==StairsShape.OUTER_LEFT)
+						yRot = (yRot+270)%360;
+					b.setForAllWithState(partialState, new ConfiguredModel(base, xRot, yRot, true));
+				}
+			}
+		}
+		out.accept(block, b.build());
+	}
+
 	private void createFenceBlock(IEFenceBlock block, ModelFile post, ModelFile side, BiConsumer<Block, List<MultiPart>> out)
 	{
 		ResourceLocation name = Preconditions.checkNotNull(block.getRegistryName());
@@ -80,11 +127,16 @@ public class BlockStates extends BlockstateGenerator
 		parts.add(new MultiPart(postModel, false));
 		for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
 		{
-			int angle = (int)(dir.getHorizontalAngle()+180)%360;
+			int angle = getAngle(dir, 180);
 			ConfiguredModel sideModel = new ConfiguredModel(side, 0, angle, true);
 			BooleanProperty sideActive = block.getFacingStateMap().get(dir);
 			parts.add(new MultiPart(sideModel, false, new PropertyWithValues<>(sideActive, true)));
 		}
 		out.accept(block, parts);
+	}
+
+	private int getAngle(Direction dir, int offset)
+	{
+		return (int)((dir.getHorizontalAngle()+offset)%360);
 	}
 }

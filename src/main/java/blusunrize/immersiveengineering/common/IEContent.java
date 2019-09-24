@@ -328,9 +328,9 @@ public class IEContent
 			MetalDecoration.steelScaffolding.put(type, steelBlock);
 			MetalDecoration.aluScaffolding.put(type, aluBlock);
 			MetalDecoration.steelScaffoldingStair.put(type, new IEStairsBlock("steel_scaffolding_stairs_"+name,
-					steelBlock.getDefaultState(), defaultMetalProperties));
+					steelBlock.getDefaultState(), defaultMetalProperties).setRenderLayer(BlockRenderLayer.CUTOUT));
 			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("alu_scaffolding_stairs_"+name,
-					aluBlock.getDefaultState(), defaultMetalProperties));
+					aluBlock.getDefaultState(), defaultMetalProperties).setRenderLayer(BlockRenderLayer.CUTOUT));
 			addSlabFor(steelBlock);
 			addSlabFor(aluBlock);
 		}
