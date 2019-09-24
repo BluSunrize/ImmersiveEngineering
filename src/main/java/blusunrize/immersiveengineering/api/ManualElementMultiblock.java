@@ -237,6 +237,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 								BlockState state = blockAccess.getBlockState(pos);
 								if(!state.isAir(blockAccess, pos))
 								{
+									if(pos.equals(multiblock.getTriggerOffset()))
+										//TODO this currently does not work correctly, but it would be a nice feature IMO
+										GlStateManager.color3f(1, 0, 0);
 									GlStateManager.translatef(l, h, w);
 									boolean b = multiblock.overwriteBlockRender(state, idx++);
 									GlStateManager.translatef(-l, -h, -w);
@@ -251,6 +254,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 										tessellator.draw();
 										openBuffer = false;
 									}
+									GlStateManager.color3f(1, 1, 1);
 								}
 							}
 

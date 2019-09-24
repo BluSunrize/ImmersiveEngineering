@@ -11,8 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -44,7 +46,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 {
 	private final ResourceLocation loc;
 	private final BlockPos masterFromOrigin;
-	private final BlockPos triggerFromOrigin;
+	public final BlockPos triggerFromOrigin;
 	@Nullable
 	private Template template;
 	@Nullable
@@ -113,13 +115,11 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		if(rot==null)
 			return false;
 		Template template = getTemplate();
-		Mirror found = null;
 		mirrorLoop:
 		for(Mirror mirror : MIRROR_STATES)
 		{
 			PlacementSettings placeSet = new PlacementSettings().setMirror(mirror).setRotation(rot);
 			BlockPos origin = pos.subtract(Template.transformedBlockPos(placeSet, triggerFromOrigin));
-			IELogger.info(rot+", "+mirror+", "+origin);
 			for(Template.BlockInfo info : template.blocks.get(0))
 			{
 				BlockPos realRelPos = Template.transformedBlockPos(placeSet, info.pos);
@@ -143,13 +143,10 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 					}
 				}
 			}
-			found = mirror;
-			break;
+			form(world, origin, rot, mirror, side);
+			return true;
 		}
-		if(found==null)
-			return false;
-		form(world, pos, rot, found, side);
-		return true;
+		return false;
 	}
 
 	protected void form(World world, BlockPos pos, Rotation rot, Mirror mirror, Direction sideHit)
@@ -186,10 +183,8 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 
 	public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, Mirror mirror, Rotation rot)
 	{
-		if(mirror!=Mirror.NONE)
-			relative = new BlockPos(-relative.getX(), relative.getY(), relative.getZ());
-		relative = relative.rotate(rot);
-		return origin.add(relative);
+		PlacementSettings settings = new PlacementSettings().setMirror(mirror).setRotation(rot);
+		return origin.add(Template.transformedBlockPos(settings, relative));
 	}
 
 	public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, boolean mirrored, Direction facing)
@@ -232,11 +227,28 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	public final void disassemble(World world, BlockPos origin, boolean mirrored, Direction clickDirectionAtCreation)
 	{
 		Mirror mirror = mirrored?Mirror.LEFT_RIGHT: Mirror.NONE;
-		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, clickDirectionAtCreation.getOpposite());
+		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, clickDirectionAtCreation);
+		Preconditions.checkNotNull(rot);
 		for(BlockInfo block : getStructure())
 		{
 			BlockPos actualPos = withSettingsAndOffset(origin, block.pos, mirror, rot);
+			prepareBlockForDisassembly(world, actualPos);
 			world.setBlockState(actualPos, block.state);
 		}
+	}
+
+	protected void prepareBlockForDisassembly(World world, BlockPos pos)
+	{
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof MultiblockPartTileEntity)
+			((MultiblockPartTileEntity)te).formed = false;
+		else
+			IELogger.logger.error("Expected multiblock TE at {}", pos);
+	}
+
+	@Override
+	public BlockPos getTriggerOffset()
+	{
+		return triggerFromOrigin;
 	}
 }

@@ -28,7 +28,6 @@ import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
@@ -105,7 +104,9 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -852,37 +853,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			double pz = -TileEntityRendererDispatcher.staticPlayerZ;
 			TileEntity tile = player.world.getTileEntity(rtr.getPos());
 			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getHeldItem(Hand.MAIN_HAND): ItemStack.EMPTY;
-			if(tile instanceof IAdvancedSelectionBounds)
-			{
-				IAdvancedSelectionBounds iasb = (IAdvancedSelectionBounds)tile;
-				List<AxisAlignedBB> boxes = iasb.getAdvancedSelectionBounds();
-				if(!boxes.isEmpty())
-				{
-					GlStateManager.enableBlend();
-					GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-					GlStateManager.lineWidth(2.0F);
-					GlStateManager.disableTexture();
-					GlStateManager.depthMask(false);
-					ArrayList<AxisAlignedBB> additionalBoxes = new ArrayList<AxisAlignedBB>();
-					AxisAlignedBB overrideBox = null;
-					for(AxisAlignedBB aabb : boxes)
-						if(aabb!=null&&player instanceof PlayerEntity)
-						{
-							if(iasb.isOverrideBox(aabb, (PlayerEntity)player, event.getTarget(), additionalBoxes))
-								overrideBox = aabb;
-						}
-
-					if(overrideBox!=null)
-						WorldRenderer.drawSelectionBoundingBox(overrideBox.grow(f1).offset(px, py, pz), 0, 0, 0, 0.4f);
-					else
-						for(AxisAlignedBB aabb : additionalBoxes.isEmpty()?boxes: additionalBoxes)
-							WorldRenderer.drawSelectionBoundingBox(aabb.grow(f1).offset(px, py, pz), 0, 0, 0, 0.4f);
-					GlStateManager.depthMask(true);
-					GlStateManager.enableTexture();
-					GlStateManager.disableBlend();
-					event.setCanceled(true);
-				}
-			}
 
 			if(Utils.isHammer(stack)&&tile instanceof TurntableTileEntity)
 			{

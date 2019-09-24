@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
+import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -20,16 +20,17 @@ import net.minecraft.tileentity.TileEntityType;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class MetalMultiblockBlock extends IEMultiblockBlock
 {
-	TileEntityType<?> tileType;
+	private Supplier<TileEntityType<?>> tileType;
 
-	public MetalMultiblockBlock(String name, TileEntityType<?> te, IProperty<?>... additionalProperties)
+	public MetalMultiblockBlock(String name, Supplier<TileEntityType<?>> te, IProperty<?>... additionalProperties)
 	{
 		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15),
 				BlockItemIE.class, ArrayUtils.addAll(additionalProperties,
-						IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED));
+						IEProperties.MIRRORED));
 		tileType = te;
 		setNotNormalBlock();
 		lightOpacity = 0;
@@ -39,6 +40,6 @@ public class MetalMultiblockBlock extends IEMultiblockBlock
 	@Override
 	public TileEntity createBasicTE(BlockState state)
 	{
-		return tileType.create();
+		return tileType.get().create();
 	}
 }

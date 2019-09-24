@@ -31,9 +31,8 @@ public class MultiblockCrusher extends TemplateMultiblock
 {
 	public MultiblockCrusher()
 	{
-		//TODO swap x and z?
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/crusher"),
-				new BlockPos(1, 0, 2), new BlockPos(0, 1, 2));
+				new BlockPos(2, 0, 1), new BlockPos(2, 1, 2));
 	}
 
 	@Override
@@ -79,8 +78,8 @@ public class MultiblockCrusher extends TemplateMultiblock
 		{
 			CrusherTileEntity tile = (CrusherTileEntity)curr;
 			tile.formed = true;
-			tile.posInMultiblock =
 					tile.offsetToMaster = new BlockPos(offsetFromMaster);
+			tile.posInMultiblock = info.pos;
 			tile.mirrored = mirrored;
 			tile.markDirty();
 			world.addBlockEvent(actualPos, crusherState.getBlock(), 255, 0);

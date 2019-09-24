@@ -487,7 +487,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			if(te instanceof IAdvancedCollisionBounds)
 			{
 				List<AxisAlignedBB> bounds = ((IAdvancedCollisionBounds)te).getAdvancedColisionBounds();
-				if(!bounds.isEmpty())
+				if(bounds!=null&&!bounds.isEmpty())
 				{
 					VoxelShape ret = VoxelShapes.empty();
 					for(AxisAlignedBB aabb : bounds)

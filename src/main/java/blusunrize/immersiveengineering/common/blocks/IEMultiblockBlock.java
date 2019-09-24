@@ -74,7 +74,8 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 		{
 			MultiblockPartTileEntity<?> multiblockTile = (MultiblockPartTileEntity<?>)te;
 			return Utils.getDrops(multiblockTile.getOriginalBlock(), new Builder(builder.getWorld())
-					.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
+					.withParameter(LootParameters.TOOL, builder.get(LootParameters.TOOL))
+					.withParameter(LootParameters.POSITION, builder.get(LootParameters.POSITION))
 			);
 		}
 		return Collections.emptyList();

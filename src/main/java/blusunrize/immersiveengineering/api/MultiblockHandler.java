@@ -115,6 +115,8 @@ public class MultiblockHandler
 		Vec3i getSize();
 
 		void disassemble(World world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation);
+
+		BlockPos getTriggerOffset();
 	}
 
 	public static MultiblockFormEvent postMultiblockFormationEvent(PlayerEntity player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
