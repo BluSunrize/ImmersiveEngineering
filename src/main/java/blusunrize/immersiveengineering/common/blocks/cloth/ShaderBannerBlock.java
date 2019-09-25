@@ -15,7 +15,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockReader;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ShaderBannerBlock extends IETileProviderBlock
@@ -28,7 +30,7 @@ public class ShaderBannerBlock extends IETileProviderBlock
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(BlockState state)
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
 		return new ShaderBannerTileEntity();
 	}

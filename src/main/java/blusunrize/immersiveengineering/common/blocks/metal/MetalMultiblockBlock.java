@@ -17,8 +17,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.IBlockReader;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
@@ -38,7 +40,7 @@ public class MetalMultiblockBlock extends IEMultiblockBlock
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(BlockState state)
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
 		return tileType.get().create();
 	}

@@ -107,9 +107,9 @@ public class ConveyorHandler
 			TileEntityType<ConveyorBeltTileEntity> te = new TileEntityType<>(() -> new ConveyorBeltTileEntity(rl),
 					ImmutableSet.of(conveyorBlocks.get(rl)),
 					null);
-			te.setRegistryName(rl);
-			tileEntities.put(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor_"
-					+rl.toString().replace(':', '_')), te);
+			te.setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor_"
+					+rl.toString().replace(':', '_')));
+			tileEntities.put(rl, te);
 			evt.getRegistry().register(te);
 		}
 	}

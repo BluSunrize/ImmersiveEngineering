@@ -15,7 +15,9 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -47,12 +49,11 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 		IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
 		ITickableTileEntity, IGeneralMultiblock
 {
-	public Direction facing = Direction.NORTH;
 	private final IConveyorBelt conveyorBeltSubtype;
 
 	public ConveyorBeltTileEntity(ResourceLocation typeName)
 	{
-		super(ConveyorHandler.getTEType(typeName));
+		super(Preconditions.checkNotNull(ConveyorHandler.getTEType(typeName), "Not TE type for "+typeName));
 		conveyorBeltSubtype = ConveyorHandler.getConveyor(typeName, this);
 	}
 
@@ -67,13 +68,13 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	public void onEntityCollision(World world, Entity entity)
 	{
 		if(this.conveyorBeltSubtype!=null)
-			this.conveyorBeltSubtype.onEntityCollision(this, entity, facing);
+			this.conveyorBeltSubtype.onEntityCollision(this, entity, getFacing());
 	}
 
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = Direction.byIndex(nbt.getInt("facing"));
+		setFacing(Direction.byIndex(nbt.getInt("facing")));
 		if(nbt.contains("conveyorBeltSubtypeNBT", NBT.TAG_COMPOUND))
 			conveyorBeltSubtype.readConveyorNBT(nbt.getCompound("conveyorBeltSubtypeNBT"));
 
@@ -84,7 +85,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putInt("facing", facing.ordinal());
+		nbt.putInt("facing", getFacing().ordinal());
 		if(conveyorBeltSubtype!=null)
 			nbt.put("conveyorBeltSubtypeNBT", conveyorBeltSubtype.writeConveyorNBT());
 	}
@@ -92,13 +93,16 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	@Override
 	public Direction getFacing()
 	{
-		return this.facing;
+		BlockState state = getWorldNonnull().getBlockState(pos);
+		return state.get(ConveyorBlock.FACING);
 	}
 
 	@Override
 	public void setFacing(Direction facing)
 	{
-		this.facing = facing;
+		BlockState oldState = getWorldNonnull().getBlockState(pos);
+		BlockState newState = oldState.with(ConveyorBlock.FACING, facing);
+		getWorldNonnull().setBlockState(pos, newState);
 	}
 
 	@Override
@@ -196,11 +200,6 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	@Override
 	public float[] getBlockBounds()
 	{
-//		if(conveyorBeltSubtype != null)
-//		{
-//			AxisAlignedBB aabb = conveyorBeltSubtype.getSelectionBox(this, facing);
-//			return new float[]{(float) aabb.minX, (float) aabb.minY, (float) aabb.minZ, (float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ};
-//		}
 		return new float[]{0, 0, 0, 1, .125f, 1};
 	}
 
@@ -211,26 +210,16 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
 		if(conveyorBeltSubtype!=null)
-		{
-			List<AxisAlignedBB> boxes = new ArrayList<>();
-			for(AxisAlignedBB aabb : conveyorBeltSubtype.getColisionBoxes(this, facing))
-				boxes.add(aabb.offset(getPos()));
-			return boxes;
-		}
-		return Lists.newArrayList(COLISIONBB.offset(getPos()));
+			return new ArrayList<>(conveyorBeltSubtype.getColisionBoxes(this, getFacing()));
+		return Lists.newArrayList(COLISIONBB);
 	}
 
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
 		if(conveyorBeltSubtype!=null)
-		{
-			List<AxisAlignedBB> boxes = new ArrayList<>();
-			for(AxisAlignedBB aabb : conveyorBeltSubtype.getSelectionBoxes(this, facing))
-				boxes.add(aabb.offset(getPos()));
-			return boxes;
-		}
-		return Lists.newArrayList(COLISIONBB.offset(getPos()));
+			return new ArrayList<>(conveyorBeltSubtype.getSelectionBoxes(this, getFacing()));
+		return Lists.newArrayList(COLISIONBB);
 	}
 
 	@Override
@@ -280,7 +269,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 				entity.setMotion(Vec3d.ZERO);
 				conveyor.getWorldNonnull().addEntity(entity);
 				if(conveyor.conveyorBeltSubtype!=null)
-					conveyor.conveyorBeltSubtype.onItemDeployed(conveyor, entity, conveyor.facing);
+					conveyor.conveyorBeltSubtype.onItemDeployed(conveyor, entity, conveyor.getFacing());
 			}
 			return ItemStack.EMPTY;
 		}

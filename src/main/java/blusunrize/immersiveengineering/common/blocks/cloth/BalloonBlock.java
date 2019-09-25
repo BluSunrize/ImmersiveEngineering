@@ -15,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -33,7 +34,7 @@ public class BalloonBlock extends IETileProviderBlock
 
 	@Nullable
 	@Override
-	public TileEntity createBasicTE(@Nonnull BlockState state)
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
 		return new BalloonTileEntity();
 	}

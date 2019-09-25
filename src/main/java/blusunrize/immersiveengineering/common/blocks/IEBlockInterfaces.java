@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -132,6 +133,7 @@ public class IEBlockInterfaces
 		/**
 		 * @return 0 = side clicked, 1=piston behaviour,  2 = horizontal, 3 = vertical, 4 = x/z axis, 5 = horizontal based on quadrant, 6 = horizontal preferring clicked side
 		 */
+		//TODO enum!
 		int getFacingLimitation();
 
 		default Direction getFacingForPlacement(LivingEntity placer, BlockPos pos, Direction side, float hitX, float hitY, float hitZ)
@@ -170,6 +172,7 @@ public class IEBlockInterfaces
 			else if(limit==6)
 				f = side.getAxis()!=Axis.Y?side.getOpposite(): placer.getHorizontalFacing();
 
+			IELogger.logger.debug("Setting facing to {}", f);
 			return mirrorFacingOnPlacement(placer)?f.getOpposite(): f;
 		}
 

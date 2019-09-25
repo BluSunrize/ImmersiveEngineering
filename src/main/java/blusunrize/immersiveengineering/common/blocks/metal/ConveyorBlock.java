@@ -13,20 +13,18 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -34,34 +32,25 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class ConveyorBlock extends IETileProviderBlock
 {
 	private final ResourceLocation typeName;
+	public static final EnumProperty<Direction> FACING = IEProperties.FACING_ALL;
 
 	public ConveyorBlock(ResourceLocation type)
 	{
 		super("conveyor_"+type.toString().replace(':', '_'),
 				Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
-				BlockItemIE.class, IEProperties.FACING_ALL);
+				BlockItemIE.class, FACING);
 		this.typeName = type;
 		this.setBlockLayer(BlockRenderLayer.CUTOUT);
 		this.setNotNormalBlock();
 		lightOpacity = 0;
 		ConveyorHandler.conveyorBlocks.put(type, this);
-	}
-
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
-	{
-		for(ResourceLocation key : ConveyorHandler.classRegistry.keySet())
-		{
-			ItemStack stack = new ItemStack(this);
-			ItemNBTHelper.putString(stack, "conveyorType", key.toString());
-			items.add(stack);
-		}
 	}
 
 	@Override
@@ -82,7 +71,7 @@ public class ConveyorBlock extends IETileProviderBlock
 		if(tile instanceof ConveyorBeltTileEntity)
 		{
 			ConveyorBeltTileEntity conveyor = (ConveyorBeltTileEntity)tile;
-			Direction f = conveyor.facing;
+			Direction f = conveyor.getFacing();
 			tile = world.getTileEntity(pos.offset(f));
 			TileEntity tileUp = world.getTileEntity(pos.offset(f).add(0, 1, 0));
 			IConveyorBelt subType = conveyor.getConveyorSubtype();
@@ -94,7 +83,7 @@ public class ConveyorBlock extends IETileProviderBlock
 	}
 
 	@Override
-	public TileEntity createBasicTE(BlockState world)
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
 		return new ConveyorBeltTileEntity(typeName);
 	}

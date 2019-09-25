@@ -76,6 +76,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -894,8 +895,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			{
 				Direction side = rtr.getFace();
 				BlockPos pos = rtr.getPos();
-				AxisAlignedBB targetedBB = world.getBlockState(pos).getRenderShape(world, pos).getBoundingBox();
-				targetedBB = targetedBB.offset(-pos.getX(), -pos.getY(), -pos.getZ());
+				VoxelShape shape = world.getBlockState(pos).getRenderShape(world, pos);
+				AxisAlignedBB targetedBB = null;
+				if(!shape.isEmpty())
+					targetedBB = shape.getBoundingBox();
 				GlStateManager.enableBlend();
 				GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 				GlStateManager.lineWidth(2.0F);
@@ -910,24 +913,27 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 				if(side.getAxis()==Axis.Y)
 				{
-					points[0] = new double[]{0-f1, side==Direction.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 0-f1};
-					points[1] = new double[]{1+f1, side==Direction.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 1+f1};
-					points[2] = new double[]{0-f1, side==Direction.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 1+f1};
-					points[3] = new double[]{1+f1, side==Direction.DOWN?(targetedBB!=null?targetedBB.minY: 0)-f1: targetedBB.maxY+f1, 0-f1};
+					double y = targetedBB==null?0: side==Direction.DOWN?targetedBB.minY-f1: targetedBB.maxY+f1;
+					points[0] = new double[]{0-f1, y, 0-f1};
+					points[1] = new double[]{1+f1, y, 1+f1};
+					points[2] = new double[]{0-f1, y, 1+f1};
+					points[3] = new double[]{1+f1, y, 0-f1};
 				}
 				else if(side.getAxis()==Axis.Z)
 				{
-					points[0] = new double[]{1+f1, 1+f1, side==Direction.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
-					points[1] = new double[]{0-f1, 0-f1, side==Direction.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
-					points[2] = new double[]{0-f1, 1+f1, side==Direction.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
-					points[3] = new double[]{1+f1, 0-f1, side==Direction.NORTH?(targetedBB!=null?targetedBB.minZ: 0)-f1: targetedBB.maxZ+f1};
+					double z = targetedBB==null?0: side==Direction.NORTH?targetedBB.minZ-f1: targetedBB.maxZ+f1;
+					points[0] = new double[]{1+f1, 1+f1, z};
+					points[1] = new double[]{0-f1, 0-f1, z};
+					points[2] = new double[]{0-f1, 1+f1, z};
+					points[3] = new double[]{1+f1, 0-f1, z};
 				}
 				else
 				{
-					points[0] = new double[]{side==Direction.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 1+f1, 1+f1};
-					points[1] = new double[]{side==Direction.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 0-f1, 0-f1};
-					points[2] = new double[]{side==Direction.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 1+f1, 0-f1};
-					points[3] = new double[]{side==Direction.WEST?(targetedBB!=null?targetedBB.minX: 0)-f1: targetedBB.maxX+f1, 0-f1, 1+f1};
+					double x = targetedBB==null?0: side==Direction.WEST?targetedBB.minX-f1: targetedBB.maxX+f1;
+					points[0] = new double[]{x, 1+f1, 1+f1};
+					points[1] = new double[]{x, 0-f1, 0-f1};
+					points[2] = new double[]{x, 1+f1, 0-f1};
+					points[3] = new double[]{x, 0-f1, 1+f1};
 				}
 				BufferBuilder.begin(1, DefaultVertexFormats.POSITION_COLOR);
 				for(double[] point : points)

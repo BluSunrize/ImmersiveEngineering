@@ -30,10 +30,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.IProperty;
-import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.*;
@@ -92,55 +90,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		return true;
 	}
 
-	@Nullable
-	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world)
-	{
-		TileEntity basic = createBasicTE(state);
-		Collection<IProperty<?>> keys = state.getProperties();
-		if(basic instanceof IDirectionalTile)
-		{
-			Direction newFacing = null;
-			if(keys.contains(IEProperties.FACING_HORIZONTAL))
-				newFacing = state.get(IEProperties.FACING_HORIZONTAL);
-			else if(keys.contains(IEProperties.FACING_ALL))
-				newFacing = state.get(IEProperties.FACING_ALL);
-			int type = ((IDirectionalTile)basic).getFacingLimitation();
-			if(newFacing!=null)
-			{
-				switch(type)
-				{
-					case 2:
-					case 4:
-					case 5:
-					case 6:
-						if(newFacing.getAxis()==Axis.Y)
-							newFacing = null;
-						break;
-					case 3:
-						if(newFacing.getAxis()!=Axis.Y)
-							newFacing = null;
-						break;
-				}
-				if(newFacing!=null)
-					((IDirectionalTile)basic).setFacing(newFacing);
-			}
-		}
-		if(basic instanceof IAttachedIntegerProperies)
-		{
-			IAttachedIntegerProperies tileIntProps = (IAttachedIntegerProperies)basic;
-			String[] names = ((IAttachedIntegerProperies)basic).getIntPropertyNames();
-			for(String propertyName : names)
-			{
-				IntegerProperty property = tileIntProps.getIntProperty(propertyName);
-				if(keys.contains(property))
-					tileIntProps.setValue(propertyName, state.get(property));
-			}
-		}
-
-		return basic;
-	}
-
 	@Override
 	protected BlockState getInitDefaultState()
 	{
@@ -151,9 +100,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			ret = ret.with(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
 		return ret;
 	}
-
-	@Nullable
-	public abstract TileEntity createBasicTE(BlockState state);
 
 	@Override
 	@SuppressWarnings("deprecation")
@@ -339,9 +285,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		TileEntity tile = world.getTileEntity(pos);
 		PlayerEntity placer = context.getPlayer();
 		Direction side = context.getFace();
-		float hitX = (float)context.getHitVec().x;
-		float hitY = (float)context.getHitVec().y;
-		float hitZ = (float)context.getHitVec().z;
+		float hitX = (float)context.getHitVec().x-pos.getX();
+		float hitY = (float)context.getHitVec().y-pos.getY();
+		float hitZ = (float)context.getHitVec().z-pos.getZ();
 		ItemStack stack = context.getItem();
 
 		if(tile instanceof IDirectionalTile)

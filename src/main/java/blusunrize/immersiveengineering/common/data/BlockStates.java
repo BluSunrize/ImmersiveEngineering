@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerato
 import blusunrize.immersiveengineering.common.data.blockstate.VariantBlockstate.Builder;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.StairsBlock;
@@ -30,7 +29,6 @@ import net.minecraft.state.IProperty;
 import net.minecraft.state.properties.Half;
 import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,7 +119,6 @@ public class BlockStates extends BlockstateGenerator
 
 	private void createFenceBlock(IEFenceBlock block, ModelFile post, ModelFile side, BiConsumer<Block, List<MultiPart>> out)
 	{
-		ResourceLocation name = Preconditions.checkNotNull(block.getRegistryName());
 		List<MultiPart> parts = new ArrayList<>();
 		ConfiguredModel postModel = new ConfiguredModel(post, 0, 0, false);
 		parts.add(new MultiPart(postModel, false));
