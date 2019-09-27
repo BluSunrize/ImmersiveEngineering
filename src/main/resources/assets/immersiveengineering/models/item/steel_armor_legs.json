@@ -1,6 +1,6 @@
 {
 	"parent":"immersiveengineering:item/ie_item_base",
 	"textures": {
-		"layer0":"immersiveengineering:items/steel_armor_legs"
+		"layer0":"immersiveengineering:items/armor_steel_legs"
 	}
 }
