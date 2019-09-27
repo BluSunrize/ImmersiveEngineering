@@ -122,7 +122,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 			return master instanceof TileEntityTransformer&&((TileEntityTransformer)master).canConnectCable(cableType, target,
 					new Vec3i(0, 2, 0));
 		}
-		else if(dummy==0&&offset.getY()==2)
+		else if(dummy==0&&(offset.getY()==2||onPost))
 		{
 			int tc = getTargetedConnector(target);
 			switch(tc)
