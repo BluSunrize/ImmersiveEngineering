@@ -39,7 +39,7 @@ import java.util.List;
 public class ConveyorBlock extends IETileProviderBlock
 {
 	private final ResourceLocation typeName;
-	public static final EnumProperty<Direction> FACING = IEProperties.FACING_ALL;
+	public static final EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 
 	public ConveyorBlock(ResourceLocation type)
 	{

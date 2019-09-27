@@ -25,7 +25,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -35,41 +34,41 @@ public class ExtractCoveredConveyor extends ExtractConveyor
 {
 	public ItemStack cover = ItemStack.EMPTY;
 
-	public ExtractCoveredConveyor(Direction conveyorDir)
+	public ExtractCoveredConveyor(TileEntity tile)
 	{
-		super(conveyorDir);
+		super(tile);
 	}
 
 	@Override
-	public void onEntityCollision(TileEntity tile, Entity entity, Direction facing)
+	public void onEntityCollision(Entity entity)
 	{
-		super.onEntityCollision(tile, entity, facing);
+		super.onEntityCollision(entity);
 		if(entity instanceof ItemEntity)
 			((ItemEntity)entity).setPickupDelay(10);
 	}
 
 	@Override
-	public void onItemDeployed(TileEntity tile, ItemEntity entity, Direction facing)
+	public void onItemDeployed(ItemEntity entity)
 	{
 		entity.setPickupDelay(10);
-		ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);
+		ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)getTile());
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
 	{
-		baseModel = super.modifyQuads(baseModel, tile, facing);
-		CoveredConveyor.addCoverToQuads(baseModel, tile, facing, () -> cover, ConveyorDirection.HORIZONTAL, new boolean[]{
-				tile==null||this.renderWall(tile, facing, 0), tile==null||this.renderWall(tile, facing, 1)
+		baseModel = super.modifyQuads(baseModel);
+		CoveredConveyor.addCoverToQuads(baseModel, getTile(), getFacing(), () -> cover, ConveyorDirection.HORIZONTAL, new boolean[]{
+				getTile()==null||this.renderWall(getFacing(), 0), getTile()==null||this.renderWall(getFacing(), 1)
 		});
 		return baseModel;
 	}
 
 	@Override
-	public String getModelCacheKey(TileEntity tile, Direction facing)
+	public String getModelCacheKey()
 	{
-		String key = super.getModelCacheKey(tile, facing);
+		String key = super.getModelCacheKey();
 		if(!cover.isEmpty())
 			key += "s"+cover.getItem().getRegistryName();
 		return key;
@@ -77,17 +76,17 @@ public class ExtractCoveredConveyor extends ExtractConveyor
 
 
 	@Override
-	public boolean playerInteraction(TileEntity tile, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
+	public boolean playerInteraction(PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 	{
-		if(super.playerInteraction(tile, player, hand, heldItem, hitX, hitY, hitZ, side))
+		if(super.playerInteraction(player, hand, heldItem, hitX, hitY, hitZ, side))
 			return true;
-		return CoveredConveyor.handleCoverInteraction(tile, player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
+		return CoveredConveyor.handleCoverInteraction(getTile(), player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
 	}
 
 	static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
 
 	@Override
-	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, Direction facing)
+	public List<AxisAlignedBB> getColisionBoxes()
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList(conveyorBounds);
 		list.add(topBox);
@@ -95,7 +94,7 @@ public class ExtractCoveredConveyor extends ExtractConveyor
 	}
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
+	public List<AxisAlignedBB> getSelectionBoxes()
 	{
 		return Lists.newArrayList(FULL_BLOCK);
 	}

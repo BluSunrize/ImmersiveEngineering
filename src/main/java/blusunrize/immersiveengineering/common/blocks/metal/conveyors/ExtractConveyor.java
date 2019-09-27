@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -29,6 +28,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -38,7 +38,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
@@ -47,14 +46,14 @@ import java.util.function.Function;
  */
 public class ExtractConveyor extends BasicConveyor
 {
-	private Direction extractDirection;
 	private int transferCooldown = -1;
 	private int transferTickrate = 8;
 	private float extension = -1;
+	private Rotation relativeExtractDir = Rotation.CLOCKWISE_180;
 
-	public ExtractConveyor(Direction conveyorDir)
+	public ExtractConveyor(TileEntity tile)
 	{
-		this.extractDirection = conveyorDir.getOpposite();
+		super(tile);
 	}
 
 	@Override
@@ -71,7 +70,7 @@ public class ExtractConveyor extends BasicConveyor
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
 	{
 		final TextureAtlasSprite texture_steel = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/storage_steel"));
 		final TextureAtlasSprite texture_casing = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/wooden_device_turntable_bottom"));
@@ -79,8 +78,8 @@ public class ExtractConveyor extends BasicConveyor
 		final TextureAtlasSprite texture_assembler = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/metal_multiblock_assembler"));
 
 		float[] colour = {1, 1, 1, 1};
-		Matrix4 matrix = new Matrix4(this.extractDirection);
-		final float extend = getExtensionIntoBlock(tile);
+		Matrix4 matrix = new Matrix4(this.getExtractDirection());
+		final float extend = getExtensionIntoBlock(getTile());
 		this.extension = extend;
 
 		Function<Direction, TextureAtlasSprite> getCasingSprite = enumFacing -> enumFacing.getAxis()==Axis.Z?texture_steel: texture_casing;
@@ -100,52 +99,52 @@ public class ExtractConveyor extends BasicConveyor
 			return ret;
 		};
 
-		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.0625f, .375f, .625f), new Vec3d(.1875f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
-		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.8125f, .375f, .625f), new Vec3d(.9375f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
-		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.1875f, .875f, .625f), new Vec3d(.8125f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
+		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.0625f, .375f, .625f), new Vec3d(.1875f, 1f, 1f), matrix, getFacing(), casingTransformer, getCasingSprite, colour));
+		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.8125f, .375f, .625f), new Vec3d(.9375f, 1f, 1f), matrix, getFacing(), casingTransformer, getCasingSprite, colour));
+		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.1875f, .875f, .625f), new Vec3d(.8125f, 1f, 1f), matrix, getFacing(), casingTransformer, getCasingSprite, colour));
 
-		if(tile!=null&&extend > 0)
+		if(getTile()!=null&&extend > 0)
 		{
-			TextureAtlasSprite tex_conveyor = ClientUtils.getSprite(isActive(tile)?BasicConveyor.texture_on: BasicConveyor.texture_off);
+			TextureAtlasSprite tex_conveyor = ClientUtils.getSprite(isActive()?BasicConveyor.texture_on: BasicConveyor.texture_off);
 			Function<Direction, TextureAtlasSprite> getExtensionSprite = enumFacing -> enumFacing.getAxis()==Axis.Y?null: enumFacing.getAxis()==Axis.Z?texture_steel: texture_casing;
 
 			Vec3d[] vertices = {new Vec3d(.0625f, 0, -extend), new Vec3d(.0625f, 0, 0), new Vec3d(.9375f, 0, 0), new Vec3d(.9375f, 0, -extend)};
-			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), tex_conveyor, new double[]{15, extend*16, 1, 0}, colour, true));
+			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, getFacing()), tex_conveyor, new double[]{15, extend*16, 1, 0}, colour, true));
 			for(int i = 0; i < vertices.length; i++)
 				vertices[i] = Utils.withCoordinate(vertices[i], Axis.Y, .125);
-			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_conveyor, new double[]{15, (1-extend)*16, 1, 16}, colour, false));
-			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.0625f, .25f, .625f), new Vec3d(.9375f, .375f, .625f+extend), matrix, facing, casingTransformer, getExtensionSprite, colour));
+			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, getFacing()), tex_conveyor, new double[]{15, (1-extend)*16, 1, 16}, colour, false));
+			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.0625f, .25f, .625f), new Vec3d(.9375f, .375f, .625f+extend), matrix, getFacing(), casingTransformer, getExtensionSprite, colour));
 		}
 
 
 		Vec3d[] vertices = new Vec3d[]{new Vec3d(.8125f, .625f, .03125f), new Vec3d(.8125f, .125f, .03125f), new Vec3d(.1875f, .125f, .03125f), new Vec3d(.1875f, .625f, .03125f)};
-		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, facing), texture_assembler, new double[]{15.25, 13.25, 12.75, 15.25}, colour, false));
+		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, getFacing()), texture_assembler, new double[]{15.25, 13.25, 12.75, 15.25}, colour, false));
 		for(int i = 0; i < vertices.length; i++)
 			vertices[i] = Utils.withCoordinate(vertices[i], Axis.Z, .0625);
-		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), texture_assembler, new double[]{12.75, 13.25, 15.25, 15.25}, colour, true));
+		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, getFacing()), texture_assembler, new double[]{12.75, 13.25, 15.25, 15.25}, colour, true));
 
 		for(int i = 0; i < 5; i++)
 		{
 			float off = i*.125f;
-			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.203125f+off, .1875f, .09375f), new Vec3d(.296875f+off, .625f, .125f), matrix, facing, vertexTransformer, (facing1) -> texture_curtain, colour));
+			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.203125f+off, .1875f, .09375f), new Vec3d(.296875f+off, .625f, .125f), matrix, getFacing(), vertexTransformer, (facing1) -> texture_curtain, colour));
 		}
 		return baseModel;
 	}
 
 	@Override
-	public String getModelCacheKey(TileEntity tile, Direction facing)
+	public String getModelCacheKey()
 	{
-		String key = super.getModelCacheKey(tile, facing);
-		key += "e"+this.extractDirection.ordinal();
-		key += "ex"+getExtensionIntoBlock(tile);
+		String key = super.getModelCacheKey();
+		key += "e"+this.getExtractDirection().ordinal();
+		key += "ex"+getExtensionIntoBlock(getTile());
 		return key;
 	}
 
 	@Override
-	public boolean renderWall(TileEntity tile, Direction facing, int wall)
+	public boolean renderWall(Direction facing, int wall)
 	{
 		Direction side = wall==0?facing.rotateYCCW(): facing.rotateY();
-		return side!=this.extractDirection&&super.renderWall(tile, facing, wall);
+		return side!=this.getExtractDirection()&&super.renderWall(facing, wall);
 	}
 
 	private float getExtensionIntoBlock(TileEntity tile)
@@ -155,16 +154,16 @@ public class ExtractConveyor extends BasicConveyor
 			return extend;
 
 		World world = tile.getWorld();
-		BlockPos neighbour = tile.getPos().offset(this.extractDirection);
+		BlockPos neighbour = tile.getPos().offset(this.getExtractDirection());
 		if(!world.isAirBlock(neighbour))
 		{
 			BlockState connected = world.getBlockState(neighbour);
 			TileEntity connectedTile = world.getTileEntity(neighbour);
-			if(connectedTile!=null&&connectedTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite()).isPresent())
-				if(Block.doesSideFillSquare(connected.getShape(world, neighbour), this.extractDirection.getOpposite()))
+			if(connectedTile!=null&&connectedTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getExtractDirection().getOpposite()).isPresent())
+				if(Block.doesSideFillSquare(connected.getShape(world, neighbour), this.getExtractDirection().getOpposite()))
 				{
 					AxisAlignedBB aabb = connected.getShape(world, neighbour).getBoundingBox();
-					switch(extractDirection)
+					switch(getExtractDirection())
 					{
 						case NORTH:
 							extend = (float)(1-aabb.maxZ);
@@ -190,7 +189,7 @@ public class ExtractConveyor extends BasicConveyor
 	}
 
 	@Override
-	public boolean isActive(TileEntity tile)
+	public boolean isActive()
 	{
 		return true;
 	}
@@ -201,29 +200,29 @@ public class ExtractConveyor extends BasicConveyor
 	}
 
 	@Override
-	public boolean isTicking(TileEntity tile)
+	public boolean isTicking()
 	{
 		return true;
 	}
 
 	@Override
-	public void onUpdate(TileEntity tile, Direction facing)
+	public void onUpdate()
 	{
-		if(!tile.getWorld().isRemote)
+		if(!getTile().getWorld().isRemote)
 		{
 			if(this.transferCooldown > 0)
 			{
 				this.transferCooldown--;
 			}
-			if(!isPowered(tile)&&this.transferCooldown <= 0)
+			if(!isPowered(getTile())&&this.transferCooldown <= 0)
 			{
-				World world = tile.getWorld();
-				BlockPos neighbour = tile.getPos().offset(this.extractDirection);
+				World world = getTile().getWorld();
+				BlockPos neighbour = getTile().getPos().offset(this.getExtractDirection());
 				if(!world.isAirBlock(neighbour))
 				{
 					TileEntity neighbourTile = world.getTileEntity(neighbour);
 					if(neighbourTile!=null)
-						neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.extractDirection.getOpposite())
+						neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getExtractDirection().getOpposite())
 								.ifPresent(itemHandler ->
 								{
 									for(int i = 0; i < itemHandler.getSlots(); i++)
@@ -233,12 +232,12 @@ public class ExtractConveyor extends BasicConveyor
 										{
 											extractItem = itemHandler.extractItem(i, 1, false);
 											ItemEntity entity = new ItemEntity(world,
-													tile.getPos().getX()+.5,
-													tile.getPos().getY()+.1875,
-													tile.getPos().getZ()+.5, extractItem);
+													getTile().getPos().getX()+.5,
+													getTile().getPos().getY()+.1875,
+													getTile().getPos().getZ()+.5, extractItem);
 											entity.setMotion(Vec3d.ZERO);
 											world.addEntity(entity);
-											this.onItemDeployed(tile, entity, facing);
+											this.onItemDeployed(entity);
 											this.transferCooldown = this.transferTickrate;
 											return;
 										}
@@ -250,14 +249,14 @@ public class ExtractConveyor extends BasicConveyor
 	}
 
 	@Override
-	public boolean playerInteraction(TileEntity tile, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
+	public boolean playerInteraction(PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 	{
 		if(Utils.isHammer(heldItem)&&player.isSneaking())
 		{
-			Direction dir = this.extractDirection.rotateY();
-			if(dir==((IConveyorTile)tile).getFacing())
-				dir = dir.rotateY();
-			this.extractDirection = dir;
+			do
+			{
+				relativeExtractDir = Rotation.values()[(relativeExtractDir.ordinal()+1)%Rotation.values().length];
+			} while(relativeExtractDir==Rotation.NONE);
 			return true;
 		}
 		if(Utils.isWirecutter(heldItem))
@@ -279,19 +278,19 @@ public class ExtractConveyor extends BasicConveyor
 	static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
 
 	@Override
-	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, Direction facing)
+	public List<AxisAlignedBB> getColisionBoxes()
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList(conveyorBounds);
 		return list;
 	}
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
+	public List<AxisAlignedBB> getSelectionBoxes()
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList(conveyorBounds);
 		if(this.extension < 0)
-			this.extension = getExtensionIntoBlock(tile);
-		switch(extractDirection)
+			this.extension = getExtensionIntoBlock(getTile());
+		switch(getExtractDirection())
 		{
 			case NORTH:
 				list.add(new AxisAlignedBB(.0625, .125, -extension, .9375, .75, .375-extension));
@@ -313,7 +312,6 @@ public class ExtractConveyor extends BasicConveyor
 	public CompoundNBT writeConveyorNBT()
 	{
 		CompoundNBT nbt = super.writeConveyorNBT();
-		nbt.putInt("extractDirection", extractDirection.ordinal());
 		nbt.putInt("transferCooldown", transferCooldown);
 		nbt.putInt("transferTickrate", transferTickrate);
 		return nbt;
@@ -323,8 +321,12 @@ public class ExtractConveyor extends BasicConveyor
 	public void readConveyorNBT(CompoundNBT nbt)
 	{
 		super.readConveyorNBT(nbt);
-		extractDirection = Direction.values()[nbt.getInt("extractDirection")];
 		transferCooldown = nbt.getInt("transferCooldown");
 		transferTickrate = nbt.getInt("transferTickrate");
+	}
+
+	private Direction getExtractDirection()
+	{
+		return relativeExtractDir.rotate(getFacing());
 	}
 }

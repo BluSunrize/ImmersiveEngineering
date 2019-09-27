@@ -28,16 +28,21 @@ import net.minecraft.world.World;
  */
 public class DropConveyor extends BasicConveyor
 {
-	@Override
-	public void handleInsertion(TileEntity tile, ItemEntity entity, Direction facing, ConveyorDirection conDir, double distX, double distZ)
+	public DropConveyor(TileEntity tile)
 	{
-		BlockPos posDown = tile.getPos().down();
-		TileEntity inventoryTile = tile.getWorld().getTileEntity(posDown);
-		boolean contact = Math.abs(facing.getAxis()==Axis.Z?(tile.getPos().getZ()+.5-entity.posZ): (tile.getPos().getX()+.5-entity.posX)) < .2;
+		super(tile);
+	}
+
+	@Override
+	public void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
+	{
+		BlockPos posDown = getTile().getPos().down();
+		TileEntity inventoryTile = getTile().getWorld().getTileEntity(posDown);
+		boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getTile().getPos().getZ()+.5-entity.posZ): (getTile().getPos().getX()+.5-entity.posX)) < .2;
 
 		if(contact&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
 		{
-			if(!tile.getWorld().isRemote)
+			if(!getTile().getWorld().isRemote)
 			{
 				ItemStack stack = entity.getItem();
 				if(!stack.isEmpty())
@@ -50,15 +55,15 @@ public class DropConveyor extends BasicConveyor
 				}
 			}
 		}
-		else if(contact&&isEmptySpace(tile.getWorld(), posDown, inventoryTile))
+		else if(contact&&isEmptySpace(getTile().getWorld(), posDown, inventoryTile))
 		{
 			entity.setMotion(0, entity.getMotion().y, 0);
-			entity.setPosition(tile.getPos().getX()+.5, tile.getPos().getY()-.5, tile.getPos().getZ()+.5);
+			entity.setPosition(getTile().getPos().getX()+.5, getTile().getPos().getY()-.5, getTile().getPos().getZ()+.5);
 			if(!(inventoryTile instanceof IConveyorTile))
-				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
+				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)getTile());
 		}
 		else
-			super.handleInsertion(tile, entity, facing, conDir, distX, distZ);
+			super.handleInsertion(entity, conDir, distX, distZ);
 	}
 
 	boolean isEmptySpace(World world, BlockPos pos, TileEntity tile)

@@ -82,24 +82,29 @@ public class CoveredConveyor extends BasicConveyor
 
 	public ItemStack cover = ItemStack.EMPTY;
 
-	@Override
-	public void onEntityCollision(TileEntity tile, Entity entity, Direction facing)
+	public CoveredConveyor(TileEntity tile)
 	{
-		super.onEntityCollision(tile, entity, facing);
+		super(tile);
+	}
+
+	@Override
+	public void onEntityCollision(Entity entity)
+	{
+		super.onEntityCollision(entity);
 		if(entity instanceof ItemEntity)
 			((ItemEntity)entity).setPickupDelay(10);
 	}
 
 	@Override
-	public void onItemDeployed(TileEntity tile, ItemEntity entity, Direction facing)
+	public void onItemDeployed(ItemEntity entity)
 	{
 		entity.setPickupDelay(10);
 	}
 
 	@Override
-	public String getModelCacheKey(TileEntity tile, Direction facing)
+	public String getModelCacheKey()
 	{
-		String key = super.getModelCacheKey(tile, facing);
+		String key = super.getModelCacheKey();
 		if(!cover.isEmpty())
 			key += "s"+cover.getItem().getRegistryName();
 		return key;
@@ -109,10 +114,10 @@ public class CoveredConveyor extends BasicConveyor
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
 	{
-		addCoverToQuads(baseModel, tile, facing, () -> this.cover, getConveyorDirection(), new boolean[]{
-				tile==null||this.renderWall(tile, facing, 0), tile==null||this.renderWall(tile, facing, 1)
+		addCoverToQuads(baseModel, getTile(), getFacing(), () -> this.cover, getConveyorDirection(), new boolean[]{
+				getTile()==null||this.renderWall(getFacing(), 0), getTile()==null||this.renderWall(getFacing(), 1)
 		});
 		return baseModel;
 	}
@@ -169,9 +174,9 @@ public class CoveredConveyor extends BasicConveyor
 
 
 	@Override
-	public boolean playerInteraction(TileEntity tile, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
+	public boolean playerInteraction(PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 	{
-		return handleCoverInteraction(tile, player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
+		return handleCoverInteraction(getTile(), player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
 	}
 
 	static boolean handleCoverInteraction(TileEntity tile, PlayerEntity player, Hand hand, ItemStack heldItem, Supplier<ItemStack> coverGet, Consumer<ItemStack> coverSet)
@@ -213,7 +218,7 @@ public class CoveredConveyor extends BasicConveyor
 	static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
 
 	@Override
-	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, Direction facing)
+	public List<AxisAlignedBB> getColisionBoxes()
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList(conveyorBounds);
 		if(getConveyorDirection()==ConveyorDirection.HORIZONTAL)
@@ -221,14 +226,14 @@ public class CoveredConveyor extends BasicConveyor
 		else
 		{
 			boolean up = getConveyorDirection()==ConveyorDirection.UP;
-			list.add(new AxisAlignedBB((facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 0, 1.75, (facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 0, (facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 1, 2, (facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 1));
-			list.add(new AxisAlignedBB((facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 0, 1.25, (facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 0, (facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 1, 1.5, (facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 1));
+			list.add(new AxisAlignedBB((getFacing()==Direction.WEST&&!up)||(getFacing()==Direction.EAST&&up)?.5: 0, 1.75, (getFacing()==Direction.NORTH&&!up)||(getFacing()==Direction.SOUTH&&up)?.5: 0, (getFacing()==Direction.WEST&&up)||(getFacing()==Direction.EAST&&!up)?.5: 1, 2, (getFacing()==Direction.NORTH&&up)||(getFacing()==Direction.SOUTH&&!up)?.5: 1));
+			list.add(new AxisAlignedBB((getFacing()==Direction.WEST&&up)||(getFacing()==Direction.EAST&&!up)?.5: 0, 1.25, (getFacing()==Direction.NORTH&&up)||(getFacing()==Direction.SOUTH&&!up)?.5: 0, (getFacing()==Direction.WEST&&!up)||(getFacing()==Direction.EAST&&up)?.5: 1, 1.5, (getFacing()==Direction.NORTH&&!up)||(getFacing()==Direction.SOUTH&&up)?.5: 1));
 		}
 		return list;
 	}
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
+	public List<AxisAlignedBB> getSelectionBoxes()
 	{
 		if(getConveyorDirection()==ConveyorDirection.HORIZONTAL)
 			return Lists.newArrayList(VoxelShapes.fullCube().getBoundingBox());
@@ -236,8 +241,8 @@ public class CoveredConveyor extends BasicConveyor
 		{
 			boolean up = getConveyorDirection()==ConveyorDirection.UP;
 			return Lists.newArrayList(
-					new AxisAlignedBB((facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 0, .5, (facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 0, (facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 1, 2, (facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 1),
-					new AxisAlignedBB((facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 0, 0, (facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 0, (facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 1, 1.5, (facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 1));
+					new AxisAlignedBB((getFacing()==Direction.WEST&&!up)||(getFacing()==Direction.EAST&&up)?.5: 0, .5, (getFacing()==Direction.NORTH&&!up)||(getFacing()==Direction.SOUTH&&up)?.5: 0, (getFacing()==Direction.WEST&&up)||(getFacing()==Direction.EAST&&!up)?.5: 1, 2, (getFacing()==Direction.NORTH&&up)||(getFacing()==Direction.SOUTH&&!up)?.5: 1),
+					new AxisAlignedBB((getFacing()==Direction.WEST&&up)||(getFacing()==Direction.EAST&&!up)?.5: 0, 0, (getFacing()==Direction.NORTH&&up)||(getFacing()==Direction.SOUTH&&!up)?.5: 0, (getFacing()==Direction.WEST&&!up)||(getFacing()==Direction.EAST&&up)?.5: 1, 1.5, (getFacing()==Direction.NORTH&&!up)||(getFacing()==Direction.SOUTH&&up)?.5: 1));
 		}
 	}
 

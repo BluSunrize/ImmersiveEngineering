@@ -25,7 +25,6 @@ import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Extinguish;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
 import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
@@ -147,16 +146,16 @@ public class IEContent
 		}, (entity, iConveyorTile) -> {
 			entity.getEntityData().remove(Lib.MAGNET_PREVENT_NBT);
 		});
-		ConveyorHandler.registerConveyorHandler(BasicConveyor.NAME, BasicConveyor.class, (tileEntity) -> new BasicConveyor());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), UncontrolledConveyor.class, (tileEntity) -> new UncontrolledConveyor());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "dropper"), DropConveyor.class, (tileEntity) -> new DropConveyor());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "vertical"), VerticalConveyor.class, (tileEntity) -> new VerticalConveyor());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "splitter"), SplitConveyor.class, (tileEntity) -> new SplitConveyor(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extract"), ExtractConveyor.class, (tileEntity) -> new ExtractConveyor(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "covered"), CoveredConveyor.class, (tileEntity) -> new CoveredConveyor());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "droppercovered"), DropCoveredConveyor.class, (tileEntity) -> new DropCoveredConveyor());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "verticalcovered"), VerticalCoveredConveyor.class, (tileEntity) -> new VerticalCoveredConveyor());
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ExtractCoveredConveyor.class, (tileEntity) -> new ExtractCoveredConveyor(tileEntity instanceof IConveyorTile?((IConveyorTile)tileEntity).getFacing(): Direction.NORTH));
+		ConveyorHandler.registerConveyorHandler(BasicConveyor.NAME, BasicConveyor.class, BasicConveyor::new);
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), UncontrolledConveyor.class, UncontrolledConveyor::new);
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "dropper"), DropConveyor.class, DropConveyor::new);
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "vertical"), VerticalConveyor.class, VerticalConveyor::new);
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "splitter"), SplitConveyor.class, SplitConveyor::new);
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extract"), ExtractConveyor.class, ExtractConveyor::new);
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "covered"), CoveredConveyor.class, CoveredConveyor::new);
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "droppercovered"), DropCoveredConveyor.class, DropCoveredConveyor::new);
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "verticalcovered"), VerticalCoveredConveyor.class, VerticalCoveredConveyor::new);
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ExtractCoveredConveyor.class, ExtractCoveredConveyor::new);
 		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
 
 		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow"), createBuilder(1100, 3000));

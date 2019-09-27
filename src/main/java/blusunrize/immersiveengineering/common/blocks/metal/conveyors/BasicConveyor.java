@@ -30,6 +30,18 @@ public class BasicConveyor implements IConveyorBelt
 	ConveyorDirection direction = ConveyorDirection.HORIZONTAL;
 	@Nullable
 	DyeColor dyeColour = null;
+	private final TileEntity tile;
+
+	public BasicConveyor(TileEntity tile)
+	{
+		this.tile = tile;
+	}
+
+	@Override
+	public TileEntity getTile()
+	{
+		return tile;
+	}
 
 	@Override
 	public ConveyorDirection getConveyorDirection()
@@ -52,7 +64,7 @@ public class BasicConveyor implements IConveyorBelt
 	}
 
 	@Override
-	public boolean isActive(TileEntity tile)
+	public boolean isActive()
 	{
 		return tile.getWorld().getRedstonePowerFromNeighbors(tile.getPos()) <= 0;
 	}

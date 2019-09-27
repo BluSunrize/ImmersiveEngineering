@@ -36,7 +36,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +47,13 @@ import java.util.WeakHashMap;
  */
 public class VerticalConveyor extends BasicConveyor
 {
+	public VerticalConveyor(TileEntity tile)
+	{
+		super(tile);
+	}
+
 	@Override
-	public boolean renderWall(TileEntity tile, Direction facing, int wall)
+	public boolean renderWall(Direction facing, int wall)
 	{
 		return true;
 	}
@@ -68,12 +72,12 @@ public class VerticalConveyor extends BasicConveyor
 
 
 	@Override
-	public String getModelCacheKey(TileEntity tile, Direction facing)
+	public String getModelCacheKey()
 	{
 		String key = ConveyorHandler.reverseClassRegistry.get(this.getClass()).toString();
-		key += "f"+facing.ordinal();
-		key += "a"+(isActive(tile)?1: 0);
-		key += "b"+(renderBottomBelt(tile, facing)?("1"+(renderBottomWall(tile, facing, 0)?"1": "0")+(renderBottomWall(tile, facing, 1)?"1": "0")): "000");
+		key += "f"+getFacing().ordinal();
+		key += "a"+(isActive()?1: 0);
+		key += "b"+(renderBottomBelt(getTile(), getFacing())?("1"+(renderBottomWall(getTile(), getFacing(), 0)?"1": "0")+(renderBottomWall(getTile(), getFacing(), 1)?"1": "0")): "000");
 		key += "c"+getDyeColour();
 		return key;
 	}
@@ -82,7 +86,7 @@ public class VerticalConveyor extends BasicConveyor
 	{
 		TileEntity te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0));
 		if(te instanceof IConveyorTile&&((IConveyorTile)te).getConveyorSubtype()!=null)
-			for(Direction f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+			for(Direction f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections())
 				if(f==Direction.UP)
 					return false;
 		for(Direction f : Direction.BY_HORIZONTAL_INDEX)
@@ -98,7 +102,7 @@ public class VerticalConveyor extends BasicConveyor
 		{
 			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
 			if(sub!=null)
-				for(Direction f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+				for(Direction f2 : sub.sigTransportDirections())
 					if(f==f2.getOpposite())
 						return true;
 		}
@@ -109,7 +113,7 @@ public class VerticalConveyor extends BasicConveyor
 			if(sub!=null)
 			{
 				int b = 0;
-				for(Direction f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+				for(Direction f2 : sub.sigTransportDirections())
 				{
 					if(f==f2.getOpposite())
 						b++;
@@ -125,26 +129,26 @@ public class VerticalConveyor extends BasicConveyor
 
 	protected boolean renderBottomWall(TileEntity tile, Direction facing, int wall)
 	{
-		return super.renderWall(tile, facing, wall);
+		return super.renderWall(facing, wall);
 	}
 
 	@Override
-	public Direction[] sigTransportDirections(TileEntity conveyorTile, Direction facing)
+	public Direction[] sigTransportDirections()
 	{
-		return new Direction[]{Direction.UP, facing};
+		return new Direction[]{Direction.UP, getFacing()};
 	}
 
 	@Override
-	public Vec3d getDirection(TileEntity conveyorTile, Entity entity, Direction facing)
+	public Vec3d getDirection(Entity entity)
 	{
-		BlockPos posWall = conveyorTile.getPos().offset(facing);
+		BlockPos posWall = getTile().getPos().offset(getFacing());
 		double d = .625+entity.getWidth();
-		double distToWall = Math.abs((facing.getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(facing.getAxis()==Axis.Z?entity.posZ: entity.posX));
+		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.posZ: entity.posX));
 		if(distToWall > d)
-			return super.getDirection(conveyorTile, entity, facing);
+			return super.getDirection(entity);
 
 		double vBase = entity instanceof LivingEntity?1.5: 1.15;
-		double distY = Math.abs(conveyorTile.getPos().add(0, 1, 0).getY()+.5-entity.posY);
+		double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.posY);
 		double treshold = .9;
 		boolean contact = distY < treshold;
 
@@ -156,26 +160,26 @@ public class VerticalConveyor extends BasicConveyor
 
 		if(!(entity instanceof PlayerEntity))
 		{
-			vX = 0.05*facing.getXOffset();
-			vZ = 0.05*facing.getZOffset();
-			if(facing==Direction.WEST||facing==Direction.EAST)
+			vX = 0.05*getFacing().getXOffset();
+			vZ = 0.05*getFacing().getZOffset();
+			if(getFacing()==Direction.WEST||getFacing()==Direction.EAST)
 			{
-				if(entity.posZ > conveyorTile.getPos().getZ()+0.65D)
+				if(entity.posZ > getTile().getPos().getZ()+0.65D)
 					vZ = -0.1D*vBase;
-				else if(entity.posZ < conveyorTile.getPos().getZ()+0.35D)
+				else if(entity.posZ < getTile().getPos().getZ()+0.35D)
 					vZ = 0.1D*vBase;
 			}
-			else if(facing==Direction.NORTH||facing==Direction.SOUTH)
+			else if(getFacing()==Direction.NORTH||getFacing()==Direction.SOUTH)
 			{
-				if(entity.posX > conveyorTile.getPos().getX()+0.65D)
+				if(entity.posX > getTile().getPos().getX()+0.65D)
 					vX = -0.1D*vBase;
-				else if(entity.posX < conveyorTile.getPos().getX()+0.35D)
+				else if(entity.posX < getTile().getPos().getX()+0.35D)
 					vX = 0.1D*vBase;
 			}
 		}
 		//Little boost at the top of a conveyor to help players and minecarts to get off
-		BlockPos upForward = conveyorTile.getPos().add(0, 1, 0);
-		if(contact&&!(Utils.getExistingTileEntity(conveyorTile.getWorld(), upForward) instanceof IConveyorTile))
+		BlockPos upForward = getTile().getPos().add(0, 1, 0);
+		if(contact&&!(Utils.getExistingTileEntity(getTile().getWorld(), upForward) instanceof IConveyorTile))
 			vY *= 2.25;
 		return new Vec3d(vX, vY, vZ);
 	}
@@ -184,23 +188,23 @@ public class VerticalConveyor extends BasicConveyor
 	private Map<TileEntity, CapabilityReference<IItemHandler>> inserters = new WeakHashMap<>();
 
 	@Override
-	public void onEntityCollision(TileEntity tile, Entity entity, Direction facing)
+	public void onEntityCollision(Entity entity)
 	{
-		if(!isActive(tile))
+		if(!isActive())
 			return;
 
-		BlockPos posWall = tile.getPos().offset(facing);
+		BlockPos posWall = getTile().getPos().offset(getFacing());
 		double d = .625+entity.getWidth();
-		double distToWall = Math.abs((facing.getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(facing.getAxis()==Axis.Z?entity.posZ: entity.posX));
+		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.posZ: entity.posX));
 		if(distToWall > d)
 		{
-			super.onEntityCollision(tile, entity, facing);
+			super.onEntityCollision(entity);
 			return;
 		}
 
 		if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking()))
 		{
-			double distY = Math.abs(tile.getPos().add(0, 1, 0).getY()+.5-entity.posY);
+			double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.posY);
 			double treshold = .9;
 			boolean contact = distY < treshold;
 
@@ -209,16 +213,16 @@ public class VerticalConveyor extends BasicConveyor
 				entity.fallDistance = 0;
 			else
 				entity.fallDistance *= .9;
-			Vec3d vec = getDirection(tile, entity, facing);
+			Vec3d vec = getDirection(entity);
 			entity.setMotion(vec);
 
 			if(!contact)
-				ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);
+				ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)getTile());
 			else
 			{
-				BlockPos posTop = tile.getPos().add(0, 1, 0);
-				if(!((tile.getWorld().getTileEntity(posTop) instanceof IConveyorTile)||(tile.getWorld().isAirBlock(posTop)&&(tile.getWorld().getTileEntity(posTop.offset(facing)) instanceof IConveyorTile))))
-					ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
+				BlockPos posTop = getTile().getPos().add(0, 1, 0);
+				if(!((getTile().getWorld().getTileEntity(posTop) instanceof IConveyorTile)||(getTile().getWorld().isAirBlock(posTop)&&(getTile().getWorld().getTileEntity(posTop.offset(getFacing())) instanceof IConveyorTile))))
+					ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)getTile());
 			}
 
 			if(entity instanceof ItemEntity)
@@ -232,15 +236,15 @@ public class VerticalConveyor extends BasicConveyor
 				else
 				{
 					TileEntity inventoryTile;
-					inventoryTile = tile.getWorld().getTileEntity(tile.getPos().add(0, 1, 0));
-					if(!tile.getWorld().isRemote)
+					inventoryTile = getTile().getWorld().getTileEntity(getTile().getPos().add(0, 1, 0));
+					if(!getTile().getWorld().isRemote)
 					{
 						if(inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
 						{
 							ItemStack stack = item.getItem();
 							if(!stack.isEmpty())
 							{
-								CapabilityReference<IItemHandler> insert = inserters.computeIfAbsent(tile,
+								CapabilityReference<IItemHandler> insert = inserters.computeIfAbsent(getTile(),
 										te -> CapabilityReference.forNeighbor(te, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN));
 								ItemStack ret = Utils.insertStackIntoInventory(insert, stack, false);
 								if(ret.isEmpty())
@@ -258,30 +262,30 @@ public class VerticalConveyor extends BasicConveyor
 	static final AxisAlignedBB[] verticalBounds = {new AxisAlignedBB(0, 0, 0, 1, 1, .125f), new AxisAlignedBB(0, 0, .875f, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .125f, 1, 1), new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)};
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
+	public List<AxisAlignedBB> getSelectionBoxes()
 	{
 		ArrayList list = new ArrayList();
-		if(facing.ordinal() > 1)
-			list.add(verticalBounds[facing.ordinal()-2]);
-		if(renderBottomBelt(tile, facing)||list.isEmpty())
+		if(getFacing().ordinal() > 1)
+			list.add(verticalBounds[getFacing().ordinal()-2]);
+		if(renderBottomBelt(getTile(), getFacing())||list.isEmpty())
 			list.add(conveyorBounds);
 		return list;
 	}
 
 	@Override
-	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, Direction facing)
+	public List<AxisAlignedBB> getColisionBoxes()
 	{
 		ArrayList list = new ArrayList();
-		if(facing.ordinal() > 1)
-			list.add(verticalBounds[facing.ordinal()-2]);
-		if(renderBottomBelt(tile, facing)||list.isEmpty())
+		if(getFacing().ordinal() > 1)
+			list.add(verticalBounds[getFacing().ordinal()-2]);
+		if(renderBottomBelt(getTile(), getFacing())||list.isEmpty())
 			list.add(conveyorBounds);
 		return list;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Matrix4f modifyBaseRotationMatrix(Matrix4f matrix, TileEntity tile, Direction facing)
+	public Matrix4f modifyBaseRotationMatrix(Matrix4f matrix)
 	{
 		return new Matrix4(matrix).translate(0, 1, 0).rotate(Math.PI/2, 1, 0, 0).toMatrix4f();
 	}
@@ -303,14 +307,14 @@ public class VerticalConveyor extends BasicConveyor
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
 	{
-		if(tile!=null&&this.renderBottomBelt(tile, facing))
+		if(getTile()!=null&&this.renderBottomBelt(getTile(), getFacing()))
 		{
-			TextureAtlasSprite sprite = ClientUtils.getSprite(isActive(tile)?BasicConveyor.texture_on: BasicConveyor.texture_off);
+			TextureAtlasSprite sprite = ClientUtils.getSprite(isActive()?BasicConveyor.texture_on: BasicConveyor.texture_off);
 			TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
-			boolean[] walls = {renderBottomWall(tile, facing, 0), renderBottomWall(tile, facing, 1)};
-			baseModel.addAll(ModelConveyor.getBaseConveyor(facing, .875f, new Matrix4(facing), ConveyorDirection.HORIZONTAL, sprite, walls, new boolean[]{true, false}, spriteColour, getDyeColour()));
+			boolean[] walls = {renderBottomWall(getTile(), getFacing(), 0), renderBottomWall(getTile(), getFacing(), 1)};
+			baseModel.addAll(ModelConveyor.getBaseConveyor(getFacing(), .875f, new Matrix4(getFacing()), ConveyorDirection.HORIZONTAL, sprite, walls, new boolean[]{true, false}, spriteColour, getDyeColour()));
 		}
 		return baseModel;
 	}

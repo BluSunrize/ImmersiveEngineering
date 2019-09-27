@@ -76,6 +76,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
@@ -844,7 +845,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void renderAdditionalBlockBounds(DrawBlockHighlightEvent event)
 	{
-		if(event.getSubID()==0&&event.getTarget() instanceof BlockRayTraceResult)
+		if(event.getSubID()==0&&event.getTarget().getType()==Type.BLOCK)
 		{
 			BlockRayTraceResult rtr = (BlockRayTraceResult)event.getTarget();
 			Entity player = event.getInfo().getRenderViewEntity();

@@ -84,7 +84,7 @@ public class ModelConveyor extends BakedIEModel
 			if(extraData.hasProperty(Model.TILEENTITY_PASSTHROUGH))
 				tile = extraData.getData(Model.TILEENTITY_PASSTHROUGH);
 			if(conveyor!=null&&tile!=null)
-				key = conveyor.getModelCacheKey(tile, facing);
+				key = conveyor.getModelCacheKey();
 		}
 		List<BakedQuad> cachedQuads = modelCache.get(key);
 		if(cachedQuads!=null)
@@ -96,22 +96,22 @@ public class ModelConveyor extends BakedIEModel
 			cachedQuads = Collections.synchronizedList(Lists.newArrayList());
 			Matrix4f facingMatrix = TRSRTransformation.getMatrix(facing);
 			if(conveyor!=null)
-				facingMatrix = conveyor.modifyBaseRotationMatrix(facingMatrix, tile, facing);
+				facingMatrix = conveyor.modifyBaseRotationMatrix(facingMatrix);
 			Matrix4 matrix = new Matrix4(facingMatrix);
 			ConveyorDirection conDir = conveyor!=null?conveyor.getConveyorDirection(): ConveyorDirection.HORIZONTAL;
-			boolean[] walls = conveyor!=null&&tile!=null?new boolean[]{conveyor.renderWall(tile, facing, 0), conveyor.renderWall(tile, facing, 1)}: new boolean[]{true, true};
+			boolean[] walls = conveyor!=null&&tile!=null?new boolean[]{conveyor.renderWall(facing, 0), conveyor.renderWall(facing, 1)}: new boolean[]{true, true};
 			TextureAtlasSprite tex_conveyor = MissingTextureSprite.func_217790_a();
 			TextureAtlasSprite tex_conveyor_colour = null;
 			DyeColor colourStripes = null;
 			if(conveyor!=null)
 			{
-				tex_conveyor = ClientUtils.getSprite(tile!=null?(conveyor.isActive(tile)?conveyor.getActiveTexture(): conveyor.getInactiveTexture()): conveyor.getActiveTexture());
+				tex_conveyor = ClientUtils.getSprite(tile!=null?(conveyor.isActive()?conveyor.getActiveTexture(): conveyor.getInactiveTexture()): conveyor.getActiveTexture());
 				if((colourStripes = conveyor.getDyeColour())!=null)
 					tex_conveyor_colour = ClientUtils.getSprite(conveyor.getColouredStripesTexture());
 			}
 			cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}, tex_conveyor_colour, colourStripes));
 			if(conveyor!=null)
-				cachedQuads = conveyor.modifyQuads(cachedQuads, tile, facing);
+				cachedQuads = conveyor.modifyQuads(cachedQuads);
 			modelCache.put(key, ImmutableList.copyOf(cachedQuads));
 			return ImmutableList.copyOf(cachedQuads);
 		}

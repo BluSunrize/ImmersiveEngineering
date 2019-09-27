@@ -15,8 +15,13 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class UncontrolledConveyor extends BasicConveyor
 {
+	public UncontrolledConveyor(TileEntity tile)
+	{
+		super(tile);
+	}
+
 	@Override
-	public boolean isActive(TileEntity tile)
+	public boolean isActive()
 	{
 		return true;
 	}

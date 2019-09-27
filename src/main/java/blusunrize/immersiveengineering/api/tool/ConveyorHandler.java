@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
@@ -200,16 +201,26 @@ public class ConveyorHandler
 		 * @return the string by which unique models would be cached. Override for additional appended information*
 		 * The model class will also append to this key for rendered walls and facing
 		 */
-		default String getModelCacheKey(TileEntity tile, Direction facing)
+		default String getModelCacheKey()
 		{
 			String key = reverseClassRegistry.get(this.getClass()).toString();
-			key += "f"+facing.ordinal();
+			key += "f"+getFacing().ordinal();
 			key += "d"+getConveyorDirection().ordinal();
-			key += "a"+(isActive(tile)?1: 0);
-			key += "w0"+(renderWall(tile, facing, 0)?1: 0);
-			key += "w1"+(renderWall(tile, facing, 1)?1: 0);
+			key += "a"+(isActive()?1: 0);
+			key += "w0"+(renderWall(getFacing(), 0)?1: 0);
+			key += "w1"+(renderWall(getFacing(), 1)?1: 0);
 			key += "c"+getDyeColour();
 			return key;
+		}
+
+		TileEntity getTile();
+
+		default Direction getFacing()
+		{
+			TileEntity te = getTile();
+			if(te instanceof IDirectionalTile)
+				return ((IDirectionalTile)te).getFacing();
+			return Direction.NORTH;
 		}
 
 		/**
@@ -244,7 +255,7 @@ public class ConveyorHandler
 		/**
 		 * @return false if the conveyor is deactivated (for instance by a redstone signal)
 		 */
-		boolean isActive(TileEntity tile);
+		boolean isActive();
 
 		/**
 		 * @return true if the conveyor can be dyed
@@ -271,7 +282,7 @@ public class ConveyorHandler
 		 *
 		 * @return true if anything happened, cancelling item use
 		 */
-		default boolean playerInteraction(TileEntity tile, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
+		default boolean playerInteraction(PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 		{
 			return false;
 		}
@@ -280,13 +291,13 @@ public class ConveyorHandler
 		 * @param wall 0 is left, 1 is right
 		 * @return whether the wall should be drawn on the model. Also used for they cache key
 		 */
-		default boolean renderWall(TileEntity tile, Direction facing, int wall)
+		default boolean renderWall(Direction facing, int wall)
 		{
 			if(getConveyorDirection()!=ConveyorDirection.HORIZONTAL)
 				return true;
 			Direction side = wall==0?facing.rotateYCCW(): facing.rotateY();
-			BlockPos pos = tile.getPos().offset(side);
-			TileEntity te = Utils.getExistingTileEntity(tile.getWorld(), pos);
+			BlockPos pos = getTile().getPos().offset(side);
+			TileEntity te = Utils.getExistingTileEntity(getTile().getWorld(), pos);
 			if(te instanceof IConveyorAttachable)
 			{
 				boolean b = false;
@@ -299,7 +310,7 @@ public class ConveyorHandler
 			}
 			else
 			{
-				te = Utils.getExistingTileEntity(tile.getWorld(), pos.add(0, -1, 0));
+				te = Utils.getExistingTileEntity(getTile().getWorld(), pos.add(0, -1, 0));
 				if(te instanceof IConveyorAttachable)
 				{
 					int b = 0;
@@ -317,27 +328,27 @@ public class ConveyorHandler
 		/**
 		 * a rough indication of where this conveyor will transport things. Relevant for vertical conveyors, to see if they need to render the groundpiece below them.
 		 */
-		default Direction[] sigTransportDirections(TileEntity conveyorTile, Direction facing)
+		default Direction[] sigTransportDirections()
 		{
 			if(getConveyorDirection()==ConveyorDirection.UP)
-				return new Direction[]{facing, Direction.UP};
+				return new Direction[]{getFacing(), Direction.UP};
 			else if(getConveyorDirection()==ConveyorDirection.DOWN)
-				return new Direction[]{facing, Direction.DOWN};
-			return new Direction[]{facing};
+				return new Direction[]{getFacing(), Direction.DOWN};
+			return new Direction[]{getFacing()};
 		}
 
 		/**
 		 * @return a vector representing the movement applied to the entity
 		 */
-		default Vec3d getDirection(TileEntity conveyorTile, Entity entity, Direction facing)
+		default Vec3d getDirection(Entity entity)
 		{
 			ConveyorDirection conveyorDirection = getConveyorDirection();
-			BlockPos pos = conveyorTile.getPos();
+			BlockPos pos = getTile().getPos();
 
 			double vBase = 1.15;
-			double vX = 0.1*vBase*facing.getXOffset();
+			double vX = 0.1*vBase*getFacing().getXOffset();
 			double vY = entity.getMotion().y;
-			double vZ = 0.1*vBase*facing.getZOffset();
+			double vZ = 0.1*vBase*getFacing().getZOffset();
 
 			if(conveyorDirection==ConveyorDirection.UP)
 				vY = 0.17D*vBase;
@@ -347,14 +358,14 @@ public class ConveyorHandler
 			if(conveyorDirection!=ConveyorDirection.HORIZONTAL)
 				entity.onGround = false;
 
-			if(facing==Direction.WEST||facing==Direction.EAST)
+			if(getFacing()==Direction.WEST||getFacing()==Direction.EAST)
 			{
 				if(entity.posZ > pos.getZ()+0.55D)
 					vZ = -0.1D*vBase;
 				else if(entity.posZ < pos.getZ()+0.45D)
 					vZ = 0.1D*vBase;
 			}
-			else if(facing==Direction.NORTH||facing==Direction.SOUTH)
+			else if(getFacing()==Direction.NORTH||getFacing()==Direction.SOUTH)
 			{
 				if(entity.posX > pos.getX()+0.55D)
 					vX = -0.1D*vBase;
@@ -365,38 +376,38 @@ public class ConveyorHandler
 			return new Vec3d(vX, vY, vZ);
 		}
 
-		default void onEntityCollision(TileEntity tile, Entity entity, Direction facing)
+		default void onEntityCollision(Entity entity)
 		{
-			if(!isActive(tile))
+			if(!isActive())
 				return;
-			BlockPos pos = tile.getPos();
+			BlockPos pos = getTile().getPos();
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			float heightLimit = conveyorDirection==ConveyorDirection.HORIZONTAL?.25f: 1f;
 			if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.posY-pos.getY() >= 0&&entity.posY-pos.getY() < heightLimit)
 			{
-				Vec3d vec = this.getDirection(tile, entity, facing);
+				Vec3d vec = this.getDirection(entity);
 				if(entity.fallDistance < 3)
 					entity.fallDistance = 0;
 				entity.setMotion(vec);
-				double distX = Math.abs(pos.offset(facing).getX()+.5-entity.posX);
-				double distZ = Math.abs(pos.offset(facing).getZ()+.5-entity.posZ);
+				double distX = Math.abs(pos.offset(getFacing()).getX()+.5-entity.posX);
+				double distZ = Math.abs(pos.offset(getFacing()).getZ()+.5-entity.posZ);
 				double treshold = .9;
-				boolean contact = facing.getAxis()==Axis.Z?distZ < treshold: distX < treshold;
-				World w = tile.getWorld();
-				BlockPos upPos = pos.offset(facing).up();
+				boolean contact = getFacing().getAxis()==Axis.Z?distZ < treshold: distX < treshold;
+				World w = getTile().getWorld();
+				BlockPos upPos = pos.offset(getFacing()).up();
 				if(contact&&conveyorDirection==ConveyorDirection.UP&&
 						!Block.doesSideFillSquare(w.getBlockState(upPos).getShape(w, upPos), Direction.DOWN))
 				{
 					double move = .4;
-					entity.setPosition(entity.posX+move*facing.getXOffset(), entity.posY+1*move, entity.posZ+move*facing.getZOffset());
+					entity.setPosition(entity.posX+move*getFacing().getXOffset(), entity.posY+1*move, entity.posZ+move*getFacing().getZOffset());
 				}
 				if(!contact)
-					ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);
+					ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)getTile());
 				else
 				{
-					BlockPos nextPos = tile.getPos().offset(facing);
-					if(!(Utils.getExistingTileEntity(tile.getWorld(), nextPos) instanceof IConveyorTile))
-						ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
+					BlockPos nextPos = getTile().getPos().offset(getFacing());
+					if(!(Utils.getExistingTileEntity(getTile().getWorld(), nextPos) instanceof IConveyorTile))
+						ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)getTile());
 				}
 
 				// In the first tick this could be an entity the conveyor belt just dropped, causing #3023
@@ -409,7 +420,7 @@ public class ConveyorHandler
 							item.setAgeToCreativeDespawnTime();
 					}
 					else
-						handleInsertion(tile, item, facing, conveyorDirection, distX, distZ);
+						handleInsertion(item, conveyorDirection, distX, distZ);
 				}
 			}
 		}
@@ -417,24 +428,24 @@ public class ConveyorHandler
 		/**
 		 * Called when an item is inserted into the conveyor and deployed as an entity
 		 */
-		default void onItemDeployed(TileEntity tile, ItemEntity entity, Direction facing)
+		default void onItemDeployed(ItemEntity entity)
 		{
 		}
 
-		default void handleInsertion(TileEntity tile, ItemEntity entity, Direction facing, ConveyorDirection conDir, double distX, double distZ)
+		default void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 		{
-			BlockPos invPos = tile.getPos().offset(facing).add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0);
-			World world = tile.getWorld();
+			BlockPos invPos = getTile().getPos().offset(getFacing()).add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0);
+			World world = getTile().getWorld();
 			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
-			boolean contact = facing.getAxis()==Axis.Z?distZ < .7: distX < .7;
-			if(!tile.getWorld().isRemote)
+			boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
+			if(!getTile().getWorld().isRemote)
 			{
 				if(contact&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
 				{
 					ItemStack stack = entity.getItem();
 					if(!stack.isEmpty())
 					{
-						ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, facing.getOpposite());
+						ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, getFacing().getOpposite());
 						if(ret.isEmpty())
 							entity.remove();
 						else if(ret.getCount() < stack.getCount())
@@ -445,12 +456,12 @@ public class ConveyorHandler
 
 		}
 
-		default boolean isTicking(TileEntity tile)
+		default boolean isTicking()
 		{
 			return false;
 		}
 
-		default void onUpdate(TileEntity tile, Direction facing)
+		default void onUpdate()
 		{
 		}
 
@@ -458,12 +469,12 @@ public class ConveyorHandler
 		AxisAlignedBB highConveyorBounds = new AxisAlignedBB(0, 0, 0, 1, 1.125f, 1);
 		AxisAlignedBB FULL_BLOCK = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 
-		default List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, Direction facing)
+		default List<AxisAlignedBB> getSelectionBoxes()
 		{
 			return getConveyorDirection()==ConveyorDirection.HORIZONTAL?Lists.newArrayList(conveyorBounds): Lists.newArrayList(highConveyorBounds);
 		}
 
-		default List<AxisAlignedBB> getColisionBoxes(TileEntity tile, Direction facing)
+		default List<AxisAlignedBB> getColisionBoxes()
 		{
 			return Lists.newArrayList(conveyorBounds);
 		}
@@ -473,7 +484,7 @@ public class ConveyorHandler
 		void readConveyorNBT(CompoundNBT nbt);
 
 		@OnlyIn(Dist.CLIENT)
-		default Matrix4f modifyBaseRotationMatrix(Matrix4f matrix, @Nullable TileEntity tile, Direction facing)
+		default Matrix4f modifyBaseRotationMatrix(Matrix4f matrix)
 		{
 			return matrix;
 		}
@@ -491,7 +502,7 @@ public class ConveyorHandler
 		}
 
 		@OnlyIn(Dist.CLIENT)
-		default List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing)
+		default List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
 		{
 			return baseModel;
 		}
@@ -529,7 +540,7 @@ public class ConveyorHandler
 		{
 			IConveyorBelt subtype = getConveyorSubtype();
 			if(subtype!=null)
-				return subtype.sigTransportDirections((TileEntity)this, this.getFacing());
+				return subtype.sigTransportDirections();
 			return new Direction[0];
 		}
 	}

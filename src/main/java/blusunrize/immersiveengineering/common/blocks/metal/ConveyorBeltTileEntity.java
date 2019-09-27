@@ -68,7 +68,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	public void onEntityCollision(World world, Entity entity)
 	{
 		if(this.conveyorBeltSubtype!=null)
-			this.conveyorBeltSubtype.onEntityCollision(this, entity, getFacing());
+			this.conveyorBeltSubtype.onEntityCollision(entity);
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	@Override
 	public boolean isLogicDummy()
 	{
-		return this.conveyorBeltSubtype!=null&&!this.conveyorBeltSubtype.isTicking(this);
+		return this.conveyorBeltSubtype!=null&&!this.conveyorBeltSubtype.isTicking();
 	}
 
 	@Override
@@ -147,7 +147,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	{
 		ApiUtils.checkForNeedlessTicking(this);
 		if(this.conveyorBeltSubtype!=null)
-			this.conveyorBeltSubtype.onUpdate(this, getFacing());
+			this.conveyorBeltSubtype.onUpdate();
 	}
 
 	@Override
@@ -185,7 +185,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 				update = dye!=null&&conveyorBeltSubtype.setDyeColour(dye);
 			}
 			else
-				update = conveyorBeltSubtype.playerInteraction(this, player, hand, heldItem, hitX, hitY, hitZ, side);
+				update = conveyorBeltSubtype.playerInteraction(player, hand, heldItem, hitX, hitY, hitZ, side);
 			if(update)
 			{
 				this.markDirty();
@@ -210,7 +210,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
 		if(conveyorBeltSubtype!=null)
-			return new ArrayList<>(conveyorBeltSubtype.getColisionBoxes(this, getFacing()));
+			return new ArrayList<>(conveyorBeltSubtype.getColisionBoxes());
 		return Lists.newArrayList(COLISIONBB);
 	}
 
@@ -218,7 +218,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
 		if(conveyorBeltSubtype!=null)
-			return new ArrayList<>(conveyorBeltSubtype.getSelectionBoxes(this, getFacing()));
+			return new ArrayList<>(conveyorBeltSubtype.getSelectionBoxes());
 		return Lists.newArrayList(COLISIONBB);
 	}
 
@@ -269,7 +269,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 				entity.setMotion(Vec3d.ZERO);
 				conveyor.getWorldNonnull().addEntity(entity);
 				if(conveyor.conveyorBeltSubtype!=null)
-					conveyor.conveyorBeltSubtype.onItemDeployed(conveyor, entity, conveyor.getFacing());
+					conveyor.conveyorBeltSubtype.onItemDeployed(entity);
 			}
 			return ItemStack.EMPTY;
 		}
