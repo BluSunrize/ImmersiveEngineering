@@ -78,5 +78,10 @@ public abstract class ModelFile
 			BlockstateGenerator.saveJSON(cache, model, target);
 			generated = true;
 		}
+
+		public GeneratedModelFile withLoc(ResourceLocation loc)
+		{
+			return new GeneratedModelFile(loc, model);
+		}
 	}
 }

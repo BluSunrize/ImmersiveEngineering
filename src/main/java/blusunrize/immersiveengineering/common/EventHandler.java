@@ -371,23 +371,27 @@ public class EventHandler
 		{
 			synchronized(interdictionTiles)
 			{
-				Iterator<ISpawnInterdiction> it = interdictionTiles.get(event.getEntity().world.getDimension().getType()).iterator();
-				while(it.hasNext())
+				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.getDimension().getType());
+				if(dimSet!=null)
 				{
-					ISpawnInterdiction interdictor = it.next();
-					if(interdictor instanceof TileEntity)
+					Iterator<ISpawnInterdiction> it = dimSet.iterator();
+					while(it.hasNext())
 					{
-						if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
-							it.remove();
-						else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ) <= interdictor.getInterdictionRangeSquared())
-							event.setCanceled(true);
-					}
-					else if(interdictor instanceof Entity)
-					{
-						if(!((Entity)interdictor).isAlive()||((Entity)interdictor).world==null)
-							it.remove();
-						else if(((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
-							event.setCanceled(true);
+						ISpawnInterdiction interdictor = it.next();
+						if(interdictor instanceof TileEntity)
+						{
+							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
+								it.remove();
+							else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ) <= interdictor.getInterdictionRangeSquared())
+								event.setCanceled(true);
+						}
+						else if(interdictor instanceof Entity)
+						{
+							if(!((Entity)interdictor).isAlive()||((Entity)interdictor).world==null)
+								it.remove();
+							else if(((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
+								event.setCanceled(true);
+						}
 					}
 				}
 			}

@@ -21,11 +21,13 @@ public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 		super(name, material, BlockItemIE.class);
 		setNotNormalBlock();
 		setBlockLayer(BlockRenderLayer.CUTOUT);
+		lightOpacity = 0;
 	}
 
 	@Override
 	public boolean isSideInvisible(BlockState state, BlockState adjState, Direction side)
 	{
-		return adjState.getBlock()==this;
+		return (adjState.getBlock() instanceof ScaffoldingBlock&&adjState.getMaterial()==state.getMaterial())
+				||super.isSideInvisible(state, adjState, side);
 	}
 }

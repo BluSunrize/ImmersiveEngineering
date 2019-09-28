@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairs
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
@@ -82,7 +83,7 @@ public class Models extends ModelGenerator
 		addSimpleBlockModel(MetalDecoration.hvCoil, rl("block/metal_decoration/coil_hv_side"), rl("block/metal_decoration/coil_hv_top"), out);
 		addSimpleBlockModel(MetalDecoration.engineeringRS, rl("block/metal_decoration/redstone_engineering"), out);
 		addSimpleBlockModel(MetalDecoration.engineeringHeavy, rl("block/metal_decoration/heavy_engineering"), out);
-		addSimpleBlockModel(MetalDecoration.engineeringLight, rl("block/metal_decoration/light_engineerign"), out);
+		addSimpleBlockModel(MetalDecoration.engineeringLight, rl("block/metal_decoration/light_engineering"), out);
 		addSimpleBlockModel(MetalDecoration.generator, rl("block/metal_decoration/generator"), out);
 		addSimpleBlockModel(MetalDecoration.radiator, rl("block/metal_decoration/radiator"), out);
 		ResourceLocation aluSide = rl("block/metal_decoration/aluminum_scaffolding");
@@ -92,8 +93,8 @@ public class Models extends ModelGenerator
 			String suffix = "_"+type.name().toLowerCase(Locale.ENGLISH);
 			ResourceLocation aluTop = rl("block/metal_decoration/aluminum_scaffolding_top"+suffix);
 			ResourceLocation steelTop = rl("block/metal_decoration/steel_scaffolding_top"+suffix);
-			addSimpleBlockModel(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop, aluSide, out);
-			addSimpleBlockModel(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, steelSide, out);
+			addScaffoldingModel(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop, out);
+			addScaffoldingModel(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, out);
 			Map<BasicStairsShape, ModelFile> aluStairs = new HashMap<>();
 			Map<BasicStairsShape, ModelFile> steelStairs = new HashMap<>();
 			for(BasicStairsShape s : BasicStairsShape.values())
@@ -111,6 +112,11 @@ public class Models extends ModelGenerator
 			aluScaffoldingStairs.put(type, aluStairs);
 			steelScaffoldingStairs.put(type, steelStairs);
 		}
+	}
+
+	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
+	{
+		addSimpleBlockModel(block, ModelHelper.createScaffolding(side, top, block.getRegistryName()), out);
 	}
 
 	private void addSimpleBlockModel(Block b, ResourceLocation side, ResourceLocation topAndBottom,
@@ -135,7 +141,14 @@ public class Models extends ModelGenerator
 	private void addSimpleBlockModel(Block b, GeneratedModelFile model, Consumer<GeneratedModelFile> out)
 	{
 		out.accept(model);
+		out.accept(model.withLoc(locForItemModel(Item.getItemFromBlock(b))));
 		Preconditions.checkState(simpleBlocks.put(b, model)==null);
+	}
+
+	private ResourceLocation locForItemModel(Item item)
+	{
+		ResourceLocation itemName = item.getRegistryName();
+		return new ResourceLocation(itemName.getNamespace(), "item/"+itemName.getPath());
 	}
 
 	public static class MetalModels

@@ -74,7 +74,6 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		setFacing(Direction.byIndex(nbt.getInt("facing")));
 		if(nbt.contains("conveyorBeltSubtypeNBT", NBT.TAG_COMPOUND))
 			conveyorBeltSubtype.readConveyorNBT(nbt.getCompound("conveyorBeltSubtypeNBT"));
 
@@ -85,7 +84,6 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putInt("facing", getFacing().ordinal());
 		if(conveyorBeltSubtype!=null)
 			nbt.put("conveyorBeltSubtypeNBT", conveyorBeltSubtype.writeConveyorNBT());
 	}

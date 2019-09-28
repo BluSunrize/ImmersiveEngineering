@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
-import com.google.common.collect.Sets;
+import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.PushReaction;
@@ -36,7 +36,8 @@ import net.minecraftforge.common.ToolType;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 
 public class IEBaseBlock extends Block
 {
@@ -46,13 +47,12 @@ public class IEBaseBlock extends Block
 	public final IProperty[] additionalProperties;
 	boolean isHidden;
 	boolean hasFlavour;
-	protected Set<BlockRenderLayer> renderLayers = Sets.newHashSet(BlockRenderLayer.SOLID);
+	protected List<BlockRenderLayer> renderLayers = Collections.singletonList(BlockRenderLayer.SOLID);
 	//TODO wtf is variable opacity?
 	protected int lightOpacity;
 	protected PushReaction mobilityFlag = PushReaction.NORMAL;
 	protected boolean canHammerHarvest;
 	protected boolean notNormalBlock;
-	private boolean opaqueCube = false;
 
 	public IEBaseBlock(String name, Block.Properties blockProps, @Nullable Class<? extends BlockItemIE> itemBlock, IProperty... additionalProperties)
 	{
@@ -120,7 +120,8 @@ public class IEBaseBlock extends Block
 
 	public IEBaseBlock setBlockLayer(BlockRenderLayer... layer)
 	{
-		this.renderLayers = Sets.newHashSet(layer);
+		Preconditions.checkArgument(layer.length > 0);
+		this.renderLayers = Arrays.asList(layer);
 		return this;
 	}
 
@@ -134,6 +135,12 @@ public class IEBaseBlock extends Block
 	{
 		lightOpacity = opacity;
 		return this;
+	}
+
+	@Override
+	public BlockRenderLayer getRenderLayer()
+	{
+		return renderLayers.get(0);
 	}
 
 	@Override
@@ -160,6 +167,19 @@ public class IEBaseBlock extends Block
 	{
 		notNormalBlock = true;
 		return this;
+	}
+
+	//TODO what is this?
+	@Override
+	public float func_220080_a(BlockState p_220080_1_, IBlockReader p_220080_2_, BlockPos p_220080_3_)
+	{
+		return notNormalBlock?1: super.func_220080_a(p_220080_1_, p_220080_2_, p_220080_3_);
+	}
+
+	@Override
+	public boolean propagatesSkylightDown(BlockState p_200123_1_, IBlockReader p_200123_2_, BlockPos p_200123_3_)
+	{
+		return notNormalBlock||super.propagatesSkylightDown(p_200123_1_, p_200123_2_, p_200123_3_);
 	}
 
 	@Override
@@ -243,17 +263,6 @@ public class IEBaseBlock extends Block
 	public boolean allowWirecutterHarvest(BlockState blockState)
 	{
 		return false;
-	}
-
-	public boolean isOpaqueCube()
-	{
-		return opaqueCube;
-	}
-
-	public IEBaseBlock setOpaque(boolean isOpaque)
-	{
-		opaqueCube = isOpaque;
-		return this;
 	}
 
 	@Override

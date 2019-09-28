@@ -26,6 +26,8 @@ public class MiscConnectorBlock extends ConnectorBlock
 	{
 		super(name);
 		this.tileType = tileType;
+		if(layers.length==0)
+			layers = new BlockRenderLayer[]{BlockRenderLayer.SOLID};
 		setBlockLayer(layers);
 	}
 

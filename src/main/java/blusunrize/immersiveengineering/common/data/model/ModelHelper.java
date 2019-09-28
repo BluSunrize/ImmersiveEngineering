@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.data.model;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import com.google.gson.JsonObject;
 import net.minecraft.state.properties.StairsShape;
@@ -102,6 +103,20 @@ public class ModelHelper
 	private static void assertTextureExists(ResourceLocation name)
 	{
 		//TODO implement
+	}
+
+	public static GeneratedModelFile createScaffolding(ResourceLocation side, ResourceLocation top, ResourceLocation fileName)
+	{
+		assertTextureExists(side);
+		assertTextureExists(top);
+		JsonObject model = new JsonObject();
+		model.addProperty("parent", ImmersiveEngineering.MODID+":block/ie_scaffolding");
+		JsonObject textures = new JsonObject();
+		textures.addProperty("top", top.toString());
+		textures.addProperty("side", side.toString());
+		textures.addProperty("bottom", side.toString());
+		model.add("textures", textures);
+		return new GeneratedModelFile(fileName, model);
 	}
 
 	public enum BasicStairsShape

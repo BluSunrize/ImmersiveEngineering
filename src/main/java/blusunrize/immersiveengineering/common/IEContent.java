@@ -177,19 +177,16 @@ public class IEContent
 			Item ingot;
 			Item plate = new IEBaseItem("plate_"+name);
 			Item dust = new IEBaseItem("dust_"+name);
-			Block sheetmetal = new IEBaseBlock("sheetmetal_"+name, sheetmetalProperties, BlockItemIE.class)
-					.setOpaque(true);
+			Block sheetmetal = new IEBaseBlock("sheetmetal_"+name, sheetmetalProperties, BlockItemIE.class);
 			addSlabFor(sheetmetal);
 			if(m.shouldAddOre())
 			{
 				ore = new IEBaseBlock("ore_"+name, Block.Properties.create(Material.ROCK)
-						.hardnessAndResistance(3, 5), BlockItemIE.class)
-						.setOpaque(true);
+						.hardnessAndResistance(3, 5), BlockItemIE.class);
 			}
 			if(!m.isVanillaMetal())
 			{
-				storage = new IEBaseBlock("storage_"+name, storageProperties, BlockItemIE.class)
-						.setOpaque(true);
+				storage = new IEBaseBlock("storage_"+name, storageProperties, BlockItemIE.class);
 				nugget = new IEBaseItem("nugget_"+name);
 				ingot = new IEBaseItem("ingot_"+name);
 				addSlabFor(storage);
@@ -285,7 +282,6 @@ public class IEContent
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			Block baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, BlockItemIE.class)
-					.setOpaque(true)
 					.setHasFlavour(true);
 			WoodenDecoration.treatedWood.put(style, baseBlock);
 			addSlabFor(baseBlock);
@@ -295,7 +291,6 @@ public class IEContent
 		}
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodProperties);
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodProperties);
-
 
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
 		//TODO WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
