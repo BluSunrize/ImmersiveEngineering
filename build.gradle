@@ -95,8 +95,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.0.73'
-
+    minecraft 'net.minecraftforge:forge:1.14.4-28.1.24'
 }
 
 def reobfFile = file("$buildDir/reobfJar/output.jar")

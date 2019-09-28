@@ -170,12 +170,12 @@ public class IEFluid extends FlowingFluid
 
 	@Nonnull
 	@Override
-	protected FluidAttributes createAttributes(Fluid p_createAttributes_1_)
+	protected FluidAttributes createAttributes()
 	{
-		FluidAttributes.Builder builder = FluidAttributes.builder(fluidName, stillTex, flowingTex);
+		FluidAttributes.Builder builder = FluidAttributes.builder(stillTex, flowingTex);
 		if(buildAttributes!=null)
 			buildAttributes.accept(builder);
-		return builder.build();
+		return builder.build(this);
 	}
 
 	@Nonnull

@@ -89,19 +89,19 @@ public class PotionFluid extends IEFluid
 
 	@Nonnull
 	@Override
-	protected FluidAttributes createAttributes(Fluid fluid)
+	protected FluidAttributes createAttributes()
 	{
 		return new PotionFluidAttributes(
-				FluidAttributes.builder(fluidName, stillTex, flowingTex)
+				FluidAttributes.builder(stillTex, flowingTex), this
 		);
 	}
 
 	private static class PotionFluidAttributes extends FluidAttributes
 	{
 
-		public PotionFluidAttributes(Builder builder)
+		public PotionFluidAttributes(Builder builder, Fluid fluid)
 		{
-			super(builder);
+			super(builder, fluid);
 		}
 
 		@Override

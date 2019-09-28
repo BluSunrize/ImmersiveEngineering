@@ -46,7 +46,7 @@ public class IEWorldGen
 	{
 		OreFeatureConfig cfg = new OreFeatureConfig(FillerBlockType.NATURAL_STONE, state, maxVeinSize);
 		ConfiguredFeature<?> feature = Biome.createDecoratedFeature(Feature.ORE, cfg, Placement.COUNT_RANGE,
-				new CountRangeConfig(chunkOccurence, minY, maxY, minY));
+				new CountRangeConfig(chunkOccurence, minY, 0, maxY));
 		for(Biome biome : Biome.BIOMES)
 			biome.addFeature(Decoration.UNDERGROUND_ORES, feature);
 		features.put(name, feature);

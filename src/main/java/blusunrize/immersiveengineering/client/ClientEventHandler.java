@@ -1218,14 +1218,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onRenderLivingPre(RenderLivingEvent.Pre event)
 	{
-		if(event.getEntity().getEntityData().contains("headshot"))
+		if(event.getEntity().getPersistentData().contains("headshot"))
 			enableHead(event.getRenderer(), false);
 	}
 
 	@SubscribeEvent()
 	public void onRenderLivingPost(RenderLivingEvent.Post event)
 	{
-		if(event.getEntity().getEntityData().contains("headshot"))
+		if(event.getEntity().getPersistentData().contains("headshot"))
 			enableHead(event.getRenderer(), true);
 	}
 

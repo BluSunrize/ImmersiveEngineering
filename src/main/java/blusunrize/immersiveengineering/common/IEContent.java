@@ -140,11 +140,11 @@ public class IEContent
 	{
 		/*CONVEYORS*/
 		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
-			CompoundNBT data = entity.getEntityData();
+			CompoundNBT data = entity.getPersistentData();
 			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
 				data.putBoolean(Lib.MAGNET_PREVENT_NBT, true);
 		}, (entity, iConveyorTile) -> {
-			entity.getEntityData().remove(Lib.MAGNET_PREVENT_NBT);
+			entity.getPersistentData().remove(Lib.MAGNET_PREVENT_NBT);
 		});
 		ConveyorHandler.registerConveyorHandler(BasicConveyor.NAME, BasicConveyor.class, BasicConveyor::new);
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), UncontrolledConveyor.class, UncontrolledConveyor::new);

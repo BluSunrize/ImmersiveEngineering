@@ -67,9 +67,9 @@ public class SplitConveyor extends BasicConveyor
 	public void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 	{
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
-		if(entity.getEntityData().contains(nbtKey, NBT.TAG_INT))
+		if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
 		{
-			Direction redirect = Direction.values()[entity.getEntityData().getInt(nbtKey)];
+			Direction redirect = Direction.values()[entity.getPersistentData().getInt(nbtKey)];
 			BlockPos nextPos = getTile().getPos().offset(redirect);
 			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.posZ: entity.posX));
 			if(distNext < .7)
@@ -86,12 +86,12 @@ public class SplitConveyor extends BasicConveyor
 		if(entity!=null&&entity.isAlive())
 		{
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
-			if(entity.getEntityData().contains(nbtKey, NBT.TAG_INT))
-				redirect = Direction.values()[entity.getEntityData().getInt(nbtKey)];
+			if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
+				redirect = Direction.values()[entity.getPersistentData().getInt(nbtKey)];
 			else
 			{
 				redirect = getOutputFace();
-				entity.getEntityData().putInt(nbtKey, redirect.ordinal());
+				entity.getPersistentData().putInt(nbtKey, redirect.ordinal());
 				BlockPos nextPos = getTile().getPos().offset(this.getOutputFace().getOpposite());
 				if(getTile().getWorld().isBlockLoaded(nextPos))
 				{
@@ -112,7 +112,7 @@ public class SplitConveyor extends BasicConveyor
 			double treshold = .4;
 			boolean contact = distNext < treshold;
 			if(contact)
-				entity.getEntityData().remove(nbtKey);
+				entity.getPersistentData().remove(nbtKey);
 		}
 	}
 
@@ -133,9 +133,9 @@ public class SplitConveyor extends BasicConveyor
 	{
 		Vec3d vec = super.getDirection(entity);
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
-		if(!entity.getEntityData().contains(nbtKey, NBT.TAG_INT))
+		if(!entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
 			return vec;
-		Direction redirect = Direction.byIndex(entity.getEntityData().getInt(nbtKey));
+		Direction redirect = Direction.byIndex(entity.getPersistentData().getInt(nbtKey));
 		BlockPos wallPos = getTile().getPos().offset(getFacing());
 		double distNext = Math.abs((getFacing().getAxis()==Axis.Z?wallPos.getZ(): wallPos.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.posZ: entity.posX));
 		if(distNext < 1.33)
