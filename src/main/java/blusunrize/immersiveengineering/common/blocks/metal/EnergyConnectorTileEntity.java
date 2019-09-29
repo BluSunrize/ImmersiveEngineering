@@ -16,8 +16,9 @@ import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTran
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -30,6 +31,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -47,7 +49,7 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 
 
-public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity implements IDirectionalTile,
+public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional,
 		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, ITickableTileEntity
 {
 	public static final BiMap<Pair<String, Boolean>, TileEntityType<EnergyConnectorTileEntity>> DATA_TYPE_MAP = HashBiMap.create();
@@ -69,7 +71,6 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 
 	private final String voltage;
 	private final boolean relay;
-	public Direction facing = Direction.DOWN;
 	public int currentTickToMachine = 0;
 	public int currentTickToNet = 0;
 	private FluxStorage storageToNet = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
@@ -98,10 +99,10 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 			int maxOut = Math.min(storageToMachine.getEnergyStored(), getMaxOutput()-currentTickToMachine);
 			if(maxOut > 0)
 			{
-				TileEntity target = Utils.getExistingTileEntity(world, pos.offset(facing));
+				TileEntity target = Utils.getExistingTileEntity(world, pos.offset(getFacing()));
 				if(target!=null)
 				{
-					int inserted = EnergyHelper.insertFlux(target, facing.getOpposite(), maxOut, false);
+					int inserted = EnergyHelper.insertFlux(target, getFacing().getOpposite(), maxOut, false);
 					storageToMachine.extractEnergy(inserted, false);
 				}
 			}
@@ -111,21 +112,15 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return this.facing;
+		return MiscConnectorBlock.DEFAULT_FACING_PROP;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 0;
+		return PlacementLimitation.SIDE_CLICKED;
 	}
 
 	@Override
@@ -162,7 +157,6 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("facing", facing.ordinal());
 		CompoundNBT toNet = new CompoundNBT();
 		storageToNet.writeToNBT(toNet);
 		nbt.put("toNet", toNet);
@@ -175,7 +169,6 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		CompoundNBT toMachine = nbt.getCompound("toMachine");
 		storageToMachine.readFromNBT(toMachine);
 		CompoundNBT toNet = nbt.getCompound("toNet");
@@ -185,7 +178,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		Direction side = facing.getOpposite();
+		Direction side = getFacing().getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
 	}
@@ -195,10 +188,10 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(facing!=this.facing||relay)
+		if(facing!=this.getFacing()||relay)
 			return null;
-		if(energyWrapper==null||energyWrapper.side!=this.facing)
-			energyWrapper = new IEForgeEnergyWrapper(this, this.facing);
+		if(energyWrapper==null||energyWrapper.side!=this.getFacing())
+			energyWrapper = new IEForgeEnergyWrapper(this, this.getFacing());
 		return energyWrapper;
 	}
 
@@ -211,7 +204,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	@Override
 	public SideConfig getEnergySideConfig(Direction facing)
 	{
-		return (!relay&&facing==this.facing)?SideConfig.INPUT: SideConfig.NONE;
+		return (!relay&&facing==this.getFacing())?SideConfig.INPUT: SideConfig.NONE;
 	}
 
 	@Override
@@ -219,7 +212,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	{
 		if(relay)
 			return false;
-		return from==facing;
+		return from==getFacing();
 	}
 
 	@Override
@@ -324,7 +317,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	{
 		float length = LENGTH.getFloat(new ImmutablePair<>(voltage, relay));
 		float wMin = .3125f;
-		return getConnectorBounds(facing, wMin, length);
+		return getConnectorBounds(getFacing(), wMin, length);
 	}
 
 	@Override

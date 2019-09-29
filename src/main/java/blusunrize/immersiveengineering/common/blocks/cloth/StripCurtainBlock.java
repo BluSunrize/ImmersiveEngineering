@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
@@ -17,7 +18,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -28,6 +33,8 @@ import java.util.List;
 
 public class StripCurtainBlock extends IETileProviderBlock
 {
+	public static BooleanProperty CEILING_ATTACHED = BooleanProperty.create("ceiling_attached");
+	public static EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 
 	public StripCurtainBlock()
 	{
@@ -66,5 +73,12 @@ public class StripCurtainBlock extends IETileProviderBlock
 	public boolean allowHammerHarvest(BlockState blockState)
 	{
 		return true;
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(CEILING_ATTACHED, FACING);
 	}
 }

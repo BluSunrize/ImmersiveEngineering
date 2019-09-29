@@ -23,6 +23,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -133,44 +134,54 @@ public class IEBlockInterfaces
 		/**
 		 * @return 0 = side clicked, 1=piston behaviour,  2 = horizontal, 3 = vertical, 4 = x/z axis, 5 = horizontal based on quadrant, 6 = horizontal preferring clicked side
 		 */
-		//TODO enum!
-		int getFacingLimitation();
+		PlacementLimitation getFacingLimitation();
 
 		default Direction getFacingForPlacement(LivingEntity placer, BlockPos pos, Direction side, float hitX, float hitY, float hitZ)
 		{
-			Direction f = Direction.DOWN;
-			int limit = getFacingLimitation();
-			if(limit==0)
-				f = side;
-			else if(limit==1)
-				f = Direction.getFacingDirections(placer)[0];
-			else if(limit==2)
-				f = Direction.fromAngle(placer.rotationYaw);
-			else if(limit==3)
-				f = (side!=Direction.DOWN&&(side==Direction.UP||hitY <= .5))?Direction.UP: Direction.DOWN;
-			else if(limit==4)
+			Direction f;
+			PlacementLimitation limit = getFacingLimitation();
+			switch(limit)
 			{
-				f = Direction.fromAngle(placer.rotationYaw);
-				if(f==Direction.SOUTH||f==Direction.WEST)
-					f = f.getOpposite();
-			}
-			else if(limit==5)
-			{
-				if(side.getAxis()!=Axis.Y)
-					f = side.getOpposite();
-				else
-				{
-					float xFromMid = hitX-.5f;
-					float zFromMid = hitZ-.5f;
-					float max = Math.max(Math.abs(xFromMid), Math.abs(zFromMid));
-					if(max==Math.abs(xFromMid))
-						f = xFromMid < 0?Direction.WEST: Direction.EAST;
+				case SIDE_CLICKED:
+					f = side;
+					break;
+				case PISTON_LIKE:
+					f = Direction.getFacingDirections(placer)[0];
+					break;
+				case HORIZONTAL:
+					f = Direction.fromAngle(placer.rotationYaw);
+					break;
+				case VERTICAL:
+					f = (side!=Direction.DOWN&&(side==Direction.UP||hitY <= .5))?Direction.UP: Direction.DOWN;
+					break;
+				case HORIZONTAL_AXIS:
+					f = Direction.fromAngle(placer.rotationYaw);
+					if(f==Direction.SOUTH||f==Direction.WEST)
+						f = f.getOpposite();
+					break;
+				case HORIZONTAL_QUADRANT:
+					if(side.getAxis()!=Axis.Y)
+						f = side.getOpposite();
 					else
-						f = zFromMid < 0?Direction.NORTH: Direction.SOUTH;
-				}
+					{
+						float xFromMid = hitX-.5f;
+						float zFromMid = hitZ-.5f;
+						float max = Math.max(Math.abs(xFromMid), Math.abs(zFromMid));
+						if(max==Math.abs(xFromMid))
+							f = xFromMid < 0?Direction.WEST: Direction.EAST;
+						else
+							f = zFromMid < 0?Direction.NORTH: Direction.SOUTH;
+					}
+					break;
+				case HORIZONTAL_PREFER_SIDE:
+					f = side.getAxis()!=Axis.Y?side.getOpposite(): placer.getHorizontalFacing();
+					break;
+				case FIXED_DOWN:
+					f = Direction.DOWN;
+					break;
+				default:
+					throw new IllegalArgumentException("Invalid facing limitation: "+limit);
 			}
-			else if(limit==6)
-				f = side.getAxis()!=Axis.Y?side.getOpposite(): placer.getHorizontalFacing();
 
 			IELogger.logger.debug("Setting facing to {}", f);
 			return mirrorFacingOnPlacement(placer)?f.getOpposite(): f;
@@ -184,6 +195,45 @@ public class IEBlockInterfaces
 
 		default void afterRotation(Direction oldDir, Direction newDir)
 		{
+		}
+
+		enum PlacementLimitation
+		{
+			SIDE_CLICKED,
+			PISTON_LIKE,
+			HORIZONTAL,
+			VERTICAL,
+			HORIZONTAL_AXIS,
+			HORIZONTAL_QUADRANT,
+			HORIZONTAL_PREFER_SIDE,
+			FIXED_DOWN
+		}
+	}
+
+	public interface BlockstateProvider
+	{
+		BlockState getState();
+
+		void setState(BlockState newState);
+	}
+
+	public interface IStateBasedDirectional extends IDirectionalTile, BlockstateProvider
+	{
+
+		EnumProperty<Direction> getFacingProperty();
+
+		@Override
+		default Direction getFacing()
+		{
+			return getState().get(getFacingProperty());
+		}
+
+		@Override
+		default void setFacing(Direction facing)
+		{
+			BlockState oldState = getState();
+			BlockState newState = oldState.with(getFacingProperty(), facing);
+			setState(newState);
 		}
 	}
 

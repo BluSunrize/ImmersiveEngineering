@@ -55,7 +55,7 @@ public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
-		final float dir = (tile.facing.getHorizontalAngle()+180)%180;
+		final float dir = (tile.getFacing().getHorizontalAngle()+180)%180;
 		float wheelRotation = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*(float)tile.perTick);
 		GlStateManager.rotatef(dir, 0, 1, 0);
 		GlStateManager.rotatef(wheelRotation, 0, 0, 1);

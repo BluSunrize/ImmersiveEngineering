@@ -21,6 +21,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -30,18 +31,17 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
  * @author BluSunrize - 01.10.2016
  */
 public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IHammerInteraction,
-		IAdvancedCollisionBounds, IAdvancedDirectionalTile, IDualState, IColouredTile, ITileDrop
+		IAdvancedCollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IDualState, IColouredTile, ITileDrop
 {
 	public static TileEntityType<StripCurtainTileEntity> TYPE;
 
-	public Direction facing = Direction.NORTH;
-	public boolean ceilingAttached = false;
 	public int colour = 0xffffff;
 	private int redstoneSignal = 0;
 	private boolean strongSignal = false;
@@ -56,21 +56,21 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	{
 		if(!world.isRemote&&world.getGameTime()%4==((getPos().getX()^getPos().getZ())&3))
 		{
-			AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()==Axis.Z?4: 5): ((facing.ordinal()-2)%4)];
+			AxisAlignedBB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
 			aabb = new AxisAlignedBB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).offset(getPos());
 			List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, aabb);
-			if(!ceilingAttached&&!entities.isEmpty()&&redstoneSignal==0)
+			if(!isCeilingAttached()&&!entities.isEmpty()&&redstoneSignal==0)
 			{
 				redstoneSignal = 15;
 				markDirty();
 				world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
-				world.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockState().getBlock());
+				world.notifyNeighborsOfStateChange(getPos().offset(getFacing()), getBlockState().getBlock());
 			}
 			if(entities.isEmpty()&&redstoneSignal!=0)
 			{
 				redstoneSignal = 0;
 				world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
-				world.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockState().getBlock());
+				world.notifyNeighborsOfStateChange(getPos().offset(getFacing()), getBlockState().getBlock());
 			}
 		}
 	}
@@ -78,9 +78,9 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(ceilingAttached&&entity.isAlive()&&redstoneSignal==0)
+		if(isCeilingAttached()&&entity.isAlive()&&redstoneSignal==0)
 		{
-			AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()==Axis.Z?4: 5): ((facing.ordinal()-2)%4)];
+			AxisAlignedBB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
 			aabb = new AxisAlignedBB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).offset(getPos());
 			if(entity.getBoundingBox().intersects(aabb))
 			{
@@ -97,7 +97,7 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	{
 		if(!strongSignal)
 			return 0;
-		return getWeakRSOutput(state, facing);
+		return getWeakRSOutput(state, getFacing());
 	}
 
 	@Override
@@ -117,17 +117,12 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = Direction.byIndex(nbt.getInt("facing"));
-		ceilingAttached = nbt.getBoolean("ceilingAttached");
 		colour = nbt.getInt("colour");
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		if(facing!=null)
-			nbt.putInt("facing", facing.ordinal());
-		nbt.putBoolean("ceilingAttached", ceilingAttached);
 		nbt.putInt("colour", colour);
 	}
 
@@ -143,32 +138,27 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	@Override
 	public float[] getBlockBounds()
 	{
-		AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()==Axis.Z?4: 5): ((facing.ordinal()-2)%4)];
+		AxisAlignedBB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
 		return new float[]{(float)aabb.minX, (float)aabb.minY, (float)aabb.minZ, (float)aabb.maxX, (float)aabb.maxY, (float)aabb.maxZ};
 	}
 
 	@Override
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
-		return Lists.newArrayList(bounds[ceilingAttached?(facing.getAxis()==Axis.Z?4: 5): ((facing.ordinal()-2)%4)]);
+		return Lists.newArrayList(bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)]);
+	}
+
+	@Nonnull
+	@Override
+	public EnumProperty<Direction> getFacingProperty()
+	{
+		return StripCurtainBlock.FACING;
 	}
 
 	@Override
-	public Direction getFacing()
+	public PlacementLimitation getFacingLimitation()
 	{
-		return facing;
-	}
-
-	@Override
-	public void setFacing(Direction facing)
-	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override
@@ -193,13 +183,13 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	public void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer)
 	{
 		if(side==Direction.DOWN)
-			ceilingAttached = true;
+			setCeilingAttached(true);
 	}
 
 	@Override
 	public boolean getIsSecondState()
 	{
-		return ceilingAttached;
+		return isCeilingAttached();
 	}
 
 	@Override
@@ -232,5 +222,16 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 		strongSignal = !strongSignal;
 		ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl.strongSignal."+strongSignal));
 		return true;
+	}
+
+	public boolean isCeilingAttached()
+	{
+		return getBlockState().get(StripCurtainBlock.CEILING_ATTACHED);
+	}
+
+	public void setCeilingAttached(boolean ceilingAttached)
+	{
+		BlockState newState = getBlockState().with(StripCurtainBlock.CEILING_ATTACHED, ceilingAttached);
+		getWorldNonnull().setBlockState(pos, newState);
 	}
 }

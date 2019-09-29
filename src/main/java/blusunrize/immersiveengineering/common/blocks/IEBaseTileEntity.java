@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.BlockstateProvider;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -34,7 +35,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public abstract class IEBaseTileEntity extends TileEntity
+public abstract class IEBaseTileEntity extends TileEntity implements BlockstateProvider
 {
 	public IEBaseTileEntity(TileEntityType<? extends TileEntity> type)
 	{
@@ -248,5 +249,17 @@ public abstract class IEBaseTileEntity extends TileEntity
 	public void setCachedState(BlockState state)
 	{
 		cachedBlockState = state;
+	}
+
+	@Override
+	public void setState(BlockState state)
+	{
+		getWorldNonnull().setBlockState(pos, state);
+	}
+
+	@Override
+	public BlockState getState()
+	{
+		return getBlockState();
 	}
 }

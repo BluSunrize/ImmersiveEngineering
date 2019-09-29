@@ -25,7 +25,7 @@ public class ChargingStationRenderer extends TileEntityRenderer<ChargingStationT
 			GlStateManager.translated(x+.5, y+.3125, z+.5);
 			GlStateManager.scalef(.75f, .75f, .75f);
 			ClientUtils.bindAtlas();
-			switch(te.facing)
+			switch(te.getFacing())
 			{
 				case NORTH:
 					GlStateManager.rotatef(180, 0, 1, 0);

@@ -142,7 +142,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 			TileEntity te = Utils.getExistingTileEntity(world, pos);
 			if(te instanceof BlastFurnacePreheaterTileEntity)
 			{
-				if(((BlastFurnacePreheaterTileEntity)te).facing==phf.getOpposite())
+				if(((BlastFurnacePreheaterTileEntity)te).getFacing()==phf.getOpposite())
 					i += ((BlastFurnacePreheaterTileEntity)te).doSpeedup();
 			}
 		}

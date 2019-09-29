@@ -149,7 +149,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(!dummy&&capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||facing==Direction.DOWN||facing==this.facing.getOpposite()))
+		if(!dummy&&capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||facing==Direction.DOWN||facing==this.getFacing().getOpposite()))
 			return tankCap.cast();
 		return super.getCapability(capability, facing);
 	}

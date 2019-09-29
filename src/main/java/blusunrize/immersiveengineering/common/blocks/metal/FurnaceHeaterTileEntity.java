@@ -9,18 +9,20 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -28,14 +30,14 @@ import net.minecraft.util.Direction;
 
 import javax.annotation.Nonnull;
 
-public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IActiveState, IDirectionalTile
+public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IActiveState,
+		IStateBasedDirectional
 {
 	public static TileEntityType<FurnaceHeaterTileEntity> TYPE;
 	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256,
 			Math.max(IEConfig.MACHINES.heater_consumption.get(), IEConfig.MACHINES.heater_speedupConsumption.get())));
 	//public int[] sockets = new int[6];
 	public boolean active = false;
-	public Direction facing = Direction.NORTH;
 
 	public FurnaceHeaterTileEntity()
 	{
@@ -100,7 +102,6 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		//		sockets = nbt.getIntArray("sockets");
 		//		if(sockets.length<6)
 		//			sockets = new int[0];
@@ -111,7 +112,6 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
-		nbt.putInt("facing", facing.ordinal());
 		//		nbt.putIntArray("sockets", sockets);
 		nbt.putBoolean("active", active);
 	}
@@ -127,39 +127,33 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	@Override
 	public SideConfig getEnergySideConfig(Direction facing)
 	{
-		return facing==this.facing?SideConfig.INPUT: SideConfig.NONE;
+		return facing==this.getFacing()?SideConfig.INPUT: SideConfig.NONE;
 	}
 
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, facing);
+	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, getFacing());
 
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(facing==this.facing)
+		if(facing==this.getFacing())
 		{
-			if(wrapper.side!=this.facing)
-				wrapper = new IEForgeEnergyWrapper(this, this.facing);
+			if(wrapper.side!=this.getFacing())
+				wrapper = new IEForgeEnergyWrapper(this, this.getFacing());
 			return wrapper;
 		}
 		return null;
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return this.facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 1;
+		return PlacementLimitation.PISTON_LIKE;
 	}
 
 	@Override

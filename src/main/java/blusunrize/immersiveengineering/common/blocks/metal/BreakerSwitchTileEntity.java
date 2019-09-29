@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -24,6 +25,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -42,15 +44,16 @@ import java.util.Optional;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
 
 //TODO ConnectionPoints for opening/closing
-public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity implements IBlockBounds, IAdvancedDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<BlockState>
+public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity implements IBlockBounds, IAdvancedDirectionalTile,
+		IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<BlockState>, IStateBasedDirectional
 {
 	public static TileEntityType<BreakerSwitchTileEntity> TYPE;
 
 	public static final int LEFT_INDEX = 0;
 	public static final int RIGHT_INDEX = 1;
 	public int rotation = 0;
-	public Direction facing = Direction.NORTH;
 	public int wires = 0;
+	//TODO convert to blockstate property?
 	public boolean active = false;
 	public boolean inverted = false;
 
@@ -68,7 +71,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
-		Matrix4 mat = new Matrix4(facing);
+		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		//TODO what is Matrix(facing)^-1?
 		mat.invert();
@@ -112,7 +115,6 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("facing", facing.ordinal());
 		nbt.putInt("rotation", rotation);
 		nbt.putInt("wires", wires);
 		nbt.putBoolean("active", active);
@@ -123,7 +125,6 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		rotation = nbt.getInt("rotation");
 		wires = nbt.getInt("wires");
 		active = nbt.getBoolean("active");
@@ -133,7 +134,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		Matrix4 mat = new Matrix4(facing);
+		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		boolean isLeft = here.getIndex()==LEFT_INDEX;
 		return mat.apply(new Vec3d(isLeft?.25: .75, .5, .125));
@@ -201,21 +202,15 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return MiscConnectorBlock.DEFAULT_FACING_PROP;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 0;
+		return PlacementLimitation.SIDE_CLICKED;
 	}
 
 	@Override
@@ -241,7 +236,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	{
 		Vec3d start = new Vec3d(.25, .1875, 0);
 		Vec3d end = new Vec3d(.75, .8125, .5);
-		Matrix4 mat = new Matrix4(facing);
+		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
@@ -258,7 +253,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public int getStrongRSOutput(BlockState state, Direction side)
 	{
-		return side.getOpposite()==facing&&(active^inverted)?15: 0;
+		return side.getOpposite()==getFacing()&&(active^inverted)?15: 0;
 	}
 
 	@Override
@@ -279,7 +274,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public String getCacheKey(BlockState object)
 	{
-		return rotation+","+facing.getIndex()+","+active;
+		return rotation+","+getFacing().getIndex()+","+active;
 	}
 
 	@Override

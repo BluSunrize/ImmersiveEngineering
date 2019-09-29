@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -34,6 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -59,12 +61,11 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class TurretTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IIEInventory,
-		IHasDummyBlocks, ITileDrop, IDirectionalTile, IBlockBounds, IInteractionObjectIE, IEntityProof, IHammerInteraction, IHasObjProperty
+		IHasDummyBlocks, ITileDrop, IStateBasedDirectional, IBlockBounds, IInteractionObjectIE, IEntityProof, IHammerInteraction, IHasObjProperty
 {
 	public boolean dummy = false;
 	public FluxStorage energyStorage = new FluxStorage(16000);
 	public boolean redstoneControlInverted = false;
-	public Direction facing = Direction.NORTH;
 
 	public String owner;
 	public List<String> targetList = new ArrayList<>();
@@ -113,7 +114,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 				this.target = null;
 			else if(world.isRemote)
 			{
-				float facingYaw = facing==Direction.NORTH?180: facing==Direction.WEST?-90: facing==Direction.EAST?90: 0;
+				float facingYaw = getFacing()==Direction.NORTH?180: getFacing()==Direction.WEST?-90: getFacing()==Direction.EAST?90: 0;
 				double yaw = (MathHelper.atan2(delta.x, delta.z)*(180/Math.PI))-facingYaw;
 				this.rotationPitch = (float)(Math.atan2(Math.sqrt(delta.x*delta.x+delta.z*delta.z), delta.y)*(180/Math.PI))-90;
 				if(this.rotationYaw==0)//moving from default
@@ -304,7 +305,6 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	{
 		dummy = nbt.getBoolean("dummy");
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		energyStorage.readFromNBT(nbt);
 
 		if(nbt.contains("owner", NBT.TAG_STRING))
@@ -328,8 +328,6 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	{
 		nbt.putBoolean("dummy", dummy);
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
-		if(facing!=null)
-			nbt.putInt("facing", facing.ordinal());
 		energyStorage.writeToNBT(nbt);
 
 		if(owner!=null)
@@ -352,7 +350,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	{
 		if(!dummy)
 			return null;
-		switch(facing)
+		switch(getFacing())
 		{
 			case NORTH:
 				return new float[]{.125f, .0625f, .125f, .875f, .875f, 1};
@@ -441,21 +439,15 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override
@@ -501,7 +493,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	{
 		world.setBlockState(pos.up(), state);
 		((TurretTileEntity)world.getTileEntity(pos.up())).dummy = true;
-		((TurretTileEntity)world.getTileEntity(pos.up())).facing = facing;
+		((TurretTileEntity)world.getTileEntity(pos.up())).setFacing(getFacing());
 	}
 
 	@Override

@@ -204,9 +204,9 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public int getFacingLimitation()
+	public PlacementLimitation getFacingLimitation()
 	{
-		return 1;
+		return PlacementLimitation.PISTON_LIKE;
 	}
 
 	@Override

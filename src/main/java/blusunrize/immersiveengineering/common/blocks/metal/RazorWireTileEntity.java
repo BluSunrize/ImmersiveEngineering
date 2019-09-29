@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveConnectableTileEntity;
@@ -15,14 +16,14 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -41,12 +42,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implements IDirectionalTile, IAdvancedCollisionBounds,
+public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, IAdvancedCollisionBounds,
 		IOBJModelCallback<BlockState>, EnergyConnector
 {
 	public static TileEntityType<RazorWireTileEntity> TYPE;
-
-	public Direction facing = Direction.NORTH;
 
 	public RazorWireTileEntity()
 	{
@@ -54,35 +53,15 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		super.readCustomNBT(nbt, descPacket);
-		facing = Direction.byIndex(nbt.getInt("facing"));
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public PlacementLimitation getFacingLimitation()
 	{
-		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("facing", facing.ordinal());
-	}
-
-	@Override
-	public Direction getFacing()
-	{
-		return facing;
-	}
-
-	@Override
-	public void setFacing(Direction facing)
-	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override
@@ -136,15 +115,15 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 			return Collections.singletonList(null);
 		List<AxisAlignedBB> list = new ArrayList<>(wallL&&wallR?2: 1);
 		if(wallL)
-			list.add(new AxisAlignedBB(facing==Direction.SOUTH?.8125: 0, 0, facing==Direction.WEST?.8125: 0, facing==Direction.NORTH?.1875: 1, 1, facing==Direction.EAST?.1875: 1).offset(getPos()));
+			list.add(new AxisAlignedBB(getFacing()==Direction.SOUTH?.8125: 0, 0, getFacing()==Direction.WEST?.8125: 0, getFacing()==Direction.NORTH?.1875: 1, 1, getFacing()==Direction.EAST?.1875: 1).offset(getPos()));
 		if(wallR)
-			list.add(new AxisAlignedBB(facing==Direction.NORTH?.8125: 0, 0, facing==Direction.EAST?.8125: 0, facing==Direction.SOUTH?.1875: 1, 1, facing==Direction.WEST?.1875: 1).offset(getPos()));
+			list.add(new AxisAlignedBB(getFacing()==Direction.NORTH?.8125: 0, 0, getFacing()==Direction.EAST?.8125: 0, getFacing()==Direction.SOUTH?.1875: 1, 1, getFacing()==Direction.WEST?.1875: 1).offset(getPos()));
 		return list;
 	}
 
 	private boolean renderWall(boolean left)
 	{
-		Direction dir = left?facing.rotateY(): facing.rotateYCCW();
+		Direction dir = left?getFacing().rotateY(): getFacing().rotateYCCW();
 		BlockPos neighbourPos = getPos().offset(dir, -1);
 		if(!world.isBlockLoaded(neighbourPos))
 			return true;
@@ -219,19 +198,19 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 		if(!isOnGround()||!(wallL||wallR))
 		{
 			if(yDif > 0)
-				return new Vec3d(facing.getXOffset()!=0?.5: xDif < 0?.40625: .59375, .9375, facing.getZOffset()!=0?.5: zDif < 0?.40625: .59375);
+				return new Vec3d(getFacing().getXOffset()!=0?.5: xDif < 0?.40625: .59375, .9375, getFacing().getZOffset()!=0?.5: zDif < 0?.40625: .59375);
 			else
 			{
-				boolean right = facing.rotateY().getAxisDirection().getOffset()==Math.copySign(1, facing.getXOffset()!=0?zDif: xDif);
-				int faceX = facing.getXOffset();
-				int faceZ = facing.getZOffset();
+				boolean right = getFacing().rotateY().getAxisDirection().getOffset()==Math.copySign(1, getFacing().getXOffset()!=0?zDif: xDif);
+				int faceX = getFacing().getXOffset();
+				int faceZ = getFacing().getZOffset();
 				return new Vec3d(faceX!=0?.5+(right?0: faceX*.1875): (xDif < 0?0: 1), .046875, faceZ!=0?.5+(right?0: faceZ*.1875): (zDif < 0?0: 1));
 			}
 		}
 		else
 		{
-			boolean wallN = facing==Direction.NORTH||facing==Direction.EAST?wallL: wallR;
-			return new Vec3d(facing.getXOffset()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, facing.getZOffset()!=0?.5: zDif < 0&&wallN?.125: .875);
+			boolean wallN = getFacing()==Direction.NORTH||getFacing()==Direction.EAST?wallL: wallR;
+			return new Vec3d(getFacing().getXOffset()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, getFacing().getZOffset()!=0?.5: zDif < 0&&wallN?.125: .875);
 		}
 	}
 
@@ -261,7 +240,7 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 		boolean connectP = true;
 		int widthN = 0;
 		boolean connectN = true;
-		Direction dir = facing.rotateY();
+		Direction dir = getFacing().rotateY();
 		if(dir.getAxisDirection()==AxisDirection.NEGATIVE)
 			dir = dir.getOpposite();
 		for(int i = 1; i <= maxReach; i++)
@@ -277,7 +256,7 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 			else
 				connectN = false;
 		}
-		AxisAlignedBB aabb = new AxisAlignedBB(getPos().add(facing.getAxis()==Axis.Z?-widthN: 0, 0, facing.getAxis()==Axis.X?-widthN: 0), getPos().add(facing.getAxis()==Axis.Z?1+widthP: 1, 1, facing.getAxis()==Axis.X?1+widthP: 1));
+		AxisAlignedBB aabb = new AxisAlignedBB(getPos().add(getFacing().getAxis()==Axis.Z?-widthN: 0, 0, getFacing().getAxis()==Axis.X?-widthN: 0), getPos().add(getFacing().getAxis()==Axis.Z?1+widthP: 1, 1, getFacing().getAxis()==Axis.X?1+widthP: 1));
 		List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, aabb);
 		for(LivingEntity ent : entities)
 			ent.attackEntityFrom(IEDamageSources.razorShock, 2);

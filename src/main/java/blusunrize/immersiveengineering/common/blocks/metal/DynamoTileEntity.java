@@ -9,16 +9,18 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -27,10 +29,9 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFluxConnector, IDirectionalTile, IRotationAcceptor
+public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFluxConnector, IStateBasedDirectional, IRotationAcceptor
 {
 	public static TileEntityType<DynamoTileEntity> TYPE;
-	public Direction facing = Direction.NORTH;
 
 	public DynamoTileEntity()
 	{
@@ -40,7 +41,7 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 	@Override
 	public void inputRotation(double rotation, @Nonnull Direction side)
 	{
-		if(side!=this.facing.getOpposite())
+		if(side!=this.getFacing().getOpposite())
 			return;
 		int output = (int)(IEConfig.MACHINES.dynamo_output.get()*rotation);
 		for(Direction fd : Direction.VALUES)
@@ -52,21 +53,15 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override
@@ -90,13 +85,11 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = Direction.byIndex(nbt.getInt("facing"));
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putInt("facing", facing.ordinal());
 	}
 
 	@Nonnull

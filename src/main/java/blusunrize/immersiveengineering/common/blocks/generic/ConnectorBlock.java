@@ -87,7 +87,7 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 		if(te instanceof EnergyConnectorTileEntity)
 		{
 			EnergyConnectorTileEntity connector = (EnergyConnectorTileEntity)te;
-			if(world.isAirBlock(pos.offset(connector.facing)))
+			if(world.isAirBlock(pos.offset(connector.getFacing())))
 			{
 				spawnAsEntity(world, pos, new ItemStack(this));
 				connector.getWorldNonnull().removeBlock(pos, false);

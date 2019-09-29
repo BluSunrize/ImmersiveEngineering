@@ -66,19 +66,19 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 
 	private int getComparatorSignal()
 	{
-		BlockPos pos = this.getPos().offset(facing);
+		BlockPos pos = this.getPos().offset(getFacing());
 		BlockState state = world.getBlockState(pos);
 		if(state.hasComparatorInputOverride())
 			return state.getComparatorInputOverride(world, pos);
 		else if(state.isNormalCube(world, pos))
 		{
-			pos = pos.offset(facing);
+			pos = pos.offset(getFacing());
 			state = world.getBlockState(pos);
 			if(state.hasComparatorInputOverride())
 				return state.getComparatorInputOverride(world, pos);
 			else if(state.getMaterial()==Material.AIR)
 			{
-				ItemFrameEntity entityitemframe = this.findItemFrame(world, facing, pos);
+				ItemFrameEntity entityitemframe = this.findItemFrame(world, getFacing(), pos);
 				if(entityitemframe!=null)
 					return entityitemframe.getAnalogOutput();
 			}
@@ -132,7 +132,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		Direction side = facing.getOpposite();
+		Direction side = getFacing().getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5+side.getXOffset()*(.375-conRadius), .5+side.getYOffset()*(.375-conRadius), .5+side.getZOffset()*(.375-conRadius));
 	}
@@ -142,7 +142,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	{
 		float wMin = .28125f;
 		float wMax = .71875f;
-		switch(facing.getOpposite())
+		switch(getFacing().getOpposite())
 		{
 			case UP:
 			case DOWN:

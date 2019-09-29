@@ -224,9 +224,9 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	}
 
 	@Override
-	public int getFacingLimitation()
+	public PlacementLimitation getFacingLimitation()
 	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override

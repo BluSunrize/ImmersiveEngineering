@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
@@ -19,9 +20,9 @@ import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -36,6 +37,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -58,14 +60,13 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
-		IDirectionalTile, IBlockBounds, IHammerInteraction
+		IStateBasedDirectional, IBlockBounds, IHammerInteraction
 {
 	public static TileEntityType<TeslaCoilTileEntity> TYPE;
 
 	public boolean dummy = false;
 	public FluxStorage energyStorage = new FluxStorage(48000);
 	public boolean redstoneControlInverted = false;
-	public Direction facing = Direction.UP;
 	public boolean lowPower = false;
 	private Vec3d soundPos = null;
 	@OnlyIn(Dist.CLIENT)
@@ -159,22 +160,22 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				tV += tV < 0?-2: 2;
 				tH += tH < 0?-2: 2;
 
-				BlockPos targetBlock = getPos().add(facing.getAxis()==Axis.X?0: tH, facing.getAxis()==Axis.Y?0: tV, facing.getAxis()==Axis.Y?tV: facing.getAxis()==Axis.X?tH: 0);
+				BlockPos targetBlock = getPos().add(getFacing().getAxis()==Axis.X?0: tH, getFacing().getAxis()==Axis.Y?0: tV, getFacing().getAxis()==Axis.Y?tV: getFacing().getAxis()==Axis.X?tH: 0);
 				double tL = 0;
 				boolean targetFound = false;
 				if(!world.isAirBlock(targetBlock))
 				{
 					BlockState state = world.getBlockState(targetBlock);
 					AxisAlignedBB blockBounds = state.getShape(world, targetBlock).getBoundingBox();
-					if(facing==Direction.UP)
+					if(getFacing()==Direction.UP)
 						tL = targetBlock.getY()-getPos().getY()+blockBounds.maxY;
-					else if(facing==Direction.DOWN)
+					else if(getFacing()==Direction.DOWN)
 						tL = targetBlock.getY()-getPos().getY()+blockBounds.minY;
-					else if(facing==Direction.NORTH)
+					else if(getFacing()==Direction.NORTH)
 						tL = targetBlock.getZ()-getPos().getZ()+blockBounds.minZ;
-					else if(facing==Direction.SOUTH)
+					else if(getFacing()==Direction.SOUTH)
 						tL = targetBlock.getZ()-getPos().getZ()+blockBounds.maxZ;
-					else if(facing==Direction.WEST)
+					else if(getFacing()==Direction.WEST)
 						tL = targetBlock.getX()-getPos().getX()+blockBounds.minX;
 					else
 						tL = targetBlock.getX()-getPos().getX()+blockBounds.maxX;
@@ -187,13 +188,13 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 					{
 						for(int ll = 0; ll <= 6; ll++)
 						{
-							BlockPos targetBlock2 = targetBlock.offset(positiveFirst?facing: facing.getOpposite(), ll);
+							BlockPos targetBlock2 = targetBlock.offset(positiveFirst?getFacing(): getFacing().getOpposite(), ll);
 							if(!world.isAirBlock(targetBlock2))
 							{
 								BlockState state = world.getBlockState(targetBlock2);
 								AxisAlignedBB blockBounds = state.getShape(world, targetBlock2).getBoundingBox();
-								tL = facing.getAxis()==Axis.Y?(targetBlock2.getY()-getPos().getY()): facing.getAxis()==Axis.Z?(targetBlock2.getZ()-getPos().getZ()): (targetBlock2.getZ()-getPos().getZ());
-								Direction tempF = positiveFirst?facing: facing.getOpposite();
+								tL = getFacing().getAxis()==Axis.Y?(targetBlock2.getY()-getPos().getY()): getFacing().getAxis()==Axis.Z?(targetBlock2.getZ()-getPos().getZ()): (targetBlock2.getZ()-getPos().getZ());
+								Direction tempF = positiveFirst?getFacing(): getFacing().getOpposite();
 								if(tempF==Direction.UP)
 									tL += blockBounds.maxY;
 								else if(tempF==Direction.DOWN)
@@ -251,14 +252,14 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				double dz = target.posZ-getPos().getZ();
 
 				Direction f = null;
-				if(facing.getAxis()==Axis.Y)
+				if(getFacing().getAxis()==Axis.Y)
 				{
 					if(Math.abs(dz) > Math.abs(dx))
 						f = dz < 0?Direction.NORTH: Direction.SOUTH;
 					else
 						f = dx < 0?Direction.WEST: Direction.EAST;
 				}
-				else if(facing.getAxis()==Axis.Z)
+				else if(getFacing().getAxis()==Axis.Z)
 				{
 					if(Math.abs(dy) > Math.abs(dx))
 						f = dy < 0?Direction.DOWN: Direction.UP;
@@ -275,13 +276,13 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
 				Vec3d coilPos = new Vec3d(getPos()).add(.5, .5, .5);
 				//Vertical offset
-				coilPos = coilPos.add(facing.getXOffset()*verticalOffset, facing.getYOffset()*verticalOffset, facing.getZOffset()*verticalOffset);
+				coilPos = coilPos.add(getFacing().getXOffset()*verticalOffset, getFacing().getYOffset()*verticalOffset, getFacing().getZOffset()*verticalOffset);
 				//offset to direction
 				if(f!=null)
 				{
 					coilPos = coilPos.add(f.getXOffset()*.375, f.getYOffset()*.375, f.getZOffset()*.375);
 					//random side offset
-					f = f.rotateAround(facing.getAxis());
+					f = f.rotateAround(getFacing().getAxis());
 					double dShift = (Utils.RAND.nextDouble()-.5)*.75;
 					coilPos = coilPos.add(f.getXOffset()*dShift, f.getYOffset()*dShift, f.getZOffset()*dShift);
 				}
@@ -299,19 +300,19 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public void initFreeStreamer(double tL, double tV, double tH)
 	{
-		double tx = facing.getAxis()==Axis.X?tL: tH;
-		double ty = facing.getAxis()==Axis.Y?tL: tV;
-		double tz = facing.getAxis()==Axis.Y?tV: facing.getAxis()==Axis.X?tH: tL;
+		double tx = getFacing().getAxis()==Axis.X?tL: tH;
+		double ty = getFacing().getAxis()==Axis.Y?tL: tV;
+		double tz = getFacing().getAxis()==Axis.Y?tV: getFacing().getAxis()==Axis.X?tH: tL;
 
 		Direction f = null;
-		if(facing.getAxis()==Axis.Y)
+		if(getFacing().getAxis()==Axis.Y)
 		{
 			if(Math.abs(tz) > Math.abs(tx))
 				f = tz < 0?Direction.NORTH: Direction.SOUTH;
 			else
 				f = tx < 0?Direction.WEST: Direction.EAST;
 		}
-		else if(facing.getAxis()==Axis.Z)
+		else if(getFacing().getAxis()==Axis.Z)
 		{
 			if(Math.abs(ty) > Math.abs(tx))
 				f = ty < 0?Direction.DOWN: Direction.UP;
@@ -329,11 +330,11 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
 		Vec3d coilPos = new Vec3d(getPos()).add(.5, .5, .5);
 		//Vertical offset
-		coilPos = coilPos.add(facing.getXOffset()*verticalOffset, facing.getYOffset()*verticalOffset, facing.getZOffset()*verticalOffset);
+		coilPos = coilPos.add(getFacing().getXOffset()*verticalOffset, getFacing().getYOffset()*verticalOffset, getFacing().getZOffset()*verticalOffset);
 		//offset to direction
 		coilPos = coilPos.add(f.getXOffset()*.375, f.getYOffset()*.375, f.getZOffset()*.375);
 		//random side offset
-		f = f.rotateAround(facing.getAxis());
+		f = f.rotateAround(getFacing().getAxis());
 		double dShift = (Utils.RAND.nextDouble()-.5)*.75;
 		coilPos = coilPos.add(f.getXOffset()*dShift, f.getYOffset()*dShift, f.getZOffset()*dShift);
 		addAnimation(new LightningAnimation(coilPos, new Vec3d(getPos()).add(tx, ty, tz)));
@@ -352,7 +353,6 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		dummy = nbt.getBoolean("dummy");
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		lowPower = nbt.getBoolean("lowPower");
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		energyStorage.readFromNBT(nbt);
 	}
 
@@ -362,8 +362,6 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		nbt.putBoolean("dummy", dummy);
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		nbt.putBoolean("lowPower", lowPower);
-		if(facing!=null)
-			nbt.putInt("facing", facing.ordinal());
 		energyStorage.writeToNBT(nbt);
 	}
 
@@ -372,7 +370,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	{
 		if(!dummy)
 			return null;
-		switch(facing)
+		switch(getFacing())
 		{
 			case DOWN:
 				return new float[]{.125f, .125f, .125f, .875f, 1, .875f};
@@ -406,7 +404,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	{
 		if(dummy)
 		{
-			TileEntity te = world.getTileEntity(getPos().offset(facing, -1));
+			TileEntity te = world.getTileEntity(getPos().offset(getFacing(), -1));
 			if(te instanceof TeslaCoilTileEntity)
 				return ((TeslaCoilTileEntity)te).hammerUseSide(side, player, hitX, hitY, hitZ);
 			return false;
@@ -436,21 +434,15 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return IEProperties.FACING_ALL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 0;
+		return PlacementLimitation.SIDE_CLICKED;
 	}
 
 	@Override
@@ -480,17 +472,17 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
-		world.setBlockState(pos.offset(facing), state);
-		((TeslaCoilTileEntity)world.getTileEntity(pos.offset(facing))).dummy = true;
-		((TeslaCoilTileEntity)world.getTileEntity(pos.offset(facing))).facing = facing;
+		world.setBlockState(pos.offset(getFacing()), state);
+		((TeslaCoilTileEntity)world.getTileEntity(pos.offset(getFacing()))).dummy = true;
+		((TeslaCoilTileEntity)world.getTileEntity(pos.offset(getFacing()))).setFacing(getFacing());
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 1; i++)
-			if(world.getTileEntity(getPos().offset(facing, dummy?-1: 0).offset(facing, i)) instanceof TeslaCoilTileEntity)
-				world.removeBlock(getPos().offset(facing, dummy?-1: 0).offset(facing, i), false);
+			if(world.getTileEntity(getPos().offset(getFacing(), dummy?-1: 0).offset(getFacing(), i)) instanceof TeslaCoilTileEntity)
+				world.removeBlock(getPos().offset(getFacing(), dummy?-1: 0).offset(getFacing(), i), false);
 	}
 
 	@Nonnull
@@ -499,7 +491,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	{
 		if(dummy)
 		{
-			TileEntity te = world.getTileEntity(getPos().offset(facing, -1));
+			TileEntity te = world.getTileEntity(getPos().offset(getFacing(), -1));
 			if(te instanceof TeslaCoilTileEntity)
 				return ((TeslaCoilTileEntity)te).getFluxStorage();
 		}

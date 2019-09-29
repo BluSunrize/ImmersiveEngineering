@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.energy.wires.redstone.IRedstoneConnec
 import blusunrize.immersiveengineering.api.energy.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -26,6 +27,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -41,11 +43,10 @@ import java.util.Collection;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE_CATEGORY;
 
-public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IDirectionalTile,
+public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
 		IRedstoneOutput, IHammerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
 		IRedstoneConnector
 {
-	public Direction facing = Direction.DOWN;
 	public int ioMode = 0; // 0 - input, 1 -output
 	public DyeColor redstoneChannel = DyeColor.WHITE;
 	public boolean rsDirty = false;
@@ -70,7 +71,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public int getStrongRSOutput(BlockState state, Direction side)
 	{
-		if(!isRSOutput()||side!=this.facing.getOpposite())
+		if(!isRSOutput()||side!=this.getFacing().getOpposite())
 			return 0;
 		return output;
 	}
@@ -98,7 +99,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 			markDirty();
 			BlockState stateHere = world.getBlockState(pos);
 			markContainingBlockForUpdate(stateHere);
-			markBlockForUpdate(pos.offset(facing), stateHere);
+			markBlockForUpdate(pos.offset(getFacing()), stateHere);
 		}
 	}
 
@@ -159,21 +160,15 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return this.facing;
+		return MiscConnectorBlock.DEFAULT_FACING_PROP;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 0;
+		return PlacementLimitation.SIDE_CLICKED;
 	}
 
 	@Override
@@ -199,7 +194,6 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("facing", facing.ordinal());
 		nbt.putInt("ioMode", ioMode);
 		nbt.putInt("redstoneChannel", redstoneChannel.getId());
 		nbt.putInt("output", output);
@@ -209,7 +203,6 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		ioMode = nbt.getInt("ioMode");
 		redstoneChannel = DyeColor.byId(nbt.getInt("redstoneChannel"));
 		output = nbt.getInt("output");
@@ -218,7 +211,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		Direction side = facing.getOpposite();
+		Direction side = getFacing().getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
 		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
 	}
@@ -228,7 +221,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	{
 		float length = .625f;
 		float wMin = .3125f;
-		return EnergyConnectorTileEntity.getConnectorBounds(facing, wMin, length);
+		return EnergyConnectorTileEntity.getConnectorBounds(getFacing(), wMin, length);
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -116,9 +116,9 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public int getFacingLimitation()
+	public PlacementLimitation getFacingLimitation()
 	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override

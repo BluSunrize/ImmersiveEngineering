@@ -86,9 +86,9 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public int getFacingLimitation()
+	public PlacementLimitation getFacingLimitation()
 	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override

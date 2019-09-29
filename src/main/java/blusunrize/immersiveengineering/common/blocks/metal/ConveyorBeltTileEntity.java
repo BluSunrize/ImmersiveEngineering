@@ -104,9 +104,9 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	}
 
 	@Override
-	public int getFacingLimitation()
+	public PlacementLimitation getFacingLimitation()
 	{
-		return 5;
+		return PlacementLimitation.HORIZONTAL_QUADRANT;
 	}
 
 	@Override

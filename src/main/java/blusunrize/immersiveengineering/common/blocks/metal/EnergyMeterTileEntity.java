@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
@@ -24,6 +25,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -38,13 +40,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IDirectionalTile,
+public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
 		IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride,
 		EnergyConnector
 {
 	public static TileEntityType<EnergyMeterTileEntity> TYPE;
 
-	public Direction facing = Direction.NORTH;
 	public double lastEnergyPassed = 0;
 	public final ArrayList<Double> lastPackets = new ArrayList<>(25);
 	public boolean lower = true;
@@ -134,7 +135,6 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("facing", facing.ordinal());
 		nbt.putBoolean("dummy", lower);
 	}
 
@@ -142,7 +142,6 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = Direction.values()[nbt.getInt("facing")];
 		lower = nbt.getBoolean("dummy");
 	}
 
@@ -152,7 +151,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 		BlockPos other = con.getOtherEnd(here).getPosition();
 		int xDif = other.getX()-pos.getX();
 		int zDif = other.getZ()-pos.getZ();
-		if(facing.getAxis()==Axis.X)
+		if(getFacing().getAxis()==Axis.X)
 			return new Vec3d(.5, .4375, zDif > 0?.8125: .1875);
 		else
 			return new Vec3d(xDif > 0?.8125: .1875, .4375, .5);
@@ -175,7 +174,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	{
 		world.setBlockState(pos.add(0, 1, 0), state);
 		((EnergyMeterTileEntity)world.getTileEntity(pos.add(0, 1, 0))).lower = false;
-		((EnergyMeterTileEntity)world.getTileEntity(pos.add(0, 1, 0))).facing = this.facing;
+		((EnergyMeterTileEntity)world.getTileEntity(pos.add(0, 1, 0))).setFacing(this.getFacing());
 	}
 
 	@Override
@@ -239,21 +238,15 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override

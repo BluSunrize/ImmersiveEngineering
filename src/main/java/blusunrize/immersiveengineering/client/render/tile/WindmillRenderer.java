@@ -69,10 +69,10 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(x+.5, y+.5, z+.5);
 
-		float dir = tile.facing==Direction.SOUTH?0: tile.facing==Direction.NORTH?180: tile.facing==Direction.EAST?90: -90;
+		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
 		float rot = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*tile.perTick);
 
-		GlStateManager.rotatef(rot, tile.facing.getAxis()==Axis.X?1: 0, 0, tile.facing.getAxis()==Axis.Z?1: 0);
+		GlStateManager.rotatef(rot, tile.getFacing().getAxis()==Axis.X?1: 0, 0, tile.getFacing().getAxis()==Axis.Z?1: 0);
 		GlStateManager.rotatef(dir, 0, 1, 0);
 
 		RenderHelper.disableStandardItemLighting();

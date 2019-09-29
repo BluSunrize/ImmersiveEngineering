@@ -8,10 +8,13 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import net.minecraft.block.BlockState;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
@@ -20,6 +23,7 @@ import java.util.function.Supplier;
 
 public class MiscConnectorBlock extends ConnectorBlock
 {
+	public static final EnumProperty<Direction> DEFAULT_FACING_PROP = IEProperties.FACING_ALL;
 	private final Supplier<TileEntityType<?>> tileType;
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, BlockRenderLayer... layers)

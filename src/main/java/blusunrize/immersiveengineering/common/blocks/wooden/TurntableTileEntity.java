@@ -76,9 +76,9 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IDirectiona
 	}
 
 	@Override
-	public int getFacingLimitation()
+	public PlacementLimitation getFacingLimitation()
 	{
-		return 1;
+		return PlacementLimitation.PISTON_LIKE;
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public class CoresampleRenderer extends TileEntityRenderer<CoresampleTileEntity>
 		GlStateManager.pushMatrix();
 		GlStateManager.disableLighting();
 		GlStateManager.translated(x+.5, y+.54864, z+.52903);
-		GlStateManager.rotatef(tile.facing==Direction.NORTH?180: tile.facing==Direction.WEST?-90: tile.facing==Direction.EAST?90: 0, 0, 1, 0);
+		GlStateManager.rotatef(tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.WEST?-90: tile.getFacing()==Direction.EAST?90: 0, 0, 1, 0);
 		GlStateManager.rotatef(-45, 1, 0, 0);
 		ClientUtils.mc().getItemRenderer().renderItem(tile.coresample, TransformType.FIXED);
 		GlStateManager.enableLighting();

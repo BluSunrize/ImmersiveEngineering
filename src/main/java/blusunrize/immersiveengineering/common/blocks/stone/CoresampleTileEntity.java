@@ -8,15 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -41,13 +42,12 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 
-public class CoresampleTileEntity extends IEBaseTileEntity implements IDirectionalTile, ITileDrop, IPlayerInteraction,
+public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ITileDrop, IPlayerInteraction,
 		IBlockOverlayText
 {
 	public static TileEntityType<CoresampleTileEntity> TYPE;
 	
 	public ItemStack coresample = ItemStack.EMPTY;
-	public Direction facing = Direction.NORTH;
 
 	public CoresampleTileEntity()
 	{
@@ -58,32 +58,24 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IDirection
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		coresample = ItemStack.read(nbt.getCompound("coresample"));
-		facing = Direction.byIndex(nbt.getInt("facing"));
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.put("coresample", coresample.write(new CompoundNBT()));
-		nbt.putInt("facing", facing.ordinal());
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override

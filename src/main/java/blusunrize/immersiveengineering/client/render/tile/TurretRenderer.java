@@ -59,7 +59,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 		GlStateManager.translated(x+.5, y+.5, z+.5);
 
 		GlStateManager.rotatef(tile.rotationYaw, 0, 1, 0);
-		GlStateManager.rotatef(tile.rotationPitch, tile.facing.getZOffset(), 0, -tile.facing.getXOffset());
+		GlStateManager.rotatef(tile.rotationPitch, tile.getFacing().getZOffset(), 0, -tile.getFacing().getXOffset());
 
 		renderModelPart(tessellator, worldRenderer, tile.getWorldNonnull(), state, model, tile.getPos(), true, "gun");
 		if(tile instanceof TurretGunTileEntity)
@@ -72,7 +72,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 				else
 					cycle = ((TurretGunTileEntity)tile).cycleRender/3f;
 
-				GlStateManager.translated(-tile.facing.getXOffset()*cycle*.3125, 0, -tile.facing.getZOffset()*cycle*.3125);
+				GlStateManager.translated(-tile.getFacing().getXOffset()*cycle*.3125, 0, -tile.getFacing().getZOffset()*cycle*.3125);
 			}
 			renderModelPart(tessellator, worldRenderer, tile.getWorldNonnull(), state, model, tile.getPos(), false, "action");
 		}

@@ -10,14 +10,15 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -27,6 +28,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -42,12 +44,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ChargingStationTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IIEInventory,
-		IDirectionalTile, IBlockBounds, IComparatorOverride, IPlayerInteraction
+		IStateBasedDirectional, IBlockBounds, IComparatorOverride, IPlayerInteraction
 {
 	public static TileEntityType<ChargingStationTileEntity> TYPE;
 
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
-	public Direction facing = Direction.NORTH;
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	private boolean charging = true;
 	public int comparatorOutput = 0;
@@ -75,9 +76,9 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 					if(charge >= 1||(time%12 >= i*4&&time%12 <= i*4+2))
 					{
 						int shift = i-1;
-						double x = getPos().getX()+.5+(facing==Direction.WEST?-.46875: facing==Direction.EAST?.46875: facing==Direction.NORTH?(-.1875*shift): (.1875*shift));
+						double x = getPos().getX()+.5+(getFacing()==Direction.WEST?-.46875: getFacing()==Direction.EAST?.46875: getFacing()==Direction.NORTH?(-.1875*shift): (.1875*shift));
 						double y = getPos().getY()+.25;
-						double z = getPos().getZ()+.5+(facing==Direction.NORTH?-.46875: facing==Direction.SOUTH?.46875: facing==Direction.EAST?(-.1875*shift): (.1875*shift));
+						double z = getPos().getZ()+.5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
 						ImmersiveEngineering.proxy.spawnRedstoneFX(world, x, y, z, .25, .25, .25, .5f, 1-charge, charge, 0);
 					}
 				}
@@ -137,7 +138,6 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		inventory.set(0, ItemStack.read(nbt.getCompound("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
@@ -146,7 +146,6 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
-		nbt.putInt("facing", facing.ordinal());
 		nbt.putBoolean("charging", charging);
 		if(!inventory.get(0).isEmpty())
 			nbt.put("inventory", inventory.get(0).write(new CompoundNBT()));
@@ -174,21 +173,21 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public SideConfig getEnergySideConfig(Direction facing)
 	{
-		return facing==Direction.DOWN||facing==this.facing.getOpposite()?SideConfig.INPUT: SideConfig.NONE;
+		return facing==Direction.DOWN||facing==this.getFacing().getOpposite()?SideConfig.INPUT: SideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper wrapperDown = new IEForgeEnergyWrapper(this, Direction.DOWN);
-	IEForgeEnergyWrapper wrapperDir = new IEForgeEnergyWrapper(this, facing.getOpposite());
+	IEForgeEnergyWrapper wrapperDir = new IEForgeEnergyWrapper(this, getFacing().getOpposite());
 
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		if(facing==Direction.DOWN)
 			return wrapperDown;
-		else if(facing==this.facing.getOpposite())
+		else if(facing==this.getFacing().getOpposite())
 		{
-			if(wrapperDir.side!=this.facing.getOpposite())
-				wrapperDir = new IEForgeEnergyWrapper(this, this.facing.getOpposite());
+			if(wrapperDir.side!=this.getFacing().getOpposite())
+				wrapperDir = new IEForgeEnergyWrapper(this, this.getFacing().getOpposite());
 			return wrapperDir;
 		}
 		return null;
@@ -201,21 +200,15 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override
@@ -239,7 +232,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public float[] getBlockBounds()
 	{
-		return new float[]{facing.getAxis()==Axis.X?0: .125f, 0, facing.getAxis()==Axis.Z?0: .125f, facing.getAxis()==Axis.X?1: .875f, 1, facing.getAxis()==Axis.Z?1: .875f};
+		return new float[]{getFacing().getAxis()==Axis.X?0: .125f, 0, getFacing().getAxis()==Axis.Z?0: .125f, getFacing().getAxis()==Axis.X?1: .875f, 1, getFacing().getAxis()==Axis.Z?1: .875f};
 	}
 
 	@Override

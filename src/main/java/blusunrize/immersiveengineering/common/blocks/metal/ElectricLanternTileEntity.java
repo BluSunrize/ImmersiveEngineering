@@ -183,9 +183,9 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public int getFacingLimitation()
+	public PlacementLimitation getFacingLimitation()
 	{
-		return -1;
+		return PlacementLimitation.FIXED_DOWN;
 	}
 
 	@Override

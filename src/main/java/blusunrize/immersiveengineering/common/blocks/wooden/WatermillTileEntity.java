@@ -9,17 +9,19 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -34,10 +36,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IDirectionalTile, IHasDummyBlocks, IHasObjProperty
+public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IHasDummyBlocks, IHasObjProperty
 {
 	public static TileEntityType<WatermillTileEntity> TYPE;
-	public Direction facing = Direction.NORTH;
 	public int[] offset = {0, 0};
 	public float rotation = 0;
 	private Vec3d rotationVec = null;
@@ -72,18 +73,18 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		}
 		prevRotation = rotation;
 
-		TileEntity acc = Utils.getExistingTileEntity(world, getPos().offset(facing.getOpposite()));
+		TileEntity acc = Utils.getExistingTileEntity(world, getPos().offset(getFacing().getOpposite()));
 		if(!multiblock&&acc instanceof IRotationAcceptor)
 		{
 			double power = getPower();
 			int l = 1;
-			TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(facing, l));
+			TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(getFacing(), l));
 			while(l < 3
 					&&canUse(tileEntity))
 			{
 				power += ((WatermillTileEntity)tileEntity).getPower();
 				l++;
-				tileEntity = Utils.getExistingTileEntity(world, getPos().offset(facing, l));
+				tileEntity = Utils.getExistingTileEntity(world, getPos().offset(getFacing(), l));
 			}
 
 			perTick = 1f/1440*power/l;
@@ -92,7 +93,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 			rotation %= 1;
 			for(int l2 = 1; l2 < l; l2++)
 			{
-				tileEntity = world.getTileEntity(getPos().offset(facing, l2));
+				tileEntity = world.getTileEntity(getPos().offset(getFacing(), l2));
 				if(tileEntity instanceof WatermillTileEntity)
 				{
 					((WatermillTileEntity)tileEntity).rotation = rotation;
@@ -109,7 +110,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 				//					return;
 				//				else if((facing.getAxis()==Axis.X)&&dynamo.facing!=4&&dynamo.facing!=5)
 				//					return;
-				dynamo.inputRotation(Math.abs(power*.75), facing.getOpposite());
+				dynamo.inputRotation(Math.abs(power*.75), getFacing().getOpposite());
 			}
 		}
 		else if(!multiblock)
@@ -128,7 +129,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		return tileEntity instanceof WatermillTileEntity
 				&&((WatermillTileEntity)tileEntity).offset[0]==0
 				&&((WatermillTileEntity)tileEntity).offset[1]==0
-				&&(((WatermillTileEntity)tileEntity).facing==facing||((WatermillTileEntity)tileEntity).facing==facing.getOpposite())
+				&&(((WatermillTileEntity)tileEntity).getFacing()==getFacing()||((WatermillTileEntity)tileEntity).getFacing()==getFacing().getOpposite())
 				&&!((WatermillTileEntity)tileEntity).isBlocked()
 				&&!((WatermillTileEntity)tileEntity).multiblock;
 	}
@@ -138,7 +139,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		if(world==null)
 			return true;
 		for(Direction fdY : new Direction[]{Direction.UP, Direction.DOWN})
-			for(Direction fdW : facing.getAxis()==Axis.Z?new Direction[]{Direction.EAST, Direction.WEST}: new Direction[]{Direction.SOUTH, Direction.NORTH})
+			for(Direction fdW : getFacing().getAxis()==Axis.Z?new Direction[]{Direction.EAST, Direction.WEST}: new Direction[]{Direction.SOUTH, Direction.NORTH})
 			{
 				BlockPos pos = getPos().offset(fdW, 2).offset(fdY, 2);
 				BlockState state = world.getBlockState(pos);
@@ -152,7 +153,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public double getPower()
 	{
-		return facing.getAxis()==Axis.Z?-getRotationVec().x: getRotationVec().z;
+		return getFacing().getAxis()==Axis.Z?-getRotationVec().x: getRotationVec().z;
 	}
 
 	public void resetRotationVec()
@@ -177,7 +178,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	private Vec3d getHorizontalVec()
 	{
 		Vec3d dir = new Vec3d(0, 0, 0);
-		boolean faceZ = facing.ordinal() <= 3;
+		boolean faceZ = getFacing().ordinal() <= 3;
 		dir = Utils.addVectors(dir, Utils.getFlowVector(world, getPos().add(-(faceZ?1: 0), +3, -(faceZ?0: 1))));
 		dir = Utils.addVectors(dir, Utils.getFlowVector(world, getPos().add(0, +3, 0)));
 		dir = Utils.addVectors(dir, Utils.getFlowVector(world, getPos().add(+(faceZ?1: 0), +3, +(faceZ?0: 1))));
@@ -199,18 +200,18 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		Vec3d dir = new Vec3d(0, 0, 0);
 
 		Vec3d dirNeg = new Vec3d(0, 0, 0);
-		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(facing.getAxis()==Axis.Z?2: 0), 2, -(facing.getAxis()==Axis.Z?0: 2))));
-		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(facing.getAxis()==Axis.Z?3: 0), 1, -(facing.getAxis()==Axis.Z?0: 3))));
-		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(facing.getAxis()==Axis.Z?3: 0), 0, -(facing.getAxis()==Axis.Z?0: 3))));
-		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(facing.getAxis()==Axis.Z?3: 0), -1, -(facing.getAxis()==Axis.Z?0: 3))));
-		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(facing.getAxis()==Axis.Z?2: 0), -2, -(facing.getAxis()==Axis.Z?0: 2))));
+		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?2: 0), 2, -(getFacing().getAxis()==Axis.Z?0: 2))));
+		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), 1, -(getFacing().getAxis()==Axis.Z?0: 3))));
+		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), 0, -(getFacing().getAxis()==Axis.Z?0: 3))));
+		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), -1, -(getFacing().getAxis()==Axis.Z?0: 3))));
+		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?2: 0), -2, -(getFacing().getAxis()==Axis.Z?0: 2))));
 		Vec3d dirPos = new Vec3d(0, 0, 0);
-		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((facing.getAxis()==Axis.Z?2: 0), 2, (facing.getAxis()==Axis.Z?0: 2))));
-		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((facing.getAxis()==Axis.Z?3: 0), 1, (facing.getAxis()==Axis.Z?0: 3))));
-		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((facing.getAxis()==Axis.Z?3: 0), 0, (facing.getAxis()==Axis.Z?0: 3))));
-		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((facing.getAxis()==Axis.Z?3: 0), -1, (facing.getAxis()==Axis.Z?0: 3))));
-		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((facing.getAxis()==Axis.Z?2: 0), -2, (facing.getAxis()==Axis.Z?0: 2))));
-		if(facing.getAxis()==Axis.Z)
+		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?2: 0), 2, (getFacing().getAxis()==Axis.Z?0: 2))));
+		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), 1, (getFacing().getAxis()==Axis.Z?0: 3))));
+		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), 0, (getFacing().getAxis()==Axis.Z?0: 3))));
+		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), -1, (getFacing().getAxis()==Axis.Z?0: 3))));
+		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?2: 0), -2, (getFacing().getAxis()==Axis.Z?0: 2))));
+		if(getFacing().getAxis()==Axis.Z)
 			dir = dir.add(dirNeg.y-dirPos.y, 0, 0);
 		else
 			dir = dir.add(0, 0, dirNeg.y-dirPos.y);
@@ -232,7 +233,6 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		prevRotation = nbt.getFloat("prevRotation");
 		offset = nbt.getIntArray("offset");
 		rotation = nbt.getFloat("rotation");
@@ -244,7 +244,6 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putInt("facing", facing.ordinal());
 		nbt.putFloat("prevRotation", prevRotation);
 		nbt.putIntArray("offset", offset);
 		nbt.putFloat("rotation", rotation);
@@ -259,28 +258,22 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	{
 		if(renderAABB==null)
 			if(offset[0]==0&&offset[1]==0)
-				renderAABB = new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?2: 0), getPos().getY()-2, getPos().getZ()-(facing.getAxis()==Axis.Z?0: 2), getPos().getX()+(facing.getAxis()==Axis.Z?3: 0), getPos().getY()+3, getPos().getZ()+(facing.getAxis()==Axis.Z?0: 3));
+				renderAABB = new AxisAlignedBB(getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 0), getPos().getY()-2, getPos().getZ()-(getFacing().getAxis()==Axis.Z?0: 2), getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 0), getPos().getY()+3, getPos().getZ()+(getFacing().getAxis()==Axis.Z?0: 3));
 			else
 				renderAABB = new AxisAlignedBB(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX()+1, getPos().getY()+1, getPos().getZ()+1);
 		return renderAABB;
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 6;
+		return PlacementLimitation.HORIZONTAL_PREFER_SIDE;
 	}
 
 	@Override
@@ -314,10 +307,10 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 			for(int ww = -2; ww <= 2; ww++)
 				if((hh > -2&&hh < 2)||(ww > -2&&ww < 2))
 				{
-					BlockPos pos2 = pos.add(facing.getAxis()==Axis.Z?ww: 0, hh, facing.getAxis()==Axis.Z?0: ww);
+					BlockPos pos2 = pos.add(getFacing().getAxis()==Axis.Z?ww: 0, hh, getFacing().getAxis()==Axis.Z?0: ww);
 					world.setBlockState(pos2, state);
 					WatermillTileEntity dummy = (WatermillTileEntity)world.getTileEntity(pos2);
-					dummy.facing = facing;
+					dummy.setFacing(getFacing());
 					dummy.offset = new int[]{ww, hh};
 				}
 	}
@@ -327,12 +320,12 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	{
 		if(!formed)
 			return;
-		BlockPos initPos = pos.add(facing.getAxis()==Axis.Z?-offset[0]: 0, -offset[1], facing.getAxis()==Axis.X?-offset[0]: 0);
+		BlockPos initPos = pos.add(getFacing().getAxis()==Axis.Z?-offset[0]: 0, -offset[1], getFacing().getAxis()==Axis.X?-offset[0]: 0);
 		for(int hh = -2; hh <= 2; hh++)
 			for(int ww = -2; ww <= 2; ww++)
 				if((hh > -2&&hh < 2)||(ww > -2&&ww < 2))
 				{
-					BlockPos pos2 = initPos.add(facing.getAxis()==Axis.Z?ww: 0, hh, facing.getAxis()==Axis.X?ww: 0);
+					BlockPos pos2 = initPos.add(getFacing().getAxis()==Axis.Z?ww: 0, hh, getFacing().getAxis()==Axis.X?ww: 0);
 					TileEntity te = world.getTileEntity(pos2);
 					if(te instanceof WatermillTileEntity)
 					{

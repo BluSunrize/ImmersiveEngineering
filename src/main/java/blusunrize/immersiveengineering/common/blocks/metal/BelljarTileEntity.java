@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler.FluidFertilizerHandler;
@@ -22,9 +23,9 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -39,6 +40,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -68,7 +70,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IDirectionalTile, IBlockBounds, IHasDummyBlocks,
+public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
 		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE, IOBJModelCallback<BlockState>
 {
 	public static TileEntityType<BelljarTileEntity> TYPE;
@@ -77,7 +79,6 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	public static final int SLOT_SEED = 1;
 	public static final int SLOT_FERTILIZER = 2;
 
-	public Direction facing = Direction.NORTH;
 	public int dummy = 0;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 	public final FluidTank tank = new FluidTank(4000)
@@ -109,7 +110,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(pos.up().offset(facing.getOpposite()), facing),
+			() -> new DirectionalBlockPos(pos.up().offset(getFacing().getOpposite()), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
@@ -316,7 +317,6 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		dummy = nbt.getInt("dummy");
 		inventory = Utils.readInventory(nbt.getList("inventory", 10), 7);
 		energyStorage.readFromNBT(nbt);
@@ -330,7 +330,6 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putInt("facing", facing.ordinal());
 		nbt.putInt("dummy", dummy);
 		nbt.put("inventory", Utils.writeInventory(inventory));
 		energyStorage.writeToNBT(nbt);
@@ -342,21 +341,15 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override
@@ -396,7 +389,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		{
 			world.setBlockState(pos.up(i), state);
 			((BelljarTileEntity)world.getTileEntity(pos.up(i))).dummy = i;
-			((BelljarTileEntity)world.getTileEntity(pos.up(i))).facing = facing;
+			((BelljarTileEntity)world.getTileEntity(pos.up(i))).setFacing(getFacing());
 		}
 	}
 
@@ -459,16 +452,16 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			if(dummy==0&&(facing==null||facing.getAxis()!=this.facing.rotateY().getAxis()))
+			if(dummy==0&&(facing==null||facing.getAxis()!=this.getFacing().rotateY().getAxis()))
 				return inputHandler.cast();
-			if(dummy==1&&(facing==null||facing==this.facing.getOpposite()))
+			if(dummy==1&&(facing==null||facing==this.getFacing().getOpposite()))
 			{
 				BelljarTileEntity te = getGuiMaster();
 				if(te!=null)
 					return te.outputHandler.cast();
 			}
 		}
-		else if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&dummy==0&&(facing==null||facing.getAxis()!=this.facing.rotateY().getAxis()))
+		else if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&dummy==0&&(facing==null||facing.getAxis()!=this.getFacing().rotateY().getAxis()))
 			return tankCap.cast();
 		return super.getCapability(capability, facing);
 	}
@@ -572,7 +565,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	@Override
 	public SideConfig getEnergySideConfig(@Nullable Direction facing)
 	{
-		return facing==null||(dummy==0&&facing.getAxis()==this.facing.rotateY().getAxis())||(dummy==2&&facing==Direction.UP)?SideConfig.INPUT: SideConfig.NONE;
+		return facing==null||(dummy==0&&facing.getAxis()==this.getFacing().rotateY().getAxis())||(dummy==2&&facing==Direction.UP)?SideConfig.INPUT: SideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper energyWrapper = new IEForgeEnergyWrapper(this, null);
@@ -580,7 +573,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(facing==null||(dummy==0&&facing.getAxis()==this.facing.rotateY().getAxis())||(dummy==2&&facing==Direction.UP))
+		if(facing==null||(dummy==0&&facing.getAxis()==this.getFacing().rotateY().getAxis())||(dummy==2&&facing==Direction.UP))
 			return energyWrapper;
 		return null;
 	}

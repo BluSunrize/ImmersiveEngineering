@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
@@ -28,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -50,7 +52,7 @@ import java.util.*;
 
 public class FloodlightTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IAdvancedDirectionalTile,
 		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<BlockState>,
-		EnergyConnector
+		EnergyConnector, IStateBasedDirectional
 {
 	public static TileEntityType<FloodlightTileEntity> TYPE;
 
@@ -60,7 +62,6 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	public boolean active = false;
 	public boolean redstoneControlInverted = false;
 	public Direction facing = Direction.NORTH;
-	public Direction side = Direction.UP;
 	public float rotY = 0;
 	public float rotX = 0;
 	public List<BlockPos> fakeLights = new ArrayList<>();
@@ -180,20 +181,20 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 					/*Intermediate*/new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1),
 					/*Diagonal*/new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1)};
 			Matrix4 mat = new Matrix4();
-			if(side==Direction.DOWN)
+			if(getFacing()==Direction.DOWN)
 				mat.scale(1, -1, 1);
-			else if(side!=Direction.UP)
+			else if(getFacing()!=Direction.UP)
 			{
 				angle = facing==Direction.DOWN?180: facing==Direction.NORTH?-90: facing==Direction.SOUTH?90: angle;
-				if(side.getAxis()==Axis.X)
+				if(getFacing().getAxis()==Axis.X)
 				{
 					mat.rotate(Math.PI/2, -1, 0, 0);
-					mat.rotate(Math.PI/2, 0, 0, -side.getAxisDirection().getOffset());
+					mat.rotate(Math.PI/2, 0, 0, -getFacing().getAxisDirection().getOffset());
 				}
 				else
 				{
 					mat.rotate(Math.PI/2, -1, 0, 0);
-					if(side==Direction.SOUTH)//I dunno why south is giving me so much trouble, but this works, so who cares
+					if(getFacing()==Direction.SOUTH)//I dunno why south is giving me so much trouble, but this works, so who cares
 					{
 						mat.rotate(Math.PI, 0, 0, 1);
 						if(facing.getAxis()==Axis.X)
@@ -305,7 +306,6 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		energyStorage = nbt.getInt("energy");
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
 		facing = Direction.byIndex(nbt.getInt("facing"));
-		side = Direction.byIndex(nbt.getInt("side"));
 		rotY = nbt.getFloat("rotY");
 		rotX = nbt.getFloat("rotX");
 		int lightAmount = nbt.getInt("lightAmount");
@@ -334,7 +334,6 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		nbt.putInt("energyStorage", energyStorage);
 		nbt.putBoolean("redstoneControlInverted", redstoneControlInverted);
 		nbt.putInt("facing", facing.ordinal());
-		nbt.putInt("side", side.ordinal());
 		nbt.putFloat("rotY", rotY);
 		nbt.putFloat("rotX", rotX);
 		nbt.putInt("lightAmount", fakeLights.size());
@@ -376,24 +375,24 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		int yDif = other.getY()-pos.getY();
 		int zDif = other.getZ()-pos.getZ();
 		double x, y, z;
-		switch(side)
+		switch(getFacing())
 		{
 			case DOWN:
 			case UP:
 				x = (Math.abs(xDif) >= Math.abs(zDif))?(xDif >= 0)?.9375: .0625: .5;
-				y = (side==Direction.DOWN)?.9375: .0625;
+				y = (getFacing()==Direction.DOWN)?.9375: .0625;
 				z = (Math.abs(zDif) > Math.abs(xDif))?(zDif >= 0)?.9375: .0625: .5;
 				break;
 			case NORTH:
 			case SOUTH:
 				x = (Math.abs(xDif) >= Math.abs(yDif))?(xDif >= 0)?.9375: .0625: .5;
 				y = (Math.abs(yDif) > Math.abs(xDif))?(yDif >= 0)?.9375: .0625: .5;
-				z = (side==Direction.NORTH)?.9375: .0625;
+				z = (getFacing()==Direction.NORTH)?.9375: .0625;
 				break;
 			case WEST:
 			case EAST:
 			default:
-				x = (side==Direction.WEST)?.9375: .0625;
+				x = (getFacing()==Direction.WEST)?.9375: .0625;
 				y = (Math.abs(yDif) >= Math.abs(zDif))?(yDif >= 0)?.9375: .0625: .5;
 				z = (Math.abs(zDif) > Math.abs(yDif))?(zDif >= 0)?.9375: .0625: .5;
 				break;
@@ -405,12 +404,12 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	public float[] getBlockBounds()
 	{
 		return new float[]{
-				side.getAxis()==Axis.X?0: .0625f,
-				side.getAxis()==Axis.Y?0: .0625f,
-				side.getAxis()==Axis.Z?0: .0625f,
-				side.getAxis()==Axis.X?1: .9375f,
-				side.getAxis()==Axis.Y?1: .9375f,
-				side.getAxis()==Axis.Z?1: .9375f
+				getFacing().getAxis()==Axis.X?0: .0625f,
+				getFacing().getAxis()==Axis.Y?0: .0625f,
+				getFacing().getAxis()==Axis.Z?0: .0625f,
+				getFacing().getAxis()==Axis.X?1: .9375f,
+				getFacing().getAxis()==Axis.Y?1: .9375f,
+				getFacing().getAxis()==Axis.Z?1: .9375f
 		};
 	}
 
@@ -429,9 +428,9 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
 	{
-		if(player.isSneaking()&&side!=this.side)
+		if(player.isSneaking()&&side!=this.getFacing())
 		{
-			boolean base = this.side==Direction.DOWN?hitY >= .8125: this.side==Direction.UP?hitY <= .1875: this.side==Direction.NORTH?hitZ >= .8125: this.side==Direction.UP?hitZ <= .1875: this.side==Direction.WEST?hitX >= .8125: hitX <= .1875;
+			boolean base = this.getFacing()==Direction.DOWN?hitY >= .8125: this.getFacing()==Direction.UP?hitY <= .1875: this.getFacing()==Direction.NORTH?hitZ >= .8125: this.getFacing()==Direction.UP?hitZ <= .1875: this.getFacing()==Direction.WEST?hitX >= .8125: hitX <= .1875;
 			if(base)
 			{
 				redstoneControlInverted = !redstoneControlInverted;
@@ -441,7 +440,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 				return true;
 			}
 		}
-		if(side.getAxis()==this.side.getAxis())
+		if(side.getAxis()==this.getFacing().getAxis())
 			turnY(player.isSneaking(), false);
 		else
 			turnX(player.isSneaking(), false);
@@ -449,21 +448,15 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return side;
+		return IEProperties.FACING_ALL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.side = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 0;
+		return PlacementLimitation.SIDE_CLICKED;
 	}
 
 	@Override
@@ -517,27 +510,27 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		double roll = 0;
 
 		//		pitch, yaw, roll
-		if(side.getAxis()==Axis.Y)
+		if(getFacing().getAxis()==Axis.Y)
 		{
 			yaw = facing==Direction.SOUTH?180: facing==Direction.WEST?90: facing==Direction.EAST?-90: 0;
-			if(side==Direction.DOWN)
+			if(getFacing()==Direction.DOWN)
 				roll = 180;
 		}
 		else //It's a mess, but it works!
 		{
-			if(side==Direction.NORTH)
+			if(getFacing()==Direction.NORTH)
 			{
 				pitch = 90;
 				yaw = 180;
 			}
-			if(side==Direction.SOUTH)
+			if(getFacing()==Direction.SOUTH)
 				pitch = 90;
-			if(side==Direction.WEST)
+			if(getFacing()==Direction.WEST)
 			{
 				pitch = 90;
 				yaw = -90;
 			}
-			if(side==Direction.EAST)
+			if(getFacing()==Direction.EAST)
 			{
 				pitch = 90;
 				yaw = 90;
@@ -545,16 +538,16 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 
 			if(facing==Direction.DOWN)
 				roll += 180;
-			else if(side.getAxis()==Axis.X&&facing.getAxis()==Axis.Z)
-				roll += 90*facing.getAxisDirection().getOffset()*side.getAxisDirection().getOffset();
-			else if(side.getAxis()==Axis.Z&&facing.getAxis()==Axis.X)
-				roll += -90*facing.getAxisDirection().getOffset()*side.getAxisDirection().getOffset();
+			else if(getFacing().getAxis()==Axis.X&&facing.getAxis()==Axis.Z)
+				roll += 90*facing.getAxisDirection().getOffset()*getFacing().getAxisDirection().getOffset();
+			else if(getFacing().getAxis()==Axis.Z&&facing.getAxis()==Axis.X)
+				roll += -90*facing.getAxisDirection().getOffset()*getFacing().getAxisDirection().getOffset();
 		}
 
-		transl.add(new Vector3f(side.getXOffset()*.125f, side.getYOffset()*.125f, side.getZOffset()*.125f));
+		transl.add(new Vector3f(getFacing().getXOffset()*.125f, getFacing().getYOffset()*.125f, getFacing().getZOffset()*.125f));
 		if("axis".equals(group)||"light".equals(group)||"off".equals(group)||"glass".equals(group))
 		{
-			if(side.getAxis()==Axis.Y)
+			if(getFacing().getAxis()==Axis.Y)
 				yaw += rotY;
 			else
 				roll += rotY;
@@ -570,7 +563,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	@Override
 	public String getCacheKey(BlockState object)
 	{
-		return side+":"+facing+":"+rotX+":"+rotY+":"+active;
+		return getFacing()+":"+facing+":"+rotX+":"+rotY+":"+active;
 	}
 
 	//computer stuff

@@ -22,6 +22,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -37,7 +38,7 @@ import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.MV_CATEGORY;
 
-public class TransformerTileEntity extends ImmersiveConnectableTileEntity implements IDirectionalTile, IMirrorAble,
+public class TransformerTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, IMirrorAble,
 		IHasDummyBlocks, IAdvancedSelectionBounds, IDualState
 {
 	public static TileEntityType<TransformerTileEntity> TYPE;
@@ -45,7 +46,6 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	private static final int LEFT_INDEX = 1;
 	private WireType leftType;
 	private WireType rightType;
-	public Direction facing = Direction.NORTH;
 	public int dummy = 0;
 	public boolean onPost = false;
 	protected Set<String> acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY);
@@ -74,7 +74,6 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("facing", facing.ordinal());
 		if(leftType!=null)
 			nbt.putString("leftType", leftType.getUniqueName());
 		if(rightType!=null)
@@ -87,7 +86,6 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		if(nbt.contains("leftType"))
 			leftType = ApiUtils.getWireTypeFromNBT(nbt, "leftType");
 		else
@@ -204,21 +202,21 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 		if(onPost)
 		{
 			if(right)
-				return new Vec3d(.5+(facing==Direction.EAST?.4375: facing==Direction.WEST?-.4375: 0), 1.4375, .5+(facing==Direction.SOUTH?.4375: facing==Direction.NORTH?-.4375: 0));
+				return new Vec3d(.5+(getFacing()==Direction.EAST?.4375: getFacing()==Direction.WEST?-.4375: 0), 1.4375, .5+(getFacing()==Direction.SOUTH?.4375: getFacing()==Direction.NORTH?-.4375: 0));
 			else
-				return new Vec3d(.5+(facing==Direction.EAST?-.0625: facing==Direction.WEST?.0625: 0), .25, .5+(facing==Direction.SOUTH?-.0625: facing==Direction.NORTH?.0625: 0));
+				return new Vec3d(.5+(getFacing()==Direction.EAST?-.0625: getFacing()==Direction.WEST?.0625: 0), .25, .5+(getFacing()==Direction.SOUTH?-.0625: getFacing()==Direction.NORTH?.0625: 0));
 		}
 		else
 		{
 			double conRadius = con.type.getRenderDiameter()/2;
 			double offset = getHigherWiretype().equals(con.type.getCategory())?getHigherOffset(): getLowerOffset();
-			if(facing==Direction.NORTH)
+			if(getFacing()==Direction.NORTH)
 				return new Vec3d(right?.8125: .1875, 2+offset-conRadius, .5);
-			if(facing==Direction.SOUTH)
+			if(getFacing()==Direction.SOUTH)
 				return new Vec3d(right?.1875: .8125, 2+offset-conRadius, .5);
-			if(facing==Direction.WEST)
+			if(getFacing()==Direction.WEST)
 				return new Vec3d(.5, 2+offset-conRadius, right?.1875: .8125);
-			if(facing==Direction.EAST)
+			if(getFacing()==Direction.EAST)
 				return new Vec3d(.5, 2+offset-conRadius, right?.8125: .1875);
 		}
 		return new Vec3d(.5, .5, .5);
@@ -239,22 +237,22 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 		{
 			if(offset.getY()!=2)
 				return null;
-			if(facing==Direction.NORTH)
+			if(getFacing()==Direction.NORTH)
 				if(target.hitX < .5)
 					return new ConnectionPoint(pos, LEFT_INDEX);
 				else
 					return new ConnectionPoint(pos, RIGHT_INDEX);
-			else if(facing==Direction.SOUTH)
+			else if(getFacing()==Direction.SOUTH)
 				if(target.hitX < .5)
 					return new ConnectionPoint(pos, RIGHT_INDEX);
 				else
 					return new ConnectionPoint(pos, LEFT_INDEX);
-			else if(facing==Direction.WEST)
+			else if(getFacing()==Direction.WEST)
 				if(target.hitZ < .5)
 					return new ConnectionPoint(pos, RIGHT_INDEX);
 				else
 					return new ConnectionPoint(pos, LEFT_INDEX);
-			else if(facing==Direction.EAST)
+			else if(getFacing()==Direction.EAST)
 				if(target.hitZ < .5)
 					return new ConnectionPoint(pos, LEFT_INDEX);
 				else
@@ -295,21 +293,15 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override
@@ -342,7 +334,7 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 		if(state.get(IEProperties.IS_SECOND_STATE))
 		{
 			onPost = true;
-			facing = ctx.getFace().getOpposite();
+			setFacing(ctx.getFace().getOpposite());
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 		}
@@ -351,7 +343,7 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 			{
 				world.setBlockState(pos.add(0, i, 0), state);
 				((TransformerTileEntity)world.getTileEntity(pos.add(0, i, 0))).dummy = i;
-				((TransformerTileEntity)world.getTileEntity(pos.add(0, i, 0))).facing = this.facing;
+				((TransformerTileEntity)world.getTileEntity(pos.add(0, i, 0))).setFacing(this.getFacing());
 			}
 	}
 
@@ -368,14 +360,14 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	public float[] getBlockBounds()
 	{
 		if(dummy==2)
-			return new float[]{facing.getAxis()==Axis.Z?0: .3125f, 0, facing.getAxis()==Axis.X?0: .3125f, facing.getAxis()==Axis.Z?1: .6875f, this instanceof TransformerHVTileEntity?.75f: .5625f, facing.getAxis()==Axis.X?1: .6875f};
+			return new float[]{getFacing().getAxis()==Axis.Z?0: .3125f, 0, getFacing().getAxis()==Axis.X?0: .3125f, getFacing().getAxis()==Axis.Z?1: .6875f, this instanceof TransformerHVTileEntity?.75f: .5625f, getFacing().getAxis()==Axis.X?1: .6875f};
 		if(onPost)
-			return new float[]{facing.getAxis()==Axis.Z?.25F: facing==Direction.WEST?-.375F: .6875F,
+			return new float[]{getFacing().getAxis()==Axis.Z?.25F: getFacing()==Direction.WEST?-.375F: .6875F,
 					0,
-					facing.getAxis()==Axis.X?.25F: facing==Direction.NORTH?-.375F: .6875F,
-					facing.getAxis()==Axis.Z?.75F: facing==Direction.EAST?1.375F: .3125F,
+					getFacing().getAxis()==Axis.X?.25F: getFacing()==Direction.NORTH?-.375F: .6875F,
+					getFacing().getAxis()==Axis.Z?.75F: getFacing()==Direction.EAST?1.375F: .3125F,
 					1,
-					facing.getAxis()==Axis.X?.75F: facing==Direction.SOUTH?1.375F: .3125F};
+					getFacing().getAxis()==Axis.X?.75F: getFacing()==Direction.SOUTH?1.375F: .3125F};
 		return null;
 	}
 
@@ -390,13 +382,13 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 		{
 			double offsetA = mirrored?getHigherOffset(): getLowerOffset();
 			double offsetB = mirrored?getLowerOffset(): getHigherOffset();
-			if(facing==Direction.NORTH)
+			if(getFacing()==Direction.NORTH)
 				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(0, 0, .3125, .375, offsetB, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.625, 0, .3125, 1, offsetA, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(facing==Direction.SOUTH)
+			if(getFacing()==Direction.SOUTH)
 				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(0, 0, .3125, .375, offsetA, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.625, 0, .3125, 1, offsetB, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(facing==Direction.WEST)
+			if(getFacing()==Direction.WEST)
 				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(.3125, 0, 0, .6875, offsetA, .375).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.3125, 0, .625, .6875, offsetB, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(facing==Direction.EAST)
+			if(getFacing()==Direction.EAST)
 				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(.3125, 0, 0, .6875, offsetB, .375).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.3125, 0, .625, .6875, offsetA, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
 			cachedMirrored = mirrored;
 		}

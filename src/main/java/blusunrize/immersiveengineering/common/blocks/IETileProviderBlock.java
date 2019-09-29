@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile.PlacementLimitation;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -334,14 +335,22 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		{
 			Direction f = ((IDirectionalTile)tile).getFacing();
 			Direction oldF = f;
-			int limit = ((IDirectionalTile)tile).getFacingLimitation();
-
-			if(limit==0)
-				f = Direction.VALUES[(f.ordinal()+1)%Direction.VALUES.length];
-			else if(limit==1)
-				f = player.isSneaking()?f.rotateAround(side.getAxis()).getOpposite(): f.rotateAround(side.getAxis());
-			else if(limit==2||limit==5)
-				f = player.isSneaking()?f.rotateYCCW(): f.rotateY();
+			PlacementLimitation limit = ((IDirectionalTile)tile).getFacingLimitation();
+			switch(limit)
+			{
+				case SIDE_CLICKED:
+					f = Direction.VALUES[(f.ordinal()+1)%Direction.VALUES.length];
+					break;
+				case PISTON_LIKE:
+					f = player.isSneaking()?f.rotateAround(side.getAxis()).getOpposite(): f.rotateAround(side.getAxis());
+					break;
+				case HORIZONTAL:
+				case HORIZONTAL_PREFER_SIDE:
+				case HORIZONTAL_QUADRANT:
+				case HORIZONTAL_AXIS:
+					f = player.isSneaking()?f.rotateYCCW(): f.rotateY();
+					break;
+			}
 			((IDirectionalTile)tile).setFacing(f);
 			((IDirectionalTile)tile).afterRotation(oldF, f);
 			tile.markDirty();

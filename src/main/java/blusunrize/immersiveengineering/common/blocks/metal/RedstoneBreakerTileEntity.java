@@ -57,7 +57,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	{
 		Vec3d start = new Vec3d(0, .125f, 0);
 		Vec3d end = new Vec3d(1, .875f, 1);
-		Matrix4 mat = new Matrix4(facing);
+		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
@@ -68,7 +68,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		Matrix4 mat = new Matrix4(facing);
+		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		boolean isLeft = here.getIndex()==LEFT_INDEX;
 		Vec3d ret = mat.apply(isLeft?new Vec3d(.125, .5, 1): new Vec3d(.875, .5, 1));

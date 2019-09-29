@@ -9,17 +9,19 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -27,14 +29,13 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 
-public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements IIEInternalFluxHandler, IDirectionalTile, IHasDummyBlocks
+public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements IIEInternalFluxHandler, IStateBasedDirectional, IHasDummyBlocks
 {
 	public static TileEntityType<BlastFurnacePreheaterTileEntity> TYPE;
 
 	public boolean active;
 	public int dummy = 0;
 	public FluxStorage energyStorage = new FluxStorage(8000);
-	public Direction facing = Direction.NORTH;
 	public float angle = 0;
 	public long lastRenderTick = -1;
 
@@ -77,7 +78,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 		{
 			world.setBlockState(pos.add(0, i, 0), state);
 			((BlastFurnacePreheaterTileEntity)world.getTileEntity(pos.add(0, i, 0))).dummy = i;
-			((BlastFurnacePreheaterTileEntity)world.getTileEntity(pos.add(0, i, 0))).facing = this.facing;
+			((BlastFurnacePreheaterTileEntity)world.getTileEntity(pos.add(0, i, 0))).setFacing(this.getFacing());
 		}
 	}
 
@@ -93,7 +94,6 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		dummy = nbt.getInt("dummy");
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		energyStorage.readFromNBT(nbt);
 		active = nbt.getBoolean("active");
 		if(descPacket)
@@ -104,7 +104,6 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putInt("dummy", dummy);
-		nbt.putInt("facing", facing.ordinal());
 		nbt.putBoolean("active", active);
 		energyStorage.writeToNBT(nbt);
 	}
@@ -140,21 +139,15 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public PlacementLimitation getFacingLimitation()
 	{
-		this.facing = facing;
-	}
-
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override

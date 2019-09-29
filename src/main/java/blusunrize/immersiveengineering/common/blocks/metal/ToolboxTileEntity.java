@@ -186,9 +186,9 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	}
 
 	@Override
-	public int getFacingLimitation()
+	public PlacementLimitation getFacingLimitation()
 	{
-		return 2;
+		return PlacementLimitation.HORIZONTAL;
 	}
 
 	@Override
