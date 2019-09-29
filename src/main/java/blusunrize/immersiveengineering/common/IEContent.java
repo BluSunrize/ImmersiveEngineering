@@ -395,7 +395,15 @@ public class IEContent
 		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties);
 
+		//TODO which ones need DYNAMIC_RENDER and which don't?
 		Multiblocks.crusher = new MetalMultiblockBlock("crusher", () -> CrusherTileEntity.TYPE, IEProperties.DYNAMICRENDER);
+		Multiblocks.arcFurnace = new MetalMultiblockBlock("arc_furnace", () -> ArcFurnaceTileEntity.TYPE, IEProperties.DYNAMICRENDER);
+		Multiblocks.assembler = new MetalMultiblockBlock("assembler", () -> AssemblerTileEntity.TYPE, IEProperties.DYNAMICRENDER);
+		Multiblocks.autoWorkbench = new MetalMultiblockBlock("auto_workbench", () -> AutoWorkbenchTileEntity.TYPE, IEProperties.DYNAMICRENDER);
+		Multiblocks.bucketWheel = new MetalMultiblockBlock("bucket_wheel", () -> BucketWheelTileEntity.TYPE, IEProperties.DYNAMICRENDER);
+		Multiblocks.excavator = new MetalMultiblockBlock("excavator", () -> ExcavatorTileEntity.TYPE, IEProperties.DYNAMICRENDER);
+		Multiblocks.blastFurnaceAdv = new MetalMultiblockBlock("improved_blast_furnace", () -> BlastFurnaceAdvancedTileEntity.TYPE, IEProperties.DYNAMICRENDER);
+		Multiblocks.metalPress = new MetalMultiblockBlock("metal_press", () -> MetalPressTileEntity.TYPE, IEProperties.DYNAMICRENDER);
 		/*TODO
 		mixer;          blockFluidCreosote = new BlockIEFluid("fluidCreosote", fluidCreosote, Material.WATER).setFlammability(40, 400);
 		blockFluidPlantoil = new BlockIEFluid("fluidPlantoil", fluidPlantoil, Material.WATER);
@@ -1073,25 +1081,25 @@ public class IEContent
 		/*TODO MultiblockHandler.registerMultiblock(IEMultiblocks.COKE_OVEN);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ALLOY_SMELTER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.BLAST_FURNACE);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.METAL_PRESS);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.SHEETMETAL_TANK);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.SILO);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.ASSEMBLER);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.AUTO_WORKBENCH);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.BOTTLING_MACHINE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.SQUEEZER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.FERMENTER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.REFINERY);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.DIESEL_GENERATOR);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.EXCAVATOR);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.BUCKET_WHEEL);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.ARC_FURNACE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.LIGHTNING_ROD);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.MIXER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.FEEDTHROUGH);
 		*/
 		MultiblockHandler.registerMultiblock(IEMultiblocks.CRUSHER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.METAL_PRESS);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.ASSEMBLER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.AUTO_WORKBENCH);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.EXCAVATOR);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.BUCKET_WHEEL);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.ARC_FURNACE);
 
 		/*VILLAGE*/
 		/*TODO
