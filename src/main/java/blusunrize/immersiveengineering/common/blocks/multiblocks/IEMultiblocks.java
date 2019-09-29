@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 
 public class IEMultiblocks
 {
-	public static final IMultiblock CRUSHER = new MultiblockCrusher();
+	public static final IMultiblock CRUSHER = new CrusherMultiblock();
 	//TODO replace with correct instances
 	public static final IMultiblock ALLOY_SMELTER = CRUSHER;
 	public static final IMultiblock ARC_FURNACE = CRUSHER;

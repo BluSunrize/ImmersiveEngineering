@@ -127,7 +127,7 @@ public class IEFluid extends FlowingFluid
 	}
 
 	@Override
-	protected boolean func_215665_a(IFluidState p_215665_1_, IBlockReader p_215665_2_, BlockPos p_215665_3_, Fluid p_215665_4_, Direction p_215665_5_)
+	protected boolean canDisplace(IFluidState p_215665_1_, IBlockReader p_215665_2_, BlockPos p_215665_3_, Fluid p_215665_4_, Direction p_215665_5_)
 	{
 		//TODO based on the water version. What is this method even?
 		return p_215665_5_==Direction.DOWN&&p_215665_4_!=source&&p_215665_4_!=flowing;

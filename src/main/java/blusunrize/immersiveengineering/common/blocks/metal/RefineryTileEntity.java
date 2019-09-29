@@ -119,8 +119,8 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 			if(this.tanks[2].getFluidAmount() > 0)
 			{
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[2].getFluid(), Math.min(this.tanks[2].getFluidAmount(), 80), false);
-				BlockPos outputPos = this.getPos().add(0, -1, 0).offset(facing.getOpposite());
-				update |= FluidUtil.getFluidHandler(world, outputPos, facing).map(output -> {
+				BlockPos outputPos = this.getPos().add(0, -1, 0).offset(getFacing().getOpposite());
+				update |= FluidUtil.getFluidHandler(world, outputPos, getFacing()).map(output -> {
 					int accepted = output.fill(out, FluidAction.SIMULATE);
 					if(accepted > 0)
 					{
@@ -177,7 +177,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
 		if(new BlockPos(0, 1, 4).equals(posInMultiblock))
-			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
+			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
 		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
 			return new float[]{.0625f, 0, .0625f, .9375f, 1, .9375f};
 
@@ -187,9 +187,9 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		Direction fl = facing;
-		Direction fw = facing.rotateY();
-		if(mirrored)
+		Direction fl = getFacing();
+		Direction fw = getFacing().rotateY();
+		if(isMirrored())
 			fw = fw.getOpposite();
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ()%4==0)
 		{
@@ -407,9 +407,9 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		RefineryTileEntity master = this.master();
 		if(master!=null)
 		{
-			if(outputOffset.equals(posInMultiblock)&&(side==null||side==facing.getOpposite()))
+			if(outputOffset.equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
 				return new FluidTank[]{master.tanks[2]};
-			if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==facing.rotateYCCW().getAxis()))
+			if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==getFacing().rotateYCCW().getAxis()))
 				return new FluidTank[]{master.tanks[0], master.tanks[1]};
 		}
 		return tanks;
@@ -418,7 +418,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	@Override
 	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
-		if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==facing.rotateYCCW().getAxis()))
+		if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==getFacing().rotateYCCW().getAxis()))
 		{
 			RefineryTileEntity master = this.master();
 			if(master==null||master.tanks[iTank].getFluidAmount() >= master.tanks[iTank].getCapacity())
@@ -440,7 +440,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	@Override
 	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
-		return outputOffset.equals(posInMultiblock)&&(side==null||side==facing.getOpposite());
+		return outputOffset.equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite());
 	}
 
 	@Override

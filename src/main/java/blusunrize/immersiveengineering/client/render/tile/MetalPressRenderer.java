@@ -105,7 +105,7 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		tessellator.draw();
 		RenderHelper.enableStandardItemLighting();
 
-		GlStateManager.rotatef(te.facing==Direction.SOUTH?180: te.facing==Direction.WEST?90: te.facing==Direction.EAST?-90: 0, 0, 1, 0);
+		GlStateManager.rotatef(te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.WEST?90: te.getFacing()==Direction.EAST?-90: 0, 0, 1, 0);
 		if(!te.mold.isEmpty())
 		{
 			GlStateManager.pushMatrix();

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTran
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.energy.wires.redstone.RedstoneNetworkHandler;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;

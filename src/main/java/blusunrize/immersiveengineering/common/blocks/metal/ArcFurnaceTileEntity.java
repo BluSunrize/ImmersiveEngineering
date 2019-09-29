@@ -68,10 +68,10 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
 	public int pouringMetal = 0;
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(this.getBlockPosForPos(MAIN_OUT_POS).offset(facing, -1), facing.getOpposite()),
+			() -> new DirectionalBlockPos(this.getBlockPosForPos(MAIN_OUT_POS).offset(getFacing(), -1), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 	private CapabilityReference<IItemHandler> slagOut = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(this.getBlockPosForPos(SLAG_OUT_POS).offset(facing), facing.getOpposite()),
+			() -> new DirectionalBlockPos(this.getBlockPosForPos(SLAG_OUT_POS).offset(getFacing()), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	public ArcFurnaceTileEntity()
@@ -109,16 +109,16 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				for(int i = 0; i < 4; i++)
 				{
 					if(Utils.RAND.nextInt(6)==0)
-						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5-.25*facing.getXOffset(),
-								getPos().getY()+2.9, getPos().getZ()+.5-.25*facing.getZOffset(),
+						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5-.25*getFacing().getXOffset(),
+								getPos().getY()+2.9, getPos().getZ()+.5-.25*getFacing().getZOffset(),
 								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 					if(Utils.RAND.nextInt(6)==0)
-						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5+(facing==Direction.EAST?-.25: .25),
-								getPos().getY()+2.9, getPos().getZ()+.5+(facing==Direction.SOUTH?.25: -.25),
+						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5+(getFacing()==Direction.EAST?-.25: .25),
+								getPos().getY()+2.9, getPos().getZ()+.5+(getFacing()==Direction.SOUTH?.25: -.25),
 								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 					if(Utils.RAND.nextInt(6)==0)
-						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5+(facing==Direction.WEST?.25: -.25),
-								getPos().getY()+2.9, getPos().getZ()+.5+(facing==Direction.NORTH?-.25: .25),
+						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5+(getFacing()==Direction.WEST?.25: -.25),
+								getPos().getY()+2.9, getPos().getZ()+.5+(getFacing()==Direction.NORTH?-.25: .25),
 								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 				}
 		}
@@ -232,7 +232,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		//			else
 		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 		//		return renderAABB;
-		return new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?2: 1), getPos().getY(), getPos().getZ()-(facing.getAxis()==Axis.X?2: 1), getPos().getX()+(facing.getAxis()==Axis.Z?3: 2), getPos().getY()+3, getPos().getZ()+(facing.getAxis()==Axis.X?3: 2));
+		return new AxisAlignedBB(getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getPos().getY(), getPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getPos().getY()+3, getPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
 	}
 
 	@Override
@@ -242,16 +242,16 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				new BlockPos(0, 0, 1),
 				new BlockPos(0, 0, 3)
 		).contains(posInMultiblock))
-			return new float[]{facing==Direction.EAST?.4375f: 0, 0, facing==Direction.SOUTH?.4375f: 0, facing==Direction.WEST?.5625f: 1, .5f, facing==Direction.NORTH?.5625f: 1};
+			return new float[]{getFacing()==Direction.EAST?.4375f: 0, 0, getFacing()==Direction.SOUTH?.4375f: 0, getFacing()==Direction.WEST?.5625f: 1, .5f, getFacing()==Direction.NORTH?.5625f: 1};
 		else if(posInMultiblock.getY()==0&&posInMultiblock.getX() < 4&&!posInMultiblock.equals(new BlockPos(0, 0, 2)))
 			return new float[]{0, 0, 0, 1, .5f, 1};
 		else if(new BlockPos(4, 0, 2).equals(posInMultiblock))
-			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
+			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
 		else if(new MutableBoundingBox(2, 1, 1, 3, 1, 3)
 				.isVecInside(posInMultiblock))
 		{
-			Direction fw = facing.rotateY();
-			if(mirrored|posInMultiblock.getZ()==3)
+			Direction fw = getFacing().rotateY();
+			if(isMirrored()|posInMultiblock.getZ()==3)
 				fw = fw.getOpposite();
 			if(posInMultiblock.getZ()==2)
 				fw = null;
@@ -261,10 +261,10 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			float maxZ = fw==Direction.NORTH?.875f: 1;
 			if(posInMultiblock.getZ() < 4)
 			{
-				minX -= facing==Direction.EAST?.875f: 0;
-				maxX += facing==Direction.WEST?.875f: 0;
-				minZ -= facing==Direction.SOUTH?.875f: 0;
-				maxZ += facing==Direction.NORTH?.875f: 0;
+				minX -= getFacing()==Direction.EAST?.875f: 0;
+				maxX += getFacing()==Direction.WEST?.875f: 0;
+				minZ -= getFacing()==Direction.SOUTH?.875f: 0;
+				maxZ += getFacing()==Direction.NORTH?.875f: 0;
 			}
 			return new float[]{minX, .5f, minZ, maxX, 1, maxZ};
 		}
@@ -273,19 +273,19 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				new BlockPos(3, 1, 4)
 		).contains(posInMultiblock))
 		{
-			Direction fl = posInMultiblock.getZ()==4?facing.getOpposite(): facing;
+			Direction fl = posInMultiblock.getZ()==4?getFacing().getOpposite(): getFacing();
 			return new float[]{fl==Direction.NORTH?.125f: fl==Direction.SOUTH?.625f: 0, .125f, fl==Direction.EAST?.125f: fl==Direction.WEST?.625f: 0, fl==Direction.SOUTH?.875f: fl==Direction.NORTH?.375f: 1, .375f, fl==Direction.WEST?.875f: fl==Direction.EAST?.375f: 1};
 		}
 		else if(posInMultiblock.getX()==4&&posInMultiblock.getY()==1&&posInMultiblock.getZ() >= 1&&posInMultiblock.getZ() <= 3)
-			return new float[]{facing==Direction.WEST?.25f: 0, 0, facing==Direction.NORTH?.25f: 0, facing==Direction.EAST?.75f: 1, 1, facing==Direction.SOUTH?.75f: 1};
+			return new float[]{getFacing()==Direction.WEST?.25f: 0, 0, getFacing()==Direction.NORTH?.25f: 0, getFacing()==Direction.EAST?.75f: 1, 1, getFacing()==Direction.SOUTH?.75f: 1};
 		else if(new BlockPos(4, 3, 2).equals(posInMultiblock))
-			return new float[]{facing.getAxis()==Axis.X?.375f: 0, 0, facing.getAxis()==Axis.Z?.375f: 0, facing.getAxis()==Axis.X?.625f: 1, 1, facing.getAxis()==Axis.Z?.625f: 1};
+			return new float[]{getFacing().getAxis()==Axis.X?.375f: 0, 0, getFacing().getAxis()==Axis.Z?.375f: 0, getFacing().getAxis()==Axis.X?.625f: 1, 1, getFacing().getAxis()==Axis.Z?.625f: 1};
 		else if(new BlockPos(4, 4, 2).equals(posInMultiblock))
-			return new float[]{facing==Direction.WEST?.3125f: 0, 0, facing==Direction.NORTH?.3125f: 0, facing==Direction.EAST?.6875f: 1, .9375f, facing==Direction.SOUTH?.6875f: 1};
+			return new float[]{getFacing()==Direction.WEST?.3125f: 0, 0, getFacing()==Direction.NORTH?.3125f: 0, getFacing()==Direction.EAST?.6875f: 1, .9375f, getFacing()==Direction.SOUTH?.6875f: 1};
 		else if(new BlockPos(3, 4, 2).equals(posInMultiblock))
 			return new float[]{0, .625f, 0, 1, .9375f, 1};
 		else if(new BlockPos(2, 4, 2).equals(posInMultiblock))
-			return new float[]{facing==Direction.EAST?.125f: 0, 0, facing==Direction.SOUTH?.125f: 0, facing==Direction.WEST?.875f: 1, .9375f, facing==Direction.NORTH?.875f: 1};
+			return new float[]{getFacing()==Direction.EAST?.125f: 0, 0, getFacing()==Direction.SOUTH?.125f: 0, getFacing()==Direction.WEST?.875f: 1, .9375f, getFacing()==Direction.NORTH?.875f: 1};
 		else if(ImmutableSet.of(
 				new BlockPos(0, 2, 1),
 				new BlockPos(0, 2, 3),
@@ -295,8 +295,8 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				new BlockPos(4, 4, 3)
 		).contains(posInMultiblock))
 		{
-			Direction fw = facing.rotateY();
-			if(mirrored^posInMultiblock.getZ()==3)
+			Direction fw = getFacing().rotateY();
+			if(isMirrored()^posInMultiblock.getZ()==3)
 				fw = fw.getOpposite();
 			return new float[]{fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1};
 		}
@@ -308,9 +308,9 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	{
 		//TODO this seems a bit nonsensical if(posInMultiblock%15==7)
 		//	return null;
-		Direction fl = facing;
-		Direction fw = facing.rotateY();
-		if(mirrored)
+		Direction fl = getFacing();
+		Direction fw = getFacing().rotateY();
+		if(isMirrored())
 			fw = fw.getOpposite();
 		if(BlockPos.ZERO.equals(posInMultiblock))
 		{
@@ -513,8 +513,8 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
 		{
-			BlockPos pos = getPos().add(0, -1, 0).offset(facing, -2);
-			Utils.dropStackAtPos(world, pos, output, facing);
+			BlockPos pos = getPos().add(0, -1, 0).offset(getFacing(), -2);
+			Utils.dropStackAtPos(world, pos, output, getFacing());
 		}
 	}
 

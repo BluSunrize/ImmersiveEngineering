@@ -8,11 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
@@ -51,8 +52,6 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public BlockPos posInMultiblock = BlockPos.ZERO;
 	//Offset from the master to this block (world coordinate system)
 	public BlockPos offsetToMaster = BlockPos.ZERO;
-	public boolean mirrored = false;
-	public Direction facing = Direction.NORTH;
 	private final IMultiblock multiblockInstance;
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
@@ -74,13 +73,16 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	@Override
 	public Direction getFacing()
 	{
-		return this.facing;
+		BlockState state = getBlockState();
+		return state.get(IEProperties.FACING_HORIZONTAL);
 	}
 
 	@Override
 	public void setFacing(Direction facing)
 	{
-		this.facing = facing;
+		BlockState oldState = getWorldNonnull().getBlockState(pos);
+		BlockState newState = oldState.with(IEProperties.FACING_HORIZONTAL, facing);
+		getWorldNonnull().setBlockState(pos, newState);
 	}
 
 	@Override
@@ -117,8 +119,6 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		formed = nbt.getBoolean("formed");
 		posInMultiblock = NBTUtil.readBlockPos(nbt.getCompound("posInMultiblock"));
 		offsetToMaster = NBTUtil.readBlockPos(nbt.getCompound("offset"));
-		mirrored = nbt.getBoolean("mirrored");
-		setFacing(Direction.byIndex(nbt.getInt("facing")));
 	}
 
 	@Override
@@ -127,8 +127,6 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		nbt.putBoolean("formed", formed);
 		nbt.put("posInMultiblock", NBTUtil.writeBlockPos(new BlockPos(offsetToMaster)));
 		nbt.put("offset", NBTUtil.writeBlockPos(new BlockPos(offsetToMaster)));
-		nbt.putBoolean("mirrored", mirrored);
-		nbt.putInt("facing", facing.ordinal());
 	}
 
 	private EnumMap<Direction, LazyOptional<IFluidHandler>> fluidCaps = new EnumMap<>(Direction.class);
@@ -142,7 +140,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&
 				this.getAccessibleFluidTanks(facing).length > 0)
@@ -159,6 +157,19 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	protected abstract boolean canFillTankFrom(int iTank, Direction side, FluidStack resource);
 
 	protected abstract boolean canDrainTankFrom(int iTank, Direction side);
+
+	public boolean isMirrored()
+	{
+		BlockState state = getBlockState();
+		return state.get(IEProperties.MIRRORED);
+	}
+
+	public void setMirrored(boolean mirrored)
+	{
+		BlockState oldState = getWorldNonnull().getBlockState(pos);
+		BlockState newState = oldState.with(IEProperties.MIRRORED, mirrored);
+		getWorldNonnull().setBlockState(pos, newState);
+	}
 
 	public static class MultiblockFluidWrapper implements IFluidHandler
 	{
@@ -331,7 +342,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 			BlockPos startPos = getOrigin();
 			BlockPos masterPos = getPos().subtract(offsetToMaster);
 			long time = world.getGameTime();
-			multiblockInstance.disassemble(world, startPos, mirrored, facing);
+			multiblockInstance.disassemble(world, startPos, isMirrored(), getFacing());
 			world.removeBlock(pos, false);
 		}
 	}
@@ -339,13 +350,13 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public BlockPos getOrigin()
 	{
 		return TemplateMultiblock.withSettingsAndOffset(pos, BlockPos.ZERO.subtract(posInMultiblock),
-				mirrored, facing);
+				isMirrored(), getFacing());
 	}
 
 	public BlockPos getBlockPosForPos(BlockPos targetPos)
 	{
 		BlockPos origin = getOrigin();
-		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, mirrored, facing);
+		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, isMirrored(), getFacing());
 	}
 
 	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)

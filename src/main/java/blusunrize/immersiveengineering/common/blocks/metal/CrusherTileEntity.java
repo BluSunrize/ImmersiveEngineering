@@ -119,7 +119,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		//			else
 		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 		//		return renderAABB;
-		return new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?2: 1), getPos().getY(), getPos().getZ()-(facing.getAxis()==Axis.X?2: 1), getPos().getX()+(facing.getAxis()==Axis.Z?3: 2), getPos().getY()+3, getPos().getZ()+(facing.getAxis()==Axis.X?3: 2));
+		return new AxisAlignedBB(getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getPos().getY(), getPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getPos().getY()+3, getPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
 	}
 
 	@Override
@@ -144,9 +144,9 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		if(new BlockPos(1, 2, 2).equals(posInMultiblock))
 			return new float[]{0, 0, 0, 0, 0, 0};
 
-		Direction fl = facing;
-		Direction fw = facing.rotateY();
-		if(mirrored)
+		Direction fl = getFacing();
+		Direction fw = getFacing().rotateY();
+		if(isMirrored())
 			fw = fw.getOpposite();
 		if(posInMultiblock.getY() > 0&&posInMultiblock.getZ() > 0&&posInMultiblock.getZ() < 4)
 		{
@@ -183,7 +183,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			return new float[]{minX, 0, minZ, maxX, 1, maxZ};
 		}
 		if(new BlockPos(0, 1, 4).equals(posInMultiblock))
-			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
+			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
 
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
@@ -193,9 +193,9 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	{
 		if(posInMultiblock.getX()==1&&posInMultiblock.getZ()==2)
 			return null;
-		Direction fl = facing;
-		Direction fw = facing.rotateY();
-		if(mirrored)
+		Direction fl = getFacing();
+		Direction fw = getFacing().rotateY();
+		if(isMirrored())
 			fw = fw.getOpposite();
 		if(new BlockPos(0, 0, 4).equals(posInMultiblock))
 		{
@@ -404,7 +404,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(getPos().add(0, -1, 0).offset(facing, -2), facing),
+			() -> new DirectionalBlockPos(getPos().add(0, -1, 0).offset(getFacing(), -2), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
@@ -412,7 +412,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	{
 		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
-			Utils.dropStackAtPos(world, getPos().add(0, -1, 0).offset(facing, -2), output, facing.getOpposite());
+			Utils.dropStackAtPos(world, getPos().add(0, -1, 0).offset(getFacing(), -2), output, getFacing().getOpposite());
 	}
 
 	@Override

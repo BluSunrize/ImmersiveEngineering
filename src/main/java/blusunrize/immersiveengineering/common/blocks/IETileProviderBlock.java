@@ -106,52 +106,56 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof IHasDummyBlocks)
-			((IHasDummyBlocks)tile).breakDummies(pos, state);
-		Consumer<Connection> dropHandler;
-		if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
-			dropHandler = (c) -> {
-				if(!c.isInternal())
-				{
-					BlockPos end = c.getOtherEnd(c.getEndFor(pos)).getPosition();
-					double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
-					double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
-					double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
-					world.addEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
-				}
-			};
-		else
-			dropHandler = c -> {
-			};
-		if(tile!=null&&(!(tile instanceof ITileDrop)||!((ITileDrop)tile).preventInventoryDrop()))
+		if(state.getBlock()!=newState.getBlock())
 		{
-			if(tile instanceof IIEInventory&&((IIEInventory)tile).getDroppedItems()!=null)
-				InventoryHelper.dropItems(world, pos, ((IIEInventory)tile).getDroppedItems());
-			else
-			{
-				LazyOptional<IItemHandler> itemHandler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-				itemHandler.ifPresent((h) ->
-				{
-					if(h instanceof IEInventoryHandler)
+			if(tile instanceof IEBaseTileEntity)
+				((IEBaseTileEntity)tile).setCachedState(state);
+			if(tile instanceof IHasDummyBlocks)
+				((IHasDummyBlocks)tile).breakDummies(pos, state);
+			Consumer<Connection> dropHandler;
+			if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+				dropHandler = (c) -> {
+					if(!c.isInternal())
 					{
-						NonNullList<ItemStack> drops = NonNullList.create();
-						for(int i = 0; i < h.getSlots(); i++)
-							if(!h.getStackInSlot(i).isEmpty())
-							{
-								drops.add(h.getStackInSlot(i));
-								((IEInventoryHandler)h).setStackInSlot(i, ItemStack.EMPTY);
-							}
-						InventoryHelper.dropItems(world, pos, drops);
+						BlockPos end = c.getOtherEnd(c.getEndFor(pos)).getPosition();
+						double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
+						double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
+						double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
+						world.addEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
 					}
-				});
+				};
+			else
+				dropHandler = c -> {
+				};
+			if(tile!=null&&(!(tile instanceof ITileDrop)||!((ITileDrop)tile).preventInventoryDrop()))
+			{
+				if(tile instanceof IIEInventory&&((IIEInventory)tile).getDroppedItems()!=null)
+					InventoryHelper.dropItems(world, pos, ((IIEInventory)tile).getDroppedItems());
+				else
+				{
+					LazyOptional<IItemHandler> itemHandler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+					itemHandler.ifPresent((h) ->
+					{
+						if(h instanceof IEInventoryHandler)
+						{
+							NonNullList<ItemStack> drops = NonNullList.create();
+							for(int i = 0; i < h.getSlots(); i++)
+								if(!h.getStackInSlot(i).isEmpty())
+								{
+									drops.add(h.getStackInSlot(i));
+									((IEInventoryHandler)h).setStackInSlot(i, ItemStack.EMPTY);
+								}
+							InventoryHelper.dropItems(world, pos, drops);
+						}
+					});
+				}
 			}
+			if(tile instanceof IImmersiveConnectable&&!world.isRemote)
+				for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
+					getNetwork(world).removeAllConnectionsAt(cp, dropHandler);
 		}
-		if(tile instanceof IImmersiveConnectable&&!world.isRemote)
-			for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
-				getNetwork(world).removeAllConnectionsAt(cp, dropHandler);
 		tempTile.put(new DimensionBlockPos(pos, world.getDimension().getType()), tile);
 		super.onReplaced(state, world, pos, newState, isMoving);
-		world.removeTileEntity(pos);
 	}
 
 	@Override

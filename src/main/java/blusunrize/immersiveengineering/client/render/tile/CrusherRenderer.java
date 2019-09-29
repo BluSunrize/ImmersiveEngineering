@@ -64,14 +64,14 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 			GlStateManager.shadeModel(7425);
 		else
 			GlStateManager.shadeModel(7424);
-		GlStateManager.translated(te.facing.getXOffset()*.5, 0, te.facing.getZOffset()*.5);
-		GlStateManager.rotatef(angle, -te.facing.getZOffset(), 0, te.facing.getXOffset());
+		GlStateManager.translated(te.getFacing().getXOffset()*.5, 0, te.getFacing().getZOffset()*.5);
+		GlStateManager.rotatef(angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
 		renderPart(worldRenderer, blockPos, blockRenderer, tessellator, te, model, state);
-		GlStateManager.rotatef(-angle, -te.facing.getZOffset(), 0, te.facing.getXOffset());
-		GlStateManager.translated(te.facing.getXOffset()*-1, 0, te.facing.getZOffset()*-1);
-		GlStateManager.rotatef(-angle, -te.facing.getZOffset(), 0, te.facing.getXOffset());
+		GlStateManager.rotatef(-angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
+		GlStateManager.translated(te.getFacing().getXOffset()*-1, 0, te.getFacing().getZOffset()*-1);
+		GlStateManager.rotatef(-angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
 		renderPart(worldRenderer, blockPos, blockRenderer, tessellator, te, model, state);
-		GlStateManager.rotatef(angle, -te.facing.getZOffset(), 0, te.facing.getXOffset());
+		GlStateManager.rotatef(angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
 
 		RenderHelper.enableStandardItemLighting();
 

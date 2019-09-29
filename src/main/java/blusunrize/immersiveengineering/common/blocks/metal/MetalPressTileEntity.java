@@ -144,7 +144,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		{
 			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof ConveyorBeltTileEntity)
-				((ConveyorBeltTileEntity)tile).setFacing(this.facing);
+				((ConveyorBeltTileEntity)tile).setFacing(this.getFacing());
 		}
 	}
 
@@ -207,7 +207,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 
 	private DirectionalBlockPos getOutputPos()
 	{
-		return new DirectionalBlockPos(pos.offset(facing, 2), facing);
+		return new DirectionalBlockPos(pos.offset(getFacing(), 2), getFacing());
 	}
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this,
@@ -332,7 +332,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			MetalPressTileEntity master = master();
 			if(master==null)
 				return LazyOptional.empty();
-			if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&facing==this.facing.getOpposite())
+			if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&facing==this.getFacing().getOpposite())
 				return master.insertionHandler.cast();
 			return LazyOptional.empty();
 		}
@@ -355,7 +355,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	public Direction[] sigOutputDirections()
 	{
 		if(new BlockPos(2, 1, 0).equals(posInMultiblock))
-			return new Direction[]{this.facing};
+			return new Direction[]{this.getFacing()};
 		return new Direction[0];
 	}
 }

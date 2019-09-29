@@ -158,7 +158,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(pos.offset(facing, 2), facing.getOpposite()),
+			() -> new DirectionalBlockPos(pos.offset(getFacing(), 2), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
@@ -370,21 +370,21 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		float xMax = 1;
 		float yMax = 1;
 		float zMax = 1;
-		if((posInMultiblock.getX()==0&&facing==Direction.SOUTH)||(posInMultiblock.getX()==2&&facing==Direction.NORTH))
+		if((posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH)||(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH))
 			zMin = .25f;
-		else if((posInMultiblock.getX()==0&&facing==Direction.NORTH)||(posInMultiblock.getX()==2&&facing==Direction.SOUTH))
+		else if((posInMultiblock.getX()==0&&getFacing()==Direction.NORTH)||(posInMultiblock.getX()==2&&getFacing()==Direction.SOUTH))
 			zMax = .75f;
-		else if((posInMultiblock.getX()==0&&facing==Direction.EAST)||(posInMultiblock.getX()==2&&facing==Direction.WEST))
+		else if((posInMultiblock.getX()==0&&getFacing()==Direction.EAST)||(posInMultiblock.getX()==2&&getFacing()==Direction.WEST))
 			xMin = .25f;
-		else if((posInMultiblock.getX()==0&&facing==Direction.WEST)||(posInMultiblock.getX()==2&&facing==Direction.EAST))
+		else if((posInMultiblock.getX()==0&&getFacing()==Direction.WEST)||(posInMultiblock.getX()==2&&getFacing()==Direction.EAST))
 			xMax = .75f;
-		if((posInMultiblock.getZ()==0&&facing==Direction.EAST)||(posInMultiblock.getZ()==2&&facing==Direction.WEST))
+		if((posInMultiblock.getZ()==0&&getFacing()==Direction.EAST)||(posInMultiblock.getZ()==2&&getFacing()==Direction.WEST))
 			zMin = .1875f;
-		else if((posInMultiblock.getZ()==0&&facing==Direction.WEST)||(posInMultiblock.getZ()==2&&facing==Direction.EAST))
+		else if((posInMultiblock.getZ()==0&&getFacing()==Direction.WEST)||(posInMultiblock.getZ()==2&&getFacing()==Direction.EAST))
 			zMax = .8125f;
-		else if((posInMultiblock.getZ()==0&&facing==Direction.NORTH)||(posInMultiblock.getZ()==2&&facing==Direction.SOUTH))
+		else if((posInMultiblock.getZ()==0&&getFacing()==Direction.NORTH)||(posInMultiblock.getZ()==2&&getFacing()==Direction.SOUTH))
 			xMin = .1875f;
-		else if((posInMultiblock.getZ()==0&&facing==Direction.SOUTH)||(posInMultiblock.getZ()==2&&facing==Direction.NORTH))
+		else if((posInMultiblock.getZ()==0&&getFacing()==Direction.SOUTH)||(posInMultiblock.getZ()==2&&getFacing()==Direction.NORTH))
 			xMax = .8125f;
 		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
 	}
@@ -414,7 +414,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		{
 			TileEntity tile = getWorldNonnull().getTileEntity(pos);
 			if(tile instanceof ConveyorBeltTileEntity)
-				((ConveyorBeltTileEntity)tile).setFacing(this.facing);
+				((ConveyorBeltTileEntity)tile).setFacing(this.getFacing());
 		}
 	}
 
@@ -531,9 +531,9 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			AssemblerTileEntity master = master();
 			if(master==null)
 				return LazyOptional.empty();
-			if(inputPos.equals(posInMultiblock)&&facing==this.facing.getOpposite())
+			if(inputPos.equals(posInMultiblock)&&facing==this.getFacing().getOpposite())
 				return master.insertionHandler.cast();
-			if(outputPos.equals(posInMultiblock)&&facing==this.facing)
+			if(outputPos.equals(posInMultiblock)&&facing==this.getFacing())
 				return master.extractionHandler.cast();
 			return LazyOptional.empty();
 		}
@@ -569,7 +569,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		AssemblerTileEntity master = master();
-		if(master!=null&&/*TODO posInMultiblock==1&&*/(side==null||side==facing.getOpposite()))
+		if(master!=null&&/*TODO posInMultiblock==1&&*/(side==null||side==getFacing().getOpposite()))
 			return master.tanks;
 		return new FluidTank[0];
 	}
@@ -590,7 +590,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	public Direction[] sigOutputDirections()
 	{
 		/*TODO if(posInMultiblock==16)*/
-			return new Direction[]{this.facing};
+		return new Direction[]{this.getFacing()};
 		//return new Direction[0];
 	}
 

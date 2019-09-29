@@ -299,7 +299,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	@Override
 	public BlockPos getOrigin()
 	{
-		return getPos().subtract(offsetToMaster).offset(facing, -1).offset(facing.rotateYCCW());
+		return getPos().subtract(offsetToMaster).offset(getFacing(), -1).offset(getFacing().rotateYCCW());
 	}
 
 	//Based on AbstractFurnaceTileEntity#getBurnTime, which is non-static protected now

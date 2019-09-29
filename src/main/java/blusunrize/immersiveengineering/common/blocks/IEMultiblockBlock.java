@@ -48,21 +48,26 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
-		TileEntity tileEntity = world.getTileEntity(pos);
-		if(tileEntity instanceof MultiblockPartTileEntity&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+		if(state.getBlock()!=newState.getBlock())
 		{
-			MultiblockPartTileEntity tile = (MultiblockPartTileEntity)tileEntity;
-			if(tile.formed&&tile instanceof IIEInventory)
+			TileEntity tileEntity = world.getTileEntity(pos);
+			if(tileEntity instanceof IEBaseTileEntity)
+				((IEBaseTileEntity)tileEntity).setCachedState(state);
+			if(tileEntity instanceof MultiblockPartTileEntity&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 			{
-				IIEInventory master = (IIEInventory)tile.master();
-				if(master!=null&&(!(master instanceof ITileDrop)||!((ITileDrop)master).preventInventoryDrop())&&master.getDroppedItems()!=null)
-					for(ItemStack s : master.getDroppedItems())
-						if(!s.isEmpty())
-							world.addEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s.copy()));
+				MultiblockPartTileEntity tile = (MultiblockPartTileEntity)tileEntity;
+				if(tile.formed&&tile instanceof IIEInventory)
+				{
+					IIEInventory master = (IIEInventory)tile.master();
+					if(master!=null&&(!(master instanceof ITileDrop)||!((ITileDrop)master).preventInventoryDrop())&&master.getDroppedItems()!=null)
+						for(ItemStack s : master.getDroppedItems())
+							if(!s.isEmpty())
+								world.addEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s.copy()));
+				}
 			}
+			if(tileEntity instanceof MultiblockPartTileEntity)
+				((MultiblockPartTileEntity)tileEntity).disassemble();
 		}
-		if(tileEntity instanceof MultiblockPartTileEntity)
-			((MultiblockPartTileEntity)tileEntity).disassemble();
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 

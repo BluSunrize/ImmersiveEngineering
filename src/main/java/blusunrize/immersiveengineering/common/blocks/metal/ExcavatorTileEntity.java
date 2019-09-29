@@ -114,8 +114,8 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 				float rot = 0;
 				int target = -1;
 				BucketWheelTileEntity wheel = ((BucketWheelTileEntity)center);
-				Direction fRot = this.facing.rotateYCCW();
-				if(wheel.facing==fRot)
+				Direction fRot = this.getFacing().rotateYCCW();
+				if(wheel.getFacing()==fRot)
 				{
 					if(active!=wheel.active)
 						world.addBlockEvent(wheel.getPos(), wheel.getBlockState().getBlock(), 0, active?1: 0);
@@ -124,16 +124,16 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 						target = Math.round(rot/360f*8)%8;
 				}
 
-				if(wheel.facing!=fRot||wheel.mirrored!=this.mirrored)
+				if(wheel.getFacing()!=fRot||wheel.isMirrored()!=this.isMirrored())
 				{
 					for(int h = -3; h <= 3; h++)
 						for(int w = -3; w <= 3; w++)
 						{
-							TileEntity te = world.getTileEntity(wheelPos.add(0, h, 0).offset(facing, w));
+							TileEntity te = world.getTileEntity(wheelPos.add(0, h, 0).offset(getFacing(), w));
 							if(te instanceof BucketWheelTileEntity)
 							{
-								((BucketWheelTileEntity)te).facing = fRot;
-								((BucketWheelTileEntity)te).mirrored = this.mirrored;
+								((BucketWheelTileEntity)te).setFacing(fRot);
+								((BucketWheelTileEntity)te).setMirrored(this.isMirrored());
 								te.markDirty();
 								((BucketWheelTileEntity)te).markContainingBlockForUpdate(null);
 								world.addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 255, 0);
@@ -219,41 +219,41 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		if(!s.isEmpty())
 			return s;
 		//Backward 1
-		s = digBlock(pos.offset(facing, -1));
+		s = digBlock(pos.offset(getFacing(), -1));
 		if(!s.isEmpty())
 			return s;
 		//Backward 2
-		s = digBlock(pos.offset(facing, -2));
+		s = digBlock(pos.offset(getFacing(), -2));
 		if(!s.isEmpty())
 			return s;
 		//Forward 1
-		s = digBlock(pos.offset(facing, 1));
+		s = digBlock(pos.offset(getFacing(), 1));
 		if(!s.isEmpty())
 			return s;
 		//Forward 2
-		s = digBlock(pos.offset(facing, 2));
+		s = digBlock(pos.offset(getFacing(), 2));
 		if(!s.isEmpty())
 			return s;
 
 		//Backward+Sides
-		s = digBlock(pos.offset(facing, -1).offset(facing.rotateY()));
+		s = digBlock(pos.offset(getFacing(), -1).offset(getFacing().rotateY()));
 		if(!s.isEmpty())
 			return s;
-		s = digBlock(pos.offset(facing, -1).offset(facing.rotateYCCW()));
+		s = digBlock(pos.offset(getFacing(), -1).offset(getFacing().rotateYCCW()));
 		if(!s.isEmpty())
 			return s;
 		//Center Sides
-		s = digBlock(pos.offset(facing.rotateY()));
+		s = digBlock(pos.offset(getFacing().rotateY()));
 		if(!s.isEmpty())
 			return s;
-		s = digBlock(pos.offset(facing.rotateYCCW()));
+		s = digBlock(pos.offset(getFacing().rotateYCCW()));
 		if(!s.isEmpty())
 			return s;
 		//Forward+Sides
-		s = digBlock(pos.offset(facing, 1).offset(facing.rotateY()));
+		s = digBlock(pos.offset(getFacing(), 1).offset(getFacing().rotateY()));
 		if(!s.isEmpty())
 			return s;
-		s = digBlock(pos.offset(facing, 1).offset(facing.rotateYCCW()));
+		s = digBlock(pos.offset(getFacing(), 1).offset(getFacing().rotateYCCW()));
 		if(!s.isEmpty())
 			return s;
 		return ItemStack.EMPTY;
@@ -304,9 +304,9 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	@Override
 	public float[] getBlockBounds()
 	{
-		Direction fl = facing;
-		Direction fw = facing.rotateY();
-		if(mirrored)
+		Direction fl = getFacing();
+		Direction fw = getFacing().rotateY();
+		if(isMirrored())
 			fw = fw.getOpposite();
 
 		if(new BlockPos(3, 2, 0).equals(posInMultiblock))
@@ -337,9 +337,9 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		Direction fl = facing;
-		Direction fw = facing.rotateY();
-		if(mirrored)
+		Direction fl = getFacing();
+		Direction fw = getFacing().rotateY();
+		if(isMirrored())
 			fw = fw.getOpposite();
 
 		if(posInMultiblock.getX()==1&&posInMultiblock.getZ()==2)
@@ -417,14 +417,14 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(getPos().offset(facing, -1), facing.getOpposite()), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+			() -> new DirectionalBlockPos(getPos().offset(getFacing(), -1), getFacing().getOpposite()), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
 		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
-			Utils.dropStackAtPos(world, getPos().offset(facing, -1), output, facing);
+			Utils.dropStackAtPos(world, getPos().offset(getFacing(), -1), output, getFacing());
 	}
 
 	@Override

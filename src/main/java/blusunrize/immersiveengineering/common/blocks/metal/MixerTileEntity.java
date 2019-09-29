@@ -110,7 +110,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 					if(fs!=null)
 					{
 						float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
-						Vec3d partPos = new Vec3d(getPos().getX()+.5f+facing.getXOffset()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+facing.getZOffset()*.5f+(mirrored?facing.rotateYCCW(): facing.rotateY()).getZOffset()*.5f);
+						Vec3d partPos = new Vec3d(getPos().getX()+.5f+getFacing().getXOffset()*.5f+(isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+getFacing().getZOffset()*.5f+(isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getZOffset()*.5f);
 						float r = Utils.RAND.nextFloat()*.8125f;
 						float angleRad = (float)Math.toRadians(animation_agitator);
 						partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
@@ -161,8 +161,8 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 
 			if(this.tank.getFluidTypes() > 1||!foundRecipe||outputAll)
 			{
-				BlockPos outputPos = this.getPos().down().offset(facing.getOpposite(), 2);
-				update |= FluidUtil.getFluidHandler(world, outputPos, facing).map(output ->
+				BlockPos outputPos = this.getPos().down().offset(getFacing().getOpposite(), 2);
+				update |= FluidUtil.getFluidHandler(world, outputPos, getFacing()).map(output ->
 				{
 					boolean ret = false;
 					if(!outputAll)
@@ -228,16 +228,16 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
 		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
-			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
+			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		Direction fl = facing;
-		Direction fw = facing.rotateY();
-		if(mirrored)
+		Direction fl = getFacing();
+		Direction fw = getFacing().rotateY();
+		if(isMirrored())
 			fw = fw.getOpposite();
 		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
@@ -390,7 +390,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 
 	private DirectionalBlockPos getOutputPos()
 	{
-		return new DirectionalBlockPos(pos.offset(facing, 2), facing);
+		return new DirectionalBlockPos(pos.offset(getFacing(), 2), getFacing());
 	}
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(
@@ -474,8 +474,8 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		MixerTileEntity master = master();
-		if(master!=null&&((new BlockPos(0, 0, 1).equals(posInMultiblock)&&(side==null||side==facing.getOpposite()))
-				||(new BlockPos(1, 0, 0).equals(posInMultiblock)&&(side==null||side==(mirrored?facing.rotateY(): facing.rotateYCCW())))))
+		if(master!=null&&((new BlockPos(0, 0, 1).equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
+				||(new BlockPos(1, 0, 0).equals(posInMultiblock)&&(side==null||side==(isMirrored()?getFacing().rotateY(): getFacing().rotateYCCW())))))
 			return master.getInternalTanks();
 		return new FluidTank[0];
 	}
@@ -483,13 +483,13 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	@Override
 	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
 	{
-		return side==null||side==(mirrored?facing.rotateY(): facing.rotateYCCW());
+		return side==null||side==(isMirrored()?getFacing().rotateY(): getFacing().rotateYCCW());
 	}
 
 	@Override
 	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
-		return side==null||side==facing.getOpposite();
+		return side==null||side==getFacing().getOpposite();
 	}
 
 	@Override

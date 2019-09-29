@@ -49,8 +49,8 @@ public class SqueezerRenderer extends TileEntityRenderer<SqueezerTileEntity>
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(x+.5, y+.5, z+.5);
-		if(te.mirrored)
-			GlStateManager.scalef(te.facing.getXOffset()==0?-1: 1, 1, te.facing.getZOffset()==0?-1: 1);
+		if(te.isMirrored())
+			GlStateManager.scalef(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
 
 		float piston = te.animation_piston;
 		//Smoothstep!

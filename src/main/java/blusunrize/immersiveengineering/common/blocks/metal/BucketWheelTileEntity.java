@@ -185,7 +185,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	{
 		if(renderAABB==null)
 //			if(pos==24)
-			renderAABB = new AxisAlignedBB(getPos().add(-(facing.getAxis()==Axis.Z?3: 0), -3, -(facing.getAxis()==Axis.X?3: 0)), getPos().add((facing.getAxis()==Axis.Z?4: 1), 4, (facing.getAxis()==Axis.X?4: 1)));
+			renderAABB = new AxisAlignedBB(getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), -3, -(getFacing().getAxis()==Axis.X?3: 0)), getPos().add((getFacing().getAxis()==Axis.Z?4: 1), 4, (getFacing().getAxis()==Axis.X?4: 1)));
 //			else
 //				renderAABB = new AxisAlignedBB(getPos(), getPos());
 		return renderAABB;
@@ -207,19 +207,19 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .75f, 1};
 		else if(new BlockPos(0, 3, 0).equals(posInMultiblock))
-			return new float[]{facing==Direction.NORTH?.25f: 0, 0, facing==Direction.WEST?.25f: 0, facing==Direction.SOUTH?.75f: 1, 1, facing==Direction.EAST?.75f: 1};
+			return new float[]{getFacing()==Direction.NORTH?.25f: 0, 0, getFacing()==Direction.WEST?.25f: 0, getFacing()==Direction.SOUTH?.75f: 1, 1, getFacing()==Direction.EAST?.75f: 1};
 		else if(new BlockPos(6, 3, 0).equals(posInMultiblock))
-			return new float[]{facing==Direction.SOUTH?.25f: 0, 0, facing==Direction.EAST?.25f: 0, facing==Direction.NORTH?.75f: 1, 1, facing==Direction.WEST?.75f: 1};
+			return new float[]{getFacing()==Direction.SOUTH?.25f: 0, 0, getFacing()==Direction.EAST?.25f: 0, getFacing()==Direction.NORTH?.75f: 1, 1, getFacing()==Direction.WEST?.75f: 1};
 		else if(ImmutableSet.of(
 				new BlockPos(1, 2, 0),
 				new BlockPos(1, 4, 0)
 		).contains(posInMultiblock))
-			return new float[]{facing==Direction.NORTH?.25f: 0, 0, facing==Direction.WEST?.25f: 0, facing==Direction.SOUTH?.75f: 1, 1, facing==Direction.EAST?.75f: 1};
+			return new float[]{getFacing()==Direction.NORTH?.25f: 0, 0, getFacing()==Direction.WEST?.25f: 0, getFacing()==Direction.SOUTH?.75f: 1, 1, getFacing()==Direction.EAST?.75f: 1};
 		else if(ImmutableSet.of(
 				new BlockPos(5, 2, 0),
 				new BlockPos(5, 4, 0)
 		).contains(posInMultiblock))
-			return new float[]{facing==Direction.SOUTH?.25f: 0, 0, facing==Direction.EAST?.25f: 0, facing==Direction.NORTH?.75f: 1, 1, facing==Direction.WEST?.75f: 1};
+			return new float[]{getFacing()==Direction.SOUTH?.25f: 0, 0, getFacing()==Direction.EAST?.25f: 0, getFacing()==Direction.NORTH?.75f: 1, 1, getFacing()==Direction.WEST?.75f: 1};
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 }

@@ -244,4 +244,9 @@ public abstract class IEBaseTileEntity extends TileEntity
 		getWorldNonnull().getChunkProvider().getLightManager().checkBlock(pos);
 		getWorldNonnull().getProfiler().endSection();
 	}
+
+	public void setCachedState(BlockState state)
+	{
+		cachedBlockState = state;
+	}
 }

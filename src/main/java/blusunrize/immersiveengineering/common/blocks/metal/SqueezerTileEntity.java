@@ -140,7 +140,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 				}
 			}
 
-			Direction fw = mirrored?facing.rotateYCCW(): facing.rotateY();
+			Direction fw = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 			if(this.tanks[0].getFluidAmount() > 0)
 			{
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[0].getFluid(), Math.min(this.tanks[0].getFluidAmount(), 80), false);
@@ -204,7 +204,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 
 	private DirectionalBlockPos getOutputPos()
 	{
-		Direction fw = mirrored?facing.rotateYCCW(): facing.rotateY();
+		Direction fw = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		return new DirectionalBlockPos(pos.offset(fw), fw.getOpposite());
 	}
 
@@ -217,7 +217,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
 		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
-			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
+			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
 
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
@@ -225,9 +225,9 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		Direction fl = facing;
-		Direction fw = facing.rotateY();
-		if(mirrored)
+		Direction fl = getFacing();
+		Direction fw = getFacing().rotateY();
+		if(isMirrored())
 			fw = fw.getOpposite();
 		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
@@ -447,7 +447,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		SqueezerTileEntity master = master();
-		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(mirrored?facing.rotateYCCW(): facing.rotateY())))
+		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY())))
 			return master.tanks;
 		return new FluidTank[0];
 	}

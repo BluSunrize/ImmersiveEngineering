@@ -40,11 +40,11 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(BlockPos.ZERO.offset(facing, 2).add(0, -1, 0), facing.getOpposite()),
+			() -> new DirectionalBlockPos(BlockPos.ZERO.offset(getFacing(), 2).add(0, -1, 0), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 	private CapabilityReference<IItemHandler> slag = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(BlockPos.ZERO.offset(facing, -2).add(0, -1, 0), facing.getOpposite()),
+			() -> new DirectionalBlockPos(BlockPos.ZERO.offset(getFacing(), -2).add(0, -1, 0), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 
@@ -90,10 +90,10 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 
 		if(new BlockPos(2, 0, 1).equals(posInMultiblock))
 		{
-			xMin = facing.getAxis()==Axis.Z?.1875f: 0;
-			xMax = facing.getAxis()==Axis.Z?.8125f: 1;
-			zMin = facing.getAxis()==Axis.X?.1875f: 0;
-			zMax = facing.getAxis()==Axis.X?.8125f: 1;
+			xMin = getFacing().getAxis()==Axis.Z?.1875f: 0;
+			xMax = getFacing().getAxis()==Axis.Z?.8125f: 1;
+			zMin = getFacing().getAxis()==Axis.X?.1875f: 0;
+			zMax = getFacing().getAxis()==Axis.X?.8125f: 1;
 			yMax = .8125f;
 		}
 		else
@@ -106,25 +106,25 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 			else if(posInMultiblock.getY()==2)
 				indent = .375f;
 
-			if((posInMultiblock.getX()==0&&facing==Direction.WEST)||
-					(posInMultiblock.getX()==2&&facing==Direction.EAST)||
-					(posInMultiblock.getZ()==2&&facing==Direction.SOUTH)||
-					(posInMultiblock.getZ()==0&&facing==Direction.NORTH))
+			if((posInMultiblock.getX()==0&&getFacing()==Direction.WEST)||
+					(posInMultiblock.getX()==2&&getFacing()==Direction.EAST)||
+					(posInMultiblock.getZ()==2&&getFacing()==Direction.SOUTH)||
+					(posInMultiblock.getZ()==0&&getFacing()==Direction.NORTH))
 				xMin = (1-indent);
-			if((posInMultiblock.getX()==0&&facing==Direction.EAST)||
-					(posInMultiblock.getX()==2&&facing==Direction.WEST)||
-					(posInMultiblock.getZ()==2&&facing==Direction.NORTH)||
-					(posInMultiblock.getZ()==0&&facing==Direction.SOUTH))
+			if((posInMultiblock.getX()==0&&getFacing()==Direction.EAST)||
+					(posInMultiblock.getX()==2&&getFacing()==Direction.WEST)||
+					(posInMultiblock.getZ()==2&&getFacing()==Direction.NORTH)||
+					(posInMultiblock.getZ()==0&&getFacing()==Direction.SOUTH))
 				xMax = indent;
-			if((posInMultiblock.getX()==0&&facing==Direction.SOUTH)||
-					(posInMultiblock.getX()==2&&facing==Direction.NORTH)||
-					(posInMultiblock.getZ()==2&&facing==Direction.EAST)||
-					(posInMultiblock.getZ()==0&&facing==Direction.WEST))
+			if((posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH)||
+					(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH)||
+					(posInMultiblock.getZ()==2&&getFacing()==Direction.EAST)||
+					(posInMultiblock.getZ()==0&&getFacing()==Direction.WEST))
 				zMin = (1-indent);
-			if((posInMultiblock.getX()==0&&facing==Direction.NORTH)||
-					(posInMultiblock.getX()==2&&facing==Direction.SOUTH)||
-					(posInMultiblock.getZ()==2&&facing==Direction.WEST)||
-					(posInMultiblock.getZ()==0&&facing==Direction.EAST))
+			if((posInMultiblock.getX()==0&&getFacing()==Direction.NORTH)||
+					(posInMultiblock.getX()==2&&getFacing()==Direction.SOUTH)||
+					(posInMultiblock.getZ()==2&&getFacing()==Direction.WEST)||
+					(posInMultiblock.getZ()==0&&getFacing()==Direction.EAST))
 				zMax = indent;
 		}
 
@@ -137,7 +137,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 		int i = 1;
 		for(int j = 0; j < 2; j++)
 		{
-			Direction phf = j==0?facing.rotateY(): facing.rotateYCCW();
+			Direction phf = j==0?getFacing().rotateY(): getFacing().rotateYCCW();
 			BlockPos pos = getPos().add(0, -1, 0).offset(phf, 2);
 			TileEntity te = Utils.getExistingTileEntity(world, pos);
 			if(te instanceof BlastFurnacePreheaterTileEntity)
@@ -174,9 +174,9 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 				return null;
 			if(inputOffset.equals(posInMultiblock)&&facing==Direction.UP)
 				return master.inputHandler.cast();
-			if(outputOffset.equals(posInMultiblock)&&facing==master.facing)
+			if(outputOffset.equals(posInMultiblock)&&facing==master.getFacing())
 				return master.outputHandler.cast();
-			if(slagOutputOffset.equals(posInMultiblock)&&facing==master.facing.getOpposite())
+			if(slagOutputOffset.equals(posInMultiblock)&&facing==master.getFacing().getOpposite())
 				return master.slagHandler.cast();
 			return LazyOptional.empty();
 		}

@@ -61,8 +61,8 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		//Outer GL Wrapping, initial translation
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(x+.5, y+.5, z+.5);
-		if(te.mirrored)
-			GlStateManager.scalef(te.facing.getXOffset()==0?-1: 1, 1, te.facing.getZOffset()==0?-1: 1);
+		if(te.isMirrored())
+			GlStateManager.scalef(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.bottlingProcessQueue.size()][];
@@ -124,7 +124,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.popMatrix();
 
-		switch(te.facing)
+		switch(te.getFacing())
 		{
 			case NORTH:
 				break;

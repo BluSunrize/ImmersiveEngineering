@@ -151,25 +151,25 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 			//TODO more sensible name
 			boolean is11 = new BlockPos(0, 1, 2).equals(posInMultiblock);
 			yMax = .8125f;
-			if(facing==Direction.NORTH)
+			if(getFacing()==Direction.NORTH)
 			{
 				zMin = .1875f;
 				if(is11)
 					xMax = .875f;
 			}
-			else if(facing==Direction.SOUTH)
+			else if(getFacing()==Direction.SOUTH)
 			{
 				zMax = .8125f;
 				if(is11)
 					xMin = .125f;
 			}
-			else if(facing==Direction.WEST)
+			else if(getFacing()==Direction.WEST)
 			{
 				xMin = .1875f;
 				if(is11)
 					zMin = .125f;
 			}
-			else if(facing==Direction.EAST)
+			else if(getFacing()==Direction.EAST)
 			{
 				xMax = .8125f;
 				if(is11)
@@ -179,22 +179,22 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
 		{
 			yMax = .3125f;
-			if(facing==Direction.NORTH)
+			if(getFacing()==Direction.NORTH)
 			{
 				zMin = .25f;
 				xMax = .875f;
 			}
-			else if(facing==Direction.SOUTH)
+			else if(getFacing()==Direction.SOUTH)
 			{
 				zMax = .75f;
 				xMin = .125f;
 			}
-			else if(facing==Direction.WEST)
+			else if(getFacing()==Direction.WEST)
 			{
 				xMin = .25f;
 				zMin = .125f;
 			}
-			else if(facing==Direction.EAST)
+			else if(getFacing()==Direction.EAST)
 			{
 				xMax = .75f;
 				zMax = .875f;
@@ -233,7 +233,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 
 	CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
 			() -> {
-				Direction outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
+				Direction outDir = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 				return new DirectionalBlockPos(pos.offset(outDir, 2), outDir.getOpposite());
 			}
 			, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
@@ -241,7 +241,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		Direction outDir = mirrored?facing.rotateYCCW(): facing.rotateY();
+		Direction outDir = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
 			Utils.dropStackAtPos(world, pos, output, outDir);
@@ -383,7 +383,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	public Direction[] sigOutputDirections()
 	{
 		if(new BlockPos(1, 1, 2).equals(posInMultiblock))
-			return new Direction[]{this.facing.rotateY()};
+			return new Direction[]{this.getFacing().rotateY()};
 		return new Direction[0];
 	}
 
@@ -393,9 +393,9 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		if(state.getBlock()==ConveyorHandler.getBlock(BasicConveyor.NAME))
 		{
 			if((l==2&&w==0)||l==1)
-				state = state.with(IEProperties.FACING_ALL, facing.rotateY());
+				state = state.with(IEProperties.FACING_ALL, getFacing().rotateY());
 			else
-				state = state.with(IEProperties.FACING_ALL, facing.getOpposite());
+				state = state.with(IEProperties.FACING_ALL, getFacing().getOpposite());
 		}
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 	}

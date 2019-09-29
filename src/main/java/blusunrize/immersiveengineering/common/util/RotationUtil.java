@@ -74,6 +74,7 @@ public class RotationUtil
 					if(!pred.test(tile))
 						return false;
 		}
+		//TODO this is not the right kind of rotation...
 		BlockState newState = state.rotate(world, pos, Rotation.CLOCKWISE_90);
 		if(newState!=state)
 		{

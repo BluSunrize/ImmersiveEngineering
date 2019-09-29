@@ -151,10 +151,10 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	{
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ()%2==0)
 		{
-			float xMin = (facing.getAxis()==Axis.X?(posInMultiblock.getX() > 0^facing==Direction.EAST): (posInMultiblock.getZ()==2^facing==Direction.SOUTH))?.75f: 0;
-			float xMax = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==0^facing==Direction.EAST): (posInMultiblock.getZ()==0^facing==Direction.SOUTH))?.25f: 1;
-			float zMin = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==2^facing==Direction.EAST): (posInMultiblock.getX()==0^facing==Direction.SOUTH))?.75f: 0;
-			float zMax = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==0^facing==Direction.EAST): (posInMultiblock.getX() > 0^facing==Direction.SOUTH))?.25f: 1;
+			float xMin = (getFacing().getAxis()==Axis.X?(posInMultiblock.getX() > 0^getFacing()==Direction.EAST): (posInMultiblock.getZ()==2^getFacing()==Direction.SOUTH))?.75f: 0;
+			float xMax = (getFacing().getAxis()==Axis.X?(posInMultiblock.getX()==0^getFacing()==Direction.EAST): (posInMultiblock.getZ()==0^getFacing()==Direction.SOUTH))?.25f: 1;
+			float zMin = (getFacing().getAxis()==Axis.X?(posInMultiblock.getZ()==2^getFacing()==Direction.EAST): (posInMultiblock.getX()==0^getFacing()==Direction.SOUTH))?.75f: 0;
+			float zMax = (getFacing().getAxis()==Axis.X?(posInMultiblock.getZ()==0^getFacing()==Direction.EAST): (posInMultiblock.getX() > 0^getFacing()==Direction.SOUTH))?.25f: 1;
 			return new float[]{xMin, 0, zMin, xMax, 1, zMax};
 		}
 		return new float[]{0, 0, 0, 1, 1, 1};

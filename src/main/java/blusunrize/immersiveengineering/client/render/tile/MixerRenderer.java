@@ -52,11 +52,11 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(x+.5, y+.5, z+.5);
 
-		if(te.mirrored)
-			GlStateManager.scalef(te.facing.getXOffset()==0?-1: 1, 1, te.facing.getZOffset()==0?-1: 1);
+		if(te.isMirrored())
+			GlStateManager.scalef(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translated(te.facing==Direction.SOUTH||te.facing==Direction.WEST?-.5: .5, 0, te.facing==Direction.SOUTH||te.facing==Direction.EAST?.5: -.5);
+		GlStateManager.translated(te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.WEST?-.5: .5, 0, te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.EAST?.5: -.5);
 		float agitator = te.animation_agitator-(!te.shouldRenderAsActive()?0: (1-partialTicks)*9f);
 		GlStateManager.rotatef(agitator, 0, 1, 0);
 
@@ -79,7 +79,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 
 		GlStateManager.popMatrix();
 
-		switch(te.facing)
+		switch(te.getFacing())
 		{
 			case NORTH:
 				break;

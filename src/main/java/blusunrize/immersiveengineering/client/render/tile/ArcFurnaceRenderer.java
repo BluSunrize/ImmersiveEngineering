@@ -99,7 +99,7 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 				hotMetal_still = ClientUtils.mc().getTextureMap().getAtlasSprite("immersiveengineering:blocks/fluid/hot_metal_still");
 				hotMetal_flow = ClientUtils.mc().getTextureMap().getAtlasSprite("immersiveengineering:blocks/fluid/hot_metal_flow");
 			}
-			GlStateManager.rotatef(-te.facing.getHorizontalAngle()+180, 0, 1, 0);
+			GlStateManager.rotatef(-te.getFacing().getHorizontalAngle()+180, 0, 1, 0);
 			int process = 40;
 			float speed = 5f;
 			int pour = process-te.pouringMetal;

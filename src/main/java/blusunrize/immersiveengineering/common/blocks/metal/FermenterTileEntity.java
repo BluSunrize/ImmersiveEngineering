@@ -77,7 +77,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this,
 			() -> {
-				Direction fw = mirrored?facing.rotateYCCW(): facing.rotateY();
+				Direction fw = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 				return new DirectionalBlockPos(this.getPos().offset(fw), fw.getOpposite());
 			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
@@ -125,7 +125,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 				}
 			}
 
-			Direction fw = mirrored?facing.rotateYCCW(): facing.rotateY();
+			Direction fw = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 			if(this.tanks[0].getFluidAmount() > 0)
 			{
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[0].getFluid(), Math.min(this.tanks[0].getFluidAmount(), 80), false);
@@ -192,7 +192,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 		if(posInMultiblock.getY()==0&&!new BlockPos(1, 0, 2).equals(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
 		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
-			return new float[]{facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1};
+			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
 
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
@@ -200,9 +200,9 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		Direction fl = facing;
-		Direction fw = facing.rotateY();
-		if(mirrored)
+		Direction fl = getFacing();
+		Direction fw = getFacing().rotateY();
+		if(isMirrored())
 			fw = fw.getOpposite();
 		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
@@ -322,7 +322,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	{
 		output = Utils.insertStackIntoInventory(outputCap, output, false);
 		if(!output.isEmpty())
-			Utils.dropStackAtPos(world, getPos().offset(facing, 2), output, facing);
+			Utils.dropStackAtPos(world, getPos().offset(getFacing(), 2), output, getFacing());
 	}
 
 	@Override
@@ -400,7 +400,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		FermenterTileEntity master = this.master();
-		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(mirrored?facing.rotateYCCW(): facing.rotateY())))
+		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY())))
 			return master.tanks;
 		return new FluidTank[0];
 	}

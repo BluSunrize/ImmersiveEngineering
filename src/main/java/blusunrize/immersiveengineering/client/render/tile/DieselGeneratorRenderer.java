@@ -66,7 +66,7 @@ public class DieselGeneratorRenderer extends TileEntityRenderer<DieselGeneratorT
 //		GlStateManager.translated(te.facing.getXOffset()*.25, 0, te.facing.getZOffset()*.25);
 //		float angle = ClientUtils.mc().player.ticksExisted%100/100f;
 //		GlStateManager.rotatef(angle*360, te.facing.getXOffset(), 0, te.facing.getZOffset());
-		GlStateManager.rotatef(te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks), te.facing.getXOffset(), 0, te.facing.getZOffset());
+		GlStateManager.rotatef(te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks), te.getFacing().getXOffset(), 0, te.getFacing().getZOffset());
 
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5-blockPos.getX(), -blockPos.getY(), -.5-blockPos.getZ());

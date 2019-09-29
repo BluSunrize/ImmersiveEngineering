@@ -10,15 +10,15 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
-import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -197,7 +197,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		{
 			BlockPos nullPos = this.getOrigin();
 			return new AxisAlignedBB(nullPos, TemplateMultiblock.withSettingsAndOffset(nullPos, new BlockPos(structureDimensions),
-					mirrored, facing));
+					isMirrored(), getFacing()));
 		}
 		return super.getRenderBoundingBox();
 	}
@@ -221,7 +221,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	@Override
 	public boolean getIsMirrored()
 	{
-		return this.mirrored;
+		return this.isMirrored();
 	}
 
 	//	=================================
