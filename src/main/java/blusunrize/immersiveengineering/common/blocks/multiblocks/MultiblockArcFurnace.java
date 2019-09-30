@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -205,33 +207,35 @@ public class MultiblockArcFurnace implements IMultiblock
 			mirrored = true;
 			b = structureCheck(world, startPos, side, mirrored);
 		}
+		if(!b)
+			return false;
+		ItemStack hammer = player.getHeldItemMainhand().getItem().getToolClasses(player.getHeldItemMainhand()).contains(Lib.TOOL_HAMMER)?player.getHeldItemMainhand(): player.getHeldItemOffhand();
+		if(MultiblockHandler.fireMultiblockFormationEventPost(player, this, pos, hammer).isCanceled())
+			return false;
 
-		if(b)
-		{
-			IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
-			state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
-			for(int l = 0; l < 5; l++)
-				for(int w = -2; w <= 2; w++)
-					for(int h = 0; h < 5; h++)
-						if(!structure[h][l][w+2].isEmpty())
+		IBlockState state = IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
+		state = state.withProperty(IEProperties.FACING_HORIZONTAL, side);
+		for(int l = 0; l < 5; l++)
+			for(int w = -2; w <= 2; w++)
+				for(int h = 0; h < 5; h++)
+					if(!structure[h][l][w+2].isEmpty())
+					{
+						int ww = mirrored?-w: w;
+						BlockPos pos2 = startPos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
+
+						world.setBlockState(pos2, state);
+						TileEntity curr = world.getTileEntity(pos2);
+						if(curr instanceof TileEntityArcFurnace)
 						{
-							int ww = mirrored?-w: w;
-							BlockPos pos2 = startPos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
-
-							world.setBlockState(pos2, state);
-							TileEntity curr = world.getTileEntity(pos2);
-							if(curr instanceof TileEntityArcFurnace)
-							{
-								TileEntityArcFurnace tile = (TileEntityArcFurnace)curr;
-								tile.formed = true;
-								tile.pos = h*25+l*5+(w+2);
-								tile.offset = new int[]{(side==EnumFacing.WEST?-l+2: side==EnumFacing.EAST?l-2: side==EnumFacing.NORTH?ww: -ww), h-1, (side==EnumFacing.NORTH?-l+2: side==EnumFacing.SOUTH?l-2: side==EnumFacing.EAST?ww: -ww)};
-								tile.mirrored = mirrored;
-								tile.markDirty();
-								world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
-							}
+							TileEntityArcFurnace tile = (TileEntityArcFurnace)curr;
+							tile.formed = true;
+							tile.pos = h*25+l*5+(w+2);
+							tile.offset = new int[]{(side==EnumFacing.WEST?-l+2: side==EnumFacing.EAST?l-2: side==EnumFacing.NORTH?ww: -ww), h-1, (side==EnumFacing.NORTH?-l+2: side==EnumFacing.SOUTH?l-2: side==EnumFacing.EAST?ww: -ww)};
+							tile.mirrored = mirrored;
+							tile.markDirty();
+							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 						}
-		}
+					}
 		return b;
 	}
 

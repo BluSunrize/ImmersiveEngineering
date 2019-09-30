@@ -105,19 +105,31 @@ public class MultiblockHandler
 		void renderFormedStructure();
 	}
 
+	@Deprecated
 	public static MultiblockFormEvent postMultiblockFormationEvent(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
 	{
-		MultiblockFormEvent event = new MultiblockFormEvent(player, multiblock, clickedBlock, hammer);
+		return fireMultiblockFormationEventPre(player, multiblock, clickedBlock, hammer);
+	}
+
+	public static MultiblockFormEvent fireMultiblockFormationEventPre(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
+	{
+		MultiblockFormEvent event = new MultiblockFormEvent.Pre(player, multiblock, clickedBlock, hammer);
 		MinecraftForge.EVENT_BUS.post(event);
 		return event;
 	}
 
 	/**
-	 * This event is fired BEFORE the multiblock is attempted to be formed.<br>
-	 * No checks of the structure have been made. The event simply exists to cancel the formation of the multiblock before it ever happens.
+	 * Only fire this if the multiblock structure has been checked positive
 	 */
+	public static MultiblockFormEvent fireMultiblockFormationEventPost(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
+	{
+		MultiblockFormEvent event = new MultiblockFormEvent.Post(player, multiblock, clickedBlock, hammer);
+		MinecraftForge.EVENT_BUS.post(event);
+		return event;
+	}
+
 	@Cancelable
-	public static class MultiblockFormEvent extends PlayerEvent
+	public abstract static class MultiblockFormEvent extends PlayerEvent
 	{
 		private final IMultiblock multiblock;
 		private final BlockPos clickedBlock;
@@ -145,5 +157,31 @@ public class MultiblockHandler
 		{
 			return hammer;
 		}
+
+		/**
+		 * This event is fired BEFORE the multiblock is attempted to be formed.<br>
+		 * No checks of the structure have been made. The event simply exists to cancel the formation of the multiblock before it ever happens.
+		 */
+		public static class Pre extends MultiblockFormEvent
+		{
+			public Pre(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
+			{
+				super(player, multiblock, clickedBlock, hammer);
+			}
+		}
+
+		/**
+		 * This event is fired AFTER the multiblock is attempted to be formed.<br>
+		 * The structure has been checked positively, but not replaced with the Multiblock.
+		 */
+		public static class Post extends MultiblockFormEvent
+		{
+			public Post(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
+			{
+				super(player, multiblock, clickedBlock, hammer);
+			}
+		}
 	}
+
+
 }

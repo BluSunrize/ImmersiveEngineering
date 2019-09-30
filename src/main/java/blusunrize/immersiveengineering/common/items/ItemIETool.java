@@ -67,8 +67,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import static blusunrize.immersiveengineering.api.Lib.TOOL_HAMMER;
-import static blusunrize.immersiveengineering.api.Lib.TOOL_WIRECUTTER;
 import static blusunrize.immersiveengineering.common.Config.IEConfig.Tools.cutterDurabiliy;
 import static blusunrize.immersiveengineering.common.Config.IEConfig.Tools.hammerDurabiliy;
 
@@ -286,7 +284,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDama
 							}
 					if(!b)
 						break;
-					if(MultiblockHandler.postMultiblockFormationEvent(player, mb, pos, stack).isCanceled())
+					if(MultiblockHandler.fireMultiblockFormationEventPre(player, mb, pos, stack).isCanceled())
 						continue;
 					if(mb.createStructure(world, pos, side, player))
 					{
@@ -441,7 +439,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDama
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		double max = (double)getMaxDamageIE(stack);
+		double max = getMaxDamageIE(stack);
 		return ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)/max;
 	}
 
@@ -450,7 +448,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDama
 	public Set<String> getToolClasses(ItemStack stack)
 	{
 		int meta = stack.getMetadata();
-		return meta==HAMMER_META?ImmutableSet.of(TOOL_HAMMER): meta==CUTTER_META?ImmutableSet.of(Lib.TOOL_WIRECUTTER): new HashSet<String>();
+		return meta==HAMMER_META?ImmutableSet.of(Lib.TOOL_HAMMER): meta==CUTTER_META?ImmutableSet.of(Lib.TOOL_WIRECUTTER): new HashSet<String>();
 	}
 
 	@Override
@@ -478,7 +476,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDama
 				if(((BlockIEBase)state.getBlock()).allowHammerHarvest(state))
 					return true;
 			}
-			else if(state.getBlock().isToolEffective(TOOL_HAMMER, state))
+			else if(state.getBlock().isToolEffective(Lib.TOOL_HAMMER, state))
 				return true;
 		}
 		else if(stack.getMetadata()==CUTTER_META)
@@ -488,7 +486,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDama
 				if(((BlockIEBase)state.getBlock()).allowWirecutterHarvest(state))
 					return true;
 			}
-			else if(state.getBlock().isToolEffective(TOOL_WIRECUTTER, state))
+			else if(state.getBlock().isToolEffective(Lib.TOOL_WIRECUTTER, state))
 				return true;
 		}
 		return super.canHarvestBlock(state, stack);

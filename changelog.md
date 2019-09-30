@@ -1,5 +1,6 @@
 ##### Version 0.12-92
 - Added Steel Armor, crafted from steel plates! (BluSunrize)
+- Added a second MultiblockFormEvent to the API, to fire *after* the structure has been checked (BluSunrize)
 - Fixed client only translation reference crashing on servers (BluSunrize)
 - Fixed client only references in Chutes (BluSunrize)
 - Fixed Coresamples without coordinates resulting in a client crash (BluSunrize)
