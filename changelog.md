@@ -1,4 +1,4 @@
-##### Version 0.12-92
+##### Version 0.12-92 - BUILT
 - Requires Forge version 14.23.5.2820 or higher (BluSunrize)
 - Added Steel Armor, crafted from steel plates! (BluSunrize)
 - Added a second MultiblockFormEvent to the API, to fire *after* the structure has been checked (BluSunrize)
