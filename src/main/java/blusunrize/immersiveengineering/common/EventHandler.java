@@ -58,6 +58,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -73,6 +74,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Pair;
@@ -112,6 +114,15 @@ public class EventHandler
 	{
 		event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "wire_network"),
 				new NetHandlerCapability.Provider(event.getObject()));
+	}
+
+	@SubscribeEvent
+	public void onTagsUpdated(TagsUpdatedEvent tagsChanged)
+	{
+		if(EffectiveSide.get().isServer())
+		{
+			IERecipes.addTagBasedRecipes();//TODO does this already have the new tags?
+		}
 	}
 
 	@SubscribeEvent

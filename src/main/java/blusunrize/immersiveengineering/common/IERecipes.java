@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
@@ -29,8 +30,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -77,8 +80,13 @@ public class IERecipes
 		//
 		//MATERIALS
 		//
-		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(componentIron), "plateIron", "plateIron", "ingotCopper");
-		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(componentSteel), "plateSteel", "plateSteel", "ingotCopper");
+		Tag<Item> ironPlate = IETags.getTagsFor(IRON).plate;
+		Tag<Item> steelPlate = IETags.getTagsFor(STEEL).plate;
+		Tag<Item> nickelPlate = IETags.getTagsFor(NICKEL).plate;
+		Tag<Item> copperIngot = IETags.getTagsFor(COPPER).ingot;
+		Tag<Item> glassBlock = Tags.Items.GLASS;
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(componentIron), ironPlate, ironPlate, copperIngot);
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(componentSteel), steelPlate, steelPlate, copperIngot);
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(electronTube, 3), "blockGlass", "plateNickel", "wireCopper", "dustRedstone");
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(circuitBoard),
 				new ItemStack(StoneDecoration.insulatingGlass), "plateCopper", "electronTube", "electronTube");
@@ -96,7 +104,7 @@ public class IERecipes
 				moldUnpacking})
 			if(!((IEBaseItem)curr).isHidden())
 				BlueprintCraftingRecipe.addRecipe("molds", new ItemStack(curr),
-						"plateSteel", "plateSteel", "plateSteel", "plateSteel", "plateSteel", new ItemStack(Tools.hammer));
+						steelPlate, steelPlate, steelPlate, steelPlate, steelPlate, new ItemStack(Tools.hammer));
 
 		//
 		//BULLETS
@@ -183,24 +191,28 @@ public class IERecipes
 
 	public static void initBlastFurnaceRecipes()
 	{
-		BlastFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), "ingotIron", 1200, new ItemStack(slag));
-		BlastFurnaceRecipe.addRecipe(new ItemStack(storage.get(STEEL)), "blockIron", 1200*9, new ItemStack(slag, 9));
+		Tag<Item> ironIngot = IETags.getTagsFor(IRON).ingot;
+		Tag<Block> ironBlock = IETags.getTagsFor(IRON).storage;
+		BlastFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), ironIngot, 1200, new ItemStack(slag));
+		BlastFurnaceRecipe.addRecipe(new ItemStack(storage.get(STEEL)), ironBlock, 1200*9, new ItemStack(slag, 9));
 
-		BlastFurnaceRecipe.addBlastFuel("fuelCoke", 1200);
-		BlastFurnaceRecipe.addBlastFuel("blockFuelCoke", 1200*10);
+		BlastFurnaceRecipe.addBlastFuel(IETags.coalCoke, 1200);
+		BlastFurnaceRecipe.addBlastFuel(IETags.coalCokeBlock, 1200*10);
+		/*TODO
 		BlastFurnaceRecipe.addBlastFuel("charcoal", 300);
 		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 300*10);
+		 */
 	}
 
 	public static void initMetalPressRecipes()
 	{
 		//Bullet casing
-		MetalPressRecipe.addRecipe(new ItemStack(emptyCasing, 2), "ingotCopper", new ItemStack(moldBulletCasing), 2400);
+		MetalPressRecipe.addRecipe(new ItemStack(emptyCasing, 2), IETags.getTagsFor(COPPER).ingot, new ItemStack(moldBulletCasing), 2400);
 
 		//Damaged Graphite Electrodes
 		ItemStack shoddyElectrode = new ItemStack(Misc.graphiteElectrode);
 		shoddyElectrode.setDamage(IEConfig.MACHINES.arcfurnace_electrodeDamage.get()/2);
-		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(moldRod), 4800).setInputSize(4);
+		MetalPressRecipe.addRecipe(shoddyElectrode, IETags.hopGraphiteIngot, new ItemStack(moldRod), 4800).setInputSize(4);
 
 		//Slicing Melons
 		MetalPressRecipe.addRecipe(new ItemStack(Items.MELON, 9), new ItemStack(Blocks.MELON), new ItemStack(moldUnpacking), 3200);
@@ -221,6 +233,7 @@ public class IERecipes
 	public static void initCrusherRecipes()
 	{
 		//TODO replace oredict names with tags
+		if(true) return;
 		oreOutputSecondaries.put("Iron", new Object[]{"dustNickel", .1f});
 		oreOutputSecondaries.put("Gold", new Object[]{"crystalCinnabar", .05f});
 		oreOutputSecondaries.put("Copper", new Object[]{"dustGold", .1f});
@@ -320,8 +333,9 @@ public class IERecipes
 		return new ResourceLocation("forge", "nuggets/"+type);
 	}
 
-	public static void postInitOreDictRecipes()
+	public static void addTagBasedRecipes()
 	{
+		//TODO remove recipes from previous world loads!
 		boolean allowHammerCrushing = !IEConfig.TOOLS.disableHammerCrushing.get();
 		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(moldPlate), false);
 		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(moldGear), false);
@@ -374,12 +388,18 @@ public class IERecipes
 					if(out!=null&&!out.isEmpty()&&!arcBlacklist.contains(baseName))
 						addArcOreSmelting(out, baseName);
 				}
-				else if(path.startsWith("gems/"))
+			}
+
+		for(Entry<ResourceLocation, Tag<Item>> tag : ItemTags.getCollection().getTagMap().entrySet())
+			if(!tag.getValue().getAllElements().isEmpty()&&tag.getKey().getNamespace().equals("forge"))
+			{
+				String path = tag.getKey().getPath();
+				if(path.startsWith("gems/"))
 				{
 					String ore = path.substring("gems/".length());
 					ResourceLocation dust = getDust(ore);
 					if(ApiUtils.isNonemptyItemTag(dust))
-						addCrusherRecipe(IEApi.getPreferredTagStack(dust), "gem"+ore, 6000, null, 0);
+						addCrusherRecipe(IEApi.getPreferredTagStack(dust), getGem(ore), 6000, null, 0);
 				}
 				else if(path.startsWith("dusts/"))
 				{
@@ -478,8 +498,8 @@ public class IERecipes
 		addOreDictAlloyingRecipe(getIngot("invar"), 3, "iron", 2, "nickel", 1, 200);
 		addOreDictAlloyingRecipe(getIngot("bronze"), 4, "copper", 3, "tin", 1, 200);
 		addOreDictAlloyingRecipe(getIngot("brass"), 4, "copper", 3, "zinc", 1, 200);
-		addOreDictAlloyingRecipe(getIngot("blueAlloy"), 1, "silver", 1, "nikolite", 4, 200);
-		addOreDictAlloyingRecipe(getIngot("redAlloy"), 1, "copper", 1, "redstone", 4, 200);
+		//TODO addOreDictAlloyingRecipe(getIngot("blueAlloy"), 1, "silver", 1, "nikolite", 4, 200);
+		//TODO addOreDictAlloyingRecipe(getIngot("redAlloy"), 1, "copper", 1, "redstone", 4, 200);
 
 	}
 
@@ -514,6 +534,8 @@ public class IERecipes
 
 	public static void initArcSmeltingRecipes()
 	{
+		//TODO tags rather than oredict
+		if(true) return;
 		//Steel
 		ArcFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), "ingotIron", new ItemStack(slag), 400, 512, "dustCoke");
 		ArcFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), "dustIron", new ItemStack(slag), 400, 512, "dustCoke");

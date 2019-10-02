@@ -77,9 +77,11 @@ public class ApiUtils
 	{
 		if(!isNonemptyItemTag(oreName))
 			return false;
-		if(ItemTags.getCollection().get(oreName).getAllElements().contains(stack.getItem()))
+		Tag<Item> itemTag = ItemTags.getCollection().get(oreName);
+		if(itemTag!=null&&itemTag.getAllElements().contains(stack.getItem()))
 			return true;
-		if(BlockTags.getCollection().get(oreName).getAllElements()
+		Tag<Block> blockTag = BlockTags.getCollection().get(oreName);
+		if(blockTag!=null&&blockTag.getAllElements()
 				.stream()
 				.map(IItemProvider::asItem)
 				.anyMatch(i -> stack.getItem()==i))
@@ -787,6 +789,8 @@ public class ApiUtils
 
 	public static Object convertToValidRecipeInput(Object input)
 	{
+		if(input instanceof Tag)
+			input = ((Tag)input).getId();
 		if(input instanceof ItemStack)
 			return input;
 		else if(input instanceof Item)
@@ -817,6 +821,8 @@ public class ApiUtils
 			return new IngredientStack(new ItemStack((Block)input));
 		else if(input instanceof Ingredient)
 			return new IngredientStack(Arrays.asList(((Ingredient)input).getMatchingStacks()));
+		else if(input instanceof Tag)
+			return new IngredientStack(((Tag)input).getId());
 		else if(input instanceof List)
 		{
 			if (!((List)input).isEmpty())
@@ -848,29 +854,6 @@ public class ApiUtils
 		else if(input instanceof FluidStack)
 			return new IngredientStack((FluidStack)input);
 		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, String (OreDictionary name) or FluidStack; "+input+" is invalid");
-	}
-
-	public static ItemStack getItemStackFromObject(Object o)
-	{
-		if(o instanceof ItemStack)
-			return (ItemStack)o;
-		else if(o instanceof Item)
-			return new ItemStack((Item)o);
-		else if(o instanceof Block)
-			return new ItemStack((Block)o);
-		else if(o instanceof List)
-			return ((List<ItemStack>)o).get(0);
-		else if(o instanceof ResourceLocation)
-		{
-			if(!isNonemptyItemTag((ResourceLocation)o))
-				return ItemStack.EMPTY;
-			List<ItemStack> l = getItemsInTag((ResourceLocation)o);
-			if(!l.isEmpty())
-				return l.get(0);
-			else
-				return ItemStack.EMPTY;
-		}
-		return ItemStack.EMPTY;
 	}
 
 	public static boolean hasPlayerIngredient(PlayerEntity player, IngredientStack ingredient)

@@ -455,7 +455,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 					return ret;
 				}
 			}
-			else if(te instanceof IBlockBounds)
+			if(te instanceof IBlockBounds)
 			{
 				float[] bounds = ((IBlockBounds)te).getBlockBounds();
 				AxisAlignedBB aabb = new AxisAlignedBB(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);

@@ -125,7 +125,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putBoolean("formed", formed);
-		nbt.put("posInMultiblock", NBTUtil.writeBlockPos(new BlockPos(offsetToMaster)));
+		nbt.put("posInMultiblock", NBTUtil.writeBlockPos(new BlockPos(posInMultiblock)));
 		nbt.put("offset", NBTUtil.writeBlockPos(new BlockPos(offsetToMaster)));
 	}
 

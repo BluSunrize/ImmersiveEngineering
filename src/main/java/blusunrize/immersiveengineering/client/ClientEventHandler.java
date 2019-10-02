@@ -705,7 +705,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
 						String[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
 						boolean useNixie = overlayBlock.useNixieFont(ClientUtils.mc().player, mop);
-						if(text.length > 0)
+						if(text!=null&&text.length > 0)
 						{
 							FontRenderer font = useNixie?ClientProxy.nixieFontOptional: ClientUtils.font();
 							int col = (useNixie&&IEConfig.GENERAL.nixietubeFont.get())?Lib.colour_nixieTubeText: 0xffffff;

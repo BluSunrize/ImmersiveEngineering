@@ -32,6 +32,7 @@ class ItemTags extends ItemTagsProvider
 			Item nugget = Metals.nuggets.get(metal);
 			Item ingot = Metals.ingots.get(metal);
 			Item plate = Metals.plates.get(metal);
+			Item dust = Metals.dusts.get(metal);
 			MetalTags tags = IETags.getTagsFor(metal);
 			if(!metal.isVanillaMetal())
 			{
@@ -39,6 +40,7 @@ class ItemTags extends ItemTagsProvider
 				getBuilder(tags.nugget).add(nugget);
 			}
 			getBuilder(tags.plate).add(plate);
+			getBuilder(tags.dust).add(dust);
 		}
 
 		IETags.forAllBlocktags(this::copy);

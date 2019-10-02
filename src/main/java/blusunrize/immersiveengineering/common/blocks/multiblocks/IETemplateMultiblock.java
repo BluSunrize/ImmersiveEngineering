@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -56,5 +57,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			tile.markDirty();
 			world.addBlockEvent(actualPos, world.getBlockState(actualPos).getBlock(), 255, 0);
 		}
+		else
+			IELogger.logger.error("Expected MB TE at {} during placement", actualPos);
 	}
 }

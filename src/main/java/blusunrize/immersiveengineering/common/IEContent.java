@@ -78,6 +78,8 @@ import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.state.IProperty;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -92,6 +94,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
@@ -373,7 +376,7 @@ public class IEContent
 		MetalDevices.capacitorLV = new GenericTileBlock("capacitor_lv", () -> CapacitorLVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorMV = new GenericTileBlock("capacitor_mv", () -> CapacitorMVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorHV = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
-		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_creative", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_creative", () -> CapacitorCreativeTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.barrel = new BarrelBlock("metal_barrel", false);
 		//MetalDevices.fluidPump = ;
 		//MetalDevices.fluidPlacer = ;
@@ -642,20 +645,19 @@ public class IEContent
 		registerTile(FakeLightTileEntity.class, event, Misc.fakeLight);
 	}
 
-	//TODO @SubscribeEvent
-	public static void registerRecipes()//TODO RegistryEvent.Register<IRecipe> event)
+	public static void registerRecipes()
 	{
 		/*CRAFTING*/
 		//IERecipes.initCraftingRecipes(event.getRegistry());
 
 		/*FURNACE*/
-		IERecipes.initFurnaceRecipes();
+		//IERecipes.initFurnaceRecipes();
 
 		/*BLUEPRINTS*/
-		IERecipes.initBlueprintRecipes();
+		//IERecipes.initBlueprintRecipes();
 
 		/*BELLJAR*/
-		BelljarHandler.init();
+		//BelljarHandler.init();
 
 		/*EXCAVATOR*/
 		//TODO remove
@@ -686,9 +688,11 @@ public class IEContent
 		ExcavatorHandler.addMineral("Silt", 25, .05f, new String[]{"blockClay", "sand", "gravel"}, new float[]{.5f, .3f, .2f});
 		*/
 		/*MULTIBLOCK RECIPES*/
+		Tag<Block> coalBlock = BlockTags.CORAL_BLOCKS;
+		Tag<Block> logWood = BlockTags.LOGS;
 		CokeOvenRecipe.addRecipe(new ItemStack(Ingredients.coalCoke), new ItemStack(Items.COAL), 1800, 500);
-		CokeOvenRecipe.addRecipe(new ItemStack(StoneDecoration.coke), "blockCoal", 1800*9, 5000);
-		CokeOvenRecipe.addRecipe(new ItemStack(Items.CHARCOAL), "logWood", 900, 250);
+		CokeOvenRecipe.addRecipe(new ItemStack(StoneDecoration.coke), coalBlock, 1800*9, 5000);
+		CokeOvenRecipe.addRecipe(new ItemStack(Items.CHARCOAL), logWood, 900, 250);
 
 		IERecipes.initBlastFurnaceRecipes();
 
@@ -712,21 +716,21 @@ public class IEContent
 			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood, 5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
 		 */
 
+		Tag<Item> potatoes = Tags.Items.CROPS_POTATO;
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.SUGAR_CANE, 6400);
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.MELON, 6400);
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.APPLE, 6400);
-		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, "cropPotato", 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, potatoes, 6400);
 
 		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel, 16), new FluidStack(fluidPlantoil, 8), new FluidStack(fluidEthanol, 8), 80);
 
-		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(Fluids.WATER, 500), new Object[]{"sand", "sand", Items.CLAY_BALL, "gravel"}, 3200);
+		Tag<Block> sand = BlockTags.SAND;
+		Tag<Block> gravel = Tags.Blocks.GRAVEL;
+		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(Fluids.WATER, 500), new Object[]{sand, sand, Items.CLAY_BALL, gravel}, 3200);
 
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.WET_SPONGE, 1), new ItemStack(Blocks.SPONGE, 1), new FluidStack(Fluids.WATER, 1000));
 
 		IECompatModule.doModulesRecipes();
-
-		/*ORE DICT CRAWLING*/
-		IERecipes.postInitOreDictRecipes();
 	}
 
 	public static void preInit()
@@ -1135,6 +1139,8 @@ public class IEContent
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler.class);
 		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class);
 		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler.class);
+
+		registerRecipes();
 	}
 
 	public static void postInit()

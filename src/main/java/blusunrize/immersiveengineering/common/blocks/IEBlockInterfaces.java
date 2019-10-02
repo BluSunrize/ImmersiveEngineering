@@ -255,7 +255,10 @@ public class IEBlockInterfaces
 
 		default ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
 		{
+			//TODO make this work properly on the client side
 			TileEntity tile = (TileEntity)this;
+			if(tile.getWorld().isRemote)
+				return new ItemStack(state.getBlock());
 			ServerWorld world = (ServerWorld)tile.getWorld();
 			return getTileDrops(
 					new Builder(world)

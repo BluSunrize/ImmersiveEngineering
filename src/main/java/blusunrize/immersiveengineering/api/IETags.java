@@ -31,6 +31,10 @@ public class IETags
 	private static final Map<Tag<Block>, Tag<Item>> toItemTag = new HashMap<>();
 	private static final Map<EnumMetals, MetalTags> metals = new HashMap<>();
 
+	public static final Tag<Item> coalCoke = new ItemTags.Wrapper(forgeLoc("coal_coke"));
+	public static final Tag<Item> hopGraphiteIngot = new ItemTags.Wrapper(IERecipes.getIngot("hop_graphite"));
+	public static final Tag<Block> coalCokeBlock = new BlockTags.Wrapper(IERecipes.getStorageBlock("coal_coke"));
+
 	static
 	{
 		for(EnumMetals m : EnumMetals.values())
@@ -67,6 +71,7 @@ public class IETags
 		public final Tag<Item> ingot;
 		public final Tag<Item> nugget;
 		public final Tag<Item> plate;
+		public final Tag<Item> dust;
 		public final Tag<Block> storage;
 		@Nullable
 		public final Tag<Block> ore;
@@ -94,8 +99,13 @@ public class IETags
 			nugget = new ItemTags.Wrapper(IERecipes.getNugget(name));
 			ingot = new ItemTags.Wrapper(IERecipes.getIngot(name));
 			plate = new ItemTags.Wrapper(IERecipes.getPlate(name));
+			dust = new ItemTags.Wrapper(IERecipes.getDust(name));
 			this.ore = ore;
 		}
 	}
 
+	private static ResourceLocation forgeLoc(String path)
+	{
+		return new ResourceLocation("forge", path);
+	}
 }
