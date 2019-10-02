@@ -3,12 +3,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "ore",
-        "data": 0
+        "item": "immersiveengineering:ore_copper"
       },
       {
-        "item": "metal",
-        "data": 0
+        "item": "immersiveengineering:plate_copper"
       }
     ]
   },
@@ -16,12 +14,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "ore",
-        "data": 1
+        "item": "immersiveengineering:ore_aluminum"
       },
       {
-        "item": "metal",
-        "data": 1
+        "item": "immersiveengineering:plate_aluminum"
       }
     ]
   },
@@ -29,12 +25,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "ore",
-        "data": 2
+        "item": "immersiveengineering:ore_lead"
       },
       {
-        "item": "metal",
-        "data": 2
+        "item": "immersiveengineering:plate_lead"
       }
     ]
   },
@@ -42,12 +36,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "ore",
-        "data": 3
+        "item": "immersiveengineering:ore_silver"
       },
       {
-        "item": "metal",
-        "data": 3
+        "item": "immersiveengineering:plate_silver"
       }
     ]
   },
@@ -55,12 +47,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "ore",
-        "data": 4
+        "item": "immersiveengineering:ore_nickel"
       },
       {
-        "item": "metal",
-        "data": 4
+        "item": "immersiveengineering:plate_nickel"
       }
     ]
   },
@@ -68,12 +58,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "ore",
-        "data": 5
+        "item": "immersiveengineering:ore_uranium"
       },
       {
-        "item": "metal",
-        "data": 5
+        "item": "immersiveengineering:plate_uranium"
       }
     ]
   }
