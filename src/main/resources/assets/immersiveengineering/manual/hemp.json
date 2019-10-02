@@ -1,0 +1,25 @@
+{
+  "items": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:hemp"
+      },
+      {
+        "item": "immersiveengineering:seed"
+      }
+    ]
+  },
+  "fabric_recipe": {
+    "type": "crafting",
+    "recipe": "material/hemp_fabric"
+  },
+  "cushion_recipe": {
+    "type": "crafting",
+    "recipe": "cloth_devices/jump_cushion"
+  },
+  "curtain_recipe": {
+    "type": "crafting",
+    "recipe": "cloth_devices/strip_curtain"
+  }
+}
