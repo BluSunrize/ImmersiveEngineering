@@ -503,9 +503,17 @@ public class ClientProxy extends CommonProxy
 				s -> new ManualElementMultiblock(ieMan,
 						MultiblockHandler.getByUniqueName(new ResourceLocation(JSONUtils.getString(s, "name")))));
 		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_ENERGY), 1);
+				ManualHelper.CAT_ENERGY), 2);
 		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_GENERAL), 0);
+		InnerNode<ResourceLocation, ManualEntry> constructionCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+				ManualHelper.CAT_CONSTRUCTION), 1);
+		InnerNode<ResourceLocation, ManualEntry> toolsCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+				ManualHelper.CAT_TOOLS), 3);
+		InnerNode<ResourceLocation, ManualEntry> machinesCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+				ManualHelper.CAT_MACHINES), 4);
+		InnerNode<ResourceLocation, ManualEntry> heavyMachinesCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+				ManualHelper.CAT_HEAVYMACHINES), 5);
 
 		ieMan.addEntry(energyCat.getOrCreateSubnode(new ResourceLocation(MODID,
 				"test"), 1), new ResourceLocation(MODID, "wiring"));
