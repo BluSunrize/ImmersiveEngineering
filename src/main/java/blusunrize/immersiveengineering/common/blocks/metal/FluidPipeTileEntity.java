@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.AdvancedAABB;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -156,14 +157,18 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		super.onLoad();
 		if(!world.isRemote)
 		{
-			boolean changed = false;
-			for(Direction f : Direction.VALUES)
-				changed |= updateConnectionByte(f);
-			if(changed)
-			{
-				world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
-				markContainingBlockForUpdate(null);
-			}
+
+			//TODO this really shouldn't be necessary IMO...
+			ApiUtils.addFutureServerTask(world, () -> {
+				boolean changed = false;
+				for(Direction f : Direction.VALUES)
+					changed |= updateConnectionByte(f);
+				if(changed)
+				{
+					world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+					markContainingBlockForUpdate(null);
+				}
+			}, true);
 		}
 	}
 

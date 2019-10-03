@@ -35,6 +35,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -594,6 +595,19 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		//return new Direction[0];
 	}
 
+	@Override
+	public void setWorld(World p_145834_1_)
+	{
+		super.setWorld(p_145834_1_);
+		if(getWorld()!=null)
+		{
+			for(int i = 0; i < patterns.length; i++)
+			{
+				patterns[i].recalculateOutput();
+			}
+		}
+	}
+
 	public static class CrafterPatternInventory implements IInventory
 	{
 		public NonNullList<ItemStack> inv = NonNullList.withSize(10, ItemStack.EMPTY);
@@ -674,9 +688,12 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 
 		public void recalculateOutput()
 		{
-			CraftingInventory invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
-			this.recipe = Utils.findCraftingRecipe(invC, tile.getWorldNonnull()).orElse(null);
-			this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC): ItemStack.EMPTY);
+			if(tile.getWorld()!=null)
+			{
+				CraftingInventory invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
+				this.recipe = Utils.findCraftingRecipe(invC, tile.getWorldNonnull()).orElse(null);
+				this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC): ItemStack.EMPTY);
+			}
 		}
 
 

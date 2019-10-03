@@ -1016,6 +1016,13 @@ public class ApiUtils
 		return raytraceWires(world, start, end, ignored);
 	}
 
+	public static void addFutureServerTask(World world, Runnable task, boolean forceFuture)
+	{
+		if(forceFuture)
+			new Thread(() -> addFutureServerTask(world, task));
+		else
+			addFutureServerTask(world, task);
+	}
 	public static void addFutureServerTask(World world, Runnable task)
 	{
 		LogicalSide side = world.isRemote?LogicalSide.CLIENT: LogicalSide.SERVER;
