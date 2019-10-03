@@ -32,6 +32,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -272,7 +273,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 					JsonObject json = JSONUtils.fromJson(GSON, new InputStreamReader(resData.getInputStream()),
 							JsonObject.class, true);
 					byte[] bytesLang = IOUtils.toByteArray(resLang.getInputStream());
-					String content = new String(bytesLang);
+					String content = new String(bytesLang, StandardCharsets.UTF_8);
 					for(Triple<String, Integer, SpecialManualElement> special : hardcodedSpecials)
 						splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
 					assert json!=null;
