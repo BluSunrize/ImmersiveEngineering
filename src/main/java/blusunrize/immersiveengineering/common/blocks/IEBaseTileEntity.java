@@ -196,7 +196,7 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	{
 		if(cap==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
 		{
-			//TODO if(!energyCaps.containsKey(side))
+			if(!energyCaps.containsKey(side))
 			{
 				IEForgeEnergyWrapper wrapper = ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(side);
 				if(wrapper!=null)

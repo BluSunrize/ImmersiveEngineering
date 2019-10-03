@@ -36,6 +36,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -97,7 +98,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			return;
 		if(tank.getFluidAmount() > 0)
 		{
-			int i = outputFluid(tank.getFluid(), FluidAction.SIMULATE);
+			int i = outputFluid(tank.getFluid(), FluidAction.EXECUTE);
 			tank.drain(i, FluidAction.EXECUTE);
 		}
 
@@ -118,7 +119,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 						handler.drain(out, FluidAction.EXECUTE);
 					}
 					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)
-							&&world.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER
+							&&world.getFluidState(getPos().offset(f)).getFluid().isIn(FluidTags.WATER)
 							&&IEConfig.MACHINES.pump_infiniteWater.get()
 							&&tank.fill(new FluidStack(Fluids.WATER, 1000), FluidAction.SIMULATE)==1000
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
@@ -127,7 +128,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 						for(Direction f2 : Direction.BY_HORIZONTAL_INDEX)
 						{
 							IFluidState waterState = world.getFluidState(getPos().offset(f).offset(f2));
-							if(waterState.getFluid()==Fluids.WATER&&waterState.isSource())
+							if(waterState.getFluid().isIn(FluidTags.WATER)&&waterState.isSource())
 								connectedSources++;
 						}
 						if(connectedSources > 1)

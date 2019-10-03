@@ -325,12 +325,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		final float hitZ = (float)hit.getHitVec().z;
 		ItemStack heldItem = player.getHeldItem(hand);
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof IConfigurableSides&&Utils.isHammer(heldItem)&&!world.isRemote)
-		{
-			Direction activeSide = player.isSneaking()?side.getOpposite(): side;
-			if(((IConfigurableSides)tile).toggleSide(activeSide, player))
-				return true;
-		}
 		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player)&&!world.isRemote)
 		{
 			Direction f = ((IDirectionalTile)tile).getFacing();
@@ -458,8 +452,11 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			if(te instanceof IBlockBounds)
 			{
 				float[] bounds = ((IBlockBounds)te).getBlockBounds();
-				AxisAlignedBB aabb = new AxisAlignedBB(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
-				return VoxelShapes.create(aabb);
+				if(bounds!=null)
+				{
+					AxisAlignedBB aabb = new AxisAlignedBB(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
+					return VoxelShapes.create(aabb);
+				}
 			}
 		}
 		return super.getShape(state, world, pos, context);

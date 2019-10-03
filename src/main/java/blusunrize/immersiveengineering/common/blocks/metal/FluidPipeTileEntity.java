@@ -55,6 +55,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.newSetFromMap;
 
+//TODO use cap references
 public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe, IAdvancedHasObjProperty,
 		IOBJModelCallback<BlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
 		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile
@@ -335,6 +336,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			world.notifyNeighborsOfStateExcept(pos, getBlockState().getBlock(), dir);
 			markContainingBlockForUpdate(null);
 		}
+		if(!getWorldNonnull().isRemote)
+			indirectConnections.clear();
 	}
 
 	static class PipeFluidHandler implements IFluidHandler

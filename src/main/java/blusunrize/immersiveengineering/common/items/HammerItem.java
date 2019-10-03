@@ -104,10 +104,22 @@ public class HammerItem extends IEBaseItem implements IItemDamageableIE, ITool
 		World world = context.getWorld();
 		BlockPos pos = context.getPos();
 		Direction side = context.getFace();
-		TileEntity tileEntity = world.getTileEntity(pos);
-		if(!(tileEntity instanceof IDirectionalTile)&&!(tileEntity instanceof IHammerInteraction)&&!(tileEntity instanceof IConfigurableSides))
-			if(RotationUtil.rotateBlock(world, pos, side))
-				return ActionResultType.SUCCESS;
+		TileEntity tile = world.getTileEntity(pos);
+		if(!world.isRemote)
+		{
+			if(tile instanceof IConfigurableSides)
+			{
+				PlayerEntity player = context.getPlayer();
+				Direction activeSide = ((player!=null)&&player.isSneaking())?side.getOpposite(): side;
+				if(((IConfigurableSides)tile).toggleSide(activeSide, player))
+					return ActionResultType.SUCCESS;
+				else
+					return ActionResultType.FAIL;
+			}
+			else if(!(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction))
+				if(RotationUtil.rotateBlock(world, pos, side))
+					return ActionResultType.SUCCESS;
+		}
 		return ActionResultType.PASS;
 	}
 
