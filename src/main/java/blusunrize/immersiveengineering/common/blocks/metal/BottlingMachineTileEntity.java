@@ -190,7 +190,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		{
 			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof FluidPumpTileEntity)
-				((FluidPumpTileEntity)tile).dummy = true;
+				((FluidPumpTileEntity)tile).setDummy(true);
 		}
 		else if(h==1&&l==0)
 		{

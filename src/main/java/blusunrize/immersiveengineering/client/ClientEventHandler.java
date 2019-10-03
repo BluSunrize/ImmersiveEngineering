@@ -442,7 +442,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	public void onRenderOverlayPost(RenderGameOverlayEvent.Post event)
 	{
 		int scaledWidth = ClientUtils.mc().mainWindow.getScaledWidth();
-		int scaledHeight = ClientUtils.mc().mainWindow.getScaledWidth();
+		int scaledHeight = ClientUtils.mc().mainWindow.getScaledHeight();
 		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
 		{
 			PlayerEntity player = ClientUtils.mc().player;

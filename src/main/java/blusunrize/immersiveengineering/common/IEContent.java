@@ -378,7 +378,8 @@ public class IEContent
 		MetalDevices.capacitorHV = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_creative", () -> CapacitorCreativeTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.barrel = new BarrelBlock("metal_barrel", false);
-		//MetalDevices.fluidPump = ;
+		MetalDevices.fluidPump = new GenericTileBlock("fluid_pump", () -> FluidPumpTileEntity.TYPE, defaultMetalProperties,
+				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		//MetalDevices.fluidPlacer = ;
 		MetalDevices.blastFurnacePreheater = new GenericTileBlock("blastfurnace_preheater", () -> BlastFurnacePreheaterTileEntity.TYPE,
 				defaultMetalProperties);
@@ -390,7 +391,7 @@ public class IEContent
 		MetalDevices.electricLantern = new MiscConnectorBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE);
 		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
 				defaultMetalProperties);
-		//MetalDevices.fluidPipe = ;
+		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.sampleDrill = new GenericTileBlock("sample_drill", () -> SampleDrillTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.teslaCoil = new GenericTileBlock("tesla_coil", () -> TeslaCoilTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.floodlight = new MiscConnectorBlock("floodlight", () -> FloodlightTileEntity.TYPE);
@@ -609,8 +610,8 @@ public class IEContent
 		registerTile(CapacitorHVTileEntity.class, event, MetalDevices.capacitorHV);
 		registerTile(CapacitorCreativeTileEntity.class, event, MetalDevices.capacitorCreative);
 		registerTile(MetalBarrelTileEntity.class, event, MetalDevices.barrel);
-		//registerTile(FluidPumpTileEntity.class, event, MetalDevices.fluidPump);
-		//registerTile(FluidPlacerTileEntity.class, event, MetalDevices.fluidPipe);
+		registerTile(FluidPumpTileEntity.class, event, MetalDevices.fluidPump);
+		//registerTile(FluidPlacerTileEntity.class, event, MetalDevices.fluidPlacer);
 
 		registerTile(BlastFurnacePreheaterTileEntity.class, event, MetalDevices.blastFurnacePreheater);
 		registerTile(FurnaceHeaterTileEntity.class, event, MetalDevices.furnaceHeater);
@@ -1082,10 +1083,7 @@ public class IEContent
 		 */
 
 		/*MULTIBLOCKS*/
-		/*TODO MultiblockHandler.registerMultiblock(IEMultiblocks.COKE_OVEN);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.ALLOY_SMELTER);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.BLAST_FURNACE);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.SHEETMETAL_TANK);
+		/*TODO MultiblockHandler.registerMultiblock(IEMultiblocks.SHEETMETAL_TANK);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.SILO);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.BOTTLING_MACHINE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.SQUEEZER);
@@ -1096,6 +1094,9 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.MIXER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.FEEDTHROUGH);
 		*/
+		MultiblockHandler.registerMultiblock(IEMultiblocks.COKE_OVEN);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.ALLOY_SMELTER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.BLAST_FURNACE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.CRUSHER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.METAL_PRESS);

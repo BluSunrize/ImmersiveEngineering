@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
@@ -65,7 +66,6 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public static TileEntityType<FluidPumpTileEntity> TYPE;
 
 	public int[] sideConfig = new int[]{0, -1, -1, -1, -1, -1};
-	public boolean dummy = false;
 	public FluidTank tank = new FluidTank(4000);
 	public FluxStorage energyStorage = new FluxStorage(8000);
 	public boolean placeCobble = true;
@@ -93,7 +93,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(dummy||world.isRemote)
+		if(isDummy()||world.isRemote)
 			return;
 		if(tank.getFluidAmount() > 0)
 		{
@@ -282,7 +282,6 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null||sideConfig.length!=6)
 			sideConfig = new int[]{0, -1, -1, -1, -1, -1};
-		dummy = nbt.getBoolean("dummy");
 		if(nbt.contains("placeCobble", NBT.TAG_BYTE))
 			placeCobble = nbt.getBoolean("placeCobble");
 		tank.readFromNBT(nbt.getCompound("tank"));
@@ -295,7 +294,6 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putIntArray("sideConfig", sideConfig);
-		nbt.putBoolean("dummy", dummy);
 		nbt.putBoolean("placeCobble", placeCobble);
 		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
 		energyStorage.writeToNBT(nbt);
@@ -310,7 +308,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public boolean toggleSide(Direction side, PlayerEntity p)
 	{
-		if(side!=Direction.UP&&!dummy)
+		if(side!=Direction.UP&&!isDummy())
 		{
 			sideConfig[side.ordinal()]++;
 			if(sideConfig[side.ordinal()] > 1)
@@ -323,7 +321,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		else if(p.isSneaking())
 		{
 			FluidPumpTileEntity master = this;
-			if(dummy)
+			if(isDummy())
 			{
 				TileEntity tmp = world.getTileEntity(pos.down());
 				if(tmp instanceof FluidPumpTileEntity)
@@ -342,7 +340,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&!dummy)
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&!isDummy())
 		{
 			if(!sidedFluidHandler.containsKey(facing))
 				sidedFluidHandler.put(facing, registerConstantCap(new SidedFluidHandler(this, facing)));
@@ -354,7 +352,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&!dummy&&mop instanceof BlockRayTraceResult)
+		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&!isDummy()&&mop instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
 			int i = sideConfig[Math.min(sideConfig.length-1, brtr.getFace().ordinal())];
@@ -373,6 +371,13 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
 	{
 		return false;
+	}
+
+	public void setDummy(boolean dummy)
+	{
+		BlockState old = getBlockState();
+		BlockState newState = old.with(IEProperties.MULTIBLOCKSLAVE, dummy);
+		setState(newState);
 	}
 
 	static class SidedFluidHandler implements IFluidHandler
@@ -440,7 +445,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public FluxStorage getFluxStorage()
 	{
-		if(dummy)
+		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().add(0, -1, 0));
 			if(te instanceof FluidPumpTileEntity)
@@ -453,7 +458,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public SideConfig getEnergySideConfig(Direction facing)
 	{
-		return dummy&&facing==Direction.UP?SideConfig.INPUT: SideConfig.NONE;
+		return isDummy()&&facing==Direction.UP?SideConfig.INPUT: SideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, Direction.UP);
@@ -461,7 +466,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(!dummy&&facing==Direction.UP)
+		if(!isDummy()&&facing==Direction.UP)
 			return null;
 		return wrapper;
 	}
@@ -469,7 +474,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public boolean isDummy()
 	{
-		return dummy;
+		return getBlockState().get(IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Override
@@ -478,22 +483,22 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		getWorldNonnull().setBlockState(pos.add(0, 1, 0), state);
 		TileEntity tile = getWorldNonnull().getTileEntity(pos.add(0, 1, 0));
 		if(tile instanceof FluidPumpTileEntity)
-			((FluidPumpTileEntity)tile).dummy = true;
+			((FluidPumpTileEntity)tile).setDummy(true);
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 1; i++)
-			if(Utils.isBlockAt(world, getPos().add(0, dummy?-1: 0, 0).add(0, i, 0),
+			if(Utils.isBlockAt(world, getPos().add(0, isDummy()?-1: 0, 0).add(0, i, 0),
 					MetalDevices.fluidPump))
-				world.removeBlock(getPos().add(0, dummy?-1: 0, 0).add(0, i, 0), false);
+				world.removeBlock(getPos().add(0, isDummy()?-1: 0, 0).add(0, i, 0), false);
 	}
 
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(!dummy)
+		if(!isDummy())
 			return null;
 		return new float[]{.1875f, 0, .1875f, .8125f, 1, .8125f};
 	}

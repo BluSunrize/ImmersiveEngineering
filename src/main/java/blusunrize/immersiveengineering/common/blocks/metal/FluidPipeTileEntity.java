@@ -556,40 +556,40 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		List<AxisAlignedBB> list = Lists.newArrayList();
 		if(!pipeCover.isEmpty())
 		{
-			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).grow(-.03125f).offset(getPos()));
+			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).grow(-.03125f));
 			return list;
 		}
 		if(/*connections==16||connections==32||*/connections==48)
 		{
-			list.add(new AxisAlignedBB(0, .25f, .25f, 1, .75f, .75f).offset(getPos()));
+			list.add(new AxisAlignedBB(0, .25f, .25f, 1, .75f, .75f));
 			if((connections&16)==0)
-				list.add(new AxisAlignedBB(0, .125f, .125f, .125f, .875f, .875f).offset(getPos()));
+				list.add(new AxisAlignedBB(0, .125f, .125f, .125f, .875f, .875f));
 			if((connections&32)==0)
-				list.add(new AxisAlignedBB(.875f, .125f, .125f, 1, .875f, .875f).offset(getPos()));
+				list.add(new AxisAlignedBB(.875f, .125f, .125f, 1, .875f, .875f));
 		}
 		else if(/*connections==4||connections==8||*/connections==12)
 		{
-			list.add(new AxisAlignedBB(.25f, .25f, 0, .75f, .75f, 1).offset(getPos()));
+			list.add(new AxisAlignedBB(.25f, .25f, 0, .75f, .75f, 1));
 			if((connections&4)==0)
-				list.add(new AxisAlignedBB(.125f, .125f, 0, .875f, .875f, .125f).offset(getPos()));
+				list.add(new AxisAlignedBB(.125f, .125f, 0, .875f, .875f, .125f));
 			if((connections&8)==0)
-				list.add(new AxisAlignedBB(.125f, .125f, .875f, .875f, .875f, 1).offset(getPos()));
+				list.add(new AxisAlignedBB(.125f, .125f, .875f, .875f, .875f, 1));
 		}
 		else if(/*connections==1||connections==2||*/connections==3)
 		{
-			list.add(new AxisAlignedBB(.25f, 0, .25f, .75f, 1, .75f).offset(getPos()));
+			list.add(new AxisAlignedBB(.25f, 0, .25f, .75f, 1, .75f));
 			if((connections&1)==0)
-				list.add(new AxisAlignedBB(.125f, 0, .125f, .875f, .125f, .875f).offset(getPos()));
+				list.add(new AxisAlignedBB(.125f, 0, .125f, .875f, .125f, .875f));
 			if((connections&2)==0)
-				list.add(new AxisAlignedBB(.125f, .875f, .125f, .875f, 1, .875f).offset(getPos()));
+				list.add(new AxisAlignedBB(.125f, .875f, .125f, .875f, 1, .875f));
 		}
 		else
 		{
-			list.add(new AxisAlignedBB(.25f, .25f, .25f, .75f, .75f, .75f).offset(getPos()));
+			list.add(new AxisAlignedBB(.25f, .25f, .25f, .75f, .75f, .75f));
 			for(int i = 0; i < 6; i++)
 			{
 				if((connections&(1<<i))!=0)
-					list.add(new AxisAlignedBB(i==4?0: i==5?.875f: .125f, i==0?0: i==1?.875f: .125f, i==2?0: i==3?.875f: .125f, i==4?.125f: i==5?1: .875f, i==0?.125f: i==1?1: .875f, i==2?.125f: i==3?1: .875f).offset(getPos()));
+					list.add(new AxisAlignedBB(i==4?0: i==5?.875f: .125f, i==0?0: i==1?.875f: .125f, i==2?0: i==3?.875f: .125f, i==4?.125f: i==5?1: .875f, i==0?.125f: i==1?1: .875f, i==2?.125f: i==3?1: .875f));
 			}
 		}
 		return list;
@@ -608,13 +608,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			//			if(pipeCover!=null)
 			//				size = 0;
 			if((availableConnections&0x1)==1)
-				list.add(new AdvancedAABB(new AxisAlignedBB(i==4?0: i==5?1-depth: size, i==0?0: i==1?1-depth: size, i==2?0: i==3?1-depth: size, i==4?depth: i==5?1: 1-size, i==0?depth: i==1?1: 1-size, i==2?depth: i==3?1: 1-size).offset(getPos()), Direction.byIndex(i)));
+				list.add(new AdvancedAABB(new AxisAlignedBB(i==4?0: i==5?1-depth: size, i==0?0: i==1?1-depth: size, i==2?0: i==3?1-depth: size, i==4?depth: i==5?1: 1-size, i==0?depth: i==1?1: 1-size, i==2?depth: i==3?1: 1-size), Direction.byIndex(i)));
 			if((connections&(1<<i))!=0)
 				baseAABB[i] += i%2==1?.125: -.125;
 			baseAABB[i] = Math.min(Math.max(baseAABB[i], 0), 1);
 			availableConnections = (byte)(availableConnections >> 1);
 		}
-		list.add(new AdvancedAABB(new AxisAlignedBB(baseAABB[4], baseAABB[0], baseAABB[2], baseAABB[5], baseAABB[1], baseAABB[3]).offset(getPos()), null));
+		list.add(new AdvancedAABB(new AxisAlignedBB(baseAABB[4], baseAABB[0], baseAABB[2], baseAABB[5], baseAABB[1], baseAABB[3]), null));
 		return list;
 	}
 

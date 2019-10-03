@@ -14,15 +14,15 @@ public class IEMultiblocks
 {
 	public static final IMultiblock CRUSHER = new CrusherMultiblock();
 	//TODO replace with correct instances
-	public static final IMultiblock ALLOY_SMELTER = CRUSHER;
+	public static final IMultiblock ALLOY_SMELTER = new AlloySmelterMultiblock();
 	public static final IMultiblock ARC_FURNACE = new ArcFurnaceMultiblock();
 	public static final IMultiblock ASSEMBLER = new AssemblerMultiblock();
 	public static final IMultiblock AUTO_WORKBENCH = new AutoWorkbenchMultiblock();
-	public static final IMultiblock BLAST_FURNACE = CRUSHER;
+	public static final IMultiblock BLAST_FURNACE = new BlastFurnaceMultiblock();
 	public static final IMultiblock ADVANCED_BLAST_FURNACE = new ImprovedBlastfurnaceMultiblock();
 	public static final IMultiblock BOTTLING_MACHINE = CRUSHER;
 	public static final IMultiblock BUCKET_WHEEL = new BucketWheelMultiblock();
-	public static final IMultiblock COKE_OVEN = CRUSHER;
+	public static final IMultiblock COKE_OVEN = new CokeOvenMultiblock();
 	public static final IMultiblock DIESEL_GENERATOR = CRUSHER;
 	public static final IMultiblock EXCAVATOR = new ExcavatorMultiblock();
 	public static final IMultiblock EXCAVATOR_DEMO = CRUSHER;
