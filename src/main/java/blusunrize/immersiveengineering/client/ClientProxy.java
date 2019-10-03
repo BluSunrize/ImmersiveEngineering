@@ -506,6 +506,14 @@ public class ClientProxy extends CommonProxy
 				ManualHelper.CAT_ENERGY), 1);
 		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_GENERAL), 0);
+		InnerNode<ResourceLocation, ManualEntry> constructionCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+				ManualHelper.CAT_CONSTRUCTION), 1);
+		InnerNode<ResourceLocation, ManualEntry> toolsCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+				ManualHelper.CAT_TOOLS), 1);
+		InnerNode<ResourceLocation, ManualEntry> machinesCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+				ManualHelper.CAT_MACHINES), 1);
+		InnerNode<ResourceLocation, ManualEntry> heavyMachinesCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+				ManualHelper.CAT_HEAVYMACHINES), 1);
 
 		ieMan.addEntry(energyCat.getOrCreateSubnode(new ResourceLocation(MODID,
 				"test"), 1), new ResourceLocation(MODID, "wiring"));
