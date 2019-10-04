@@ -164,6 +164,8 @@ public class TextSplitter
 
 	private int getWidth(String text)
 	{
+		if(LINEBREAK.matcher(text).matches())
+			return 0;
 		switch(text)
 		{
 			case "<br>":
