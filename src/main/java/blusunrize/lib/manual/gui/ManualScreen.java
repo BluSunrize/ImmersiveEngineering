@@ -257,6 +257,7 @@ public class ManualScreen extends Screen
 		super.onClose();
 		if(prevGuiScale!=-1&&manual.allowGuiRescale())
 			mc.gameSettings.guiScale = prevGuiScale;
+		activeManual = null;
 	}
 
 	private void drawCenteredStringScaled(FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)

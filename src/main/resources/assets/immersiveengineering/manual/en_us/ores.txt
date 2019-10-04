@@ -9,6 +9,6 @@ The ore will smelt into lead ingots, which are used in creating capacitors.
 <&silver>§lSilver Ore§r is found in the world between layers <config;i;ores.silver.min_y> and <config;i;ores.silver.max_y>, and requires an Iron Pickaxe to harvest.
 The ore will smelt into silver ingots, which alloy with gold to create electrum, a far more effective conductor.
 <&nickel>§lNickel Ore§r is found in the world between layers <config;i;ores.nickel.min_y> and <config;i;ores.nickel.max_y>, and requires an Iron Pickaxe to harvest.
-The ore will smelt into nickel ingots, which alloy with copper to create constantan, a heat resistant conductor used in the creation of <link;thermoelectric;§o§nThermoelectric §o§nGenerators§r;start>.
+The ore will smelt into nickel ingots, which alloy with copper to create constantan, a heat resistant conductor used in the creation of <link;thermoelectric;Thermoelectric Generators;start>.
 <&uranium>§lUranium Ore§r is found in the world between layers <config;i;ores.uranium.min_y> and <config;i;ores.uranium.max_y>, and requires an Iron Pickaxe to harvest.
-The ore will smelt into uranium ingots, but there are currently not many uses for the metal. A uranium block can serve as a heatsource for the <link;thermoelectric;§o§nThermoelectric §o§nGenerator§r;start> and the metal will be used in future endeavours.
+The ore will smelt into uranium ingots, but there are currently not many uses for the metal. A uranium block can serve as a heatsource for the <link;thermoelectric;Thermoelectric Generator;start> and the metal will be used in future endeavours.

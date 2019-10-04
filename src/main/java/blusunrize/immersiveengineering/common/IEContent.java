@@ -385,7 +385,7 @@ public class IEContent
 				defaultMetalProperties);
 		MetalDevices.furnaceHeater = new GenericTileBlock("furnace_heater", () -> FurnaceHeaterTileEntity.TYPE,
 				defaultMetalProperties);
-		MetalDevices.dynamo = new GenericTileBlock("dynamo", () -> DynamoTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.dynamo = new GenericTileBlock("dynamo", () -> DynamoTileEntity.TYPE, defaultMetalProperties, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.thermoelectricGen = new GenericTileBlock("thermoelectric_generator", () -> ThermoelectricGenTileEntity.TYPE,
 				defaultMetalProperties);
 		MetalDevices.electricLantern = new MiscConnectorBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE);

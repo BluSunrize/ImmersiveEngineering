@@ -305,6 +305,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		getAllEntries().forEach(ManualEntry::refreshPages);
 		contentTree.sortAll();
 		indexRecipes();
+		initialized = true;
 	}
 
 	public abstract FontRenderer fontRenderer();
