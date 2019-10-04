@@ -89,6 +89,7 @@ public class TextSplitter
 		{
 			List<String> page = new ArrayList<>(overflow);
 			overflow.clear();
+			boolean forceNewPage = false;
 			page:
 			while(page.size() < getLinesOnPage(entry.size())&&pos < wordsAndSpaces.length)
 			{
@@ -128,6 +129,7 @@ public class TextSplitter
 							{
 								page.add(line);
 								pos--;
+								forceNewPage = true;
 								break page;
 							}
 						}
@@ -143,10 +145,9 @@ public class TextSplitter
 					}
 				}
 				line = line.trim();
-				//if(!line.isEmpty())
-					page.add(line);
+				page.add(line);
 			}
-			if(!page.stream().allMatch(String::isEmpty))
+			if(forceNewPage||!page.stream().allMatch(String::isEmpty))
 			{
 				int linesMax = getLinesOnPage(entry.size());
 				if(page.size() > linesMax)
@@ -164,6 +165,8 @@ public class TextSplitter
 
 	private int getWidth(String text)
 	{
+		if(LINEBREAK.matcher(text).matches())
+			return 0;
 		switch(text)
 		{
 			case "<br>":
