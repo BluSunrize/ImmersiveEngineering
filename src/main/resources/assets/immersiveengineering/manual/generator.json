@@ -1,0 +1,36 @@
+{
+  "dynamo_recipe": {
+    "type": "crafting",
+    "recipe": "metal_devices/dynamo"
+  },
+  "waterwheel_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+      {
+        "recipe": "wooden_devices/watermill"
+      },
+      {
+        "recipe": "material/waterwheel_segment"
+      }
+      ]
+    ]
+  },
+  "windmill_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+      {
+        "recipe": "wooden_devices/windmill"
+      },
+      {
+        "recipe": "material/windmill_blade"
+      }
+      ]
+    ]
+  },
+  "sail_recipe": {
+    "type": "crafting",
+    "recipe": "material/windmill_sail"
+  }
+}
