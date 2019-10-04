@@ -1,0 +1,6 @@
+{
+  "recipe": {
+    "type": "crafting",
+    "recipe": "metal_devices/external_heater"
+  }
+}
