@@ -137,7 +137,6 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		setFacing(Direction.byIndex(nbt.getInt("facing")));
 		sails = nbt.getInt("sails");
 		//prevRotation = nbt.getFloat("prevRotation");
 		rotation = nbt.getFloat("rotation");
@@ -147,7 +146,6 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putInt("facing", getFacing().ordinal());
 		nbt.putInt("sails", sails);
 		//nbt.putFloat("prevRotation", prevRotation);
 		nbt.putFloat("rotation", rotation);
@@ -210,7 +208,8 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 		if(sails < 8&&heldItem.getItem()==Ingredients.windmillSail)
 		{
 			this.sails++;
-			heldItem.shrink(1);
+			if(!player.abilities.isCreativeMode)
+				heldItem.shrink(1);
 			return true;
 		}
 		return false;

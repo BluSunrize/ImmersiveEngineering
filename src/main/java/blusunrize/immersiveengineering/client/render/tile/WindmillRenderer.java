@@ -53,7 +53,7 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 			BlockState state = getWorld().getBlockState(blockPos);
 			if(state.getBlock()!=WoodenDevices.windmill)
 				return;
-			state = state.with(IEProperties.FACING_ALL, Direction.NORTH);
+			state = state.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 			List<String> parts = new ArrayList<>();
 			parts.add("base");
