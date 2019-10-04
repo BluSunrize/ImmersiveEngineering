@@ -30,7 +30,6 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
-import net.minecraftforge.resource.VanillaResourceType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -228,7 +227,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		if(ManualScreen.activeManual!=null&&ManualScreen.activeManual.getManual()==this)
 			return ManualScreen.activeManual;
 		if(!initialized)
-			onResourceManagerReload(Minecraft.getInstance().getResourceManager(), t -> true);
+			reload();
 		return new ManualScreen(this, texture);
 	}
 
@@ -298,12 +297,14 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, @Nonnull Predicate<IResourceType> resourcePredicate)
 	{
-		if(resourcePredicate.test(VanillaResourceType.LANGUAGES)||resourcePredicate.test(VanillaResourceType.TEXTURES))
-		{
-			getAllEntries().forEach(ManualEntry::refreshPages);
-			contentTree.sortAll();
-			indexRecipes();
-		}
+		initialized = false;
+	}
+
+	public void reload()
+	{
+		getAllEntries().forEach(ManualEntry::refreshPages);
+		contentTree.sortAll();
+		indexRecipes();
 	}
 
 	public abstract FontRenderer fontRenderer();

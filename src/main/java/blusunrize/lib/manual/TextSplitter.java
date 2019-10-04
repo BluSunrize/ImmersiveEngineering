@@ -143,7 +143,7 @@ public class TextSplitter
 					}
 				}
 				line = line.trim();
-				if(!line.isEmpty())
+				//if(!line.isEmpty())
 					page.add(line);
 			}
 			if(!page.stream().allMatch(String::isEmpty))
@@ -252,6 +252,11 @@ public class TextSplitter
 		{
 			ret = 0b10;
 		}
+		else if(here=='\n')
+			ret = 0b11;
+		else if(here=='\r')
+			ret = 0b10;
+
 		if(here=='<')
 		{
 			ret = 0b10;

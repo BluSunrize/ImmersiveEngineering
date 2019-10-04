@@ -1341,7 +1341,7 @@ public class ClientProxy extends CommonProxy
 	public void reloadManual()
 	{
 		if(ManualHelper.getManual()!=null)
-			ManualHelper.getManual().onResourceManagerReload(Minecraft.getInstance().getResourceManager(), type -> true);
+			ManualHelper.getManual().reload();
 	}
 
 	static

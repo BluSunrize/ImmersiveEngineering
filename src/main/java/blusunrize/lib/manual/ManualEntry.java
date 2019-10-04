@@ -36,6 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("WeakerAccess")
 public class ManualEntry implements Comparable<ManualEntry>
@@ -280,11 +281,12 @@ public class ManualEntry implements Comparable<ManualEntry>
 					ManualUtils.parseSpecials(json, splitter, manual);
 					int titleEnd = content.indexOf('\n');
 					String title = content.substring(0, titleEnd).trim();
-					content = content.substring(titleEnd+1).trim();
+					content = content.substring(titleEnd+1);
 					int subtitleEnd = content.indexOf('\n');
 					String subtext = content.substring(0, subtitleEnd).trim();
 					content = content.substring(subtitleEnd+1).trim();
-					String rawText = content;
+					Pattern backslashNewline = Pattern.compile("[^\\\\][\\\\][\r]?\n[\r]?");
+					String rawText = backslashNewline.matcher(content).replaceAll("").replace("\\\\", "\\");
 					return new String[]{title, subtext, rawText};
 				} catch(IOException e)
 				{
