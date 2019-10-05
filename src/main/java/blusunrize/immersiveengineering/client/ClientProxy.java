@@ -531,6 +531,7 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "tesla_coil"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "razor_wire"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "turrets"));
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "assembler"));
 		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "refinery"));
 		String[][] table = formatToTable_ItemIntHashmap(ThermoelectricHandler.getThermalValuesSorted(true), "K");
 		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
