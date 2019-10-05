@@ -1,0 +1,4 @@
+Turntable
+I can't keep up
+<&recipe>The Turntable will rotate blocks placed against it.
+Holding an Engineer's Hammer while looking at the machine displays its active side and turn direction. Rightclicking with tha Hammer will reorient it, sneaking while doing so will invert the Turntable's rotation direction.

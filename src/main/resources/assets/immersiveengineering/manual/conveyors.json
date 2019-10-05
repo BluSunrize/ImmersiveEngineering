@@ -1,0 +1,73 @@
+{
+  "conveyor_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "conveyors/conveyor_basic"
+        },
+        {
+          "recipe": "conveyors/conveyor_uncontrolled"
+        }
+      ]
+    ]
+  },
+  "conveyor_dropping_recipe": {
+    "type": "crafting",
+    "recipe": "conveyors/conveyor_dropper"
+  },
+  "conveyor_extract_recipe": {
+    "type": "crafting",
+    "recipe": "conveyors/conveyor_extract"
+  },
+  "conveyor_vertical_recipe": {
+    "type": "crafting",
+    "recipe": "conveyors/conveyor_vertical"
+  },
+  "conveyor_splitter_recipe": {
+    "type": "crafting",
+    "recipe": "conveyors/conveyor_splitter"
+  },
+  "conveyor_covered_recipe": {
+    "type": "crafting",
+    "recipe": "conveyors/conveyor_covered"
+  },
+  "conveyor_other_covered_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+        "recipe": "conveyors/conveyor_droppercovered"
+        },
+        {
+          "recipe": "conveyors/conveyor_extractcovered"
+        },
+        {
+          "recipe": "conveyors/conveyor_verticalcovered"
+        }
+      ]
+    ]
+  },
+  "chute_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "chutes/chute_iron"
+        }
+      ]
+    ]
+  },
+  "image": {
+    "type": "image",
+    "images": [
+      {
+        "location": "textures/misc/chute.png",
+        "uMin": 0,
+        "vMin": 0,
+        "uSize": 110,
+        "vSize": 80
+      }
+    ]
+  }
+}

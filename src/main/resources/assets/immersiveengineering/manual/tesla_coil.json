@@ -1,0 +1,28 @@
+{
+  "tesla_coil_recipe": {
+    "type": "crafting",
+    "recipe": "metal_devices/tesla_coil"
+  },
+  "tesla_stuff_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "armour/faraday_boots"
+        },
+        {
+          "recipe": "armour/faraday_legs"
+        },
+        {
+          "recipe": "armour/faraday_chest"
+        },
+        {
+          "recipe": "armour/faraday_helm"
+        },
+        {
+          "recipe": "tool/fluorescent_tube"
+        }
+      ]
+    ]
+  }
+}
