@@ -49,14 +49,6 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 
 	public EnumMap<Direction, SideConfig> sideConfig = new EnumMap<>(Direction.class);
 
-	{
-		for(Direction f : Direction.VALUES)
-			if(f==Direction.UP)
-				sideConfig.put(f, SideConfig.INPUT);
-			else
-				sideConfig.put(f, SideConfig.NONE);
-	}
-
 	FluxStorage energyStorage = new FluxStorage(getMaxStorage(), getMaxInput(), getMaxOutput());
 
 	public int comparatorOutput = 0;
@@ -64,11 +56,18 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 	public CapacitorLVTileEntity(TileEntityType<? extends CapacitorLVTileEntity> type)
 	{
 		super(type);
+		for(Direction f : Direction.VALUES)
+		{
+			if(f==Direction.UP)
+				sideConfig.put(f, SideConfig.INPUT);
+			else
+				sideConfig.put(f, SideConfig.NONE);
+		}
 	}
 
 	public CapacitorLVTileEntity()
 	{
-		super(TYPE);
+		this(TYPE);
 	}
 
 	@Override
@@ -231,6 +230,7 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
 	{
-		readCustomNBT(stack.getOrCreateTag(), false);
+		if(stack.hasTag())
+			readCustomNBT(stack.getOrCreateTag(), false);
 	}
 }

@@ -35,6 +35,7 @@ import java.util.function.Predicate;
 
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
+//TODO Metadata and oredict are gone. Update manual entry as well.
 public class SorterTileEntity extends IEBaseTileEntity implements IInteractionObjectIE
 {
 	public static TileEntityType<SorterTileEntity> TYPE;
@@ -152,9 +153,9 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 			{
 				EnumFilterResult result = checkStackAgainstFilter(stack, side);
 				if(result==EnumFilterResult.VALID_FILTERED)
-						validFiltered.add(side);
+					validFiltered.add(side);
 				else if(result==EnumFilterResult.VALID_UNFILTERED)
-						validUnfiltered.add(side);
+					validUnfiltered.add(side);
 			}
 
 		return new Direction[][]{

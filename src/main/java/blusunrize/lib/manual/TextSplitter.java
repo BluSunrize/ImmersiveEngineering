@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,6 +85,7 @@ public class TextSplitter
 		int pos = 0;
 		List<String> overflow = new ArrayList<>();
 		updateSpecials(START, 0);
+		String formattingFromPreviousLine = "";
 		entry:
 		while(pos < wordsAndSpaces.length)
 		{
@@ -93,7 +95,8 @@ public class TextSplitter
 			page:
 			while(page.size() < getLinesOnPage(entry.size())&&pos < wordsAndSpaces.length)
 			{
-				String line = "";
+				String line = formattingFromPreviousLine;
+				formattingFromPreviousLine = "";
 				int currWidth = 0;
 				line:
 				while(pos < wordsAndSpaces.length&&currWidth < lineWidth)
@@ -133,7 +136,7 @@ public class TextSplitter
 								break page;
 							}
 						}
-						else if(!Character.isWhitespace(token.charAt(0))||line.length()!=0)
+						else if(!Character.isWhitespace(token.charAt(0))||currWidth!=0)
 						{//Don't add whitespace at the start of a line
 							line += token;
 							currWidth += textWidth;
@@ -141,6 +144,7 @@ public class TextSplitter
 					}
 					else
 					{
+						formattingFromPreviousLine = TextFormatting.getFormatString(line);
 						break line;
 					}
 				}

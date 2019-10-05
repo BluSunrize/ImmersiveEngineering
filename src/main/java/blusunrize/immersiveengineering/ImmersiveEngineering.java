@@ -28,6 +28,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
@@ -49,6 +50,7 @@ import org.apache.logging.log4j.LogManager;
 import javax.annotation.Nonnull;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.function.Function;
 
 @Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
@@ -128,43 +130,24 @@ public class ImmersiveEngineering
 
 		IECompatModule.doModulesInit();
 		proxy.initEnd();
-		int messageId = 0;
-		packetHandler.registerMessage(messageId++, MessageMineralListSync.class, MessageMineralListSync::toBytes,
-				MessageMineralListSync::new, MessageMineralListSync::process);
-		packetHandler.registerMessage(messageId++, MessageTileSync.class, MessageTileSync::toBytes,
-				MessageTileSync::new, MessageTileSync::process);
-		packetHandler.registerMessage(messageId++, MessageTileSync.class, MessageTileSync::toBytes,
-				MessageTileSync::new, MessageTileSync::process);
-		packetHandler.registerMessage(messageId++, MessageSpeedloaderSync.class, MessageSpeedloaderSync::toBytes,
-				MessageSpeedloaderSync::new, MessageSpeedloaderSync::process);
-		packetHandler.registerMessage(messageId++, MessageSkyhookSync.class, MessageSkyhookSync::toBytes,
-				MessageSkyhookSync::new, MessageSkyhookSync::process);
-		packetHandler.registerMessage(messageId++, MessageMinecartShaderSync.class, MessageMinecartShaderSync::toBytes,
-				MessageMinecartShaderSync::new, MessageMinecartShaderSync::process);
-		packetHandler.registerMessage(messageId++, MessageMinecartShaderSync.class, MessageMinecartShaderSync::toBytes,
-				MessageMinecartShaderSync::new, MessageMinecartShaderSync::process);
-		packetHandler.registerMessage(messageId++, MessageRequestBlockUpdate.class, MessageRequestBlockUpdate::toBytes,
-				MessageRequestBlockUpdate::new, MessageRequestBlockUpdate::process);
-		packetHandler.registerMessage(messageId++, MessageNoSpamChatComponents.class, MessageNoSpamChatComponents::toBytes,
-				MessageNoSpamChatComponents::new, MessageNoSpamChatComponents::process);
-		packetHandler.registerMessage(messageId++, MessageShaderManual.class, MessageShaderManual::toBytes,
-				MessageShaderManual::new, MessageShaderManual::process);
-		packetHandler.registerMessage(messageId++, MessageShaderManual.class, MessageShaderManual::toBytes,
-				MessageShaderManual::new, MessageShaderManual::process);
-		packetHandler.registerMessage(messageId++, MessageBirthdayParty.class, MessageBirthdayParty::toBytes,
-				MessageBirthdayParty::new, MessageBirthdayParty::process);
-		packetHandler.registerMessage(messageId++, MessageMagnetEquip.class, MessageMagnetEquip::toBytes,
-				MessageMagnetEquip::new, MessageMagnetEquip::process);
-		packetHandler.registerMessage(messageId++, MessageChemthrowerSwitch.class, MessageChemthrowerSwitch::toBytes,
-				MessageChemthrowerSwitch::new, MessageChemthrowerSwitch::process);
-		packetHandler.registerMessage(messageId++, MessageObstructedConnection.class, MessageObstructedConnection::toBytes,
-				MessageObstructedConnection::new, MessageObstructedConnection::process);
-		packetHandler.registerMessage(messageId++, MessageSetGhostSlots.class, MessageSetGhostSlots::toBytes,
-				MessageSetGhostSlots::new, MessageSetGhostSlots::process);
-		packetHandler.registerMessage(messageId++, MessageWireSync.class, MessageWireSync::toBytes,
-				MessageWireSync::new, MessageWireSync::process);
-		packetHandler.registerMessage(messageId++, MessageMaintenanceKit.class, MessageMaintenanceKit::toBytes,
-				MessageMaintenanceKit::new, MessageMaintenanceKit::process);
+		registerMessage(MessageMineralListSync.class, MessageMineralListSync::new);
+		registerMessage(MessageTileSync.class, MessageTileSync::new);
+		registerMessage(MessageTileSync.class, MessageTileSync::new);
+		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new);
+		registerMessage(MessageSkyhookSync.class, MessageSkyhookSync::new);
+		registerMessage(MessageMinecartShaderSync.class, MessageMinecartShaderSync::new);
+		registerMessage(MessageMinecartShaderSync.class, MessageMinecartShaderSync::new);
+		registerMessage(MessageRequestBlockUpdate.class, MessageRequestBlockUpdate::new);
+		registerMessage(MessageNoSpamChatComponents.class, MessageNoSpamChatComponents::new);
+		registerMessage(MessageShaderManual.class, MessageShaderManual::new);
+		registerMessage(MessageShaderManual.class, MessageShaderManual::new);
+		registerMessage(MessageBirthdayParty.class, MessageBirthdayParty::new);
+		registerMessage(MessageMagnetEquip.class, MessageMagnetEquip::new);
+		registerMessage(MessageChemthrowerSwitch.class, MessageChemthrowerSwitch::new);
+		registerMessage(MessageObstructedConnection.class, MessageObstructedConnection::new);
+		registerMessage(MessageSetGhostSlots.class, MessageSetGhostSlots::new);
+		registerMessage(MessageWireSync.class, MessageWireSync::new);
+		registerMessage(MessageMaintenanceKit.class, MessageMaintenanceKit::new);
 
 		IEIMCHandler.init();
 		//TODO IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));
@@ -177,6 +160,16 @@ public class ImmersiveEngineering
 		IECompatModule.doModulesPostInit();
 		proxy.postInitEnd();
 		ShaderRegistry.compileWeight();
+	}
+
+	private int messageId = 0;
+
+	private <T extends IMessage> void registerMessage(Class<T> packetType, Function<PacketBuffer, T> decoder)
+	{
+		packetHandler.registerMessage(messageId++, packetType, IMessage::toBytes, decoder, (t, ctx) -> {
+			t.process(ctx);
+			ctx.get().setPacketHandled(true);
+		});
 	}
 
 	public void loadComplete(FMLLoadCompleteEvent event)
