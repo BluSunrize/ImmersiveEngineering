@@ -1,0 +1,124 @@
+{
+  "variants": {
+    "_0multiblockslave=false,_1dynamicrender=false,facing=north,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj"
+    },
+    "_0multiblockslave=false,_1dynamicrender=false,facing=north,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj"
+    },
+    "_0multiblockslave=false,_1dynamicrender=false,facing=south,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 180,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=false,facing=south,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 180,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=false,facing=west,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 270,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=false,facing=west,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 270,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=false,facing=east,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 90,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=false,facing=east,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 90,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=true,facing=north,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj"
+    },
+    "_0multiblockslave=false,_1dynamicrender=true,facing=north,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj"
+    },
+    "_0multiblockslave=false,_1dynamicrender=true,facing=south,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 180,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=true,facing=south,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 180,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=true,facing=west,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 270,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=true,facing=west,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 270,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=true,facing=east,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 90,
+      "uvlock": true
+    },
+    "_0multiblockslave=false,_1dynamicrender=true,facing=east,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator.obj",
+      "y": 90,
+      "uvlock": true
+    },
+    "_0multiblockslave=true,_1dynamicrender=false,facing=north,mirrored=false": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=false,facing=north,mirrored=true": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=false,facing=south,mirrored=false": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=false,facing=south,mirrored=true": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=false,facing=west,mirrored=false": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=false,facing=west,mirrored=true": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=false,facing=east,mirrored=false": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=false,facing=east,mirrored=true": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=true,facing=north,mirrored=false": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=true,facing=north,mirrored=true": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=true,facing=south,mirrored=false": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=true,facing=south,mirrored=true": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=true,facing=west,mirrored=false": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=true,facing=west,mirrored=true": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=true,facing=east,mirrored=false": {
+      "model": "immersiveengineering:block/ie_empty"
+    },
+    "_0multiblockslave=true,_1dynamicrender=true,facing=east,mirrored=true": {
+      "model": "immersiveengineering:block/ie_empty"
+    }
+  }
+}

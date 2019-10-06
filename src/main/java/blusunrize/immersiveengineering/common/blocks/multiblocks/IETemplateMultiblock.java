@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -44,7 +45,10 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	@Override
 	protected void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster)
 	{
-		world.setBlockState(actualPos, baseState.get());
+		BlockState state = baseState.get();
+		if(!offsetFromMaster.equals(Vec3i.NULL_VECTOR))
+			state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
+		world.setBlockState(actualPos, state);
 		TileEntity curr = world.getTileEntity(actualPos);
 		if(curr instanceof MultiblockPartTileEntity)
 		{
