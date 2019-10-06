@@ -8,9 +8,11 @@
 
 package blusunrize.immersiveengineering.common.data;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
@@ -18,6 +20,7 @@ import blusunrize.immersiveengineering.common.data.Models.MetalModels;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator;
 import blusunrize.immersiveengineering.common.data.blockstate.VariantBlockstate.Builder;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
@@ -35,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
+
+import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class BlockStates extends BlockstateGenerator
 {
@@ -72,6 +77,8 @@ public class BlockStates extends BlockstateGenerator
 			createStairsBlock(MetalDecoration.steelScaffoldingStair.get(type), models.steelScaffoldingStairs.get(type),
 					StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
 		}
+
+		createMultiblock(Multiblocks.excavator, new ExistingModelFile(rl("block/metal_multiblock/excavator.obj")), IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, variantBased);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -130,6 +137,19 @@ public class BlockStates extends BlockstateGenerator
 			parts.add(new MultiPart(sideModel, false, new PropertyWithValues<>(sideActive, true)));
 		}
 		out.accept(block, parts);
+	}
+
+	private void createMultiblock(Block b, ModelFile masterModel, IProperty<Boolean> isSlave, EnumProperty<Direction> facing, BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		Builder builder = new Builder(b);
+		ModelFile empty = new ExistingModelFile(rl("block/ie_empty"));
+		builder.setForAllWithState(ImmutableMap.of(isSlave, true), new ConfiguredModel(empty));
+		for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
+		{
+			int angle = getAngle(dir, 180);
+			builder.setForAllWithState(ImmutableMap.of(isSlave, false, facing, dir), new ConfiguredModel(masterModel, 0, angle, true));
+		}
+		out.accept(b, builder.build());
 	}
 
 	private int getAngle(Direction dir, int offset)
