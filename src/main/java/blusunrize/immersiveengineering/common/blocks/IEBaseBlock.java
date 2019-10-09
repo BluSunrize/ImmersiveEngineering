@@ -140,7 +140,8 @@ public class IEBaseBlock extends Block
 	@Override
 	public BlockRenderLayer getRenderLayer()
 	{
-		return renderLayers.get(0);
+		//TODO This is currently mostly a marker for culling, the actual layer is determined by canRenderInLayer
+		return notNormalBlock?BlockRenderLayer.CUTOUT: BlockRenderLayer.SOLID;
 	}
 
 	@Override

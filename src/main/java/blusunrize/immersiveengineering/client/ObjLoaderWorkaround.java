@@ -10,13 +10,15 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
@@ -44,17 +46,15 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashSet;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class ObjLoaderWorkaround
 {
-	private static final Gson GSON = new Gson();
-
 	private static Set<ResourceLocation> requestedTextures = new HashSet<>();
-	private static Multimap<ResourceLocation, ModelResourceLocation> requestedModels = HashMultimap.create();
+	private static Multimap<ConfiguredModel, ModelResourceLocation> requestedModels = HashMultimap.create();
+	private static Map<ConfiguredModel, IUnbakedModel> unbakedModels = new HashMap<>();
 
 	@SubscribeEvent
 	public static void modelRegistry(ModelRegistryEvent evt)
@@ -81,22 +81,39 @@ public class ObjLoaderWorkaround
 					if(!entry.getValue().isJsonObject())
 						continue;
 					JsonObject val = entry.getValue().getAsJsonObject();
-					ResourceLocation model = new ResourceLocation(val.get("model").getAsString());
-					if(model.getPath().endsWith(".obj"))
-						requestedModels.put(model, new ModelResourceLocation(blockName, entry.getKey()));
+					ResourceLocation name = new ResourceLocation(val.get("model").getAsString());
+					if(name.getPath().endsWith(".obj"))
+					{
+						int xRot = Optional.ofNullable(val.get("x")).map(JsonElement::getAsInt).orElse(0);
+						int yRot = Optional.ofNullable(val.get("y")).map(JsonElement::getAsInt).orElse(0);
+						boolean uvLock = Optional.ofNullable(val.get("uvlock")).map(JsonElement::getAsBoolean).orElse(false);
+						ImmutableMap.Builder<String, Object> remaining = new Builder<>();
+						for(Entry<String, JsonElement> e : val.entrySet())
+						{
+							String key = e.getKey();
+							if(!"model".equals(key)&&!"x".equals(key)&&!"y".equals(key)&&!"uvlock".equals(key))
+								remaining.put(key, e.getValue());
+						}
+						requestedModels.put(
+								new ConfiguredModel(new ExistingModelFile(name), xRot, yRot, uvLock, remaining.build()),
+								new ModelResourceLocation(blockName, entry.getKey())
+						);
+					}
 				}
 			} catch(IOException x)
 			{
-
 			}
 		}
 		try
 		{
-			for(ResourceLocation reqModel : requestedModels.keySet())
+			for(ConfiguredModel reqModel : requestedModels.keySet())
 			{
-				IResource asResource = manager.getResource(new ResourceLocation(reqModel.getNamespace(), "models/"+reqModel.getPath()));
+				ResourceLocation name = reqModel.name.getLocation();
+				IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
 				IUnbakedModel unbaked = new OBJModel.Parser(asResource, manager).parse();
+				unbaked = unbaked.process(reqModel.getAddtionalDataAsStrings());
 				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), ImmutableSet.of()));
+				unbakedModels.put(reqModel, unbaked);
 			}
 		} catch(IOException e)
 		{
@@ -109,23 +126,14 @@ public class ObjLoaderWorkaround
 	public static void modelBake(ModelBakeEvent evt)
 	{
 		IELogger.logger.debug("Baking models");
-		final IResourceManager manager = Minecraft.getInstance().getResourceManager();
-		try
+		for(Entry<ConfiguredModel, IUnbakedModel> unbaked : unbakedModels.entrySet())
 		{
-			for(ResourceLocation reqModel : requestedModels.keySet())
-			{
-				IResource asResource = manager.getResource(new ResourceLocation(reqModel.getNamespace(), "models/"+reqModel.getPath()));
-				IUnbakedModel unbaked = new OBJModel.Parser(asResource, manager).parse();
-				unbaked = unbaked.process(ImmutableMap.of("flip-v", "true"));
-				//TODO parse rotation+uvlock from JSON
-				IBakedModel baked = unbaked.bake(evt.getModelLoader(), ModelLoader.defaultTextureGetter(), new BasicState(ModelRotation.X0_Y0, false), DefaultVertexFormats.ITEM);
-				for(ModelResourceLocation mrl : requestedModels.get(reqModel))
-					evt.getModelRegistry().put(mrl, baked);
-			}
-		} catch(IOException e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException(e);
+			ConfiguredModel conf = unbaked.getKey();
+			IBakedModel baked = unbaked.getValue().bake(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
+					new BasicState(ModelRotation.getModelRotation(conf.rotationX, conf.rotationY), conf.uvLock),
+					DefaultVertexFormats.ITEM);
+			for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
+				evt.getModelRegistry().put(mrl, baked);
 		}
 	}
 

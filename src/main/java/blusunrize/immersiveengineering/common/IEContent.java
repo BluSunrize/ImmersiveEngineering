@@ -402,11 +402,11 @@ public class IEContent
 		//TODO which ones need DYNAMIC_RENDER and which don't?
 		Multiblocks.crusher = new MetalMultiblockBlock("crusher", () -> CrusherTileEntity.TYPE, IEProperties.DYNAMICRENDER);
 		Multiblocks.arcFurnace = new MetalMultiblockBlock("arc_furnace", () -> ArcFurnaceTileEntity.TYPE, IEProperties.DYNAMICRENDER);
-		Multiblocks.assembler = new MetalMultiblockBlock("assembler", () -> AssemblerTileEntity.TYPE, IEProperties.DYNAMICRENDER);
+		Multiblocks.assembler = new MetalMultiblockBlock("assembler", () -> AssemblerTileEntity.TYPE);
 		Multiblocks.autoWorkbench = new MetalMultiblockBlock("auto_workbench", () -> AutoWorkbenchTileEntity.TYPE, IEProperties.DYNAMICRENDER);
 		Multiblocks.bucketWheel = new MetalMultiblockBlock("bucket_wheel", () -> BucketWheelTileEntity.TYPE, IEProperties.DYNAMICRENDER);
-		Multiblocks.excavator = new MetalMultiblockBlock("excavator", () -> ExcavatorTileEntity.TYPE, IEProperties.DYNAMICRENDER);
-		Multiblocks.blastFurnaceAdv = new MetalMultiblockBlock("improved_blast_furnace", () -> BlastFurnaceAdvancedTileEntity.TYPE, IEProperties.DYNAMICRENDER);
+		Multiblocks.excavator = new MetalMultiblockBlock("excavator", () -> ExcavatorTileEntity.TYPE);
+		Multiblocks.blastFurnaceAdv = new MetalMultiblockBlock("improved_blast_furnace", () -> BlastFurnaceAdvancedTileEntity.TYPE);
 		Multiblocks.metalPress = new MetalMultiblockBlock("metal_press", () -> MetalPressTileEntity.TYPE, IEProperties.DYNAMICRENDER);
 		/*TODO
 		mixer;          blockFluidCreosote = new BlockIEFluid("fluidCreosote", fluidCreosote, Material.WATER).setFlammability(40, 400);

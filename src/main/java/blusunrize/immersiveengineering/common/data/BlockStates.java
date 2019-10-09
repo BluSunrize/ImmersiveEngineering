@@ -78,7 +78,10 @@ public class BlockStates extends BlockstateGenerator
 					StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
 		}
 
-		createMultiblock(Multiblocks.excavator, new ExistingModelFile(rl("block/metal_multiblock/excavator.obj")), IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, variantBased);
+		createMultiblock(Multiblocks.excavator, new ExistingModelFile(rl("block/metal_multiblock/excavator.obj")),
+				new ExistingModelFile(rl("block/metal_multiblock/excavator_mirrored.obj")),
+				IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED,
+				variantBased);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -117,7 +120,7 @@ public class BlockStates extends BlockstateGenerator
 					int yRot = getAngle(dir, 90);
 					if(shape==StairsShape.INNER_LEFT||shape==StairsShape.OUTER_LEFT)
 						yRot = (yRot+270)%360;
-					b.setForAllWithState(partialState, new ConfiguredModel(base, xRot, yRot, true));
+					b.setForAllWithState(partialState, new ConfiguredModel(base, xRot, yRot, true, ImmutableMap.of()));
 				}
 			}
 		}
@@ -127,28 +130,33 @@ public class BlockStates extends BlockstateGenerator
 	private void createFenceBlock(IEFenceBlock block, ModelFile post, ModelFile side, BiConsumer<Block, List<MultiPart>> out)
 	{
 		List<MultiPart> parts = new ArrayList<>();
-		ConfiguredModel postModel = new ConfiguredModel(post, 0, 0, false);
+		ConfiguredModel postModel = new ConfiguredModel(post, 0, 0, false, ImmutableMap.of());
 		parts.add(new MultiPart(postModel, false));
 		for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
 		{
 			int angle = getAngle(dir, 180);
-			ConfiguredModel sideModel = new ConfiguredModel(side, 0, angle, true);
+			ConfiguredModel sideModel = new ConfiguredModel(side, 0, angle, true, ImmutableMap.of());
 			BooleanProperty sideActive = block.getFacingStateMap().get(dir);
 			parts.add(new MultiPart(sideModel, false, new PropertyWithValues<>(sideActive, true)));
 		}
 		out.accept(block, parts);
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel, IProperty<Boolean> isSlave, EnumProperty<Direction> facing, BiConsumer<Block, IVariantModelGenerator> out)
+	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel, IProperty<Boolean> isSlave,
+								  EnumProperty<Direction> facing, IProperty<Boolean> mirroredState,
+								  BiConsumer<Block, IVariantModelGenerator> out)
 	{
 		Builder builder = new Builder(b);
 		ModelFile empty = new ExistingModelFile(rl("block/ie_empty"));
 		builder.setForAllWithState(ImmutableMap.of(isSlave, true), new ConfiguredModel(empty));
-		for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
-		{
-			int angle = getAngle(dir, 180);
-			builder.setForAllWithState(ImmutableMap.of(isSlave, false, facing, dir), new ConfiguredModel(masterModel, 0, angle, true));
-		}
+		for(boolean mirrored : new boolean[]{false, true})
+			for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
+			{
+				int angle = getAngle(dir, 180);
+				ModelFile model = mirrored?mirroredModel: masterModel;
+				builder.setForAllWithState(ImmutableMap.of(isSlave, false, facing, dir, mirroredState, mirrored),
+						new ConfiguredModel(model, 0, angle, true, ImmutableMap.of("flip-v", true)));
+			}
 		out.accept(b, builder.build());
 	}
 

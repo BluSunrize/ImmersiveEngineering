@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.data.blockstate;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
 public abstract class BlockstateGenerator implements IDataProvider
@@ -143,18 +145,24 @@ public abstract class BlockstateGenerator implements IDataProvider
 		public final int rotationX;
 		public final int rotationY;
 		public final boolean uvLock;
+		public final ImmutableMap<String, Object> additionalData;
 
-		public ConfiguredModel(ModelFile name, int rotationX, int rotationY, boolean uvLock)
+		public ConfiguredModel(ModelFile name, int rotationX, int rotationY, boolean uvLock, ImmutableMap<String, Object> additionalData)
 		{
+			Preconditions.checkArgument(!additionalData.containsKey("model"));
+			Preconditions.checkArgument(!additionalData.containsKey("x"));
+			Preconditions.checkArgument(!additionalData.containsKey("y"));
+			Preconditions.checkArgument(!additionalData.containsKey("uvlock"));
 			this.name = name;
 			this.rotationX = rotationX;
 			this.rotationY = rotationY;
 			this.uvLock = uvLock;
+			this.additionalData = additionalData;
 		}
 
 		public ConfiguredModel(ModelFile name)
 		{
-			this(name, 0, 0, false);
+			this(name, 0, 0, false, ImmutableMap.of());
 		}
 
 		public JsonObject toJSON()
@@ -167,7 +175,50 @@ public abstract class BlockstateGenerator implements IDataProvider
 				modelJson.addProperty("y", rotationY);
 			if(uvLock&&(rotationX!=0||rotationY!=0))
 				modelJson.addProperty("uvlock", uvLock);
+			for(Entry<String, Object> e : additionalData.entrySet())
+			{
+				if(e.getValue() instanceof Boolean)
+					modelJson.addProperty(e.getKey(), (Boolean)e.getValue());
+				else if(e.getValue() instanceof Number)
+					modelJson.addProperty(e.getKey(), (Number)e.getValue());
+				else if(e.getValue() instanceof Character)
+					modelJson.addProperty(e.getKey(), (Character)e.getValue());
+				else
+					modelJson.addProperty(e.getKey(), e.getValue().toString());
+			}
 			return modelJson;
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			ConfiguredModel that = (ConfiguredModel)o;
+			return rotationX==that.rotationX&&
+					rotationY==that.rotationY&&
+					uvLock==that.uvLock&&
+					name.equals(that.name)&&
+					additionalData.equals(that.additionalData);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(name, rotationX, rotationY, uvLock, additionalData);
+		}
+
+		public ImmutableMap<String, String> getAddtionalDataAsStrings()
+		{
+			ImmutableMap.Builder<String, String> ret = ImmutableMap.builder();
+			for(Entry<String, Object> entry : additionalData.entrySet())
+			{
+				if(entry.getValue() instanceof String)
+					ret.put(entry.getKey(), "\""+entry.getValue()+"\n");
+				else
+					ret.put(entry.getKey(), entry.getValue().toString());
+			}
+			return ret.build();
 		}
 	}
 
