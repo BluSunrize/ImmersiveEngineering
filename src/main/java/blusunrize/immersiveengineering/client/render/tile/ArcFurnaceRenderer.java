@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
@@ -63,7 +62,7 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.arcFurnace)
 			return;
-		state = state.with(IEProperties.DYNAMICRENDER, true);
+		//TODO state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 		OBJState objState = new OBJState(renderedParts, true);
 

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
@@ -67,7 +66,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.autoWorkbench)
 			return;
-		state = state.with(IEProperties.DYNAMICRENDER, true);
+		//TODO state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 
 		//Initialize Tesselator and BufferBuilder

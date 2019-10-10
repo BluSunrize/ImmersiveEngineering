@@ -14,31 +14,19 @@ import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerato
 import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.client.renderer.model.ModelRotation;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.BasicState;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -46,20 +34,16 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class ObjLoaderWorkaround
 {
-	private static Set<ResourceLocation> requestedTextures = new HashSet<>();
-	private static Multimap<ConfiguredModel, ModelResourceLocation> requestedModels = HashMultimap.create();
-	private static Map<ConfiguredModel, IUnbakedModel> unbakedModels = new HashMap<>();
-
 	@SubscribeEvent
 	public static void modelRegistry(ModelRegistryEvent evt)
 	{
-		IELogger.logger.debug("Registring models");
+		IELogger.logger.debug("Registring obj models");
 		final IResourceManager manager = Minecraft.getInstance().getResourceManager();
 		for(Block b : IEContent.registeredIEBlocks)
 		{
@@ -94,7 +78,7 @@ public class ObjLoaderWorkaround
 							if(!"model".equals(key)&&!"x".equals(key)&&!"y".equals(key)&&!"uvlock".equals(key))
 								remaining.put(key, e.getValue());
 						}
-						requestedModels.put(
+						DynamicModelLoader.requestModel(
 								new ConfiguredModel(new ExistingModelFile(name), xRot, yRot, uvLock, remaining.build()),
 								new ModelResourceLocation(blockName, entry.getKey())
 						);
@@ -104,46 +88,7 @@ public class ObjLoaderWorkaround
 			{
 			}
 		}
-		try
-		{
-			for(ConfiguredModel reqModel : requestedModels.keySet())
-			{
-				ResourceLocation name = reqModel.name.getLocation();
-				IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
-				IUnbakedModel unbaked = new OBJModel.Parser(asResource, manager).parse();
-				unbaked = unbaked.process(reqModel.getAddtionalDataAsStrings());
-				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), ImmutableSet.of()));
-				unbakedModels.put(reqModel, unbaked);
-			}
-		} catch(IOException e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
 	}
 
-	@SubscribeEvent
-	public static void modelBake(ModelBakeEvent evt)
-	{
-		IELogger.logger.debug("Baking models");
-		for(Entry<ConfiguredModel, IUnbakedModel> unbaked : unbakedModels.entrySet())
-		{
-			ConfiguredModel conf = unbaked.getKey();
-			IBakedModel baked = unbaked.getValue().bake(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
-					new BasicState(ModelRotation.getModelRotation(conf.rotationX, conf.rotationY), conf.uvLock),
-					DefaultVertexFormats.ITEM);
-			for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
-				evt.getModelRegistry().put(mrl, baked);
-		}
-	}
 
-	@SubscribeEvent
-	public static void textureStitch(TextureStitchEvent.Pre evt)
-	{
-		IELogger.logger.debug("Stitching textures!");
-		for(ResourceLocation rl : requestedTextures)
-		{
-			evt.addSprite(rl);
-		}
-	}
 }

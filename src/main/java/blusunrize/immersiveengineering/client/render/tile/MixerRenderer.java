@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
@@ -42,7 +41,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.mixer)
 			return;
-		state = state.with(IEProperties.DYNAMICRENDER, true);
+		//TODO state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 
 		Tessellator tessellator = Tessellator.getInstance();
