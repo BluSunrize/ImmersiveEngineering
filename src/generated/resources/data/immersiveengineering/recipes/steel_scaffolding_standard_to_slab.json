@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:steel_scaffolding_standard"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:slab_steel_scaffolding_standard",
+    "count": 6
+  }
+}

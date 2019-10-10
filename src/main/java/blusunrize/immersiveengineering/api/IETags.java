@@ -34,6 +34,7 @@ public class IETags
 	public static final Tag<Item> coalCoke = new ItemTags.Wrapper(forgeLoc("coal_coke"));
 	public static final Tag<Item> hopGraphiteIngot = new ItemTags.Wrapper(IERecipes.getIngot("hop_graphite"));
 	public static final Tag<Block> coalCokeBlock = new BlockTags.Wrapper(IERecipes.getStorageBlock("coal_coke"));
+	public static final Tag<Item> clay = new ItemTags.Wrapper(forgeLoc("clay"));
 
 	static
 	{
