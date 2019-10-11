@@ -54,10 +54,12 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 	{
 		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 		{
-			ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(BARREL_LOC), 0, (int)d.getHorizontalAngle(), false, ImmutableMap.of());
+			ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(BARREL_LOC), 0,
+					(int)d.getHorizontalAngle(), false, ImmutableMap.of("flip-v", true));
 			DynamicModelLoader.requestModel(model, BARREL_NAMES.get(d));
 		}
 	}
+
 	@Override
 	public void render(CrusherTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{

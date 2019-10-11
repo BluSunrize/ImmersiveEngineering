@@ -81,8 +81,8 @@ public class BlockStates extends BlockstateGenerator
 		createMultiblock(Multiblocks.excavator, new ExistingModelFile(rl("block/metal_multiblock/excavator.obj")),
 				new ExistingModelFile(rl("block/metal_multiblock/excavator_mirrored.obj")),
 				variantBased);
-		createMultiblock(Multiblocks.crusher, new ExistingModelFile(rl("block/metal_multiblock/crusher.obj")),
-				new ExistingModelFile(rl("block/metal_multiblock/crusher_mirrored.obj")),
+		createMultiblock(Multiblocks.crusher, new ExistingModelFile(rl("block/metal_multiblock/crusher_mirrored.obj")),
+				new ExistingModelFile(rl("block/metal_multiblock/crusher.obj")),
 				variantBased);
 	}
 
