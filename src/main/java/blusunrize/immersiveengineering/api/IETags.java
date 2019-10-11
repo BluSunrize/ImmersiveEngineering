@@ -75,6 +75,7 @@ public class IETags
 		public final Tag<Item> plate;
 		public final Tag<Item> dust;
 		public final Tag<Block> storage;
+		public final Tag<Block> sheetmetal;
 		@Nullable
 		public final Tag<Block> ore;
 
@@ -98,6 +99,7 @@ public class IETags
 			}
 			else
 				throw new RuntimeException("Unkown vanilla metal: "+m.name());
+			sheetmetal = createBlockTag(IERecipes.getSheetmetalBlock(name));
 			nugget = new ItemTags.Wrapper(IERecipes.getNugget(name));
 			ingot = new ItemTags.Wrapper(IERecipes.getIngot(name));
 			plate = new ItemTags.Wrapper(IERecipes.getPlate(name));
