@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:concrete_tile"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:slab_concrete_tile",
+    "count": 6
+  }
+}

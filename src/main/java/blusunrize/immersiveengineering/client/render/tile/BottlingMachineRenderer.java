@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -52,7 +51,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.bottlingMachine)
 			return;
-		state = state.with(IEProperties.DYNAMICRENDER, true);
+		//TODO state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 
 		//Initialize Tesselator and BufferBuilder

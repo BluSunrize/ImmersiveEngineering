@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " g ",
+    "idi",
+    " g "
+  ],
+  "key": {
+    "g": {
+      "tag": "forge:glass"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "d": {
+      "tag": "forge:dyes/green"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:insulating_glass",
+    "count": 2
+  }
+}

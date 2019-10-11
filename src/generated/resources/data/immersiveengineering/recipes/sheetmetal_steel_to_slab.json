@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:sheetmetal_steel"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:slab_sheetmetal_steel",
+    "count": 6
+  }
+}

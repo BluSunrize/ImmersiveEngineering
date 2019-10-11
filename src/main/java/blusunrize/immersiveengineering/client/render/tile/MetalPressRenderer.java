@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
@@ -49,7 +48,7 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.metalPress)
 			return;
-		state = state.with(IEProperties.DYNAMICRENDER, true);
+		//TODO state = state.with(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 
 		Tessellator tessellator = Tessellator.getInstance();

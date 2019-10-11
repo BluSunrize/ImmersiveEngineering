@@ -94,8 +94,17 @@ minecraft {
     }
 }
 
+repositories {
+    maven { // JEI & Tinkers
+        name 'DVS1 Maven FS'
+        url 'https://dvs1.progwml6.com/files/maven'
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.14.4-28.1.26'
+    runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11")
+    compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11:api")
 }
 
 def reobfFile = file("$buildDir/reobfJar/output.jar")

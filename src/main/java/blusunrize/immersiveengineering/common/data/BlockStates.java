@@ -80,7 +80,9 @@ public class BlockStates extends BlockstateGenerator
 
 		createMultiblock(Multiblocks.excavator, new ExistingModelFile(rl("block/metal_multiblock/excavator.obj")),
 				new ExistingModelFile(rl("block/metal_multiblock/excavator_mirrored.obj")),
-				IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED,
+				variantBased);
+		createMultiblock(Multiblocks.crusher, new ExistingModelFile(rl("block/metal_multiblock/crusher_mirrored.obj")),
+				new ExistingModelFile(rl("block/metal_multiblock/crusher.obj")),
 				variantBased);
 	}
 
@@ -142,6 +144,11 @@ public class BlockStates extends BlockstateGenerator
 		out.accept(block, parts);
 	}
 
+	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel,
+								  BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		createMultiblock(b, masterModel, mirroredModel, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED, out);
+	}
 	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel, IProperty<Boolean> isSlave,
 								  EnumProperty<Direction> facing, IProperty<Boolean> mirroredState,
 								  BiConsumer<Block, IVariantModelGenerator> out)

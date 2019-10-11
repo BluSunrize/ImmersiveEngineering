@@ -328,6 +328,11 @@ public class IERecipes
 		return new ResourceLocation("forge", "storage_blocks/"+type);
 	}
 
+	public static ResourceLocation getSheetmetalBlock(String type)
+	{
+		return new ResourceLocation("forge", "sheetmetal/"+type);
+	}
+
 	public static ResourceLocation getNugget(String type)
 	{
 		return new ResourceLocation("forge", "nuggets/"+type);

@@ -27,8 +27,8 @@ public class IEDataGenerator
 		if(event.includeServer())
 		{
 			gen.addProvider(new Recipes(gen));
-			gen.addProvider(new ItemTags(gen));
 			gen.addProvider(new BlockTags(gen));
+			gen.addProvider(new ItemTags(gen));
 			gen.addProvider(new BlockLoot(gen));
 			Models models = new Models(gen);
 			gen.addProvider(models);

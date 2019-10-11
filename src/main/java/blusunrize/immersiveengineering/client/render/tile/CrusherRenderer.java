@@ -8,11 +8,15 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
+import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -21,15 +25,41 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.lwjgl.opengl.GL11;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 {
+	private static final Map<Direction, ModelResourceLocation> BARREL_NAMES = new HashMap<>();
+	private static final ResourceLocation BARREL_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/crusher_drum.obj");
+
+	static
+	{
+		ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/crusher");
+		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+			BARREL_NAMES.put(d, new ModelResourceLocation(baseLoc, d.getName()));
+	}
+
+	public CrusherRenderer()
+	{
+		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+		{
+			ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(BARREL_LOC), 0,
+					(int)d.getHorizontalAngle(), false, ImmutableMap.of("flip-v", true));
+			DynamicModelLoader.requestModel(model, BARREL_NAMES.get(d));
+		}
+	}
+
 	@Override
 	public void render(CrusherTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
@@ -41,8 +71,8 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.crusher)
 			return;
-		state = state.with(IEProperties.DYNAMICRENDER, true);
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
+		Direction dir = te.getFacing();
+		IBakedModel model = blockRenderer.getBlockModelShapes().getModelManager().getModel(BARREL_NAMES.get(dir));
 
 		boolean b = te.shouldRenderAsActive();
 		float angle = te.animation_barrelRotation+(b?18*partialTicks: 0);

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:alloybrick"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:slab_alloybrick",
+    "count": 6
+  }
+}

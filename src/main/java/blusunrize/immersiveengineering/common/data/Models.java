@@ -77,6 +77,7 @@ public class Models extends ModelGenerator
 		addSimpleBlockModel(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"), out);
 		addSimpleBlockModel(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"), out);
 		addSimpleBlockModel(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"), out);
+		addSimpleBlockModel(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"), out);
 
 		addSimpleBlockModel(MetalDecoration.lvCoil, rl("block/metal_decoration/coil_lv_side"), rl("block/metal_decoration/coil_lv_top"), out);
 		addSimpleBlockModel(MetalDecoration.mvCoil, rl("block/metal_decoration/coil_mv_side"), rl("block/metal_decoration/coil_mv_top"), out);

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:storage_aluminum"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:slab_storage_aluminum",
+    "count": 6
+  }
+}
