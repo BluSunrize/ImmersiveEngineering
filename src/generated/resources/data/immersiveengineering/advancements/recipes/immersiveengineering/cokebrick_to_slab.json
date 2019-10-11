@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:cokebrick_to_slab"
+    ]
+  },
+  "criteria": {
+    "has_slab_cokebrick": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:slab_cokebrick"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:cokebrick_to_slab"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_slab_cokebrick",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -17,6 +17,7 @@
     }
   },
   "result": {
-    "item": "immersiveengineering:blastbrick"
+    "item": "immersiveengineering:blastbrick",
+    "count": 3
   }
 }

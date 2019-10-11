@@ -8,9 +8,11 @@
 
 package blusunrize.immersiveengineering.common.data;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
@@ -20,17 +22,20 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 class Recipes extends RecipeProvider
 {
 	private final Path ADV_ROOT;
+	private final HashMap<String, Integer> PATH_COUNT = new HashMap<>();
 
 	public Recipes(DataGenerator gen)
 	{
@@ -79,8 +84,15 @@ class Recipes extends RecipeProvider
 		for(Entry<Block, Block> blockSlab : IEBlocks.toSlab.entrySet())
 			addSlab(blockSlab.getKey(), blockSlab.getValue(), out);
 
-		addCornerStraightMiddle(IEBlocks.StoneDecoration.cokebrick, IETags.clay, Tags.Items.INGOTS_BRICK, Tags.Items.SANDSTONE, out);
-		addCornerStraightMiddle(IEBlocks.StoneDecoration.blastbrick, Tags.Items.INGOTS_NETHER_BRICK, Tags.Items.INGOTS_BRICK, Items.BLAZE_POWDER, out);
+		addRecipe(IEBlocks.StoneDecoration.alloybrick, 2, out, "sb","bs",null, 's', Tags.Items.SANDSTONE, 'b', Tags.Items.INGOTS_BRICK);
+		addCornerStraightMiddle(IEBlocks.StoneDecoration.cokebrick, 3, IETags.clay, Tags.Items.INGOTS_BRICK, Tags.Items.SANDSTONE, out);
+		addCornerStraightMiddle(IEBlocks.StoneDecoration.blastbrick, 3, Tags.Items.INGOTS_NETHER_BRICK, Tags.Items.INGOTS_BRICK, Items.BLAZE_POWDER, out);
+		addSandwich(IEBlocks.StoneDecoration.hempcrete, 6, IETags.clay, IETags.fiberHemp, IETags.clay, out);
+		add3x3Conversion(IEBlocks.StoneDecoration.coke, IEItems.Ingredients.coalCoke, out);
+
+		addRecipe(IEBlocks.StoneDecoration.concrete, 8, out, "scs", "gbg", "scs", 's', Tags.Items.SAND, 'c', IETags.clay, 'g', Tags.Items.GRAVEL, 'b', Items.WATER_BUCKET);
+		addRecipe(IEBlocks.StoneDecoration.concrete, 12, out, "scs", "gbg", "scs", 's', IEItems.Ingredients.slag, 'c', IETags.clay, 'g', Tags.Items.GRAVEL, 'b', Items.WATER_BUCKET);
+		addRecipe(IEBlocks.StoneDecoration.insulatingGlass, 2, out, " g ", "idi", " g ", 'g', Tags.Items.GLASS, 'i', Tags.Items.INGOTS_IRON, 'd', Tags.Items.DYES_GREEN);
 	}
 
 	//TODO use tags
@@ -92,11 +104,11 @@ class Recipes extends RecipeProvider
 				.patternLine("sss")
 				.patternLine("sss")
 				.addCriterion("has_"+toPath(small), hasItem(small))
-				.build(out, IEDataGenerator.rl(toPath(small)+"_to_")+toPath(big));
+				.build(out, toRL(toPath(small)+"_to_")+toPath(big));
 		ShapelessRecipeBuilder.shapelessRecipe(small, 9)
 				.addIngredient(big)
 				.addCriterion("has_"+toPath(big), hasItem(small))
-				.build(out, IEDataGenerator.rl(toPath(big)+"_to_"+toPath(small)));
+				.build(out, toRL(toPath(big)+"_to_"+toPath(small)));
 	}
 
 	private void addSlab(IItemProvider block, IItemProvider slab, Consumer<IFinishedRecipe> out)
@@ -105,13 +117,13 @@ class Recipes extends RecipeProvider
 				.key('s', block)
 				.patternLine("sss")
 				.addCriterion("has_"+toPath(slab), hasItem(slab))
-				.build(out, IEDataGenerator.rl(toPath(block)+"_to_slab"));
+				.build(out, toRL(toPath(block)+"_to_slab"));
 		ShapedRecipeBuilder.shapedRecipe(block)
 				.key('s', slab)
 				.patternLine("s")
 				.patternLine("s")
 				.addCriterion("has_"+toPath(block), hasItem(block))
-				.build(out, IEDataGenerator.rl(toPath(block)+"_from_slab"));
+				.build(out, toRL(toPath(block)+"_from_slab"));
 	}
 
 	/**
@@ -124,9 +136,9 @@ class Recipes extends RecipeProvider
 	 * @param middle the item in the middle
 	 */
 	@ParametersAreNonnullByDefault
-	private void addCornerStraightMiddle(IItemProvider output, Object corner, Object side, Object middle, Consumer<IFinishedRecipe> out)
+	private void addCornerStraightMiddle(IItemProvider output, int count, Object corner, Object side, Object middle, Consumer<IFinishedRecipe> out)
 	{
-		ShapedRecipeBuilder.shapedRecipe(output)
+		ShapedRecipeBuilder.shapedRecipe(output, count)
 				.key('c', makeIngredient(corner))
 				.key('s', makeIngredient(side))
 				.key('m', makeIngredient(middle))
@@ -134,12 +146,67 @@ class Recipes extends RecipeProvider
 				.patternLine("sms")
 				.patternLine("csc")
 				.addCriterion("has_"+toPath(output), hasItem(output))
-				.build(out, IEDataGenerator.rl(toPath(output)));
+				.build(out, toRL(toPath(output)));
+	}
+
+	/**
+	 * For Recipes consisting of layers
+	 *
+	 * @param output the recipe's output
+	 * @param top    the item on the top
+	 * @param middle the item in the middle
+	 * @param bottom the item on the bottom
+	 */
+	@ParametersAreNonnullByDefault
+	private void addSandwich(IItemProvider output, int count, Object top, Object middle, Object bottom, Consumer<IFinishedRecipe> out)
+	{
+		ShapedRecipeBuilder.shapedRecipe(output, count)
+				.key('t', makeIngredient(top))
+				.key('m', makeIngredient(middle))
+				.key('b', makeIngredient(bottom))
+				.patternLine("ttt")
+				.patternLine("mmm")
+				.patternLine("bbb")
+				.addCriterion("has_"+toPath(output), hasItem(output))
+				.build(out, toRL(toPath(output)));
+	}
+
+	/**
+	 * For any other recipes
+	 */
+	private void addRecipe(IItemProvider output, int count, Consumer<IFinishedRecipe> out, String row1, String row2, String row3, Object... recipe)
+	{
+		assert recipe.length%2==0;
+		ShapedRecipeBuilder builder = ShapedRecipeBuilder.shapedRecipe(output, count).addCriterion("has_"+toPath(output), hasItem(output));
+		if(row1!=null)
+			builder.patternLine(row1);
+		if(row2!=null)
+			builder.patternLine(row2);
+		if(row3!=null)
+			builder.patternLine(row3);
+		for(int i = 0; i < recipe.length; i += 2)
+		{
+			assert recipe[i] instanceof Character;
+			builder.key((Character)recipe[i], makeIngredient(recipe[i+1]));
+		}
+		builder.build(out, toRL(toPath(output)));
 	}
 
 	private String toPath(IItemProvider src)
 	{
 		return src.asItem().getRegistryName().getPath();
+	}
+
+	private ResourceLocation toRL(String s)
+	{
+		if(PATH_COUNT.containsKey(s))
+		{
+			int count = PATH_COUNT.get(s)+1;
+			PATH_COUNT.put(s, count);
+			return new ResourceLocation(ImmersiveEngineering.MODID, s+count);
+		}
+		PATH_COUNT.put(s, 1);
+		return new ResourceLocation(ImmersiveEngineering.MODID, s);
 	}
 
 	@Nonnull

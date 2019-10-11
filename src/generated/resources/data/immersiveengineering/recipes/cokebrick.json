@@ -17,6 +17,7 @@
     }
   },
   "result": {
-    "item": "immersiveengineering:cokebrick"
+    "item": "immersiveengineering:cokebrick",
+    "count": 3
   }
 }

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:blastbrick_to_slab"
+    ]
+  },
+  "criteria": {
+    "has_slab_blastbrick": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:slab_blastbrick"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:blastbrick_to_slab"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_slab_blastbrick",
+      "has_the_recipe"
+    ]
+  ]
+}
