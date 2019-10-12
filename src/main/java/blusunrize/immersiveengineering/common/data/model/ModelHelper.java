@@ -43,7 +43,7 @@ public class ModelHelper
 		assertTextureExists(top);
 		assertTextureExists(bottom);
 		JsonObject model = new JsonObject();
-		model.addProperty("parent", "immersiveengineering:block/ie_pillar");
+		model.addProperty("parent", "block/cube_bottom_top");
 		JsonObject textures = new JsonObject();
 		textures.addProperty("top", top.toString());
 		textures.addProperty("bottom", bottom.toString());
