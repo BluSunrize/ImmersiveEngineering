@@ -24,12 +24,14 @@ import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModel
 import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.properties.Half;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.Direction;
 
@@ -70,6 +72,8 @@ public class BlockStates extends BlockstateGenerator
 		createFenceBlock(MetalDecoration.aluFence, models.aluFencePost, models.aluFenceSide, multipartBased);
 		for(Entry<Block, ModelFile> entry : models.simpleBlocks.entrySet())
 			createBasicBlock(entry.getKey(), entry.getValue(), variantBased);
+		for(Entry<Block, Map<SlabType, ModelFile>> entry : models.slabs.entrySet())
+			createSlabBlock(entry.getKey(), entry.getValue(), SlabBlock.TYPE, variantBased);
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
 			createStairsBlock(MetalDecoration.aluScaffoldingStair.get(type), models.aluScaffoldingStairs.get(type),
@@ -98,6 +102,19 @@ public class BlockStates extends BlockstateGenerator
 				.setModel(block.getDefaultState(), model)
 				.build();
 		out.accept(block, gen);
+	}
+
+	private void createSlabBlock(Block block, Map<SlabType, ModelFile> baseModels, EnumProperty<SlabType> typeProp, BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		Builder b = new Builder(block);
+		for(SlabType type : SlabType.values())
+		{
+			Map<IProperty<?>, ?> partialState = ImmutableMap.<IProperty<?>, Object>builder()
+					.put(typeProp, type)
+					.build();
+			b.setForAllWithState(partialState, new ConfiguredModel(baseModels.get(type)));
+		}
+		out.accept(block, b.build());
 	}
 
 	private void createStairsBlock(Block block, Map<BasicStairsShape, ModelFile> baseModels, EnumProperty<Direction> facingProp,
@@ -149,6 +166,7 @@ public class BlockStates extends BlockstateGenerator
 	{
 		createMultiblock(b, masterModel, mirroredModel, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED, out);
 	}
+
 	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel, IProperty<Boolean> isSlave,
 								  EnumProperty<Direction> facing, IProperty<Boolean> mirroredState,
 								  BiConsumer<Block, IVariantModelGenerator> out)

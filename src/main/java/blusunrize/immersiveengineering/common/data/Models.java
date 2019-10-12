@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
@@ -22,6 +23,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
@@ -35,6 +37,7 @@ public class Models extends ModelGenerator
 {
 	final Map<EnumMetals, MetalModels> metalModels = new HashMap<>();
 	final Map<Block, ModelFile> simpleBlocks = new HashMap<>();
+	final Map<Block, Map<SlabType, ModelFile>> slabs = new HashMap<>();
 	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> aluScaffoldingStairs = new HashMap<>();
 	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> steelScaffoldingStairs = new HashMap<>();
 	final GeneratedModelFile treatedFencePost = ModelHelper.createFencePost(rl("block/wooden_decoration/treated_wood_horizontal"),
@@ -119,6 +122,17 @@ public class Models extends ModelGenerator
 			aluScaffoldingStairs.put(type, aluStairs);
 			steelScaffoldingStairs.put(type, steelStairs);
 		}
+
+		addSlabModel(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"), out);
+		addSlabModel(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"), out);
+		addSlabModel(StoneDecoration.blastbrickReinforced, rl("block/stone_decoration/blastbrick_reinforced"), out);
+		addSlabModel(StoneDecoration.coke, rl("block/stone_decoration/coke"), out);
+		addSlabModel(StoneDecoration.concrete, rl("block/stone_decoration/concrete"), out);
+		addSlabModel(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"), out);
+		addSlabModel(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"), out);
+		addSlabModel(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"), out);
+		addSlabModel(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"), out);
+		addSlabModel(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"), out);
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
@@ -126,9 +140,25 @@ public class Models extends ModelGenerator
 		addSimpleBlockModel(block, ModelHelper.createScaffolding(side, top, block.getRegistryName()), out);
 	}
 
-	private void addSlabModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
+	private void addSlabModel(Block block, ResourceLocation texture, Consumer<GeneratedModelFile> out)
 	{
-		addSimpleBlockModel(block, ModelHelper.createScaffolding(side, top, block.getRegistryName()), out);
+		addSlabModel(block, texture, texture, texture, out);
+	}
+
+	private void addSlabModel(Block block, ResourceLocation side, ResourceLocation top, ResourceLocation bottom, Consumer<GeneratedModelFile> out)
+	{
+		Map<SlabType, ModelFile> map = new HashMap<>();
+		GeneratedModelFile blockModel = (GeneratedModelFile)simpleBlocks.get(block);
+		String defaultPath = blockModel.getUncheckedLocation().getPath();
+		GeneratedModelFile bottomModel = ModelHelper.createSlab(SlabType.BOTTOM, side, top, bottom, rl(defaultPath+"_slab"));
+		GeneratedModelFile topModel = ModelHelper.createSlab(SlabType.TOP, side, top, bottom, rl(defaultPath+"_slab_top"));
+		out.accept(topModel);
+		out.accept(bottomModel);
+		out.accept(bottomModel.createChild(locForItemModel(Item.getItemFromBlock(IEBlocks.toSlab.get(block)))));
+		map.put(SlabType.TOP, topModel);
+		map.put(SlabType.BOTTOM, bottomModel);
+		map.put(SlabType.DOUBLE, blockModel);
+		slabs.put(IEBlocks.toSlab.get(block), map);
 	}
 
 	private void addSimpleBlockModel(Block b, ResourceLocation side, ResourceLocation topAndBottom,
@@ -187,9 +217,12 @@ public class Models extends ModelGenerator
 					storage = ModelHelper.createBasicCube(side, top, top, defaultName);
 				}
 				else
+				{
 					storage = ModelHelper.createBasicCube(defaultName);
+				}
 			}
-			sheetmetal = ModelHelper.createBasicCube(rl("block/metal/sheetmetal_"+name));
+			ResourceLocation sheetmetalName = rl("block/metal/sheetmetal_"+name);
+			sheetmetal = ModelHelper.createBasicCube(sheetmetalName);
 		}
 
 		void register(Consumer<GeneratedModelFile> out)

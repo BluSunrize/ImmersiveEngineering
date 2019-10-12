@@ -11,8 +11,11 @@ package blusunrize.immersiveengineering.common.data.model;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import com.google.gson.JsonObject;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Locale;
 
 public class ModelHelper
 {
@@ -52,14 +55,14 @@ public class ModelHelper
 		return new GeneratedModelFile(modelName, model);
 	}
 
-	public static GeneratedModelFile createSlab(ResourceLocation sides, ResourceLocation top,
-													 ResourceLocation bottom, ResourceLocation modelName)
+	public static GeneratedModelFile createSlab(SlabType type, ResourceLocation sides, ResourceLocation top,
+												ResourceLocation bottom, ResourceLocation modelName)
 	{
 		assertTextureExists(sides);
 		assertTextureExists(top);
 		assertTextureExists(bottom);
 		JsonObject model = new JsonObject();
-		model.addProperty("parent", "block/slab");
+		model.addProperty("parent", type==SlabType.TOP?"block/slab_top":"block/slab");
 		JsonObject textures = new JsonObject();
 		textures.addProperty("top", top.toString());
 		textures.addProperty("bottom", bottom.toString());
@@ -132,6 +135,17 @@ public class ModelHelper
 		textures.addProperty("side", side.toString());
 		textures.addProperty("bottom", side.toString());
 		model.add("textures", textures);
+		return new GeneratedModelFile(fileName, model);
+	}
+
+	public static GeneratedModelFile createVariants(ResourceLocation fileName, Enum[] types, GeneratedModelFile... models)
+	{
+		assert types.length == models.length;
+		JsonObject model = new JsonObject();
+		JsonObject variants = new JsonObject();
+		for(int i=0; i<types.length; i++)
+			variants.addProperty(types[i].name().toLowerCase(Locale.US), models[i].getUncheckedLocation().toString());
+		model.add("variants", variants);
 		return new GeneratedModelFile(fileName, model);
 	}
 
