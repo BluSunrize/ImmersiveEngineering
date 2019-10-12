@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:block/ie_pillar",
+  "parent": "block/cube_bottom_top",
   "textures": {
     "top": "immersiveengineering:block/metal_decoration/coil_lv_top",
     "bottom": "immersiveengineering:block/metal_decoration/coil_lv_top",
