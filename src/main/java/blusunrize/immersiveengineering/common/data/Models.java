@@ -13,7 +13,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
+import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelGenerator;
@@ -42,6 +44,7 @@ public class Models extends ModelGenerator
 	final Map<EnumMetals, MetalModels> metalModels = new HashMap<>();
 	final Map<Block, ModelFile> simpleBlocks = new HashMap<>();
 	final Map<Block, Map<SlabType, ModelFile>> slabs = new HashMap<>();
+	final Map<Block, Map<BasicStairsShape, ModelFile>> stairs = new HashMap<>();
 	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> aluScaffoldingStairs = new HashMap<>();
 	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> steelScaffoldingStairs = new HashMap<>();
 	final GeneratedModelFile treatedFencePost = ModelHelper.createFencePost(rl("block/wooden_decoration/treated_wood_horizontal"),
@@ -87,6 +90,10 @@ public class Models extends ModelGenerator
 		addSimpleBlockModel(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"), out);
 		addSimpleBlockModel(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"), out);
 
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
+			addSimpleBlockModel(WoodenDecoration.treatedWood.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)), out);
+		addScaffoldingModel(WoodenDecoration.treatedScaffolding, rl("block/wooden_decoration/scaffolding"), rl("block/wooden_decoration/scaffolding_top"), out);
+
 		addSimpleBlockModel(MetalDecoration.lvCoil, rl("block/metal_decoration/coil_lv_side"), rl("block/metal_decoration/coil_lv_top"), out);
 		addSimpleBlockModel(MetalDecoration.mvCoil, rl("block/metal_decoration/coil_mv_side"), rl("block/metal_decoration/coil_mv_top"), out);
 		addSimpleBlockModel(MetalDecoration.hvCoil, rl("block/metal_decoration/coil_hv_side"), rl("block/metal_decoration/coil_hv_top"), out);
@@ -104,40 +111,62 @@ public class Models extends ModelGenerator
 			ResourceLocation steelTop = rl("block/metal_decoration/steel_scaffolding_top"+suffix);
 			addScaffoldingModel(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop, out);
 			addScaffoldingModel(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, out);
-			Map<BasicStairsShape, ModelFile> aluStairs = new HashMap<>();
-			Map<BasicStairsShape, ModelFile> steelStairs = new HashMap<>();
-			for(BasicStairsShape s : BasicStairsShape.values())
-			{
-				String stairSuffix = suffix+"_"+s.name().toLowerCase(Locale.ENGLISH);
-				GeneratedModelFile aluModel = ModelHelper.createStairs(s, aluSide, aluTop,
-						aluSide, rl("block/metal_decoration/aluminum_scaffolding_stairs"+stairSuffix));
-				aluStairs.put(s, aluModel);
-				out.accept(aluModel);
-				GeneratedModelFile steelModel = ModelHelper.createStairs(s, steelSide, steelTop,
-						steelSide, rl("block/metal_decoration/steel_scaffolding_stairs"+stairSuffix));
-				steelStairs.put(s, steelModel);
-				out.accept(steelModel);
-				if(s==BasicStairsShape.STRAIGHT)
-				{
-					out.accept(aluModel.createChild(rl("item/aluminum_scaffolding_stairs"+suffix)));
-					out.accept(steelModel.createChild(rl("item/steel_scaffolding_stairs"+suffix)));
-				}
-			}
-			aluScaffoldingStairs.put(type, aluStairs);
-			steelScaffoldingStairs.put(type, steelStairs);
+			addSlabModel(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop, aluSide, out);
+			addSlabModel(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, steelSide, out);
+			addStairModel(MetalDecoration.aluScaffoldingStair.get(type), "metal_decoration/stairs_alu_scaffolding"+suffix, aluSide, aluTop, aluSide, out);
+			addStairModel(MetalDecoration.steelScaffoldingStair.get(type), "metal_decoration/stairs_steel_scaffolding"+suffix, steelSide, steelTop, steelSide, out);
+
+//			Map<BasicStairsShape, ModelFile> aluStairs = new HashMap<>();
+//			Map<BasicStairsShape, ModelFile> steelStairs = new HashMap<>();
+
+//			for(BasicStairsShape s : BasicStairsShape.values())
+//			{
+//
+//
+//				String stairSuffix = suffix+"_"+s.name().toLowerCase(Locale.ENGLISH);
+//				GeneratedModelFile aluModel = ModelHelper.createStairs(s, aluSide, aluTop,
+//						aluSide, rl("block/metal_decoration/stairs_alu_scaffolding"+stairSuffix));
+//				aluStairs.put(s, aluModel);
+//				out.accept(aluModel);
+//				GeneratedModelFile steelModel = ModelHelper.createStairs(s, steelSide, steelTop,
+//						steelSide, rl("block/metal_decoration/"+stairSuffix));
+//				steelStairs.put(s, steelModel);
+//				out.accept(steelModel);
+//				if(s==BasicStairsShape.STRAIGHT)
+//				{
+//					out.accept(aluModel.createChild(rl("item/stairs_aluminum_scaffolding"+suffix)));
+//					out.accept(steelModel.createChild(rl("item/stairs_steel_scaffolding"+suffix)));
+//				}
+//			}
+//			stairs.put(MetalDecoration.aluScaffoldingStair.get(type), aluStairs);
+//			stairs.put(MetalDecoration.steelScaffoldingStair.get(type), steelStairs);
+//			aluScaffoldingStairs.put(type, aluStairs);
+//			steelScaffoldingStairs.put(type, steelStairs);
 		}
 
+		/* SLABS */
 		addSlabModel(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"), out);
 		addSlabModel(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"), out);
 		addSlabModel(StoneDecoration.blastbrickReinforced, rl("block/stone_decoration/blastbrick_reinforced"), out);
 		addSlabModel(StoneDecoration.coke, rl("block/stone_decoration/coke"), out);
 		addSlabModel(StoneDecoration.concrete, rl("block/stone_decoration/concrete"), out);
-		addSlabModel(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"), out);
 		addSlabModel(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"), out);
+		addSlabModel(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"), out);
 		addSlabModel(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"), out);
 		addSlabModel(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"), out);
 		addSlabModel(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"), out);
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
+			addSlabModel(WoodenDecoration.treatedWood.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)), out);
 
+		/* STAIRS */
+		addStairModel(StoneDecoration.hempcreteStairs, "stone_decoration/stairs_hempcrete", rl("block/stone_decoration/hempcrete"), out);
+		addStairModel(StoneDecoration.concreteStairs[0], "stone_decoration/stairs_concrete", rl("block/stone_decoration/concrete"), out);
+		addStairModel(StoneDecoration.concreteStairs[1], "stone_decoration/stairs_concrete_tile", rl("block/stone_decoration/concrete_tile"), out);
+		addStairModel(StoneDecoration.concreteStairs[2], "stone_decoration/stairs_concrete_leaded", rl("block/stone_decoration/concrete_leaded"), out);
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
+			addStairModel(WoodenDecoration.treatedStairs.get(style), "wooden_decoration/stairs_treated_wood_"+style.name().toLowerCase(Locale.ENGLISH), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)), out);
+
+		/* ITEMS */
 		addItemModels("metal_", out, IEItems.Metals.ingots.values().toArray(new Item[IEItems.Metals.ingots.size()]));
 		addItemModels("metal_", out, IEItems.Metals.nuggets.values().toArray(new Item[IEItems.Metals.ingots.size()]));
 		addItemModels("metal_", out, IEItems.Metals.dusts.values().toArray(new Item[IEItems.Metals.ingots.size()]));
@@ -184,6 +213,26 @@ public class Models extends ModelGenerator
 		map.put(SlabType.BOTTOM, bottomModel);
 		map.put(SlabType.DOUBLE, blockModel);
 		slabs.put(IEBlocks.toSlab.get(block), map);
+	}
+
+	private void addStairModel(Block stairBlock, String path, ResourceLocation texture, Consumer<GeneratedModelFile> out)
+	{
+		addStairModel(stairBlock, path, texture, texture, texture, out);
+	}
+
+	private void addStairModel(Block stairBlock, String path, ResourceLocation side, ResourceLocation top, ResourceLocation bottom, Consumer<GeneratedModelFile> out)
+	{
+		Map<BasicStairsShape, ModelFile> map = new HashMap<>();
+		for(BasicStairsShape s : BasicStairsShape.values())
+		{
+			String stairSuffix = "_"+s.name().toLowerCase(Locale.ENGLISH);
+			GeneratedModelFile model = ModelHelper.createStairs(s, side, top, bottom, rl("block/"+path+stairSuffix));
+			map.put(s, model);
+			out.accept(model);
+			if(s==BasicStairsShape.STRAIGHT)
+				out.accept(model.createChild(rl("item/"+path.substring(path.lastIndexOf("/")+1))));
+		}
+		stairs.put(stairBlock, map);
 	}
 
 	private void addSimpleBlockModel(Block b, ResourceLocation side, ResourceLocation topAndBottom,

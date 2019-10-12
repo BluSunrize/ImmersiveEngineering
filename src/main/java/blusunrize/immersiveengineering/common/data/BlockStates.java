@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
-import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.data.Models.MetalModels;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator;
 import blusunrize.immersiveengineering.common.data.blockstate.VariantBlockstate.Builder;
@@ -74,13 +73,15 @@ public class BlockStates extends BlockstateGenerator
 			createBasicBlock(entry.getKey(), entry.getValue(), variantBased);
 		for(Entry<Block, Map<SlabType, ModelFile>> entry : models.slabs.entrySet())
 			createSlabBlock(entry.getKey(), entry.getValue(), SlabBlock.TYPE, variantBased);
-		for(MetalScaffoldingType type : MetalScaffoldingType.values())
-		{
-			createStairsBlock(MetalDecoration.aluScaffoldingStair.get(type), models.aluScaffoldingStairs.get(type),
-					StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
-			createStairsBlock(MetalDecoration.steelScaffoldingStair.get(type), models.steelScaffoldingStairs.get(type),
-					StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
-		}
+//		for(MetalScaffoldingType type : MetalScaffoldingType.values())
+//		{
+//			createStairsBlock(MetalDecoration.aluScaffoldingStair.get(type), models.aluScaffoldingStairs.get(type),
+//					StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
+//			createStairsBlock(MetalDecoration.steelScaffoldingStair.get(type), models.steelScaffoldingStairs.get(type),
+//					StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
+//		}
+		for(Entry<Block, Map<BasicStairsShape, ModelFile>> entry : models.stairs.entrySet())
+			createStairsBlock(entry.getKey(), entry.getValue(), StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
 
 		createMultiblock(Multiblocks.excavator, new ExistingModelFile(rl("block/metal_multiblock/excavator.obj")),
 				new ExistingModelFile(rl("block/metal_multiblock/excavator_mirrored.obj")),

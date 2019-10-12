@@ -290,7 +290,7 @@ public class IEContent
 			WoodenDecoration.treatedWood.put(style, baseBlock);
 			addSlabFor(baseBlock);
 			WoodenDecoration.treatedStairs.put(style,
-					new IEStairsBlock("treated_wood_stairs_"+style.name().toLowerCase(), baseBlock.getDefaultState(), standardWoodProperties)
+					new IEStairsBlock("stairs_treated_wood_"+style.name().toLowerCase(), baseBlock.getDefaultState(), standardWoodProperties)
 							.setHasFlavour(true));
 		}
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodProperties);
@@ -345,12 +345,12 @@ public class IEContent
 			Block aluBlock = new ScaffoldingBlock("alu_scaffolding_"+name, defaultMetalProperties);
 			MetalDecoration.steelScaffolding.put(type, steelBlock);
 			MetalDecoration.aluScaffolding.put(type, aluBlock);
-			MetalDecoration.steelScaffoldingStair.put(type, new IEStairsBlock("steel_scaffolding_stairs_"+name,
+			MetalDecoration.steelScaffoldingStair.put(type, new IEStairsBlock("stairs_steel_scaffolding_"+name,
 					steelBlock.getDefaultState(), defaultMetalProperties).setRenderLayer(BlockRenderLayer.CUTOUT));
-			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("alu_scaffolding_stairs_"+name,
+			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("stairs_alu_scaffolding_"+name,
 					aluBlock.getDefaultState(), defaultMetalProperties).setRenderLayer(BlockRenderLayer.CUTOUT));
-			addSlabFor(steelBlock);
-			addSlabFor(aluBlock);
+			IEBlocks.toSlab.put(steelBlock, new ScaffoldingSlabBlock("slab_"+steelBlock.getRegistryName().getPath(), Block.Properties.from(steelBlock), BlockItemIE.class, true));
+			IEBlocks.toSlab.put(aluBlock, new ScaffoldingSlabBlock("slab_"+aluBlock.getRegistryName().getPath(), Block.Properties.from(aluBlock), BlockItemIE.class, true));
 		}
 		for(String cat : new String[]{WireType.LV_CATEGORY, WireType.MV_CATEGORY, WireType.HV_CATEGORY})
 		{
@@ -1269,7 +1269,7 @@ public class IEContent
 		TileEntityType<T> type = new TileEntityType<>(() -> {
 			try
 			{
-				return (T)tile.newInstance();
+				return tile.newInstance();
 			} catch(InstantiationException|IllegalAccessException e)
 			{
 				e.printStackTrace();
