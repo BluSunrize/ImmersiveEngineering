@@ -19,6 +19,10 @@ import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedMode
 import blusunrize.immersiveengineering.common.data.model.ModelGenerator;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
+import blusunrize.immersiveengineering.common.items.IEItems;
+import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -133,6 +137,27 @@ public class Models extends ModelGenerator
 		addSlabModel(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"), out);
 		addSlabModel(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"), out);
 		addSlabModel(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"), out);
+
+		addItemModels("metal_", out, IEItems.Metals.ingots.values().toArray(new Item[IEItems.Metals.ingots.size()]));
+		addItemModels("metal_", out, IEItems.Metals.nuggets.values().toArray(new Item[IEItems.Metals.ingots.size()]));
+		addItemModels("metal_", out, IEItems.Metals.dusts.values().toArray(new Item[IEItems.Metals.ingots.size()]));
+		addItemModels("metal_", out, IEItems.Metals.plates.values().toArray(new Item[IEItems.Metals.ingots.size()]));
+
+		addItemModels("material_", out, Ingredients.stickTreated, Ingredients.stickIron, Ingredients.stickSteel, Ingredients.stickAluminum,
+				Ingredients.hempFiber, Ingredients.hempFabric, Ingredients.coalCoke, Ingredients.slag,
+				Ingredients.componentIron, Ingredients.componentSteel, Ingredients.waterwheelSegment, Ingredients.windmillBlade, Ingredients.windmillSail,
+				Ingredients.woodenGrip, Ingredients.gunpartBarrel, Ingredients.gunpartDrum, Ingredients.gunpartHammer,
+				Ingredients.dustCoke, Ingredients.dustHopGraphite, Ingredients.ingotHopGraphite,
+				Ingredients.wireCopper, Ingredients.wireElectrum, Ingredients.wireAluminum, Ingredients.wireSteel,
+				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.electronTube, Ingredients.circuitBoard);
+
+		addItemModels("tool_", out, Tools.hammer, Tools.wirecutter, Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelSword);
+		addItemModels("wirecoil_", out, Misc.wireCoils.values().toArray(new Item[Misc.wireCoils.size()]));
+//		NYI:
+//		addItemModels("toolupgrade_", out, Misc.toolUpgrades.values().toArray(new Item[Misc.toolUpgrades.size()]));
+//		addItemModels("mold_", out, Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
+		addItemModels("bullet_", out, Ingredients.emptyCasing, Ingredients.emptyShell);
+
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
@@ -186,6 +211,16 @@ public class Models extends ModelGenerator
 //		out.accept(model.withLoc(locForItemModel(Item.getItemFromBlock(b))));
 		out.accept(model.createChild(locForItemModel(Item.getItemFromBlock(b))));
 		Preconditions.checkState(simpleBlocks.put(b, model)==null);
+	}
+
+	private void addItemModels(String texturePrefix, Consumer<GeneratedModelFile> out, Item... items)
+	{
+		for(Item item : items)
+		{
+			ResourceLocation path = locForItemModel(item);
+			ResourceLocation texture = texturePrefix==null?path: new ResourceLocation(path.getNamespace(), "item/"+texturePrefix+item.getRegistryName().getPath());
+			out.accept(ModelHelper.createBasicItem(texture, path));
+		}
 	}
 
 	private static ResourceLocation locForItemModel(Item item)

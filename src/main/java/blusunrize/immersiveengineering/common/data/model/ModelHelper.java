@@ -28,6 +28,17 @@ public class ModelHelper
 		return createBasicCube(texture, texture);
 	}
 
+	public static GeneratedModelFile createBasicItem(ResourceLocation texture, ResourceLocation modelName)
+	{
+		assertTextureExists(texture);
+		JsonObject model = new JsonObject();
+		model.addProperty("parent", "item/generated");
+		JsonObject textures = new JsonObject();
+		textures.addProperty("layer0", texture.toString());
+		model.add("textures", textures);
+		return new GeneratedModelFile(modelName, model);
+	}
+
 	public static GeneratedModelFile createBasicCube(ResourceLocation texture, ResourceLocation modelName)
 	{
 		assertTextureExists(texture);
