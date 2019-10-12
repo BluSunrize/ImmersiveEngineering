@@ -521,6 +521,7 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "hemp"));
 		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "balloon"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "jerrycan"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "mining_drill"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "conveyors"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "external_heater"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "item_router"));
