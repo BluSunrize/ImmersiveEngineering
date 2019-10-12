@@ -228,7 +228,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	}
 
 	@Override
-	public final void disassemble(World world, BlockPos origin, boolean mirrored, Direction clickDirectionAtCreation)
+	public void disassemble(World world, BlockPos origin, boolean mirrored, Direction clickDirectionAtCreation)
 	{
 		Mirror mirror = mirrored?Mirror.FRONT_BACK: Mirror.NONE;
 		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, clickDirectionAtCreation);

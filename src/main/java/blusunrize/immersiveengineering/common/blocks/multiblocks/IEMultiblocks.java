@@ -8,31 +8,29 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-
 public class IEMultiblocks
 {
-	public static final IMultiblock CRUSHER = new CrusherMultiblock();
+	public static final IETemplateMultiblock CRUSHER = new CrusherMultiblock();
 	//TODO replace with correct instances
-	public static final IMultiblock ALLOY_SMELTER = new AlloySmelterMultiblock();
-	public static final IMultiblock ARC_FURNACE = new ArcFurnaceMultiblock();
-	public static final IMultiblock ASSEMBLER = new AssemblerMultiblock();
-	public static final IMultiblock AUTO_WORKBENCH = new AutoWorkbenchMultiblock();
-	public static final IMultiblock BLAST_FURNACE = new BlastFurnaceMultiblock();
-	public static final IMultiblock ADVANCED_BLAST_FURNACE = new ImprovedBlastfurnaceMultiblock();
-	public static final IMultiblock BOTTLING_MACHINE = CRUSHER;
-	public static final IMultiblock BUCKET_WHEEL = new BucketWheelMultiblock();
-	public static final IMultiblock COKE_OVEN = new CokeOvenMultiblock();
-	public static final IMultiblock DIESEL_GENERATOR = CRUSHER;
-	public static final IMultiblock EXCAVATOR = new ExcavatorMultiblock();
-	public static final IMultiblock EXCAVATOR_DEMO = CRUSHER;
-	public static final IMultiblock FEEDTHROUGH = CRUSHER;
-	public static final IMultiblock FERMENTER = CRUSHER;
-	public static final IMultiblock LIGHTNING_ROD = CRUSHER;
-	public static final IMultiblock METAL_PRESS = new MetalPressMultiblock();
-	public static final IMultiblock MIXER = CRUSHER;
-	public static final IMultiblock REFINERY = CRUSHER;
-	public static final IMultiblock SHEETMETAL_TANK = CRUSHER;
-	public static final IMultiblock SILO = CRUSHER;
-	public static final IMultiblock SQUEEZER = CRUSHER;
+	public static final IETemplateMultiblock ALLOY_SMELTER = new AlloySmelterMultiblock();
+	public static final IETemplateMultiblock ARC_FURNACE = new ArcFurnaceMultiblock();
+	public static final IETemplateMultiblock ASSEMBLER = new AssemblerMultiblock();
+	public static final IETemplateMultiblock AUTO_WORKBENCH = new AutoWorkbenchMultiblock();
+	public static final IETemplateMultiblock BLAST_FURNACE = new BlastFurnaceMultiblock();
+	public static final IETemplateMultiblock ADVANCED_BLAST_FURNACE = new ImprovedBlastfurnaceMultiblock();
+	public static final IETemplateMultiblock BOTTLING_MACHINE = CRUSHER;
+	public static final IETemplateMultiblock BUCKET_WHEEL = new BucketWheelMultiblock();
+	public static final IETemplateMultiblock COKE_OVEN = new CokeOvenMultiblock();
+	public static final IETemplateMultiblock DIESEL_GENERATOR = CRUSHER;
+	public static final IETemplateMultiblock EXCAVATOR = new ExcavatorMultiblock();
+	public static final IETemplateMultiblock EXCAVATOR_DEMO = CRUSHER;
+	public static final IETemplateMultiblock FEEDTHROUGH = CRUSHER;
+	public static final IETemplateMultiblock FERMENTER = CRUSHER;
+	public static final IETemplateMultiblock LIGHTNING_ROD = CRUSHER;
+	public static final IETemplateMultiblock METAL_PRESS = new MetalPressMultiblock();
+	public static final IETemplateMultiblock MIXER = CRUSHER;
+	public static final IETemplateMultiblock REFINERY = CRUSHER;
+	public static final IETemplateMultiblock SHEETMETAL_TANK = CRUSHER;
+	public static final IETemplateMultiblock SILO = CRUSHER;
+	public static final IETemplateMultiblock SQUEEZER = CRUSHER;
 }

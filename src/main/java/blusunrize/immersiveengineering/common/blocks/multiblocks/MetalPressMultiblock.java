@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -57,5 +58,17 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	public float getManualScale()
 	{
 		return 13;
+	}
+
+	@Override
+	public Direction transformDirection(Direction original)
+	{
+		return original.rotateY();
+	}
+
+	@Override
+	public Direction untransformDirection(Direction transformed)
+	{
+		return transformed.rotateYCCW();
 	}
 }

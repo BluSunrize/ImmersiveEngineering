@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
@@ -52,7 +52,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public BlockPos posInMultiblock = BlockPos.ZERO;
 	//Offset from the master to this block (world coordinate system)
 	public BlockPos offsetToMaster = BlockPos.ZERO;
-	private final IMultiblock multiblockInstance;
+	private final IETemplateMultiblock multiblockInstance;
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
 	public long onlyLocalDissassembly = -1;
@@ -62,7 +62,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	//Absent means no controlling computers
 	public Optional<Boolean> computerOn = Optional.empty();
 
-	protected MultiblockPartTileEntity(IMultiblock multiblockInstance, TileEntityType<? extends T> type, boolean hasRSControl)
+	protected MultiblockPartTileEntity(IETemplateMultiblock multiblockInstance, TileEntityType<? extends T> type, boolean hasRSControl)
 	{
 		super(type);
 		this.multiblockInstance = multiblockInstance;
@@ -340,9 +340,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		if(formed&&!world.isRemote)
 		{
 			BlockPos startPos = getOrigin();
-			BlockPos masterPos = getPos().subtract(offsetToMaster);
-			long time = world.getGameTime();
-			multiblockInstance.disassemble(world, startPos, isMirrored(), getFacing());
+			multiblockInstance.disassemble(world, startPos, isMirrored(), multiblockInstance.untransformDirection(getFacing()));
 			world.removeBlock(pos, false);
 		}
 	}
@@ -350,13 +348,13 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public BlockPos getOrigin()
 	{
 		return TemplateMultiblock.withSettingsAndOffset(pos, BlockPos.ZERO.subtract(posInMultiblock),
-				isMirrored(), getFacing());
+				isMirrored(), multiblockInstance.untransformDirection(getFacing()));
 	}
 
 	public BlockPos getBlockPosForPos(BlockPos targetPos)
 	{
 		BlockPos origin = getOrigin();
-		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, isMirrored(), getFacing());
+		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, isMirrored(), multiblockInstance.untransformDirection(getFacing()));
 	}
 
 	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)

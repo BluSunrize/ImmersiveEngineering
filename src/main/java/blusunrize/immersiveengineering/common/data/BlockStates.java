@@ -89,6 +89,8 @@ public class BlockStates extends BlockstateGenerator
 		createMultiblock(Multiblocks.crusher, new ExistingModelFile(rl("block/metal_multiblock/crusher_mirrored.obj")),
 				new ExistingModelFile(rl("block/metal_multiblock/crusher.obj")),
 				variantBased);
+		ExistingModelFile metalPressModel = new ExistingModelFile(rl("block/metal_multiblock/metal_press.obj"));
+		createMultiblock(Multiblocks.metalPress, metalPressModel, metalPressModel, variantBased);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -162,14 +164,19 @@ public class BlockStates extends BlockstateGenerator
 		out.accept(block, parts);
 	}
 
+	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel, int rotationOffset,
+								  BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		createMultiblock(b, masterModel, mirroredModel, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED, rotationOffset, out);
+	}
 	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel,
 								  BiConsumer<Block, IVariantModelGenerator> out)
 	{
-		createMultiblock(b, masterModel, mirroredModel, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED, out);
+		createMultiblock(b, masterModel, mirroredModel, 180, out);
 	}
 
 	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel, IProperty<Boolean> isSlave,
-								  EnumProperty<Direction> facing, IProperty<Boolean> mirroredState,
+								  EnumProperty<Direction> facing, IProperty<Boolean> mirroredState, int rotationOffset,
 								  BiConsumer<Block, IVariantModelGenerator> out)
 	{
 		Builder builder = new Builder(b);
@@ -178,7 +185,7 @@ public class BlockStates extends BlockstateGenerator
 		for(boolean mirrored : new boolean[]{false, true})
 			for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
 			{
-				int angle = getAngle(dir, 180);
+				int angle = getAngle(dir, rotationOffset);
 				ModelFile model = mirrored?mirroredModel: masterModel;
 				builder.setForAllWithState(ImmutableMap.of(isSlave, false, facing, dir, mirroredState, mirrored),
 						new ConfiguredModel(model, 0, angle, true, ImmutableMap.of("flip-v", true)));

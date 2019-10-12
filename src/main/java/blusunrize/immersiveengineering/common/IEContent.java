@@ -49,6 +49,7 @@ import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackPartBullet;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -455,6 +456,15 @@ public class IEContent
 		IEItems.Ingredients.circuitBoard = new IEBaseItem("circuit_board");
 		IEItems.Ingredients.emptyCasing = new IEBaseItem("empty_casing");
 		IEItems.Ingredients.emptyShell = new IEBaseItem("empty_shell");
+		Item.Properties moldProperties = new Item.Properties().maxStackSize(1);
+		Molds.moldPlate = new IEBaseItem("mold_plate", moldProperties);
+		Molds.moldGear = new IEBaseItem("mold_gear", moldProperties);
+		Molds.moldRod = new IEBaseItem("mold_rod", moldProperties);
+		Molds.moldBulletCasing = new IEBaseItem("mold_bullet_casing", moldProperties);
+		Molds.moldWire = new IEBaseItem("mold_wire", moldProperties);
+		Molds.moldPacking4 = new IEBaseItem("mold_packing_4", moldProperties);
+		Molds.moldPacking9 = new IEBaseItem("mold_packing_9", moldProperties);
+		Molds.moldUnpacking = new IEBaseItem("mold_unpacking", moldProperties);
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);

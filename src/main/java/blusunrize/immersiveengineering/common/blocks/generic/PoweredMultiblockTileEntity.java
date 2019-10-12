@@ -14,11 +14,11 @@ import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -52,7 +52,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 {
 	public final FluxStorageAdvanced energyStorage;
 
-	public PoweredMultiblockTileEntity(IMultiblock multiblockInstance, int energyCapacity, boolean redstoneControl,
+	public PoweredMultiblockTileEntity(IETemplateMultiblock multiblockInstance, int energyCapacity, boolean redstoneControl,
 									   TileEntityType<? extends T> type)
 	{
 		super(multiblockInstance, type, redstoneControl);

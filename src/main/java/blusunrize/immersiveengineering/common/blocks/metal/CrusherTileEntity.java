@@ -388,7 +388,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	public Set<BlockPos> getRedstonePos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(0, 1, 0)
+				new BlockPos(0, 1, 2)
 		);
 	}
 
