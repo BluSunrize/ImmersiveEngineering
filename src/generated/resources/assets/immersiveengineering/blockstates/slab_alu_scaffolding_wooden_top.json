@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "type=top,waterlogged=true": {
+      "model": "immersiveengineering:alu_scaffolding_wooden_top_slab_top"
+    },
+    "type=top,waterlogged=false": {
+      "model": "immersiveengineering:alu_scaffolding_wooden_top_slab_top"
+    },
+    "type=bottom,waterlogged=true": {
+      "model": "immersiveengineering:alu_scaffolding_wooden_top_slab"
+    },
+    "type=bottom,waterlogged=false": {
+      "model": "immersiveengineering:alu_scaffolding_wooden_top_slab"
+    },
+    "type=double,waterlogged=true": {
+      "model": "immersiveengineering:alu_scaffolding_wooden_top"
+    },
+    "type=double,waterlogged=false": {
+      "model": "immersiveengineering:alu_scaffolding_wooden_top"
+    }
+  }
+}
