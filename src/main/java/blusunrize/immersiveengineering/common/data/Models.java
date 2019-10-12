@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
@@ -109,6 +110,11 @@ public class Models extends ModelGenerator
 						steelSide, rl("block/metal_decoration/steel_scaffolding_stairs"+stairSuffix));
 				steelStairs.put(s, steelModel);
 				out.accept(steelModel);
+				if(s==BasicStairsShape.STRAIGHT)
+				{
+					out.accept(aluModel.createChild(rl("item/aluminum_scaffolding_stairs"+suffix)));
+					out.accept(steelModel.createChild(rl("item/steel_scaffolding_stairs"+suffix)));
+				}
 			}
 			aluScaffoldingStairs.put(type, aluStairs);
 			steelScaffoldingStairs.put(type, steelStairs);
@@ -116,6 +122,11 @@ public class Models extends ModelGenerator
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
+	{
+		addSimpleBlockModel(block, ModelHelper.createScaffolding(side, top, block.getRegistryName()), out);
+	}
+
+	private void addSlabModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
 	{
 		addSimpleBlockModel(block, ModelHelper.createScaffolding(side, top, block.getRegistryName()), out);
 	}
@@ -142,11 +153,12 @@ public class Models extends ModelGenerator
 	private void addSimpleBlockModel(Block b, GeneratedModelFile model, Consumer<GeneratedModelFile> out)
 	{
 		out.accept(model);
-		out.accept(model.withLoc(locForItemModel(Item.getItemFromBlock(b))));
+//		out.accept(model.withLoc(locForItemModel(Item.getItemFromBlock(b))));
+		out.accept(model.createChild(locForItemModel(Item.getItemFromBlock(b))));
 		Preconditions.checkState(simpleBlocks.put(b, model)==null);
 	}
 
-	private ResourceLocation locForItemModel(Item item)
+	private static ResourceLocation locForItemModel(Item item)
 	{
 		ResourceLocation itemName = item.getRegistryName();
 		return new ResourceLocation(itemName.getNamespace(), "item/"+itemName.getPath());
@@ -154,12 +166,14 @@ public class Models extends ModelGenerator
 
 	public static class MetalModels
 	{
+		EnumMetals metal;
 		GeneratedModelFile ore;
 		GeneratedModelFile storage;
 		GeneratedModelFile sheetmetal;
 
 		public MetalModels(EnumMetals metal)
 		{
+			this.metal = metal;
 			String name = metal.tagName();
 			if(metal.shouldAddOre())
 				ore = ModelHelper.createBasicCube(rl("block/metal/ore_"+name));
@@ -181,10 +195,17 @@ public class Models extends ModelGenerator
 		void register(Consumer<GeneratedModelFile> out)
 		{
 			if(ore!=null)
+			{
 				out.accept(ore);
+				out.accept(ore.createChild(locForItemModel(Item.getItemFromBlock(Metals.ores.get(metal)))));
+			}
 			if(storage!=null)
+			{
 				out.accept(storage);
+				out.accept(storage.createChild(locForItemModel(Item.getItemFromBlock(Metals.storage.get(metal)))));
+			}
 			out.accept(sheetmetal);
+			out.accept(sheetmetal.createChild(locForItemModel(Item.getItemFromBlock(Metals.sheetmetal.get(metal)))));
 		}
 	}
 }

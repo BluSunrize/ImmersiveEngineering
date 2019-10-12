@@ -52,6 +52,22 @@ public class ModelHelper
 		return new GeneratedModelFile(modelName, model);
 	}
 
+	public static GeneratedModelFile createSlab(ResourceLocation sides, ResourceLocation top,
+													 ResourceLocation bottom, ResourceLocation modelName)
+	{
+		assertTextureExists(sides);
+		assertTextureExists(top);
+		assertTextureExists(bottom);
+		JsonObject model = new JsonObject();
+		model.addProperty("parent", "block/slab");
+		JsonObject textures = new JsonObject();
+		textures.addProperty("top", top.toString());
+		textures.addProperty("bottom", bottom.toString());
+		textures.addProperty("side", sides.toString());
+		model.add("textures", textures);
+		return new GeneratedModelFile(modelName, model);
+	}
+
 	public static GeneratedModelFile createStairs(BasicStairsShape s, ResourceLocation sides, ResourceLocation top, ResourceLocation bottom, ResourceLocation modelName)
 	{
 		assertTextureExists(sides);
