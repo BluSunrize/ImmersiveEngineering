@@ -71,7 +71,15 @@ public class Models extends ModelGenerator
 	protected void registerModels(Consumer<GeneratedModelFile> out)
 	{
 		for(MetalModels mm : metalModels.values())
+		{
 			mm.register(out);
+			if(mm.storage!=null)
+				if(mm.metal==EnumMetals.URANIUM)
+					addSlabModel(Metals.storage.get(mm.metal), mm.storage, rl("block/metal/storage_"+mm.metal.tagName()+"_side"), rl("block/metal/storage_"+mm.metal.tagName()+"_top"), rl("block/metal/storage_"+mm.metal.tagName()+"_top"), out);
+				else
+					addSlabModel(Metals.storage.get(mm.metal), mm.storage, rl("block/metal/storage_"+mm.metal.tagName()), out);
+			addSlabModel(Metals.sheetmetal.get(mm.metal), mm.sheetmetal, rl("block/metal/sheetmetal_"+mm.metal.tagName()), out);
+		}
 		out.accept(treatedFencePost);
 		out.accept(treatedFenceSide);
 		out.accept(steelFencePost);
@@ -115,33 +123,6 @@ public class Models extends ModelGenerator
 			addSlabModel(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, steelSide, out);
 			addStairModel(MetalDecoration.aluScaffoldingStair.get(type), "metal_decoration/stairs_alu_scaffolding"+suffix, aluSide, aluTop, aluSide, out);
 			addStairModel(MetalDecoration.steelScaffoldingStair.get(type), "metal_decoration/stairs_steel_scaffolding"+suffix, steelSide, steelTop, steelSide, out);
-
-//			Map<BasicStairsShape, ModelFile> aluStairs = new HashMap<>();
-//			Map<BasicStairsShape, ModelFile> steelStairs = new HashMap<>();
-
-//			for(BasicStairsShape s : BasicStairsShape.values())
-//			{
-//
-//
-//				String stairSuffix = suffix+"_"+s.name().toLowerCase(Locale.ENGLISH);
-//				GeneratedModelFile aluModel = ModelHelper.createStairs(s, aluSide, aluTop,
-//						aluSide, rl("block/metal_decoration/stairs_alu_scaffolding"+stairSuffix));
-//				aluStairs.put(s, aluModel);
-//				out.accept(aluModel);
-//				GeneratedModelFile steelModel = ModelHelper.createStairs(s, steelSide, steelTop,
-//						steelSide, rl("block/metal_decoration/"+stairSuffix));
-//				steelStairs.put(s, steelModel);
-//				out.accept(steelModel);
-//				if(s==BasicStairsShape.STRAIGHT)
-//				{
-//					out.accept(aluModel.createChild(rl("item/stairs_aluminum_scaffolding"+suffix)));
-//					out.accept(steelModel.createChild(rl("item/stairs_steel_scaffolding"+suffix)));
-//				}
-//			}
-//			stairs.put(MetalDecoration.aluScaffoldingStair.get(type), aluStairs);
-//			stairs.put(MetalDecoration.steelScaffoldingStair.get(type), steelStairs);
-//			aluScaffoldingStairs.put(type, aluStairs);
-//			steelScaffoldingStairs.put(type, steelStairs);
 		}
 
 		/* SLABS */
@@ -199,10 +180,19 @@ public class Models extends ModelGenerator
 		addSlabModel(block, texture, texture, texture, out);
 	}
 
+	private void addSlabModel(Block block, GeneratedModelFile blockModel, ResourceLocation texture, Consumer<GeneratedModelFile> out)
+	{
+		addSlabModel(block, blockModel, texture, texture, texture, out);
+	}
+
 	private void addSlabModel(Block block, ResourceLocation side, ResourceLocation top, ResourceLocation bottom, Consumer<GeneratedModelFile> out)
 	{
+		addSlabModel(block, (GeneratedModelFile)simpleBlocks.get(block), side, top, bottom, out);
+	}
+
+	private void addSlabModel(Block block, GeneratedModelFile blockModel, ResourceLocation side, ResourceLocation top, ResourceLocation bottom, Consumer<GeneratedModelFile> out)
+	{
 		Map<SlabType, ModelFile> map = new HashMap<>();
-		GeneratedModelFile blockModel = (GeneratedModelFile)simpleBlocks.get(block);
 		String defaultPath = blockModel.getUncheckedLocation().getPath();
 		GeneratedModelFile bottomModel = ModelHelper.createSlab(SlabType.BOTTOM, side, top, bottom, rl(defaultPath+"_slab"));
 		GeneratedModelFile topModel = ModelHelper.createSlab(SlabType.TOP, side, top, bottom, rl(defaultPath+"_slab_top"));

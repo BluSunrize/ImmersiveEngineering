@@ -340,7 +340,7 @@ public class IEContent
 			MetalDecoration.metalLadder.put(t, new MetalLadderBlock(t));
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
-			String name = type.name().toLowerCase();
+			String name = type.name().toLowerCase(Locale.ENGLISH);
 			Block steelBlock = new ScaffoldingBlock("steel_scaffolding_"+name, defaultMetalProperties);
 			Block aluBlock = new ScaffoldingBlock("alu_scaffolding_"+name, defaultMetalProperties);
 			MetalDecoration.steelScaffolding.put(type, steelBlock);
