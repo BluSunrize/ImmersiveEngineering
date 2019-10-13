@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "bb ",
+    "ssb",
+    "ss "
+  ],
+  "key": {
+    "s": {
+      "tag": "forge:rods/treated_wood"
+    },
+    "b": {
+      "tag": "forge:treated_wood"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:windmill_blade"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "sticks",
+  "pattern": [
+    "w",
+    "w"
+  ],
+  "key": {
+    "w": {
+      "tag": "forge:treated_wood"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:stick_treated",
+    "count": 4
+  }
+}

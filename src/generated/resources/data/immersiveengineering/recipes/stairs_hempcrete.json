@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "s  ",
+    "ss ",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:hempcrete"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:stairs_hempcrete",
+    "count": 4
+  }
+}

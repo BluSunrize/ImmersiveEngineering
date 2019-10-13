@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "s  ",
+    "ss ",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:concrete_leaded"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:stairs_concrete_leaded",
+    "count": 4
+  }
+}
