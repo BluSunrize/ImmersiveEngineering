@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_alloybrick": {
+    "has_brick": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:alloybrick"
+            "tag": "forge:ingots/brick"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_alloybrick",
+      "has_brick",
       "has_the_recipe"
     ]
   ]

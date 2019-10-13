@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_sheetmetal_gold": {
+    "has_sheetmetal_gold": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_sheetmetal_gold"
+            "item": "immersiveengineering:sheetmetal_gold"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_sheetmetal_gold",
+      "has_sheetmetal_gold",
       "has_the_recipe"
     ]
   ]

@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_concrete_tile": {
+    "has_concrete_tile": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_concrete_tile"
+            "item": "immersiveengineering:concrete_tile"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_concrete_tile",
+      "has_concrete_tile",
       "has_the_recipe"
     ]
   ]

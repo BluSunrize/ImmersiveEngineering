@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_alu_scaffolding_standard": {
+    "has_alu_scaffolding_standard": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_alu_scaffolding_standard"
+            "item": "immersiveengineering:alu_scaffolding_standard"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_alu_scaffolding_standard",
+      "has_alu_scaffolding_standard",
       "has_the_recipe"
     ]
   ]

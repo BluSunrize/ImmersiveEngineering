@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_treated_wood_packaged": {
+    "has_treated_wood_packaged": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_treated_wood_packaged"
+            "item": "immersiveengineering:treated_wood_packaged"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_treated_wood_packaged",
+      "has_treated_wood_packaged",
       "has_the_recipe"
     ]
   ]

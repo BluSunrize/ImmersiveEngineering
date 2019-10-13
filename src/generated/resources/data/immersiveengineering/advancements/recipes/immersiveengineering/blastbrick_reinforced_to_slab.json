@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_blastbrick_reinforced": {
+    "has_blastbrick_reinforced": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_blastbrick_reinforced"
+            "item": "immersiveengineering:blastbrick_reinforced"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_blastbrick_reinforced",
+      "has_blastbrick_reinforced",
       "has_the_recipe"
     ]
   ]

@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_insulating_glass": {
+    "has_glass": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:insulating_glass"
+            "tag": "forge:glass"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_insulating_glass",
+      "has_glass",
       "has_the_recipe"
     ]
   ]

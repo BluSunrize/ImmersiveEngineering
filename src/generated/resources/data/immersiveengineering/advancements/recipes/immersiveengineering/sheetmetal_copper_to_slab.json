@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_sheetmetal_copper": {
+    "has_sheetmetal_copper": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_sheetmetal_copper"
+            "item": "immersiveengineering:sheetmetal_copper"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_sheetmetal_copper",
+      "has_sheetmetal_copper",
       "has_the_recipe"
     ]
   ]

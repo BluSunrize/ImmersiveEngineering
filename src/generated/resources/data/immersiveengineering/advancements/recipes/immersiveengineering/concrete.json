@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_concrete": {
+    "has_clay": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:concrete"
+            "tag": "forge:clay"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_concrete",
+      "has_clay",
       "has_the_recipe"
     ]
   ]

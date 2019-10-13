@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_storage_copper": {
+    "has_storage_copper": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_storage_copper"
+            "item": "immersiveengineering:storage_copper"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_storage_copper",
+      "has_storage_copper",
       "has_the_recipe"
     ]
   ]

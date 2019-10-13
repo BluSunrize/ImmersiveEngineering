@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_concrete": {
+    "has_slag": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:concrete"
+            "item": "immersiveengineering:slag"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_concrete",
+      "has_slag",
       "has_the_recipe"
     ]
   ]
