@@ -12,6 +12,11 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
+import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import com.google.gson.JsonObject;
@@ -58,11 +63,11 @@ class Recipes extends RecipeProvider
 			Item nugget = Metals.nuggets.get(metal);
 			Item ingot = Metals.ingots.get(metal);
 			Item plate = Metals.plates.get(metal);
+			Item dust = Metals.dusts.get(metal);
 			Block block = IEBlocks.Metals.storage.get(metal);
 			Block sheetMetal = IEBlocks.Metals.sheetmetal.get(metal);
 			if(!metal.isVanillaMetal())
 			{
-
 				add3x3Conversion(ingot, nugget, out);
 				add3x3Conversion(block, ingot, out);
 				if(IEBlocks.Metals.ores.containsKey(metal))
@@ -73,6 +78,9 @@ class Recipes extends RecipeProvider
 							.build(out);
 				}
 			}
+			CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(dust), ingot, 0, 20)
+					.addCriterion("has_"+toPath(dust), hasItem(dust))
+					.build(out, toRL(toPath(ingot)+"_from_dust"));
 			ShapedRecipeBuilder.shapedRecipe(sheetMetal, 4)
 					.key('p', plate)
 					.patternLine(" p ")
@@ -83,16 +91,34 @@ class Recipes extends RecipeProvider
 		}
 		for(Entry<Block, Block> blockSlab : IEBlocks.toSlab.entrySet())
 			addSlab(blockSlab.getKey(), blockSlab.getValue(), out);
+		addStairs(StoneDecoration.hempcrete, StoneDecoration.hempcreteStairs, out);
+		addStairs(StoneDecoration.concrete, StoneDecoration.concreteStairs[0], out);
+		addStairs(StoneDecoration.concreteTile, StoneDecoration.concreteStairs[1], out);
+		addStairs(StoneDecoration.concreteLeaded, StoneDecoration.concreteStairs[2], out);
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
+			addStairs(WoodenDecoration.treatedWood.get(style), WoodenDecoration.treatedStairs.get(style), out);
+		for(MetalScaffoldingType type : MetalScaffoldingType.values())
+			addStairs(MetalDecoration.steelScaffolding.get(type), MetalDecoration.steelScaffoldingStair.get(type), out);
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete)).func_218643_a("has_hempcrete", this.hasItem(StoneDecoration.hempcrete)).func_218647_a(out, toRL("hempcrete_slab_from_hempcrete_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), StoneDecoration.hempcreteStairs).func_218643_a("has_hempcrete", this.hasItem(StoneDecoration.hempcrete)).func_218647_a(out, toRL("hempcrete_stairs_from_hempcrete_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete)).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_slab_from_concrete_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteStairs[0]).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_stairs_from_concrete_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteTile), IEBlocks.toSlab.get(StoneDecoration.concreteTile)).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_tile_slab_from_concrete_tile_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteTile), StoneDecoration.concreteStairs[1]).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_tile_stairs_from_concrete_tile_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded)).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_leaded_slab_from_concrete_leaded_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteLeaded), StoneDecoration.concreteStairs[2]).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_leaded_stairs_from_concrete_leaded_stonecutting"));
 
-		addRecipe(IEBlocks.StoneDecoration.alloybrick, 2, out, "sb","bs",null, 's', Tags.Items.SANDSTONE, 'b', Tags.Items.INGOTS_BRICK);
-		addCornerStraightMiddle(IEBlocks.StoneDecoration.cokebrick, 3, IETags.clay, Tags.Items.INGOTS_BRICK, Tags.Items.SANDSTONE, out);
-		addCornerStraightMiddle(IEBlocks.StoneDecoration.blastbrick, 3, Tags.Items.INGOTS_NETHER_BRICK, Tags.Items.INGOTS_BRICK, Items.BLAZE_POWDER, out);
-		addSandwich(IEBlocks.StoneDecoration.hempcrete, 6, IETags.clay, IETags.fiberHemp, IETags.clay, out);
-		add3x3Conversion(IEBlocks.StoneDecoration.coke, IEItems.Ingredients.coalCoke, out);
 
-		addRecipe(IEBlocks.StoneDecoration.concrete, 8, out, "scs", "gbg", "scs", 's', Tags.Items.SAND, 'c', IETags.clay, 'g', Tags.Items.GRAVEL, 'b', Items.WATER_BUCKET);
-		addRecipe(IEBlocks.StoneDecoration.concrete, 12, out, "scs", "gbg", "scs", 's', IEItems.Ingredients.slag, 'c', IETags.clay, 'g', Tags.Items.GRAVEL, 'b', Items.WATER_BUCKET);
-		addRecipe(IEBlocks.StoneDecoration.insulatingGlass, 2, out, " g ", "idi", " g ", 'g', Tags.Items.GLASS, 'i', Tags.Items.INGOTS_IRON, 'd', Tags.Items.DYES_GREEN);
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.alloybrick, 2).patternLine("sb").patternLine("bs").key('s', Tags.Items.SANDSTONE).key('b', Tags.Items.INGOTS_BRICK).addCriterion("has_brick", hasItem(Tags.Items.INGOTS_BRICK)).build(out);
+		addCornerStraightMiddle(StoneDecoration.cokebrick, 3, IETags.clay, Tags.Items.INGOTS_BRICK, Tags.Items.SANDSTONE, out);
+		addCornerStraightMiddle(StoneDecoration.blastbrick, 3, Tags.Items.INGOTS_NETHER_BRICK, Tags.Items.INGOTS_BRICK, Items.BLAZE_POWDER, out);
+		ShapelessRecipeBuilder.shapelessRecipe(StoneDecoration.blastbrickReinforced, 1).addIngredient(StoneDecoration.blastbrick).addIngredient(IETags.getTagsFor(EnumMetals.STEEL).plate).addCriterion("has_blastbrick", hasItem(StoneDecoration.blastbrick)).build(out);
+		addSandwich(StoneDecoration.hempcrete, 6, IETags.clay, IETags.fiberHemp, IETags.clay, out);
+		add3x3Conversion(StoneDecoration.coke, IEItems.Ingredients.coalCoke, out);
+
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concrete, 8).setGroup("ie_concrete").patternLine("scs").patternLine("gbg").patternLine("scs").key('s', Tags.Items.SAND).key('c', IETags.clay).key('g', Tags.Items.GRAVEL).key('b', Items.WATER_BUCKET).addCriterion("has_clay", hasItem(IETags.clay)).build(out, toRL("concrete"));
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concrete, 12).setGroup("ie_concrete").patternLine("scs").patternLine("gbg").patternLine("scs").key('s', IEItems.Ingredients.slag).key('c', IETags.clay).key('g', Tags.Items.GRAVEL).key('b', Items.WATER_BUCKET).addCriterion("has_slag", hasItem(IEItems.Ingredients.slag)).build(out, toRL("concrete"));
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.insulatingGlass, 2).patternLine(" g ").patternLine("idi").patternLine(" g ").key('g', Tags.Items.GLASS).key('i', Tags.Items.INGOTS_IRON).key('d', Tags.Items.DYES_GREEN).addCriterion("has_glass", hasItem(Tags.Items.GLASS)).build(out);
 	}
 
 	//TODO use tags
@@ -116,7 +142,7 @@ class Recipes extends RecipeProvider
 		ShapedRecipeBuilder.shapedRecipe(slab, 6)
 				.key('s', block)
 				.patternLine("sss")
-				.addCriterion("has_"+toPath(slab), hasItem(slab))
+				.addCriterion("has_"+toPath(block), hasItem(block))
 				.build(out, toRL(toPath(block)+"_to_slab"));
 		ShapedRecipeBuilder.shapedRecipe(block)
 				.key('s', slab)
@@ -124,6 +150,17 @@ class Recipes extends RecipeProvider
 				.patternLine("s")
 				.addCriterion("has_"+toPath(block), hasItem(block))
 				.build(out, toRL(toPath(block)+"_from_slab"));
+	}
+
+	private void addStairs(IItemProvider block, IItemProvider stairs, Consumer<IFinishedRecipe> out)
+	{
+		ShapedRecipeBuilder.shapedRecipe(stairs, 4)
+				.key('s', block)
+				.patternLine("s  ")
+				.patternLine("ss ")
+				.patternLine("sss")
+				.addCriterion("has_"+toPath(block), hasItem(block))
+				.build(out, toRL(toPath(stairs)));
 	}
 
 	/**
@@ -169,27 +206,6 @@ class Recipes extends RecipeProvider
 				.patternLine("bbb")
 				.addCriterion("has_"+toPath(output), hasItem(output))
 				.build(out, toRL(toPath(output)));
-	}
-
-	/**
-	 * For any other recipes
-	 */
-	private void addRecipe(IItemProvider output, int count, Consumer<IFinishedRecipe> out, String row1, String row2, String row3, Object... recipe)
-	{
-		assert recipe.length%2==0;
-		ShapedRecipeBuilder builder = ShapedRecipeBuilder.shapedRecipe(output, count).addCriterion("has_"+toPath(output), hasItem(output));
-		if(row1!=null)
-			builder.patternLine(row1);
-		if(row2!=null)
-			builder.patternLine(row2);
-		if(row3!=null)
-			builder.patternLine(row3);
-		for(int i = 0; i < recipe.length; i += 2)
-		{
-			assert recipe[i] instanceof Character;
-			builder.key((Character)recipe[i], makeIngredient(recipe[i+1]));
-		}
-		builder.build(out, toRL(toPath(output)));
 	}
 
 	private String toPath(IItemProvider src)
