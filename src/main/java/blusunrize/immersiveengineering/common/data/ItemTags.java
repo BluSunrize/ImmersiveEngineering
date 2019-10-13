@@ -52,9 +52,20 @@ class ItemTags extends ItemTagsProvider
 
 		getBuilder(Tags.Items.RODS_WOODEN).add(Ingredients.stickTreated);
 		getBuilder(IETags.treatedStick).add(Ingredients.stickTreated);
+		getBuilder(IETags.ironRod).add(Ingredients.stickIron);
+		getBuilder(IETags.steelRod).add(Ingredients.stickSteel);
+		getBuilder(IETags.aluminumRod).add(Ingredients.stickAluminum);
 		getBuilder(IETags.fiberHemp).add(Ingredients.hempFiber);
+		getBuilder(IETags.fabricHemp).add(Ingredients.hempFabric);
 		getBuilder(IETags.coalCoke).add(Ingredients.coalCoke);
+		getBuilder(IETags.coalCokeDust).add(Ingredients.dustCoke);
 		getBuilder(IETags.hopGraphiteDust).add(Ingredients.dustHopGraphite);
 		getBuilder(IETags.hopGraphiteIngot).add(Ingredients.ingotHopGraphite);
+		getBuilder(IETags.copperWire).add(Ingredients.wireCopper);
+		getBuilder(IETags.electrumWire).add(Ingredients.wireElectrum);
+		getBuilder(IETags.aluminumWire).add(Ingredients.wireAluminum);
+		getBuilder(IETags.steelWire).add(Ingredients.wireSteel);
+		getBuilder(IETags.saltpeterDust).add(Ingredients.dustSaltpeter);
+		getBuilder(IETags.sulfurDust).add(Ingredients.dustSulfur);
 	}
 }

@@ -38,10 +38,22 @@ public class IETags
 	public static final Tag<Block> coalCokeBlock = createBlockTag(IERecipes.getStorageBlock("coal_coke"));
 	//IE Items
 	public static final Tag<Item> treatedStick = new ItemTags.Wrapper(forgeLoc("rods/treated_wood"));
+	public static final Tag<Item> ironRod = new ItemTags.Wrapper(forgeLoc("rods/iron"));
+	public static final Tag<Item> steelRod = new ItemTags.Wrapper(forgeLoc("rods/steel"));
+	public static final Tag<Item> aluminumRod = new ItemTags.Wrapper(forgeLoc("rods/aluminum"));
 	public static final Tag<Item> fiberHemp = new ItemTags.Wrapper(forgeLoc("fiber_hemp"));
+	public static final Tag<Item> fabricHemp = new ItemTags.Wrapper(forgeLoc("fabric_hemp"));
 	public static final Tag<Item> coalCoke = new ItemTags.Wrapper(forgeLoc("coal_coke"));
+	public static final Tag<Item> slag = new ItemTags.Wrapper(forgeLoc("slag"));
+	public static final Tag<Item> coalCokeDust = new ItemTags.Wrapper(IERecipes.getDust("coal_coke"));
 	public static final Tag<Item> hopGraphiteDust = new ItemTags.Wrapper(IERecipes.getDust("hop_graphite"));
 	public static final Tag<Item> hopGraphiteIngot = new ItemTags.Wrapper(IERecipes.getIngot("hop_graphite"));
+	public static final Tag<Item> copperWire = new ItemTags.Wrapper(forgeLoc("wire/copper"));
+	public static final Tag<Item> electrumWire = new ItemTags.Wrapper(forgeLoc("wire/electrum"));
+	public static final Tag<Item> aluminumWire = new ItemTags.Wrapper(forgeLoc("wire/aluminum"));
+	public static final Tag<Item> steelWire = new ItemTags.Wrapper(forgeLoc("wire/steel"));
+	public static final Tag<Item> saltpeterDust = new ItemTags.Wrapper(IERecipes.getDust("saltpeter"));
+	public static final Tag<Item> sulfurDust = new ItemTags.Wrapper(IERecipes.getDust("sulfur"));
 
 	static
 	{
