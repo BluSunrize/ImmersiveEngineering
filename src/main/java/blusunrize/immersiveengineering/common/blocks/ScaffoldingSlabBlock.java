@@ -32,8 +32,32 @@ public class ScaffoldingSlabBlock extends BlockIESlab
 	}
 
 	@Override
+	public BlockRenderLayer getRenderLayer()
+	{
+		return BlockRenderLayer.CUTOUT;
+	}
+
+	@Override
 	public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer)
 	{
 		return layer==BlockRenderLayer.CUTOUT;
+	}
+
+	@Override
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
+	{
+		return false;
 	}
 }
