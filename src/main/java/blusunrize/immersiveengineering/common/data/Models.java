@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.data;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
@@ -171,8 +172,8 @@ public class Models extends ModelGenerator
 			addStairModel(WoodenDecoration.treatedStairs.get(style), "wooden_decoration/stairs_treated_wood_"+style.name().toLowerCase(Locale.ENGLISH), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)), out);
 
 		/* ITEMS */
-		addItemModels("metal_", out, IEItems.Metals.ingots.values().toArray(new Item[IEItems.Metals.ingots.size()]));
-		addItemModels("metal_", out, IEItems.Metals.nuggets.values().toArray(new Item[IEItems.Metals.ingots.size()]));
+		addItemModels("metal_", out, IEItems.Metals.ingots.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getRegistryName().getNamespace())).toArray(Item[]::new));
+		addItemModels("metal_", out, IEItems.Metals.nuggets.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getRegistryName().getNamespace())).toArray(Item[]::new));
 		addItemModels("metal_", out, IEItems.Metals.dusts.values().toArray(new Item[IEItems.Metals.ingots.size()]));
 		addItemModels("metal_", out, IEItems.Metals.plates.values().toArray(new Item[IEItems.Metals.ingots.size()]));
 

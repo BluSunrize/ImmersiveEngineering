@@ -103,7 +103,10 @@ class Recipes extends RecipeProvider
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			addStairs(WoodenDecoration.treatedWood.get(style), WoodenDecoration.treatedStairs.get(style), out);
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
+		{
 			addStairs(MetalDecoration.steelScaffolding.get(type), MetalDecoration.steelScaffoldingStair.get(type), out);
+			addStairs(MetalDecoration.aluScaffolding.get(type), MetalDecoration.aluScaffoldingStair.get(type), out);
+		}
 		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete)).func_218643_a("has_hempcrete", this.hasItem(StoneDecoration.hempcrete)).func_218647_a(out, toRL("hempcrete_slab_from_hempcrete_stonecutting"));
 		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), StoneDecoration.hempcreteStairs).func_218643_a("has_hempcrete", this.hasItem(StoneDecoration.hempcrete)).func_218647_a(out, toRL("hempcrete_stairs_from_hempcrete_stonecutting"));
 		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete)).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_slab_from_concrete_stonecutting"));
