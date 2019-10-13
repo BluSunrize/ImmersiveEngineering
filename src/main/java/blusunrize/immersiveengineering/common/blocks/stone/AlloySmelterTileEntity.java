@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -26,6 +27,7 @@ import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -41,19 +43,13 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;
-	public boolean active = false;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
+	public final AlloySmelterState guiState = new AlloySmelterState();
 
 	public AlloySmelterTileEntity()
 	{
 		super(IEMultiblocks.ALLOY_SMELTER, TYPE, false);
-	}
-
-	@Override
-	public boolean getIsActive()
-	{
-		return this.active;
 	}
 
 	@Override
@@ -80,7 +76,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 		ApiUtils.checkForNeedlessTicking(this);
 		if(!world.isRemote&&formed&&!isDummy())
 		{
-			boolean a = active;
+			final boolean activeBeforeTick = getIsActive();
 
 			if(burnTime > 0)
 			{
@@ -99,14 +95,14 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 						{
 							processMax = 0;
 							process = 0;
-							active = false;
+							setActive(false);
 						}
 						else
 						{
 							process--;
 							doneWork = true;
-							if(!active)
-								active = true;
+							if(!activeBeforeTick)
+								setActive(true);
 						}
 					}
 					markContainingBlockForUpdate(null);
@@ -138,14 +134,14 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 						if(!doneWork)
 							process--;
 						this.processMax = recipe.time;
-						this.active = true;
+						setActive(true);
 					}
 				}
 			}
 			else
 			{
-				if(active)
-					active = false;
+				if(activeBeforeTick)
+					setActive(false);
 			}
 
 			if(burnTime <= 10&&getRecipe()!=null)
@@ -163,21 +159,21 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 				}
 			}
 
-			if(a!=active)
+			final boolean activeAfterTick = getIsActive();
+			if(activeBeforeTick!=activeAfterTick)
 			{
 
 				this.markDirty();
-				TileEntity tileEntity;
-				for(int yy = -1; yy <= 1; yy++)
-					for(int xx = -1; xx <= 1; xx++)
-						for(int zz = -1; zz <= 1; zz++)
+				for(int x = 0; x < 2; ++x)
+					for(int y = 0; y < 2; ++y)
+						for(int z = 0; z < 2; ++z)
 						{
-							tileEntity = Utils.getExistingTileEntity(world, getPos().add(xx, yy, zz));
-							if(tileEntity!=null)
-								tileEntity.markDirty();
-							markBlockForUpdate(getPos().add(xx, yy, zz), null);
-							world.addBlockEvent(getPos().add(xx, yy, zz), getBlockState().getBlock(), 1, active?1: 0);
+							BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
+							TileEntity te = Utils.getExistingTileEntity(world, actualPos);
+							if(te instanceof AlloySmelterTileEntity)
+								((AlloySmelterTileEntity)te).setActive(activeAfterTick);
 						}
+
 			}
 		}
 	}
@@ -218,8 +214,6 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	{
 		if(id==0)
 			this.formed = arg==1;
-		else if(id==1)
-			this.active = arg==1;
 		markDirty();
 		markContainingBlockForUpdate(null);
 		return true;
@@ -229,14 +223,13 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		process = nbt.getInt("process");
-		processMax = nbt.getInt("processMax");
-		active = nbt.getBoolean("active");
-		burnTime = nbt.getInt("burnTime");
-		lastBurnTime = nbt.getInt("lastBurnTime");
 		if(!descPacket)
 		{
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 4);
+			ItemStackHelper.loadAllItems(nbt, inventory);
+			process = nbt.getInt("process");
+			processMax = nbt.getInt("processMax");
+			burnTime = nbt.getInt("burnTime");
+			lastBurnTime = nbt.getInt("lastBurnTime");
 		}
 	}
 
@@ -244,14 +237,13 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("process", process);
-		nbt.putInt("processMax", processMax);
-		nbt.putBoolean("active", active);
-		nbt.putInt("burnTime", burnTime);
-		nbt.putInt("lastBurnTime", lastBurnTime);
 		if(!descPacket)
 		{
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			nbt.putInt("process", process);
+			nbt.putInt("processMax", processMax);
+			nbt.putInt("burnTime", burnTime);
+			nbt.putInt("lastBurnTime", lastBurnTime);
+			ItemStackHelper.saveAllItems(nbt, inventory);
 		}
 	}
 
@@ -296,12 +288,6 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 		return false;
 	}
 
-	@Override
-	public BlockPos getOrigin()
-	{
-		return getPos().subtract(offsetToMaster).offset(getFacing(), -1).offset(getFacing().rotateYCCW());
-	}
-
 	//Based on AbstractFurnaceTileEntity#getBurnTime, which is non-static protected now
 	private static int getBurnTime(ItemStack stack)
 	{
@@ -314,6 +300,80 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 			if(baseBurnTime==-1)
 				baseBurnTime = AbstractFurnaceTileEntity.getBurnTimes().getOrDefault(item, 0);
 			return ForgeEventFactory.getItemBurnTime(stack, baseBurnTime);
+		}
+	}
+
+	public class AlloySmelterState implements IIntArray
+	{
+		public static final int LAST_BURN_TIME = 0;
+		public static final int BURN_TIME = 1;
+		public static final int PROCESS_MAX = 2;
+		public static final int CURRENT_PROCESS = 3;
+
+		public int getLastBurnTime()
+		{
+			return get(LAST_BURN_TIME);
+		}
+
+		public int getBurnTime()
+		{
+			return get(BURN_TIME);
+		}
+
+		public int getMaxProcess()
+		{
+			return get(PROCESS_MAX);
+		}
+
+		public int getProcess()
+		{
+			return get(CURRENT_PROCESS);
+		}
+
+		@Override
+		public int get(int index)
+		{
+			switch(index)
+			{
+				case LAST_BURN_TIME:
+					return lastBurnTime;
+				case BURN_TIME:
+					return burnTime;
+				case PROCESS_MAX:
+					return processMax;
+				case CURRENT_PROCESS:
+					return process;
+				default:
+					throw new IllegalArgumentException("Unknown index "+index);
+			}
+		}
+
+		@Override
+		public void set(int index, int value)
+		{
+			switch(index)
+			{
+				case LAST_BURN_TIME:
+					lastBurnTime = value;
+					break;
+				case BURN_TIME:
+					burnTime = value;
+					break;
+				case PROCESS_MAX:
+					processMax = value;
+					break;
+				case CURRENT_PROCESS:
+					process = value;
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown index "+index);
+			}
+		}
+
+		@Override
+		public int size()
+		{
+			return 4;
 		}
 	}
 }

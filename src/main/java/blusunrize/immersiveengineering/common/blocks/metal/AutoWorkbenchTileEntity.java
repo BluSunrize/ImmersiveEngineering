@@ -233,7 +233,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 
 	CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
 			() -> {
-				Direction outDir = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+				Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 				return new DirectionalBlockPos(pos.offset(outDir, 2), outDir.getOpposite());
 			}
 			, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
@@ -241,7 +241,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		Direction outDir = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
 			Utils.dropStackAtPos(world, pos, output, outDir);

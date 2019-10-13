@@ -20,12 +20,15 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -47,18 +50,11 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;
-	public boolean active = false;
+	public CokeOvenData guiData = new CokeOvenData();
 
 	public CokeOvenTileEntity()
 	{
 		super(IEMultiblocks.COKE_OVEN, TYPE, false);
-	}
-
-
-	@Override
-	public boolean getIsActive()
-	{
-		return this.active;
 	}
 
 	@Override
@@ -85,8 +81,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 		ApiUtils.checkForNeedlessTicking(this);
 		if(!world.isRemote&&formed&&!isDummy())
 		{
-			boolean a = active;
-			boolean b = false;
+			final boolean activeBeforeTick = getIsActive();
 			if(process > 0)
 			{
 				if(inventory.get(0).isEmpty())
@@ -101,7 +96,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 					{
 						process = 0;
 						processMax = 0;
-						active = false;
+						setActive(false);
 					}
 					else
 						process--;
@@ -110,7 +105,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 			}
 			else
 			{
-				if(active)
+				if(activeBeforeTick)
 				{
 					CokeOvenRecipe recipe = getRecipe();
 					if(recipe!=null)
@@ -123,14 +118,14 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 						this.tank.fill(new FluidStack(IEContent.fluidCreosote, recipe.creosoteOutput), FluidAction.EXECUTE);
 					}
 					processMax = 0;
-					active = false;
+					setActive(false);
 				}
 				CokeOvenRecipe recipe = getRecipe();
 				if(recipe!=null)
 				{
 					this.process = recipe.time;
 					this.processMax = process;
-					this.active = true;
+					setActive(true);
 				}
 			}
 
@@ -142,7 +137,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 					if(inventory.get(2).getCount()==1&&!Utils.isFluidContainerFull(filledContainer))
 					{
 						inventory.set(2, filledContainer.copy());
-						b = true;
+						markDirty();
 					}
 					else
 					{
@@ -151,24 +146,23 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 						else if(inventory.get(3).isEmpty())
 							inventory.set(3, filledContainer.copy());
 						Utils.modifyInvStackSize(inventory, 2, -filledContainer.getCount());
-						b = true;
+						markDirty();
 					}
 				}
 			}
 
-			if(a!=active||b)
+			final boolean activeAfterTick = getIsActive();
+			if(activeBeforeTick!=activeAfterTick)
 			{
 				this.markDirty();
-				TileEntity tileEntity;
-				for(int yy = -1; yy <= 1; yy++)
-					for(int xx = -1; xx <= 1; xx++)
-						for(int zz = -1; zz <= 1; zz++)
+				for(int x = 0; x < 3; ++x)
+					for(int y = 0; y < 3; ++y)
+						for(int z = 0; z < 3; ++z)
 						{
-							tileEntity = Utils.getExistingTileEntity(world, getPos().add(xx, yy, zz));
-							if(tileEntity!=null)
-								tileEntity.markDirty();
-							this.markBlockForUpdate(getPos().add(xx, yy, zz), null);
-							world.addBlockEvent(getPos().add(xx, yy, zz), getBlockState().getBlock(), 1, active?1: 0);
+							BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
+							TileEntity te = Utils.getExistingTileEntity(world, actualPos);
+							if(te instanceof CokeOvenTileEntity)
+								((CokeOvenTileEntity)te).setActive(activeAfterTick);
 						}
 			}
 		}
@@ -211,8 +205,6 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	{
 		if(id==0)
 			this.formed = arg==1;
-		else if(id==1)
-			this.active = arg==1;
 		markDirty();
 		this.markContainingBlockForUpdate(null);
 		return true;
@@ -222,14 +214,13 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		process = nbt.getInt("process");
-		processMax = nbt.getInt("processMax");
-		active = nbt.getBoolean("active");
 
 		tank.readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
 		{
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 4);
+			ItemStackHelper.loadAllItems(nbt, inventory);
+			process = nbt.getInt("process");
+			processMax = nbt.getInt("processMax");
 		}
 	}
 
@@ -237,15 +228,14 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("process", process);
-		nbt.putInt("processMax", processMax);
-		nbt.putBoolean("active", active);
 
 		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
 		nbt.put("tank", tankTag);
 		if(!descPacket)
 		{
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			nbt.putInt("process", process);
+			nbt.putInt("processMax", processMax);
+			ItemStackHelper.saveAllItems(nbt, inventory);
 		}
 	}
 
@@ -319,5 +309,47 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 			return master.invHandler.cast();
 		}
 		return super.getCapability(capability, facing);
+	}
+
+	public class CokeOvenData implements IIntArray
+	{
+		public static final int MAX_BURN_TIME = 0;
+		public static final int BURN_TIME = 1;
+
+		@Override
+		public int get(int index)
+		{
+			switch(index)
+			{
+				case MAX_BURN_TIME:
+					return processMax;
+				case BURN_TIME:
+					return process;
+				default:
+					throw new IllegalArgumentException("Unknown index "+index);
+			}
+		}
+
+		@Override
+		public void set(int index, int value)
+		{
+			switch(index)
+			{
+				case MAX_BURN_TIME:
+					processMax = value;
+					break;
+				case BURN_TIME:
+					process = value;
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown index "+index);
+			}
+		}
+
+		@Override
+		public int size()
+		{
+			return 2;
+		}
 	}
 }

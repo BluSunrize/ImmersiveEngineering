@@ -520,18 +520,10 @@ public class IERecipes
 
 	public static void addAlloyingRecipe(ItemStack output, String input0, int size0, String input1, int size1, int time)
 	{
-		boolean ingot0 = ApiUtils.isNonemptyItemTag(getIngot(input0));
-		boolean ingot1 = ApiUtils.isNonemptyItemTag(getIngot(input1));
-		boolean dust0 = ApiUtils.isNonemptyItemTag(getDust(input0));
-		boolean dust1 = ApiUtils.isNonemptyItemTag(getDust(input1));
-		if(ingot0&&ingot1)
-			AlloyRecipe.addRecipe(output, new IngredientStack(getIngot(input0), size0), new IngredientStack(getIngot(input1), size1), time);
-		if(dust0&&dust1)
-			AlloyRecipe.addRecipe(output, new IngredientStack(getDust(input0), size0), new IngredientStack(getDust(input1), size1), time);
-		if(ingot0&&dust1)
-			AlloyRecipe.addRecipe(output, new IngredientStack(getIngot(input0), size0), new IngredientStack(getDust(input1), size1), time);
-		if(dust0&&ingot1)
-			AlloyRecipe.addRecipe(output, new IngredientStack(getDust(input0), size0), new IngredientStack(getIngot(input1), size1), time);
+		AlloyRecipe.addRecipe(output, new IngredientStack(getIngot(input0), size0), new IngredientStack(getIngot(input1), size1), time);
+		AlloyRecipe.addRecipe(output, new IngredientStack(getDust(input0), size0), new IngredientStack(getDust(input1), size1), time);
+		AlloyRecipe.addRecipe(output, new IngredientStack(getIngot(input0), size0), new IngredientStack(getDust(input1), size1), time);
+		AlloyRecipe.addRecipe(output, new IngredientStack(getDust(input0), size0), new IngredientStack(getIngot(input1), size1), time);
 	}
 
 	public static HashMap<String, ItemStack> arcOutputModifier = new HashMap<>();

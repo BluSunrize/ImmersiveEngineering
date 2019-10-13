@@ -124,7 +124,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 						target = Math.round(rot/360f*8)%8;
 				}
 
-				if(wheel.getFacing()!=fRot||wheel.isMirrored()!=this.isMirrored())
+				if(wheel.getFacing()!=fRot||wheel.getIsMirrored()!=this.getIsMirrored())
 				{
 					for(int h = -3; h <= 3; h++)
 						for(int w = -3; w <= 3; w++)
@@ -133,7 +133,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 							if(te instanceof BucketWheelTileEntity)
 							{
 								((BucketWheelTileEntity)te).setFacing(fRot);
-								((BucketWheelTileEntity)te).setMirrored(this.isMirrored());
+								((BucketWheelTileEntity)te).setMirrored(this.getIsMirrored());
 								te.markDirty();
 								((BucketWheelTileEntity)te).markContainingBlockForUpdate(null);
 								world.addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 255, 0);
@@ -306,7 +306,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	{
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(isMirrored())
+		if(getIsMirrored())
 			fw = fw.getOpposite();
 
 		if(new BlockPos(3, 2, 0).equals(posInMultiblock))
@@ -339,7 +339,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	{
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(isMirrored())
+		if(getIsMirrored())
 			fw = fw.getOpposite();
 
 		if(posInMultiblock.getX()==1&&posInMultiblock.getZ()==2)

@@ -88,7 +88,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
 		Direction facing = tile.getFacing();
-		if(tile.isMirrored())
+		if(tile.getIsMirrored())
 		{
 			GlStateManager.scalef(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
 			GlStateManager.disableCull();
@@ -117,7 +117,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();
 		GlStateManager.enableCull();
-		if(tile.isMirrored())
+		if(tile.getIsMirrored())
 		{
 			GlStateManager.enableCull();
 		}

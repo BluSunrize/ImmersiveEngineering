@@ -61,6 +61,21 @@ public class Models extends ModelGenerator
 	final GeneratedModelFile aluFenceSide = ModelHelper.createFenceSide(rl("block/metal/storage_aluminum"),
 			rl("block/alu_fence_side"));
 
+	final GeneratedModelFile blastFurnaceOff = ModelHelper.createThreeCubed(rl("block/multiblocks/blast_furnace_off"),
+			rl("block/multiblocks/blast_furnace"), rl("block/multiblocks/blast_furnace_off"));
+	final GeneratedModelFile blastFurnaceOn = ModelHelper.createThreeCubed(rl("block/multiblocks/blast_furnace_on"),
+			rl("block/multiblocks/blast_furnace"), rl("block/multiblocks/blast_furnace_on"));
+	final GeneratedModelFile cokeOvenOff = ModelHelper.createThreeCubed(rl("block/multiblocks/coke_oven_off"),
+			rl("block/multiblocks/coke_oven"), rl("block/multiblocks/coke_oven_off"));
+	final GeneratedModelFile cokeOvenOn = ModelHelper.createThreeCubed(rl("block/multiblocks/coke_oven_on"),
+			rl("block/multiblocks/coke_oven"), rl("block/multiblocks/coke_oven_on"));
+	final GeneratedModelFile alloySmelterOff = ModelHelper.createTwoCubed(rl("block/multiblocks/alloy_smelter_off"),
+			rl("block/multiblocks/alloy_smelter_bottom"), rl("block/multiblocks/alloy_smelter_top"),
+			rl("block/multiblocks/alloy_smelter_side"), rl("block/multiblocks/alloy_smelter_off"));
+	final GeneratedModelFile alloySmelterOn = ModelHelper.createTwoCubed(rl("block/multiblocks/alloy_smelter_on"),
+			rl("block/multiblocks/alloy_smelter_bottom"), rl("block/multiblocks/alloy_smelter_top"),
+			rl("block/multiblocks/alloy_smelter_side"), rl("block/multiblocks/alloy_smelter_on"));
+
 	public Models(DataGenerator gen)
 	{
 		super(gen);
@@ -87,6 +102,13 @@ public class Models extends ModelGenerator
 		out.accept(steelFenceSide);
 		out.accept(aluFencePost);
 		out.accept(aluFenceSide);
+
+		out.accept(blastFurnaceOn);
+		out.accept(cokeOvenOn);
+		out.accept(alloySmelterOn);
+		out.accept(blastFurnaceOff);
+		out.accept(cokeOvenOff);
+		out.accept(alloySmelterOff);
 
 		addSimpleBlockModel(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"), out);
 		addSimpleBlockModel(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"), out);

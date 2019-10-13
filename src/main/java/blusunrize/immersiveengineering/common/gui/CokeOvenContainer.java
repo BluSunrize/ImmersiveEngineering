@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 
 public class CokeOvenContainer extends IEBaseContainer<CokeOvenTileEntity>
 {
+	public CokeOvenTileEntity.CokeOvenData data;
 	public CokeOvenContainer(int id, PlayerInventory inventoryPlayer, CokeOvenTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
@@ -38,5 +39,7 @@ public class CokeOvenContainer extends IEBaseContainer<CokeOvenTileEntity>
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 84+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 142));
+		data = tile.guiData;
+		trackIntArray(data);
 	}
 }

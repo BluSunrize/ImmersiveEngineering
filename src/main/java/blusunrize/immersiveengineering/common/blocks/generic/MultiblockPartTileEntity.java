@@ -45,7 +45,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickableTileEntity, IDirectionalTile, IBlockBounds, IGeneralMultiblock, IHammerInteraction
+		implements ITickableTileEntity, IDirectionalTile, IBlockBounds, IGeneralMultiblock, IHammerInteraction, IMirrorAble
 {
 	public boolean formed = false;
 	//Position of this block according to the BlockInfo's returned by IMultiblock#getStructure
@@ -157,25 +157,6 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	protected abstract boolean canFillTankFrom(int iTank, Direction side, FluidStack resource);
 
 	protected abstract boolean canDrainTankFrom(int iTank, Direction side);
-
-	public boolean isMirrored()
-	{
-		BlockState state = getBlockState();
-		if(state.has(IEProperties.MIRRORED))
-			return state.get(IEProperties.MIRRORED);
-		else
-			return false;
-	}
-
-	public void setMirrored(boolean mirrored)
-	{
-		BlockState oldState = getWorldNonnull().getBlockState(pos);
-		if(oldState.has(IEProperties.MIRRORED))
-		{
-			BlockState newState = oldState.with(IEProperties.MIRRORED, mirrored);
-			getWorldNonnull().setBlockState(pos, newState);
-		}
-	}
 
 	public static class MultiblockFluidWrapper implements IFluidHandler
 	{
@@ -346,7 +327,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		if(formed&&!world.isRemote)
 		{
 			BlockPos startPos = getOrigin();
-			multiblockInstance.disassemble(world, startPos, isMirrored(), multiblockInstance.untransformDirection(getFacing()));
+			multiblockInstance.disassemble(world, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
 			world.removeBlock(pos, false);
 		}
 	}
@@ -354,13 +335,13 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public BlockPos getOrigin()
 	{
 		return TemplateMultiblock.withSettingsAndOffset(pos, BlockPos.ZERO.subtract(posInMultiblock),
-				isMirrored(), multiblockInstance.untransformDirection(getFacing()));
+				getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
 	}
 
 	public BlockPos getBlockPosForPos(BlockPos targetPos)
 	{
 		BlockPos origin = getOrigin();
-		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, isMirrored(), multiblockInstance.untransformDirection(getFacing()));
+		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
 	}
 
 	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)

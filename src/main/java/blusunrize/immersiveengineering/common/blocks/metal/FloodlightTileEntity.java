@@ -59,7 +59,6 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	public int energyStorage = 0;
 	private int energyDraw = IEConfig.MACHINES.floodlight_energyDraw.get();
 	private int maximumStorage = IEConfig.MACHINES.floodlight_maximumStorage.get();
-	public boolean active = false;
 	public boolean redstoneControlInverted = false;
 	public Direction facing = Direction.NORTH;
 	public float rotY = 0;
@@ -86,42 +85,39 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			return;
 		if(turnCooldown > 0)
 			turnCooldown--;
-		// Needed for CC floodlight compat112, specifically the waiting function
-		// Commented out since there is no CC compat112 right now
-//		if(turnCooldown == 0)
-//			notifyAll();
-		boolean b = active;
+		boolean activeBeforeTick = getIsActive();
 		boolean enabled;
 		if(shouldUpdate)
 		{
 			lightsToBePlaced.clear();
-			updateFakeLights(true, active);
+			updateFakeLights(true, activeBeforeTick);
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 			shouldUpdate = false;
 		}
 
 		enabled = (controllingComputers > 0&&computerOn)||(world.getRedstonePowerFromNeighbors(getPos()) > 0^redstoneControlInverted);
-		if(energyStorage >= (!active?energyDraw*10: energyDraw)&&enabled&&switchCooldown <= 0)
+		if(energyStorage >= (!activeBeforeTick?energyDraw*10: energyDraw)&&enabled&&switchCooldown <= 0)
 		{
 			energyStorage -= energyDraw;
-			if(!active)
-				active = true;
+			if(!activeBeforeTick)
+				setActive(true);
 		}
-		else if(active)
+		else if(activeBeforeTick)
 		{
-			active = false;
+			setActive(false);
 			switchCooldown = timeBetweenSwitches;
 		}
 
 		switchCooldown--;
-		if(active!=b||world.getGameTime()%512==((getPos().getX()^getPos().getZ())&511))
+		boolean activeAfterTick = getIsActive();
+		if(activeAfterTick!=activeBeforeTick||world.getGameTime()%512==((getPos().getX()^getPos().getZ())&511))
 		{
 			this.markContainingBlockForUpdate(null);
-			updateFakeLights(true, active);
+			updateFakeLights(true, activeAfterTick);
 			checkLight();
 		}
-		if(!active)
+		if(!activeAfterTick)
 		{
 			if(!lightsToBePlaced.isEmpty())
 				lightsToBePlaced.clear();
@@ -274,7 +270,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	@Override
 	public double getInterdictionRangeSquared()
 	{
-		return active?1024: 0;
+		return getIsActive()?1024: 0;
 	}
 
 	@Override
@@ -301,8 +297,6 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		boolean oldActive = active;
-		active = nbt.getBoolean("active");
 		energyStorage = nbt.getInt("energy");
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
 		facing = Direction.byIndex(nbt.getInt("facing"));
@@ -322,7 +316,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			controllingComputers = nbt.getBoolean("computerControlled")?1: 0;
 			computerOn = nbt.getBoolean("computerOn");
 		}
-		if(world!=null&&oldActive!=active)
+		if(world!=null&&getIsActive())
 			checkLight();
 	}
 
@@ -330,7 +324,6 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putBoolean("active", active);
 		nbt.putInt("energyStorage", energyStorage);
 		nbt.putBoolean("redstoneControlInverted", redstoneControlInverted);
 		nbt.putInt("facing", facing.ordinal());
@@ -414,15 +407,9 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public boolean getIsActive()
-	{
-		return active;
-	}
-
-	@Override
 	public int getLightValue()
 	{
-		return active?15: 0;
+		return getIsActive()?15: 0;
 	}
 
 	@Override
@@ -563,13 +550,13 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	@Override
 	public String getCacheKey(BlockState object)
 	{
-		return getFacing()+":"+facing+":"+rotX+":"+rotY+":"+active;
+		return getFacing()+":"+facing+":"+rotX+":"+rotY;
 	}
 
 	//computer stuff
 	public boolean canComputerTurn()
 	{
-		return turnCooldown <= 0||!active;
+		return turnCooldown <= 0||!getIsActive();
 	}
 
 	public void turnX(boolean dir, boolean throwException)

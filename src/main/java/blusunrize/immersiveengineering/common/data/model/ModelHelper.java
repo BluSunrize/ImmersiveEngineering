@@ -13,9 +13,12 @@ import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedMode
 import com.google.gson.JsonObject;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Locale;
+
+import static net.minecraft.util.Direction.NORTH;
 
 public class ModelHelper
 {
@@ -147,6 +150,44 @@ public class ModelHelper
 		textures.addProperty("bottom", side.toString());
 		model.add("textures", textures);
 		return new GeneratedModelFile(fileName, model);
+	}
+
+	public static GeneratedModelFile createThreeCubed(ResourceLocation outName, ResourceLocation nonFront, ResourceLocation front)
+	{
+		assertTextureExists(nonFront);
+		assertTextureExists(front);
+		JsonObject model = new JsonObject();
+		model.addProperty("parent", ImmersiveEngineering.MODID+":block/ie_three_cubed");
+		JsonObject textures = new JsonObject();
+		textures.addProperty("top", nonFront.toString());
+		textures.addProperty("bottom", nonFront.toString());
+		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+			if(d!=NORTH)
+				textures.addProperty(d.getName(), nonFront.toString());
+			else
+				textures.addProperty(d.getName(), front.toString());
+		model.add("textures", textures);
+		return new GeneratedModelFile(outName, model);
+	}
+
+	public static GeneratedModelFile createTwoCubed(ResourceLocation out, ResourceLocation bottom, ResourceLocation top, ResourceLocation sides, ResourceLocation front)
+	{
+		assertTextureExists(bottom);
+		assertTextureExists(top);
+		assertTextureExists(sides);
+		assertTextureExists(front);
+		JsonObject model = new JsonObject();
+		model.addProperty("parent", ImmersiveEngineering.MODID+":block/ie_two_cubed");
+		JsonObject textures = new JsonObject();
+		textures.addProperty("top", top.toString());
+		textures.addProperty("bottom", bottom.toString());
+		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+			if(d!=NORTH)
+				textures.addProperty(d.getName(), sides.toString());
+			else
+				textures.addProperty(d.getName(), front.toString());
+		model.add("textures", textures);
+		return new GeneratedModelFile(out, model);
 	}
 
 	public static GeneratedModelFile createVariants(ResourceLocation fileName, Enum[] types, GeneratedModelFile... models)

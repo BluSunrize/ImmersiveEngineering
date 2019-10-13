@@ -93,6 +93,13 @@ public class BlockStates extends BlockstateGenerator
 				variantBased);
 		createMultiblock(Multiblocks.metalPress, new ExistingModelFile(rl("block/metal_multiblock/metal_press.obj")), variantBased);
 		createMultiblock(Multiblocks.blastFurnaceAdv, new ExistingModelFile(rl("block/blastfurnace_advanced.obj")), variantBased);
+
+		createMultiblock(Multiblocks.cokeOven, models.cokeOvenOff, models.cokeOvenOn, IEProperties.MULTIBLOCKSLAVE,
+				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
+		createMultiblock(Multiblocks.alloySmelter, models.alloySmelterOff, models.alloySmelterOn, IEProperties.MULTIBLOCKSLAVE,
+				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
+		createMultiblock(Multiblocks.blastFurnace, models.blastFurnaceOff, models.blastFurnaceOn, IEProperties.MULTIBLOCKSLAVE,
+				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)

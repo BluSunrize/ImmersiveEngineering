@@ -26,16 +26,13 @@ public class StoneMultiBlock extends IEMultiblockBlock
 {
 	private Supplier<TileEntityType<?>> type;
 
-	public StoneMultiBlock(String name, Supplier<TileEntityType<?>> type, boolean notNormal)
+	public StoneMultiBlock(String name, Supplier<TileEntityType<?>> type)
 	{
 		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20),
 				BlockItemIE.class, IEProperties.ACTIVE);
 		this.type = type;
-		if(notNormal)
-		{
-			setNotNormalBlock();
-			lightOpacity = 0;
-		}
+		setNotNormalBlock();
+		lightOpacity = 0;
 	}
 
 	@Nullable

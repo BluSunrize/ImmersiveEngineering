@@ -60,7 +60,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		//Outer GL Wrapping, initial translation
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(x+.5, y+.5, z+.5);
-		if(te.isMirrored())
+		if(te.getIsMirrored())
 			GlStateManager.scalef(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
 
 		//Item Displacement

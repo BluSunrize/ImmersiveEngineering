@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlastFurnaceMultiblock extends IETemplateMultiblock
+public class BlastFurnaceMultiblock extends StoneMultiblock
 {
 	public BlastFurnaceMultiblock()
 	{

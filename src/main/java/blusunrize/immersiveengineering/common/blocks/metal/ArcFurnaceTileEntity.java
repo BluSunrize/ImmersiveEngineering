@@ -251,7 +251,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				.isVecInside(posInMultiblock))
 		{
 			Direction fw = getFacing().rotateY();
-			if(isMirrored()|posInMultiblock.getZ()==3)
+			if(getIsMirrored()|posInMultiblock.getZ()==3)
 				fw = fw.getOpposite();
 			if(posInMultiblock.getZ()==2)
 				fw = null;
@@ -296,7 +296,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		).contains(posInMultiblock))
 		{
 			Direction fw = getFacing().rotateY();
-			if(isMirrored()^posInMultiblock.getZ()==3)
+			if(getIsMirrored()^posInMultiblock.getZ()==3)
 				fw = fw.getOpposite();
 			return new float[]{fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1};
 		}
@@ -310,7 +310,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		//	return null;
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(isMirrored())
+		if(getIsMirrored())
 			fw = fw.getOpposite();
 		if(BlockPos.ZERO.equals(posInMultiblock))
 		{

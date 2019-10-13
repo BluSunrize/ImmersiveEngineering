@@ -189,7 +189,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	{
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(isMirrored())
+		if(getIsMirrored())
 			fw = fw.getOpposite();
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ()%4==0)
 		{

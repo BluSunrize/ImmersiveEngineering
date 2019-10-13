@@ -368,8 +368,8 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		{
 			IInteractionObjectIE interaction = (IInteractionObjectIE)tile;
 			IInteractionObjectIE master = interaction.getGuiMaster();
-			if(!world.isRemote&&master!=null)
-				NetworkHooks.openGui((ServerPlayerEntity)player, master, pos);//TODO pos or masterpos?
+			if(!world.isRemote&&master instanceof TileEntity)
+				NetworkHooks.openGui((ServerPlayerEntity)player, master, ((TileEntity)master).getPos());
 			return true;
 		}
 		return false;

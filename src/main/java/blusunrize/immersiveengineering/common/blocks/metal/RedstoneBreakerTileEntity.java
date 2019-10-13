@@ -33,10 +33,10 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	@Override
 	public void tick()
 	{
-		//TODO use block updates to detect RS changes?
-		if(!world.isRemote&&(world.getRedstonePowerFromNeighbors(getPos()) > 0)==active)
+		final boolean activeOld = getIsActive();
+		if(!world.isRemote&&(world.getRedstonePowerFromNeighbors(getPos()) > 0)==activeOld)
 		{
-			active = !active;
+			setActive(!activeOld);
 			updateConductivity();
 		}
 	}
@@ -49,7 +49,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 
 	protected boolean allowEnergyToPass()
 	{
-		return active^inverted;
+		return getIsActive()^inverted;
 	}
 
 	@Override

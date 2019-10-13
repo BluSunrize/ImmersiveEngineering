@@ -140,7 +140,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 				}
 			}
 
-			Direction fw = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+			Direction fw = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 			if(this.tanks[0].getFluidAmount() > 0)
 			{
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[0].getFluid(), Math.min(this.tanks[0].getFluidAmount(), 80), false);
@@ -204,7 +204,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 
 	private DirectionalBlockPos getOutputPos()
 	{
-		Direction fw = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+		Direction fw = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		return new DirectionalBlockPos(pos.offset(fw), fw.getOpposite());
 	}
 
@@ -227,7 +227,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	{
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(isMirrored())
+		if(getIsMirrored())
 			fw = fw.getOpposite();
 		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
@@ -447,7 +447,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		SqueezerTileEntity master = master();
-		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY())))
+		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY())))
 			return master.tanks;
 		return new FluidTank[0];
 	}

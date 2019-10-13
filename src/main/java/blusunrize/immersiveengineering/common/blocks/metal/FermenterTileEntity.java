@@ -77,7 +77,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this,
 			() -> {
-				Direction fw = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+				Direction fw = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 				return new DirectionalBlockPos(this.getPos().offset(fw), fw.getOpposite());
 			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
@@ -125,7 +125,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 				}
 			}
 
-			Direction fw = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+			Direction fw = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 			if(this.tanks[0].getFluidAmount() > 0)
 			{
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[0].getFluid(), Math.min(this.tanks[0].getFluidAmount(), 80), false);
@@ -202,7 +202,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	{
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(isMirrored())
+		if(getIsMirrored())
 			fw = fw.getOpposite();
 		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
@@ -400,7 +400,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		FermenterTileEntity master = this.master();
-		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY())))
+		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY())))
 			return master.tanks;
 		return new FluidTank[0];
 	}

@@ -38,7 +38,7 @@ import java.util.List;
  * @author BluSunrize - 01.10.2016
  */
 public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IHammerInteraction,
-		IAdvancedCollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IDualState, IColouredTile, ITileDrop
+		IAdvancedCollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IColouredTile, ITileDrop
 {
 	public static TileEntityType<StripCurtainTileEntity> TYPE;
 
@@ -184,12 +184,6 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	{
 		if(side==Direction.DOWN)
 			setCeilingAttached(true);
-	}
-
-	@Override
-	public boolean getIsSecondState()
-	{
-		return isCeilingAttached();
 	}
 
 	@Override

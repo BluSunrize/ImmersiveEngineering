@@ -278,10 +278,10 @@ public class IEContent
 		StoneDecoration.concreteStairs[1] = new IEStairsBlock("stairs_concrete_tile", StoneDecoration.concreteTile.getDefaultState(), stoneDecoProps);
 		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stairs_concrete_leaded", StoneDecoration.concreteLeaded.getDefaultState(), stoneDecoLeadedProps);
 
-		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE, false);
-		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE, false);
-		Multiblocks.alloySmelter = new StoneMultiBlock("alloy_smelter", () -> AlloySmelterTileEntity.TYPE, false);
-		Multiblocks.blastFurnaceAdv = new StoneMultiBlock("advanced_blast_furnace", () -> BlastFurnaceAdvancedTileEntity.TYPE, true);
+		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
+		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
+		Multiblocks.alloySmelter = new StoneMultiBlock("alloy_smelter", () -> AlloySmelterTileEntity.TYPE);
+		Multiblocks.blastFurnaceAdv = new StoneMultiBlock("advanced_blast_furnace", () -> BlastFurnaceAdvancedTileEntity.TYPE);
 
 		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5);
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())

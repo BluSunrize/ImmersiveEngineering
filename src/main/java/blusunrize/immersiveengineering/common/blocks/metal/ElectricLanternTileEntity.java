@@ -38,7 +38,6 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	public int energyStorage = 0;
 	private int energyDraw = IEConfig.MACHINES.lantern_energyDraw.get();
 	private int maximumStorage = IEConfig.MACHINES.lantern_maximumStorage.get();
-	public boolean active = false;
 	private boolean interdictionList = false;
 	private boolean flipped = false;
 
@@ -61,28 +60,26 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 			}
 			interdictionList = true;
 		}
-		boolean b = active;
+		boolean activeBeforeTick = getIsActive();
 		if(energyStorage >= energyDraw)
 		{
 			energyStorage -= energyDraw;
-			if(!active)
-				active = true;
+			if(!activeBeforeTick)
+				setActive(true);
 		}
-		else if(active)
-			active = false;
+		else if(activeBeforeTick)
+			setActive(false);
 
-		if(active!=b)
+		if(getIsActive()!=activeBeforeTick)
 		{
-			this.markContainingBlockForUpdate(null);
 			checkLight();
-			world.addBlockEvent(getPos(), getBlockState().getBlock(), 1, 0);
 		}
 	}
 
 	@Override
 	public double getInterdictionRangeSquared()
 	{
-		return active?1024: 0;
+		return getIsActive()?1024: 0;
 	}
 
 	@Override
@@ -109,7 +106,6 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		active = nbt.getBoolean("active");
 		energyStorage = nbt.getInt("energyStorage");
 		flipped = nbt.getBoolean("flipped");
 	}
@@ -118,7 +114,6 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putBoolean("active", active);
 		nbt.putInt("energyStorage", energyStorage);
 		nbt.putBoolean("flipped", flipped);
 	}
@@ -159,15 +154,9 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean getIsActive()
-	{
-		return active;
-	}
-
-	@Override
 	public int getLightValue()
 	{
-		return active?15: 0;
+		return getIsActive()?15: 0;
 	}
 
 
@@ -211,7 +200,6 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	{
 		flipped = !flipped;
 		markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), getBlockState().getBlock(), active?1: 0, 0);
 		return true;
 	}
 

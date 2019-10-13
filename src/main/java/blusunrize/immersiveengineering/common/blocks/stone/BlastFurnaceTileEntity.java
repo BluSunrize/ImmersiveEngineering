@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMulti
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -26,6 +27,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -40,7 +42,6 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;
-	public boolean active = false;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
 	private BlastFurnaceState state = new BlastFurnaceState();
@@ -53,12 +54,6 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	protected BlastFurnaceTileEntity(IETemplateMultiblock mb, TileEntityType<? extends BlastFurnaceTileEntity> type)
 	{
 		super(mb, type, false);
-	}
-
-	@Override
-	public boolean getIsActive()
-	{
-		return this.active;
 	}
 
 	@Override
@@ -85,7 +80,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 		ApiUtils.checkForNeedlessTicking(this);
 		if(!world.isRemote&&formed&&!isDummy())
 		{
-			boolean a = active;
+			boolean activeBeforeTick = getIsActive();
 
 			if(burnTime > 0)
 			{
@@ -107,14 +102,14 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 						{
 							processMax = 0;
 							process = 0;
-							active = false;
+							setActive(false);
 						}
 						else
 						{
 							process -= processSpeed;
 							processSpeed = 0;//Process speed is "used up"
-							if(!active)
-								active = true;
+							if(!activeBeforeTick)
+								setActive(true);
 						}
 					}
 					markContainingBlockForUpdate(null);
@@ -148,14 +143,14 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 					{
 						this.process = recipe.time-processSpeed;
 						this.processMax = recipe.time;
-						this.active = true;
+						setActive(true);
 					}
 				}
 			}
 			else
 			{
-				if(active)
-					active = false;
+				if(activeBeforeTick)
+					setActive(false);
 			}
 
 			if(burnTime <= 0&&getRecipe()!=null)
@@ -169,20 +164,19 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 				}
 			}
 
-			if(a!=active)
+			final boolean activeAfterTick = getIsActive();
+			if(activeBeforeTick!=activeAfterTick)
 			{
 
 				this.markDirty();
-				TileEntity tileEntity;
-				for(int yy = -1; yy <= 1; yy++)
-					for(int xx = -1; xx <= 1; xx++)
-						for(int zz = -1; zz <= 1; zz++)
+				for(int x = 0; x < 3; ++x)
+					for(int y = 0; y < 3; ++y)
+						for(int z = 0; z < 3; ++z)
 						{
-							tileEntity = Utils.getExistingTileEntity(world, getPos().add(xx, yy, zz));
-							if(tileEntity!=null)
-								tileEntity.markDirty();
-							markBlockForUpdate(getPos().add(xx, yy, zz), null);
-							world.addBlockEvent(getPos().add(xx, yy, zz), getBlockState().getBlock(), 1, active?1: 0);
+							BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
+							TileEntity te = Utils.getExistingTileEntity(world, actualPos);
+							if(te instanceof BlastFurnaceTileEntity)
+								((BlastFurnaceTileEntity)te).setActive(activeAfterTick);
 						}
 			}
 		}
@@ -233,8 +227,6 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	{
 		if(id==0)
 			this.formed = arg==1;
-		else if(id==1)
-			this.active = arg==1;
 		markDirty();
 		markContainingBlockForUpdate(null);
 		return true;
@@ -244,14 +236,13 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		active = nbt.getBoolean("active");
 		if(!descPacket)
 		{
 			process = nbt.getInt("process");
 			processMax = nbt.getInt("processMax");
 			burnTime = nbt.getInt("burnTime");
 			lastBurnTime = nbt.getInt("lastBurnTime");
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 4);
+			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
 	}
 
@@ -259,14 +250,13 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putBoolean("active", active);
 		if(!descPacket)
 		{
 			nbt.putInt("process", process);
 			nbt.putInt("processMax", processMax);
 			nbt.putInt("burnTime", burnTime);
 			nbt.putInt("lastBurnTime", lastBurnTime);
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			ItemStackHelper.saveAllItems(nbt, inventory);
 		}
 	}
 

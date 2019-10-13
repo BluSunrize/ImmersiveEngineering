@@ -41,7 +41,6 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 		}
 	}
 
-
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{

@@ -94,7 +94,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	}
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {
-		Direction outDir = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(0, 1, 2)).offset(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
@@ -139,7 +139,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			return new float[]{.0625f, 0, .0625f, .9375f, 1, .9375f};
 		if(new BlockPos(1, 1, 1).equals(posInMultiblock))
 		{
-			Direction f = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+			Direction f = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 			float xMin = f==Direction.EAST?-.0625f: f==Direction.WEST?.25f: getFacing()==Direction.WEST?.125f: getFacing()==Direction.EAST?.25f: 0;
 			float zMin = getFacing()==Direction.NORTH?.125f: getFacing()==Direction.SOUTH?.25f: f==Direction.SOUTH?-.0625f: f==Direction.NORTH?.25f: 0;
 			float xMax = f==Direction.EAST?.75f: f==Direction.WEST?1.0625f: getFacing()==Direction.WEST?.75f: getFacing()==Direction.EAST?.875f: 1;
@@ -196,7 +196,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		{
 			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof ConveyorBeltTileEntity)
-				((ConveyorBeltTileEntity)tile).setFacing(this.isMirrored()?this.getFacing().rotateYCCW(): this.getFacing().rotateY());
+				((ConveyorBeltTileEntity)tile).setFacing(this.getIsMirrored()?this.getFacing().rotateYCCW(): this.getFacing().rotateY());
 		}
 	}
 
@@ -254,7 +254,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		output = Utils.insertStackIntoInventory(outputCap, output, false);
 		if(!output.isEmpty())
 		{
-			Direction outDir = isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+			Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 			BlockPos pos = getPos().offset(outDir, 2);
 			Utils.dropStackAtPos(world, pos, output, outDir);
 		}
@@ -355,7 +355,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			BottlingMachineTileEntity master = master();
 			if(master==null)
 				return null;
-			if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&facing==(isMirrored()?this.getFacing().rotateY(): this.getFacing().rotateYCCW()))
+			if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().rotateY(): this.getFacing().rotateYCCW()))
 				return master.insertionHandler.cast();
 			return LazyOptional.empty();
 		}
@@ -395,7 +395,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	public Direction[] sigOutputDirections()
 	{
 		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
-			return new Direction[]{isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()};
+			return new Direction[]{getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()};
 		return new Direction[0];
 	}
 

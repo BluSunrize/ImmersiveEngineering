@@ -10,10 +10,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -39,7 +41,7 @@ import java.util.Set;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.MV_CATEGORY;
 
 public class TransformerTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, IMirrorAble,
-		IHasDummyBlocks, IAdvancedSelectionBounds, IDualState
+		IHasDummyBlocks, IAdvancedSelectionBounds
 {
 	public static TileEntityType<TransformerTileEntity> TYPE;
 	private static final int RIGHT_INDEX = 0;
@@ -262,17 +264,6 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
-	{
-		if(inf==IMirrorAble.class)
-			return IEProperties.MIRRORED;
-		else if(inf==IDualState.class)
-			return IEProperties.IS_SECOND_STATE;
-		else
-			return null;
-	}
-
-	@Override
 	public boolean getIsMirrored()
 	{
 		if(onPost)
@@ -290,6 +281,12 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 			return (rightType!=null&&higher.equals(rightType.getCategory()))||
 					(leftType!=null&&!higher.equals(leftType.getCategory()));
 		}
+	}
+
+	@Override
+	public void setMirrored(boolean mirrored)
+	{
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -411,12 +408,6 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 		if(onPost)
 			return super.getIgnored(other);
 		return ImmutableSet.of(pos.up(2));
-	}
-
-	@Override
-	public boolean getIsSecondState()
-	{
-		return onPost;
 	}
 
 	protected float getLowerOffset()

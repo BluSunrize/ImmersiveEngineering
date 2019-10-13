@@ -115,7 +115,6 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		return state.getBlock()==trigger.getBlock();
 	}
 
-	private static final List<Mirror> MIRROR_STATES = ImmutableList.of(Mirror.NONE, Mirror.FRONT_BACK);
 
 	@Override
 	public final boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
@@ -126,8 +125,13 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		if(rot==null)
 			return false;
 		Template template = getTemplate();
+		List<Mirror> mirrorStates;
+		if(canBeMirrored())
+			mirrorStates = ImmutableList.of(Mirror.NONE, Mirror.FRONT_BACK);
+		else
+			mirrorStates = ImmutableList.of(Mirror.NONE);
 		mirrorLoop:
-		for(Mirror mirror : MIRROR_STATES)
+		for(Mirror mirror : mirrorStates)
 		{
 			PlacementSettings placeSet = new PlacementSettings().setMirror(mirror).setRotation(rot);
 			BlockPos origin = pos.subtract(Template.transformedBlockPos(placeSet, triggerFromOrigin));
@@ -254,5 +258,10 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	public BlockPos getTriggerOffset()
 	{
 		return triggerFromOrigin;
+	}
+
+	public boolean canBeMirrored()
+	{
+		return true;
 	}
 }

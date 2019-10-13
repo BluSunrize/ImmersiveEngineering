@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -62,12 +61,6 @@ public class IEBlockInterfaces
 		default void setValue(String name, int value)
 		{
 		}
-	}
-
-	public interface IUsesBooleanProperty
-	{
-		@Nullable
-		PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf);
 	}
 
 	public interface IBlockOverlayText
@@ -301,48 +294,47 @@ public class IEBlockInterfaces
 		void onTilePlaced(World world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack);
 	}
 
-	public interface IActiveState extends IUsesBooleanProperty
+	public interface IActiveState extends BlockstateProvider
 	{
-		boolean getIsActive();
-
-		@Nullable
-		@Override
-		default PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
+		default boolean getIsActive()
 		{
-			if(inf==IActiveState.class)
-				return IEProperties.ACTIVE;
+			BlockState state = getState();
+			if(state.has(IEProperties.ACTIVE))
+				return state.get(IEProperties.ACTIVE);
 			else
-				return null;
+				return false;
+		}
+
+		default void setActive(boolean active)
+		{
+			BlockState state = getState();
+			if(state.has(IEProperties.ACTIVE))
+			{
+				BlockState newState = state.with(IEProperties.ACTIVE, active);
+				setState(newState);
+			}
 		}
 	}
 
-	public interface IDualState extends IUsesBooleanProperty
+	public interface IMirrorAble extends BlockstateProvider
 	{
-		boolean getIsSecondState();
-
-		@Nullable
-		@Override
-		default PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
+		default boolean getIsMirrored()
 		{
-			if(inf==IActiveState.class)
-				return IEProperties.IS_SECOND_STATE;
+			BlockState state = getState();
+			if(state.has(IEProperties.MIRRORED))
+				return state.get(IEProperties.MIRRORED);
 			else
-				return null;
+				return false;
 		}
-	}
 
-	public interface IMirrorAble extends IUsesBooleanProperty
-	{
-		boolean getIsMirrored();
-
-		@Nullable
-		@Override
-		default PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
+		default void setMirrored(boolean mirrored)
 		{
-			if(inf==IActiveState.class)
-				return IEProperties.MIRRORED;
-			else
-				return null;
+			BlockState state = getState();
+			if(state.has(IEProperties.MIRRORED))
+			{
+				BlockState newState = state.with(IEProperties.MIRRORED, mirrored);
+				setState(newState);
+			}
 		}
 	}
 
