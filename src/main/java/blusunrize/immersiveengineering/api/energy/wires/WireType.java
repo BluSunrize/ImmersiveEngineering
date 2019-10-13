@@ -130,7 +130,7 @@ public abstract class WireType implements ILocalHandlerProvider
 		);
 	}
 
-	public static void init()
+	public static void registerWires()
 	{
 		COPPER = new IEBASE(0);
 		ELECTRUM = new IEBASE(1);
@@ -140,6 +140,10 @@ public abstract class WireType implements ILocalHandlerProvider
 		REDSTONE = new IEBASE(5);
 		COPPER_INSULATED = new IEBASE(6);
 		ELECTRUM_INSULATED = new IEBASE(7);
+	}
+
+	public static void init()
+	{
 		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
 				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
 				.5, Connectors.getEnergyConnector(LV_CATEGORY, false).getDefaultState(),

@@ -15,7 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 
 import java.util.EnumMap;
-import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class IEItems
@@ -110,7 +110,7 @@ public final class IEItems
 	//TODO move all of these somewhere else
 	public static final class Misc
 	{
-		public static Map<WireType, Item> wireCoils = new IdentityHashMap<>();
+		public static Map<WireType, Item> wireCoils = new LinkedHashMap<>();
 		public static Map<ToolUpgrade, Item> toolUpgrades = new EnumMap<>(ToolUpgrade.class);
 
 		public static Item hempSeeds;

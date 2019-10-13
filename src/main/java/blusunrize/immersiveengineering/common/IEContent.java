@@ -142,6 +142,8 @@ public class IEContent
 
 	public static void modConstruction()
 	{
+		/*WIRES*/
+		WireType.registerWires();
 		/*CONVEYORS*/
 		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
 			CompoundNBT data = entity.getPersistentData();
@@ -454,6 +456,8 @@ public class IEContent
 		IEItems.Ingredients.circuitBoard = new IEBaseItem("circuit_board");
 		IEItems.Ingredients.emptyCasing = new IEBaseItem("empty_casing");
 		IEItems.Ingredients.emptyShell = new IEBaseItem("empty_shell");
+		for(WireType t : WireType.getIEWireTypes())
+			IEItems.Misc.wireCoils.put(t, new WireCoilItem(t));
 		Item.Properties moldProperties = new Item.Properties().maxStackSize(1);
 		Molds.moldPlate = new IEBaseItem("mold_plate", moldProperties);
 		Molds.moldGear = new IEBaseItem("mold_gear", moldProperties);
@@ -744,8 +748,6 @@ public class IEContent
 	public static void preInit()
 	{
 		WireType.init();
-		for(WireType t : WireType.getIEWireTypes())
-			IEItems.Misc.wireCoils.put(t, new WireCoilItem(t));
 
 		/*BULLETS*/
 		BulletItem.initBullets();

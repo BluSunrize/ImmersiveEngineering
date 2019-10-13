@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
@@ -20,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
@@ -155,6 +157,16 @@ class Recipes extends RecipeProvider
 		ShapedRecipeBuilder.shapedRecipe(Tools.steelShovel).patternLine("i").patternLine("s").patternLine("s").key('s', IETags.treatedStick).key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 		ShapedRecipeBuilder.shapedRecipe(Tools.steelSword).patternLine("i").patternLine("i").patternLine("s").key('s', IETags.treatedStick).key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.COPPER),4).patternLine(" w ").patternLine("wsw").patternLine(" w ").key('w', IETags.copperWire).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_copper_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.ELECTRUM),4).patternLine(" w ").patternLine("wsw").patternLine(" w ").key('w', IETags.electrumWire).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_electrum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STEEL),4).patternLine(" w ").patternLine("asa").patternLine(" w ").key('w', IETags.steelWire).key('a', IETags.aluminumWire).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STEEL),4).patternLine(" a ").patternLine("wsw").patternLine(" a ").key('w', IETags.steelWire).key('a', IETags.aluminumWire).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out, toRL("wirecoil_steel2"));
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STRUCTURE_ROPE),4).patternLine(" w ").patternLine("wsw").patternLine(" w ").key('w', Ingredients.hempFiber).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_hemp_fiber", this.hasItem(Ingredients.hempFiber)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STRUCTURE_STEEL),4).patternLine(" w ").patternLine("wsw").patternLine(" w ").key('w', Ingredients.wireSteel).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+		addCornerStraightMiddle(Misc.wireCoils.get(WireType.COPPER_INSULATED), 4, IETags.fabricHemp, Misc.wireCoils.get(WireType.COPPER), IETags.fabricHemp, out);
+		addCornerStraightMiddle(Misc.wireCoils.get(WireType.ELECTRUM_INSULATED), 4, IETags.fabricHemp, Misc.wireCoils.get(WireType.ELECTRUM), IETags.fabricHemp, out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.REDSTONE),4).patternLine(" w ").patternLine("asa").patternLine(" w ").key('w', IETags.aluminumWire).key('a', Tags.Items.DUSTS_REDSTONE).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.REDSTONE),4).patternLine(" a ").patternLine("wsw").patternLine(" a ").key('w', IETags.aluminumWire).key('a', Tags.Items.DUSTS_REDSTONE).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out, toRL("wirecoil_redstone2"));
 
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
