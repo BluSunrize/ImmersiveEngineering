@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairs
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
@@ -162,12 +163,11 @@ public class Models extends ModelGenerator
 				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.electronTube, Ingredients.circuitBoard);
 
 		addItemModels("tool_", out, Tools.hammer, Tools.wirecutter, Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelSword);
-		addItemModels("wirecoil_", out, Misc.wireCoils.values().toArray(new Item[Misc.wireCoils.size()]));
+		addItemModels("wirecoil_", out, Misc.wireCoils.values().toArray(new Item[0]));
 //		NYI:
 //		addItemModels("toolupgrade_", out, Misc.toolUpgrades.values().toArray(new Item[Misc.toolUpgrades.size()]));
-//		addItemModels("mold_", out, Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
+		addItemModels("", out, Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
 		addItemModels("bullet_", out, Ingredients.emptyCasing, Ingredients.emptyShell);
-
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
