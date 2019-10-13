@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "csc",
+    "sms",
+    "csc"
+  ],
+  "key": {
+    "c": {
+      "tag": "forge:fabric_hemp"
+    },
+    "s": {
+      "item": "immersiveengineering:wirecoil_copper"
+    },
+    "m": {
+      "tag": "forge:fabric_hemp"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:wirecoil_copper_ins",
+    "count": 4
+  }
+}
