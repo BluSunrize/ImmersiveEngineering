@@ -1,0 +1,11 @@
+{
+  "parent": "immersiveengineering:block/ie_three_cubed",
+  "textures": {
+    "top": "immersiveengineering:block/multiblocks/coke_oven",
+    "bottom": "immersiveengineering:block/multiblocks/coke_oven",
+    "south": "immersiveengineering:block/multiblocks/coke_oven",
+    "west": "immersiveengineering:block/multiblocks/coke_oven",
+    "north": "immersiveengineering:block/multiblocks/coke_oven_off",
+    "east": "immersiveengineering:block/multiblocks/coke_oven"
+  }
+}
