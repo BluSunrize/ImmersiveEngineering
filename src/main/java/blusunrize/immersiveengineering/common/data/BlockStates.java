@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.data.blockstate.VariantBlockstate.
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
@@ -34,6 +35,7 @@ import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.Direction;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -89,8 +91,8 @@ public class BlockStates extends BlockstateGenerator
 		createMultiblock(Multiblocks.crusher, new ExistingModelFile(rl("block/metal_multiblock/crusher_mirrored.obj")),
 				new ExistingModelFile(rl("block/metal_multiblock/crusher.obj")),
 				variantBased);
-		ExistingModelFile metalPressModel = new ExistingModelFile(rl("block/metal_multiblock/metal_press.obj"));
-		createMultiblock(Multiblocks.metalPress, metalPressModel, metalPressModel, variantBased);
+		createMultiblock(Multiblocks.metalPress, new ExistingModelFile(rl("block/metal_multiblock/metal_press.obj")), variantBased);
+		createMultiblock(Multiblocks.blastFurnaceAdv, new ExistingModelFile(rl("block/blastfurnace_advanced.obj")), variantBased);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -169,25 +171,42 @@ public class BlockStates extends BlockstateGenerator
 	{
 		createMultiblock(b, masterModel, mirroredModel, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED, rotationOffset, out);
 	}
+
 	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel,
 								  BiConsumer<Block, IVariantModelGenerator> out)
 	{
 		createMultiblock(b, masterModel, mirroredModel, 180, out);
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel, IProperty<Boolean> isSlave,
-								  EnumProperty<Direction> facing, IProperty<Boolean> mirroredState, int rotationOffset,
+	private void createMultiblock(Block b, ModelFile masterModel, BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		createMultiblock(b, masterModel, null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180, out);
+	}
+
+	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, IProperty<Boolean> isSlave,
+								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset,
 								  BiConsumer<Block, IVariantModelGenerator> out)
 	{
+		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
 		Builder builder = new Builder(b);
 		ModelFile empty = new ExistingModelFile(rl("block/ie_empty"));
 		builder.setForAllWithState(ImmutableMap.of(isSlave, true), new ConfiguredModel(empty));
-		for(boolean mirrored : new boolean[]{false, true})
+		boolean[] possibleMirrorStates;
+		if(mirroredState!=null)
+			possibleMirrorStates = new boolean[]{false, true};
+		else
+			possibleMirrorStates = new boolean[1];
+		for(boolean mirrored : possibleMirrorStates)
 			for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
 			{
 				int angle = getAngle(dir, rotationOffset);
 				ModelFile model = mirrored?mirroredModel: masterModel;
-				builder.setForAllWithState(ImmutableMap.of(isSlave, false, facing, dir, mirroredState, mirrored),
+				ImmutableMap.Builder<IProperty<?>, Comparable<?>> partialState = ImmutableMap.builder();
+				partialState.put(isSlave, Boolean.FALSE)
+						.put(facing, dir);
+				if(mirroredState!=null)
+					partialState.put(mirroredState, mirrored);
+				builder.setForAllWithState(partialState.build(),
 						new ConfiguredModel(model, 0, angle, true, ImmutableMap.of("flip-v", true)));
 			}
 		out.accept(b, builder.build());

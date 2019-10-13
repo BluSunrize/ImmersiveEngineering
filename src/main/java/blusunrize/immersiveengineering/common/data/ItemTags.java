@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.items.IEItems;
+import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
@@ -49,5 +50,6 @@ class ItemTags extends ItemTagsProvider
 
 		getBuilder(IETags.fiberHemp).add(IEItems.Ingredients.hempFiber);
 		getBuilder(IETags.clay).add(Items.CLAY_BALL);
+		getBuilder(IETags.coalCoke).add(Ingredients.coalCoke);
 	}
 }

@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.gui.BlastFurnaceContainer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
@@ -17,14 +16,10 @@ import net.minecraft.util.text.ITextComponent;
 
 public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 {
-	private BlastFurnaceTileEntity tile;
-
 	public BlastFurnaceScreen(BlastFurnaceContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
 		super(container, inventoryPlayer, title);
-		this.tile = container.tile;
 	}
-
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
@@ -33,14 +28,14 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/blast_furnace.png");
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		if(tile.lastBurnTime > 0)
+		if(container.state.getLastBurnTime() > 0)
 		{
-			int h = (int)(12*(tile.burnTime/(float)tile.lastBurnTime));
+			int h = (int)(12*(container.state.getBurnTime()/(float)container.state.getLastBurnTime()));
 			this.blit(guiLeft+56, guiTop+37+12-h, 179, 1+12-h, 9, h);
 		}
-		if(tile.processMax > 0)
+		if(container.state.getMaxProcess() > 0)
 		{
-			int w = (int)(22*((tile.processMax-tile.process)/(float)tile.processMax));
+			int w = (int)(22*((container.state.getMaxProcess()-container.state.getProcess())/(float)container.state.getMaxProcess()));
 			this.blit(guiLeft+76, guiTop+35, 177, 14, w, 16);
 		}
 	}

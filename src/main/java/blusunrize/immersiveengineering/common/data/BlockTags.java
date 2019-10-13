@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import net.minecraft.block.Block;
 import net.minecraft.data.BlockTagsProvider;
@@ -52,5 +53,6 @@ class BlockTags extends BlockTagsProvider
 			Block sheetmetal = IEBlocks.Metals.sheetmetal.get(metal);
 			getBuilder(tags.sheetmetal).add(sheetmetal);
 		}
+		getBuilder(IETags.coalCokeBlock).add(StoneDecoration.coke);
 	}
 }

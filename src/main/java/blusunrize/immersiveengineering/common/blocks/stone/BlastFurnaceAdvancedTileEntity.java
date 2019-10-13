@@ -40,11 +40,11 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(BlockPos.ZERO.offset(getFacing(), 2).add(0, -1, 0), getFacing().getOpposite()),
+			() -> new DirectionalBlockPos(pos.offset(getFacing(), 2).add(0, -1, 0), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 	private CapabilityReference<IItemHandler> slag = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(BlockPos.ZERO.offset(getFacing(), -2).add(0, -1, 0), getFacing().getOpposite()),
+			() -> new DirectionalBlockPos(pos.offset(getFacing(), -2).add(0, -1, 0), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 
@@ -73,10 +73,9 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	public float[] getBlockBounds()
 	{
 		if((posInMultiblock.getX()==1&&posInMultiblock.getZ()==1)
-				//TODO double-check this. The values seem strange
 				||ImmutableSet.of(
-				new BlockPos(0, 0, 1),
-				new BlockPos(0, 1, 1),
+				new BlockPos(1, 0, 0),
+				new BlockPos(1, 1, 0),
 				new BlockPos(1, 3, 1)
 		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, 1, 1};
@@ -88,7 +87,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 		float yMax = 1;
 		float zMax = 1;
 
-		if(new BlockPos(2, 0, 1).equals(posInMultiblock))
+		if(new BlockPos(1, 0, 2).equals(posInMultiblock))
 		{
 			xMin = getFacing().getAxis()==Axis.Z?.1875f: 0;
 			xMax = getFacing().getAxis()==Axis.Z?.8125f: 1;
@@ -100,31 +99,31 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 		{
 			float indent = 1;
 			if(posInMultiblock.getY()==0)
-				indent = posInMultiblock.getX()==1?.5f: .3125f;
+				indent = posInMultiblock.getZ()==1?.5f: .3125f;
 			else if(posInMultiblock.getY()==1)
 				indent = .5f;
 			else if(posInMultiblock.getY()==2)
 				indent = .375f;
 
-			if((posInMultiblock.getX()==0&&getFacing()==Direction.WEST)||
-					(posInMultiblock.getX()==2&&getFacing()==Direction.EAST)||
-					(posInMultiblock.getZ()==2&&getFacing()==Direction.SOUTH)||
-					(posInMultiblock.getZ()==0&&getFacing()==Direction.NORTH))
-				xMin = (1-indent);
-			if((posInMultiblock.getX()==0&&getFacing()==Direction.EAST)||
-					(posInMultiblock.getX()==2&&getFacing()==Direction.WEST)||
-					(posInMultiblock.getZ()==2&&getFacing()==Direction.NORTH)||
-					(posInMultiblock.getZ()==0&&getFacing()==Direction.SOUTH))
-				xMax = indent;
-			if((posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH)||
-					(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH)||
-					(posInMultiblock.getZ()==2&&getFacing()==Direction.EAST)||
-					(posInMultiblock.getZ()==0&&getFacing()==Direction.WEST))
-				zMin = (1-indent);
-			if((posInMultiblock.getX()==0&&getFacing()==Direction.NORTH)||
+			if((this.posInMultiblock.getZ()==2&&getFacing()==Direction.WEST)||
+					(posInMultiblock.getZ()==0&&getFacing()==Direction.EAST)||
 					(posInMultiblock.getX()==2&&getFacing()==Direction.SOUTH)||
-					(posInMultiblock.getZ()==2&&getFacing()==Direction.WEST)||
-					(posInMultiblock.getZ()==0&&getFacing()==Direction.EAST))
+					(posInMultiblock.getX()==0&&getFacing()==Direction.NORTH))
+				xMin = (1-indent);
+			if((this.posInMultiblock.getZ()==2&&getFacing()==Direction.EAST)||
+					(posInMultiblock.getZ()==0&&getFacing()==Direction.WEST)||
+					(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH)||
+					(posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH))
+				xMax = indent;
+			if((this.posInMultiblock.getZ()==2&&getFacing()==Direction.SOUTH)||
+					(posInMultiblock.getZ()==0&&getFacing()==Direction.NORTH)||
+					(posInMultiblock.getX()==2&&getFacing()==Direction.EAST)||
+					(posInMultiblock.getX()==0&&getFacing()==Direction.WEST))
+				zMin = (1-indent);
+			if((this.posInMultiblock.getZ()==2&&getFacing()==Direction.NORTH)||
+					(posInMultiblock.getZ()==0&&getFacing()==Direction.SOUTH)||
+					(posInMultiblock.getX()==2&&getFacing()==Direction.WEST)||
+					(posInMultiblock.getX()==0&&getFacing()==Direction.EAST))
 				zMax = indent;
 		}
 
@@ -158,10 +157,10 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	private LazyOptional<IItemHandler> slagHandler = registerConstantCap(
 			new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true})
 	);
-
-	private static final BlockPos inputOffset = new BlockPos(0, 0, 1);
-	private static final BlockPos outputOffset = new BlockPos(2, 0, 1);
-	private static final BlockPos slagOutputOffset = new BlockPos(1, 3, 1);
+	//TODO output is facing, 2
+	private static final BlockPos outputOffset = new BlockPos(1, 0, 0);
+	private static final BlockPos slagOutputOffset = new BlockPos(1, 0, 2);
+	private static final BlockPos inputOffset = new BlockPos(1, 3, 1);
 	private static final Set<BlockPos> ioOffsets = ImmutableSet.of(inputOffset, outputOffset, slagOutputOffset);
 	@Nonnull
 	@Override

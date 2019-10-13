@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -42,6 +43,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	public boolean active = false;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
+	private BlastFurnaceState state = new BlastFurnaceState();
 
 	public BlastFurnaceTileEntity()
 	{
@@ -189,6 +191,8 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	@Nullable
 	public BlastFurnaceRecipe getRecipe()
 	{
+		if(inventory.get(0).isEmpty())
+			return null;
 		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory.get(0));
 		if(recipe==null)
 			return null;
@@ -240,13 +244,13 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		process = nbt.getInt("process");
-		processMax = nbt.getInt("processMax");
 		active = nbt.getBoolean("active");
-		burnTime = nbt.getInt("burnTime");
-		lastBurnTime = nbt.getInt("lastBurnTime");
 		if(!descPacket)
 		{
+			process = nbt.getInt("process");
+			processMax = nbt.getInt("processMax");
+			burnTime = nbt.getInt("burnTime");
+			lastBurnTime = nbt.getInt("lastBurnTime");
 			inventory = Utils.readInventory(nbt.getList("inventory", 10), 4);
 		}
 	}
@@ -255,13 +259,13 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("process", process);
-		nbt.putInt("processMax", processMax);
 		nbt.putBoolean("active", active);
-		nbt.putInt("burnTime", burnTime);
-		nbt.putInt("lastBurnTime", lastBurnTime);
 		if(!descPacket)
 		{
+			nbt.putInt("process", process);
+			nbt.putInt("processMax", processMax);
+			nbt.putInt("burnTime", burnTime);
+			nbt.putInt("lastBurnTime", lastBurnTime);
 			nbt.put("inventory", Utils.writeInventory(inventory));
 		}
 	}
@@ -305,5 +309,84 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return false;
+	}
+
+	public BlastFurnaceState getGuiInts()
+	{
+		return state;
+	}
+
+	public class BlastFurnaceState implements IIntArray
+	{
+		public static final int LAST_BURN_TIME = 0;
+		public static final int BURN_TIME = 1;
+		public static final int PROCESS_MAX = 2;
+		public static final int CURRENT_PROCESS = 3;
+
+		public int getLastBurnTime()
+		{
+			return get(LAST_BURN_TIME);
+		}
+
+		public int getBurnTime()
+		{
+			return get(BURN_TIME);
+		}
+
+		public int getMaxProcess()
+		{
+			return get(PROCESS_MAX);
+		}
+
+		public int getProcess()
+		{
+			return get(CURRENT_PROCESS);
+		}
+
+		@Override
+		public int get(int index)
+		{
+			switch(index)
+			{
+				case LAST_BURN_TIME:
+					return lastBurnTime;
+				case BURN_TIME:
+					return burnTime;
+				case PROCESS_MAX:
+					return processMax;
+				case CURRENT_PROCESS:
+					return process;
+				default:
+					throw new IllegalArgumentException("Unknown index "+index);
+			}
+		}
+
+		@Override
+		public void set(int index, int value)
+		{
+			switch(index)
+			{
+				case LAST_BURN_TIME:
+					lastBurnTime = value;
+					break;
+				case BURN_TIME:
+					burnTime = value;
+					break;
+				case PROCESS_MAX:
+					processMax = value;
+					break;
+				case CURRENT_PROCESS:
+					process = value;
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown index "+index);
+			}
+		}
+
+		@Override
+		public int size()
+		{
+			return 4;
+		}
 	}
 }

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedTileEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntit
 import blusunrize.immersiveengineering.common.items.MaintenanceKitItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
+import com.google.common.base.Preconditions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
@@ -58,6 +60,7 @@ public class GuiHandler
 		register(CokeOvenTileEntity.class, Lib.GUIID_CokeOven, CokeOvenScreen::new, CokeOvenContainer::new);
 		register(AlloySmelterTileEntity.class, Lib.GUIID_AlloySmelter, AlloySmelterScreen::new, AlloySmelterContainer::new);
 		register(BlastFurnaceTileEntity.class, Lib.GUIID_BlastFurnace, BlastFurnaceScreen::new, BlastFurnaceContainer::new);
+		useSameContainer(BlastFurnaceTileEntity.class, BlastFurnaceAdvancedTileEntity.class);
 		register(WoodenCrateTileEntity.class, Lib.GUIID_WoodenCrate, CrateScreen::new, CrateContainer::new);
 		register(ModWorkbenchTileEntity.class, Lib.GUIID_Workbench, ModWorkbenchScreen::new, ModWorkbenchContainer::new);
 		register(AssemblerTileEntity.class, Lib.GUIID_Assembler, AssemblerScreen::new, AssemblerContainer::new);
@@ -94,6 +97,12 @@ public class GuiHandler
 		type.setRegistryName(name);
 		TILE_CONTAINERS.put(tileClass, new TileContainer<>(type, container));
 		ScreenManager.registerFactory(type, gui);
+	}
+
+	public static <T0 extends TileEntity, T extends T0> void useSameContainer(Class<T0> existing, Class<T> toAdd)
+	{
+		Preconditions.checkArgument(TILE_CONTAINERS.containsKey(existing));
+		TILE_CONTAINERS.put(toAdd, TILE_CONTAINERS.get(existing));
 	}
 
 	public static <C extends Container, S extends Screen & IHasContainer<C>>

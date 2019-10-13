@@ -800,11 +800,7 @@ public class ApiUtils
 		else if(input instanceof List)
 			return input;
 		else if(input instanceof ResourceLocation)
-		{
-			if(!ApiUtils.isNonemptyItemTag((ResourceLocation)input))
-				return getItemsInTag((ResourceLocation)input);
-			return null;
-		}
+			return input;
 		else
 			throw new RuntimeException("Recipe Inputs must always be ItemStack, Item, Block or ResourceLocation (tag name), "+input+" is invalid");
 	}

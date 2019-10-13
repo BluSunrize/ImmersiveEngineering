@@ -161,14 +161,20 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public boolean isMirrored()
 	{
 		BlockState state = getBlockState();
-		return state.get(IEProperties.MIRRORED);
+		if(state.has(IEProperties.MIRRORED))
+			return state.get(IEProperties.MIRRORED);
+		else
+			return false;
 	}
 
 	public void setMirrored(boolean mirrored)
 	{
 		BlockState oldState = getWorldNonnull().getBlockState(pos);
-		BlockState newState = oldState.with(IEProperties.MIRRORED, mirrored);
-		getWorldNonnull().setBlockState(pos, newState);
+		if(oldState.has(IEProperties.MIRRORED))
+		{
+			BlockState newState = oldState.with(IEProperties.MIRRORED, mirrored);
+			getWorldNonnull().setBlockState(pos, newState);
+		}
 	}
 
 	public static class MultiblockFluidWrapper implements IFluidHandler
