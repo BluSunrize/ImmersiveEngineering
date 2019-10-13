@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RotationUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -51,19 +50,13 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public class HammerItem extends IEBaseItem implements IItemDamageableIE, ITool
+public class HammerItem extends IEBaseItem implements ITool
 {
 	public static final ToolType HAMMER_TOOL = ToolType.get(ImmersiveEngineering.MODID+"_hammer");
 
 	public HammerItem()
 	{
-		super("hammer", new Properties().maxStackSize(1).setNoRepair());
-	}
-
-	@Override
-	public int getMaxDamageIE(ItemStack stack)
-	{
-		return IEConfig.TOOLS.hammerDurabiliy.get();
+		super("hammer", new Properties().defaultMaxDamage(IEConfig.TOOLS.hammerDurabiliy.get()).setNoRepair());
 	}
 
 	@Override
@@ -185,8 +178,14 @@ public class HammerItem extends IEBaseItem implements IItemDamageableIE, ITool
 	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
-		this.damageIETool(container, 1, Utils.RAND, null);
+		container.attemptDamageItem(1, Utils.RAND, null);
 		return container;
+	}
+
+	@Override
+	public boolean hasContainerItem(@Nonnull ItemStack stack)
+	{
+		return true;
 	}
 
 	@Override
@@ -255,11 +254,8 @@ public class HammerItem extends IEBaseItem implements IItemDamageableIE, ITool
 	{
 		if(state.getBlock() instanceof IEBaseBlock)
 		{
-			if(((IEBaseBlock)state.getBlock()).allowHammerHarvest(state))
-				return true;
+			return ((IEBaseBlock)state.getBlock()).allowHammerHarvest(state);
 		}
-		else if(state.getBlock().isToolEffective(state, HAMMER_TOOL))
-			return true;
-		return false;
+		else return state.getBlock().isToolEffective(state, HAMMER_TOOL);
 	}
 }

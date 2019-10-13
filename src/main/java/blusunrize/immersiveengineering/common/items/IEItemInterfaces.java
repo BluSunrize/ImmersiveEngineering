@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -76,16 +74,5 @@ public class IEItemInterfaces
 		}
 
 		int getBulletCount(ItemStack container);
-	}
-
-	public interface IItemDamageableIE
-	{
-
-		int getMaxDamageIE(ItemStack stack);
-
-		default int getItemDamageIE(ItemStack stack)
-		{
-			return ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE);
-		}
 	}
 }

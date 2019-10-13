@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
@@ -41,13 +40,13 @@ import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class WirecutterItem extends IEBaseItem implements ITool, IItemDamageableIE
+public class WirecutterItem extends IEBaseItem implements ITool
 {
 	public static final ToolType CUTTER_TOOL = ToolType.get(ImmersiveEngineering.MODID+"_cutter");
 
 	public WirecutterItem()
 	{
-		super("wirecutter", new Properties().maxStackSize(1).setNoRepair());
+		super("wirecutter", new Properties().defaultMaxDamage(IEConfig.TOOLS.cutterDurabiliy.get()).setNoRepair());
 	}
 
 	@Nonnull
@@ -55,8 +54,14 @@ public class WirecutterItem extends IEBaseItem implements ITool, IItemDamageable
 	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
-		this.damageIETool(container, 1, Utils.RAND, null);
+		container.attemptDamageItem(1, Utils.RAND, null);
 		return container;
+	}
+
+	@Override
+	public boolean hasContainerItem(@Nonnull ItemStack stack)
+	{
+		return true;
 	}
 
 	@Override
@@ -65,11 +70,11 @@ public class WirecutterItem extends IEBaseItem implements ITool, IItemDamageable
 		return true;
 	}
 
-	@Override
-	public int getMaxDamageIE(ItemStack stack)
-	{
-		return IEConfig.TOOLS.cutterDurabiliy.get();
-	}
+//	@Override
+//	public int getMaxDamageIE(ItemStack stack)
+//	{
+//		return IEConfig.TOOLS.cutterDurabiliy.get();
+//	}
 
 	@Override
 	public boolean isEnchantable(@Nonnull ItemStack stack)
@@ -100,7 +105,7 @@ public class WirecutterItem extends IEBaseItem implements ITool, IItemDamageable
 				effective = true;
 				break;
 			}
-		this.damageIETool(itemstack, effective?1: 2, player.getRNG(), player);
+		itemstack.attemptDamageItem(1, Utils.RAND, null);
 		return effective;
 	}
 
@@ -196,12 +201,9 @@ public class WirecutterItem extends IEBaseItem implements ITool, IItemDamageable
 	{
 		if(state.getBlock() instanceof IEBaseBlock)
 		{
-			if(((IEBaseBlock)state.getBlock()).allowWirecutterHarvest(state))
-				return true;
+			return ((IEBaseBlock)state.getBlock()).allowWirecutterHarvest(state);
 		}
-		else if(state.getBlock().isToolEffective(state, CUTTER_TOOL))
-			return true;
-		return false;
+		else return state.getBlock().isToolEffective(state, CUTTER_TOOL);
 	}
 
 	@Override
