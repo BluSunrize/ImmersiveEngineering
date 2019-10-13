@@ -83,6 +83,7 @@ class Recipes extends RecipeProvider
 			CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(dust), ingot, 0, 20)
 					.addCriterion("has_"+toPath(dust), hasItem(dust))
 					.build(out, toRL(toPath(ingot)+"_from_dust"));
+			ShapelessRecipeBuilder.shapelessRecipe(plate).addIngredient(IETags.getTagsFor(metal).ingot).addIngredient(Tools.hammer).addCriterion("has_"+metal.tagName()+"_ingot", this.hasItem(IETags.getTagsFor(metal).ingot)).build(out, toRL("plate_"+metal.tagName()+"_hammering"));
 			ShapedRecipeBuilder.shapedRecipe(sheetMetal, 4)
 					.key('p', plate)
 					.patternLine(" p ")
