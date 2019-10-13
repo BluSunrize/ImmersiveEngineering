@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.common.data;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
-import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraftforge.common.Tags;
 
 class ItemTags extends ItemTagsProvider
 {
@@ -48,8 +48,13 @@ class ItemTags extends ItemTagsProvider
 
 		IETags.forAllBlocktags(this::copy);
 
-		getBuilder(IETags.fiberHemp).add(IEItems.Ingredients.hempFiber);
 		getBuilder(IETags.clay).add(Items.CLAY_BALL);
+
+		getBuilder(Tags.Items.RODS_WOODEN).add(Ingredients.stickTreated);
+		getBuilder(IETags.treatedStick).add(Ingredients.stickTreated);
+		getBuilder(IETags.fiberHemp).add(Ingredients.hempFiber);
 		getBuilder(IETags.coalCoke).add(Ingredients.coalCoke);
+		getBuilder(IETags.hopGraphiteDust).add(Ingredients.dustHopGraphite);
+		getBuilder(IETags.hopGraphiteIngot).add(Ingredients.ingotHopGraphite);
 	}
 }

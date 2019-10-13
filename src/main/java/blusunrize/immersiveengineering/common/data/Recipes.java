@@ -18,7 +18,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.items.IEItems;
+import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.data.*;
@@ -112,13 +114,37 @@ class Recipes extends RecipeProvider
 		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.alloybrick, 2).patternLine("sb").patternLine("bs").key('s', Tags.Items.SANDSTONE).key('b', Tags.Items.INGOTS_BRICK).addCriterion("has_brick", hasItem(Tags.Items.INGOTS_BRICK)).build(out);
 		addCornerStraightMiddle(StoneDecoration.cokebrick, 3, IETags.clay, Tags.Items.INGOTS_BRICK, Tags.Items.SANDSTONE, out);
 		addCornerStraightMiddle(StoneDecoration.blastbrick, 3, Tags.Items.INGOTS_NETHER_BRICK, Tags.Items.INGOTS_BRICK, Items.BLAZE_POWDER, out);
-		ShapelessRecipeBuilder.shapelessRecipe(StoneDecoration.blastbrickReinforced, 1).addIngredient(StoneDecoration.blastbrick).addIngredient(IETags.getTagsFor(EnumMetals.STEEL).plate).addCriterion("has_blastbrick", hasItem(StoneDecoration.blastbrick)).build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(StoneDecoration.blastbrickReinforced).addIngredient(StoneDecoration.blastbrick).addIngredient(IETags.getTagsFor(EnumMetals.STEEL).plate).addCriterion("has_blastbrick", hasItem(StoneDecoration.blastbrick)).build(out);
 		addSandwich(StoneDecoration.hempcrete, 6, IETags.clay, IETags.fiberHemp, IETags.clay, out);
 		add3x3Conversion(StoneDecoration.coke, IEItems.Ingredients.coalCoke, out);
 
 		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concrete, 8).setGroup("ie_concrete").patternLine("scs").patternLine("gbg").patternLine("scs").key('s', Tags.Items.SAND).key('c', IETags.clay).key('g', Tags.Items.GRAVEL).key('b', Items.WATER_BUCKET).addCriterion("has_clay", hasItem(IETags.clay)).build(out, toRL("concrete"));
 		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concrete, 12).setGroup("ie_concrete").patternLine("scs").patternLine("gbg").patternLine("scs").key('s', IEItems.Ingredients.slag).key('c', IETags.clay).key('g', Tags.Items.GRAVEL).key('b', Items.WATER_BUCKET).addCriterion("has_slag", hasItem(IEItems.Ingredients.slag)).build(out, toRL("concrete"));
-		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.insulatingGlass, 2).patternLine(" g ").patternLine("idi").patternLine(" g ").key('g', Tags.Items.GLASS).key('i', Tags.Items.INGOTS_IRON).key('d', Tags.Items.DYES_GREEN).addCriterion("has_glass", hasItem(Tags.Items.GLASS)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concreteTile, 4).setGroup("ie_concrete").patternLine("cc").patternLine("cc").key('c', StoneDecoration.concrete).addCriterion("has_concrete", hasItem(StoneDecoration.concrete)).build(out);
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteTile).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_tile_from_concrete_stonecutting"));
+		ShapelessRecipeBuilder.shapelessRecipe(StoneDecoration.concreteLeaded).addIngredient(StoneDecoration.concrete).addIngredient(IETags.getTagsFor(EnumMetals.LEAD).plate).addCriterion("has_concrete", hasItem(StoneDecoration.concrete)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.insulatingGlass, 2).patternLine(" g ").patternLine("idi").patternLine(" g ").key('g', Tags.Items.GLASS).key('i', IETags.getTagsFor(EnumMetals.IRON).dust).key('d', Tags.Items.DYES_GREEN).addCriterion("has_glass", hasItem(Tags.Items.GLASS)).build(out);
+
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickTreated, 4).patternLine("w").patternLine("w").key('w', IETags.getItemTag(IETags.treatedWood)).setGroup("sticks").addCriterion("has_planks", this.hasItem(IETags.getItemTag(IETags.treatedWood))).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickIron, 4).patternLine("i").patternLine("i").key('i', IETags.getTagsFor(EnumMetals.IRON).ingot).setGroup("sticks").addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickSteel, 4).patternLine("i").patternLine("i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).setGroup("sticks").addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickAluminum, 4).patternLine("i").patternLine("i").key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot).setGroup("sticks").addCriterion("has_alu_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.hempFabric).patternLine("fff").patternLine("fsf").patternLine("fff").key('f', IETags.fiberHemp).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_hemp_fiber", this.hasItem(IETags.fiberHemp)).build(out);
+
+		ShapedRecipeBuilder.shapedRecipe(Tools.hammer).patternLine(" if").patternLine(" si").patternLine("s  ").key('s', Tags.Items.RODS_WOODEN).key('i', IETags.getTagsFor(EnumMetals.IRON).ingot).key('f', Tags.Items.STRING).addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.wirecutter).patternLine("si").patternLine(" s").key('s', Tags.Items.RODS_WOODEN).key('i', IETags.getTagsFor(EnumMetals.IRON).ingot).addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot)).build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(Tools.manual).addIngredient(Items.BOOK).addIngredient(Items.LEVER).addCriterion("has_book", hasItem(Items.BOOK)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.steelAxe).patternLine("ii").patternLine("is").patternLine(" s").key('s', IETags.treatedStick).key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.steelPick).patternLine("iii").patternLine(" s ").patternLine(" s ").key('s', IETags.treatedStick).key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.steelShovel).patternLine("i").patternLine("s").patternLine("s").key('s', IETags.treatedStick).key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.steelSword).patternLine("i").patternLine("i").patternLine("s").key('s', IETags.treatedStick).key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+
+		//NYI
+//		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+//		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[1]).patternLine("iii").patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+//		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[2]).patternLine("i i").patternLine("iii").patternLine("iii").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+//		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[3]).patternLine("iii").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+
 	}
 
 	//TODO use tags

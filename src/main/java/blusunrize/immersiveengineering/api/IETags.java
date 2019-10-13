@@ -31,11 +31,17 @@ public class IETags
 	private static final Map<Tag<Block>, Tag<Item>> toItemTag = new HashMap<>();
 	private static final Map<EnumMetals, MetalTags> metals = new HashMap<>();
 
+	//Vanilla
 	public static final Tag<Item> clay = new ItemTags.Wrapper(forgeLoc("clay"));
+	//IE Blocks
+	public static final Tag<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
+	public static final Tag<Block> coalCokeBlock = createBlockTag(IERecipes.getStorageBlock("coal_coke"));
+	//IE Items
+	public static final Tag<Item> treatedStick = new ItemTags.Wrapper(forgeLoc("rods/treated_wood"));
 	public static final Tag<Item> fiberHemp = new ItemTags.Wrapper(forgeLoc("fiber_hemp"));
 	public static final Tag<Item> coalCoke = new ItemTags.Wrapper(forgeLoc("coal_coke"));
+	public static final Tag<Item> hopGraphiteDust = new ItemTags.Wrapper(IERecipes.getDust("hop_graphite"));
 	public static final Tag<Item> hopGraphiteIngot = new ItemTags.Wrapper(IERecipes.getIngot("hop_graphite"));
-	public static final Tag<Block> coalCokeBlock = createBlockTag(IERecipes.getStorageBlock("coal_coke"));
 
 	static
 	{
