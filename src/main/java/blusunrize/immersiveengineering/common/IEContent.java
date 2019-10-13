@@ -44,7 +44,6 @@ import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
-import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackPartBullet;
@@ -172,7 +171,7 @@ public class IEContent
 
 		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);
-		GuiHandler.init();
+		ImmersiveEngineering.proxy.registerContainersAndScreens();
 		for(EnumMetals m : EnumMetals.values())
 		{
 			String name = m.tagName();
@@ -1102,6 +1101,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.MIXER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.FEEDTHROUGH);
 		*/
+		IEMultiblocks.init();
 		MultiblockHandler.registerMultiblock(IEMultiblocks.COKE_OVEN);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ALLOY_SMELTER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.BLAST_FURNACE);

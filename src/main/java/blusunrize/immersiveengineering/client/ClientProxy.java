@@ -27,7 +27,7 @@ import blusunrize.immersiveengineering.client.fx.FluidSplashParticle;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.fx.IEBubbleParticle;
 import blusunrize.immersiveengineering.client.fx.SparksParticle;
-import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.connection.*;
@@ -53,6 +53,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEnti
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
 import blusunrize.immersiveengineering.common.entities.*;
+import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -80,6 +81,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.IHasContainer;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.ScreenManager.IScreenFactory;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.Particle;
@@ -96,6 +100,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
@@ -1391,5 +1397,46 @@ public class ClientProxy extends CommonProxy
 	{
 		Minecraft.getInstance().getSoundHandler().play(new SkyhookSound(hook,
 				new ResourceLocation(MODID, "skyhook")));
+	}
+
+	@Override
+	public void openManual()
+	{
+		Minecraft.getInstance().displayGuiScreen(ManualHelper.getManual().getGui());
+	}
+
+	@Override
+	public void registerContainersAndScreens()
+	{
+		super.registerContainersAndScreens();
+		registerScreen(Lib.GUIID_CokeOven, CokeOvenScreen::new);
+		registerScreen(Lib.GUIID_AlloySmelter, AlloySmelterScreen::new);
+		registerScreen(Lib.GUIID_BlastFurnace, BlastFurnaceScreen::new);
+		registerScreen(Lib.GUIID_WoodenCrate, CrateScreen::new);
+		registerScreen(Lib.GUIID_Workbench, ModWorkbenchScreen::new);
+		registerScreen(Lib.GUIID_Assembler, AssemblerScreen::new);
+		registerScreen(Lib.GUIID_Sorter, SorterScreen::new);
+		registerScreen(Lib.GUIID_Squeezer, SqueezerScreen::new);
+		registerScreen(Lib.GUIID_Fermenter, FermenterScreen::new);
+		registerScreen(Lib.GUIID_Refinery, RefineryScreen::new);
+		registerScreen(Lib.GUIID_ArcFurnace, ArcFurnaceScreen::new);
+		registerScreen(Lib.GUIID_AutoWorkbench, AutoWorkbenchScreen::new);
+		registerScreen(Lib.GUIID_Mixer, MixerScreen::new);
+		registerScreen(Lib.GUIID_Turret, TurretScreen::new);
+		registerScreen(Lib.GUIID_FluidSorter, FluidSorterScreen::new);
+		registerScreen(Lib.GUIID_Belljar, BelljarScreen::new);
+		registerScreen(Lib.GUIID_ToolboxBlock, ToolboxBlockScreen::new);
+
+		registerScreen(Lib.GUIID_Toolbox, ToolboxScreen::new);
+		registerScreen(Lib.GUIID_Revolver, RevolverScreen::new);
+		registerScreen(Lib.GUIID_MaintenanceKit, MaintenanceKitScreen::new);
+	}
+
+
+	public <C extends Container, S extends Screen & IHasContainer<C>>
+	void registerScreen(ResourceLocation containerName, IScreenFactory<C, S> factory)
+	{
+		ContainerType<C> type = (ContainerType<C>)GuiHandler.getContainerType(containerName);
+		ScreenManager.registerFactory(type, factory);
 	}
 }

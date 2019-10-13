@@ -43,7 +43,7 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	public void renderFormedStructure()
 	{
 		if(renderStack==null)
-			renderStack = new ItemStack(Multiblocks.arcFurnace);
+			renderStack = new ItemStack(Multiblocks.metalPress);
 		GlStateManager.scaled(4, 4, 4);
 		GlStateManager.translated(.375, .375, .125f);
 		GlStateManager.rotatef(-45, 0, 1, 0);

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.multiblocks;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
@@ -19,7 +20,6 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
@@ -214,7 +214,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 			RayTraceResult rtr = new BlockRayTraceResult(Vec3d.ZERO, Direction.DOWN, BlockPos.ZERO, false);
 			for(BlockInfo info : structure)
 			{
-				ItemStack picked = Utils.getPickBlock(info.state, rtr, Minecraft.getInstance().player);
+				ItemStack picked = Utils.getPickBlock(info.state, rtr, ImmersiveEngineering.proxy.getClientPlayer());
 				boolean added = false;
 				for(IngredientStack existing : ret)
 					if(existing.matchesItemStackIgnoringSize(picked))

@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedTileEntity;
@@ -23,11 +23,6 @@ import blusunrize.immersiveengineering.common.items.MaintenanceKitItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
 import com.google.common.base.Preconditions;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.ScreenManager.IScreenFactory;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Container;
@@ -54,49 +49,47 @@ public class GuiHandler
 {
 	private static final Map<Class<? extends TileEntity>, TileContainer<?, ?>> TILE_CONTAINERS = new HashMap<>();
 	private static final Map<Class<? extends Item>, ItemContainer<?>> ITEM_CONTAINERS = new HashMap<>();
+	private static final Map<ResourceLocation, ContainerType<?>> ALL_TYPES = new HashMap<>();
 
-	public static void init()
+	public static void commonInit()
 	{
-		register(CokeOvenTileEntity.class, Lib.GUIID_CokeOven, CokeOvenScreen::new, CokeOvenContainer::new);
-		register(AlloySmelterTileEntity.class, Lib.GUIID_AlloySmelter, AlloySmelterScreen::new, AlloySmelterContainer::new);
-		register(BlastFurnaceTileEntity.class, Lib.GUIID_BlastFurnace, BlastFurnaceScreen::new, BlastFurnaceContainer::new);
+		register(CokeOvenTileEntity.class, Lib.GUIID_CokeOven, CokeOvenContainer::new);
+		register(AlloySmelterTileEntity.class, Lib.GUIID_AlloySmelter, AlloySmelterContainer::new);
+		register(BlastFurnaceTileEntity.class, Lib.GUIID_BlastFurnace, BlastFurnaceContainer::new);
 		useSameContainer(BlastFurnaceTileEntity.class, BlastFurnaceAdvancedTileEntity.class);
-		register(WoodenCrateTileEntity.class, Lib.GUIID_WoodenCrate, CrateScreen::new, CrateContainer::new);
-		register(ModWorkbenchTileEntity.class, Lib.GUIID_Workbench, ModWorkbenchScreen::new, ModWorkbenchContainer::new);
-		register(AssemblerTileEntity.class, Lib.GUIID_Assembler, AssemblerScreen::new, AssemblerContainer::new);
-		register(SorterTileEntity.class, Lib.GUIID_Sorter, SorterScreen::new, SorterContainer::new);
-		register(SqueezerTileEntity.class, Lib.GUIID_Squeezer, SqueezerScreen::new, SqueezerContainer::new);
-		register(FermenterTileEntity.class, Lib.GUIID_Fermenter, FermenterScreen::new, FermenterContainer::new);
-		register(RefineryTileEntity.class, Lib.GUIID_Refinery, RefineryScreen::new, RefineryContainer::new);
-		register(ArcFurnaceTileEntity.class, Lib.GUIID_ArcFurnace, ArcFurnaceScreen::new, ArcFurnaceContainer::new);
-		register(AutoWorkbenchTileEntity.class, Lib.GUIID_AutoWorkbench, AutoWorkbenchScreen::new, AutoWorkbenchContainer::new);
-		register(MixerTileEntity.class, Lib.GUIID_Mixer, MixerScreen::new, MixerContainer::new);
-		register(TurretTileEntity.class, Lib.GUIID_Turret, TurretScreen::new, TurretContainer::new);
-		register(FluidSorterTileEntity.class, Lib.GUIID_FluidSorter, FluidSorterScreen::new, FluidSorterContainer::new);
-		register(BelljarTileEntity.class, Lib.GUIID_Belljar, BelljarScreen::new, BelljarContainer::new);
-		register(ToolboxTileEntity.class, Lib.GUIID_ToolboxBlock, ToolboxBlockScreen::new, ToolboxBlockContainer::new);
+		register(WoodenCrateTileEntity.class, Lib.GUIID_WoodenCrate, CrateContainer::new);
+		register(ModWorkbenchTileEntity.class, Lib.GUIID_Workbench, ModWorkbenchContainer::new);
+		register(AssemblerTileEntity.class, Lib.GUIID_Assembler, AssemblerContainer::new);
+		register(SorterTileEntity.class, Lib.GUIID_Sorter, SorterContainer::new);
+		register(SqueezerTileEntity.class, Lib.GUIID_Squeezer, SqueezerContainer::new);
+		register(FermenterTileEntity.class, Lib.GUIID_Fermenter, FermenterContainer::new);
+		register(RefineryTileEntity.class, Lib.GUIID_Refinery, RefineryContainer::new);
+		register(ArcFurnaceTileEntity.class, Lib.GUIID_ArcFurnace, ArcFurnaceContainer::new);
+		register(AutoWorkbenchTileEntity.class, Lib.GUIID_AutoWorkbench, AutoWorkbenchContainer::new);
+		register(MixerTileEntity.class, Lib.GUIID_Mixer, MixerContainer::new);
+		register(TurretTileEntity.class, Lib.GUIID_Turret, TurretContainer::new);
+		register(FluidSorterTileEntity.class, Lib.GUIID_FluidSorter, FluidSorterContainer::new);
+		register(BelljarTileEntity.class, Lib.GUIID_Belljar, BelljarContainer::new);
+		register(ToolboxTileEntity.class, Lib.GUIID_ToolboxBlock, ToolboxBlockContainer::new);
 
-		register(ToolboxItem.class, Lib.GUIID_Toolbox, ToolboxScreen::new, ToolboxContainer::new);
-		register(RevolverItem.class, Lib.GUIID_Revolver, RevolverScreen::new, RevolverContainer::new);
-		//TODO Lib.GUIID_Manual
-		register(MaintenanceKitItem.class, Lib.GUIID_MaintenanceKit, MaintenanceKitScreen::new, MaintenanceKitContainer::new);
+		register(ToolboxItem.class, Lib.GUIID_Toolbox, ToolboxContainer::new);
+		register(RevolverItem.class, Lib.GUIID_Revolver, RevolverContainer::new);
+		register(MaintenanceKitItem.class, Lib.GUIID_MaintenanceKit, MaintenanceKitContainer::new);
 	}
 
-	//TODO dedicated server?
-	public static <T extends TileEntity, C extends IEBaseContainer<T>, S extends Screen & IHasContainer<C>>
+	public static <T extends TileEntity, C extends IEBaseContainer<T>>
 	void register(Class<T> tileClass, ResourceLocation name,
-				  IScreenFactory<C, S> gui,
 				  TileContainerConstructor<T, C> container)
 	{
 		ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
-			World world = Minecraft.getInstance().world;
+			World world = ImmersiveEngineering.proxy.getClientWorld();
 			BlockPos pos = data.readBlockPos();
 			TileEntity te = world.getTileEntity(pos);
 			return container.construct(windowId, inv, (T)te);
 		});
 		type.setRegistryName(name);
 		TILE_CONTAINERS.put(tileClass, new TileContainer<>(type, container));
-		ScreenManager.registerFactory(type, gui);
+		ALL_TYPES.put(name, type);
 	}
 
 	public static <T0 extends TileEntity, T extends T0> void useSameContainer(Class<T0> existing, Class<T> toAdd)
@@ -105,20 +98,20 @@ public class GuiHandler
 		TILE_CONTAINERS.put(toAdd, TILE_CONTAINERS.get(existing));
 	}
 
-	public static <C extends Container, S extends Screen & IHasContainer<C>>
-	void register(Class<? extends Item> itemClass, ResourceLocation name, IScreenFactory<C, S> gui,
+	public static <C extends Container>
+	void register(Class<? extends Item> itemClass, ResourceLocation name,
 				  ItemContainerConstructor<C> container)
 	{
 		ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
-			World world = Minecraft.getInstance().world;
+			World world = ImmersiveEngineering.proxy.getClientWorld();
 			int slotOrdinal = data.readInt();
 			EquipmentSlotType slot = EquipmentSlotType.values()[slotOrdinal];
-			ItemStack stack = Minecraft.getInstance().player.getItemStackFromSlot(slot);
+			ItemStack stack = ImmersiveEngineering.proxy.getClientPlayer().getItemStackFromSlot(slot);
 			return container.construct(windowId, inv, world, slot, stack);
 		});
 		type.setRegistryName(name);
 		ITEM_CONTAINERS.put(itemClass, new ItemContainer<>(type, container));
-		ScreenManager.registerFactory(type, gui);
+		ALL_TYPES.put(name, type);
 	}
 
 	public static <T extends TileEntity> Container createContainer(PlayerInventory inv, T te, int id)
@@ -139,6 +132,11 @@ public class GuiHandler
 	public static ContainerType<?> getContainerTypeFor(ItemStack stack)
 	{
 		return ITEM_CONTAINERS.get(stack.getItem().getClass()).type;
+	}
+
+	public static ContainerType<?> getContainerType(ResourceLocation name)
+	{
+		return ALL_TYPES.get(name);
 	}
 
 	@SubscribeEvent
@@ -177,7 +175,7 @@ public class GuiHandler
 		final ContainerType<C> type;
 		final ItemContainerConstructor<C> factory;
 
-		private ItemContainer(ContainerType<C> type, ItemContainerConstructor factory)
+		private ItemContainer(ContainerType<C> type, ItemContainerConstructor<C> factory)
 		{
 			this.type = type;
 			this.factory = factory;

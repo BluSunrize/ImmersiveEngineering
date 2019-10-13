@@ -19,6 +19,7 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
+import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -173,5 +174,15 @@ public class CommonProxy
 
 	public void startSkyhookSound(SkylineHookEntity hook)
 	{
+	}
+
+	public void openManual()
+	{
+
+	}
+
+	public void registerContainersAndScreens()
+	{
+		GuiHandler.commonInit();
 	}
 }
