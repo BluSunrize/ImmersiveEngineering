@@ -74,8 +74,8 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	{
 		if((posInMultiblock.getX()==1&&posInMultiblock.getZ()==1)
 				||ImmutableSet.of(
-				new BlockPos(1, 0, 0),
-				new BlockPos(1, 1, 0),
+				new BlockPos(1, 0, 2),
+				new BlockPos(1, 1, 2),
 				new BlockPos(1, 3, 1)
 		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, 1, 1};
@@ -87,7 +87,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 		float yMax = 1;
 		float zMax = 1;
 
-		if(new BlockPos(1, 0, 2).equals(posInMultiblock))
+		if(new BlockPos(1, 0, 0).equals(posInMultiblock))
 		{
 			xMin = getFacing().getAxis()==Axis.Z?.1875f: 0;
 			xMax = getFacing().getAxis()==Axis.Z?.8125f: 1;
@@ -107,21 +107,21 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 
 			if((this.posInMultiblock.getZ()==2&&getFacing()==Direction.WEST)||
 					(posInMultiblock.getZ()==0&&getFacing()==Direction.EAST)||
-					(posInMultiblock.getX()==2&&getFacing()==Direction.SOUTH)||
-					(posInMultiblock.getX()==0&&getFacing()==Direction.NORTH))
+					(posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH)||
+					(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH))
 				xMin = (1-indent);
 			if((this.posInMultiblock.getZ()==2&&getFacing()==Direction.EAST)||
 					(posInMultiblock.getZ()==0&&getFacing()==Direction.WEST)||
-					(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH)||
-					(posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH))
+					(posInMultiblock.getX()==0&&getFacing()==Direction.NORTH)||
+					(posInMultiblock.getX()==2&&getFacing()==Direction.SOUTH))
 				xMax = indent;
-			if((this.posInMultiblock.getZ()==2&&getFacing()==Direction.SOUTH)||
-					(posInMultiblock.getZ()==0&&getFacing()==Direction.NORTH)||
+			if((this.posInMultiblock.getZ()==0&&getFacing()==Direction.SOUTH)||
+					(posInMultiblock.getZ()==2&&getFacing()==Direction.NORTH)||
 					(posInMultiblock.getX()==2&&getFacing()==Direction.EAST)||
 					(posInMultiblock.getX()==0&&getFacing()==Direction.WEST))
 				zMin = (1-indent);
-			if((this.posInMultiblock.getZ()==2&&getFacing()==Direction.NORTH)||
-					(posInMultiblock.getZ()==0&&getFacing()==Direction.SOUTH)||
+			if((this.posInMultiblock.getZ()==0&&getFacing()==Direction.NORTH)||
+					(posInMultiblock.getZ()==2&&getFacing()==Direction.SOUTH)||
 					(posInMultiblock.getX()==2&&getFacing()==Direction.WEST)||
 					(posInMultiblock.getX()==0&&getFacing()==Direction.EAST))
 				zMax = indent;
