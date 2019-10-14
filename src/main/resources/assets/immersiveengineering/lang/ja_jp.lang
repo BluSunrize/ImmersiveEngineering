@@ -203,6 +203,10 @@ tile.immersiveengineering.conveyor.immersiveengineering:covered.name=フレー�
 tile.immersiveengineering.conveyor.immersiveengineering:verticalcovered.name=フレームつき垂直コンベア
 tile.immersiveengineering.conveyor.immersiveengineering:extract.name=搬出ベルトコンベア
 tile.immersiveengineering.conveyor.immersiveengineering:extractcovered.name=フレーム付き搬出ベルトコンベア
+tile.immersiveengineering.conveyor.immersiveengineering:chute_iron.name=板金のシュート
+tile.immersiveengineering.conveyor.immersiveengineering:chute_steel.name=板金のシュート
+tile.immersiveengineering.conveyor.immersiveengineering:chute_aluminum.name=板金のシュート
+tile.immersiveengineering.conveyor.immersiveengineering:chute_copper.name=板金のシュート
 
 tile.immersiveengineering.metal_multiblock.metal_press.name=金属プレス機
 tile.immersiveengineering.metal_multiblock.crusher.name=工業用粉砕機
@@ -433,6 +437,10 @@ item.immersiveengineering.fluorescent_tube.name=蛍光管
 item.immersiveengineering.powerpack.name=キャパシターバックパック
 item.immersiveengineering.shield.name=ヘビィプレートシールド
 item.immersiveengineering.maintenance_kit.name=メンテナンスキット
+item.immersiveengineering.steel_armor_head.name=鋼鉄のヘルメット
+item.immersiveengineering.steel_armor_chest.name=鋼鉄のチェストプレート
+item.immersiveengineering.steel_armor_legs.name=鋼鉄のレギンス
+item.immersiveengineering.steel_armor_feet.name=鋼鉄のブーツ
 
 item.immersiveengineering.map_orevein.name=鉱脈の地図
 
@@ -597,6 +605,7 @@ entity.Villager.immersiveengineering.engineer=構造技術者
 entity.Villager.immersiveengineering.machinist=機械工
 entity.Villager.immersiveengineering.electrician=電気技師
 entity.Villager.immersiveengineering.outfitter=服屋
+entity.Villager.immersiveengineering.gunsmith=鉄砲鍛冶
 
 key.immersiveengineering.magnetEquip=磁気グローブ盾-切り替え(ダブルタップ)
 key.immersiveengineering.chemthrowerSwitch=ケミカル放射器-タンク切り替え
@@ -606,6 +615,7 @@ desc.immersiveengineering.info.attachedToDim=接続元 %1$s, %2$s, %3$s ディ�
 desc.immersiveengineering.info.energyStored=RF保有量: %1$s RF
 desc.immersiveengineering.info.energyStoredEU=EU保有量: %1$s EU
 desc.immersiveengineering.info.blastFuelTime=燃焼時間: %1$s Ticks
+desc.immersiveengineering.info.seconds=%1$s秒
 desc.immersiveengineering.info.gasStored=ガス保有量: %1$s
 desc.immersiveengineering.info.colour=色: %1$s
 desc.immersiveengineering.info.day=%1$s日
@@ -702,6 +712,28 @@ desc.immersiveengineering.info.blueprint.specialBullet=弾丸_スペシャル
 desc.immersiveengineering.info.blueprint.electrode=アーク炉の電極
 
 desc.immersiveengineering.info.electrodeIntegrity=基準
+
+desc.immersiveengineering.info.revolver.perk.cooldown=連射速度: %1$s%%
+desc.immersiveengineering.info.revolver.perk.cooldown.tier-3=鈍重な%1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier-2=閊える%1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier-1=軋んだ%1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier1=追風ある%1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier2=自己反復する%1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier3=自動射撃する%1$s
+desc.immersiveengineering.info.revolver.perk.noise=銃声: %1$s%%
+desc.immersiveengineering.info.revolver.perk.noise.tier-3=殷々たる%1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier-2=喧囂たる%1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier-1=騒然たる%1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier1=囁嚅たる%1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier2=静寂たる%1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier3=黙々たる%1$s
+desc.immersiveengineering.info.revolver.perk.luck=運: %1$s%%
+desc.immersiveengineering.info.revolver.perk.luck.tier-3=災禍の%1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier-2=悪運の%1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier-1=不吉の%1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier1=吉兆の%1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier2=好運の%1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier3=慶福の%1$s
 
 desc.immersiveengineering.info.bullet.flareColour=フレアの色: %1$s
 
@@ -1369,6 +1401,8 @@ ie.manual.entry.conveyor4=垂直ベルトコンベアは壁に取り付けられ
 ie.manual.entry.conveyor5=分岐コンベアは、アイテムと物体(動物など)を左右に振り分けます。この機能を利用して、工場においてより均等な配送を実現できます。
 ie.manual.entry.conveyor6=フレーム付きコンベアの機能は通常のコンベアと同じですが、足場で覆われていることで、プレイヤーがアイテムを拾ってしまわないようになります。<br>他の種類の足場やガラスブロックを持って右クリックすることで、フレームの外観を変更できます。
 ie.manual.entry.conveyor7=同様に、フレーム付き搬出ベルトコンベアと垂直ベルトコンベアも足場で覆うことで、プレイヤーがアイテムを拾ってしまうのを防止することができます。
+ie.manual.entry.conveyor8=シュートとは、板金で作られた単純な構造物で、エンティティを直下へ落下させることができます。シュートは直下にあるインベントリへのアイテムの搬入や、コンベア及び類似するデバイスからの投入が可能です。
+ie.manual.entry.conveyor9=エンジニア・ハンマーでSneak+右クリックすると、 シュートを投入エンティティを側面に逸らせるコーナー片に変化できます。
 
 ie.manual.entry.furnaceHeater.name=外部発熱器
 ie.manual.entry.furnaceHeater.subtext=Fluxでよくやってるね?
@@ -1428,6 +1462,7 @@ ie.manual.entry.revolver1=使用できる弾薬には<link;bullets;§o§nさま�
 ie.manual.entry.revolver2=§6銃剣§rをリボルバーに装着することで、あなたはクローズ-クォーターコンバットを身に着け、鉄の剣を使用するのと同等の近接攻撃が可能になります。
 ie.manual.entry.revolver3=§6追加マガジン§rは、6発の弾丸を追加でリボルバーに装填することができます。<br><br>このマガジンへは、スピードローダーによる補充は行えません。
 ie.manual.entry.revolver4=§6増幅真空管§rは発射する弾に感電効果を付与します。<br>この衝撃はターゲットに命中する(それがどんな仕組みかは聞かないで)と発動します。<br>ターゲットは数秒間スタン状態になり、対象の使用しているすべての動力機器からわずかな放電が行われます。
+ie.manual.entry.revolver5=村を探検し、そこのエンジニアと取引するときに、たまにリボルバー拳銃用の特別な制作パーツが見つかる場合があります。これらの特別な制作パーツには固有のボーナスがあり、それらを使ってリボルバー拳銃を作成すると§o連射速度§rや§o銃声§r、§o運§rに補正がかかったものが出来上がります。
 
 ie.manual.entry.bullets.name=リボルバーの弾丸
 ie.manual.entry.bullets.subtext=
