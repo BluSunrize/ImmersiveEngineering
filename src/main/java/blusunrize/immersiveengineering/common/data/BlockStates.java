@@ -46,6 +46,7 @@ import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class BlockStates extends BlockstateGenerator
 {
+	private static final ConfiguredModel EMPTY_MODEL = new ConfiguredModel(new ExistingModelFile(rl("block/ie_empty")));
 	private final Models models;
 
 	public BlockStates(DataGenerator gen, Models models)
@@ -92,8 +93,16 @@ public class BlockStates extends BlockstateGenerator
 				new ExistingModelFile(rl("block/metal_multiblock/crusher.obj")),
 				variantBased);
 		createMultiblock(Multiblocks.metalPress, new ExistingModelFile(rl("block/metal_multiblock/metal_press.obj")), variantBased);
-		createMultiblock(Multiblocks.blastFurnaceAdv, new ExistingModelFile(rl("block/blastfurnace_advanced.obj")), variantBased);
+		{
+			IVariantModelGenerator gen = new Builder(Multiblocks.bucketWheel)
+					.setForAllWithState(ImmutableMap.of(), EMPTY_MODEL)
+					.build();
+			variantBased.accept(Multiblocks.bucketWheel, gen);
+		}
+		createMultiblock(Multiblocks.arcFurnace, new ExistingModelFile(rl("block/metal_multiblock/arc_furnace.obj")),
+				new ExistingModelFile(rl("block/metal_multiblock/arc_furnace_mirrored.obj")), variantBased);
 
+		createMultiblock(Multiblocks.blastFurnaceAdv, new ExistingModelFile(rl("block/blastfurnace_advanced.obj")), variantBased);
 		createMultiblock(Multiblocks.cokeOven, models.cokeOvenOff, models.cokeOvenOn, IEProperties.MULTIBLOCKSLAVE,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
 		createMultiblock(Multiblocks.alloySmelter, models.alloySmelterOff, models.alloySmelterOn, IEProperties.MULTIBLOCKSLAVE,
@@ -196,8 +205,7 @@ public class BlockStates extends BlockstateGenerator
 	{
 		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
 		Builder builder = new Builder(b);
-		ModelFile empty = new ExistingModelFile(rl("block/ie_empty"));
-		builder.setForAllWithState(ImmutableMap.of(isSlave, true), new ConfiguredModel(empty));
+		builder.setForAllWithState(ImmutableMap.of(isSlave, true), EMPTY_MODEL);
 		boolean[] possibleMirrorStates;
 		if(mirroredState!=null)
 			possibleMirrorStates = new boolean[]{false, true};

@@ -449,9 +449,9 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	public Set<BlockPos> getEnergyPos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(4, 1, 1),
-				new BlockPos(4, 1, 2),
-				new BlockPos(4, 1, 3)
+				new BlockPos(1, 1, 0),
+				new BlockPos(2, 1, 0),
+				new BlockPos(3, 1, 0)
 		);
 	}
 

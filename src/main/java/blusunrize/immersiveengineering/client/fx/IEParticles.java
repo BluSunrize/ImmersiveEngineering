@@ -1,0 +1,37 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
+package blusunrize.immersiveengineering.client.fx;
+
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.DataDeserializer;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+
+@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
+public class IEParticles
+{
+	public static final ParticleType<FluidSplashParticle.Data> FLUID_SPLASH = new ParticleType<>(false, new DataDeserializer());
+	public static final ParticleType<FractalParticle.Data> FRACTAL = new ParticleType<>(false, new FractalParticle.DataDeserializer());
+	public static final BasicParticleType IE_BUBBLE = new BasicParticleType(false);
+	public static final BasicParticleType SPARKS = new BasicParticleType(false);
+
+	@SubscribeEvent
+	public static void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> evt)
+	{
+		FLUID_SPLASH.setRegistryName(ImmersiveEngineering.MODID, "fluid_splash");
+		FRACTAL.setRegistryName(ImmersiveEngineering.MODID, "fractal");
+		IE_BUBBLE.setRegistryName(ImmersiveEngineering.MODID, "ie_bubble");
+		SPARKS.setRegistryName(ImmersiveEngineering.MODID, "sparks");
+		evt.getRegistry().registerAll(FLUID_SPLASH, FRACTAL, IE_BUBBLE, SPARKS);
+	}
+}

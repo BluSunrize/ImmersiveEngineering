@@ -187,6 +187,7 @@ public class Models extends ModelGenerator
 
 		addItemModels("tool_", out, Tools.hammer, Tools.wirecutter, Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelSword);
 		addItemModels("", out, Misc.wireCoils.values().toArray(new Item[Misc.wireCoils.size()]));
+		addItemModels("", out, Misc.graphiteElectrode);
 //		NYI:
 //		addItemModels("toolupgrade_", out, Misc.toolUpgrades.values().toArray(new Item[Misc.toolUpgrades.size()]));
 		addItemModels("", out, Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);

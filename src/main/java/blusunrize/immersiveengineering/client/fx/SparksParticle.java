@@ -8,17 +8,18 @@
 
 package blusunrize.immersiveengineering.client.fx;
 
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class SparksParticle extends SpriteTexturedParticle
 {
-	public SparksParticle(World world, double x, double y, double z, double mx, double my, double mz)
+	public SparksParticle(World world, double x, double y, double z, double mx, double my, double mz, IAnimatedSprite sprite)
 	{
 		super(world, x, y, z, mx, my, mz);
 		this.setMaxAge(16);
@@ -28,6 +29,7 @@ public class SparksParticle extends SpriteTexturedParticle
 		this.motionX = mx;
 		this.motionY = my;
 		this.motionZ = mz;
+		selectSpriteRandomly(sprite);
 		//TODO this.setParticleTextureIndex(Utils.RAND.nextInt(3));
 	}
 
@@ -50,5 +52,22 @@ public class SparksParticle extends SpriteTexturedParticle
 	public IParticleRenderType getRenderType()
 	{
 		return IParticleRenderType.PARTICLE_SHEET_LIT;
+	}
+
+	public static class Factory implements IParticleFactory<BasicParticleType>
+	{
+		private final IAnimatedSprite sprite;
+
+		public Factory(IAnimatedSprite sprite)
+		{
+			this.sprite = sprite;
+		}
+
+		@Nullable
+		@Override
+		public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		{
+			return new SparksParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, sprite);
+		}
 	}
 }

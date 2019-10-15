@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
@@ -79,7 +78,7 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		IModelData data = new SinglePropertyModelData<>(new OBJState(Lists.newArrayList("drill"), true),
 				Model.OBJ_STATE);
 		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorldNonnull(), model, state, tile.getPos(), worldRenderer, true,
-				Utils.RAND, 0, data);
+				getWorld().rand, 0, data);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		GlStateManager.popMatrix();

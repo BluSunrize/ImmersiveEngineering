@@ -17,6 +17,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
@@ -91,6 +92,7 @@ public class CommonProxy
 
 	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
 	{
+		world.addParticle(IEParticles.SPARKS, x, y, z, mx, my, mz);
 	}
 
 	public void spawnRedstoneFX(World world, double x, double y, double z, double mx, double my, double mz, float size, float r, float g, float b)

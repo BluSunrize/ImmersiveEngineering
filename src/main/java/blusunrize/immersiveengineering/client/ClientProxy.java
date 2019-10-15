@@ -23,10 +23,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.client.fx.FluidSplashParticle;
-import blusunrize.immersiveengineering.client.fx.FractalParticle;
-import blusunrize.immersiveengineering.client.fx.IEBubbleParticle;
-import blusunrize.immersiveengineering.client.fx.SparksParticle;
+import blusunrize.immersiveengineering.client.fx.*;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.models.*;
@@ -87,6 +84,7 @@ import net.minecraft.client.gui.ScreenManager.IScreenFactory;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -276,6 +274,12 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
 		ModelLoaderRegistry.registerLoader(new MultiLayerLoader());
+
+		ParticleManager manager = Minecraft.getInstance().particles;
+		manager.registerFactory(IEParticles.FLUID_SPLASH, new FluidSplashParticle.Factory());
+		manager.registerFactory(IEParticles.FRACTAL, new FractalParticle.Factory());
+		manager.registerFactory(IEParticles.SPARKS, SparksParticle.Factory::new);
+		manager.registerFactory(IEParticles.IE_BUBBLE, IEBubbleParticle.Factory::new);
 	}
 
 	@Override
@@ -1138,13 +1142,7 @@ public class ClientProxy extends CommonProxy
 		}
 	}
 
-	@Override
-	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
-	{
-		Particle particle = new SparksParticle(world, x, y, z, mx, my, mz);
-		Minecraft.getInstance().particles.addEffect(particle);
-	}
-
+	//TODO move to commonProxy or even use directly
 	@Override
 	public void spawnRedstoneFX(World world, double x, double y, double z, double mx, double my, double mz, float size, float r, float g, float b)
 	{
@@ -1154,8 +1152,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnFluidSplashFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
 	{
-		FluidSplashParticle particle = new FluidSplashParticle(world, x, y, z, mx, my, mz);
-		particle.setFluidTexture(fs);
+		FluidSplashParticle particle = new FluidSplashParticle(fs.getFluid(), world, x, y, z, mx, my, mz);
 		mc().particles.addEffect(particle);
 	}
 

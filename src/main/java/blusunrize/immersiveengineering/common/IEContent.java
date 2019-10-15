@@ -467,6 +467,7 @@ public class IEContent
 		Molds.moldPacking4 = new IEBaseItem("mold_packing_4", moldProperties);
 		Molds.moldPacking9 = new IEBaseItem("mold_packing_9", moldProperties);
 		Molds.moldUnpacking = new IEBaseItem("mold_unpacking", moldProperties);
+		IEItems.Misc.graphiteElectrode = new GraphiteElectrodeItem();
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
