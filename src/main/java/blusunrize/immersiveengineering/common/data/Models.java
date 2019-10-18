@@ -49,17 +49,21 @@ public class Models extends ModelGenerator
 	final Map<Block, Map<BasicStairsShape, ModelFile>> stairs = new HashMap<>();
 	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> aluScaffoldingStairs = new HashMap<>();
 	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> steelScaffoldingStairs = new HashMap<>();
-	final GeneratedModelFile treatedFencePost = ModelHelper.createFencePost(rl("block/wooden_decoration/treated_wood_horizontal"),
+
+	private static final ResourceLocation ALU_FENCE_TEXTURE = rl("block/metal/storage_aluminum");
+	private static final ResourceLocation STEEL_FENCE_TEXTURE = rl("block/metal/storage_steel");
+	private static final ResourceLocation TREATED_FENCE_TEXTURE = rl("block/wooden_decoration/treated_wood_horizontal");
+	final GeneratedModelFile treatedFencePost = ModelHelper.createFencePost(TREATED_FENCE_TEXTURE,
 			rl("block/wooden_decoration/treated_fence_post"));
-	final GeneratedModelFile steelFencePost = ModelHelper.createFencePost(rl("block/metal/storage_steel"),
+	final GeneratedModelFile steelFencePost = ModelHelper.createFencePost(STEEL_FENCE_TEXTURE,
 			rl("block/steel_fence_post"));
-	final GeneratedModelFile aluFencePost = ModelHelper.createFencePost(rl("block/metal/storage_aluminum"),
+	final GeneratedModelFile aluFencePost = ModelHelper.createFencePost(ALU_FENCE_TEXTURE,
 			rl("block/alu_fence_post"));
-	final GeneratedModelFile treatedFenceSide = ModelHelper.createFenceSide(rl("block/wooden_decoration/treated_wood_horizontal"),
+	final GeneratedModelFile treatedFenceSide = ModelHelper.createFenceSide(TREATED_FENCE_TEXTURE,
 			rl("block/wooden_decoration/treated_fence_side"));
-	final GeneratedModelFile steelFenceSide = ModelHelper.createFenceSide(rl("block/metal/storage_steel"),
+	final GeneratedModelFile steelFenceSide = ModelHelper.createFenceSide(STEEL_FENCE_TEXTURE,
 			rl("block/steel_fence_side"));
-	final GeneratedModelFile aluFenceSide = ModelHelper.createFenceSide(rl("block/metal/storage_aluminum"),
+	final GeneratedModelFile aluFenceSide = ModelHelper.createFenceSide(ALU_FENCE_TEXTURE,
 			rl("block/alu_fence_side"));
 
 	final GeneratedModelFile blastFurnaceOff = ModelHelper.createThreeCubed(rl("block/multiblocks/blast_furnace_off"),
@@ -192,6 +196,10 @@ public class Models extends ModelGenerator
 //		addItemModels("toolupgrade_", out, Misc.toolUpgrades.values().toArray(new Item[Misc.toolUpgrades.size()]));
 		addItemModels("", out, Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
 		addItemModels("bullet_", out, Ingredients.emptyCasing, Ingredients.emptyShell);
+
+		out.accept(ModelHelper.createInventoryFence(ALU_FENCE_TEXTURE, locForItemModel(MetalDecoration.aluFence)));
+		out.accept(ModelHelper.createInventoryFence(STEEL_FENCE_TEXTURE, locForItemModel(MetalDecoration.steelFence)));
+		out.accept(ModelHelper.createInventoryFence(TREATED_FENCE_TEXTURE, locForItemModel(WoodenDecoration.treatedFence)));
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
@@ -272,7 +280,7 @@ public class Models extends ModelGenerator
 	{
 		out.accept(model);
 //		out.accept(model.withLoc(locForItemModel(Item.getItemFromBlock(b))));
-		out.accept(model.createChild(locForItemModel(Item.getItemFromBlock(b))));
+		out.accept(model.createChild(locForItemModel(b)));
 		Preconditions.checkState(simpleBlocks.put(b, model)==null);
 	}
 
@@ -284,6 +292,11 @@ public class Models extends ModelGenerator
 			ResourceLocation texture = texturePrefix==null?path: new ResourceLocation(path.getNamespace(), "item/"+texturePrefix+item.getRegistryName().getPath());
 			out.accept(ModelHelper.createBasicItem(texture, path));
 		}
+	}
+
+	private ResourceLocation locForItemModel(Block b)
+	{
+		return locForItemModel(Item.getItemFromBlock(b));
 	}
 
 	private static ResourceLocation locForItemModel(Item item)

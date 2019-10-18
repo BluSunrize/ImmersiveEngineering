@@ -111,6 +111,17 @@ public class ModelHelper
 		return new GeneratedModelFile(modelName, model);
 	}
 
+	public static GeneratedModelFile createInventoryFence(ResourceLocation texture, ResourceLocation modelName)
+	{
+		assertTextureExists(texture);
+		JsonObject model = new JsonObject();
+		model.addProperty("parent", "block/fence_inventory");
+		JsonObject textures = new JsonObject();
+		textures.addProperty("texture", texture.toString());
+		model.add("textures", textures);
+		return new GeneratedModelFile(modelName, model);
+	}
+
 	public static GeneratedModelFile createFencePost(ResourceLocation texture, ResourceLocation modelName)
 	{
 		assertTextureExists(texture);

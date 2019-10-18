@@ -1,6 +1,0 @@
-{
-  "parent": "block/fence_inventory",
-  "textures": {
-    "texture": "immersiveengineering:block/treated_wood_horizontal"
-  }
-}
