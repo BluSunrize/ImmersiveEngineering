@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.models.obj.IEOBJModel;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
@@ -47,6 +48,7 @@ import java.util.Set;
 public class DynamicModelLoader
 {
 	private static Set<ResourceLocation> requestedTextures = new HashSet<>();
+	private static Set<ResourceLocation> manualTextureRequests = new HashSet<>();
 	private static Multimap<ConfiguredModel, ModelResourceLocation> requestedModels = HashMultimap.create();
 	private static Map<ConfiguredModel, IUnbakedModel> unbakedModels = new HashMap<>();
 
@@ -69,6 +71,8 @@ public class DynamicModelLoader
 	public static void textureStitch(TextureStitchEvent.Pre evt)
 	{
 		IELogger.logger.debug("Stitching textures!");
+		for(ResourceLocation rl : manualTextureRequests)
+			evt.addSprite(rl);
 		for(ResourceLocation rl : requestedTextures)
 			evt.addSprite(rl);
 	}
@@ -87,6 +91,8 @@ public class DynamicModelLoader
 				IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
 				IUnbakedModel unbaked = new OBJModel.Parser(asResource, manager).parse();
 				unbaked = unbaked.process(reqModel.getAddtionalDataAsStrings());
+				if(name.getPath().endsWith(".obj.ie"))
+					unbaked = new IEOBJModel(((OBJModel)unbaked).getMatLib(), name);
 				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), ImmutableSet.of()));
 				unbakedModels.put(reqModel, unbaked);
 			}
@@ -94,6 +100,11 @@ public class DynamicModelLoader
 		{
 			throw new RuntimeException(x);
 		}
+	}
+
+	public static void requestTexture(ResourceLocation name)
+	{
+		manualTextureRequests.add(name);
 	}
 
 	public static void requestModel(ConfiguredModel reqModel, ModelResourceLocation name)

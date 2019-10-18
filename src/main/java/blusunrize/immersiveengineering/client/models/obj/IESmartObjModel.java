@@ -48,7 +48,6 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad.Builder;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -218,16 +217,13 @@ public class IESmartObjModel extends OBJBakedModel
 		if(side!=null)
 			return ImmutableList.of();
 		OBJState objState = null;
-		Map<String, String> tex = null;
-		if(modelData.hasProperty(Properties.AnimationProperty))
-		{
-			IModelState modState = modelData.getData(Properties.AnimationProperty);
-			if(modState instanceof OBJState)
-				objState = (OBJState)modState;
-		}
+		Map<String, String> tex = ImmutableMap.of();
+		if(modelData.hasProperty(Model.OBJ_STATE))
+			objState = modelData.getData(Model.OBJ_STATE);
 		if(modelData.hasProperty(Model.TEXTURE_REMAP))
 			tex = modelData.getData(Model.TEXTURE_REMAP);
-		return getQuads(blockState, side, rand.nextLong(), objState, tex, false, modelData);
+		//TODO addAnimationAndtex?
+		return getQuads(blockState, side, rand.nextLong(), objState, tex, true, modelData);
 	}
 
 	public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand, OBJState objstate, Map<String, String> tex,
@@ -248,7 +244,7 @@ public class IESmartObjModel extends OBJBakedModel
 		else
 			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer());
 		List<BakedQuad> quads = modelCache.get(adapter);
-		if(quads==null)
+		if(true||quads==null)
 		{
 			IESmartObjModel model = null;
 			if(objstate!=null)
@@ -363,7 +359,7 @@ public class IESmartObjModel extends OBJBakedModel
 			for(int faceId = 0; faceId < faces.size(); faceId++)
 			{
 				Face f = faces.get(faceId);
-				TextureAtlasSprite tempSprite = Minecraft.getInstance().getTextureMap().getAtlasSprite("missingno");
+				TextureAtlasSprite tempSprite = null;
 				if(this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite()&&!"null".equals(f.getMaterialName()))
 				{
 					for(Vertex v : f.getVertices())

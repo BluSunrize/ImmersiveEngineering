@@ -135,7 +135,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 
 			if(this.processQueue.size() < this.getProcessQueueMaxLength())
 			{
-				Map<Integer, Integer> usedInvSlots = new HashMap<Integer, Integer>();
+				Map<Integer, Integer> usedInvSlots = new HashMap<>();
 				for(MultiblockProcess<ArcFurnaceRecipe> process : processQueue)
 					if(process instanceof MultiblockProcessInMachine)
 					{
