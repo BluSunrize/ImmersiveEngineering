@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile.PlacementLimitation;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -128,7 +129,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			else
 				dropHandler = c -> {
 				};
-			if(tile!=null&&(!(tile instanceof ITileDrop)||!((ITileDrop)tile).preventInventoryDrop()))
+			if(tile!=null&&(!(tile instanceof ITileDrop)||!((ITileDrop)tile).preventInventoryDrop())&&!(tile instanceof MultiblockPartTileEntity))
 			{
 				if(tile instanceof IIEInventory&&((IIEInventory)tile).getDroppedItems()!=null)
 					InventoryHelper.dropItems(world, pos, ((IIEInventory)tile).getDroppedItems());

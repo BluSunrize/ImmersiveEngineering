@@ -10,9 +10,7 @@ package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -23,7 +21,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Mirror;
@@ -247,11 +244,6 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 
 	protected void prepareBlockForDisassembly(World world, BlockPos pos)
 	{
-		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof MultiblockPartTileEntity)
-			((MultiblockPartTileEntity)te).formed = false;
-		else
-			IELogger.logger.error("Expected multiblock TE at {}", pos);
 	}
 
 	@Override

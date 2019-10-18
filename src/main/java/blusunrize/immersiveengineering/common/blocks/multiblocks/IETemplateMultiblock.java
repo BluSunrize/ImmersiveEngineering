@@ -81,4 +81,14 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	{
 		return transformed;
 	}
+
+	@Override
+	protected void prepareBlockForDisassembly(World world, BlockPos pos)
+	{
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof MultiblockPartTileEntity)
+			((MultiblockPartTileEntity)te).formed = false;
+		else
+			IELogger.logger.error("Expected multiblock TE at {}", pos);
+	}
 }
