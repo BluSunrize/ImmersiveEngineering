@@ -66,7 +66,7 @@ public class ObjLoaderWorkaround
 						continue;
 					JsonObject val = entry.getValue().getAsJsonObject();
 					ResourceLocation name = new ResourceLocation(val.get("model").getAsString());
-					if(name.getPath().endsWith(".obj"))
+					if(name.getPath().endsWith(".obj")||name.getPath().endsWith(".obj.ie"))
 					{
 						int xRot = Optional.ofNullable(val.get("x")).map(JsonElement::getAsInt).orElse(0);
 						int yRot = Optional.ofNullable(val.get("y")).map(JsonElement::getAsInt).orElse(0);

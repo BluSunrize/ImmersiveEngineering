@@ -246,43 +246,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		return false;
 	}*/
 
-	/*TODO when extended states are a thing again...
-	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockReader world, BlockPos pos)
-	{
-		state = super.getExtendedState(state, world, pos);
-		if(state instanceof IExtendedBlockState)
-		{
-			IExtendedBlockState extended = (IExtendedBlockState)state;
-			TileEntity te = world.getTileEntity(pos);
-			if(te!=null)
-			{
-				if(te instanceof IConfigurableSides)
-					for(int i = 0; i < 6; i++)
-						if(extended.getUnlistedNames().contains(IEProperties.SIDECONFIG[i]))
-							extended = extended.with(IEProperties.SIDECONFIG[i], ((IConfigurableSides)te).getSideConfig(i));
-				if(te instanceof IAdvancedHasObjProperty)
-					extended = extended.with(Properties.AnimationProperty, ((IAdvancedHasObjProperty)te).getOBJState());
-				else if(te instanceof IHasObjProperty)
-					extended = extended.with(Properties.AnimationProperty, new OBJState(((IHasObjProperty)te).compileDisplayList(), true));
-				if(te instanceof IDynamicTexture)
-					extended = extended.with(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
-				if(te instanceof IOBJModelCallback)
-					extended = extended.with(IOBJModelCallback.PROPERTY, (IOBJModelCallback)te);
-				if(te.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
-					extended = extended.with(CapabilityShader.BLOCKSTATE_PROPERTY, te.getCapability(CapabilityShader.SHADER_CAPABILITY, null));
-				if(te instanceof IPropertyPassthrough&&((IExtendedBlockState)state).getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
-					extended = extended.with(IEProperties.TILEENTITY_PASSTHROUGH, te);
-				if(te instanceof ImmersiveConnectableTileEntity&&((IExtendedBlockState)state).getUnlistedNames().contains(IEProperties.CONNECTIONS))
-					extended = extended.with(IEProperties.CONNECTIONS, ((ImmersiveConnectableTileEntity)te).genConnBlockstate());
-			}
-			state = extended;
-		}
-
-		return state;
-	}
-	 */
-
 	@Override
 	public void onIEBlockPlacedBy(BlockItemUseContext context, BlockState state)
 	{
@@ -368,9 +331,8 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		if(tile instanceof IInteractionObjectIE&&hand==Hand.MAIN_HAND&&!player.isSneaking())
 		{
 			IInteractionObjectIE interaction = (IInteractionObjectIE)tile;
-			IInteractionObjectIE master = interaction.getGuiMaster();
-			if(!world.isRemote&&master instanceof TileEntity)
-				NetworkHooks.openGui((ServerPlayerEntity)player, master, ((TileEntity)master).getPos());
+			if(interaction.isValid()&&interaction.canUseGui(player)&&!world.isRemote)
+				NetworkHooks.openGui((ServerPlayerEntity)player, interaction, pos);
 			return true;
 		}
 		return false;

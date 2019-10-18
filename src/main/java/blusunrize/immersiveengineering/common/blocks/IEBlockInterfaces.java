@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -42,6 +43,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -403,15 +405,18 @@ public class IEBlockInterfaces
 
 		boolean canUseGui(PlayerEntity player);
 
-		@Nullable
+		default boolean isValid()
+		{
+			return getGuiMaster()!=null;
+		}
+
+		@Nonnull//Super is annotated nullable, but Forge assumes Nonnull in at least one place
 		@Override
 		default Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity)
 		{
 			IInteractionObjectIE master = getGuiMaster();
-			if(master instanceof TileEntity)
-				return GuiHandler.createContainer(playerInventory, (TileEntity)master, id);
-			else
-				return null;
+			Preconditions.checkState(master instanceof TileEntity);
+			return GuiHandler.createContainer(playerInventory, (TileEntity)master, id);
 		}
 
 		@Override
