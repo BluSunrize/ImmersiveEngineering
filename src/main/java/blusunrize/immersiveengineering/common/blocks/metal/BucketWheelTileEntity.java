@@ -107,6 +107,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 		{
 			if(!particleStack.isEmpty())
 			{
+				//TODO this can be done from the server now
 				ImmersiveEngineering.proxy.spawnBucketWheelFX(this, particleStack);
 				particleStack = ItemStack.EMPTY;
 			}
@@ -158,7 +159,11 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 			if(message.contains("fill", NBT.TAG_INT))
 				this.digStacks.set(message.getInt("fill"), ItemStack.read(message.getCompound("fillStack")));
 			if(message.contains("empty", NBT.TAG_INT))
-				this.digStacks.set(message.getInt("empty"), ItemStack.EMPTY);
+			{
+				int toRemove = message.getInt("empty");
+				particleStack = digStacks.get(toRemove);
+				this.digStacks.set(toRemove, ItemStack.EMPTY);
+			}
 			if(message.contains("rotation", NBT.TAG_INT))
 			{
 				int packetRotation = message.getInt("rotation");

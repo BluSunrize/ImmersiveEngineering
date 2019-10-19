@@ -127,7 +127,7 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, "nuggetLead", "nuggetLead", "nuggetSilver");
 		//Buckshot
 		bullet = BulletHandler.getBulletStack("buckshot");
-		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyShell), Items.GUNPOWDER, "dustIron");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyShell), Items.GUNPOWDER, getDust("iron"));
 		//HE
 		bullet = BulletHandler.getBulletStack("HE");
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, Blocks.TNT);
@@ -234,10 +234,10 @@ public class IERecipes
 	{
 		//TODO replace oredict names with tags
 		if(true) return;
-		oreOutputSecondaries.put("Iron", new Object[]{"dustNickel", .1f});
+		oreOutputSecondaries.put("Iron", new Object[]{getDust("nickel"), .1f});
 		oreOutputSecondaries.put("Gold", new Object[]{"crystalCinnabar", .05f});
-		oreOutputSecondaries.put("Copper", new Object[]{"dustGold", .1f});
-		oreOutputSecondaries.put("Lead", new Object[]{"dustSilver", .1f});
+		oreOutputSecondaries.put("Copper", new Object[]{getDust("gold"), .1f});
+		oreOutputSecondaries.put("Lead", new Object[]{getDust("silver"), .1f});
 		oreOutputSecondaries.put("Silver", new Object[]{"dustLead", .1f});
 		oreOutputSecondaries.put("Nickel", new Object[]{"dustPlatinum", .1f});
 
@@ -251,7 +251,7 @@ public class IERecipes
 		oreOutputSecondaries.put("Quartz", new Object[]{"dustSulfur", .15f});
 		oreOutputModifier.put("Coal", new ItemStack(Items.COAL, 4));
 
-		oreOutputSecondaries.put("Platinum", new Object[]{"dustNickel", .1f});
+		oreOutputSecondaries.put("Platinum", new Object[]{getDust("nickel"), .1f});
 		oreOutputSecondaries.put("Tungsten", new Object[]{"dustManganese", .1f});
 		oreOutputSecondaries.put("Uranium", new Object[]{"dustLead", .1f});
 		oreOutputSecondaries.put("Yellorium", new Object[]{"dustLead", .1f});
@@ -259,7 +259,7 @@ public class IERecipes
 		Item item = GameRegistry.findRegistry(Item.class).getValue(new ResourceLocation("IC2", "itemOreIridium"));
 		oreOutputSecondaries.put("Osmium", new Object[]{item, .01f});
 		oreOutputSecondaries.put("Iridium", new Object[]{"dustPlatium", .1f});
-		oreOutputSecondaries.put("FzDarkIron", new Object[]{"dustIron", .1f});
+		oreOutputSecondaries.put("FzDarkIron", new Object[]{getDust("iron"), .1f});
 		item = GameRegistry.findRegistry(Item.class).getValue(new ResourceLocation("Railcraft", "firestone.raw"));
 		if(item!=null)
 			oreOutputModifier.put("Firestone", new ItemStack(item));
@@ -531,25 +531,23 @@ public class IERecipes
 
 	public static void initArcSmeltingRecipes()
 	{
-		//TODO tags rather than oredict
-		if(true) return;
 		//Steel
-		ArcFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), "ingotIron", new ItemStack(slag), 400, 512, "dustCoke");
-		ArcFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), "dustIron", new ItemStack(slag), 400, 512, "dustCoke");
+		ArcFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), getIngot("iron"), new ItemStack(slag), 400, 512, getDust("coke"));
+		ArcFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), getDust("iron"), new ItemStack(slag), 400, 512, getDust("coke"));
 		//Vanilla+IE Ores
 		for(EnumMetals metal : ores.keySet())
 			arcOutputModifier.put(metal.tagName(), new ItemStack(ingots.get(metal), 2));
 		//IE Alloys
-		addOreDictArcAlloyingRecipe(new ItemStack(ingots.get(CONSTANTAN), 2), "Copper", 100, 512, "dustNickel");
-		addOreDictArcAlloyingRecipe(new ItemStack(ingots.get(CONSTANTAN), 2), "Nickel", 100, 512, "dustCopper");
-		addOreDictArcAlloyingRecipe(new ItemStack(ingots.get(ELECTRUM), 2), "Gold", 100, 512, "dustSilver");
-		addOreDictArcAlloyingRecipe(new ItemStack(ingots.get(ELECTRUM), 2), "Silver", 100, 512, "dustGold");
+		addOreDictArcAlloyingRecipe(new ItemStack(ingots.get(CONSTANTAN), 2), "copper", 100, 512, getDust("nickel"));
+		addOreDictArcAlloyingRecipe(new ItemStack(ingots.get(CONSTANTAN), 2), "nickel", 100, 512, getDust("copper"));
+		addOreDictArcAlloyingRecipe(new ItemStack(ingots.get(ELECTRUM), 2), "gold", 100, 512, getDust("silver"));
+		addOreDictArcAlloyingRecipe(new ItemStack(ingots.get(ELECTRUM), 2), "silver", 100, 512, getDust("gold"));
 		//Common Alloys
-		addOreDictArcAlloyingRecipe(getIngot("invar"), 3, "nickel", 200, 512, "dustIron", "dustIron");
+		addOreDictArcAlloyingRecipe(getIngot("invar"), 3, "nickel", 200, 512, getDust("iron"), getDust("iron"));
 		addOreDictArcAlloyingRecipe(getIngot("bronze"), 4, "tin", 200, 512, new IngredientStack(getDust("copper"), 3));
 		addOreDictArcAlloyingRecipe(getIngot("brass"), 4, "zinc", 200, 512, new IngredientStack(getDust("copper"), 3));
-		addOreDictArcAlloyingRecipe(getIngot("blueAlloy"), 1, "silver", 100, 512, new IngredientStack(getDust("nikolite"), 4));
-		addOreDictArcAlloyingRecipe(getIngot("redAlloy"), 1, "copper", 100, 512, new IngredientStack(getDust("redstone"), 4));
+		//addOreDictArcAlloyingRecipe(getIngot("blueAlloy"), 1, "silver", 100, 512, new IngredientStack(getDust("nikolite"), 4));
+		//addOreDictArcAlloyingRecipe(getIngot("redAlloy"), 1, "copper", 100, 512, new IngredientStack(getDust("redstone"), 4));
 
 		//Recycling
 		/*TODO better, possibly tag-based system
@@ -587,9 +585,7 @@ public class IERecipes
 
 	public static void addOreDictArcAlloyingRecipe(ItemStack out, String inputName, int time, int energyPerTick, Object... additives)
 	{
-		if(ApiUtils.isNonemptyItemTag(getIngot(inputName)))
-			ArcFurnaceRecipe.addRecipe(out, getIngot(inputName), ItemStack.EMPTY, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
-		if(ApiUtils.isNonemptyItemTag(getDust(inputName)))
-			ArcFurnaceRecipe.addRecipe(out, getDust(inputName), ItemStack.EMPTY, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
+		ArcFurnaceRecipe.addRecipe(out, getIngot(inputName), ItemStack.EMPTY, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
+		ArcFurnaceRecipe.addRecipe(out, getDust(inputName), ItemStack.EMPTY, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
 	}
 }

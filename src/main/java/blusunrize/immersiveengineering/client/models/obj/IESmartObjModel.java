@@ -244,7 +244,7 @@ public class IESmartObjModel extends OBJBakedModel
 		else
 			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer());
 		List<BakedQuad> quads = modelCache.get(adapter);
-		if(true||quads==null)
+		if(quads==null)
 		{
 			IESmartObjModel model = null;
 			if(objstate!=null)

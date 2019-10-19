@@ -677,29 +677,71 @@ public class IEContent
 		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion.get();
 		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance.get();
 		ExcavatorHandler.defaultDimensionBlacklist = ImmutableSet.of();//IEConfig.MACHINES.excavator_dimBlacklist.get();
-		/*TODO
-		String sulfur = OreDictionary.doesOreNameExist("oreSulfur")?"oreSulfur": "dustSulfur";
-		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron", "oreNickel", "oreTin", "denseoreIron"}, new float[]{.5f, .25f, .20f, .05f});
-		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron", "oreGold"}, new float[]{.85f, .15f});
-		ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", sulfur}, new float[]{.5f, .5f});
-		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum", "oreTitanium", "denseoreAluminum"}, new float[]{.90f, .05f, .05f});
-		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper", "oreGold", "oreNickel", "denseoreCopper"}, new float[]{.65f, .25f, .05f, .05f});
-		if(OreDictionary.doesOreNameExist("oreTin"))
-			ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new String[]{"oreTin", "denseoreTin"}, new float[]{.95f, .05f});
-		ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold", "oreCopper", "oreNickel", "denseoreGold"}, new float[]{.65f, .25f, .05f, .05f});
-		ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel", "orePlatinum", "oreIron", "denseoreNickel"}, new float[]{.85f, .05f, .05f, .05f});
-		if(OreDictionary.doesOreNameExist("orePlatinum"))
-			ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum", "oreNickel", "", "oreIridium", "denseorePlatinum"}, new float[]{.40f, .30f, .15f, .1f, .05f});
-		ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium", "oreLead", "orePlutonium", "denseoreUranium"}, new float[]{.55f, .3f, .1f, .05f}).addReplacement("oreUranium", "oreYellorium");
-		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new String[]{"oreQuartz", "oreCertusQuartz"}, new float[]{.6f, .4f});
-		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead", "oreSilver", "oreSulfur", "denseoreLead", "denseoreSilver"}, new float[]{.40f, .40f, .1f, .05f, .05f});
-		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead", "oreSilver", "denseoreLead"}, new float[]{.55f, .4f, .05f});
-		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver", "oreLead", "denseoreSilver"}, new float[]{.55f, .4f, .05f});
-		ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis", "oreIron", sulfur, "denseoreLapis"}, new float[]{.65f, .275f, .025f, .05f});
-		ExcavatorHandler.addMineral("Cinnabar", 15, .1f, new String[]{"oreRedstone", "denseoreRedstone", "oreRuby", "oreCinnabar", sulfur}, new float[]{.75f, .05f, .05f, .1f, .05f});
-		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal", "denseoreCoal", "oreDiamond", "oreEmerald"}, new float[]{.92f, .1f, .015f, .015f});
-		ExcavatorHandler.addMineral("Silt", 25, .05f, new String[]{"blockClay", "sand", "gravel"}, new float[]{.5f, .3f, .2f});
-		*/
+		//TODO String sulfur = OreDictionary.doesOreNameExist(oreSulfur)?"oreSulfur: "dustSulfur;
+		ResourceLocation invalid = new ResourceLocation("immersiveengineering:invalid");
+		ResourceLocation sulfur = IERecipes.getDust("sulfur");
+		ResourceLocation oreIron = IERecipes.getOre("iron");
+		ResourceLocation oreNickel = IERecipes.getOre("nickel");
+		ResourceLocation oreTin = IERecipes.getOre("tin");
+		ResourceLocation oreGold = IERecipes.getOre("gold");
+		ResourceLocation oreAluminum = IERecipes.getOre("aluminum");
+		ResourceLocation oreTitanium = IERecipes.getOre("titanium");
+		ResourceLocation oreCopper = IERecipes.getOre("copper");
+		ResourceLocation orePlatinum = IERecipes.getOre("platinum");
+		ResourceLocation oreUranium = IERecipes.getOre("uranium");
+		ResourceLocation oreLead = IERecipes.getOre("lead");
+		//TODO is this the correct name?
+		ResourceLocation oreQuartz = IERecipes.getOre("quartz");
+		ResourceLocation oreIridium = IERecipes.getOre("iridium");
+		ResourceLocation orePlutonium = IERecipes.getOre("plutonium");
+		ResourceLocation oreCertusQuartz = IERecipes.getOre("certus_quartz");
+		ResourceLocation oreSilver = IERecipes.getOre("silver");
+		ResourceLocation oreSulfur = IERecipes.getOre("sulfur");
+		ResourceLocation oreLapis = IERecipes.getOre("lapis");
+		ResourceLocation oreRedstone = IERecipes.getOre("redstone");
+		ResourceLocation oreRuby = IERecipes.getOre("ruby");
+		ResourceLocation oreCinnabar = IERecipes.getOre("cinnabar");
+		ResourceLocation oreCoal = IERecipes.getOre("coal");
+		ResourceLocation oreDiamond = IERecipes.getOre("diamond");
+		ResourceLocation oreEmerald = IERecipes.getOre("emerald");
+		ResourceLocation oreYellorium = IERecipes.getOre("yellorium");
+		//TODO is this the correct name?
+		ResourceLocation blockClay = IERecipes.getStorageBlock("clay");
+		ResourceLocation sand = BlockTags.SAND.getId();
+		ResourceLocation gravel = Tags.Blocks.GRAVEL.getId();
+		ResourceLocation denseoreIron = invalid;
+		ResourceLocation denseoreAluminum = invalid;
+		ResourceLocation denseoreCopper = invalid;
+		ResourceLocation denseoreTin = invalid;
+		ResourceLocation denseoreGold = invalid;
+		ResourceLocation denseoreNickel = invalid;
+		ResourceLocation denseorePlatinum = invalid;
+		ResourceLocation denseoreLead = invalid;
+		ResourceLocation denseoreSilver = invalid;
+		ResourceLocation denseoreLapis = invalid;
+		ResourceLocation denseoreRedstone = invalid;
+		ResourceLocation denseoreCoal = invalid;
+		ResourceLocation denseoreUranium = invalid;
+
+		ExcavatorHandler.addMineral("Iron", 25, .1f, new ResourceLocation[]{oreIron, oreNickel, oreTin, denseoreIron}, new float[]{.5f, .25f, .20f, .05f});
+		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new ResourceLocation[]{oreIron, oreGold}, new float[]{.85f, .15f});
+		ExcavatorHandler.addMineral("Pyrite", 20, .1f, new ResourceLocation[]{oreIron, sulfur}, new float[]{.5f, .5f});
+		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new ResourceLocation[]{oreAluminum, oreTitanium, denseoreAluminum}, new float[]{.90f, .05f, .05f});
+		ExcavatorHandler.addMineral("Copper", 30, .2f, new ResourceLocation[]{oreCopper, oreGold, oreNickel, denseoreCopper}, new float[]{.65f, .25f, .05f, .05f});
+		ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new ResourceLocation[]{oreTin, denseoreTin}, new float[]{.95f, .05f});
+		ExcavatorHandler.addMineral("Gold", 20, .3f, new ResourceLocation[]{oreGold, oreCopper, oreNickel, denseoreGold}, new float[]{.65f, .25f, .05f, .05f});
+		ExcavatorHandler.addMineral("Nickel", 20, .3f, new ResourceLocation[]{oreNickel, orePlatinum, oreIron, denseoreNickel}, new float[]{.85f, .05f, .05f, .05f});
+		ExcavatorHandler.addMineral("Platinum", 5, .35f, new ResourceLocation[]{orePlatinum, oreNickel, oreIridium, denseorePlatinum}, new float[]{.40f, .30f, .15f, .1f, .05f});
+		ExcavatorHandler.addMineral("Uranium", 10, .35f, new ResourceLocation[]{oreUranium, oreLead, orePlutonium, denseoreUranium}, new float[]{.55f, .3f, .1f, .05f})
+				.addReplacement(oreUranium, oreYellorium);
+		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new ResourceLocation[]{oreQuartz, oreCertusQuartz}, new float[]{.6f, .4f});
+		ExcavatorHandler.addMineral("Galena", 15, .2f, new ResourceLocation[]{oreLead, oreSilver, oreSulfur, denseoreLead, denseoreSilver}, new float[]{.40f, .40f, .1f, .05f, .05f});
+		ExcavatorHandler.addMineral("Lead", 10, .15f, new ResourceLocation[]{oreLead, oreSilver, denseoreLead}, new float[]{.55f, .4f, .05f});
+		ExcavatorHandler.addMineral("Silver", 10, .2f, new ResourceLocation[]{oreSilver, oreLead, denseoreSilver}, new float[]{.55f, .4f, .05f});
+		ExcavatorHandler.addMineral("Lapis", 10, .2f, new ResourceLocation[]{oreLapis, oreIron, sulfur, denseoreLapis}, new float[]{.65f, .275f, .025f, .05f});
+		ExcavatorHandler.addMineral("Cinnabar", 15, .1f, new ResourceLocation[]{oreRedstone, denseoreRedstone, oreRuby, oreCinnabar, sulfur}, new float[]{.75f, .05f, .05f, .1f, .05f});
+		ExcavatorHandler.addMineral("Coal", 25, .1f, new ResourceLocation[]{oreCoal, denseoreCoal, oreDiamond, oreEmerald}, new float[]{.92f, .1f, .015f, .015f});
+		ExcavatorHandler.addMineral("Silt", 25, .05f, new ResourceLocation[]{blockClay, sand, gravel}, new float[]{.5f, .3f, .2f});
 		/*MULTIBLOCK RECIPES*/
 		Tag<Block> coalBlock = BlockTags.CORAL_BLOCKS;
 		Tag<Block> logWood = BlockTags.LOGS;
@@ -737,8 +779,6 @@ public class IEContent
 
 		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel, 16), new FluidStack(fluidPlantoil, 8), new FluidStack(fluidEthanol, 8), 80);
 
-		Tag<Block> sand = BlockTags.SAND;
-		Tag<Block> gravel = Tags.Blocks.GRAVEL;
 		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(Fluids.WATER, 500), new Object[]{sand, sand, Items.CLAY_BALL, gravel}, 3200);
 
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.WET_SPONGE, 1), new ItemStack(Blocks.SPONGE, 1), new FluidStack(Fluids.WATER, 1000));

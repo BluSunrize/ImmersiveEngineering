@@ -1127,12 +1127,12 @@ public class ClientProxy extends CommonProxy
 				double x = tile.getPos().getX()+.5+.1*(tile.getFacing().getAxis()==Axis.Z?2*(tile.getWorldNonnull().rand.nextGaussian()-.5): 0);
 				double y = tile.getPos().getY()+2.5;// + tile.getworld().rand.nextGaussian()/2;
 				double z = tile.getPos().getZ()+.5+.1*(tile.getFacing().getAxis()==Axis.X?2*(tile.getWorldNonnull().rand.nextGaussian()-.5): 0);
-				double mX = ((tile.getFacing()==Direction.WEST?-.075: tile.getFacing()==Direction.EAST?.075: 0)*(tile.getIsMirrored()?-1: 1))+((tile.getWorldNonnull().rand.nextDouble()-.5)*.01);
+				double mX = ((tile.getFacing()==Direction.WEST?.075: tile.getFacing()==Direction.EAST?-.075: 0)*(tile.getIsMirrored()?-1: 1))+((tile.getWorldNonnull().rand.nextDouble()-.5)*.01);
 				double mY = -.15D;//tile.getworld().rand.nextGaussian() * -0.05D;
 				double mZ = ((tile.getFacing()==Direction.NORTH?-.075: tile.getFacing()==Direction.SOUTH?.075: 0)*(tile.getIsMirrored()?-1: 1))+((tile.getWorldNonnull().rand.nextDouble()-.5)*.01);
 
 				Particle particle = new BreakingParticle.Factory().makeParticle(new ItemParticleData(ParticleTypes.ITEM, stack),
-						tile.getWorldNonnull(), x, y, z, mX, mY, mZ);
+						tile.getWorldNonnull(), x+1, y, z, mX, mY, mZ);//TODO x+1 is testing
 				mc().particles.addEffect(particle);
 			}
 		}

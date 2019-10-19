@@ -60,7 +60,7 @@ import java.util.Set;
 public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTileEntity, IMultiblockRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds
 {
 	public static TileEntityType<ExcavatorTileEntity> TYPE;
-	private static final BlockPos wheelCenterOffset = new BlockPos(4, 1, 1);
+	private static final BlockPos wheelCenterOffset = new BlockPos(1, 1, 1);
 	public boolean active = false;
 
 	public ExcavatorTileEntity()
@@ -105,7 +105,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		if(isDummy())
 			return;
 		BlockPos wheelPos = this.getBlockPosForPos(wheelCenterOffset);
-		if(!world.isRemote&&world.isBlockLoaded(wheelPos))
+		if(!world.isRemote&&world.isAreaLoaded(wheelPos, 5))
 		{
 			TileEntity center = world.getTileEntity(wheelPos);
 
@@ -267,7 +267,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		FakePlayer fakePlayer = FakePlayerUtil.getFakePlayer(world);
 		BlockState blockstate = world.getBlockState(pos);
 		Block block = blockstate.getBlock();
-		if(block!=null&&!world.isAirBlock(pos)&&blockstate.getPlayerRelativeBlockHardness(fakePlayer, world, pos)!=0)
+		if(!world.isAirBlock(pos)&&blockstate.getBlockHardness(world, pos)!=-1)
 		{
 			if(!block.canHarvestBlock(blockstate, world, pos, fakePlayer))
 				return ItemStack.EMPTY;
@@ -309,25 +309,25 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		if(getIsMirrored())
 			fw = fw.getOpposite();
 
-		if(new BlockPos(3, 2, 0).equals(posInMultiblock))
+		if(new BlockPos(0, 2, 2).equals(posInMultiblock))
 			return new float[]{fl==Direction.EAST?.5f: 0, 0, fl==Direction.SOUTH?.5f: 0, fl==Direction.WEST?.5f: 1, .5f, fl==Direction.NORTH?.5f: 1};
-		if(new BlockPos(4, 2, 0).equals(posInMultiblock))
+		if(new BlockPos(0, 2, 1).equals(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(new BlockPos(5, 2, 0).equals(posInMultiblock))
+		if(new BlockPos(0, 2, 0).equals(posInMultiblock))
 			return new float[]{fl==Direction.WEST?.5f: 0, 0, fl==Direction.NORTH?.5f: 0, fl==Direction.EAST?.5f: 1, .5f, fl==Direction.SOUTH?.5f: 1};
 
-		if(new BlockPos(3, 2, 2).equals(posInMultiblock))
+		if(new BlockPos(2, 2, 2).equals(posInMultiblock))
 			return new float[]{fl==Direction.EAST?.5f: fl==Direction.WEST?.375f: 0, 0, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.375f: 0, fl==Direction.WEST?.5f: fl==Direction.EAST?.625f: 1, 1, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.625f: 1};
-		if(new BlockPos(4, 2, 2).equals(posInMultiblock))
+		if(new BlockPos(2, 2, 1).equals(posInMultiblock))
 			return new float[]{fw==Direction.EAST?.875f: 0, 0, fw==Direction.SOUTH?.875f: 0, fw==Direction.WEST?.125f: 1, 1, fw==Direction.NORTH?.125f: 1};
-		if(new BlockPos(5, 2, 2).equals(posInMultiblock))
+		if(new BlockPos(2, 2, 0).equals(posInMultiblock))
 			return new float[]{fl==Direction.WEST?.5f: fl==Direction.EAST?.375f: 0, 0, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: 0, fl==Direction.EAST?.5f: fl==Direction.WEST?.625f: 1, 1, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.625f: 1};
 
-		if(posInMultiblock.getX()==1&&posInMultiblock.getZ()==2)
+		if(posInMultiblock.getX()==2&&posInMultiblock.getZ()==4)
 			return new float[]{fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1};
-		if(posInMultiblock.getX() >= 3&&posInMultiblock.getY()==0&&posInMultiblock.getZ()==0)
+		if(posInMultiblock.getZ() < 3&&posInMultiblock.getY()==0&&posInMultiblock.getX()==0)
 			return new float[]{fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1};
-		if(posInMultiblock.getX() >= 3&&posInMultiblock.getY()==0&&posInMultiblock.getZ()==2)
+		if(posInMultiblock.getZ() < 3&&posInMultiblock.getY()==0&&posInMultiblock.getX()==2)
 			return new float[]{fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1};
 
 
@@ -342,33 +342,33 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		if(getIsMirrored())
 			fw = fw.getOpposite();
 
-		if(posInMultiblock.getX()==1&&posInMultiblock.getZ()==2)
+		if(posInMultiblock.getX()==2&&posInMultiblock.getZ()==4)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			list.add(new AxisAlignedBB(fw==Direction.EAST?.5f: fw==Direction.WEST?0: .25f, .25f, fw==Direction.SOUTH?.5f: fw==Direction.NORTH?0: .25f, fw==Direction.WEST?.5f: fw==Direction.EAST?1: .75f, .75f, fw==Direction.NORTH?.5f: fw==Direction.SOUTH?1: .75f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1));
+			list.add(new AxisAlignedBB(fw==Direction.EAST?.5f: fw==Direction.WEST?0: .25f, .25f, fw==Direction.SOUTH?.5f: fw==Direction.NORTH?0: .25f, fw==Direction.WEST?.5f: fw==Direction.EAST?1: .75f, .75f, fw==Direction.NORTH?.5f: fw==Direction.SOUTH?1: .75f));
 			return list;
 		}
-		else if(posInMultiblock.getX() >= 3&&posInMultiblock.getY()==0&&posInMultiblock.getZ()==0)
+		else if(posInMultiblock.getZ() < 3&&posInMultiblock.getY()==0&&posInMultiblock.getX()==0)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock.getX()==3)
-				list.add(new AxisAlignedBB(fw==Direction.WEST||fl==Direction.EAST?.5f: 0, .5f, fw==Direction.NORTH||fl==Direction.SOUTH?.5f: 0, fw==Direction.EAST||fl==Direction.WEST?.5f: 1, 1, fw==Direction.SOUTH||fl==Direction.NORTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			else if(posInMultiblock.getX()==4)
-				list.add(new AxisAlignedBB(fw==Direction.WEST?.5f: 0, .5f, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1));
+			if(posInMultiblock.getZ()==2)
+				list.add(new AxisAlignedBB(fw==Direction.WEST||fl==Direction.EAST?.5f: 0, .5f, fw==Direction.NORTH||fl==Direction.SOUTH?.5f: 0, fw==Direction.EAST||fl==Direction.WEST?.5f: 1, 1, fw==Direction.SOUTH||fl==Direction.NORTH?.5f: 1));
+			else if(posInMultiblock.getZ()==1)
+				list.add(new AxisAlignedBB(fw==Direction.WEST?.5f: 0, .5f, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1));
 			else
-				list.add(new AxisAlignedBB(fw==Direction.WEST||fl==Direction.WEST?.5f: 0, .5f, fw==Direction.NORTH||fl==Direction.NORTH?.5f: 0, fw==Direction.EAST||fl==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH||fl==Direction.SOUTH?.5f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				list.add(new AxisAlignedBB(fw==Direction.WEST||fl==Direction.WEST?.5f: 0, .5f, fw==Direction.NORTH||fl==Direction.NORTH?.5f: 0, fw==Direction.EAST||fl==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH||fl==Direction.SOUTH?.5f: 1));
 			return list;
 		}
-		else if(new BlockPos(3, 2, 2).equals(posInMultiblock))
+		else if(new BlockPos(2, 2, 2).equals(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fl==Direction.EAST?.5f: fl==Direction.WEST?.375f: 0, 0, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.375f: 0, fl==Direction.WEST?.5f: fl==Direction.EAST?.625f: 1, 1, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.625f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			list.add(new AxisAlignedBB(fl==Direction.EAST?.625f: fw==Direction.EAST?.875f: 0, 0, fl==Direction.SOUTH?.625f: fw==Direction.SOUTH?.875f: 0, fl==Direction.WEST?.375f: fw==Direction.WEST?.125f: 1, 1, fl==Direction.NORTH?.375f: fw==Direction.NORTH?.125f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fl==Direction.EAST?.5f: fl==Direction.WEST?.375f: 0, 0, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.375f: 0, fl==Direction.WEST?.5f: fl==Direction.EAST?.625f: 1, 1, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.625f: 1));
+			list.add(new AxisAlignedBB(fl==Direction.EAST?.625f: fw==Direction.EAST?.875f: 0, 0, fl==Direction.SOUTH?.625f: fw==Direction.SOUTH?.875f: 0, fl==Direction.WEST?.375f: fw==Direction.WEST?.125f: 1, 1, fl==Direction.NORTH?.375f: fw==Direction.NORTH?.125f: 1));
 			return list;
 		}
-		else if(new BlockPos(5, 2, 2).equals(posInMultiblock))
+		else if(new BlockPos(2, 2, 0).equals(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fl==Direction.WEST?.5f: fl==Direction.EAST?.375f: 0, 0, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: 0, fl==Direction.EAST?.5f: fl==Direction.WEST?.625f: 1, 1, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.625f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			list.add(new AxisAlignedBB(fl==Direction.WEST?.625f: fw==Direction.EAST?.875f: 0, 0, fl==Direction.NORTH?.625f: fw==Direction.SOUTH?.875f: 0, fl==Direction.EAST?.375f: fw==Direction.WEST?.125f: 1, 1, fl==Direction.SOUTH?.375f: fw==Direction.NORTH?.125f: 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fl==Direction.WEST?.5f: fl==Direction.EAST?.375f: 0, 0, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: 0, fl==Direction.EAST?.5f: fl==Direction.WEST?.625f: 1, 1, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.625f: 1));
+			list.add(new AxisAlignedBB(fl==Direction.WEST?.625f: fw==Direction.EAST?.875f: 0, 0, fl==Direction.NORTH?.625f: fw==Direction.SOUTH?.875f: 0, fl==Direction.EAST?.375f: fw==Direction.WEST?.125f: 1, 1, fl==Direction.SOUTH?.375f: fw==Direction.NORTH?.125f: 1));
 			return list;
 		}
 		return null;
@@ -390,9 +390,9 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	public Set<BlockPos> getEnergyPos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(1, 0, 2),
-				new BlockPos(1, 1, 2),
-				new BlockPos(1, 2, 2)
+				new BlockPos(2, 0, 4),
+				new BlockPos(2, 1, 4),
+				new BlockPos(2, 2, 4)
 		);
 	}
 
@@ -400,7 +400,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	public Set<BlockPos> getRedstonePos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(0, 1, 0)
+				new BlockPos(0, 1, 5)
 		);
 	}
 

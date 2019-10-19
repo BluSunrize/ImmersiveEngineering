@@ -8,15 +8,19 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
+import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
@@ -29,11 +33,13 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import org.lwjgl.opengl.GL11;
@@ -46,6 +52,21 @@ import java.util.Map;
 public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntity>
 {
 	private static IBakedModel model = null;
+	private static final ModelResourceLocation WHEEL_NAME;
+	private static final ResourceLocation WHEEL_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bucket_wheel.obj.ie");
+
+	static
+	{
+		ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/bucket_wheel");
+		WHEEL_NAME = new ModelResourceLocation(baseLoc, "");
+	}
+
+	public BucketWheelRenderer()
+	{
+		ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(WHEEL_LOC), 0,
+				0, false, ImmutableMap.of("flip-v", true));
+		DynamicModelLoader.requestModel(model, WHEEL_NAME);
+	}
 
 	@Override
 	public void render(BucketWheelTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
@@ -57,11 +78,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		if(state.getBlock()!=Multiblocks.bucketWheel)
 			return;
 		if(model==null)
-		{
-			//TODO state = state.with(IEProperties.DYNAMICRENDER, true);
-			state = state.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
-			model = blockRenderer.getModelForState(state);
-		}
+			model = blockRenderer.getBlockModelShapes().getModelManager().getModel(WHEEL_NAME);
 		OBJState objState = null;
 		Map<String, String> texMap = new HashMap<>();
 		List<String> list = Lists.newArrayList("bucketWheel");
@@ -96,7 +113,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		float dir = tile.getFacing()==Direction.SOUTH?90: tile.getFacing()==Direction.NORTH?-90: tile.getFacing()==Direction.EAST?180: 0;
 		GlStateManager.rotatef(dir, 0, 1, 0);
 		float rot = tile.rotation+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
-		GlStateManager.rotatef(rot, 1, 0, 0);
+		GlStateManager.rotatef(rot+90, 1, 0, 0);
 
 		RenderHelper.disableStandardItemLighting();
 		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
