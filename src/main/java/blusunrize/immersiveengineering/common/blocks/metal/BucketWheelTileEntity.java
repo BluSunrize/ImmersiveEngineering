@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjPr
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -41,7 +41,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	public static TileEntityType<BucketWheelTileEntity> TYPE;
 
 	public float rotation = 0;
-	public NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
+	public final NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
 	public boolean active = false;
 	public ItemStack particleStack = ItemStack.EMPTY;
 
@@ -56,7 +56,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 		super.readCustomNBT(nbt, descPacket);
 		float nbtRot = nbt.getFloat("rotation");
 		rotation = (Math.abs(nbtRot-rotation) > 5*IEConfig.MACHINES.excavator_speed.get())?nbtRot: rotation; // avoid stuttering due to packet delays
-		digStacks = Utils.readInventory(nbt.getList("digStacks", 10), 8);
+		ItemStackHelper.loadAllItems(nbt, digStacks);
 		active = nbt.getBoolean("active");
 		particleStack = nbt.contains("particleStack", NBT.TAG_COMPOUND)?ItemStack.read(nbt.getCompound("particleStack")): ItemStack.EMPTY;
 	}
@@ -66,7 +66,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putFloat("rotation", rotation);
-		nbt.put("digStacks", Utils.writeInventory(digStacks));
+		ItemStackHelper.saveAllItems(nbt, digStacks);
 		nbt.putBoolean("active", active);
 		if(!particleStack.isEmpty())
 			nbt.put("particleStack", particleStack.write(new CompoundNBT()));

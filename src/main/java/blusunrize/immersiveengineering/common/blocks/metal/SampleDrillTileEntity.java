@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
@@ -23,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
@@ -144,6 +146,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		ItemNBTHelper.putLong(stack, "timestamp", world.getGameTime());
 		DimensionChunkCoords dimCoords = new DimensionChunkCoords(world.dimension.getType(), chunkX, chunkZ);
 		ItemNBTHelper.setTagCompound(stack, "coords", dimCoords.writeToNBT());
+		IELogger.logger.info("Created basic sample: {}", stack);
 		if(info==null)
 			return stack;
 		if(info.mineralOverride!=null)
@@ -242,6 +245,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
+		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int i = 1; i <= 2; i++)
 		{
 			world.setBlockState(pos.add(0, i, 0), state);

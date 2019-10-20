@@ -197,8 +197,11 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 								packet.putInt("empty", target);
 							}
 							if(!packet.isEmpty())
+							{
+								packet.putInt("rotation", (int)wheel.rotation);
 								ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)),
 										new MessageTileSync(wheel, packet));
+							}
 						}
 					}
 					else if(active)

@@ -113,7 +113,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		float dir = tile.getFacing()==Direction.SOUTH?90: tile.getFacing()==Direction.NORTH?-90: tile.getFacing()==Direction.EAST?180: 0;
 		GlStateManager.rotatef(dir, 0, 1, 0);
 		float rot = tile.rotation+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
-		GlStateManager.rotatef(rot+90, 1, 0, 0);
+		GlStateManager.rotatef(rot, 1, 0, 0);
 
 		RenderHelper.disableStandardItemLighting();
 		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);

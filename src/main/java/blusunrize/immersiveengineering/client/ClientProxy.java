@@ -113,6 +113,7 @@ import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -1122,17 +1123,38 @@ public class ClientProxy extends CommonProxy
 	{
 		if(stack!=null&&IEConfig.MACHINES.excavator_particles.get())
 		{
+			Direction facing = tile.getFacing();
 			for(int i = 0; i < 16; i++)
 			{
-				double x = tile.getPos().getX()+.5+.1*(tile.getFacing().getAxis()==Axis.Z?2*(tile.getWorldNonnull().rand.nextGaussian()-.5): 0);
-				double y = tile.getPos().getY()+2.5;// + tile.getworld().rand.nextGaussian()/2;
-				double z = tile.getPos().getZ()+.5+.1*(tile.getFacing().getAxis()==Axis.X?2*(tile.getWorldNonnull().rand.nextGaussian()-.5): 0);
-				double mX = ((tile.getFacing()==Direction.WEST?.075: tile.getFacing()==Direction.EAST?-.075: 0)*(tile.getIsMirrored()?-1: 1))+((tile.getWorldNonnull().rand.nextDouble()-.5)*.01);
-				double mY = -.15D;//tile.getworld().rand.nextGaussian() * -0.05D;
-				double mZ = ((tile.getFacing()==Direction.NORTH?-.075: tile.getFacing()==Direction.SOUTH?.075: 0)*(tile.getIsMirrored()?-1: 1))+((tile.getWorldNonnull().rand.nextDouble()-.5)*.01);
+				double x = tile.getPos().getX()+.5;
+				if(facing.getAxis()==Axis.Z)
+					x += .1*(2*(tile.getWorldNonnull().rand.nextDouble()-.5));
+				else
+					x -= .5*facing.getAxisDirection().getOffset();
+				double y = tile.getPos().getY()+2.5;
+				double z = tile.getPos().getZ()+.5+.1*0;
+				if(tile.getFacing().getAxis()==Axis.X)
+					z += .1*(2*(tile.getWorldNonnull().rand.nextGaussian()-.5));
+				else
+					z -= .5*facing.getAxisDirection().getOffset();
+				double mX = (tile.getWorldNonnull().rand.nextDouble()-.5)*.01;
+				;
+				if(facing.getAxis()==Axis.X)
+				{
+					int sign = (tile.getIsMirrored()^facing.getAxisDirection()==AxisDirection.NEGATIVE)?1: -1;
+					mX += .075*sign;
+				}
+				double mY = tile.getWorld().rand.nextDouble()*-0.05D;
+				double mZ = (tile.getWorldNonnull().rand.nextDouble()-.5)*.01;
+				;
+				if(facing.getAxis()==Axis.Z)
+				{
+					int sign = (tile.getIsMirrored()^facing.getAxisDirection()==AxisDirection.NEGATIVE)?1: -1;
+					mZ += .075*sign;
+				}
 
 				Particle particle = new BreakingParticle.Factory().makeParticle(new ItemParticleData(ParticleTypes.ITEM, stack),
-						tile.getWorldNonnull(), x+1, y, z, mX, mY, mZ);//TODO x+1 is testing
+						tile.getWorldNonnull(), x, y, z, mX, mY, mZ);
 				mc().particles.addEffect(particle);
 			}
 		}

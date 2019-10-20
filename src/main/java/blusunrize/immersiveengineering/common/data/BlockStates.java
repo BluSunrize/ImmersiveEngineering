@@ -10,10 +10,7 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
 import blusunrize.immersiveengineering.common.data.Models.MetalModels;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator;
@@ -109,6 +106,9 @@ public class BlockStates extends BlockstateGenerator
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
 		createMultiblock(Multiblocks.blastFurnace, models.blastFurnaceOff, models.blastFurnaceOn, IEProperties.MULTIBLOCKSLAVE,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
+		createMultiblock(MetalDevices.sampleDrill, new ExistingModelFile(rl("block/metal_device/core_drill.obj.ie")),
+				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180,
+				variantBased);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)

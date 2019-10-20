@@ -394,7 +394,10 @@ public class IEContent
 		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
 				defaultMetalProperties);
 		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties);
-		MetalDevices.sampleDrill = new GenericTileBlock("sample_drill", () -> SampleDrillTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.sampleDrill = new GenericTileBlock("sample_drill", () -> SampleDrillTileEntity.TYPE, defaultMetalProperties,
+				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
+				.setBlockLayer(BlockRenderLayer.CUTOUT)
+				.setNotNormalBlock();
 		MetalDevices.teslaCoil = new GenericTileBlock("tesla_coil", () -> TeslaCoilTileEntity.TYPE, defaultMetalProperties, IEProperties.FACING_ALL);
 		MetalDevices.floodlight = new MiscConnectorBlock("floodlight", () -> FloodlightTileEntity.TYPE);
 		MetalDevices.turretChem = new GenericTileBlock("turret_chem", () -> TurretChemTileEntity.TYPE, defaultMetalProperties);
@@ -468,6 +471,7 @@ public class IEContent
 		Molds.moldPacking9 = new IEBaseItem("mold_packing_9", moldProperties);
 		Molds.moldUnpacking = new IEBaseItem("mold_unpacking", moldProperties);
 		IEItems.Misc.graphiteElectrode = new GraphiteElectrodeItem();
+		IEItems.Misc.coresample = new CoresampleItem();
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
