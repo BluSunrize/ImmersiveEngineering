@@ -170,20 +170,25 @@ public class BulletHandler
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult rtr, @Nullable UUID shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult rtr, @Nullable UUID shooterUUID, Entity projectile, boolean headshot)
 		{
 			if(!(rtr instanceof EntityRayTraceResult))
 				return;
 			EntityRayTraceResult target = (EntityRayTraceResult)rtr;
 			Entity hitEntity = target.getEntity();
 			if(!world.isRemote&&hitEntity!=null&&damageSourceGetter!=null)
-				if(hitEntity.attackEntityFrom(damageSourceGetter.getSource(projectile, world.getPlayerByUuid(shooter), hitEntity), getDamage(headshot)))
+			{
+				Entity shooter = null;
+				if(shooterUUID!=null)
+					shooter = world.getPlayerByUuid(shooterUUID);
+				if(hitEntity.attackEntityFrom(damageSourceGetter.getSource(projectile, shooter, hitEntity), getDamage(headshot)))
 				{
 					if(resetHurt)
 						hitEntity.hurtResistantTime = 0;
 					if(setFire)
 						hitEntity.setFire(3);
 				}
+			}
 		}
 
 		@Override

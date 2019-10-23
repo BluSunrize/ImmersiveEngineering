@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -75,14 +77,6 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		return new EntitySize(.125f, .125f, true);
 	}
 
-	@Override
-	protected void registerData()
-	{
-		super.registerData();
-		this.dataManager.register(field_212362_a, Optional.empty());
-	}
-
-
 	public void setTickLimit(int limit)
 	{
 		this.tickLimit = limit;
@@ -118,9 +112,13 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			this.shootingEntity = getShooterSynced();
 
 		this.baseTick();
+		BlockState localState;
+		if(stuckIn!=null)
+			localState = this.world.getBlockState(stuckIn);
+		else
+			localState = Blocks.AIR.getDefaultState();
 
-		BlockState localState = this.world.getBlockState(stuckIn);
-
+		//TODO better air check
 		if(localState.getMaterial()!=Material.AIR)
 		{
 			VoxelShape shape = localState.getCollisionShape(this.world, stuckIn);
@@ -134,6 +132,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 		if(this.inGround)
 		{
+			IELogger.logger.debug("In ground, at pos {}!", getPositionVec());
 			if(localState==inBlockState)
 			{
 				++this.ticksInGround;
@@ -154,20 +153,23 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 			if(ticksInAir >= tickLimit)
 			{
+				IELogger.logger.debug("Removing after {} ticks", ticksInAir);
 				this.remove();
 				return;
 			}
 
 			Vec3d currentPos = new Vec3d(this.posX, this.posY, this.posZ);
 			Vec3d nextPos = new Vec3d(this.posX, this.posY, this.posZ).add(getMotion());
+			IELogger.logger.info("Moving from {} to {} ({})", currentPos, nextPos, getMotion());
 			RayTraceResult mop = this.world.rayTraceBlocks(new RayTraceContext(currentPos, nextPos, BlockMode.COLLIDER,
 					FluidMode.NONE, this));
 
 			if(mop.getType()==Type.BLOCK)
 				nextPos = mop.getHitVec();
 
-			if(mop.getType()==Type.BLOCK)
+			if(mop.getType()!=Type.ENTITY)
 			{
+				IELogger.logger.info("Did not hit entity at {}", mop.getHitVec());
 				Entity entity = null;
 				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
 				double d0 = 0.0D;
@@ -199,19 +201,24 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			{
 				if(mop.getType()==Type.ENTITY)
 				{
+					IELogger.logger.info("Hit entity at {}", mop.getHitVec());
 					EntityRayTraceResult entityHit = (EntityRayTraceResult)mop;
 					if(!this.isBurning()&&this.canIgnite()&&entityHit.getEntity().isBurning())
 						this.setFire(3);
 					boolean allowHit = true;
-					PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
-					if(shooter!=null&&entityHit.getEntity() instanceof PlayerEntity)
-						allowHit = shooter.canAttackPlayer((PlayerEntity)entityHit.getEntity());
+					if(shootingEntity!=null)
+					{
+						PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
+						if(shooter!=null&&entityHit.getEntity() instanceof PlayerEntity)
+							allowHit = shooter.canAttackPlayer((PlayerEntity)entityHit.getEntity());
+					}
 					if(allowHit)
 						this.onImpact(mop);
 					this.remove();
 				}
 				else if(mop.getType()==Type.BLOCK)
 				{
+					IELogger.logger.info("Hit block at {}", mop.getHitVec());
 					BlockRayTraceResult blockHit = (BlockRayTraceResult)mop;
 					this.onImpact(blockHit);
 					this.stuckIn = blockHit.getPos();
@@ -265,7 +272,8 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				}
 				movementDecay *= 0.8F;
 			}
-			setMotion(getMotion().scale(movementDecay).add(0, -getGravity(), 0));
+			if(movementDecay > 0)
+				setMotion(getMotion().scale(movementDecay).add(0, -getGravity(), 0));
 			this.setPosition(this.posX, this.posY, this.posZ);
 			this.doBlockCollisions();
 		}
@@ -337,8 +345,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			stuckIn = null;
 		}
 		this.inGround = nbt.getByte("inGround")==1;
-		if(this.world!=null)
-			this.shootingEntity = nbt.getUniqueId("shootingEntity");
+		this.shootingEntity = nbt.getUniqueId("shootingEntity");
 	}
 
 	@Override

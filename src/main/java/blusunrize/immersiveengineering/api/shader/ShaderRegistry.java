@@ -18,7 +18,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
@@ -571,8 +570,8 @@ public class ShaderRegistry
 
 	public static Triple<ItemStack, ShaderRegistryEntry, ShaderCase> getStoredShaderAndCase(ItemStack itemStack)
 	{
-		LazyOptional<ShaderWrapper> shaderCap = itemStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		return shaderCap.map(ShaderRegistry::getStoredShaderAndCase).orElse(null);
+		ShaderWrapper shaderCap = itemStack.getCapability(CapabilityShader.SHADER_CAPABILITY).orElse(null);
+		return shaderCap!=null?getStoredShaderAndCase(shaderCap): null;
 	}
 
 	public static Triple<ItemStack, ShaderRegistryEntry, ShaderCase> getStoredShaderAndCase(CapabilityShader.ShaderWrapper wrapper)

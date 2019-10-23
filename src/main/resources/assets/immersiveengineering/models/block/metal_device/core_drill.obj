@@ -2,6 +2,7 @@
 mtllib core_drill.mtl
 usemtl coreDrill
 
+# TODO: Remove these vertices, they're currently only here to shift the indices correctly
 o drill
 v 0.375000 2.499999 0.625000
 v 0.375000 2.499999 0.375000
@@ -18,11 +19,6 @@ vt 0.312500 0.437500
 vt 0.312500 0.750000
 vt 0.375000 0.750000
 vt 0.375000 0.812500
-f 1/1 2/2 3/3 4/4
-f 2/1 5/2 6/3 3/4
-f 5/1 7/2 8/3 6/4
-f 7/1 1/2 4/3 8/4
-f 2/1 1/5 7/6 5/7
 
 o drill_base
 v 0.875000 0.687500 0.312500

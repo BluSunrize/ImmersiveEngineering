@@ -472,6 +472,8 @@ public class IEContent
 		Molds.moldUnpacking = new IEBaseItem("mold_unpacking", moldProperties);
 		IEItems.Misc.graphiteElectrode = new GraphiteElectrodeItem();
 		IEItems.Misc.coresample = new CoresampleItem();
+		Weapons.revolver = new RevolverItem();
+		Weapons.bullet = new BulletItem();
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
