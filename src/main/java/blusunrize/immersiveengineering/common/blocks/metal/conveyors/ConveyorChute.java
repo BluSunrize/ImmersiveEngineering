@@ -133,8 +133,7 @@ public class ConveyorChute extends ConveyorVertical
 
 			if(!contact)
 			{
-				if(item.getAge() > item.lifespan-60*20)
-					item.setAgeToCreativeDespawnTime();
+				item.setNoDespawn(); //misnamed, actually sets despawn timer to 10 minutes
 				ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);
 			}
 			else
