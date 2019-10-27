@@ -56,6 +56,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBas
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorSplit;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
@@ -327,6 +328,7 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
 		ModelLoaderRegistry.registerLoader(new MultiLayerLoader());
+		ConveyorChute.clientInit();
 	}
 
 

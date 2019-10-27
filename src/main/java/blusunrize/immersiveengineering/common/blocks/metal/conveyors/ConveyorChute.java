@@ -200,11 +200,18 @@ public class ConveyorChute extends ConveyorVertical
 	}
 
 	@SideOnly(Side.CLIENT)
-	private static final IBakedModel[][] chuteModel = new IBakedModel[BlockTypes_MetalsAll.values().length][];
+	private static IBakedModel[][] chuteModel;
 	@SideOnly(Side.CLIENT)
-	private static final Function<ResourceLocation, TextureAtlasSprite>[] TEXTURE_GETTERS = new Function[BlockTypes_MetalsAll.values().length];
+	private static Function<ResourceLocation, TextureAtlasSprite>[] TEXTURE_GETTERS;
 	@SideOnly(Side.CLIENT)
-	private static boolean initTextures = false;
+	private static boolean initTextures;
+
+	@SideOnly(Side.CLIENT)
+	public static void clientInit()
+	{
+		chuteModel = new IBakedModel[BlockTypes_MetalsAll.values().length][];
+		TEXTURE_GETTERS = new Function[BlockTypes_MetalsAll.values().length];
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
