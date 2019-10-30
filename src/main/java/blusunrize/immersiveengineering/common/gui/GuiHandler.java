@@ -40,6 +40,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.network.IContainerFactory;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -142,9 +143,9 @@ public class GuiHandler
 	@SubscribeEvent
 	public static void registerContainers(RegistryEvent.Register<ContainerType<?>> evt)
 	{
-		for(TileContainer<?, ?> tc : TILE_CONTAINERS.values())
+		for(TileContainer<?, ?> tc : new HashSet<>(TILE_CONTAINERS.values()))
 			evt.getRegistry().register(tc.type);
-		for(ItemContainer<?> ic : ITEM_CONTAINERS.values())
+		for(ItemContainer<?> ic : new HashSet<>(ITEM_CONTAINERS.values()))
 			evt.getRegistry().register(ic.type);
 	}
 

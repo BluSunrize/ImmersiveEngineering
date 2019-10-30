@@ -229,6 +229,12 @@ public class IESmartObjModel extends OBJBakedModel
 	public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand, OBJState objstate, Map<String, String> tex,
 									boolean addAnimationAndTex, IModelData modelData)
 	{
+		if(blockState==null)
+		{
+			if(bakedQuads==null)
+				bakedQuads = ImmutableList.copyOf(buildQuads(modelData));
+			return bakedQuads;
+		}
 		texReplace = tex;
 		this.tempState = blockState;
 		RenderCacheKey adapter;

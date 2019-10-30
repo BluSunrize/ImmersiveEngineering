@@ -16,26 +16,44 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemModelMesher;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ItemModelMesherForge;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ForgeBlockStateV1.TRSRDeserializer;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.registries.IRegistryDelegate;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Function;
+
+import static net.minecraftforge.eventbus.api.EventPriority.LOW;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class ObjLoaderWorkaround
@@ -52,7 +70,6 @@ public class ObjLoaderWorkaround
 			ResourceLocation jsonLoc = new ResourceLocation(blockName.getNamespace(), "blockstates/"+blockName.getPath()+".json");
 			try
 			{
-
 				IResource jsonResource = manager.getResource(jsonLoc);
 				InputStream in = jsonResource.getInputStream();
 				JsonObject json = JSONUtils.fromJson(new InputStreamReader(in));
@@ -66,7 +83,7 @@ public class ObjLoaderWorkaround
 						continue;
 					JsonObject val = entry.getValue().getAsJsonObject();
 					ResourceLocation name = new ResourceLocation(val.get("model").getAsString());
-					if(name.getPath().endsWith(".obj")||name.getPath().endsWith(".obj.ie"))
+					if(shouldLoad(name))
 					{
 						int xRot = Optional.ofNullable(val.get("x")).map(JsonElement::getAsInt).orElse(0);
 						int yRot = Optional.ofNullable(val.get("y")).map(JsonElement::getAsInt).orElse(0);
@@ -88,7 +105,84 @@ public class ObjLoaderWorkaround
 			{
 			}
 		}
+
+		try
+		{
+			//TODO obfuscation?
+			Function<Item, ModelResourceLocation> toLoc;
+			ItemModelMesher mesher = ClientUtils.mc().getItemRenderer().getItemModelMesher();
+			if(mesher instanceof ItemModelMesherForge)
+			{
+				Field modelLocField = ItemModelMesherForge.class.getDeclaredField("locations");
+				modelLocField.setAccessible(true);
+				Map<IRegistryDelegate<Item>, ModelResourceLocation> idMap = (Map<IRegistryDelegate<Item>, ModelResourceLocation>)modelLocField.get(mesher);
+				toLoc = item -> idMap.get(item.delegate);
+			}
+			else
+			{
+				Field modelLocField = ItemModelMesher.class.getDeclaredField("modelLocations");
+				modelLocField.setAccessible(true);
+				Int2ObjectMap<ModelResourceLocation> idMap = (Int2ObjectMap<ModelResourceLocation>)modelLocField.get(mesher);
+				toLoc = item -> idMap.get(Item.getIdFromItem(item));
+			}
+			Gson GSON = new GsonBuilder().registerTypeAdapter(TRSRTransformation.class, TRSRDeserializer.INSTANCE).create();
+			for(Item item : IEContent.registeredIEItems)
+			{
+				try
+				{
+					ModelResourceLocation modelLoc = toLoc.apply(item);
+					ResourceLocation itemName = item.getRegistryName();
+					ResourceLocation jsonLoc = new ResourceLocation(itemName.getNamespace(), "models/item/"+itemName.getPath()+".json");
+					IResource jsonResource = manager.getResource(jsonLoc);
+					InputStream in = jsonResource.getInputStream();
+					JsonObject json = JSONUtils.fromJson(new InputStreamReader(in));
+					if(json.has("parent"))
+					{
+						ResourceLocation parent = new ResourceLocation(json.get("parent").getAsString());
+						IELogger.logger.info("Parent for {} is {}", itemName, parent);
+						if(shouldLoad(parent))
+						{
+							Map<TransformType, TRSRTransformation> perspectives = new HashMap<>();
+							if(json.has("display_trsr"))
+							{
+								JsonObject displayJson = json.getAsJsonObject("display_trsr");
+								for(TransformType type : TransformType.values())
+								{
+									String name = type.name().toLowerCase(Locale.ENGLISH);
+									if(displayJson.has(name))
+									{
+										JsonObject obj = displayJson.getAsJsonObject(name);
+										TRSRTransformation transform = GSON.fromJson(obj, TRSRTransformation.class);
+										Preconditions.checkNotNull(transform);
+										perspectives.put(type, transform);
+									}
+								}
+							}
+							DynamicModelLoader.requestModel(new ConfiguredModel(new ExistingModelFile(parent), 0, 0, false,
+									ImmutableMap.of("flip-v", true)), modelLoc, perspectives);
+						}
+					}
+				} catch(IOException ioxcp)
+				{
+					ioxcp.printStackTrace();
+				}
+			}
+		} catch(NoSuchFieldException|IllegalAccessException x)
+		{
+			x.printStackTrace();
+			System.exit(3);
+			throw new RuntimeException(x);
+		}
 	}
 
+	@SubscribeEvent(priority = LOW)
+	public static void modelBake(ModelBakeEvent evt)
+	{
+		ClientUtils.mc().getItemRenderer().getItemModelMesher().rebuildCache();
+	}
 
+	private static boolean shouldLoad(ResourceLocation name)
+	{
+		return name.getPath().endsWith(".obj")||name.getPath().endsWith(".obj.ie");
+	}
 }

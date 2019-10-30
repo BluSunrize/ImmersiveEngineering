@@ -13,11 +13,13 @@ import blusunrize.immersiveengineering.client.models.obj.IEOBJModel;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.model.ModelRotation;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -30,7 +32,10 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.BasicState;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -49,19 +54,23 @@ public class DynamicModelLoader
 {
 	private static Set<ResourceLocation> requestedTextures = new HashSet<>();
 	private static Set<ResourceLocation> manualTextureRequests = new HashSet<>();
-	private static Multimap<ConfiguredModel, ModelResourceLocation> requestedModels = HashMultimap.create();
-	private static Map<ConfiguredModel, IUnbakedModel> unbakedModels = new HashMap<>();
+	private static Multimap<ModelWithTransforms, ModelResourceLocation> requestedModels = HashMultimap.create();
+	private static Map<ModelWithTransforms, IUnbakedModel> unbakedModels = new HashMap<>();
 
 	@SubscribeEvent
 	public static void modelBake(ModelBakeEvent evt)
 	{
 		IELogger.logger.debug("Baking models");
-		for(Entry<ConfiguredModel, IUnbakedModel> unbaked : unbakedModels.entrySet())
+		for(Entry<ModelWithTransforms, IUnbakedModel> unbaked : unbakedModels.entrySet())
 		{
-			ConfiguredModel conf = unbaked.getKey();
+			ConfiguredModel conf = unbaked.getKey().model;
+			IModelState state;
+			if(unbaked.getKey().transforms.isEmpty())
+				state = ModelRotation.getModelRotation(conf.rotationX, conf.rotationY);
+			else
+				state = new SimpleModelState(ImmutableMap.copyOf(unbaked.getKey().transforms));
 			IBakedModel baked = unbaked.getValue().bake(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
-					new BasicState(ModelRotation.getModelRotation(conf.rotationX, conf.rotationY), conf.uvLock),
-					DefaultVertexFormats.ITEM);
+					new BasicState(state, conf.uvLock), DefaultVertexFormats.ITEM);
 			for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
 				evt.getModelRegistry().put(mrl, baked);
 		}
@@ -85,12 +94,12 @@ public class DynamicModelLoader
 		unbakedModels.clear();
 		try
 		{
-			for(ConfiguredModel reqModel : requestedModels.keySet())
+			for(ModelWithTransforms reqModel : requestedModels.keySet())
 			{
-				ResourceLocation name = reqModel.name.getLocation();
+				ResourceLocation name = reqModel.model.name.getLocation();
 				IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
 				IUnbakedModel unbaked = new OBJModel.Parser(asResource, manager).parse();
-				unbaked = unbaked.process(reqModel.getAddtionalDataAsStrings());
+				unbaked = unbaked.process(reqModel.model.getAddtionalDataAsStrings());
 				if(name.getPath().endsWith(".obj.ie"))
 					unbaked = new IEOBJModel(((OBJModel)unbaked).getMatLib(), name);
 				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), ImmutableSet.of()));
@@ -109,6 +118,24 @@ public class DynamicModelLoader
 
 	public static void requestModel(ConfiguredModel reqModel, ModelResourceLocation name)
 	{
-		requestedModels.put(reqModel, name);
+		requestModel(reqModel, name, ImmutableMap.of());
+	}
+
+	public static void requestModel(ConfiguredModel reqModel, ModelResourceLocation name,
+									Map<TransformType, TRSRTransformation> transforms)
+	{
+		requestedModels.put(new ModelWithTransforms(reqModel, transforms), name);
+	}
+
+	private static class ModelWithTransforms
+	{
+		final ConfiguredModel model;
+		final Map<TransformType, TRSRTransformation> transforms;
+
+		private ModelWithTransforms(ConfiguredModel model, Map<TransformType, TRSRTransformation> transforms)
+		{
+			this.model = model;
+			this.transforms = transforms;
+		}
 	}
 }

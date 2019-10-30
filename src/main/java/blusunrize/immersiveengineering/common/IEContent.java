@@ -510,12 +510,12 @@ public class IEContent
 			}
 		};
 		 */
+		ConveyorHandler.createConveyorBlocks();
 	}
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
-		ConveyorHandler.registerConveyorBlocks(event);
 		checkNonNullNames(registeredIEBlocks);
 		for(Block block : registeredIEBlocks)
 			event.getRegistry().register(block);

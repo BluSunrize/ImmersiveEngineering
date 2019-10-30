@@ -120,12 +120,11 @@ public class ConveyorHandler
 		return tileEntities.get(typeName);
 	}
 
-	public static void registerConveyorBlocks(RegistryEvent.Register<Block> evt)
+	public static void createConveyorBlocks()
 	{
 		for(ResourceLocation rl : classRegistry.keySet())
 		{
 			Block b = new ConveyorBlock(rl);
-			evt.getRegistry().register(b);
 			conveyorBlocks.put(rl, b);
 		}
 	}

@@ -1,5 +1,37 @@
 {
-	"parent":"immersiveengineering:item/ie_item_base",
-	"textures": {
-	}
+  "display_trsr": {
+    "first_person_right_hand": {
+      "translation": [-0.125, 0.0625, 0.046875],
+      "scale": [0.1875, 0.25, 0.25]
+    },
+    "first_person_left_hand": {
+      "scale": [0.1875, 0.25, 0.25],
+      "translation": [0.125, 0.0625, 0.05625]
+    },
+    "third_person_right_hand": {
+      "translation": [-0.125, 0.0625, -0.03125],
+      "scale": 0.125,
+      "rotation": [90, 0, -90]
+    },
+    "third_person_left_hand": {
+      "translation": [0, 0.0625, -0.03125],
+      "scale": 0.125,
+      "rotation": [90, 0, 90]
+    },
+    "gui": {
+      "translation": [0.1875, -0.0781225, -0.15625],
+      "scale": 0.2,
+      "rotation": [25.7, 0, -42.5]
+    },
+    "fixed": {
+      "translation": [-0.375, -0.25, -0.0625],
+      "scale": 0.1875,
+      "rotation": [180, 0, -140]
+    },
+    "ground": {
+      "translation": [0.125, 0, 0.0625],
+      "scale": 0.125
+    }
+  },
+  "parent": "immersiveengineering:item/revolver.obj.ie"
 }
