@@ -124,7 +124,7 @@ public class EntitySkylineHook extends Entity
 	@Override
 	public void onUpdate()
 	{
-		if(ticksExisted==1)
+		if(ticksExisted==1 && world.isRemote)
 			ImmersiveEngineering.proxy.startSkyhookSound(this);
 		EntityPlayer player = null;
 		List<Entity> list = this.getPassengers();
