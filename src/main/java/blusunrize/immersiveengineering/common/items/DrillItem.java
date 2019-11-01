@@ -225,15 +225,12 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
 	{
-		if(transform.isPresent())
+		CompoundNBT upgrades = this.getUpgrades(stack);
+		if(group.equals("drill_head")&&upgrades.getInt("damage") <= 0)
 		{
-			CompoundNBT upgrades = this.getUpgrades(stack);
-			if(group.equals("drill_head")&&upgrades.getInt("damage") <= 0)
-			{
-				Matrix4 mat = new Matrix4(transform.get().getMatrixVec());
-				mat.translate(-.25f, 0, 0);
-				return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
-			}
+			Matrix4 mat = new Matrix4(transform.orElse(TRSRTransformation.identity()).getMatrixVec());
+			mat.translate(-.25f, 0, 0);
+			return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
 		}
 		return transform;
 	}
@@ -274,7 +271,6 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		mat.setIdentity();
 		if(groups==FIXED[0])
 			return matAugers;
-		//.069813f
 		float angle = (entity.ticksExisted%60+partialTicks)/60f*(float)(2*Math.PI);
 		if("drill_head".equals(groups[0]))
 			mat.rotate(angle, 1, 0, 0);

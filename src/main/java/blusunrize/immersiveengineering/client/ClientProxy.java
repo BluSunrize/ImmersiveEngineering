@@ -70,6 +70,7 @@ import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree.InnerNode;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -134,6 +135,7 @@ import net.minecraftforge.fml.VersionChecker.Status;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.lwjgl.glfw.GLFW;
@@ -149,7 +151,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = MODID, bus = Bus.MOD)
 public class ClientProxy extends CommonProxy
 {
 	public static AtlasTexture revolverTextureMap;
@@ -174,7 +176,6 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(IEOBJLoader.instance);
 		OBJLoader.INSTANCE.addDomain("immersiveengineering");
 		IEOBJLoader.instance.addDomain("immersiveengineering");
-		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(ImmersiveModelRegistry.instance);
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Weapons.bullet), new ImmersiveModelRegistry.ItemModelReplacement()
@@ -958,9 +959,12 @@ public class ClientProxy extends CommonProxy
 	{
 	}
 
+	//TODO are these here rather than in ClientEventHandler for any particular reason???
 	@SubscribeEvent
-	public void textureStichPre(TextureStitchEvent.Pre event)
+	public static void textureStichPre(TextureStitchEvent.Pre event)
 	{
+		if(event.getMap()!=mc().getTextureMap())
+			return;
 		IELogger.info("Stitching Revolver Textures!");
 		RevolverItem.addRevolverTextures(event);
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
@@ -971,7 +975,7 @@ public class ClientProxy extends CommonProxy
 							event.addSprite(layer.getTexture());
 
 		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
-			event.addSprite(new ResourceLocation(p.texture));
+			event.addSprite(p.texture);
 		event.addSprite(new ResourceLocation(MODID, "blocks/wire"));
 		event.addSprite(new ResourceLocation(MODID, "blocks/shaders/greyscale_fire"));
 
@@ -992,32 +996,43 @@ public class ClientProxy extends CommonProxy
 		event.addSprite(SplitConveyor.texture_on);
 		event.addSprite(SplitConveyor.texture_casing);
 
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/creosote_still"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/creosote_flow"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/plantoil_still"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/plantoil_flow"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/ethanol_still"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/ethanol_flow"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/biodiesel_still"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/biodiesel_flow"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/concrete_still"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/concrete_flow"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/potion_still"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/potion_flow"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/hot_metal_still"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/fluid/hot_metal_flow"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/creosote_still"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/creosote_flow"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/plantoil_still"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/plantoil_flow"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/ethanol_still"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/ethanol_flow"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/biodiesel_still"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/biodiesel_flow"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/concrete_still"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/concrete_flow"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/potion_still"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/potion_flow"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/hot_metal_still"));
+		event.addSprite(new ResourceLocation(MODID, "block/fluid/hot_metal_flow"));
 
 		event.addSprite(new ResourceLocation(MODID, "item/shader_slot"));
 	}
 
 	@SubscribeEvent
-	public void textureStichPost(TextureStitchEvent.Post event)
+	public static void textureStichPost(TextureStitchEvent.Post event)
 	{
-		clearRenderCaches();
+		if(event.getMap()!=mc().getTextureMap())
+			return;
+		ImmersiveEngineering.proxy.clearRenderCaches();
 		RevolverItem.retrieveRevolverTextures(event.getMap());
 		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
-			p.sprite = event.getMap().getAtlasSprite(p.texture);
+		{
+			p.sprite = event.getMap().getSprite(p.texture);
+			Preconditions.checkNotNull(p.sprite);
+		}
 		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "blocks/wire"));
+		AtlasTexture texturemap = Minecraft.getInstance().getTextureMap();
+		for(int i = 0; i < ClientUtils.destroyBlockIcons.length; i++)
+		{
+			ClientUtils.destroyBlockIcons[i] = texturemap.getSprite(new ResourceLocation("block/destroy_stage_"+i));
+			Preconditions.checkNotNull(ClientUtils.destroyBlockIcons[i]);
+		}
 	}
 
 	public void registerItemModel(Item item, String path, String renderCase)

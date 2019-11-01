@@ -104,7 +104,6 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -122,12 +121,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
 	{
 		if(resourcePredicate.test(VanillaResourceType.TEXTURES))
-		{
-			// TODO this "lazy loading" of the textures is a workaround for the issues described in
-			// https://github.com/MinecraftForge/MinecraftForge/pull/5860
-			Arrays.fill(ClientUtils.destroyBlockIcons, null);
 			ImmersiveEngineering.proxy.clearRenderCaches();
-		}
 	}
 
 	public static final Map<Connection, Pair<BlockPos, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
