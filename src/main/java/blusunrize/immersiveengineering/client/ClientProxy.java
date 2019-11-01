@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
@@ -148,7 +149,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-@SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class ClientProxy extends CommonProxy
 {
@@ -1435,5 +1435,11 @@ public class ClientProxy extends CommonProxy
 	{
 		ContainerType<C> type = (ContainerType<C>)GuiHandler.getContainerType(containerName);
 		ScreenManager.registerFactory(type, factory);
+	}
+
+	@Override
+	public Item.Properties useIEOBJRenderer(Item.Properties props)
+	{
+		return super.useIEOBJRenderer(props).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE);
 	}
 }

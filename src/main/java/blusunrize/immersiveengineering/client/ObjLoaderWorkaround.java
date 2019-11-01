@@ -158,8 +158,16 @@ public class ObjLoaderWorkaround
 									}
 								}
 							}
+							ImmutableMap.Builder<String, Object> remaining = new Builder<>();
+							for(Entry<String, JsonElement> e : json.entrySet())
+							{
+								String key = e.getKey();
+								if(!key.equals("parent")&&!key.equals("display-trsr"))
+									remaining.put(key, e.getValue());
+							}
+							remaining.put("flip-v", true);
 							DynamicModelLoader.requestModel(new ConfiguredModel(new ExistingModelFile(parent), 0, 0, false,
-									ImmutableMap.of("flip-v", true)), modelLoc, perspectives);
+									remaining.build()), modelLoc, perspectives);
 						}
 					}
 				} catch(IOException ioxcp)

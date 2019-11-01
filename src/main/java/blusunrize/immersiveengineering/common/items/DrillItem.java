@@ -94,7 +94,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 
 	public DrillItem()
 	{
-		super("drill", new Properties().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
+		super("drill", withIEOBJRender().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
 	}
 
 	@Override

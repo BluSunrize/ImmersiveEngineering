@@ -43,5 +43,6 @@
       "post-rotation": [0.0, 0.0, 0.0, 1.0]
     }
   },
+  "dynamic": true,
   "parent": "immersiveengineering:item/revolver.obj.ie"
 }

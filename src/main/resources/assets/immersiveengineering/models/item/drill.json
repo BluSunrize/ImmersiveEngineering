@@ -1,5 +1,6 @@
 {
 	"parent": "immersiveengineering:item/drill/drill_diesel.obj.ie",
+  "dynamic": true,
 	"display-trsr": {
 		"first_person_right_hand": {
 			"translation": [0.21875, 0.71875, 0.875],

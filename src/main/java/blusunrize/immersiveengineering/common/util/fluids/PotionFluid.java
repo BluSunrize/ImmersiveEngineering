@@ -40,9 +40,9 @@ public class PotionFluid extends IEFluid
 	}
 
 	@Override
-	protected Fluid createSourceVariant()
+	protected Fluid createFlowingVariant()
 	{
-		PotionFluid ret = new PotionFluid(fluidName+"_source", stillTex, flowingTex, true);
+		PotionFluid ret = new PotionFluid(fluidName, stillTex, flowingTex, false);
 		ret.flowing = this;
 		return ret;
 	}

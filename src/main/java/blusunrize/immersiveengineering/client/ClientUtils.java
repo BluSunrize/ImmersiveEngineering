@@ -20,10 +20,12 @@ import blusunrize.immersiveengineering.common.items.ChemthrowerItem;
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.RailgunItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.*;
@@ -467,6 +469,16 @@ public class ClientUtils
 	//Cheers boni =P
 	public static void drawBlockDamageTexture(Tessellator tessellatorIn, BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
 	{
+		if(destroyBlockIcons[0]==null)
+		{
+			AtlasTexture texturemap = Minecraft.getInstance().getTextureMap();
+			IELogger.logger.debug("Reloading breaking icons");
+			for(int i = 0; i < ClientUtils.destroyBlockIcons.length; i++)
+			{
+				ClientUtils.destroyBlockIcons[i] = texturemap.getSprite(new ResourceLocation("block/destroy_stage_"+i));
+				Preconditions.checkNotNull(ClientUtils.destroyBlockIcons[i]);
+			}
+		}
 		double d0 = entityIn.lastTickPosX+(entityIn.posX-entityIn.lastTickPosX)*(double)partialTicks;
 		double d1 = entityIn.lastTickPosY+(entityIn.posY-entityIn.lastTickPosY)*(double)partialTicks;
 		double d2 = entityIn.lastTickPosZ+(entityIn.posZ-entityIn.lastTickPosZ)*(double)partialTicks;
@@ -486,7 +498,7 @@ public class ClientUtils
 		GlStateManager.pushMatrix();
 		//preRenderDamagedBlocks END
 		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRendererIn.setTranslation(-d0, -d1, -d2);
+		worldRendererIn.setTranslation(-d0, -d1-entityIn.getEyeHeight(), -d2);
 		//		worldRendererIn.markDirty();
 		for(BlockPos blockpos : blocks)
 		{
@@ -501,6 +513,7 @@ public class ClientUtils
 				if(iblockstate.getMaterial()!=Material.AIR)
 				{
 					TextureAtlasSprite textureatlassprite = destroyBlockIcons[progress];
+					Preconditions.checkNotNull(textureatlassprite, "No destroy icon for "+progress);
 					BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 					blockrendererdispatcher.renderBlockDamage(iblockstate, blockpos, textureatlassprite, world);
 				}

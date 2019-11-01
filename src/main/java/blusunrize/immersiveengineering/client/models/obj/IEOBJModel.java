@@ -24,15 +24,18 @@ import java.util.function.Function;
 
 public class IEOBJModel extends OBJModel
 {
+	private final boolean dynamic;
 	public IEOBJModel(MaterialLibrary matLib, ResourceLocation modelLocation)
 	{
 		super(matLib, modelLocation);
+		dynamic = false;
 	}
 
-	public IEOBJModel(MaterialLibrary matLib, ResourceLocation modelLocation, Object customData)
+	public IEOBJModel(MaterialLibrary matLib, ResourceLocation modelLocation, Object customData, boolean dynamic)
 	{
 		super(matLib, modelLocation);
 		this.setCustomData(customData);
+		this.dynamic = dynamic;
 	}
 
 	@Nullable
@@ -41,20 +44,21 @@ public class IEOBJModel extends OBJModel
 	{
 		IBakedModel preBaked = super.bake(bakery, spriteGetter, sprite, format);
 		return new IESmartObjModel(preBaked, this, sprite.getState(), format,
-				IESmartObjModel.getTexturesForOBJModel(preBaked), null, false);//TODO possibly dynamic?
+				IESmartObjModel.getTexturesForOBJModel(preBaked), null, dynamic);
 	}
 
 	@Override
 	public IUnbakedModel process(ImmutableMap<String, String> customData)
 	{
-		IEOBJModel ret = new IEOBJModel(this.getMatLib(), getResourceLocation(), getCustomData());
+		boolean dynamic = customData.containsKey("dynamic")&&Boolean.parseBoolean(customData.get("dynamic"));
+		IEOBJModel ret = new IEOBJModel(this.getMatLib(), getResourceLocation(), getCustomData(), dynamic);
 		return ret;
 	}
 
 	@Override
 	public IUnbakedModel retexture(ImmutableMap<String, String> textures)
 	{
-		IEOBJModel ret = new IEOBJModel(this.getMatLib().makeLibWithReplacements(textures), getResourceLocation(), getCustomData());
+		IEOBJModel ret = new IEOBJModel(this.getMatLib().makeLibWithReplacements(textures), getResourceLocation(), getCustomData(), dynamic);
 		return ret;
 	}
 

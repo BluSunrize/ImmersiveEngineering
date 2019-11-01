@@ -51,7 +51,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.PlayerController;
@@ -59,7 +58,6 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.IHasHead;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
@@ -106,6 +104,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,10 +123,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(resourcePredicate.test(VanillaResourceType.TEXTURES))
 		{
-			AtlasTexture texturemap = Minecraft.getInstance().getTextureMap();
-			for(int i = 0; i < ClientUtils.destroyBlockIcons.length; i++)
-				ClientUtils.destroyBlockIcons[i] = texturemap.getAtlasSprite("minecraft:blocks/destroy_stage_"+i);
-
+			// TODO this "lazy loading" of the textures is a workaround for the issues described in
+			// https://github.com/MinecraftForge/MinecraftForge/pull/5860
+			Arrays.fill(ClientUtils.destroyBlockIcons, null);
 			ImmersiveEngineering.proxy.clearRenderCaches();
 		}
 	}

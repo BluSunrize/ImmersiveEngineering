@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -186,5 +187,10 @@ public class CommonProxy
 	public void registerContainersAndScreens()
 	{
 		GuiHandler.commonInit();
+	}
+
+	public Item.Properties useIEOBJRenderer(Item.Properties props)
+	{
+		return props;
 	}
 }

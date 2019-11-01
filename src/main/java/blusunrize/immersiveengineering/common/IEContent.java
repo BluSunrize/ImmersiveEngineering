@@ -51,6 +51,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
+import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
@@ -477,6 +478,10 @@ public class IEContent
 		Tools.drillheadSteel = new DrillheadItem(DrillheadItem.STEEL);
 		Weapons.revolver = new RevolverItem();
 		Weapons.bullet = new BulletItem();
+		for(ToolUpgrade upgrade : ToolUpgrade.values())
+		{
+			IEItems.Misc.toolUpgrades.put(upgrade, new ToolUpgradeItem(upgrade));
+		}
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);

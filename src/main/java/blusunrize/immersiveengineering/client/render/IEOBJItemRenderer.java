@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -78,7 +79,15 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					sCase = tmp.getRight();
 				}
 				IESmartObjModel obj = (IESmartObjModel)model;
-				Map<String, Boolean> visible = new HashMap<>(((OBJModel.OBJState)obj.getState()).getVisibilityMap());
+				Map<String, Boolean> visible;
+				if(obj.getState() instanceof OBJState)
+					visible = new HashMap<>(((OBJModel.OBJState)obj.getState()).getVisibilityMap());
+				else
+				{
+					visible = new HashMap<>();
+					for(String g : obj.getModel().getMatLib().getGroups().keySet())
+						visible.put(g, true);
+				}
 				Tessellator tes = Tessellator.getInstance();
 				BufferBuilder bb = tes.getBuffer();
 				TransformType transformType = obj.lastCameraTransform;

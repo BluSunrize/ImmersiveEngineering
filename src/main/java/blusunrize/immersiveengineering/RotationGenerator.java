@@ -43,7 +43,6 @@ public class RotationGenerator
 		System.out.println(transforms.toJson());
 	}
 
-
 	private static class Transformation
 	{
 		private final Map<TransformType, Matrix4> transforms = new HashMap<>();
