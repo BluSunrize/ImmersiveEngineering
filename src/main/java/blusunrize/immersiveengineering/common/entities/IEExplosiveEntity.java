@@ -21,6 +21,7 @@ import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -32,6 +33,7 @@ import net.minecraft.world.Explosion.Mode;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -41,6 +43,11 @@ public class IEExplosiveEntity extends TNTEntity
 	public static final EntityType<IEExplosiveEntity> TYPE = Builder
 			.<IEExplosiveEntity>create(IEExplosiveEntity::new, EntityClassification.MISC)
 			.build(ImmersiveEngineering.MODID+":explosive");
+
+	static
+	{
+		TYPE.setRegistryName(ImmersiveEngineering.MODID, "explosive");
+	}
 
 	private float size;
 	private Explosion.Mode mode = Mode.DESTROY;
@@ -208,4 +215,11 @@ public class IEExplosiveEntity extends TNTEntity
 	{
 		return TYPE;
 	}
+
+	@Override
+	public IPacket<?> createSpawnPacket()
+	{
+		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
 }

@@ -134,8 +134,6 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	{
 		if(slotChanged)
 			return true;
-		if(super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged))
-			return true;
 
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld->{
@@ -266,7 +264,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 					if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
 						return new ActionResult<>(ActionResultType.PASS, revolver);
 
-					NonNullList<ItemStack> bullets = getBullets(revolver);
+					NonNullList<ItemStack> bullets = getBullets(revolver, false);
 
 					if(isEmpty(revolver, false))
 						for(int i = 0; i < player.inventory.getSizeInventory(); i++)
@@ -384,7 +382,10 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			for(int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack b = inv.getStackInSlot(i);
-				if(!b.isEmpty()&&b.getItem() instanceof BulletItem&&(allowCasing||ItemNBTHelper.hasKey(b, "bullet")))
+				boolean isValid = true;
+				if(!allowCasing)
+					isValid = b.getItem() instanceof BulletItem&&ItemNBTHelper.hasKey(b, "bullet");
+				if(!b.isEmpty()&&isValid)
 					return false;
 			}
 			return true;

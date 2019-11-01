@@ -41,6 +41,11 @@ public class RevolvershotEntity extends IEProjectileEntity
 			.size(0.125f, 0.125f)
 			.build(ImmersiveEngineering.MODID+":revolver_shot");
 
+	static
+	{
+		TYPE.setRegistryName(ImmersiveEngineering.MODID, "revolvershot");
+	}
+
 	private IBullet bulletType;
 	public boolean bulletElectro = false;
 	public ItemStack bulletPotion = ItemStack.EMPTY;

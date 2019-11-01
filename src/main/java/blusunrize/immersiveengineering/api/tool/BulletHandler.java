@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,7 +33,6 @@ public class BulletHandler
 {
 	public static ItemStack emptyCasing = ItemStack.EMPTY;
 	public static ItemStack emptyShell = ItemStack.EMPTY;
-	public static ItemStack basicCartridge = ItemStack.EMPTY;
 	/**
 	 * A list of all cartridges that shoot a homing bullet. Used to add Wolfpack Cartridges
 	 */
@@ -61,7 +61,7 @@ public class BulletHandler
 
 	public static ItemStack getBulletStack(String key)
 	{
-		ItemStack stack = basicCartridge.copy();
+		ItemStack stack = new ItemStack(Weapons.bullet);
 		stack.getOrCreateTag().putString("bullet", key);
 		return stack;
 	}

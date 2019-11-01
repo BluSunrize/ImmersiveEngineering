@@ -43,7 +43,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
-import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
+import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackPartBullet;
@@ -65,6 +65,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropsBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -519,6 +520,8 @@ public class IEContent
 		};
 		 */
 		ConveyorHandler.createConveyorBlocks();
+		BulletHandler.emptyCasing = new ItemStack(Ingredients.emptyCasing);
+		BulletHandler.emptyShell = new ItemStack(Ingredients.emptyShell);
 	}
 
 	@SubscribeEvent
@@ -587,6 +590,19 @@ public class IEContent
 		BlockIESlab ret = new BlockIESlab("slab_"+b.getRegistryName().getPath(), Block.Properties.from(b), BlockItemIE.class, true);
 		IEBlocks.toSlab.put(b, ret);
 		return ret;
+	}
+
+	@SubscribeEvent
+	public static void registerEntityTypes(RegistryEvent.Register<EntityType<?>> event)
+	{
+		event.getRegistry().registerAll(
+				ChemthrowerShotEntity.TYPE,
+				FluorescentTubeEntity.TYPE,
+				IEExplosiveEntity.TYPE,
+				RailgunShotEntity.TYPE,
+				RevolvershotEntity.TYPE,
+				SkylineHookEntity.TYPE
+		);
 	}
 
 	@SubscribeEvent
@@ -798,6 +814,7 @@ public class IEContent
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.WET_SPONGE, 1), new ItemStack(Blocks.SPONGE, 1), new FluidStack(Fluids.WATER, 1000));
 
 		IECompatModule.doModulesRecipes();
+
 	}
 
 	public static void preInit()

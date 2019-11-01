@@ -60,7 +60,6 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 	public BulletItem()
 	{
 		super("bullet", new Properties());
-		BulletHandler.basicCartridge = new ItemStack(this, 1);
 	}
 
 	public static void initBullets()

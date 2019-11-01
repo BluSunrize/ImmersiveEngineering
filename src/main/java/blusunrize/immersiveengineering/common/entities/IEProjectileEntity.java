@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -18,6 +17,7 @@ import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.*;
@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -132,7 +133,6 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 		if(this.inGround)
 		{
-			IELogger.logger.debug("In ground, at pos {}!", getPositionVec());
 			if(localState==inBlockState)
 			{
 				++this.ticksInGround;
@@ -153,14 +153,12 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 			if(ticksInAir >= tickLimit)
 			{
-				IELogger.logger.debug("Removing after {} ticks", ticksInAir);
 				this.remove();
 				return;
 			}
 
 			Vec3d currentPos = new Vec3d(this.posX, this.posY, this.posZ);
 			Vec3d nextPos = new Vec3d(this.posX, this.posY, this.posZ).add(getMotion());
-			IELogger.logger.info("Moving from {} to {} ({})", currentPos, nextPos, getMotion());
 			RayTraceResult mop = this.world.rayTraceBlocks(new RayTraceContext(currentPos, nextPos, BlockMode.COLLIDER,
 					FluidMode.NONE, this));
 
@@ -169,7 +167,6 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 			if(mop.getType()!=Type.ENTITY)
 			{
-				IELogger.logger.info("Did not hit entity at {}", mop.getHitVec());
 				Entity entity = null;
 				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
 				double d0 = 0.0D;
@@ -201,7 +198,6 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			{
 				if(mop.getType()==Type.ENTITY)
 				{
-					IELogger.logger.info("Hit entity at {}", mop.getHitVec());
 					EntityRayTraceResult entityHit = (EntityRayTraceResult)mop;
 					if(!this.isBurning()&&this.canIgnite()&&entityHit.getEntity().isBurning())
 						this.setFire(3);
@@ -218,7 +214,6 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				}
 				else if(mop.getType()==Type.BLOCK)
 				{
-					IELogger.logger.info("Hit block at {}", mop.getHitVec());
 					BlockRayTraceResult blockHit = (BlockRayTraceResult)mop;
 					this.onImpact(blockHit);
 					this.stuckIn = blockHit.getPos();
@@ -352,5 +347,11 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_)
 	{
 		return false;
+	}
+
+	@Override
+	public IPacket<?> createSpawnPacket()
+	{
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

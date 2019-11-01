@@ -172,7 +172,6 @@ public class ObjLoaderWorkaround
 					}
 				} catch(IOException ioxcp)
 				{
-					ioxcp.printStackTrace();
 				}
 			}
 		} catch(NoSuchFieldException|IllegalAccessException x)
