@@ -93,9 +93,11 @@ public class IESmartObjModel extends OBJBakedModel
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
 		this.lastCameraTransform = cameraTransformType;
+		Matrix4 matrix;
 		if(transformationMap==null||transformationMap.isEmpty())
-			return super.handlePerspective(cameraTransformType);
-		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType).copy(): new Matrix4();
+			matrix = new Matrix4(super.handlePerspective(cameraTransformType).getRight());
+		else
+			matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType).copy(): new Matrix4();
 
 		if(!this.tempStack.isEmpty()&&this.tempStack.getItem() instanceof IOBJModelCallback)
 			matrix = ((IOBJModelCallback)this.tempStack.getItem()).handlePerspective(this.tempStack, cameraTransformType, matrix, tempEntity);

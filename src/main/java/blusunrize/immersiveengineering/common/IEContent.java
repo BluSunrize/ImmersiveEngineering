@@ -472,6 +472,9 @@ public class IEContent
 		Molds.moldUnpacking = new IEBaseItem("mold_unpacking", moldProperties);
 		IEItems.Misc.graphiteElectrode = new GraphiteElectrodeItem();
 		IEItems.Misc.coresample = new CoresampleItem();
+		Tools.drill = new DrillItem();
+		Tools.drillheadIron = new DrillheadItem(DrillheadItem.IRON);
+		Tools.drillheadSteel = new DrillheadItem(DrillheadItem.STEEL);
 		Weapons.revolver = new RevolverItem();
 		Weapons.bullet = new BulletItem();
 		/*TODO

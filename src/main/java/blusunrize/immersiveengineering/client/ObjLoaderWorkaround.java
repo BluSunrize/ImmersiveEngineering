@@ -143,9 +143,9 @@ public class ObjLoaderWorkaround
 						if(shouldLoad(parent))
 						{
 							Map<TransformType, TRSRTransformation> perspectives = new HashMap<>();
-							if(json.has("display_trsr"))
+							if(json.has("display-trsr"))
 							{
-								JsonObject displayJson = json.getAsJsonObject("display_trsr");
+								JsonObject displayJson = json.getAsJsonObject("display-trsr");
 								for(TransformType type : TransformType.values())
 								{
 									String name = type.name().toLowerCase(Locale.ENGLISH);

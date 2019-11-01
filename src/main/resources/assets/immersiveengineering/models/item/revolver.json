@@ -1,36 +1,46 @@
 {
-  "display_trsr": {
-    "first_person_right_hand": {
-      "translation": [-0.125, 0.0625, 0.046875],
-      "scale": [0.1875, 0.25, 0.25]
-    },
-    "first_person_left_hand": {
-      "scale": [0.1875, 0.25, 0.25],
-      "translation": [0.125, 0.0625, 0.05625]
-    },
-    "third_person_right_hand": {
-      "translation": [-0.125, 0.0625, -0.03125],
-      "scale": 0.125,
-      "rotation": [90, 0, -90]
+  "display-trsr": {
+    "fixed": {
+      "translation": [0.257078, 0.23844467, 0.53125],
+      "rotation": [-0.34202018, 0.93969274, -2.094269E-17, 5.7539583E-17],
+      "scale": [0.18750001, 0.18750001, 0.18750001],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
     },
     "third_person_left_hand": {
-      "translation": [0, 0.0625, -0.03125],
-      "scale": 0.125,
-      "rotation": [90, 0, 90]
+      "translation": [0.4375, 0.4900965, 0.51944745],
+      "rotation": [0.061628446, 0.7044161, 0.061628446, 0.7044161],
+      "scale": [0.12500001, 0.12500001, 0.125],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
     },
     "gui": {
-      "translation": [0.1875, -0.0781225, -0.15625],
-      "scale": 0.2,
-      "rotation": [25.7, 0, -42.5]
+      "translation": [0.64508957, 0.39731994, 0.1776227],
+      "rotation": [0.10284745, -0.32619044, -0.28257102, 0.8962008],
+      "scale": [0.2, 0.2, 0.19999999],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
     },
-    "fixed": {
-      "translation": [-0.375, -0.25, -0.0625],
-      "scale": 0.1875,
-      "rotation": [180, 0, -140]
+    "first_person_left_hand": {
+      "translation": [0.5, 0.4375, 0.65],
+      "rotation": [0.0, 0.70710677, 0.0, 0.70710677],
+      "scale": [0.1875, 0.25, 0.25],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "third_person_right_hand": {
+      "translation": [0.4375, 0.51180255, 0.3963465],
+      "rotation": [0.061628446, -0.7044161, -0.061628446, 0.7044161],
+      "scale": [0.12500001, 0.12500001, 0.125],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
     },
     "ground": {
-      "translation": [0.125, 0, 0.0625],
-      "scale": 0.125
+      "translation": [0.5625, 0.4375, 0.5],
+      "rotation": [0.0, 0.0, 0.0, 1.0],
+      "scale": [0.125, 0.125, 0.125],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "first_person_right_hand": {
+      "translation": [0.5, 0.4375, 0.453125],
+      "rotation": [0.0, -0.70710677, 0.0, 0.70710677],
+      "scale": [0.1875, 0.25, 0.25],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
     }
   },
   "parent": "immersiveengineering:item/revolver.obj.ie"

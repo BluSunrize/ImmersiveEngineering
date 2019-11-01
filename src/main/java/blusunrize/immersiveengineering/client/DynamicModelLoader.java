@@ -99,9 +99,9 @@ public class DynamicModelLoader
 				ResourceLocation name = reqModel.model.name.getLocation();
 				IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
 				IUnbakedModel unbaked = new OBJModel.Parser(asResource, manager).parse();
-				unbaked = unbaked.process(reqModel.model.getAddtionalDataAsStrings());
 				if(name.getPath().endsWith(".obj.ie"))
 					unbaked = new IEOBJModel(((OBJModel)unbaked).getMatLib(), name);
+				unbaked = unbaked.process(reqModel.model.getAddtionalDataAsStrings());
 				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), ImmutableSet.of()));
 				unbakedModels.put(reqModel, unbaked);
 			}

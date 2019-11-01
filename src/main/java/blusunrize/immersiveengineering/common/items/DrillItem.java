@@ -316,6 +316,8 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	/*INVENTORY STUFF*/
 	public ItemStack getHead(ItemStack drill)
 	{
+		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
+			return ItemStack.EMPTY;
 		ItemStack head;
 		boolean remote = EffectiveSide.get()==LogicalSide.CLIENT;
 		LazyOptional<IItemHandler> cap = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);

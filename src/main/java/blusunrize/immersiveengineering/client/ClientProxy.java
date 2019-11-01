@@ -212,24 +212,6 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GUI, new Matrix4().translate(-.625, .75, 0).scale(.875, .875, .875).rotate(-Math.PI*.6875, 0, 1, 0))
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25, .5, .25).scale(.5, .5, .5)));
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Weapons.revolver), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/revolver.obj", true)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0, 1, 0).scale(.1875, .25, .25).translate(.25, .25, .5))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(90), 0, 1, 0).scale(.1875, .25, .25).translate(-.3, .25, .5))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.125, .0625, -.03125).scale(.125, .125, .125).rotate(Math.toRadians(-90), 0, 1, 0).rotate(Math.toRadians(-10), 0, 0, 1))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(.0, .0625, -.03125).scale(.125, .125, .125).rotate(Math.toRadians(90), 0, 1, 0).rotate(Math.toRadians(10), 0, 0, 1))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(.1875, -.0781225, -.15625).scale(.2, .2, .2).rotate(Math.toRadians(-40), 0, 1, 0).rotate(Math.toRadians(-35), 0, 0, 1))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.375, -.25, -.0625).scale(.1875, .1875, .1875).rotate(Math.PI, 0, 1, 0).rotate(Math.toRadians(-40), 0, 0, 1))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, 0, .0625).scale(.125, .125, .125)));
-
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Tools.drill), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/drill/drill_diesel.obj", true)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .4375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(-.375, .4375, .375).translate(.25, 1, .5).rotate(-Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(.75, .75, .75).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(-.75, .75, .75).rotate(-Math.PI*.75, 0, 1, 0).rotate(-Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(.1875, .0625, .15625).scale(.4375, .4375, .4375).rotate(-Math.PI*.25, 0, 0, 1))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(-.5, .25, 0).scale(.75, .75, .75).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.125, 0, 0, 1))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, .25, .25).scale(.5, .5, .5)));
-
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Misc.fluorescentTube), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/fluorescent_tube.obj", true)
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(.2, .1, 0).rotate(-Math.PI/3, 1, 0, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(.2, .1, 0).rotate(-Math.PI/3, 1, 0, 0))
