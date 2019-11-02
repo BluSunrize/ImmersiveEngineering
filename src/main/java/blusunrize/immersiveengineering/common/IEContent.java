@@ -381,7 +381,7 @@ public class IEContent
 		MetalDevices.capacitorMV = new GenericTileBlock("capacitor_mv", () -> CapacitorMVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorHV = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_creative", () -> CapacitorCreativeTileEntity.TYPE, defaultMetalProperties);
-		MetalDevices.barrel = new BarrelBlock("metal_barrel", false);
+		MetalDevices.barrel = new BarrelBlock("metal_barrel", true);
 		MetalDevices.fluidPump = new GenericTileBlock("fluid_pump", () -> FluidPumpTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		//MetalDevices.fluidPlacer = ;
@@ -479,6 +479,7 @@ public class IEContent
 		Tools.drillheadIron = new DrillheadItem(DrillheadItem.IRON);
 		Tools.drillheadSteel = new DrillheadItem(DrillheadItem.STEEL);
 		Weapons.revolver = new RevolverItem();
+		Weapons.chemthrower = new ChemthrowerItem();
 		Weapons.railgun = new RailgunItem();
 		Weapons.bullet = new BulletItem();
 		IEItems.Misc.powerpack = new PowerpackItem();

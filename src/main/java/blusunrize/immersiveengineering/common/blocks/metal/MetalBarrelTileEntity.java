@@ -9,10 +9,23 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fluids.FluidStack;
 
 public class MetalBarrelTileEntity extends WoodenBarrelTileEntity
 {
+	public static TileEntityType<MetalBarrelTileEntity> TYPE;
+
+	public MetalBarrelTileEntity(TileEntityType<? extends WoodenBarrelTileEntity> type)
+	{
+		super(type);
+	}
+
+	public MetalBarrelTileEntity()
+	{
+		this(TYPE);
+	}
+
 	@Override
 	public void tick()
 	{

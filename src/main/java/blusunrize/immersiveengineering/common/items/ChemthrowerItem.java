@@ -130,7 +130,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	public void onUsingTick(ItemStack stack, LivingEntity player, int count)
 	{
 		FluidStack fs = this.getFluid(stack);
-		if(fs!=null&&fs.getFluid()!=null)
+		if(!fs.isEmpty())
 		{
 			int duration = getUseDuration(stack)-count;
 			int consumed = IEConfig.TOOLS.chemthrower_consumption.get();
@@ -184,7 +184,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity player, int timeLeft)
 	{
 		FluidStack fs = this.getFluid(stack);
-		if(fs!=null)
+		if(!fs.isEmpty())
 		{
 			int duration = getUseDuration(stack)-timeLeft;
 			fs.shrink(IEConfig.TOOLS.chemthrower_consumption.get()*duration);
@@ -228,7 +228,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	public void finishUpgradeRecalculation(ItemStack stack)
 	{
 		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.getAmount() > getCapacity(stack, 2000))
+		if(!fs.isEmpty()&&fs.getAmount() > getCapacity(stack, 2000))
 		{
 			fs.setAmount(getCapacity(stack, 2000));
 			ItemNBTHelper.setFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fs);
