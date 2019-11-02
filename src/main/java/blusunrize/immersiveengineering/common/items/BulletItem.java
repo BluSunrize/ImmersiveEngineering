@@ -94,9 +94,12 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		BulletHandler.registerBullet("he", new BulletHandler.DamagingBullet(null, 0, BulletHandler.emptyCasing, new ResourceLocation("immersiveengineering:item/bullet_he"))
 		{
 			@Override
-			public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
+			public void onHitTarget(World world, RayTraceResult target, UUID shooterId, Entity projectile, boolean headshot)
 			{
-				world.createExplosion(world.getPlayerByUuid(shooter), projectile.posX, projectile.posY, projectile.posZ, 2, Mode.BREAK);
+				Entity shooter = null;
+				if(shooterId!=null)
+					shooter = world.getPlayerByUuid(shooterId);
+				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, Mode.BREAK);
 			}
 
 			@Override
@@ -423,7 +426,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		public Entity getProjectile(PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
 			RevolvershotHomingEntity shot = shooter!=null?new RevolvershotHomingEntity(projectile.world, shooter,
-					projectile.getMotion().x*1.5, projectile.getMotion().y*1.5, projectile.getMotion().z*1.5, this, cartridge): new RevolvershotHomingEntity(projectile.world, projectile.posX, projectile.posY, projectile.posZ, 0, 0, 0, this);
+					projectile.getMotion().x*1.5, projectile.getMotion().y*1.5, projectile.getMotion().z*1.5, this): new RevolvershotHomingEntity(projectile.world, projectile.posX, projectile.posY, projectile.posZ, 0, 0, 0, this);
 			shot.setMotion(projectile.getMotion());
 			shot.bulletElectro = electro;
 			return shot;
@@ -463,7 +466,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				WolfpackShotEntity bullet;
 				if(shooter!=null)
 					bullet = new WolfpackShotEntity(world, world.getPlayerByUuid(shooter),
-							vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this, null);
+							vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this);
 				else
 					bullet = new WolfpackShotEntity(world, 0, 0, 0, 0, 0, 0, this);
 				EntityRayTraceResult eTarget = (EntityRayTraceResult)target;

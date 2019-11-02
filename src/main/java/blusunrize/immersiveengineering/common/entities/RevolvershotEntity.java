@@ -62,10 +62,10 @@ public class RevolvershotEntity extends IEProjectileEntity
 		this(TYPE, world);
 	}
 
-	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> eType, World world, double x, double y, double z,
+	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> eType, World world, LivingEntity shooter, double x, double y, double z,
 							  double ax, double ay, double az, IBullet type)
 	{
-		super(eType, world, x, y, z, ax, ay, az);
+		super(eType, world, shooter, x, y, z, ax, ay, az);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);
 		this.bulletType = type;
@@ -74,7 +74,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 	public RevolvershotEntity(World world, double x, double y, double z,
 							  double ax, double ay, double az, IBullet type)
 	{
-		this(TYPE, world, x, y, z, ax, ay, az, type);
+		this(TYPE, world, null, x, y, z, ax, ay, az, type);
 	}
 
 	public RevolvershotEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type)
@@ -84,7 +84,12 @@ public class RevolvershotEntity extends IEProjectileEntity
 
 	public RevolvershotEntity(World world, LivingEntity living, double ax, double ay, double az, String type)
 	{
-		this(TYPE, world, living.posX+ax, living.posY+living.getEyeHeight()+ay, living.posZ+az, ax, ay, az, BulletHandler.getBullet(type));
+		this(TYPE, world, living, ax, ay, az, BulletHandler.getBullet(type));
+	}
+
+	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> eType, World world, LivingEntity living, double ax, double ay, double az, IBullet type)
+	{
+		this(eType, world, living, living.posX+ax, living.posY+living.getEyeHeight()+ay, living.posZ+az, ax, ay, az, type);
 		setShooterSynced();
 		setMotion(Vec3d.ZERO);
 	}

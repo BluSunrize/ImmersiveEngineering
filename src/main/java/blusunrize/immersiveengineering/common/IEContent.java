@@ -601,7 +601,10 @@ public class IEContent
 				IEExplosiveEntity.TYPE,
 				RailgunShotEntity.TYPE,
 				RevolvershotEntity.TYPE,
-				SkylineHookEntity.TYPE
+				RevolvershotFlareEntity.TYPE,
+				RevolvershotHomingEntity.TYPE,
+				SkylineHookEntity.TYPE,
+				WolfpackShotEntity.TYPE
 		);
 	}
 

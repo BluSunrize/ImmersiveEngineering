@@ -8,32 +8,55 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class RevolvershotHomingEntity extends RevolvershotEntity
 {
+	public static final EntityType<RevolvershotHomingEntity> TYPE = Builder
+			.<RevolvershotHomingEntity>create(RevolvershotHomingEntity::new, EntityClassification.MISC)
+			.size(0.125f, 0.125f)
+			.build(ImmersiveEngineering.MODID+":revolver_shot_homing");
+
+	static
+	{
+		TYPE.setRegistryName(ImmersiveEngineering.MODID, "revolver_shot_homing");
+	}
+
 	public int trackCountdown = 5;
 	public double redirectionSpeed = .25;
 	public LivingEntity targetOverride;
 
-	public RevolvershotHomingEntity(World world)
+	public RevolvershotHomingEntity(EntityType<? extends RevolvershotHomingEntity> type, World world)
 	{
-		super(world);
+		super(type, world);
+	}
+
+	public RevolvershotHomingEntity(EntityType<? extends RevolvershotHomingEntity> eType, World world, double x, double y, double z, double ax, double ay, double az, IBullet type)
+	{
+		super(eType, world, null, x, y, z, ax, ay, az, type);
 	}
 
 	public RevolvershotHomingEntity(World world, double x, double y, double z, double ax, double ay, double az, IBullet type)
 	{
-		super(world, x, y, z, ax, ay, az, type);
+		this(TYPE, world, x, y, z, ax, ay, az, type);
 	}
 
-	public RevolvershotHomingEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type, ItemStack stack)
+	public RevolvershotHomingEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type)
 	{
-		super(world, living, ax, ay, az, type);
+		super(TYPE, world, living, ax, ay, az, type);
+	}
+
+	public RevolvershotHomingEntity(EntityType<? extends RevolvershotHomingEntity> type, World world, LivingEntity living, double ax, double ay, double az, IBullet type1)
+	{
+		super(type, world, living, ax, ay, az, type1);
 	}
 
 	@Override

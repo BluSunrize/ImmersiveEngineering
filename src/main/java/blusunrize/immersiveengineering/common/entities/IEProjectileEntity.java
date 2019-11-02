@@ -52,7 +52,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		this.pickupStatus = PickupStatus.DISALLOWED;
 	}
 
-	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, double x, double y, double z, double ax, double ay, double az)
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, double x, double y, double z)
 	{
 		this(type, world);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
@@ -61,8 +61,13 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double ax, double ay, double az)
 	{
+		this(type, world, living, living.posX, living.posY+living.getEyeHeight(), living.posZ, ax, ay, az);
+	}
+
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double x, double y, double z, double ax, double ay, double az)
+	{
 		this(type, world);
-		this.setLocationAndAngles(living.posX, living.posY+living.getEyeHeight(), living.posZ, living.rotationYaw, living.rotationPitch);
+		this.setLocationAndAngles(x, y, z, living.rotationYaw, living.rotationPitch);
 		this.setPosition(this.posX, this.posY, this.posZ);
 		setMotion(ax, ay, az);
 		this.shootingEntity = living.getUniqueID();

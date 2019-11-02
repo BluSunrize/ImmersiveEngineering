@@ -53,7 +53,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 
 	public RailgunShotEntity(World world, double x, double y, double z, double ax, double ay, double az, ItemStack ammo)
 	{
-		super(TYPE, world, x, y, z, ax, ay, az);
+		super(TYPE, world, x, y, z);
 		this.ammo = ammo;
 		this.setAmmoSynced();
 		this.pickupStatus = PickupStatus.ALLOWED;

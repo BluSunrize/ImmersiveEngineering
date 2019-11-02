@@ -59,7 +59,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 
 	public ChemthrowerShotEntity(World world, double x, double y, double z, double ax, double ay, double az, FluidStack fluid)
 	{
-		super(TYPE, world, x, y, z, ax, ay, az);
+		super(TYPE, world, x, y, z);
 		this.fluid = fluid;
 		this.setFluidSynced();
 	}

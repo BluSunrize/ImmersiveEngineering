@@ -8,35 +8,48 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class WolfpackShotEntity extends RevolvershotHomingEntity
 {
-	public WolfpackShotEntity(World world)
+	public static final EntityType<WolfpackShotEntity> TYPE = Builder
+			.<WolfpackShotEntity>create(WolfpackShotEntity::new, EntityClassification.MISC)
+			.size(0.125f, 0.125f)
+			.build(ImmersiveEngineering.MODID+":revolver_shot_wolfpack");
+
+	static
 	{
-		super(world);
+		TYPE.setRegistryName(ImmersiveEngineering.MODID, "revolver_shot_wolfpack");
+	}
+
+	public WolfpackShotEntity(EntityType<WolfpackShotEntity> type, World world)
+	{
+		super(type, world);
 		trackCountdown = 15;
 		redirectionSpeed = .1875;
 	}
 
 	public WolfpackShotEntity(World world, double x, double y, double z, double ax, double ay, double az, IBullet type)
 	{
-		super(world, x, y, z, ax, ay, az, type);
+		super(TYPE, world, x, y, z, ax, ay, az, type);
 		trackCountdown = 15;
 		redirectionSpeed = .1875;
 	}
 
-	public WolfpackShotEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type, ItemStack stack)
+	public WolfpackShotEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type)
 	{
-		super(world, living, ax, ay, az, type, stack);
+		super(TYPE, world, living, ax, ay, az, type);
 		trackCountdown = 15;
 		redirectionSpeed = .1875;
 	}
