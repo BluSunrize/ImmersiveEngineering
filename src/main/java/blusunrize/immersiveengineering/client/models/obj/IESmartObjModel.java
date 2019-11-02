@@ -307,7 +307,7 @@ public class IESmartObjModel extends OBJBakedModel
 		}
 		for(String groupName : getModel().getMatLib().getGroups().keySet())
 		{
-			List<Pair<BakedQuad, ShaderLayer>> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, shader);
+			List<Pair<BakedQuad, ShaderLayer>> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, true);
 			quads.addAll(temp.stream().filter(Objects::nonNull).map(Pair::getKey).collect(Collectors.toList()));
 		}
 
@@ -316,10 +316,22 @@ public class IESmartObjModel extends OBJBakedModel
 		return ImmutableList.copyOf(quads);
 	}
 
+	private Cache<Pair<String, String>, List<Pair<BakedQuad, ShaderLayer>>> groupCache = CacheBuilder.newBuilder()
+			.maximumSize(100)
+			.build();
+
 	public <T> List<Pair<BakedQuad, ShaderLayer>> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject,
 																   String groupName, ShaderCase sCase,
-																   ItemStack shader)
+																   ItemStack shader, boolean allowCaching)
 	{
+		String objCacheKey = callback.getCacheKey(callbackObject);
+		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
+		if(allowCaching)
+		{
+			List<Pair<BakedQuad, ShaderLayer>> cached = groupCache.getIfPresent(cacheKey);
+			if(cached!=null)
+				return cached;
+		}
 		int maxPasses = 1;
 		if(sCase!=null)
 			maxPasses = sCase.getLayers().length;
@@ -446,6 +458,8 @@ public class IESmartObjModel extends OBJBakedModel
 				}
 			}
 		}
+		if(allowCaching)
+			groupCache.put(cacheKey, quads);
 		return quads;
 	}
 

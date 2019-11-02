@@ -83,7 +83,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeIngameGui;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.event.GuiScreenEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
@@ -793,7 +792,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	}
 
 	@SubscribeEvent
-	public void onMouseEvent(MouseScrollEvent event)
+	public void onMouseEvent(InputEvent.MouseScrollEvent event)
 	{
 		if(event.getScrollDelta()!=0&&ClientUtils.mc().currentScreen==null)
 		{
