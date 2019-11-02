@@ -80,7 +80,7 @@ public class ConnLoader implements ICustomModelLoader
 
 	private static class ConnModelBase implements IUnbakedModel
 	{
-		private static final ResourceLocation WIRE_LOC = new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":blocks/wire");
+		private static final ResourceLocation WIRE_LOC = new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":block/wire");
 		@Nullable
 		private final ModelData baseData;
 		@Nonnull

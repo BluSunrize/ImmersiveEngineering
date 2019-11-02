@@ -324,7 +324,7 @@ public class IESmartObjModel extends OBJBakedModel
 																   String groupName, ShaderCase sCase,
 																   ItemStack shader, boolean allowCaching)
 	{
-		String objCacheKey = callback.getCacheKey(callbackObject);
+		String objCacheKey = callback!=null?callback.getCacheKey(callbackObject): "<none>";
 		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
 		if(allowCaching)
 		{

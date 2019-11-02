@@ -394,7 +394,8 @@ public class IEContent
 				defaultMetalProperties);
 		MetalDevices.electricLantern = new MiscConnectorBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE);
 		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
-				defaultMetalProperties, IEProperties.FACING_HORIZONTAL);
+				defaultMetalProperties, IEProperties.FACING_HORIZONTAL)
+				.setNotNormalBlock();
 		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.sampleDrill = new GenericTileBlock("sample_drill", () -> SampleDrillTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
@@ -480,10 +481,9 @@ public class IEContent
 		Weapons.revolver = new RevolverItem();
 		Weapons.railgun = new RailgunItem();
 		Weapons.bullet = new BulletItem();
+		IEItems.Misc.powerpack = new PowerpackItem();
 		for(ToolUpgrade upgrade : ToolUpgrade.values())
-		{
 			IEItems.Misc.toolUpgrades.put(upgrade, new ToolUpgradeItem(upgrade));
-		}
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);

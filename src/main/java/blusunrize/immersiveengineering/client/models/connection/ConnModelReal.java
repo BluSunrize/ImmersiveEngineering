@@ -44,7 +44,7 @@ public class ConnModelReal extends BakedIEModel
 {
 
 	TextureAtlasSprite textureAtlasSprite = Minecraft.getInstance().getTextureMap()
-			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":blocks/wire");
+			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":block/wire");
 	public static final Cache<ModelKey, IBakedModel> cache = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)

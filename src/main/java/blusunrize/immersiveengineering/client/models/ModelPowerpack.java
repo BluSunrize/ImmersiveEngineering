@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.models;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
-import blusunrize.immersiveengineering.common.items.ItemPowerpack;
+import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.cache.Cache;
@@ -187,7 +187,7 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 			ItemStack chest = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
 			ItemStack powerpack = null;
 			float storage = 0;
-			if(!chest.isEmpty()&&chest.getItem() instanceof ItemPowerpack)
+			if(!chest.isEmpty()&&chest.getItem() instanceof PowerpackItem)
 				powerpack = chest;
 			else if(!chest.isEmpty()&&chest.getItem() instanceof ArmorItem&&ItemNBTHelper.hasKey(chest, "IE:Powerpack"))
 				powerpack = ItemNBTHelper.getItemStack(chest, "IE:Powerpack");
@@ -206,8 +206,9 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 		super.render(entity, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
 		GlStateManager.disableBlend();
 
-		ClientUtils.bindTexture("immersiveengineering:textures/blocks/wire.png");
+		ClientUtils.bindTexture("immersiveengineering:textures/block/wire.png");
 		GlStateManager.pushMatrix();
+		GlStateManager.color3f(1, 1, 1);
 		for(Hand hand : Hand.values())
 		{
 			ItemStack stack = entity.getHeldItem(hand);

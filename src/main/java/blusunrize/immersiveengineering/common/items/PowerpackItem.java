@@ -46,14 +46,14 @@ import java.util.List;
  * @author BluSunrize
  * @since 15.06.2017
  */
-public class ItemPowerpack extends ArmorItem implements IIEEnergyItem
+public class PowerpackItem extends ArmorItem implements IIEEnergyItem
 {
-	public ItemPowerpack()
+	public PowerpackItem()
 	{
-		//TODO custome material rather than leather
+		//TODO custom material rather than leather
 		super(ArmorMaterial.LEATHER, EquipmentSlotType.CHEST, new Properties().maxStackSize(1).defaultMaxDamage(0)
-		.group(ImmersiveEngineering.itemGroup));
-		String name = "powerpack";
+				.group(ImmersiveEngineering.itemGroup));
+		setRegistryName(ImmersiveEngineering.MODID, "powerpack");
 		IEContent.registeredIEItems.add(this);
 	}
 
@@ -92,7 +92,7 @@ public class ItemPowerpack extends ArmorItem implements IIEEnergyItem
 		{
 			int pre = energy;
 			for(EquipmentSlotType slot : EquipmentSlotType.values())
-				if(EnergyHelper.isFluxReceiver(player.getItemStackFromSlot(slot))&&!(player.getItemStackFromSlot(slot).getItem() instanceof ItemPowerpack))
+				if(EnergyHelper.isFluxReceiver(player.getItemStackFromSlot(slot))&&!(player.getItemStackFromSlot(slot).getItem() instanceof PowerpackItem))
 					energy -= EnergyHelper.insertFlux(player.getItemStackFromSlot(slot), Math.min(energy, 256), false);
 			if(pre!=energy)
 				EnergyHelper.extractFlux(itemStack, pre-energy, false);

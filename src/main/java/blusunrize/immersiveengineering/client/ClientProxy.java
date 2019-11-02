@@ -976,8 +976,8 @@ public class ClientProxy extends CommonProxy
 
 		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
 			event.addSprite(p.texture);
-		event.addSprite(new ResourceLocation(MODID, "blocks/wire"));
-		event.addSprite(new ResourceLocation(MODID, "blocks/shaders/greyscale_fire"));
+		event.addSprite(new ResourceLocation(MODID, "block/wire"));
+		event.addSprite(new ResourceLocation(MODID, "block/shaders/greyscale_fire"));
 
 		for(BulletHandler.IBullet bullet : BulletHandler.registry.values())
 			for(ResourceLocation rl : bullet.getTextures())
@@ -1026,7 +1026,7 @@ public class ClientProxy extends CommonProxy
 			p.sprite = event.getMap().getSprite(p.texture);
 			Preconditions.checkNotNull(p.sprite);
 		}
-		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "blocks/wire"));
+		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "block/wire"));
 		AtlasTexture texturemap = Minecraft.getInstance().getTextureMap();
 		for(int i = 0; i < ClientUtils.destroyBlockIcons.length; i++)
 		{
