@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
-import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -48,6 +47,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
@@ -289,10 +289,10 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 					if(!ItemNBTHelper.hasKey(revolver, "reload"))
 					{
-						if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem&&ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
+						Item bullet0 = bullets.get(0).getItem();
+						if(bullet0 instanceof BulletItem)
 						{
-							String key = ItemNBTHelper.getString(bullets.get(0), "bullet");
-							IBullet bullet = BulletHandler.getBullet(key);
+							IBullet bullet = ((BulletItem)bullet0).getType();
 							if(bullet!=null)
 							{
 								Vec3d vec = player.getLookVec();
@@ -300,14 +300,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 								int count = bullet.getProjectileCount(player);
 								if(count==1)
 								{
-									Entity entBullet = getBullet(player, vec, vec, key, bullets.get(0), electro);
+									Entity entBullet = getBullet(player, vec, bullet, electro);
 									player.world.addEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 								}
 								else
 									for(int i = 0; i < count; i++)
 									{
 										Vec3d vecDir = vec.add(player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1);
-										Entity entBullet = getBullet(player, vec, vecDir, key, bullets.get(0), electro);
+										Entity entBullet = getBullet(player, vecDir, bullet, electro);
 										player.world.addEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 									}
 								bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
@@ -356,7 +356,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return new ActionResult<>(ActionResultType.SUCCESS, revolver);
 	}
 
-	private RevolvershotEntity getBullet(PlayerEntity player, Vec3d vecSpawn, Vec3d vecDir, String type, ItemStack stack, boolean electro)
+	private RevolvershotEntity getBullet(PlayerEntity player, Vec3d vecDir, IBullet type, boolean electro)
 	{
 		IELogger.logger.info("Starting with motion vector {}", vecDir);
 		RevolvershotEntity bullet = new RevolvershotEntity(player.world, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);

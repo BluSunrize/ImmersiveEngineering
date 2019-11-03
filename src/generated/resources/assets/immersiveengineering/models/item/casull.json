@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:item/ie_item_base",
+  "parent": "item/generated",
   "textures": {
     "layer0": "immersiveengineering:item/bullet_casull"
   }

@@ -26,6 +26,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
@@ -79,10 +80,10 @@ public class RevolvershotEntity extends IEProjectileEntity
 
 	public RevolvershotEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type)
 	{
-		this(world, living, ax, ay, az, BulletHandler.findRegistryName(type));
+		this(TYPE, world, living, ax, ay, az, type);
 	}
 
-	public RevolvershotEntity(World world, LivingEntity living, double ax, double ay, double az, String type)
+	public RevolvershotEntity(World world, LivingEntity living, double ax, double ay, double az, ResourceLocation type)
 	{
 		this(TYPE, world, living, ax, ay, az, BulletHandler.getBullet(type));
 	}
@@ -187,7 +188,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 	{
 		super.writeAdditional(nbt);
 		nbt.putByte("inGround", (byte)(this.inGround?1: 0));
-		nbt.putString("bulletType", BulletHandler.findRegistryName(this.bulletType));
+		nbt.putString("bulletType", BulletHandler.findRegistryName(this.bulletType).toString());
 		if(!bulletPotion.isEmpty())
 			nbt.put("bulletPotion", bulletPotion.write(new CompoundNBT()));
 	}
@@ -196,7 +197,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 	public void readAdditional(CompoundNBT nbt)
 	{
 		super.readAdditional(nbt);
-		this.bulletType = BulletHandler.getBullet(nbt.getString("bulletType"));
+		this.bulletType = BulletHandler.getBullet(new ResourceLocation(nbt.getString("bulletType")));
 		if(nbt.contains("bulletPotion", NBT.TAG_COMPOUND))
 			this.bulletPotion = ItemStack.read(nbt.getCompound("bulletPotion"));
 	}

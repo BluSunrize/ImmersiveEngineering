@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Extinguish;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
@@ -45,8 +46,6 @@ import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
-import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackBullet;
-import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackPartBullet;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
@@ -144,6 +143,8 @@ public class IEContent
 
 	public static void modConstruction()
 	{
+		/*BULLETS*/
+		BulletItem.initBullets();
 		/*WIRES*/
 		WireType.registerWires();
 		/*CONVEYORS*/
@@ -481,7 +482,12 @@ public class IEContent
 		Weapons.revolver = new RevolverItem();
 		Weapons.chemthrower = new ChemthrowerItem();
 		Weapons.railgun = new RailgunItem();
-		Weapons.bullet = new BulletItem();
+		for(ResourceLocation bulletType : BulletHandler.getAllKeys())
+		{
+			IBullet bullet = BulletHandler.getBullet(bulletType);
+			if(bullet.isProperCartridge())
+				Weapons.bullets.put(bullet, new BulletItem(bullet));
+		}
 		IEItems.Misc.powerpack = new PowerpackItem();
 		for(ToolUpgrade upgrade : ToolUpgrade.values())
 			IEItems.Misc.toolUpgrades.put(upgrade, new ToolUpgradeItem(upgrade));
@@ -826,22 +832,9 @@ public class IEContent
 	{
 		WireType.init();
 
-		/*BULLETS*/
-		BulletItem.initBullets();
-
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
 		IELootFunctions.preInit();
-	}
-
-	public static void preInitEnd()
-	{
-		/*WOLFPACK BULLETS*/
-		if(!BulletHandler.homingCartridges.isEmpty())
-		{
-			BulletHandler.registerBullet("wolfpack", new WolfpackBullet());
-			BulletHandler.registerBullet("wolfpackPart", new WolfpackPartBullet());
-		}
 	}
 
 	public static void registerOres()
@@ -978,13 +971,10 @@ public class IEContent
 		addBanner("ornate", "orn", "dustSilver");
 		addBanner("treated_wood", "twd", "plankTreatedWood");
 		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(WoodenDevices.windmill)});
-		if(!BulletHandler.homingCartridges.isEmpty())
-		{
-			ItemStack wolfpackCartridge = BulletHandler.getBulletStack("wolfpack");
-			addBanner("wolf_r", "wlfr", wolfpackCartridge, 1);
-			addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
-			addBanner("wolf", "wlf", wolfpackCartridge, 0, 0);
-		}
+		ItemStack wolfpackCartridge = new ItemStack(BulletHandler.getBulletItem(BulletItem.WOLFPACK));
+		addBanner("wolf_r", "wlfr", wolfpackCartridge, 1);
+		addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
+		addBanner("wolf", "wlf", wolfpackCartridge, 0, 0);
 
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients

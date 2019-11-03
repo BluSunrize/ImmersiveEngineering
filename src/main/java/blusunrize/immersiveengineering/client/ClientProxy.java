@@ -58,7 +58,6 @@ import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -178,14 +177,6 @@ public class ClientProxy extends CommonProxy
 		IEOBJLoader.instance.addDomain("immersiveengineering");
 		MinecraftForge.EVENT_BUS.register(ImmersiveModelRegistry.instance);
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Weapons.bullet), new ImmersiveModelRegistry.ItemModelReplacement()
-		{
-			@Override
-			public IBakedModel createBakedModel(IBakedModel existingModel)
-			{
-				return new ModelItemDynamicOverride(existingModel, null);
-			}
-		});
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Misc.shader), new ImmersiveModelRegistry.ItemModelReplacement()
 		{
 			@Override
@@ -961,7 +952,8 @@ public class ClientProxy extends CommonProxy
 		event.addSprite(new ResourceLocation(MODID, "block/wire"));
 		event.addSprite(new ResourceLocation(MODID, "block/shaders/greyscale_fire"));
 
-		for(BulletHandler.IBullet bullet : BulletHandler.registry.values())
+		//TODO this shouldn't be necessary any more
+		for(BulletHandler.IBullet bullet : BulletHandler.getAllValues())
 			for(ResourceLocation rl : bullet.getTextures())
 				event.addSprite(rl);
 

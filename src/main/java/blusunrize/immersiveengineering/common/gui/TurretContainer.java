@@ -8,11 +8,10 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.items.BulletItem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -35,8 +34,7 @@ public class TurretContainer extends IEBaseContainer<TurretTileEntity>
 				{
 					if(!super.isItemValid(itemStack))
 						return false;
-					String key = ItemNBTHelper.getString(itemStack, "bullet");
-					IBullet bullet = BulletHandler.getBullet(key);
+					IBullet bullet = ((BulletItem)itemStack.getItem()).getType();
 					return bullet!=null&&bullet.isValidForTurret();
 				}
 			});

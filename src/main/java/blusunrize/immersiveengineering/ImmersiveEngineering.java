@@ -113,8 +113,6 @@ public class ImmersiveEngineering
 
 		new ThreadContributorSpecialsDownloader();
 
-		IEContent.preInitEnd();
-
 		//Previously in INIT
 
 		proxy.preInitEnd();

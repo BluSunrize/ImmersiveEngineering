@@ -18,6 +18,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
@@ -36,7 +37,7 @@ public class SpeedloaderRecipe extends ShapedRecipe
 
 	private static NonNullList<Ingredient> getPattern()
 	{
-		Ingredient bullet = Ingredient.fromItems(Weapons.bullet);
+		Ingredient bullet = Ingredient.fromItems(Weapons.bullets.values().toArray(new IItemProvider[0]));
 		Ingredient speedloader = Ingredient.fromItems(Weapons.speedloader);
 		return NonNullList.from(Ingredient.EMPTY,
 				bullet, bullet, bullet,

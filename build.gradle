@@ -82,6 +82,7 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            property 'fml.earlyprogresswindow', 'false'
 
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/')
 

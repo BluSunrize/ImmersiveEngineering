@@ -23,10 +23,7 @@ import blusunrize.immersiveengineering.common.data.model.ModelGenerator;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
 import blusunrize.immersiveengineering.common.items.IEItems;
-import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.IEItems.Molds;
-import blusunrize.immersiveengineering.common.items.IEItems.Tools;
+import blusunrize.immersiveengineering.common.items.IEItems.*;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -34,9 +31,7 @@ import net.minecraft.item.Item;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
@@ -195,6 +190,7 @@ public class Models extends ModelGenerator
 		addItemModels("", out, Misc.toolUpgrades.values().toArray(new Item[0]));
 		addItemModels("", out, Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
 		addItemModels("bullet_", out, Ingredients.emptyCasing, Ingredients.emptyShell);
+		addItemModels("bullet_", out, Weapons.bullets.values());
 
 		out.accept(ModelHelper.createInventoryFence(ALU_FENCE_TEXTURE, locForItemModel(MetalDecoration.aluFence)));
 		out.accept(ModelHelper.createInventoryFence(STEEL_FENCE_TEXTURE, locForItemModel(MetalDecoration.steelFence)));
@@ -284,6 +280,11 @@ public class Models extends ModelGenerator
 	}
 
 	private void addItemModels(String texturePrefix, Consumer<GeneratedModelFile> out, Item... items)
+	{
+		addItemModels(texturePrefix, out, Arrays.asList(items));
+	}
+
+	private void addItemModels(String texturePrefix, Consumer<GeneratedModelFile> out, Collection<Item> items)
 	{
 		for(Item item : items)
 		{

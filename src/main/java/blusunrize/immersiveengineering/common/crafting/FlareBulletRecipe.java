@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
@@ -50,8 +50,7 @@ public class FlareBulletRecipe implements ICraftingRecipe
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(bullet.isEmpty()&&Weapons.bullet.equals(stackInSlot.getItem())&&
-						"flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty()&&isFlareBullet(stackInSlot))
 					bullet = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
@@ -74,7 +73,7 @@ public class FlareBulletRecipe implements ICraftingRecipe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty()&&Weapons.bullet.equals(stackInSlot.getItem())&&"flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty()&&isFlareBullet(stackInSlot))
 				{
 					bullet = stackInSlot;
 
@@ -131,7 +130,7 @@ public class FlareBulletRecipe implements ICraftingRecipe
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return BulletHandler.getBulletStack("flare");
+		return BulletHandler.getBulletStack(BulletItem.FLARE);
 	}
 
 	@Nonnull
@@ -146,5 +145,11 @@ public class FlareBulletRecipe implements ICraftingRecipe
 	public ResourceLocation getId()
 	{
 		return id;
+	}
+
+	private boolean isFlareBullet(ItemStack stack)
+	{
+		return stack.getItem() instanceof BulletItem&&
+				((BulletItem)stack.getItem()).getType()==BulletHandler.getBullet(BulletItem.FLARE);
 	}
 }

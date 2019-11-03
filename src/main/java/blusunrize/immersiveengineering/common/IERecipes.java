@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipe;
 import blusunrize.immersiveengineering.common.crafting.MetalPressUnpackingRecipe;
+import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEBaseItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Molds;
@@ -110,10 +111,10 @@ public class IERecipes
 		//BULLETS
 		//
 		//Casull
-		ItemStack bullet = BulletHandler.getBulletStack("casull");
+		ItemStack bullet = BulletHandler.getBulletStack(BulletItem.CASULL);
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, "nuggetLead", "nuggetLead");
 		//Piercing
-		bullet = BulletHandler.getBulletStack("armorPiercing");
+		bullet = BulletHandler.getBulletStack(BulletItem.ARMOR_PIERCING);
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, "nuggetSteel", "nuggetSteel", "nuggetConstantan", "nuggetConstantan");
 		if(ApiUtils.isNonemptyItemTag(getNugget("tungsten")))
 			BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, "nuggetTungsten", "nuggetTungsten");
@@ -123,22 +124,22 @@ public class IERecipes
 		//		else if(ApiUtils.isNonemptyItemTag("ingotCyanite"))
 		//			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,3,3), new ItemStack(IEContent.itemBullet,3,0),new ItemStack(Items.gunpowder,3),"ingotCyanite");
 		//Silver
-		bullet = BulletHandler.getBulletStack("silver");
+		bullet = BulletHandler.getBulletStack(BulletItem.SILVER);
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, "nuggetLead", "nuggetLead", "nuggetSilver");
 		//Buckshot
-		bullet = BulletHandler.getBulletStack("buckshot");
+		bullet = BulletHandler.getBulletStack(BulletItem.BUCKSHOT);
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyShell), Items.GUNPOWDER, getDust("iron"));
 		//HE
-		bullet = BulletHandler.getBulletStack("HE");
+		bullet = BulletHandler.getBulletStack(BulletItem.HIGH_EXPLOSIVE);
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, Blocks.TNT);
 		//Dragonsbreath
-		bullet = BulletHandler.getBulletStack("dragonsbreath");
+		bullet = BulletHandler.getBulletStack(BulletItem.DRAGONS_BREATH);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(emptyShell), Items.GUNPOWDER, "dustAluminum", "dustAluminum");
 		//Potion
-		bullet = BulletHandler.getBulletStack("potion");
+		bullet = BulletHandler.getBulletStack(BulletItem.POTION);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, Items.GLASS_BOTTLE);
 		//Flare
-		bullet = BulletHandler.getBulletStack("flare");
+		bullet = BulletHandler.getBulletStack(BulletItem.FLARE);
 		ItemNBTHelper.putInt(bullet, "flareColour", 0xcc2e06);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, "dustAluminum", "dyeRed");
 		ItemNBTHelper.putInt(bullet, "flareColour", 0x2ca30b);
@@ -147,14 +148,16 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, "dustAluminum", "dyeYellow");
 
 		//Wolfpack
+		/*TODO new condition, or maybe an event?
 		if(!BulletHandler.homingCartridges.isEmpty())
 		{
-			bullet = BulletHandler.getBulletStack("wolfpack");
+			bullet = BulletHandler.getBulletStack(BulletItem.WOLFPACK);
 			ArrayList<ItemStack> homingCartridges = new ArrayList<>();
 			for(String s : BulletHandler.homingCartridges)
 				homingCartridges.add(BulletHandler.getBulletStack(s));
 			BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, homingCartridges, homingCartridges, homingCartridges, homingCartridges);
 		}
+		 */
 
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.EMERALD, 1));
 		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.EMERALD, 1));
