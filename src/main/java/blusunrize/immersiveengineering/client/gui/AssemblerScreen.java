@@ -27,6 +27,7 @@ import net.minecraft.util.text.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntConsumer;
 
 public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 {
@@ -45,21 +46,23 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 	public void init()
 	{
 		super.init();
-		this.buttons.clear();
+		IntConsumer sendButtonClick = id -> {
+			CompoundNBT tag = new CompoundNBT();
+			tag.putInt("buttonID", id);
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile.master(), tag));
+		};
 		for(int i = 0; i < 3; ++i)
 		{
 			final int id = i;
-			this.buttons.add(new GuiButtonIE(guiLeft+11+i*59, guiTop+67, 10, 10, null, texture, 230, 50, btn -> {
-				CompoundNBT tag = new CompoundNBT();
-				tag.putInt("buttonID", id);
-				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
-			})
+			this.addButton(new GuiButtonIE(guiLeft+11+i*59, guiTop+67, 10, 10, "", texture, 230, 50,
+					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}
-		this.buttons.add(new GuiButtonState(guiLeft+162, guiTop+69, 16, 16, null, tile.recursiveIngredients, texture, 240, 66, 3,
+		this.addButton(new GuiButtonState(guiLeft+162, guiTop+69, 16, 16, "", tile.recursiveIngredients, texture, 240, 66, 3,
 				btn -> {
+					sendButtonClick.accept(3);
 					tile.recursiveIngredients = !tile.recursiveIngredients;
-					init();
+					fullInit();
 				}));
 	}
 

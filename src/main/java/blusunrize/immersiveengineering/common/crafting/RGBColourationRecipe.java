@@ -74,7 +74,7 @@ public class RGBColourationRecipe implements ICraftingRecipe
 				{
 					itemToColour = stackInSlot;
 					int colour;
-					if(itemToColour.getOrCreateTag().contains(colorKey, NBT.TAG_INT))
+					if(itemToColour.hasTag()&&itemToColour.getOrCreateTag().contains(colorKey, NBT.TAG_INT))
 						colour = itemToColour.getOrCreateTag().getInt(colorKey);
 					else
 						colour = 0xff_ff_ff;

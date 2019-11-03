@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils.InventoryCraftingFalse;
+import com.google.common.base.Preconditions;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -24,6 +25,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
@@ -39,12 +41,12 @@ import java.util.function.Function;
  */
 public class AssemblerHandler
 {
-	private static final HashMap<Class<? extends IRecipe>, IRecipeAdapter> registry = new LinkedHashMap<Class<? extends IRecipe>, IRecipeAdapter>();
+	private static final HashMap<Class<? extends IRecipe>, IRecipeAdapter> registry = new LinkedHashMap<>();
 	private static final List<Function<Object, RecipeQuery>> specialQueryConverters = new ArrayList<>();
-	public static final IRecipeAdapter<IRecipe> defaultAdapter = new IRecipeAdapter<IRecipe>()
+	public static final IRecipeAdapter<IRecipe<CraftingInventory>> defaultAdapter = new IRecipeAdapter<IRecipe<CraftingInventory>>()
 	{
 		@Override
-		public RecipeQuery[] getQueriedInputs(IRecipe recipe, NonNullList<ItemStack> input)
+		public RecipeQuery[] getQueriedInputs(IRecipe<CraftingInventory> recipe, NonNullList<ItemStack> input)
 		{
 			NonNullList<Ingredient> ingred = recipe.getIngredients();
 			CraftingInventory verificationInv = InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input);
@@ -110,7 +112,7 @@ public class AssemblerHandler
 		specialQueryConverters.add(func);
 	}
 
-	public interface IRecipeAdapter<R extends IRecipe>
+	public interface IRecipeAdapter<R extends IRecipe<CraftingInventory>>
 	{
 		@Nullable
 		default RecipeQuery[] getQueriedInputs(R recipe)
@@ -153,9 +155,9 @@ public class AssemblerHandler
 
 	public static RecipeQuery createQueryFromItemStack(ItemStack stack)
 	{
-		if(FluidUtil.getFluidContained(stack)!=null)
-			return new RecipeQuery(FluidUtil.getFluidContained(stack), stack.getCount());
-		return new RecipeQuery(stack, stack.getCount());
+		return FluidUtil.getFluidContained(stack)
+				.map(fluid -> new RecipeQuery(fluid, stack.getCount()))
+				.orElseGet(() -> new RecipeQuery(stack, stack.getCount()));
 	}
 
 	public static class RecipeQuery
@@ -168,6 +170,15 @@ public class AssemblerHandler
 		 */
 		public RecipeQuery(Object query, int querySize)
 		{
+			Preconditions.checkArgument(
+					query instanceof ItemStack||
+							query instanceof ItemStack[]||
+							query instanceof List||
+							query instanceof IngredientStack||
+							query instanceof ResourceLocation||
+							query instanceof FluidStack,
+					query+" is not a valid ingredient!"
+			);
 			this.query = query;
 			this.querySize = querySize;
 		}

@@ -9,3 +9,5 @@
 |common.block.BlockIEFluid*|This needs to be implemented in the fluids now, as fluid blocks appear to be gone|
 |common.util.IEVillagerHandler|Update, maybe incorporate some of the new vanilla features/concepts?|
 |common.util.VillageEngineersHouse|I think this uses structures/templates now?|
+
+- Check calls to `ItemStack::areItemStacksEqual`, 90% of those should probably be `ItemHandlerHelper::canItemStacksStack` or similar

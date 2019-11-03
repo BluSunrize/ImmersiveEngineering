@@ -96,7 +96,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 				return super.isHovered()&&mc.player!=null&&mc.player.inventory.getItemStack().isEmpty();
 			}
 		}.setHoverOffset(0, 16);
-		this.buttons.add(distributeButton);
+		this.addButton(distributeButton);
 	}
 
 	private void autoSplitStacks()

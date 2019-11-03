@@ -31,9 +31,8 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 		this.renderHoveredToolTip(mouseX, mouseY);
 	}
 
-	@Override
-	public void init()
+	public void fullInit()
 	{
-		super.init();
+		super.init(minecraft, width, height);
 	}
 }

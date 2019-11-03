@@ -56,7 +56,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 					if(recipes[i]!=null&&!recipes[i].output.isEmpty())
 					{
 						final int id = i;
-						this.buttons.add(new GuiButtonItem(xx+(i%3)*18, yy+(i/3)*18, recipes[i].output.copy(), i==tile.selectedRecipe,
+						this.addButton(new GuiButtonItem(xx+(i%3)*18, yy+(i/3)*18, recipes[i].output.copy(), i==tile.selectedRecipe,
 								btn -> {
 									if(id==tile.selectedRecipe)//disable
 										tile.selectedRecipe = -1;
@@ -65,7 +65,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 									CompoundNBT message = new CompoundNBT();
 									message.putInt("recipe", tile.selectedRecipe);
 									ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, message));
-									init();
+									fullInit();
 								}));
 					}
 			}

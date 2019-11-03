@@ -73,13 +73,6 @@ public class BlockStates extends BlockstateGenerator
 			createBasicBlock(entry.getKey(), entry.getValue(), variantBased);
 		for(Entry<Block, Map<SlabType, ModelFile>> entry : models.slabs.entrySet())
 			createSlabBlock(entry.getKey(), entry.getValue(), SlabBlock.TYPE, variantBased);
-//		for(MetalScaffoldingType type : MetalScaffoldingType.values())
-//		{
-//			createStairsBlock(MetalDecoration.aluScaffoldingStair.get(type), models.aluScaffoldingStairs.get(type),
-//					StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
-//			createStairsBlock(MetalDecoration.steelScaffoldingStair.get(type), models.steelScaffoldingStairs.get(type),
-//					StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
-//		}
 		for(Entry<Block, Map<BasicStairsShape, ModelFile>> entry : models.stairs.entrySet())
 			createStairsBlock(entry.getKey(), entry.getValue(), StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
 
@@ -90,6 +83,7 @@ public class BlockStates extends BlockstateGenerator
 				new ExistingModelFile(rl("block/metal_multiblock/crusher.obj")),
 				variantBased);
 		createMultiblock(Multiblocks.metalPress, new ExistingModelFile(rl("block/metal_multiblock/metal_press.obj")), variantBased);
+		createMultiblock(Multiblocks.assembler, new ExistingModelFile(rl("block/metal_multiblock/assembler.obj")), variantBased);
 		{
 			IVariantModelGenerator gen = new Builder(Multiblocks.bucketWheel)
 					.setForAllWithState(ImmutableMap.of(), EMPTY_MODEL)

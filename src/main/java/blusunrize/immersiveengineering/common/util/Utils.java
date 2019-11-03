@@ -112,11 +112,11 @@ public class Utils
 	{
 		if((stack1.isEmpty())!=(stack2.isEmpty()))
 			return false;
-		boolean empty1 = stack1.hasTag();
-		boolean empty2 = stack2.hasTag();
-		if(empty1!=empty2)
+		boolean hasTag1 = stack1.hasTag();
+		boolean hasTag2 = stack2.hasTag();
+		if(hasTag1!=hasTag2)
 			return false;
-		if(!empty1&&!stack1.getOrCreateTag().equals(stack2.getOrCreateTag()))
+		if(hasTag1&&!stack1.getOrCreateTag().equals(stack2.getOrCreateTag()))
 			return false;
 		return stack1.areCapsCompatible(stack2);
 	}

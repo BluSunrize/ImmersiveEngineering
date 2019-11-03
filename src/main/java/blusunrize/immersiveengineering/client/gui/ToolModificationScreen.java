@@ -42,12 +42,12 @@ public abstract class ToolModificationScreen<C extends Container> extends IECont
 			ToolConfigBoolean[] boolArray = tool.getBooleanOptions(stack);
 			if(boolArray!=null)
 				for(ToolConfigBoolean b : boolArray)
-					this.buttons.add(new GuiButtonCheckbox(guiLeft+b.x, guiTop+b.y, tool.fomatConfigName(stack, b), b.value,
+					this.addButton(new GuiButtonCheckbox(guiLeft+b.x, guiTop+b.y, tool.fomatConfigName(stack, b), b.value,
 							btn -> dataChanged(btn, b.name)));
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			if(floatArray!=null)
 				for(ToolConfigFloat f : floatArray)
-					this.buttons.add(new GuiSliderIE(guiLeft+f.x, guiTop+f.y, 80, tool.fomatConfigName(stack, f), f.value,
+					this.addButton(new GuiSliderIE(guiLeft+f.x, guiTop+f.y, 80, tool.fomatConfigName(stack, f), f.value,
 							btn -> dataChanged(btn, f.name)));
 		}
 	}

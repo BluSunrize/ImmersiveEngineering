@@ -147,10 +147,10 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 				CompoundNBT tag = new CompoundNBT();
 				tag.putByteArray("sideConfig", tile.sortWithNBT);
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
-				init();
+				fullInit();
 			});
 			b.active = this.tile.doNBT(side);
-			this.buttons.add(b);
+			this.addButton(b);
 		}
 	}
 
