@@ -768,7 +768,7 @@ public class Utils
 		if(result.isSuccess())
 		{
 			final ItemStack full = result.getResult();
-			if((containerOut.isEmpty()||ItemStack.areItemStacksEqual(containerOut, full)))
+			if((containerOut.isEmpty()||ItemHandlerHelper.canItemStacksStack(containerOut, full)))
 			{
 				if(!containerOut.isEmpty()&&containerOut.getCount()+full.getCount() > containerOut.getMaxStackSize())
 					return ItemStack.EMPTY;
@@ -794,7 +794,7 @@ public class Utils
 		if(result.isSuccess())
 		{
 			ItemStack empty = result.getResult();
-			if((containerOut.isEmpty()||ItemStack.areItemStacksEqual(containerOut, empty)))
+			if((containerOut.isEmpty()||ItemHandlerHelper.canItemStacksStack(containerOut, empty)))
 			{
 				if(!containerOut.isEmpty()&&containerOut.getCount()+empty.getCount() > containerOut.getMaxStackSize())
 					return ItemStack.EMPTY;

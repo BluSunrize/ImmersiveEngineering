@@ -31,6 +31,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +107,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 					inventory.set(4, filledContainer.copy());
 				else
 				{
-					if(!inventory.get(5).isEmpty()&&ItemStack.areItemStacksEqual(inventory.get(5), filledContainer))
+					if(!inventory.get(5).isEmpty()&&ItemHandlerHelper.canItemStacksStack(inventory.get(5), filledContainer))
 						inventory.get(5).grow(filledContainer.getCount());
 					else if(inventory.get(5).isEmpty())
 						inventory.set(5, filledContainer.copy());
@@ -137,7 +138,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[0], inventory.get(0), inventory.get(1), null);
 		if(amount_prev!=tanks[0].getFluidAmount())
 		{
-			if(!inventory.get(1).isEmpty()&&ItemStack.areItemStacksEqual(inventory.get(1), emptyContainer))
+			if(!inventory.get(1).isEmpty()&&ItemHandlerHelper.canItemStacksStack(inventory.get(1), emptyContainer))
 				inventory.get(1).grow(emptyContainer.getCount());
 			else if(inventory.get(1).isEmpty())
 				inventory.set(1, emptyContainer.copy());
@@ -150,7 +151,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		emptyContainer = Utils.drainFluidContainer(tanks[1], inventory.get(2), inventory.get(3), null);
 		if(amount_prev!=tanks[1].getFluidAmount())
 		{
-			if(!inventory.get(3).isEmpty()&&ItemStack.areItemStacksEqual(inventory.get(3), emptyContainer))
+			if(!inventory.get(3).isEmpty()&&ItemHandlerHelper.canItemStacksStack(inventory.get(3), emptyContainer))
 				inventory.get(3).grow(emptyContainer.getCount());
 			else if(inventory.get(3).isEmpty())
 				inventory.set(3, emptyContainer.copy());

@@ -29,6 +29,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 								continue;
 							boolean isNew = true;
 							for(ItemStack ss : inputs)
-								if(ItemStack.areItemStacksEqual(ss, toAdd))
+								if(ItemHandlerHelper.canItemStacksStack(ss, toAdd))
 								{
 									ss.grow(toAdd.getCount());
 									isNew = false;

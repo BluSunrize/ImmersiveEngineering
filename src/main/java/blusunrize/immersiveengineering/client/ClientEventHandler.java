@@ -442,7 +442,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				if(!player.getHeldItem(hand).isEmpty())
 				{
 					ItemStack equipped = player.getHeldItem(hand);
-					if(ItemStack.areItemStacksEqual(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
+					if(ItemStack.areItemsEqual(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
 					{
 						if(ItemNBTHelper.hasKey(equipped, "linkingPos"))
 						{

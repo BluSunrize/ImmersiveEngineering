@@ -39,6 +39,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -165,7 +166,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 							getInventory().set(9, full.copy());
 						else
 						{
-							if(!getInventory().get(10).isEmpty()&&ItemStack.areItemStacksEqual(full, getInventory().get(10)))
+							if(!getInventory().get(10).isEmpty()&&ItemHandlerHelper.canItemStacksStack(full, getInventory().get(10)))
 								getInventory().get(10).grow(full.getCount());
 							else
 								getInventory().set(10, full);

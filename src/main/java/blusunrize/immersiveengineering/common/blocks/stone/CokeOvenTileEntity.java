@@ -37,6 +37,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -141,7 +142,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 					}
 					else
 					{
-						if(!inventory.get(3).isEmpty()&&ItemStack.areItemStacksEqual(inventory.get(3), filledContainer))
+						if(!inventory.get(3).isEmpty()&&ItemHandlerHelper.canItemStacksStack(inventory.get(3), filledContainer))
 							inventory.get(3).grow(filledContainer.getCount());
 						else if(inventory.get(3).isEmpty())
 							inventory.set(3, filledContainer.copy());

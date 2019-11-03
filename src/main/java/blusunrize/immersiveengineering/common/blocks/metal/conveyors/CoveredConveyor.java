@@ -38,6 +38,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -197,7 +198,7 @@ public class CoveredConveyor extends BasicConveyor
 			for(Predicate<ItemStack> func : validCoveyorCovers)
 				if(func.test(heldItem))
 				{
-					if(!ItemStack.areItemStacksEqual(cover, heldItem))
+					if(!ItemHandlerHelper.canItemStacksStack(cover, heldItem))
 					{
 						if(!tile.getWorld().isRemote&&!cover.isEmpty()&&tile.getWorld().getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 						{
