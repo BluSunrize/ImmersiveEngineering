@@ -88,15 +88,16 @@ public class ObjLoaderWorkaround
 						int xRot = Optional.ofNullable(val.get("x")).map(JsonElement::getAsInt).orElse(0);
 						int yRot = Optional.ofNullable(val.get("y")).map(JsonElement::getAsInt).orElse(0);
 						boolean uvLock = Optional.ofNullable(val.get("uvlock")).map(JsonElement::getAsBoolean).orElse(false);
-						ImmutableMap.Builder<String, Object> remaining = new Builder<>();
-						for(Entry<String, JsonElement> e : val.entrySet())
-						{
-							String key = e.getKey();
-							if(!"model".equals(key)&&!"x".equals(key)&&!"y".equals(key)&&!"uvlock".equals(key))
-								remaining.put(key, e.getValue());
-						}
+						ImmutableMap.Builder<String, Object> custom = new Builder<>();
+						ImmutableMap.Builder<String, String> textures = new Builder<>();
+						if(val.has("custom"))
+							for(Entry<String, JsonElement> e : val.getAsJsonObject("custom").entrySet())
+								custom.put(e.getKey(), e.getValue());
+						if(val.has("textures"))
+							for(Entry<String, JsonElement> e : val.getAsJsonObject("textures").entrySet())
+								textures.put(e.getKey(), e.getValue().getAsString());
 						DynamicModelLoader.requestModel(
-								new ConfiguredModel(new ExistingModelFile(name), xRot, yRot, uvLock, remaining.build()),
+								new ConfiguredModel(new ExistingModelFile(name), xRot, yRot, uvLock, custom.build(), textures.build()),
 								new ModelResourceLocation(blockName, entry.getKey())
 						);
 					}

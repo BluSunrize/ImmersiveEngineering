@@ -147,8 +147,15 @@ public abstract class BlockstateGenerator implements IDataProvider
 		public final int rotationY;
 		public final boolean uvLock;
 		public final ImmutableMap<String, Object> additionalData;
+		public final ImmutableMap<String, String> retexture;
 
 		public ConfiguredModel(ModelFile name, int rotationX, int rotationY, boolean uvLock, ImmutableMap<String, Object> additionalData)
+		{
+			this(name, rotationX, rotationY, uvLock, additionalData, ImmutableMap.of());
+		}
+
+		public ConfiguredModel(ModelFile name, int rotationX, int rotationY, boolean uvLock, ImmutableMap<String, Object> additionalData,
+							   ImmutableMap<String, String> textures)
 		{
 			Preconditions.checkArgument(!additionalData.containsKey("model"));
 			Preconditions.checkArgument(!additionalData.containsKey("x"));
@@ -159,6 +166,7 @@ public abstract class BlockstateGenerator implements IDataProvider
 			this.rotationY = rotationY;
 			this.uvLock = uvLock;
 			this.additionalData = additionalData;
+			this.retexture = textures;
 		}
 
 		public ConfiguredModel(ModelFile name)
@@ -176,16 +184,28 @@ public abstract class BlockstateGenerator implements IDataProvider
 				modelJson.addProperty("y", rotationY);
 			if(uvLock&&(rotationX!=0||rotationY!=0))
 				modelJson.addProperty("uvlock", uvLock);
-			for(Entry<String, Object> e : additionalData.entrySet())
+			if(!additionalData.isEmpty())
 			{
-				if(e.getValue() instanceof Boolean)
-					modelJson.addProperty(e.getKey(), (Boolean)e.getValue());
-				else if(e.getValue() instanceof Number)
-					modelJson.addProperty(e.getKey(), (Number)e.getValue());
-				else if(e.getValue() instanceof Character)
-					modelJson.addProperty(e.getKey(), (Character)e.getValue());
-				else
-					modelJson.addProperty(e.getKey(), e.getValue().toString());
+				JsonObject custom = new JsonObject();
+				for(Entry<String, Object> e : additionalData.entrySet())
+				{
+					if(e.getValue() instanceof Boolean)
+						custom.addProperty(e.getKey(), (Boolean)e.getValue());
+					else if(e.getValue() instanceof Number)
+						custom.addProperty(e.getKey(), (Number)e.getValue());
+					else if(e.getValue() instanceof Character)
+						custom.addProperty(e.getKey(), (Character)e.getValue());
+					else
+						custom.addProperty(e.getKey(), e.getValue().toString());
+				}
+				modelJson.add("custom", custom);
+			}
+			if(!retexture.isEmpty())
+			{
+				JsonObject textures = new JsonObject();
+				for(Entry<String, String> entry : retexture.entrySet())
+					textures.addProperty(entry.getKey(), entry.getValue());
+				modelJson.add("textures", textures);
 			}
 			return modelJson;
 		}

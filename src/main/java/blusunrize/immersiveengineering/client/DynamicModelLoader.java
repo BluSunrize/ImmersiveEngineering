@@ -101,7 +101,9 @@ public class DynamicModelLoader
 				IUnbakedModel unbaked = new OBJModel.Parser(asResource, manager).parse();
 				if(name.getPath().endsWith(".obj.ie"))
 					unbaked = new IEOBJModel(((OBJModel)unbaked).getMatLib(), name);
-				unbaked = unbaked.process(reqModel.model.getAddtionalDataAsStrings());
+				unbaked = unbaked
+						.process(reqModel.model.getAddtionalDataAsStrings())
+						.retexture(reqModel.model.retexture);
 				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), ImmutableSet.of()));
 				unbakedModels.put(reqModel, unbaked);
 			}

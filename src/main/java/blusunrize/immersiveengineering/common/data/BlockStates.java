@@ -32,6 +32,7 @@ import net.minecraft.state.properties.Half;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -105,12 +106,14 @@ public class BlockStates extends BlockstateGenerator
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180,
 				variantBased);
 
-		//TODO tex replacements for alu and steel
 		createPostBlock(MetalDecoration.aluPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
+				rl("block/metal_decoration/aluminum_post"),
 				variantBased);
 		createPostBlock(MetalDecoration.steelPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
+				rl("block/metal_decoration/steel_post"),
 				variantBased);
 		createPostBlock(WoodenDecoration.treatedPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
+				rl("block/wooden_decoration/post"),
 				variantBased);
 	}
 
@@ -230,14 +233,15 @@ public class BlockStates extends BlockstateGenerator
 		out.accept(b, builder.build());
 	}
 
-	private void createPostBlock(Block b, ModelFile masterModel, BiConsumer<Block, IVariantModelGenerator> out)
+	private void createPostBlock(Block b, ModelFile masterModel, ResourceLocation texture, BiConsumer<Block, IVariantModelGenerator> out)
 	{
 		Builder builder = new Builder(b);
 		for(int i : PostBlock.POST_SLAVE.getAllowedValues())
 			if(i!=0)
 				builder.setForAllWithState(ImmutableMap.of(PostBlock.POST_SLAVE, i), EMPTY_MODEL);
 		builder.setForAllWithState(ImmutableMap.of(PostBlock.POST_SLAVE, 0),
-				new ConfiguredModel(masterModel, 0, 0, true, ImmutableMap.of("flip-v", true)));
+				new ConfiguredModel(masterModel, 0, 0, true, ImmutableMap.of("flip-v", true),
+						ImmutableMap.of("#immersiveengineering:block/wooden_decoration/post", texture.toString())));
 		out.accept(b, builder.build());
 	}
 
