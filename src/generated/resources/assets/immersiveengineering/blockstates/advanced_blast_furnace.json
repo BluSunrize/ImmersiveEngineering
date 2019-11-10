@@ -2,7 +2,9 @@
   "variants": {
     "active=false,facing=north,multiblockslave=false": {
       "model": "immersiveengineering:block/blastfurnace_advanced.obj",
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "active=false,facing=north,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -11,7 +13,9 @@
       "model": "immersiveengineering:block/blastfurnace_advanced.obj",
       "y": 180,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "active=false,facing=south,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -20,7 +24,9 @@
       "model": "immersiveengineering:block/blastfurnace_advanced.obj",
       "y": 270,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "active=false,facing=west,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -29,14 +35,18 @@
       "model": "immersiveengineering:block/blastfurnace_advanced.obj",
       "y": 90,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "active=false,facing=east,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
     "active=true,facing=north,multiblockslave=false": {
       "model": "immersiveengineering:block/blastfurnace_advanced.obj",
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "active=true,facing=north,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -45,7 +55,9 @@
       "model": "immersiveengineering:block/blastfurnace_advanced.obj",
       "y": 180,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "active=true,facing=south,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -54,7 +66,9 @@
       "model": "immersiveengineering:block/blastfurnace_advanced.obj",
       "y": 270,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "active=true,facing=west,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -63,7 +77,9 @@
       "model": "immersiveengineering:block/blastfurnace_advanced.obj",
       "y": 90,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "active=true,facing=east,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"

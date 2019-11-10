@@ -2,7 +2,12 @@
   "variants": {
     "horizontal_offset=none,post_slave=0": {
       "model": "immersiveengineering:block/wooden_device/wooden_post.obj.ie",
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_decoration/post": "immersiveengineering:block/metal_decoration/steel_post"
+      }
     },
     "horizontal_offset=none,post_slave=1": {
       "model": "immersiveengineering:block/ie_empty"
@@ -15,7 +20,12 @@
     },
     "horizontal_offset=north,post_slave=0": {
       "model": "immersiveengineering:block/wooden_device/wooden_post.obj.ie",
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_decoration/post": "immersiveengineering:block/metal_decoration/steel_post"
+      }
     },
     "horizontal_offset=north,post_slave=1": {
       "model": "immersiveengineering:block/ie_empty"
@@ -28,7 +38,12 @@
     },
     "horizontal_offset=south,post_slave=0": {
       "model": "immersiveengineering:block/wooden_device/wooden_post.obj.ie",
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_decoration/post": "immersiveengineering:block/metal_decoration/steel_post"
+      }
     },
     "horizontal_offset=south,post_slave=1": {
       "model": "immersiveengineering:block/ie_empty"
@@ -41,7 +56,12 @@
     },
     "horizontal_offset=east,post_slave=0": {
       "model": "immersiveengineering:block/wooden_device/wooden_post.obj.ie",
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_decoration/post": "immersiveengineering:block/metal_decoration/steel_post"
+      }
     },
     "horizontal_offset=east,post_slave=1": {
       "model": "immersiveengineering:block/ie_empty"
@@ -54,7 +74,12 @@
     },
     "horizontal_offset=west,post_slave=0": {
       "model": "immersiveengineering:block/wooden_device/wooden_post.obj.ie",
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_decoration/post": "immersiveengineering:block/metal_decoration/steel_post"
+      }
     },
     "horizontal_offset=west,post_slave=1": {
       "model": "immersiveengineering:block/ie_empty"

@@ -2,14 +2,18 @@
   "variants": {
     "facing=north,mirrored=false,multiblockslave=false": {
       "model": "immersiveengineering:block/metal_multiblock/arc_furnace.obj",
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "facing=north,mirrored=false,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
     "facing=north,mirrored=true,multiblockslave=false": {
       "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored.obj",
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "facing=north,mirrored=true,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -18,7 +22,9 @@
       "model": "immersiveengineering:block/metal_multiblock/arc_furnace.obj",
       "y": 180,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "facing=south,mirrored=false,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -27,7 +33,9 @@
       "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored.obj",
       "y": 180,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "facing=south,mirrored=true,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -36,7 +44,9 @@
       "model": "immersiveengineering:block/metal_multiblock/arc_furnace.obj",
       "y": 270,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "facing=west,mirrored=false,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -45,7 +55,9 @@
       "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored.obj",
       "y": 270,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "facing=west,mirrored=true,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -54,7 +66,9 @@
       "model": "immersiveengineering:block/metal_multiblock/arc_furnace.obj",
       "y": 90,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "facing=east,mirrored=false,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
@@ -63,7 +77,9 @@
       "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored.obj",
       "y": 90,
       "uvlock": true,
-      "flip-v": true
+      "custom": {
+        "flip-v": true
+      }
     },
     "facing=east,mirrored=true,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
