@@ -32,15 +32,18 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 
 import javax.annotation.Nonnull;
@@ -288,7 +291,7 @@ public class IEBlockInterfaces
 
 	public interface IHammerInteraction
 	{
-		boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ);
+		boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec);
 	}
 
 	public interface IPlacementInteraction
@@ -445,5 +448,11 @@ public class IEBlockInterfaces
 	public interface ICacheData
 	{
 		Object[] getCacheData();
+	}
+
+	public interface IModelDataBlock
+	{
+		IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+								@Nonnull IModelData tileData);
 	}
 }

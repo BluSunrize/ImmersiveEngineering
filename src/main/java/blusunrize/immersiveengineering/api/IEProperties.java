@@ -34,7 +34,7 @@ public class IEProperties
 	public static final DirectionProperty FACING_ALL = DirectionProperty.create("facing", Direction.VALUES);
 	public static final DirectionProperty FACING_HORIZONTAL = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
 
-	public static final PropertyBoolInverted MULTIBLOCKSLAVE = PropertyBoolInverted.create("_0multiblockslave");//Name starts with '_0' to ensure priority when overriding models
+	public static final PropertyBoolInverted MULTIBLOCKSLAVE = PropertyBoolInverted.create("multiblockslave");
 	public static final PropertyBoolInverted ACTIVE = PropertyBoolInverted.create("active");
 	public static final PropertyBoolInverted IS_SECOND_STATE = PropertyBoolInverted.create("issecondstate");
 	public static final PropertyBoolInverted MIRRORED = PropertyBoolInverted.create("mirrored");

@@ -1,21 +1,21 @@
 {
   "variants": {
     "facing=north,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/metal_press.obj",
+      "model": "immersiveengineering:block/metal_multiblock/assembler.obj",
       "flip-v": true
     },
     "facing=north,mirrored=false,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
     "facing=north,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/metal_press.obj",
+      "model": "immersiveengineering:block/metal_multiblock/assembler.obj",
       "flip-v": true
     },
     "facing=north,mirrored=true,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
     "facing=south,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/metal_press.obj",
+      "model": "immersiveengineering:block/metal_multiblock/assembler.obj",
       "y": 180,
       "uvlock": true,
       "flip-v": true
@@ -24,7 +24,7 @@
       "model": "immersiveengineering:block/ie_empty"
     },
     "facing=south,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/metal_press.obj",
+      "model": "immersiveengineering:block/metal_multiblock/assembler.obj",
       "y": 180,
       "uvlock": true,
       "flip-v": true
@@ -33,7 +33,7 @@
       "model": "immersiveengineering:block/ie_empty"
     },
     "facing=west,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/metal_press.obj",
+      "model": "immersiveengineering:block/metal_multiblock/assembler.obj",
       "y": 270,
       "uvlock": true,
       "flip-v": true
@@ -42,7 +42,7 @@
       "model": "immersiveengineering:block/ie_empty"
     },
     "facing=west,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/metal_press.obj",
+      "model": "immersiveengineering:block/metal_multiblock/assembler.obj",
       "y": 270,
       "uvlock": true,
       "flip-v": true
@@ -51,7 +51,7 @@
       "model": "immersiveengineering:block/ie_empty"
     },
     "facing=east,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/metal_press.obj",
+      "model": "immersiveengineering:block/metal_multiblock/assembler.obj",
       "y": 90,
       "uvlock": true,
       "flip-v": true
@@ -60,7 +60,7 @@
       "model": "immersiveengineering:block/ie_empty"
     },
     "facing=east,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/metal_press.obj",
+      "model": "immersiveengineering:block/metal_multiblock/assembler.obj",
       "y": 90,
       "uvlock": true,
       "flip-v": true

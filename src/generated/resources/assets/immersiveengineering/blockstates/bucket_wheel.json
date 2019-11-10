@@ -1,51 +1,51 @@
 {
   "variants": {
-    "_0multiblockslave=false,facing=north,mirrored=false": {
+    "facing=north,mirrored=false,multiblockslave=false": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=false,facing=north,mirrored=true": {
+    "facing=north,mirrored=false,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=false,facing=south,mirrored=false": {
+    "facing=north,mirrored=true,multiblockslave=false": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=false,facing=south,mirrored=true": {
+    "facing=north,mirrored=true,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=false,facing=west,mirrored=false": {
+    "facing=south,mirrored=false,multiblockslave=false": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=false,facing=west,mirrored=true": {
+    "facing=south,mirrored=false,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=false,facing=east,mirrored=false": {
+    "facing=south,mirrored=true,multiblockslave=false": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=false,facing=east,mirrored=true": {
+    "facing=south,mirrored=true,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=true,facing=north,mirrored=false": {
+    "facing=west,mirrored=false,multiblockslave=false": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=true,facing=north,mirrored=true": {
+    "facing=west,mirrored=false,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=true,facing=south,mirrored=false": {
+    "facing=west,mirrored=true,multiblockslave=false": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=true,facing=south,mirrored=true": {
+    "facing=west,mirrored=true,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=true,facing=west,mirrored=false": {
+    "facing=east,mirrored=false,multiblockslave=false": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=true,facing=west,mirrored=true": {
+    "facing=east,mirrored=false,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=true,facing=east,mirrored=false": {
+    "facing=east,mirrored=true,multiblockslave=false": {
       "model": "immersiveengineering:block/ie_empty"
     },
-    "_0multiblockslave=true,facing=east,mirrored=true": {
+    "facing=east,mirrored=true,multiblockslave=true": {
       "model": "immersiveengineering:block/ie_empty"
     }
   }

@@ -311,7 +311,7 @@ public class IEContent
 		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
 		WoodenDevices.windmill = new WindmillBlock("windmill");
 		WoodenDevices.watermill = new WatermillBlock("watermill");
-		WoodenDevices.treatedPost = new PostBlock("treated_post", standardWoodProperties);
+		WoodenDecoration.treatedPost = new PostBlock("treated_post", standardWoodProperties);
 		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodProperties);
 		IEBlocks.Misc.hempPlant = new HempBlock("hemp");
 
@@ -640,8 +640,6 @@ public class IEContent
 		registerTile(FluidSorterTileEntity.class, event, WoodenDevices.fluidSorter);
 		registerTile(WatermillTileEntity.class, event, WoodenDevices.watermill);
 		registerTile(WindmillTileEntity.class, event, WoodenDevices.windmill);
-		registerTile(PostTileEntity.class, event, WoodenDevices.treatedPost, MetalDecoration.aluPost,
-				MetalDecoration.steelPost);
 
 		registerTile(LanternTileEntity.class, event, MetalDecoration.lantern);
 		registerTile(RazorWireTileEntity.class, event, MetalDevices.razorWire);

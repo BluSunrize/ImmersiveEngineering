@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.PostBlock;
 import blusunrize.immersiveengineering.common.data.Models.MetalModels;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator;
 import blusunrize.immersiveengineering.common.data.blockstate.VariantBlockstate.Builder;
@@ -102,6 +103,14 @@ public class BlockStates extends BlockstateGenerator
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
 		createMultiblock(MetalDevices.sampleDrill, new ExistingModelFile(rl("block/metal_device/core_drill.obj")),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180,
+				variantBased);
+
+		//TODO tex replacements for alu and steel
+		createPostBlock(MetalDecoration.aluPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
+				variantBased);
+		createPostBlock(MetalDecoration.steelPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
+				variantBased);
+		createPostBlock(WoodenDecoration.treatedPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
 				variantBased);
 	}
 
@@ -218,6 +227,17 @@ public class BlockStates extends BlockstateGenerator
 				builder.setForAllWithState(partialState.build(),
 						new ConfiguredModel(model, 0, angle, true, ImmutableMap.of("flip-v", true)));
 			}
+		out.accept(b, builder.build());
+	}
+
+	private void createPostBlock(Block b, ModelFile masterModel, BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		Builder builder = new Builder(b);
+		for(int i : PostBlock.POST_SLAVE.getAllowedValues())
+			if(i!=0)
+				builder.setForAllWithState(ImmutableMap.of(PostBlock.POST_SLAVE, i), EMPTY_MODEL);
+		builder.setForAllWithState(ImmutableMap.of(PostBlock.POST_SLAVE, 0),
+				new ConfiguredModel(masterModel, 0, 0, true, ImmutableMap.of("flip-v", true)));
 		out.accept(b, builder.build());
 	}
 

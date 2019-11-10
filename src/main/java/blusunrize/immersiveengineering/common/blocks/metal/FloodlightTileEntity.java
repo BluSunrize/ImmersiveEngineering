@@ -413,8 +413,11 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
+		double hitX = hitVec.x;
+		double hitY = hitVec.y;
+		double hitZ = hitVec.z;
 		if(player.isSneaking()&&side!=this.getFacing())
 		{
 			boolean base = this.getFacing()==Direction.DOWN?hitY >= .8125: this.getFacing()==Direction.UP?hitY <= .1875: this.getFacing()==Direction.NORTH?hitZ >= .8125: this.getFacing()==Direction.UP?hitZ <= .1875: this.getFacing()==Direction.WEST?hitX >= .8125: hitX <= .1875;

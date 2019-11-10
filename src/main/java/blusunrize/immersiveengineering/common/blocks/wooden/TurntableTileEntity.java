@@ -19,6 +19,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class TurntableTileEntity extends IEBaseTileEntity implements IDirectionalTile, INeighbourChangeTile, IHammerInteraction
 {
@@ -100,7 +101,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IDirectiona
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(player.isSneaking())
 		{

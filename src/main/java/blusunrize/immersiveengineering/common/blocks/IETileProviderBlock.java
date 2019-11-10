@@ -281,6 +281,19 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
+	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	{
+		TileEntity tile = w.getTileEntity(pos);
+		if(tile instanceof IHammerInteraction&&!w.isRemote)
+		{
+			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hit.getHitVec());
+			if(b)
+				return true;
+		}
+		return super.hammerUseSide(side, player, w, pos, hit);
+	}
+
+	@Override
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
 	{
 		final Direction side = hit.getFace();
@@ -316,12 +329,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			world.addBlockEvent(tile.getPos(), tile.getBlockState().getBlock(), 255, 0);
 			return true;
 		}
-		if(tile instanceof IHammerInteraction&&Utils.isHammer(heldItem)&&!world.isRemote)
-		{
-			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hitX, hitY, hitZ);
-			if(b)
-				return b;
-		}
 		if(tile instanceof IPlayerInteraction)
 		{
 			boolean b = ((IPlayerInteraction)tile).interact(side, player, hand, heldItem, hitX, hitY, hitZ);
@@ -336,7 +343,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				NetworkHooks.openGui((ServerPlayerEntity)player, interaction, ((TileEntity)interaction).getPos());
 			return true;
 		}
-		return false;
+		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
 
 	@Override

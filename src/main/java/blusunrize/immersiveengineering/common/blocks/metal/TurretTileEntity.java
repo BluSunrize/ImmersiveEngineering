@@ -376,13 +376,13 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(dummy)
 		{
 			TileEntity te = world.getTileEntity(getPos().down());
 			if(te instanceof TurretTileEntity)
-				return ((TurretTileEntity)te).hammerUseSide(side, player, hitX, hitY, hitZ);
+				return ((TurretTileEntity)te).hammerUseSide(side, player, hitVec);
 			return false;
 		}
 		if(player.isSneaking())

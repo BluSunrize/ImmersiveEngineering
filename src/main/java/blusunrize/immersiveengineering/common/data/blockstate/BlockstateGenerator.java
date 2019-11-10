@@ -70,7 +70,8 @@ public abstract class BlockstateGenerator implements IDataProvider
 					name.append(",");
 				name.append(prop.getName())
 						.append("=")
-						.append(b.get(prop));
+						//TODO surely there's a better way to do this
+						.append(((IProperty)prop).getName(b.get(prop)));
 			}
 			variants.add(name.toString(), model.toJSON());
 		}

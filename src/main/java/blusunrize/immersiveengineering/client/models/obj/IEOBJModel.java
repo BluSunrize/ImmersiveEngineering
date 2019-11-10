@@ -51,7 +51,8 @@ public class IEOBJModel extends OBJModel
 	public IUnbakedModel process(ImmutableMap<String, String> customData)
 	{
 		boolean dynamic = customData.containsKey("dynamic")&&Boolean.parseBoolean(customData.get("dynamic"));
-		IEOBJModel ret = new IEOBJModel(this.getMatLib(), getResourceLocation(), getCustomData(), dynamic);
+		IEOBJModel ret = new IEOBJModel(this.getMatLib(), getResourceLocation(),
+				getCustomData((OBJModel)super.process(customData)), dynamic);
 		return ret;
 	}
 
@@ -86,6 +87,11 @@ public class IEOBJModel extends OBJModel
 
 	public Object getCustomData()
 	{
+		return getCustomData(this);
+	}
+
+	public static Object getCustomData(OBJModel model)
+	{
 		try
 		{
 			if(f_customData==null)
@@ -94,7 +100,7 @@ public class IEOBJModel extends OBJModel
 				f_customData.setAccessible(true);
 			}
 			if(f_customData!=null)
-				return f_customData.get(this);
+				return f_customData.get(model);
 		} catch(Exception e)
 		{
 			e.printStackTrace();
