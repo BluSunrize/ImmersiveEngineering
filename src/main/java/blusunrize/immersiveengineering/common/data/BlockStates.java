@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.PostBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.data.Models.MetalModels;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator;
 import blusunrize.immersiveengineering.common.data.blockstate.VariantBlockstate.Builder;
@@ -115,6 +116,13 @@ public class BlockStates extends BlockstateGenerator
 		createPostBlock(WoodenDecoration.treatedPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
 				rl("block/wooden_decoration/post"),
 				variantBased);
+
+		createDirectionalBlock(MetalDecoration.metalLadder.get(CoverType.NONE), IEProperties.FACING_HORIZONTAL,
+				models.metalLadderNone, variantBased);
+		createDirectionalBlock(MetalDecoration.metalLadder.get(CoverType.ALU), IEProperties.FACING_HORIZONTAL,
+				models.metalLadderAlu, variantBased);
+		createDirectionalBlock(MetalDecoration.metalLadder.get(CoverType.STEEL), IEProperties.FACING_HORIZONTAL,
+				models.metalLadderSteel, variantBased);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -248,5 +256,14 @@ public class BlockStates extends BlockstateGenerator
 	private int getAngle(Direction dir, int offset)
 	{
 		return (int)((dir.getHorizontalAngle()+offset)%360);
+	}
+
+	private void createDirectionalBlock(Block b, IProperty<Direction> prop, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		Builder builder = new Builder(b);
+		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+			builder.setForAllWithState(ImmutableMap.of(prop, d), new ConfiguredModel(model, 0, getAngle(d, 180),
+					true, ImmutableMap.of()));
+		out.accept(b, builder.build());
 	}
 }

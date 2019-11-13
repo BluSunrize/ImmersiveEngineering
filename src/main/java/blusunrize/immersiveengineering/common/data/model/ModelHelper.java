@@ -10,12 +10,14 @@ package blusunrize.immersiveengineering.common.data.model;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.Locale;
 
 import static net.minecraft.util.Direction.NORTH;
@@ -210,6 +212,30 @@ public class ModelHelper
 			variants.addProperty(types[i].name().toLowerCase(Locale.US), models[i].getUncheckedLocation().toString());
 		model.add("variants", variants);
 		return new GeneratedModelFile(fileName, model);
+	}
+
+	public static GeneratedModelFile createMetalLadder(ResourceLocation out, @Nullable ResourceLocation bottomTop, @Nullable ResourceLocation sides)
+	{
+		JsonObject model = new JsonObject();
+		JsonObject textures = new JsonObject();
+		if(bottomTop!=null)
+		{
+			Preconditions.checkNotNull(sides);
+			assertTextureExists(bottomTop);
+			assertTextureExists(sides);
+			model.addProperty("parent", ImmersiveEngineering.MODID+":block/ie_scaffoldladder");
+			textures.addProperty("top", bottomTop.toString());
+			textures.addProperty("bottom", bottomTop.toString());
+			textures.addProperty("side", sides.toString());
+		}
+		else
+		{
+			Preconditions.checkArgument(sides==null);
+			model.addProperty("parent", ImmersiveEngineering.MODID+":block/ie_ladder");
+		}
+		textures.addProperty("ladder", ImmersiveEngineering.MODID+":block/metal_decoration/metal_ladder");
+		model.add("textures", textures);
+		return new GeneratedModelFile(out, model);
 	}
 
 	public enum BasicStairsShape

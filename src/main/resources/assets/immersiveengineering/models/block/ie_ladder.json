@@ -1,16 +1,22 @@
 {
 	"ambientocclusion": false,
 	"textures": {
-		"particle": "blocks/ladder",
-		"texture": "blocks/ladder"
+		"particle": "block/ladder",
+		"ladder": "block/ladder"
 	},
 	"elements": [
 		{   "from": [ 0, 0, 14.9 ],
 			"to": [ 16, 16, 14.9 ],
 			"shade": false,
 			"faces": {
-				"north": { "uv": [ 0, 0, 16, 16 ], "texture": "#texture" },
-				"south": { "uv": [ 0, 0, 16, 16 ], "texture": "#texture" }
+				"north": {
+					"uv": [0, 0, 16, 16],
+					"texture": "#ladder"
+				},
+				"south": {
+					"uv": [0, 0, 16, 16],
+					"texture": "#ladder"
+				}
 			}
 		}
 	]

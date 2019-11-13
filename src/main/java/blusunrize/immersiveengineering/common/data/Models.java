@@ -76,6 +76,14 @@ public class Models extends ModelGenerator
 			rl("block/multiblocks/alloy_smelter_bottom"), rl("block/multiblocks/alloy_smelter_top"),
 			rl("block/multiblocks/alloy_smelter_side"), rl("block/multiblocks/alloy_smelter_on"));
 
+	final GeneratedModelFile metalLadderNone = ModelHelper.createMetalLadder(rl("block/metal_decoration/metal_ladder_none"), null, null);
+	final GeneratedModelFile metalLadderAlu = ModelHelper.createMetalLadder(rl("block/metal_decoration/metal_ladder_aluminum"),
+			rl("block/metal_decoration/aluminum_scaffolding_open"),
+			rl("block/metal_decoration/aluminum_scaffolding"));
+	final GeneratedModelFile metalLadderSteel = ModelHelper.createMetalLadder(rl("block/metal_decoration/metal_ladder_steel"),
+			rl("block/metal_decoration/steel_scaffolding_open"),
+			rl("block/metal_decoration/steel_scaffolding"));
+
 	public Models(DataGenerator gen)
 	{
 		super(gen);
@@ -109,6 +117,10 @@ public class Models extends ModelGenerator
 		out.accept(blastFurnaceOff);
 		out.accept(cokeOvenOff);
 		out.accept(alloySmelterOff);
+
+		out.accept(metalLadderNone);
+		out.accept(metalLadderAlu);
+		out.accept(metalLadderSteel);
 
 		addSimpleBlockModel(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"), out);
 		addSimpleBlockModel(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"), out);
