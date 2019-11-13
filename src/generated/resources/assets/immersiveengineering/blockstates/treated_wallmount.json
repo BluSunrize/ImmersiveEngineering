@@ -1,0 +1,172 @@
+{
+  "variants": {
+    "facing=north,orientation=side_up": {
+      "model": "immersiveengineering:block/wooden_device/wallmount.obj",
+      "y": 180,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=north,orientation=side_down": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_inverted.obj",
+      "y": 180,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=north,orientation=vert_down": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_sideways.obj",
+      "y": 180,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=north,orientation=vert_up": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_sideways_inverted.obj",
+      "y": 180,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=south,orientation=side_up": {
+      "model": "immersiveengineering:block/wooden_device/wallmount.obj",
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=south,orientation=side_down": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_inverted.obj",
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=south,orientation=vert_down": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_sideways.obj",
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=south,orientation=vert_up": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_sideways_inverted.obj",
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=west,orientation=side_up": {
+      "model": "immersiveengineering:block/wooden_device/wallmount.obj",
+      "y": 90,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=west,orientation=side_down": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_inverted.obj",
+      "y": 90,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=west,orientation=vert_down": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_sideways.obj",
+      "y": 90,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=west,orientation=vert_up": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_sideways_inverted.obj",
+      "y": 90,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=east,orientation=side_up": {
+      "model": "immersiveengineering:block/wooden_device/wallmount.obj",
+      "y": 270,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=east,orientation=side_down": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_inverted.obj",
+      "y": 270,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=east,orientation=vert_down": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_sideways.obj",
+      "y": 270,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    },
+    "facing=east,orientation=vert_up": {
+      "model": "immersiveengineering:block/wooden_device/wallmount_sideways_inverted.obj",
+      "y": 270,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true
+      },
+      "textures": {
+        "#immersiveengineering:block/wooden_device/wallmount": "immersiveengineering:block/wooden_device/wallmount"
+      }
+    }
+  }
+}
