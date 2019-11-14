@@ -14,23 +14,14 @@ import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -120,51 +111,6 @@ public class BlockItemIE extends BlockItem
 		}
 		else
 			return super.placeBlock(context, newState);
-	}
-
-	@Override
-	public ActionResultType tryPlace(BlockItemUseContext context)
-	{
-		PlayerEntity player = context.getPlayer();
-		BlockPos pos = context.getPos();
-		World world = context.getWorld();
-		if(player==null)
-			return ActionResultType.FAIL;
-		Hand hand = context.getHand();
-		ItemStack stack = player.getHeldItem(hand);
-		BlockState currState = world.getBlockState(pos);
-		Block block = currState.getBlock();
-		Direction side = context.getFace();
-		if(!block.isReplaceable(currState, context))
-			pos = pos.offset(side);
-		BlockState newState = getBlock().getStateForPlacement(context);
-		if(stack.getCount() > 0&&player.canPlayerEdit(pos, side, stack)&&canPlace(context, newState))
-		{
-			if(newState!=null&&placeBlock(context, newState))
-			{
-				SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
-				world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
-				if(!player.abilities.isCreativeMode)
-					stack.shrink(1);
-			}
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.FAIL;
-	}
-
-	@Override
-	protected boolean canPlace(BlockItemUseContext context, BlockState state)
-	{
-		World worldIn = context.getWorld();
-		BlockPos pos = context.getPos();
-		BlockState oldState = worldIn.getBlockState(pos);
-		Direction side = context.getFace();
-		if(oldState.getBlock()==Blocks.SNOW&&oldState.isReplaceable(context))
-			side = Direction.UP;
-		else if(!oldState.isReplaceable(context))
-			pos = pos.offset(side);
-		//TODO more accurate shape?
-		return worldIn.checkNoEntityCollision(null, VoxelShapes.fullCube().withOffset(pos.getX(), pos.getY(), pos.getZ()));
 	}
 
 	public static class BlockItemIENoInventory extends BlockItemIE

@@ -40,6 +40,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.*;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -98,8 +99,12 @@ public class HammerItem extends IEBaseItem implements ITool
 		BlockPos pos = context.getPos();
 		Direction side = context.getFace();
 		TileEntity tile = world.getTileEntity(pos);
+		BlockState state = world.getBlockState(pos);
 		if(!world.isRemote)
 		{
+			if(context.getPlayer()!=null&&state.getBlock() instanceof IEBaseBlock)
+				((IEBaseBlock)state.getBlock()).hammerUseSide(context.getFace(), context.getPlayer(), context.getWorld(),
+						context.getPos(), new BlockRayTraceResult(context.getHitVec(), context.getFace(), pos, false));
 			if(tile instanceof IConfigurableSides)
 			{
 				PlayerEntity player = context.getPlayer();

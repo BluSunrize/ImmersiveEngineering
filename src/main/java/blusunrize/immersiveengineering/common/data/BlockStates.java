@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.PostBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.data.Models.MetalModels;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator;
@@ -123,6 +125,10 @@ public class BlockStates extends BlockstateGenerator
 				models.metalLadderAlu, variantBased);
 		createDirectionalBlock(MetalDecoration.metalLadder.get(CoverType.STEEL), IEProperties.FACING_HORIZONTAL,
 				models.metalLadderSteel, variantBased);
+
+		createWallmount(WoodenDevices.treatedWallmount, rl("block/wooden_device/wallmount"), variantBased);
+		createWallmount(MetalDecoration.aluWallmount, rl("block/metal_decoration/aluminum_wallmount"), variantBased);
+		createWallmount(MetalDecoration.steelWallmount, rl("block/metal_decoration/steel_wallmount"), variantBased);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -264,6 +270,25 @@ public class BlockStates extends BlockstateGenerator
 		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 			builder.setForAllWithState(ImmutableMap.of(prop, d), new ConfiguredModel(model, 0, getAngle(d, 180),
 					true, ImmutableMap.of()));
+		out.accept(b, builder.build());
+	}
+
+	private void createWallmount(Block b, ResourceLocation texture, BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		Builder builder = new Builder(b);
+		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+		{
+			int rotation = getAngle(d, 0);
+			for(WallmountBlock.Orientation or : Orientation.values())
+			{
+				ResourceLocation model = rl("block/wooden_device/wallmount"+or.modelSuffix()+".obj");
+				builder.setForAllWithState(
+						ImmutableMap.of(IEProperties.FACING_HORIZONTAL, d, WallmountBlock.ORIENTATION, or),
+						new ConfiguredModel(new ExistingModelFile(model), 0, rotation, true,
+								ImmutableMap.of("flip-v", true),
+								ImmutableMap.of("#immersiveengineering:block/wooden_device/wallmount", texture.toString())));
+			}
+		}
 		out.accept(b, builder.build());
 	}
 }
