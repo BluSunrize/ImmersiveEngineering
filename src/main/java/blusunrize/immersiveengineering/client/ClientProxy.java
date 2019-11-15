@@ -228,7 +228,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(RailgunShotEntity.class, RailgunShotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(IEExplosiveEntity.class, IEExplosiveRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(FluorescentTubeEntity.class, FluorescentTubeRenderer::new);
-		ModelLoaderRegistry.registerLoader(new ConnLoader());
+		ModelLoaderRegistry.registerLoader(new ConnectionLoader());
 		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
 		ModelLoaderRegistry.registerLoader(new MultiLayerLoader());
@@ -1329,14 +1329,14 @@ public class ClientProxy extends CommonProxy
 	{
 		//TODO
 		for(BlockRenderLayer r : BlockRenderLayer.values())
-			ConnModelReal.cache.invalidate(new RenderCacheKey(state, r));
-		ConnModelReal.cache.invalidate(new RenderCacheKey(state, null));
+			BakedConnectionModel.cache.invalidate(new RenderCacheKey(state, r));
+		BakedConnectionModel.cache.invalidate(new RenderCacheKey(state, null));
 	}
 
 	@Override
 	public void clearConnectionModelCache()
 	{
-		ConnModelReal.cache.invalidateAll();
+		BakedConnectionModel.cache.invalidateAll();
 	}
 
 	@Override
@@ -1357,7 +1357,7 @@ public class ClientProxy extends CommonProxy
 	{
 		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::clear);
 		IEApi.renderCacheClearers.add(IESmartObjModel.cachedBakedItemModels::invalidateAll);
-		IEApi.renderCacheClearers.add(ConnModelReal.cache::invalidateAll);
+		IEApi.renderCacheClearers.add(BakedConnectionModel.cache::invalidateAll);
 		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::invalidateAll);
 		IEApi.renderCacheClearers.add(FluidPipeTileEntity.cachedOBJStates::clear);

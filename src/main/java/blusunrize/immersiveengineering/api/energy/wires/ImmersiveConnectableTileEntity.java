@@ -9,8 +9,11 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
+import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableList;
@@ -21,13 +24,13 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 
@@ -38,11 +41,6 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public ImmersiveConnectableTileEntity(TileEntityType<? extends ImmersiveConnectableTileEntity> type)
 	{
 		super(type);
-	}
-
-	@Override
-	public void onEnergyPassthrough(int amount)
-	{
 	}
 
 	@Override
@@ -71,31 +69,6 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			BlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state, state, 3);
 		}
-	}
-
-	private List<Pair<Float, Consumer<Float>>> sources = new ArrayList<>();
-	private long lastSourceUpdate = 0;
-
-	@Override
-	public void addAvailableEnergy(float amount, Consumer<Float> consume)
-	{
-		long currentTime = world.getGameTime();
-		if(lastSourceUpdate!=currentTime)
-		{
-			sources.clear();
-			Pair<Float, Consumer<Float>> own = getOwnEnergy();
-			if(own!=null)
-				sources.add(own);
-			lastSourceUpdate = currentTime;
-		}
-		if(amount > 0&&consume!=null)
-			sources.add(new ImmutablePair<>(amount, consume));
-	}
-
-	@Nullable
-	protected Pair<Float, Consumer<Float>> getOwnEnergy()
-	{
-		return null;
 	}
 
 	@Override
@@ -164,7 +137,10 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			LocalWireNetwork local = globalNet.getLocalNet(cp);
 			Collection<Connection> conns = local.getConnections(cp);
 			if(conns==null)
+			{
+				IELogger.logger.debug("Aborting and returning empty data: null connections at {}", cp);
 				return new ConnectionModelData(ImmutableSet.of(), pos);
+			}
 			//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
 			for(Connection c : conns)
 				if(!c.isInternal())
@@ -174,7 +150,15 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 					ret.add(c);
 				}
 		}
+		IELogger.logger.info("Model data has connections {}", ret);
 		return new ConnectionModelData(ret, pos);
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData()
+	{
+		return new SinglePropertyModelData<>(genConnBlockstate(), Model.CONNECTIONS);
 	}
 
 	@Override
@@ -190,7 +174,10 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	{
 		super.onLoad();
 		IELogger.info("Loading connector at {}", pos);
-		globalNet.onConnectorLoad(this, world);
+		if(world.isRemote)
+			globalNet.onConnectorLoad(this, world);
+		else
+			ApiUtils.addFutureServerTask(world, () -> globalNet.onConnectorLoad(this, world), true);
 	}
 
 	@Override
@@ -198,7 +185,10 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	{
 		super.remove();
 		IELogger.logger.info("Removing connector at {}", pos);
-		globalNet.removeConnector(this);
+		if(world.isRemote)
+			globalNet.removeConnector(this);
+		else
+			ApiUtils.addFutureServerTask(world, () -> globalNet.removeConnector(this), true);
 	}
 
 	@Override

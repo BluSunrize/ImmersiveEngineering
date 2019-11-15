@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -403,6 +404,7 @@ public class ApiUtils
 		Vec3d offset = Vec3d.ZERO;
 		//Force loading
 		IImmersiveConnectable iicPos = net.getConnector(pos.getPosition());
+		Preconditions.checkArgument(!(iicPos instanceof IICProxy));
 		if(iicPos!=null)
 			offset = iicPos.getConnectionOffset(conn, pos);
 		if(fromOtherEnd)
@@ -682,13 +684,13 @@ public class ApiUtils
 					CompoundNBT linkNBT = stack.getOrCreateTag().getCompound("linkingPos");
 					DimensionBlockPos linkPos = new DimensionBlockPos(linkNBT.getCompound("master"));
 					BlockPos offsetLink = NBTUtil.readBlockPos(linkNBT.getCompound("offset"));
-					TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
-					int distanceSq = (int)Math.ceil(linkPos.distanceSq(masterPos));
+					TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos.pos);
+					int distanceSq = (int)Math.ceil(linkPos.pos.distanceSq(masterPos));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
 					if(linkPos.dimension!=world.getDimension().getType())
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongDimension"), true);
-					else if(linkPos.equals(masterPos))
+					else if(linkPos.pos.equals(masterPos))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"sameConnection"), true);
 					else if(distanceSq > maxLengthSq)
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"tooFar"), true);
@@ -704,7 +706,7 @@ public class ApiUtils
 							IImmersiveConnectable iicLink = (IImmersiveConnectable)tileEntityLinkingPos;
 							ConnectionPoint cpLink = iicLink.getTargetedPoint(targetLink, offsetLink);
 							if(!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, cpLink, offsetLink)||
-									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos)||
+									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos.pos)||
 									!coil.canConnectCable(stack, tileEntityLinkingPos))
 							{
 								player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"invalidPoint"), true);
@@ -746,7 +748,7 @@ public class ApiUtils
 										}
 										return false;
 									}, (p) -> {
-									}, start, end.add(new Vec3d(linkPos.subtract(masterPos))));
+									}, start, end.add(new Vec3d(linkPos.pos.subtract(masterPos))));
 									if(canSee)
 									{
 										Connection conn = new Connection(wire, cpHere, cpLink);
@@ -764,9 +766,9 @@ public class ApiUtils
 										BlockState state = world.getBlockState(masterPos);
 										world.notifyBlockUpdate(masterPos, state, state, 3);
 										((TileEntity)iicLink).markDirty();
-										world.addBlockEvent(linkPos, ((TileEntity)iicLink).getBlockState().getBlock(), -1, 0);
-										state = world.getBlockState(linkPos);
-										world.notifyBlockUpdate(linkPos, state, state, 3);
+										world.addBlockEvent(linkPos.pos, ((TileEntity)iicLink).getBlockState().getBlock(), -1, 0);
+										state = world.getBlockState(linkPos.pos);
+										world.notifyBlockUpdate(linkPos.pos, state, state, 3);
 									}
 									else
 									{
@@ -1015,7 +1017,7 @@ public class ApiUtils
 	public static void addFutureServerTask(World world, Runnable task, boolean forceFuture)
 	{
 		if(forceFuture)
-			new Thread(() -> addFutureServerTask(world, task));
+			new Thread(() -> addFutureServerTask(world, task)).start();
 		else
 			addFutureServerTask(world, task);
 	}

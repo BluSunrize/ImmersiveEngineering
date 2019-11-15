@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.client.models.connection.ConnLoader;
+import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -37,11 +37,11 @@ public final class WireApi
 	public static void registerConnectorForRender(String key, ResourceLocation baseModel,
 												  @Nullable ImmutableMap<String, String> texReplacement)
 	{
-		if(ConnLoader.baseModels.containsKey(key))
+		if(ConnectionLoader.baseModels.containsKey(key))
 			IELogger.warn("Tried to register connector model for "+key+" twice");//TODO . Active mod: "+Loader.instance().activeModContainer().getModId());
-		ConnLoader.baseModels.put(key, baseModel);
+		ConnectionLoader.baseModels.put(key, baseModel);
 		if(texReplacement!=null)
-			ConnLoader.textureReplacements.put(key, texReplacement);
+			ConnectionLoader.textureReplacements.put(key, texReplacement);
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,

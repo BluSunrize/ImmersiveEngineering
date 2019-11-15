@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
@@ -129,6 +130,13 @@ public class BlockStates extends BlockstateGenerator
 		createWallmount(WoodenDevices.treatedWallmount, rl("block/wooden_device/wallmount"), variantBased);
 		createWallmount(MetalDecoration.aluWallmount, rl("block/metal_decoration/aluminum_wallmount"), variantBased);
 		createWallmount(MetalDecoration.steelWallmount, rl("block/metal_decoration/steel_wallmount"), variantBased);
+
+		//TODO proper models
+		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), new ResourceLocation("block/lever"),
+				ImmutableMap.of(), variantBased);
+		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), new ResourceLocation("block/lever"),
+				//ImmutableMap.of("#immersiveengineering:block/connector/connector_lv", "immersiveengineering:block/connector/relay_lv"),
+				ImmutableMap.of(), variantBased);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -288,6 +296,26 @@ public class BlockStates extends BlockstateGenerator
 								ImmutableMap.of("flip-v", true),
 								ImmutableMap.of("#immersiveengineering:block/wooden_device/wallmount", texture.toString())));
 			}
+		}
+		out.accept(b, builder.build());
+	}
+
+	private void createConnector(Block b, ResourceLocation model, ImmutableMap<String, String> textures, BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		final ExistingModelFile connFile = new ExistingModelFile(rl("connector"));
+		//TODO layers
+		final ImmutableMap<String, Object> customData = ImmutableMap.of("flip-v", true, "base", model.toString(), "layers", "SOLID");
+		Builder builder = new Builder(b);
+		builder.setForAllWithState(ImmutableMap.of(IEProperties.FACING_ALL, Direction.DOWN),
+				new ConfiguredModel(connFile, 0, 0, true, customData, textures));
+		builder.setForAllWithState(ImmutableMap.of(IEProperties.FACING_ALL, Direction.UP),
+				new ConfiguredModel(connFile, 0, 180, true, customData, textures));
+		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+		{
+			int rotation = getAngle(d, 0);
+			builder.setForAllWithState(
+					ImmutableMap.of(IEProperties.FACING_ALL, d),
+					new ConfiguredModel(connFile, 90, rotation, true, customData, textures));
 		}
 		out.accept(b, builder.build());
 	}

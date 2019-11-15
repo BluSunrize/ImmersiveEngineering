@@ -256,7 +256,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 					}
 				}
 			}
-		IELogger.logger.info("Validating after load...");
+		IELogger.logger.info("Validating after loading {} at {}...", iic, iic.getConnectionPoints());
 		validate();
 	}
 

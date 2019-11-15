@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class ConnModelReal extends BakedIEModel
+public class BakedConnectionModel extends BakedIEModel
 {
 
 	TextureAtlasSprite textureAtlasSprite = Minecraft.getInstance().getTextureMap()
@@ -52,7 +52,7 @@ public class ConnModelReal extends BakedIEModel
 	private final IBakedModel base;
 	private final ImmutableSet<BlockRenderLayer> layers;
 
-	public ConnModelReal(IBakedModel basic, ImmutableSet<BlockRenderLayer> layers)
+	public BakedConnectionModel(IBakedModel basic, ImmutableSet<BlockRenderLayer> layers)
 	{
 		base = basic;
 		this.layers = layers;
@@ -85,6 +85,8 @@ public class ConnModelReal extends BakedIEModel
 			ModelKey key = new ModelKey(data, ad, orig.here);
 			try
 			{
+				//TODO
+				cache.invalidateAll();
 				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(key, textureAtlasSprite, base));
 				return ret.getQuads(state, null, rand);
 			} catch(ExecutionException e)

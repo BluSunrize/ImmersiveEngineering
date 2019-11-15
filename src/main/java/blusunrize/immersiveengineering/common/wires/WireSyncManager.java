@@ -9,10 +9,12 @@
 package blusunrize.immersiveengineering.common.wires;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.network.MessageWireSync;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -62,7 +64,10 @@ public class WireSyncManager
 	{
 		ServerChunkProvider chunkProvider = world.getChunkProvider();
 		Stream<ServerPlayerEntity> watching = chunkProvider.chunkManager.getTrackingPlayers(new ChunkPos(x >> 4, z >> 4), false);
-		watching.forEach(receivers::add);
+		watching.forEach(e -> {
+			IELogger.logger.debug("Watching player for {}, {}: {}", x, z, e);
+			receivers.add(e);
+		});
 	}
 
 	private static <T> void sendToPlayersForConnection(T msg, ServerWorld world, Connection c)
@@ -91,7 +96,8 @@ public class WireSyncManager
 	{
 		Chunk chunk = ev.getWorld().getChunk(ev.getPos().x, ev.getPos().z);
 		if(chunk!=null)
-			sendMessagesForChunk(chunk, ev.getPlayer(), true);
+			//TODO this is a hack
+			ApiUtils.addFutureServerTask(ev.getWorld(), () -> sendMessagesForChunk(chunk, ev.getPlayer(), true), true);
 	}
 
 	@SubscribeEvent
@@ -99,6 +105,7 @@ public class WireSyncManager
 	{
 		Chunk chunk = ev.getWorld().getChunk(ev.getPos().x, ev.getPos().z);
 		if(chunk!=null)
-			sendMessagesForChunk(chunk, ev.getPlayer(), false);
+			//TODO this is a hack
+			ApiUtils.addFutureServerTask(ev.getWorld(), () -> sendMessagesForChunk(chunk, ev.getPlayer(), false), true);
 	}
 }

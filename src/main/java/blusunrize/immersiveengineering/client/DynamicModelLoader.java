@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader.ConnectorModel;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJModel;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -97,10 +98,16 @@ public class DynamicModelLoader
 			for(ModelWithTransforms reqModel : requestedModels.keySet())
 			{
 				ResourceLocation name = reqModel.model.name.getLocation();
-				IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
-				IUnbakedModel unbaked = new OBJModel.Parser(asResource, manager).parse();
-				if(name.getPath().endsWith(".obj.ie"))
-					unbaked = new IEOBJModel(((OBJModel)unbaked).getMatLib(), name);
+				IUnbakedModel unbaked;
+				if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "connector")))
+					unbaked = new ConnectorModel();
+				else
+				{
+					IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
+					unbaked = new OBJModel.Parser(asResource, manager).parse();
+					if(name.getPath().endsWith(".obj.ie"))
+						unbaked = new IEOBJModel(((OBJModel)unbaked).getMatLib(), name);
+				}
 				unbaked = unbaked
 						.process(reqModel.model.getAddtionalDataAsStrings())
 						.retexture(reqModel.model.retexture);

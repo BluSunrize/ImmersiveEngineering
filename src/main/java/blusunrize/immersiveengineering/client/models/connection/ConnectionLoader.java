@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models.connection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.models.ModelData;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerModel;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -34,7 +35,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
-public class ConnLoader implements ICustomModelLoader
+public class ConnectionLoader implements ICustomModelLoader
 {
 	public static final String RESOURCE_LOCATION = "models/block/smartmodel/conn_";
 	public static final ResourceLocation DATA_BASED_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "models/block/smartmodel/connector");
@@ -45,7 +46,7 @@ public class ConnLoader implements ICustomModelLoader
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
 	{
-		ConnModelReal.cache.invalidateAll();
+		BakedConnectionModel.cache.invalidateAll();
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class ConnLoader implements ICustomModelLoader
 	public IUnbakedModel loadModel(@Nonnull ResourceLocation modelLocation)
 	{
 		if(modelLocation.equals(DATA_BASED_LOC))
-			return new ConnModelBase();
+			return new ConnectorModel();
 		String resourcePath = modelLocation.getPath();
 		int pos = resourcePath.indexOf("conn_");
 		if(pos >= 0)
@@ -72,13 +73,13 @@ public class ConnLoader implements ICustomModelLoader
 				ImmutableMap<String, String> texRepl = ImmutableMap.of();
 				if(textureReplacements.containsKey(name))
 					texRepl = textureReplacements.get(name);
-				return new ConnModelBase(r, texRepl, ImmutableMap.of("flip-v", "true"), ALL_LAYERS);
+				return new ConnectorModel(r, texRepl, ImmutableMap.of("flip-v", "true"), ALL_LAYERS);
 			}
 		}
 		return ModelLoaderRegistry.getMissingModel();
 	}
 
-	private static class ConnModelBase implements IUnbakedModel
+	public static class ConnectorModel implements IUnbakedModel
 	{
 		private static final ResourceLocation WIRE_LOC = new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":block/wire");
 		@Nullable
@@ -88,26 +89,26 @@ public class ConnLoader implements ICustomModelLoader
 		@Nonnull
 		private final ImmutableMap<String, String> externalTextures;
 
-		public ConnModelBase(@Nonnull ResourceLocation b, @Nonnull ImmutableMap<String, String> t,
-							 @Nonnull ImmutableMap<String, String> customBase, @Nonnull ImmutableSet<BlockRenderLayer> layers)
+		public ConnectorModel(@Nonnull ResourceLocation b, @Nonnull ImmutableMap<String, String> t,
+							  @Nonnull ImmutableMap<String, String> customBase, @Nonnull ImmutableSet<BlockRenderLayer> layers)
 		{
 			this(new ModelData(b, ModelData.asJsonObject(customBase), t), layers, ImmutableMap.of());
 		}
 
-		public ConnModelBase(@Nonnull ResourceLocation b)
+		public ConnectorModel(@Nonnull ResourceLocation b)
 		{
 			this(b, ImmutableMap.of(), ImmutableMap.of(), ALL_LAYERS);
 		}
 
-		public ConnModelBase()
+		public ConnectorModel()
 		{
 			baseData = null;
 			layers = ALL_LAYERS;
 			externalTextures = ImmutableMap.of();
 		}
 
-		public ConnModelBase(@Nullable ModelData newData, @Nonnull ImmutableSet<BlockRenderLayer> layers,
-							 @Nonnull ImmutableMap<String, String> externalTextures)
+		public ConnectorModel(@Nullable ModelData newData, @Nonnull ImmutableSet<BlockRenderLayer> layers,
+							  @Nonnull ImmutableMap<String, String> externalTextures)
 		{
 			this.baseData = newData;
 			this.layers = layers;
@@ -154,10 +155,10 @@ public class ConnLoader implements ICustomModelLoader
 		public IBakedModel bake(@Nonnull ModelBakery bakery, @Nonnull Function<ResourceLocation, TextureAtlasSprite> spriteGetter,
 								@Nonnull ISprite sprite, @Nonnull VertexFormat format)
 		{
-			assert baseData!=null;
+			Preconditions.checkNotNull(baseData);
 			baseData.attemptToLoad(true);
-			assert baseData.getModel()!=null;
-			return new ConnModelReal(baseData.getModel().bake(bakery, spriteGetter, sprite, format), layers);
+			Preconditions.checkNotNull(baseData.getModel());
+			return new BakedConnectionModel(baseData.getModel().bake(bakery, spriteGetter, sprite, format), layers);
 		}
 
 		private static final ImmutableSet<String> ownKeys = ImmutableSet.of("base", "custom", "textures", "layers");
@@ -191,7 +192,7 @@ public class ConnLoader implements ICustomModelLoader
 			}
 			layers = ImmutableSet.copyOf(layers);
 			if(!newData.equals(baseData)||!layers.equals(this.layers))
-				return new ConnModelBase(newData, (ImmutableSet<BlockRenderLayer>)layers, externalTextures);
+				return new ConnectorModel(newData, (ImmutableSet<BlockRenderLayer>)layers, externalTextures);
 			return this;
 		}
 
@@ -202,10 +203,10 @@ public class ConnLoader implements ICustomModelLoader
 			if(baseData!=null)
 			{
 				if(!textures.equals(baseData.textures)&&!(textures.isEmpty()&&!baseData.textures.isEmpty()))
-					return new ConnModelBase(new ModelData(baseData.location, baseData.data, textures), layers, textures);
+					return new ConnectorModel(new ModelData(baseData.location, baseData.data, textures), layers, textures);
 			}
 			else if(!externalTextures.equals(textures))
-				return new ConnModelBase(null, layers, textures);
+				return new ConnectorModel(null, layers, textures);
 			return this;
 		}
 	}

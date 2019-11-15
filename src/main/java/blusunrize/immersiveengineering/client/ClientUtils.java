@@ -859,7 +859,7 @@ public class ClientUtils
 				{
 					dir = current.subtract(previous);
 					cross = up.crossProduct(dir);
-					cross.scale(radius/cross.length());
+					cross = cross.scale(radius/cross.length());
 				}
 				else
 					cross = new Vec3d(radius, 0, 0);
@@ -873,7 +873,7 @@ public class ClientUtils
 				if(!vertical)
 				{
 					cross = dir.crossProduct(cross);
-					cross.scale(radius/cross.length());
+					cross = cross.scale(radius/cross.length());
 				}
 				else
 					cross = new Vec3d(0, 0, radius);
