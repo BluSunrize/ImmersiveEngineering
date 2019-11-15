@@ -4,8 +4,8 @@
       "model": "immersiveengineering:connector",
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
       }
     },
     "facing=up": {
@@ -14,8 +14,8 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
       }
     },
     "facing=north": {
@@ -25,8 +25,8 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
       }
     },
     "facing=south": {
@@ -35,8 +35,8 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
       }
     },
     "facing=west": {
@@ -46,8 +46,8 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
       }
     },
     "facing=east": {
@@ -57,8 +57,8 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
       }
     }
   }

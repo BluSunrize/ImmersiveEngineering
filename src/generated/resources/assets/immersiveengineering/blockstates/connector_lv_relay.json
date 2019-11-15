@@ -4,8 +4,11 @@
       "model": "immersiveengineering:connector",
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
       }
     },
     "facing=up": {
@@ -14,8 +17,11 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
       }
     },
     "facing=north": {
@@ -25,8 +31,11 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
       }
     },
     "facing=south": {
@@ -35,8 +44,11 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
       }
     },
     "facing=west": {
@@ -46,8 +58,11 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
       }
     },
     "facing=east": {
@@ -57,8 +72,11 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "minecraft:block/lever",
-        "layers": "SOLID"
+        "base": "immersiveengineering:block/connector/connector_lv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
       }
     }
   }

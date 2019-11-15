@@ -18,6 +18,7 @@ import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -36,6 +37,12 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 {
 	private DyeColor redstoneChannelSending = DyeColor.WHITE;
 	private int lastOutput = 0;
+	public static TileEntityType<ConnectorProbeTileEntity> TYPE;
+
+	public ConnectorProbeTileEntity()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void tick()

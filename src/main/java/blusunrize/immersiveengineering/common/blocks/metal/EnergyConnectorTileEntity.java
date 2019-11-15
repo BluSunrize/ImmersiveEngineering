@@ -179,8 +179,10 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Direction side = getFacing().getOpposite();
-		double conRadius = con.type.getRenderDiameter()/2;
-		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
+		double lengthFromHalf = LENGTH.getFloat(new ImmutablePair<>(voltage, relay))-con.type.getRenderDiameter()/2-.5;
+		return new Vec3d(.5+lengthFromHalf*side.getXOffset(),
+				.5+lengthFromHalf*side.getYOffset(),
+				.5+lengthFromHalf*side.getZOffset());
 	}
 
 	IEForgeEnergyWrapper energyWrapper;

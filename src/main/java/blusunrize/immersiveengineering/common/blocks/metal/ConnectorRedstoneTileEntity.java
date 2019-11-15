@@ -56,9 +56,13 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 
 	public ConnectorRedstoneTileEntity()
 	{
-		super(TYPE);
+		this(TYPE);
 	}
 
+	public ConnectorRedstoneTileEntity(TileEntityType<? extends ConnectorRedstoneTileEntity> type)
+	{
+		super(type);
+	}
 	@Override
 	public void tick()
 	{

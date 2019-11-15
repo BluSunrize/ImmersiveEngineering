@@ -360,7 +360,11 @@ public class IEContent
 		for(String cat : new String[]{WireType.LV_CATEGORY, WireType.MV_CATEGORY, WireType.HV_CATEGORY})
 		{
 			Block connector = new PowerConnectorBlock(cat, false);
-			Block relay = new PowerConnectorBlock(cat, true);
+			Block relay;
+			if(!WireType.HV_CATEGORY.equals(cat))
+				relay = new PowerConnectorBlock(cat, true);
+			else
+				relay = new PowerConnectorBlock(cat, true, BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID);
 			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, false), connector);
 			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, true), relay);
 		}
@@ -372,7 +376,8 @@ public class IEContent
 		Connectors.redstoneBreaker = new MiscConnectorBlock("redstone_breaker", () -> RedstoneBreakerTileEntity.TYPE);
 		Connectors.energyMeter = new MiscConnectorBlock("current_transformer", () -> EnergyMeterTileEntity.TYPE);
 		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
-		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE);
+		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE,
+				BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID);
 		Connectors.feedthrough = new MiscConnectorBlock("feedthrough", () -> FeedthroughTileEntity.TYPE);
 
 		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE);

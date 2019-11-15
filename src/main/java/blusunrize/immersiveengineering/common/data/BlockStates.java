@@ -35,6 +35,7 @@ import net.minecraft.state.IProperty;
 import net.minecraft.state.properties.Half;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
@@ -131,12 +132,32 @@ public class BlockStates extends BlockstateGenerator
 		createWallmount(MetalDecoration.aluWallmount, rl("block/metal_decoration/aluminum_wallmount"), variantBased);
 		createWallmount(MetalDecoration.steelWallmount, rl("block/metal_decoration/steel_wallmount"), variantBased);
 
-		//TODO proper models
-		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), new ResourceLocation("block/lever"),
-				ImmutableMap.of(), variantBased);
-		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), new ResourceLocation("block/lever"),
-				//ImmutableMap.of("#immersiveengineering:block/connector/connector_lv", "immersiveengineering:block/connector/relay_lv"),
-				ImmutableMap.of(), variantBased);
+
+		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), rl("block/connector/connector_lv.obj"),
+				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
+		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), rl("block/connector/connector_lv.obj"),
+				ImmutableMap.of("#immersiveengineering:block/connector/connector_lv", "immersiveengineering:block/connector/relay_lv"),
+				variantBased, BlockRenderLayer.SOLID);
+
+		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false), rl("block/connector/connector_mv.obj"),
+				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
+		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), rl("block/connector/connector_mv.obj"),
+				ImmutableMap.of("#immersiveengineering:block/connector/connector_mv", "immersiveengineering:block/connector/relay_mv"),
+				variantBased, BlockRenderLayer.SOLID);
+
+		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), rl("block/connector/connector_hv.obj"),
+				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
+		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), rl("block/connector/relay_hv.obj"),
+				ImmutableMap.of(), variantBased, BlockRenderLayer.TRANSLUCENT);
+
+		createConnector(Connectors.connectorStructural, rl("block/connector/connector_structural.obj.ie"),
+				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
+		createConnector(Connectors.connectorRedstone, rl("block/connector/connector_redstone.obj.ie"),
+				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
+		createConnector(Connectors.connectorProbe, rl("block/connector/connector_probe.obj.ie"),
+				ImmutableMap.of(), variantBased, BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
+		createConnector(Connectors.feedthrough, rl("block/smartmodel/feedthrough"),
+				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -300,11 +321,22 @@ public class BlockStates extends BlockstateGenerator
 		out.accept(b, builder.build());
 	}
 
-	private void createConnector(Block b, ResourceLocation model, ImmutableMap<String, String> textures, BiConsumer<Block, IVariantModelGenerator> out)
+	private void createConnector(Block b, ResourceLocation model, ImmutableMap<String, String> textures,
+								 BiConsumer<Block, IVariantModelGenerator> out, BlockRenderLayer... layers)
 	{
 		final ExistingModelFile connFile = new ExistingModelFile(rl("connector"));
-		//TODO layers
-		final ImmutableMap<String, Object> customData = ImmutableMap.of("flip-v", true, "base", model.toString(), "layers", "SOLID");
+		StringBuilder layerString = new StringBuilder("[");
+		for(int i = 0; i < layers.length; i++)
+		{
+			BlockRenderLayer l = layers[i];
+			layerString.append(l.name());
+			if(i+1 < layers.length)
+				layerString.append(", ");
+		}
+		layerString.append("]");
+		final ImmutableMap<String, Object> customData = ImmutableMap.of("flip-v", true,
+				"base", model.toString(),
+				"layers", layerString.toString());
 		Builder builder = new Builder(b);
 		builder.setForAllWithState(ImmutableMap.of(IEProperties.FACING_ALL, Direction.DOWN),
 				new ConfiguredModel(connFile, 0, 0, true, customData, textures));

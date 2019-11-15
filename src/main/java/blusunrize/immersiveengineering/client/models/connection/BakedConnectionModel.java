@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -88,13 +89,13 @@ public class BakedConnectionModel extends BakedIEModel
 				//TODO
 				cache.invalidateAll();
 				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(key, textureAtlasSprite, base));
-				return ret.getQuads(state, null, rand);
+				return ret.getQuads(state, null, rand, extraData);
 			} catch(ExecutionException e)
 			{
 				e.printStackTrace();
 			}
 		}
-		return getBaseQuads(MinecraftForgeClient.getRenderLayer(), state, side, rand);
+		return getBaseQuads(MinecraftForgeClient.getRenderLayer(), state, side, rand, extraData);
 	}
 
 	@Override
@@ -129,11 +130,18 @@ public class BakedConnectionModel extends BakedIEModel
 		return ItemOverrideList.EMPTY;
 	}
 
-	private List<BakedQuad> getBaseQuads(BlockRenderLayer currentLayer, BlockState state, Direction side, Random rand)
+	private List<BakedQuad> getBaseQuads(BlockRenderLayer currentLayer, BlockState state, Direction side, Random rand, IModelData data)
 	{
 		if(layers.contains(currentLayer)||currentLayer==null)
-			return base.getQuads(state, side, rand);
+			return base.getQuads(state, side, rand, data);
 		return ImmutableList.of();
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	{
+		return base.getModelData(world, pos, state, tileData);
 	}
 
 	public class AssembledBakedModel implements IBakedModel
@@ -152,16 +160,22 @@ public class BakedConnectionModel extends BakedIEModel
 
 		@Nonnull
 		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand, IModelData data)
 		{
 			BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
 			if(layer!=BlockRenderLayer.SOLID&&layer!=BlockRenderLayer.TRANSLUCENT)
-				return getBaseQuads(layer, state, side, rand);
+				return getBaseQuads(layer, state, side, rand, data);
 			if(lists==null)
 				lists = ClientUtils.convertConnectionFromBlockstate(key.here, key.connections, texture);
 			List<BakedQuad> l = new ArrayList<>(lists[layer==BlockRenderLayer.SOLID?0: 1]);
-			l.addAll(getBaseQuads(layer, state, side, rand));
+			l.addAll(getBaseQuads(layer, state, side, rand, data));
 			return Collections.synchronizedList(l);
+		}
+
+		@Override
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)
+		{
+			return ImmutableList.of();
 		}
 
 		@Override

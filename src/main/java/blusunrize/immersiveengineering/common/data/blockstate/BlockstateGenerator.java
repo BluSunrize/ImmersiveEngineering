@@ -157,10 +157,6 @@ public abstract class BlockstateGenerator implements IDataProvider
 		public ConfiguredModel(ModelFile name, int rotationX, int rotationY, boolean uvLock, ImmutableMap<String, Object> additionalData,
 							   ImmutableMap<String, String> textures)
 		{
-			Preconditions.checkArgument(!additionalData.containsKey("model"));
-			Preconditions.checkArgument(!additionalData.containsKey("x"));
-			Preconditions.checkArgument(!additionalData.containsKey("y"));
-			Preconditions.checkArgument(!additionalData.containsKey("uvlock"));
 			this.name = name;
 			this.rotationX = rotationX;
 			this.rotationY = rotationY;
