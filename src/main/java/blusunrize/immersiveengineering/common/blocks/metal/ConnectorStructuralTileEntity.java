@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveConnectableTileEntity;
@@ -15,10 +16,13 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -31,10 +35,9 @@ import java.util.Optional;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.STRUCTURE_CATEGORY;
 
 public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntity implements IHammerInteraction,
-		IOBJModelCallback<BlockState>, IBlockBounds
+		IOBJModelCallback<BlockState>, IBlockBounds, IStateBasedDirectional
 {
 	public float rotation = 0;
-	public Direction facing = Direction.DOWN;
 
 	public static TileEntityType<ConnectorStructuralTileEntity> TYPE;
 
@@ -62,7 +65,6 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("facing", facing.ordinal());
 		nbt.putFloat("rotation", rotation);
 	}
 
@@ -70,7 +72,6 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		rotation = nbt.getFloat("rotation");
 		if(world!=null&&world.isRemote)
 			this.markContainingBlockForUpdate(null);
@@ -79,7 +80,7 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		Direction side = facing.getOpposite();
+		Direction side = getFacing().getOpposite();
 		double conRadius = .03125;
 		return new Vec3d(.5+side.getXOffset()*(-.125-conRadius),
 				.5+side.getYOffset()*(-.125-conRadius),
@@ -111,6 +112,36 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	@Override
 	public float[] getBlockBounds()
 	{
-		return EnergyConnectorTileEntity.getConnectorBounds(facing, .3125F, .5F);
+		return EnergyConnectorTileEntity.getConnectorBounds(getFacing(), .3125F, .5F);
+	}
+
+	@Override
+	public PlacementLimitation getFacingLimitation()
+	{
+		return PlacementLimitation.SIDE_CLICKED;
+	}
+
+	@Override
+	public boolean mirrorFacingOnPlacement(LivingEntity placer)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canRotate(Direction axis)
+	{
+		return false;
+	}
+
+	@Override
+	public EnumProperty<Direction> getFacingProperty()
+	{
+		return IEProperties.FACING_ALL;
 	}
 }

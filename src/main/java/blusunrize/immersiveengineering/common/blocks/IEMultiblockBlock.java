@@ -54,7 +54,7 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof IEBaseTileEntity)
-				((IEBaseTileEntity)tileEntity).setCachedState(state);
+				((IEBaseTileEntity)tileEntity).setOverrideState(state);
 			if(tileEntity instanceof MultiblockPartTileEntity&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 			{
 				MultiblockPartTileEntity tile = (MultiblockPartTileEntity)tileEntity;

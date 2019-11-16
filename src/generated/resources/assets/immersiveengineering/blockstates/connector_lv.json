@@ -10,7 +10,7 @@
     },
     "facing=up": {
       "model": "immersiveengineering:connector",
-      "y": 180,
+      "x": 180,
       "uvlock": true,
       "custom": {
         "flip-v": true,

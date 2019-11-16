@@ -32,6 +32,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -45,7 +46,7 @@ import static blusunrize.immersiveengineering.api.energy.wires.WireType.REDSTONE
 
 public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
 		IRedstoneOutput, IHammerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
-		IRedstoneConnector
+		IRedstoneConnector, INeighbourChangeTile
 {
 	public int ioMode = 0; // 0 - input, 1 -output
 	public DyeColor redstoneChannel = DyeColor.WHITE;
@@ -275,5 +276,11 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public Collection<ResourceLocation> getRequestedHandlers()
 	{
 		return ImmutableList.of(RedstoneNetworkHandler.ID);
+	}
+
+	@Override
+	public void onNeighborBlockChange(BlockPos otherPos)
+	{
+		rsDirty = true;
 	}
 }

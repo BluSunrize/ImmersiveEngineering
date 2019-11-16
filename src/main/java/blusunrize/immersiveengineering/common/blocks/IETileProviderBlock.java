@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
@@ -45,7 +44,6 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootParameters;
@@ -111,7 +109,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		if(state.getBlock()!=newState.getBlock())
 		{
 			if(tile instanceof IEBaseTileEntity)
-				((IEBaseTileEntity)tile).setCachedState(state);
+				((IEBaseTileEntity)tile).setOverrideState(state);
 			if(tile instanceof IHasDummyBlocks)
 				((IHasDummyBlocks)tile).breakDummies(pos, state);
 			Consumer<Connection> dropHandler;
@@ -352,18 +350,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	{
 		if(!world.isRemote)
 		{
-			//Necessary to prevent ghostloading, see conversation in #immersive-engineering on Discord on 12/13 Mar 2019
-			Chunk posChunk = world.getChunkAt(pos);
-			//TODO figure out why this became a "future task"...
-			ApiUtils.addFutureServerTask(world, () ->
-			{
-				if(world.isBlockLoaded(pos))//TODO where did this go? &&!posChunk.unloadQueued)
-				{
-					TileEntity tile = world.getTileEntity(pos);
-					if(tile instanceof INeighbourChangeTile&&!tile.getWorld().isRemote)
-						((INeighbourChangeTile)tile).onNeighborBlockChange(fromPos);
-				}
-			});
+			TileEntity tile = world.getTileEntity(pos);
+			if(tile instanceof INeighbourChangeTile&&!tile.getWorld().isRemote)
+				((INeighbourChangeTile)tile).onNeighborBlockChange(fromPos);
 		}
 	}
 

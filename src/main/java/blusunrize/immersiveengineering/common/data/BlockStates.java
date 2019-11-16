@@ -341,7 +341,7 @@ public class BlockStates extends BlockstateGenerator
 		builder.setForAllWithState(ImmutableMap.of(IEProperties.FACING_ALL, Direction.DOWN),
 				new ConfiguredModel(connFile, 0, 0, true, customData, textures));
 		builder.setForAllWithState(ImmutableMap.of(IEProperties.FACING_ALL, Direction.UP),
-				new ConfiguredModel(connFile, 0, 180, true, customData, textures));
+				new ConfiguredModel(connFile, 180, 0, true, customData, textures));
 		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 		{
 			int rotation = getAngle(d, 0);
