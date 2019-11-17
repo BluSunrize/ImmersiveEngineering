@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -84,6 +85,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeIngameGui;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -444,27 +446,26 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					ItemStack equipped = player.getHeldItem(hand);
 					if(ItemStack.areItemsEqual(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
 					{
-						if(ItemNBTHelper.hasKey(equipped, "linkingPos"))
+						if(equipped.hasTag()&&equipped.getOrCreateTag().contains("linkingPos", NBT.TAG_COMPOUND))
 						{
-							int[] link = ItemNBTHelper.getIntArray(equipped, "linkingPos");
-							if(link.length > 3)
+							CompoundNBT link = equipped.getOrCreateTag().getCompound("linkingPos");
+							DimensionBlockPos pos = new DimensionBlockPos(link.getCompound("master"));
+							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.pos.getX(), pos.pos.getY(), pos.pos.getZ());
+							int col = WireType.ELECTRUM.getColour(null);
+							if(equipped.getItem() instanceof IWireCoil)
 							{
-								String s = I18n.format(Lib.DESC_INFO+"attachedTo", link[1], link[2], link[3]);
-								int col = WireType.ELECTRUM.getColour(null);
-								if(equipped.getItem() instanceof IWireCoil)
-								{
-									RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
-									double d;
-									if(rtr instanceof BlockRayTraceResult)
-										d = ((BlockRayTraceResult)rtr).getPos().distanceSq(link[1], link[2], link[3], true);
-									else
-										d = player.getDistanceSq(link[1], link[2], link[3]);
-									int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
-									if(d > max*max)
-										col = 0xdd3333;
-								}
-								ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2, scaledHeight-ForgeIngameGui.left_height-20, col);
+								//TODO use actual connection offset rather than pos
+								RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
+								double d;
+								if(rtr instanceof BlockRayTraceResult)
+									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.pos.getX(), pos.pos.getY(), pos.pos.getZ(), true);
+								else
+									d = player.getDistanceSq(pos.pos.getX(), pos.pos.getY(), pos.pos.getZ());
+								int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
+								if(d > max*max)
+									col = 0xdd3333;
 							}
+							ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2, scaledHeight-ForgeIngameGui.left_height-20, col);
 						}
 					}
 					else if(equipped.getItem()==Misc.fluorescentTube)

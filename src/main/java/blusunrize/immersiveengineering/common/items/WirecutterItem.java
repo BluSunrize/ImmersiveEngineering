@@ -9,8 +9,10 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.tool.ITool;
@@ -24,7 +26,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
@@ -139,19 +140,22 @@ public class WirecutterItem extends IEBaseItem implements ITool
 					cut.set(true);
 				});
 				if(cut.get())
-				{
-					int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;
-					if(nbtDamage < IEConfig.TOOLS.cutterDurabiliy.get())
-						ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, nbtDamage);
-					else
-					{
-						player.renderBrokenItemStack(stack);
-						player.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
-					}
-				}
+					damageStack(stack, player, context.getHand());
 			}
 		}
 		return ActionResultType.SUCCESS;
+	}
+
+	private void damageStack(ItemStack stack, PlayerEntity player, Hand hand)
+	{
+		int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;
+		if(nbtDamage < IEConfig.TOOLS.cutterDurabiliy.get())
+			ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, nbtDamage);
+		else
+		{
+			player.renderBrokenItemStack(stack);
+			player.setHeldItem(hand, ItemStack.EMPTY);
+		}
 	}
 
 	@Nonnull
@@ -161,11 +165,13 @@ public class WirecutterItem extends IEBaseItem implements ITool
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
 		{
-			//TODO
-			//double reachDistance = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getAttributeValue();
-			//Connection target = ApiUtils.getTargetConnection(world, player, null, reachDistance);
-			//if(target!=null)
-			//	ImmersiveNetHandler.INSTANCE.removeConnectionAndDrop(target, world, player.getPosition());
+			double reachDistance = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+			Connection target = ApiUtils.getTargetConnection(world, player, null, reachDistance);
+			if(target!=null)
+			{
+				GlobalWireNetwork.getNetwork(world).removeAndDropConnection(target, player.getPosition());
+				damageStack(stack, player, hand);
+			}
 		}
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}

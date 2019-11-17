@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.*;
 import blusunrize.immersiveengineering.api.energy.wires.Connection.CatenaryData;
+import blusunrize.immersiveengineering.api.energy.wires.WireCollisionData.CollisionInfo;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
@@ -20,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -43,6 +45,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.concurrent.ThreadTaskExecutor;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -66,6 +69,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -953,50 +957,33 @@ public class ApiUtils
 
 	public static Connection raytraceWires(World world, Vec3d start, Vec3d end, @Nullable Connection ignored)
 	{
-		return null;//TODO
-		/*
-		Vec3d look = player.getLookVec();
-		Vec3d start = player.getPositionEyes(1);
-		Vec3d end = start.add(look.scale(maxDistance));
-		Map<BlockPos, ImmersiveNetHandler.BlockWireInfo> inDim = ImmersiveNetHandler.INSTANCE.blockWireMap
-				.lookup(world.provider.getDimension());
+		GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
+		WireCollisionData collisionData = global.getCollisionData();
 		AtomicReference<Connection> ret = new AtomicReference<>();
 		AtomicDouble minDistSq = new AtomicDouble(Double.POSITIVE_INFINITY);
-		if(inDim!=null)
+		Utils.rayTrace(start, end, world, (pos) ->
 		{
-			Utils.rayTrace(start, end, world, (pos) ->
+			Collection<CollisionInfo> infoAtPos = collisionData.getCollisionInfo(pos);
+			for(CollisionInfo wireInfo : infoAtPos)
 			{
-				if(inDim.containsKey(pos))
+				Connection c = wireInfo.conn;
+				if(ignored==null||!c.hasSameConnectors(ignored))
 				{
-					ImmersiveNetHandler.BlockWireInfo info = inDim.get(pos);
-					for(int i = 0; i < 2; i++)
+					Vec3d startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
+					Vec3d across = wireInfo.intersectB.subtract(wireInfo.intersectA);
+					double t = Utils.getCoeffForMinDistance(startRelative, wireInfo.intersectA, across);
+					t = MathHelper.clamp(t, 0, 1);
+					Vec3d closest = wireInfo.intersectA.add(t*across.x, t*across.y, t*across.z);
+					double distSq = closest.squareDistanceTo(startRelative);
+					if(distSq < minDistSq.get())
 					{
-						Set<Triple<Connection, Vec3d, Vec3d>> conns = i==0?info.in: info.near;
-						for(Triple<Connection, Vec3d, Vec3d> conn : conns)
-						{
-							Connection c = conn.getLeft();
-							if(ignored==null||!c.hasSameConnectors(ignored))
-							{
-								Vec3d startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
-								Vec3d across = conn.getRight().subtract(conn.getMiddle());
-								double t = Utils.getCoeffForMinDistance(startRelative, conn.getMiddle(), across);
-								t = MathHelper.clamp(0, t, 1);
-								Vec3d closest = conn.getMiddle().add(t*across.x, t*across.y, t*across.z);
-								double distSq = closest.squareDistanceTo(startRelative);
-								if(distSq < minDistSq.get())
-								{
-									ret.set(c);
-									minDistSq.set(distSq);
-								}
-							}
-						}
+						ret.set(c);
+						minDistSq.set(distSq);
 					}
 				}
-			});
-		}
-
+			}
+		});
 		return ret.get();
-		 */
 	}
 
 	public static Connection getConnectionMovedThrough(World world, LivingEntity e)

@@ -9,12 +9,14 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -57,11 +59,12 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.construction0"));
 			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
-		if(stack.hasTag()&&stack.getOrCreateTag().contains("linkingPos", NBT.TAG_INT_ARRAY))
+		if(stack.hasTag()&&stack.getOrCreateTag().contains("linkingPos", NBT.TAG_COMPOUND))
 		{
-			int[] link = stack.getOrCreateTag().getIntArray("linkingPos");
-			if(link.length > 3)
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"attachedToDim", link[1], link[2], link[3], link[0]));
+			CompoundNBT link = stack.getOrCreateTag().getCompound("linkingPos");
+			DimensionBlockPos pos = new DimensionBlockPos(link.getCompound("master"));
+			list.add(new TranslationTextComponent(Lib.DESC_INFO+"attachedToDim", pos.pos.getX(),
+					pos.pos.getY(), pos.pos.getZ(), pos.dimension.getRegistryName()));
 		}
 	}
 

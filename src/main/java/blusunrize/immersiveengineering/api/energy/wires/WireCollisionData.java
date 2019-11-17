@@ -62,6 +62,7 @@ public class WireCollisionData
 		}
 	}
 
+	@Nonnull
 	public Collection<CollisionInfo> getCollisionInfo(BlockPos pos)
 	{
 		return blockToWires.get(pos);
