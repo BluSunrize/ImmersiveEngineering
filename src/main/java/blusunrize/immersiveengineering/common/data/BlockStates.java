@@ -171,6 +171,12 @@ public class BlockStates extends BlockstateGenerator
 			else
 				return rl("block/connector/breaker_switch_on.obj.ie");
 		}, ImmutableMap.of(), variantBased, ImmutableList.of(IEProperties.ACTIVE), BlockRenderLayer.SOLID);
+		createConnector(Connectors.energyMeter, map -> {
+			if(map.get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
+				return rl("block/connector/e_meter.obj");
+			else
+				return EMPTY_MODEL.name.getLocation();
+		}, ImmutableMap.of(), variantBased, ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), BlockRenderLayer.SOLID);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -368,21 +374,37 @@ public class BlockStates extends BlockstateGenerator
 				layerString.append(", ");
 		}
 		layerString.append("]");
+		final IProperty<Direction> facingProp;
+		final int xForHorizontal;
+		if(b.getDefaultState().has(IEProperties.FACING_ALL))
+		{
+			facingProp = IEProperties.FACING_ALL;
+			xForHorizontal = 90;
+		}
+		else
+		{
+			facingProp = IEProperties.FACING_HORIZONTAL;
+			xForHorizontal = 0;
+		}
+		Preconditions.checkState(b.getDefaultState().has(facingProp), b+" does not have "+facingProp);
 		Builder builder = new Builder(b);
 		forEachState(additional, map -> {
 			final ImmutableMap<String, Object> customData = ImmutableMap.of("flip-v", true,
 					"base", model.apply(map).toString(),
 					"layers", layerString.toString());
-			builder.setForAllWithState(with(map, IEProperties.FACING_ALL, Direction.DOWN),
-					new ConfiguredModel(connFile, 0, 0, true, customData, textures));
-			builder.setForAllWithState(with(map, IEProperties.FACING_ALL, Direction.UP),
-					new ConfiguredModel(connFile, 180, 0, true, customData, textures));
+			if(facingProp.getAllowedValues().contains(Direction.DOWN))
+			{
+				builder.setForAllWithState(with(map, facingProp, Direction.DOWN),
+						new ConfiguredModel(connFile, 0, 0, true, customData, textures));
+				builder.setForAllWithState(with(map, facingProp, Direction.UP),
+						new ConfiguredModel(connFile, 180, 0, true, customData, textures));
+			}
 			for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 			{
 				int rotation = getAngle(d, 0);
 				builder.setForAllWithState(
-						with(map, IEProperties.FACING_ALL, d),
-						new ConfiguredModel(connFile, 90, rotation, true, customData, textures));
+						with(map, facingProp, d),
+						new ConfiguredModel(connFile, xForHorizontal, rotation, true, customData, textures));
 			}
 		});
 		out.accept(b, builder.build());

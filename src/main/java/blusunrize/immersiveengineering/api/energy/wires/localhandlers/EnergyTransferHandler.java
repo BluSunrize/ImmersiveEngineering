@@ -12,10 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.wires.*;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import it.unimi.dsi.fastutil.objects.Object2DoubleAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -23,7 +21,6 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 public class EnergyTransferHandler extends LocalNetworkHandler implements IWorldTickable
@@ -31,7 +28,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "energy_transfer");
 
 	private final Multimap<ConnectionPoint, Path> energyPaths = MultimapBuilder.hashKeys().arrayListValues().build();
-	private final Object2IntMap<Connection> transferredInTick = new Object2IntOpenHashMap<>();
+	private final Object2DoubleMap<Connection> transferredInTick = new Object2DoubleOpenHashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sources = new HashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sinks = new HashMap<>();
 	private boolean uninitialised = true;
@@ -83,8 +80,14 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	{
 		if(uninitialised)
 			calcPaths();
+		transferredInTick.clear();
 		transferPower();
 		burnOverloaded(w);
+	}
+
+	public Object2DoubleMap<Connection> getTransferredInTick()
+	{
+		return transferredInTick;
 	}
 
 	private void reset()
@@ -138,6 +141,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 						{
 							stack.push(end);
 							visited.add(end);
+							path.add(c);
 							lossSum += loss;
 							foundNext = true;
 							break;
@@ -169,7 +173,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			if(available <= 0)
 				continue;
 			double maxSum = 0;
-			Object2DoubleMap<Path> maxOut = new Object2DoubleAVLTreeMap<>();
+			Object2DoubleMap<Path> maxOut = new Object2DoubleOpenHashMap<>();
 			for(Path p : energyPaths.get(sourceCp))
 			{
 				EnergyConnector end = sinks.get(p.end);
@@ -191,14 +195,14 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					currentPoint = c.getOtherEnd(currentPoint);
 					//TODO use Blu's loss formula
 					currentLoss += ((IEnergyWire)c.type).getBasicLossRate(c);
+					double availableAtPoint = atSource*(1-currentLoss);
+					double transferred = transferredInTick.getDouble(c);
+					transferredInTick.put(c, transferred+availableAtPoint);
 					if(!currentPoint.equals(p.end))
 					{
 						IImmersiveConnectable iic = net.getConnector(currentPoint);
 						if(iic instanceof EnergyConnector)
-						{
-							double availableAtPoint = atSource*(1-currentLoss);
 							((EnergyConnector)iic).onEnergyPassedThrough(availableAtPoint);
-						}
 					}
 				}
 				EnergyConnector sink = sinks.get(p.end);
@@ -213,16 +217,16 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 
 	private void burnOverloaded(World world)
 	{
-		List<Pair<Connection, Integer>> toBurn = new ArrayList<>();
+		List<Pair<Connection, Double>> toBurn = new ArrayList<>();
 		for(Connection c : transferredInTick.keySet())
 		{
-			int transferred = transferredInTick.get(c);
+			double transferred = transferredInTick.getDouble(c);
 			if(c.type instanceof IEnergyWire&&((IEnergyWire)c.type).shouldBurn(c, transferred))
 			{
 				toBurn.add(new ImmutablePair<>(c, transferred));
 			}
 		}
-		for(Pair<Connection, Integer> c : toBurn)
+		for(Pair<Connection, Double> c : toBurn)
 		{
 			((IEnergyWire)c.getLeft().type).burn(c.getLeft(), c.getRight(), net.getGlobal(), world);
 		}
@@ -238,7 +242,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			return Double.POSITIVE_INFINITY;
 	}
 
-	private class Path implements Comparable<Path>
+	private static class Path
 	{
 		final Connection[] conns;
 		final ConnectionPoint start;
@@ -254,9 +258,18 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		}
 
 		@Override
-		public int compareTo(@Nonnull Path o)
+		public boolean equals(Object o)
 		{
-			return Double.compare(loss, o.loss);
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			Path path = (Path)o;
+			return Arrays.equals(conns, path.conns);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Arrays.hashCode(conns);
 		}
 	}
 
@@ -268,12 +281,12 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 
 		double getLossRate(Connection c, int transferred);
 
-		default boolean shouldBurn(Connection c, int power)
+		default boolean shouldBurn(Connection c, double power)
 		{
 			return power > getTransferRate();
 		}
 
-		default void burn(Connection c, int power, GlobalWireNetwork net, World w)
+		default void burn(Connection c, double power, GlobalWireNetwork net, World w)
 		{
 			net.removeConnection(c);
 			//TODO

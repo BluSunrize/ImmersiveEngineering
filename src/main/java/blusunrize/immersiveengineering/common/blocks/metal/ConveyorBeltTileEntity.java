@@ -135,7 +135,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	}
 
 	@Override
-	public boolean isLogicDummy()
+	public boolean isDummy()
 	{
 		return this.conveyorBeltSubtype!=null&&!this.conveyorBeltSubtype.isTicking();
 	}

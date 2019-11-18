@@ -26,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -347,6 +348,7 @@ public class LocalWireNetwork implements IWorldTickable
 				((IWorldTickable)handler).update(w);
 	}
 
+	@Nullable
 	public <T extends LocalNetworkHandler> T getHandler(ResourceLocation name, Class<T> type)
 	{
 		LocalNetworkHandler p = handlers.get(name);

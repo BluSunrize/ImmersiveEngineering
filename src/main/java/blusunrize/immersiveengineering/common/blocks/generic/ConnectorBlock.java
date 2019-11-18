@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
@@ -30,16 +29,14 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class ConnectorBlock extends IETileProviderBlock
 {
 
 	public ConnectorBlock(String name, IProperty... additional)
 	{
-		super(name, Block.Properties.create(Material.IRON).
-						hardnessAndResistance(3.0F, 15.0F),
-				BlockItemIE.class, ArrayUtils.add(additional, IEProperties.FACING_ALL));
+		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
+				BlockItemIE.class, additional);
 		lightOpacity = 0;
 		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setNotNormalBlock();

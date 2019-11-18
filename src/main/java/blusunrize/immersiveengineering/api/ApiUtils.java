@@ -928,7 +928,7 @@ public class ApiUtils
 
 	public static <T extends TileEntity & IGeneralMultiblock> void checkForNeedlessTicking(T te)
 	{
-		if(!te.getWorld().isRemote&&te.isLogicDummy())
+		if(!te.getWorld().isRemote&&te.isDummy())
 			EventHandler.REMOVE_FROM_TICKING.add(te);
 	}
 

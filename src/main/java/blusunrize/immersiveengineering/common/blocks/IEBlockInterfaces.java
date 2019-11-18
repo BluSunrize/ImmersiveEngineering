@@ -355,22 +355,17 @@ public class IEBlockInterfaces
 		void placeDummies(BlockItemUseContext ctx, BlockState state);
 
 		void breakDummies(BlockPos pos, BlockState state);
-
-		boolean isDummy();
-
-		@Override
-		default boolean isLogicDummy()
-		{
-			return isDummy();
-		}
 	}
 
 	/**
 	 * super-interface for {@link MultiblockPartTileEntity} and {@link IHasDummyBlocks}
 	 */
-	public interface IGeneralMultiblock
+	public interface IGeneralMultiblock extends BlockstateProvider
 	{
-		boolean isLogicDummy();
+		default boolean isDummy()
+		{
+			return getState().get(IEProperties.MULTIBLOCKSLAVE);
+		}
 	}
 
 	public interface IHasObjProperty

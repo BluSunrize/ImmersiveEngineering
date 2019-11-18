@@ -304,15 +304,10 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		}
 	}
 
+	@Override
 	public boolean isDummy()
 	{
 		return !offsetToMaster.equals(Vec3i.NULL_VECTOR);
-	}
-
-	@Override
-	public boolean isLogicDummy()
-	{
-		return isDummy();
 	}
 
 	public BlockState getOriginalBlock()

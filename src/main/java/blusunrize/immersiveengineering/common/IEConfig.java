@@ -42,7 +42,7 @@ public class IEConfig
 					.define("validateConnections", false);
 			List<Integer> defaultTransferRates = Lists.newArrayList(2048, 8192, 32768, 0, 0, 0);
 			wireTransferRate = builder
-					.comment("The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )")
+					.comment("The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone (no transfer) )")
 					.define("wireTransferRate", defaultTransferRates, isSameSizeList(defaultTransferRates));
 			List<Double> defaultLossRates = Lists.newArrayList(.05, .025, .025, 1., 1., 1.);
 			wireLossRatio = builder

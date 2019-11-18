@@ -31,7 +31,7 @@ public class MiscConnectorBlock extends ConnectorBlock
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType)
 	{
-		this(name, tileType, ImmutableList.of(), ImmutableList.of());
+		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL), ImmutableList.of());
 	}
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, IProperty<?>... extraProperties)
@@ -41,7 +41,7 @@ public class MiscConnectorBlock extends ConnectorBlock
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, BlockRenderLayer... layers)
 	{
-		this(name, tileType, ImmutableList.of(), ImmutableList.copyOf(layers));
+		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL), ImmutableList.copyOf(layers));
 	}
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, List<IProperty<?>> extraProps, List<BlockRenderLayer> layers)

@@ -13,18 +13,22 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleList;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -36,6 +40,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,10 +51,9 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 {
 	public static TileEntityType<EnergyMeterTileEntity> TYPE;
 
-	public double lastEnergyPassed = 0;
-	public final ArrayList<Double> lastPackets = new ArrayList<>(25);
-	public boolean lower = true;
+	public final DoubleList lastPackets = new DoubleArrayList(25);
 	private int compVal = -1;
+	private Connection shuntConnection;
 
 	public EnergyMeterTileEntity()
 	{
@@ -63,11 +67,11 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 			return false;
 		int transfer = getAveragePower();
 		int packets = lastPackets.size();
-		if(lower)
+		if(isDummy())
 		{
-			TileEntity above = world.getTileEntity(getPos().add(0, 1, 0));
-			if(above instanceof EnergyMeterTileEntity)
-				packets = ((EnergyMeterTileEntity)above).lastPackets.size();
+			TileEntity below = world.getTileEntity(getPos().down());
+			if(below instanceof EnergyMeterTileEntity)
+				packets = ((EnergyMeterTileEntity)below).lastPackets.size();
 		}
 		String transferred = "0";
 		if(transfer > 0)
@@ -80,15 +84,21 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(lower||world.isRemote)
+		if(isDummy()||world.isRemote)
 			return;
 		if(((world.getGameTime()&31)==(pos.toLong()&31)||compVal < 0))
 			updateComparatorValues();
-		//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
-		lastPackets.add(lastEnergyPassed);
+		EnergyTransferHandler handler = globalNet.getLocalNet(pos)
+				.getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
+		double transferred = 0;
+		if(handler!=null)
+		{
+			Object2DoubleMap<Connection> map = handler.getTransferredInTick();
+			transferred = map.getDouble(shuntConnection);
+		}
+		lastPackets.add(transferred);
 		if(lastPackets.size() > 20)
 			lastPackets.remove(0);
-		lastEnergyPassed = 0;
 	}
 
 	@Override
@@ -100,23 +110,34 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
-		if(lower)
+		if(isDummy())
 		{
-			TileEntity above = world.getTileEntity(getPos().add(0, 1, 0));
-			if(above instanceof EnergyMeterTileEntity)
-				return ((EnergyMeterTileEntity)above).canConnectCable(cableType, target, offset);
+			TileEntity below = world.getTileEntity(getPos().down());
+			if(below instanceof EnergyMeterTileEntity)
+				return ((EnergyMeterTileEntity)below).canConnectCable(cableType, target, offset);
 		}
-		return false;
+		//TODO correct condition. Energy wire + same voltage as any existing ones?
+		return cableType instanceof IEnergyWire;
+	}
+
+	@Nullable
+	@Override
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
+	{
+		if(getFacing().getAxis()==Axis.X)
+			return info.hitZ > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
+		else
+			return info.hitX > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
 	}
 
 	@Override
 	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
-		if(lower)
+		if(isDummy())
 		{
-			TileEntity above = world.getTileEntity(getPos().add(0, 1, 0));
-			if(above instanceof EnergyMeterTileEntity)
-				((EnergyMeterTileEntity)above).connectCable(cableType, target, other, otherTarget);
+			TileEntity below = world.getTileEntity(getPos().down());
+			if(below instanceof EnergyMeterTileEntity)
+				((EnergyMeterTileEntity)below).connectCable(cableType, target, other, otherTarget);
 		}
 		else
 			super.connectCable(cableType, target, other, otherTarget);
@@ -125,75 +146,45 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target)
 	{
-		if(lower)
-			return pos.up();
+		if(isDummy())
+			return pos.down();
 		else
 			return pos;
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
-	{
-		super.writeCustomNBT(nbt, descPacket);
-		nbt.putBoolean("dummy", lower);
-	}
-
-	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
-	{
-		super.readCustomNBT(nbt, descPacket);
-		lower = nbt.getBoolean("dummy");
-	}
-
-	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		BlockPos other = con.getOtherEnd(here).getPosition();
-		int xDif = other.getX()-pos.getX();
-		int zDif = other.getZ()-pos.getZ();
 		if(getFacing().getAxis()==Axis.X)
-			return new Vec3d(.5, .4375, zDif > 0?.8125: .1875);
+			return new Vec3d(.5, 1.4375, here.getIndex()==0?.8125: .1875);
 		else
-			return new Vec3d(xDif > 0?.8125: .1875, .4375, .5);
+			return new Vec3d(here.getIndex()==0?.8125: .1875, 1.4375, .5);
 	}
 
-	@Override
-	public boolean isDummy()
-	{
-		return !lower;
-	}
-
-	@Override
-	public boolean isLogicDummy()
-	{
-		return lower;
-	}
-
-	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
-		world.setBlockState(pos.add(0, 1, 0), state);
-		((EnergyMeterTileEntity)world.getTileEntity(pos.add(0, 1, 0))).lower = false;
+		world.setBlockState(pos.add(0, 1, 0), state.with(IEProperties.MULTIBLOCKSLAVE, true));
 		((EnergyMeterTileEntity)world.getTileEntity(pos.add(0, 1, 0))).setFacing(this.getFacing());
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
-		for(int i = 0; i <= 1; i++)
-			if(world.getTileEntity(getPos().add(0, !lower?-1: 0, 0).add(0, i, 0)) instanceof EnergyMeterTileEntity)
-				world.removeBlock(getPos().add(0, !lower?-1: 0, 0).add(0, i, 0), false);
+		if(isDummy())
+			world.removeBlock(pos.down(), false);
+		else
+			world.removeBlock(pos.up(), false);
 	}
 
 	public int getAveragePower()
 	{
 		EnergyMeterTileEntity te = this;
-		if(te.lower)
+		if(te.isDummy())
 		{
-			TileEntity tmp = world.getTileEntity(getPos().add(0, 1, 0));
-			if(!(tmp instanceof EnergyMeterTileEntity))
+			TileEntity below = world.getTileEntity(getPos().down());
+			if(!(below instanceof EnergyMeterTileEntity))
 				return -1;
-			te = (EnergyMeterTileEntity)tmp;
+			te = (EnergyMeterTileEntity)below;
 		}
 		if(te.lastPackets.size()==0)
 			return 0;
@@ -209,19 +200,19 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public float[] getBlockBounds()
 	{
-//		return new float[]{0,0,0,1,1,1};
-		return null;
+		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(.1875f, -.625f, .1875f, .8125f, .8125f, .8125f).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-		if(lower)
-		{
-			list.set(0, list.get(0).offset(0, 1, 0));
-			list.add(new AxisAlignedBB(0, 0, 0, 1, .375f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-		}
+		List<AxisAlignedBB> list = Lists.newArrayList(
+				new AxisAlignedBB(.1875f, -.625f, .1875f, .8125f, .8125f, .8125f),
+				new AxisAlignedBB(0, -1, 0, 1, .375f-1, 1)
+		);
+		if(!isDummy())
+			for(int i = 0; i < list.size(); ++i)
+				list.set(i, list.get(i).offset(0, 1, 0));
 		return list;
 	}
 
@@ -312,8 +303,21 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public void onEnergyPassedThrough(double amount)
+	public void onLoad()
 	{
-		lastEnergyPassed += amount;
+		super.onLoad();
+		shuntConnection = new Connection(pos, 0, 1);
+	}
+
+	@Override
+	public Iterable<? extends Connection> getInternalConnections()
+	{
+		return ImmutableList.of(shuntConnection);
+	}
+
+	@Override
+	public Collection<ConnectionPoint> getConnectionPoints()
+	{
+		return ImmutableList.of(new ConnectionPoint(pos, 0), new ConnectionPoint(pos, 1));
 	}
 }
