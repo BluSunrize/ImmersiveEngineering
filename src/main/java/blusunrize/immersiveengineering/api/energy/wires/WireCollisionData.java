@@ -30,18 +30,21 @@ public class WireCollisionData
 
 	public void addConnection(Connection conn)
 	{
-		IELogger.logger.info("Adding block data for {}", conn);
-		if(!conn.blockDataGenerated)
+		if(!conn.isInternal())
 		{
-			IELogger.logger.info("Raytracing for addition of {}", conn);
-			if((net.getLocalNet(conn.getEndA())!=net.getLocalNet(conn.getEndB()))) throw new AssertionError();
-			ApiUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()), (p) ->
+			IELogger.logger.info("Adding block data for {}", conn);
+			if(!conn.blockDataGenerated)
 			{
-				blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, true));
-				return false;
-			}, (p) ->
-					blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, false)));
-			conn.blockDataGenerated = true;
+				IELogger.logger.info("Raytracing for addition of {}", conn);
+				if((net.getLocalNet(conn.getEndA())!=net.getLocalNet(conn.getEndB()))) throw new AssertionError();
+				ApiUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()), (p) ->
+				{
+					blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, true));
+					return false;
+				}, (p) ->
+						blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, false)));
+				conn.blockDataGenerated = true;
+			}
 		}
 	}
 

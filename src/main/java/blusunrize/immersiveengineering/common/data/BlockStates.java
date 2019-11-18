@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.data.model.ModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
@@ -41,10 +42,13 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
@@ -158,6 +162,15 @@ public class BlockStates extends BlockstateGenerator
 				ImmutableMap.of(), variantBased, BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
 		createConnector(Connectors.feedthrough, rl("block/smartmodel/feedthrough"),
 				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
+
+		createConnector(Connectors.redstoneBreaker, rl("block/connector/redstone_breaker.obj.ie"),
+				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
+		createConnector(Connectors.breakerswitch, map -> {
+			if(map.get(IEProperties.ACTIVE)==Boolean.FALSE)
+				return rl("block/connector/breaker_switch_off.obj.ie");
+			else
+				return rl("block/connector/breaker_switch_on.obj.ie");
+		}, ImmutableMap.of(), variantBased, ImmutableList.of(IEProperties.ACTIVE), BlockRenderLayer.SOLID);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -179,7 +192,7 @@ public class BlockStates extends BlockstateGenerator
 		Builder b = new Builder(block);
 		for(SlabType type : SlabType.values())
 		{
-			Map<IProperty<?>, ?> partialState = ImmutableMap.<IProperty<?>, Object>builder()
+			Map<IProperty<?>, Object> partialState = ImmutableMap.<IProperty<?>, Object>builder()
 					.put(typeProp, type)
 					.build();
 			b.setForAllWithState(partialState, new ConfiguredModel(baseModels.get(type)));
@@ -197,7 +210,7 @@ public class BlockStates extends BlockstateGenerator
 			{
 				for(StairsShape shape : StairsShape.values())
 				{
-					Map<IProperty<?>, ?> partialState = ImmutableMap.<IProperty<?>, Object>builder()
+					Map<IProperty<?>, Object> partialState = ImmutableMap.<IProperty<?>, Object>builder()
 							.put(facingProp, dir)
 							.put(halfProp, half)
 							.put(shapeProp, shape)
@@ -265,7 +278,7 @@ public class BlockStates extends BlockstateGenerator
 			{
 				int angle = getAngle(dir, rotationOffset);
 				ModelFile model = mirrored?mirroredModel: masterModel;
-				ImmutableMap.Builder<IProperty<?>, Comparable<?>> partialState = ImmutableMap.builder();
+				ImmutableMap.Builder<IProperty<?>, Object> partialState = ImmutableMap.builder();
 				partialState.put(isSlave, Boolean.FALSE)
 						.put(facing, dir);
 				if(mirroredState!=null)
@@ -321,8 +334,29 @@ public class BlockStates extends BlockstateGenerator
 		out.accept(b, builder.build());
 	}
 
-	private void createConnector(Block b, ResourceLocation model, ImmutableMap<String, String> textures,
-								 BiConsumer<Block, IVariantModelGenerator> out, BlockRenderLayer... layers)
+	private void forEachState(List<IProperty<?>> props, Consumer<Map<IProperty<?>, Object>> out)
+	{
+		if(props.size() > 0)
+		{
+			List<IProperty<?>> remaining = props.subList(1, props.size());
+			IProperty<?> main = props.get(0);
+			for(Object value : main.getAllowedValues())
+			{
+				forEachState(remaining, map -> {
+					map.put(main, value);
+					out.accept(map);
+				});
+			}
+		}
+		else
+		{
+			out.accept(new HashMap<>());
+		}
+	}
+
+	private void createConnector(Block b, Function<Map<IProperty<?>, Object>, ResourceLocation> model,
+								 ImmutableMap<String, String> textures, BiConsumer<Block, IVariantModelGenerator> out,
+								 List<IProperty<?>> additional, BlockRenderLayer... layers)
 	{
 		final ExistingModelFile connFile = new ExistingModelFile(rl("connector"));
 		StringBuilder layerString = new StringBuilder("[");
@@ -334,21 +368,36 @@ public class BlockStates extends BlockstateGenerator
 				layerString.append(", ");
 		}
 		layerString.append("]");
-		final ImmutableMap<String, Object> customData = ImmutableMap.of("flip-v", true,
-				"base", model.toString(),
-				"layers", layerString.toString());
 		Builder builder = new Builder(b);
-		builder.setForAllWithState(ImmutableMap.of(IEProperties.FACING_ALL, Direction.DOWN),
-				new ConfiguredModel(connFile, 0, 0, true, customData, textures));
-		builder.setForAllWithState(ImmutableMap.of(IEProperties.FACING_ALL, Direction.UP),
-				new ConfiguredModel(connFile, 180, 0, true, customData, textures));
-		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
-		{
-			int rotation = getAngle(d, 0);
-			builder.setForAllWithState(
-					ImmutableMap.of(IEProperties.FACING_ALL, d),
-					new ConfiguredModel(connFile, 90, rotation, true, customData, textures));
-		}
+		forEachState(additional, map -> {
+			final ImmutableMap<String, Object> customData = ImmutableMap.of("flip-v", true,
+					"base", model.apply(map).toString(),
+					"layers", layerString.toString());
+			builder.setForAllWithState(with(map, IEProperties.FACING_ALL, Direction.DOWN),
+					new ConfiguredModel(connFile, 0, 0, true, customData, textures));
+			builder.setForAllWithState(with(map, IEProperties.FACING_ALL, Direction.UP),
+					new ConfiguredModel(connFile, 180, 0, true, customData, textures));
+			for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+			{
+				int rotation = getAngle(d, 0);
+				builder.setForAllWithState(
+						with(map, IEProperties.FACING_ALL, d),
+						new ConfiguredModel(connFile, 90, rotation, true, customData, textures));
+			}
+		});
 		out.accept(b, builder.build());
+	}
+
+	private <K, V> Map<K, V> with(Map<K, V> old, K newKey, V newVal)
+	{
+		Map<K, V> ret = new HashMap<>(old);
+		ret.put(newKey, newVal);
+		return ret;
+	}
+
+	private void createConnector(Block b, ResourceLocation model, ImmutableMap<String, String> textures,
+								 BiConsumer<Block, IVariantModelGenerator> out, BlockRenderLayer... layers)
+	{
+		createConnector(b, map -> model, textures, out, ImmutableList.of(), layers);
 	}
 }

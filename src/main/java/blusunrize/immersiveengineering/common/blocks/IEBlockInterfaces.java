@@ -304,20 +304,14 @@ public class IEBlockInterfaces
 		default boolean getIsActive()
 		{
 			BlockState state = getState();
-			if(state.has(IEProperties.ACTIVE))
-				return state.get(IEProperties.ACTIVE);
-			else
-				return false;
+			return state.get(IEProperties.ACTIVE);
 		}
 
 		default void setActive(boolean active)
 		{
 			BlockState state = getState();
-			if(state.has(IEProperties.ACTIVE))
-			{
-				BlockState newState = state.with(IEProperties.ACTIVE, active);
-				setState(newState);
-			}
+			BlockState newState = state.with(IEProperties.ACTIVE, active);
+			setState(newState);
 		}
 	}
 
@@ -326,20 +320,14 @@ public class IEBlockInterfaces
 		default boolean getIsMirrored()
 		{
 			BlockState state = getState();
-			if(state.has(IEProperties.MIRRORED))
-				return state.get(IEProperties.MIRRORED);
-			else
-				return false;
+			return state.get(IEProperties.MIRRORED);
 		}
 
 		default void setMirrored(boolean mirrored)
 		{
 			BlockState state = getState();
-			if(state.has(IEProperties.MIRRORED))
-			{
-				BlockState newState = state.with(IEProperties.MIRRORED, mirrored);
-				setState(newState);
-			}
+			BlockState newState = state.with(IEProperties.MIRRORED, mirrored);
+			setState(newState);
 		}
 	}
 

@@ -653,7 +653,7 @@ public class ApiUtils
 		if(tileEntity instanceof IImmersiveConnectable&&((IImmersiveConnectable)tileEntity).canConnect())
 		{
 			ItemStack stack = player.getHeldItem(hand);
-			TargetingInfo targetHere = new TargetingInfo(side, hitX, hitY, hitZ);
+			TargetingInfo targetHere = new TargetingInfo(side, hitX-pos.getX(), hitY-pos.getY(), hitZ-pos.getZ());
 			WireType wire = coil.getWireType(stack);
 			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, targetHere);
 			BlockPos offsetHere = pos.subtract(masterPos);

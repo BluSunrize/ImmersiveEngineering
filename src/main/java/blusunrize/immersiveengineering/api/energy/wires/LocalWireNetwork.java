@@ -248,10 +248,7 @@ public class LocalWireNetwork implements IWorldTickable
 			h.onConnectionAdded(conn);
 		addRequestedHandlers(conn.type);
 		if(!(connA instanceof IICProxy)&&!(connB instanceof IICProxy))
-		{
-			IELogger.logger.info("Adding collision data, ends are {} and {}", connA, connB);
 			globalNet.getCollisionData().addConnection(conn);
-		}
 	}
 
 	private void removeHandlersFor(ILocalHandlerProvider iic)
