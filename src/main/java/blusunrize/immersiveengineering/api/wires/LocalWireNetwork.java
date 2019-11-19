@@ -6,11 +6,11 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.energy.wires;
+package blusunrize.immersiveengineering.api.wires;
 
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.ILocalHandlerProvider;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.IWorldTickable;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
+import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
+import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
+import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;

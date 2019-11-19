@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
-import blusunrize.immersiveengineering.api.energy.wires.WireApi;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.wires.WireApi;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
+import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.MIDDLE_STATE;
 import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.WIRE;

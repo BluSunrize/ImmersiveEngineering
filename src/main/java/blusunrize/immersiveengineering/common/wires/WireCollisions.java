@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.common.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork;
-import blusunrize.immersiveengineering.api.energy.wires.LocalWireNetwork;
-import blusunrize.immersiveengineering.api.energy.wires.WireCollisionData;
-import blusunrize.immersiveengineering.api.energy.wires.WireCollisionData.CollisionInfo;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.ICollisionHandler;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
+import blusunrize.immersiveengineering.api.wires.LocalWireNetwork;
+import blusunrize.immersiveengineering.api.wires.WireCollisionData;
+import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
+import blusunrize.immersiveengineering.api.wires.localhandlers.ICollisionHandler;
+import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;

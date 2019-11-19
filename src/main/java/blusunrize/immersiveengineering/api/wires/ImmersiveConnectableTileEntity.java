@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.energy.wires;
+package blusunrize.immersiveengineering.api.wires;
 
 
 import blusunrize.immersiveengineering.api.ApiUtils;
@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
+import static blusunrize.immersiveengineering.api.wires.WireType.*;
 
 public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity implements IImmersiveConnectable
 {

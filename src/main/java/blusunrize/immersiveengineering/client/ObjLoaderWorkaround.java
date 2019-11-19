@@ -140,7 +140,6 @@ public class ObjLoaderWorkaround
 					if(json.has("parent"))
 					{
 						ResourceLocation parent = new ResourceLocation(json.get("parent").getAsString());
-						IELogger.logger.info("Parent for {} is {}", itemName, parent);
 						if(shouldLoad(parent))
 						{
 							Map<TransformType, TRSRTransformation> perspectives = new HashMap<>();

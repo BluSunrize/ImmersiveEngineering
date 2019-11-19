@@ -6,9 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.energy.wires.localhandlers;
+package blusunrize.immersiveengineering.api.wires.localhandlers;
 
-import blusunrize.immersiveengineering.api.energy.wires.WireCollisionData.CollisionInfo;
+import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
 

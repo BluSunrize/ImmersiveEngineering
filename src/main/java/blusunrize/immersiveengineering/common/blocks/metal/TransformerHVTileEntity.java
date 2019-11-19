@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.tileentity.TileEntityType;
 
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
+import static blusunrize.immersiveengineering.api.wires.WireType.HV_CATEGORY;
 
 public class TransformerHVTileEntity extends TransformerTileEntity
 {

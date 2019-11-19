@@ -6,12 +6,12 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.energy.wires;
+package blusunrize.immersiveengineering.api.wires;
 
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.ILocalHandlerProvider;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.WireDamageHandler;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.WireDamageHandler.IShockingWire;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
+import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
+import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
+import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler.IShockingWire;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import com.google.common.collect.ImmutableList;
@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,7 +28,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
+import static blusunrize.immersiveengineering.api.wires.WireApi.registerFeedthroughForWiretype;
 import static blusunrize.immersiveengineering.common.IEConfig.WIRES;
 
 /**
@@ -199,7 +200,8 @@ public abstract class WireType implements ILocalHandlerProvider
 		@Override
 		public double getBasicLossRate(Connection c)
 		{
-			return 0;
+			double length = Math.sqrt(c.getEndA().getPosition().distanceSq(new Vec3d(c.getEndB().getPosition()), false));
+			return getLossRatio()*length/getMaxLength();
 		}
 
 		@Override

@@ -6,10 +6,12 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.energy.wires.localhandlers;
+package blusunrize.immersiveengineering.api.wires.localhandlers;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap;
+import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap.HeapEntry;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
@@ -103,7 +105,6 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	{
 		uninitialised = false;
 		energyPaths.clear();
-		//TODO Dijkstra, using a proper binary heap since PriorityQueue does not have decreaseKey. This is just DFS
 		for(ConnectionPoint cp : net.getConnectionPoints())
 		{
 			IImmersiveConnectable iic = net.getConnector(cp);
@@ -120,47 +121,41 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			return;
 		for(ConnectionPoint source : sources.keySet())
 		{
-			Deque<ConnectionPoint> stack = new ArrayDeque<>();
-			Set<ConnectionPoint> visited = new HashSet<>();
-			List<Path> paths = new ArrayList<>();
-			visited.add(source);
-			stack.add(source);
-			List<Connection> path = new ArrayList<>();
-			double lossSum = 0;
-			while(!stack.isEmpty())
+			Map<ConnectionPoint, Path> shortestKnown = new HashMap<>();
+			BinaryHeap<ConnectionPoint> heap = new BinaryHeap<>(
+					Comparator.comparingDouble(end -> shortestKnown.get(end).loss));
+			Map<ConnectionPoint, HeapEntry<ConnectionPoint>> entryMap = new HashMap<>();
+			shortestKnown.put(source, new Path(source));
+			entryMap.put(source, heap.insert(source));
+			while(!heap.empty())
 			{
-				ConnectionPoint current = stack.peek();
-				boolean foundNext = false;
-				for(Connection c : net.getConnections(current))
+				ConnectionPoint endPoint = heap.extractMin();
+				entryMap.remove(endPoint);
+				Path shortest = shortestKnown.get(endPoint);
+				if(sinks.containsKey(endPoint))
+					energyPaths.put(source, shortest);
+				//Loss of 1 means no energy will be transferred, so the paths are irrelevant
+				if(shortest.loss >= 1)
+					break;
+				for(Connection next : net.getConnections(endPoint))
 				{
-					double loss = getBasicLoss(c);
-					if(Double.isFinite(loss))
+					Path alternative = shortest.append(next);
+					if(!shortestKnown.containsKey(alternative.end))
 					{
-						ConnectionPoint end = c.getOtherEnd(current);
-						if(!visited.contains(end))
+						shortestKnown.put(alternative.end, alternative);
+						entryMap.put(alternative.end, heap.insert(alternative.end));
+					}
+					else
+					{
+						Path oldPath = shortestKnown.get(alternative.end);
+						if(alternative.loss < oldPath.loss)
 						{
-							stack.push(end);
-							visited.add(end);
-							path.add(c);
-							lossSum += loss;
-							foundNext = true;
-							break;
+							shortestKnown.put(alternative.end, alternative);
+							heap.decreaseKey(entryMap.get(alternative.end));
 						}
 					}
 				}
-				if(!foundNext)
-				{
-					if(!current.equals(source)&&sinks.containsKey(current)&&lossSum < 1)
-						paths.add(new Path(path.toArray(new Connection[0]), source, current, lossSum));
-					stack.pop();
-					if(!path.isEmpty())
-					{
-						Connection removed = path.remove(path.size()-1);
-						lossSum -= ((IEnergyWire)removed.type).getBasicLossRate(removed);
-					}
-				}
 			}
-			energyPaths.putAll(source, paths);
 		}
 	}
 
@@ -257,6 +252,11 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			this.loss = loss;
 		}
 
+		public Path(ConnectionPoint point)
+		{
+			this(new Connection[0], point, point, 0);
+		}
+
 		@Override
 		public boolean equals(Object o)
 		{
@@ -270,6 +270,15 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		public int hashCode()
 		{
 			return Arrays.hashCode(conns);
+		}
+
+		public Path append(Connection next)
+		{
+			ConnectionPoint newEnd = next.getOtherEnd(end);
+			double newLoss = loss+((IEnergyWire)next.type).getBasicLossRate(next);
+			Connection[] newPath = Arrays.copyOf(conns, conns.length+1);
+			newPath[newPath.length-1] = next;
+			return new Path(newPath, start, newEnd, newLoss);
 		}
 	}
 

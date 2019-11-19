@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
@@ -62,7 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static blusunrize.immersiveengineering.api.energy.wires.GlobalWireNetwork.getNetwork;
+import static blusunrize.immersiveengineering.api.wires.GlobalWireNetwork.getNetwork;
 
 @Mod.EventBusSubscriber
 public abstract class IETileProviderBlock extends IEBaseBlock implements IColouredBlock

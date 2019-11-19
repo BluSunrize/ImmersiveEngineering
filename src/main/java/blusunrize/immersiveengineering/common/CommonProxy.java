@@ -16,7 +16,7 @@
 
 package blusunrize.immersiveengineering.common;
 
-import blusunrize.immersiveengineering.api.energy.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;

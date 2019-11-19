@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.energy.wires.localhandlers;
+package blusunrize.immersiveengineering.api.wires.localhandlers;
 
 import net.minecraft.world.World;
 

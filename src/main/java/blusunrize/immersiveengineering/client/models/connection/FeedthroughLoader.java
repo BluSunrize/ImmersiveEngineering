@@ -29,7 +29,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
+import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 import static net.minecraftforge.resource.VanillaResourceType.MODELS;
 import static net.minecraftforge.resource.VanillaResourceType.TEXTURES;
 
