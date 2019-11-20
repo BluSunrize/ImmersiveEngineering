@@ -46,6 +46,9 @@ class Recipes extends RecipeProvider
 	private final Path ADV_ROOT;
 	private final HashMap<String, Integer> PATH_COUNT = new HashMap<>();
 
+	private final int standardSmeltingTime = 200;
+	private final int blastDivider = 2;
+
 	public Recipes(DataGenerator gen)
 	{
 		super(gen);
@@ -77,14 +80,11 @@ class Recipes extends RecipeProvider
 				if(IEBlocks.Metals.ores.containsKey(metal))
 				{
 					Block ore = IEBlocks.Metals.ores.get(metal);
-					CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(ore), ingot, metal.smeltingXP, 20)
-							.addCriterion("has_"+toPath(ore), hasItem(ore))
-							.build(out);
+					addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
 				}
 			}
-			CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(dust), ingot, 0, 20)
-					.addCriterion("has_"+toPath(dust), hasItem(dust))
-					.build(out, toRL(toPath(ingot)+"_from_dust"));
+			addStandardSmeltingBlastingRecipe(dust, ingot, 0, out, "_from_dust");
+//			addStandardSmeltingBlastingRecipe(dust, ingot, metal.smeltingXP, out, "_from_dust"); //TODO: remove this, if 0 XP on dust is intentional. this bugs out because the alloys do not have metal.smeltingXP
 			ShapelessRecipeBuilder.shapelessRecipe(plate).addIngredient(IETags.getTagsFor(metal).ingot).addIngredient(Tools.hammer).addCriterion("has_"+metal.tagName()+"_ingot", this.hasItem(IETags.getTagsFor(metal).ingot)).build(out, toRL("plate_"+metal.tagName()+"_hammering"));
 			ShapedRecipeBuilder.shapedRecipe(sheetMetal, 4)
 					.key('p', plate)
@@ -94,6 +94,8 @@ class Recipes extends RecipeProvider
 					.addCriterion("has_"+toPath(plate), hasItem(plate))
 					.build(out);
 		}
+		addStandardSmeltingBlastingRecipe(IEItems.Ingredients.dustHopGraphite, Ingredients.ingotHopGraphite, 0.5F, out);
+
 		for(Entry<Block, Block> blockSlab : IEBlocks.toSlab.entrySet())
 			addSlab(blockSlab.getKey(), blockSlab.getValue(), out);
 		addStairs(StoneDecoration.hempcrete, StoneDecoration.hempcreteStairs, out);
@@ -176,7 +178,6 @@ class Recipes extends RecipeProvider
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[1]).patternLine("iii").patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[2]).patternLine("i i").patternLine("iii").patternLine("iii").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[3]).patternLine("iii").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-
 	}
 
 	//TODO use tags
@@ -293,5 +294,30 @@ class Recipes extends RecipeProvider
 			return Ingredient.fromTag((Tag)in);
 		else
 			return (Ingredient)in;
+	}
+
+	/**
+	 * For smelting recipes that also have a blasting recipe, like ores
+	 * keep the smelting postfix in mind when using this for non-ores or weird cases where the primary recipe for the ingot is not occupied by the smelting recipe
+	 * has an overloaded method for regular use
+	 *
+	 * @param input  		the recipe's input
+	 * @param output 		the recipe's output
+	 * @param xp			experience awarded per smelted item
+	 * @param smeltingTime	smelting time in ticks
+	 * @param extraPostfix	adds an additional postfix before the smelting/blasting postfix when needed (for example used by dusts)
+	 * @param smeltPostfix	allows adding the smelting postfix to the smelting (non-blasting) recipe
+	 */
+	private void addStandardSmeltingBlastingRecipe(IItemProvider input, IItemProvider output, float xp, int smeltingTime, Consumer<IFinishedRecipe> out, String extraPostfix, boolean smeltPostfix) {
+		CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(input), output, xp, smeltingTime).addCriterion("has_"+toPath(input), hasItem(input)).build(out, toRL(toPath(output) + extraPostfix + (smeltPostfix ? "_from_smelting" : "")));
+		CookingRecipeBuilder.blastingRecipe(Ingredient.fromItems(input), output, xp, smeltingTime/blastDivider).addCriterion("has_"+toPath(input), hasItem(input)).build(out, toRL(toPath(output) + extraPostfix + "_from_blasting"));
+	}
+
+	private void addStandardSmeltingBlastingRecipe(IItemProvider input, IItemProvider output, float xp, Consumer<IFinishedRecipe> out) {
+		addStandardSmeltingBlastingRecipe(input, output, xp, out, "");
+	}
+
+	private void addStandardSmeltingBlastingRecipe(IItemProvider input, IItemProvider output, float xp, Consumer<IFinishedRecipe> out, String extraPostfix) {
+		addStandardSmeltingBlastingRecipe(input, output, xp, standardSmeltingTime, out, extraPostfix, false);
 	}
 }

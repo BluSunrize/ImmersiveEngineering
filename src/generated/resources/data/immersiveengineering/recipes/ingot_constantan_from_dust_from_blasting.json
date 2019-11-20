@@ -1,9 +1,9 @@
 {
-  "type": "minecraft:smelting",
+  "type": "minecraft:blasting",
   "ingredient": {
     "item": "immersiveengineering:dust_constantan"
   },
   "result": "immersiveengineering:ingot_constantan",
   "experience": 0.0,
-  "cookingtime": 200
+  "cookingtime": 100
 }

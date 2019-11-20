@@ -166,32 +166,6 @@ public class IERecipes
 		BlueprintCraftingRecipe.addVillagerTrade("electrode", new ItemStack(Items.EMERALD, 1));
 	}
 
-	public static void initFurnaceRecipes()
-	{
-		//TODO JSONs
-		//Ores
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 0), new ItemStack(IEContent.itemMetal, 1, 0), 0.3f);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 1), new ItemStack(IEContent.itemMetal, 1, 1), 0.3F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 2), new ItemStack(IEContent.itemMetal, 1, 2), 0.7F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 3), new ItemStack(IEContent.itemMetal, 1, 3), 1.0F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 4), new ItemStack(IEContent.itemMetal, 1, 4), 1.0F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 5), new ItemStack(IEContent.itemMetal, 1, 5), 1.0F);
-		//Dusts
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 9), new ItemStack(IEContent.itemMetal, 1, 0), 0.3F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 10), new ItemStack(IEContent.itemMetal, 1, 1), 0.3F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 11), new ItemStack(IEContent.itemMetal, 1, 2), 0.7F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 12), new ItemStack(IEContent.itemMetal, 1, 3), 0.7F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 13), new ItemStack(IEContent.itemMetal, 1, 4), 1F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 14), new ItemStack(IEContent.itemMetal, 1, 5), 0.7F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 15), new ItemStack(IEContent.itemMetal, 1, 6), 0.7F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 16), new ItemStack(IEContent.itemMetal, 1, 7), 1F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 17), new ItemStack(IEContent.itemMetal, 1, 8), 0.7F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 18), new ItemStack(Items.IRON_INGOT), 0.7F);
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 19), new ItemStack(Items.GOLD_INGOT), 1.0F);
-
-		//FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMaterial, 1, 18), new ItemStack(IEContent.itemMaterial, 1, 19), 0.5F);
-	}
-
 	public static void initBlastFurnaceRecipes()
 	{
 		Tag<Item> ironIngot = IETags.getTagsFor(IRON).ingot;

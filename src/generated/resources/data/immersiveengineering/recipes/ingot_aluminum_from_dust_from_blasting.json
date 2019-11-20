@@ -1,9 +1,9 @@
 {
-  "type": "minecraft:smelting",
+  "type": "minecraft:blasting",
   "ingredient": {
     "item": "immersiveengineering:dust_aluminum"
   },
   "result": "immersiveengineering:ingot_aluminum",
   "experience": 0.0,
-  "cookingtime": 200
+  "cookingtime": 100
 }
