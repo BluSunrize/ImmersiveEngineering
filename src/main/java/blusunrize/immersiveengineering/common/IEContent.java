@@ -57,6 +57,7 @@ import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
+import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
@@ -146,7 +147,7 @@ public class IEContent
 		/*BULLETS*/
 		BulletItem.initBullets();
 		/*WIRES*/
-		WireType.registerWires();
+		IEWireTypes.modConstruction();
 		/*CONVEYORS*/
 		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
 			CompoundNBT data = entity.getPersistentData();
@@ -836,8 +837,7 @@ public class IEContent
 
 	public static void preInit()
 	{
-		WireType.init();
-
+		IEWireTypes.setup();
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
 		IELootFunctions.preInit();

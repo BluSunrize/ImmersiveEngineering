@@ -32,7 +32,6 @@ public class BinaryHeap<T>
 		HeapEntry<T> ret = new HeapEntry<>(newElement, storage.size(), this);
 		storage.add(ret);
 		siftUp(ret);
-		validate();
 		return ret;
 	}
 
@@ -44,7 +43,6 @@ public class BinaryHeap<T>
 		ret.invalidate();
 		if(!empty())
 			siftDown(storage.get(0));
-		validate();
 		return ret.getValue();
 	}
 
@@ -52,7 +50,6 @@ public class BinaryHeap<T>
 	{
 		entry.testValidity(this);
 		siftUp(entry);
-		validate();
 	}
 
 	public boolean empty()

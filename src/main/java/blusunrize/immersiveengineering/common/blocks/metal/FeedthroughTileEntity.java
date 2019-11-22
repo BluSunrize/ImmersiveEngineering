@@ -363,18 +363,6 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	protected float getBaseDamage(Connection c)
-	{
-		return INFOS.get(reference).dmgPerEnergy;
-	}
-
-	@Override
-	protected float getMaxDamage(Connection c)
-	{
-		return INFOS.get(reference).maxDmg;
-	}
-
-	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
 		if(id==253)

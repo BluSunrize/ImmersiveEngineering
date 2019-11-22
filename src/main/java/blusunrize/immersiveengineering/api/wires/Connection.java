@@ -39,7 +39,7 @@ public class Connection
 
 	public Connection(BlockPos pos, int idA, int idB)
 	{
-		this.type = WireType.STEEL;//TODO
+		this.type = WireType.INTERNAL_CONNECTION;
 		this.endA = new ConnectionPoint(pos, idA);
 		this.endB = new ConnectionPoint(pos, idB);
 		this.internal = true;

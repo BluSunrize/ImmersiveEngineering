@@ -1,8 +1,6 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
@@ -32,38 +30,23 @@ public final class WireApi
 {
 	public static final Map<WireType, FeedthroughModelInfo> INFOS = new HashMap<>();
 
-	@OnlyIn(Dist.CLIENT)
-	@Deprecated//This should be done in JSON in IE 86+
-	public static void registerConnectorForRender(String key, ResourceLocation baseModel,
-												  @Nullable ImmutableMap<String, String> texReplacement)
-	{
-		if(ConnectionLoader.baseModels.containsKey(key))
-			IELogger.warn("Tried to register connector model for "+key+" twice");//TODO . Active mod: "+Loader.instance().activeModContainer().getModId());
-		ConnectionLoader.baseModels.put(key, baseModel);
-		if(texReplacement!=null)
-			ConnectionLoader.textureReplacements.put(key, texReplacement);
-	}
-
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-													  ResourceLocation texLoc, float[] uvs, double connLength, BlockState conn,
-													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
+													  ResourceLocation texLoc, float[] uvs, double connLength, BlockState conn)
 	{
-		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connLength, conn, dmgPerEnergy, maxDmg, postProcessDmg));
+		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connLength, conn));
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
 													  ResourceLocation texLoc, float[] uvs, double connLength, double connOffset,
-													  BlockState conn,
-													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
+													  BlockState conn)
 	{
-		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connOffset, conn, dmgPerEnergy, maxDmg, postProcessDmg));
+		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connOffset, conn));
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ResourceLocation texLoc, float[] uvs,
-													  double connLength, BlockState conn,
-													  float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
+													  double connLength, BlockState conn)
 	{
-		INFOS.put(w, new FeedthroughModelInfo(model, ImmutableMap.of(), texLoc, uvs, connLength, connLength, conn, dmgPerEnergy, maxDmg, postProcessDmg));
+		INFOS.put(w, new FeedthroughModelInfo(model, ImmutableMap.of(), texLoc, uvs, connLength, connLength, conn));
 	}
 
 	@Nullable
@@ -105,9 +88,6 @@ public final class WireApi
 	{
 		public final ResourceLocation modelLoc;
 		final ImmutableMap<String, String> texReplacements;
-		public final float dmgPerEnergy;
-		public final float maxDmg;
-		public final Function<Float, Float> postProcessDmg;
 		@Nonnull
 		public BlockState conn;
 		@OnlyIn(Dist.CLIENT)
@@ -120,8 +100,7 @@ public final class WireApi
 		public final double connOffset;
 
 		public FeedthroughModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
-									double connLength, double connOffset, @Nonnull BlockState conn,
-									float dmgPerEnergy, float maxDmg, Function<Float, Float> postProcessDmg)
+									double connLength, double connOffset, @Nonnull BlockState conn)
 		{
 			modelLoc = model;
 			this.texLoc = texLoc;
@@ -130,9 +109,6 @@ public final class WireApi
 			texReplacements = texRepl;
 			this.connLength = connLength;
 			this.connOffset = connOffset;
-			this.dmgPerEnergy = dmgPerEnergy;
-			this.maxDmg = maxDmg;
-			this.postProcessDmg = postProcessDmg;
 			this.conn = conn;
 		}
 
