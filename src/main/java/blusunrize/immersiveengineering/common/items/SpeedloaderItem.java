@@ -57,7 +57,7 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 			for(int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack b = inv.getStackInSlot(i);
-				if(!b.isEmpty()&&b.getItem() instanceof BulletItem&&ItemNBTHelper.hasKey(b, "bullet"))
+				if(!b.isEmpty()&&b.getItem() instanceof BulletItem)
 					return false;
 			}
 			return true;

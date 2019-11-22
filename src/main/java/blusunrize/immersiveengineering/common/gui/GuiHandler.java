@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import blusunrize.immersiveengineering.common.items.MaintenanceKitItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
+import blusunrize.immersiveengineering.common.items.SpeedloaderItem;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
 import com.google.common.base.Preconditions;
 import net.minecraft.entity.player.PlayerInventory;
@@ -57,7 +58,7 @@ public class GuiHandler
 		register(CokeOvenTileEntity.class, Lib.GUIID_CokeOven, CokeOvenContainer::new);
 		register(AlloySmelterTileEntity.class, Lib.GUIID_AlloySmelter, AlloySmelterContainer::new);
 		register(BlastFurnaceTileEntity.class, Lib.GUIID_BlastFurnace, BlastFurnaceContainer::new);
-		useSameContainer(BlastFurnaceTileEntity.class, BlastFurnaceAdvancedTileEntity.class);
+		useSameContainerTile(BlastFurnaceTileEntity.class, BlastFurnaceAdvancedTileEntity.class);
 		register(WoodenCrateTileEntity.class, Lib.GUIID_WoodenCrate, CrateContainer::new);
 		register(ModWorkbenchTileEntity.class, Lib.GUIID_Workbench, ModWorkbenchContainer::new);
 		register(AssemblerTileEntity.class, Lib.GUIID_Assembler, AssemblerContainer::new);
@@ -76,6 +77,7 @@ public class GuiHandler
 		register(ToolboxItem.class, Lib.GUIID_Toolbox, ToolboxContainer::new);
 		register(RevolverItem.class, Lib.GUIID_Revolver, RevolverContainer::new);
 		register(MaintenanceKitItem.class, Lib.GUIID_MaintenanceKit, MaintenanceKitContainer::new);
+		useSameContainerItem(RevolverItem.class, SpeedloaderItem.class);
 	}
 
 	public static <T extends TileEntity, C extends IEBaseContainer<T>>
@@ -93,7 +95,7 @@ public class GuiHandler
 		ALL_TYPES.put(name, type);
 	}
 
-	public static <T0 extends TileEntity, T extends T0> void useSameContainer(Class<T0> existing, Class<T> toAdd)
+	public static <T0 extends TileEntity, T extends T0> void useSameContainerTile(Class<T0> existing, Class<T> toAdd)
 	{
 		Preconditions.checkArgument(TILE_CONTAINERS.containsKey(existing));
 		TILE_CONTAINERS.put(toAdd, TILE_CONTAINERS.get(existing));
@@ -113,6 +115,12 @@ public class GuiHandler
 		type.setRegistryName(name);
 		ITEM_CONTAINERS.put(itemClass, new ItemContainer<>(type, container));
 		ALL_TYPES.put(name, type);
+	}
+
+	public static <T0 extends Item, T extends Item> void useSameContainerItem(Class<T0> existing, Class<T> toAdd)
+	{
+		Preconditions.checkArgument(ITEM_CONTAINERS.containsKey(existing));
+		ITEM_CONTAINERS.put(toAdd, ITEM_CONTAINERS.get(existing));
 	}
 
 	public static <T extends TileEntity> Container createContainer(PlayerInventory inv, T te, int id)

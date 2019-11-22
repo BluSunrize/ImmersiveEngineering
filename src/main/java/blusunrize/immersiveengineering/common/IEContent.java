@@ -489,6 +489,7 @@ public class IEContent
 		Tools.drillheadIron = new DrillheadItem(DrillheadItem.IRON);
 		Tools.drillheadSteel = new DrillheadItem(DrillheadItem.STEEL);
 		Weapons.revolver = new RevolverItem();
+		Weapons.speedloader = new SpeedloaderItem();
 		Weapons.chemthrower = new ChemthrowerItem();
 		Weapons.railgun = new RailgunItem();
 		for(ResourceLocation bulletType : BulletHandler.getAllKeys())
