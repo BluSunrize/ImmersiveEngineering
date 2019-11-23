@@ -82,6 +82,7 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            property 'fml.earlyprogresswindow', 'false'
 
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/')
 
@@ -99,11 +100,18 @@ repositories {
         name 'DVS1 Maven FS'
         url 'https://dvs1.progwml6.com/files/maven'
     }
-}
+    repositories {//Curseforge maven, in case some other maven goes offline and for mods that don't have a maven
+        maven {
+            name = "CurseForge"
+            url = "https://minecraft.curseforge.com/api/maven/"
+        }
+    }
+ }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.1.26'
+    minecraft 'net.minecraftforge:forge:1.14.4-28.1.64'
     runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11")
+    runtimeOnly fg.deobf("nbtedit:NBTEdit:0.8.2")
     compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11:api")
 }
 

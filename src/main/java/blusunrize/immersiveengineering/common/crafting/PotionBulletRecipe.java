@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
+import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.CraftingInventory;
@@ -46,7 +46,7 @@ public class PotionBulletRecipe implements ICraftingRecipe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty()&&Weapons.bullet.equals(stackInSlot.getItem())&&"potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty()&&isPotionBullet(stackInSlot))
 					bullet = stackInSlot;
 				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof PotionItem)
 					potion = stackInSlot;
@@ -66,7 +66,7 @@ public class PotionBulletRecipe implements ICraftingRecipe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty()&&Weapons.bullet.equals(stackInSlot.getItem())&&"potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
+				if(bullet.isEmpty()&&isPotionBullet(stackInSlot))
 					bullet = stackInSlot;
 				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof PotionItem)
 					potion = stackInSlot;
@@ -86,7 +86,7 @@ public class PotionBulletRecipe implements ICraftingRecipe
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return BulletHandler.getBulletStack("potion");
+		return BulletHandler.getBulletStack(BulletItem.POTION);
 	}
 
 	@Nonnull
@@ -101,5 +101,11 @@ public class PotionBulletRecipe implements ICraftingRecipe
 	public ResourceLocation getId()
 	{
 		return id;
+	}
+
+	private boolean isPotionBullet(ItemStack stack)
+	{
+		return stack.getItem() instanceof BulletItem&&
+				((BulletItem)stack.getItem()).getType()==BulletHandler.getBullet(BulletItem.POTION);
 	}
 }

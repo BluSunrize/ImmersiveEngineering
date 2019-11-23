@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class CokeOvenMultiblock extends IETemplateMultiblock
+public class CokeOvenMultiblock extends StoneMultiblock
 {
 	public CokeOvenMultiblock()
 	{

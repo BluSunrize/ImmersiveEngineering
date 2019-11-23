@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "sticks",
+  "pattern": [
+    "i",
+    "i"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/aluminum"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:stick_aluminum",
+    "count": 4
+  }
+}

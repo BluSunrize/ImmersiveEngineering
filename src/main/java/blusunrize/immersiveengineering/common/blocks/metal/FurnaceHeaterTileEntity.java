@@ -36,8 +36,6 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	public static TileEntityType<FurnaceHeaterTileEntity> TYPE;
 	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256,
 			Math.max(IEConfig.MACHINES.heater_consumption.get(), IEConfig.MACHINES.heater_speedupConsumption.get())));
-	//public int[] sockets = new int[6];
-	public boolean active = false;
 
 	public FurnaceHeaterTileEntity()
 	{
@@ -49,11 +47,11 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	{
 		if(!world.isRemote)
 		{
-			boolean a = active;
+			boolean activeBeforeTick = getIsActive();
 			boolean redstonePower = world.getRedstonePowerFromNeighbors(getPos()) > 0;
-			if(active&&!redstonePower)
-				active = false;
-			if(energyStorage.getEnergyStored() > 3200||a)
+			if(activeBeforeTick&&!redstonePower)
+				setActive(false);
+			if(energyStorage.getEnergyStored() > 3200||activeBeforeTick)
 				for(Direction fd : Direction.VALUES)
 				{
 					TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(fd));
@@ -70,30 +68,21 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 					if(consumed > 0)
 					{
 						this.energyStorage.extractEnergy(consumed, false);
-						if(!active)
-							active = true;
+						if(!activeBeforeTick)
+							setActive(true);
 					}
 				}
-			if(active!=a)
+			if(getIsActive()!=activeBeforeTick)
 			{
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
-				world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 1, active?1: 0);
 			}
 		}
 	}
 
 	@Override
-	public boolean getIsActive()
-	{
-		return active||world.getRedstonePowerFromNeighbors(getPos()) > 0;
-	}
-
-	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
-		if(id==1)
-			this.active = arg==1;
 		this.markContainingBlockForUpdate(null);
 		return true;
 	}
@@ -102,18 +91,12 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
-		//		sockets = nbt.getIntArray("sockets");
-		//		if(sockets.length<6)
-		//			sockets = new int[0];
-		active = nbt.getBoolean("active");
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
-		//		nbt.putIntArray("sockets", sockets);
-		nbt.putBoolean("active", active);
 	}
 
 	@Nonnull

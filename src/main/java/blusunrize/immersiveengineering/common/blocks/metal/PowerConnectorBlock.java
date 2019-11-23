@@ -8,9 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
@@ -21,11 +23,13 @@ public class PowerConnectorBlock extends ConnectorBlock
 	private final String voltage;
 	private final boolean relay;
 
-	public PowerConnectorBlock(String voltage, boolean relay)
+	public PowerConnectorBlock(String voltage, boolean relay, BlockRenderLayer... layers)
 	{
-		super("connector_"+voltage.toLowerCase()+(relay?"_relay": ""));
+		super("connector_"+voltage.toLowerCase()+(relay?"_relay": ""), IEProperties.FACING_ALL);
 		this.voltage = voltage;
 		this.relay = relay;
+		if(layers.length > 0)
+			setBlockLayer(layers);
 	}
 
 	@Nullable

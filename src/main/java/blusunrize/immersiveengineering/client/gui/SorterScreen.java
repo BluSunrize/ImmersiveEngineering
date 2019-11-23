@@ -102,10 +102,10 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 					CompoundNBT tag = new CompoundNBT();
 					tag.putIntArray("sideConfig", tile.sideFilter);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
-					init();
+					fullInit();
 				});
 				b.active = bit==0?this.tile.doOredict(side): bit==1?this.tile.doNBT(side): this.tile.doFuzzy(side);
-				this.buttons.add(b);
+				this.addButton(b);
 			}
 	}
 

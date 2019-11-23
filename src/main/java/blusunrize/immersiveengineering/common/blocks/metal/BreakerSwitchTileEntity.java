@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
@@ -41,7 +41,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Optional;
 
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
+import static blusunrize.immersiveengineering.api.wires.WireType.HV_CATEGORY;
 
 //TODO ConnectionPoints for opening/closing
 public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity implements IBlockBounds, IAdvancedDirectionalTile,
@@ -53,8 +53,6 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	public static final int RIGHT_INDEX = 1;
 	public int rotation = 0;
 	public int wires = 0;
-	//TODO convert to blockstate property?
-	public boolean active = false;
 	public boolean inverted = false;
 
 	public BreakerSwitchTileEntity()
@@ -117,7 +115,6 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("rotation", rotation);
 		nbt.putInt("wires", wires);
-		nbt.putBoolean("active", active);
 		nbt.putBoolean("inverted", inverted);
 	}
 
@@ -127,7 +124,6 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getInt("rotation");
 		wires = nbt.getInt("wires");
-		active = nbt.getBoolean("active");
 		inverted = nbt.getBoolean("inverted");
 	}
 
@@ -141,7 +137,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(player.isSneaking())
 		{
@@ -160,7 +156,8 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	{
 		if(!Utils.isHammer(heldItem))
 		{
-			active = !active;
+			boolean active = !getIsActive();
+			setActive(active);
 			world.playSound(null, getPos(), IESounds.direSwitch, SoundCategory.BLOCKS, 2.5F, 1);
 			world.addBlockEvent(getPos(), getBlockState().getBlock(), active?1: 0, 0);
 			notifyNeighbours();
@@ -190,16 +187,10 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	{
 		if(super.receiveClientEvent(id, arg))
 			return true;
-		this.active = id==1;
 		this.markContainingBlockForUpdate(null);
 		return true;
 	}
 
-	@Override
-	public boolean getIsActive()
-	{
-		return active;
-	}
 
 	@Override
 	public EnumProperty<Direction> getFacingProperty()
@@ -247,13 +238,13 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public int getWeakRSOutput(BlockState state, Direction side)
 	{
-		return (active^inverted)?15: 0;
+		return (getIsActive()^inverted)?15: 0;
 	}
 
 	@Override
 	public int getStrongRSOutput(BlockState state, Direction side)
 	{
-		return side.getOpposite()==getFacing()&&(active^inverted)?15: 0;
+		return side.getOpposite()==getFacing()&&(getIsActive()^inverted)?15: 0;
 	}
 
 	@Override
@@ -274,7 +265,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public String getCacheKey(BlockState object)
 	{
-		return rotation+","+getFacing().getIndex()+","+active;
+		return rotation+","+getFacing().getIndex();
 	}
 
 	@Override
@@ -313,6 +304,6 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 
 	protected boolean allowEnergyToPass()
 	{
-		return active;
+		return getIsActive();
 	}
 }

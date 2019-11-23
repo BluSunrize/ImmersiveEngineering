@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_sheetmetal_uranium": {
+    "has_sheetmetal_uranium": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_sheetmetal_uranium"
+            "item": "immersiveengineering:sheetmetal_uranium"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_sheetmetal_uranium",
+      "has_sheetmetal_uranium",
       "has_the_recipe"
     ]
   ]

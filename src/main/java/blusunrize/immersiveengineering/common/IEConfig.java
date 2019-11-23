@@ -42,20 +42,20 @@ public class IEConfig
 					.define("validateConnections", false);
 			List<Integer> defaultTransferRates = Lists.newArrayList(2048, 8192, 32768, 0, 0, 0);
 			wireTransferRate = builder
-					.comment("The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )")
+					.comment("The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone (no transfer) )")
 					.define("wireTransferRate", defaultTransferRates, isSameSizeList(defaultTransferRates));
 			List<Double> defaultLossRates = Lists.newArrayList(.05, .025, .025, 1., 1., 1.);
 			wireLossRatio = builder
 					.comment("The percentage of power lost every 16 blocks of distance for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )")
-					.define("wireTransferRate", defaultLossRates, isSameSizeList(defaultLossRates));
+					.define("wireLossRatio", defaultLossRates, isSameSizeList(defaultLossRates));
 			List<Integer> defaultColours = Lists.newArrayList(0xb36c3f, 0xeda045, 0x6f6f6f, 0x967e6d, 0x6f6f6f, 0xff2f2f, 0xfaf1de, 0x9d857a);
 			wireColouration = builder
 					.comment("The RGB colourate of the wires.")
-					.define("wireTransferRate", defaultColours, isSameSizeList(defaultColours));
+					.define("wireColouration", defaultColours, isSameSizeList(defaultColours));
 			List<Integer> defaultLength = Lists.newArrayList(16, 16, 32, 32, 32, 32);
 			wireLength = builder
 					.comment("\"The maximum length wire can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational\"")
-					.define("wireTransferRate", defaultLength, isSameSizeList(defaultLength));
+					.define("wireLength", defaultLength, isSameSizeList(defaultLength));
 			enableWireDamage = builder.comment("If this is enabled, wires connected to power sources will cause damage to entities touching them",
 					"This shouldn't cause significant lag but possibly will. If it does, please report it at https://github.com/BluSunrize/ImmersiveEngineering/issues unless there is a report of it already.")
 					.define("enableWireDamage", true);

@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_cokebrick": {
+    "has_cokebrick": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_cokebrick"
+            "item": "immersiveengineering:cokebrick"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_cokebrick",
+      "has_cokebrick",
       "has_the_recipe"
     ]
   ]

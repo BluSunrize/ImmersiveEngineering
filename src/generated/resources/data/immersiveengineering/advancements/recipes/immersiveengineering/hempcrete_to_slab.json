@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_hempcrete": {
+    "has_hempcrete": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_hempcrete"
+            "item": "immersiveengineering:hempcrete"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_hempcrete",
+      "has_hempcrete",
       "has_the_recipe"
     ]
   ]

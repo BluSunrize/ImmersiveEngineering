@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
@@ -75,7 +74,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		//Outer GL Wrapping, initial translation
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(x+.5, y+.5, z+.5);
-		if(te.isMirrored())
+		if(te.getIsMirrored())
 			GlStateManager.scalef(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
 
 		//Item Displacement
@@ -331,7 +330,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5-pos.getX(), -.5-pos.getY(), -.5-pos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, worldRenderer, true, Utils.RAND,
+		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, worldRenderer, true, world.rand,
 				0, data);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
@@ -362,7 +361,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		{
 			IBakedModel ibakedmodel = ClientUtils.mc().getItemRenderer().getItemModelWithOverrides(stack, world, player);
 			HashSet<String> textures = new HashSet<>();
-			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
+			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.rand, EmptyModelData.INSTANCE);
 			for(BakedQuad quad : quads)
 				if(quad!=null&&quad.getSprite()!=null)
 					textures.add(quad.getSprite().getName().toString());

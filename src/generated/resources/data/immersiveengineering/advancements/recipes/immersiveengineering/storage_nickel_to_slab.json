@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_storage_nickel": {
+    "has_storage_nickel": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_storage_nickel"
+            "item": "immersiveengineering:storage_nickel"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_storage_nickel",
+      "has_storage_nickel",
       "has_the_recipe"
     ]
   ]

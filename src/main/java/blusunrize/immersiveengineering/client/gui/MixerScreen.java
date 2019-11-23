@@ -46,13 +46,13 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	{
 		super.init();
 		this.buttons.clear();
-		this.buttons.add(new GuiButtonState(guiLeft+106, guiTop+61, 30, 16, null, tile.outputAll, "immersiveengineering:textures/gui/mixer.png", 176, 82, 1,
+		this.addButton(new GuiButtonState(guiLeft+106, guiTop+61, 30, 16, null, tile.outputAll, "immersiveengineering:textures/gui/mixer.png", 176, 82, 1,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					tile.outputAll = ((GuiButtonState)btn).state;
 					tag.putBoolean("outputAll", tile.outputAll);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
-					init();
+					fullInit();
 				}));
 	}
 

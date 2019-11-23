@@ -8,9 +8,6 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IItemDamageableIE;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -43,26 +40,27 @@ public class IEItemRepairRecipe extends RepairItemRecipe
 	@Override
 	public ItemStack getCraftingResult(CraftingInventory inv)
 	{
-		int[] relevant = getRelevantStacks(inv);
-		if(relevant==null)
-			return ItemStack.EMPTY;
+//		int[] relevant = getRelevantStacks(inv);
+//		if(relevant==null)
+//			return ItemStack.EMPTY;
+//
+//		ItemStack first = inv.getStackInSlot(relevant[0]);
+//		ItemStack second = inv.getStackInSlot(relevant[1]);
+//		IItemDamageableIE firstDamage = (IItemDamageableIE)first.getItem();
+//		IItemDamageableIE secondDamage = (IItemDamageableIE)second.getItem();
+//
+//		int j = firstDamage.getMaxDamageIE(first)-firstDamage.getItemDamageIE(first);
+//		int k = firstDamage.getMaxDamageIE(first)-secondDamage.getItemDamageIE(second);
+//		int l = j+k+firstDamage.getMaxDamageIE(first)*5/100;
+//		int i1 = firstDamage.getMaxDamageIE(first)-l;
+//
+//		if(i1 < 0)
+//			i1 = 0;
 
-		ItemStack first = inv.getStackInSlot(relevant[0]);
-		ItemStack second = inv.getStackInSlot(relevant[1]);
-		IItemDamageableIE firstDamage = (IItemDamageableIE)first.getItem();
-		IItemDamageableIE secondDamage = (IItemDamageableIE)second.getItem();
-
-		int j = firstDamage.getMaxDamageIE(first)-firstDamage.getItemDamageIE(first);
-		int k = firstDamage.getMaxDamageIE(first)-secondDamage.getItemDamageIE(second);
-		int l = j+k+firstDamage.getMaxDamageIE(first)*5/100;
-		int i1 = firstDamage.getMaxDamageIE(first)-l;
-
-		if(i1 < 0)
-			i1 = 0;
-
-		ItemStack ret = new ItemStack(first.getItem(), 1);
-		ItemNBTHelper.putInt(ret, Lib.NBT_DAMAGE, i1);
-		return ret;
+//		ItemStack ret = new ItemStack(first.getItem(), 1);
+//		ItemNBTHelper.putInt(ret, Lib.NBT_DAMAGE, i1);
+//		return ret;
+		return ItemStack.EMPTY;
 	}
 
 	@Nonnull
@@ -84,22 +82,22 @@ public class IEItemRepairRecipe extends RepairItemRecipe
 	{
 		int[] ret = new int[2];
 		int indexInRet = 0;
-		for(int i = 0; i < inv.getSizeInventory(); ++i)
-		{
-			ItemStack curr = inv.getStackInSlot(i);
-
-			if(tool.test(curr)&&curr.getItem() instanceof IItemDamageableIE)
-			{
-				if(indexInRet > 1)
-					return null;
-
-				ret[indexInRet] = i;
-
-				indexInRet++;
-			}
-			else if(!curr.isEmpty())
-				return null;
-		}
+//		for(int i = 0; i < inv.getSizeInventory(); ++i)
+//		{
+//			ItemStack curr = inv.getStackInSlot(i);
+//
+//			if(tool.test(curr)&&curr.getItem() instanceof IItemDamageableIE)
+//			{
+//				if(indexInRet > 1)
+//					return null;
+//
+//				ret[indexInRet] = i;
+//
+//				indexInRet++;
+//			}
+//			else if(!curr.isEmpty())
+//				return null;
+//		}
 		return indexInRet==2?ret: null;
 	}
 

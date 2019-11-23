@@ -72,7 +72,7 @@ public class IEFluid extends FlowingFluid
 
 	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes, @Nullable Supplier<Block> block)
 	{
-		this(fluidName, stillTex, flowingTex, buildAttributes, block, false);
+		this(fluidName, stillTex, flowingTex, buildAttributes, block, true);
 	}
 
 	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes, @Nullable Supplier<Block> block, boolean isSource)
@@ -86,13 +86,13 @@ public class IEFluid extends FlowingFluid
 		if(!isSource)
 		{
 			flowing = this;
-			source = createSourceVariant();
 			setRegistryName(ImmersiveEngineering.MODID, fluidName+"_flowing");
 		}
 		else
 		{
 			source = this;
-			setRegistryName(ImmersiveEngineering.MODID, fluidName+"_source");
+			source = createFlowingVariant();
+			setRegistryName(ImmersiveEngineering.MODID, fluidName);
 		}
 	}
 
@@ -217,9 +217,9 @@ public class IEFluid extends FlowingFluid
 	}
 
 
-	protected Fluid createSourceVariant()
+	protected Fluid createFlowingVariant()
 	{
-		IEFluid ret = new IEFluid(fluidName+"_source", stillTex, flowingTex, buildAttributes, block, true);
+		IEFluid ret = new IEFluid(fluidName, stillTex, flowingTex, buildAttributes, block, false);
 		ret.flowing = this;
 		return ret;
 	}

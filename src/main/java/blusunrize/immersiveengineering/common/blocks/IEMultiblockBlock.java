@@ -18,9 +18,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.GameRules;
@@ -52,7 +54,7 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof IEBaseTileEntity)
-				((IEBaseTileEntity)tileEntity).setCachedState(state);
+				((IEBaseTileEntity)tileEntity).setOverrideState(state);
 			if(tileEntity instanceof MultiblockPartTileEntity&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
 			{
 				MultiblockPartTileEntity tile = (MultiblockPartTileEntity)tileEntity;
@@ -93,5 +95,11 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 		if(te instanceof MultiblockPartTileEntity)
 			return Utils.getPickBlock(((MultiblockPartTileEntity)te).getOriginalBlock(), target, player);
 		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	{
+		//Don't add multiblocks to the creative tab/JEI
 	}
 }

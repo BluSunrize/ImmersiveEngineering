@@ -177,7 +177,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	IEForgeEnergyWrapper wrapperDown = new IEForgeEnergyWrapper(this, Direction.DOWN);
-	IEForgeEnergyWrapper wrapperDir = new IEForgeEnergyWrapper(this, getFacing().getOpposite());
+	IEForgeEnergyWrapper wrapperDir = null;
 
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
@@ -186,7 +186,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 			return wrapperDown;
 		else if(facing==this.getFacing().getOpposite())
 		{
-			if(wrapperDir.side!=this.getFacing().getOpposite())
+			if(wrapperDir==null||wrapperDir.side!=this.getFacing().getOpposite())
 				wrapperDir = new IEForgeEnergyWrapper(this, this.getFacing().getOpposite());
 			return wrapperDir;
 		}

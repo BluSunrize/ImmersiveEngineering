@@ -91,7 +91,7 @@ public class RevolverContainer extends InternalStorageItemContainer
 			int i = 0;
 			ItemStack held = this.secondHand==null?heldItem: (hand==0)==(player.getPrimaryHand()==HandSide.RIGHT)?secondRevolver: heldItem;
 			IItemHandler secondRevolverInventory = secondRevolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-					.orElseThrow(RuntimeException::new);
+					.orElse(null);
 			IItemHandler inv = this.secondHand==null?this.inv: (hand==0)==(player.getPrimaryHand()==HandSide.RIGHT)?secondRevolverInventory: this.inv;
 			int revolverSlots = ((IBulletContainer)(held).getItem()).getBulletCount(held);
 
@@ -154,7 +154,7 @@ public class RevolverContainer extends InternalStorageItemContainer
 		for(int hand = 0; hand < (this.secondHand!=null?2: 1); hand++)
 		{
 			IItemHandler secondRevolverInventory = secondRevolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-					.orElseThrow(RuntimeException::new);
+					.orElse(null);
 			IItemHandler inv = this.secondHand==null?this.inv: (hand==0)==(player.getPrimaryHand()==HandSide.RIGHT)?secondRevolverInventory: this.inv;
 			if(inv instanceof IEItemStackHandler)
 				((IEItemStackHandler)inv).setInventoryForUpdate(null);

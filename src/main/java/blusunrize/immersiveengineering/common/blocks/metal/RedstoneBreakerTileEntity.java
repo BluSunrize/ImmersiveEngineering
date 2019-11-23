@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,10 +33,10 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	@Override
 	public void tick()
 	{
-		//TODO use block updates to detect RS changes?
-		if(!world.isRemote&&(world.getRedstonePowerFromNeighbors(getPos()) > 0)==active)
+		final boolean activeOld = getIsActive();
+		if(!world.isRemote&&(world.getRedstonePowerFromNeighbors(getPos()) > 0)==activeOld)
 		{
-			active = !active;
+			setActive(!activeOld);
 			updateConductivity();
 		}
 	}
@@ -49,7 +49,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 
 	protected boolean allowEnergyToPass()
 	{
-		return active^inverted;
+		return getIsActive()^inverted;
 	}
 
 	@Override

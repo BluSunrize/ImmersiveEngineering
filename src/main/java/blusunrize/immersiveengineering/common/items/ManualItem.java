@@ -8,8 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.ManualHelper;
-import net.minecraft.client.Minecraft;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -32,7 +31,7 @@ public class ManualItem extends IEBaseItem
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		if(world.isRemote)
-			Minecraft.getInstance().displayGuiScreen(ManualHelper.getManual().getGui());
+			ImmersiveEngineering.proxy.openManual();
 		return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
 	}
 }

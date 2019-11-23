@@ -10,21 +10,24 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -39,24 +42,18 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;
-	public boolean active = false;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
+	private BlastFurnaceState state = new BlastFurnaceState();
 
 	public BlastFurnaceTileEntity()
 	{
 		super(IEMultiblocks.BLAST_FURNACE, TYPE, false);
 	}
 
-	protected BlastFurnaceTileEntity(IMultiblock mb, TileEntityType<? extends BlastFurnaceTileEntity> type)
+	protected BlastFurnaceTileEntity(IETemplateMultiblock mb, TileEntityType<? extends BlastFurnaceTileEntity> type)
 	{
 		super(mb, type, false);
-	}
-
-	@Override
-	public boolean getIsActive()
-	{
-		return this.active;
 	}
 
 	@Override
@@ -83,7 +80,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 		ApiUtils.checkForNeedlessTicking(this);
 		if(!world.isRemote&&formed&&!isDummy())
 		{
-			boolean a = active;
+			boolean activeBeforeTick = getIsActive();
 
 			if(burnTime > 0)
 			{
@@ -105,14 +102,14 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 						{
 							processMax = 0;
 							process = 0;
-							active = false;
+							setActive(false);
 						}
 						else
 						{
 							process -= processSpeed;
 							processSpeed = 0;//Process speed is "used up"
-							if(!active)
-								active = true;
+							if(!activeBeforeTick)
+								setActive(true);
 						}
 					}
 					markContainingBlockForUpdate(null);
@@ -146,14 +143,14 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 					{
 						this.process = recipe.time-processSpeed;
 						this.processMax = recipe.time;
-						this.active = true;
+						setActive(true);
 					}
 				}
 			}
 			else
 			{
-				if(active)
-					active = false;
+				if(activeBeforeTick)
+					setActive(false);
 			}
 
 			if(burnTime <= 0&&getRecipe()!=null)
@@ -167,20 +164,19 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 				}
 			}
 
-			if(a!=active)
+			final boolean activeAfterTick = getIsActive();
+			if(activeBeforeTick!=activeAfterTick)
 			{
 
 				this.markDirty();
-				TileEntity tileEntity;
-				for(int yy = -1; yy <= 1; yy++)
-					for(int xx = -1; xx <= 1; xx++)
-						for(int zz = -1; zz <= 1; zz++)
+				for(int x = 0; x < 3; ++x)
+					for(int y = 0; y < 3; ++y)
+						for(int z = 0; z < 3; ++z)
 						{
-							tileEntity = Utils.getExistingTileEntity(world, getPos().add(xx, yy, zz));
-							if(tileEntity!=null)
-								tileEntity.markDirty();
-							markBlockForUpdate(getPos().add(xx, yy, zz), null);
-							world.addBlockEvent(getPos().add(xx, yy, zz), getBlockState().getBlock(), 1, active?1: 0);
+							BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
+							TileEntity te = Utils.getExistingTileEntity(world, actualPos);
+							if(te instanceof BlastFurnaceTileEntity)
+								((BlastFurnaceTileEntity)te).setActive(activeAfterTick);
 						}
 			}
 		}
@@ -189,6 +185,8 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	@Nullable
 	public BlastFurnaceRecipe getRecipe()
 	{
+		if(inventory.get(0).isEmpty())
+			return null;
 		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory.get(0));
 		if(recipe==null)
 			return null;
@@ -229,8 +227,6 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	{
 		if(id==0)
 			this.formed = arg==1;
-		else if(id==1)
-			this.active = arg==1;
 		markDirty();
 		markContainingBlockForUpdate(null);
 		return true;
@@ -240,14 +236,13 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		process = nbt.getInt("process");
-		processMax = nbt.getInt("processMax");
-		active = nbt.getBoolean("active");
-		burnTime = nbt.getInt("burnTime");
-		lastBurnTime = nbt.getInt("lastBurnTime");
 		if(!descPacket)
 		{
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 4);
+			process = nbt.getInt("process");
+			processMax = nbt.getInt("processMax");
+			burnTime = nbt.getInt("burnTime");
+			lastBurnTime = nbt.getInt("lastBurnTime");
+			ItemStackHelper.loadAllItems(nbt, inventory);
 		}
 	}
 
@@ -255,14 +250,13 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("process", process);
-		nbt.putInt("processMax", processMax);
-		nbt.putBoolean("active", active);
-		nbt.putInt("burnTime", burnTime);
-		nbt.putInt("lastBurnTime", lastBurnTime);
 		if(!descPacket)
 		{
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			nbt.putInt("process", process);
+			nbt.putInt("processMax", processMax);
+			nbt.putInt("burnTime", burnTime);
+			nbt.putInt("lastBurnTime", lastBurnTime);
+			ItemStackHelper.saveAllItems(nbt, inventory);
 		}
 	}
 
@@ -305,5 +299,84 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return false;
+	}
+
+	public BlastFurnaceState getGuiInts()
+	{
+		return state;
+	}
+
+	public class BlastFurnaceState implements IIntArray
+	{
+		public static final int LAST_BURN_TIME = 0;
+		public static final int BURN_TIME = 1;
+		public static final int PROCESS_MAX = 2;
+		public static final int CURRENT_PROCESS = 3;
+
+		public int getLastBurnTime()
+		{
+			return get(LAST_BURN_TIME);
+		}
+
+		public int getBurnTime()
+		{
+			return get(BURN_TIME);
+		}
+
+		public int getMaxProcess()
+		{
+			return get(PROCESS_MAX);
+		}
+
+		public int getProcess()
+		{
+			return get(CURRENT_PROCESS);
+		}
+
+		@Override
+		public int get(int index)
+		{
+			switch(index)
+			{
+				case LAST_BURN_TIME:
+					return lastBurnTime;
+				case BURN_TIME:
+					return burnTime;
+				case PROCESS_MAX:
+					return processMax;
+				case CURRENT_PROCESS:
+					return process;
+				default:
+					throw new IllegalArgumentException("Unknown index "+index);
+			}
+		}
+
+		@Override
+		public void set(int index, int value)
+		{
+			switch(index)
+			{
+				case LAST_BURN_TIME:
+					lastBurnTime = value;
+					break;
+				case BURN_TIME:
+					burnTime = value;
+					break;
+				case PROCESS_MAX:
+					processMax = value;
+					break;
+				case CURRENT_PROCESS:
+					process = value;
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown index "+index);
+			}
+		}
+
+		@Override
+		public int size()
+		{
+			return 4;
+		}
 	}
 }

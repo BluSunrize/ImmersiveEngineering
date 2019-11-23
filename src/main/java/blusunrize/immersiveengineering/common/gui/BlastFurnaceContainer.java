@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 
 public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceTileEntity>
 {
+	public final BlastFurnaceTileEntity.BlastFurnaceState state;
 	public BlastFurnaceContainer(int id, PlayerInventory inventoryPlayer, BlastFurnaceTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
@@ -38,48 +39,7 @@ public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceTileEntit
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 84+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 142));
+		state = tile.getGuiInts();
+		trackIntArray(state);
 	}
-//
-//	@Override
-//	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
-//	{
-//		ItemStack stack = null;
-//		Slot slotObject = (Slot) inventorySlots.get(slot);
-//
-//		if (slotObject != null && slotObject.getHasStack())
-//		{
-//			ItemStack stackInSlot = slotObject.getStack();
-//			stack = stackInSlot.copy();
-//
-//			if (slot < slotCount)
-//			{
-//				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
-//					return null;
-//			}
-//			else
-//			{
-//				int i = -1;
-//				if(BlastFurnaceRecipe.findRecipe(stackInSlot)!=null)
-//					i=0;
-//				else if(BlastFurnaceRecipe.isValidBlastFuel(stackInSlot))
-//					i=1;
-//				if(i!=-1)
-//					if(!this.mergeItemStack(stackInSlot, i,i+1, false))
-//						return null;
-//
-//				//				for(int i=0;i<slotCount;i++)
-//				//					if(this.getSlot(i).isItemValid(stackInSlot))
-//			}
-//
-//			if (stackInSlot.stackSize == 0)
-//				slotObject.putStack(null);
-//			else
-//				slotObject.onSlotChanged();
-//
-//			if (stackInSlot.stackSize == stack.stackSize)
-//				return null;
-//			slotObject.onTake(player, stackInSlot);
-//		}
-//		return stack;
-//	}
 }

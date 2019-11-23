@@ -1,0 +1,83 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "immersiveengineering:connector",
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_mv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_mv": "immersiveengineering:block/connector/relay_mv"
+      }
+    },
+    "facing=up": {
+      "model": "immersiveengineering:connector",
+      "x": 180,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_mv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_mv": "immersiveengineering:block/connector/relay_mv"
+      }
+    },
+    "facing=north": {
+      "model": "immersiveengineering:connector",
+      "x": 90,
+      "y": 180,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_mv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_mv": "immersiveengineering:block/connector/relay_mv"
+      }
+    },
+    "facing=south": {
+      "model": "immersiveengineering:connector",
+      "x": 90,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_mv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_mv": "immersiveengineering:block/connector/relay_mv"
+      }
+    },
+    "facing=west": {
+      "model": "immersiveengineering:connector",
+      "x": 90,
+      "y": 90,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_mv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_mv": "immersiveengineering:block/connector/relay_mv"
+      }
+    },
+    "facing=east": {
+      "model": "immersiveengineering:connector",
+      "x": 90,
+      "y": 270,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_mv.obj",
+        "layers": "[SOLID]"
+      },
+      "textures": {
+        "#immersiveengineering:block/connector/connector_mv": "immersiveengineering:block/connector/relay_mv"
+      }
+    }
+  }
+}

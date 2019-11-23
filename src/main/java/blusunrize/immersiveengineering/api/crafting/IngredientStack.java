@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -42,6 +43,11 @@ public class IngredientStack
 	{
 		this.tag = tag;
 		this.inputSize = inputSize;
+	}
+
+	public IngredientStack(Tag<?> tag)
+	{
+		this(tag.getId());
 	}
 
 	public IngredientStack(ResourceLocation tag)
@@ -181,7 +187,15 @@ public class IngredientStack
 		if(!ItemStack.areItemsEqual(stack, input)||minSize > input.getCount())
 			return false;
 		if(this.useNBT)
+		{
+			boolean stackHasNBT = stack.hasTag();
+			boolean inputHasNBT = input.hasTag();
+			if(!stackHasNBT&&!inputHasNBT)
+				return true;
+			else if(stackHasNBT!=inputHasNBT)
+				return false;
 			return this.stack.getOrCreateTag().equals(input.getOrCreateTag());
+		}
 		return true;
 	}
 
@@ -214,7 +228,15 @@ public class IngredientStack
 			if(!ItemStack.areItemsEqual(stack, otherStack))
 				return false;
 			if(this.useNBT)
-				return stack.getOrCreateTag().equals(otherStack.getOrCreateTag());
+			{
+				boolean stackHasNBT = stack.hasTag();
+				boolean otherHasNBT = otherStack.hasTag();
+				if(!stackHasNBT&&!otherHasNBT)
+					return true;
+				else if(stackHasNBT!=otherHasNBT)
+					return false;
+				return this.stack.getOrCreateTag().equals(otherStack.getOrCreateTag());
+			}
 			return true;
 		}
 		return false;

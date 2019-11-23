@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
@@ -28,6 +28,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
@@ -45,14 +46,14 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickableTileEntity, IDirectionalTile, IBlockBounds, IGeneralMultiblock, IHammerInteraction
+		implements ITickableTileEntity, IDirectionalTile, IBlockBounds, IGeneralMultiblock, IHammerInteraction, IMirrorAble
 {
 	public boolean formed = false;
 	//Position of this block according to the BlockInfo's returned by IMultiblock#getStructure
 	public BlockPos posInMultiblock = BlockPos.ZERO;
 	//Offset from the master to this block (world coordinate system)
 	public BlockPos offsetToMaster = BlockPos.ZERO;
-	private final IMultiblock multiblockInstance;
+	private final IETemplateMultiblock multiblockInstance;
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
 	public long onlyLocalDissassembly = -1;
@@ -62,7 +63,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	//Absent means no controlling computers
 	public Optional<Boolean> computerOn = Optional.empty();
 
-	protected MultiblockPartTileEntity(IMultiblock multiblockInstance, TileEntityType<? extends T> type, boolean hasRSControl)
+	protected MultiblockPartTileEntity(IETemplateMultiblock multiblockInstance, TileEntityType<? extends T> type, boolean hasRSControl)
 	{
 		super(type);
 		this.multiblockInstance = multiblockInstance;
@@ -157,19 +158,6 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	protected abstract boolean canFillTankFrom(int iTank, Direction side, FluidStack resource);
 
 	protected abstract boolean canDrainTankFrom(int iTank, Direction side);
-
-	public boolean isMirrored()
-	{
-		BlockState state = getBlockState();
-		return state.get(IEProperties.MIRRORED);
-	}
-
-	public void setMirrored(boolean mirrored)
-	{
-		BlockState oldState = getWorldNonnull().getBlockState(pos);
-		BlockState newState = oldState.with(IEProperties.MIRRORED, mirrored);
-		getWorldNonnull().setBlockState(pos, newState);
-	}
 
 	public static class MultiblockFluidWrapper implements IFluidHandler
 	{
@@ -316,15 +304,10 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		}
 	}
 
+	@Override
 	public boolean isDummy()
 	{
 		return !offsetToMaster.equals(Vec3i.NULL_VECTOR);
-	}
-
-	@Override
-	public boolean isLogicDummy()
-	{
-		return isDummy();
 	}
 
 	public BlockState getOriginalBlock()
@@ -340,9 +323,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		if(formed&&!world.isRemote)
 		{
 			BlockPos startPos = getOrigin();
-			BlockPos masterPos = getPos().subtract(offsetToMaster);
-			long time = world.getGameTime();
-			multiblockInstance.disassemble(world, startPos, isMirrored(), getFacing());
+			multiblockInstance.disassemble(world, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
 			world.removeBlock(pos, false);
 		}
 	}
@@ -350,13 +331,13 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public BlockPos getOrigin()
 	{
 		return TemplateMultiblock.withSettingsAndOffset(pos, BlockPos.ZERO.subtract(posInMultiblock),
-				isMirrored(), getFacing());
+				getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
 	}
 
 	public BlockPos getBlockPosForPos(BlockPos targetPos)
 	{
 		BlockPos origin = getOrigin();
-		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, isMirrored(), getFacing());
+		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
 	}
 
 	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
@@ -388,7 +369,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(this.isRedstonePos()&&hasRedstoneControl)
 		{

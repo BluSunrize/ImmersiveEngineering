@@ -36,6 +36,11 @@ public class RailgunShotEntity extends IEProjectileEntity
 			.size(.5F, .5F)
 			.build(ImmersiveEngineering.MODID+":railgun_shot");
 
+	static
+	{
+		TYPE.setRegistryName(ImmersiveEngineering.MODID, "railgun_shot");
+	}
+
 	private ItemStack ammo = ItemStack.EMPTY;
 	private static final DataParameter<ItemStack> dataMarker_ammo = EntityDataManager.createKey(RailgunShotEntity.class, DataSerializers.ITEMSTACK);
 	private RailgunProjectileProperties ammoProperties;
@@ -48,7 +53,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 
 	public RailgunShotEntity(World world, double x, double y, double z, double ax, double ay, double az, ItemStack ammo)
 	{
-		super(TYPE, world, x, y, z, ax, ay, az);
+		super(TYPE, world, x, y, z);
 		this.ammo = ammo;
 		this.setAmmoSynced();
 		this.pickupStatus = PickupStatus.ALLOWED;

@@ -56,12 +56,39 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			tile.formed = true;
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;
-			tile.setMirrored(mirrored);
-			tile.setFacing(clickDirection.getOpposite());
+			if(state.getProperties().contains(IEProperties.MIRRORED))
+				tile.setMirrored(mirrored);
+			tile.setFacing(transformDirection(clickDirection.getOpposite()));
 			tile.markDirty();
 			world.addBlockEvent(actualPos, world.getBlockState(actualPos).getBlock(), 255, 0);
 		}
 		else
 			IELogger.logger.error("Expected MB TE at {} during placement", actualPos);
+	}
+
+	@Override
+	public void disassemble(World world, BlockPos origin, boolean mirrored, Direction clickDirectionAtCreation)
+	{
+		super.disassemble(world, origin, mirrored, clickDirectionAtCreation);
+	}
+
+	public Direction transformDirection(Direction original)
+	{
+		return original;
+	}
+
+	public Direction untransformDirection(Direction transformed)
+	{
+		return transformed;
+	}
+
+	@Override
+	protected void prepareBlockForDisassembly(World world, BlockPos pos)
+	{
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof MultiblockPartTileEntity)
+			((MultiblockPartTileEntity)te).formed = false;
+		else
+			IELogger.logger.error("Expected multiblock TE at {}", pos);
 	}
 }

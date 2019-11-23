@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -32,17 +32,21 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,12 +66,6 @@ public class IEBlockInterfaces
 		default void setValue(String name, int value)
 		{
 		}
-	}
-
-	public interface IUsesBooleanProperty
-	{
-		@Nullable
-		PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf);
 	}
 
 	public interface IBlockOverlayText
@@ -293,7 +291,7 @@ public class IEBlockInterfaces
 
 	public interface IHammerInteraction
 	{
-		boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ);
+		boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec);
 	}
 
 	public interface IPlacementInteraction
@@ -301,48 +299,35 @@ public class IEBlockInterfaces
 		void onTilePlaced(World world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack);
 	}
 
-	public interface IActiveState extends IUsesBooleanProperty
+	public interface IActiveState extends BlockstateProvider
 	{
-		boolean getIsActive();
-
-		@Nullable
-		@Override
-		default PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
+		default boolean getIsActive()
 		{
-			if(inf==IActiveState.class)
-				return IEProperties.ACTIVE;
-			else
-				return null;
+			BlockState state = getState();
+			return state.get(IEProperties.ACTIVE);
+		}
+
+		default void setActive(boolean active)
+		{
+			BlockState state = getState();
+			BlockState newState = state.with(IEProperties.ACTIVE, active);
+			setState(newState);
 		}
 	}
 
-	public interface IDualState extends IUsesBooleanProperty
+	public interface IMirrorAble extends BlockstateProvider
 	{
-		boolean getIsSecondState();
-
-		@Nullable
-		@Override
-		default PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
+		default boolean getIsMirrored()
 		{
-			if(inf==IActiveState.class)
-				return IEProperties.IS_SECOND_STATE;
-			else
-				return null;
+			BlockState state = getState();
+			return state.get(IEProperties.MIRRORED);
 		}
-	}
 
-	public interface IMirrorAble extends IUsesBooleanProperty
-	{
-		boolean getIsMirrored();
-
-		@Nullable
-		@Override
-		default PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
+		default void setMirrored(boolean mirrored)
 		{
-			if(inf==IActiveState.class)
-				return IEProperties.MIRRORED;
-			else
-				return null;
+			BlockState state = getState();
+			BlockState newState = state.with(IEProperties.MIRRORED, mirrored);
+			setState(newState);
 		}
 	}
 
@@ -370,22 +355,17 @@ public class IEBlockInterfaces
 		void placeDummies(BlockItemUseContext ctx, BlockState state);
 
 		void breakDummies(BlockPos pos, BlockState state);
-
-		boolean isDummy();
-
-		@Override
-		default boolean isLogicDummy()
-		{
-			return isDummy();
-		}
 	}
 
 	/**
 	 * super-interface for {@link MultiblockPartTileEntity} and {@link IHasDummyBlocks}
 	 */
-	public interface IGeneralMultiblock
+	public interface IGeneralMultiblock extends BlockstateProvider
 	{
-		boolean isLogicDummy();
+		default boolean isDummy()
+		{
+			return getState().get(IEProperties.MULTIBLOCKSLAVE);
+		}
 	}
 
 	public interface IHasObjProperty
@@ -411,11 +391,18 @@ public class IEBlockInterfaces
 
 		boolean canUseGui(PlayerEntity player);
 
-		@Nullable
+		default boolean isValid()
+		{
+			return getGuiMaster()!=null;
+		}
+
+		@Nonnull//Super is annotated nullable, but Forge assumes Nonnull in at least one place
 		@Override
 		default Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity)
 		{
-			return GuiHandler.createContainer(playerInventory, (TileEntity)this, id);
+			IInteractionObjectIE master = getGuiMaster();
+			Preconditions.checkState(master instanceof TileEntity);
+			return GuiHandler.createContainer(playerInventory, (TileEntity)master, id);
 		}
 
 		@Override
@@ -444,5 +431,11 @@ public class IEBlockInterfaces
 	public interface ICacheData
 	{
 		Object[] getCacheData();
+	}
+
+	public interface IModelDataBlock
+	{
+		IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+								@Nonnull IModelData tileData);
 	}
 }

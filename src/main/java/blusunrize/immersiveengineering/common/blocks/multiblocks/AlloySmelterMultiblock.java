@@ -15,12 +15,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class AlloySmelterMultiblock extends IETemplateMultiblock
+public class AlloySmelterMultiblock extends StoneMultiblock
 {
 	public AlloySmelterMultiblock()
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/alloy_smelter"),
-				BlockPos.ZERO, new BlockPos(1, 1, 1), () -> Multiblocks.alloySmelter.getDefaultState());
+				new BlockPos(0, 0, 1), new BlockPos(1, 1, 1), () -> Multiblocks.alloySmelter.getDefaultState());
 	}
 
 	@Override

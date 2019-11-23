@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " cc",
+    "ccc",
+    " c "
+  ],
+  "key": {
+    "c": {
+      "tag": "forge:fabric_hemp"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:windmill_sail"
+  }
+}

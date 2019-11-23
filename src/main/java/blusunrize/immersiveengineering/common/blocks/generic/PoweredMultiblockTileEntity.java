@@ -14,11 +14,10 @@ import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -48,11 +47,11 @@ import java.util.*;
 
 public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTileEntity<T, R>, R extends IMultiblockRecipe>
 		extends MultiblockPartTileEntity<T> implements IIEInventory, IIEInternalFluxHandler,
-		IMirrorAble, IProcessTile, IComparatorOverride
+		IProcessTile, IComparatorOverride
 {
 	public final FluxStorageAdvanced energyStorage;
 
-	public PoweredMultiblockTileEntity(IMultiblock multiblockInstance, int energyCapacity, boolean redstoneControl,
+	public PoweredMultiblockTileEntity(IETemplateMultiblock multiblockInstance, int energyCapacity, boolean redstoneControl,
 									   TileEntityType<? extends T> type)
 	{
 		super(multiblockInstance, type, redstoneControl);
@@ -197,7 +196,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		{
 			BlockPos nullPos = this.getOrigin();
 			return new AxisAlignedBB(nullPos, TemplateMultiblock.withSettingsAndOffset(nullPos, new BlockPos(structureDimensions),
-					isMirrored(), getFacing()));
+					getIsMirrored(), getFacing()));
 		}
 		return super.getRenderBoundingBox();
 	}
@@ -211,17 +210,6 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		if(master==null)
 			return 0;
 		return Utils.calcRedstoneFromInventory(master);
-	}
-
-
-	//	=================================
-	//		POSITION MANAGEMENT
-	//	=================================
-
-	@Override
-	public boolean getIsMirrored()
-	{
-		return this.isMirrored();
 	}
 
 	//	=================================

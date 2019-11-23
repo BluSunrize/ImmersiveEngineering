@@ -59,7 +59,7 @@ public class TurretScreen extends IEContainerScreen<TurretContainer>
 		this.nameField.setMaxStringLength(30);
 
 		this.buttons.clear();
-		this.buttons.add(new GuiReactiveList(this, guiLeft+10, guiTop+10, 60, 72,
+		this.addButton(new GuiReactiveList(this, guiLeft+10, guiTop+10, 60, 72,
 				btn -> {
 					GuiReactiveList list = (GuiReactiveList)btn;
 					CompoundNBT tag = new CompoundNBT();
@@ -71,7 +71,7 @@ public class TurretScreen extends IEContainerScreen<TurretContainer>
 					handleButtonClick(tag, listOffset);
 				}, tile.targetList.toArray(new String[0]))
 				.setPadding(0, 0, 2, 2));
-		this.buttons.add(new GuiButtonIE(guiLeft+74, guiTop+84, 24, 16, I18n.format(Lib.GUI_CONFIG+"turret.add"), "immersiveengineering:textures/gui/turret.png", 176, 65,
+		this.addButton(new GuiButtonIE(guiLeft+74, guiTop+84, 24, 16, I18n.format(Lib.GUI_CONFIG+"turret.add"), "immersiveengineering:textures/gui/turret.png", 176, 65,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
@@ -85,7 +85,7 @@ public class TurretScreen extends IEContainerScreen<TurretContainer>
 					nameField.setText("");
 					handleButtonClick(tag, listOffset);
 				}));
-		this.buttons.add(new GuiButtonCheckbox(guiLeft+74, guiTop+10, I18n.format(Lib.GUI_CONFIG+"turret.blacklist"), !tile.whitelist,
+		this.addButton(new GuiButtonCheckbox(guiLeft+74, guiTop+10, I18n.format(Lib.GUI_CONFIG+"turret.blacklist"), !tile.whitelist,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
@@ -93,7 +93,7 @@ public class TurretScreen extends IEContainerScreen<TurretContainer>
 					tag.putBoolean("whitelist", tile.whitelist);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.buttons.add(new GuiButtonCheckbox(guiLeft+74, guiTop+26, I18n.format(Lib.GUI_CONFIG+"turret.animals"), tile.attackAnimals,
+		this.addButton(new GuiButtonCheckbox(guiLeft+74, guiTop+26, I18n.format(Lib.GUI_CONFIG+"turret.animals"), tile.attackAnimals,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
@@ -101,7 +101,7 @@ public class TurretScreen extends IEContainerScreen<TurretContainer>
 					tag.putBoolean("attackAnimals", tile.attackAnimals);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.buttons.add(new GuiButtonCheckbox(guiLeft+74, guiTop+42, I18n.format(Lib.GUI_CONFIG+"turret.players"), tile.attackPlayers,
+		this.addButton(new GuiButtonCheckbox(guiLeft+74, guiTop+42, I18n.format(Lib.GUI_CONFIG+"turret.players"), tile.attackPlayers,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
@@ -109,7 +109,7 @@ public class TurretScreen extends IEContainerScreen<TurretContainer>
 					tag.putBoolean("attackPlayers", tile.attackPlayers);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.buttons.add(new GuiButtonCheckbox(guiLeft+74, guiTop+58, I18n.format(Lib.GUI_CONFIG+"turret.neutrals"), tile.attackNeutrals,
+		this.addButton(new GuiButtonCheckbox(guiLeft+74, guiTop+58, I18n.format(Lib.GUI_CONFIG+"turret.neutrals"), tile.attackNeutrals,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
@@ -119,7 +119,7 @@ public class TurretScreen extends IEContainerScreen<TurretContainer>
 				}));
 
 		if(tile instanceof TurretChemTileEntity)
-			this.buttons.add(new GuiButtonState(guiLeft+135, guiTop+68, 14, 14, null, ((TurretChemTileEntity)tile).ignite, "immersiveengineering:textures/gui/turret.png", 176, 51, 0,
+			this.addButton(new GuiButtonState(guiLeft+135, guiTop+68, 14, 14, null, ((TurretChemTileEntity)tile).ignite, "immersiveengineering:textures/gui/turret.png", 176, 51, 0,
 					btn -> {
 						CompoundNBT tag = new CompoundNBT();
 						int listOffset = -1;
@@ -128,7 +128,7 @@ public class TurretScreen extends IEContainerScreen<TurretContainer>
 						handleButtonClick(tag, listOffset);
 					}));
 		else if(tile instanceof TurretGunTileEntity)
-			this.buttons.add(new GuiButtonState(guiLeft+134, guiTop+31, 16, 16, null, ((TurretGunTileEntity)tile).expelCasings, "immersiveengineering:textures/gui/turret.png", 176, 81, 0,
+			this.addButton(new GuiButtonState(guiLeft+134, guiTop+31, 16, 16, null, ((TurretGunTileEntity)tile).expelCasings, "immersiveengineering:textures/gui/turret.png", 176, 81, 0,
 					btn -> {
 						CompoundNBT tag = new CompoundNBT();
 						int listOffset = -1;

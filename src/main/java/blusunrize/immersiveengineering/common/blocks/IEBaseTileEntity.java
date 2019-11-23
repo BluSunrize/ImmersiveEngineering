@@ -37,6 +37,7 @@ import java.util.*;
 
 public abstract class IEBaseTileEntity extends TileEntity implements BlockstateProvider
 {
+	private BlockState overrideBlockState = null;
 	public IEBaseTileEntity(TileEntityType<? extends TileEntity> type)
 	{
 		super(type);
@@ -246,9 +247,18 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 		getWorldNonnull().getProfiler().endSection();
 	}
 
-	public void setCachedState(BlockState state)
+	public void setOverrideState(BlockState state)
 	{
-		cachedBlockState = state;
+		overrideBlockState = state;
+	}
+
+	@Override
+	public BlockState getBlockState()
+	{
+		if(overrideBlockState!=null)
+			return overrideBlockState;
+		else
+			return super.getBlockState();
 	}
 
 	@Override

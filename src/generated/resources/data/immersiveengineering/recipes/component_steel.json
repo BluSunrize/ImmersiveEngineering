@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "i i",
+    " c ",
+    "i i"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:plates/steel"
+    },
+    "c": {
+      "tag": "forge:ingots/copper"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:component_steel"
+  }
+}

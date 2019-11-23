@@ -83,5 +83,12 @@ public abstract class ModelFile
 		{
 			return new GeneratedModelFile(loc, model);
 		}
+
+		public GeneratedModelFile createChild(ResourceLocation loc)
+		{
+			JsonObject childModel = new JsonObject();
+			childModel.addProperty("parent", this.location.toString());
+			return new GeneratedModelFile(loc, childModel);
+		}
 	}
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "ie_concrete",
   "pattern": [
     "scs",
     "gbg",

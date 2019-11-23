@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.Connection.RenderData;
-import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem;
@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.*;
@@ -486,7 +487,7 @@ public class ClientUtils
 		GlStateManager.pushMatrix();
 		//preRenderDamagedBlocks END
 		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRendererIn.setTranslation(-d0, -d1, -d2);
+		worldRendererIn.setTranslation(-d0, -d1-entityIn.getEyeHeight(), -d2);
 		//		worldRendererIn.markDirty();
 		for(BlockPos blockpos : blocks)
 		{
@@ -501,6 +502,7 @@ public class ClientUtils
 				if(iblockstate.getMaterial()!=Material.AIR)
 				{
 					TextureAtlasSprite textureatlassprite = destroyBlockIcons[progress];
+					Preconditions.checkNotNull(textureatlassprite, "No destroy icon for "+progress);
 					BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 					blockrendererdispatcher.renderBlockDamage(iblockstate, blockpos, textureatlassprite, world);
 				}
@@ -857,7 +859,7 @@ public class ClientUtils
 				{
 					dir = current.subtract(previous);
 					cross = up.crossProduct(dir);
-					cross.scale(radius/cross.length());
+					cross = cross.scale(radius/cross.length());
 				}
 				else
 					cross = new Vec3d(radius, 0, 0);
@@ -871,7 +873,7 @@ public class ClientUtils
 				if(!vertical)
 				{
 					cross = dir.crossProduct(cross);
-					cross.scale(radius/cross.length());
+					cross = cross.scale(radius/cross.length());
 				}
 				else
 					cross = new Vec3d(0, 0, radius);

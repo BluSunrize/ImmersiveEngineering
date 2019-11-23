@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "type=top,waterlogged=true": {
+      "model": "immersiveengineering:block/stone_decoration/concrete_slab_top"
+    },
+    "type=top,waterlogged=false": {
+      "model": "immersiveengineering:block/stone_decoration/concrete_slab_top"
+    },
+    "type=bottom,waterlogged=true": {
+      "model": "immersiveengineering:block/stone_decoration/concrete_slab"
+    },
+    "type=bottom,waterlogged=false": {
+      "model": "immersiveengineering:block/stone_decoration/concrete_slab"
+    },
+    "type=double,waterlogged=true": {
+      "model": "immersiveengineering:block/stone_decoration/concrete"
+    },
+    "type=double,waterlogged=false": {
+      "model": "immersiveengineering:block/stone_decoration/concrete"
+    }
+  }
+}

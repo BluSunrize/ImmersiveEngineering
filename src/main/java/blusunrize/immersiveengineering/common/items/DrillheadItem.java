@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
@@ -27,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -46,8 +48,8 @@ import java.util.Set;
 public class DrillheadItem extends IEBaseItem implements IDrillHead
 {
 	//Maximal damage is slightly proportionate to pickaxes
-	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.getTagsFor(EnumMetals.STEEL).ingot, 3, 1, 3, 10, 7, 10000, "immersiveengineering:item/drill_diesel");
-	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, 2, 9, 6, 6000, "immersiveengineering:item/drill_iron");
+	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.getTagsFor(EnumMetals.STEEL).ingot, 3, 1, 3, 10, 7, 10000, new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_diesel"));
+	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, 2, 9, 6, 6000, new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_iron"));
 
 	public DrillHeadPerm perms;
 
@@ -157,11 +159,11 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		final float drillSpeed;
 		final float drillAttack;
 		final int maxDamage;
-		public final String texture;
+		public final ResourceLocation texture;
 		@OnlyIn(Dist.CLIENT)
 		public TextureAtlasSprite sprite;
 
-		public DrillHeadPerm(String name, Tag<Item> repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, String texture)
+		public DrillHeadPerm(String name, Tag<Item> repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, ResourceLocation texture)
 		{
 			this.name = name;
 			this.repairMaterial = repairMaterial;

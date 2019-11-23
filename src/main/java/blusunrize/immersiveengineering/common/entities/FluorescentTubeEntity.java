@@ -27,13 +27,13 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 
@@ -44,6 +44,11 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 			.<FluorescentTubeEntity>create(FluorescentTubeEntity::new, EntityClassification.MISC)
 			.size(TUBE_LENGTH/2, 1+TUBE_LENGTH/2)
 			.build(ImmersiveEngineering.MODID+":fluorescent_tube");
+
+	static
+	{
+		TYPE.setRegistryName(ImmersiveEngineering.MODID, "fluorescent_tube");
+	}
 
 	private static final DataParameter<Boolean> dataMarker_active = EntityDataManager.createKey(FluorescentTubeEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Float> dataMarker_r = EntityDataManager.createKey(FluorescentTubeEntity.class, DataSerializers.FLOAT);
@@ -111,11 +116,10 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 		setMotion(motion);
 	}
 
-	@Nonnull
 	@Override
 	public IPacket<?> createSpawnPacket()
 	{
-		return new SSpawnObjectPacket(this);
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override

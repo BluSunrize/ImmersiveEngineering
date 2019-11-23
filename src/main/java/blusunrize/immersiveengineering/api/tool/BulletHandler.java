@@ -8,9 +8,15 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -21,49 +27,60 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author BluSunrize - 12.08.2016
  * <p>
  * A registry for custom bullet types
  */
+
 public class BulletHandler
 {
 	public static ItemStack emptyCasing = ItemStack.EMPTY;
 	public static ItemStack emptyShell = ItemStack.EMPTY;
-	public static ItemStack basicCartridge = ItemStack.EMPTY;
-	/**
-	 * A list of all cartridges that shoot a homing bullet. Used to add Wolfpack Cartridges
-	 */
-	public static List<String> homingCartridges = new ArrayList<String>();
 
-	public static HashMap<String, IBullet> registry = new LinkedHashMap<String, IBullet>();
+	private final static BiMap<ResourceLocation, IBullet> REGISTRY = HashBiMap.create();
 
-	public static void registerBullet(String name, IBullet bullet)
+	public static void registerBullet(ResourceLocation name, IBullet bullet)
 	{
-		registry.put(name, bullet);
+		Preconditions.checkState(!REGISTRY.containsKey(name), name+" is already registered");
+		Preconditions.checkState(!REGISTRY.containsValue(bullet));
+		REGISTRY.put(name, bullet);
 	}
 
-	public static IBullet getBullet(String name)
+	public static IBullet getBullet(ResourceLocation name)
 	{
-		return registry.get(name);
+		return REGISTRY.get(name);
 	}
 
-	public static String findRegistryName(IBullet bullet)
+	public static ResourceLocation findRegistryName(IBullet bullet)
 	{
 		if(bullet!=null)
-			for(Map.Entry<String, IBullet> entry : registry.entrySet())
-				if(bullet.equals(entry.getValue()))
-					return entry.getKey();
+			return REGISTRY.inverse().get(bullet);
 		return null;
 	}
 
-	public static ItemStack getBulletStack(String key)
+	public static ItemStack getBulletStack(ResourceLocation key)
 	{
-		ItemStack stack = basicCartridge.copy();
-		stack.getOrCreateTag().putString("bullet", key);
-		return stack;
+		return new ItemStack(getBulletItem(key));
+	}
+
+	public static Item getBulletItem(ResourceLocation key)
+	{
+		return Weapons.bullets.get(getBullet(key));
+	}
+
+	public static Collection<ResourceLocation> getAllKeys()
+	{
+		return REGISTRY.keySet();
+	}
+
+	public static Collection<IBullet> getAllValues()
+	{
+		return REGISTRY.values();
 	}
 
 	public interface IBullet
@@ -146,15 +163,15 @@ public class BulletHandler
 		final float damage;
 		boolean resetHurt = false;
 		boolean setFire = false;
-		ItemStack casing;
+		Supplier<ItemStack> casing;
 		ResourceLocation[] textures;
 
-		public DamagingBullet(DamageSourceProvider damageSourceGetter, float damage, ItemStack casing, ResourceLocation... textures)
+		public DamagingBullet(DamageSourceProvider damageSourceGetter, float damage, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
 			this(damageSourceGetter, damage, false, false, casing, textures);
 		}
 
-		public DamagingBullet(DamageSourceProvider damageSourceGetter, float damage, boolean resetHurt, boolean setFire, ItemStack casing, ResourceLocation... textures)
+		public DamagingBullet(DamageSourceProvider damageSourceGetter, float damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
 			this.damageSourceGetter = damageSourceGetter;
 			this.damage = damage;
@@ -170,26 +187,31 @@ public class BulletHandler
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult rtr, @Nullable UUID shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult rtr, @Nullable UUID shooterUUID, Entity projectile, boolean headshot)
 		{
 			if(!(rtr instanceof EntityRayTraceResult))
 				return;
 			EntityRayTraceResult target = (EntityRayTraceResult)rtr;
 			Entity hitEntity = target.getEntity();
 			if(!world.isRemote&&hitEntity!=null&&damageSourceGetter!=null)
-				if(hitEntity.attackEntityFrom(damageSourceGetter.getSource(projectile, world.getPlayerByUuid(shooter), hitEntity), getDamage(headshot)))
+			{
+				Entity shooter = null;
+				if(shooterUUID!=null)
+					shooter = world.getPlayerByUuid(shooterUUID);
+				if(hitEntity.attackEntityFrom(damageSourceGetter.getSource(projectile, shooter, hitEntity), getDamage(headshot)))
 				{
 					if(resetHurt)
 						hitEntity.hurtResistantTime = 0;
 					if(setFire)
 						hitEntity.setFire(3);
 				}
+			}
 		}
 
 		@Override
 		public ItemStack getCasing(ItemStack stack)
 		{
-			return casing;
+			return casing.get();
 		}
 
 		@Override

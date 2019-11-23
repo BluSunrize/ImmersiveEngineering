@@ -9,19 +9,20 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.Connection.RenderData;
-import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
+import blusunrize.immersiveengineering.api.wires.IWireCoil;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
@@ -51,7 +52,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.PlayerController;
@@ -59,7 +59,6 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.IHasHead;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
@@ -85,8 +84,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeIngameGui;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.event.GuiScreenEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -123,13 +122,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
 	{
 		if(resourcePredicate.test(VanillaResourceType.TEXTURES))
-		{
-			AtlasTexture texturemap = Minecraft.getInstance().getTextureMap();
-			for(int i = 0; i < ClientUtils.destroyBlockIcons.length; i++)
-				ClientUtils.destroyBlockIcons[i] = texturemap.getAtlasSprite("minecraft:blocks/destroy_stage_"+i);
-
 			ImmersiveEngineering.proxy.clearRenderCaches();
-		}
 	}
 
 	public static final Map<Connection, Pair<BlockPos, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
@@ -451,29 +444,28 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				if(!player.getHeldItem(hand).isEmpty())
 				{
 					ItemStack equipped = player.getHeldItem(hand);
-					if(ItemStack.areItemStacksEqual(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
+					if(ItemStack.areItemsEqual(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
 					{
-						if(ItemNBTHelper.hasKey(equipped, "linkingPos"))
+						if(equipped.hasTag()&&equipped.getOrCreateTag().contains("linkingPos", NBT.TAG_COMPOUND))
 						{
-							int[] link = ItemNBTHelper.getIntArray(equipped, "linkingPos");
-							if(link.length > 3)
+							CompoundNBT link = equipped.getOrCreateTag().getCompound("linkingPos");
+							DimensionBlockPos pos = new DimensionBlockPos(link.getCompound("master"));
+							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.pos.getX(), pos.pos.getY(), pos.pos.getZ());
+							int col = WireType.ELECTRUM.getColour(null);
+							if(equipped.getItem() instanceof IWireCoil)
 							{
-								String s = I18n.format(Lib.DESC_INFO+"attachedTo", link[1], link[2], link[3]);
-								int col = WireType.ELECTRUM.getColour(null);
-								if(equipped.getItem() instanceof IWireCoil)
-								{
-									RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
-									double d;
-									if(rtr instanceof BlockRayTraceResult)
-										d = ((BlockRayTraceResult)rtr).getPos().distanceSq(link[1], link[2], link[3], true);
-									else
-										d = player.getDistanceSq(link[1], link[2], link[3]);
-									int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
-									if(d > max*max)
-										col = 0xdd3333;
-								}
-								ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2, scaledHeight-ForgeIngameGui.left_height-20, col);
+								//TODO use actual connection offset rather than pos
+								RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
+								double d;
+								if(rtr instanceof BlockRayTraceResult)
+									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.pos.getX(), pos.pos.getY(), pos.pos.getZ(), true);
+								else
+									d = player.getDistanceSq(pos.pos.getX(), pos.pos.getY(), pos.pos.getZ());
+								int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
+								if(d > max*max)
+									col = 0xdd3333;
 							}
+							ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2, scaledHeight-ForgeIngameGui.left_height-20, col);
 						}
 					}
 					else if(equipped.getItem()==Misc.fluorescentTube)
@@ -801,7 +793,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	}
 
 	@SubscribeEvent
-	public void onMouseEvent(MouseScrollEvent event)
+	public void onMouseEvent(InputEvent.MouseScrollEvent event)
 	{
 		if(event.getScrollDelta()!=0&&ClientUtils.mc().currentScreen==null)
 		{

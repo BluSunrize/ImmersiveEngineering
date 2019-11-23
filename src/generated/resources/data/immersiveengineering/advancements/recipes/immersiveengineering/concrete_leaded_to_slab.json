@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_slab_concrete_leaded": {
+    "has_concrete_leaded": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slab_concrete_leaded"
+            "item": "immersiveengineering:concrete_leaded"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_slab_concrete_leaded",
+      "has_concrete_leaded",
       "has_the_recipe"
     ]
   ]

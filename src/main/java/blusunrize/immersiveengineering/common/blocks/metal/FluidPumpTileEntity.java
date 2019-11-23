@@ -193,7 +193,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			if(!checked.contains(next))
 			{
 				Fluid fluid = Utils.getRelatedFluid(getWorldNonnull(), next);
-				if((fluid!=Fluids.WATER||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
+				if(fluid!=Fluids.EMPTY&&(fluid!=Fluids.WATER||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 				{
 					if(searchFluid==null)
 						searchFluid = fluid;
@@ -204,7 +204,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					{
 						BlockPos pos2 = next.offset(f);
 						fluid = Utils.getRelatedFluid(world, pos2);
-						if(!checked.contains(pos2)&&!closedList.contains(pos2)&&!openList.contains(pos2)&&(fluid!=Fluids.WATER
+						if(fluid!=Fluids.EMPTY&&!checked.contains(pos2)&&!closedList.contains(pos2)&&!openList.contains(pos2)&&(fluid!=Fluids.WATER
 								||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 							openList.add(pos2);
 					}

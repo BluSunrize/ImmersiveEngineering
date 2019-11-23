@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "immersiveengineering:dust_uranium"
+  },
+  "result": "immersiveengineering:ingot_uranium",
+  "experience": 0.0,
+  "cookingtime": 100
+}

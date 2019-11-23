@@ -1010,7 +1010,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(world.isRemote)
 			return true;
@@ -1019,7 +1019,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		for(AxisAlignedBB box : boxes)
 			if(box instanceof AdvancedAABB)
 			{
-				if(box.grow(.002).contains(new Vec3d(getPos().getX()+hitX, getPos().getY()+hitY, getPos().getZ()+hitZ)))
+				if(box.grow(.002).contains(new Vec3d(getPos().getX()+hitVec.x, getPos().getY()+hitVec.y, getPos().getZ()+hitVec.z)))
 					if(((AdvancedAABB)box).fd!=null)
 						fd = ((AdvancedAABB)box).fd;
 			}

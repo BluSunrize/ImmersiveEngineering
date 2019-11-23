@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "immersiveengineering:dust_electrum"
+  },
+  "result": "immersiveengineering:ingot_electrum",
+  "experience": 0.0,
+  "cookingtime": 200
+}

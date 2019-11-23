@@ -8,15 +8,19 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
+import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
@@ -29,11 +33,13 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import org.lwjgl.opengl.GL11;
@@ -46,6 +52,21 @@ import java.util.Map;
 public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntity>
 {
 	private static IBakedModel model = null;
+	private static final ModelResourceLocation WHEEL_NAME;
+	private static final ResourceLocation WHEEL_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bucket_wheel.obj.ie");
+
+	static
+	{
+		ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/bucket_wheel");
+		WHEEL_NAME = new ModelResourceLocation(baseLoc, "");
+	}
+
+	public BucketWheelRenderer()
+	{
+		ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(WHEEL_LOC), 0,
+				0, false, ImmutableMap.of("flip-v", true));
+		DynamicModelLoader.requestModel(model, WHEEL_NAME);
+	}
 
 	@Override
 	public void render(BucketWheelTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
@@ -57,11 +78,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		if(state.getBlock()!=Multiblocks.bucketWheel)
 			return;
 		if(model==null)
-		{
-			//TODO state = state.with(IEProperties.DYNAMICRENDER, true);
-			state = state.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
-			model = blockRenderer.getModelForState(state);
-		}
+			model = blockRenderer.getBlockModelShapes().getModelManager().getModel(WHEEL_NAME);
 		OBJState objState = null;
 		Map<String, String> texMap = new HashMap<>();
 		List<String> list = Lists.newArrayList("bucketWheel");
@@ -88,7 +105,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
 		Direction facing = tile.getFacing();
-		if(tile.isMirrored())
+		if(tile.getIsMirrored())
 		{
 			GlStateManager.scalef(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
 			GlStateManager.disableCull();
@@ -117,91 +134,9 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();
 		GlStateManager.enableCull();
-		if(tile.isMirrored())
+		if(tile.getIsMirrored())
 		{
 			GlStateManager.enableCull();
 		}
 	}
-
-	//	@Override
-	//	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float f)
-	//	{
-	//		BucketWheelTileEntity wheel = (BucketWheelTileEntity)tile;
-	//		if(!wheel.formed || wheel.pos!=24)
-	//			return;
-	//		GL11.glPushMatrix();
-	//
-	//		GlStateManager.translated(x+.5, y+.5, z+.5);
-	//		GL11.glRotatef(wheel.facing==3?180: wheel.facing==5?-90: wheel.facing==4?90: 0, 0,1,0);
-	//
-	//		if(wheel.mirrored)
-	//		{
-	//			GlStateManager.scalef(1,1,-1);
-	//			GL11.glDisable(GL11.GL_CULL_FACE);
-	//		}
-	//
-	//		float rot =  wheel.rotation+(float)(wheel.active?Config.getDouble("excavator_speed")*f:0);
-	//		GL11.glRotatef(rot, 0,0,-1);
-	//		ClientUtils.bindTexture("immersiveengineering:textures/models/bucketWheel.png");
-	//		model.renderOnly("bucketWheel");
-	//
-	//		for(int i=0; i<8; i++)
-	//		{
-	//			ItemStack stack = wheel.digStacks[i];
-	//			//			String ss = ClientUtils.getResourceNameForItemStack(stack);
-	//			//			if(!ss.isEmpty())
-	//			if(stack==null || stack.getItem()==null)
-	//				continue;
-	//			IIcon ic = null;
-	//			Block b = Block.getBlockFromItem(stack.getItem());
-	//			if(b!=null&&b!=Blocks.air)
-	//				ic = b.getIcon(2, stack.getItemDamage());
-	//			else
-	//				ic = stack.getIconIndex();
-	//			if(ic!=null)
-	//			{
-	//				ClientUtils.bindAtlas(stack.getItemSpriteNumber());
-	//				ClientUtils.tes().startDrawingQuads();
-	//				for(GroupObject go : model.groupObjects)
-	//				{
-	//					if(go.name.equals("dig"+i))
-	//					{
-	//						for(Face face : go.faces)
-	//						{
-	//							float minU = ic.getMinU();
-	//							float sizeU = ic.getMaxU() - minU;
-	//							float minV = ic.getMinV();
-	//							float sizeV = ic.getMaxV() - minV;
-	//
-	//							TextureCoordinate[] oldUVs = new TextureCoordinate[face.textureCoordinates.length];
-	//							for(int v=0; v<face.vertices.length; ++v)
-	//							{
-	//								oldUVs[v] = face.textureCoordinates[v]; 
-	//								TextureCoordinate textureCoordinate = face.textureCoordinates[v];
-	//								face.textureCoordinates[v] = new TextureCoordinate(
-	//										minU + sizeU * textureCoordinate.u,
-	//										minV + sizeV * textureCoordinate.v
-	//										);
-	//							}
-	//							face.addFaceForRender(ClientUtils.tes(),0);
-	//							for(int v=0; v<face.vertices.length; ++v)
-	//								face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
-	////							face.textureCoordinates = oldUVs;
-	//						}
-	////						go.render();
-	//					}
-	//				}
-	//				ClientUtils.tes().draw();
-	//			}
-	//		}
-	//
-	//		if(wheel.mirrored)
-	//		{
-	//			GlStateManager.scalef(1,1,-1);
-	//			GL11.glEnable(GL11.GL_CULL_FACE);
-	//		}
-	//
-	//		GlStateManager.popMatrix();
-	//	}
-
 }

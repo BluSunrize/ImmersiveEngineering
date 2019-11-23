@@ -400,13 +400,13 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(dummy)
 		{
 			TileEntity te = world.getTileEntity(getPos().offset(getFacing(), -1));
 			if(te instanceof TeslaCoilTileEntity)
-				return ((TeslaCoilTileEntity)te).hammerUseSide(side, player, hitX, hitY, hitZ);
+				return ((TeslaCoilTileEntity)te).hammerUseSide(side, player, hitVec);
 			return false;
 		}
 		if(player.isSneaking())

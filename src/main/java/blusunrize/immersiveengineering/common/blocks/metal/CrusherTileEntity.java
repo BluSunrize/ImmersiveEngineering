@@ -146,7 +146,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(isMirrored())
+		if(getIsMirrored())
 			fw = fw.getOpposite();
 		if(posInMultiblock.getY() > 0&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4)
 		{
@@ -195,7 +195,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			return null;
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(!isMirrored())
+		if(!getIsMirrored())
 			fw = fw.getOpposite();
 		//TODO clean all of this up a bit
 		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
@@ -388,7 +388,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	public Set<BlockPos> getRedstonePos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(0, 1, 0)
+				new BlockPos(0, 1, 2)
 		);
 	}
 

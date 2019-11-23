@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
@@ -18,6 +18,7 @@ import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -36,6 +37,12 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 {
 	private DyeColor redstoneChannelSending = DyeColor.WHITE;
 	private int lastOutput = 0;
+	public static TileEntityType<ConnectorProbeTileEntity> TYPE;
+
+	public ConnectorProbeTileEntity()
+	{
+		super(TYPE);
+	}
 
 	@Override
 	public void tick()
@@ -101,7 +108,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	//}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, float hitX, float hitY, float hitZ)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(player.isSneaking())
 			redstoneChannel = DyeColor.byId(redstoneChannel.getId()+1);

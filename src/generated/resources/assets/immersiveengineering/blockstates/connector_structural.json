@@ -1,0 +1,65 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "immersiveengineering:connector",
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_structural.obj.ie",
+        "layers": "[SOLID]"
+      }
+    },
+    "facing=up": {
+      "model": "immersiveengineering:connector",
+      "x": 180,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_structural.obj.ie",
+        "layers": "[SOLID]"
+      }
+    },
+    "facing=north": {
+      "model": "immersiveengineering:connector",
+      "x": 90,
+      "y": 180,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_structural.obj.ie",
+        "layers": "[SOLID]"
+      }
+    },
+    "facing=south": {
+      "model": "immersiveengineering:connector",
+      "x": 90,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_structural.obj.ie",
+        "layers": "[SOLID]"
+      }
+    },
+    "facing=west": {
+      "model": "immersiveengineering:connector",
+      "x": 90,
+      "y": 90,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_structural.obj.ie",
+        "layers": "[SOLID]"
+      }
+    },
+    "facing=east": {
+      "model": "immersiveengineering:connector",
+      "x": 90,
+      "y": 270,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/connector/connector_structural.obj.ie",
+        "layers": "[SOLID]"
+      }
+    }
+  }
+}

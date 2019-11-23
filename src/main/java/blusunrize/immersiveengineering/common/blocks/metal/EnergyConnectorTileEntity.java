@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.energy.wires.*;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
+import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
+import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -46,7 +46,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
-import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
+import static blusunrize.immersiveengineering.api.wires.WireType.*;
 
 
 public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional,
@@ -179,8 +179,10 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Direction side = getFacing().getOpposite();
-		double conRadius = con.type.getRenderDiameter()/2;
-		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
+		double lengthFromHalf = LENGTH.getFloat(new ImmutablePair<>(voltage, relay))-con.type.getRenderDiameter()/2-.5;
+		return new Vec3d(.5+lengthFromHalf*side.getXOffset(),
+				.5+lengthFromHalf*side.getYOffset(),
+				.5+lengthFromHalf*side.getZOffset());
 	}
 
 	IEForgeEnergyWrapper energyWrapper;

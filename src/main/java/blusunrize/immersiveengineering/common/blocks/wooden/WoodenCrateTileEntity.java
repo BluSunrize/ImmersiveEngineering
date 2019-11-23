@@ -45,7 +45,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -149,7 +148,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 		return this;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player)
 	{

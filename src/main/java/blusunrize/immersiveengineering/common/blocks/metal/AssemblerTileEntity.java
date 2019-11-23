@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -45,6 +46,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -131,6 +133,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	@Override
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
+		Preconditions.checkState(!world.isRemote);
 		if(message.contains("buttonID", NBT.TAG_INT))
 		{
 			int id = message.getInt("buttonID");
@@ -232,7 +235,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 							if(this.inventory.get(18+buffer).isEmpty()&&free < 0)
 								free = 18+buffer;
 							else if(!this.inventory.get(18+buffer).isEmpty()&&
-									ItemStack.areItemStacksEqual(output, this.inventory.get(18+buffer))&&
+									ItemHandlerHelper.canItemStacksStack(output, this.inventory.get(18+buffer))&&
 									this.inventory.get(18+buffer).getCount()+output.getCount() <= this.inventory.get(18+buffer).getMaxStackSize())
 							{
 								this.inventory.get(18+buffer).grow(output.getCount());
@@ -246,7 +249,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 								if(this.inventory.get(i).isEmpty()&&free < 0)
 									free = i;
 								else if(!this.inventory.get(i).isEmpty()&&
-										ItemStack.areItemStacksEqual(output, this.inventory.get(i))&&
+										ItemHandlerHelper.canItemStacksStack(output, this.inventory.get(i))&&
 										this.inventory.get(i).getCount()+output.getCount() <= this.inventory.get(i).getMaxStackSize())
 								{
 									this.inventory.get(i).grow(output.getCount());
@@ -291,7 +294,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				{
 					boolean hasFluid = false;
 					for(FluidTank tank : tanks)
-						if(tank.getFluid()!=null&&tank.getFluid().containsFluid(fs))
+						if(tank.getFluid().containsFluid(fs))
 						{
 							hasFluid = true;
 							if(doConsume)
@@ -332,7 +335,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		if(this.inventory.get(18+iPattern).isEmpty())
 			return true;
 		else
-			return ItemStack.areItemStacksEqual(output, this.inventory.get(18+iPattern))&&
+			return ItemHandlerHelper.canItemStacksStack(output, this.inventory.get(18+iPattern))&&
 					this.inventory.get(18+iPattern).getCount()+output.getCount() <= this.inventory.get(18+iPattern).getMaxStackSize();
 	}
 
@@ -358,9 +361,9 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	public float[] getBlockBounds()
 	{
 		Set<BlockPos> fullBlocks = ImmutableSet.of(
-				new BlockPos(0, 1, 1),
+				new BlockPos(1, 1, 2),
 				new BlockPos(1, 1, 1),
-				new BlockPos(2, 1, 1),
+				new BlockPos(1, 1, 0),
 				new BlockPos(1, 2, 1)
 		);
 		if(posInMultiblock.getY()==0||fullBlocks.contains(posInMultiblock))
@@ -371,21 +374,21 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		float xMax = 1;
 		float yMax = 1;
 		float zMax = 1;
-		if((posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH)||(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH))
+		if((posInMultiblock.getZ()==2&&getFacing()==Direction.SOUTH)||(posInMultiblock.getZ()==0&&getFacing()==Direction.NORTH))
 			zMin = .25f;
-		else if((posInMultiblock.getX()==0&&getFacing()==Direction.NORTH)||(posInMultiblock.getX()==2&&getFacing()==Direction.SOUTH))
+		else if((posInMultiblock.getZ()==2&&getFacing()==Direction.NORTH)||(posInMultiblock.getZ()==0&&getFacing()==Direction.SOUTH))
 			zMax = .75f;
-		else if((posInMultiblock.getX()==0&&getFacing()==Direction.EAST)||(posInMultiblock.getX()==2&&getFacing()==Direction.WEST))
+		else if((posInMultiblock.getZ()==2&&getFacing()==Direction.EAST)||(posInMultiblock.getZ()==0&&getFacing()==Direction.WEST))
 			xMin = .25f;
-		else if((posInMultiblock.getX()==0&&getFacing()==Direction.WEST)||(posInMultiblock.getX()==2&&getFacing()==Direction.EAST))
+		else if((posInMultiblock.getZ()==2&&getFacing()==Direction.WEST)||(posInMultiblock.getZ()==0&&getFacing()==Direction.EAST))
 			xMax = .75f;
-		if((posInMultiblock.getZ()==0&&getFacing()==Direction.EAST)||(posInMultiblock.getZ()==2&&getFacing()==Direction.WEST))
+		if((posInMultiblock.getX()==0&&getFacing()==Direction.EAST)||(posInMultiblock.getX()==2&&getFacing()==Direction.WEST))
 			zMin = .1875f;
-		else if((posInMultiblock.getZ()==0&&getFacing()==Direction.WEST)||(posInMultiblock.getZ()==2&&getFacing()==Direction.EAST))
+		else if((posInMultiblock.getX()==0&&getFacing()==Direction.WEST)||(posInMultiblock.getX()==2&&getFacing()==Direction.EAST))
 			zMax = .8125f;
-		else if((posInMultiblock.getZ()==0&&getFacing()==Direction.NORTH)||(posInMultiblock.getZ()==2&&getFacing()==Direction.SOUTH))
+		else if((posInMultiblock.getX()==0&&getFacing()==Direction.NORTH)||(posInMultiblock.getX()==2&&getFacing()==Direction.SOUTH))
 			xMin = .1875f;
-		else if((posInMultiblock.getZ()==0&&getFacing()==Direction.SOUTH)||(posInMultiblock.getZ()==2&&getFacing()==Direction.NORTH))
+		else if((posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH)||(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH))
 			xMax = .8125f;
 		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
 	}

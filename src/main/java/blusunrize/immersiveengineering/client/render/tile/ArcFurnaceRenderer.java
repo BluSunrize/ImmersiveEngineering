@@ -8,12 +8,16 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
@@ -23,9 +27,11 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
@@ -37,6 +43,27 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 {
 	private TextureAtlasSprite hotMetal_flow = null;
 	private TextureAtlasSprite hotMetal_still = null;
+	//TODO one for each rotation?
+	private static final ModelResourceLocation ELECTRODES_NAME;
+	private static final ResourceLocation ELECTRODES_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/arc_furnace_electrodes.obj.ie");
+
+	private static final ResourceLocation HOT_METLA_STILL = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_still");
+	private static final ResourceLocation HOT_METLA_FLOW = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_flow");
+
+	static
+	{
+		ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/arc_furnace_electrodes");
+		ELECTRODES_NAME = new ModelResourceLocation(baseLoc, "");
+	}
+
+	public ArcFurnaceRenderer()
+	{
+		ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(ELECTRODES_LOC), 0,
+				0, false, ImmutableMap.of("flip-v", true));
+		DynamicModelLoader.requestModel(model, ELECTRODES_NAME);
+		DynamicModelLoader.requestTexture(HOT_METLA_FLOW);
+		DynamicModelLoader.requestTexture(HOT_METLA_STILL);
+	}
 
 	@Override
 	public void render(ArcFurnaceTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
@@ -62,8 +89,7 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.arcFurnace)
 			return;
-		//TODO state = state.with(IEProperties.DYNAMICRENDER, true);
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
+		IBakedModel model = blockRenderer.getBlockModelShapes().getModelManager().getModel(ELECTRODES_NAME);
 		OBJState objState = new OBJState(renderedParts, true);
 
 		Tessellator tessellator = Tessellator.getInstance();
@@ -86,7 +112,7 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
 		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, worldRenderer, true,
-				Utils.RAND, 0, new SinglePropertyModelData<>(objState, Model.OBJ_STATE));
+				getWorld().rand, 0, new SinglePropertyModelData<>(objState, Model.OBJ_STATE));
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 
@@ -95,8 +121,8 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		{
 			if(hotMetal_flow==null)
 			{
-				hotMetal_still = ClientUtils.mc().getTextureMap().getAtlasSprite("immersiveengineering:blocks/fluid/hot_metal_still");
-				hotMetal_flow = ClientUtils.mc().getTextureMap().getAtlasSprite("immersiveengineering:blocks/fluid/hot_metal_flow");
+				hotMetal_still = ClientUtils.mc().getTextureMap().getAtlasSprite(HOT_METLA_STILL.toString());
+				hotMetal_flow = ClientUtils.mc().getTextureMap().getAtlasSprite(HOT_METLA_FLOW.toString());
 			}
 			GlStateManager.rotatef(-te.getFacing().getHorizontalAngle()+180, 0, 1, 0);
 			int process = 40;
@@ -145,7 +171,7 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 	private Vec3d addTranslation(Vec3d tmp, BufferBuilder bb, float x, float y, float z)
 	{
 		Vec3d ret = tmp.add(x, y, z);
-		bb.setTranslation(tmp.x, tmp.y, tmp.z);
+		bb.setTranslation(ret.x, ret.y, ret.z);
 		return ret;
 	}
 }

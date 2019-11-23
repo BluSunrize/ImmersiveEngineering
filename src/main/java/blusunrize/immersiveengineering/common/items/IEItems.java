@@ -8,7 +8,8 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import net.minecraft.item.Item;
@@ -16,6 +17,7 @@ import net.minecraft.item.Rarity;
 
 import java.util.EnumMap;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class IEItems
@@ -101,7 +103,7 @@ public final class IEItems
 	{
 		public static Item revolver;
 		public static Item speedloader;
-		public static Item bullet;
+		public static Map<IBullet, Item> bullets = new IdentityHashMap<>();
 		public static Item chemthrower;
 		public static Item railgun;
 
@@ -110,7 +112,7 @@ public final class IEItems
 	//TODO move all of these somewhere else
 	public static final class Misc
 	{
-		public static Map<WireType, Item> wireCoils = new IdentityHashMap<>();
+		public static Map<WireType, Item> wireCoils = new LinkedHashMap<>();
 		public static Map<ToolUpgrade, Item> toolUpgrades = new EnumMap<>(ToolUpgrade.class);
 
 		public static Item hempSeeds;

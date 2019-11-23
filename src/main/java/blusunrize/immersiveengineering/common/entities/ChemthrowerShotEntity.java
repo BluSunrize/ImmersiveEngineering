@@ -47,6 +47,11 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 			.size(0.1F, 0.1F)
 			.build(ImmersiveEngineering.MODID+":chemthrower_shot");
 
+	static
+	{
+		TYPE.setRegistryName(ImmersiveEngineering.MODID, "chemthrower_shot");
+	}
+
 	public ChemthrowerShotEntity(EntityType<ChemthrowerShotEntity> type, World world)
 	{
 		super(type, world);
@@ -54,7 +59,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 
 	public ChemthrowerShotEntity(World world, double x, double y, double z, double ax, double ay, double az, FluidStack fluid)
 	{
-		super(TYPE, world, x, y, z, ax, ay, az);
+		super(TYPE, world, x, y, z);
 		this.fluid = fluid;
 		this.setFluidSynced();
 	}

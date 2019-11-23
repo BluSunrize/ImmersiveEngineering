@@ -174,7 +174,7 @@ public class CommandMineral
 		@Override
 		public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
 		{
-			return ISuggestionProvider.suggest(ExcavatorHandler.mineralList.keySet().stream().map(mix -> mix.name), builder);
+			return ISuggestionProvider.suggest(ExcavatorHandler.mineralList.keySet().stream().map(mix -> "\""+mix.name+"\""), builder);
 		}
 
 		@Override
@@ -183,7 +183,7 @@ public class CommandMineral
 			List<String> ret = new ArrayList<>();
 			for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
 			{
-				ret.add(mix.name);
+				ret.add("\""+mix.name+"\"");
 				if(ret.size() > 5)
 					break;
 			}

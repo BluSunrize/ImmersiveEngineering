@@ -17,14 +17,17 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
-public class DimensionBlockPos extends BlockPos
+//Intentionally does not inherit from BlockPos to prevent TEs etc being created with dimensional positions nad causing weird issues
+public class DimensionBlockPos
 {
-	public DimensionType dimension;
+	public final DimensionType dimension;
+	public final BlockPos pos;
 
 	public DimensionBlockPos(int x, int y, int z, DimensionType dim)
 	{
-		super(x, y, z);
+		pos = new BlockPos(x, y, z);
 		dimension = dim;
 	}
 
@@ -54,34 +57,19 @@ public class DimensionBlockPos extends BlockPos
 	}
 
 	@Override
-	public int hashCode()
+	public boolean equals(Object o)
 	{
-		final int prime = 31;
-		int result = 1;
-		result = prime*result+dimension.getId();
-		result = prime*result+getX();
-		result = prime*result+getY();
-		result = prime*result+getZ();
-		return result;
+		if(this==o) return true;
+		if(o==null||getClass()!=o.getClass()) return false;
+		DimensionBlockPos that = (DimensionBlockPos)o;
+		return dimension.equals(that.dimension)&&
+				pos.equals(that.pos);
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public int hashCode()
 	{
-		if(this==obj)
-			return true;
-		if(obj==null)
-			return false;
-		if(getClass()!=obj.getClass())
-			return false;
-		DimensionBlockPos other = (DimensionBlockPos)obj;
-		if(dimension!=other.dimension)
-			return false;
-		if(getX()!=other.getX())
-			return false;
-		if(getY()!=other.getY())
-			return false;
-		return getZ()==other.getZ();
+		return Objects.hash(dimension, pos);
 	}
 
 	@Nonnull
@@ -93,8 +81,7 @@ public class DimensionBlockPos extends BlockPos
 
 	public CompoundNBT toNBT()
 	{
-		CompoundNBT ret = new CompoundNBT();
-		NBTUtil.writeBlockPos(this);
+		CompoundNBT ret = NBTUtil.writeBlockPos(pos);
 		ret.putString("dimension", dimension.getRegistryName().toString());
 		return ret;
 	}

@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
+import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 
 public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implements ITileDrop, IDirectionalTile,
 		IHasDummyBlocks, IPropertyPassthrough, IBlockBounds, ICacheData
@@ -360,18 +360,6 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		return new Object[]{
 				stateForMiddle, reference, facing
 		};
-	}
-
-	@Override
-	protected float getBaseDamage(Connection c)
-	{
-		return INFOS.get(reference).dmgPerEnergy;
-	}
-
-	@Override
-	protected float getMaxDamage(Connection c)
-	{
-		return INFOS.get(reference).maxDmg;
 	}
 
 	@Override

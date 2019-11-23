@@ -42,7 +42,8 @@ public class ComparableItemStack
 		this.stack = stack;
 		if(copy)
 			copy();
-		tags = ImmutableList.copyOf(ApiUtils.getMatchingTagNames(stack));
+		if(matchOre)
+			tags = ImmutableList.copyOf(ApiUtils.getMatchingTagNames(stack));
 	}
 
 	public ComparableItemStack(Collection<ResourceLocation> tags)
@@ -76,7 +77,7 @@ public class ComparableItemStack
 	@Override
 	public int hashCode()
 	{
-		if(this.tags!=null)
+		if(hasTags())
 			return this.tags.hashCode();
 		int hash = stack.getItem().hashCode();
 		if(this.useNBT&&stack.hasTag())
@@ -90,7 +91,7 @@ public class ComparableItemStack
 		if(!(object instanceof ComparableItemStack))
 			return false;
 
-		if(this.tags!=null&&((ComparableItemStack)object).tags!=null)
+		if(this.hasTags()&&((ComparableItemStack)object).hasTags())
 			return this.tags.equals(((ComparableItemStack)object).tags);
 
 		ItemStack otherStack = ((ComparableItemStack)object).stack;
@@ -101,10 +102,14 @@ public class ComparableItemStack
 		return true;
 	}
 
+	private boolean hasTags()
+	{
+		return tags!=null&&!tags.isEmpty();
+	}
 
 	public CompoundNBT writeToNBT(CompoundNBT nbt)
 	{
-		if(this.tags!=null)
+		if(hasTags())
 		{
 			ListNBT tagList = new ListNBT();
 			for(ResourceLocation rl : tags)

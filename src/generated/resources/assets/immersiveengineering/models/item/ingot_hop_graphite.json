@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "immersiveengineering:item/material_ingot_hop_graphite"
+  }
+}

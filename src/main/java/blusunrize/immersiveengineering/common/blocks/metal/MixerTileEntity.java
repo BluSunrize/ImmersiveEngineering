@@ -110,7 +110,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 					if(fs!=null)
 					{
 						float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
-						Vec3d partPos = new Vec3d(getPos().getX()+.5f+getFacing().getXOffset()*.5f+(isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+getFacing().getZOffset()*.5f+(isMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getZOffset()*.5f);
+						Vec3d partPos = new Vec3d(getPos().getX()+.5f+getFacing().getXOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+getFacing().getZOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getZOffset()*.5f);
 						float r = Utils.RAND.nextFloat()*.8125f;
 						float angleRad = (float)Math.toRadians(animation_agitator);
 						partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
@@ -237,7 +237,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	{
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(isMirrored())
+		if(getIsMirrored())
 			fw = fw.getOpposite();
 		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
@@ -475,7 +475,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	{
 		MixerTileEntity master = master();
 		if(master!=null&&((new BlockPos(0, 0, 1).equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
-				||(new BlockPos(1, 0, 0).equals(posInMultiblock)&&(side==null||side==(isMirrored()?getFacing().rotateY(): getFacing().rotateYCCW())))))
+				||(new BlockPos(1, 0, 0).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().rotateY(): getFacing().rotateYCCW())))))
 			return master.getInternalTanks();
 		return new FluidTank[0];
 	}
@@ -483,7 +483,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	@Override
 	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
 	{
-		return side==null||side==(isMirrored()?getFacing().rotateY(): getFacing().rotateYCCW());
+		return side==null||side==(getIsMirrored()?getFacing().rotateY(): getFacing().rotateYCCW());
 	}
 
 	@Override

@@ -12,21 +12,22 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.wires.NetHandlerCapability;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.EnergyTransferHandler;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.LocalNetworkHandler;
-import blusunrize.immersiveengineering.api.energy.wires.localhandlers.WireDamageHandler;
-import blusunrize.immersiveengineering.api.energy.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Extinguish;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
+import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
+import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
+import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
+import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
+import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
@@ -43,20 +44,20 @@ import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
-import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
-import blusunrize.immersiveengineering.common.gui.GuiHandler;
+import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
-import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackBullet;
-import blusunrize.immersiveengineering.common.items.BulletItem.WolfpackPartBullet;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
+import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
+import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
@@ -64,6 +65,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropsBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -142,6 +144,10 @@ public class IEContent
 
 	public static void modConstruction()
 	{
+		/*BULLETS*/
+		BulletItem.initBullets();
+		/*WIRES*/
+		IEWireTypes.modConstruction();
 		/*CONVEYORS*/
 		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
 			CompoundNBT data = entity.getPersistentData();
@@ -171,7 +177,7 @@ public class IEContent
 
 		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);
-		GuiHandler.init();
+		ImmersiveEngineering.proxy.registerContainersAndScreens();
 		for(EnumMetals m : EnumMetals.values())
 		{
 			String name = m.tagName();
@@ -290,7 +296,7 @@ public class IEContent
 			WoodenDecoration.treatedWood.put(style, baseBlock);
 			addSlabFor(baseBlock);
 			WoodenDecoration.treatedStairs.put(style,
-					new IEStairsBlock("treated_wood_stairs_"+style.name().toLowerCase(), baseBlock.getDefaultState(), standardWoodProperties)
+					new IEStairsBlock("stairs_treated_wood_"+style.name().toLowerCase(), baseBlock.getDefaultState(), standardWoodProperties)
 							.setHasFlavour(true));
 		}
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodProperties);
@@ -306,7 +312,7 @@ public class IEContent
 		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
 		WoodenDevices.windmill = new WindmillBlock("windmill");
 		WoodenDevices.watermill = new WatermillBlock("watermill");
-		WoodenDevices.treatedPost = new PostBlock("treated_post", standardWoodProperties);
+		WoodenDecoration.treatedPost = new PostBlock("treated_post", standardWoodProperties);
 		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodProperties);
 		IEBlocks.Misc.hempPlant = new HempBlock("hemp");
 
@@ -340,22 +346,26 @@ public class IEContent
 			MetalDecoration.metalLadder.put(t, new MetalLadderBlock(t));
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
-			String name = type.name().toLowerCase();
+			String name = type.name().toLowerCase(Locale.ENGLISH);
 			Block steelBlock = new ScaffoldingBlock("steel_scaffolding_"+name, defaultMetalProperties);
 			Block aluBlock = new ScaffoldingBlock("alu_scaffolding_"+name, defaultMetalProperties);
 			MetalDecoration.steelScaffolding.put(type, steelBlock);
 			MetalDecoration.aluScaffolding.put(type, aluBlock);
-			MetalDecoration.steelScaffoldingStair.put(type, new IEStairsBlock("steel_scaffolding_stairs_"+name,
+			MetalDecoration.steelScaffoldingStair.put(type, new IEStairsBlock("stairs_steel_scaffolding_"+name,
 					steelBlock.getDefaultState(), defaultMetalProperties).setRenderLayer(BlockRenderLayer.CUTOUT));
-			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("alu_scaffolding_stairs_"+name,
+			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("stairs_alu_scaffolding_"+name,
 					aluBlock.getDefaultState(), defaultMetalProperties).setRenderLayer(BlockRenderLayer.CUTOUT));
-			addSlabFor(steelBlock);
-			addSlabFor(aluBlock);
+			IEBlocks.toSlab.put(steelBlock, new ScaffoldingSlabBlock("slab_"+steelBlock.getRegistryName().getPath(), Block.Properties.from(steelBlock), BlockItemIE.class, true));
+			IEBlocks.toSlab.put(aluBlock, new ScaffoldingSlabBlock("slab_"+aluBlock.getRegistryName().getPath(), Block.Properties.from(aluBlock), BlockItemIE.class, true));
 		}
 		for(String cat : new String[]{WireType.LV_CATEGORY, WireType.MV_CATEGORY, WireType.HV_CATEGORY})
 		{
 			Block connector = new PowerConnectorBlock(cat, false);
-			Block relay = new PowerConnectorBlock(cat, true);
+			Block relay;
+			if(!WireType.HV_CATEGORY.equals(cat))
+				relay = new PowerConnectorBlock(cat, true);
+			else
+				relay = new PowerConnectorBlock(cat, true, BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID);
 			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, false), connector);
 			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, true), relay);
 		}
@@ -363,11 +373,15 @@ public class IEContent
 		Connectors.connectorStructural = new MiscConnectorBlock("connector_structural", () -> ConnectorStructuralTileEntity.TYPE);
 		Connectors.transformer = new MiscConnectorBlock("transformer", () -> TransformerTileEntity.TYPE);
 		Connectors.transformerHV = new MiscConnectorBlock("transformer_hv", () -> TransformerHVTileEntity.TYPE);
-		Connectors.breakerswitch = new MiscConnectorBlock("breaker_switch", () -> BreakerSwitchTileEntity.TYPE);
-		Connectors.redstoneBreaker = new MiscConnectorBlock("redstone_breaker", () -> RedstoneBreakerTileEntity.TYPE);
-		Connectors.energyMeter = new MiscConnectorBlock("current_transformer", () -> EnergyMeterTileEntity.TYPE);
+		Connectors.breakerswitch = new MiscConnectorBlock("breaker_switch", () -> BreakerSwitchTileEntity.TYPE,
+				IEProperties.ACTIVE, IEProperties.FACING_ALL);
+		Connectors.redstoneBreaker = new MiscConnectorBlock("redstone_breaker", () -> RedstoneBreakerTileEntity.TYPE,
+				IEProperties.ACTIVE, IEProperties.FACING_ALL);
+		Connectors.energyMeter = new MiscConnectorBlock("current_transformer", () -> EnergyMeterTileEntity.TYPE,
+				IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
 		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
-		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE);
+		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE,
+				BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID);
 		Connectors.feedthrough = new MiscConnectorBlock("feedthrough", () -> FeedthroughTileEntity.TYPE);
 
 		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE);
@@ -377,7 +391,7 @@ public class IEContent
 		MetalDevices.capacitorMV = new GenericTileBlock("capacitor_mv", () -> CapacitorMVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorHV = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_creative", () -> CapacitorCreativeTileEntity.TYPE, defaultMetalProperties);
-		MetalDevices.barrel = new BarrelBlock("metal_barrel", false);
+		MetalDevices.barrel = new BarrelBlock("metal_barrel", true);
 		MetalDevices.fluidPump = new GenericTileBlock("fluid_pump", () -> FluidPumpTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		//MetalDevices.fluidPlacer = ;
@@ -390,9 +404,13 @@ public class IEContent
 				defaultMetalProperties);
 		MetalDevices.electricLantern = new MiscConnectorBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE);
 		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
-				defaultMetalProperties);
+				defaultMetalProperties, IEProperties.FACING_HORIZONTAL)
+				.setNotNormalBlock();
 		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties);
-		MetalDevices.sampleDrill = new GenericTileBlock("sample_drill", () -> SampleDrillTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.sampleDrill = new GenericTileBlock("sample_drill", () -> SampleDrillTileEntity.TYPE, defaultMetalProperties,
+				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
+				.setBlockLayer(BlockRenderLayer.CUTOUT)
+				.setNotNormalBlock();
 		MetalDevices.teslaCoil = new GenericTileBlock("tesla_coil", () -> TeslaCoilTileEntity.TYPE, defaultMetalProperties, IEProperties.FACING_ALL);
 		MetalDevices.floodlight = new MiscConnectorBlock("floodlight", () -> FloodlightTileEntity.TYPE);
 		MetalDevices.turretChem = new GenericTileBlock("turret_chem", () -> TurretChemTileEntity.TYPE, defaultMetalProperties);
@@ -405,7 +423,6 @@ public class IEContent
 		Multiblocks.autoWorkbench = new MetalMultiblockBlock("auto_workbench", () -> AutoWorkbenchTileEntity.TYPE);
 		Multiblocks.bucketWheel = new MetalMultiblockBlock("bucket_wheel", () -> BucketWheelTileEntity.TYPE);
 		Multiblocks.excavator = new MetalMultiblockBlock("excavator", () -> ExcavatorTileEntity.TYPE);
-		Multiblocks.blastFurnaceAdv = new MetalMultiblockBlock("improved_blast_furnace", () -> BlastFurnaceAdvancedTileEntity.TYPE);
 		Multiblocks.metalPress = new MetalMultiblockBlock("metal_press", () -> MetalPressTileEntity.TYPE);
 		/*TODO
 		mixer;          blockFluidCreosote = new BlockIEFluid("fluidCreosote", fluidCreosote, Material.WATER).setFlammability(40, 400);
@@ -455,6 +472,35 @@ public class IEContent
 		IEItems.Ingredients.circuitBoard = new IEBaseItem("circuit_board");
 		IEItems.Ingredients.emptyCasing = new IEBaseItem("empty_casing");
 		IEItems.Ingredients.emptyShell = new IEBaseItem("empty_shell");
+		for(WireType t : WireType.getIEWireTypes())
+			IEItems.Misc.wireCoils.put(t, new WireCoilItem(t));
+		Item.Properties moldProperties = new Item.Properties().maxStackSize(1);
+		Molds.moldPlate = new IEBaseItem("mold_plate", moldProperties);
+		Molds.moldGear = new IEBaseItem("mold_gear", moldProperties);
+		Molds.moldRod = new IEBaseItem("mold_rod", moldProperties);
+		Molds.moldBulletCasing = new IEBaseItem("mold_bullet_casing", moldProperties);
+		Molds.moldWire = new IEBaseItem("mold_wire", moldProperties);
+		Molds.moldPacking4 = new IEBaseItem("mold_packing_4", moldProperties);
+		Molds.moldPacking9 = new IEBaseItem("mold_packing_9", moldProperties);
+		Molds.moldUnpacking = new IEBaseItem("mold_unpacking", moldProperties);
+		IEItems.Misc.graphiteElectrode = new GraphiteElectrodeItem();
+		IEItems.Misc.coresample = new CoresampleItem();
+		Tools.drill = new DrillItem();
+		Tools.drillheadIron = new DrillheadItem(DrillheadItem.IRON);
+		Tools.drillheadSteel = new DrillheadItem(DrillheadItem.STEEL);
+		Weapons.revolver = new RevolverItem();
+		Weapons.speedloader = new SpeedloaderItem();
+		Weapons.chemthrower = new ChemthrowerItem();
+		Weapons.railgun = new RailgunItem();
+		for(ResourceLocation bulletType : BulletHandler.getAllKeys())
+		{
+			IBullet bullet = BulletHandler.getBullet(bulletType);
+			if(bullet.isProperCartridge())
+				Weapons.bullets.put(bullet, new BulletItem(bullet));
+		}
+		IEItems.Misc.powerpack = new PowerpackItem();
+		for(ToolUpgrade upgrade : ToolUpgrade.values())
+			IEItems.Misc.toolUpgrades.put(upgrade, new ToolUpgradeItem(upgrade));
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
@@ -491,12 +537,14 @@ public class IEContent
 			}
 		};
 		 */
+		ConveyorHandler.createConveyorBlocks();
+		BulletHandler.emptyCasing = new ItemStack(Ingredients.emptyCasing);
+		BulletHandler.emptyShell = new ItemStack(Ingredients.emptyShell);
 	}
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
-		ConveyorHandler.registerConveyorBlocks(event);
 		checkNonNullNames(registeredIEBlocks);
 		for(Block block : registeredIEBlocks)
 			event.getRegistry().register(block);
@@ -563,6 +611,22 @@ public class IEContent
 	}
 
 	@SubscribeEvent
+	public static void registerEntityTypes(RegistryEvent.Register<EntityType<?>> event)
+	{
+		event.getRegistry().registerAll(
+				ChemthrowerShotEntity.TYPE,
+				FluorescentTubeEntity.TYPE,
+				IEExplosiveEntity.TYPE,
+				RailgunShotEntity.TYPE,
+				RevolvershotEntity.TYPE,
+				RevolvershotFlareEntity.TYPE,
+				RevolvershotHomingEntity.TYPE,
+				SkylineHookEntity.TYPE,
+				WolfpackShotEntity.TYPE
+		);
+	}
+
+	@SubscribeEvent
 	public static void registerTEs(RegistryEvent.Register<TileEntityType<?>> event)
 	{
 		EnergyConnectorTileEntity.registerConnectorTEs(event);
@@ -586,8 +650,6 @@ public class IEContent
 		registerTile(FluidSorterTileEntity.class, event, WoodenDevices.fluidSorter);
 		registerTile(WatermillTileEntity.class, event, WoodenDevices.watermill);
 		registerTile(WindmillTileEntity.class, event, WoodenDevices.windmill);
-		registerTile(PostTileEntity.class, event, WoodenDevices.treatedPost, MetalDecoration.aluPost,
-				MetalDecoration.steelPost);
 
 		registerTile(LanternTileEntity.class, event, MetalDecoration.lantern);
 		registerTile(RazorWireTileEntity.class, event, MetalDevices.razorWire);
@@ -664,29 +726,71 @@ public class IEContent
 		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion.get();
 		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance.get();
 		ExcavatorHandler.defaultDimensionBlacklist = ImmutableSet.of();//IEConfig.MACHINES.excavator_dimBlacklist.get();
-		/*TODO
-		String sulfur = OreDictionary.doesOreNameExist("oreSulfur")?"oreSulfur": "dustSulfur";
-		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron", "oreNickel", "oreTin", "denseoreIron"}, new float[]{.5f, .25f, .20f, .05f});
-		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron", "oreGold"}, new float[]{.85f, .15f});
-		ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron", sulfur}, new float[]{.5f, .5f});
-		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum", "oreTitanium", "denseoreAluminum"}, new float[]{.90f, .05f, .05f});
-		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper", "oreGold", "oreNickel", "denseoreCopper"}, new float[]{.65f, .25f, .05f, .05f});
-		if(OreDictionary.doesOreNameExist("oreTin"))
-			ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new String[]{"oreTin", "denseoreTin"}, new float[]{.95f, .05f});
-		ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold", "oreCopper", "oreNickel", "denseoreGold"}, new float[]{.65f, .25f, .05f, .05f});
-		ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel", "orePlatinum", "oreIron", "denseoreNickel"}, new float[]{.85f, .05f, .05f, .05f});
-		if(OreDictionary.doesOreNameExist("orePlatinum"))
-			ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum", "oreNickel", "", "oreIridium", "denseorePlatinum"}, new float[]{.40f, .30f, .15f, .1f, .05f});
-		ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium", "oreLead", "orePlutonium", "denseoreUranium"}, new float[]{.55f, .3f, .1f, .05f}).addReplacement("oreUranium", "oreYellorium");
-		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new String[]{"oreQuartz", "oreCertusQuartz"}, new float[]{.6f, .4f});
-		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead", "oreSilver", "oreSulfur", "denseoreLead", "denseoreSilver"}, new float[]{.40f, .40f, .1f, .05f, .05f});
-		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead", "oreSilver", "denseoreLead"}, new float[]{.55f, .4f, .05f});
-		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver", "oreLead", "denseoreSilver"}, new float[]{.55f, .4f, .05f});
-		ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis", "oreIron", sulfur, "denseoreLapis"}, new float[]{.65f, .275f, .025f, .05f});
-		ExcavatorHandler.addMineral("Cinnabar", 15, .1f, new String[]{"oreRedstone", "denseoreRedstone", "oreRuby", "oreCinnabar", sulfur}, new float[]{.75f, .05f, .05f, .1f, .05f});
-		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal", "denseoreCoal", "oreDiamond", "oreEmerald"}, new float[]{.92f, .1f, .015f, .015f});
-		ExcavatorHandler.addMineral("Silt", 25, .05f, new String[]{"blockClay", "sand", "gravel"}, new float[]{.5f, .3f, .2f});
-		*/
+		//TODO String sulfur = OreDictionary.doesOreNameExist(oreSulfur)?"oreSulfur: "dustSulfur;
+		ResourceLocation invalid = new ResourceLocation("immersiveengineering:invalid");
+		ResourceLocation sulfur = IERecipes.getDust("sulfur");
+		ResourceLocation oreIron = IERecipes.getOre("iron");
+		ResourceLocation oreNickel = IERecipes.getOre("nickel");
+		ResourceLocation oreTin = IERecipes.getOre("tin");
+		ResourceLocation oreGold = IERecipes.getOre("gold");
+		ResourceLocation oreAluminum = IERecipes.getOre("aluminum");
+		ResourceLocation oreTitanium = IERecipes.getOre("titanium");
+		ResourceLocation oreCopper = IERecipes.getOre("copper");
+		ResourceLocation orePlatinum = IERecipes.getOre("platinum");
+		ResourceLocation oreUranium = IERecipes.getOre("uranium");
+		ResourceLocation oreLead = IERecipes.getOre("lead");
+		//TODO is this the correct name?
+		ResourceLocation oreQuartz = IERecipes.getOre("quartz");
+		ResourceLocation oreIridium = IERecipes.getOre("iridium");
+		ResourceLocation orePlutonium = IERecipes.getOre("plutonium");
+		ResourceLocation oreCertusQuartz = IERecipes.getOre("certus_quartz");
+		ResourceLocation oreSilver = IERecipes.getOre("silver");
+		ResourceLocation oreSulfur = IERecipes.getOre("sulfur");
+		ResourceLocation oreLapis = IERecipes.getOre("lapis");
+		ResourceLocation oreRedstone = IERecipes.getOre("redstone");
+		ResourceLocation oreRuby = IERecipes.getOre("ruby");
+		ResourceLocation oreCinnabar = IERecipes.getOre("cinnabar");
+		ResourceLocation oreCoal = IERecipes.getOre("coal");
+		ResourceLocation oreDiamond = IERecipes.getOre("diamond");
+		ResourceLocation oreEmerald = IERecipes.getOre("emerald");
+		ResourceLocation oreYellorium = IERecipes.getOre("yellorium");
+		//TODO is this the correct name?
+		ResourceLocation blockClay = IERecipes.getStorageBlock("clay");
+		ResourceLocation sand = BlockTags.SAND.getId();
+		ResourceLocation gravel = Tags.Blocks.GRAVEL.getId();
+		ResourceLocation denseoreIron = invalid;
+		ResourceLocation denseoreAluminum = invalid;
+		ResourceLocation denseoreCopper = invalid;
+		ResourceLocation denseoreTin = invalid;
+		ResourceLocation denseoreGold = invalid;
+		ResourceLocation denseoreNickel = invalid;
+		ResourceLocation denseorePlatinum = invalid;
+		ResourceLocation denseoreLead = invalid;
+		ResourceLocation denseoreSilver = invalid;
+		ResourceLocation denseoreLapis = invalid;
+		ResourceLocation denseoreRedstone = invalid;
+		ResourceLocation denseoreCoal = invalid;
+		ResourceLocation denseoreUranium = invalid;
+
+		ExcavatorHandler.addMineral("Iron", 25, .1f, new ResourceLocation[]{oreIron, oreNickel, oreTin, denseoreIron}, new float[]{.5f, .25f, .20f, .05f});
+		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new ResourceLocation[]{oreIron, oreGold}, new float[]{.85f, .15f});
+		ExcavatorHandler.addMineral("Pyrite", 20, .1f, new ResourceLocation[]{oreIron, sulfur}, new float[]{.5f, .5f});
+		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new ResourceLocation[]{oreAluminum, oreTitanium, denseoreAluminum}, new float[]{.90f, .05f, .05f});
+		ExcavatorHandler.addMineral("Copper", 30, .2f, new ResourceLocation[]{oreCopper, oreGold, oreNickel, denseoreCopper}, new float[]{.65f, .25f, .05f, .05f});
+		ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new ResourceLocation[]{oreTin, denseoreTin}, new float[]{.95f, .05f});
+		ExcavatorHandler.addMineral("Gold", 20, .3f, new ResourceLocation[]{oreGold, oreCopper, oreNickel, denseoreGold}, new float[]{.65f, .25f, .05f, .05f});
+		ExcavatorHandler.addMineral("Nickel", 20, .3f, new ResourceLocation[]{oreNickel, orePlatinum, oreIron, denseoreNickel}, new float[]{.85f, .05f, .05f, .05f});
+		ExcavatorHandler.addMineral("Platinum", 5, .35f, new ResourceLocation[]{orePlatinum, oreNickel, oreIridium, denseorePlatinum}, new float[]{.40f, .30f, .15f, .1f, .05f});
+		ExcavatorHandler.addMineral("Uranium", 10, .35f, new ResourceLocation[]{oreUranium, oreLead, orePlutonium, denseoreUranium}, new float[]{.55f, .3f, .1f, .05f})
+				.addReplacement(oreUranium, oreYellorium);
+		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new ResourceLocation[]{oreQuartz, oreCertusQuartz}, new float[]{.6f, .4f});
+		ExcavatorHandler.addMineral("Galena", 15, .2f, new ResourceLocation[]{oreLead, oreSilver, oreSulfur, denseoreLead, denseoreSilver}, new float[]{.40f, .40f, .1f, .05f, .05f});
+		ExcavatorHandler.addMineral("Lead", 10, .15f, new ResourceLocation[]{oreLead, oreSilver, denseoreLead}, new float[]{.55f, .4f, .05f});
+		ExcavatorHandler.addMineral("Silver", 10, .2f, new ResourceLocation[]{oreSilver, oreLead, denseoreSilver}, new float[]{.55f, .4f, .05f});
+		ExcavatorHandler.addMineral("Lapis", 10, .2f, new ResourceLocation[]{oreLapis, oreIron, sulfur, denseoreLapis}, new float[]{.65f, .275f, .025f, .05f});
+		ExcavatorHandler.addMineral("Cinnabar", 15, .1f, new ResourceLocation[]{oreRedstone, denseoreRedstone, oreRuby, oreCinnabar, sulfur}, new float[]{.75f, .05f, .05f, .1f, .05f});
+		ExcavatorHandler.addMineral("Coal", 25, .1f, new ResourceLocation[]{oreCoal, denseoreCoal, oreDiamond, oreEmerald}, new float[]{.92f, .1f, .015f, .015f});
+		ExcavatorHandler.addMineral("Silt", 25, .05f, new ResourceLocation[]{blockClay, sand, gravel}, new float[]{.5f, .3f, .2f});
 		/*MULTIBLOCK RECIPES*/
 		Tag<Block> coalBlock = BlockTags.CORAL_BLOCKS;
 		Tag<Block> logWood = BlockTags.LOGS;
@@ -724,37 +828,20 @@ public class IEContent
 
 		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel, 16), new FluidStack(fluidPlantoil, 8), new FluidStack(fluidEthanol, 8), 80);
 
-		Tag<Block> sand = BlockTags.SAND;
-		Tag<Block> gravel = Tags.Blocks.GRAVEL;
 		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(Fluids.WATER, 500), new Object[]{sand, sand, Items.CLAY_BALL, gravel}, 3200);
 
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.WET_SPONGE, 1), new ItemStack(Blocks.SPONGE, 1), new FluidStack(Fluids.WATER, 1000));
 
 		IECompatModule.doModulesRecipes();
+
 	}
 
 	public static void preInit()
 	{
-		WireType.init();
-		for(WireType t : WireType.getIEWireTypes())
-			IEItems.Misc.wireCoils.put(t, new WireCoilItem(t));
-
-		/*BULLETS*/
-		BulletItem.initBullets();
-
+		IEWireTypes.setup();
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
 		IELootFunctions.preInit();
-	}
-
-	public static void preInitEnd()
-	{
-		/*WOLFPACK BULLETS*/
-		if(!BulletHandler.homingCartridges.isEmpty())
-		{
-			BulletHandler.registerBullet("wolfpack", new WolfpackBullet());
-			BulletHandler.registerBullet("wolfpackPart", new WolfpackPartBullet());
-		}
 	}
 
 	public static void registerOres()
@@ -891,13 +978,10 @@ public class IEContent
 		addBanner("ornate", "orn", "dustSilver");
 		addBanner("treated_wood", "twd", "plankTreatedWood");
 		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(WoodenDevices.windmill)});
-		if(!BulletHandler.homingCartridges.isEmpty())
-		{
-			ItemStack wolfpackCartridge = BulletHandler.getBulletStack("wolfpack");
-			addBanner("wolf_r", "wlfr", wolfpackCartridge, 1);
-			addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
-			addBanner("wolf", "wlf", wolfpackCartridge, 0, 0);
-		}
+		ItemStack wolfpackCartridge = new ItemStack(BulletHandler.getBulletItem(BulletItem.WOLFPACK));
+		addBanner("wolf_r", "wlfr", wolfpackCartridge, 1);
+		addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
+		addBanner("wolf", "wlf", wolfpackCartridge, 0, 0);
 
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
@@ -1027,11 +1111,9 @@ public class IEContent
 		ChemthrowerHandler.registerFlammable("rocket_fuel");
 		 */
 
-		/*TODO
-		RailgunHandler.registerProjectileProperties(new IngredientStack("stickIron"), 15, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(new IngredientStack("stickAluminum"), 13, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(new IngredientStack("stickSteel"), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
-		 */
+		RailgunHandler.registerProjectileProperties(new IngredientStack(IETags.ironRod), 15, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
+		RailgunHandler.registerProjectileProperties(new IngredientStack(IETags.aluminumRod), 13, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
+		RailgunHandler.registerProjectileProperties(new IngredientStack(IETags.steelRod), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
 		RailgunHandler.registerProjectileProperties(new ItemStack(IEItems.Misc.graphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
@@ -1093,6 +1175,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.MIXER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.FEEDTHROUGH);
 		*/
+		IEMultiblocks.init();
 		MultiblockHandler.registerMultiblock(IEMultiblocks.COKE_OVEN);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ALLOY_SMELTER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.BLAST_FURNACE);
@@ -1269,7 +1352,7 @@ public class IEContent
 		TileEntityType<T> type = new TileEntityType<>(() -> {
 			try
 			{
-				return (T)tile.newInstance();
+				return tile.newInstance();
 			} catch(InstantiationException|IllegalAccessException e)
 			{
 				e.printStackTrace();

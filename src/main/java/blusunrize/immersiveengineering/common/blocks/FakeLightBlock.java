@@ -101,7 +101,7 @@ public class FakeLightBlock extends IETileProviderBlock
 					return;
 				}
 				TileEntity tile = Utils.getExistingTileEntity(world, floodlightCoords);
-				if(!(tile instanceof FloodlightTileEntity)||!((FloodlightTileEntity)tile).active)
+				if(!(tile instanceof FloodlightTileEntity)||!((FloodlightTileEntity)tile).getIsActive())
 				{
 					world.removeBlock(getPos(), false);
 					return;

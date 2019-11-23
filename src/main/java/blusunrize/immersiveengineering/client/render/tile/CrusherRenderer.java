@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
@@ -114,7 +113,7 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 		bb.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		bb.setTranslation(-.5-pos.getX(), -.5-pos.getY(), -.5-pos.getZ());
 		bb.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, pos, bb, true, Utils.RAND,
+		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, pos, bb, true, getWorld().rand,
 				0, EmptyModelData.INSTANCE);
 		bb.setTranslation(0.0D, 0.0D, 0.0D);
 		tes.draw();

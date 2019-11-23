@@ -116,7 +116,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 				BlockPos exhaust = this.getBlockPosForPos(new BlockPos(2, 2, 2));
 				Direction fl = getFacing();
 				Direction fw = getFacing().rotateY();
-				if(isMirrored())
+				if(getIsMirrored())
 					fw = fw.getOpposite();
 				world.addParticle(ParticleTypes.LARGE_SMOKE,
 						exhaust.getX()+.5+(fl.getXOffset()*.3125f)+(-fw.getXOffset()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getZOffset()*.3125f)+(-fw.getZOffset()*.3125f), 0, 0, 0);
@@ -195,7 +195,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	{
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(isMirrored())
+		if(getIsMirrored())
 			fw = fw.getOpposite();
 
 		if(new BlockPos(0, 0, 1).equals(posInMultiblock))
@@ -255,7 +255,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	{
 		Direction fl = getFacing();
 		Direction fw = getFacing().rotateY();
-		if(isMirrored())
+		if(getIsMirrored())
 			fw = fw.getOpposite();
 
 		if(new BlockPos(0, 1, 1).equals(posInMultiblock))

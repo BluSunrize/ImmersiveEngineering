@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -76,9 +76,8 @@ public class ImmersiveEngineering
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
-		//TODO right bus?
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarting);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarted);
+		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		//TODO separate client/server config?
 		ModLoadingContext.get().registerConfig(Type.COMMON, IEConfig.ALL);
 		IEContent.modConstruction();
@@ -113,8 +112,6 @@ public class ImmersiveEngineering
 		IECompatModule.doModulesPreInit();
 
 		new ThreadContributorSpecialsDownloader();
-
-		IEContent.preInitEnd();
 
 		//Previously in INIT
 
@@ -155,7 +152,6 @@ public class ImmersiveEngineering
 		//Previously in POSTINIT
 
 		IEContent.postInit();
-		ExcavatorHandler.recalculateChances(true);
 		proxy.postInit();
 		IECompatModule.doModulesPostInit();
 		proxy.postInitEnd();
@@ -210,11 +206,12 @@ public class ImmersiveEngineering
 			ServerWorld world = event.getServer().getWorld(DimensionType.OVERWORLD);
 			if(!world.isRemote)
 			{
-				IESaveData worldData = world.getSavedData().get(IESaveData::new, IESaveData.dataName);
+				IESaveData worldData = world.getSavedData().getOrCreate(IESaveData::new, IESaveData.dataName);
 				IESaveData.setInstance(worldData);
 			}
 		}
 		IEContent.refreshFluidReferences();
+		ExcavatorHandler.recalculateChances(true);
 	}
 
 	public static ItemGroup itemGroup = new ItemGroup(MODID)

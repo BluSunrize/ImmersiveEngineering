@@ -97,7 +97,7 @@ public class MetalLadderBlock extends LadderBlock
 		if(type==CoverType.NONE||baseState==null)
 			return baseState;
 		else
-			return baseState.with(LadderBlock.FACING, ctx.getNearestLookingDirection());
+			return baseState.with(LadderBlock.FACING, Direction.fromAngle(ctx.getPlacementYaw()).getOpposite());
 	}
 
 	@Override

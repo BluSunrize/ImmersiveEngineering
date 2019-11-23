@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +17,7 @@ import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.*;
@@ -27,6 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -49,7 +52,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		this.pickupStatus = PickupStatus.DISALLOWED;
 	}
 
-	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, double x, double y, double z, double ax, double ay, double az)
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, double x, double y, double z)
 	{
 		this(type, world);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
@@ -58,8 +61,13 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double ax, double ay, double az)
 	{
+		this(type, world, living, living.posX, living.posY+living.getEyeHeight(), living.posZ, ax, ay, az);
+	}
+
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double x, double y, double z, double ax, double ay, double az)
+	{
 		this(type, world);
-		this.setLocationAndAngles(living.posX, living.posY+living.getEyeHeight(), living.posZ, living.rotationYaw, living.rotationPitch);
+		this.setLocationAndAngles(x, y, z, living.rotationYaw, living.rotationPitch);
 		this.setPosition(this.posX, this.posY, this.posZ);
 		setMotion(ax, ay, az);
 		this.shootingEntity = living.getUniqueID();
@@ -74,14 +82,6 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	{
 		return new EntitySize(.125f, .125f, true);
 	}
-
-	@Override
-	protected void registerData()
-	{
-		super.registerData();
-		this.dataManager.register(field_212362_a, Optional.empty());
-	}
-
 
 	public void setTickLimit(int limit)
 	{
@@ -118,9 +118,13 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			this.shootingEntity = getShooterSynced();
 
 		this.baseTick();
+		BlockState localState;
+		if(stuckIn!=null)
+			localState = this.world.getBlockState(stuckIn);
+		else
+			localState = Blocks.AIR.getDefaultState();
 
-		BlockState localState = this.world.getBlockState(stuckIn);
-
+		//TODO better air check
 		if(localState.getMaterial()!=Material.AIR)
 		{
 			VoxelShape shape = localState.getCollisionShape(this.world, stuckIn);
@@ -166,7 +170,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			if(mop.getType()==Type.BLOCK)
 				nextPos = mop.getHitVec();
 
-			if(mop.getType()==Type.BLOCK)
+			if(mop.getType()!=Type.ENTITY)
 			{
 				Entity entity = null;
 				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
@@ -203,9 +207,12 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 					if(!this.isBurning()&&this.canIgnite()&&entityHit.getEntity().isBurning())
 						this.setFire(3);
 					boolean allowHit = true;
-					PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
-					if(shooter!=null&&entityHit.getEntity() instanceof PlayerEntity)
-						allowHit = shooter.canAttackPlayer((PlayerEntity)entityHit.getEntity());
+					if(shootingEntity!=null)
+					{
+						PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
+						if(shooter!=null&&entityHit.getEntity() instanceof PlayerEntity)
+							allowHit = shooter.canAttackPlayer((PlayerEntity)entityHit.getEntity());
+					}
 					if(allowHit)
 						this.onImpact(mop);
 					this.remove();
@@ -265,7 +272,8 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				}
 				movementDecay *= 0.8F;
 			}
-			setMotion(getMotion().scale(movementDecay).add(0, -getGravity(), 0));
+			if(movementDecay > 0)
+				setMotion(getMotion().scale(movementDecay).add(0, -getGravity(), 0));
 			this.setPosition(this.posX, this.posY, this.posZ);
 			this.doBlockCollisions();
 		}
@@ -337,13 +345,18 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			stuckIn = null;
 		}
 		this.inGround = nbt.getByte("inGround")==1;
-		if(this.world!=null)
-			this.shootingEntity = nbt.getUniqueId("shootingEntity");
+		this.shootingEntity = nbt.getUniqueId("shootingEntity");
 	}
 
 	@Override
 	public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_)
 	{
 		return false;
+	}
+
+	@Override
+	public IPacket<?> createSpawnPacket()
+	{
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }
