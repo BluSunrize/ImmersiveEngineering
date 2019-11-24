@@ -347,17 +347,13 @@ public class BlockStates extends BlockstateGenerator
 			List<IProperty<?>> remaining = props.subList(1, props.size());
 			IProperty<?> main = props.get(0);
 			for(Object value : main.getAllowedValues())
-			{
 				forEachState(remaining, map -> {
 					map.put(main, value);
 					out.accept(map);
 				});
-			}
 		}
 		else
-		{
 			out.accept(new HashMap<>());
-		}
 	}
 
 	private void createConnector(Block b, Function<Map<IProperty<?>, Object>, ResourceLocation> model,

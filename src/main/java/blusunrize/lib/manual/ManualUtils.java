@@ -114,7 +114,7 @@ public class ManualUtils
 					ret.add(node);
 		}
 		ret.sort(
-				(s0, s1) -> getSpellingDistanceBetweenStrings(getTitle.apply(s1), getTitle.apply(s0))
+				Comparator.comparingInt(s -> getSpellingDistanceBetweenStrings(query, getTitle.apply(s)))
 		);
 		return ret;
 	}
@@ -142,12 +142,14 @@ public class ManualUtils
 						if(queryWords[iWord].charAt(iChar)!=targetWords[iWord].charAt(iChar))
 						{
 							wordDistance++;
-							if(iChar > 0&&queryWords[iWord].charAt(iChar-1)==targetWords[iWord].charAt(iChar)&&queryWords[iWord].charAt(iChar)==targetWords[iWord].charAt(iChar-1))
+							if(iChar > 0
+									&&queryWords[iWord].charAt(iChar-1)==targetWords[iWord].charAt(iChar)
+									&&queryWords[iWord].charAt(iChar)==targetWords[iWord].charAt(iChar-1))
 								wordDistance -= 2;//switched letters don't increase distance
 						}
 					}
 				if(wordDistance > 0)
-					wordDistance += targetWords[iWord].length()-queryWords[iWord].length();
+					wordDistance += Math.abs(targetWords[iWord].length()-queryWords[iWord].length());
 				distance += wordDistance;
 			}
 		}
