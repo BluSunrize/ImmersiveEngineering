@@ -96,16 +96,14 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		return template;
 	}
 
-	//TODO make all of these non-final (currently final to make porting easier)
-
 	@Override
-	public final ResourceLocation getUniqueName()
+	public ResourceLocation getUniqueName()
 	{
 		return loc;
 	}
 
 	@Override
-	public final boolean isBlockTrigger(BlockState state)
+	public boolean isBlockTrigger(BlockState state)
 	{
 		getTemplate();
 		//TODO facing dependant
@@ -114,7 +112,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 
 
 	@Override
-	public final boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
 		if(side.getAxis()==Axis.Y)
 			side = Direction.fromAngle(player.rotationYaw);
@@ -168,13 +166,13 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	protected abstract void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster);
 
 	@Override
-	public final List<BlockInfo> getStructure()
+	public List<BlockInfo> getStructure()
 	{
 		return getTemplate().blocks.get(0);
 	}
 
 	@Override
-	public final Vec3i getSize()
+	public Vec3i getSize()
 	{
 		return getTemplate().getSize();
 	}
@@ -202,7 +200,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	}
 
 	@Override
-	public final IngredientStack[] getTotalMaterials()
+	public IngredientStack[] getTotalMaterials()
 	{
 		if(materials==null)
 		{

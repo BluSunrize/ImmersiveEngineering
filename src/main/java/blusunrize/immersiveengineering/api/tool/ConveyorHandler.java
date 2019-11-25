@@ -53,13 +53,13 @@ import java.util.function.Function;
  */
 public class ConveyorHandler
 {
-	public static final Map<ResourceLocation, Class<? extends IConveyorBelt>> classRegistry = new LinkedHashMap<ResourceLocation, Class<? extends IConveyorBelt>>();
+	public static final Map<ResourceLocation, Class<? extends IConveyorBelt>> classRegistry = new LinkedHashMap<>();
 	public static final Map<ResourceLocation, Set<ResourceLocation>> substituteRegistry = new HashMap<>();
-	public static final Map<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>>();
+	public static final Map<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<>();
 	public static final Map<ResourceLocation, TileEntityType<? extends TileEntity>> tileEntities = new LinkedHashMap<>();
-	public static final Map<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<Class<? extends IConveyorBelt>, ResourceLocation>();
-	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<BiConsumer<Entity, IConveyorTile>>();
-	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<BiConsumer<Entity, IConveyorTile>>();
+	public static final Map<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<>();
+	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<>();
+	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<>();
 
 	public static final Map<ResourceLocation, Block> conveyorBlocks = MetalDevices.CONVEYORS;
 	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:blocks/conveyor_colour");
@@ -193,7 +193,6 @@ public class ConveyorHandler
 	/**
 	 * An interface for the external handling of conveyorbelts
 	 */
-	//TODO redesign the interface to make it either a singleton or obviously link each instance to a fixed TE
 	public interface IConveyorBelt
 	{
 		/**

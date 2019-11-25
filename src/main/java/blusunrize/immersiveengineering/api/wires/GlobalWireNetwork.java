@@ -313,8 +313,6 @@ public class GlobalWireNetwork implements ITickableTileEntity
 										handlers.put(rl, handlers.getInt(rl)+1);
 							}
 					}
-					if(!handlers.equals(local.handlerUserCount))
-						IELogger.logger.warn("Net {} assumes user counts as {}, but should be {}!", local, local.handlerUserCount, handlers);
 					for(BlockPos p : local.getConnectors())
 						if(world.isBlockLoaded(p))
 						{

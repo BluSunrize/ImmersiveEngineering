@@ -548,7 +548,7 @@ public class ApiUtils
 		else
 		{
 			CatenaryData data = conn.catData;
-			double min = data.getA()+data.getOffsetY()+vStart.y;
+			double min = data.getScale()+data.getOffsetY()+vStart.y;
 			for(int i = 0; i < 2; i++)
 			{
 				double factor = i==0?1: -1;
@@ -558,7 +558,7 @@ public class ApiUtils
 					double yReal = y-vStart.y;
 					double posRel;
 					Vec3d pos;
-					posRel = (factor*acosh((yReal-data.getOffsetY())/data.getA())*data.getA()+data.getOffsetX())/lengthHor;
+					posRel = (factor*acosh((yReal-data.getOffsetY())/data.getScale())*data.getScale()+data.getOffsetX())/lengthHor;
 					pos = new Vec3d(vStart.x+across.x*posRel, y, vStart.z+across.z*posRel);
 
 					if(posRel >= 0&&posRel <= 1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, startPos))

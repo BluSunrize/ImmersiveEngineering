@@ -37,7 +37,7 @@ public class LocalWireNetwork implements IWorldTickable
 	private final Map<ConnectionPoint, Collection<Connection>> connections = new HashMap<>();
 	private final Map<BlockPos, IImmersiveConnectable> connectors = new HashMap<>();
 	private final Map<ResourceLocation, LocalNetworkHandler> handlers = new HashMap<>();
-	/*private */final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
+	private final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
 
 	public LocalWireNetwork(CompoundNBT subnet, GlobalWireNetwork globalNet)
 	{
@@ -257,7 +257,7 @@ public class LocalWireNetwork implements IWorldTickable
 		for(ResourceLocation loc : iic.getRequestedHandlers())
 		{
 			if(!handlers.containsKey(loc))
-				continue;//TODO throw new AssertionError("Expected to find handler for "+loc+" but didn't!");
+				throw new AssertionError("Expected to find handler for "+loc+" but didn't!");
 			int remaining = handlerUserCount.get(loc)-1;
 			handlerUserCount.put(loc, remaining);
 			IELogger.logger.info("Decreasing {} to {}", loc, remaining);

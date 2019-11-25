@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 public final class WireApi
 {
@@ -125,7 +124,7 @@ public final class WireApi
 		@OnlyIn(Dist.CLIENT)
 		public void onModelBake(ModelBakeEvent evt)
 		{
-			IModel model;
+			IModel<?> model;
 			try
 			{
 				model = ModelLoaderRegistry.getModel(modelLoc);
@@ -141,14 +140,7 @@ public final class WireApi
 				model = obj.process(ImmutableMap.of("flip-v", "true"));
 			}
 			//TODO why doesn't this work with a lambda???
-			this.model = model.bake(evt.getModelLoader(), new Function<ResourceLocation, TextureAtlasSprite>()
-					{
-						@Override
-						public TextureAtlasSprite apply(ResourceLocation rl)
-						{
-							return Minecraft.getInstance().getTextureMap().getSprite(rl);
-						}
-					},
+			this.model = model.bake(evt.getModelLoader(), rl -> Minecraft.getInstance().getTextureMap().getSprite(rl),
 					new BasicState(model.getDefaultState(), false), DefaultVertexFormats.ITEM);
 			tex = Minecraft.getInstance().getTextureMap().getSprite(texLoc);
 		}
