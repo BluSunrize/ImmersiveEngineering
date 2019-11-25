@@ -41,63 +41,71 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
-class Recipes extends RecipeProvider {
+class Recipes extends RecipeProvider
+{
 	private final Path ADV_ROOT;
 	private final HashMap<String, Integer> PATH_COUNT = new HashMap<>();
 
 	private final int standardSmeltingTime = 200;
 	private final int blastDivider = 2;
 
-	public Recipes(DataGenerator gen) {
+	public Recipes(DataGenerator gen)
+	{
 		super(gen);
 		ADV_ROOT = gen.getOutputFolder().resolve("data/minecraft/advancements/recipes/root.json");
 	}
 
 	@Override
-	protected void saveRecipeAdvancement(DirectoryCache cache, JsonObject json, Path path) {
-		if (path.equals(ADV_ROOT)) return; //We NEVER care about this.
+	protected void saveRecipeAdvancement(DirectoryCache cache, JsonObject json, Path path)
+	{
+		if(path.equals(ADV_ROOT)) return; //We NEVER care about this.
 		super.saveRecipeAdvancement(cache, json, path);
 	}
 
 	@Override
-	protected void registerRecipes(@Nonnull Consumer<IFinishedRecipe> out) {
-		for (EnumMetals metal : EnumMetals.values()) {
+	protected void registerRecipes(@Nonnull Consumer<IFinishedRecipe> out)
+	{
+		for(EnumMetals metal : EnumMetals.values())
+		{
 			Item nugget = Metals.nuggets.get(metal);
 			Item ingot = Metals.ingots.get(metal);
 			Item plate = Metals.plates.get(metal);
 			Item dust = Metals.dusts.get(metal);
 			Block block = IEBlocks.Metals.storage.get(metal);
 			Block sheetMetal = IEBlocks.Metals.sheetmetal.get(metal);
-			if (!metal.isVanillaMetal()) {
+			if(!metal.isVanillaMetal())
+			{
 				add3x3Conversion(ingot, nugget, out);
 				add3x3Conversion(block, ingot, out);
-				if (IEBlocks.Metals.ores.containsKey(metal)) {
+				if(IEBlocks.Metals.ores.containsKey(metal))
+				{
 					Block ore = IEBlocks.Metals.ores.get(metal);
 					addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
 				}
 			}
 			addStandardSmeltingBlastingRecipe(dust, ingot, 0, out, "_from_dust");
 //			addStandardSmeltingBlastingRecipe(dust, ingot, metal.smeltingXP, out, "_from_dust"); //TODO: remove this, if 0 XP on dust is intentional. this bugs out because the alloys do not have metal.smeltingXP
-			ShapelessRecipeBuilder.shapelessRecipe(plate).addIngredient(IETags.getTagsFor(metal).ingot).addIngredient(Tools.hammer).addCriterion("has_" + metal.tagName() + "_ingot", this.hasItem(IETags.getTagsFor(metal).ingot)).build(out, toRL("plate_" + metal.tagName() + "_hammering"));
+			ShapelessRecipeBuilder.shapelessRecipe(plate).addIngredient(IETags.getTagsFor(metal).ingot).addIngredient(Tools.hammer).addCriterion("has_"+metal.tagName()+"_ingot", this.hasItem(IETags.getTagsFor(metal).ingot)).build(out, toRL("plate_"+metal.tagName()+"_hammering"));
 			ShapedRecipeBuilder.shapedRecipe(sheetMetal, 4)
 					.key('p', plate)
 					.patternLine(" p ")
 					.patternLine("p p")
 					.patternLine(" p ")
-					.addCriterion("has_" + toPath(plate), hasItem(plate))
+					.addCriterion("has_"+toPath(plate), hasItem(plate))
 					.build(out);
 		}
 		addStandardSmeltingBlastingRecipe(IEItems.Ingredients.dustHopGraphite, Ingredients.ingotHopGraphite, 0.5F, out);
 
-		for (Entry<Block, Block> blockSlab : IEBlocks.toSlab.entrySet())
+		for(Entry<Block, Block> blockSlab : IEBlocks.toSlab.entrySet())
 			addSlab(blockSlab.getKey(), blockSlab.getValue(), out);
 		addStairs(StoneDecoration.hempcrete, StoneDecoration.hempcreteStairs, out);
 		addStairs(StoneDecoration.concrete, StoneDecoration.concreteStairs[0], out);
 		addStairs(StoneDecoration.concreteTile, StoneDecoration.concreteStairs[1], out);
 		addStairs(StoneDecoration.concreteLeaded, StoneDecoration.concreteStairs[2], out);
-		for (TreatedWoodStyles style : TreatedWoodStyles.values())
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			addStairs(WoodenDecoration.treatedWood.get(style), WoodenDecoration.treatedStairs.get(style), out);
-		for (MetalScaffoldingType type : MetalScaffoldingType.values()) {
+		for(MetalScaffoldingType type : MetalScaffoldingType.values())
+		{
 			addStairs(MetalDecoration.steelScaffolding.get(type), MetalDecoration.steelScaffoldingStair.get(type), out);
 			addStairs(MetalDecoration.aluScaffolding.get(type), MetalDecoration.aluScaffoldingStair.get(type), out);
 		}
@@ -165,9 +173,9 @@ class Recipes extends RecipeProvider {
 		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.REDSTONE), 4).patternLine(" w ").patternLine("asa").patternLine(" w ").key('w', IETags.aluminumWire).key('a', Tags.Items.DUSTS_REDSTONE).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out);
 		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.REDSTONE), 4).patternLine(" a ").patternLine("wsw").patternLine(" a ").key('w', IETags.aluminumWire).key('a', Tags.Items.DUSTS_REDSTONE).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out, toRL("wirecoil_redstone2"));
 
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.SPEEDLOADER_LOAD).build(out, ImmersiveEngineering.MODID + ":speedloader_load");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POTION_BULLET_FILL).build(out, ImmersiveEngineering.MODID + ":potion_bullet_fill");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.FLARE_BULLET_COLOR).build(out, ImmersiveEngineering.MODID + ":flare_bullet_color");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.SPEEDLOADER_LOAD).build(out, ImmersiveEngineering.MODID+":speedloader_load");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POTION_BULLET_FILL).build(out, ImmersiveEngineering.MODID+":potion_bullet_fill");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.FLARE_BULLET_COLOR).build(out, ImmersiveEngineering.MODID+":flare_bullet_color");
 
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
@@ -177,41 +185,44 @@ class Recipes extends RecipeProvider {
 	}
 
 	//TODO use tags
-	private void add3x3Conversion(IItemProvider big, IItemProvider small, Consumer<IFinishedRecipe> out) {
+	private void add3x3Conversion(IItemProvider big, IItemProvider small, Consumer<IFinishedRecipe> out)
+	{
 		ShapedRecipeBuilder.shapedRecipe(big)
 				.key('s', small)
 				.patternLine("sss")
 				.patternLine("sss")
 				.patternLine("sss")
-				.addCriterion("has_" + toPath(small), hasItem(small))
-				.build(out, toRL(toPath(small) + "_to_") + toPath(big));
+				.addCriterion("has_"+toPath(small), hasItem(small))
+				.build(out, toRL(toPath(small)+"_to_")+toPath(big));
 		ShapelessRecipeBuilder.shapelessRecipe(small, 9)
 				.addIngredient(big)
-				.addCriterion("has_" + toPath(big), hasItem(small))
-				.build(out, toRL(toPath(big) + "_to_" + toPath(small)));
+				.addCriterion("has_"+toPath(big), hasItem(small))
+				.build(out, toRL(toPath(big)+"_to_"+toPath(small)));
 	}
 
-	private void addSlab(IItemProvider block, IItemProvider slab, Consumer<IFinishedRecipe> out) {
+	private void addSlab(IItemProvider block, IItemProvider slab, Consumer<IFinishedRecipe> out)
+	{
 		ShapedRecipeBuilder.shapedRecipe(slab, 6)
 				.key('s', block)
 				.patternLine("sss")
-				.addCriterion("has_" + toPath(block), hasItem(block))
-				.build(out, toRL(toPath(block) + "_to_slab"));
+				.addCriterion("has_"+toPath(block), hasItem(block))
+				.build(out, toRL(toPath(block)+"_to_slab"));
 		ShapedRecipeBuilder.shapedRecipe(block)
 				.key('s', slab)
 				.patternLine("s")
 				.patternLine("s")
-				.addCriterion("has_" + toPath(block), hasItem(block))
-				.build(out, toRL(toPath(block) + "_from_slab"));
+				.addCriterion("has_"+toPath(block), hasItem(block))
+				.build(out, toRL(toPath(block)+"_from_slab"));
 	}
 
-	private void addStairs(IItemProvider block, IItemProvider stairs, Consumer<IFinishedRecipe> out) {
+	private void addStairs(IItemProvider block, IItemProvider stairs, Consumer<IFinishedRecipe> out)
+	{
 		ShapedRecipeBuilder.shapedRecipe(stairs, 4)
 				.key('s', block)
 				.patternLine("s  ")
 				.patternLine("ss ")
 				.patternLine("sss")
-				.addCriterion("has_" + toPath(block), hasItem(block))
+				.addCriterion("has_"+toPath(block), hasItem(block))
 				.build(out, toRL(toPath(stairs)));
 	}
 
@@ -225,7 +236,8 @@ class Recipes extends RecipeProvider {
 	 * @param middle the item in the middle
 	 */
 	@ParametersAreNonnullByDefault
-	private void addCornerStraightMiddle(IItemProvider output, int count, Object corner, Object side, Object middle, Consumer<IFinishedRecipe> out) {
+	private void addCornerStraightMiddle(IItemProvider output, int count, Object corner, Object side, Object middle, Consumer<IFinishedRecipe> out)
+	{
 		ShapedRecipeBuilder.shapedRecipe(output, count)
 				.key('c', makeIngredient(corner))
 				.key('s', makeIngredient(side))
@@ -233,7 +245,7 @@ class Recipes extends RecipeProvider {
 				.patternLine("csc")
 				.patternLine("sms")
 				.patternLine("csc")
-				.addCriterion("has_" + toPath(output), hasItem(output))
+				.addCriterion("has_"+toPath(output), hasItem(output))
 				.build(out, toRL(toPath(output)));
 	}
 
@@ -246,7 +258,8 @@ class Recipes extends RecipeProvider {
 	 * @param bottom the item on the bottom
 	 */
 	@ParametersAreNonnullByDefault
-	private void addSandwich(IItemProvider output, int count, Object top, Object middle, Object bottom, Consumer<IFinishedRecipe> out) {
+	private void addSandwich(IItemProvider output, int count, Object top, Object middle, Object bottom, Consumer<IFinishedRecipe> out)
+	{
 		ShapedRecipeBuilder.shapedRecipe(output, count)
 				.key('t', makeIngredient(top))
 				.key('m', makeIngredient(middle))
@@ -254,33 +267,37 @@ class Recipes extends RecipeProvider {
 				.patternLine("ttt")
 				.patternLine("mmm")
 				.patternLine("bbb")
-				.addCriterion("has_" + toPath(output), hasItem(output))
+				.addCriterion("has_"+toPath(output), hasItem(output))
 				.build(out, toRL(toPath(output)));
 	}
 
-	private String toPath(IItemProvider src) {
+	private String toPath(IItemProvider src)
+	{
 		return src.asItem().getRegistryName().getPath();
 	}
 
-	private ResourceLocation toRL(String s) {
-		if (PATH_COUNT.containsKey(s)) {
-			int count = PATH_COUNT.get(s) + 1;
+	private ResourceLocation toRL(String s)
+	{
+		if(PATH_COUNT.containsKey(s))
+		{
+			int count = PATH_COUNT.get(s)+1;
 			PATH_COUNT.put(s, count);
-			return new ResourceLocation(ImmersiveEngineering.MODID, s + count);
+			return new ResourceLocation(ImmersiveEngineering.MODID, s+count);
 		}
 		PATH_COUNT.put(s, 1);
 		return new ResourceLocation(ImmersiveEngineering.MODID, s);
 	}
 
 	@Nonnull
-	private Ingredient makeIngredient(Object in) {
-		assert in instanceof IItemProvider || in instanceof Tag || in instanceof Ingredient;
-		if (in instanceof IItemProvider)
-			return Ingredient.fromItems((IItemProvider) in);
-		else if (in instanceof Tag)
-			return Ingredient.fromTag((Tag) in);
+	private Ingredient makeIngredient(Object in)
+	{
+		assert in instanceof IItemProvider||in instanceof Tag||in instanceof Ingredient;
+		if(in instanceof IItemProvider)
+			return Ingredient.fromItems((IItemProvider)in);
+		else if(in instanceof Tag)
+			return Ingredient.fromTag((Tag)in);
 		else
-			return (Ingredient) in;
+			return (Ingredient)in;
 	}
 
 	/**
@@ -295,16 +312,19 @@ class Recipes extends RecipeProvider {
 	 * @param extraPostfix adds an additional postfix before the smelting/blasting postfix when needed (for example used by dusts)
 	 * @param smeltPostfix allows adding the smelting postfix to the smelting (non-blasting) recipe
 	 */
-	private void addStandardSmeltingBlastingRecipe(IItemProvider input, IItemProvider output, float xp, int smeltingTime, Consumer<IFinishedRecipe> out, String extraPostfix, boolean smeltPostfix) {
-		CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(input), output, xp, smeltingTime).addCriterion("has_" + toPath(input), hasItem(input)).build(out, toRL(toPath(output) + extraPostfix + (smeltPostfix ? "_from_smelting" : "")));
-		CookingRecipeBuilder.blastingRecipe(Ingredient.fromItems(input), output, xp, smeltingTime / blastDivider).addCriterion("has_" + toPath(input), hasItem(input)).build(out, toRL(toPath(output) + extraPostfix + "_from_blasting"));
+	private void addStandardSmeltingBlastingRecipe(IItemProvider input, IItemProvider output, float xp, int smeltingTime, Consumer<IFinishedRecipe> out, String extraPostfix, boolean smeltPostfix)
+	{
+		CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(input), output, xp, smeltingTime).addCriterion("has_"+toPath(input), hasItem(input)).build(out, toRL(toPath(output)+extraPostfix+(smeltPostfix?"_from_smelting": "")));
+		CookingRecipeBuilder.blastingRecipe(Ingredient.fromItems(input), output, xp, smeltingTime/blastDivider).addCriterion("has_"+toPath(input), hasItem(input)).build(out, toRL(toPath(output)+extraPostfix+"_from_blasting"));
 	}
 
-	private void addStandardSmeltingBlastingRecipe(IItemProvider input, IItemProvider output, float xp, Consumer<IFinishedRecipe> out) {
+	private void addStandardSmeltingBlastingRecipe(IItemProvider input, IItemProvider output, float xp, Consumer<IFinishedRecipe> out)
+	{
 		addStandardSmeltingBlastingRecipe(input, output, xp, out, "");
 	}
 
-	private void addStandardSmeltingBlastingRecipe(IItemProvider input, IItemProvider output, float xp, Consumer<IFinishedRecipe> out, String extraPostfix) {
+	private void addStandardSmeltingBlastingRecipe(IItemProvider input, IItemProvider output, float xp, Consumer<IFinishedRecipe> out, String extraPostfix)
+	{
 		addStandardSmeltingBlastingRecipe(input, output, xp, standardSmeltingTime, out, extraPostfix, false);
 	}
 }

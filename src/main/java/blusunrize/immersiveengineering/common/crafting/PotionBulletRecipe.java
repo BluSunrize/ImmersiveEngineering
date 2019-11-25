@@ -23,46 +23,57 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class PotionBulletRecipe extends SpecialRecipe {
+public class PotionBulletRecipe extends SpecialRecipe
+{
 
 
-	public PotionBulletRecipe(ResourceLocation ressourceLocation) {
+	public PotionBulletRecipe(ResourceLocation ressourceLocation)
+	{
 		super(ressourceLocation);
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, @Nonnull World world) {
+	public boolean matches(CraftingInventory inv, @Nonnull World world)
+	{
 		boolean hasBullet = false;
 		boolean hasPotion = false;
-		for (int i = 0; i < inv.getSizeInventory(); i++) {
+		for(int i = 0; i < inv.getSizeInventory(); i++)
+		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if (!stackInSlot.isEmpty()) {
-				if (isPotionBullet(stackInSlot)) {
-					if (hasBullet)
+			if(!stackInSlot.isEmpty())
+			{
+				if(isPotionBullet(stackInSlot))
+				{
+					if(hasBullet)
 						return false;
 					hasBullet = true;
-				} else if (stackInSlot.getItem() instanceof PotionItem) {
-					if (hasBullet)
+				}
+				else if(stackInSlot.getItem() instanceof PotionItem)
+				{
+					if(hasBullet)
 						return false;
 					hasPotion = true;
-				} else
+				}
+				else
 					return false;
 			}
 		}
-		return hasBullet && hasPotion;
+		return hasBullet&&hasPotion;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
+	public ItemStack getCraftingResult(CraftingInventory inv)
+	{
 		ItemStack bullet = ItemStack.EMPTY;
 		ItemStack potion = ItemStack.EMPTY;
-		for (int i = 0; i < inv.getSizeInventory(); i++) {
+		for(int i = 0; i < inv.getSizeInventory(); i++)
+		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if (!stackInSlot.isEmpty())
-				if (bullet.isEmpty() && isPotionBullet(stackInSlot))
+			if(!stackInSlot.isEmpty())
+				if(bullet.isEmpty()&&isPotionBullet(stackInSlot))
 					bullet = stackInSlot;
-				else if (potion.isEmpty() && stackInSlot.getItem() instanceof PotionItem)
+				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof PotionItem)
 					potion = stackInSlot;
 		}
 		ItemStack newBullet = Utils.copyStackWithAmount(bullet, 1);
@@ -71,19 +82,22 @@ public class PotionBulletRecipe extends SpecialRecipe {
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
-		return width >= 2 || height >= 2;
+	public boolean canFit(int width, int height)
+	{
+		return width >= 2||height >= 2;
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public IRecipeSerializer<?> getSerializer()
+	{
 		return RecipeSerializers.POTION_BULLET_FILL;
 	}
 
 
-	private boolean isPotionBullet(ItemStack stack) {
-		return stack.getItem() instanceof BulletItem &&
-				((BulletItem) stack.getItem()).getType() == BulletHandler.getBullet(BulletItem.POTION);
+	private boolean isPotionBullet(ItemStack stack)
+	{
+		return stack.getItem() instanceof BulletItem&&
+				((BulletItem)stack.getItem()).getType()==BulletHandler.getBullet(BulletItem.POTION);
 	}
 }
