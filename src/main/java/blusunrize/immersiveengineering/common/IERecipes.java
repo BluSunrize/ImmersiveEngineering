@@ -60,7 +60,6 @@ public class IERecipes
 		/*
 		//Loop, special or colouration recipes
 		registry.register(new RecipeBannerAdvanced().setRegistryName(ImmersiveEngineering.MODID, "banners"));
-		registry.register(new RecipeSpeedloader().setRegistryName(ImmersiveEngineering.MODID, "speedloader_load"));
 		registry.register(new RecipeJerrycan(id).setRegistryName(ImmersiveEngineering.MODID, "jerrycan"));
 		registry.register(new RecipeShaderBags(id).setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
 		registry.register(new RecipeEarmuffs().setRegistryName(ImmersiveEngineering.MODID, "earmuffs"));
@@ -70,8 +69,6 @@ public class IERecipes
 				(s) -> (ItemNBTHelper.hasKey(s, "colour")?ItemNBTHelper.getInt(s, "colour"): 0xffffff),
 				(s, i) -> ItemNBTHelper.putInt(s, "colour", i))
 				.setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
-		ForgeRegistries.RECIPES.register(new RecipeFlareBullets(id).setRegistryName(ImmersiveEngineering.MODID, "potion_flare"));
-		ForgeRegistries.RECIPES.register(new RecipePotionBullets(id).setRegistryName(ImmersiveEngineering.MODID, "bullet_potion"));
 		*/
 	}
 

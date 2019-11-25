@@ -20,17 +20,18 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class SpeedloaderRecipe extends SpecialRecipe
-{
-	private final byte[] offsetPattern = {0,1,1,1,0,-1,-1,-1};
+import javax.annotation.Nonnull;
 
-	public SpeedloaderRecipe(ResourceLocation p_i48169_1_) {
-		super(p_i48169_1_);
+public class SpeedloaderRecipe extends SpecialRecipe {
+	private final byte[] offsetPattern = {0, 1, 1, 1, 0, -1, -1, -1};
+
+	public SpeedloaderRecipe(ResourceLocation ressourceLocation) {
+		super(ressourceLocation);
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, World worldIn) {
-		ItemStack curStack;
+	public boolean matches(CraftingInventory inv, @Nonnull World world) {
+		ItemStack stackInSlot;
 		int speedloaderX = -1;
 		int speedloaderY = -1;
 		boolean hasSpeedLoader = false;
@@ -40,14 +41,10 @@ public class SpeedloaderRecipe extends SpecialRecipe
 		//but I can't come up with a smart way to prevent out-of-bounds exceptions for mismatching inventories at the moment
 		boolean[][] blindBulletGrid = new boolean[inv.getHeight()][width];
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
-			curStack = inv.getStackInSlot(i);
-			if (curStack.isEmpty())
-				continue;
-			else if (curStack.getItem() instanceof SpeedloaderItem) {
-				if (hasSpeedLoader)
-					return false;
-				else {
-					if (!((SpeedloaderItem)curStack.getItem()).isEmpty(curStack))
+			stackInSlot = inv.getStackInSlot(i);
+			if (!stackInSlot.isEmpty()) {
+				if (stackInSlot.getItem() instanceof SpeedloaderItem) {
+					if (hasSpeedLoader || !((SpeedloaderItem) stackInSlot.getItem()).isEmpty(stackInSlot))
 						return false;
 					speedloaderX = i % width;
 					speedloaderY = i / width;
@@ -55,28 +52,27 @@ public class SpeedloaderRecipe extends SpecialRecipe
 						for (int k = 0; k < width; k++) {
 							if (j >= speedloaderY && k >= speedloaderX)
 								break;
-							if(blindBulletGrid[j][k] && (Math.abs(j-speedloaderY) > 1 || Math.abs(k-speedloaderX) > 1))
+							if (blindBulletGrid[j][k] && (Math.abs(j - speedloaderY) > 1 || Math.abs(k - speedloaderX) > 1))
 								return false;
 						}
 						if (j >= speedloaderY)
 							break;
 					}
 					hasSpeedLoader = true;
-				}
-			}
-			else if (curStack.getItem() instanceof BulletItem) {
-				hasBullets = true;
-				if (!hasSpeedLoader)
-					blindBulletGrid[i / width][i % width] = true;
-				else if (Math.abs((i / width) - speedloaderY) > 1 || Math.abs((i % width) - speedloaderX) > 1)
+				} else if (stackInSlot.getItem() instanceof BulletItem) {
+					hasBullets = true;
+					if (!hasSpeedLoader)
+						blindBulletGrid[i / width][i % width] = true;
+					else if (Math.abs((i / width) - speedloaderY) > 1 || Math.abs((i % width) - speedloaderX) > 1)
+						return false;
+				} else
 					return false;
 			}
-			else
-				return false;
 		}
 		return hasSpeedLoader && hasBullets;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getCraftingResult(CraftingInventory inv) {
 		ItemStack speedloader = null;
@@ -96,7 +92,7 @@ public class SpeedloaderRecipe extends SpecialRecipe
 		ItemStack out = speedloader.copy();
 		NonNullList<ItemStack> fill = NonNullList.withSize(8, ItemStack.EMPTY);
 		for (int i = 0; i < 8; i++) { //8 == offsetPattern.length == # of Revolver Slots
-			int curY = speedloaderY + offsetPattern[(i+6)%8];
+			int curY = speedloaderY + offsetPattern[(i + 6) % 8];
 			if (curY < 0 || curY >= height)
 				continue;
 			int curX = speedloaderX + offsetPattern[i];
@@ -112,59 +108,13 @@ public class SpeedloaderRecipe extends SpecialRecipe
 
 	@Override
 	public boolean canFit(int width, int height) {
-		return width > 1 || height > 1;
+		return width >= 2 || height >= 2; //assumes the minimum value for width and height is 1, so this isn't checked for
 	}
 
-
+	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
 		return RecipeSerializers.SPEEDLOADER_LOAD;
 	}
-/*	public static final IRecipeSerializer<SpeedloaderRecipe> SERIALIZER = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+":speedloader", new SpecialRecipeSerializer<>(SpeedloaderRecipe::new)
-	);
 
-	public SpeedloaderRecipe(ResourceLocation id)
-	{
-		super(id, null, 3, 3, getPattern(), new ItemStack(Weapons.speedloader));
-	}
-
-	private static NonNullList<Ingredient> getPattern()
-	{
-		Ingredient bullet = Ingredient.fromItems(Weapons.bullets.values().toArray(new IItemProvider[0]));
-		Ingredient speedloader = Ingredient.fromItems(Weapons.speedloader);
-		return NonNullList.from(Ingredient.EMPTY,
-				bullet, bullet, bullet,
-				bullet, speedloader, bullet,
-				bullet, bullet, bullet);
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack getCraftingResult(CraftingInventory matrix)
-	{
-		ItemStack speedloader = matrix.getStackInSlot(4);
-
-		if(!speedloader.isEmpty()&&speedloader.getItem() instanceof SpeedloaderItem&&((SpeedloaderItem)speedloader.getItem()).isEmpty(speedloader))
-		{
-			ItemStack out = speedloader.copy();
-			NonNullList<ItemStack> fill = NonNullList.withSize(8, ItemStack.EMPTY);
-			for(int i = 0; i < 8; i++)
-			{
-				int j = i >= 4?i+1: i;
-				fill.set(i, Utils.copyStackWithAmount(matrix.getStackInSlot(j), 1));
-			}
-			((SpeedloaderItem)out.getItem()).setContainedItems(out, fill);
-			return out;
-		}
-		else
-			return ItemStack.EMPTY;
-	}
-
-	@Nonnull
-	@Override
-	public IRecipeSerializer<?> getSerializer()
-	{
-		return SERIALIZER;
-	}*/
 }

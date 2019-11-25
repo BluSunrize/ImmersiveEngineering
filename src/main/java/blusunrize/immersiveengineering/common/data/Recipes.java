@@ -177,6 +177,8 @@ class Recipes extends RecipeProvider
 		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.REDSTONE),4).patternLine(" a ").patternLine("wsw").patternLine(" a ").key('w', IETags.aluminumWire).key('a', Tags.Items.DUSTS_REDSTONE).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out, toRL("wirecoil_redstone2"));
 
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.SPEEDLOADER_LOAD).build(out, ImmersiveEngineering.MODID + ":speedloader_load");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POTION_BULLET_FILL).build(out, ImmersiveEngineering.MODID + ":potion_bullet_fill");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.FLARE_BULLET_COLOR).build(out, ImmersiveEngineering.MODID + ":flare_bullet_color");
 
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
