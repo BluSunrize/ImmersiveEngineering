@@ -26,9 +26,9 @@ public class SpeedloaderRecipe extends SpecialRecipe
 {
 	private final byte[] offsetPattern = {0, 1, 1, 1, 0, -1, -1, -1};
 
-	public SpeedloaderRecipe(ResourceLocation ressourceLocation)
+	public SpeedloaderRecipe(ResourceLocation resourceLocation)
 	{
-		super(ressourceLocation);
+		super(resourceLocation);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class SpeedloaderRecipe extends SpecialRecipe
 		ItemStack stackInSlot;
 		int speedloaderX = -1;
 		int speedloaderY = -1;
-		boolean hasSpeedLoader = false;
+		boolean hasSpeedloader = false;
 		boolean hasBullets = false;
 		int width = inv.getWidth();
 		//for bullets found before the speedloader was located. could maybe limit it to half the crafting grids size,
@@ -50,7 +50,7 @@ public class SpeedloaderRecipe extends SpecialRecipe
 			{
 				if(stackInSlot.getItem() instanceof SpeedloaderItem)
 				{
-					if(hasSpeedLoader||!((SpeedloaderItem)stackInSlot.getItem()).isEmpty(stackInSlot))
+					if(hasSpeedloader||!((SpeedloaderItem)stackInSlot.getItem()).isEmpty(stackInSlot))
 						return false;
 					speedloaderX = i%width;
 					speedloaderY = i/width;
@@ -66,12 +66,12 @@ public class SpeedloaderRecipe extends SpecialRecipe
 						if(j >= speedloaderY)
 							break;
 					}
-					hasSpeedLoader = true;
+					hasSpeedloader = true;
 				}
 				else if(stackInSlot.getItem() instanceof BulletItem)
 				{
 					hasBullets = true;
-					if(!hasSpeedLoader)
+					if(!hasSpeedloader)
 						blindBulletGrid[i/width][i%width] = true;
 					else if(Math.abs((i/width)-speedloaderY) > 1||Math.abs((i%width)-speedloaderX) > 1)
 						return false;
@@ -80,7 +80,7 @@ public class SpeedloaderRecipe extends SpecialRecipe
 					return false;
 			}
 		}
-		return hasSpeedLoader&&hasBullets;
+		return hasSpeedloader&&hasBullets;
 	}
 
 	@Nonnull

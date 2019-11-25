@@ -27,9 +27,9 @@ public class PotionBulletRecipe extends SpecialRecipe
 {
 
 
-	public PotionBulletRecipe(ResourceLocation ressourceLocation)
+	public PotionBulletRecipe(ResourceLocation resourceLocation)
 	{
-		super(ressourceLocation);
+		super(resourceLocation);
 	}
 
 	@Override
