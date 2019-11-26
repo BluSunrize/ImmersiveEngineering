@@ -436,14 +436,7 @@ public class ShaderRegistry
 
 		sortedRarityMap.clear();
 		sortedRarityMap.addAll(ShaderRegistry.rarityWeightMap.keySet());
-		Collections.sort(sortedRarityMap, new Comparator<Rarity>()
-		{
-			@Override
-			public int compare(Rarity enum0, Rarity enum1)
-			{
-				return Integer.compare(ShaderRegistry.rarityWeightMap.get(enum0), ShaderRegistry.rarityWeightMap.get(enum1));
-			}
-		});
+		sortedRarityMap.sort(Comparator.comparingInt(enum0 -> ShaderRegistry.rarityWeightMap.get(enum0)));
 
 		//TODO manual entry
 	}

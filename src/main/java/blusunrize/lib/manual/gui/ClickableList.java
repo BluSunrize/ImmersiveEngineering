@@ -33,7 +33,7 @@ public class ClickableList extends Button
 	private final Consumer<AbstractNode<ResourceLocation, ManualEntry>> handler;
 	private int offset;
 	private int maxOffset;
-	private int perPage;
+	private final int perPage;
 	private ManualScreen gui;
 
 	ClickableList(ManualScreen gui, int x, int y, int w, int h, float textScale,
@@ -45,6 +45,7 @@ public class ClickableList extends Button
 		this.gui = gui;
 		this.textScale = textScale;
 		this.handler = handler;
+		this.perPage = (h-8)/getFontHeight();
 		setEntries(nodes);
 	}
 
@@ -154,7 +155,6 @@ public class ClickableList extends Button
 			isCategory[i] = !nodes.get(i).isLeaf();
 		}
 
-		perPage = (height-8)/getFontHeight();
 		if(perPage < headers.length)
 			maxOffset = headers.length-perPage;
 		height = getFontHeight()*Math.min(perPage, headers.length);

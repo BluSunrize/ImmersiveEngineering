@@ -43,8 +43,9 @@ public class NetHandlerCapability
 			{
 				instance.readFromNBT((CompoundNBT)nbt);
 			}
-			//TODO whatb is this used for? How will it work in 1.13?
-		}, () -> new GlobalWireNetwork(null));
+		}, () -> {
+			throw new IllegalStateException("Can not create global wire network without a world");
+		});
 	}
 
 	public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundNBT>

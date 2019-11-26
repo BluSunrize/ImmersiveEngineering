@@ -137,7 +137,7 @@ public class IngredientStack
 			return stackList;
 		if(tag!=null)
 			return ApiUtils.getItemsInTag(tag);
-		//TODO
+		//TODO when universal buckets are back
 		//if(fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
 		//	return Collections.singletonList(UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid()));
 		return Collections.singletonList(stack);

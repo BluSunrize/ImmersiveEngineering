@@ -402,58 +402,72 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
+	public boolean charTyped(char p_charTyped_1_, int p_charTyped_2_)
+	{
+		if(this.searchField!=null&&this.searchField.charTyped(p_charTyped_1_, p_charTyped_2_))
+		{
+			updateSearch();
+			return true;
+		}
+		else
+			return super.charTyped(p_charTyped_1_, p_charTyped_2_);
+	}
+
+	@Override
 	public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_)
 	{
 		if(this.searchField!=null&&this.searchField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_))
 		{
-			String search = searchField.getText();
-			if(search.trim().isEmpty())
-			{
-				suggestionList.visible = false;
-				this.fullInit();
-			}
-			else
-			{
-				search = search.toLowerCase(Locale.ENGLISH);
-				ArrayList<AbstractNode<ResourceLocation, ManualEntry>> lHeaders = new ArrayList<>();
-				Set<AbstractNode<ResourceLocation, ManualEntry>> lSpellcheck = new HashSet<>();
-				final String searchFinal = search;
-				manual.contentTree.fullStream().forEach((node) ->
-				{
-					if(manual.showNodeInList(node))
-					{
-						String title = ManualUtils.getTitleForNode(node, manual).toLowerCase(Locale.ENGLISH);
-						if(title.contains(searchFinal))
-							lHeaders.add(node);
-						else
-							lSpellcheck.add(node);
-					}
-				});
-				List<AbstractNode<ResourceLocation, ManualEntry>> lCorrections =
-						ManualUtils.getPrimitiveSpellingCorrections(search, lSpellcheck, 4,
-								(e) -> ManualUtils.getTitleForNode(e, manual));
-				for(AbstractNode<ResourceLocation, ManualEntry> node : lSpellcheck)
-					if(!lCorrections.contains(node))
-					{
-						if(node.isLeaf()&&node.getLeafData().listForSearch(search))
-						{
-							lHeaders.add(node);
-							lCorrections.add(node);
-							break;
-						}
-					}
-
-				//TODO is this correct?
-				entryList.setEntries(lHeaders);
-				if(!lCorrections.isEmpty())
-					suggestionList.setEntries(lCorrections);
-				suggestionList.visible = !lCorrections.isEmpty();
-			}
+			updateSearch();
 			return true;
 		}
 		else
-		{
 			return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+	}
+
+	private void updateSearch()
+	{
+		String search = searchField.getText();
+		if(search.trim().isEmpty())
+		{
+			suggestionList.visible = false;
+			this.fullInit();
+		}
+		else
+		{
+			search = search.toLowerCase(Locale.ENGLISH);
+			ArrayList<AbstractNode<ResourceLocation, ManualEntry>> lHeaders = new ArrayList<>();
+			Set<AbstractNode<ResourceLocation, ManualEntry>> lSpellcheck = new HashSet<>();
+			final String searchFinal = search;
+			manual.contentTree.fullStream().forEach((node) ->
+			{
+				if(manual.showNodeInList(node))
+				{
+					String title = ManualUtils.getTitleForNode(node, manual).toLowerCase(Locale.ENGLISH);
+					if(title.contains(searchFinal))
+						lHeaders.add(node);
+					else
+						lSpellcheck.add(node);
+				}
+			});
+			List<AbstractNode<ResourceLocation, ManualEntry>> lCorrections =
+					ManualUtils.getPrimitiveSpellingCorrections(search, lSpellcheck, 4,
+							(e) -> ManualUtils.getTitleForNode(e, manual));
+			for(AbstractNode<ResourceLocation, ManualEntry> node : lSpellcheck)
+				if(!lCorrections.contains(node))
+				{
+					if(node.isLeaf()&&node.getLeafData().listForSearch(search))
+					{
+						lHeaders.add(node);
+						lCorrections.add(node);
+						break;
+					}
+				}
+
+			entryList.setEntries(lHeaders);
+			if(!lCorrections.isEmpty())
+				suggestionList.setEntries(lCorrections);
+			suggestionList.visible = !lCorrections.isEmpty();
 		}
 	}
 

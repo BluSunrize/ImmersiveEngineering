@@ -111,7 +111,7 @@ public class Connection
 		if(Math.abs(catData.deltaX) < 0.05&&Math.abs(catData.deltaZ) < 0.05)
 		{
 			catData.isVertical = true;
-			catData.a = 1;
+			catData.scale = 1;
 			catData.offsetX = catData.offsetY = 0;
 			return;
 		}
@@ -147,8 +147,8 @@ public class Connection
 			}
 			l = (lower+upper)/2;
 		}
-		catData.a = catData.horLength/(2*l);
-		catData.offsetX = (0+catData.horLength-catData.a*Math.log((wireLength+catData.deltaY)/(wireLength-catData.deltaY)))*0.5;
+		catData.scale = catData.horLength/(2*l);
+		catData.offsetX = (0+catData.horLength-catData.scale*Math.log((wireLength+catData.deltaY)/(wireLength-catData.deltaY)))*0.5;
 		catData.offsetY = (catData.deltaY+0-wireLength*Math.cosh(l)/Math.sinh(l))*0.5;
 	}
 
@@ -239,8 +239,8 @@ public class Connection
 				data.vecA = conn.getPoint(0, conn.getEndB());
 				data.deltaX *= -1;
 				data.deltaZ *= -1;
-				data.offsetX = conn.catData.horLength-conn.catData.offsetX;//TODO is this correct?
-				data.offsetY = -data.a*Math.cosh(-data.offsetX/data.a);
+				data.offsetX = conn.catData.horLength-conn.catData.offsetX;
+				data.offsetY = -data.scale*Math.cosh(-data.offsetX/data.scale);
 			}
 		}
 
@@ -278,8 +278,7 @@ public class Connection
 		//Relative to endA
 		private double offsetX = Double.NaN;
 		private double offsetY = Double.NaN;
-		//TODO better name?
-		private double a = Double.NaN;
+		private double scale = Double.NaN;
 		private double deltaX = Double.NaN;
 		private double deltaY = Double.NaN;
 		private double deltaZ = Double.NaN;
@@ -292,7 +291,7 @@ public class Connection
 			ret.isVertical = isVertical;
 			ret.offsetX = offsetX;
 			ret.offsetY = offsetY;
-			ret.a = a;
+			ret.scale = scale;
 			ret.deltaX = deltaX;
 			ret.deltaY = deltaY;
 			ret.deltaZ = deltaZ;
@@ -307,7 +306,7 @@ public class Connection
 			if(isVertical)
 				return Double.POSITIVE_INFINITY;
 			else
-				return Math.sinh((pos*horLength-offsetX)/a);
+				return Math.sinh((pos*horLength-offsetX)/scale);
 		}
 
 		public Vec3d getPoint(double pos)
@@ -319,7 +318,7 @@ public class Connection
 			if(isVertical)
 				y = deltaY*pos;
 			else
-				y = a*Math.cosh((horLength*pos-offsetX)/a)+offsetY;
+				y = scale*Math.cosh((horLength*pos-offsetX)/scale)+offsetY;
 			double z = deltaZ*pos;
 			return vecA.add(x, y, z);
 		}
@@ -339,9 +338,9 @@ public class Connection
 			return offsetY;
 		}
 
-		public double getA()
+		public double getScale()
 		{
-			return a;
+			return scale;
 		}
 
 		public double getDeltaX()
@@ -372,7 +371,7 @@ public class Connection
 		@Override
 		public String toString()
 		{
-			return "Vertical: "+isVertical+", offset: x "+offsetX+" y "+offsetY+", Factor A: "+a+", Vector at end A: "+
+			return "Vertical: "+isVertical+", offset: x "+offsetX+" y "+offsetY+", Factor A: "+scale+", Vector at end A: "+
 					vecA+", horizontal length: "+horLength+", delta: "+deltaX+", "+deltaY+", "+deltaZ;
 		}
 
@@ -387,7 +386,7 @@ public class Connection
 			if(isVertical!=that.isVertical) return false;
 			if(Double.compare(that.offsetX, offsetX)!=0) return false;
 			if(Double.compare(that.offsetY, offsetY)!=0) return false;
-			if(Double.compare(that.a, a)!=0) return false;
+			if(Double.compare(that.scale, scale)!=0) return false;
 			if(Double.compare(that.deltaX, deltaX)!=0) return false;
 			if(Double.compare(that.deltaY, deltaY)!=0) return false;
 			if(Double.compare(that.deltaZ, deltaZ)!=0) return false;
@@ -405,7 +404,7 @@ public class Connection
 			result = 31*result+(int)(temp^(temp >>> 32));
 			temp = Double.doubleToLongBits(offsetY);
 			result = 31*result+(int)(temp^(temp >>> 32));
-			temp = Double.doubleToLongBits(a);
+			temp = Double.doubleToLongBits(scale);
 			result = 31*result+(int)(temp^(temp >>> 32));
 			temp = Double.doubleToLongBits(deltaX);
 			result = 31*result+(int)(temp^(temp >>> 32));
