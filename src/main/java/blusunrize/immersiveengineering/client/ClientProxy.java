@@ -279,7 +279,7 @@ public class ClientProxy extends CommonProxy
 		//TODO
 		nixieFontOptional = ClientUtils.font();
 		nixieFont = ClientUtils.font();
-		itemFont = ClientUtils.font();
+		itemFont = new IEItemFontRender(false);
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 
 		ClientRegistry.bindTileEntitySpecialRenderer(ChargingStationTileEntity.class, new ChargingStationRenderer());
