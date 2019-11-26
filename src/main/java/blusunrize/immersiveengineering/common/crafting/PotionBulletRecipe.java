@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.common.data.RecipeSerializers;
+import blusunrize.immersiveengineering.common.data.Recipes;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -50,7 +50,7 @@ public class PotionBulletRecipe extends SpecialRecipe
 				}
 				else if(stackInSlot.getItem() instanceof PotionItem)
 				{
-					if(hasBullet)
+					if(hasPotion)
 						return false;
 					hasPotion = true;
 				}
@@ -84,14 +84,14 @@ public class PotionBulletRecipe extends SpecialRecipe
 	@Override
 	public boolean canFit(int width, int height)
 	{
-		return width >= 2||height >= 2;
+		return width*height >= 2;
 	}
 
 	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return RecipeSerializers.POTION_BULLET_FILL;
+		return Recipes.POTION_BULLET_FILL.get();
 	}
 
 

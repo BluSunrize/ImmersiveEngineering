@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.common.data.RecipeSerializers;
+import blusunrize.immersiveengineering.common.data.Recipes;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.SpeedloaderItem;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -38,11 +38,9 @@ public class SpeedloaderRecipe extends SpecialRecipe
 		int speedloaderX = -1;
 		int speedloaderY = -1;
 		boolean hasSpeedloader = false;
+		NonNullList<ItemStack> speedloaderBullets = null;
 		boolean hasBullets = false;
 		int width = inv.getWidth();
-		//for bullets found before the speedloader was located. could maybe limit it to half the crafting grids size,
-		//but I can't come up with a smart way to prevent out-of-bounds exceptions for mismatching inventories at the moment
-		boolean[][] blindBulletGrid = new boolean[inv.getHeight()][width];
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			stackInSlot = inv.getStackInSlot(i);
@@ -50,37 +48,40 @@ public class SpeedloaderRecipe extends SpecialRecipe
 			{
 				if(stackInSlot.getItem() instanceof SpeedloaderItem)
 				{
-					if(hasSpeedloader||!((SpeedloaderItem)stackInSlot.getItem()).isEmpty(stackInSlot))
+					if(hasSpeedloader)
 						return false;
+					if(!((SpeedloaderItem)stackInSlot.getItem()).isEmpty(stackInSlot))
+						speedloaderBullets = ((SpeedloaderItem)stackInSlot.getItem()).getBullets(stackInSlot, false);
 					speedloaderX = i%width;
 					speedloaderY = i/width;
-					for(int j = 0; j < inv.getHeight(); j++)
-					{
-						for(int k = 0; k < width; k++)
-						{
-							if(j >= speedloaderY&&k >= speedloaderX)
-								break;
-							if(blindBulletGrid[j][k]&&(Math.abs(j-speedloaderY) > 1||Math.abs(k-speedloaderX) > 1))
-								return false;
-						}
-						if(j >= speedloaderY)
-							break;
-					}
 					hasSpeedloader = true;
 				}
 				else if(stackInSlot.getItem() instanceof BulletItem)
-				{
 					hasBullets = true;
-					if(!hasSpeedloader)
-						blindBulletGrid[i/width][i%width] = true;
-					else if(Math.abs((i/width)-speedloaderY) > 1||Math.abs((i%width)-speedloaderX) > 1)
-						return false;
-				}
 				else
 					return false;
 			}
 		}
-		return hasSpeedloader&&hasBullets;
+		if(hasSpeedloader&&hasBullets)
+		{
+			for(int i = 0; i < inv.getSizeInventory(); i++)
+			{
+				stackInSlot = inv.getStackInSlot(i);
+				if(!stackInSlot.isEmpty())
+				{
+					int curOffsetY = (i/width)-speedloaderY;
+					int curOffsetX = (i%width)-speedloaderX;
+					if((curOffsetY!=0||curOffsetX!=0)&&
+							(Math.abs(curOffsetY) > 1||Math.abs(curOffsetX) > 1||
+									(speedloaderBullets!=null&&!speedloaderBullets.get(3+(curOffsetX > 0||(curOffsetX==0&&curOffsetY < 0)?1: -1)*(curOffsetX+curOffsetY-2)).isEmpty())
+							)
+					)
+						return false;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Nonnull
@@ -104,7 +105,8 @@ public class SpeedloaderRecipe extends SpecialRecipe
 		}
 
 		ItemStack out = speedloader.copy();
-		NonNullList<ItemStack> fill = NonNullList.withSize(8, ItemStack.EMPTY);
+		NonNullList<ItemStack> fill = ((SpeedloaderItem)out.getItem()).getBullets(out, false);
+
 		for(int i = 0; i < 8; i++)
 		{ //8 == offsetPattern.length == # of Revolver Slots
 			int curY = speedloaderY+offsetPattern[(i+6)%8];
@@ -124,14 +126,14 @@ public class SpeedloaderRecipe extends SpecialRecipe
 	@Override
 	public boolean canFit(int width, int height)
 	{
-		return width >= 2||height >= 2; //assumes the minimum value for width and height is 1, so this isn't checked for
+		return width*height >= 2;
 	}
 
 	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return RecipeSerializers.SPEEDLOADER_LOAD;
+		return Recipes.SPEEDLOADER_LOAD.get();
 	}
 
 }

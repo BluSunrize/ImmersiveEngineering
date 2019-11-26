@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.common.data.RecipeSerializers;
+import blusunrize.immersiveengineering.common.data.Recipes;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -119,14 +119,14 @@ public class FlareBulletRecipe extends SpecialRecipe
 	@Override
 	public boolean canFit(int width, int height)
 	{
-		return width >= 2||height >= 2;
+		return width*height >= 2;
 	}
 
 	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return RecipeSerializers.FLARE_BULLET_COLOR;
+		return Recipes.FLARE_BULLET_COLOR.get();
 	}
 
 	private boolean isFlareBullet(ItemStack stack)

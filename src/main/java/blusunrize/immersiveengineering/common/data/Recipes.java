@@ -18,21 +18,26 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.crafting.FlareBulletRecipe;
+import blusunrize.immersiveengineering.common.crafting.PotionBulletRecipe;
+import blusunrize.immersiveengineering.common.crafting.SpeedloaderRecipe;
 import blusunrize.immersiveengineering.common.items.IEItems;
-import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.items.IEItems.Metals;
-import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.IEItems.Tools;
+import blusunrize.immersiveengineering.common.items.IEItems.*;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -41,13 +46,19 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
-class Recipes extends RecipeProvider
+public class Recipes extends RecipeProvider
 {
 	private final Path ADV_ROOT;
 	private final HashMap<String, Integer> PATH_COUNT = new HashMap<>();
 
 	private final int standardSmeltingTime = 200;
 	private final int blastDivider = 2;
+
+	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = new DeferredRegister<>(ForgeRegistries.RECIPE_SERIALIZERS, ImmersiveEngineering.MODID);
+
+	public static final RegistryObject<IRecipeSerializer<?>> SPEEDLOADER_LOAD = RECIPE_SERIALIZERS.register("crafting_special_speedloader_load", () -> new SpecialRecipeSerializer<>(SpeedloaderRecipe::new));
+	public static final RegistryObject<IRecipeSerializer<?>> POTION_BULLET_FILL = RECIPE_SERIALIZERS.register("crafting_special_potion_bullet_fill", () -> new SpecialRecipeSerializer<>(PotionBulletRecipe::new));
+	public static final RegistryObject<IRecipeSerializer<?>> FLARE_BULLET_COLOR = RECIPE_SERIALIZERS.register("crafting_special_flare_bullet_color", () -> new SpecialRecipeSerializer<>(FlareBulletRecipe::new));
 
 	public Recipes(DataGenerator gen)
 	{
@@ -174,10 +185,11 @@ class Recipes extends RecipeProvider
 		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.REDSTONE), 4).patternLine(" a ").patternLine("wsw").patternLine(" a ").key('w', IETags.aluminumWire).key('a', Tags.Items.DUSTS_REDSTONE).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out, toRL("wirecoil_redstone2"));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.jerrycan).patternLine(" ii").patternLine("ibb").patternLine("ibb").key('i', IETags.getTagsFor(EnumMetals.IRON).plate).key('b', Items.BUCKET).addCriterion("has_bucket", this.hasItem(Items.BUCKET)).build(out, toRL("jerrycan"));
+		ShapedRecipeBuilder.shapedRecipe(Weapons.speedloader).patternLine("  i").patternLine("iis").patternLine("  i").key('i', IETags.getTagsFor(EnumMetals.IRON).ingot).key('s', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.SPEEDLOADER_LOAD).build(out, ImmersiveEngineering.MODID+":speedloader_load");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POTION_BULLET_FILL).build(out, ImmersiveEngineering.MODID+":potion_bullet_fill");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.FLARE_BULLET_COLOR).build(out, ImmersiveEngineering.MODID+":flare_bullet_color");
+		CustomRecipeBuilder.func_218656_a((SpecialRecipeSerializer<?>)SPEEDLOADER_LOAD.get()).build(out, ImmersiveEngineering.MODID+":speedloader_load");
+		CustomRecipeBuilder.func_218656_a((SpecialRecipeSerializer<?>)FLARE_BULLET_COLOR.get()).build(out, ImmersiveEngineering.MODID+":flare_bullet_color");
+		CustomRecipeBuilder.func_218656_a((SpecialRecipeSerializer<?>)POTION_BULLET_FILL.get()).build(out, ImmersiveEngineering.MODID+":potion_bullet_fill");
 
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
