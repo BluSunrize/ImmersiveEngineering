@@ -60,7 +60,6 @@ public class IERecipes
 		/*
 		//Loop, special or colouration recipes
 		registry.register(new RecipeBannerAdvanced().setRegistryName(ImmersiveEngineering.MODID, "banners"));
-		registry.register(new RecipeJerrycan(id).setRegistryName(ImmersiveEngineering.MODID, "jerrycan"));
 		registry.register(new RecipeShaderBags(id).setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
 		registry.register(new RecipeEarmuffs().setRegistryName(ImmersiveEngineering.MODID, "earmuffs"));
 		registry.register(new RecipePowerpack(id).setRegistryName(ImmersiveEngineering.MODID, "powerpack"));

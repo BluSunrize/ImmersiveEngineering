@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.common.data.Recipes;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.inventory.CraftingInventory;
@@ -24,10 +24,9 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class FlareBulletRecipe extends SpecialRecipe
+public class FlareBulletColorRecipe extends SpecialRecipe
 {
-
-	public FlareBulletRecipe(ResourceLocation resourceLocation)
+	public FlareBulletColorRecipe(ResourceLocation resourceLocation)
 	{
 		super(resourceLocation);
 	}
@@ -126,7 +125,7 @@ public class FlareBulletRecipe extends SpecialRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return Recipes.FLARE_BULLET_COLOR.get();
+		return RecipeSerializers.FLARE_BULLET_COLOR.get();
 	}
 
 	private boolean isFlareBullet(ItemStack stack)

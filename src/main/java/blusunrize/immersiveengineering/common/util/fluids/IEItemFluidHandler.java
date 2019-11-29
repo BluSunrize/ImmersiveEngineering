@@ -8,16 +8,38 @@
 
 package blusunrize.immersiveengineering.common.util.fluids;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author BluSunrize - 31.07.2016
  */
 public class IEItemFluidHandler extends FluidHandlerItemStack
 {
+	public static ITextComponent fluidItemInfoFlavor(@Nullable FluidStack fluid, int fluidCapacity)
+	{
+		if(fluid!=null&&fluid.getAmount() > 0)
+		{
+			FluidAttributes attr = fluid.getFluid().getAttributes();
+			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY: attr.getRarity().color;
+			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity)
+					.setStyle(new Style().setColor(rarity));
+		}
+		return new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty");
+	}
+
 	public IEItemFluidHandler(ItemStack container, int capacity)
 	{
 		super(container, capacity);
@@ -36,6 +58,13 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 		if(container.getItem() instanceof IAdvancedFluidItem)
 			return ((IAdvancedFluidItem)container.getItem()).allowFluid(container, fluid);
 		return true;
+	}
+
+	@Override
+	public boolean isFluidValid(int tank, @Nonnull FluidStack fluid)
+	{
+		FluidStack tankFluid = getFluidInTank(tank);
+		return (tankFluid.isEmpty()&&this.canFillFluidType(fluid))||tankFluid.isFluidEqual(fluid);
 	}
 
 	@Override

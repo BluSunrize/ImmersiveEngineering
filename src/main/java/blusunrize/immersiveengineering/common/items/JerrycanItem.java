@@ -8,27 +8,22 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.fluids.IEItemFluidHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -56,18 +51,7 @@ public class JerrycanItem extends IEBaseItem
 		if(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY!=null) //cap is null until after ForgeMod.preInit, and Minecraft.init calls this method before that
 		{
 			LazyOptional<FluidStack> fsCap = FluidUtil.getFluidContained(stack);
-			fsCap.ifPresent(fs ->
-			{
-				if(fs.getAmount() > 0)
-				{
-					FluidAttributes attr = fs.getFluid().getAttributes();
-					TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY: attr.getRarity().color;
-					list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fs.getDisplayName(), fs.getAmount(), jerrycanMaxMB)
-							.setStyle(new Style().setColor(rarity)));
-				}
-				else
-					list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty"));
-			});
+			fsCap.ifPresent(fs -> list.add(IEItemFluidHandler.fluidItemInfoFlavor(fs, jerrycanMaxMB)));
 		}
 	}
 

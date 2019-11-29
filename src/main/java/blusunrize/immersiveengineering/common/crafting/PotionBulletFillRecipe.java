@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.common.data.Recipes;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -23,11 +23,9 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class PotionBulletRecipe extends SpecialRecipe
+public class PotionBulletFillRecipe extends SpecialRecipe
 {
-
-
-	public PotionBulletRecipe(ResourceLocation resourceLocation)
+	public PotionBulletFillRecipe(ResourceLocation resourceLocation)
 	{
 		super(resourceLocation);
 	}
@@ -91,7 +89,7 @@ public class PotionBulletRecipe extends SpecialRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return Recipes.POTION_BULLET_FILL.get();
+		return RecipeSerializers.POTION_BULLET_FILL.get();
 	}
 
 

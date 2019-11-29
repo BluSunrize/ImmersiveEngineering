@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.common.data.Recipes;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.SpeedloaderItem;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -22,11 +22,12 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class SpeedloaderRecipe extends SpecialRecipe
+public class SpeedloaderLoadRecipe extends SpecialRecipe
 {
+	;
 	private final byte[] offsetPattern = {0, 1, 1, 1, 0, -1, -1, -1};
 
-	public SpeedloaderRecipe(ResourceLocation resourceLocation)
+	public SpeedloaderLoadRecipe(ResourceLocation resourceLocation)
 	{
 		super(resourceLocation);
 	}
@@ -133,7 +134,7 @@ public class SpeedloaderRecipe extends SpecialRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return Recipes.SPEEDLOADER_LOAD.get();
+		return RecipeSerializers.SPEEDLOADER_LOAD.get();
 	}
 
 }
