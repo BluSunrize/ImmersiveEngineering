@@ -8,52 +8,55 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
-import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class PotionBulletRecipe implements ICraftingRecipe
+public class PotionBulletFillRecipe extends SpecialRecipe
 {
-	public static final IRecipeSerializer<PotionBulletRecipe> SERIALIZER = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+":potion_bullets", new SpecialRecipeSerializer<>(PotionBulletRecipe::new)
-	);
-
-	private final ResourceLocation id;
-
-	public PotionBulletRecipe(ResourceLocation id)
+	public PotionBulletFillRecipe(ResourceLocation resourceLocation)
 	{
-		this.id = id;
+		super(resourceLocation);
 	}
 
 	@Override
 	public boolean matches(CraftingInventory inv, @Nonnull World world)
 	{
-		ItemStack bullet = ItemStack.EMPTY;
-		ItemStack potion = ItemStack.EMPTY;
+		boolean hasBullet = false;
+		boolean hasPotion = false;
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
-				if(bullet.isEmpty()&&isPotionBullet(stackInSlot))
-					bullet = stackInSlot;
-				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof PotionItem)
-					potion = stackInSlot;
+			{
+				if(isPotionBullet(stackInSlot))
+				{
+					if(hasBullet)
+						return false;
+					hasBullet = true;
+				}
+				else if(stackInSlot.getItem() instanceof PotionItem)
+				{
+					if(hasPotion)
+						return false;
+					hasPotion = true;
+				}
 				else
 					return false;
+			}
 		}
-		return !bullet.isEmpty()&&!potion.isEmpty();
+		return hasBullet&&hasPotion;
 	}
 
 	@Nonnull
@@ -79,29 +82,16 @@ public class PotionBulletRecipe implements ICraftingRecipe
 	@Override
 	public boolean canFit(int width, int height)
 	{
-		return width >= 2&&height >= 2;
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack getRecipeOutput()
-	{
-		return BulletHandler.getBulletStack(BulletItem.POTION);
+		return width*height >= 2;
 	}
 
 	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return SERIALIZER;
+		return RecipeSerializers.POTION_BULLET_FILL.get();
 	}
 
-	@Nonnull
-	@Override
-	public ResourceLocation getId()
-	{
-		return id;
-	}
 
 	private boolean isPotionBullet(ItemStack stack)
 	{

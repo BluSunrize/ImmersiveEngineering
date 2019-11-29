@@ -8,27 +8,22 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.fluids.IEItemFluidHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -42,6 +37,8 @@ import java.util.List;
 
 public class JerrycanItem extends IEBaseItem
 {
+	private final int jerrycanMaxMB = 10000;
+
 	public JerrycanItem()
 	{
 		super("jerrycan", new Properties().maxStackSize(1));
@@ -51,16 +48,11 @@ public class JerrycanItem extends IEBaseItem
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		LazyOptional<FluidStack> fsCap = FluidUtil.getFluidContained(stack);
-		fsCap.ifPresent(fs ->
+		if(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY!=null) //cap is null until after ForgeMod.preInit, and Minecraft.init calls this method before that
 		{
-			FluidAttributes attr = fs.getFluid().getAttributes();
-			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY: attr.getRarity().color;
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fs.getAmount(), 10000)
-					.setStyle(new Style().setColor(rarity)));
-		});
-		if(!fsCap.isPresent())
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty"));
+			LazyOptional<FluidStack> fsCap = FluidUtil.getFluidContained(stack);
+			fsCap.ifPresent(fs -> list.add(IEItemFluidHandler.fluidItemInfoFlavor(fs, jerrycanMaxMB)));
+		}
 	}
 
 	@Nonnull
@@ -114,7 +106,7 @@ public class JerrycanItem extends IEBaseItem
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
 	{
 		if(!stack.isEmpty())
-			return new FluidHandlerItemStack(stack, 10000);
+			return new FluidHandlerItemStack(stack, jerrycanMaxMB);
 		return null;
 	}
 }

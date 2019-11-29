@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
@@ -78,6 +79,7 @@ public class ImmersiveEngineering
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
+		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		//TODO separate client/server config?
 		ModLoadingContext.get().registerConfig(Type.COMMON, IEConfig.ALL);
 		IEContent.modConstruction();

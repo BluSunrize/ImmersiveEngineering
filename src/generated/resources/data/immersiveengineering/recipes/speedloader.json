@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  i",
+    "iis",
+    "  i"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "s": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:speedloader"
+  }
+}

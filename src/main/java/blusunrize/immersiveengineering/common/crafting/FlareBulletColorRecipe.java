@@ -8,57 +8,52 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.Lists;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
-public class FlareBulletRecipe implements ICraftingRecipe
+public class FlareBulletColorRecipe extends SpecialRecipe
 {
-	public static final IRecipeSerializer<FlareBulletRecipe> SERIALIZER = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+":flare_bullets", new SpecialRecipeSerializer<>(FlareBulletRecipe::new)
-	);
-
-	private final ResourceLocation id;
-
-	public FlareBulletRecipe(ResourceLocation id)
+	public FlareBulletColorRecipe(ResourceLocation resourceLocation)
 	{
-		this.id = id;
+		super(resourceLocation);
 	}
 
 	@Override
 	public boolean matches(CraftingInventory inv, @Nonnull World world)
 	{
-		ItemStack bullet = ItemStack.EMPTY;
-		List<ItemStack> list = Lists.newArrayList();
+		boolean hasBullet = false;
+		boolean hasDye = false;
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(bullet.isEmpty()&&isFlareBullet(stackInSlot))
-					bullet = stackInSlot;
+				if(isFlareBullet(stackInSlot))
+				{
+					if(hasBullet)
+						return false;
+					hasBullet = true;
+				}
 				else if(Utils.isDye(stackInSlot))
-					list.add(stackInSlot);
+					hasDye = true;
 				else
 					return false;
 			}
 		}
-		return !bullet.isEmpty()&&!list.isEmpty();
+		return hasBullet&&hasDye;
 	}
 
 	@Nonnull
@@ -123,28 +118,14 @@ public class FlareBulletRecipe implements ICraftingRecipe
 	@Override
 	public boolean canFit(int width, int height)
 	{
-		return width >= 2&&height >= 2;
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack getRecipeOutput()
-	{
-		return BulletHandler.getBulletStack(BulletItem.FLARE);
+		return width*height >= 2;
 	}
 
 	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return SERIALIZER;
-	}
-
-	@Nonnull
-	@Override
-	public ResourceLocation getId()
-	{
-		return id;
+		return RecipeSerializers.FLARE_BULLET_COLOR.get();
 	}
 
 	private boolean isFlareBullet(ItemStack stack)

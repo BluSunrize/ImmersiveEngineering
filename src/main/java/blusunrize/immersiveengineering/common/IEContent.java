@@ -501,6 +501,7 @@ public class IEContent
 		IEItems.Misc.powerpack = new PowerpackItem();
 		for(ToolUpgrade upgrade : ToolUpgrade.values())
 			IEItems.Misc.toolUpgrades.put(upgrade, new ToolUpgradeItem(upgrade));
+		IEItems.Misc.jerrycan = new JerrycanItem();
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);

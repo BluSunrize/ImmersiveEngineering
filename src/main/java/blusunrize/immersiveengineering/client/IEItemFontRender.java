@@ -105,7 +105,7 @@ public class IEItemFontRender extends FontRenderer
 		for(int i = 0; i < text.length(); ++i)
 		{
 			char currentChar = text.charAt(i);
-			if(currentChar=='§'&&i+1 < text.length())
+			if(currentChar=='\u00a7'&&i+1 < text.length())
 			{
 				TextFormatting newFormatting = TextFormatting.fromFormattingCode(text.charAt(i+1));
 				if(newFormatting!=null)
