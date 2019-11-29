@@ -23,6 +23,8 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.client.font.IEFontRender;
+import blusunrize.immersiveengineering.client.font.NixieFontRender;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.fx.IEBubbleParticle;
@@ -80,7 +82,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.ScreenManager.IScreenFactory;
@@ -155,9 +156,9 @@ public class ClientProxy extends CommonProxy
 {
 	public static AtlasTexture revolverTextureMap;
 	public static final ResourceLocation revolverTextureResource = new ResourceLocation("textures/atlas/immersiveengineering/revolvers.png");
-	public static FontRenderer nixieFontOptional;
-	public static FontRenderer nixieFont;
-	public static FontRenderer itemFont;
+	public static IEFontRender nixieFontOptional;
+	public static IEFontRender nixieFont;
+	public static IEFontRender itemFont;
 	public static boolean stencilBufferEnabled = false;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.gameplay");
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", 0, "key.categories.gameplay");
@@ -277,9 +278,9 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerKeyBinding(keybind_chemthrowerSwitch);
 
 		//TODO
-		nixieFontOptional = ClientUtils.font();
-		nixieFont = ClientUtils.font();
-		itemFont = new IEItemFontRender(false);
+		nixieFontOptional = new NixieFontRender(false);
+		nixieFont = new NixieFontRender(false);
+		itemFont = new IEFontRender(false);
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 
 		ClientRegistry.bindTileEntitySpecialRenderer(ChargingStationTileEntity.class, new ChargingStationRenderer());

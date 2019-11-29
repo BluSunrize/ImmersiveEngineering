@@ -6,11 +6,13 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client;
+package blusunrize.immersiveengineering.client.font;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.floats.FloatList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.fonts.Font;
@@ -33,7 +35,7 @@ import java.util.Objects;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 @OnlyIn(Dist.CLIENT)
-public class IEItemFontRender extends FontRenderer
+public class IEFontRender extends FontRenderer
 {
 	private static HashMap<Character, TexturedGlyph> unicodeReplacements = new HashMap<>();
 	private static final ResourceLocation UNICODE = new ResourceLocation(ImmersiveEngineering.MODID, "unicode");
@@ -47,13 +49,12 @@ public class IEItemFontRender extends FontRenderer
 	}
 
 	public float customSpaceWidth = 4f;
-	public float spacingModifier = 0f;
 	public boolean verticalBoldness = false;
 	private Font font;
-	private final TextureManager texManager;
+	protected final TextureManager texManager;
 	private final boolean unicode;
 
-	public IEItemFontRender(boolean unicode)
+	public IEFontRender(boolean unicode)
 	{
 		super(mc().textureManager, new Font(mc().textureManager, unicode?UNICODE: NORMAL));
 		texManager = mc().textureManager;
@@ -101,6 +102,7 @@ public class IEItemFontRender extends FontRenderer
 		boolean strikethrough = false;
 		List<Entry> lineSegments = Lists.newArrayList();
 		int resetColorAt = -1;
+		FloatList charPositions = new FloatArrayList(text.length());
 
 		for(int i = 0; i < text.length(); ++i)
 		{
@@ -186,10 +188,10 @@ public class IEItemFontRender extends FontRenderer
 					float boldOffset = bold?currentGlyph.getBoldOffset(): 0.0F;
 					float shadowOffset = isShadow?currentGlyph.getShadowOffset(): 0.0F;
 					this.renderGlyph(texturedglyph, bold, italic, boldOffset, x+shadowOffset,
-							y+shadowOffset, bufferbuilder, currentRed, currentGreen, currentBlue, alpha);
+							y+shadowOffset, bufferbuilder, currentRed, currentGreen, currentBlue, alpha, currentChar);
 				}
 
-				float advance = currentGlyph.getAdvance(bold);
+				float advance = getCharWidthIE(currentChar, bold);
 				float shadowOffset = isShadow?1.0F: 0.0F;
 				if(strikethrough)
 					lineSegments.add(new Entry(x+shadowOffset-1.0F, y+shadowOffset+4.5F,
@@ -201,6 +203,7 @@ public class IEItemFontRender extends FontRenderer
 							x+shadowOffset+advance, y+shadowOffset+9.0F-1.0F,
 							currentRed, currentGreen, currentBlue, alpha));
 
+				charPositions.add(x);
 				x += advance;
 			}
 		}
@@ -217,12 +220,18 @@ public class IEItemFontRender extends FontRenderer
 			tessellator.draw();
 			GlStateManager.enableTexture();
 		}
+		postStringRender(text, charPositions, bufferbuilder, tessellator, y);
 
 		return x;
 	}
 
-	private void renderGlyph(TexturedGlyph glyph, boolean bold, boolean italic, float boldOffset, float x, float y,
-							 BufferBuilder bufferBuilder, float red, float green, float blue, float alpha)
+	protected void postStringRender(String text, FloatList charPositions, BufferBuilder bb, Tessellator tes, float y)
+	{
+
+	}
+
+	protected void renderGlyph(TexturedGlyph glyph, boolean bold, boolean italic, float boldOffset, float x, float y,
+							   BufferBuilder bufferBuilder, float red, float green, float blue, float alpha, char orig)
 	{
 
 		glyph.render(this.texManager, italic, x, y, bufferBuilder, red, green, blue, alpha);
@@ -233,8 +242,7 @@ public class IEItemFontRender extends FontRenderer
 
 	}
 
-
-	public float getCharWidthIEFloat(char character, boolean bold)
+	public float getCharWidthIE(char character, boolean bold)
 	{
 		if(character==32)
 			return customSpaceWidth;
@@ -245,7 +253,7 @@ public class IEItemFontRender extends FontRenderer
 	@Override
 	public float getCharWidth(char character)
 	{
-		return this.getCharWidthIEFloat(character, false);
+		return this.getCharWidthIE(character, false);
 	}
 
 	@Override
@@ -281,7 +289,7 @@ public class IEItemFontRender extends FontRenderer
 							bold = false;
 					}
 					else
-						length += this.getCharWidthIEFloat(currentChar, bold);
+						length += this.getCharWidthIE(currentChar, bold);
 				}
 			}
 
@@ -309,7 +317,7 @@ public class IEItemFontRender extends FontRenderer
 				case ' ':
 					lastSpace = currIndex;
 				default:
-					currentWidth += this.getCharWidthIEFloat(currentChar, bold);
+					currentWidth += this.getCharWidthIE(currentChar, bold);
 					break;
 				case '\u00a7':
 					if(currIndex < strLength-1)
@@ -336,6 +344,17 @@ public class IEItemFontRender extends FontRenderer
 				break;
 		}
 		return currIndex!=strLength&&lastSpace!=-1&&lastSpace < currIndex?lastSpace: currIndex;
+	}
+
+	public int getFontHeight()
+	{
+		return FONT_HEIGHT;
+	}
+
+	@Override
+	public int getWordWrappedHeight(String str, int maxLength)
+	{
+		return getFontHeight()*this.listFormattedStringToWidth(str, maxLength).size();
 	}
 
 	static class Entry

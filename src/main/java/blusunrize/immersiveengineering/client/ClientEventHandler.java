@@ -678,9 +678,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							for(String s : text)
 								if(s!=null)
 								{
+									s = s.trim();
 									int w = ClientProxy.nixieFontOptional.getStringWidth(s);
 									ClientProxy.nixieFontOptional.drawStringWithShadow(s, scaledWidth/2-w/2,
-											scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2)+(i++)*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2), col);
+											scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.getFontHeight()+2)+
+													(i++)*(ClientProxy.nixieFontOptional.getFontHeight()+2), col);
 								}
 						}
 					}
