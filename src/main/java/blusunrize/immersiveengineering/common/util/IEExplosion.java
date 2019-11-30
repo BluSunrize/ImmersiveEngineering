@@ -104,6 +104,7 @@ public class IEExplosion extends Explosion
 					if(damagesTerrain==Explosion.Mode.DESTROY)
 						lootCtx.withParameter(LootParameters.EXPLOSION_RADIUS, this.size);
 					Block.spawnDrops(state, lootCtx);
+					state.onBlockExploded(world, pos, this);
 				}
 			}
 		}

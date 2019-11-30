@@ -303,11 +303,12 @@ public class IEContent
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodProperties);
 
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
-		//TODO WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
+		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
 		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
 		WoodenDevices.turntable = new TurntableBlock("turntable");
 		WoodenDevices.crate = new CrateBlock("crate", false);
 		WoodenDevices.reinforcedCrate = new CrateBlock("reinforced_crate", true);
+
 		WoodenDevices.sorter = new SorterBlock("sorter", false);
 		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
 		WoodenDevices.windmill = new WindmillBlock("windmill");

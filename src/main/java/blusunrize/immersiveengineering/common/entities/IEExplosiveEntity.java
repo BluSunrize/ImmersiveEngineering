@@ -42,6 +42,8 @@ public class IEExplosiveEntity extends TNTEntity
 {
 	public static final EntityType<IEExplosiveEntity> TYPE = Builder
 			.<IEExplosiveEntity>create(IEExplosiveEntity::new, EntityClassification.MISC)
+			.immuneToFire()
+			.size(0.98F, 0.98F)
 			.build(ImmersiveEngineering.MODID+":explosive");
 
 	static
