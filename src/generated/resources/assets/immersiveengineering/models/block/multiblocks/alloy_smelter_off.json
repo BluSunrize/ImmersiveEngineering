@@ -1,11 +1,11 @@
 {
   "parent": "immersiveengineering:block/ie_two_cubed",
   "textures": {
+    "east": "immersiveengineering:block/multiblocks/alloy_smelter_side",
     "top": "immersiveengineering:block/multiblocks/alloy_smelter_top",
-    "bottom": "immersiveengineering:block/multiblocks/alloy_smelter_bottom",
     "south": "immersiveengineering:block/multiblocks/alloy_smelter_side",
-    "west": "immersiveengineering:block/multiblocks/alloy_smelter_side",
+    "bottom": "immersiveengineering:block/multiblocks/alloy_smelter_bottom",
     "north": "immersiveengineering:block/multiblocks/alloy_smelter_off",
-    "east": "immersiveengineering:block/multiblocks/alloy_smelter_side"
+    "west": "immersiveengineering:block/multiblocks/alloy_smelter_side"
   }
 }
