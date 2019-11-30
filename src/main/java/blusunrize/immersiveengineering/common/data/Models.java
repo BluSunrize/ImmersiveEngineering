@@ -207,6 +207,15 @@ public class Models extends ModelGenerator
 		out.accept(ModelHelper.createInventoryFence(ALU_FENCE_TEXTURE, locForItemModel(MetalDecoration.aluFence)));
 		out.accept(ModelHelper.createInventoryFence(STEEL_FENCE_TEXTURE, locForItemModel(MetalDecoration.steelFence)));
 		out.accept(ModelHelper.createInventoryFence(TREATED_FENCE_TEXTURE, locForItemModel(WoodenDecoration.treatedFence)));
+
+		out.accept(ModelHelper.createWithModel(rl("block/sprayed_concrete.obj"),
+				locForItemModel(StoneDecoration.concreteSprayed)));
+		out.accept(ModelHelper.createQuarterBlock(rl("block/stone_decoration/concrete"),
+				locForItemModel(StoneDecoration.concreteQuarter)));
+		out.accept(ModelHelper.createThreeQuarterBlock(rl("block/stone_decoration/concrete"),
+				locForItemModel(StoneDecoration.concreteThreeQuarter)));
+		out.accept(ModelHelper.createCarpetBlock(rl("block/stone_decoration/concrete"),
+				locForItemModel(StoneDecoration.concreteSheet)));
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)

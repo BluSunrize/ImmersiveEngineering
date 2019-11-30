@@ -84,7 +84,8 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             property 'fml.earlyprogresswindow', 'false'
 
-            args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
+                    '--existing', sourceSets.main.resources.srcDirs[0]
 
             mods {
                 immersiveengineering {

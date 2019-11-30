@@ -11,19 +11,27 @@ package blusunrize.immersiveengineering.common.data.model;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import net.minecraft.resources.ResourcePackType;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.generators.ExistingFileHelper;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import static net.minecraft.util.Direction.NORTH;
 
 public class ModelHelper
 {
+	public static ExistingFileHelper EXISTING_FILE_HELPER;
+
 	private ModelHelper()
 	{
 	}
@@ -33,174 +41,168 @@ public class ModelHelper
 		return createBasicCube(texture, texture);
 	}
 
+	public static GeneratedModelFile createWithModel(ResourceLocation model, ResourceLocation outLoc)
+	{
+		return create(outLoc, model, ImmutableMap.of());
+	}
+
 	public static GeneratedModelFile createBasicItem(ResourceLocation texture, ResourceLocation modelName)
 	{
-		assertTextureExists(texture);
-		JsonObject model = new JsonObject();
-		model.addProperty("parent", "item/generated");
-		JsonObject textures = new JsonObject();
-		textures.addProperty("layer0", texture.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(modelName, model);
+		return create(modelName, new ResourceLocation("item/generated"),
+				ImmutableMap.of("layer0", texture));
 	}
 
 	public static GeneratedModelFile createBasicCube(ResourceLocation texture, ResourceLocation modelName)
 	{
-		assertTextureExists(texture);
-		JsonObject model = new JsonObject();
-		model.addProperty("parent", "block/cube_all");
-		JsonObject textures = new JsonObject();
-		textures.addProperty("all", texture.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(modelName, model);
+		return create(modelName, new ResourceLocation("block/cube_all"),
+				ImmutableMap.of("all", texture));
 	}
 
 	public static GeneratedModelFile createBasicCube(ResourceLocation sides, ResourceLocation top,
 													 ResourceLocation bottom, ResourceLocation modelName)
 	{
-		assertTextureExists(sides);
-		assertTextureExists(top);
-		assertTextureExists(bottom);
+		return create(modelName, new ResourceLocation("block/cube_bottom_top"), ImmutableMap.of(
+				"top", top,
+				"bottom", bottom,
+				"side", sides
+		));
+	}
+
+	private static GeneratedModelFile create(ResourceLocation outName, ResourceLocation parent, Map<String, ResourceLocation> textures)
+	{
+		for(ResourceLocation rl : textures.values())
+			assertTextureExists(rl);
 		JsonObject model = new JsonObject();
-		model.addProperty("parent", "block/cube_bottom_top");
-		JsonObject textures = new JsonObject();
-		textures.addProperty("top", top.toString());
-		textures.addProperty("bottom", bottom.toString());
-		textures.addProperty("side", sides.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(modelName, model);
+		model.addProperty("parent", parent.toString());
+		if(!textures.isEmpty())
+		{
+			JsonObject textureJson = new JsonObject();
+			for(Entry<String, ResourceLocation> e : textures.entrySet())
+				textureJson.addProperty(e.getKey(), e.getValue().toString());
+			model.add("textures", textureJson);
+		}
+		return new GeneratedModelFile(outName, model);
+	}
+
+	public static GeneratedModelFile createCarpetBlock(ResourceLocation texture, ResourceLocation modelName)
+	{
+		return create(modelName, new ResourceLocation("block/carpet"),
+				ImmutableMap.of("wool", texture));
+	}
+
+	public static GeneratedModelFile createThreeQuarterBlock(ResourceLocation texture, ResourceLocation modelName)
+	{
+		return create(modelName, new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_three_quarter_block"),
+				ImmutableMap.of("texture", texture));
+	}
+
+	public static GeneratedModelFile createQuarterBlock(ResourceLocation texture, ResourceLocation modelName)
+	{
+		return create(modelName, new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_quarter_block"),
+				ImmutableMap.of("texture", texture));
 	}
 
 	public static GeneratedModelFile createSlab(SlabType type, ResourceLocation sides, ResourceLocation top,
 												ResourceLocation bottom, ResourceLocation modelName)
 	{
-		assertTextureExists(sides);
-		assertTextureExists(top);
-		assertTextureExists(bottom);
-		JsonObject model = new JsonObject();
-		model.addProperty("parent", type==SlabType.TOP?"block/slab_top":"block/slab");
-		JsonObject textures = new JsonObject();
-		textures.addProperty("top", top.toString());
-		textures.addProperty("bottom", bottom.toString());
-		textures.addProperty("side", sides.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(modelName, model);
+		ResourceLocation parent;
+		if(type==SlabType.TOP)
+			parent = new ResourceLocation("block/slab_top");
+		else
+			parent = new ResourceLocation("block/slab");
+		return create(modelName, parent, ImmutableMap.of(
+				"top", top,
+				"bottom", bottom,
+				"side", sides
+		));
 	}
 
 	public static GeneratedModelFile createStairs(BasicStairsShape s, ResourceLocation sides, ResourceLocation top, ResourceLocation bottom, ResourceLocation modelName)
 	{
-		assertTextureExists(sides);
-		assertTextureExists(top);
-		assertTextureExists(bottom);
-		JsonObject model = new JsonObject();
+		ResourceLocation parent;
 		switch(s)
 		{
 			case STRAIGHT:
-				model.addProperty("parent", "block/stairs");
+			default:
+				parent = new ResourceLocation("block/stairs");
 				break;
 			case INNER:
-				model.addProperty("parent", "block/inner_stairs");
+				parent = new ResourceLocation("block/inner_stairs");
 				break;
 			case OUTER:
-				model.addProperty("parent", "block/outer_stairs");
+				parent = new ResourceLocation("block/outer_stairs");
 				break;
 		}
-		JsonObject textures = new JsonObject();
-		textures.addProperty("side", sides.toString());
-		textures.addProperty("top", top.toString());
-		textures.addProperty("bottom", bottom.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(modelName, model);
+		return create(modelName, parent, ImmutableMap.of(
+				"top", top,
+				"bottom", bottom,
+				"side", sides
+		));
 	}
 
 	public static GeneratedModelFile createInventoryFence(ResourceLocation texture, ResourceLocation modelName)
 	{
-		assertTextureExists(texture);
-		JsonObject model = new JsonObject();
-		model.addProperty("parent", "block/fence_inventory");
-		JsonObject textures = new JsonObject();
-		textures.addProperty("texture", texture.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(modelName, model);
+		return create(modelName, new ResourceLocation("block/fence_inventory"),
+				ImmutableMap.of("texture", texture));
 	}
 
 	public static GeneratedModelFile createFencePost(ResourceLocation texture, ResourceLocation modelName)
 	{
-		assertTextureExists(texture);
-		JsonObject model = new JsonObject();
-		model.addProperty("parent", "block/fence_post");
-		JsonObject textures = new JsonObject();
-		textures.addProperty("texture", texture.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(modelName, model);
+		return create(modelName, new ResourceLocation("block/fence_post"),
+				ImmutableMap.of("texture", texture));
 	}
 
 	public static GeneratedModelFile createFenceSide(ResourceLocation texture, ResourceLocation modelName)
 	{
-		assertTextureExists(texture);
-		JsonObject model = new JsonObject();
-		model.addProperty("parent", "block/fence_side");
-		JsonObject textures = new JsonObject();
-		textures.addProperty("texture", texture.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(modelName, model);
+		return create(modelName, new ResourceLocation("block/fence_side"),
+				ImmutableMap.of("texture", texture));
 	}
 
 	private static void assertTextureExists(ResourceLocation name)
 	{
-		//TODO implement
+		if(EXISTING_FILE_HELPER!=null)
+			Preconditions.checkState(
+					EXISTING_FILE_HELPER.exists(name, ResourcePackType.CLIENT_RESOURCES, ".png", "textures"),
+					"Texture \""+name+"\" does not exist");
 	}
 
 	public static GeneratedModelFile createScaffolding(ResourceLocation side, ResourceLocation top, ResourceLocation fileName)
 	{
-		assertTextureExists(side);
-		assertTextureExists(top);
-		JsonObject model = new JsonObject();
-		model.addProperty("parent", ImmersiveEngineering.MODID+":block/ie_scaffolding");
-		JsonObject textures = new JsonObject();
-		textures.addProperty("top", top.toString());
-		textures.addProperty("side", side.toString());
-		textures.addProperty("bottom", side.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(fileName, model);
+		return create(fileName, new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_scaffolding"),
+				ImmutableMap.of(
+						"top", top,
+						"side", side,
+						"bottom", side
+				));
 	}
 
 	public static GeneratedModelFile createThreeCubed(ResourceLocation outName, ResourceLocation nonFront, ResourceLocation front)
 	{
-		assertTextureExists(nonFront);
-		assertTextureExists(front);
-		JsonObject model = new JsonObject();
-		model.addProperty("parent", ImmersiveEngineering.MODID+":block/ie_three_cubed");
-		JsonObject textures = new JsonObject();
-		textures.addProperty("top", nonFront.toString());
-		textures.addProperty("bottom", nonFront.toString());
+		Map<String, ResourceLocation> textures = new HashMap<>();
+		textures.put("top", nonFront);
+		textures.put("bottom", nonFront);
 		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 			if(d!=NORTH)
-				textures.addProperty(d.getName(), nonFront.toString());
+				textures.put(d.getName(), nonFront);
 			else
-				textures.addProperty(d.getName(), front.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(outName, model);
+				textures.put(d.getName(), front);
+		return create(outName, new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_three_cubed"),
+				textures);
 	}
 
-	public static GeneratedModelFile createTwoCubed(ResourceLocation out, ResourceLocation bottom, ResourceLocation top, ResourceLocation sides, ResourceLocation front)
+	public static GeneratedModelFile createTwoCubed(ResourceLocation out, ResourceLocation bottom, ResourceLocation top,
+													ResourceLocation sides, ResourceLocation front)
 	{
-		assertTextureExists(bottom);
-		assertTextureExists(top);
-		assertTextureExists(sides);
-		assertTextureExists(front);
-		JsonObject model = new JsonObject();
-		model.addProperty("parent", ImmersiveEngineering.MODID+":block/ie_two_cubed");
-		JsonObject textures = new JsonObject();
-		textures.addProperty("top", top.toString());
-		textures.addProperty("bottom", bottom.toString());
+		Map<String, ResourceLocation> textures = new HashMap<>();
+		textures.put("top", top);
+		textures.put("bottom", bottom);
 		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 			if(d!=NORTH)
-				textures.addProperty(d.getName(), sides.toString());
+				textures.put(d.getName(), sides);
 			else
-				textures.addProperty(d.getName(), front.toString());
-		model.add("textures", textures);
-		return new GeneratedModelFile(out, model);
+				textures.put(d.getName(), front);
+		return create(out, new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_two_cubed"),
+				textures);
 	}
 
 	public static GeneratedModelFile createVariants(ResourceLocation fileName, Enum[] types, GeneratedModelFile... models)
@@ -216,26 +218,20 @@ public class ModelHelper
 
 	public static GeneratedModelFile createMetalLadder(ResourceLocation out, @Nullable ResourceLocation bottomTop, @Nullable ResourceLocation sides)
 	{
-		JsonObject model = new JsonObject();
-		JsonObject textures = new JsonObject();
+		Map<String, ResourceLocation> textures = new HashMap<>();
+		ResourceLocation parent;
 		if(bottomTop!=null)
 		{
 			Preconditions.checkNotNull(sides);
-			assertTextureExists(bottomTop);
-			assertTextureExists(sides);
-			model.addProperty("parent", ImmersiveEngineering.MODID+":block/ie_scaffoldladder");
-			textures.addProperty("top", bottomTop.toString());
-			textures.addProperty("bottom", bottomTop.toString());
-			textures.addProperty("side", sides.toString());
+			parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_scaffoldladder");
+			textures.put("top", bottomTop);
+			textures.put("bottom", bottomTop);
+			textures.put("side", sides);
 		}
 		else
-		{
-			Preconditions.checkArgument(sides==null);
-			model.addProperty("parent", ImmersiveEngineering.MODID+":block/ie_ladder");
-		}
-		textures.addProperty("ladder", ImmersiveEngineering.MODID+":block/metal_decoration/metal_ladder");
-		model.add("textures", textures);
-		return new GeneratedModelFile(out, model);
+			parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_ladder");
+		textures.put("ladder", new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_decoration/metal_ladder"));
+		return create(out, parent, textures);
 	}
 
 	public enum BasicStairsShape
