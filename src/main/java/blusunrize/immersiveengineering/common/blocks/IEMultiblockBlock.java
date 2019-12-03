@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.item.ItemEntity;
@@ -39,10 +38,9 @@ import java.util.List;
 public abstract class IEMultiblockBlock extends IETileProviderBlock
 {
 
-	public IEMultiblockBlock(String name, Block.Properties props, Class<? extends BlockItemIE> itemBlock, IProperty<?>... additionalProperties)
+	public IEMultiblockBlock(String name, Properties props, IProperty<?>... additionalProperties)
 	{
-		super(name, props, itemBlock,
-				ArrayUtils.addAll(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));
+		super(name, props, null, ArrayUtils.addAll(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));
 		setMobility(PushReaction.BLOCK);
 		setNotNormalBlock();
 	}

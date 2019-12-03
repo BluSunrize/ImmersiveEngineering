@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerato
 import blusunrize.immersiveengineering.common.data.blockstate.VariantBlockstate.Builder;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.UncheckedModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -111,6 +112,9 @@ public class BlockStates extends BlockstateGenerator
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
 		createMultiblock(Multiblocks.blastFurnace, models.blastFurnaceOff, models.blastFurnaceOn, IEProperties.MULTIBLOCKSLAVE,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
+		createMultiblock(WoodenDevices.workbench, new ExistingModelFile(rl("block/wooden_device/workbench.obj.ie")),
+				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180,
+				variantBased);
 		createMultiblock(MetalDevices.sampleDrill, new ExistingModelFile(rl("block/metal_device/core_drill.obj")),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180,
 				variantBased);
@@ -177,6 +181,19 @@ public class BlockStates extends BlockstateGenerator
 			else
 				return EMPTY_MODEL.name.getLocation();
 		}, ImmutableMap.of(), variantBased, ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), BlockRenderLayer.SOLID);
+
+		createBasicBlock(StoneDecoration.concreteSheet, models.sheetConcreteBlock, variantBased);
+		createBasicBlock(StoneDecoration.concreteQuarter, models.quarterConcreteBlock, variantBased);
+		createBasicBlock(StoneDecoration.concreteThreeQuarter, models.threeQuarterConcreteBlock, variantBased);
+		createBasicBlock(StoneDecoration.concreteSprayed, new ExistingModelFile(rl("block/sprayed_concrete.obj")),
+				variantBased);
+
+		createBasicBlock(WoodenDevices.crate, models.crate, variantBased);
+		createBasicBlock(WoodenDevices.reinforcedCrate, models.reinforcedCrate, variantBased);
+		createMultistateSingleModel(WoodenDevices.gunpowderBarrel, new ConfiguredModel(models.gunpowderBarrel),
+				variantBased);
+		createBasicBlock(WoodenDevices.sorter, models.router, variantBased);
+		createBasicBlock(WoodenDevices.fluidSorter, models.fluidRouter, variantBased);
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -189,6 +206,14 @@ public class BlockStates extends BlockstateGenerator
 	{
 		IVariantModelGenerator gen = new Builder(block)
 				.setModel(block.getDefaultState(), model)
+				.build();
+		out.accept(block, gen);
+	}
+
+	private void createMultistateSingleModel(Block block, ConfiguredModel model, BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		IVariantModelGenerator gen = new Builder(block)
+				.setForAllMatching(state -> true, model)
 				.build();
 		out.accept(block, gen);
 	}
@@ -360,7 +385,7 @@ public class BlockStates extends BlockstateGenerator
 								 ImmutableMap<String, String> textures, BiConsumer<Block, IVariantModelGenerator> out,
 								 List<IProperty<?>> additional, BlockRenderLayer... layers)
 	{
-		final ExistingModelFile connFile = new ExistingModelFile(rl("connector"));
+		final ModelFile connFile = new UncheckedModelFile(rl("connector"));
 		StringBuilder layerString = new StringBuilder("[");
 		for(int i = 0; i < layers.length; i++)
 		{

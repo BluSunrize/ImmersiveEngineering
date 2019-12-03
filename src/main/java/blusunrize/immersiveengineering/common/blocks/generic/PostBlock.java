@@ -279,34 +279,47 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock
 		}
 	}
 
+	ThreadLocal<Boolean> recursionLock = new ThreadLocal<>();
+
 	public boolean hasConnection(BlockState stateHere, Direction dir, IBlockReader world, BlockPos pos)
 	{
+		if(recursionLock.get()!=null&&recursionLock.get())
+			return true;
+		recursionLock.set(true);
 		BlockPos neighborPos = pos.offset(dir);
 		int dummy = stateHere.get(POST_SLAVE);
+		boolean ret = false;
 		if(dummy > 0&&dummy < 3)
 		{
 			BlockState neighborState = world.getBlockState(neighborPos);
 			//TODO test
-			return !FenceBlock.cannotAttach(neighborState.getBlock())&&neighborState.func_224755_d(world, neighborPos,
+			ret = !FenceBlock.cannotAttach(neighborState.getBlock())&&neighborState.func_224755_d(world, neighborPos,
 					dir.getOpposite());
 		}
 		else if(dummy==3)
 		{
 			HorizontalOffset offset = stateHere.get(HORIZONTAL_OFFSET);
 			if(offset==HorizontalOffset.NONE)
-				return hasArmFor(pos, dir, world);
+				ret = hasArmFor(pos, dir, world);
 			else
 			{
 				if(world.getBlockState(neighborPos).isAir(world, neighborPos)||dir.getAxis()!=Axis.Y)
-					return false;
-				BlockState neighborState = world.getBlockState(neighborPos);
-				if(neighborState.getMaterial().isReplaceable())
-					return false;
-				VoxelShape shape = neighborState.getShape(world, neighborPos);
-				return shapeReachesBlockFace(shape, dir.getOpposite());
+					ret = false;
+				else
+				{
+					BlockState neighborState = world.getBlockState(neighborPos);
+					if(neighborState.getMaterial().isReplaceable())
+						ret = false;
+					else
+					{
+						VoxelShape shape = neighborState.getShape(world, neighborPos);
+						ret = shapeReachesBlockFace(shape, dir.getOpposite());
+					}
+				}
 			}
 		}
-		return false;
+		recursionLock.set(false);
+		return ret;
 	}
 
 	private boolean shapeReachesBlockFace(VoxelShape shape, Direction face)

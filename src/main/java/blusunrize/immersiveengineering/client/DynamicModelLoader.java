@@ -116,7 +116,9 @@ public class DynamicModelLoader
 			}
 		} catch(Exception x)
 		{
-			throw new RuntimeException(x);
+			x.printStackTrace();
+			//TODO mostly for dev
+			System.exit(1);
 		}
 	}
 

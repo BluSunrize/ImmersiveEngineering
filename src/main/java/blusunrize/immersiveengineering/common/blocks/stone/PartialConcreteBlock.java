@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
-import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -30,6 +30,11 @@ public class PartialConcreteBlock extends IEBaseBlock
 				BlockItemIE.class);
 		shape = VoxelShapes.create(0, 0, 0, 1, pixels/16F, 1);
 		full = pixels==16;
+		if(!full)
+		{
+			setNotNormalBlock();
+
+		}
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -50,5 +51,23 @@ public class GunpowderBarrelBlock extends TNTBlock
 		world.addEntity(explosive);
 		world.playSound(null, explosive.posX, explosive.posY, explosive.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		world.removeBlock(pos, false);
+	}
+
+	@Override
+	public void onBlockExploded(BlockState state, World world, BlockPos pos, Explosion explosion)
+	{
+		super.onBlockExploded(state, world, pos, explosion);
+		if(!world.isRemote)
+		{
+			IEExplosiveEntity explosive = new IEExplosiveEntity(world, pos, explosion.getExplosivePlacedBy(), state, 4);
+			explosive.setFuse((short)(world.rand.nextInt(explosive.getFuse()/4)+explosive.getFuse()/8));
+			world.addEntity(explosive);
+		}
+	}
+
+	@Override
+	public void onExplosionDestroy(World worldIn, BlockPos pos, Explosion explosionIn)
+	{
+
 	}
 }

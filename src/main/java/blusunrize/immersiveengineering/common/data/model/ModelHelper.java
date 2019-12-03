@@ -68,10 +68,11 @@ public class ModelHelper
 		));
 	}
 
-	private static GeneratedModelFile create(ResourceLocation outName, ResourceLocation parent, Map<String, ResourceLocation> textures)
+	public static GeneratedModelFile create(ResourceLocation outName, ResourceLocation parent, Map<String, ResourceLocation> textures)
 	{
 		for(ResourceLocation rl : textures.values())
 			assertTextureExists(rl);
+		assertModelExists(parent);
 		JsonObject model = new JsonObject();
 		model.addProperty("parent", parent.toString());
 		if(!textures.isEmpty())
@@ -87,7 +88,7 @@ public class ModelHelper
 	public static GeneratedModelFile createCarpetBlock(ResourceLocation texture, ResourceLocation modelName)
 	{
 		return create(modelName, new ResourceLocation("block/carpet"),
-				ImmutableMap.of("wool", texture));
+				ImmutableMap.of("wool", texture, "particle", texture));
 	}
 
 	public static GeneratedModelFile createThreeQuarterBlock(ResourceLocation texture, ResourceLocation modelName)
@@ -156,6 +157,17 @@ public class ModelHelper
 	{
 		return create(modelName, new ResourceLocation("block/fence_side"),
 				ImmutableMap.of("texture", texture));
+	}
+
+	private static void assertModelExists(ResourceLocation name)
+	{
+		if(EXISTING_FILE_HELPER!=null)
+		{
+			String suffix = name.getPath().contains(".")?"": ".json";
+			Preconditions.checkState(
+					EXISTING_FILE_HELPER.exists(name, ResourcePackType.CLIENT_RESOURCES, suffix, "models"),
+					"Model \""+name+"\" does not exist");
+		}
 	}
 
 	private static void assertTextureExists(ResourceLocation name)

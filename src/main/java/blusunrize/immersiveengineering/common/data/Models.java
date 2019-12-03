@@ -11,10 +11,8 @@ package blusunrize.immersiveengineering.common.data;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
@@ -23,12 +21,14 @@ import blusunrize.immersiveengineering.common.data.model.ModelGenerator;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
 import blusunrize.immersiveengineering.common.items.IEItems;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.*;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.state.properties.SlabType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.*;
@@ -83,6 +83,26 @@ public class Models extends ModelGenerator
 	final GeneratedModelFile metalLadderSteel = ModelHelper.createMetalLadder(rl("block/metal_decoration/metal_ladder_steel"),
 			rl("block/metal_decoration/steel_scaffolding_open"),
 			rl("block/metal_decoration/steel_scaffolding"));
+
+	final GeneratedModelFile quarterConcreteBlock = ModelHelper.createQuarterBlock(rl("block/stone_decoration/concrete"),
+			locForItemModel(StoneDecoration.concreteQuarter));
+	final GeneratedModelFile threeQuarterConcreteBlock = ModelHelper.createThreeQuarterBlock(rl("block/stone_decoration/concrete"),
+			locForItemModel(StoneDecoration.concreteThreeQuarter));
+	final GeneratedModelFile sheetConcreteBlock = ModelHelper.createCarpetBlock(rl("block/stone_decoration/concrete"),
+			locForItemModel(StoneDecoration.concreteSheet));
+
+
+	final GeneratedModelFile gunpowderBarrel = ModelHelper.createBasicCube(rl("block/wooden_device/gunpowder_barrel"),
+			rl("block/wooden_device/gunpowder_barrel_top"), rl("block/wooden_device/barrel_up_none"),
+			locForItemModel(WoodenDevices.gunpowderBarrel));
+	final GeneratedModelFile crate = ModelHelper.createBasicCube(rl("block/wooden_device/crate"),
+			locForItemModel(WoodenDevices.crate));
+	final GeneratedModelFile reinforcedCrate = ModelHelper.createBasicCube(rl("block/wooden_device/reinforced_crate"),
+			locForItemModel(WoodenDevices.reinforcedCrate));
+	final GeneratedModelFile router = createRouterModel(rl("block/wooden_device/sorter"),
+			locForItemModel(WoodenDevices.sorter));
+	final GeneratedModelFile fluidRouter = createRouterModel(rl("block/wooden_device/fluid_sorter"),
+			locForItemModel(WoodenDevices.fluidSorter));
 
 	public Models(DataGenerator gen)
 	{
@@ -210,12 +230,21 @@ public class Models extends ModelGenerator
 
 		out.accept(ModelHelper.createWithModel(rl("block/sprayed_concrete.obj"),
 				locForItemModel(StoneDecoration.concreteSprayed)));
-		out.accept(ModelHelper.createQuarterBlock(rl("block/stone_decoration/concrete"),
-				locForItemModel(StoneDecoration.concreteQuarter)));
-		out.accept(ModelHelper.createThreeQuarterBlock(rl("block/stone_decoration/concrete"),
-				locForItemModel(StoneDecoration.concreteThreeQuarter)));
-		out.accept(ModelHelper.createCarpetBlock(rl("block/stone_decoration/concrete"),
-				locForItemModel(StoneDecoration.concreteSheet)));
+		out.accept(quarterConcreteBlock);
+		out.accept(threeQuarterConcreteBlock);
+		out.accept(sheetConcreteBlock);
+
+		out.accept(gunpowderBarrel);
+		out.accept(crate);
+		out.accept(reinforcedCrate);
+		out.accept(ModelHelper.createWithModel(rl("block/wooden_device/workbench.obj.ie"),
+				locForItemModel(WoodenDevices.workbench)));
+		out.accept(router);
+		out.accept(fluidRouter);
+
+		out.accept(ModelHelper.createWithModel(rl("block/metal_device/teslacoil.obj"),
+				locForItemModel(MetalDevices.teslaCoil)));
+
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
@@ -313,6 +342,16 @@ public class Models extends ModelGenerator
 			ResourceLocation texture = texturePrefix==null?path: new ResourceLocation(path.getNamespace(), "item/"+texturePrefix+item.getRegistryName().getPath());
 			out.accept(ModelHelper.createBasicItem(texture, path));
 		}
+	}
+
+	private GeneratedModelFile createRouterModel(ResourceLocation baseTexName, ResourceLocation outName)
+	{
+		Map<String, ResourceLocation> textures = new HashMap<>();
+		for(Direction d : Direction.VALUES)
+			textures.put(d.getName(), new ResourceLocation(baseTexName.getNamespace(),
+					baseTexName.getPath()+"_"+d.ordinal()));
+		textures.put("particle", textures.get("down"));
+		return ModelHelper.create(outName, rl("block/ie_six_sides"), textures);
 	}
 
 	private ResourceLocation locForItemModel(Block b)

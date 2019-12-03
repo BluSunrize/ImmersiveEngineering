@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,7 +28,7 @@ public class StoneMultiBlock extends IEMultiblockBlock
 	public StoneMultiBlock(String name, Supplier<TileEntityType<?>> type)
 	{
 		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20),
-				BlockItemIE.class, IEProperties.ACTIVE);
+				IEProperties.ACTIVE);
 		this.type = type;
 		setNotNormalBlock();
 		lightOpacity = 0;

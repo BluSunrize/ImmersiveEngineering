@@ -238,9 +238,9 @@ public class IEContent
 		StoneDecoration.concreteTile = new IEBaseBlock("concrete_tile", stoneDecoProps, BlockItemIE.class);
 		StoneDecoration.concreteLeaded = new IEBaseBlock("concrete_leaded", stoneDecoLeadedProps, BlockItemIE.class);
 		StoneDecoration.alloybrick = new IEBaseBlock("alloybrick", stoneDecoProps, BlockItemIE.class);
-		StoneDecoration.concreteThreeQuarter = new IEBaseBlock("concrete_three_quarter", stoneDecoProps, BlockItemIE.class);
-		StoneDecoration.concreteSheet = new IEBaseBlock("concrete_sheet", stoneDecoProps, BlockItemIE.class);
-		StoneDecoration.concreteQuarter = new IEBaseBlock("concrete_quarter", stoneDecoProps, BlockItemIE.class);
+		StoneDecoration.concreteThreeQuarter = new PartialConcreteBlock("concrete_three_quarter", 12);
+		StoneDecoration.concreteQuarter = new PartialConcreteBlock("concrete_quarter", 4);
+		StoneDecoration.concreteSheet = new PartialConcreteBlock("concrete_sheet", 1);
 
 		IEBlocks.StoneDecoration.insulatingGlass = new IEBaseBlock("insulating_glass", stoneDecoProps, BlockItemIE.class)
 		{

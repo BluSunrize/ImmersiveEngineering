@@ -93,7 +93,7 @@ public class IEBaseBlock extends Block
 				propList.addAll(Arrays.asList(((IProperty[])o)));
 		}
 		tempProperties = propList.toArray(new IProperty[0]);
-		return blockProps;
+		return blockProps.variableOpacity();
 	}
 
 	public IEBaseBlock setHidden(boolean shouldHide)
@@ -148,7 +148,7 @@ public class IEBaseBlock extends Block
 	@SuppressWarnings("deprecation")
 	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
-		return lightOpacity;
+		return notNormalBlock?0: lightOpacity;
 	}
 
 	public IEBaseBlock setMobility(PushReaction flag)
