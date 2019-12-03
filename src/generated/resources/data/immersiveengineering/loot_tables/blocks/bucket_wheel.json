@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:bucket_wheel"
+          "name": "minecraft:air"
         }
       ],
       "conditions": [

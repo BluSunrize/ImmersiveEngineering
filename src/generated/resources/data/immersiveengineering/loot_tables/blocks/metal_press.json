@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:metal_press"
+          "name": "minecraft:air"
         }
       ],
       "conditions": [

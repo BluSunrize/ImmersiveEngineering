@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:coke_oven"
+          "name": "minecraft:air"
         }
       ],
       "conditions": [

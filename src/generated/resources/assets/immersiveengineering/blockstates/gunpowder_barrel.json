@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "unstable=true": {
+      "model": "immersiveengineering:item/gunpowder_barrel"
+    },
+    "unstable=false": {
+      "model": "immersiveengineering:item/gunpowder_barrel"
+    }
+  }
+}

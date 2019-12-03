@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:fake_light"
+          "name": "minecraft:air"
         }
       ],
       "conditions": [

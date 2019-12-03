@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:alloy_smelter"
+          "name": "minecraft:air"
         }
       ],
       "conditions": [
