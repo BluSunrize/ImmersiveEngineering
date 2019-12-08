@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
@@ -204,9 +204,9 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public SideConfig getEnergySideConfig(Direction facing)
+	public IOSideConfig getEnergySideConfig(Direction facing)
 	{
-		return (!relay&&facing==this.getFacing())?SideConfig.INPUT: SideConfig.NONE;
+		return (!relay&&facing==this.getFacing())?IOSideConfig.INPUT: IOSideConfig.NONE;
 	}
 
 	@Override

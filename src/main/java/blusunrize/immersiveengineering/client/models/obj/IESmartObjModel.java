@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.connection.RenderCacheKey;
 import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
@@ -46,7 +47,6 @@ import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.*;
@@ -102,7 +102,13 @@ public class IESmartObjModel extends OBJBakedModel
 		this.lastCameraTransform = cameraTransformType;
 		Matrix4 matrix;
 		if(transformationMap==null||transformationMap.isEmpty())
-			matrix = new Matrix4(super.handlePerspective(cameraTransformType).getRight());
+		{
+			Matrix4f superMatrix = super.handlePerspective(cameraTransformType).getRight();
+			if(superMatrix!=null)
+				matrix = new Matrix4(superMatrix);
+			else
+				matrix = new Matrix4();
+		}
 		else
 			matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType).copy(): new Matrix4();
 
@@ -231,7 +237,6 @@ public class IESmartObjModel extends OBJBakedModel
 			objState = modelData.getData(Model.OBJ_STATE);
 		if(modelData.hasProperty(Model.TEXTURE_REMAP))
 			tex = modelData.getData(Model.TEXTURE_REMAP);
-		//TODO addAnimationAndtex?
 		return getQuads(blockState, side, rand.nextLong(), objState, tex, true, modelData);
 	}
 
@@ -239,16 +244,19 @@ public class IESmartObjModel extends OBJBakedModel
 	@Override
 	public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
-		IModelData customData = EmptyModelData.INSTANCE;
+		List<IModelData> customData = new ArrayList<>();
 		if(state.getBlock() instanceof IModelDataBlock)
-			customData = ((IModelDataBlock)state.getBlock()).getModelData(world, pos, state, tileData);
+			customData.add(((IModelDataBlock)state.getBlock()).getModelData(world, pos, state, tileData));
 		else
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof IOBJModelCallback)
-				customData = new SinglePropertyModelData<>((IOBJModelCallback)te, IOBJModelCallback.PROPERTY);
+				customData.add(new SinglePropertyModelData<>((IOBJModelCallback)te, IOBJModelCallback.PROPERTY));
+			if(te instanceof IAdvancedHasObjProperty)
+				customData.add(new SinglePropertyModelData<>(((IAdvancedHasObjProperty)te).getOBJState(), Model.OBJ_STATE));
 		}
-		return new CombinedModelData(customData, tileData);
+		customData.add(tileData);
+		return new CombinedModelData(customData.toArray(new IModelData[0]));
 	}
 
 	public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand, OBJState objstate, Map<String, String> tex,
@@ -274,7 +282,7 @@ public class IESmartObjModel extends OBJBakedModel
 			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), objstate, tex);
 		else
 			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer());
-		List<BakedQuad> quads = null;//TODO modelCache.get(adapter);
+		List<BakedQuad> quads = modelCache.get(adapter);
 		if(quads==null)
 		{
 			IESmartObjModel model = null;

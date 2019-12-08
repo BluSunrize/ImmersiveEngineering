@@ -98,13 +98,16 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler)
 	{
-		output = handler.getValue(redstoneChannel.getId());
-		if(!isRemoved()&&isRSOutput())
+		if(!world.isRemote)
 		{
-			markDirty();
-			BlockState stateHere = world.getBlockState(pos);
-			markContainingBlockForUpdate(stateHere);
-			markBlockForUpdate(pos.offset(getFacing()), stateHere);
+			output = handler.getValue(redstoneChannel.getId());
+			if(!isRemoved()&&isRSOutput())
+			{
+				markDirty();
+				BlockState stateHere = world.getBlockState(pos);
+				markContainingBlockForUpdate(stateHere);
+				markBlockForUpdate(pos.offset(getFacing()), world.getBlockState(pos.offset(getFacing())));
+			}
 		}
 	}
 

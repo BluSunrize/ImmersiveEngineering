@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
@@ -563,9 +563,9 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(@Nullable Direction facing)
+	public IOSideConfig getEnergySideConfig(@Nullable Direction facing)
 	{
-		return facing==null||(dummy==0&&facing.getAxis()==this.getFacing().rotateY().getAxis())||(dummy==2&&facing==Direction.UP)?SideConfig.INPUT: SideConfig.NONE;
+		return facing==null||(dummy==0&&facing.getAxis()==this.getFacing().rotateY().getAxis())||(dummy==2&&facing==Direction.UP)?IOSideConfig.INPUT: IOSideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper energyWrapper = new IEForgeEnergyWrapper(this, null);

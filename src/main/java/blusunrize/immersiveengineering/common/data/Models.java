@@ -244,7 +244,8 @@ public class Models extends ModelGenerator
 
 		out.accept(ModelHelper.createWithModel(rl("block/metal_device/teslacoil.obj"),
 				locForItemModel(MetalDevices.teslaCoil)));
-
+		out.accept(ModelHelper.createWithModel(rl("block/metal_device/fluid_pipe.obj.ie"),
+				locForItemModel(MetalDevices.fluidPipe)));
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)

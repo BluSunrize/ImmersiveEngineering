@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
@@ -108,9 +108,9 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(Direction facing)
+	public IOSideConfig getEnergySideConfig(Direction facing)
 	{
-		return facing==this.getFacing()?SideConfig.INPUT: SideConfig.NONE;
+		return facing==this.getFacing()?IOSideConfig.INPUT: IOSideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, getFacing());

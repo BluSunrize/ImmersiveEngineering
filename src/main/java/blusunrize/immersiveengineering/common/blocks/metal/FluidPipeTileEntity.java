@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.AdvancedAABB;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -20,6 +19,8 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -32,7 +33,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -92,7 +96,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		FluidPipeTileEntity.climbablePipeCovers.add(defaultMatch);
 	}
 
-	public int[] sideConfig = new int[]{0, 0, 0, 0, 0, 0};
+	public Object2BooleanMap<Direction> sideConfig = new Object2BooleanOpenHashMap<>();
+
+	{
+		for(Direction d : Direction.VALUES)
+			sideConfig.put(d, true);
+	}
+
 	public ItemStack pipeCover = ItemStack.EMPTY;
 	private byte connections = 0;
 	@Nullable
@@ -117,7 +127,6 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 					closedList.add(next);
 				for(int i = 0; i < 6; i++)
 				{
-					//						boolean b = (te instanceof FluidPipeTileEntity)? (((FluidPipeTileEntity) te).sideConfig[i]==0): (((FluidPumpTileEntity) te).sideConfig[i]==1);
 					Direction fd = Direction.byIndex(i);
 					if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
 					{
@@ -158,7 +167,6 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		super.onLoad();
 		if(!world.isRemote)
 		{
-
 			//TODO this really shouldn't be necessary IMO...
 			ApiUtils.addFutureServerTask(world, () -> {
 				boolean changed = false;
@@ -222,9 +230,12 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		sideConfig = nbt.getIntArray("sideConfig");
-		if(sideConfig==null||sideConfig.length!=6)
-			sideConfig = new int[]{0, 0, 0, 0, 0, 0};
+		int[] config = nbt.getIntArray("sideConfig");
+		for(int i = 0; i < 6; ++i)
+			if(i < config.length)
+				sideConfig.put(Direction.byIndex(i), config[i]!=0);
+			else
+				sideConfig.put(Direction.byIndex(i), false);
 		pipeCover = ItemStack.read(nbt.getCompound("pipeCover"));
 		DyeColor oldColor = color;
 		if(nbt.contains("color", NBT.TAG_INT))
@@ -243,7 +254,11 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putIntArray("sideConfig", sideConfig);
+		int[] config = new int[6];
+		for(int i = 0; i < 6; ++i)
+			if(sideConfig.getBoolean(Direction.byIndex(i)))
+				config[i] = 1;
+		nbt.putIntArray("sideConfig", config);
 		if(!pipeCover.isEmpty())
 			nbt.put("pipeCover", (pipeCover.write(new CompoundNBT())));
 		nbt.putByte("connections", connections);
@@ -274,7 +289,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&sideConfig[facing.ordinal()]==0)
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&sideConfig.getBoolean(facing))
 			return sidedHandlers.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}
@@ -477,7 +492,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		int i = dir.getIndex();
 		int mask = 1<<i;
 		connections &= ~mask;
-		if(sideConfig[i]==0&&neighbors.get(dir).isPresent())
+		if(sideConfig.getBoolean(dir)&&neighbors.get(dir).isPresent())
 		{
 			IFluidHandler handler = neighbors.get(dir).get();
 			if(handler.getTanks() > 0)
@@ -489,54 +504,51 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	public byte getAvailableConnectionByte()
 	{
 		byte connections = 0;
-		int mask = 1<<6;
+		int mask = 1;
 		for(Direction dir : Direction.VALUES)
 		{
-			mask >>= 1;
 			if(neighbors.get(dir).isPresent())
 			{
 				IFluidHandler handler = neighbors.get(dir).get();
 				if(handler.getTanks() > 0)
 					connections |= mask;
 			}
+			mask <<= 1;
 		}
 		return connections;
 	}
 
-	public int getConnectionStyle(int connection)
+	public int getConnectionStyle(Direction connection)
 	{
-		if(sideConfig[connection]==-1)
+		if(!sideConfig.getBoolean(connection))
 			return 0;
-		if((connections&(1<<connection))==0)
+		if((connections&(1<<connection.ordinal()))==0)
 			return 0;
 
 		if(connections!=3&&connections!=12&&connections!=48)
 			return 1;
-		//		TileEntity con = world.getTileEntity(xCoord+(connection==4?-1: connection==5?1: 0),yCoord+(connection==0?-1: connection==1?1: 0),zCoord+(connection==2?-1: connection==3?1: 0));
-		TileEntity con = world.getTileEntity(getPos().offset(Direction.byIndex(connection)));
+		TileEntity con = world.getTileEntity(getPos().offset(connection));
 		if(con instanceof FluidPipeTileEntity)
 		{
 			byte tileConnections = ((FluidPipeTileEntity)con).connections;
+			//TODO doesn't seem right to me
 			if(connections==tileConnections)
 				return 0;
 		}
 		return 1;
 	}
 
-	public void toggleSide(int side)
+	public void toggleSide(Direction side)
 	{
-		sideConfig[side]++;
-		if(sideConfig[side] > 0)
-			sideConfig[side] = -1;
+		sideConfig.put(side, !sideConfig.getBoolean(side));
 		markDirty();
 
-		Direction fd = Direction.byIndex(side);
-		TileEntity connected = world.getTileEntity(getPos().offset(fd));
+		TileEntity connected = world.getTileEntity(getPos().offset(side));
 		if(connected instanceof FluidPipeTileEntity)
 		{
-			((FluidPipeTileEntity)connected).sideConfig[fd.getOpposite().ordinal()] = sideConfig[side];
+			((FluidPipeTileEntity)connected).sideConfig.put(side.getOpposite(), sideConfig.getBoolean(side));
 			connected.markDirty();
-			world.addBlockEvent(getPos().offset(fd), getBlockState().getBlock(), 0, 0);
+			world.addBlockEvent(getPos().offset(side), getBlockState().getBlock(), 0, 0);
 		}
 		world.addBlockEvent(getPos(), getBlockState().getBlock(), 0, 0);
 	}
@@ -567,40 +579,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).grow(-.03125f));
 			return list;
 		}
-		if(/*connections==16||connections==32||*/connections==48)
-		{
-			list.add(new AxisAlignedBB(0, .25f, .25f, 1, .75f, .75f));
-			if((connections&16)==0)
-				list.add(new AxisAlignedBB(0, .125f, .125f, .125f, .875f, .875f));
-			if((connections&32)==0)
-				list.add(new AxisAlignedBB(.875f, .125f, .125f, 1, .875f, .875f));
-		}
-		else if(/*connections==4||connections==8||*/connections==12)
-		{
-			list.add(new AxisAlignedBB(.25f, .25f, 0, .75f, .75f, 1));
-			if((connections&4)==0)
-				list.add(new AxisAlignedBB(.125f, .125f, 0, .875f, .875f, .125f));
-			if((connections&8)==0)
-				list.add(new AxisAlignedBB(.125f, .125f, .875f, .875f, .875f, 1));
-		}
-		else if(/*connections==1||connections==2||*/connections==3)
-		{
-			list.add(new AxisAlignedBB(.25f, 0, .25f, .75f, 1, .75f));
-			if((connections&1)==0)
-				list.add(new AxisAlignedBB(.125f, 0, .125f, .875f, .125f, .875f));
-			if((connections&2)==0)
-				list.add(new AxisAlignedBB(.125f, .875f, .125f, .875f, 1, .875f));
-		}
-		else
-		{
-			list.add(new AxisAlignedBB(.25f, .25f, .25f, .75f, .75f, .75f));
-			for(int i = 0; i < 6; i++)
-			{
-				if((connections&(1<<i))!=0)
-					list.add(new AxisAlignedBB(i==4?0: i==5?.875f: .125f, i==0?0: i==1?.875f: .125f, i==2?0: i==3?.875f: .125f, i==4?.125f: i==5?1: .875f, i==0?.125f: i==1?1: .875f, i==2?.125f: i==3?1: .875f));
-			}
-		}
-		return list;
+		return getAdvancedSelectionBounds();
 	}
 
 	@Override
@@ -609,42 +588,28 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		List<AxisAlignedBB> list = Lists.newArrayList();
 		byte availableConnections = getAvailableConnectionByte();
 		double[] baseAABB = !pipeCover.isEmpty()?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
-		for(int i = 0; i < 6; i++)
+		for(Direction d : Direction.VALUES)
 		{
-			double depth = getConnectionStyle(i)==0?.25: .125;
-			double size = getConnectionStyle(i)==0?.25: .125;
-			//			if(pipeCover!=null)
-			//				size = 0;
+			int i = d.ordinal();
 			if((availableConnections&0x1)==1)
-				list.add(new AdvancedAABB(new AxisAlignedBB(i==4?0: i==5?1-depth: size, i==0?0: i==1?1-depth: size, i==2?0: i==3?1-depth: size, i==4?depth: i==5?1: 1-size, i==0?depth: i==1?1: 1-size, i==2?depth: i==3?1: 1-size), Direction.byIndex(i)));
-			if((connections&(1<<i))!=0)
-				baseAABB[i] += i%2==1?.125: -.125;
-			baseAABB[i] = Math.min(Math.max(baseAABB[i], 0), 1);
+			{
+				list.add(new AxisAlignedBB(
+						i==4?0: i==5?0.75: 0.25, i==0?0: i==1?0.75: 0.25, i==2?0: i==3?0.75: 0.25,
+						i==4?0.25: i==5?1: 0.75, i==0?0.25: i==1?1: 0.75, i==2?0.25: i==3?1: 0.75
+				));
+				if(getConnectionStyle(d)==1)
+					list.add(new AxisAlignedBB(
+							i==4?0: i==5?0.875: 0.125, i==0?0: i==1?0.875: 0.125, i==2?0: i==3?0.875: 0.125,
+							i==4?0.125: i==5?1: 0.875, i==0?0.125: i==1?1: 0.875, i==2?0.125: i==3?1: 0.875
+					));
+			}
 			availableConnections = (byte)(availableConnections >> 1);
 		}
-		list.add(new AdvancedAABB(new AxisAlignedBB(baseAABB[4], baseAABB[0], baseAABB[2], baseAABB[5], baseAABB[1], baseAABB[3]), null));
+		list.add(new AxisAlignedBB(baseAABB[4], baseAABB[0], baseAABB[2], baseAABB[5], baseAABB[1], baseAABB[3]));
 		return list;
 	}
 
-	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
-	{
-		if(box instanceof AdvancedAABB)
-		{
-			if(box.grow(.002).contains(mop.getHitVec()))
-			{
-				AxisAlignedBB changedBox = ((AdvancedAABB)box).fd!=null?box.grow(((AdvancedAABB)box).fd.getXOffset()!=0?0: .03125, ((AdvancedAABB)box).fd.getYOffset()!=0?0: .03125, ((AdvancedAABB)box).fd.getZOffset()!=0?0: .03125): box;
-				list.add(changedBox);
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public static HashMap<String, OBJState> cachedOBJStates = new HashMap<>();
-	static String[] CONNECTIONS = new String[]{
-			"con_yMin", "con_yMax", "con_zMin", "con_zMax", "con_xMin", "con_xMax"
-	};
 
 	String getRenderCacheKey()
 	{
@@ -652,7 +617,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		for(int i = 0; i < 6; i++)
 		{
 			if((connections&(1<<i))!=0)
-				key.append(getConnectionStyle(i)==1?"2": "1");
+				key.append(getConnectionStyle(Direction.byIndex(i))==1?"2": "1");
 			else
 				key.append("0");
 		}
@@ -699,7 +664,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public static OBJState getStateFromKey(String key)
 	{
-		if(!cachedOBJStates.containsKey(key))
+		//if(!cachedOBJStates.containsKey(key))
 		{
 			ArrayList<String> parts = new ArrayList<>();
 			Matrix4 rotationMatrix = new Matrix4(TRSRTransformation.identity().getMatrixVec());//TODO is getMatrixVec correct?
@@ -939,10 +904,6 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 					break;
 			}
-			//			connetionParts
-			//			for(int i=0; i<6; i++)
-			//				if(((FluidPipeTileEntity)tile).getConnectionStyle(i)==1)
-			//					connectionCaps.add(CONNECTIONS[i]);
 
 			Matrix4 tempMatr = new Matrix4();
 			tempMatr.m03 = tempMatr.m13 = tempMatr.m23 = .5f;
@@ -1017,15 +978,18 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		Direction fd = side;
 		List<AxisAlignedBB> boxes = this.getAdvancedSelectionBounds();
 		for(AxisAlignedBB box : boxes)
-			if(box instanceof AdvancedAABB)
+			for(Direction d : Direction.VALUES)
 			{
-				if(box.grow(.002).contains(new Vec3d(getPos().getX()+hitVec.x, getPos().getY()+hitVec.y, getPos().getZ()+hitVec.z)))
-					if(((AdvancedAABB)box).fd!=null)
-						fd = ((AdvancedAABB)box).fd;
+				Vec3d testVec = new Vec3d(0.5+0.5*d.getXOffset(), 0.5+0.5*d.getYOffset(), 0.5+0.5*d.getZOffset());
+				if(box.contains(testVec))
+				{
+					fd = d;
+					break;
+				}
 			}
 		if(fd!=null)
 		{
-			toggleSide(fd.ordinal());
+			toggleSide(fd);
 			this.markContainingBlockForUpdate(null);
 			FluidPipeTileEntity.indirectConnections.clear();
 			return true;
@@ -1040,7 +1004,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		for(Direction dir : Direction.values())
 			if((te = world.getTileEntity(pos.offset(dir))) instanceof FluidPipeTileEntity)
 				if(((FluidPipeTileEntity)te).color!=this.color)
-					this.toggleSide(dir.ordinal());
+					this.toggleSide(dir);
 	}
 
 	@Override
@@ -1052,7 +1016,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public boolean hasOutputConnection(Direction side)
 	{
-		return side!=null&&sideConfig[side.ordinal()]==0;
+		return side!=null&&sideConfig.getBoolean(side);
 	}
 
 	@Override

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -48,8 +48,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static blusunrize.immersiveengineering.api.IEEnums.SideConfig.NONE;
-import static blusunrize.immersiveengineering.api.IEEnums.SideConfig.OUTPUT;
+import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.NONE;
+import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.OUTPUT;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
 public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
@@ -57,9 +57,9 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	public static final int IGNITION_TEMPERATURE = 573;
 	public static TileEntityType<WoodenBarrelTileEntity> TYPE;
 
-	public EnumMap<Direction, SideConfig> sideConfig = new EnumMap<>(ImmutableMap.of(
+	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(ImmutableMap.of(
 			Direction.DOWN, OUTPUT,
-			Direction.UP, SideConfig.INPUT
+			Direction.UP, IOSideConfig.INPUT
 	));
 	public FluidTank tank = new FluidTank(12000, this::isFluidValid);
 
@@ -126,8 +126,8 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		}
 		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&brtr.getFace().getAxis()==Axis.Y)
 		{
-			SideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
-			SideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);
+			IOSideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
+			IOSideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
 							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+side.getName()),
@@ -152,7 +152,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			sideCfgArray = new int[]{-1, 0};
 		sideConfig.clear();
 		for(int i = 0; i < sideCfgArray.length; ++i)
-			sideConfig.put(Direction.byIndex(i), SideConfig.VALUES[sideCfgArray[i]]);
+			sideConfig.put(Direction.byIndex(i), IOSideConfig.VALUES[sideCfgArray[i]]);
 		this.readTank(nbt);
 	}
 
@@ -211,7 +211,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		@Override
 		public int fill(FluidStack resource, FluidAction doFill)
 		{
-			if(resource==null||(facing!=null&&barrel.sideConfig.get(facing)!=SideConfig.INPUT)||!barrel.isFluidValid(resource))
+			if(resource==null||(facing!=null&&barrel.sideConfig.get(facing)!=IOSideConfig.INPUT)||!barrel.isFluidValid(resource))
 				return 0;
 
 			int i = barrel.tank.fill(resource, doFill);
@@ -279,7 +279,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public SideConfig getSideConfig(Direction side)
+	public IOSideConfig getSideConfig(Direction side)
 	{
 		return sideConfig.getOrDefault(side, NONE);
 	}
@@ -289,7 +289,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	{
 		if(side.getAxis()!=Axis.Y)
 			return false;
-		sideConfig.compute(side, (s, config) -> SideConfig.next(config));
+		sideConfig.compute(side, (s, config) -> IOSideConfig.next(config));
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
 		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);

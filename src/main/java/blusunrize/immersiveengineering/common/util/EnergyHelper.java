@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -151,7 +151,7 @@ public class EnergyHelper
 		@Override
 		default int extractEnergy(@Nullable Direction fd, int amount, boolean simulate)
 		{
-			if(((TileEntity)this).getWorld().isRemote||getEnergySideConfig(fd)!=SideConfig.OUTPUT)
+			if(((TileEntity)this).getWorld().isRemote||getEnergySideConfig(fd)!=IOSideConfig.OUTPUT)
 				return 0;
 			int r = getFluxStorage().extractEnergy(amount, simulate);
 			postEnergyTransferUpdate(-r, simulate);
@@ -173,7 +173,7 @@ public class EnergyHelper
 		@Override
 		default int receiveEnergy(@Nullable Direction fd, int amount, boolean simulate)
 		{
-			if(((TileEntity)this).getWorld().isRemote||getEnergySideConfig(fd)!=SideConfig.INPUT)
+			if(((TileEntity)this).getWorld().isRemote||getEnergySideConfig(fd)!=IOSideConfig.INPUT)
 				return 0;
 			int r = getFluxStorage().receiveEnergy(amount, simulate);
 			postEnergyTransferUpdate(r, simulate);
@@ -184,12 +184,12 @@ public class EnergyHelper
 	public interface IIEInternalFluxConnector extends IFluxConnection
 	{
 		@Nonnull
-		SideConfig getEnergySideConfig(@Nullable Direction facing);
+		IOSideConfig getEnergySideConfig(@Nullable Direction facing);
 
 		@Override
 		default boolean canConnectEnergy(@Nullable Direction fd)
 		{
-			return getEnergySideConfig(fd)!=SideConfig.NONE;
+			return getEnergySideConfig(fd)!=IOSideConfig.NONE;
 		}
 
 		@Nullable

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.IEEnums;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
@@ -242,7 +242,7 @@ public class IEBlockInterfaces
 
 	public interface IConfigurableSides
 	{
-		IEEnums.SideConfig getSideConfig(Direction side);
+		IOSideConfig getSideConfig(Direction side);
 
 		boolean toggleSide(Direction side, PlayerEntity p);
 	}
@@ -339,8 +339,6 @@ public class IEBlockInterfaces
 	public interface IAdvancedSelectionBounds extends IBlockBounds
 	{
 		List<AxisAlignedBB> getAdvancedSelectionBounds();
-
-		boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list);
 	}
 
 	public interface IAdvancedCollisionBounds extends IBlockBounds

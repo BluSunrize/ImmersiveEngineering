@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.tileentity.TileEntity;
@@ -23,13 +23,13 @@ public class CapacitorCreativeTileEntity extends CapacitorLVTileEntity
 	{
 		super(TYPE);
 		for(Direction d : Direction.VALUES)
-			sideConfig.put(d, SideConfig.OUTPUT);
+			sideConfig.put(d, IOSideConfig.OUTPUT);
 	}
 
 	@Override
 	public int receiveEnergy(Direction from, int maxReceive, boolean simulate)
 	{
-		if(world.isRemote||sideConfig.get(from)!=SideConfig.INPUT)
+		if(world.isRemote||sideConfig.get(from)!=IOSideConfig.INPUT)
 			return 0;
 		return maxReceive;
 	}
@@ -37,7 +37,7 @@ public class CapacitorCreativeTileEntity extends CapacitorLVTileEntity
 	@Override
 	public int extractEnergy(Direction from, int maxExtract, boolean simulate)
 	{
-		if(world.isRemote||sideConfig.get(from)!=SideConfig.OUTPUT)
+		if(world.isRemote||sideConfig.get(from)!=IOSideConfig.OUTPUT)
 			return 0;
 		return maxExtract;
 	}
@@ -57,7 +57,7 @@ public class CapacitorCreativeTileEntity extends CapacitorLVTileEntity
 	@Override
 	protected void transferEnergy(Direction side)
 	{
-		if(sideConfig.get(side)!=SideConfig.OUTPUT)
+		if(sideConfig.get(side)!=IOSideConfig.OUTPUT)
 			return;
 		TileEntity te = Utils.getExistingTileEntity(world, pos.offset(side));
 		EnergyHelper.insertFlux(te, side.getOpposite(), Integer.MAX_VALUE, false);

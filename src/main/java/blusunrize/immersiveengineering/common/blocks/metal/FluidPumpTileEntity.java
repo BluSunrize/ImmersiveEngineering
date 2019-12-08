@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
@@ -301,9 +301,9 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public SideConfig getSideConfig(Direction side)
+	public IOSideConfig getSideConfig(Direction side)
 	{
-		return SideConfig.values()[this.sideConfig[side.ordinal()]+1];
+		return IOSideConfig.values()[this.sideConfig[side.ordinal()]+1];
 	}
 
 	@Override
@@ -457,9 +457,9 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(Direction facing)
+	public IOSideConfig getEnergySideConfig(Direction facing)
 	{
-		return isDummy()&&facing==Direction.UP?SideConfig.INPUT: SideConfig.NONE;
+		return isDummy()&&facing==Direction.UP?IOSideConfig.INPUT: IOSideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, Direction.UP);

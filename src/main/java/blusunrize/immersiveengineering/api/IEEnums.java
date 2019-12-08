@@ -14,17 +14,17 @@ import java.util.Locale;
 
 public class IEEnums
 {
-	public enum SideConfig implements IStringSerializable
+	public enum IOSideConfig implements IStringSerializable
 	{
 		NONE("none"),
 		INPUT("in"),
 		OUTPUT("out");
 
-		public static final SideConfig[] VALUES = values();
+		public static final IOSideConfig[] VALUES = values();
 
 		final String texture;
 
-		SideConfig(String texture)
+		IOSideConfig(String texture)
 		{
 			this.texture = texture;
 		}
@@ -40,7 +40,7 @@ public class IEEnums
 			return texture;
 		}
 
-		public static SideConfig next(SideConfig current)
+		public static IOSideConfig next(IOSideConfig current)
 		{
 			return current==INPUT?OUTPUT: current==OUTPUT?NONE: INPUT;
 		}

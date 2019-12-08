@@ -118,6 +118,8 @@ public class BlockStates extends BlockstateGenerator
 		createMultiblock(MetalDevices.sampleDrill, new ExistingModelFile(rl("block/metal_device/core_drill.obj")),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180,
 				variantBased);
+		createBasicBlock(MetalDevices.fluidPipe, new ExistingModelFile(rl("block/metal_device/fluid_pipe.obj.ie")),
+				variantBased);
 
 		createPostBlock(MetalDecoration.aluPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
 				rl("block/metal_decoration/aluminum_post"),

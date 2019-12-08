@@ -63,7 +63,8 @@ public class IEBaseBlock extends Block
 		this.setDefaultState(getInitDefaultState());
 		ResourceLocation registryName = createRegistryName();
 		setRegistryName(registryName);
-		//TODO this.adjustSound();
+
+		//TODO this.adjustSo/nd();
 
 		IEContent.registeredIEBlocks.add(this);
 		if(itemBlock!=null)
@@ -78,19 +79,19 @@ public class IEBaseBlock extends Block
 				throw new RuntimeException(e);
 			}
 		}
-		lightOpacity = 255;
+		lightOpacity = 15;
 	}
 
 	//TODO do we still need this hackyness?
 	protected static Block.Properties setTempProperties(Properties blockProps, Object[] additionalProperties)
 	{
-		ArrayList<IProperty> propList = new ArrayList<IProperty>();
+		List<IProperty<?>> propList = new ArrayList<>();
 		for(Object o : additionalProperties)
 		{
 			if(o instanceof IProperty)
-				propList.add((IProperty)o);
+				propList.add((IProperty<?>)o);
 			if(o instanceof IProperty[])
-				propList.addAll(Arrays.asList(((IProperty[])o)));
+				propList.addAll(Arrays.asList(((IProperty<?>[])o)));
 		}
 		tempProperties = propList.toArray(new IProperty[0]);
 		return blockProps.variableOpacity();
@@ -148,7 +149,14 @@ public class IEBaseBlock extends Block
 	@SuppressWarnings("deprecation")
 	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
-		return notNormalBlock?0: lightOpacity;
+		if(state.isOpaqueCube(worldIn, pos))
+		{
+			return lightOpacity;
+		}
+		else
+		{
+			return state.propagatesSkylightDown(worldIn, pos)?0: 1;
+		}
 	}
 
 	public IEBaseBlock setMobility(PushReaction flag)

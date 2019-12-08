@@ -30,7 +30,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -218,12 +217,6 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 		if(conveyorBeltSubtype!=null)
 			return new ArrayList<>(conveyorBeltSubtype.getSelectionBoxes());
 		return Lists.newArrayList(COLISIONBB);
-	}
-
-	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, PlayerEntity player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
-	{
-		return false;
 	}
 
 	private LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ConveyorInventoryHandler(this));

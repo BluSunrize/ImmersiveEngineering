@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -115,9 +115,9 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(@Nullable Direction facing)
+	public IOSideConfig getEnergySideConfig(@Nullable Direction facing)
 	{
-		return SideConfig.OUTPUT;
+		return IOSideConfig.OUTPUT;
 	}
 
 	@Override

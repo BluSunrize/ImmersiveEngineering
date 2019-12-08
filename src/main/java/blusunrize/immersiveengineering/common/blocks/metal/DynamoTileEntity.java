@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -94,9 +94,9 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(@Nullable Direction facing)
+	public IOSideConfig getEnergySideConfig(@Nullable Direction facing)
 	{
-		return SideConfig.OUTPUT;
+		return IOSideConfig.OUTPUT;
 	}
 
 	@Override

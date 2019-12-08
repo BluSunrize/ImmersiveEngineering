@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
@@ -244,9 +244,9 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 
 	@Nonnull
 	@Override
-	public SideConfig getEnergySideConfig(@Nullable Direction facing)
+	public IOSideConfig getEnergySideConfig(@Nullable Direction facing)
 	{
-		return this.formed&&this.isEnergyPos()?SideConfig.OUTPUT: SideConfig.NONE;
+		return this.formed&&this.isEnergyPos()?IOSideConfig.OUTPUT: IOSideConfig.NONE;
 	}
 
 	private IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);

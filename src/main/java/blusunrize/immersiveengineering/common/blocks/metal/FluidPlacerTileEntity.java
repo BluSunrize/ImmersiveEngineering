@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -163,9 +163,9 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
-	public SideConfig getSideConfig(Direction side)
+	public IOSideConfig getSideConfig(Direction side)
 	{
-		return SideConfig.values()[this.sideConfig[side.ordinal()]+1];
+		return IOSideConfig.values()[this.sideConfig[side.ordinal()]+1];
 	}
 
 	@Override

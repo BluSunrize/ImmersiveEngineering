@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.wires.Connection;
@@ -113,7 +113,7 @@ public class IEProperties
 		public static final ModelProperty<MineralMix> MINERAL = new ModelProperty<>();
 		public static final ModelProperty<IConveyorBelt> CONVEYOR = new ModelProperty<>();
 		public static final ModelProperty<FeedthroughData> FEEDTHROUGH = new ModelProperty<>();
-		public static final ModelProperty<Map<Direction, SideConfig>> SIDECONFIG = new ModelProperty<>();
+		public static final ModelProperty<Map<Direction, IOSideConfig>> SIDECONFIG = new ModelProperty<>();
 		//TODO remove?
 		public static final ModelProperty<TileEntity> TILEENTITY_PASSTHROUGH = new ModelProperty<>();
 	}

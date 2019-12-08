@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import com.google.common.cache.Cache;
@@ -60,7 +60,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		TYPES.put("s_", new ITextureNamer()
 		{//all sides, same texture
 			@Override
-			public String nameFromSide(Direction side, SideConfig cfg)
+			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
 				return "side";
 			}
@@ -68,7 +68,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		TYPES.put("hud_", new ITextureNamer()
 		{//horizontal, up, down
 			@Override
-			public String nameFromSide(Direction side, SideConfig cfg)
+			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
 				return side.ordinal() < 2?side.getName(): "side";
 			}
@@ -76,7 +76,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		TYPES.put("hv_", new ITextureNamer()
 		{//horizontal, vertical
 			@Override
-			public String nameFromSide(Direction side, SideConfig cfg)
+			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
 				return side.ordinal() < 2?"up": "side";
 			}
@@ -84,13 +84,13 @@ public class ModelConfigurableSides extends BakedIEModel
 		TYPES.put("ud_", new ITextureNamer()
 		{//up, down, sides not configureable
 			@Override
-			public String nameFromSide(Direction side, SideConfig cfg)
+			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
 				return side.ordinal() < 2?side.getName(): "side";
 			}
 
 			@Override
-			public String nameFromCfg(Direction side, SideConfig cfg)
+			public String nameFromCfg(Direction side, IOSideConfig cfg)
 			{
 				return side.ordinal() < 2?cfg.getTextureName(): null;
 			}
@@ -98,13 +98,13 @@ public class ModelConfigurableSides extends BakedIEModel
 		TYPES.put("v_", new ITextureNamer()
 		{//vertical, sides not configureable
 			@Override
-			public String nameFromSide(Direction side, SideConfig cfg)
+			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
 				return side.ordinal() < 2?"up": "side";
 			}
 
 			@Override
-			public String nameFromCfg(Direction side, SideConfig cfg)
+			public String nameFromCfg(Direction side, IOSideConfig cfg)
 			{
 				return side.ordinal() < 2?cfg.getTextureName(): null;
 			}
@@ -114,9 +114,9 @@ public class ModelConfigurableSides extends BakedIEModel
 	public static Cache<ModelKey, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build();
 
 	final String name;
-	public Map<Direction, Map<SideConfig, TextureAtlasSprite>> textures;
+	public Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> textures;
 
-	public ModelConfigurableSides(String name, Map<Direction, Map<SideConfig, TextureAtlasSprite>> textures)
+	public ModelConfigurableSides(String name, Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> textures)
 	{
 		this.name = name;
 		this.textures = textures;
@@ -126,14 +126,14 @@ public class ModelConfigurableSides extends BakedIEModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
-		Map<Direction, SideConfig> config;
+		Map<Direction, IOSideConfig> config;
 		if(extraData.hasProperty(Model.SIDECONFIG))
 			config = extraData.getData(Model.SIDECONFIG);
 		else
 		{
 			config = new EnumMap<>(Direction.class);
 			for(Direction d : Direction.VALUES)
-				config.put(d, SideConfig.NONE);
+				config.put(d, IOSideConfig.NONE);
 		}
 		assert (config!=null);
 		ModelKey key = new ModelKey(name, config);
@@ -193,7 +193,7 @@ public class ModelConfigurableSides extends BakedIEModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return this.textures.get(DOWN).get(SideConfig.NONE);
+		return this.textures.get(DOWN).get(IOSideConfig.NONE);
 	}
 
 	static final ItemCameraTransforms defaultTransforms = new ItemCameraTransforms(
@@ -260,7 +260,7 @@ public class ModelConfigurableSides extends BakedIEModel
 						type = e.getKey();
 						name = sub.substring(type.length());
 						for(Direction f : Direction.VALUES)
-							for(SideConfig cfg : SideConfig.values())
+							for(IOSideConfig cfg : IOSideConfig.values())
 							{
 								String key = f.getName()+"_"+cfg.getTextureName();
 								String tex = name+"_"+e.getValue().getTextureName(f, cfg);
@@ -305,11 +305,11 @@ public class ModelConfigurableSides extends BakedIEModel
 		@Override
 		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
 		{
-			Map<Direction, Map<SideConfig, TextureAtlasSprite>> tex = new EnumMap<>(Direction.class);
+			Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> tex = new EnumMap<>(Direction.class);
 			for(Direction f : Direction.VALUES)
 			{
-				Map<SideConfig, TextureAtlasSprite> forSide = new EnumMap<>(SideConfig.class);
-				for(SideConfig cfg : SideConfig.values())
+				Map<IOSideConfig, TextureAtlasSprite> forSide = new EnumMap<>(IOSideConfig.class);
+				for(IOSideConfig cfg : IOSideConfig.values())
 				{
 					ResourceLocation rl = textures.get(f.getName()+"_"+cfg.getTextureName());
 					if(rl!=null)
@@ -326,7 +326,7 @@ public class ModelConfigurableSides extends BakedIEModel
 			String newName = this.name;
 			ImmutableMap.Builder<String, ResourceLocation> builder = ImmutableMap.builder();
 			for(Direction f : Direction.VALUES)
-				for(SideConfig cfg : SideConfig.values())
+				for(IOSideConfig cfg : IOSideConfig.values())
 				{
 					String key = f.getName()+"_"+cfg.getTextureName();
 					ResourceLocation rl = this.textures.get(key);
@@ -358,7 +358,7 @@ public class ModelConfigurableSides extends BakedIEModel
 
 	interface ITextureNamer
 	{
-		default String getTextureName(Direction side, SideConfig cfg)
+		default String getTextureName(Direction side, IOSideConfig cfg)
 		{
 			String s = nameFromSide(side, cfg);
 			String c = nameFromCfg(side, cfg);
@@ -371,12 +371,12 @@ public class ModelConfigurableSides extends BakedIEModel
 			return "";
 		}
 
-		default String nameFromSide(Direction side, SideConfig cfg)
+		default String nameFromSide(Direction side, IOSideConfig cfg)
 		{
 			return side.getName();
 		}
 
-		default String nameFromCfg(Direction side, SideConfig cfg)
+		default String nameFromCfg(Direction side, IOSideConfig cfg)
 		{
 			return cfg.getTextureName();
 		}
@@ -387,9 +387,9 @@ public class ModelConfigurableSides extends BakedIEModel
 		@Nonnull
 		final String name;
 		@Nonnull
-		final Map<Direction, SideConfig> config;
+		final Map<Direction, IOSideConfig> config;
 
-		private ModelKey(String name, Map<Direction, SideConfig> config)
+		private ModelKey(String name, Map<Direction, IOSideConfig> config)
 		{
 			this.name = name;
 			this.config = config;
