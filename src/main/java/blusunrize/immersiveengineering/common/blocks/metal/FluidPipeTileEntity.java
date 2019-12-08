@@ -587,23 +587,26 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList();
 		byte availableConnections = getAvailableConnectionByte();
+		byte activeConnections = connections;
 		double[] baseAABB = !pipeCover.isEmpty()?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
 		for(Direction d : Direction.VALUES)
 		{
 			int i = d.ordinal();
 			if((availableConnections&0x1)==1)
 			{
-				list.add(new AxisAlignedBB(
-						i==4?0: i==5?0.75: 0.25, i==0?0: i==1?0.75: 0.25, i==2?0: i==3?0.75: 0.25,
-						i==4?0.25: i==5?1: 0.75, i==0?0.25: i==1?1: 0.75, i==2?0.25: i==3?1: 0.75
-				));
-				if(getConnectionStyle(d)==1)
+				if((activeConnections&1)==1)
+					list.add(new AxisAlignedBB(
+							i==4?0: i==5?0.75: 0.25, i==0?0: i==1?0.75: 0.25, i==2?0: i==3?0.75: 0.25,
+							i==4?0.25: i==5?1: 0.75, i==0?0.25: i==1?1: 0.75, i==2?0.25: i==3?1: 0.75
+					));
+				if((activeConnections&1)==0||getConnectionStyle(d)==1)
 					list.add(new AxisAlignedBB(
 							i==4?0: i==5?0.875: 0.125, i==0?0: i==1?0.875: 0.125, i==2?0: i==3?0.875: 0.125,
 							i==4?0.125: i==5?1: 0.875, i==0?0.125: i==1?1: 0.875, i==2?0.125: i==3?1: 0.875
 					));
 			}
 			availableConnections = (byte)(availableConnections >> 1);
+			activeConnections = (byte)(activeConnections >> 1);
 		}
 		list.add(new AxisAlignedBB(baseAABB[4], baseAABB[0], baseAABB[2], baseAABB[5], baseAABB[1], baseAABB[3]));
 		return list;
@@ -664,7 +667,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public static OBJState getStateFromKey(String key)
 	{
-		//if(!cachedOBJStates.containsKey(key))
+		if(!cachedOBJStates.containsKey(key))
 		{
 			ArrayList<String> parts = new ArrayList<>();
 			Matrix4 rotationMatrix = new Matrix4(TRSRTransformation.identity().getMatrixVec());//TODO is getMatrixVec correct?
@@ -975,17 +978,22 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		if(world.isRemote)
 			return true;
+		hitVec = hitVec.subtract(new Vec3d(pos));
 		Direction fd = side;
 		List<AxisAlignedBB> boxes = this.getAdvancedSelectionBounds();
 		for(AxisAlignedBB box : boxes)
-			for(Direction d : Direction.VALUES)
+			if(box.grow(.002).contains(hitVec))
 			{
-				Vec3d testVec = new Vec3d(0.5+0.5*d.getXOffset(), 0.5+0.5*d.getYOffset(), 0.5+0.5*d.getZOffset());
-				if(box.contains(testVec))
+				for(Direction d : Direction.VALUES)
 				{
-					fd = d;
-					break;
+					Vec3d testVec = new Vec3d(0.5+0.5*d.getXOffset(), 0.5+0.5*d.getYOffset(), 0.5+0.5*d.getZOffset());
+					if(box.grow(0.002).contains(testVec))
+					{
+						fd = d;
+						break;
+					}
 				}
+				break;
 			}
 		if(fd!=null)
 		{
