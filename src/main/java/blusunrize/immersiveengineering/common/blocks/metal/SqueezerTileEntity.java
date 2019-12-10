@@ -325,7 +325,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedColisionBounds()
+	public List<AxisAlignedBB> getAdvancedCollisionBounds()
 	{
 		return getAdvancedSelectionBounds();
 	}

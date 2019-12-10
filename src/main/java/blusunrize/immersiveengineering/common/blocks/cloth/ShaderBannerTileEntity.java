@@ -86,7 +86,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedColisionBounds()
+	public List<AxisAlignedBB> getAdvancedCollisionBounds()
 	{
 		return ImmutableList.of();
 	}

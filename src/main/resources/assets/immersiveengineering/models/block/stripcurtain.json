@@ -87,6 +87,8 @@
 	],
 	"textures":
 	{
-		"particle": "#side"
+		"metal": "immersiveengineering:block/conveyor/casing_side",
+		"side": "immersiveengineering:block/stripcurtain",
+		"particle": "immersiveengineering:block/stripcurtain"
 	}
 }

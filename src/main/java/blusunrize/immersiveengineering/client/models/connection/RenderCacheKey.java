@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.client.model.data.IModelData;
@@ -29,14 +30,16 @@ public class RenderCacheKey
 		additionalProperties = additional;
 	}
 
-	public RenderCacheKey(BlockState state, BlockRenderLayer l, RenderCacheKey baseKey, IModelData data, ModelProperty<?>... toSave)
+	public RenderCacheKey(BlockState state, BlockRenderLayer l, RenderCacheKey baseKey, IModelData data,
+						  ImmutableList<Object> additional, ModelProperty<?>... toSave)
 	{
-		this(state, l, getAllProperties(baseKey, data, toSave));
+		this(state, l, additional, getAllProperties(baseKey, data, toSave));
 	}
 
-	public RenderCacheKey(BlockState state, BlockRenderLayer l, IModelData data, ModelProperty<?>... toSave)
+	public RenderCacheKey(BlockState state, BlockRenderLayer l, IModelData data, ImmutableList<Object> additional,
+						  ModelProperty<?>... toSave)
 	{
-		this(state, l, null, data, toSave);
+		this(state, l, null, data, additional, toSave);
 	}
 
 	private static Object[] getAllProperties(RenderCacheKey base, IModelData data, ModelProperty<?>[] toSave)

@@ -295,9 +295,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
 	{
 		final Direction side = hit.getFace();
-		final float hitX = (float)hit.getHitVec().x;
-		final float hitY = (float)hit.getHitVec().y;
-		final float hitZ = (float)hit.getHitVec().z;
+		final float hitX = (float)hit.getHitVec().x-pos.getX();
+		final float hitY = (float)hit.getHitVec().y-pos.getY();
+		final float hitZ = (float)hit.getHitVec().z-pos.getZ();
 		ItemStack heldItem = player.getHeldItem(hand);
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player)&&!world.isRemote)
@@ -399,7 +399,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof IAdvancedCollisionBounds)
 			{
-				List<AxisAlignedBB> bounds = ((IAdvancedCollisionBounds)te).getAdvancedColisionBounds();
+				List<AxisAlignedBB> bounds = ((IAdvancedCollisionBounds)te).getAdvancedCollisionBounds();
 				if(bounds!=null&&!bounds.isEmpty())
 				{
 					VoxelShape ret = VoxelShapes.empty();
@@ -420,6 +420,28 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			}
 		}
 		return super.getShape(state, world, pos, context);
+	}
+
+	@Override
+	public VoxelShape getRaytraceShape(BlockState state, IBlockReader world, BlockPos pos)
+	{
+		if(world.getBlockState(pos).getBlock()==this)
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if(te instanceof IAdvancedSelectionBounds)
+			{
+				List<AxisAlignedBB> bounds = ((IAdvancedSelectionBounds)te).getAdvancedSelectionBounds();
+				if(bounds!=null&&!bounds.isEmpty())
+				{
+					VoxelShape ret = VoxelShapes.empty();
+					for(AxisAlignedBB aabb : bounds)
+						if(aabb!=null)
+							ret = VoxelShapes.combineAndSimplify(ret, VoxelShapes.create(aabb), IBooleanFunction.OR);
+					return ret;
+				}
+			}
+		}
+		return super.getRaytraceShape(state, world, pos);
 	}
 
 	@Nullable

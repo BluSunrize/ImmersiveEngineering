@@ -73,9 +73,14 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
+		final int oldStyle = style;
+		final int oldC0 = colour0;
+		final int oldC1 = colour1;
 		style = nbt.getInt("style");
 		colour0 = nbt.getInt("colour0");
 		colour1 = nbt.getInt("colour1");
+		if(oldStyle!=style||oldC0!=colour0||oldC1!=colour1)
+			requestModelDataUpdate();
 		if(nbt.contains("shader", NBT.TAG_COMPOUND))
 		{
 			shader = new ShaderWrapper_Direct("immersiveengineering:balloon");
@@ -252,5 +257,16 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 				shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), null, shader.getRight().getShaderType(), pos, null, .375f);
 
 		}
+	}
+
+	@Override
+	public Direction getFacing()
+	{
+		return Direction.NORTH;
+	}
+
+	@Override
+	public void setFacing(Direction facing)
+	{
 	}
 }

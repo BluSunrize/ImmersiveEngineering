@@ -144,7 +144,7 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedColisionBounds()
+	public List<AxisAlignedBB> getAdvancedCollisionBounds()
 	{
 		return Lists.newArrayList(bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)]);
 	}
@@ -185,6 +185,8 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	{
 		if(side==Direction.DOWN)
 			setCeilingAttached(true);
+		else
+			setCeilingAttached(false);
 	}
 
 	@Override

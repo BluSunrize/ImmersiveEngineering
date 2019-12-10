@@ -204,7 +204,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 			new AxisAlignedBB(0, 0, 0, 1, .125F, 1);
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedColisionBounds()
+	public List<AxisAlignedBB> getAdvancedCollisionBounds()
 	{
 		if(conveyorBeltSubtype!=null)
 			return new ArrayList<>(conveyorBeltSubtype.getColisionBoxes());

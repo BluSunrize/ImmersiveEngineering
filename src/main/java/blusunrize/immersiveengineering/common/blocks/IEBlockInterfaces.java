@@ -344,7 +344,7 @@ public class IEBlockInterfaces
 	public interface IAdvancedCollisionBounds extends IBlockBounds
 	{
 		@Nullable
-		List<AxisAlignedBB> getAdvancedColisionBounds();
+		List<AxisAlignedBB> getAdvancedCollisionBounds();
 	}
 
 	//TODO move a lot of this to block states!

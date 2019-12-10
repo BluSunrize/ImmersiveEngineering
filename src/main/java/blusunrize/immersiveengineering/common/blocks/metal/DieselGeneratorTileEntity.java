@@ -333,7 +333,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedColisionBounds()
+	public List<AxisAlignedBB> getAdvancedCollisionBounds()
 	{
 		return getAdvancedSelectionBounds();
 	}

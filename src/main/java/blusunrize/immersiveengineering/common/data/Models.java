@@ -104,6 +104,9 @@ public class Models extends ModelGenerator
 	final GeneratedModelFile fluidRouter = createRouterModel(rl("block/wooden_device/fluid_sorter"),
 			locForItemModel(WoodenDevices.fluidSorter));
 
+	final GeneratedModelFile cushion = ModelHelper.createBasicCube(rl("block/cushion"),
+			locForItemModel(Cloth.cushion));
+
 	public Models(DataGenerator gen)
 	{
 		super(gen);
@@ -141,6 +144,10 @@ public class Models extends ModelGenerator
 		out.accept(metalLadderNone);
 		out.accept(metalLadderAlu);
 		out.accept(metalLadderSteel);
+
+		out.accept(ModelHelper.createWithModel(rl("block/stripcurtain"), locForItemModel(Cloth.curtain)));
+		out.accept(ModelHelper.createWithModel(rl("block/balloon.obj.ie"), locForItemModel(Cloth.balloon)));
+		out.accept(cushion);
 
 		addSimpleBlockModel(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"), out);
 		addSimpleBlockModel(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"), out);

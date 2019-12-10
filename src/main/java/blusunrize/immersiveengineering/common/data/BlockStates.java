@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
+import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.PostBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
@@ -39,6 +40,7 @@ import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -196,6 +198,44 @@ public class BlockStates extends BlockstateGenerator
 				variantBased);
 		createBasicBlock(WoodenDevices.sorter, models.router, variantBased);
 		createBasicBlock(WoodenDevices.fluidSorter, models.fluidRouter, variantBased);
+
+		createConnector(Cloth.balloon, map -> rl("block/balloon.obj.ie"), ImmutableMap.of(), variantBased,
+				ImmutableList.of(), BlockRenderLayer.SOLID);
+		createRotatedBlock(Cloth.curtain,
+				state -> new ExistingModelFile(rl(
+						state.get(StripCurtainBlock.CEILING_ATTACHED)==Boolean.FALSE?
+								"block/stripcurtain":
+								"block/stripcurtain_middle"
+				)), IEProperties.FACING_HORIZONTAL, ImmutableList.of(StripCurtainBlock.CEILING_ATTACHED),
+				variantBased);
+		createBasicBlock(Cloth.cushion, models.cushion, variantBased);
+	}
+
+	private void createRotatedBlock(Block block, Function<Map<IProperty<?>, Object>, ModelFile> model, IProperty<Direction> facing,
+									List<IProperty<?>> additionalProps,
+									BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		Builder builder = new Builder(block);
+		forEachState(additionalProps, state -> {
+			ImmutableMap<String, Object> additional;
+			ModelFile modelLoc = model.apply(state);
+			if(modelLoc.getLocation().getPath().contains(".obj"))
+				additional = ImmutableMap.of("flip-v", true);
+			else
+				additional = ImmutableMap.of();
+			Map<IProperty<?>, Object> baseState = new HashMap<>();
+			for(Entry<IProperty<?>, Object> e : state.entrySet())
+				baseState.put(e.getKey(), e.getValue());
+			for(Direction d : facing.getAllowedValues())
+			{
+				Preconditions.checkState(d.getAxis()!=Axis.Y);
+				ConfiguredModel configuredModel = new ConfiguredModel(modelLoc, 0, getAngle(d, 180), true,
+						additional);
+
+				builder.setForAllWithState(with(baseState, facing, d), configuredModel);
+			}
+		});
+		out.accept(block, builder.build());
 	}
 
 	private void createBasicBlock(Block block, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
@@ -404,31 +444,43 @@ public class BlockStates extends BlockstateGenerator
 			facingProp = IEProperties.FACING_ALL;
 			xForHorizontal = 90;
 		}
-		else
+		else if(b.getDefaultState().has(IEProperties.FACING_HORIZONTAL))
 		{
 			facingProp = IEProperties.FACING_HORIZONTAL;
 			xForHorizontal = 0;
 		}
-		Preconditions.checkState(b.getDefaultState().has(facingProp), b+" does not have "+facingProp);
+		else
+		{
+			facingProp = null;
+			xForHorizontal = 0;
+		}
+		Preconditions.checkState(facingProp==null||b.getDefaultState().has(facingProp),
+				b+" does not have "+facingProp);
 		Builder builder = new Builder(b);
 		forEachState(additional, map -> {
 			final ImmutableMap<String, Object> customData = ImmutableMap.of("flip-v", true,
 					"base", model.apply(map).toString(),
 					"layers", layerString.toString());
-			if(facingProp.getAllowedValues().contains(Direction.DOWN))
+			if(facingProp!=null)
 			{
-				builder.setForAllWithState(with(map, facingProp, Direction.DOWN),
+				if(facingProp.getAllowedValues().contains(Direction.DOWN))
+				{
+					builder.setForAllWithState(with(map, facingProp, Direction.DOWN),
+							new ConfiguredModel(connFile, 0, 0, true, customData, textures));
+					builder.setForAllWithState(with(map, facingProp, Direction.UP),
+							new ConfiguredModel(connFile, 180, 0, true, customData, textures));
+				}
+				for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+				{
+					int rotation = getAngle(d, 0);
+					builder.setForAllWithState(
+							with(map, facingProp, d),
+							new ConfiguredModel(connFile, xForHorizontal, rotation, true, customData, textures));
+				}
+			}
+			else
+				builder.setForAllWithState(map,
 						new ConfiguredModel(connFile, 0, 0, true, customData, textures));
-				builder.setForAllWithState(with(map, facingProp, Direction.UP),
-						new ConfiguredModel(connFile, 180, 0, true, customData, textures));
-			}
-			for(Direction d : Direction.BY_HORIZONTAL_INDEX)
-			{
-				int rotation = getAngle(d, 0);
-				builder.setForAllWithState(
-						with(map, facingProp, d),
-						new ConfiguredModel(connFile, xForHorizontal, rotation, true, customData, textures));
-			}
 		});
 		out.accept(b, builder.build());
 	}

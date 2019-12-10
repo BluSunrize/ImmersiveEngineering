@@ -209,7 +209,6 @@ public class IEBaseBlock extends Block
 	protected void fillStateContainer(Builder<Block, BlockState> builder)
 	{
 		super.fillStateContainer(builder);
-		//TODO ext states?
 		builder.add(tempProperties);
 	}
 

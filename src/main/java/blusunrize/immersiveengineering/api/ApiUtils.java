@@ -1011,6 +1011,7 @@ public class ApiUtils
 	public static void addFutureServerTask(World world, Runnable task)
 	{
 		LogicalSide side = world.isRemote?LogicalSide.CLIENT: LogicalSide.SERVER;
+		//TODO this sometimes causes NPEs?
 		ThreadTaskExecutor<?> tmp = LogicalSidedProvider.WORKQUEUE.get(side);
 		tmp.deferTask(task);
 	}

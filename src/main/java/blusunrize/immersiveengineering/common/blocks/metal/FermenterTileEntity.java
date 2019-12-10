@@ -278,7 +278,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedColisionBounds()
+	public List<AxisAlignedBB> getAdvancedCollisionBounds()
 	{
 		return getAdvancedSelectionBounds();
 	}

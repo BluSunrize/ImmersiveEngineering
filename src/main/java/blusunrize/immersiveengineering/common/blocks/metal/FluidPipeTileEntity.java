@@ -571,7 +571,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedColisionBounds()
+	public List<AxisAlignedBB> getAdvancedCollisionBounds()
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList();
 		if(!pipeCover.isEmpty())
@@ -579,11 +579,16 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).grow(-.03125f));
 			return list;
 		}
-		return getAdvancedSelectionBounds();
+		return getBoxes(true);
 	}
 
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	{
+		return getBoxes(false);
+	}
+
+	private List<AxisAlignedBB> getBoxes(boolean collision)
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList();
 		byte availableConnections = getAvailableConnectionByte();
@@ -599,7 +604,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 							i==4?0: i==5?0.75: 0.25, i==0?0: i==1?0.75: 0.25, i==2?0: i==3?0.75: 0.25,
 							i==4?0.25: i==5?1: 0.75, i==0?0.25: i==1?1: 0.75, i==2?0.25: i==3?1: 0.75
 					));
-				if((activeConnections&1)==0||getConnectionStyle(d)==1)
+				if(((activeConnections&1)==0&&!collision)||getConnectionStyle(d)==1)
 					list.add(new AxisAlignedBB(
 							i==4?0: i==5?0.875: 0.125, i==0?0: i==1?0.875: 0.125, i==2?0: i==3?0.875: 0.125,
 							i==4?0.125: i==5?1: 0.875, i==0?0.125: i==1?1: 0.875, i==2?0.125: i==3?1: 0.875

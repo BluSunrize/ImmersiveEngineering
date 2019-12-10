@@ -278,10 +278,13 @@ public class IESmartObjModel extends OBJBakedModel
 			if(objstate.getVisibilityMap().containsKey(Group.ALL)||objstate.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
 				this.updateStateVisibilityMap(objstate);
 		}
+		String cacheKey = "";
+		if(blockState!=null&&modelData.hasProperty(IOBJModelCallback.PROPERTY))
+			cacheKey = modelData.getData(IOBJModelCallback.PROPERTY).getCacheKey(blockState);
 		if(addAnimationAndTex)
-			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), objstate, tex);
+			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), objstate, tex, cacheKey);
 		else
-			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer());
+			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), cacheKey);
 		List<BakedQuad> quads = modelCache.get(adapter);
 		if(quads==null)
 		{

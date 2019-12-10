@@ -20,7 +20,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -38,7 +37,8 @@ public class StripCurtainBlock extends IETileProviderBlock
 
 	public StripCurtainBlock()
 	{
-		super("strip_curtain", Block.Properties.create(Material.WOOL).hardnessAndResistance(0.8F), BlockItemIE.class);
+		super("strip_curtain", Block.Properties.create(Material.WOOL).hardnessAndResistance(0.8F), BlockItemIE.class,
+				CEILING_ATTACHED, FACING);
 		setLightOpacity(0);
 		setHasColours();
 		setNotNormalBlock();
@@ -48,7 +48,7 @@ public class StripCurtainBlock extends IETileProviderBlock
 	@Override
 	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
-		return new BalloonTileEntity();
+		return new StripCurtainTileEntity();
 	}
 
 	/*TODO why is this here? Added in the original 1.8 commit
@@ -73,12 +73,5 @@ public class StripCurtainBlock extends IETileProviderBlock
 	public boolean allowHammerHarvest(BlockState blockState)
 	{
 		return true;
-	}
-
-	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
-	{
-		super.fillStateContainer(builder);
-		builder.add(CEILING_ATTACHED, FACING);
 	}
 }
