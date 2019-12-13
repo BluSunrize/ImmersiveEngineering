@@ -124,6 +124,7 @@ public class ExcavatorHandler
 			worldInfo = new MineralWorldInfo();
 			worldInfo.mineral = mix;
 			mineralCache.put(chunkCoords, worldInfo);
+			IESaveData.setDirty();
 		}
 		return worldInfo;
 	}

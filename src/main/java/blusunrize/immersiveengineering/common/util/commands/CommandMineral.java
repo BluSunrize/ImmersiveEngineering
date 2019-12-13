@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
+import blusunrize.immersiveengineering.common.IESaveData;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -121,6 +122,7 @@ public class CommandMineral
 				xChunk, zChunk);
 		MineralMix mineral = context.getArgument("mineral", MineralMix.class);
 		info.mineralOverride = mineral;
+		IESaveData.setDirty();
 		sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
 				"mineral.set.sucess", mineral.name), true);
 	}
