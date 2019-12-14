@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ppp",
+    "rcr"
+  ],
+  "key": {
+    "p": {
+      "tag": "forge:plates/aluminum"
+    },
+    "c": {
+      "item": "immersiveengineering:crate"
+    },
+    "r": {
+      "tag": "forge:dyes/red"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:toolbox"
+  }
+}

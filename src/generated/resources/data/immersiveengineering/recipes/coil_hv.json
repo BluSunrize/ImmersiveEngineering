@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "www",
+    "wiw",
+    "www"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "w": {
+      "item": "immersiveengineering:wirecoil_steel"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:coil_hv"
+  }
+}

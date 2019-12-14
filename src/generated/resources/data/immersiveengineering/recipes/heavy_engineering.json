@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "igi",
+    "pep",
+    "igi"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "e": {
+      "tag": "forge:ingots/electrum"
+    },
+    "g": {
+      "item": "immersiveengineering:component_steel"
+    },
+    "p": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:heavy_engineering"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "lbl",
+    "wcw"
+  ],
+  "key": {
+    "l": {
+      "tag": "forge:leather"
+    },
+    "b": {
+      "item": "immersiveengineering:capacitor_lv"
+    },
+    "c": {
+      "item": "immersiveengineering:connector_lv"
+    },
+    "w": {
+      "item": "immersiveengineering:wirecoil_copper"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:powerpack"
+  }
+}

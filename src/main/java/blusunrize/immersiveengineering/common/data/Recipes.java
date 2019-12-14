@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.*;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -116,7 +117,203 @@ public class Recipes extends RecipeProvider
 		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded)).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_leaded_slab_from_concrete_leaded_stonecutting"));
 		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteLeaded), StoneDecoration.concreteStairs[2]).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_leaded_stairs_from_concrete_leaded_stonecutting"));
 
+		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.treatedScaffolding, 6)
+			.patternLine("iii")
+			.patternLine(" s ")
+			.patternLine("s s")
+			.key('i', IETags.getItemTag(IETags.treatedWood))
+			.key('s', IETags.treatedStick)
+			.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD), 6)
+			.patternLine("iii")
+			.patternLine(" s ")
+			.patternLine("s s")
+			.key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
+			.key('s', IETags.aluminumRod)
+			.addCriterion("has_"+toPath(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD)), hasItem(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD)))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD), 6)
+			.patternLine("iii")
+			.patternLine(" s ")
+			.patternLine("s s")
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.key('s', IETags.steelRod)
+			.addCriterion("has_"+toPath(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD)), hasItem(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD)))
+			.build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.GRATE_TOP))
+			.addIngredient(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD))
+			.addCriterion("has_"+toPath(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD)), hasItem(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD)))
+			.build(out, toRL("alu_scaffolding_grate_top_from_standard"));
+		ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.WOODEN_TOP))
+			.addIngredient(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.GRATE_TOP))
+			.addCriterion("has_"+toPath(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.GRATE_TOP)), hasItem(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.GRATE_TOP)))
+			.build(out, toRL("alu_scaffolding_wooden_top_from_grate_top"));
+		ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD))
+			.addIngredient(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.WOODEN_TOP))
+			.addCriterion("has_"+toPath(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD)), hasItem(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD)))
+			.build(out, toRL("alu_scaffolding_standard_from_wooden_top"));
+		ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.GRATE_TOP))
+			.addIngredient(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD))
+			.addCriterion("has_"+toPath(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD)), hasItem(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD)))
+			.build(out, toRL("steel_scaffolding_grate_top_from_standard"));
+		ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.WOODEN_TOP))
+			.addIngredient(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.GRATE_TOP))
+			.addCriterion("has_"+toPath(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.GRATE_TOP)), hasItem(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.GRATE_TOP)))
+			.build(out, toRL("steel_scaffolding_wooden_top_from_grate_top"));
+		ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD))
+			.addIngredient(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.WOODEN_TOP))
+			.addCriterion("has_"+toPath(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD)), hasItem(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD)))
+			.build(out, toRL("steel_scaffolding_standard_from_wooden_top"));
 
+		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.treatedFence, 3)
+			.patternLine("isi")
+			.patternLine("isi")
+			.key('i', IETags.getItemTag(IETags.treatedWood))
+			.key('s', IETags.treatedStick)
+			.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.aluFence, 3)
+			.patternLine("isi")
+			.patternLine("isi")
+			.key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
+			.key('s', IETags.aluminumRod)
+			.addCriterion("has_"+toPath(MetalDecoration.aluFence), hasItem(MetalDecoration.aluFence))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.steelFence, 3)
+			.patternLine("isi")
+			.patternLine("isi")
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.key('s', IETags.steelRod)
+			.addCriterion("has_"+toPath(MetalDecoration.steelFence), hasItem(MetalDecoration.steelFence))
+			.build(out);
+		
+		ShapedRecipeBuilder.shapedRecipe(IEBlocks.WoodenDevices.crate)
+			.patternLine("ppp")
+			.patternLine("p p")
+			.patternLine("ppp")
+			.key('p', IETags.getItemTag(IETags.treatedWood))
+			.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(IEBlocks.WoodenDevices.reinforcedCrate)
+			.patternLine("wpw")
+			.patternLine("rcr")
+			.patternLine("wpw")
+			.key('w', IETags.getItemTag(IETags.treatedWood))
+			.key('p', IETags.getTagsFor(EnumMetals.IRON).plate)
+			.key('r', IETags.ironRod)
+			.key('c', IEBlocks.WoodenDevices.crate)
+			.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
+			.build(out);
+		
+		ShapedRecipeBuilder.shapedRecipe(IEBlocks.WoodenDevices.workbench)
+			.patternLine("ppp")
+			.patternLine("c f")
+			.key('p', IETags.getItemTag(IETags.treatedWood))
+			.key('c', Blocks.CRAFTING_TABLE)
+			.key('f', WoodenDecoration.treatedFence)
+			.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
+			.build(out);
+
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.lvCoil)
+			.patternLine("www")
+			.patternLine("wiw")
+			.patternLine("www")
+			.key('i', Tags.Items.INGOTS_IRON)
+			.key('w', Misc.wireCoils.get(WireType.COPPER))
+			.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.mvCoil)
+			.patternLine("www")
+			.patternLine("wiw")
+			.patternLine("www")
+			.key('i', Tags.Items.INGOTS_IRON)
+			.key('w', Misc.wireCoils.get(WireType.ELECTRUM))
+			.addCriterion("has_electrum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.hvCoil)
+			.patternLine("www")
+			.patternLine("wiw")
+			.patternLine("www")
+			.key('i', Tags.Items.INGOTS_IRON)
+			.key('w', Misc.wireCoils.get(WireType.STEEL))
+			.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.engineeringRS)
+			.patternLine("iri")
+			.patternLine("rcr")
+			.patternLine("iri")
+			.key('i', Tags.Items.INGOTS_IRON)
+			.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+			.key('r', Tags.Items.DUSTS_REDSTONE)
+			.addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.engineeringLight)
+			.patternLine("igi")
+			.patternLine("ccc")
+			.patternLine("igi")
+			.key('i', Tags.Items.INGOTS_IRON)
+			.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+			.key('g', Ingredients.componentIron)
+			.addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.engineeringHeavy)
+			.patternLine("igi")
+			.patternLine("pep")
+			.patternLine("igi")
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.key('e', IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)
+			.key('g', Ingredients.componentSteel)
+			.key('p', Blocks.PISTON)
+			.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.generator)
+			.patternLine("iii")
+			.patternLine("ede")
+			.patternLine("iii")
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.key('e', IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)
+			.key('d', IEBlocks.MetalDevices.dynamo)
+			.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.radiator)
+			.patternLine("ici")
+			.patternLine("cbc")
+			.patternLine("ici")
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+			.key('b', Items.WATER_BUCKET)
+			.addCriterion("has_water_bucket", hasItem(Items.WATER_BUCKET))
+			.build(out);
+		
+		ShapedRecipeBuilder.shapedRecipe(IEItems.Tools.toolbox)
+			.patternLine("ppp")
+			.patternLine("rcr")
+			.key('p', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
+			.key('c', IEBlocks.WoodenDevices.crate)
+			.key('r', Tags.Items.DYES_RED)
+			.addCriterion("has_iron_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(IEItems.Tools.voltmeter)
+			.patternLine(" p ")
+			.patternLine("scs")
+			.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+			.key('p', Items.COMPASS)
+			.key('s', Tags.Items.RODS_WOODEN)
+			.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.powerpack)
+			.patternLine("lbl")
+			.patternLine("wcw")
+			.key('l', Tags.Items.LEATHER)
+			.key('b', IEBlocks.MetalDevices.capacitorLV)
+			.key('c', IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false))
+			.key('w', Misc.wireCoils.get(WireType.COPPER))
+			.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+			.build(out);
+		
+		
 		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.alloybrick, 2).patternLine("sb").patternLine("bs").key('s', Tags.Items.SANDSTONE).key('b', Tags.Items.INGOTS_BRICK).addCriterion("has_brick", hasItem(Tags.Items.INGOTS_BRICK)).build(out);
 		addCornerStraightMiddle(StoneDecoration.cokebrick, 3, IETags.clay, Tags.Items.INGOTS_BRICK, Tags.Items.SANDSTONE, out);
 		addCornerStraightMiddle(StoneDecoration.blastbrick, 3, Tags.Items.INGOTS_NETHER_BRICK, Tags.Items.INGOTS_BRICK, Items.BLAZE_POWDER, out);
