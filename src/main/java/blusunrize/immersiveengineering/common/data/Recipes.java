@@ -84,14 +84,18 @@ public class Recipes extends RecipeProvider
 			}
 			addStandardSmeltingBlastingRecipe(dust, ingot, 0, out, "_from_dust");
 //			addStandardSmeltingBlastingRecipe(dust, ingot, metal.smeltingXP, out, "_from_dust"); //TODO: remove this, if 0 XP on dust is intentional. this bugs out because the alloys do not have metal.smeltingXP
-			ShapelessRecipeBuilder.shapelessRecipe(plate).addIngredient(IETags.getTagsFor(metal).ingot).addIngredient(Tools.hammer).addCriterion("has_"+metal.tagName()+"_ingot", this.hasItem(IETags.getTagsFor(metal).ingot)).build(out, toRL("plate_"+metal.tagName()+"_hammering"));
+			ShapelessRecipeBuilder.shapelessRecipe(plate)
+				.addIngredient(IETags.getTagsFor(metal).ingot)
+				.addIngredient(Tools.hammer)
+				.addCriterion("has_"+metal.tagName()+"_ingot", this.hasItem(IETags.getTagsFor(metal).ingot))
+				.build(out, toRL("plate_"+metal.tagName()+"_hammering"));
 			ShapedRecipeBuilder.shapedRecipe(sheetMetal, 4)
-					.key('p', plate)
-					.patternLine(" p ")
-					.patternLine("p p")
-					.patternLine(" p ")
-					.addCriterion("has_"+toPath(plate), hasItem(plate))
-					.build(out);
+				.key('p', plate)
+				.patternLine(" p ")
+				.patternLine("p p")
+				.patternLine(" p ")
+				.addCriterion("has_"+toPath(plate), hasItem(plate))
+				.build(out);
 		}
 		addStandardSmeltingBlastingRecipe(IEItems.Ingredients.dustHopGraphite, Ingredients.ingotHopGraphite, 0.5F, out);
 
@@ -108,14 +112,30 @@ public class Recipes extends RecipeProvider
 			addStairs(MetalDecoration.steelScaffolding.get(type), MetalDecoration.steelScaffoldingStair.get(type), out);
 			addStairs(MetalDecoration.aluScaffolding.get(type), MetalDecoration.aluScaffoldingStair.get(type), out);
 		}
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete)).func_218643_a("has_hempcrete", this.hasItem(StoneDecoration.hempcrete)).func_218647_a(out, toRL("hempcrete_slab_from_hempcrete_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), StoneDecoration.hempcreteStairs).func_218643_a("has_hempcrete", this.hasItem(StoneDecoration.hempcrete)).func_218647_a(out, toRL("hempcrete_stairs_from_hempcrete_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete)).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_slab_from_concrete_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteStairs[0]).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_stairs_from_concrete_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteTile), IEBlocks.toSlab.get(StoneDecoration.concreteTile)).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_tile_slab_from_concrete_tile_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteTile), StoneDecoration.concreteStairs[1]).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_tile_stairs_from_concrete_tile_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded)).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_leaded_slab_from_concrete_leaded_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteLeaded), StoneDecoration.concreteStairs[2]).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_leaded_stairs_from_concrete_leaded_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete))
+			.func_218643_a("has_hempcrete", this.hasItem(StoneDecoration.hempcrete))
+			.func_218647_a(out, toRL("hempcrete_slab_from_hempcrete_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), StoneDecoration.hempcreteStairs)
+			.func_218643_a("has_hempcrete", this.hasItem(StoneDecoration.hempcrete))
+			.func_218647_a(out, toRL("hempcrete_stairs_from_hempcrete_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete))
+			.func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete))
+			.func_218647_a(out, toRL("concrete_slab_from_concrete_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteStairs[0])
+			.func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete))
+			.func_218647_a(out, toRL("concrete_stairs_from_concrete_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteTile), IEBlocks.toSlab.get(StoneDecoration.concreteTile))
+			.func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete))
+			.func_218647_a(out, toRL("concrete_tile_slab_from_concrete_tile_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteTile), StoneDecoration.concreteStairs[1])
+			.func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete))
+			.func_218647_a(out, toRL("concrete_tile_stairs_from_concrete_tile_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded))
+			.func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete))
+			.func_218647_a(out, toRL("concrete_leaded_slab_from_concrete_leaded_stonecutting"));
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteLeaded), StoneDecoration.concreteStairs[2])
+			.func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete))
+			.func_218647_a(out, toRL("concrete_leaded_stairs_from_concrete_leaded_stonecutting"));
 
 		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.treatedScaffolding, 6)
 			.patternLine("iii")
@@ -314,67 +334,334 @@ public class Recipes extends RecipeProvider
 			.build(out);
 		
 		
-		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.alloybrick, 2).patternLine("sb").patternLine("bs").key('s', Tags.Items.SANDSTONE).key('b', Tags.Items.INGOTS_BRICK).addCriterion("has_brick", hasItem(Tags.Items.INGOTS_BRICK)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.alloybrick, 2)
+			.patternLine("sb")
+			.patternLine("bs")
+			.key('s', Tags.Items.SANDSTONE)
+			.key('b', Tags.Items.INGOTS_BRICK)
+			.addCriterion("has_brick", hasItem(Tags.Items.INGOTS_BRICK))
+			.build(out);
 		addCornerStraightMiddle(StoneDecoration.cokebrick, 3, IETags.clay, Tags.Items.INGOTS_BRICK, Tags.Items.SANDSTONE, out);
 		addCornerStraightMiddle(StoneDecoration.blastbrick, 3, Tags.Items.INGOTS_NETHER_BRICK, Tags.Items.INGOTS_BRICK, Items.BLAZE_POWDER, out);
-		ShapelessRecipeBuilder.shapelessRecipe(StoneDecoration.blastbrickReinforced).addIngredient(StoneDecoration.blastbrick).addIngredient(IETags.getTagsFor(EnumMetals.STEEL).plate).addCriterion("has_blastbrick", hasItem(StoneDecoration.blastbrick)).build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(StoneDecoration.blastbrickReinforced)
+			.addIngredient(StoneDecoration.blastbrick)
+			.addIngredient(IETags.getTagsFor(EnumMetals.STEEL).plate)
+			.addCriterion("has_blastbrick", hasItem(StoneDecoration.blastbrick))
+			.build(out);
 		addSandwich(StoneDecoration.hempcrete, 6, IETags.clay, IETags.fiberHemp, IETags.clay, out);
 		add3x3Conversion(StoneDecoration.coke, IEItems.Ingredients.coalCoke, out);
 
-		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concrete, 8).setGroup("ie_concrete").patternLine("scs").patternLine("gbg").patternLine("scs").key('s', Tags.Items.SAND).key('c', IETags.clay).key('g', Tags.Items.GRAVEL).key('b', Items.WATER_BUCKET).addCriterion("has_clay", hasItem(IETags.clay)).build(out, toRL("concrete"));
-		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concrete, 12).setGroup("ie_concrete").patternLine("scs").patternLine("gbg").patternLine("scs").key('s', IEItems.Ingredients.slag).key('c', IETags.clay).key('g', Tags.Items.GRAVEL).key('b', Items.WATER_BUCKET).addCriterion("has_slag", hasItem(IEItems.Ingredients.slag)).build(out, toRL("concrete"));
-		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concreteTile, 4).setGroup("ie_concrete").patternLine("cc").patternLine("cc").key('c', StoneDecoration.concrete).addCriterion("has_concrete", hasItem(StoneDecoration.concrete)).build(out);
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteTile).func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete)).func_218647_a(out, toRL("concrete_tile_from_concrete_stonecutting"));
-		ShapelessRecipeBuilder.shapelessRecipe(StoneDecoration.concreteLeaded).addIngredient(StoneDecoration.concrete).addIngredient(IETags.getTagsFor(EnumMetals.LEAD).plate).addCriterion("has_concrete", hasItem(StoneDecoration.concrete)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.insulatingGlass, 2).patternLine(" g ").patternLine("idi").patternLine(" g ").key('g', Tags.Items.GLASS).key('i', IETags.getTagsFor(EnumMetals.IRON).dust).key('d', Tags.Items.DYES_GREEN).addCriterion("has_glass", hasItem(Tags.Items.GLASS)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concrete, 8)
+			.setGroup("ie_concrete")
+			.patternLine("scs")
+			.patternLine("gbg")
+			.patternLine("scs")
+			.key('s', Tags.Items.SAND)
+			.key('c', IETags.clay)
+			.key('g', Tags.Items.GRAVEL)
+			.key('b', Items.WATER_BUCKET)
+			.addCriterion("has_clay", hasItem(IETags.clay))
+			.build(out, toRL("concrete"));
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concrete, 12)
+			.setGroup("ie_concrete")
+			.patternLine("scs")
+			.patternLine("gbg")
+			.patternLine("scs")
+			.key('s', IEItems.Ingredients.slag)
+			.key('c', IETags.clay)
+			.key('g', Tags.Items.GRAVEL)
+			.key('b', Items.WATER_BUCKET)
+			.addCriterion("has_slag", hasItem(IEItems.Ingredients.slag))
+			.build(out, toRL("concrete"));
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concreteTile, 4)
+			.setGroup("ie_concrete")
+			.patternLine("cc")
+			.patternLine("cc")
+			.key('c', StoneDecoration.concrete)
+			.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
+			.build(out);
+		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteTile)
+			.func_218643_a("has_concrete", this.hasItem(StoneDecoration.concrete))
+			.func_218647_a(out, toRL("concrete_tile_from_concrete_stonecutting"));
+		ShapelessRecipeBuilder.shapelessRecipe(StoneDecoration.concreteLeaded)
+			.addIngredient(StoneDecoration.concrete)
+			.addIngredient(IETags.getTagsFor(EnumMetals.LEAD).plate)
+			.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.insulatingGlass, 2)
+			.patternLine(" g ")
+			.patternLine("idi")
+			.patternLine(" g ")
+			.key('g', Tags.Items.GLASS)
+			.key('i', IETags.getTagsFor(EnumMetals.IRON).dust)
+			.key('d', Tags.Items.DYES_GREEN)
+			.addCriterion("has_glass", hasItem(Tags.Items.GLASS))
+			.build(out);
 
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickTreated, 4).patternLine("w").patternLine("w").key('w', IETags.getItemTag(IETags.treatedWood)).setGroup("sticks").addCriterion("has_treated_planks", this.hasItem(IETags.getItemTag(IETags.treatedWood))).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickIron, 4).patternLine("i").patternLine("i").key('i', IETags.getTagsFor(EnumMetals.IRON).ingot).setGroup("sticks").addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickSteel, 4).patternLine("i").patternLine("i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).setGroup("sticks").addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickAluminum, 4).patternLine("i").patternLine("i").key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot).setGroup("sticks").addCriterion("has_alu_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.hempFabric).patternLine("fff").patternLine("fsf").patternLine("fff").key('f', IETags.fiberHemp).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_hemp_fiber", this.hasItem(IETags.fiberHemp)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickTreated, 4)
+			.patternLine("w")
+			.patternLine("w")
+			.key('w', IETags.getItemTag(IETags.treatedWood))
+			.setGroup("sticks")
+			.addCriterion("has_treated_planks", this.hasItem(IETags.getItemTag(IETags.treatedWood)))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickIron, 4)
+			.patternLine("i")
+			.patternLine("i")
+			.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+			.setGroup("sticks")
+			.addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickSteel, 4)
+			.patternLine("i")
+			.patternLine("i")
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.setGroup("sticks")
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.stickAluminum, 4)
+			.patternLine("i")
+			.patternLine("i")
+			.key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
+			.setGroup("sticks")
+			.addCriterion("has_alu_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.hempFabric)
+			.patternLine("fff")
+			.patternLine("fsf")
+			.patternLine("fff")
+			.key('f', IETags.fiberHemp)
+			.key('s', Tags.Items.RODS_WOODEN)
+			.addCriterion("has_hemp_fiber", this.hasItem(IETags.fiberHemp))
+			.build(out);
 
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.componentIron).patternLine("i i").patternLine(" c ").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.IRON).plate).key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot).addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.componentSteel).patternLine("i i").patternLine(" c ").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).plate).key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.waterwheelSegment).patternLine(" s ").patternLine("sbs").patternLine("bsb").key('s', IETags.treatedStick).key('b', IETags.getItemTag(IETags.treatedWood)).addCriterion("has_treated_planks", this.hasItem(IETags.getItemTag(IETags.treatedWood))).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.windmillBlade).patternLine("bb ").patternLine("ssb").patternLine("ss ").key('s', IETags.treatedStick).key('b', IETags.getItemTag(IETags.treatedWood)).addCriterion("has_treated_planks", this.hasItem(IETags.getItemTag(IETags.treatedWood))).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.windmillSail).patternLine(" cc").patternLine("ccc").patternLine(" c ").key('c', IETags.fabricHemp).addCriterion("has_hemp_fabric", this.hasItem(IETags.fabricHemp)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Ingredients.woodenGrip).patternLine("ss").patternLine("cs").patternLine("ss").key('s', IETags.treatedStick).key('c', IETags.getTagsFor(EnumMetals.COPPER).nugget).addCriterion("has_treated_sticks", this.hasItem(IETags.treatedStick)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.componentIron)
+			.patternLine("i i")
+			.patternLine(" c ")
+			.patternLine("i i")
+			.key('i', IETags.getTagsFor(EnumMetals.IRON).plate)
+			.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+			.addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.componentSteel)
+			.patternLine("i i")
+			.patternLine(" c ")
+			.patternLine("i i")
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).plate)
+			.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.waterwheelSegment)
+			.patternLine(" s ")
+			.patternLine("sbs")
+			.patternLine("bsb")
+			.key('s', IETags.treatedStick)
+			.key('b', IETags.getItemTag(IETags.treatedWood))
+			.addCriterion("has_treated_planks", this.hasItem(IETags.getItemTag(IETags.treatedWood)))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.windmillBlade)
+			.patternLine("bb ")
+			.patternLine("ssb")
+			.patternLine("ss ")
+			.key('s', IETags.treatedStick)
+			.key('b', IETags.getItemTag(IETags.treatedWood))
+			.addCriterion("has_treated_planks", this.hasItem(IETags.getItemTag(IETags.treatedWood)))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.windmillSail)
+			.patternLine(" cc")
+			.patternLine("ccc")
+			.patternLine(" c ")
+			.key('c', IETags.fabricHemp)
+			.addCriterion("has_hemp_fabric", this.hasItem(IETags.fabricHemp))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Ingredients.woodenGrip)
+			.patternLine("ss")
+			.patternLine("cs")
+			.patternLine("ss")
+			.key('s', IETags.treatedStick)
+			.key('c', IETags.getTagsFor(EnumMetals.COPPER).nugget)
+			.addCriterion("has_treated_sticks", this.hasItem(IETags.treatedStick))
+			.build(out);
 //		ShapedRecipeBuilder.shapedRecipe(Ingredients.gunpartBarrel).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(Ingredients.gunpartDrum).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(Ingredients.gunpartHammer).build(out);
-		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireCopper).addIngredient(IETags.getTagsFor(EnumMetals.COPPER).plate).addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter)).addCriterion("has_copper_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot)).build(out);
-		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireElectrum).addIngredient(IETags.getTagsFor(EnumMetals.ELECTRUM).plate).addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter)).addCriterion("has_electrum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)).build(out);
-		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireAluminum).addIngredient(IETags.getTagsFor(EnumMetals.ALUMINUM).plate).addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter)).addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out);
-		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireSteel).addIngredient(IETags.getTagsFor(EnumMetals.STEEL).plate).addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter)).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER).addIngredient(Ingredient.fromTag(IETags.saltpeterDust), 4).addIngredient(IETags.sulfurDust).addIngredient(Items.CHARCOAL).addCriterion("has_sulfur", this.hasItem(IETags.sulfurDust)).build(out, toRL("gunpowder_from_dusts"));
+		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireCopper)
+			.addIngredient(IETags.getTagsFor(EnumMetals.COPPER).plate)
+			.addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+			.addCriterion("has_copper_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+			.build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireElectrum)
+			.addIngredient(IETags.getTagsFor(EnumMetals.ELECTRUM).plate)
+			.addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+			.addCriterion("has_electrum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
+			.build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireAluminum)
+			.addIngredient(IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
+			.addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+			.addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
+			.build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireSteel)
+			.addIngredient(IETags.getTagsFor(EnumMetals.STEEL).plate)
+			.addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER)
+			.addIngredient(Ingredient.fromTag(IETags.saltpeterDust), 4)
+			.addIngredient(IETags.sulfurDust)
+			.addIngredient(Items.CHARCOAL)
+			.addCriterion("has_sulfur", this.hasItem(IETags.sulfurDust))
+			.build(out, toRL("gunpowder_from_dusts"));
 
-		ShapedRecipeBuilder.shapedRecipe(Tools.hammer).patternLine(" if").patternLine(" si").patternLine("s  ").key('s', Tags.Items.RODS_WOODEN).key('i', IETags.getTagsFor(EnumMetals.IRON).ingot).key('f', Tags.Items.STRING).addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Tools.wirecutter).patternLine("si").patternLine(" s").key('s', Tags.Items.RODS_WOODEN).key('i', IETags.getTagsFor(EnumMetals.IRON).ingot).addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot)).build(out);
-		ShapelessRecipeBuilder.shapelessRecipe(Tools.manual).addIngredient(Items.BOOK).addIngredient(Items.LEVER).addCriterion("has_book", hasItem(Items.BOOK)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Tools.steelAxe).patternLine("ii").patternLine("is").patternLine(" s").key('s', IETags.treatedStick).key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Tools.steelPick).patternLine("iii").patternLine(" s ").patternLine(" s ").key('s', IETags.treatedStick).key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Tools.steelShovel).patternLine("i").patternLine("s").patternLine("s").key('s', IETags.treatedStick).key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Tools.steelSword).patternLine("i").patternLine("i").patternLine("s").key('s', IETags.treatedStick).key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.hammer)
+			.patternLine(" if")
+			.patternLine(" si")
+			.patternLine("s  ")
+			.key('s', Tags.Items.RODS_WOODEN)
+			.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+			.key('f', Tags.Items.STRING)
+			.addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.wirecutter)
+			.patternLine("si")
+			.patternLine(" s")
+			.key('s', Tags.Items.RODS_WOODEN)
+			.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+			.addCriterion("has_iron_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+			.build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(Tools.manual)
+			.addIngredient(Items.BOOK)
+			.addIngredient(Items.LEVER)
+			.addCriterion("has_book", hasItem(Items.BOOK))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.steelAxe)
+			.patternLine("ii")
+			.patternLine("is")
+			.patternLine(" s")
+			.key('s', IETags.treatedStick)
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.steelPick)
+			.patternLine("iii")
+			.patternLine(" s ")
+			.patternLine(" s ")
+			.key('s', IETags.treatedStick)
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.steelShovel)
+			.patternLine("i")
+			.patternLine("s")
+			.patternLine("s")
+			.key('s', IETags.treatedStick)
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.steelSword)
+			.patternLine("i")
+			.patternLine("i")
+			.patternLine("s")
+			.key('s', IETags.treatedStick)
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
 
-		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.COPPER), 4).patternLine(" w ").patternLine("wsw").patternLine(" w ").key('w', IETags.copperWire).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_copper_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.ELECTRUM), 4).patternLine(" w ").patternLine("wsw").patternLine(" w ").key('w', IETags.electrumWire).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_electrum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STEEL), 4).patternLine(" w ").patternLine("asa").patternLine(" w ").key('w', IETags.steelWire).key('a', IETags.aluminumWire).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STEEL), 4).patternLine(" a ").patternLine("wsw").patternLine(" a ").key('w', IETags.steelWire).key('a', IETags.aluminumWire).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out, toRL("wirecoil_steel2"));
-		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STRUCTURE_ROPE), 4).patternLine(" w ").patternLine("wsw").patternLine(" w ").key('w', Ingredients.hempFiber).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_hemp_fiber", this.hasItem(Ingredients.hempFiber)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STRUCTURE_STEEL), 4).patternLine(" w ").patternLine("wsw").patternLine(" w ").key('w', Ingredients.wireSteel).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.COPPER), 4)
+			.patternLine(" w ")
+			.patternLine("wsw")
+			.patternLine(" w ")
+			.key('w', IETags.copperWire)
+			.key('s', Tags.Items.RODS_WOODEN)
+			.addCriterion("has_copper_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.ELECTRUM), 4)
+			.patternLine(" w ")
+			.patternLine("wsw")
+			.patternLine(" w ")
+			.key('w', IETags.electrumWire)
+			.key('s', Tags.Items.RODS_WOODEN)
+			.addCriterion("has_electrum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STEEL), 4)
+			.patternLine(" w ")
+			.patternLine("asa")
+			.patternLine(" w ")
+			.key('w', IETags.steelWire)
+			.key('a', IETags.aluminumWire)
+			.key('s', Tags.Items.RODS_WOODEN)
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STEEL), 4)
+			.patternLine(" a ")
+			.patternLine("wsw")
+			.patternLine(" a ")
+			.key('w', IETags.steelWire)
+			.key('a', IETags.aluminumWire)
+			.key('s', Tags.Items.RODS_WOODEN)
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out, toRL("wirecoil_steel2"));
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STRUCTURE_ROPE), 4)
+			.patternLine(" w ")
+			.patternLine("wsw")
+			.patternLine(" w ")
+			.key('w', Ingredients.hempFiber)
+			.key('s', Tags.Items.RODS_WOODEN)
+			.addCriterion("has_hemp_fiber", this.hasItem(Ingredients.hempFiber))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.STRUCTURE_STEEL), 4)
+			.patternLine(" w ")
+			.patternLine("wsw")
+			.patternLine(" w ")
+			.key('w', Ingredients.wireSteel)
+			.key('s', Tags.Items.RODS_WOODEN)
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
 		addCornerStraightMiddle(Misc.wireCoils.get(WireType.COPPER_INSULATED), 4, IETags.fabricHemp, Misc.wireCoils.get(WireType.COPPER), IETags.fabricHemp, out);
 		addCornerStraightMiddle(Misc.wireCoils.get(WireType.ELECTRUM_INSULATED), 4, IETags.fabricHemp, Misc.wireCoils.get(WireType.ELECTRUM), IETags.fabricHemp, out);
-		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.REDSTONE), 4).patternLine(" w ").patternLine("asa").patternLine(" w ").key('w', IETags.aluminumWire).key('a', Tags.Items.DUSTS_REDSTONE).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.REDSTONE), 4).patternLine(" a ").patternLine("wsw").patternLine(" a ").key('w', IETags.aluminumWire).key('a', Tags.Items.DUSTS_REDSTONE).key('s', Tags.Items.RODS_WOODEN).addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)).build(out, toRL("wirecoil_redstone2"));
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.REDSTONE), 4)
+			.patternLine(" w ")
+			.patternLine("asa")
+			.patternLine(" w ")
+			.key('w', IETags.aluminumWire)
+			.key('a', Tags.Items.DUSTS_REDSTONE)
+			.key('s', Tags.Items.RODS_WOODEN)
+			.addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.wireCoils.get(WireType.REDSTONE), 4)
+			.patternLine(" a ")
+			.patternLine("wsw")
+			.patternLine(" a ")
+			.key('w', IETags.aluminumWire)
+			.key('a', Tags.Items.DUSTS_REDSTONE)
+			.key('s', Tags.Items.RODS_WOODEN)
+			.addCriterion("has_aluminum_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
+			.build(out, toRL("wirecoil_redstone2"));
 
-		ShapedRecipeBuilder.shapedRecipe(Misc.jerrycan).patternLine(" ii").patternLine("ibb").patternLine("ibb").key('i', IETags.getTagsFor(EnumMetals.IRON).plate).key('b', Items.BUCKET).addCriterion("has_bucket", this.hasItem(Items.BUCKET)).build(out, toRL("jerrycan"));
-		ShapedRecipeBuilder.shapedRecipe(Weapons.speedloader).patternLine("  i").patternLine("iis").patternLine("  i").key('i', IETags.getTagsFor(EnumMetals.IRON).ingot).key('s', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.jerrycan)
+			.patternLine(" ii")
+			.patternLine("ibb")
+			.patternLine("ibb")
+			.key('i', IETags.getTagsFor(EnumMetals.IRON).plate)
+			.key('b', Items.BUCKET)
+			.addCriterion("has_bucket", this.hasItem(Items.BUCKET))
+			.build(out, toRL("jerrycan"));
+		ShapedRecipeBuilder.shapedRecipe(Weapons.speedloader)
+			.patternLine("  i")
+			.patternLine("iis")
+			.patternLine("  i")
+			.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+			.key('s', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
 
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.SPEEDLOADER_LOAD.get()).build(out, ImmersiveEngineering.MODID+":speedloader_load");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.FLARE_BULLET_COLOR.get()).build(out, ImmersiveEngineering.MODID+":flare_bullet_color");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POTION_BULLET_FILL.get()).build(out, ImmersiveEngineering.MODID+":potion_bullet_fill");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.JERRYCAN_REFILL.get()).build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.SPEEDLOADER_LOAD.get())
+			.build(out, ImmersiveEngineering.MODID+":speedloader_load");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.FLARE_BULLET_COLOR.get())
+			.build(out, ImmersiveEngineering.MODID+":flare_bullet_color");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POTION_BULLET_FILL.get())
+			.build(out, ImmersiveEngineering.MODID+":potion_bullet_fill");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.JERRYCAN_REFILL.get())
+			.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
 
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", this.hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
