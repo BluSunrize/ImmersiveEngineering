@@ -8,13 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.resources.I18n;
@@ -29,6 +27,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -37,13 +36,14 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
 import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 
 public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ITileDrop, IPlayerInteraction,
-		IBlockOverlayText
+		IBlockOverlayText, IBlockBounds
 {
 	public static TileEntityType<CoresampleTileEntity> TYPE;
 	
@@ -195,12 +195,13 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	@Override
 	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(coresample!=null&&ItemNBTHelper.hasKey(coresample, "coords"))
+		if(coresample!=null&&ItemNBTHelper.hasKey(coresample, "coords", NBT.TAG_COMPOUND))
 		{
 			if(overlay==null)
 			{
 				overlay = new String[3];
-				int[] coords = ItemNBTHelper.getIntArray(coresample, "coords");
+				CompoundNBT coordNBT = ItemNBTHelper.getTagCompound(coresample, "coords");
+				DimensionChunkCoords dimPos = DimensionChunkCoords.readFromNBT(coordNBT);
 				String dimName = ItemNBTHelper.getString(coresample, "dimension");
 				overlay[0] = I18n.format(Lib.CHAT_INFO+"coresample.noMineral");
 				if(ItemNBTHelper.hasKey(coresample, "mineral"))
@@ -211,9 +212,10 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 					overlay[0] = TextFormatting.GOLD+I18n.format(Lib.CHAT_INFO+"coresample.mineral", (unloc.equals(loc)?mineral: loc));
 				}
 
-				String s0 = (coords[1]*16)+", "+(coords[2]*16);
-				String s1 = (coords[1]*16+16)+", "+(coords[2]*16+16);
-				String name = dimName;//TODO
+				String s0 = (dimPos.x*16)+", "+(dimPos.z*16);
+				String s1 = (dimPos.x*16+16)+", "+(dimPos.z*16+16);
+				//TODO
+				String name = dimPos.dimension.getRegistryName().getPath();
 				if(name.toLowerCase(Locale.ENGLISH).startsWith("the "))
 					name = name.substring(4);
 				overlay[1] = name;
@@ -228,5 +230,14 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
 	{
 		return false;
+	}
+
+	private static final float[] AABB_CORESAMPLE_X = new float[]{0, 0, .28125f, 1, 1, .71875f};
+	private static final float[] AABB_CORESAMPLE_Z = new float[]{.28125f, 0, 0, .71875f, 1, 1};
+
+	@Override
+	public float[] getBlockBounds()
+	{
+		return getFacing().getAxis()==Axis.Z?AABB_CORESAMPLE_Z: AABB_CORESAMPLE_X;
 	}
 }

@@ -16,18 +16,18 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -46,6 +46,7 @@ import javax.vecmath.Matrix4f;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 @SuppressWarnings("deprecation")
 public class ModelCoresample extends BakedIEModel
@@ -76,7 +77,6 @@ public class ModelCoresample extends BakedIEModel
 			mineral = extraData.getData(Model.MINERAL);
 		else
 			mineral = this.mineral;
-		assert (mineral!=null);
 		if(bakedQuads==null||this.mineral==null)
 		{
 			bakedQuads = new ArrayList<>();
@@ -89,7 +89,7 @@ public class ModelCoresample extends BakedIEModel
 				int pixelLength = 0;
 
 				Map<TextureAtlasSprite, Integer> textureOre = new HashMap<>();
-				if(mineral.oreOutput!=null)
+				if(mineral!=null&&mineral.oreOutput!=null&&!mineral.oreOutput.isEmpty())
 				{
 					for(int i = 0; i < mineral.oreOutput.size(); i++)
 						if(!mineral.oreOutput.get(i).isEmpty())
@@ -105,7 +105,7 @@ public class ModelCoresample extends BakedIEModel
 				}
 				else
 					pixelLength = 16;
-				TextureAtlasSprite textureStone = ClientUtils.getSprite(new ResourceLocation("blocks/stone"));
+				TextureAtlasSprite textureStone = ClientUtils.getSprite(new ResourceLocation("block/stone"));
 
 				Vec2f[] stoneUVs = {
 						new Vec2f(textureStone.getInterpolatedU(16*wOff), textureStone.getInterpolatedV(16*dOff)),
@@ -312,5 +312,28 @@ public class ModelCoresample extends BakedIEModel
 		Matrix4f id = new Matrix4f();
 		id.setIdentity();
 		return Pair.of(this, id);
+	}
+
+	public static class RawCoresampleModel implements IUnbakedModel
+	{
+
+		@Override
+		public Collection<ResourceLocation> getDependencies()
+		{
+			return ImmutableList.of();
+		}
+
+		@Override
+		public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
+		{
+			return ImmutableList.of();
+		}
+
+		@Nullable
+		@Override
+		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
+		{
+			return new ModelCoresample(null);
+		}
 	}
 }

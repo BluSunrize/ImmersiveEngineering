@@ -190,6 +190,9 @@ public class ObjLoaderWorkaround
 
 	private static boolean shouldLoad(ResourceLocation name)
 	{
-		return name.getPath().endsWith(".obj")||name.getPath().endsWith(".obj.ie")||"connector".equals(name.getPath());
+		return name.getPath().endsWith(".obj")||
+				name.getPath().endsWith(".obj.ie")||
+				"connector".equals(name.getPath())||
+				"coresample".equals(name.getPath());
 	}
 }

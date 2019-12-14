@@ -29,6 +29,11 @@ public class ItemNBTHelper
 		return hasTag(stack)&&stack.getOrCreateTag().contains(key);
 	}
 
+	public static boolean hasKey(ItemStack stack, String key, int type)
+	{
+		return hasTag(stack)&&stack.getOrCreateTag().contains(key, type);
+	}
+
 	public static void remove(ItemStack stack, String key)
 	{
 		if(hasKey(stack, key))

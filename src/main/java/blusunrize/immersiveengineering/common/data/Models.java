@@ -230,6 +230,7 @@ public class Models extends ModelGenerator
 		addItemModels("", out, Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
 		addItemModels("bullet_", out, Ingredients.emptyCasing, Ingredients.emptyShell);
 		addItemModels("bullet_", out, Weapons.bullets.values());
+		out.accept(ModelHelper.createWithDynamicModel(rl("coresample"), locForItemModel(Misc.coresample)));
 
 		out.accept(ModelHelper.createInventoryFence(ALU_FENCE_TEXTURE, locForItemModel(MetalDecoration.aluFence)));
 		out.accept(ModelHelper.createInventoryFence(STEEL_FENCE_TEXTURE, locForItemModel(MetalDecoration.steelFence)));
@@ -359,7 +360,7 @@ public class Models extends ModelGenerator
 			textures.put(d.getName(), new ResourceLocation(baseTexName.getNamespace(),
 					baseTexName.getPath()+"_"+d.ordinal()));
 		textures.put("particle", textures.get("down"));
-		return ModelHelper.create(outName, rl("block/ie_six_sides"), textures);
+		return ModelHelper.create(outName, rl("block/ie_six_sides"), textures, true);
 	}
 
 	private ResourceLocation locForItemModel(Block b)

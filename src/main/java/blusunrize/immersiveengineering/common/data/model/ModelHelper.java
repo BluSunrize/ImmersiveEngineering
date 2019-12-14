@@ -43,19 +43,24 @@ public class ModelHelper
 
 	public static GeneratedModelFile createWithModel(ResourceLocation model, ResourceLocation outLoc)
 	{
-		return create(outLoc, model, ImmutableMap.of());
+		return create(outLoc, model, ImmutableMap.of(), true);
+	}
+
+	public static GeneratedModelFile createWithDynamicModel(ResourceLocation model, ResourceLocation outLoc)
+	{
+		return create(outLoc, model, ImmutableMap.of(), false);
 	}
 
 	public static GeneratedModelFile createBasicItem(ResourceLocation texture, ResourceLocation modelName)
 	{
 		return create(modelName, new ResourceLocation("item/generated"),
-				ImmutableMap.of("layer0", texture));
+				ImmutableMap.of("layer0", texture), true);
 	}
 
 	public static GeneratedModelFile createBasicCube(ResourceLocation texture, ResourceLocation modelName)
 	{
 		return create(modelName, new ResourceLocation("block/cube_all"),
-				ImmutableMap.of("all", texture));
+				ImmutableMap.of("all", texture), true);
 	}
 
 	public static GeneratedModelFile createBasicCube(ResourceLocation sides, ResourceLocation top,
@@ -65,14 +70,16 @@ public class ModelHelper
 				"top", top,
 				"bottom", bottom,
 				"side", sides
-		));
+		), true);
 	}
 
-	public static GeneratedModelFile create(ResourceLocation outName, ResourceLocation parent, Map<String, ResourceLocation> textures)
+	public static GeneratedModelFile create(ResourceLocation outName, ResourceLocation parent,
+											Map<String, ResourceLocation> textures, boolean existingModel)
 	{
 		for(ResourceLocation rl : textures.values())
 			assertTextureExists(rl);
-		assertModelExists(parent);
+		if(existingModel)
+			assertModelExists(parent);
 		JsonObject model = new JsonObject();
 		model.addProperty("parent", parent.toString());
 		if(!textures.isEmpty())
@@ -88,19 +95,19 @@ public class ModelHelper
 	public static GeneratedModelFile createCarpetBlock(ResourceLocation texture, ResourceLocation modelName)
 	{
 		return create(modelName, new ResourceLocation("block/carpet"),
-				ImmutableMap.of("wool", texture, "particle", texture));
+				ImmutableMap.of("wool", texture, "particle", texture), true);
 	}
 
 	public static GeneratedModelFile createThreeQuarterBlock(ResourceLocation texture, ResourceLocation modelName)
 	{
 		return create(modelName, new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_three_quarter_block"),
-				ImmutableMap.of("texture", texture));
+				ImmutableMap.of("texture", texture), true);
 	}
 
 	public static GeneratedModelFile createQuarterBlock(ResourceLocation texture, ResourceLocation modelName)
 	{
 		return create(modelName, new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_quarter_block"),
-				ImmutableMap.of("texture", texture));
+				ImmutableMap.of("texture", texture), true);
 	}
 
 	public static GeneratedModelFile createSlab(SlabType type, ResourceLocation sides, ResourceLocation top,
@@ -115,7 +122,7 @@ public class ModelHelper
 				"top", top,
 				"bottom", bottom,
 				"side", sides
-		));
+		), true);
 	}
 
 	public static GeneratedModelFile createStairs(BasicStairsShape s, ResourceLocation sides, ResourceLocation top, ResourceLocation bottom, ResourceLocation modelName)
@@ -138,25 +145,25 @@ public class ModelHelper
 				"top", top,
 				"bottom", bottom,
 				"side", sides
-		));
+		), true);
 	}
 
 	public static GeneratedModelFile createInventoryFence(ResourceLocation texture, ResourceLocation modelName)
 	{
 		return create(modelName, new ResourceLocation("block/fence_inventory"),
-				ImmutableMap.of("texture", texture));
+				ImmutableMap.of("texture", texture), true);
 	}
 
 	public static GeneratedModelFile createFencePost(ResourceLocation texture, ResourceLocation modelName)
 	{
 		return create(modelName, new ResourceLocation("block/fence_post"),
-				ImmutableMap.of("texture", texture));
+				ImmutableMap.of("texture", texture), true);
 	}
 
 	public static GeneratedModelFile createFenceSide(ResourceLocation texture, ResourceLocation modelName)
 	{
 		return create(modelName, new ResourceLocation("block/fence_side"),
-				ImmutableMap.of("texture", texture));
+				ImmutableMap.of("texture", texture), true);
 	}
 
 	private static void assertModelExists(ResourceLocation name)
@@ -185,7 +192,7 @@ public class ModelHelper
 						"top", top,
 						"side", side,
 						"bottom", side
-				));
+				), true);
 	}
 
 	public static GeneratedModelFile createThreeCubed(ResourceLocation outName, ResourceLocation nonFront, ResourceLocation front)
@@ -199,7 +206,7 @@ public class ModelHelper
 			else
 				textures.put(d.getName(), front);
 		return create(outName, new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_three_cubed"),
-				textures);
+				textures, true);
 	}
 
 	public static GeneratedModelFile createTwoCubed(ResourceLocation out, ResourceLocation bottom, ResourceLocation top,
@@ -214,7 +221,7 @@ public class ModelHelper
 			else
 				textures.put(d.getName(), front);
 		return create(out, new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_two_cubed"),
-				textures);
+				textures, true);
 	}
 
 	public static GeneratedModelFile createVariants(ResourceLocation fileName, Enum[] types, GeneratedModelFile... models)
@@ -243,7 +250,7 @@ public class ModelHelper
 		else
 			parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_ladder");
 		textures.put("ladder", new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_decoration/metal_ladder"));
-		return create(out, parent, textures);
+		return create(out, parent, textures, true);
 	}
 
 	public enum BasicStairsShape

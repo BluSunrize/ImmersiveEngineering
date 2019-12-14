@@ -186,6 +186,8 @@ public class BlockStates extends BlockstateGenerator
 				return EMPTY_MODEL.name.getLocation();
 		}, ImmutableMap.of(), variantBased, ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), BlockRenderLayer.SOLID);
 
+		createRotatedBlock(StoneDecoration.coresample, map -> new ExistingModelFile(rl("block/coresample.obj")),
+				IEProperties.FACING_HORIZONTAL, ImmutableList.of(), variantBased);
 		createBasicBlock(StoneDecoration.concreteSheet, models.sheetConcreteBlock, variantBased);
 		createBasicBlock(StoneDecoration.concreteQuarter, models.quarterConcreteBlock, variantBased);
 		createBasicBlock(StoneDecoration.concreteThreeQuarter, models.threeQuarterConcreteBlock, variantBased);

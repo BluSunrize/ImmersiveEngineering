@@ -12,11 +12,9 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
-import blusunrize.immersiveengineering.client.models.ModelCoresample;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.common.items.IEBaseItem;
-import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Function;
@@ -67,11 +65,9 @@ public class ImmersiveModelRegistry
 			}
 		}
 
-		ModelResourceLocation mLoc = new ModelResourceLocation(Misc.coresample.getRegistryName(), "inventory");
-		event.getModelRegistry().put(mLoc, new ModelCoresample(null));
 		IConveyorBelt belt = ConveyorHandler.getConveyor(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), null);
 		ModelConveyor modelConveyor = new ModelConveyor(belt);
-		mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", "conveyor"), "normal");
+		ModelResourceLocation mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", "conveyor"), "normal");
 		event.getModelRegistry().put(mLoc, modelConveyor);
 		mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", "conveyor"), "inventory");
 		event.getModelRegistry().put(mLoc, modelConveyor);

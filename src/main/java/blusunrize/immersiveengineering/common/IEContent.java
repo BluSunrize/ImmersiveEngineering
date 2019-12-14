@@ -282,6 +282,8 @@ public class IEContent
 		StoneDecoration.concreteStairs[0] = new IEStairsBlock("stairs_concrete", StoneDecoration.concrete.getDefaultState(), stoneDecoProps);
 		StoneDecoration.concreteStairs[1] = new IEStairsBlock("stairs_concrete_tile", StoneDecoration.concreteTile.getDefaultState(), stoneDecoProps);
 		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stairs_concrete_leaded", StoneDecoration.concreteLeaded.getDefaultState(), stoneDecoLeadedProps);
+		StoneDecoration.coresample = new GenericTileBlock("coresample", () -> CoresampleTileEntity.TYPE,
+				stoneDecoProps, (Class<? extends BlockItemIE>)null, IEProperties.FACING_HORIZONTAL).setNotNormalBlock();
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
