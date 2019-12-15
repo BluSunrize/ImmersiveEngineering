@@ -164,24 +164,15 @@ public class Recipes extends RecipeProvider
 			.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 			.addCriterion("has_steel_sticks", hasItem(IETags.steelRod))
 			.build(out);
-		for(int i=0;i<MetalScaffoldingType.values().length;i++)
+		int numScaffoldingTypes = MetalScaffoldingType.values().length;
+		for(MetalScaffoldingType from:MetalScaffoldingType.values())
 		{
-			MetalScaffoldingType from = MetalScaffoldingType.values()[i];
-			MetalScaffoldingType to = null;
-			if((i+1)>=MetalScaffoldingType.values().length) // Meant to prevent this whole thing to throw IndexOutOfBounds.
-			{
-				to = MetalScaffoldingType.STANDARD; // And to have wood_top -> standard conversion
-			}
-			else
-			{
-				to = MetalScaffoldingType.values()[i+1];
-			}
-			
+			MetalScaffoldingType to = MetalScaffoldingType.values()[(from.ordinal()+1)%numScaffoldingTypes];
 			ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.aluScaffolding.get(to))
 				.addIngredient(MetalDecoration.aluScaffolding.get(from))
 				.addCriterion("has_"+toPath(MetalDecoration.aluScaffolding.get(from)), hasItem(MetalDecoration.aluScaffolding.get(from)))
 				.build(out, toRL("alu_scaffolding_"+to.name().toLowerCase()+"_from_"+from.name().toLowerCase()));
-			
+
 			ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.steelScaffolding.get(to))
 				.addIngredient(MetalDecoration.steelScaffolding.get(from))
 				.addCriterion("has_"+toPath(MetalDecoration.steelScaffolding.get(from)), hasItem(MetalDecoration.steelScaffolding.get(from)))
