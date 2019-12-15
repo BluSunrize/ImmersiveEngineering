@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "isi",
+    "isi"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "s": {
+      "tag": "forge:rods/aluminum"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:alu_fence",
+    "count": 3
+  }
+}

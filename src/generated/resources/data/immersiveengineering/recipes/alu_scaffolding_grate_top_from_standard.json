@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:alu_scaffolding_standard"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:alu_scaffolding_grate_top"
+  }
+}

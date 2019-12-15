@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    " s ",
+    "s s"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:treated_wood"
+    },
+    "s": {
+      "tag": "forge:rods/treated_wood"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:treated_scaffold",
+    "count": 6
+  }
+}
