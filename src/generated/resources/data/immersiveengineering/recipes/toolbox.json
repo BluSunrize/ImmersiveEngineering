@@ -8,11 +8,11 @@
     "p": {
       "tag": "forge:plates/aluminum"
     },
-    "c": {
-      "item": "immersiveengineering:crate"
-    },
     "r": {
       "tag": "forge:dyes/red"
+    },
+    "c": {
+      "item": "immersiveengineering:crate"
     }
   },
   "result": {

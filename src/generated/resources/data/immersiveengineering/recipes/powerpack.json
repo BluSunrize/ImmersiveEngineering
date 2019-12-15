@@ -8,14 +8,14 @@
     "l": {
       "tag": "forge:leather"
     },
+    "w": {
+      "item": "immersiveengineering:wirecoil_copper"
+    },
     "b": {
       "item": "immersiveengineering:capacitor_lv"
     },
     "c": {
       "item": "immersiveengineering:connector_lv"
-    },
-    "w": {
-      "item": "immersiveengineering:wirecoil_copper"
     }
   },
   "result": {
