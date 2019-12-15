@@ -55,7 +55,7 @@ public class ShaderCaseBalloon extends ShaderCase
 //
 //	public ShaderCaseBalloon(String overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 //	{
-//		super(overlayType, defaultWhite,colourPrimary,colourSecondary, "immersiveengineering:blocks/shaders/balloon_");
+//		super(overlayType, defaultWhite,colourPrimary,colourSecondary, "immersiveengineering:block/shaders/balloon_");
 //		this.additionalTexture = additionalTexture;
 //	}
 //
@@ -91,7 +91,7 @@ public class ShaderCaseBalloon extends ShaderCase
 //	@Override
 //	public void stichTextures(TextureMap map, int sheetID)
 //	{
-//		i_balloonBase = ApiUtils.getRegisterSprite(map, "immersiveengineering:blocks/shaders/balloon_0");
+//		i_balloonBase = ApiUtils.getRegisterSprite(map, "immersiveengineering:block/shaders/balloon_0");
 //		i_balloonOverlay = ApiUtils.getRegisterSprite(map, this.baseTexturePath+"1_"+this.overlayType);
 //		if(this.additionalTexture!=null)
 //			i_balloonAdditional = ApiUtils.getRegisterSprite(map, this.baseTexturePath+additionalTexture);

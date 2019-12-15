@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:shader_banner"
+          "name": "minecraft:air"
         }
       ],
       "conditions": [

@@ -73,6 +73,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
@@ -168,12 +169,12 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ExtractCoveredConveyor.class, ExtractCoveredConveyor::new);
 		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
 
-		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow"), createBuilder(1100, 3000));
-		fluidPlantoil = new IEFluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow"), createBuilder(925, 2000));
-		fluidEthanol = new IEFluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow"), createBuilder(789, 1000));
-		fluidBiodiesel = new IEFluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow"), createBuilder(789, 1000));
-		fluidConcrete = new IEFluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow"), createBuilder(2400, 4000));
-		fluidPotion = new PotionFluid("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow"));
+		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:block/fluid/creosote_still"), new ResourceLocation("immersiveengineering:block/fluid/creosote_flow"), createBuilder(1100, 3000));
+		fluidPlantoil = new IEFluid("plantoil", new ResourceLocation("immersiveengineering:block/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:block/fluid/plantoil_flow"), createBuilder(925, 2000));
+		fluidEthanol = new IEFluid("ethanol", new ResourceLocation("immersiveengineering:block/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:block/fluid/ethanol_flow"), createBuilder(789, 1000));
+		fluidBiodiesel = new IEFluid("biodiesel", new ResourceLocation("immersiveengineering:block/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:block/fluid/biodiesel_flow"), createBuilder(789, 1000));
+		fluidConcrete = new IEFluid("concrete", new ResourceLocation("immersiveengineering:block/fluid/concrete_still"), new ResourceLocation("immersiveengineering:block/fluid/concrete_flow"), createBuilder(2400, 4000));
+		fluidPotion = new PotionFluid("potion", new ResourceLocation("immersiveengineering:block/fluid/potion_still"), new ResourceLocation("immersiveengineering:block/fluid/potion_flow"));
 
 		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);
@@ -506,6 +507,9 @@ public class IEContent
 		for(ToolUpgrade upgrade : ToolUpgrade.values())
 			IEItems.Misc.toolUpgrades.put(upgrade, new ToolUpgradeItem(upgrade));
 		IEItems.Misc.jerrycan = new JerrycanItem();
+		IEItems.Misc.shader = new ShaderItem();
+		for(Rarity r : Rarity.values())
+			IEItems.Misc.shaderBag.put(r, new ShaderBagItem(r));
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
@@ -514,23 +518,15 @@ public class IEContent
 		itemJerrycan = new ItemJerrycan();
 		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
 		BlueprintCraftingRecipe.itemBlueprint = itemBlueprint;
-		itemRevolver = new ItemRevolver();
-		itemSpeedloader = new ItemSpeedloader();
-		itemBullet = new ItemBullet();
 		itemChemthrower = new ItemChemthrower();
 		itemRailgun = new ItemRailgun();
 		itemSkyhook = new ItemSkyhook();
 		itemToolUpgrades = new ItemToolUpgrade();
-		itemShader = new ItemShader();
-		itemShaderBag = new ItemShaderBag();
 		itemEarmuffs = new ItemEarmuffs();
-		itemCoresample = new ItemCoresample();
-		itemGraphiteElectrode = new ItemGraphiteElectrode();
 		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("faradayChains", "immersiveengineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0);
 		for(int i = 0; i < itemsFaradaySuit.length; i++)
 			itemsFaradaySuit[i] = new ItemFaradaySuit(EquipmentSlotType.values()[2+i]);
 		itemFluorescentTube = new ItemFluorescentTube();
-		itemPowerpack = new ItemPowerpack();
 		itemShield = new ItemIEShield();
 		itemMaintenanceKit = new ItemMaintenanceKit();
 

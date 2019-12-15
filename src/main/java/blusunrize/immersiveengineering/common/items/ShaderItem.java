@@ -19,10 +19,8 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.lib.manual.ManualUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BannerBlock;
 import net.minecraft.block.BlockState;
@@ -54,10 +52,10 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
+//TODO one item per shader?
 public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverride
 {
 	public ShaderItem()
@@ -98,7 +96,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 		addShader("Crescent Rose", 2, Rarity.COMMON, 0xff141414, 0xff910008, 0xff080808, 0xffa4a4a4).setInfo(null, "RWBY", "crescentrose");
 		addShader("Qrow", 2, Rarity.UNCOMMON, 0xff6d1c11, 0xffd8d7d0, 0xff313640, 0xff730008).setInfo(null, "RWBY", "qrow");
 		entry = addShader("Lusus Naturae", 0, Rarity.EPIC, 0xff141919, 0xff141919, 0xffadb4bf, 0xffadb4bf).setInfo(null, "RWBY", "lususnaturae");
-		addBlockScaledLayer(entry, "minecraft:blocks/destroy_stage_8", 0xbb940c0c);
+		addBlockScaledLayer(entry, "minecraft:block/destroy_stage_8", 0xbb940c0c);
 		addLayer(entry, "1_4", 0xffadb4bf);
 
 		addShader("Vanguard", 3, Rarity.UNCOMMON, 0xff373737, 0xff131b42, 0xffb86c14, 0xffdcdcdc).setInfo(null, "Destiny", "vanguard");
@@ -159,13 +157,13 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 		addShader("OmniTool", 2, Rarity.RARE, 0x40ff952c, 0x30ff952c, 0x40ff952c, 0x20ff952c).setInfo(null, "Mass Effect", "omnitool");
 
 		entry = addShader("The Kindled", 5, Rarity.EPIC, 0xff2b160b, 0xff3a3a3a, 0x80bf541f, 0xff4f4f4f).setInfo(null, "Dark Souls", "kindled");
-		addBlockScaledLayer(entry, "minecraft:blocks/fire_layer_0", 0x80ffffff);
+		addBlockScaledLayer(entry, "minecraft:block/fire_layer_0", 0x80ffffff);
 
 		entry = addShader("Dark Fire", 5, Rarity.EPIC, 0xff1e131b, 0xff211633, 0xff330812, 0xff412965).setInfo(null, "Kingdom Hearts", "darkfire");
-		addBlockScaledLayer(entry, "immersiveengineering:blocks/shaders/greyscale_fire", 0xff9e83eb);
+		addBlockScaledLayer(entry, "immersiveengineering:block/shaders/greyscale_fire", 0xff9e83eb);
 
 		entry = addShader("Erruption", 5, Rarity.RARE, 0xff2b160b, 0xff58432f, 0x80bf301f, 0xff58432f).setInfo(null, null, "erruption");
-		addBlockScaledLayer(entry, "minecraft:blocks/destroy_stage_8", 0xffff6314);
+		addBlockScaledLayer(entry, "minecraft:block/destroy_stage_8", 0xffff6314);
 
 		addShader("WAAAGH!", 5, Rarity.RARE, 0xff0f0f0f, 0xffdea712, 0xffc15b09, 0xff2f2f2f, "1_7", true, 0xff2f2f2f).setInfo(null, "Warhammer 40k", "waaagh");
 	}
@@ -185,11 +183,6 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	public static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade, String additionalTexture, boolean loot, int colourOverlay)
 	{
 		return ShaderRegistry.registerShader(name, Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, colourOverlay, loot, true);
-		//		ShaderCaseRevolver revolver = IEApi.registerShader_Revolver(name, overlayType, colour0, colour1, colour2, colour3, additionalTexture);
-		//		revolver.glowLayer = revolver_glow;
-		//		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, additionalTexture);
-		//		IEApi.registerShader_Minecart(name, overlayType, colour1, colour2, additionalTexture);
-		//		IEApi.registerShader_Balloon(name, overlayType, colour1, colour2, additionalTexture);
 	}
 
 	private static void addBlockScaledLayer(ShaderRegistryEntry entry, String texture, int colour)
@@ -211,8 +204,8 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour));
 		entry.getCase("immersiveengineering:shield").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour));
 		entry.getCase("immersiveengineering:minecart").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour));
-		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+texture), colour));
-		entry.getCase("immersiveengineering:banner").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_"+texture), colour));
+		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_"+texture), colour));
+		entry.getCase("immersiveengineering:banner").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_"+texture), colour));
 	}
 
 	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Integer, Integer> func_getColour, final BiConsumer<Boolean, Float> func_modifyRender)
@@ -223,8 +216,8 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 		entry.getCase("immersiveengineering:railgun").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour, func_getColour, func_modifyRender));
 		entry.getCase("immersiveengineering:shield").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour, func_getColour, func_modifyRender));
 		entry.getCase("immersiveengineering:minecart").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour, func_getColour, func_modifyRender));
-		entry.getCase("immersiveengineering:balloon").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase("immersiveengineering:banner").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:balloon").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase("immersiveengineering:banner").addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_"+texture), colour, func_getColour, func_modifyRender));
 	}
 
 	public void setDefaultTextureBounds(ResourceLocation rl, double... bounds)
@@ -236,23 +229,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	public String getShaderName(ItemStack stack)
 	{
 		if(ItemNBTHelper.hasKey(stack, "shader_name"))
-		{
-			String name = ItemNBTHelper.getString(stack, "shader_name");
-			if(ShaderRegistry.shaderRegistry.containsKey(ItemNBTHelper.getString(stack, "shader_name")))
-				return name;
-			else
-			{
-				Set<String> keys = ShaderRegistry.shaderRegistry.keySet();
-				List<String> corrected = ManualUtils.getPrimitiveSpellingCorrections(name, keys, 4, s->s);
-				if(!corrected.isEmpty())
-				{
-					IELogger.info("SHADER UPDATE: Fixing "+name+" to "+corrected.get(0));
-					IELogger.info("Others: "+corrected);
-					ItemNBTHelper.putString(stack, "shader_name", corrected.get(0));
-					return corrected.get(0);
-				}
-			}
-		}
+			return ItemNBTHelper.getString(stack, "shader_name");
 		return "";
 	}
 
@@ -274,10 +251,11 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 				{
 					boolean wall = blockState.getBlock() instanceof WallBannerBlock;
 					int orientation = wall?blockState.get(WallBannerBlock.HORIZONTAL_FACING).getIndex(): blockState.get(BannerBlock.ROTATION);
-					world.setBlockState(pos, Cloth.shaderBanner.getDefaultState().with(IEProperties.FACING_ALL, Direction.SOUTH));
+					world.setBlockState(pos, Cloth.shaderBanner.getDefaultState().with(IEProperties.FACING_HORIZONTAL, Direction.SOUTH));
 					tile = world.getTileEntity(pos);
 					if(tile instanceof ShaderBannerTileEntity)
 					{
+						//TODO use blockstate props similar to vanilla banners
 						((ShaderBannerTileEntity)tile).wall = wall;
 						((ShaderBannerTileEntity)tile).orientation = (byte)orientation;
 						((ShaderBannerTileEntity)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));

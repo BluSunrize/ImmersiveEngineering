@@ -56,7 +56,7 @@ public class IEShaderLayerCompositeTexture extends Texture
 			finalTexture = new NativeImage(canvasWidth, canvasHeight, true);
 			int layer = 0;
 
-			while(layer < 17||layer < this.layers.length)
+			while(layer < 17&&layer < this.layers.length)
 			{
 				IResource iresource1 = null;
 
@@ -112,7 +112,7 @@ public class IEShaderLayerCompositeTexture extends Texture
 								int iRGB = texureImage.getPixelRGBA(interU, interV);
 
 								float[] rgb = {(iRGB >> 16&255)/255f, (iRGB >> 8&255)/255f, (iRGB&255)/255f, (iRGB >> 24&255)/255f};
-								if((iRGB&-16777216)!=0)
+								if((iRGB&0xff000000)!=0)
 								{
 									int iNoise = originalImage.getPixelRGBA(u, v);
 									float[] noise = {(iNoise >> 16&255)/255f, (iNoise >> 8&255)/255f, (iNoise&255)/255f, (iNoise >> 24&255)/255f};
@@ -121,7 +121,7 @@ public class IEShaderLayerCompositeTexture extends Texture
 										rgb[m] = rgb[m]*mod[m]*noise[m];
 									int[] irgb = {(int)(rgb[0]*255), (int)(rgb[1]*255), (int)(rgb[2]*255), (int)(rgb[3]*255)};
 
-									int i2 = (irgb[0]<<16)+(irgb[1]<<8)+(irgb[2])+(irgb[3]<<24);
+									int i2 = (irgb[0])+(irgb[1]<<8)+(irgb[2]<<16)+(irgb[3]<<24);
 									finalTexture.setPixelRGBA(u, v, i2);
 								}
 							}

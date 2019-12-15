@@ -335,14 +335,14 @@ public class ShaderRegistry
 	public static ShaderCaseBalloon registerShader_Balloon(String name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
 		ArrayList<ShaderLayer> list = new ArrayList();
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_0"), colour0));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_1_"+overlayType), colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_0"), colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_1_"+overlayType), colour1));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:block/shaders/balloon_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_uncoloured"), 0xffffffff));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_uncoloured"), 0xffffffff));
 
 		ShaderCaseBalloon shader = new ShaderCaseBalloon(list);
 		return registerShaderCase(name, shader, rarity);
@@ -362,15 +362,15 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseBanner registerShader_Banner(String name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
-		ArrayList<ShaderLayer> list = new ArrayList();
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_0"), colour0));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_1_"+overlayType), colour1));
+		ArrayList<ShaderLayer> list = new ArrayList<>();
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_0"), colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_1_"+overlayType), colour1));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:blocks/shaders/banner_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:block/shaders/banner_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/banner_uncoloured"), 0xffffffff));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_uncoloured"), 0xffffffff));
 
 		ShaderCaseBanner shader = new ShaderCaseBanner(list);
 		return registerShaderCase(name, shader, rarity);

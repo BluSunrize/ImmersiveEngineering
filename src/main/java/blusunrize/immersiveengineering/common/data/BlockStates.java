@@ -211,6 +211,7 @@ public class BlockStates extends BlockstateGenerator
 				)), IEProperties.FACING_HORIZONTAL, ImmutableList.of(StripCurtainBlock.CEILING_ATTACHED),
 				variantBased);
 		createBasicBlock(Cloth.cushion, models.cushion, variantBased);
+		createMultistateSingleModel(Cloth.shaderBanner, EMPTY_MODEL, variantBased);
 	}
 
 	private void createRotatedBlock(Block block, Function<Map<IProperty<?>, Object>, ModelFile> model, IProperty<Direction> facing,

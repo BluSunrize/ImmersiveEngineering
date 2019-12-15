@@ -24,6 +24,7 @@ import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEntity>
 {
@@ -32,12 +33,9 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 	@Override
 	public void render(ShaderBannerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		te.getWorldNonnull();
 		int orientation = te.orientation;
 		long time = te.getWorldNonnull().getGameTime();
 		GlStateManager.pushMatrix();
-		float f = 2/3f;
-
 		if(!te.wall)
 		{
 			GlStateManager.translated((float)x+0.5F, (float)y+0.5F, (float)z+0.5F);
@@ -95,6 +93,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 		{
 			IShaderItem iShaderItem = ((IShaderItem)shader.getItem());
 			name = iShaderItem.getShaderName(shader);
+			name = name.toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9/._-]", "_");
 			if(CACHE.containsKey(name))
 				return CACHE.get(name);
 			sCase = iShaderItem.getShaderCase(shader, null, bannerObj.shader.getShaderType());

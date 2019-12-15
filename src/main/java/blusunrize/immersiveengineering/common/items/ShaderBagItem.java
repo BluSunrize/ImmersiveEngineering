@@ -31,7 +31,7 @@ public class ShaderBagItem extends IEBaseItem
 
 	public ShaderBagItem(Rarity rarity)
 	{
-		super("shader_bag_"+rarity.name().toLowerCase(), new Properties());
+		super("shader_bag_"+rarity.name().toLowerCase().replace(':', '_'), new Properties());
 		this.rarity = rarity;
 	}
 
