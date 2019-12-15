@@ -54,8 +54,8 @@
 			"true":{
 				"custom": {
 					"textures": {
-						"#immersiveengineering:blocks/metal_device1_electric_lantern": "immersiveengineering:blocks/metal_device1_electric_lantern_on"
-					}
+                      "#immersiveengineering:block/metal_device1_electric_lantern": "immersiveengineering:block/metal_device1_electric_lantern_on"
+                    }
 				}
 			}
 		}

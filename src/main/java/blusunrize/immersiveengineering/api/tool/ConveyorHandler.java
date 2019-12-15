@@ -62,7 +62,7 @@ public class ConveyorHandler
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<>();
 
 	public static final Map<ResourceLocation, Block> conveyorBlocks = MetalDevices.CONVEYORS;
-	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:blocks/conveyor_colour");
+	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor_colour");
 
 	/**
 	 * @param key           A unique ResourceLocation to identify the conveyor by

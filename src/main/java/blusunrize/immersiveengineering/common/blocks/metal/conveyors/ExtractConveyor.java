@@ -72,10 +72,10 @@ public class ExtractConveyor extends BasicConveyor
 	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
 	{
-		final TextureAtlasSprite texture_steel = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/storage_steel"));
-		final TextureAtlasSprite texture_casing = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/wooden_device_turntable_bottom"));
-		final TextureAtlasSprite texture_curtain = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/cloth_device_stripcurtain"));
-		final TextureAtlasSprite texture_assembler = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:blocks/metal_multiblock_assembler"));
+		final TextureAtlasSprite texture_steel = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:block/storage_steel"));
+		final TextureAtlasSprite texture_casing = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:block/wooden_device_turntable_bottom"));
+		final TextureAtlasSprite texture_curtain = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:block/cloth_device_stripcurtain"));
+		final TextureAtlasSprite texture_assembler = ClientUtils.getSprite(new ResourceLocation("immersiveengineering:block/metal_multiblock_assembler"));
 
 		float[] colour = {1, 1, 1, 1};
 		Matrix4 matrix = new Matrix4(this.getExtractDirection());

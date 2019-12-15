@@ -391,7 +391,7 @@ public class BelljarHandler
 
 	public static void init()
 	{
-		soilTextureMap.put(new ComparableItemStack(new ItemStack(Blocks.DIRT), false, false), new ResourceLocation("minecraft:blocks/farmland_wet"));
+		soilTextureMap.put(new ComparableItemStack(new ItemStack(Blocks.DIRT), false, false), new ResourceLocation("minecraft:block/farmland_wet"));
 		registerHandler(cropHandler);
 		registerHandler(stemHandler);
 		registerHandler(stackingHandler);

@@ -183,8 +183,8 @@ public class TConstructHelper extends IECompatModule
 
 	public static class FluidColouredMetal extends Fluid
 	{
-		public static ResourceLocation ICON_MetalStill = new ResourceLocation("tconstruct:blocks/fluids/molten_metal");
-		public static ResourceLocation ICON_MetalFlowing = new ResourceLocation("tconstruct:blocks/fluids/molten_metal_flow");
+		public static ResourceLocation ICON_MetalStill = new ResourceLocation("tconstruct:block/fluids/molten_metal");
+		public static ResourceLocation ICON_MetalFlowing = new ResourceLocation("tconstruct:block/fluids/molten_metal_flow");
 
 		int colour;
 

@@ -5,10 +5,10 @@
 		"model": "stairs",
 		"uvlock": true,
 		"textures": {
-			"bottom": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_top",
-			"top": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding_top2",
-			"side": "immersiveengineering:blocks/metal_decoration1_aluminum_scaffolding"
-		}
+          "bottom": "immersiveengineering:block/metal_decoration1_aluminum_scaffolding_top",
+          "top": "immersiveengineering:block/metal_decoration1_aluminum_scaffolding_top2",
+          "side": "immersiveengineering:block/metal_decoration1_aluminum_scaffolding"
+        }
 	},
 	"variants": {
 		"facing=east,half=bottom,shape=straight":  { "model": "minecraft:stairs" },

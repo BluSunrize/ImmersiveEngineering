@@ -8,16 +8,20 @@
 	"variants":
 	{
 		"inventory,type=capacitor_lv": [{"textures": {
-			"name": "immersiveengineering:blocks/metal_device0_capacitor_lv"}
+          "name": "immersiveengineering:block/metal_device0_capacitor_lv"
+        }
 		}],
 		"inventory,type=capacitor_mv": [{"textures": {
-			"name": "immersiveengineering:blocks/metal_device0_capacitor_mv"}
+          "name": "immersiveengineering:block/metal_device0_capacitor_mv"
+        }
 		}],
 		"inventory,type=capacitor_hv": [{"textures": {
-			"name": "immersiveengineering:blocks/metal_device0_capacitor_hv"}
+          "name": "immersiveengineering:block/metal_device0_capacitor_hv"
+        }
 		}],
 		"inventory,type=capacitor_creative": [{"textures": {
-			"name": "immersiveengineering:blocks/metal_device0_capacitor_creative"}
+          "name": "immersiveengineering:block/metal_device0_capacitor_creative"
+        }
 		}],
 		"inventory,type=barrel": [{
 			"model": "immersiveengineering:block/smartmodel/conf_sides_v_metal_device0_barrel"
@@ -28,17 +32,17 @@
 		"type":
 		{
 			"capacitor_lv": {"textures": {
-				"name": "immersiveengineering:blocks/metal_device0_capacitor_lv"
-			}},
+              "name": "immersiveengineering:block/metal_device0_capacitor_lv"
+            }},
 			"capacitor_mv": {"textures": {
-				"name": "immersiveengineering:blocks/metal_device0_capacitor_mv"
-			}},
+              "name": "immersiveengineering:block/metal_device0_capacitor_mv"
+            }},
 			"capacitor_hv": {"textures": {
-				"name": "immersiveengineering:blocks/metal_device0_capacitor_hv"
-			}},
+              "name": "immersiveengineering:block/metal_device0_capacitor_hv"
+            }},
 			"capacitor_creative": {"textures": {
-				"name": "immersiveengineering:blocks/metal_device0_capacitor_creative"
-			}},
+              "name": "immersiveengineering:block/metal_device0_capacitor_creative"
+            }},
 			"barrel": {
 				"model": "immersiveengineering:block/smartmodel/conf_sides_v_metal_device0_barrel"
 			},

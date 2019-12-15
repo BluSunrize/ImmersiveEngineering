@@ -5,36 +5,128 @@
 		"transform": "forge:default-block",
 		"model": "immersiveengineering:block/ie_slab",
 		"textures": {
-			"all": "immersiveengineering:blocks/storage_copper",
-			"bottom": "#all",
-			"top": "#all",
-			"side": "#all",
-			"particle": "#all"
-		}
+          "all": "immersiveengineering:block/storage_copper",
+          "bottom": "#all",
+          "top": "#all",
+          "side": "#all",
+          "particle": "#all"
+        }
 	},
-	"variants":
-	{
-		"inventory,type=copper": [{"textures": {"all": "immersiveengineering:blocks/storage_copper"}}],
-		"inventory,type=aluminum": [{"textures": {"all": "immersiveengineering:blocks/storage_aluminum"}}],
-		"inventory,type=lead": [{"textures": {"all": "immersiveengineering:blocks/storage_lead"}}],
-		"inventory,type=silver": [{"textures": {"all": "immersiveengineering:blocks/storage_silver"}}],
-		"inventory,type=nickel": [{"textures": {"all": "immersiveengineering:blocks/storage_nickel"}}],
-		"inventory,type=uranium": [{"textures": { "side": "immersiveengineering:blocks/storage_uranium_side", "top": "immersiveengineering:blocks/storage_uranium_top", "bottom": "immersiveengineering:blocks/storage_uranium_top"}}],
-		"inventory,type=constantan": [{"textures": {"all": "immersiveengineering:blocks/storage_constantan"}}],
-		"inventory,type=electrum": [{"textures": {"all": "immersiveengineering:blocks/storage_electrum"}}],
-		"inventory,type=steel": [{"textures": {"all": "immersiveengineering:blocks/storage_steel"}}],
-		"type":
-		{
-			"copper": {"textures": {"all": "immersiveengineering:blocks/storage_copper"}},
-			"aluminum": {"textures": {"all": "immersiveengineering:blocks/storage_aluminum"}},
-			"lead": {"textures": {"all": "immersiveengineering:blocks/storage_lead"}},
-			"silver": {"textures": {"all": "immersiveengineering:blocks/storage_silver"}},
-			"nickel": {"textures": {"all": "immersiveengineering:blocks/storage_nickel"}},
-			"uranium": {"textures": { "side": "immersiveengineering:blocks/storage_uranium_side", "top": "immersiveengineering:blocks/storage_uranium_top", "bottom": "immersiveengineering:blocks/storage_uranium_top"}},
-			"constantan": {"textures": {"all": "immersiveengineering:blocks/storage_constantan"}},
-			"electrum": {"textures": {"all": "immersiveengineering:blocks/storage_electrum"}},
-			"steel": {"textures": {"all": "immersiveengineering:blocks/storage_steel"}}
-		},
+	"variants": {
+      "inventory,type=copper": [
+        {
+          "textures": {
+            "all": "immersiveengineering:block/storage_copper"
+          }
+        }
+      ],
+      "inventory,type=aluminum": [
+        {
+          "textures": {
+            "all": "immersiveengineering:block/storage_aluminum"
+          }
+        }
+      ],
+      "inventory,type=lead": [
+        {
+          "textures": {
+            "all": "immersiveengineering:block/storage_lead"
+          }
+        }
+      ],
+      "inventory,type=silver": [
+        {
+          "textures": {
+            "all": "immersiveengineering:block/storage_silver"
+          }
+        }
+      ],
+      "inventory,type=nickel": [
+        {
+          "textures": {
+            "all": "immersiveengineering:block/storage_nickel"
+          }
+        }
+      ],
+      "inventory,type=uranium": [
+        {
+          "textures": {
+            "side": "immersiveengineering:block/storage_uranium_side",
+            "top": "immersiveengineering:block/storage_uranium_top",
+            "bottom": "immersiveengineering:block/storage_uranium_top"
+          }
+        }
+      ],
+      "inventory,type=constantan": [
+        {
+          "textures": {
+            "all": "immersiveengineering:block/storage_constantan"
+          }
+        }
+      ],
+      "inventory,type=electrum": [
+        {
+          "textures": {
+            "all": "immersiveengineering:block/storage_electrum"
+          }
+        }
+      ],
+      "inventory,type=steel": [
+        {
+          "textures": {
+            "all": "immersiveengineering:block/storage_steel"
+          }
+        }
+      ],
+      "type": {
+        "copper": {
+          "textures": {
+            "all": "immersiveengineering:block/storage_copper"
+          }
+        },
+        "aluminum": {
+          "textures": {
+            "all": "immersiveengineering:block/storage_aluminum"
+          }
+        },
+        "lead": {
+          "textures": {
+            "all": "immersiveengineering:block/storage_lead"
+          }
+        },
+        "silver": {
+          "textures": {
+            "all": "immersiveengineering:block/storage_silver"
+          }
+        },
+        "nickel": {
+          "textures": {
+            "all": "immersiveengineering:block/storage_nickel"
+          }
+        },
+        "uranium": {
+          "textures": {
+            "side": "immersiveengineering:block/storage_uranium_side",
+            "top": "immersiveengineering:block/storage_uranium_top",
+            "bottom": "immersiveengineering:block/storage_uranium_top"
+          }
+        },
+        "constantan": {
+          "textures": {
+            "all": "immersiveengineering:block/storage_constantan"
+          }
+        },
+        "electrum": {
+          "textures": {
+            "all": "immersiveengineering:block/storage_electrum"
+          }
+        },
+        "steel": {
+          "textures": {
+            "all": "immersiveengineering:block/storage_steel"
+          }
+        }
+      },
 		"slabtype":
 		{
           "0": {},

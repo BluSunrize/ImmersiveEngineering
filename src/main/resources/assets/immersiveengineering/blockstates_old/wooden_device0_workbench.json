@@ -49,9 +49,11 @@
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:block/ie_empty",
-				"textures": {"particle": "immersiveengineering:blocks/treated_wood_horizontal"}
-			}
+              "model": "immersiveengineering:block/ie_empty",
+              "textures": {
+                "particle": "immersiveengineering:block/treated_wood_horizontal"
+              }
+            }
 		}
 	}
 }

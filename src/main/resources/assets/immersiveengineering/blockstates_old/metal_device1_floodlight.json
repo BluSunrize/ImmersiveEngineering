@@ -53,7 +53,7 @@
 			"true":{
               "custom": {
                 "textures": {
-                  "#immersiveengineering:blocks/metal_device1_floodlight": "immersiveengineering:blocks/metal_device1_floodlight_on"
+                  "#immersiveengineering:block/metal_device1_floodlight": "immersiveengineering:block/metal_device1_floodlight_on"
                 }
               }
 			}

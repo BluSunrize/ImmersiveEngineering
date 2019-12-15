@@ -5,11 +5,11 @@
 		"model": "stairs",
 		"uvlock": true,
 		"textures": {
-			"all": "immersiveengineering:blocks/stone_decoration_concrete",
-			"bottom": "#all",
-			"top": "#all",
-			"side": "#all"
-		}
+          "all": "immersiveengineering:block/stone_decoration_concrete",
+          "bottom": "#all",
+          "top": "#all",
+          "side": "#all"
+        }
 	},
 	"variants": {
 		"facing=east,half=bottom,shape=straight":  { "model": "minecraft:stairs" },

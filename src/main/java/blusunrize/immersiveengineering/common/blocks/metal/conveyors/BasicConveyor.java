@@ -111,8 +111,8 @@ public class BasicConveyor implements IConveyorBelt
 
 	}
 
-	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor");
-	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:blocks/conveyor_off");
+	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor");
+	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor_off");
 
 	@Override
 	public ResourceLocation getActiveTexture()

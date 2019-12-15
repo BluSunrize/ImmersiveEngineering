@@ -2,34 +2,52 @@
 	"forge_marker": 1,
 	"defaults":
 	{
-		"transform": "forge:default-block",
-		"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion" },
-		"model": "cube_all",
-		"custom": {
-			"flip-v": true
-		}
-	},
-	"variants":
-	{
-		"inventory,type=cushion": [{"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion"}}],
-		"inventory,type=balloon":	[{"model": "immersiveengineering:block/balloon.obj.ie"}],
-    "inventory,type=shader_banner": [{"model": "immersiveengineering:block/ie_empty"}],
-		"type":
-		{
-			"cushion": {"textures": {"all": "immersiveengineering:blocks/cloth_device_cushion"}},
-      "balloon": {
-        "model": "immersiveengineering:block/smartmodel/connector",
-        "custom": {
-          "base": "immersiveengineering:block/balloon.obj.ie",
-          "layers": [
-			  "TRANSLUCENT"
-          ]
-        }
+      "transform": "forge:default-block",
+      "textures": {
+        "all": "immersiveengineering:block/cloth_device_cushion"
       },
-      "shader_banner": {
+      "model": "cube_all",
+      "custom": {
+        "flip-v": true
+      }
+    },
+	"variants": {
+      "inventory,type=cushion": [
+        {
+          "textures": {
+            "all": "immersiveengineering:block/cloth_device_cushion"
+          }
+        }
+      ],
+      "inventory,type=balloon": [
+        {
+          "model": "immersiveengineering:block/balloon.obj.ie"
+        }
+      ],
+      "inventory,type=shader_banner": [
+        {
+          "model": "immersiveengineering:block/ie_empty"
+        }
+      ],
+      "type": {
+        "cushion": {
+          "textures": {
+            "all": "immersiveengineering:block/cloth_device_cushion"
+          }
+        },
+        "balloon": {
+          "model": "immersiveengineering:block/smartmodel/connector",
+          "custom": {
+            "base": "immersiveengineering:block/balloon.obj.ie",
+            "layers": [
+              "TRANSLUCENT"
+            ]
+          }
+        },
+        "shader_banner": {
         "model": "immersiveengineering:block/ie_empty",
         "textures": {
-          "particle": "immersiveengineering:blocks/cloth_device_cushion"
+          "particle": "immersiveengineering:block/cloth_device_cushion"
         }
       }
 		},

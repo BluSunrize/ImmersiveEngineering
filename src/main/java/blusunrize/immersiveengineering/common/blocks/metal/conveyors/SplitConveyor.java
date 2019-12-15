@@ -163,9 +163,9 @@ public class SplitConveyor extends BasicConveyor
 		nextOutputLeft = nbt.getBoolean("nextLeft");
 	}
 
-	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor_split");
-	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:blocks/conveyor_split_off");
-	public static ResourceLocation texture_casing = new ResourceLocation("immersiveengineering:blocks/conveyor_split_wall");
+	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor_split");
+	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor_split_off");
+	public static ResourceLocation texture_casing = new ResourceLocation("immersiveengineering:block/conveyor_split_wall");
 
 	@Override
 	public ResourceLocation getActiveTexture()

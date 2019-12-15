@@ -5,9 +5,9 @@
 		"transform": "forge:default-block",
 		"model": "immersiveengineering:block/stripcurtain",
 		"textures": {
-			"metal": "immersiveengineering:blocks/conveyor_casing_side",
-			"side": "immersiveengineering:blocks/cloth_device_stripcurtain"
-		}
+          "metal": "immersiveengineering:block/conveyor_casing_side",
+          "side": "immersiveengineering:block/cloth_device_stripcurtain"
+        }
 	},
 	"variants":
 	{

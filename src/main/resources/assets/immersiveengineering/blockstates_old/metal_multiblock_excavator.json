@@ -5,8 +5,8 @@
 		"transform": "forge:default-block",
 		"custom": { "flip-v": true },
 		"textures": {
-			"particle": "immersiveengineering:blocks/storage_steel"
-		}
+          "particle": "immersiveengineering:block/storage_steel"
+        }
 	},
 	"variants":
 	{

@@ -5,11 +5,11 @@
 		"model": "stairs",
 		"uvlock": true,
 		"textures": {
-			"all": "immersiveengineering:blocks/treated_wood_horizontal",
-			"bottom": "#all",
-			"top": "#all",
-			"side": "#all"
-		}
+          "all": "immersiveengineering:block/treated_wood_horizontal",
+          "bottom": "#all",
+          "top": "#all",
+          "side": "#all"
+        }
 	},
 	"variants": {
 		"facing=east,half=bottom,shape=straight":  { "model": "minecraft:stairs" },
