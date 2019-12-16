@@ -262,6 +262,19 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Override
+	public void updateContainingBlockInfo()
+	{
+		BlockState old = getBlockState();
+		super.updateContainingBlockInfo();
+		BlockState newState = getBlockState();
+		if(old!=null&&
+				newState!=null&&
+				getType().isValidBlock(old.getBlock())&&
+				!getType().isValidBlock(newState.getBlock()))
+			setOverrideState(old);
+	}
+
+	@Override
 	public void setState(BlockState state)
 	{
 		getWorldNonnull().setBlockState(pos, state);

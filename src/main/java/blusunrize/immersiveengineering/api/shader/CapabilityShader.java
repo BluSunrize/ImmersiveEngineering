@@ -188,5 +188,5 @@ public class CapabilityShader
 		});
 	}
 
-	public static ModelProperty<ShaderWrapper> BLOCKSTATE_PROPERTY = new ModelProperty<>();
+	public static ModelProperty<ShaderWrapper> MODEL_PROPERTY = new ModelProperty<>();
 }

@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorStructuralTileEntity;
-import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -245,7 +244,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(entity instanceof AbstractArrowEntity||entity instanceof RevolvershotEntity)
+		if(entity instanceof AbstractArrowEntity)
 		{
 			Vec3d pos = new Vec3d(getPos()).add(.5, .5, .5);
 			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST,

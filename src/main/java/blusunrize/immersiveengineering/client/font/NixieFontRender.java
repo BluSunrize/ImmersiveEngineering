@@ -57,6 +57,13 @@ public class NixieFontRender extends IEFontRender
 	{
 		float baseCharWidth = super.getCharWidthIE(orig, bold);
 		x = (float)Math.floor(x+NIXIE_X_OFFSET+(NIXIE_WIDTH-baseCharWidth)/2);
+		super.renderGlyph(glyph, bold, italic, boldOffset, x, y, bufferBuilder, red, green, blue, alpha, orig);
+		final float backgroundFactor = 0.875F;
+		final float alphaFactor = 0.375F;
+		red *= backgroundFactor;
+		green *= backgroundFactor;
+		blue *= backgroundFactor;
+		alpha *= alphaFactor;
 		super.renderGlyph(glyph, bold, italic, boldOffset, x-.5F, y, bufferBuilder, red, green, blue, alpha, orig);
 		super.renderGlyph(glyph, bold, italic, boldOffset, x+.5F, y, bufferBuilder, red, green, blue, alpha, orig);
 	}

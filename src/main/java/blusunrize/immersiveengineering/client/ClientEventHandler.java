@@ -536,10 +536,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						int chargeLevel = duration < 72000?Math.min(99, (int)(duration/(float)chargeTime*100)): 0;
 						float scale = 2f;
 						GlStateManager.pushMatrix();
+						GlStateManager.enableBlend();
 						GlStateManager.translated(scaledWidth-80, scaledHeight-30, 0);
 						GlStateManager.scalef(scale, scale, 1);
 						ClientProxy.nixieFont.drawString((chargeLevel < 10?"0": "")+chargeLevel, 0, 0, Lib.colour_nixieTubeText);
 						GlStateManager.scalef(1/scale, 1/scale, 1);
+						GlStateManager.disableBlend();
 						GlStateManager.popMatrix();
 					}
 					else if(equipped.getItem() instanceof DrillItem||equipped.getItem() instanceof ChemthrowerItem)

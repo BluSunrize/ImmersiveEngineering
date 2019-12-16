@@ -254,6 +254,13 @@ public class IESmartObjModel extends OBJBakedModel
 				customData.add(new SinglePropertyModelData<>((IOBJModelCallback)te, IOBJModelCallback.PROPERTY));
 			if(te instanceof IAdvancedHasObjProperty)
 				customData.add(new SinglePropertyModelData<>(((IAdvancedHasObjProperty)te).getOBJState(), Model.OBJ_STATE));
+			if(te!=null)
+			{
+				LazyOptional<ShaderWrapper> shaderCap = te.getCapability(CapabilityShader.SHADER_CAPABILITY);
+				if(shaderCap.isPresent())
+					customData.add(new SinglePropertyModelData<>(shaderCap.orElseThrow(RuntimeException::new),
+							CapabilityShader.MODEL_PROPERTY));
+			}
 		}
 		customData.add(tileData);
 		return new CombinedModelData(customData.toArray(new IModelData[0]));
@@ -318,9 +325,9 @@ public class IESmartObjModel extends OBJBakedModel
 			if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
 				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
 		}
-		else if(data.hasProperty(CapabilityShader.BLOCKSTATE_PROPERTY))
+		else if(data.hasProperty(CapabilityShader.MODEL_PROPERTY))
 		{
-			ShaderWrapper wrapper = data.getData(CapabilityShader.BLOCKSTATE_PROPERTY);
+			ShaderWrapper wrapper = data.getData(CapabilityShader.MODEL_PROPERTY);
 			if(wrapper!=null)
 			{
 				shader = wrapper.getShaderItem();
