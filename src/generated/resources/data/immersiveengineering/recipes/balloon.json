@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " f ",
+    "ftf",
+    " s "
+  ],
+  "key": {
+    "f": {
+      "item": "immersiveengineering:hemp_fabric"
+    },
+    "t": {
+      "item": "minecraft:torch"
+    },
+    "s": {
+      "item": "immersiveengineering:slab_treated_wood_horizontal"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:balloon",
+    "count": 2
+  }
+}
