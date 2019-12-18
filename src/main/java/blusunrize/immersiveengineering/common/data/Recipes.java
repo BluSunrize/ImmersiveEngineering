@@ -72,7 +72,7 @@ public class Recipes extends RecipeProvider
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			IETags.MetalTags tags=IETags.getTagsFor(metal);
-			
+
 			Item nugget = Metals.nuggets.get(metal);
 			Item ingot = Metals.ingots.get(metal);
 			Item plate = Metals.plates.get(metal);
@@ -108,7 +108,7 @@ public class Recipes extends RecipeProvider
 
 		for(Entry<Block, Block> blockSlab : IEBlocks.toSlab.entrySet())
 			addSlab(blockSlab.getKey(), blockSlab.getValue(), out);
-		
+
 		recipesStoneDecorations(out);
 		recipesWoodenDecorations(out);
 		recipesWoodenDevices(out);
@@ -116,7 +116,7 @@ public class Recipes extends RecipeProvider
 		recipesMetalDevices(out);
 		recipesConnectors(out);
 		recipesCloth(out);
-		
+
 		recipesTools(out);
 		recipesIngredients(out);
 		recipesWeapons(out);
@@ -216,12 +216,12 @@ public class Recipes extends RecipeProvider
 		addCornerStraightMiddle(StoneDecoration.blastbrick, 3, Tags.Items.INGOTS_NETHER_BRICK, Tags.Items.INGOTS_BRICK, Items.BLAZE_POWDER, out);
 		addSandwich(StoneDecoration.hempcrete, 6, IETags.clay, IETags.fiberHemp, IETags.clay, out);
 		add3x3Conversion(StoneDecoration.coke, IETags.coalCokeBlock, IEItems.Ingredients.coalCoke, IETags.coalCoke, out);
-		
+
 		addStairs(StoneDecoration.hempcrete, StoneDecoration.hempcreteStairs, out);
 		addStairs(StoneDecoration.concrete, StoneDecoration.concreteStairs[0], out);
 		addStairs(StoneDecoration.concreteTile, StoneDecoration.concreteStairs[1], out);
 		addStairs(StoneDecoration.concreteLeaded, StoneDecoration.concreteStairs[2], out);
-		
+
 		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete))
 			.func_218643_a("has_hempcrete", hasItem(StoneDecoration.hempcrete))
 			.func_218647_a(out, toRL("hempcrete_slab_from_hempcrete_stonecutting"));
@@ -249,7 +249,7 @@ public class Recipes extends RecipeProvider
 		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteTile)
 			.func_218643_a("has_concrete", hasItem(StoneDecoration.concrete))
 			.func_218647_a(out, toRL("concrete_tile_from_concrete_stonecutting"));
-		
+
 		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.alloybrick, 2)
 			.patternLine("sb")
 			.patternLine("bs")
@@ -323,7 +323,7 @@ public class Recipes extends RecipeProvider
 			.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
 			.addCriterion("has_treated_sticks", hasItem(IETags.treatedStick))
 			.build(out);
-	
+
 		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.treatedFence, 3)
 			.patternLine("isi")
 			.patternLine("isi")
@@ -332,14 +332,14 @@ public class Recipes extends RecipeProvider
 			.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
 			.addCriterion("has_treated_sticks", hasItem(IETags.treatedStick))
 			.build(out);
-		
+
 		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.treatedPost)
 			.patternLine("f")
 			.patternLine("f")
 			.patternLine("s")
 			.key('f', WoodenDecoration.treatedFence)
 			.key('s', Blocks.STONE_BRICKS)
-			.addCriterion("has_treated_fence", hasItem(WoodenDecoration.treatedFence))
+			.addCriterion("has_"+toPath(WoodenDecoration.treatedFence), hasItem(WoodenDecoration.treatedFence))
 			.build(out);
 	}
 
@@ -459,7 +459,7 @@ public class Recipes extends RecipeProvider
 			addStairs(MetalDecoration.steelScaffolding.get(type), MetalDecoration.steelScaffoldingStair.get(type), out);
 			addStairs(MetalDecoration.aluScaffolding.get(type), MetalDecoration.aluScaffoldingStair.get(type), out);
 		}
-		
+
 		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD), 6)
 			.patternLine("iii")
 			.patternLine(" s ")
@@ -508,7 +508,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_"+toPath(MetalDecoration.steelScaffolding.get(from)), hasItem(MetalDecoration.steelScaffolding.get(from)))
 				.build(out, toRL("steel_scaffolding_"+to.name().toLowerCase()+"_from_"+from.name().toLowerCase()));
 		}
-		
+
 		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.aluFence, 3)
 			.patternLine("isi")
 			.patternLine("isi")
@@ -525,7 +525,7 @@ public class Recipes extends RecipeProvider
 			.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 			.addCriterion("has_steel_sticks", hasItem(IETags.steelRod))
 			.build(out);
-		
+
 		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.lvCoil)
 			.patternLine("www")
 			.patternLine("wiw")
@@ -608,6 +608,38 @@ public class Recipes extends RecipeProvider
 			.key('b', Items.WATER_BUCKET)
 			.addCriterion("has_water_bucket", hasItem(Items.WATER_BUCKET))
 			.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+			.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+			.build(out);
+
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.aluPost)
+			.patternLine("f")
+			.patternLine("f")
+			.patternLine("s")
+			.key('f', MetalDecoration.aluFence)
+			.key('s', Blocks.STONE_BRICKS)
+			.addCriterion("has_"+toPath(MetalDecoration.aluFence), hasItem(MetalDecoration.aluFence))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.steelPost)
+			.patternLine("f")
+			.patternLine("f")
+			.patternLine("s")
+			.key('f', MetalDecoration.steelFence)
+			.key('s', Blocks.STONE_BRICKS)
+			.addCriterion("has_"+toPath(MetalDecoration.steelFence), hasItem(MetalDecoration.steelFence))
+			.build(out);
+
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.aluWallmount)
+			.patternLine("ii")
+			.patternLine("is")
+			.key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
+			.key('s', IETags.aluminumRod)
+			.addCriterion("has_aluminum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
+			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.steelWallmount)
+			.patternLine("ii")
+			.patternLine("is")
+			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+			.key('s', IETags.steelRod)
 			.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 			.build(out);
 	}
@@ -848,7 +880,7 @@ public class Recipes extends RecipeProvider
 			.key('c', MetalDecoration.lvCoil)
 			.addCriterion("has_voltmeter", hasItem(IEItems.Tools.voltmeter))
 			.build(out);
-		
+
 		ShapedRecipeBuilder.shapedRecipe(IEBlocks.Connectors.transformer)
 			.patternLine("l m")
 			.patternLine("ibi")
@@ -1165,7 +1197,7 @@ public class Recipes extends RecipeProvider
 //		ShapedRecipeBuilder.shapedRecipe(Ingredients.gunpartBarrel).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(Ingredients.gunpartDrum).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(Ingredients.gunpartHammer).build(out);
-		
+
 		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireCopper)
 			.addIngredient(IETags.getTagsFor(EnumMetals.COPPER).plate)
 			.addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
