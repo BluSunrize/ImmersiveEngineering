@@ -6,7 +6,7 @@
     ]
   },
   "criteria": {
-    "has_immersiveengineering:waterwheel_segment": {
+    "has_waterwheel_segment": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_immersiveengineering:waterwheel_segment",
+      "has_waterwheel_segment",
       "has_the_recipe"
     ]
   ]

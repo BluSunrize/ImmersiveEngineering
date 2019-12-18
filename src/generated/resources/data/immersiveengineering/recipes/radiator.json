@@ -17,6 +17,7 @@
     }
   },
   "result": {
-    "item": "immersiveengineering:radiator"
+    "item": "immersiveengineering:radiator",
+    "count": 2
   }
 }

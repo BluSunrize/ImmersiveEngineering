@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "immersiveengineering:storage_uranium"
+      "tag": "forge:storage_blocks/uranium"
     }
   ],
   "result": {

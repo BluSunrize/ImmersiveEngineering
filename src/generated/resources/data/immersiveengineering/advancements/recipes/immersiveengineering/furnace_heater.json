@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:balloon"
+      "immersiveengineering:furnace_heater"
     ]
   },
   "criteria": {
-    "has_hemp_fabric": {
+    "has_coil_lv": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:fabric_hemp"
+            "item": "immersiveengineering:coil_lv"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:balloon"
+        "recipe": "immersiveengineering:furnace_heater"
       }
     }
   },
   "requirements": [
     [
-      "has_hemp_fabric",
+      "has_coil_lv",
       "has_the_recipe"
     ]
   ]

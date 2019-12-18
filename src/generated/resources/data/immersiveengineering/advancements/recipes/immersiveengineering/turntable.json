@@ -6,7 +6,7 @@
     ]
   },
   "criteria": {
-    "has_immersiveengineering:coil_lv": {
+    "has_coil_lv": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_immersiveengineering:coil_lv",
+      "has_coil_lv",
       "has_the_recipe"
     ]
   ]

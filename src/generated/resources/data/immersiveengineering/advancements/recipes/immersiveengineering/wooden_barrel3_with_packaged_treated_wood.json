@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:wooden_barrel3_with_vertical_treated_wood"
+      "immersiveengineering:wooden_barrel3_with_packaged_treated_wood"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:wooden_barrel3_with_vertical_treated_wood"
+        "recipe": "immersiveengineering:wooden_barrel3_with_packaged_treated_wood"
       }
     }
   },

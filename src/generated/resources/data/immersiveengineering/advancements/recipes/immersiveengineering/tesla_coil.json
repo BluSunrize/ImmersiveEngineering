@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:wooden_barrel2_with_horizontal_treated_wood"
+      "immersiveengineering:tesla_coil"
     ]
   },
   "criteria": {
-    "has_treated_planks": {
+    "has_capacitor_hv": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:treated_wood"
+            "item": "immersiveengineering:capacitor_hv"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:wooden_barrel2_with_horizontal_treated_wood"
+        "recipe": "immersiveengineering:tesla_coil"
       }
     }
   },
   "requirements": [
     [
-      "has_treated_planks",
+      "has_capacitor_hv",
       "has_the_recipe"
     ]
   ]

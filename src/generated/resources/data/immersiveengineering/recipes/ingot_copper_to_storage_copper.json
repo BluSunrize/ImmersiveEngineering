@@ -7,7 +7,7 @@
   ],
   "key": {
     "s": {
-      "item": "immersiveengineering:ingot_copper"
+      "tag": "forge:ingots/copper"
     }
   },
   "result": {

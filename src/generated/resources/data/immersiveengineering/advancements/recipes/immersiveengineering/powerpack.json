@@ -26,7 +26,7 @@
         ]
       }
     },
-    "has_immersiveengineering:capacitor_lv": {
+    "has_capacitor_lv": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -36,7 +36,7 @@
         ]
       }
     },
-    "has_immersiveengineering:connector_lv": {
+    "has_connector_lv": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -57,8 +57,8 @@
     [
       "has_leather",
       "has_copper_ingot",
-      "has_immersiveengineering:capacitor_lv",
-      "has_immersiveengineering:connector_lv",
+      "has_capacitor_lv",
+      "has_connector_lv",
       "has_the_recipe"
     ]
   ]

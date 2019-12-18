@@ -7,7 +7,7 @@
   ],
   "key": {
     "s": {
-      "item": "immersiveengineering:ingot_silver"
+      "tag": "forge:ingots/silver"
     }
   },
   "result": {

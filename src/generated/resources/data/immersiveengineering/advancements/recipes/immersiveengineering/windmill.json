@@ -6,7 +6,7 @@
     ]
   },
   "criteria": {
-    "has_immersiveengineering:windmill_blade": {
+    "has_windmill_blade": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_immersiveengineering:windmill_blade",
+      "has_windmill_blade",
       "has_the_recipe"
     ]
   ]

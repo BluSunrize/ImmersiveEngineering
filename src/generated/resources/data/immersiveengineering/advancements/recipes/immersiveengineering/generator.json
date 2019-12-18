@@ -26,7 +26,7 @@
         ]
       }
     },
-    "has_immersiveengineering:dynamo": {
+    "has_dynamo": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -47,7 +47,7 @@
     [
       "has_steel_ingot",
       "has_electrum_ingot",
-      "has_immersiveengineering:dynamo",
+      "has_dynamo",
       "has_the_recipe"
     ]
   ]

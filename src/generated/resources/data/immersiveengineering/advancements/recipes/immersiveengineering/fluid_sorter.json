@@ -6,7 +6,7 @@
     ]
   },
   "criteria": {
-    "has_immersiveengineering:fluid_pipe": {
+    "has_fluid_pipe": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_immersiveengineering:fluid_pipe",
+      "has_fluid_pipe",
       "has_the_recipe"
     ]
   ]

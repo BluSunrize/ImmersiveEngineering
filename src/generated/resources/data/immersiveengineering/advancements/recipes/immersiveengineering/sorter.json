@@ -6,7 +6,7 @@
     ]
   },
   "criteria": {
-    "has_immersiveengineering:conveyor_immersiveengineering_conveyor": {
+    "has_conveyor_immersiveengineering_conveyor": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_immersiveengineering:conveyor_immersiveengineering_conveyor",
+      "has_conveyor_immersiveengineering_conveyor",
       "has_the_recipe"
     ]
   ]

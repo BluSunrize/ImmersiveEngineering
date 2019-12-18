@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " i ",
+    "ici",
+    "ppp"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:fluid_pump"
+  }
+}

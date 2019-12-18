@@ -6,7 +6,7 @@
     ]
   },
   "criteria": {
-    "has_immersiveengineering:wooden_barrel": {
+    "has_wooden_barrel": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_immersiveengineering:wooden_barrel",
+      "has_wooden_barrel",
       "has_the_recipe"
     ]
   ]

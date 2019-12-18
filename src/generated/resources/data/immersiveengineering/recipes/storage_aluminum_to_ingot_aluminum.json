@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "immersiveengineering:storage_aluminum"
+      "tag": "forge:storage_blocks/aluminum"
     }
   ],
   "result": {
