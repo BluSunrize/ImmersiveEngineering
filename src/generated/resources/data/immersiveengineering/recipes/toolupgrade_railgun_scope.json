@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "pi ",
+    "i i",
+    " ip"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/copper"
+    },
+    "p": {
+      "tag": "forge:glass_panes"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:toolupgrade_railgun_scope"
+  }
+}

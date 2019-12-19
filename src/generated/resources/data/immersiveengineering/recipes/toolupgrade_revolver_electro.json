@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "eee",
+    "rwr"
+  ],
+  "key": {
+    "e": {
+      "item": "immersiveengineering:electron_tube"
+    },
+    "r": {
+      "tag": "forge:rods/steel"
+    },
+    "w": {
+      "item": "immersiveengineering:wire_copper"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:toolupgrade_revolver_electro"
+  }
+}

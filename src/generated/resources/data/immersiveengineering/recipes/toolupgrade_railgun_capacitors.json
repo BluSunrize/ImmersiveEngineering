@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "www",
+    "ccc"
+  ],
+  "key": {
+    "w": {
+      "item": "immersiveengineering:wirecoil_steel"
+    },
+    "c": {
+      "item": "immersiveengineering:capacitor_hv"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:toolupgrade_railgun_capacitors"
+  }
+}

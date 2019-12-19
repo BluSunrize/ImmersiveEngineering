@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "bl ",
+    "lbl",
+    " lc"
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:bucket"
+    },
+    "l": {
+      "tag": "forge:gems/lapis"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:toolupgrade_drill_waterproof"
+  }
+}

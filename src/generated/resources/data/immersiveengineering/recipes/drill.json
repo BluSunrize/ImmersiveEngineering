@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  g",
+    " hg",
+    "c  "
+  ],
+  "key": {
+    "g": {
+      "item": "immersiveengineering:wooden_grip"
+    },
+    "h": {
+      "item": "immersiveengineering:heavy_engineering"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:drill"
+  }
+}
