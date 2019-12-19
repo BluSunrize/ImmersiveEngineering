@@ -79,13 +79,25 @@ public class IERecipes
 		Tag<Item> ironPlate = IETags.getTagsFor(IRON).plate;
 		Tag<Item> steelPlate = IETags.getTagsFor(STEEL).plate;
 		Tag<Item> nickelPlate = IETags.getTagsFor(NICKEL).plate;
+		Tag<Item> copperPlate = IETags.getTagsFor(COPPER).plate;
 		Tag<Item> copperIngot = IETags.getTagsFor(COPPER).ingot;
+		Tag<Item> hopGraphiteIngot = IETags.hopGraphiteIngot;
+		Tag<Item> leadNugget = IETags.getTagsFor(LEAD).nugget;
+		Tag<Item> silverNugget = IETags.getTagsFor(SILVER).nugget;
+		Tag<Item> steelNugget = IETags.getTagsFor(LEAD).nugget;
+		Tag<Item> aluDust = IETags.getTagsFor(ALUMINUM).nugget;
+		Tag<Item> constantanNugget = IETags.getTagsFor(CONSTANTAN).nugget;
 		Tag<Item> glassBlock = Tags.Items.GLASS;
+		Tag<Item> dustRedstone = Tags.Items.DUSTS_REDSTONE;
+		Tag<Item> copperWire = IETags.copperWire;
+		Tag<Item> redDye = Tags.Items.DYES_RED;
+		Tag<Item> greenDye = Tags.Items.DYES_GREEN;
+		Tag<Item> blueDye = Tags.Items.DYES_BLUE;
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(componentIron), ironPlate, ironPlate, copperIngot);
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(componentSteel), steelPlate, steelPlate, copperIngot);
-		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(electronTube, 3), "blockGlass", "plateNickel", "wireCopper", "dustRedstone");
+		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(electronTube, 3), glassBlock, nickelPlate, copperWire, dustRedstone);
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(circuitBoard),
-				new ItemStack(StoneDecoration.insulatingGlass), "plateCopper", "electronTube", "electronTube");
+				new ItemStack(StoneDecoration.insulatingGlass), copperPlate, electronTube, electronTube);
 
 		//
 		//MOLDS
@@ -107,12 +119,13 @@ public class IERecipes
 		//
 		//Casull
 		ItemStack bullet = BulletHandler.getBulletStack(BulletItem.CASULL);
-		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, "nuggetLead", "nuggetLead");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, leadNugget, leadNugget);
 		//Piercing
 		bullet = BulletHandler.getBulletStack(BulletItem.ARMOR_PIERCING);
-		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, "nuggetSteel", "nuggetSteel", "nuggetConstantan", "nuggetConstantan");
-		if(ApiUtils.isNonemptyItemTag(getNugget("tungsten")))
-			BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, "nuggetTungsten", "nuggetTungsten");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, steelNugget, steelNugget, constantanNugget, constantanNugget);
+		ResourceLocation tungstenNugget = getNugget("tungsten");
+		if(ApiUtils.isNonemptyItemTag(tungstenNugget))
+			BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, tungstenNugget, tungstenNugget);
 		// We don't have depleted stuff atm
 		//		if(ApiUtils.isNonemptyItemTag("nuggetCyanite"))
 		//			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetCyanite","nuggetCyanite");
@@ -120,7 +133,7 @@ public class IERecipes
 		//			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,3,3), new ItemStack(IEContent.itemBullet,3,0),new ItemStack(Items.gunpowder,3),"ingotCyanite");
 		//Silver
 		bullet = BulletHandler.getBulletStack(BulletItem.SILVER);
-		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, "nuggetLead", "nuggetLead", "nuggetSilver");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, leadNugget, leadNugget, silverNugget);
 		//Buckshot
 		bullet = BulletHandler.getBulletStack(BulletItem.BUCKSHOT);
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyShell), Items.GUNPOWDER, getDust("iron"));
@@ -129,18 +142,18 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, Blocks.TNT);
 		//Dragonsbreath
 		bullet = BulletHandler.getBulletStack(BulletItem.DRAGONS_BREATH);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(emptyShell), Items.GUNPOWDER, "dustAluminum", "dustAluminum");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(emptyShell), Items.GUNPOWDER, aluDust, aluDust);
 		//Potion
 		bullet = BulletHandler.getBulletStack(BulletItem.POTION);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(emptyCasing), Items.GUNPOWDER, Items.GLASS_BOTTLE);
 		//Flare
 		bullet = BulletHandler.getBulletStack(BulletItem.FLARE);
 		ItemNBTHelper.putInt(bullet, "flareColour", 0xcc2e06);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, "dustAluminum", "dyeRed");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, aluDust, redDye);
 		ItemNBTHelper.putInt(bullet, "flareColour", 0x2ca30b);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, "dustAluminum", "dyeGreen");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, aluDust, greenDye);
 		ItemNBTHelper.putInt(bullet, "flareColour", 0xffff82);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, "dustAluminum", "dyeYellow");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, aluDust, blueDye);
 
 		//Wolfpack
 		/*TODO new condition, or maybe an event?
@@ -157,7 +170,8 @@ public class IERecipes
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.EMERALD, 1));
 		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.EMERALD, 1));
 
-		BlueprintCraftingRecipe.addRecipe("electrode", new ItemStack(Misc.graphiteElectrode), "ingotHOPGraphite", "ingotHOPGraphite", "ingotHOPGraphite", "ingotHOPGraphite");
+		BlueprintCraftingRecipe.addRecipe("electrode", new ItemStack(Misc.graphiteElectrode),
+				hopGraphiteIngot, hopGraphiteIngot, hopGraphiteIngot, hopGraphiteIngot);
 		BlueprintCraftingRecipe.addVillagerTrade("electrode", new ItemStack(Items.EMERALD, 1));
 	}
 

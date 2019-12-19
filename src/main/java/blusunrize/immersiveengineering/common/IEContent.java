@@ -510,14 +510,13 @@ public class IEContent
 		IEItems.Misc.shader = new ShaderItem();
 		for(Rarity r : Rarity.values())
 			IEItems.Misc.shaderBag.put(r, new ShaderBagItem(r));
+		IEItems.Misc.blueprint = new EngineersBlueprintItem();
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
 		itemDrill = new ItemDrill();
 		itemDrillhead = new ItemDrillhead();
 		itemJerrycan = new ItemJerrycan();
-		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
-		BlueprintCraftingRecipe.itemBlueprint = itemBlueprint;
 		itemChemthrower = new ItemChemthrower();
 		itemRailgun = new ItemRailgun();
 		itemSkyhook = new ItemSkyhook();
@@ -558,6 +557,10 @@ public class IEContent
 		for(Item item : registeredIEItems)
 			event.getRegistry().register(item);
 		registerOres();
+
+		//TODO probably not the best place for this, but it works.
+		/*BLUEPRINTS*/
+		IERecipes.initBlueprintRecipes();
 	}
 
 	private static <T extends IForgeRegistryEntry<T>> void checkNonNullNames(Collection<T> coll)
@@ -715,9 +718,6 @@ public class IEContent
 
 		/*FURNACE*/
 		//IERecipes.initFurnaceRecipes();
-
-		/*BLUEPRINTS*/
-		//IERecipes.initBlueprintRecipes();
 
 		/*BELLJAR*/
 		//BelljarHandler.init();

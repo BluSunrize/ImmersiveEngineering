@@ -53,7 +53,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 			String formatted = I18n.format(formatKey);
 			if(formatKey.equals(formatted)) list.add(new StringTextComponent(key));
 			else list.add(new TranslationTextComponent(formatKey));
-			if(Minecraft.getInstance().player.isSneaking())
+			if(Minecraft.getInstance().player!=null&&Minecraft.getInstance().player.isSneaking())
 			{
 				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates1"));
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);

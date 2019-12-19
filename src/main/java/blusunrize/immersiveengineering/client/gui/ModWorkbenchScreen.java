@@ -87,7 +87,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 								inputs.add(toAdd.copy());
 						}
 						for(ItemStack ss : inputs)
-							tooltip.add(new StringTextComponent(ss.getCount()+"x "+ss.getDisplayName())
+							tooltip.add(new StringTextComponent(ss.getCount()+"x ").appendSibling(ss.getDisplayName())
 									.setStyle(new Style().setColor(TextFormatting.GRAY)));
 
 						ClientUtils.drawHoveringText(tooltip, mx, my, font);

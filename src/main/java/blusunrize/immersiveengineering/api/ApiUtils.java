@@ -855,7 +855,7 @@ public class ApiUtils
 			return new IngredientStack((ResourceLocation)input);
 		else if(input instanceof FluidStack)
 			return new IngredientStack((FluidStack)input);
-		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, String (OreDictionary name) or FluidStack; "+input+" is invalid");
+		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, ResourceLocation (Tag name) or FluidStack; "+input+" is invalid");
 	}
 
 	public static boolean hasPlayerIngredient(PlayerEntity player, IngredientStack ingredient)
