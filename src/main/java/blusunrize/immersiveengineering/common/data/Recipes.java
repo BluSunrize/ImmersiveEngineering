@@ -82,7 +82,7 @@ public class Recipes extends RecipeProvider
 			if(!metal.isVanillaMetal())
 			{
 				add3x3Conversion(ingot, tags.ingot, nugget, tags.nugget, out);
-				add3x3Conversion(block, tags.storage, ingot, tags.ingot, out);
+				add3x3Conversion(block, IETags.getItemTag(tags.storage), ingot, tags.ingot, out);
 				if(IEBlocks.Metals.ores.containsKey(metal))
 				{
 					Block ore = IEBlocks.Metals.ores.get(metal);
@@ -143,7 +143,7 @@ public class Recipes extends RecipeProvider
 		addCornerStraightMiddle(StoneDecoration.cokebrick, 3, IETags.clay, Tags.Items.INGOTS_BRICK, Tags.Items.SANDSTONE, out);
 		addCornerStraightMiddle(StoneDecoration.blastbrick, 3, Tags.Items.INGOTS_NETHER_BRICK, Tags.Items.INGOTS_BRICK, Items.BLAZE_POWDER, out);
 		addSandwich(StoneDecoration.hempcrete, 6, IETags.clay, IETags.fiberHemp, IETags.clay, out);
-		add3x3Conversion(StoneDecoration.coke, IETags.coalCokeBlock, IEItems.Ingredients.coalCoke, IETags.coalCoke, out);
+		add3x3Conversion(StoneDecoration.coke, IETags.getItemTag(IETags.coalCokeBlock), IEItems.Ingredients.coalCoke, IETags.coalCoke, out);
 
 		addStairs(StoneDecoration.hempcrete, StoneDecoration.hempcreteStairs, out);
 		addStairs(StoneDecoration.concrete, StoneDecoration.concreteStairs[0], out);
@@ -1481,18 +1481,17 @@ public class Recipes extends RecipeProvider
 //			.build(out);
 	}
 
-	// Experimental?
-	private void add3x3Conversion(IItemProvider bigItem, Tag<?> bigTag, IItemProvider smallItem, Tag<Item> smallTag, Consumer<IFinishedRecipe> out)
+	private void add3x3Conversion(IItemProvider bigItem, Tag<Item> bigTag, IItemProvider smallItem, Tag<Item> smallTag, Consumer<IFinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shapedRecipe(bigItem)
-			.key('s', (Tag<Item>) smallTag)
+			.key('s', smallTag)
 			.patternLine("sss")
 			.patternLine("sss")
 			.patternLine("sss")
 			.addCriterion("has_"+toPath(smallItem), hasItem(smallItem))
 			.build(out, toRL(toPath(smallItem)+"_to_")+toPath(bigItem));
 		ShapelessRecipeBuilder.shapelessRecipe(smallItem, 9)
-			.addIngredient(makeIngredient(bigTag))
+			.addIngredient(bigTag)
 			.addCriterion("has_"+toPath(bigItem), hasItem(smallItem))
 			.build(out, toRL(toPath(bigItem)+"_to_"+toPath(smallItem)));
 	}
