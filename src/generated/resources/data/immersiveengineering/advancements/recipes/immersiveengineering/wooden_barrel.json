@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:balloon3_with_packaged_slab"
+      "immersiveengineering:wooden_barrel"
     ]
   },
   "criteria": {
-    "has_hemp_fabric": {
+    "has_treated_planks": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:fabric_hemp"
+            "tag": "forge:treated_wood"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:balloon3_with_packaged_slab"
+        "recipe": "immersiveengineering:wooden_barrel"
       }
     }
   },
   "requirements": [
     [
-      "has_hemp_fabric",
+      "has_treated_planks",
       "has_the_recipe"
     ]
   ]

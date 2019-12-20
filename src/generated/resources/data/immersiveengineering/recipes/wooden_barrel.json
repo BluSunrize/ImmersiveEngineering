@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "treated_barrel",
   "pattern": [
     "sss",
     "w w",
@@ -11,7 +10,7 @@
       "tag": "forge:treated_wood"
     },
     "s": {
-      "item": "immersiveengineering:slab_treated_wood_vertical"
+      "tag": "forge:treated_wood_slab"
     }
   },
   "result": {

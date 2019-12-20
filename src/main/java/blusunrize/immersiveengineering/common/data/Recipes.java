@@ -241,7 +241,16 @@ public class Recipes extends RecipeProvider
 	{
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			addStairs(WoodenDecoration.treatedWood.get(style), WoodenDecoration.treatedStairs.get(style), out);
-	
+
+		int numTreatedStyles=TreatedWoodStyles.values().length;
+		for(TreatedWoodStyles from:TreatedWoodStyles.values())
+		{
+			TreatedWoodStyles to = TreatedWoodStyles.values()[(from.ordinal()+1)%numTreatedStyles];
+			ShapelessRecipeBuilder.shapelessRecipe(WoodenDecoration.treatedWood.get(to))
+				.addIngredient(WoodenDecoration.treatedWood.get(from))
+				.addCriterion("has_"+toPath(WoodenDecoration.treatedWood.get(from)), hasItem(WoodenDecoration.treatedWood.get(from)))
+				.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(to))+"_from_"+from.toString().toLowerCase()));
+		}
 		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.treatedScaffolding, 6)
 			.patternLine("iii")
 			.patternLine(" s ")
@@ -368,16 +377,14 @@ public class Recipes extends RecipeProvider
 			.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
 			.build(out);
 
-		for(TreatedWoodStyles style:TreatedWoodStyles.values())
-			ShapedRecipeBuilder.shapedRecipe(WoodenDevices.woodenBarrel)
-				.patternLine("sss")
-				.patternLine("w w")
-				.patternLine("www")
-				.key('w', IETags.getItemTag(IETags.treatedWood))
-				.key('s', IEBlocks.toSlab.get(IEBlocks.WoodenDecoration.treatedWood.get(style)))
-				.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
-				.setGroup("treated_barrel")
-				.build(out, toRL(toPath(WoodenDevices.woodenBarrel))+"_with_"+style.toString().toLowerCase()+"_treated_wood");
+		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.woodenBarrel)
+			.patternLine("sss")
+			.patternLine("w w")
+			.patternLine("www")
+			.key('w', IETags.getItemTag(IETags.treatedWood))
+			.key('s', IETags.getItemTag(IETags.treatedWoodSlab))
+			.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
+			.build(out);
 	}
 
 	private void recipesMetalDecorations(@Nonnull Consumer<IFinishedRecipe> out)
@@ -386,6 +393,20 @@ public class Recipes extends RecipeProvider
 		{
 			addStairs(MetalDecoration.steelScaffolding.get(type), MetalDecoration.steelScaffoldingStair.get(type), out);
 			addStairs(MetalDecoration.aluScaffolding.get(type), MetalDecoration.aluScaffoldingStair.get(type), out);
+		}
+
+		int numScaffoldingTypes = MetalScaffoldingType.values().length;
+		for(MetalScaffoldingType from:MetalScaffoldingType.values())
+		{
+			MetalScaffoldingType to = MetalScaffoldingType.values()[(from.ordinal()+1)%numScaffoldingTypes];
+			ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.aluScaffolding.get(to))
+				.addIngredient(MetalDecoration.aluScaffolding.get(from))
+				.addCriterion("has_"+toPath(MetalDecoration.aluScaffolding.get(from)), hasItem(MetalDecoration.aluScaffolding.get(from)))
+				.build(out, toRL("alu_scaffolding_"+to.name().toLowerCase()+"_from_"+from.name().toLowerCase()));
+			ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.steelScaffolding.get(to))
+				.addIngredient(MetalDecoration.steelScaffolding.get(from))
+				.addCriterion("has_"+toPath(MetalDecoration.steelScaffolding.get(from)), hasItem(MetalDecoration.steelScaffolding.get(from)))
+				.build(out, toRL("steel_scaffolding_"+to.name().toLowerCase()+"_from_"+from.name().toLowerCase()));
 		}
 
 		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD), 6)
@@ -421,20 +442,6 @@ public class Recipes extends RecipeProvider
 			.key('s', MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD))
 			.addCriterion("has_"+toPath(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD)), hasItem(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD)))
 			.build(out);
-
-		int numScaffoldingTypes = MetalScaffoldingType.values().length;
-		for(MetalScaffoldingType from:MetalScaffoldingType.values())
-		{
-			MetalScaffoldingType to = MetalScaffoldingType.values()[(from.ordinal()+1)%numScaffoldingTypes];
-			ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.aluScaffolding.get(to))
-				.addIngredient(MetalDecoration.aluScaffolding.get(from))
-				.addCriterion("has_"+toPath(MetalDecoration.aluScaffolding.get(from)), hasItem(MetalDecoration.aluScaffolding.get(from)))
-				.build(out, toRL("alu_scaffolding_"+to.name().toLowerCase()+"_from_"+from.name().toLowerCase()));
-			ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.steelScaffolding.get(to))
-				.addIngredient(MetalDecoration.steelScaffolding.get(from))
-				.addCriterion("has_"+toPath(MetalDecoration.steelScaffolding.get(from)), hasItem(MetalDecoration.steelScaffolding.get(from)))
-				.build(out, toRL("steel_scaffolding_"+to.name().toLowerCase()+"_from_"+from.name().toLowerCase()));
-		}
 
 		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.aluFence, 3)
 			.patternLine("isi")
@@ -907,17 +914,15 @@ public class Recipes extends RecipeProvider
 
 	private void recipesCloth(@Nonnull Consumer<IFinishedRecipe> out)
 	{
-		for(TreatedWoodStyles style:TreatedWoodStyles.values())
-			ShapedRecipeBuilder.shapedRecipe(IEBlocks.Cloth.balloon, 2)
-				.patternLine(" f ")
-				.patternLine("ftf")
-				.patternLine(" s ")
-				.key('f', IEItems.Ingredients.hempFabric)
-				.key('t', Items.TORCH)
-				.key('s', IEBlocks.toSlab.get(IEBlocks.WoodenDecoration.treatedWood.get(style)))
-				.addCriterion("has_hemp_fabric", hasItem(IETags.fabricHemp))
-				.build(out, toRL(toPath(IEBlocks.Cloth.balloon))+"_with_"+style.toString().toLowerCase()+"_slab");
-
+		ShapedRecipeBuilder.shapedRecipe(IEBlocks.Cloth.balloon, 2)
+			.patternLine(" f ")
+			.patternLine("ftf")
+			.patternLine(" s ")
+			.key('f', IEItems.Ingredients.hempFabric)
+			.key('t', Items.TORCH)
+			.key('s', IETags.getItemTag(IETags.treatedWoodSlab))
+			.addCriterion("has_hemp_fabric", hasItem(IETags.fabricHemp))
+			.build(out);
 		ShapedRecipeBuilder.shapedRecipe(IEBlocks.Cloth.cushion, 3)
 			.patternLine("fff")
 			.patternLine("f f")
@@ -925,7 +930,6 @@ public class Recipes extends RecipeProvider
 			.key('f', IEItems.Ingredients.hempFabric)
 			.addCriterion("has_hemp_fabric", hasItem(IETags.fabricHemp))
 			.build(out);
-
 		ShapedRecipeBuilder.shapedRecipe(IEBlocks.Cloth.curtain, 3)
 			.patternLine("sss")
 			.patternLine("fff")
@@ -1478,7 +1482,7 @@ public class Recipes extends RecipeProvider
 	}
 
 	// Experimental?
-	private void add3x3Conversion(IItemProvider bigItem, Tag<?> bigTag, IItemProvider smallItem, Tag<?> smallTag, Consumer<IFinishedRecipe> out)
+	private void add3x3Conversion(IItemProvider bigItem, Tag<?> bigTag, IItemProvider smallItem, Tag<Item> smallTag, Consumer<IFinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shapedRecipe(bigItem)
 			.key('s', (Tag<Item>) smallTag)
@@ -1488,7 +1492,7 @@ public class Recipes extends RecipeProvider
 			.addCriterion("has_"+toPath(smallItem), hasItem(smallItem))
 			.build(out, toRL(toPath(smallItem)+"_to_")+toPath(bigItem));
 		ShapelessRecipeBuilder.shapelessRecipe(smallItem, 9)
-			.addIngredient((Tag<Item>) bigTag)
+			.addIngredient(makeIngredient(bigTag))
 			.addCriterion("has_"+toPath(bigItem), hasItem(smallItem))
 			.build(out, toRL(toPath(bigItem)+"_to_"+toPath(smallItem)));
 	}

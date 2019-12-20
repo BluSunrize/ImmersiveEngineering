@@ -13,7 +13,7 @@
       "item": "minecraft:torch"
     },
     "s": {
-      "item": "immersiveengineering:slab_treated_wood_packaged"
+      "tag": "forge:treated_wood_slab"
     }
   },
   "result": {
