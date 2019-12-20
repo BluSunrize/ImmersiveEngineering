@@ -114,6 +114,8 @@ public class BlockStates extends BlockstateGenerator
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
 		createMultiblock(Multiblocks.blastFurnace, models.blastFurnaceOff, models.blastFurnaceOn, IEProperties.MULTIBLOCKSLAVE,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
+		createMultiblock(Multiblocks.silo, new ExistingModelFile(rl("block/metal_multiblock/silo.obj")), variantBased);
+		createMultiblock(Multiblocks.tank, new ExistingModelFile(rl("block/metal_multiblock/tank.obj")), variantBased);
 		createMultiblock(WoodenDevices.workbench, new ExistingModelFile(rl("block/wooden_device/workbench.obj.ie")),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180,
 				variantBased);

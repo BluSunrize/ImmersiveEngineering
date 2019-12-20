@@ -55,8 +55,8 @@ public class IEMultiblocks
 		METAL_PRESS = new MetalPressMultiblock();
 		MIXER = CRUSHER;
 		REFINERY = CRUSHER;
-		SHEETMETAL_TANK = CRUSHER;
-		SILO = CRUSHER;
+		SHEETMETAL_TANK = new SheetmetalTankMultiblock();
+		SILO = new SiloMultiblock();
 		SQUEEZER = CRUSHER;
 	}
 }

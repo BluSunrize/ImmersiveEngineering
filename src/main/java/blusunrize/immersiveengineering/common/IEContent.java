@@ -423,6 +423,8 @@ public class IEContent
 		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties);
 
 		Multiblocks.crusher = new MetalMultiblockBlock("crusher", () -> CrusherTileEntity.TYPE);
+		Multiblocks.silo = new MetalMultiblockBlock("silo", () -> SiloTileEntity.TYPE);
+		Multiblocks.tank = new MetalMultiblockBlock("tank", () -> SheetmetalTankTileEntity.TYPE);
 		Multiblocks.arcFurnace = new MetalMultiblockBlock("arc_furnace", () -> ArcFurnaceTileEntity.TYPE);
 		Multiblocks.assembler = new MetalMultiblockBlock("assembler", () -> AssemblerTileEntity.TYPE);
 		Multiblocks.autoWorkbench = new MetalMultiblockBlock("auto_workbench", () -> AutoWorkbenchTileEntity.TYPE);
@@ -1188,6 +1190,8 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.EXCAVATOR);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.BUCKET_WHEEL);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ARC_FURNACE);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.SILO);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.SHEETMETAL_TANK);
 
 		/*VILLAGE*/
 		/*TODO
