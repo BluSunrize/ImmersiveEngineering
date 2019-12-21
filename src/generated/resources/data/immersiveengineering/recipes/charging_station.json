@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ici",
+    "ggg",
+    "wlw"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "item": "immersiveengineering:connector_lv"
+    },
+    "w": {
+      "tag": "forge:treated_wood"
+    },
+    "l": {
+      "item": "immersiveengineering:coil_lv"
+    },
+    "g": {
+      "tag": "forge:glass"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:charging_station"
+  }
+}

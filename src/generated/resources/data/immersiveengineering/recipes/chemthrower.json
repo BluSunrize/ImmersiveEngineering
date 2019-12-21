@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " tg",
+    " hg",
+    "pb "
+  ],
+  "key": {
+    "g": {
+      "item": "immersiveengineering:wooden_grip"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
+    },
+    "h": {
+      "item": "immersiveengineering:heavy_engineering"
+    },
+    "t": {
+      "item": "immersiveengineering:toolupgrade_drill_waterproof"
+    },
+    "b": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:chemthrower"
+  }
+}

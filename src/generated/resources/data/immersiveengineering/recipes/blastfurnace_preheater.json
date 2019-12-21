@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "s s",
+    "shs"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:sheetmetal_iron"
+    },
+    "h": {
+      "item": "immersiveengineering:furnace_heater"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:blastfurnace_preheater"
+  }
+}

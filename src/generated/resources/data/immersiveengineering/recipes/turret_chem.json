@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " s ",
+    " gc",
+    "bte"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:toolupgrade_railgun_scope"
+    },
+    "g": {
+      "item": "immersiveengineering:chemthrower"
+    },
+    "c": {
+      "item": "immersiveengineering:circuit_board"
+    },
+    "b": {
+      "item": "immersiveengineering:metal_barrel"
+    },
+    "t": {
+      "item": "immersiveengineering:turntable"
+    },
+    "e": {
+      "item": "immersiveengineering:rs_engineering"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:turret_chem"
+  }
+}

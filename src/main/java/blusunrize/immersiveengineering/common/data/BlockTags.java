@@ -54,7 +54,12 @@ class BlockTags extends BlockTagsProvider
 			Block sheetmetal = IEBlocks.Metals.sheetmetal.get(metal);
 			getBuilder(tags.sheetmetal).add(sheetmetal);
 		}
-		getBuilder(IETags.treatedWood).add(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL), WoodenDecoration.treatedWood.get(TreatedWoodStyles.VERTICAL), WoodenDecoration.treatedWood.get(TreatedWoodStyles.PACKAGED));
-		getBuilder(IETags.coalCokeBlock).add(StoneDecoration.coke);
+		for(TreatedWoodStyles style:TreatedWoodStyles.values())
+		{
+			getBuilder(IETags.treatedWood).add(WoodenDecoration.treatedWood.get(style));
+			getBuilder(IETags.treatedWoodSlab).add(IEBlocks.toSlab.get(IEBlocks.WoodenDecoration.treatedWood.get(style)));
+		}
+		getBuilder(IETags.coalCokeBlock)
+			.add(StoneDecoration.coke);
 	}
 }

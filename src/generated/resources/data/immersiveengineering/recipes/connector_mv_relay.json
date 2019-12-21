@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " i ",
+    "cic"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "item": "minecraft:terracotta"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:connector_mv_relay",
+    "count": 8
+  }
+}

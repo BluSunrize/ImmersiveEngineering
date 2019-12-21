@@ -26,7 +26,7 @@
         ]
       }
     },
-    "has_immersiveengineering:component_iron": {
+    "has_component_iron": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -47,7 +47,7 @@
     [
       "has_iron_ingot",
       "has_copper_ingot",
-      "has_immersiveengineering:component_iron",
+      "has_component_iron",
       "has_the_recipe"
     ]
   ]

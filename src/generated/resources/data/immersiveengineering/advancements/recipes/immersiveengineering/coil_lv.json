@@ -16,7 +16,7 @@
         ]
       }
     },
-    "has_immersiveengineering:wirecoil_copper": {
+    "has_wirecoil_copper": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -36,7 +36,7 @@
   "requirements": [
     [
       "has_iron_ingot",
-      "has_immersiveengineering:wirecoil_copper",
+      "has_wirecoil_copper",
       "has_the_recipe"
     ]
   ]

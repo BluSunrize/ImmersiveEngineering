@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "immersiveengineering:storage_silver"
+      "tag": "forge:storage_blocks/silver"
     }
   ],
   "result": {

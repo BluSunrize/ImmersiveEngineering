@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "crc",
+    "crc",
+    "crc"
+  ],
+  "key": {
+    "r": {
+      "tag": "forge:rods/iron"
+    },
+    "c": {
+      "item": "immersiveengineering:connector_lv"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:toolupgrade_shield_shock"
+  }
+}

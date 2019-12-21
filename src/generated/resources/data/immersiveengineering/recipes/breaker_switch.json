@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " l ",
+    "cic"
+  ],
+  "key": {
+    "l": {
+      "item": "minecraft:lever"
+    },
+    "i": {
+      "tag": "forge:ingots/copper"
+    },
+    "c": {
+      "item": "minecraft:terracotta"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:breaker_switch"
+  }
+}

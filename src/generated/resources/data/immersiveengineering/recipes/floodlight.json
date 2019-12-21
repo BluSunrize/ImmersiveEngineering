@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "pel",
+    "ici"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "l": {
+      "item": "immersiveengineering:coil_lv"
+    },
+    "e": {
+      "item": "immersiveengineering:electron_tube"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "p": {
+      "tag": "forge:glass_panes"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:floodlight"
+  }
+}

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "immersiveengineering:storage_nickel"
+      "tag": "forge:storage_blocks/nickel"
     }
   ],
   "result": {

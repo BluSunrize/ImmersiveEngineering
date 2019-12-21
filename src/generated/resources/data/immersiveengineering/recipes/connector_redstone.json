@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "brb"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:nuggets/electrum"
+    },
+    "b": {
+      "item": "minecraft:terracotta"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:connector_redstone",
+    "count": 4
+  }
+}

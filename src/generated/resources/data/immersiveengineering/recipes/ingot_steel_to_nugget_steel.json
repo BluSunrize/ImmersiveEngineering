@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "immersiveengineering:ingot_steel"
+      "tag": "forge:ingots/steel"
     }
   ],
   "result": {

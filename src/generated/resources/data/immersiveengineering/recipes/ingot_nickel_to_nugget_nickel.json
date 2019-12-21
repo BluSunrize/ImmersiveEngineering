@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "immersiveengineering:ingot_nickel"
+      "tag": "forge:ingots/nickel"
     }
   ],
   "result": {

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ww",
+    "ws"
+  ],
+  "key": {
+    "w": {
+      "tag": "forge:treated_wood"
+    },
+    "s": {
+      "tag": "forge:rods/treated_wood"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:treated_wallmount",
+    "count": 4
+  }
+}

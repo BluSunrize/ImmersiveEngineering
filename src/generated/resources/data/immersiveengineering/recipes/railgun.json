@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " vg",
+    "cbv",
+    "bc "
+  ],
+  "key": {
+    "g": {
+      "item": "immersiveengineering:wooden_grip"
+    },
+    "b": {
+      "item": "immersiveengineering:gunpart_barrel"
+    },
+    "v": {
+      "item": "immersiveengineering:capacitor_hv"
+    },
+    "c": {
+      "item": "immersiveengineering:coil_mv"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:railgun"
+  }
+}
