@@ -43,7 +43,7 @@ public class IEMultiblocks
 		AUTO_WORKBENCH = new AutoWorkbenchMultiblock();
 		BLAST_FURNACE = new BlastFurnaceMultiblock();
 		ADVANCED_BLAST_FURNACE = new ImprovedBlastfurnaceMultiblock();
-		BOTTLING_MACHINE = CRUSHER;
+		BOTTLING_MACHINE = new BottlingMachineMultiblock();
 		BUCKET_WHEEL = new BucketWheelMultiblock();
 		COKE_OVEN = new CokeOvenMultiblock();
 		DIESEL_GENERATOR = CRUSHER;

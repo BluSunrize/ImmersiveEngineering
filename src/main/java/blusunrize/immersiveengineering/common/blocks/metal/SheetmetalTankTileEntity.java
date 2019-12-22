@@ -58,14 +58,14 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 		{
 			SheetmetalTankTileEntity master = master();
 			FluidStack fs = master!=null?master.tank.getFluid(): this.tank.getFluid();
-			String s = null;
-			if(fs!=null)
+			String s;
+			if(!fs.isEmpty())
 				s = fs.getDisplayName().getFormattedText()+": "+fs.getAmount()+"mB";
 			else
 				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};
 		}
-		return null;
+		return new String[0];
 	}
 
 	@Override
