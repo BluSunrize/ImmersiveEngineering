@@ -54,7 +54,7 @@ public class IEMultiblocks
 		LIGHTNING_ROD = CRUSHER;
 		METAL_PRESS = new MetalPressMultiblock();
 		MIXER = new MixerMultiblock();
-		REFINERY = CRUSHER;
+		REFINERY = new RefineryMultiblock();
 		SHEETMETAL_TANK = new SheetmetalTankMultiblock();
 		SILO = new SiloMultiblock();
 		SQUEEZER = new SqueezerMultiblock();
