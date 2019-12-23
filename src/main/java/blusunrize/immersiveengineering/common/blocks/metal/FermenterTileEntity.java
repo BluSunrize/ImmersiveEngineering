@@ -94,9 +94,9 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 			if(energyStorage.getEnergyStored() > 0&&processQueue.size() < this.getProcessQueueMaxLength())
 			{
 				final int[] usedInvSlots = new int[8];
-				for(MultiblockProcess process : processQueue)
+				for(MultiblockProcess<FermenterRecipe> process : processQueue)
 					if(process instanceof MultiblockProcessInMachine)
-						for(int i : ((MultiblockProcessInMachine)process).getInputSlots())
+						for(int i : ((MultiblockProcessInMachine<FermenterRecipe>)process).getInputSlots())
 							usedInvSlots[i]++;
 
 				Integer[] preferredSlots = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7};
@@ -189,10 +189,16 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(posInMultiblock.getY()==0&&!new BlockPos(1, 0, 2).equals(posInMultiblock))
+		if(posInMultiblock.getY()==0&&!ImmutableSet.of(
+				new BlockPos(2, 0, 1),
+				new BlockPos(0, 0, 2)
+		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
-			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
+		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
+			return new float[]{
+					getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0,
+					getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1
+			};
 
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
@@ -204,35 +210,35 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 		Direction fw = getFacing().rotateY();
 		if(getIsMirrored())
 			fw = fw.getOpposite();
-		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
+		if(new BlockPos(2, 0, 2).equals(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
 			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
 			float maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .25f;
 			float minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .125f;
 			float maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .25f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
 
 			minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .75f;
 			maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .875f;
 			minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .75f;
 			maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .875f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
 			return list;
 		}
-		if(new MutableBoundingBox(1, 0, 0, 2, 0, 1)
+		if(new MutableBoundingBox(0, 0, 0, 1, 0, 1)
 				.isVecInside(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock.getX()==2)
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
+			if(posInMultiblock.getZ()==0)
 				fl = fl.getOpposite();
-			if(posInMultiblock.getZ()==1)
+			if(posInMultiblock.getX()==1)
 				fw = fw.getOpposite();
 			float minX = fl==Direction.WEST?.6875f: fl==Direction.EAST?.0625f: fw==Direction.EAST?.0625f: .6875f;
 			float maxX = fl==Direction.EAST?.3125f: fl==Direction.WEST?.9375f: fw==Direction.EAST?.3125f: .9375f;
 			float minZ = fl==Direction.NORTH?.6875f: fl==Direction.SOUTH?.0625f: fw==Direction.SOUTH?.0625f: .6875f;
 			float maxZ = fl==Direction.SOUTH?.3125f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?.3125f: .9375f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1.1875f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1.1875f, maxZ));
 
 			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
@@ -240,29 +246,29 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.625f: fw==Direction.EAST?1.125f: 1;
 				minZ = fl==Direction.NORTH?.375f: fl==Direction.SOUTH?.625f: fw==Direction.NORTH?-.125f: 0;
 				maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.625f: fw==Direction.SOUTH?1.125f: 1;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
 
 				minX = fl==Direction.WEST?-.125f: fl==Direction.EAST?.625f: fw==Direction.WEST?-.125f: .875f;
 				maxX = fl==Direction.EAST?1.125f: fl==Direction.WEST?.375f: fw==Direction.EAST?1.125f: .125f;
 				minZ = fl==Direction.NORTH?-.125f: fl==Direction.SOUTH?.625f: fw==Direction.NORTH?-.125f: .875f;
 				maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?.375f: fw==Direction.SOUTH?1.125f: .125f;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
 
 				minX = fl==Direction.WEST?-.125f: fl==Direction.EAST?.875f: fw==Direction.WEST?-.125f: .875f;
 				maxX = fl==Direction.EAST?1.125f: fl==Direction.WEST?.125f: fw==Direction.EAST?1.125f: .125f;
 				minZ = fl==Direction.NORTH?-.125f: fl==Direction.SOUTH?.875f: fw==Direction.NORTH?-.125f: .875f;
 				maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?.125f: fw==Direction.SOUTH?1.125f: .125f;
-				list.add(new AxisAlignedBB(minX, .75f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				list.add(new AxisAlignedBB(minX, .75f, minZ, maxX, 1, maxZ));
 			}
 
 			return list;
 		}
-		if(new MutableBoundingBox(1, 1, 0, 2, 2, 1).isVecInside(posInMultiblock))
+		if(new MutableBoundingBox(0, 1, 0, 1, 2, 1).isVecInside(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>(2);
-			if(posInMultiblock.getX()==2)
+			if(posInMultiblock.getZ()==0)
 				fl = fl.getOpposite();
-			if(posInMultiblock.getZ()==1)
+			if(posInMultiblock.getX()==1)
 				fw = fw.getOpposite();
 			float minY = posInMultiblock.getY() < 2?.1875f: -.8125f;
 			float maxY = posInMultiblock.getY() < 2?2: 1;
@@ -271,7 +277,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 			float maxX = fl==Direction.EAST?1: fl==Direction.WEST?.9375f: fw==Direction.EAST?1: .9375f;
 			float minZ = fl==Direction.NORTH?0: fl==Direction.SOUTH?.0625f: fw==Direction.SOUTH?.0625f: 0;
 			float maxZ = fl==Direction.SOUTH?1: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?1: .9375f;
-			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
 			return list;
 		}
 		return null;
@@ -287,7 +293,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	public Set<BlockPos> getEnergyPos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(0, 1, 0)
+				new BlockPos(0, 1, 2)
 		);
 	}
 
@@ -295,7 +301,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	public Set<BlockPos> getRedstonePos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(0, 1, 2)
+				new BlockPos(2, 1, 2)
 		);
 	}
 
@@ -394,7 +400,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		FermenterTileEntity master = this.master();
-		if(master!=null&&new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY())))
+		if(master!=null&&new BlockPos(2, 0, 1).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY())))
 			return master.tanks;
 		return new FluidTank[0];
 	}
@@ -431,13 +437,13 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	{
 		if(ImmutableSet.of(
 				new BlockPos(1, 1, 1),
-				new BlockPos(2, 1, 0)
+				new BlockPos(0, 1, 0)
 		).contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			FermenterTileEntity master = master();
 			if(master!=null)
 			{
-				if(posInMultiblock.getX()==2)
+				if(posInMultiblock.getX()==0)
 					return master.insertionHandler.cast();
 				else
 					return master.extractionHandler.cast();

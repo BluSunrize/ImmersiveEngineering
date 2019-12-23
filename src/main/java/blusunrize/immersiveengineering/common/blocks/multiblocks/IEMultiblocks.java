@@ -50,13 +50,13 @@ public class IEMultiblocks
 		EXCAVATOR = new ExcavatorMultiblock();
 		EXCAVATOR_DEMO = CRUSHER;
 		FEEDTHROUGH = CRUSHER;
-		FERMENTER = CRUSHER;
+		FERMENTER = new FermenterMultiblock();
 		LIGHTNING_ROD = CRUSHER;
 		METAL_PRESS = new MetalPressMultiblock();
 		MIXER = CRUSHER;
 		REFINERY = CRUSHER;
 		SHEETMETAL_TANK = new SheetmetalTankMultiblock();
 		SILO = new SiloMultiblock();
-		SQUEEZER = CRUSHER;
+		SQUEEZER = new SqueezerMultiblock();
 	}
 }

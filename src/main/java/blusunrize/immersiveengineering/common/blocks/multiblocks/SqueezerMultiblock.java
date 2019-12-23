@@ -19,13 +19,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BottlingMachineMultiblock extends IETemplateMultiblock
+public class SqueezerMultiblock extends IETemplateMultiblock
 {
-	//TODO pump seems to be a bit weird
-	public BottlingMachineMultiblock()
+	public SqueezerMultiblock()
 	{
-		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/bottling_machine"),
-				new BlockPos(1, 1, 0), new BlockPos(1, 1, 1), () -> Multiblocks.bottlingMachine.getDefaultState());
+		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/squeezer"),
+				new BlockPos(1, 1, 1), new BlockPos(1, 1, 1), () -> Multiblocks.squeezer.getDefaultState());
 	}
 
 	@Override
@@ -43,7 +42,7 @@ public class BottlingMachineMultiblock extends IETemplateMultiblock
 	public void renderFormedStructure()
 	{
 		if(renderStack==null)
-			renderStack = new ItemStack(Multiblocks.bottlingMachine);
+			renderStack = new ItemStack(Multiblocks.squeezer);
 		GlStateManager.translated(1.5, 1.5, 1.5);
 		GlStateManager.rotatef(-45, 0, 1, 0);
 		GlStateManager.rotatef(-20, 1, 0, 0);
