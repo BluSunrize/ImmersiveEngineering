@@ -11,16 +11,12 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
-import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
@@ -33,7 +29,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -51,22 +46,9 @@ import java.util.Map;
 @SuppressWarnings("deprecation")
 public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntity>
 {
-	private static IBakedModel model = null;
-	private static final ModelResourceLocation WHEEL_NAME;
-	private static final ResourceLocation WHEEL_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bucket_wheel.obj.ie");
-
-	static
-	{
-		ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/bucket_wheel");
-		WHEEL_NAME = new ModelResourceLocation(baseLoc, "");
-	}
-
-	public BucketWheelRenderer()
-	{
-		ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(WHEEL_LOC), 0,
-				0, false, ImmutableMap.of("flip-v", true));
-		DynamicModelLoader.requestModel(model, WHEEL_NAME);
-	}
+	private final DynamicModel<Void> wheel = DynamicModel.createSimple(
+			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bucket_wheel.obj.ie"),
+			"bucket_wheel");
 
 	@Override
 	public void render(BucketWheelTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
@@ -77,8 +59,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
 		if(state.getBlock()!=Multiblocks.bucketWheel)
 			return;
-		if(model==null)
-			model = blockRenderer.getBlockModelShapes().getModelManager().getModel(WHEEL_NAME);
+		IBakedModel model = wheel.get(null);
 		OBJState objState = null;
 		Map<String, String> texMap = new HashMap<>();
 		List<String> list = Lists.newArrayList("bucketWheel");

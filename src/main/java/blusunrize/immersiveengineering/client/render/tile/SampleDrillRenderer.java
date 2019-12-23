@@ -9,13 +9,9 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
-import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -24,7 +20,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -35,21 +30,11 @@ import org.lwjgl.opengl.GL11;
 
 public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntity>
 {
-	private static final ModelResourceLocation DRILL_NAME;
-	private static final ResourceLocation DRILL_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_device/core_drill_center.obj");
+	private final DynamicModel<Void> drill = DynamicModel.createSimple(
+			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_device/core_drill_center.obj"),
+			"sample_drill"
+	);
 
-	static
-	{
-		ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/sample_drill");
-		DRILL_NAME = new ModelResourceLocation(baseLoc, "");
-	}
-
-	public SampleDrillRenderer()
-	{
-		ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(DRILL_LOC), 0,
-				0, false, ImmutableMap.of("flip-v", true));
-		DynamicModelLoader.requestModel(model, DRILL_NAME);
-	}
 
 	@Override
 	public void render(SampleDrillTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
@@ -60,7 +45,7 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModelManager().getModel(DRILL_NAME);
+		IBakedModel model = drill.get(null);
 		if(state.getBlock()!=MetalDevices.sampleDrill)
 			return;
 

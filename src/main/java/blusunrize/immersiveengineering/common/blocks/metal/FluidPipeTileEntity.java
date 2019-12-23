@@ -452,7 +452,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 		private int getTranferrableAmount(FluidStack resource, DirectionalFluidOutput output)
 		{
-			return (resource.getOrCreateTag().contains("pressurized"))||
+			return (resource.hasTag()&&resource.getOrCreateTag().contains("pressurized"))||
 					pipe.canOutputPressurized(output.containingTile, false)
 					?1000: 50;
 		}

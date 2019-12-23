@@ -217,16 +217,13 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(ImmutableSet.of(
+		if(posInMultiblock.getY()==0&&!ImmutableSet.of(
 				new BlockPos(0, 0, 2),
-				new BlockPos(1, 0, 1),
-				new BlockPos(1, 0, 2),
-				new BlockPos(2, 0, 0),
-				new BlockPos(2, 0, 1),
-				new BlockPos(2, 0, 2)
+				new BlockPos(0, 0, 1),
+				new BlockPos(1, 0, 2)
 		).contains(posInMultiblock))
 			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
+		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
 			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
@@ -238,34 +235,34 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		Direction fw = getFacing().rotateY();
 		if(getIsMirrored())
 			fw = fw.getOpposite();
-		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
+		if(new BlockPos(2, 0, 2).equals(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
 			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
 			float maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .25f;
 			float minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .125f;
 			float maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .25f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
 
 			minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .75f;
 			maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .875f;
 			minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .75f;
 			maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .875f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
 			return list;
 		}
-		else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() > 0)
+		else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() < 2)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
-			if(posInMultiblock.getX()==2)
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
+			if(posInMultiblock.getZ()==0)
 				fl = fl.getOpposite();
-			if(posInMultiblock.getZ()==2)
+			if(posInMultiblock.getX()==2)
 				fw = fw.getOpposite();
 			float minX = fl==Direction.WEST?.6875f: fl==Direction.EAST?.0625f: fw==Direction.EAST?.0625f: .6875f;
 			float maxX = fl==Direction.EAST?.3125f: fl==Direction.WEST?.9375f: fw==Direction.EAST?.3125f: .9375f;
 			float minZ = fl==Direction.NORTH?.6875f: fl==Direction.SOUTH?.0625f: fw==Direction.SOUTH?.0625f: .6875f;
 			float maxZ = fl==Direction.SOUTH?.3125f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?.3125f: .9375f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
 
 			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
@@ -273,58 +270,58 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.625f: fw==Direction.EAST?1.125f: 1;
 				minZ = fl==Direction.NORTH?.375f: fl==Direction.SOUTH?.625f: fw==Direction.NORTH?-.125f: 0;
 				maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.625f: fw==Direction.SOUTH?1.125f: 1;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
 
 				minX = fl==Direction.WEST?-.125f: fl==Direction.EAST?.625f: fw==Direction.WEST?-.125f: .875f;
 				maxX = fl==Direction.EAST?1.125f: fl==Direction.WEST?.375f: fw==Direction.EAST?1.125f: .125f;
 				minZ = fl==Direction.NORTH?-.125f: fl==Direction.SOUTH?.625f: fw==Direction.NORTH?-.125f: .875f;
 				maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?.375f: fw==Direction.SOUTH?1.125f: .125f;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
 
 				minX = fl==Direction.WEST?-.125f: fl==Direction.EAST?.875f: fw==Direction.WEST?-.125f: .875f;
 				maxX = fl==Direction.EAST?1.125f: fl==Direction.WEST?.125f: fw==Direction.EAST?1.125f: .125f;
 				minZ = fl==Direction.NORTH?-.125f: fl==Direction.SOUTH?.875f: fw==Direction.NORTH?-.125f: .875f;
 				maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?.125f: fw==Direction.SOUTH?1.125f: .125f;
-				list.add(new AxisAlignedBB(minX, .75f, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				list.add(new AxisAlignedBB(minX, .75f, minZ, maxX, 1, maxZ));
 			}
 
 			return list;
 		}
-		else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==1&&posInMultiblock.getZ() > 0)
+		else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==1&&posInMultiblock.getZ() < 2)
 		{
 			List<AxisAlignedBB> list = new ArrayList<>(3);
-			if(posInMultiblock.getX()==2)
+			if(posInMultiblock.getZ()==0)
 				fl = fl.getOpposite();
-			if(posInMultiblock.getZ()==2)
+			if(posInMultiblock.getX()==2)
 				fw = fw.getOpposite();
 			float minX = fl==Direction.WEST?0f: fl==Direction.EAST?.1875f: fw==Direction.EAST?.1875f: 0f;
 			float maxX = fl==Direction.EAST?1f: fl==Direction.WEST?.8125f: fw==Direction.EAST?1f: .8125f;
 			float minZ = fl==Direction.NORTH?0f: fl==Direction.SOUTH?.1875f: fw==Direction.SOUTH?.1875f: 0f;
 			float maxZ = fl==Direction.SOUTH?1f: fl==Direction.NORTH?.8125f: fw==Direction.SOUTH?1f: .8125f;
-			list.add(new AxisAlignedBB(minX, -.25, minZ, maxX, 0, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, -.25, minZ, maxX, 0, maxZ));
 
 			minX = fl==Direction.WEST?0f: fl==Direction.EAST?.0625f: fw==Direction.EAST?.0625f: .8125f;
 			maxX = fl==Direction.EAST?1f: fl==Direction.WEST?.9375f: fw==Direction.EAST?.1875f: .9375f;
 			minZ = fl==Direction.NORTH?0f: fl==Direction.SOUTH?.0625f: fw==Direction.SOUTH?.0625f: .8125f;
 			maxZ = fl==Direction.SOUTH?1f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?.1875f: .9375f;
-			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, 1, maxZ));
 
 			minX = fl==Direction.WEST?.8125f: fl==Direction.EAST?.0625f: fw==Direction.EAST?.1875f: 0f;
 			maxX = fl==Direction.EAST?.1875f: fl==Direction.WEST?.9375f: fw==Direction.EAST?1f: .8125f;
 			minZ = fl==Direction.NORTH?.8125f: fl==Direction.SOUTH?.0625f: fw==Direction.SOUTH?.1875f: 0f;
 			maxZ = fl==Direction.SOUTH?.1875f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?1f: .8125f;
-			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, 1, maxZ));
 
 			return list;
 		}
-		else if(new BlockPos(1, 2, 0).equals(posInMultiblock))
+		else if(new BlockPos(0, 2, 1).equals(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = new ArrayList<>(1);
 			float minX = fl==Direction.WEST?.1875f: fl==Direction.EAST?.3125f: fw==Direction.EAST?.1875f: 0f;
 			float maxX = fl==Direction.EAST?.8125f: fl==Direction.WEST?.6875f: fw==Direction.EAST?1f: .8125f;
 			float minZ = fl==Direction.NORTH?.1875f: fl==Direction.SOUTH?.3125f: fw==Direction.SOUTH?.1875f: 0f;
 			float maxZ = fl==Direction.SOUTH?.8125f: fl==Direction.NORTH?.6875f: fw==Direction.SOUTH?1f: .8125f;
-			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, .625f, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, .625f, maxZ));
 			return list;
 		}
 		else if(new BlockPos(1, 2, 1).equals(posInMultiblock))
@@ -334,13 +331,13 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 			float maxX = fl==Direction.EAST?1.4375f: fl==Direction.WEST?.4375f: fw==Direction.EAST?1.4375f: .4375f;
 			float minZ = fl==Direction.NORTH?-.4375f: fl==Direction.SOUTH?.5625f: fw==Direction.SOUTH?.5625f: -.4375f;
 			float maxZ = fl==Direction.SOUTH?1.4375f: fl==Direction.NORTH?.4375f: fw==Direction.SOUTH?1.4375f: .4375f;
-			list.add(new AxisAlignedBB(minX, .1875, minZ, maxX, 1, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, .1875, minZ, maxX, 1, maxZ));
 
 			minX = fl==Direction.WEST?0f: fl==Direction.EAST?.5f: fw==Direction.EAST?0f: .4375f;
 			maxX = fl==Direction.EAST?1f: fl==Direction.WEST?.5f: fw==Direction.EAST?.5625f: 1f;
 			minZ = fl==Direction.NORTH?0f: fl==Direction.SOUTH?.5f: fw==Direction.SOUTH?0f: .4375f;
 			maxZ = fl==Direction.SOUTH?1f: fl==Direction.NORTH?.5f: fw==Direction.SOUTH?.5625f: 1f;
-			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, .875, maxZ).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, .875, maxZ));
 			return list;
 
 		}
@@ -357,7 +354,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	public Set<BlockPos> getEnergyPos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(0, 1, 0)
+				new BlockPos(0, 1, 2)
 		);
 	}
 
@@ -365,7 +362,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	public Set<BlockPos> getRedstonePos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(0, 1, 2)
+				new BlockPos(2, 1, 2)
 		);
 	}
 
@@ -467,8 +464,8 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		MixerTileEntity master = master();
-		if(master!=null&&((new BlockPos(0, 0, 1).equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
-				||(new BlockPos(1, 0, 0).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().rotateY(): getFacing().rotateYCCW())))))
+		if(master!=null&&((new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
+				||(new BlockPos(0, 0, 1).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().rotateY(): getFacing().rotateYCCW())))))
 			return master.getInternalTanks();
 		return new FluidTank[0];
 	}
@@ -500,7 +497,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if((facing==null||new BlockPos(2, 1, 1).equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((facing==null||new BlockPos(1, 1, 0).equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			MixerTileEntity master = master();
 			if(master!=null)
@@ -576,7 +573,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 						amount++;
 					}
 				}
-				FluidStack drained = ((MixerTileEntity)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, amount, false), FluidAction.SIMULATE);
+				FluidStack drained = ((MixerTileEntity)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, amount, false), FluidAction.EXECUTE);
 				if(!drained.isEmpty())
 				{
 					NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);

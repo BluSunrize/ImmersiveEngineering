@@ -25,9 +25,9 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.font.IEFontRender;
 import blusunrize.immersiveengineering.client.font.NixieFontRender;
-import blusunrize.immersiveengineering.client.fx.FluidSplashParticle;
+import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
-import blusunrize.immersiveengineering.client.fx.IEBubbleParticle;
+import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.models.*;
@@ -1144,15 +1144,13 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnFluidSplashFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
 	{
-		FluidSplashParticle particle = new FluidSplashParticle(fs.getFluid(), world, x, y, z, mx, my, mz);
-		mc().particles.addEffect(particle);
+		world.addParticle(new Data(fs.getFluid()), x, y, z, mx, my, mz);
 	}
 
 	@Override
 	public void spawnBubbleFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
 	{
-		IEBubbleParticle particle = new IEBubbleParticle(world, x, y, z, mx, my, mz);
-		mc().particles.addEffect(particle);
+		world.addParticle(IEParticles.IE_BUBBLE, x, y, z, mx, my, mz);
 	}
 
 	@Override
@@ -1160,8 +1158,8 @@ public class ClientProxy extends CommonProxy
 	{
 		if(prefixColour >= 0)
 			colour = prefixColour==1?FractalParticle.COLOUR_ORANGE: prefixColour==2?FractalParticle.COLOUR_RED: FractalParticle.COLOUR_LIGHTNING;
-		FractalParticle particle = new FractalParticle(world, x, y, z, direction, scale, colour[0], colour[1]);
-		mc().particles.addEffect(particle);
+		FractalParticle.Data particle = new FractalParticle.Data(direction, scale, 10, 16, colour[0], colour[1]);
+		world.addParticle(particle, x, y, z, 0, 0, 0);
 	}
 
 	@Override

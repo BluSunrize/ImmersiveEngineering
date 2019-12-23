@@ -11,15 +11,11 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity;
-import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -29,7 +25,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -43,21 +38,10 @@ import java.util.List;
 
 public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 {
-	private static final ModelResourceLocation PISTON_NAME;
-	private static final ResourceLocation PISTON_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/metal_press_piston.obj");
-
-	static
-	{
-		ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/metal_press");
-		PISTON_NAME = new ModelResourceLocation(baseLoc, "");
-	}
-
-	public MetalPressRenderer()
-	{
-		ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(PISTON_LOC), 0,
-				0, false, ImmutableMap.of("flip-v", true));
-		DynamicModelLoader.requestModel(model, PISTON_NAME);
-	}
+	private final DynamicModel<Void> piston = DynamicModel.createSimple(
+			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/metal_press_piston.obj"),
+			"metal_press_piston"
+	);
 
 	@Override
 	public void render(MetalPressTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
@@ -70,7 +54,7 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.metalPress)
 			return;
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModelManager().getModel(PISTON_NAME);
+		IBakedModel model = piston.get(null);
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();

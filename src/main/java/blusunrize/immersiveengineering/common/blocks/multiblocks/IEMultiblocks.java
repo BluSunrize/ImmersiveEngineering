@@ -53,7 +53,7 @@ public class IEMultiblocks
 		FERMENTER = new FermenterMultiblock();
 		LIGHTNING_ROD = CRUSHER;
 		METAL_PRESS = new MetalPressMultiblock();
-		MIXER = CRUSHER;
+		MIXER = new MixerMultiblock();
 		REFINERY = CRUSHER;
 		SHEETMETAL_TANK = new SheetmetalTankMultiblock();
 		SILO = new SiloMultiblock();

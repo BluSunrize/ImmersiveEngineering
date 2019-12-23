@@ -17,6 +17,8 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
@@ -45,9 +47,9 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 	{
 		super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
 
-		this.motionX *= 0.30000001192092896D;
-		this.motionY = Math.random()*0.20000000298023224D+0.10000000149011612D;
-		this.motionZ *= 0.30000001192092896D;
+		this.motionX *= 0.3D;
+		this.motionY = Math.random()*0.2D+0.1D;
+		this.motionZ *= 0.3D;
 		this.particleRed = 1.0F;
 		this.particleGreen = 1.0F;
 		this.particleBlue = 1.0F;
@@ -66,9 +68,9 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 		this.prevPosZ = this.posZ;
 		this.motionY -= (double)this.particleGravity;
 		this.move(this.motionX, this.motionY, this.motionZ);
-		this.motionX *= 0.9800000190734863D;
-		this.motionY *= 0.9800000190734863D;
-		this.motionZ *= 0.9800000190734863D;
+		this.motionX *= 0.98;
+		this.motionY *= 0.98;
+		this.motionZ *= 0.98;
 
 		if(this.maxAge-- <= 0)
 			this.setExpired();
@@ -77,8 +79,8 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 		{
 			if(Math.random() < 0.5D)
 				this.setExpired();
-			this.motionX *= 0.699999988079071D;
-			this.motionZ *= 0.699999988079071D;
+			this.motionX *= 0.7;
+			this.motionZ *= 0.7;
 		}
 
 		BlockPos blockpos = new BlockPos(this.posX, this.posY, this.posZ);
@@ -100,7 +102,10 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 
 	public void setFluidTexture(FluidStack fluid)
 	{
-		setSprite(ClientUtils.getSprite(fluid.getFluid().getAttributes().getStill(fluid)));
+		TextureAtlasSprite sprite = ClientUtils.getSprite(fluid.getFluid().getAttributes().getStill(fluid));
+		if(sprite==null)
+			sprite = MissingTextureSprite.func_217790_a();
+		setSprite(sprite);
 		int argb = fluid.getFluid().getAttributes().getColor(fluid);
 		this.particleAlpha = ((argb >> 24)&255)/255f;
 		this.particleRed = ((argb >> 16)&255)/255f;

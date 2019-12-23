@@ -12,14 +12,10 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity.BottlingProcess;
-import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -29,7 +25,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -43,31 +38,12 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineTileEntity>
 {
-	private static final Map<Direction, ModelResourceLocation> DYNAMIC_NAMES = new HashMap<>();
-	private static final ResourceLocation DYNAMIC_LOC = new ResourceLocation(ImmersiveEngineering.MODID,
-			"block/metal_multiblock/bottling_machine_animated.obj.ie");
-
-	static
-	{
-		ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/bottling_machine");
-		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
-			DYNAMIC_NAMES.put(d, new ModelResourceLocation(baseLoc, d.getName()));
-	}
-
-	public BottlingMachineRenderer()
-	{
-		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
-		{
-			ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(DYNAMIC_LOC), 0,
-					(int)d.getHorizontalAngle()+180, false, ImmutableMap.of("flip-v", true));
-			DynamicModelLoader.requestModel(model, DYNAMIC_NAMES.get(d));
-		}
-	}
+	private final DynamicModel<Direction> dynamic = DynamicModel.createSided(
+			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bottling_machine_animated.obj.ie"),
+			"bottling_machine");
 
 	@Override
 	public void render(BottlingMachineTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
@@ -75,13 +51,13 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 
-		//Grab model + correct eextended state
+		//Grab model
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.bottlingMachine)
 			return;
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModelManager().getModel(DYNAMIC_NAMES.get(te.getFacing()));
+		IBakedModel model = dynamic.get(te.getFacing());
 
 		//Initialize Tesselator and BufferBuilder
 		Tessellator tessellator = Tessellator.getInstance();

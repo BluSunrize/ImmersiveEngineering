@@ -15,9 +15,6 @@ import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
-import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
@@ -27,10 +24,10 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -43,24 +40,16 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 {
 	private TextureAtlasSprite hotMetal_flow = null;
 	private TextureAtlasSprite hotMetal_still = null;
-	//TODO one for each rotation?
-	private static final ModelResourceLocation ELECTRODES_NAME;
-	private static final ResourceLocation ELECTRODES_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/arc_furnace_electrodes.obj.ie");
+	private final DynamicModel<Direction> electrodes = DynamicModel.createSided(
+			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/arc_furnace_electrodes.obj.ie"),
+			"arc_furnace_electrodes");
 
 	private static final ResourceLocation HOT_METLA_STILL = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_still");
 	private static final ResourceLocation HOT_METLA_FLOW = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_flow");
 
-	static
-	{
-		ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/arc_furnace_electrodes");
-		ELECTRODES_NAME = new ModelResourceLocation(baseLoc, "");
-	}
 
 	public ArcFurnaceRenderer()
 	{
-		ConfiguredModel model = new ConfiguredModel(new ExistingModelFile(ELECTRODES_LOC), 0,
-				0, false, ImmutableMap.of("flip-v", true));
-		DynamicModelLoader.requestModel(model, ELECTRODES_NAME);
 		DynamicModelLoader.requestTexture(HOT_METLA_FLOW);
 		DynamicModelLoader.requestTexture(HOT_METLA_STILL);
 	}
@@ -89,7 +78,7 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.arcFurnace)
 			return;
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModelManager().getModel(ELECTRODES_NAME);
+		IBakedModel model = electrodes.get(te.getFacing());
 		OBJState objState = new OBJState(renderedParts, true);
 
 		Tessellator tessellator = Tessellator.getInstance();

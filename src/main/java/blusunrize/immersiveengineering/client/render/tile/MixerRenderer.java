@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
@@ -22,6 +23,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fluids.FluidStack;
@@ -29,6 +31,10 @@ import org.lwjgl.opengl.GL11;
 
 public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 {
+	private final DynamicModel<Direction> dynamic = DynamicModel.createSided(
+			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/mixer_agitator.obj"),
+			"mixer");
+
 	@Override
 	public void render(MixerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
@@ -40,8 +46,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.mixer)
 			return;
-		//TODO state = state.with(IEProperties.DYNAMICRENDER, true);
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
+		IBakedModel model = dynamic.get(te.getFacing());
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();
@@ -76,21 +81,6 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 		RenderHelper.enableStandardItemLighting();
 
 		GlStateManager.popMatrix();
-
-		switch(te.getFacing())
-		{
-			case NORTH:
-				break;
-			case SOUTH:
-				GlStateManager.rotatef(180, 0, 1, 0);
-				break;
-			case WEST:
-				GlStateManager.rotatef(90, 0, 1, 0);
-				break;
-			case EAST:
-				GlStateManager.rotatef(-90, 0, 1, 0);
-				break;
-		}
 
 		GlStateManager.scalef(.0625f, 1, .0625f);
 		GlStateManager.rotatef(90, 1, 0, 0);

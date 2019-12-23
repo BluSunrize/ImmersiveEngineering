@@ -434,6 +434,7 @@ public class IEContent
 		//TODO multilayer models? .setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		Multiblocks.fermenter = new MetalMultiblockBlock("fermenter", () -> FermenterTileEntity.TYPE);
 		Multiblocks.squeezer = new MetalMultiblockBlock("squeezer", () -> SqueezerTileEntity.TYPE);
+		Multiblocks.mixer = new MetalMultiblockBlock("mixer", () -> MixerTileEntity.TYPE);
 
 		Tools.wirecutter = new WirecutterItem();
 		Tools.hammer = new HammerItem();
@@ -1167,10 +1168,10 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.REFINERY);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.DIESEL_GENERATOR);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.LIGHTNING_ROD);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.MIXER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.FEEDTHROUGH);
 		*/
 		IEMultiblocks.init();
+		MultiblockHandler.registerMultiblock(IEMultiblocks.MIXER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.SQUEEZER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.FERMENTER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.BOTTLING_MACHINE);

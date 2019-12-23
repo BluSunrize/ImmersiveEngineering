@@ -45,7 +45,6 @@ public class GuiButtonState extends GuiButtonIE
 			int u = texU+(!state?0: offsetDir==0?width: offsetDir==2?-width: 0);
 			int v = texV+(!state?0: offsetDir==1?height: offsetDir==3?-height: 0);
 			this.blit(x, y, u, v, width, height);
-			//TODO this.mouseDragged(mc, mouseX, mouseY);
 			if(!getMessage().isEmpty())
 			{
 				int txtCol = 0xE0E0E0;
