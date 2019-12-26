@@ -41,7 +41,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -52,6 +55,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
@@ -289,7 +293,10 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		//TODO proper translation
-		list.add(new StringTextComponent("Level: "+this.getRarity(stack).color+this.getRarity(stack).name()));
+		list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.level")
+				.appendText(this.getRarity(stack).color.toString())
+				.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
+		);
 		if(!Screen.hasShiftDown())
 			list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.applyTo")
 					.appendText(" ")
