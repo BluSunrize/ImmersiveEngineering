@@ -55,6 +55,7 @@ import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
+import blusunrize.immersiveengineering.common.util.IEShaders;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
@@ -553,6 +554,7 @@ public class IEContent
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
 		IELootFunctions.preInit();
+		IEShaders.preInit();
 	}
 
 	@SubscribeEvent
