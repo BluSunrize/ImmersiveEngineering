@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
@@ -100,7 +101,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 		if(sCase!=null)
 		{
 			ShaderLayer[] layers = sCase.getLayers();
-			ResourceLocation textureLocation = new ResourceLocation("immersiveengineering", "bannershader/"+name);
+			ResourceLocation textureLocation = new ResourceLocation(ImmersiveEngineering.MODID, "bannershader/"+name);
 			ClientUtils.mc().getTextureManager().loadTexture(textureLocation, new IEShaderLayerCompositeTexture(BASE_TEXTURE, layers));
 			CACHE.put(name, textureLocation);
 			return textureLocation;

@@ -156,7 +156,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			return new IEItemStackHandler(stack)
 			{
 				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
-						new ShaderWrapper_Item(new ResourceLocation("immersiveengineering", "revolver"), stack));
+						new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "revolver"), stack));
 
 				@Nonnull
 				@Override

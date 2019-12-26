@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -30,7 +31,7 @@ public class ShaderCaseDrill extends ShaderCase
 	@Override
 	public ResourceLocation getShaderType()
 	{
-		return new ResourceLocation("immersiveengineering", "drill");
+		return new ResourceLocation(ImmersiveEngineering.MODID, "drill");
 	}
 
 	@Override

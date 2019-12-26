@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -28,7 +29,7 @@ public class ShaderCaseRailgun extends ShaderCase
 	@Override
 	public ResourceLocation getShaderType()
 	{
-		return new ResourceLocation("immersiveengineering", "railgun");
+		return new ResourceLocation(ImmersiveEngineering.MODID, "railgun");
 	}
 
 	@Override

@@ -85,11 +85,11 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 		addShader("vaulttec", 0, Rarity.COMMON, 0xff56382c, 0xff1a4785, 0xffc0aa50, 0xffaaaaaa).setInfo(null, "Fallout", "vaulttec");
 
 		ShaderRegistryEntry entry = addShader("sponsor", 0, Rarity.EPIC, 0xff191919, 0xfff71b24, 0xffffffff, 0xffaaaaaa, "sponsor", false, 0xffffffff).setInfo(null, "Fallout", "sponsor");
-		((ShaderCaseMinecart)entry.getCase(new ResourceLocation("immersiveengineering", "minecart"))).mirrorSideForPass[2] = false;
-		entry.getCase(new ResourceLocation("immersiveengineering", "revolver")).getLayers()[4].setTextureBounds(0, 0, .25, .25);
-		entry.getCase(new ResourceLocation("immersiveengineering", "drill")).getLayers()[3].setTextureBounds(10/64d, 34/64d, 26/64d, 50/64d);
-		entry.getCase(new ResourceLocation("immersiveengineering", "chemthrower")).getLayers()[3].setTextureBounds(6/64d, 16/64d, 22/64d, 32/64d);
-		entry.getCase(new ResourceLocation("immersiveengineering", "shield")).getLayers()[2].setTextureBounds(0/32d, 9/32d, 14/32d, 25/32d).setCutoutBounds(.0625, 0, .9375, 1);
+		((ShaderCaseMinecart)entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "minecart"))).mirrorSideForPass[2] = false;
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[4].setTextureBounds(0, 0, .25, .25);
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).getLayers()[3].setTextureBounds(10/64d, 34/64d, 26/64d, 50/64d);
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).getLayers()[3].setTextureBounds(6/64d, 16/64d, 22/64d, 32/64d);
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).getLayers()[2].setTextureBounds(0/32d, 9/32d, 14/32d, 25/32d).setCutoutBounds(.0625, 0, .9375, 1);
 
 		addShader("massfusion", 3, Rarity.RARE, 0xff6e5a37, 0xff394730, 0xff545454, 0xffaaaaaa, "fusion", true, 0xffffffff).setInfo(null, "Fallout", "massfusion");
 
@@ -146,7 +146,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 				(layer, superColour) -> ClientUtils.pulseRGBAlpha(0xff80fcf2, 60, .05f, .5f),
 				(pre, partialTick) -> ClientUtils.toggleLightmap(pre, true));
 		addLayer(entry, "circuit", 0x99bc9377);
-		((ShaderCaseDrill)entry.getCase(new ResourceLocation("immersiveengineering", "drill"))).addHeadLayers(new ShaderLayer(new ResourceLocation("immersiveengineering", "items/drill_iron"), 0xff80fcf2));
+		((ShaderCaseDrill)entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill"))).addHeadLayers(new ShaderLayer(new ResourceLocation(ImmersiveEngineering.MODID, "items/drill_iron"), 0xff80fcf2));
 
 		addShader("glacis", 6, Rarity.RARE, 0xff499bc2, 0x3376d0f9, 0x33bdfffd, 0x33bdfffd).setInfo(null, null, "glacis");
 		addShader("phoenix", 5, Rarity.RARE, 0xff750000, 0xffd00000, 0xffff7f00, 0xffff7f00).setInfo(null, null, "phoenix");
@@ -185,42 +185,42 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 
 	public static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade, String additionalTexture, boolean loot, int colourOverlay)
 	{
-		return ShaderRegistry.registerShader(new ResourceLocation("immersiveengineering", name), Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, colourOverlay, loot, true);
+		return ShaderRegistry.registerShader(new ResourceLocation(ImmersiveEngineering.MODID, name), Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, colourOverlay, loot, true);
 	}
 
 	private static void addBlockScaledLayer(ShaderRegistryEntry entry, String texture, int colour)
 	{
-		entry.getCase(new ResourceLocation("immersiveengineering", "revolver")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, 0, .25, .1875));
-		entry.getCase(new ResourceLocation("immersiveengineering", "drill")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(10/64d, 34/64d, 26/64d, 50/64d).setCutoutBounds(.1875f, 0, .8125, .75f));
-		entry.getCase(new ResourceLocation("immersiveengineering", "chemthrower")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(6/64d, 16/64d, 22/64d, 24/64d).setCutoutBounds(0, 0, 1, .5));
-		entry.getCase(new ResourceLocation("immersiveengineering", "railgun")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(55/64d, 48/64d, 1, 58/64d).setCutoutBounds(.25, .125, .75, .6875));
-		entry.getCase(new ResourceLocation("immersiveengineering", "shield")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/32f, 9/32f, 14/32f, 26/32f).setCutoutBounds(.0625, 0, .9375, 1));
-		entry.getCase(new ResourceLocation("immersiveengineering", "balloon")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, .375, .75, .875).setCutoutBounds(.125, 0, .875, .5));
-		entry.getCase(new ResourceLocation("immersiveengineering", "banner")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(1/64d, 21/64d, 21/64d, 41/64d));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, 0, .25, .1875));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(10/64d, 34/64d, 26/64d, 50/64d).setCutoutBounds(.1875f, 0, .8125, .75f));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(6/64d, 16/64d, 22/64d, 24/64d).setCutoutBounds(0, 0, 1, .5));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "railgun")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(55/64d, 48/64d, 1, 58/64d).setCutoutBounds(.25, .125, .75, .6875));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/32f, 9/32f, 14/32f, 26/32f).setCutoutBounds(.0625, 0, .9375, 1));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "balloon")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, .375, .75, .875).setCutoutBounds(.125, 0, .875, .5));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(1/64d, 21/64d, 21/64d, 41/64d));
 	}
 
 	private static void addLayer(ShaderRegistryEntry entry, String texture, int colour)
 	{
-		entry.getCase(new ResourceLocation("immersiveengineering", "revolver")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour));
-		entry.getCase(new ResourceLocation("immersiveengineering", "drill")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour));
-		entry.getCase(new ResourceLocation("immersiveengineering", "chemthrower")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+texture), colour));
-		entry.getCase(new ResourceLocation("immersiveengineering", "railgun")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour));
-		entry.getCase(new ResourceLocation("immersiveengineering", "shield")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour));
-		entry.getCase(new ResourceLocation("immersiveengineering", "minecart")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour));
-		entry.getCase(new ResourceLocation("immersiveengineering", "balloon")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_"+texture), colour));
-		entry.getCase(new ResourceLocation("immersiveengineering", "banner")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_"+texture), colour));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+texture), colour));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "railgun")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "balloon")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_"+texture), colour));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_"+texture), colour));
 	}
 
 	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Integer, Integer> func_getColour, final BiConsumer<Boolean, Float> func_modifyRender)
 	{
-		entry.getCase(new ResourceLocation("immersiveengineering", "revolver")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation("immersiveengineering", "drill")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation("immersiveengineering", "chemthrower")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation("immersiveengineering", "railgun")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation("immersiveengineering", "shield")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation("immersiveengineering", "minecart")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation("immersiveengineering", "balloon")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation("immersiveengineering", "banner")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "railgun")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour, func_getColour, func_modifyRender));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "balloon")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_"+texture), colour, func_getColour, func_modifyRender));
 	}
 
 	public void setDefaultTextureBounds(ResourceLocation rl, double... bounds)
@@ -249,7 +249,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 			TileEntity tile = world.getTileEntity(pos);
 			if(tile instanceof BannerTileEntity)
 			{
-				ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(new ResourceLocation("immersiveengineering", "banner"));
+				ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
 				if(sCase!=null)
 				{
 					boolean wall = blockState.getBlock() instanceof WallBannerBlock;
@@ -360,7 +360,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 		ResourceLocation name = getShaderName(stack);
 		if(ShaderRegistry.shaderRegistry.containsKey(name))
 		{
-			ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(new ResourceLocation("immersiveengineering", "item"));
+			ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(new ResourceLocation(ImmersiveEngineering.MODID, "item"));
 			if(sCase!=null)
 			{
 				ShaderLayer[] layers = sCase.getLayers();
@@ -386,7 +386,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 		ResourceLocation name = getShaderName(stack);
 		if(ShaderRegistry.shaderRegistry.containsKey(name))
 		{
-			ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(new ResourceLocation("immersiveengineering", "item"));
+			ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(new ResourceLocation(ImmersiveEngineering.MODID, "item"));
 			if(sCase!=null)
 			{
 				ShaderLayer[] layers = sCase.getLayers();

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
@@ -56,7 +57,7 @@ public class ShaderMinecartModel<T extends MinecartEntity> extends MinecartModel
 		{
 			shader = shadedCarts.get(entity.getEntityId());
 			if(shader!=null&&!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, new ResourceLocation("immersiveengineering", "minecart"));
+				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, new ResourceLocation(ImmersiveEngineering.MODID, "minecart"));
 		}
 		if(sCase!=null)
 		{

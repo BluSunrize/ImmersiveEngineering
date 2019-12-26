@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -37,7 +38,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 {
 	public boolean wall = false;
 	public byte orientation = 0;
-	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation("immersiveengineering", "banner"));
+	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
 
 	public static TileEntityType<BannerTileEntity> TYPE;
 
@@ -54,7 +55,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 		this.orientation = nbt.getByte("orientation");
 		if(nbt.contains("shader", NBT.TAG_COMPOUND))
 		{
-			shader = new ShaderWrapper_Direct(new ResourceLocation("immersiveengineering", "banner"));
+			shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
 			shader.deserializeNBT(nbt.getCompound("shader"));
 		}
 	}

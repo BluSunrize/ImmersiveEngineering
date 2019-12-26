@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -31,7 +32,7 @@ public class ShaderCaseChemthrower extends ShaderCase
 	@Override
 	public ResourceLocation getShaderType()
 	{
-		return new ResourceLocation("immersiveengineering", "chemthrower");
+		return new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower");
 	}
 
 	@Override

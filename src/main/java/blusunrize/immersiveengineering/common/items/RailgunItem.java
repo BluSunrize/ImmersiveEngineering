@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -136,7 +137,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 						new EnergyHelper.ItemEnergyStorage(stack)
 				);
 				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
-						new ShaderWrapper_Item(new ResourceLocation("immersiveengineering", "railgun"), stack)
+						new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "railgun"), stack)
 				);
 
 				@Nonnull
