@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.common.IERecipes;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -29,17 +30,17 @@ public class ShaderRegistry
 	/**
 	 * A map of shader name to ShaderRegistryEntry, which contains ShaderCases, rarity, weight and loot specifics
 	 */
-	public static LinkedHashMap<ResourceLocation, ShaderRegistryEntry> shaderRegistry = new LinkedHashMap<>();
+	public static Map<ResourceLocation, ShaderRegistryEntry> shaderRegistry = new LinkedHashMap<>();
 
 	/**
 	 * A list of shader names that can generate in chests/crates. Names are added multiple times depending on their weight
 	 */
-	public static ArrayList<ResourceLocation> chestLootShaders = new ArrayList<>();
+	public static List<ResourceLocation> chestLootShaders = new ArrayList<>();
 
 	/**
 	 * A map of EnumRarities to weight for grab bag distribution
 	 */
-	public static HashMap<Rarity, Integer> rarityWeightMap = new HashMap<>();
+	public static Map<Rarity, Integer> rarityWeightMap = new HashMap<>();
 
 	static
 	{
@@ -53,21 +54,21 @@ public class ShaderRegistry
 	/**
 	 * A list of EnumRarities sorted by their weight
 	 */
-	public static ArrayList<Rarity> sortedRarityMap = new ArrayList<>();
+	public static List<Rarity> sortedRarityMap = new ArrayList<>();
 
 
 	/**
 	 * A map of player names to received shaders. Saved with worlddata. Designed to prioritize shaders the player has not yet received
 	 */
-	public static ArrayListMultimap<UUID, ResourceLocation> receivedShaders = ArrayListMultimap.create();
+	public static Multimap<UUID, ResourceLocation> receivedShaders = ArrayListMultimap.create();
 	/**
 	 * The map of EnumRarities to the total weight of all shaders of that rarity or rarer
 	 */
-	public static HashMap<Rarity, Integer> totalWeight = new HashMap<>();
+	public static Map<Rarity, Integer> totalWeight = new HashMap<>();
 	/**
 	 * The total weight in relation to the player. This takes into account shaders the player has gotten, which then result in less weight
 	 */
-	public static HashMap<UUID, HashMap<Rarity, Integer>> playerTotalWeight = new HashMap<>();
+	public static Map<UUID, Map<Rarity, Integer>> playerTotalWeight = new HashMap<>();
 	/**
 	 * The deafault cost for replicating a shader. Prices are multiplied with 10-rarity level. Prices can be adjusted for every registry entry
 	 */
@@ -75,7 +76,7 @@ public class ShaderRegistry
 	/**
 	 * A HashMap to set default texture bounds for the additional layers of a shadercase. Saves you the trouble of redfining them for every shader. See {@link ShaderLayer#setTextureBounds(double... bounds)}.
 	 */
-	public static HashMap<ResourceLocation, double[]> defaultLayerBounds = new HashMap<>();
+	public static Map<ResourceLocation, double[]> defaultLayerBounds = new HashMap<>();
 
 	public static ShaderCase getShader(ResourceLocation name, ResourceLocation shaderCase)
 	{
@@ -122,7 +123,7 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseItem registerShader_Item(ResourceLocation name, Rarity rarity, int colour0, int colour1, int colour2)
 	{
-		ArrayList<ShaderLayer> list = new ArrayList();
+		List<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shader_0"), colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shader_1"), colour1));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shader_2"), colour2));
@@ -146,7 +147,7 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseRevolver registerShader_Revolver(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, int colourBlade, String additionalTexture, int colourAddtional)
 	{
-		ArrayList<ShaderLayer> list = new ArrayList();
+		List<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_grip"), colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_0"), colour1));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_0"), colourBlade));
@@ -176,7 +177,7 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseChemthrower registerShader_Chemthrower(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
 	{
-		ArrayList<ShaderLayer> list = new ArrayList();
+		List<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_0"), colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_0"), colour1));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_1_"+overlayType), colour2));
@@ -206,7 +207,7 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseDrill registerShader_Drill(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
 	{
-		ArrayList<ShaderLayer> list = new ArrayList();
+		List<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_0"), colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_0"), colour1));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_1_"+overlayType), colour2));
@@ -236,7 +237,7 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseRailgun registerShader_Railgun(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
 	{
-		ArrayList<ShaderLayer> list = new ArrayList();
+		List<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_0"), colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_0"), colour1));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_1_"+overlayType), colour2));
@@ -265,7 +266,7 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseShield registerShader_Shield(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
-		ArrayList<ShaderLayer> list = new ArrayList();
+		List<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_0"), colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_1_"+overlayType), colour1));
 		if(additionalTexture!=null)
@@ -293,7 +294,7 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseMinecart registerShader_Minecart(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
-		ArrayList<ShaderLayer> list = new ArrayList();
+		List<ShaderLayer> list = new ArrayList();
 		//Minecart textures need .png behind them, since they are used for direct binding, not stitching >_>
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_0.png"), colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_1_"+overlayType+".png"), colour1));
@@ -334,7 +335,7 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseBalloon registerShader_Balloon(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
-		ArrayList<ShaderLayer> list = new ArrayList();
+		List<ShaderLayer> list = new ArrayList();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_0"), colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_1_"+overlayType), colour1));
 		if(additionalTexture!=null)
@@ -362,7 +363,7 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseBanner registerShader_Banner(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
 	{
-		ArrayList<ShaderLayer> list = new ArrayList<>();
+		List<ShaderLayer> list = new ArrayList<>();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_0"), colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_1_"+overlayType), colour1));
 		if(additionalTexture!=null)
@@ -447,7 +448,7 @@ public class ShaderRegistry
 			playerTotalWeight.put(player, new HashMap<>());
 		else
 			playerTotalWeight.get(player).clear();
-		List<ResourceLocation> received = receivedShaders.get(player);
+		Collection<ResourceLocation> received = receivedShaders.get(player);
 		for(ShaderRegistryEntry entry : shaderRegistry.values())
 			if(entry.getIsBagLoot())
 			{
