@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
 
@@ -25,9 +26,9 @@ public class ShaderCaseRevolver extends ShaderCase
 	}
 
 	@Override
-	public String getShaderType()
+	public ResourceLocation getShaderType()
 	{
-		return "immersiveengineering:revolver";
+		return new ResourceLocation("immersiveengineering", "revolver");
 	}
 
 	@Override

@@ -156,7 +156,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			return new IEItemStackHandler(stack)
 			{
 				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
-						new ShaderWrapper_Item("immersiveengineering:revolver", stack));
+						new ShaderWrapper_Item(new ResourceLocation("immersiveengineering", "revolver"), stack));
 
 				@Nonnull
 				@Override
@@ -348,7 +348,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				if(shader!=null)
 				{
 					Vec3d pos = Utils.getLivingFrontPos(player, .75, player.getHeight()*.75, hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite(), false, 1);
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver, shader.getRight().getShaderType(), pos, player.getForward(), .125f);
+					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver, shader.getRight().getShaderType().toString(), pos, player.getForward(), .125f);
 				}
 			}
 			return new ActionResult<>(ActionResultType.SUCCESS, revolver);
@@ -446,9 +446,9 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	{
 		String tag = ItemNBTHelper.getString(stack, "elite");
 		if(!tag.isEmpty())
-			return this.revolverIcons.get(tag);
+			return revolverIcons.get(tag);
 		else
-			return this.revolverDefaultTexture;
+			return revolverDefaultTexture;
 	}
 
 	@OnlyIn(Dist.CLIENT)

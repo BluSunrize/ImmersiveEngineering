@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class ShaderMinecartModel<T extends MinecartEntity> extends MinecartModel
 		{
 			shader = shadedCarts.get(entity.getEntityId());
 			if(shader!=null&&!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, "immersiveengineering:minecart");
+				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, new ResourceLocation("immersiveengineering", "minecart"));
 		}
 		if(sCase!=null)
 		{

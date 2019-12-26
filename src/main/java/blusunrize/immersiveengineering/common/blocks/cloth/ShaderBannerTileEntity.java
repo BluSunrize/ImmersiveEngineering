@@ -22,6 +22,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.BannerTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.common.capabilities.Capability;
@@ -36,7 +37,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 {
 	public boolean wall = false;
 	public byte orientation = 0;
-	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct("immersiveengineering:banner");
+	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation("immersiveengineering", "banner"));
 
 	public static TileEntityType<BannerTileEntity> TYPE;
 
@@ -53,7 +54,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 		this.orientation = nbt.getByte("orientation");
 		if(nbt.contains("shader", NBT.TAG_COMPOUND))
 		{
-			shader = new ShaderWrapper_Direct("immersiveengineering:banner");
+			shader = new ShaderWrapper_Direct(new ResourceLocation("immersiveengineering", "banner"));
 			shader.deserializeNBT(nbt.getCompound("shader"));
 		}
 	}

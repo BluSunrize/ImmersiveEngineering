@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.shader;
 
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -54,9 +55,9 @@ public class ShaderCaseMinecart extends ShaderCase
 	}
 
 	@Override
-	public String getShaderType()
+	public ResourceLocation getShaderType()
 	{
-		return "immersiveengineering:minecart";
+		return new ResourceLocation("immersiveengineering", "minecart");
 	}
 
 	@Override

@@ -73,7 +73,7 @@ public class ManualPageShader extends SpecialManualElements
 		unlocked = ShaderRegistry.receivedShaders.get(uuid).contains(shader.getName());
 
 		shaderItem = new ItemStack(ShaderRegistry.itemShader);
-		shaderItem.getOrCreateTag().putString("shader_name", shader.getName());
+		shaderItem.getOrCreateTag().putString("shader_name", shader.getName().toString());
 		replicationCost = shader.replicationCost;
 
 		if(unlocked)

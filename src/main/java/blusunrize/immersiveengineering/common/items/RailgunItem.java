@@ -136,7 +136,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 						new EnergyHelper.ItemEnergyStorage(stack)
 				);
 				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
-						new ShaderWrapper_Item("immersiveengineering:railgun", stack)
+						new ShaderWrapper_Item(new ResourceLocation("immersiveengineering", "railgun"), stack)
 				);
 
 				@Nonnull
@@ -208,7 +208,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			if(shader!=null)
 			{
 				Vec3d pos = Utils.getLivingFrontPos(user, .4375, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
-				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, null, .0625f);
+				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), pos, null, .0625f);
 			}
 		}
 	}
@@ -245,7 +245,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 					if(shader!=null)
 					{
 						Vec3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
-						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, user.getForward(), .125f);
+						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), pos, user.getForward(), .125f);
 					}
 				}
 			}

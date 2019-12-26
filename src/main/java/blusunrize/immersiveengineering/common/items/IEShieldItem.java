@@ -75,7 +75,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 						new EnergyHelper.ItemEnergyStorage(stack)
 				);
 				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
-						new ShaderWrapper_Item("immersiveengineering:shield", stack)
+						new ShaderWrapper_Item(new ResourceLocation("immersiveengineering", "shield"), stack)
 				);
 
 				@Nonnull

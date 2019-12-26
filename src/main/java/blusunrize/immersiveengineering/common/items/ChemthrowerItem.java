@@ -273,7 +273,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			return new IEItemStackHandler(stack)
 			{
 				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
-				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item("immersiveengineering:chemthrower", stack));
+				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation("immersiveengineering", "chemthrower"), stack));
 
 				@Nonnull
 				@Override

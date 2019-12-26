@@ -24,7 +24,6 @@ import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEntity>
 {
@@ -81,19 +80,18 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 	}
 
 	private static final ResourceLocation BASE_TEXTURE = new ResourceLocation("textures/entity/banner_base.png");
-	private static final HashMap<String, ResourceLocation> CACHE = new HashMap<>();
+	private static final HashMap<ResourceLocation, ResourceLocation> CACHE = new HashMap<>();
 
 	@Nullable
 	private ResourceLocation getBannerResourceLocation(ShaderBannerTileEntity bannerObj)
 	{
-		String name = null;
+		ResourceLocation name = null;
 		ShaderCase sCase = null;
 		ItemStack shader = bannerObj.shader.getShaderItem();
 		if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
 		{
 			IShaderItem iShaderItem = ((IShaderItem)shader.getItem());
 			name = iShaderItem.getShaderName(shader);
-			name = name.toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9/._-]", "_");
 			if(CACHE.containsKey(name))
 				return CACHE.get(name);
 			sCase = iShaderItem.getShaderCase(shader, null, bannerObj.shader.getShaderType());

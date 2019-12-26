@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -28,9 +29,9 @@ import java.util.function.Supplier;
 public class MessageShaderManual implements IMessage
 {
 	private MessageType key;
-	private String[] args;
+	private ResourceLocation[] args;
 
-	public MessageShaderManual(MessageType key, String... args)
+	public MessageShaderManual(MessageType key, ResourceLocation... args)
 	{
 		this.key = key;
 		this.args = args;
@@ -40,9 +41,9 @@ public class MessageShaderManual implements IMessage
 	{
 		this.key = MessageType.values()[buf.readInt()];
 		int l = buf.readInt();
-		args = new String[l];
+		args = new ResourceLocation[l];
 		for(int i = 0; i < l; i++)
-			args[i] = buf.readString(1000);
+			args[i] = new ResourceLocation(buf.readString(1000));
 	}
 
 	@Override
@@ -52,8 +53,8 @@ public class MessageShaderManual implements IMessage
 		if(args!=null)
 		{
 			buf.writeInt(this.args.length);
-			for(String s : args)
-				buf.writeString(s);
+			for(ResourceLocation rl : args)
+				buf.writeString(rl.toString());
 		}
 		else
 			buf.writeInt(0);
@@ -78,8 +79,8 @@ public class MessageShaderManual implements IMessage
 			ctx.enqueueWork(() -> {
 				if(key==MessageType.SYNC)
 				{
-					Collection<String> received = ShaderRegistry.receivedShaders.get(playerId);
-					String[] ss = received.toArray(new String[0]);
+					Collection<ResourceLocation> received = ShaderRegistry.receivedShaders.get(playerId);
+					ResourceLocation[] ss = received.toArray(new ResourceLocation[0]);
 					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> player),
 							new MessageShaderManual(MessageType.SYNC, ss));
 				}
@@ -92,7 +93,7 @@ public class MessageShaderManual implements IMessage
 					if(!player.abilities.isCreativeMode)
 						ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(args[0]).replicationCost);
 					ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
-					ItemNBTHelper.putString(shaderStack, "shader_name", args[0]);
+					ItemNBTHelper.putString(shaderStack, "shader_name", args[0].toString());
 					ItemEntity entityitem = player.dropItem(shaderStack, false);
 					if(entityitem!=null)
 					{
@@ -110,7 +111,7 @@ public class MessageShaderManual implements IMessage
 					if(player!=null)
 					{
 						UUID name = player.getUniqueID();
-						for(String shader : args)
+						for(ResourceLocation shader : args)
 							if(shader!=null)
 								ShaderRegistry.receivedShaders.put(name, shader);
 					}

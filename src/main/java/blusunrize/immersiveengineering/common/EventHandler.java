@@ -105,7 +105,7 @@ public class EventHandler
 	{
 		if(event.getObject() instanceof AbstractMinecartEntity)
 			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
-					new ShaderWrapper_Direct("immersiveengineering:minecart"));
+					new ShaderWrapper_Direct(new ResourceLocation("immersiveengineering", "minecart")));
 		if(event.getObject() instanceof PlayerEntity)
 			event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "skyhook_data"),
 					new SimpleSkyhookProvider());

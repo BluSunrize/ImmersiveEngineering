@@ -54,6 +54,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
@@ -390,7 +391,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 				if(shader!=null)
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType(), new Vec3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
+					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), new Vec3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
 			}
 		}
 
@@ -477,7 +478,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		World world = player.world;
 		if(player.isSneaking()||world.isRemote||!(player instanceof ServerPlayerEntity))
 			return false;
-		RayTraceResult mop = this.rayTrace(world, player, FluidMode.NONE);
+		RayTraceResult mop = rayTrace(world, player, FluidMode.NONE);
 		ItemStack head = getHead(stack);
 		if(mop==null||head.isEmpty()||this.isDrillBroken(stack))
 			return false;
@@ -546,7 +547,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 			return new IEItemStackHandler(stack)
 			{
 				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
-				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item("immersiveengineering:drill", stack));
+				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation("immersiveengineering", "drill"), stack));
 
 				@Nonnull
 				@Override

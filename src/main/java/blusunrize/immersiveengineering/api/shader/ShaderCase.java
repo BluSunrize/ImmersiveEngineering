@@ -68,7 +68,7 @@ public abstract class ShaderCase
 	/**
 	 * @return A string representing which item this shader case applies to. e.g.: "immersiveengineering:revolver"
 	 */
-	public abstract String getShaderType();
+	public abstract ResourceLocation getShaderType();
 
 	/**
 	 * @return if the ResourceLocations of the layers should be stitched into the main texturemap<br>

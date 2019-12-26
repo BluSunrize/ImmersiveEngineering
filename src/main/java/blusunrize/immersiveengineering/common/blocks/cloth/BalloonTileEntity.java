@@ -30,11 +30,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -53,7 +50,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	public int style = 0;
 	public int colour0 = 0xffffff;
 	public int colour1 = 0xffffff;
-	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct("immersiveengineering:balloon");
+	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation("immersiveengineering", "balloon"));
 
 	public BalloonTileEntity()
 	{
@@ -75,7 +72,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 			requestModelDataUpdate();
 		if(nbt.contains("shader", NBT.TAG_COMPOUND))
 		{
-			shader = new ShaderWrapper_Direct("immersiveengineering:balloon");
+			shader = new ShaderWrapper_Direct(new ResourceLocation("immersiveengineering", "balloon"));
 			shader.deserializeNBT(nbt.getCompound("shader"));
 			reInitCapability();
 		}
@@ -132,7 +129,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	public String getCacheKey(@Nonnull BlockState object)
 	{
 		if(shader!=null&&!shader.getShaderItem().isEmpty()&&shader.getShaderItem().getItem() instanceof IShaderItem)
-			return ((IShaderItem)shader.getShaderItem().getItem()).getShaderName(shader.getShaderItem());
+			return ((IShaderItem)shader.getShaderItem().getItem()).getShaderName(shader.getShaderItem()).toString();
 		return colour0+":"+colour1+":"+style;
 	}
 
@@ -183,7 +180,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 		if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem)
 		{
 			if(this.shader==null)
-				this.shader = new ShaderWrapper_Direct("immersiveengineering:balloon");
+				this.shader = new ShaderWrapper_Direct(new ResourceLocation("immersiveengineering", "balloon"));
 			this.shader.setShaderItem(Utils.copyStackWithAmount(heldItem, 1));
 			markContainingBlockForUpdate(null);
 			return true;
@@ -249,7 +246,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 			world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 0, .05, 0);
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(this.shader);
 			if(shader!=null)
-				shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), null, shader.getRight().getShaderType(), pos, null, .375f);
+				shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), null, shader.getRight().getShaderType().toString(), pos, null, .375f);
 
 		}
 	}
