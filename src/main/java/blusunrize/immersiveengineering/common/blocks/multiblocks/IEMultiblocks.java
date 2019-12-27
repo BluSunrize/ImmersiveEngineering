@@ -51,7 +51,7 @@ public class IEMultiblocks
 		EXCAVATOR_DEMO = CRUSHER;
 		FEEDTHROUGH = CRUSHER;
 		FERMENTER = new FermenterMultiblock();
-		LIGHTNING_ROD = CRUSHER;
+		LIGHTNING_ROD = new LightningRodMultiblock();
 		METAL_PRESS = new MetalPressMultiblock();
 		MIXER = new MixerMultiblock();
 		REFINERY = new RefineryMultiblock();

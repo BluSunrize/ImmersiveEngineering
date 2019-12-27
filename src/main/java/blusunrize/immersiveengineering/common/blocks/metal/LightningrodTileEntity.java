@@ -25,11 +25,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -97,11 +94,15 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 	{
 		this.height = 0;
 		boolean broken = false;
+		BlockPos lastFence = null;
 		for(int i = getPos().getY()+2; i < world.getHeight()-1; i++)
 		{
 			BlockPos pos = new BlockPos(getPos().getX(), i, getPos().getZ());
 			if(!broken&&isFence(pos))
+			{
 				this.height++;
+				lastFence = pos;
+			}
 			else if(!world.isAirBlock(pos))
 				return null;
 			else
@@ -110,10 +111,12 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 					broken = true;
 			}
 		}
+		if(lastFence==null)
+			return null;
 
 		ArrayList<BlockPos> openList = new ArrayList<>();
 		ArrayList<BlockPos> closedList = new ArrayList<>();
-		openList.add(getPos().add(0, height, 0));
+		openList.add(lastFence);
 		while(!openList.isEmpty()&&closedList.size() < 256)
 		{
 			BlockPos next = openList.get(0);
@@ -168,23 +171,24 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 		float zMax = 1;
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getZ()%2==0)
 		{
+			Direction facing = getFacing();
 			if(posInMultiblock.getY() < 2)
 			{
 				yMin = -.5f;
 				yMax = 1.25f;
-				xMin = (getFacing().getAxis()==Axis.X?(posInMultiblock.getX() > 0^getFacing()==Direction.EAST): (posInMultiblock.getZ()==2^getFacing()==Direction.NORTH))?.8125f: .4375f;
-				xMax = (getFacing().getAxis()==Axis.X?(posInMultiblock.getX()==0^getFacing()==Direction.EAST): (posInMultiblock.getZ()==0^getFacing()==Direction.NORTH))?.1875f: .5625f;
-				zMin = (getFacing().getAxis()==Axis.X?(posInMultiblock.getZ()==2^getFacing()==Direction.EAST): (posInMultiblock.getX()==0^getFacing()==Direction.NORTH))?.8125f: .4375f;
-				zMax = (getFacing().getAxis()==Axis.X?(posInMultiblock.getZ()==0^getFacing()==Direction.EAST): (posInMultiblock.getX() > 0^getFacing()==Direction.NORTH))?.1875f: .5625f;
+				xMin = (facing.getAxis()==Axis.X?(posInMultiblock.getZ() < 2^facing==Direction.EAST): (posInMultiblock.getX()==2^facing==Direction.NORTH))?.8125f: .4375f;
+				xMax = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==2^facing==Direction.EAST): (posInMultiblock.getX()==0^facing==Direction.NORTH))?.1875f: .5625f;
+				zMin = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==2^facing==Direction.EAST): (posInMultiblock.getZ()==2^facing==Direction.NORTH))?.8125f: .4375f;
+				zMax = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==0^facing==Direction.EAST): (posInMultiblock.getZ() < 2^facing==Direction.NORTH))?.1875f: .5625f;
 			}
 			else
 			{
 				yMin = .25f;
 				yMax = .75f;
-				xMin = (getFacing().getAxis()==Axis.X?(posInMultiblock.getX() > 0^getFacing()==Direction.EAST): (posInMultiblock.getZ()==2^getFacing()==Direction.NORTH))?1: .625f;
-				xMax = (getFacing().getAxis()==Axis.X?(posInMultiblock.getX()==0^getFacing()==Direction.EAST): (posInMultiblock.getZ()==0^getFacing()==Direction.NORTH))?0: .375f;
-				zMin = (getFacing().getAxis()==Axis.X?(posInMultiblock.getZ()==2^getFacing()==Direction.EAST): (posInMultiblock.getX()==0^getFacing()==Direction.NORTH))?1: .625f;
-				zMax = (getFacing().getAxis()==Axis.X?(posInMultiblock.getZ()==0^getFacing()==Direction.EAST): (posInMultiblock.getX() > 0^getFacing()==Direction.NORTH))?0: .375f;
+				xMin = (facing.getAxis()==Axis.X?(posInMultiblock.getZ() < 2^facing==Direction.EAST): (posInMultiblock.getX()==2^facing==Direction.NORTH))?1: .625f;
+				xMax = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==2^facing==Direction.EAST): (posInMultiblock.getX()==0^facing==Direction.NORTH))?0: .375f;
+				zMin = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==2^facing==Direction.EAST): (posInMultiblock.getZ()==2^facing==Direction.NORTH))?1: .625f;
+				zMax = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==0^facing==Direction.EAST): (posInMultiblock.getZ() < 2^facing==Direction.NORTH))?0: .375f;
 			}
 		}
 		else if(posInMultiblock.getY() >= 2)
@@ -215,21 +219,6 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 	protected boolean canDrainTankFrom(int iTank, Direction side)
 	{
 		return false;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private AxisAlignedBB renderAABB;
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox()
-	{
-		if(renderAABB==null)
-			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
-				renderAABB = new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 5, 2));
-			else
-				renderAABB = new AxisAlignedBB(getPos(), getPos());
-		return renderAABB;
 	}
 
 	@Nonnull

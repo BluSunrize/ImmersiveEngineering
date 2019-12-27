@@ -437,6 +437,7 @@ public class IEContent
 		Multiblocks.mixer = new MetalMultiblockBlock("mixer", () -> MixerTileEntity.TYPE);
 		Multiblocks.refinery = new MetalMultiblockBlock("refinery", () -> RefineryTileEntity.TYPE);
 		Multiblocks.dieselGenerator = new MetalMultiblockBlock("diesel_generator", () -> DieselGeneratorTileEntity.TYPE);
+		Multiblocks.lightningrod = new MetalMultiblockBlock("lightning_rod", () -> LightningrodTileEntity.TYPE);
 
 		Tools.wirecutter = new WirecutterItem();
 		Tools.hammer = new HammerItem();
@@ -1167,10 +1168,10 @@ public class IEContent
 
 		/*MULTIBLOCKS*/
 		/*TODO
-		MultiblockHandler.registerMultiblock(IEMultiblocks.LIGHTNING_ROD);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.FEEDTHROUGH);
 		*/
 		IEMultiblocks.init();
+		MultiblockHandler.registerMultiblock(IEMultiblocks.LIGHTNING_ROD);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.DIESEL_GENERATOR);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.REFINERY);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.MIXER);
