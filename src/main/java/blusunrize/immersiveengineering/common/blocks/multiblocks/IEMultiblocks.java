@@ -46,7 +46,7 @@ public class IEMultiblocks
 		BOTTLING_MACHINE = new BottlingMachineMultiblock();
 		BUCKET_WHEEL = new BucketWheelMultiblock();
 		COKE_OVEN = new CokeOvenMultiblock();
-		DIESEL_GENERATOR = CRUSHER;
+		DIESEL_GENERATOR = new DieselGeneratorMultiblock();
 		EXCAVATOR = new ExcavatorMultiblock();
 		EXCAVATOR_DEMO = CRUSHER;
 		FEEDTHROUGH = CRUSHER;

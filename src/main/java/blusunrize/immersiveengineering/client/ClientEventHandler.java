@@ -652,7 +652,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					}
 					if(equipped.getItem()==Tools.voltmeter)
 					{
-
 						RayTraceResult rrt = ClientUtils.mc().objectMouseOver;
 						IFluxReceiver receiver = null;
 						Direction side = null;
@@ -677,6 +676,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								text = I18n.format(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
 							int col = IEConfig.GENERAL.nixietubeFont.get()?Lib.colour_nixieTubeText: 0xffffff;
 							int i = 0;
+							GlStateManager.enableBlend();
 							for(String s : text)
 								if(s!=null)
 								{
@@ -686,6 +686,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 											scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.getFontHeight()+2)+
 													(i++)*(ClientProxy.nixieFontOptional.getFontHeight()+2), col);
 								}
+							GlStateManager.disableBlend();
 						}
 					}
 				}

@@ -223,7 +223,11 @@ public class IEBlockInterfaces
 		@Override
 		default Direction getFacing()
 		{
-			return getState().get(getFacingProperty());
+			BlockState state = getState();
+			if(state.has(getFacingProperty()))
+				return state.get(getFacingProperty());
+			else
+				return Direction.NORTH;
 		}
 
 		@Override
@@ -304,7 +308,10 @@ public class IEBlockInterfaces
 		default boolean getIsActive()
 		{
 			BlockState state = getState();
-			return state.get(IEProperties.ACTIVE);
+			if(state.has(IEProperties.ACTIVE))
+				return state.get(IEProperties.ACTIVE);
+			else
+				return false;
 		}
 
 		default void setActive(boolean active)
@@ -320,7 +327,10 @@ public class IEBlockInterfaces
 		default boolean getIsMirrored()
 		{
 			BlockState state = getState();
-			return state.get(IEProperties.MIRRORED);
+			if(state.has(IEProperties.MIRRORED))
+				return state.get(IEProperties.MIRRORED);
+			else
+				return false;
 		}
 
 		default void setMirrored(boolean mirrored)
@@ -362,7 +372,11 @@ public class IEBlockInterfaces
 	{
 		default boolean isDummy()
 		{
-			return getState().get(IEProperties.MULTIBLOCKSLAVE);
+			BlockState state = getState();
+			if(state.has(IEProperties.MULTIBLOCKSLAVE))
+				return state.get(IEProperties.MULTIBLOCKSLAVE);
+			else
+				return true;
 		}
 	}
 

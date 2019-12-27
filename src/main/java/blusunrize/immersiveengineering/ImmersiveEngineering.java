@@ -267,8 +267,7 @@ public class ImmersiveEngineering
 				}
 			} catch(Exception e)
 			{
-				IELogger.info("Could not load contributor+special revolver list.");
-				e.printStackTrace();
+				IELogger.logger.info("Could not load contributor+special revolver list.", e);
 			}
 		}
 	}
