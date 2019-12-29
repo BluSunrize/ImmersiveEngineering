@@ -189,7 +189,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				{
 					currentPoint = c.getOtherEnd(currentPoint);
 					//TODO use Blu's loss formula
-					currentLoss += ((IEnergyWire)c.type).getBasicLossRate(c);
+					currentLoss += getBasicLoss(c);
 					double availableAtPoint = atSource*(1-currentLoss);
 					double transferred = transferredInTick.getDouble(c);
 					transferredInTick.put(c, transferred+availableAtPoint);
@@ -227,7 +227,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		}
 	}
 
-	private double getBasicLoss(Connection c)
+	private static double getBasicLoss(Connection c)
 	{
 		if(c.isInternal())
 			return 0;
@@ -275,7 +275,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		public Path append(Connection next)
 		{
 			ConnectionPoint newEnd = next.getOtherEnd(end);
-			double newLoss = loss+((IEnergyWire)next.type).getBasicLossRate(next);
+			double newLoss = loss+getBasicLoss(next);
 			Connection[] newPath = Arrays.copyOf(conns, conns.length+1);
 			newPath[newPath.length-1] = next;
 			return new Path(newPath, start, newEnd, newLoss);

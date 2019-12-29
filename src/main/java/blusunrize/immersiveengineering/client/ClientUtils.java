@@ -412,6 +412,7 @@ public class ClientUtils
 		return newRenderers;
 	}
 
+	//TODO move somewhere else?
 	public static void handleBipedRotations(BipedModel model, Entity entity)
 	{
 		if(!IEConfig.GENERAL.fancyItemHolding.get())
