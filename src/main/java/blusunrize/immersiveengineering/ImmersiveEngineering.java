@@ -180,6 +180,7 @@ public class ImmersiveEngineering
 			"MavenKeyHere"//TODO maven
 	};
 
+	//TODO doesn't seem to be fired any more?
 	public void wrongSignature(FMLFingerprintViolationEvent event)
 	{
 		System.out.println("[Immersive Engineering/Error] THIS IS NOT AN OFFICIAL BUILD OF IMMERSIVE ENGINEERING! Found these fingerprints: "+event.getFingerprints());
@@ -191,7 +192,6 @@ public class ImmersiveEngineering
 				break;
 			}
 	}
-
 
 	public void serverStarting(FMLServerStartingEvent event)
 	{

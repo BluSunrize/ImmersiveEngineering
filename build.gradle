@@ -1,3 +1,5 @@
+import net.minecraftforge.gradle.common.task.SignJar
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -138,3 +140,20 @@ publishing {
         }
     }
 }
+task signJar(type: SignJar, dependsOn: jar) {
+    onlyIf {
+        project.hasProperty('keyStore')
+    }
+    if (project.hasProperty('keyStore')) {
+        keyStore = project.keyStore
+        alias = project.storeAlias
+        storePass = project.storePass
+        keyPass = project.storePass
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
+    } else {
+        logger.warn("No key store found, not signing the output jar\n")
+    }
+}
+
+build.dependsOn signJar
