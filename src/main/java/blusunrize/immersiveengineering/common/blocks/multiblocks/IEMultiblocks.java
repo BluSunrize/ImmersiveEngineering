@@ -8,6 +8,14 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher;
+import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.block.FourWayBlock;
+import net.minecraft.state.Property;
+
+import java.util.List;
+
 public class IEMultiblocks
 {
 	//TODO replace with correct instances
@@ -36,6 +44,27 @@ public class IEMultiblocks
 
 	public static void init()
 	{
+		//Add general matcher predicates
+		//Basic blockstate matcher
+		BlockMatcher.addPredicate((expected, found, world, pos) -> expected==found?Result.allow(1): Result.deny(1));
+		//FourWayBlock (fences etc): allow additional connections
+		List<Property<Boolean>> sideProperties = ImmutableList.of(FourWayBlock.NORTH,
+				FourWayBlock.EAST,
+				FourWayBlock.SOUTH,
+				FourWayBlock.WEST
+		);
+		BlockMatcher.addPredicate((expected, found, world, pos) -> {
+			if(expected.getBlock() instanceof FourWayBlock&&expected.getBlock()==found.getBlock())
+			{
+				for(Property<Boolean> side : sideProperties)
+					if(expected.get(side)&&!found.get(side))
+						return Result.deny(2);
+				return Result.allow(2);
+			}
+			return Result.DEFAULT;
+		});
+
+		//Init IE multiblocks
 		CRUSHER = new CrusherMultiblock();
 		ALLOY_SMELTER = new AlloySmelterMultiblock();
 		ARC_FURNACE = new ArcFurnaceMultiblock();

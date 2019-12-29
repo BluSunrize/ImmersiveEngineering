@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
@@ -41,18 +42,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-//TODO rotaion of blocks?
 public abstract class TemplateMultiblock implements MultiblockHandler.IMultiblock
 {
 	private final ResourceLocation loc;
 	private final BlockPos masterFromOrigin;
 	public final BlockPos triggerFromOrigin;
-	private final Map<Block, Tag<Block>> tags;
+	private final List<BlockMatcher.MatcherPredicate> additionalPredicates;
 	@Nullable
 	private Template template;
 	@Nullable
 	private IngredientStack[] materials;
 	private BlockState trigger = Blocks.AIR.getDefaultState();
+
+	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin,
+							  List<BlockMatcher.MatcherPredicate> additionalPredicates)
+	{
+		this.loc = loc;
+		this.masterFromOrigin = masterFromOrigin;
+		this.triggerFromOrigin = triggerFromOrigin;
+		this.additionalPredicates = additionalPredicates;
+	}
 
 	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin)
 	{
@@ -61,10 +70,20 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 
 	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, Map<Block, Tag<Block>> tags)
 	{
-		this.loc = loc;
-		this.masterFromOrigin = masterFromOrigin;
-		this.triggerFromOrigin = triggerFromOrigin;
-		this.tags = tags;
+		this(loc, masterFromOrigin, triggerFromOrigin, ImmutableList.of(
+				(expected, found, world, pos) -> {
+					Tag<Block> tag = tags.get(expected.getBlock());
+					if(tag!=null)
+					{
+						if(found.isIn(tag))
+							return Result.allow(2);
+						else
+							return Result.deny(2);
+					}
+					else
+						return Result.DEFAULT;
+				}
+		));
 	}
 
 	@Nonnull
@@ -106,7 +125,6 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	public boolean isBlockTrigger(BlockState state)
 	{
 		getTemplate();
-		//TODO facing dependant
 		return state.getBlock()==trigger.getBlock();
 	}
 
@@ -136,14 +154,8 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 				BlockPos here = origin.add(realRelPos);
 
 				BlockState expected = info.state.mirror(mirror).rotate(rot);
-
 				BlockState inWorld = world.getBlockState(here);
-				boolean valid;
-				if(tags.containsKey(expected.getBlock()))
-					valid = inWorld.getBlock().isIn(tags.get(expected.getBlock()));
-				else
-					valid = inWorld==expected;
-				if(!valid)
+				if(!BlockMatcher.matches(expected, inWorld, world, here, additionalPredicates).isAllow())
 					continue mirrorLoop;
 			}
 			form(world, origin, rot, mirror, side);
@@ -254,4 +266,5 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	{
 		return true;
 	}
+
 }
