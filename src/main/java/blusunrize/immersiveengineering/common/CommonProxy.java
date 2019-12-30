@@ -16,7 +16,6 @@
 
 package blusunrize.immersiveengineering.common;
 
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
@@ -29,7 +28,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -68,10 +66,6 @@ public class CommonProxy
 	}
 
 	public void onWorldLoad()
-	{
-	}
-
-	public void addFailedConnection(Connection connection, BlockPos reason, PlayerEntity player)
 	{
 	}
 

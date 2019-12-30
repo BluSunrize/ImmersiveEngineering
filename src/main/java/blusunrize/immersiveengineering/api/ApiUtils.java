@@ -559,9 +559,7 @@ public class ApiUtils
 					{
 						TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
 						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable))
-						{
 							player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"invalidPoint"), true);
-						}
 						else
 						{
 							IImmersiveConnectable iicLink = (IImmersiveConnectable)tileEntityLinkingPos;
@@ -631,11 +629,9 @@ public class ApiUtils
 									else
 									{
 										player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"cantSee"), true);
-										//TODO show all
-										BlockPos failedReason = failedReasons.iterator().next();
 										ImmersiveEngineering.packetHandler.send(
-												PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(failedReason)),
-												new MessageObstructedConnection(tempConn, failedReason, player.world));
+												PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(failedReasons.iterator().next())),
+												new MessageObstructedConnection(tempConn, failedReasons));
 									}
 								}
 							}
@@ -792,8 +788,8 @@ public class ApiUtils
 	{
 		for(AxisAlignedBB aabb : state.getCollisionShape(worldIn, pos).toBoundingBoxList())
 		{
-			aabb = aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()).grow(1e-5);
-			if(aabb.contains(a)||aabb.contains(b))
+			aabb = aabb.grow(1e-5);
+			if(aabb.contains(a)||aabb.contains(b)||aabb.rayTrace(a, b).isPresent())
 				return true;
 		}
 		return false;
