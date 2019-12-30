@@ -3,7 +3,6 @@ Things to do before the release. Not a complete list, but a list of things that 
  - Port missing manual entries
  - Rendering formed structures in the manual is probably broken right now
    - Render OBJs/block models directly rather than item models?
- - Wire damage is currently 5 independent of energy sources connected to the wire. Needs to be changed back to a similar behavior to 1.12
  
 From TODO_1.13.md:
  - Split `ApiUtils` in a client and a server class

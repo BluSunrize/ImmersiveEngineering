@@ -52,7 +52,6 @@ import net.minecraft.item.Rarity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
@@ -63,7 +62,6 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -217,38 +215,12 @@ public class EventHandler
 	}
 
 	private LongList tickTimes = new LongArrayList();
-	private long lastTick = -1;
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
 	{
-		if(event.phase==Phase.START&&event.world.dimension.getType()==DimensionType.OVERWORLD&&!event.world.isRemote)
+		if(event.phase==TickEvent.Phase.START&&!event.world.isRemote)
 		{
-			lastTick = Util.milliTime();
-		}
-		if(event.phase==Phase.END&&event.world.dimension.getType()==DimensionType.OVERWORLD&&!event.world.isRemote)
-		{
-			long curr = Util.milliTime();
-			tickTimes.add(curr-lastTick);
-			if(event.world.getGameTime()%40==0)
-			{
-				long sum = 0;
-				long max = 0, min = Long.MAX_VALUE;
-				for(Long i : tickTimes)
-				{
-					sum += i;
-					if(i > max) max = i;
-					if(i < min) min = i;
-				}
-				IELogger.info("Max tick time: {}, min {}, mean {}", max, min, sum/(double)tickTimes.size());
-				tickTimes.clear();
-			}
-		}
-		if(event.phase==TickEvent.Phase.START&&validateConnsNextTick&&!event.world.isRemote)
-		{
-			//TODO implement for the new system
-		}
-		if(event.phase==TickEvent.Phase.END&&!event.world.isRemote)
-		{
+			//TODO implement for the new system if (validateConnsNextTick)...
 			DimensionType dim = event.world.getDimension().getType();
 			GlobalWireNetwork.getNetwork(event.world).tick();
 

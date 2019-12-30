@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -232,6 +233,21 @@ public class IEWireTypes
 		public IElectricEquipment.ElectricSource getElectricSource()
 		{
 			return eSource;
+		}
+
+		@Override
+		public float getDamageAmount(Entity e, Connection c, int energy)
+		{
+			float factor;
+			if(this==COPPER)
+				factor = 2F;
+			else if(this==ELECTRUM)
+				factor = 5F;
+			else if(this==STEEL)
+				factor = 15F;
+			else
+				throw new UnsupportedOperationException("");
+			return factor*energy/getTransferRate()*8;
 		}
 	}
 

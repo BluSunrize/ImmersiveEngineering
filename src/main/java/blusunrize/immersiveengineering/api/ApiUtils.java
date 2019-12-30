@@ -492,23 +492,9 @@ public class ApiUtils
 		return raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart, vEnd);
 	}
 
-	/**
-	 * Use raytraceAlongCatenaryRelative instead, pass vStart and vEnd relative to the start of the connection
-	 */
-	@Deprecated
-	public static boolean raytraceAlongCatenary(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
-												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
-	{
-		BlockPos posA = conn.getEndA().getPosition();
-		return raytraceAlongCatenaryRelative(conn, shouldStop, close,
-				vStart.subtract(posA.getX(), posA.getY(), posA.getZ()),
-				vEnd.subtract(posA.getX(), posA.getY(), posA.getZ()));
-	}
-
 	public static boolean raytraceAlongCatenaryRelative(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
 														Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
 	{
-		IELogger.logger.info("Start is {}, end {}", vStart, vEnd);
 		conn.generateCatenaryData(vStart, vEnd);
 		HashMap<BlockPos, Vec3d> halfScanned = new HashMap<>();
 		HashSet<BlockPos> done = new HashSet<>();

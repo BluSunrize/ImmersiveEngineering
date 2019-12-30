@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap;
 import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap.HeapEntry;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.minecraft.util.ResourceLocation;
@@ -29,7 +29,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 {
 	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "energy_transfer");
 
-	private final Multimap<ConnectionPoint, Path> energyPaths = MultimapBuilder.hashKeys().arrayListValues().build();
+	private final Table<ConnectionPoint, ConnectionPoint, Path> energyPaths = HashBasedTable.create();
 	private final Object2DoubleMap<Connection> transferredInTick = new Object2DoubleOpenHashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sources = new HashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sinks = new HashMap<>();
@@ -82,9 +82,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	{
 		if(uninitialised)
 			calcPaths();
-		transferredInTick.clear();
 		transferPower();
 		burnOverloaded(w);
+		transferredInTick.clear();
 	}
 
 	public Object2DoubleMap<Connection> getTransferredInTick()
@@ -99,6 +99,20 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		sinks.clear();
 		sources.clear();
 		uninitialised = true;
+	}
+
+	public Map<ConnectionPoint, EnergyConnector> getSources()
+	{
+		if(uninitialised)
+			calcPaths();
+		return sources;
+	}
+
+	public Path getPath(ConnectionPoint source, ConnectionPoint sink)
+	{
+		if(uninitialised)
+			calcPaths();
+		return energyPaths.get(source, sink);
 	}
 
 	private void calcPaths()
@@ -132,14 +146,13 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				ConnectionPoint endPoint = heap.extractMin();
 				entryMap.remove(endPoint);
 				Path shortest = shortestKnown.get(endPoint);
-				if(sinks.containsKey(endPoint))
-					energyPaths.put(source, shortest);
+				energyPaths.put(source, shortest.end, shortest);
 				//Loss of 1 means no energy will be transferred, so the paths are irrelevant
 				if(shortest.loss >= 1)
 					break;
 				for(Connection next : net.getConnections(endPoint))
 				{
-					Path alternative = shortest.append(next);
+					Path alternative = shortest.append(next, sinks.containsKey(next.getOtherEnd(shortest.end)));
 					if(!shortestKnown.containsKey(alternative.end))
 					{
 						shortestKnown.put(alternative.end, alternative);
@@ -161,7 +174,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 
 	private void transferPower()
 	{
-		for(ConnectionPoint sourceCp : energyPaths.keySet())
+		for(ConnectionPoint sourceCp : energyPaths.rowKeySet())
 		{
 			EnergyConnector source = sources.get(sourceCp);
 			int available = source.getAvailableEnergy();
@@ -169,16 +182,17 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				continue;
 			double maxSum = 0;
 			Object2DoubleMap<Path> maxOut = new Object2DoubleOpenHashMap<>();
-			for(Path p : energyPaths.get(sourceCp))
-			{
-				EnergyConnector end = sinks.get(p.end);
-				int requested = end.getRequestedEnergy();
-				if(requested <= 0)
-					continue;
-				double requiredAtSource = Math.min(requested/(1-p.loss), available);
-				maxOut.put(p, requiredAtSource);
-				maxSum += requiredAtSource;
-			}
+			for(Path p : energyPaths.row(sourceCp).values())
+				if(p.isPathToSink)
+				{
+					EnergyConnector end = sinks.get(p.end);
+					int requested = end.getRequestedEnergy();
+					if(requested <= 0)
+						continue;
+					double requiredAtSource = Math.min(requested/(1-p.loss), available);
+					maxOut.put(p, requiredAtSource);
+					maxSum += requiredAtSource;
+				}
 			double allowedFactor = Math.min(1, available/maxSum);
 			for(Path p : maxOut.keySet())
 			{
@@ -217,14 +231,10 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		{
 			double transferred = transferredInTick.getDouble(c);
 			if(c.type instanceof IEnergyWire&&((IEnergyWire)c.type).shouldBurn(c, transferred))
-			{
 				toBurn.add(new ImmutablePair<>(c, transferred));
-			}
 		}
 		for(Pair<Connection, Double> c : toBurn)
-		{
 			((IEnergyWire)c.getLeft().type).burn(c.getLeft(), c.getRight(), net.getGlobal(), world);
-		}
 	}
 
 	private static double getBasicLoss(Connection c)
@@ -237,24 +247,26 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			return Double.POSITIVE_INFINITY;
 	}
 
-	private static class Path
+	public static class Path
 	{
-		final Connection[] conns;
-		final ConnectionPoint start;
-		final ConnectionPoint end;
-		final double loss;
+		public final Connection[] conns;
+		public final ConnectionPoint start;
+		public final ConnectionPoint end;
+		public final double loss;
+		public final boolean isPathToSink;
 
-		private Path(Connection[] conns, ConnectionPoint start, ConnectionPoint end, double loss)
+		private Path(Connection[] conns, ConnectionPoint start, ConnectionPoint end, double loss, boolean isPathToSink)
 		{
 			this.conns = conns;
 			this.start = start;
 			this.end = end;
 			this.loss = loss;
+			this.isPathToSink = isPathToSink;
 		}
 
 		public Path(ConnectionPoint point)
 		{
-			this(new Connection[0], point, point, 0);
+			this(new Connection[0], point, point, 0, false);
 		}
 
 		@Override
@@ -272,13 +284,13 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			return Arrays.hashCode(conns);
 		}
 
-		public Path append(Connection next)
+		public Path append(Connection next, boolean isPathToSink)
 		{
 			ConnectionPoint newEnd = next.getOtherEnd(end);
 			double newLoss = loss+getBasicLoss(next);
 			Connection[] newPath = Arrays.copyOf(conns, conns.length+1);
 			newPath[newPath.length-1] = next;
-			return new Path(newPath, start, newEnd, newLoss);
+			return new Path(newPath, start, newEnd, newLoss, isPathToSink);
 		}
 	}
 

@@ -13,15 +13,24 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
+import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
+import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.Path;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 public class WireDamageHandler extends LocalNetworkHandler implements ICollisionHandler
@@ -41,6 +50,9 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		WireType wType = info.conn.type;
 		if(!(wType instanceof IShockingWire))
 			return;
+		EnergyTransferHandler energyHandler = getEnergyHandler();
+		if(energyHandler==null)
+			return;
 		IShockingWire shockWire = (IShockingWire)wType;
 		double extra = shockWire.getDamageRadius();
 		AxisAlignedBB eAabb = e.getBoundingBox();
@@ -53,19 +65,57 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 			rayRes = includingExtra.rayTrace(info.intersectA, info.intersectB);
 		if(endpointsInEntity||rayRes.isPresent())
 		{
-			//TODO proper damage calculations
-			float damage = 5;
-			if(damage!=0)
+			Map<ConnectionPoint, EnergyConnector> sources = energyHandler.getSources();
+			Object2IntMap<ConnectionPoint> available = getAvailableEnergy(sources);
+			Map<ConnectionPoint, Path> paths = new HashMap<>();
+			int totalAvailable = 0;
+			ConnectionPoint target = info.conn.getEndA();//TODO less random choice?
+			for(Object2IntMap.Entry<ConnectionPoint> entry : available.object2IntEntrySet())
 			{
-				IEDamageSources.ElectricDamageSource dmg = IEDamageSources.causeWireDamage(damage, shockWire.getElectricSource());
+				Path path = energyHandler.getPath(entry.getKey(), target);
+				totalAvailable += entry.getIntValue()*(1-path.loss);
+				paths.put(entry.getKey(), path);
+			}
+			totalAvailable = Math.min(totalAvailable, shockWire.getTransferRate());
+
+			final float maxPossibleDamage = shockWire.getDamageAmount(e, info.conn, totalAvailable);
+			if(maxPossibleDamage > 0)
+			{
+				IEDamageSources.ElectricDamageSource dmg =
+						IEDamageSources.causeWireDamage(maxPossibleDamage, shockWire.getElectricSource());
 				if(dmg.apply(e))
 				{
-					damage = dmg.dmg;
+					final float actualDamage = dmg.dmg;
 					Vec3d v = e.getLookVec();
-					ApiUtils.knockbackNoSource(e, damage/KNOCKBACK_PER_DAMAGE, v.x, v.z);
+					ApiUtils.knockbackNoSource(e, actualDamage/KNOCKBACK_PER_DAMAGE, v.x, v.z);
+					//Consume energy
+					double factor = actualDamage/maxPossibleDamage;
+					Object2DoubleMap<Connection> transferred = energyHandler.getTransferredInTick();
+					for(Entry<ConnectionPoint, EnergyConnector> source : sources.entrySet())
+					{
+						Path path = paths.get(source.getKey());
+						int availableFromSource = available.getInt(source.getKey());
+						double energyFromSource = availableFromSource*factor;
+						source.getValue().extractEnergy(MathHelper.ceil(energyFromSource));
+						for(Connection c : path.conns)
+							transferred.mergeDouble(c, energyFromSource, Double::sum);
+					}
 				}
 			}
 		}
+	}
+
+	private Object2IntMap<ConnectionPoint> getAvailableEnergy(Map<ConnectionPoint, EnergyConnector> sources)
+	{
+		Object2IntMap<ConnectionPoint> ret = new Object2IntOpenHashMap<>();
+		for(Entry<ConnectionPoint, EnergyConnector> c : sources.entrySet())
+			ret.put(c.getKey(), c.getValue().getAvailableEnergy());
+		return ret;
+	}
+
+	private EnergyTransferHandler getEnergyHandler()
+	{
+		return net.getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
 	}
 
 	@Override
@@ -114,8 +164,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 
 		IElectricEquipment.ElectricSource getElectricSource();
 
-		//TODO use and change parameters to be useful
-		default float getDamageAmount(Entity e, Connection c)
+		default float getDamageAmount(Entity e, Connection c, int energy)
 		{
 			return 0;
 		}
