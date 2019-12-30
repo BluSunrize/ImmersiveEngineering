@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.font.IEFontRender;
 import blusunrize.immersiveengineering.client.font.NixieFontRender;
@@ -136,7 +135,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.lwjgl.glfw.GLFW;
 
@@ -146,7 +144,6 @@ import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -1340,13 +1337,6 @@ public class ClientProxy extends CommonProxy
 	public void clearConnectionModelCache()
 	{
 		BakedConnectionModel.cache.invalidateAll();
-	}
-
-	@Override
-	public void addFailedConnection(Connection connection, BlockPos reason, PlayerEntity player)
-	{
-		ClientEventHandler.FAILED_CONNECTIONS.put(connection,
-				new ImmutablePair<>(reason, new AtomicInteger(200)));
 	}
 
 	@Override

@@ -125,7 +125,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			ImmersiveEngineering.proxy.clearRenderCaches();
 	}
 
-	public static final Map<Connection, Pair<BlockPos, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
+	public static final Map<Connection, Pair<Collection<BlockPos>, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
 
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -294,14 +294,16 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	private void renderObstructingBlocks(BufferBuilder bb, Tessellator tes, double dx, double dy, double dz)
 	{
 		bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-		for(Map.Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
+		for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 		{
-			BlockPos obstruction = entry.getValue().getKey();
-			bb.setTranslation(obstruction.getX()-dx,
-					obstruction.getY()-dy,
-					obstruction.getZ()-dz);
-			final double eps = 1e-3;
-			ClientUtils.renderBox(bb, -eps, -eps, -eps, 1+eps, 1+eps, 1+eps);
+			for(BlockPos obstruction : entry.getValue().getKey())
+			{
+				bb.setTranslation(obstruction.getX()-dx,
+						obstruction.getY()-dy,
+						obstruction.getZ()-dz);
+				final double eps = 1e-3;
+				ClientUtils.renderBox(bb, -eps, -eps, -eps, 1+eps, 1+eps, 1+eps);
+			}
 		}
 		bb.setTranslation(0, 0, 0);
 		tes.draw();
@@ -1085,11 +1087,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			chunkBorders = true;
 
 		float partial = event.getPartialTicks();
+		double px = TileEntityRendererDispatcher.staticPlayerX;
+		double py = TileEntityRendererDispatcher.staticPlayerY;
+		double pz = TileEntityRendererDispatcher.staticPlayerZ;
 		if(!FractalParticle.PARTICLE_FRACTAL_DEQUE.isEmpty())
 		{
-			double px = TileEntityRendererDispatcher.staticPlayerX;
-			double py = TileEntityRendererDispatcher.staticPlayerY;
-			double pz = TileEntityRendererDispatcher.staticPlayerZ;
 
 			Tessellator tessellator = Tessellator.getInstance();
 
@@ -1114,9 +1116,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(chunkBorders)
 		{
 			PlayerEntity player = ClientUtils.mc().player;
-			double px = TileEntityRendererDispatcher.staticPlayerX;
-			double py = TileEntityRendererDispatcher.staticPlayerY;
-			double pz = TileEntityRendererDispatcher.staticPlayerZ;
 			int chunkX = (int)player.posX >> 4<<4;
 			int chunkZ = (int)player.posZ >> 4<<4;
 			int y = Math.min((int)player.posY-2, 0);//TODO player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
@@ -1165,9 +1164,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			Entity viewer = ClientUtils.mc().getRenderViewEntity();
 			if(viewer==null)
 				viewer = ClientUtils.mc().player;
-			double dx = viewer.lastTickPosX+(viewer.posX-viewer.lastTickPosX)*partial;
-			double dy = viewer.lastTickPosY+(viewer.posY-viewer.lastTickPosY)*partial;
-			double dz = viewer.lastTickPosZ+(viewer.posZ-viewer.lastTickPosZ)*partial;
 			Tessellator tes = Tessellator.getInstance();
 			BufferBuilder bb = tes.getBuffer();
 			float oldLineWidth = GL11.glGetFloat(GL11.GL_LINE_WIDTH);
@@ -1175,12 +1171,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
 			bb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-			for(Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
+			for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 			{
 				Connection conn = entry.getKey();
-				bb.setTranslation(conn.getEndA().getX()-dx,
-						conn.getEndA().getY()-dy,
-						conn.getEndA().getZ()-dz);
+				bb.setTranslation(conn.getEndA().getX()-px,
+						conn.getEndA().getY()-py,
+						conn.getEndA().getZ()-pz);
 				int time = entry.getValue().getValue().get();
 				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
 				Vec3d prev = conn.getPoint(0, conn.getEndA());
@@ -1200,7 +1196,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.lineWidth(oldLineWidth);
 			GlStateManager.enableBlend();
 			GlStateManager.color4f(1, 0, 0, .5F);
-			renderObstructingBlocks(bb, tes, dx, dy, dz);
+			renderObstructingBlocks(bb, tes, px, py, pz);
 
 			GlStateManager.disableBlend();
 			GlStateManager.enableTexture();
