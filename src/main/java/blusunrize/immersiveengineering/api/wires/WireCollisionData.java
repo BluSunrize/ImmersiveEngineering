@@ -38,11 +38,10 @@ public class WireCollisionData
 				IELogger.logger.info("Raytracing for addition of {}", conn);
 				if((net.getLocalNet(conn.getEndA())!=net.getLocalNet(conn.getEndB()))) throw new AssertionError();
 				ApiUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()), (p) ->
-				{
-					blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, true));
-					return false;
-				}, (p) ->
-						blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, false)));
+								blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, true))
+						, (p) ->
+								blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, false))
+				);
 				conn.blockDataGenerated = true;
 			}
 		}
@@ -54,12 +53,9 @@ public class WireCollisionData
 		if(conn.blockDataGenerated)
 		{
 			IELogger.info("Raytracing for removal of {}", conn);
-			ApiUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()), (p) ->
-			{
-				blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn);
-				return false;
-			}, (p) ->
-							blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn)
+			ApiUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()),
+					(p) -> blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn),
+					(p) -> blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn)
 			);
 			conn.blockDataGenerated = false;
 		}

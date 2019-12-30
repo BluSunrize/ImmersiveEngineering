@@ -125,12 +125,15 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			}
 			//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
 			for(Connection c : conns)
-				if(!c.isInternal())
+			{
+				ConnectionPoint other = c.getOtherEnd(cp);
+				if(!c.isInternal()&&!(globalNet.getLocalNet(other).getConnector(other) instanceof IICProxy))
 				{
 					// generate subvertices
 					c.generateCatenaryData(world);
 					ret.add(c);
 				}
+			}
 		}
 		IELogger.logger.info("Model data has connections {}", ret);
 		return new ConnectionModelData(ret, pos);

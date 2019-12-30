@@ -115,7 +115,7 @@ public class Connection
 			catData.offsetX = catData.offsetY = 0;
 			return;
 		}
-		double wireLength = Math.sqrt(catData.deltaX*catData.deltaX+catData.deltaY*catData.deltaY+catData.deltaZ*catData.deltaZ)*type.getSlack();
+		double wireLength = catData.getDelta().length()*type.getSlack();
 		double l;
 		{
 			double goal = Math.sqrt(wireLength*wireLength-catData.deltaY*catData.deltaY)/catData.horLength;
