@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.models.ModelConveyor.RawConveyorModel;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.RawCoresampleModel;
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader.ConnectorModel;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJModel;
@@ -104,6 +105,8 @@ public class DynamicModelLoader
 					unbaked = new ConnectorModel();
 				else if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "coresample")))
 					unbaked = new RawCoresampleModel();
+				else if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor")))
+					unbaked = new RawConveyorModel();
 				else
 				{
 					IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));

@@ -78,8 +78,8 @@ public class DropConveyor extends BasicConveyor
 		return false;
 	}
 
-	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor_dropper");
-	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor_dropper_off");
+	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/dropper");
+	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor/dropper_off");
 
 	@Override
 	public ResourceLocation getActiveTexture()

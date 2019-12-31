@@ -254,6 +254,8 @@ public class Models extends ModelGenerator
 				locForItemModel(MetalDevices.teslaCoil)));
 		out.accept(ModelHelper.createWithModel(rl("block/metal_device/fluid_pipe.obj.ie"),
 				locForItemModel(MetalDevices.fluidPipe)));
+		for(Block b : MetalDevices.CONVEYORS.values())
+			out.accept(ModelHelper.createWithDynamicModel(rl("conveyor"), locForItemModel(b)));
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)

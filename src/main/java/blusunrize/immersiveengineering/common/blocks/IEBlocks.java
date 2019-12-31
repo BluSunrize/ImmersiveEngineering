@@ -21,7 +21,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -174,7 +173,7 @@ public final class IEBlocks
 		public static Block turretChem;
 		public static Block turretGun;
 		public static Block belljar;
-		public static final Map<ResourceLocation, Block> CONVEYORS = new HashMap<>();
+		public static final BiMap<ResourceLocation, Block> CONVEYORS = HashBiMap.create();
 	}
 
 	public static final class Connectors

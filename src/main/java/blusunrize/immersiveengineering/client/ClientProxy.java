@@ -277,11 +277,13 @@ public class ClientProxy extends CommonProxy
 		keybind_chemthrowerSwitch.setKeyConflictContext(KeyConflictContext.IN_GAME);
 		ClientRegistry.registerKeyBinding(keybind_chemthrowerSwitch);
 
-		//TODO
 		nixieFontOptional = new NixieFontRender(false);
 		nixieFont = new NixieFontRender(false);
 		itemFont = new IEFontRender(false);
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
+
+		//TODO remove once the turntable is back, if it ever comes back
+		DynamicModelLoader.requestTexture(new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/turntable_bottom"));
 
 		ClientRegistry.bindTileEntitySpecialRenderer(ChargingStationTileEntity.class, new ChargingStationRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(SampleDrillTileEntity.class, new SampleDrillRenderer());

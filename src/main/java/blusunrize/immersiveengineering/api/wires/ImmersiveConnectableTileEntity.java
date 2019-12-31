@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -140,7 +141,8 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	@Override
 	public IModelData getModelData()
 	{
-		return new SinglePropertyModelData<>(genConnBlockstate(), Model.CONNECTIONS);
+		return new CombinedModelData(new SinglePropertyModelData<>(genConnBlockstate(), Model.CONNECTIONS),
+				super.getModelData());
 	}
 
 	@Override

@@ -8,9 +8,13 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.client.utils.CombinedModelData;
+import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.BlockstateProvider;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPropertyPassthrough;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import net.minecraft.block.BlockState;
@@ -25,6 +29,7 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
@@ -284,5 +289,16 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	public BlockState getState()
 	{
 		return getBlockState();
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData()
+	{
+		IModelData base = super.getModelData();
+		if(this instanceof IPropertyPassthrough)
+			return new CombinedModelData(base, new SinglePropertyModelData<>(this, Model.TILEENTITY_PASSTHROUGH));
+		else
+			return base;
 	}
 }

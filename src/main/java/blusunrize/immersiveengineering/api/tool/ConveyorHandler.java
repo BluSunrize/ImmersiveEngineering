@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
@@ -61,8 +62,8 @@ public class ConveyorHandler
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<>();
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<>();
 
-	public static final Map<ResourceLocation, Block> conveyorBlocks = MetalDevices.CONVEYORS;
-	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor_colour");
+	public static final BiMap<ResourceLocation, Block> conveyorBlocks = MetalDevices.CONVEYORS;
+	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor/colour");
 
 	/**
 	 * @param key           A unique ResourceLocation to identify the conveyor by
@@ -127,6 +128,11 @@ public class ConveyorHandler
 			Block b = new ConveyorBlock(rl);
 			conveyorBlocks.put(rl, b);
 		}
+	}
+
+	public static ResourceLocation getType(Block b)
+	{
+		return conveyorBlocks.inverse().get(b);
 	}
 
 	public static Block getBlock(ResourceLocation typeName)

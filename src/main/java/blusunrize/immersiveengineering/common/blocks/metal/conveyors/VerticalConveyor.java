@@ -290,8 +290,8 @@ public class VerticalConveyor extends BasicConveyor
 		return new Matrix4(matrix).translate(0, 1, 0).rotate(Math.PI/2, 1, 0, 0).toMatrix4f();
 	}
 
-	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor_vertical");
-	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor_vertical_off");
+	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/vertical");
+	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor/vertical_off");
 
 	@Override
 	public ResourceLocation getActiveTexture()

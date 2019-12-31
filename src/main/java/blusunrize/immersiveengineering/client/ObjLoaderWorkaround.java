@@ -193,6 +193,7 @@ public class ObjLoaderWorkaround
 		return name.getPath().endsWith(".obj")||
 				name.getPath().endsWith(".obj.ie")||
 				"connector".equals(name.getPath())||
-				"coresample".equals(name.getPath());
+				"coresample".equals(name.getPath())||
+				"conveyor".equals(name.getPath());
 	}
 }

@@ -234,6 +234,9 @@ public class BlockStates extends BlockstateGenerator
 				variantBased);
 		createBasicBlock(Cloth.cushion, models.cushion, variantBased);
 		createMultistateSingleModel(Cloth.shaderBanner, EMPTY_MODEL, variantBased);
+
+		for(Block b : MetalDevices.CONVEYORS.values())
+			createMultistateSingleModel(b, new ConfiguredModel(new UncheckedModelFile(rl("conveyor"))), variantBased);
 	}
 
 	private void createRotatedBlock(Block block, Function<Map<IProperty<?>, Object>, ModelFile> model, IProperty<Direction> facing,

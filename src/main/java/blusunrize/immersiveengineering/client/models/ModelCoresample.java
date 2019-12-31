@@ -316,7 +316,6 @@ public class ModelCoresample extends BakedIEModel
 
 	public static class RawCoresampleModel implements IUnbakedModel
 	{
-
 		@Override
 		public Collection<ResourceLocation> getDependencies()
 		{
