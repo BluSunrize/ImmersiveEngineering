@@ -161,10 +161,7 @@ public class IEWireTypes
 		@Override
 		public Collection<ResourceLocation> getRequestedHandlers()
 		{
-			if(ordinal < 3)
-				return ImmutableList.of(WireDamageHandler.ID);
-			else
-				return ImmutableList.of();
+			return ImmutableList.of();
 		}
 	}
 
@@ -248,6 +245,12 @@ public class IEWireTypes
 			else
 				throw new UnsupportedOperationException("");
 			return factor*energy/getTransferRate()*8;
+		}
+
+		@Override
+		public Collection<ResourceLocation> getRequestedHandlers()
+		{
+			return ImmutableList.of(WireDamageHandler.ID);
 		}
 	}
 

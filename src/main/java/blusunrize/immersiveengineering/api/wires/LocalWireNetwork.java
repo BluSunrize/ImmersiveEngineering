@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProv
 import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -256,9 +257,8 @@ public class LocalWireNetwork implements IWorldTickable
 	{
 		for(ResourceLocation loc : iic.getRequestedHandlers())
 		{
-			if(!handlers.containsKey(loc))
-				throw new AssertionError("Expected to find handler for "+loc+" but didn't!");
-			int remaining = handlerUserCount.get(loc)-1;
+			Preconditions.checkState(handlers.containsKey(loc), "Expected to find handler for "+loc);
+			int remaining = handlerUserCount.getInt(loc)-1;
 			handlerUserCount.put(loc, remaining);
 			IELogger.logger.info("Decreasing {} to {}", loc, remaining);
 			if(remaining <= 0)

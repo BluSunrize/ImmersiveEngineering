@@ -25,8 +25,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -288,7 +286,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	private void validate()
 	{
-		if(EffectiveSide.get()==LogicalSide.CLIENT)
+		if(world.isRemote)
 			return;
 		localNets.values().stream().distinct().forEach(
 				(local) -> {
