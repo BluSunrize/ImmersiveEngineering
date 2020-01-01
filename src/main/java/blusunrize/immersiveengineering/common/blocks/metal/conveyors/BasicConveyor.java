@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 //TODO support covers in here, rather than having to make a covered and a non-covered version of every belt?
 public class BasicConveyor implements IConveyorBelt
 {
-	public static final ResourceLocation NAME = new ResourceLocation(ImmersiveEngineering.MODID, "conveyor");
+	public static final ResourceLocation NAME = new ResourceLocation(ImmersiveEngineering.MODID, "basic");
 
 	ConveyorDirection direction = ConveyorDirection.HORIZONTAL;
 	@Nullable
@@ -52,7 +52,8 @@ public class BasicConveyor implements IConveyorBelt
 	@Override
 	public boolean changeConveyorDirection()
 	{
-		direction = direction==ConveyorDirection.HORIZONTAL?ConveyorDirection.UP: direction==ConveyorDirection.UP?ConveyorDirection.DOWN: ConveyorDirection.HORIZONTAL;
+		if(!tile.getWorld().isRemote)
+			direction = direction==ConveyorDirection.HORIZONTAL?ConveyorDirection.UP: direction==ConveyorDirection.UP?ConveyorDirection.DOWN: ConveyorDirection.HORIZONTAL;
 		return true;
 	}
 

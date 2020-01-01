@@ -139,15 +139,18 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		if(player.isSneaking())
+		if(!world.isRemote)
 		{
-			inverted = !inverted;
-			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
-			notifyNeighbours();
-			updateConductivity();
+			if(player.isSneaking())
+			{
+				inverted = !inverted;
+				ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
+				notifyNeighbours();
+				updateConductivity();
+			}
+			else
+				rotation = (rotation+3)%4;
 		}
-		else
-			rotation = (rotation+3)%4;
 		return true;
 	}
 

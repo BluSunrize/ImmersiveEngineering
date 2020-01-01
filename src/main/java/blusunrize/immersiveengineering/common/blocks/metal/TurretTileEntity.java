@@ -385,7 +385,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 				return ((TurretTileEntity)te).hammerUseSide(side, player, hitVec);
 			return false;
 		}
-		if(player.isSneaking())
+		if(player.isSneaking()&&!world.isRemote)
 		{
 			redstoneControlInverted = !redstoneControlInverted;
 			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));

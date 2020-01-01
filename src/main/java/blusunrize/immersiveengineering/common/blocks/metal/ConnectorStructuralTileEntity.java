@@ -54,10 +54,13 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		rotation += player.isSneaking()?-22.5f: 22.5f;
-		rotation %= 360;
-		markDirty();
-		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
+		if(!world.isRemote)
+		{
+			rotation += player.isSneaking()?-22.5f: 22.5f;
+			rotation %= 360;
+			markDirty();
+			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
+		}
 		return true;
 	}
 

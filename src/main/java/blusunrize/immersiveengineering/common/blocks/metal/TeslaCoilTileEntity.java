@@ -409,26 +409,29 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				return ((TeslaCoilTileEntity)te).hammerUseSide(side, player, hitVec);
 			return false;
 		}
-		if(player.isSneaking())
+		if(!world.isRemote)
 		{
-			int energyDrain = IEConfig.MACHINES.teslacoil_consumption.get();
-			if(lowPower)
-				energyDrain /= 2;
-			if(canRun(energyDrain))
-				player.attackEntityFrom(IEDamageSources.causeTeslaPrimaryDamage(), Float.MAX_VALUE);
+			if(player.isSneaking())
+			{
+				int energyDrain = IEConfig.MACHINES.teslacoil_consumption.get();
+				if(lowPower)
+					energyDrain /= 2;
+				if(canRun(energyDrain))
+					player.attackEntityFrom(IEDamageSources.causeTeslaPrimaryDamage(), Float.MAX_VALUE);
+				else
+				{
+					lowPower = !lowPower;
+					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"tesla."+(lowPower?"lowPower": "highPower")));
+					markDirty();
+				}
+			}
 			else
 			{
-				lowPower = !lowPower;
-				ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"tesla."+(lowPower?"lowPower": "highPower")));
+				redstoneControlInverted = !redstoneControlInverted;
+				ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
 				markDirty();
+				this.markContainingBlockForUpdate(null);
 			}
-		}
-		else
-		{
-			redstoneControlInverted = !redstoneControlInverted;
-			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
-			markDirty();
-			this.markContainingBlockForUpdate(null);
 		}
 		return true;
 	}

@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:conveyor_immersiveengineering_droppercovered"
+          "name": "immersiveengineering:conveyor_uncontrolled"
         }
       ],
       "conditions": [

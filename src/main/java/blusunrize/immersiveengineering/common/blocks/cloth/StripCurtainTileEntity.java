@@ -216,8 +216,11 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		strongSignal = !strongSignal;
-		ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl.strongSignal."+strongSignal));
+		if(!world.isRemote)
+		{
+			strongSignal = !strongSignal;
+			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl.strongSignal."+strongSignal));
+		}
 		return true;
 	}
 

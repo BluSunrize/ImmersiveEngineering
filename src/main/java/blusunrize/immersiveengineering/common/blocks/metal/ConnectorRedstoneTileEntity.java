@@ -147,17 +147,20 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		//Sneaking iterates through colours, normal hammerign toggles in and out
-		if(player.isSneaking())
-			redstoneChannel = DyeColor.byId(redstoneChannel.getId()+1);
-		else
-			ioMode = ioMode==0?1: 0;
-		markDirty();
-		globalNet.getLocalNet(pos)
-				.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
-				.updateValues();
-		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
+		if(!world.isRemote)
+		{
+			//Sneaking iterates through colours, normal hammerign toggles in and out
+			if(player.isSneaking())
+				redstoneChannel = DyeColor.byId(redstoneChannel.getId()+1);
+			else
+				ioMode = ioMode==0?1: 0;
+			markDirty();
+			globalNet.getLocalNet(pos)
+					.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
+					.updateValues();
+			this.markContainingBlockForUpdate(null);
+			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
+		}
 		return true;
 	}
 

@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:conveyor_immersiveengineering_splitter"
+          "name": "immersiveengineering:conveyor_droppercovered"
         }
       ],
       "conditions": [

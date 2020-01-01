@@ -96,7 +96,7 @@ public class ModelConveyor extends BakedIEModel
 				key = conveyor.getModelCacheKey();
 		}
 		List<BakedQuad> cachedQuads = modelCache.get(key);
-		if(true||cachedQuads==null)
+		if(cachedQuads==null)
 		{
 			if(conveyor==null)
 				conveyor = ConveyorHandler.getConveyor(new ResourceLocation(key), tile);
@@ -480,7 +480,6 @@ public class ModelConveyor extends BakedIEModel
 			return tileData;
 	}
 
-	//TODO read conveyor from extra data
 	public static class RawConveyorModel implements IUnbakedModel
 	{
 		@Override

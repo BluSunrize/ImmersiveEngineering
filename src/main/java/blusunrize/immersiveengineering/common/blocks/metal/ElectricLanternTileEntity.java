@@ -198,8 +198,11 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		flipped = !flipped;
-		markContainingBlockForUpdate(null);
+		if(!world.isRemote)
+		{
+			flipped = !flipped;
+			markContainingBlockForUpdate(null);
+		}
 		return true;
 	}
 

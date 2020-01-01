@@ -162,9 +162,12 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 //			else
 //				transportUp = true;
 
-			this.markDirty();
-			this.markContainingBlockForUpdate(null);
-			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
+			if(!world.isRemote)
+			{
+				this.markDirty();
+				this.markContainingBlockForUpdate(null);
+				world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
+			}
 			return true;
 		}
 		return false;

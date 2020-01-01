@@ -371,16 +371,19 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		if(this.isRedstonePos()&&hasRedstoneControl)
+		if(!world.isRemote)
 		{
-			MultiblockPartTileEntity<T> master = master();
-			if(master!=null)
+			if(this.isRedstonePos()&&hasRedstoneControl)
 			{
-				master.redstoneControlInverted = !master.redstoneControlInverted;
-				ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."
-						+(master.redstoneControlInverted?"invertedOn": "invertedOff")));
-				this.updateMasterBlock(null, true);
-				return true;
+				MultiblockPartTileEntity<T> master = master();
+				if(master!=null)
+				{
+					master.redstoneControlInverted = !master.redstoneControlInverted;
+					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."
+							+(master.redstoneControlInverted?"invertedOn": "invertedOff")));
+					this.updateMasterBlock(null, true);
+					return true;
+				}
 			}
 		}
 		return false;

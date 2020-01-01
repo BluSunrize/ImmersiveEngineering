@@ -282,7 +282,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		TileEntity tile = w.getTileEntity(pos);
-		if(tile instanceof IHammerInteraction&&!w.isRemote)
+		if(tile instanceof IHammerInteraction)
 		{
 			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hit.getHitVec());
 			if(b)

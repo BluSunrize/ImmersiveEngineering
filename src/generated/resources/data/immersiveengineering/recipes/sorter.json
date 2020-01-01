@@ -16,7 +16,7 @@
       "tag": "forge:treated_wood"
     },
     "b": {
-      "item": "immersiveengineering:conveyor_immersiveengineering_conveyor"
+      "item": "immersiveengineering:conveyor_basic"
     },
     "c": {
       "item": "immersiveengineering:component_iron"

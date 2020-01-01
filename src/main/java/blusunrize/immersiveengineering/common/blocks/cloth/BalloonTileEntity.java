@@ -236,8 +236,11 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		style = 1-style;
-		markContainingBlockForUpdate(null);
+		if(!world.isRemote)
+		{
+			style = 1-style;
+			markContainingBlockForUpdate(null);
+		}
 		return true;
 	}
 

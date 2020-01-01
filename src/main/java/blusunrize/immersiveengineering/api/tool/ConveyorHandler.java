@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
@@ -62,7 +61,7 @@ public class ConveyorHandler
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<>();
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<>();
 
-	public static final BiMap<ResourceLocation, Block> conveyorBlocks = MetalDevices.CONVEYORS;
+	public static final Map<ResourceLocation, Block> conveyorBlocks = MetalDevices.CONVEYORS;
 	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor/colour");
 
 	/**
@@ -96,6 +95,12 @@ public class ConveyorHandler
 	 */
 	public static IConveyorBelt getConveyor(ResourceLocation key, @Nullable TileEntity tile)
 	{
+		if(tile instanceof ConveyorBeltTileEntity)
+		{
+			IConveyorBelt fromTile = ((ConveyorBeltTileEntity)tile).getConveyorSubtype();
+			if(fromTile!=null)
+				return fromTile;
+		}
 		Function<TileEntity, ? extends IConveyorBelt> func = functionRegistry.get(key);
 		if(func!=null)
 			return func.apply(tile);
@@ -109,8 +114,7 @@ public class ConveyorHandler
 			TileEntityType<ConveyorBeltTileEntity> te = new TileEntityType<>(() -> new ConveyorBeltTileEntity(rl),
 					ImmutableSet.of(conveyorBlocks.get(rl)),
 					null);
-			te.setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor_"
-					+rl.toString().replace(':', '_')));
+			te.setRegistryName(getRegistryNameFor(rl));
 			tileEntities.put(rl, te);
 			evt.getRegistry().register(te);
 		}
@@ -119,6 +123,16 @@ public class ConveyorHandler
 	public static TileEntityType<? extends TileEntity> getTEType(ResourceLocation typeName)
 	{
 		return tileEntities.get(typeName);
+	}
+
+	public static ResourceLocation getRegistryNameFor(ResourceLocation conveyorLoc)
+	{
+		String path;
+		if(ImmersiveEngineering.MODID.equals(conveyorLoc.getNamespace()))
+			path = conveyorLoc.getPath();
+		else
+			path = conveyorLoc.getNamespace()+"_"+conveyorLoc.getPath();
+		return new ResourceLocation(ImmersiveEngineering.MODID, "conveyor_"+path);
 	}
 
 	public static void createConveyorBlocks()
@@ -132,7 +146,10 @@ public class ConveyorHandler
 
 	public static ResourceLocation getType(Block b)
 	{
-		return conveyorBlocks.inverse().get(b);
+		if(b instanceof ConveyorBlock)
+			return ((ConveyorBlock)b).getTypeName();
+		else
+			return null;
 	}
 
 	public static Block getBlock(ResourceLocation typeName)

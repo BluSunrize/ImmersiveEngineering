@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:conveyor_immersiveengineering_verticalcovered"
+          "name": "immersiveengineering:conveyor_verticalcovered"
         }
       ],
       "conditions": [

@@ -105,9 +105,12 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IDirectiona
 	{
 		if(player.isSneaking())
 		{
-			invert = !invert;
-			markDirty();
-			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
+			if(!world.isRemote)
+			{
+				invert = !invert;
+				markDirty();
+				world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
+			}
 			return true;
 		}
 		return false;

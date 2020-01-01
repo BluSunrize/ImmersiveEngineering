@@ -43,7 +43,7 @@ public class ConveyorBlock extends IETileProviderBlock
 
 	public ConveyorBlock(ResourceLocation type)
 	{
-		super("conveyor_"+type.toString().replace(':', '_'),
+		super(ConveyorHandler.getRegistryNameFor(type).getPath(),
 				Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
 				BlockItemIE.class, FACING);
 		this.typeName = type;
@@ -94,4 +94,8 @@ public class ConveyorBlock extends IETileProviderBlock
 		return true;
 	}
 
+	public ResourceLocation getTypeName()
+	{
+		return typeName;
+	}
 }
