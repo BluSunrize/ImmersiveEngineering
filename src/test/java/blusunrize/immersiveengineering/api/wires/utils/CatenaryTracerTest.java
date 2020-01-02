@@ -12,8 +12,11 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.doubles.DoubleAVLTreeSet;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -22,6 +25,8 @@ import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,30 +61,62 @@ class CatenaryTracerTest
 		for(double d : ct.integerIntersections)
 			sum += d;
 		assertTrue(Math.abs(sum-2) < 1e-5);
+		//Only one branch exists
+		for(int i = 0; i < 2; ++i)
+		{
+			ct = create(new Vec3d(0.1+0.8*i, 0.5, 0.5), new Vec3d(0.9-0.8*i, 5.5, 0.5), 0.0005);
+			ct.calculateIntegerIntersections();
+			assertTrue(ct.integerIntersections.contains(0));
+			assertTrue(ct.integerIntersections.contains(1));
+			assertEquals(5+2, ct.integerIntersections.size());
+		}
 	}
 
 	@Test
 	void forEachSegment()
 	{
-		//TODO more precise tests
-		CatenaryTracer ct = create(new Vec3d(0.5, 0.125, 0.75), new Vec3d(1.5, 0.125, 0.75), 0.005);
-		ct.calculateIntegerIntersections();
-		ct.forEachSegment(segment -> {
-			double[] minDist = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
-			for(Vec3d p : new Vec3d[]{segment.relativeSegmentStart, segment.relativeSegmentEnd})
-			{
-				assertEquals(0.75+OFFSET.getZ(), p.z+segment.mainPos.getZ());
-				for(int i = 0; i < 3; ++i)
+		//TODO more tests?
+		{
+			CatenaryTracer ct = create(new Vec3d(0.5, 0.125, 0.75), new Vec3d(1.5, 0.125, 0.75), 0.005);
+			ct.calculateIntegerIntersections();
+			ct.forEachSegment(segment -> {
+				double[] minDist = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
+				for(Vec3d p : new Vec3d[]{segment.relativeSegmentStart, segment.relativeSegmentEnd})
 				{
-					double pos = ApiUtils.getDim(p, i);
-					double projection = MathHelper.clamp(pos, 0, 1);
-					minDist[i] = Math.min(minDist[i], Math.abs(projection-pos));
+					assertEquals(0.75+OFFSET.getZ(), p.z+segment.mainPos.getZ());
+					for(int i = 0; i < 3; ++i)
+					{
+						double pos = ApiUtils.getDim(p, i);
+						double projection = MathHelper.clamp(pos, 0, 1);
+						minDist[i] = Math.min(minDist[i], Math.abs(projection-pos));
+					}
 				}
+				double eps = segment.inBlock?1e-5: 0.3;
+				for(int i = 0; i < 3; ++i)
+					assertTrue(minDist[i] < eps);
+			});
+		}
+		{
+			Object2IntMap<BlockPos> inCounts = new Object2IntOpenHashMap<>();
+			CatenaryTracer ct = create(new Vec3d(0.5, 0.5, 0.5), new Vec3d(-0.5, 0.5, -0.5), 0.005);
+			ct.calculateIntegerIntersections();
+			ct.forEachSegment(seg -> {
+				if(seg.inBlock)
+					inCounts.computeInt(seg.mainPos, (bp, count) -> count==null?1: count+1);
+			});
+			Map<BlockPos, Integer> expectedBase = ImmutableMap.of(
+					BlockPos.ZERO, 2,
+					new BlockPos(-1, 0, -1), 2,
+					new BlockPos(-1, 0, 0), 2,
+					new BlockPos(0, 0, -1), 2
+			);
+			Object2IntMap<BlockPos> expected = new Object2IntOpenHashMap<>();
+			for(Entry<BlockPos, Integer> x : expectedBase.entrySet())
+			{
+				expected.put(x.getKey().add(OFFSET), x.getValue());
 			}
-			double eps = segment.inBlock?1e-5: 0.3;
-			for(int i = 0; i < 3; ++i)
-				assertTrue(minDist[i] < eps);
-		});
+			assertEquals(expected, inCounts);
+		}
 	}
 
 	private void testForEachCloseCoord(Vec3d center, double eps, Set<BlockPos> expected)
