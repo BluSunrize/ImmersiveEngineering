@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.wires.utils;
 
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.DoubleAVLTreeSet;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleSortedSet;
@@ -38,9 +39,10 @@ public class CatenaryTracer
 		this.offset = offset;
 	}
 
-	public static double acosh(double arg)
+	public static double acosh(double arg, CatenaryBranch branch)
 	{
-		return Math.log(arg-Math.sqrt(arg*arg-1));
+		double factor = branch==CatenaryBranch.NEGATIVE?-1: 1;
+		return Math.log(arg+factor*Math.sqrt(arg*arg-1));
 	}
 
 	public void calculateIntegerIntersections()
@@ -78,23 +80,30 @@ public class CatenaryTracer
 		else
 		{
 			//Lowest point (on an infinite catenary): x=0, so cosh(x/factor)=1
-			double min = catenaryData.getScale()+catenaryData.getOffsetY()+start.y;
+			double min;
+			if(!CatenaryBranch.POSITIVE.exists(catenaryData)||!CatenaryBranch.NEGATIVE.exists(catenaryData))
+				//Only one branch exists => the lower endpoint is the lowest point
+				min = Math.min(start.y, end.y);
+			else
+				//Both branches exist => lowest point is the lowest point on the infinite catenary
+				min = catenaryData.getScale()+catenaryData.getOffsetY()+start.y;
 			//There are up to 2 points with the same Y coord in a catenary
-			for(int branch = 0; branch < 2; branch++)
-			{
-				double factor = branch==0?1: -1;
-				double max = branch==0?end.y: start.y;
-				//Iterate over all possible Y intersections
-				for(int y = (int)Math.ceil(min); y <= Math.floor(max); y++)
+			for(CatenaryBranch branch : CatenaryBranch.values())
+				if(branch.exists(catenaryData))
 				{
-					double yReal = y-start.y;
-					double acosh = factor*acosh((yReal-catenaryData.getOffsetY())/catenaryData.getScale());
-					double posRel = (acosh*catenaryData.getScale()+catenaryData.getOffsetX())/lengthHor;
-					//Not every intersection exists (in the existing interval of the catenary)
-					if(posRel >= 0&&posRel <= 1)
-						integerIntersections.add(posRel);
+					double max = branch==CatenaryBranch.POSITIVE?end.y: start.y;
+					//Iterate over all Y intersections
+					for(int y = MathHelper.ceil(min); y <= MathHelper.floor(max); y++)
+					{
+						double yReal = y-start.y;
+						double acosh = acosh((yReal-catenaryData.getOffsetY())/catenaryData.getScale(), branch);
+						double posRel = (acosh*catenaryData.getScale()+catenaryData.getOffsetX())/lengthHor;
+						//All calculated intersections should exist up to numerical errors
+						Preconditions.checkState(posRel >= -1e-5&&posRel <= 1+1e-5);
+						if(posRel >= 0&&posRel <= 1)
+							integerIntersections.add(posRel);
+					}
 				}
-			}
 		}
 		/*
 		Remove points closer than 1e-5, since they are usually points with >1 integer coordinate and were added twice
@@ -187,6 +196,20 @@ public class CatenaryTracer
 		public int hashCode()
 		{
 			return Objects.hash(relativeSegmentStart, relativeSegmentEnd, mainPos, inBlock);
+		}
+	}
+
+	private enum CatenaryBranch
+	{
+		POSITIVE,
+		NEGATIVE;
+
+		boolean exists(CatenaryData data)
+		{
+			if(this==NEGATIVE)
+				return data.getOffsetX() >= 0;
+			else
+				return data.getOffsetX() <= data.getHorLength();
 		}
 	}
 }
