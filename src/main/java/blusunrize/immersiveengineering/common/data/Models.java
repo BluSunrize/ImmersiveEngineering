@@ -214,6 +214,8 @@ public class Models extends ModelGenerator
 		addItemModels("metal_", out, IEItems.Metals.nuggets.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getRegistryName().getNamespace())).toArray(Item[]::new));
 		addItemModels("metal_", out, IEItems.Metals.dusts.values().toArray(new Item[IEItems.Metals.ingots.size()]));
 		addItemModels("metal_", out, IEItems.Metals.plates.values().toArray(new Item[IEItems.Metals.ingots.size()]));
+		for(Item bag : Misc.shaderBag.values())
+			addItemModel("shader_bag", out, bag);
 
 		addItemModels("material_", out, Ingredients.stickTreated, Ingredients.stickIron, Ingredients.stickSteel, Ingredients.stickAluminum,
 				Ingredients.hempFiber, Ingredients.hempFabric, Ingredients.coalCoke, Ingredients.slag,
@@ -348,11 +350,14 @@ public class Models extends ModelGenerator
 	private void addItemModels(String texturePrefix, Consumer<GeneratedModelFile> out, Collection<Item> items)
 	{
 		for(Item item : items)
-		{
-			ResourceLocation path = locForItemModel(item);
-			ResourceLocation texture = texturePrefix==null?path: new ResourceLocation(path.getNamespace(), "item/"+texturePrefix+item.getRegistryName().getPath());
-			out.accept(ModelHelper.createBasicItem(texture, path));
-		}
+			addItemModel(texturePrefix==null?null: (texturePrefix+item.getRegistryName().getPath()), out, item);
+	}
+
+	private void addItemModel(String texture, Consumer<GeneratedModelFile> out, Item item)
+	{
+		ResourceLocation path = locForItemModel(item);
+		ResourceLocation textureLoc = texture==null?path: new ResourceLocation(path.getNamespace(), "item/"+texture);
+		out.accept(ModelHelper.createBasicItem(textureLoc, path));
 	}
 
 	private GeneratedModelFile createRouterModel(ResourceLocation baseTexName, ResourceLocation outName)

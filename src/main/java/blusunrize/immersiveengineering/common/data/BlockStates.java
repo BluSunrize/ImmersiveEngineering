@@ -154,6 +154,8 @@ public class BlockStates extends BlockstateGenerator
 		createPostBlock(WoodenDecoration.treatedPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
 				rl("block/wooden_decoration/post"),
 				variantBased);
+		createMultistateSingleModel(WoodenDevices.windmill, EMPTY_MODEL, variantBased);
+		createMultistateSingleModel(WoodenDevices.watermill, EMPTY_MODEL, variantBased);
 
 		createDirectionalBlock(MetalDecoration.metalLadder.get(CoverType.NONE), IEProperties.FACING_HORIZONTAL,
 				models.metalLadderNone, variantBased);

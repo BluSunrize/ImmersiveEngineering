@@ -179,7 +179,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	@Override
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
-		return false;
+		return true;
 	}
 
 	@Override

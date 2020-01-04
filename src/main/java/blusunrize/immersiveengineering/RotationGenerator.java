@@ -10,10 +10,7 @@ package blusunrize.immersiveengineering;
 
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraftforge.client.model.ForgeBlockStateV1.TRSRDeserializer;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -32,14 +29,7 @@ public class RotationGenerator
 	public static void main(String[] args)
 	{
 		Transformation transforms = new Transformation();
-		transforms
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(-.375, .375, .375).translate(-.25, 1, .5).rotate(-Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5, .5, .5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .75, .1875).scale(.5, -.5, .5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.625, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(.125, .125, -.25).scale(.3125, .3125, .3125).rotate(Math.PI, 0, 1, 0).rotate(Math.PI*.25, 0, 0, 1))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(-.1875, .3125, 0).scale(.4375, .4375, .4375).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.125, 0, 0, 1))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(0, .25, .125).scale(.25, .25, .25));
+		transforms.addFromJson("{ \"scale\": [ 0.09375, 0.09375, 0.09375 ], \"firstperson_righthand\": { \"translation\": [ 0.25, 0, 0 ], \"rotation\": [{ \"y\": -90 }], \"scale\": [ 2, 2, 2 ] }, \"firstperson_lefthand\": { \"translation\": [ 0.25, 0, 0 ], \"rotation\": [{ \"y\": -90 }], \"scale\": [ 2, 2, 2 ] }, \"thirdperson_righthand\": { \"translation\": [ 0, 0.09375, -0.171875 ], \"rotation\": [{ \"x\": 60 },{ \"y\": -142.5 }], \"scale\": [ 0.75, 0.75, 0.75 ] }, \"thirdperson_lefthand\": { \"translation\": [ 0, 0.09375, -0.171875 ], \"rotation\": [{ \"x\": 60 },{ \"y\": -142.5 }], \"scale\": [ 0.75, 0.75, 0.75 ] }, \"fixed\": { \"scale\": [ 1.5, 1.5, 1.5 ], \"rotation\": [{ \"y\": 180 }] }, \"gui\": { \"scale\": [ 1.25, 1.25, 1.25 ], \"rotation\": [{ \"y\": 35 }] } }");
 		System.out.println(transforms.toJson());
 	}
 
@@ -51,6 +41,42 @@ public class RotationGenerator
 		{
 			transforms.put(t, mat);
 			return this;
+		}
+
+		public void addFromJson(String json)
+		{
+			Gson GSON = new GsonBuilder().registerTypeAdapter(TRSRTransformation.class, TRSRDeserializer.INSTANCE).create();
+			JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
+			Vector3f baseScale;
+			if(obj.has("scale"))
+				baseScale = fromJson(obj.get("scale"));
+			else
+				baseScale = new Vector3f(1, 1, 1);
+			for(TransformType type : TransformType.values())
+			{
+				String key = type.name().toLowerCase();
+				JsonObject forType = obj.getAsJsonObject(key);
+				if(forType==null)
+				{
+					key = key.replace("_person", "person").replace("_hand", "hand");
+					forType = obj.getAsJsonObject(key);
+				}
+				TRSRTransformation transform;
+				if(forType!=null)
+				{
+					transform = GSON.fromJson(forType, TRSRTransformation.class);
+					Vector3f oldScale = transform.getScale();
+					Vector3f newScale = new Vector3f(
+							oldScale.x*baseScale.x,
+							oldScale.y*baseScale.y,
+							oldScale.z*baseScale.z
+					);
+					transform = new TRSRTransformation(transform.getTranslation(), transform.getLeftRot(), newScale, transform.getRightRot());
+				}
+				else
+					transform = new TRSRTransformation(null, null, baseScale, null);
+				transforms.put(type, new Matrix4(transform.getMatrixVec()));
+			}
 		}
 
 		public JsonObject toJson()
@@ -104,6 +130,12 @@ public class RotationGenerator
 			ret.add(v.y);
 			ret.add(v.z);
 			return ret;
+		}
+
+		private static Vector3f fromJson(JsonElement ele)
+		{
+			JsonArray arr = ele.getAsJsonArray();
+			return new Vector3f(arr.get(0).getAsFloat(), arr.get(1).getAsFloat(), arr.get(2).getAsFloat());
 		}
 	}
 }

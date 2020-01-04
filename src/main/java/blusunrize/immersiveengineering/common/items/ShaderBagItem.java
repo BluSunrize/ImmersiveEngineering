@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -51,6 +52,12 @@ public class ShaderBagItem extends IEBaseItem
 	public ITextComponent getDisplayName(ItemStack stack)
 	{
 		return new StringTextComponent(rarity.name()+" ").appendSibling(super.getDisplayName(stack));
+	}
+
+	@Override
+	public String getTranslationKey()
+	{
+		return "item."+ImmersiveEngineering.MODID+".shader_bag";
 	}
 
 	@Override
