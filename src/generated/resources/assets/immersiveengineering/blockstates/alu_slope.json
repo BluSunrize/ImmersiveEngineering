@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "immersiveengineering:block/slope.obj.ie",
+      "textures": {
+        "#immersiveengineering:block/metal_decoration/steel_scaffolding": "immersiveengineering:block/metal_decoration/aluminum_scaffolding"
+      }
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/slope.obj.ie",
+      "textures": {
+        "#immersiveengineering:block/metal_decoration/steel_scaffolding": "immersiveengineering:block/metal_decoration/aluminum_scaffolding"
+      }
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/slope.obj.ie",
+      "textures": {
+        "#immersiveengineering:block/metal_decoration/steel_scaffolding": "immersiveengineering:block/metal_decoration/aluminum_scaffolding"
+      }
+    },
+    "facing=east": {
+      "model": "immersiveengineering:block/slope.obj.ie",
+      "textures": {
+        "#immersiveengineering:block/metal_decoration/steel_scaffolding": "immersiveengineering:block/metal_decoration/aluminum_scaffolding"
+      }
+    }
+  }
+}

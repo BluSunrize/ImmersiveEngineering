@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.data;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
@@ -170,7 +171,26 @@ public class BlockStates extends BlockstateGenerator
 		createWallmount(WoodenDevices.treatedWallmount, rl("block/wooden_device/wallmount"), variantBased);
 		createWallmount(MetalDecoration.aluWallmount, rl("block/metal_decoration/aluminum_wallmount"), variantBased);
 		createWallmount(MetalDecoration.steelWallmount, rl("block/metal_decoration/steel_wallmount"), variantBased);
-
+		createMultistateSingleModel(
+				MetalDecoration.slopeSteel,
+				new ConfiguredModel(new ExistingModelFile(rl("block/slope.obj.ie"))),
+				variantBased
+		);
+		createMultistateSingleModel(
+				MetalDecoration.slopeAlu,
+				new ConfiguredModel(
+						new ExistingModelFile(rl("block/slope.obj.ie")),
+						0,
+						0,
+						true,
+						ImmutableMap.of(),
+						ImmutableMap.of(
+								ImmersiveEngineering.MODID+":block/metal_decoration/steel_scaffolding",
+								ImmersiveEngineering.MODID+":block/metal_decoration/aluminum_scaffolding"
+						)
+				),
+				variantBased
+		);
 
 		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), rl("block/connector/connector_lv.obj"),
 				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);

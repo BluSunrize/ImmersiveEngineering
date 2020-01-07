@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "immersiveengineering:block/lantern.obj.ie"
+    },
+    "facing=up": {
+      "model": "immersiveengineering:block/lantern.obj.ie"
+    },
+    "facing=north": {
+      "model": "immersiveengineering:block/lantern.obj.ie"
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/lantern.obj.ie"
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/lantern.obj.ie"
+    },
+    "facing=east": {
+      "model": "immersiveengineering:block/lantern.obj.ie"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "immersiveengineering:block/slope.obj.ie"
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/slope.obj.ie"
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/slope.obj.ie"
+    },
+    "facing=east": {
+      "model": "immersiveengineering:block/slope.obj.ie"
+    }
+  }
+}
