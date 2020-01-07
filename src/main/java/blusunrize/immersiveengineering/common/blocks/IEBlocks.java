@@ -110,6 +110,7 @@ public final class IEBlocks
 		public static Block fluidSorter;
 		public static Block windmill;
 		public static Block watermill;
+		//TODO move to deco?
 		public static Block treatedWallmount;
 	}
 

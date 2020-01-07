@@ -35,6 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IHasDummyBlocks, IHasObjProperty
 {
@@ -339,7 +340,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	static ArrayList<String> emptyDisplayList = new ArrayList<>();
 
 	@Override
-	public ArrayList<String> compileDisplayList()
+	public List<String> compileDisplayList()
 	{
 		return emptyDisplayList;
 	}

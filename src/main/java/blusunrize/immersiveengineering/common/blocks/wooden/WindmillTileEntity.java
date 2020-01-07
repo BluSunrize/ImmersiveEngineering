@@ -197,7 +197,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	static ArrayList<String> emptyDisplayList = new ArrayList();
 
 	@Override
-	public ArrayList<String> compileDisplayList()
+	public List<String> compileDisplayList()
 	{
 		return emptyDisplayList;
 	}

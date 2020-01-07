@@ -616,7 +616,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	static ArrayList<String> displayList = Lists.newArrayList("base");
 
 	@Override
-	public ArrayList<String> compileDisplayList()
+	public List<String> compileDisplayList()
 	{
 		return displayList;
 	}

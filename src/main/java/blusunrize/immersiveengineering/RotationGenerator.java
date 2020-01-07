@@ -29,7 +29,13 @@ public class RotationGenerator
 	public static void main(String[] args)
 	{
 		Transformation transforms = new Transformation();
-		transforms.addFromJson("{ \"scale\": [ 0.09375, 0.09375, 0.09375 ], \"firstperson_righthand\": { \"translation\": [ 0.25, 0, 0 ], \"rotation\": [{ \"y\": -90 }], \"scale\": [ 2, 2, 2 ] }, \"firstperson_lefthand\": { \"translation\": [ 0.25, 0, 0 ], \"rotation\": [{ \"y\": -90 }], \"scale\": [ 2, 2, 2 ] }, \"thirdperson_righthand\": { \"translation\": [ 0, 0.09375, -0.171875 ], \"rotation\": [{ \"x\": 60 },{ \"y\": -142.5 }], \"scale\": [ 0.75, 0.75, 0.75 ] }, \"thirdperson_lefthand\": { \"translation\": [ 0, 0.09375, -0.171875 ], \"rotation\": [{ \"x\": 60 },{ \"y\": -142.5 }], \"scale\": [ 0.75, 0.75, 0.75 ] }, \"fixed\": { \"scale\": [ 1.5, 1.5, 1.5 ], \"rotation\": [{ \"y\": 180 }] }, \"gui\": { \"scale\": [ 1.25, 1.25, 1.25 ], \"rotation\": [{ \"y\": 35 }] } }");
+		transforms.addFromJson("{\t\t\t\t\"scale\": [ 0.5, 0.5, 0.5 ],\n"+
+				"\t\t\t\t\"firstperson_righthand\": {\"translation\": [ -0.125, 0.125, 0 ]},\n"+
+				"\t\t\t\t\"firstperson_lefthand\": {\"translation\": [ -0.125, 0.125, 0 ]},\n"+
+				"\t\t\t\t\"thirdperson_righthand\": { \"translation\": [ -0.0625, 0.125, 0.125 ], \"rotation\": [{ \"x\": 70 }, { \"y\": 70 }] },\n"+
+				"\t\t\t\t\"thirdperson_lefthand\": { \"translation\": [ -0.0625, -0.125, 0.25 ], \"rotation\": [{ \"x\": 70 }, { \"y\": 70 }] },\n"+
+				"\t\t\t\t\"fixed\": {\"scale\": [ 2,2,2 ]},\n"+
+				"\t\t\t\t\"gui\": { \"translation\": [ 0,0,0 ], \"rotation\": [{ \"x\": 20}, { \"y\": 45 }], \"scale\": [ 1.5, 1.5, 1.5 ] }}");
 		System.out.println(transforms.toJson());
 	}
 

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -21,7 +22,8 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 //TODO replace with blockstates?
 public class LanternTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IHasObjProperty, IBlockBounds, ILightValue
@@ -79,23 +81,19 @@ public class LanternTileEntity extends IEBaseTileEntity implements IStateBasedDi
 		return new float[]{getFacing()==Direction.EAST?0: .25f, getFacing()==Direction.UP?0: getFacing()==Direction.DOWN?.125f: .0625f, getFacing()==Direction.SOUTH?0: .25f, getFacing()==Direction.WEST?1: .75f, getFacing()==Direction.DOWN?1: .875f, getFacing()==Direction.NORTH?1: .75f};
 	}
 
-	static ArrayList[] displayList = {
-			Lists.newArrayList("base", "attach_t"),
-			Lists.newArrayList("base", "attach_b"),
-			Lists.newArrayList("base", "attach_n"),
-			Lists.newArrayList("base", "attach_s"),
-			Lists.newArrayList("base", "attach_w"),
-			Lists.newArrayList("base", "attach_e")};
+	static Map<Direction, List<String>> displayList = ImmutableMap.<Direction, List<String>>builder()
+			.put(Direction.DOWN, Lists.newArrayList("base", "attach_t"))
+			.put(Direction.UP, Lists.newArrayList("base", "attach_b"))
+			.put(Direction.NORTH, Lists.newArrayList("base", "attach_n"))
+			.put(Direction.SOUTH, Lists.newArrayList("base", "attach_s"))
+			.put(Direction.WEST, Lists.newArrayList("base", "attach_w"))
+			.put(Direction.EAST, Lists.newArrayList("base", "attach_e"))
+			.build();
 
 	@Override
-	public ArrayList<String> compileDisplayList()
+	public List<String> compileDisplayList()
 	{
-		if(getFacing()==Direction.UP)
-			return displayList[1];
-		else if(getFacing()==Direction.DOWN)
-			return displayList[0];
-
-		return displayList[3];
+		return displayList.get(getFacing());
 	}
 
 	@Override

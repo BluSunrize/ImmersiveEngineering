@@ -158,16 +158,20 @@ public class ObjLoaderWorkaround
 									}
 								}
 							}
+							ImmutableMap.Builder<String, String> textures = ImmutableMap.builder();
+							if(json.has("textures"))
+								for(Entry<String, JsonElement> replacement : json.getAsJsonObject("textures").entrySet())
+									textures.put(replacement.getKey(), replacement.getValue().getAsString());
 							ImmutableMap.Builder<String, Object> remaining = new Builder<>();
 							for(Entry<String, JsonElement> e : json.entrySet())
 							{
 								String key = e.getKey();
-								if(!key.equals("parent")&&!key.equals("display-trsr"))
+								if(!key.equals("parent")&&!key.equals("display-trsr")&&!key.equals("textures"))
 									remaining.put(key, e.getValue());
 							}
 							remaining.put("flip-v", true);
 							DynamicModelLoader.requestModel(new ConfiguredModel(new ExistingModelFile(parent), 0, 0, false,
-									remaining.build()), modelLoc, perspectives);
+									remaining.build(), textures.build()), modelLoc, perspectives);
 						}
 					}
 				} catch(IOException ioxcp)

@@ -156,6 +156,9 @@ public class BlockStates extends BlockstateGenerator
 				variantBased);
 		createMultistateSingleModel(WoodenDevices.windmill, EMPTY_MODEL, variantBased);
 		createMultistateSingleModel(WoodenDevices.watermill, EMPTY_MODEL, variantBased);
+		createMultistateSingleModel(MetalDecoration.lantern,
+				new ConfiguredModel(new ExistingModelFile(rl("block/lantern.obj.ie"))),
+				variantBased);
 
 		createDirectionalBlock(MetalDecoration.metalLadder.get(CoverType.NONE), IEProperties.FACING_HORIZONTAL,
 				models.metalLadderNone, variantBased);

@@ -1,0 +1,59 @@
+{
+  "parent": "immersiveengineering:block/lantern_inventory.obj",
+  "display-trsr": {
+    "first_person_right_hand": {
+      "translation": [0.125, 0.375, 0.25],
+      "rotation": [0.0, 0.0, 0.0, 1.0],
+      "scale": [0.5, 0.5, 0.5],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "gui": {
+      "translation": [-0.030330062, 0.14761525, 0.37174243],
+      "rotation": [0.16042995, 0.37686953, 0.06645229, 0.90984374],
+      "scale": [0.7499999, 0.75000006, 0.74999994],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "head": {
+      "translation": [0.25, 0.25, 0.25],
+      "rotation": [0.0, 0.0, 0.0, 1.0],
+      "scale": [0.5, 0.5, 0.5],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "ground": {
+      "translation": [0.25, 0.25, 0.25],
+      "rotation": [0.0, 0.0, 0.0, 1.0],
+      "scale": [0.5, 0.5, 0.5],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "fixed": {
+      "translation": [0.0, 0.0, 0.0],
+      "rotation": [0.0, 0.0, 0.0, 1.0],
+      "scale": [1.0, 1.0, 1.0],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "first_person_left_hand": {
+      "translation": [0.125, 0.375, 0.25],
+      "rotation": [0.0, 0.0, 0.0, 1.0],
+      "scale": [0.5, 0.5, 0.5],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "third_person_right_hand": {
+      "translation": [0.11707181, 0.39908785, 0.44118086],
+      "rotation": [0.46984625, 0.46984628, 0.32898995, 0.67100996],
+      "scale": [0.50000006, 0.49999997, 0.5],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "none": {
+      "translation": [0.25, 0.25, 0.25],
+      "rotation": [0.0, 0.0, 0.0, 1.0],
+      "scale": [0.5, 0.5, 0.5],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "third_person_left_hand": {
+      "translation": [0.11707181, 0.14908786, 0.5661808],
+      "rotation": [0.46984625, 0.46984628, 0.32898995, 0.67100996],
+      "scale": [0.50000006, 0.49999997, 0.5],
+      "post-rotation": [0.0, 0.0, 0.0, 1.0]
+    }
+  }
+}

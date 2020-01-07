@@ -48,7 +48,6 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -380,9 +379,15 @@ public class IEBlockInterfaces
 		}
 	}
 
-	public interface IHasObjProperty
+	public interface IHasObjProperty extends IAdvancedHasObjProperty
 	{
-		ArrayList<String> compileDisplayList();
+		List<String> compileDisplayList();
+
+		@Override
+		default OBJState getOBJState()
+		{
+			return new OBJState(compileDisplayList(), true);
+		}
 	}
 
 	public interface IAdvancedHasObjProperty

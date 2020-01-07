@@ -38,6 +38,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInventory, IDirectionalTile, IHasDummyBlocks,
 		IInteractionObjectIE, IHasObjProperty
@@ -215,7 +216,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	private static ArrayList<String> blueprintDisplayList = Lists.newArrayList("cube0", "blueprint");
 
 	@Override
-	public ArrayList<String> compileDisplayList()
+	public List<String> compileDisplayList()
 	{
 		if(this.inventory.get(0).getItem() instanceof EngineersBlueprintItem)
 			return blueprintDisplayList;

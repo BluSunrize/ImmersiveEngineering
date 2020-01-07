@@ -35,6 +35,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelTileEntity> implements IHasObjProperty, IDynamicTexture
 {
@@ -146,7 +147,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	static ArrayList<String> emptyDisplayList = new ArrayList<>();
 
 	@Override
-	public ArrayList<String> compileDisplayList()
+	public List<String> compileDisplayList()
 	{
 		return emptyDisplayList;
 	}
