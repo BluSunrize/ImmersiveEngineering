@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -147,7 +148,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	static ArrayList<String> emptyDisplayList = new ArrayList<>();
 
 	@Override
-	public List<String> compileDisplayList()
+	public List<String> compileDisplayList(BlockState state)
 	{
 		return emptyDisplayList;
 	}

@@ -245,6 +245,11 @@ public class IESmartObjModel extends OBJBakedModel
 	public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> customData = new ArrayList<>();
+		if(state.getBlock() instanceof IAdvancedHasObjProperty)
+			customData.add(new SinglePropertyModelData<>(
+					((IAdvancedHasObjProperty)state.getBlock()).getOBJState(state),
+					Model.OBJ_STATE
+			));
 		if(state.getBlock() instanceof IModelDataBlock)
 			customData.add(((IModelDataBlock)state.getBlock()).getModelData(world, pos, state, tileData));
 		else
@@ -253,7 +258,7 @@ public class IESmartObjModel extends OBJBakedModel
 			if(te instanceof IOBJModelCallback)
 				customData.add(new SinglePropertyModelData<>((IOBJModelCallback)te, IOBJModelCallback.PROPERTY));
 			if(te instanceof IAdvancedHasObjProperty)
-				customData.add(new SinglePropertyModelData<>(((IAdvancedHasObjProperty)te).getOBJState(), Model.OBJ_STATE));
+				customData.add(new SinglePropertyModelData<>(((IAdvancedHasObjProperty)te).getOBJState(state), Model.OBJ_STATE));
 			if(te!=null)
 			{
 				LazyOptional<ShaderWrapper> shaderCap = te.getCapability(CapabilityShader.SHADER_CAPABILITY);

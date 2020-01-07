@@ -216,7 +216,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	private static ArrayList<String> blueprintDisplayList = Lists.newArrayList("cube0", "blueprint");
 
 	@Override
-	public List<String> compileDisplayList()
+	public List<String> compileDisplayList(BlockState state)
 	{
 		if(this.inventory.get(0).getItem() instanceof EngineersBlueprintItem)
 			return blueprintDisplayList;

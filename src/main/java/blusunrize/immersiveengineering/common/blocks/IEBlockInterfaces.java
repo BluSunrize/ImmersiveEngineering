@@ -381,18 +381,18 @@ public class IEBlockInterfaces
 
 	public interface IHasObjProperty extends IAdvancedHasObjProperty
 	{
-		List<String> compileDisplayList();
+		List<String> compileDisplayList(BlockState state);
 
 		@Override
-		default OBJState getOBJState()
+		default OBJState getOBJState(BlockState state)
 		{
-			return new OBJState(compileDisplayList(), true);
+			return new OBJState(compileDisplayList(state), true);
 		}
 	}
 
 	public interface IAdvancedHasObjProperty
 	{
-		OBJState getOBJState();
+		OBJState getOBJState(BlockState state);
 	}
 
 	public interface IDynamicTexture

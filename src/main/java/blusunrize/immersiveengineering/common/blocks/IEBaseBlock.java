@@ -18,9 +18,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.*;
@@ -54,7 +52,7 @@ public class IEBaseBlock extends Block
 	protected boolean canHammerHarvest;
 	protected boolean notNormalBlock;
 
-	public IEBaseBlock(String name, Block.Properties blockProps, @Nullable Class<? extends BlockItemIE> itemBlock, IProperty... additionalProperties)
+	public IEBaseBlock(String name, Block.Properties blockProps, @Nullable Class<? extends BlockItem> itemBlock, IProperty... additionalProperties)
 	{
 		super(setTempProperties(blockProps, additionalProperties));
 		this.name = name;
@@ -64,15 +62,15 @@ public class IEBaseBlock extends Block
 		ResourceLocation registryName = createRegistryName();
 		setRegistryName(registryName);
 
-		//TODO this.adjustSo/nd();
-
 		IEContent.registeredIEBlocks.add(this);
 		if(itemBlock!=null)
 		{
 			try
 			{
-				IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class)
-						.newInstance(this));
+				Item item = itemBlock.getConstructor(Block.class, Item.Properties.class)
+						.newInstance(this, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+				item.setRegistryName(registryName);
+				IEContent.registeredIEItems.add(item);
 			} catch(Exception e)
 			{
 				//TODO e.printStackTrace();

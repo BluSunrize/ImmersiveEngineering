@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -197,7 +198,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	static ArrayList<String> emptyDisplayList = new ArrayList();
 
 	@Override
-	public List<String> compileDisplayList()
+	public List<String> compileDisplayList(BlockState state)
 	{
 		return emptyDisplayList;
 	}

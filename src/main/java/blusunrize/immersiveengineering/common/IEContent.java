@@ -657,7 +657,6 @@ public class IEContent
 		registerTile(WatermillTileEntity.class, event, WoodenDevices.watermill);
 		registerTile(WindmillTileEntity.class, event, WoodenDevices.windmill);
 
-		registerTile(LanternTileEntity.class, event, MetalDecoration.lantern);
 		registerTile(RazorWireTileEntity.class, event, MetalDevices.razorWire);
 		registerTile(ToolboxTileEntity.class, event, MetalDevices.toolbox);
 		registerTile(StructuralArmTileEntity.class, event, MetalDecoration.slopeAlu, MetalDecoration.slopeSteel);

@@ -664,7 +664,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	}
 
 	@Override
-	public OBJState getOBJState()
+	public OBJState getOBJState(BlockState state)
 	{
 		String key = getRenderCacheKey();
 		return getStateFromKey(key);

@@ -340,7 +340,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	static ArrayList<String> emptyDisplayList = new ArrayList<>();
 
 	@Override
-	public List<String> compileDisplayList()
+	public List<String> compileDisplayList(BlockState state)
 	{
 		return emptyDisplayList;
 	}

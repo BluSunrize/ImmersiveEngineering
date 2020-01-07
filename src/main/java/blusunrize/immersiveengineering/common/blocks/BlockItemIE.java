@@ -36,9 +36,14 @@ public class BlockItemIE extends BlockItem
 {
 	private int burnTime;
 
+	public BlockItemIE(Block b, Item.Properties props)
+	{
+		super(b, props);
+	}
+
 	public BlockItemIE(Block b)
 	{
-		super(b, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		this(b, new Item.Properties().group(ImmersiveEngineering.itemGroup));
 		setRegistryName(b.getRegistryName());
 	}
 
@@ -115,9 +120,9 @@ public class BlockItemIE extends BlockItem
 
 	public static class BlockItemIENoInventory extends BlockItemIE
 	{
-		public BlockItemIENoInventory(Block b)
+		public BlockItemIENoInventory(Block b, Properties props)
 		{
-			super(b);
+			super(b, props);
 		}
 
 		@Nullable
