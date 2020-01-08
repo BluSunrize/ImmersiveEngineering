@@ -247,6 +247,8 @@ public class BlockStates extends BlockstateGenerator
 				variantBased);
 		createBasicBlock(WoodenDevices.sorter, models.router, variantBased);
 		createBasicBlock(WoodenDevices.fluidSorter, models.fluidRouter, variantBased);
+		createBasicBlock(WoodenDevices.woodenBarrel,
+				new UncheckedModelFile(rl("smartmodel/conf_sides_v_wooden_device/barrel")), variantBased);
 
 		createConnector(Cloth.balloon, map -> rl("block/balloon.obj.ie"), ImmutableMap.of(), variantBased,
 				ImmutableList.of(), BlockRenderLayer.SOLID);
@@ -260,6 +262,8 @@ public class BlockStates extends BlockstateGenerator
 		createBasicBlock(Cloth.cushion, models.cushion, variantBased);
 		createMultistateSingleModel(Cloth.shaderBanner, EMPTY_MODEL, variantBased);
 
+		createBasicBlock(MetalDevices.barrel,
+				new UncheckedModelFile(rl("smartmodel/conf_sides_v_metal_device/barrel")), variantBased);
 		for(Block b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(new UncheckedModelFile(rl("conveyor"))), variantBased);
 	}

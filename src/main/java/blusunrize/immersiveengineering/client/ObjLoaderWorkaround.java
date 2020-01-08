@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.models.ModelConfigurableSides;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
@@ -198,6 +199,7 @@ public class ObjLoaderWorkaround
 				name.getPath().endsWith(".obj.ie")||
 				"connector".equals(name.getPath())||
 				"coresample".equals(name.getPath())||
-				"conveyor".equals(name.getPath());
+				"conveyor".equals(name.getPath())||
+				name.getPath().contains(ModelConfigurableSides.RESOURCE_LOCATION);
 	}
 }

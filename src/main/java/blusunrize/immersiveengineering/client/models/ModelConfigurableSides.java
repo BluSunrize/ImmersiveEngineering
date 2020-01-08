@@ -12,6 +12,9 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.CombinedModelData;
+import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -25,9 +28,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.IModelData;
@@ -47,9 +53,8 @@ import static net.minecraft.util.Direction.*;
 
 public class ModelConfigurableSides extends BakedIEModel
 {
-	private static final String MODEL_PREFIX = "conf_sides_";
-	private static final String RESOURCE_LOCATION = "models/block/smartmodel/"+MODEL_PREFIX;
-	//Holy shit, this type-chaining is messy. But I wanted to use lambdas!
+	public static final String MODEL_PREFIX = "conf_sides_";
+	public static final String RESOURCE_LOCATION = "smartmodel/"+MODEL_PREFIX;
 	private static HashMap<String, ITextureNamer> TYPES = new HashMap<>();
 
 	static
@@ -70,7 +75,7 @@ public class ModelConfigurableSides extends BakedIEModel
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
-				return side.ordinal() < 2?side.getName(): "side";
+				return side.getAxis()==Axis.Y?side.getName(): "side";
 			}
 		});
 		TYPES.put("hv_", new ITextureNamer()
@@ -78,7 +83,7 @@ public class ModelConfigurableSides extends BakedIEModel
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
-				return side.ordinal() < 2?"up": "side";
+				return side.getAxis()==Axis.Y?"up": "side";
 			}
 		});
 		TYPES.put("ud_", new ITextureNamer()
@@ -86,13 +91,13 @@ public class ModelConfigurableSides extends BakedIEModel
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
-				return side.ordinal() < 2?side.getName(): "side";
+				return side.getAxis()==Axis.Y?side.getName(): "side";
 			}
 
 			@Override
 			public String nameFromCfg(Direction side, IOSideConfig cfg)
 			{
-				return side.ordinal() < 2?cfg.getTextureName(): null;
+				return side.getAxis()==Axis.Y?cfg.getTextureName(): null;
 			}
 		});
 		TYPES.put("v_", new ITextureNamer()
@@ -100,13 +105,13 @@ public class ModelConfigurableSides extends BakedIEModel
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
-				return side.ordinal() < 2?"up": "side";
+				return side.getAxis()==Axis.Y?"up": "side";
 			}
 
 			@Override
 			public String nameFromCfg(Direction side, IOSideConfig cfg)
 			{
-				return side.ordinal() < 2?cfg.getTextureName(): null;
+				return side.getAxis()==Axis.Y?cfg.getTextureName(): null;
 			}
 		});
 	}
@@ -149,6 +154,25 @@ public class ModelConfigurableSides extends BakedIEModel
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	{
+		List<IModelData> data = new ArrayList<>();
+		data.add(tileData);
+		data.add(super.getModelData(world, pos, state, tileData));
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof IConfigurableSides)
+		{
+			IConfigurableSides confTE = (IConfigurableSides)te;
+			Map<Direction, IOSideConfig> conf = new HashMap<>();
+			for(Direction d : VALUES)
+				conf.put(d, confTE.getSideConfig(d));
+			data.add(new SinglePropertyModelData<>(conf, Model.SIDECONFIG));
+		}
+		return new CombinedModelData(data.toArray(new IModelData[0]));
 	}
 
 	private static List<BakedQuad> bakeQuads(Map<Direction, TextureAtlasSprite> sprites)
@@ -264,7 +288,7 @@ public class ModelConfigurableSides extends BakedIEModel
 							{
 								String key = f.getName()+"_"+cfg.getTextureName();
 								String tex = name+"_"+e.getValue().getTextureName(f, cfg);
-								builder.put(key, new ResourceLocation(ImmersiveEngineering.MODID, "blocks/"+tex));
+								builder.put(key, new ResourceLocation(ImmersiveEngineering.MODID, "block/"+tex));
 							}
 					}
 				return new ConfigSidesModelBase(name, type, builder.build());

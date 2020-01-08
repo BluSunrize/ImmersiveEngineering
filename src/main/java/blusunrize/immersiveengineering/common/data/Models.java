@@ -252,11 +252,21 @@ public class Models extends ModelGenerator
 				locForItemModel(WoodenDevices.workbench)));
 		out.accept(router);
 		out.accept(fluidRouter);
+		out.accept(ModelHelper.createBasicCube(
+				rl("block/wooden_device/barrel_side"),
+				rl("block/wooden_device/barrel_up_none"),
+				rl("block/wooden_device/barrel_up_none"),
+				locForItemModel(WoodenDevices.woodenBarrel)));
 
 		out.accept(ModelHelper.createWithModel(rl("block/metal_device/teslacoil.obj"),
 				locForItemModel(MetalDevices.teslaCoil)));
 		out.accept(ModelHelper.createWithModel(rl("block/metal_device/fluid_pipe.obj.ie"),
 				locForItemModel(MetalDevices.fluidPipe)));
+		out.accept(ModelHelper.createBasicCube(
+				rl("block/metal_device/barrel_side"),
+				rl("block/metal_device/barrel_up_none"),
+				rl("block/metal_device/barrel_up_none"),
+				locForItemModel(MetalDevices.barrel)));
 		for(Block b : MetalDevices.CONVEYORS.values())
 			out.accept(ModelHelper.createWithDynamicModel(rl("conveyor"), locForItemModel(b)));
 	}

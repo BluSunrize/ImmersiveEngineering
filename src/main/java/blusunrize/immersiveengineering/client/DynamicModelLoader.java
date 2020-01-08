@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.models.ModelConfigurableSides;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.RawConveyorModel;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.RawCoresampleModel;
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader.ConnectorModel;
@@ -50,6 +51,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import static blusunrize.immersiveengineering.client.ClientUtils.mc;
+
 //Loads models not referenced in any blockstates for rendering in TE(S)Rs
 //TODO rewrite this once Forge has native OBJ support again, this should be just a few lines afterwards
 @EventBusSubscriber(value = Dist.CLIENT, modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
@@ -83,6 +86,8 @@ public class DynamicModelLoader
 	public static void textureStitch(TextureStitchEvent.Pre evt)
 	{
 		IELogger.logger.debug("Stitching textures!");
+		if(evt.getMap()!=mc().getTextureMap())
+			return;
 		for(ResourceLocation rl : manualTextureRequests)
 			evt.addSprite(rl);
 		for(ResourceLocation rl : requestedTextures)
@@ -107,6 +112,8 @@ public class DynamicModelLoader
 					unbaked = new RawCoresampleModel();
 				else if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor")))
 					unbaked = new RawConveyorModel();
+				else if(name.getPath().contains(ModelConfigurableSides.RESOURCE_LOCATION))
+					unbaked = new ModelConfigurableSides.Loader().loadModel(name);
 				else
 				{
 					IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
