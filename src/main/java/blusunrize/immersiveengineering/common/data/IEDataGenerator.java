@@ -38,7 +38,7 @@ public class IEDataGenerator
 		}
 	}
 
-	static ResourceLocation rl(String path)
+	public static ResourceLocation rl(String path)
 	{
 		return new ResourceLocation(ImmersiveEngineering.MODID, path);
 	}

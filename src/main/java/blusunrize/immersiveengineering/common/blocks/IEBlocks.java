@@ -186,7 +186,7 @@ public final class IEBlocks
 		public static Block transformerHV;
 		public static Block breakerswitch;
 		public static Block redstoneBreaker;
-		public static Block energyMeter;
+		public static Block currentTransformer;
 		public static Block connectorRedstone;
 		public static Block connectorProbe;
 		public static Block feedthrough;

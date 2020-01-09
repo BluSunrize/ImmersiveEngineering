@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
@@ -287,6 +288,90 @@ public class Models extends ModelGenerator
 					locForItemModel(cap.getKey())));
 		for(Block b : MetalDevices.CONVEYORS.values())
 			out.accept(ModelHelper.createWithDynamicModel(rl("conveyor"), locForItemModel(b)));
+
+		out.accept(ModelHelper.createConnectorModel(
+				locForItemModel(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)),
+				ImmutableMap.of(),
+				rl("block/connector/connector_lv.obj")
+		));
+		out.accept(ModelHelper.createConnectorModel(
+				locForItemModel(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true)),
+				ImmutableMap.of("#immersiveengineering:block/connector/connector_lv", rl("block/connector/relay_lv")),
+				rl("block/connector/connector_lv.obj")
+		));
+
+		out.accept(ModelHelper.createConnectorModel(
+				locForItemModel(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false)),
+				ImmutableMap.of(),
+				rl("block/connector/connector_mv.obj")
+		));
+		out.accept(ModelHelper.createConnectorModel(
+				locForItemModel(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true)),
+				ImmutableMap.of("#immersiveengineering:block/connector/connector_mv", rl("block/connector/relay_mv")),
+				rl("block/connector/connector_mv.obj")
+		));
+
+		out.accept(ModelHelper.createConnectorModel(
+				locForItemModel(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false)),
+				ImmutableMap.of(),
+				rl("block/connector/connector_hv.obj")
+		));
+		out.accept(ModelHelper.createConnectorModel(
+				locForItemModel(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true)),
+				ImmutableMap.of(),
+				rl("block/connector/relay_hv.obj")
+		));
+
+		out.accept(ModelHelper.createConnectorModel(
+				locForItemModel(Connectors.connectorRedstone),
+				ImmutableMap.of(),
+				rl("block/connector/connector_redstone.obj.ie")
+		));
+		out.accept(ModelHelper.createConnectorModel(
+				locForItemModel(Connectors.connectorProbe),
+				ImmutableMap.of(),
+				rl("block/connector/connector_probe.obj.ie")
+		));
+		out.accept(ModelHelper.createConnectorModel(
+				locForItemModel(Connectors.connectorStructural),
+				ImmutableMap.of(),
+				rl("block/connector/connector_structural.obj.ie")
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(Connectors.transformer),
+				rl("block/connector/transformer_mv_left.obj"),
+				ImmutableMap.of(),
+				rl("item/transformer"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(Connectors.transformerHV),
+				rl("block/connector/transformer_hv_left.obj"),
+				ImmutableMap.of(),
+				rl("item/transformer"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(Connectors.redstoneBreaker),
+				rl("block/connector/redstone_breaker.obj.ie"),
+				ImmutableMap.of(),
+				rl("item/redstone_breaker"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(Connectors.currentTransformer),
+				rl("block/connector/e_meter.obj"),
+				ImmutableMap.of(),
+				rl("item/current_transformer"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(Connectors.breakerswitch),
+				rl("block/connector/breaker_switch_off.obj.ie"),
+				ImmutableMap.of(),
+				rl("item/breaker_switch"),
+				true
+		));
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)

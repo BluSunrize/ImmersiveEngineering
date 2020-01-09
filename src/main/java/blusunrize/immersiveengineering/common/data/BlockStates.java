@@ -226,7 +226,7 @@ public class BlockStates extends BlockstateGenerator
 			else
 				return rl("block/connector/breaker_switch_on.obj.ie");
 		}, ImmutableMap.of(), variantBased, ImmutableList.of(IEProperties.ACTIVE), BlockRenderLayer.SOLID);
-		createConnector(Connectors.energyMeter, map -> {
+		createConnector(Connectors.currentTransformer, map -> {
 			if(map.get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
 				return rl("block/connector/e_meter.obj");
 			else

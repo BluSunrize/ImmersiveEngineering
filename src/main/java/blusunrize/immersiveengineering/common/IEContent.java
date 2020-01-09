@@ -376,7 +376,7 @@ public class IEContent
 				IEProperties.ACTIVE, IEProperties.FACING_ALL);
 		Connectors.redstoneBreaker = new MiscConnectorBlock("redstone_breaker", () -> RedstoneBreakerTileEntity.TYPE,
 				IEProperties.ACTIVE, IEProperties.FACING_ALL);
-		Connectors.energyMeter = new MiscConnectorBlock("current_transformer", () -> EnergyMeterTileEntity.TYPE,
+		Connectors.currentTransformer = new MiscConnectorBlock("current_transformer", () -> EnergyMeterTileEntity.TYPE,
 				IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
 		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
 		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE,
@@ -666,7 +666,7 @@ public class IEContent
 		registerTile(TransformerHVTileEntity.class, event, Connectors.transformerHV);
 		registerTile(BreakerSwitchTileEntity.class, event, Connectors.breakerswitch);
 		registerTile(RedstoneBreakerTileEntity.class, event, Connectors.redstoneBreaker);
-		registerTile(EnergyMeterTileEntity.class, event, Connectors.energyMeter);
+		registerTile(EnergyMeterTileEntity.class, event, Connectors.currentTransformer);
 		registerTile(ConnectorRedstoneTileEntity.class, event, Connectors.connectorRedstone);
 		registerTile(ConnectorProbeTileEntity.class, event, Connectors.connectorProbe);
 		registerTile(FeedthroughTileEntity.class, event, Connectors.feedthrough);
