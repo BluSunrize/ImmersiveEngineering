@@ -269,6 +269,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		@Override
 		public IUnbakedModel loadModel(ResourceLocation modelLocation)
 		{
+			//TODO put the data in the JSON, not the model name
 			String resourcePath = modelLocation.getPath();
 			int pos = resourcePath.indexOf(MODEL_PREFIX);
 			if(pos >= 0)

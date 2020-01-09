@@ -264,6 +264,15 @@ public class BlockStates extends BlockstateGenerator
 
 		createBasicBlock(MetalDevices.barrel,
 				new UncheckedModelFile(rl("smartmodel/conf_sides_v_metal_device/barrel")), variantBased);
+		for(Entry<Block, String> cap : ImmutableMap.of(
+				MetalDevices.capacitorCreative, "creative",
+				MetalDevices.capacitorLV, "lv",
+				MetalDevices.capacitorMV, "mv",
+				MetalDevices.capacitorHV, "hv"
+		).entrySet())
+			createBasicBlock(cap.getKey(),
+					new UncheckedModelFile(rl("smartmodel/conf_sides_hud_metal_device/capacitor_"+cap.getValue())),
+					variantBased);
 		for(Block b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(new UncheckedModelFile(rl("conveyor"))), variantBased);
 	}

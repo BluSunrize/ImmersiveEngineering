@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
@@ -24,6 +25,7 @@ import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.*;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
@@ -32,6 +34,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
@@ -76,11 +79,15 @@ public class Models extends ModelGenerator
 			rl("block/multiblocks/alloy_smelter_bottom"), rl("block/multiblocks/alloy_smelter_top"),
 			rl("block/multiblocks/alloy_smelter_side"), rl("block/multiblocks/alloy_smelter_on"));
 
-	final GeneratedModelFile metalLadderNone = ModelHelper.createMetalLadder(rl("block/metal_decoration/metal_ladder_none"), null, null);
-	final GeneratedModelFile metalLadderAlu = ModelHelper.createMetalLadder(rl("block/metal_decoration/metal_ladder_aluminum"),
+	final GeneratedModelFile metalLadderNone = ModelHelper.createMetalLadder(
+			locForItemModel(MetalDecoration.metalLadder.get(CoverType.NONE)),
+			null, null);
+	final GeneratedModelFile metalLadderAlu = ModelHelper.createMetalLadder(
+			locForItemModel(MetalDecoration.metalLadder.get(CoverType.ALU)),
 			rl("block/metal_decoration/aluminum_scaffolding_open"),
 			rl("block/metal_decoration/aluminum_scaffolding"));
-	final GeneratedModelFile metalLadderSteel = ModelHelper.createMetalLadder(rl("block/metal_decoration/metal_ladder_steel"),
+	final GeneratedModelFile metalLadderSteel = ModelHelper.createMetalLadder(
+			locForItemModel(MetalDecoration.metalLadder.get(CoverType.STEEL)),
 			rl("block/metal_decoration/steel_scaffolding_open"),
 			rl("block/metal_decoration/steel_scaffolding"));
 
@@ -234,6 +241,9 @@ public class Models extends ModelGenerator
 		addItemModels("bullet_", out, Weapons.bullets.values());
 		out.accept(ModelHelper.createWithDynamicModel(rl("coresample"), locForItemModel(Misc.coresample)));
 		addItemModel("blueprint", out, Misc.blueprint);
+		addItemModel("seed_hemp", out, Misc.hempSeeds);
+		addItemModel("drillhead_iron", out, Tools.drillheadIron);
+		addItemModel("drillhead_steel", out, Tools.drillheadSteel);
 
 		out.accept(ModelHelper.createInventoryFence(ALU_FENCE_TEXTURE, locForItemModel(MetalDecoration.aluFence)));
 		out.accept(ModelHelper.createInventoryFence(STEEL_FENCE_TEXTURE, locForItemModel(MetalDecoration.steelFence)));
@@ -267,6 +277,14 @@ public class Models extends ModelGenerator
 				rl("block/metal_device/barrel_up_none"),
 				rl("block/metal_device/barrel_up_none"),
 				locForItemModel(MetalDevices.barrel)));
+		for(Entry<Block, String> cap : ImmutableMap.of(
+				MetalDevices.capacitorCreative, "creative",
+				MetalDevices.capacitorLV, "lv",
+				MetalDevices.capacitorMV, "mv",
+				MetalDevices.capacitorHV, "hv"
+		).entrySet())
+			out.accept(ModelHelper.createWithDynamicModel(rl("smartmodel/conf_sides_hud_metal_device/capacitor_"+cap.getValue()),
+					locForItemModel(cap.getKey())));
 		for(Block b : MetalDevices.CONVEYORS.values())
 			out.accept(ModelHelper.createWithDynamicModel(rl("conveyor"), locForItemModel(b)));
 	}
