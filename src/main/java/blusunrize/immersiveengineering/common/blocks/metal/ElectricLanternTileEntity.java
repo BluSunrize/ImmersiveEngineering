@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.ImmersiveConnectableTileEntity;
@@ -19,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -31,7 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity implements ISpawnInterdiction, ITickableTileEntity,
-		IDirectionalTile, IHammerInteraction, IBlockBounds, IActiveState, ILightValue, EnergyConnector
+		IStateBasedDirectional, IHammerInteraction, IBlockBounds, IActiveState, EnergyConnector
 {
 	public static TileEntityType<ElectricLanternTileEntity> TYPE;
 
@@ -39,7 +41,6 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	private int energyDraw = IEConfig.MACHINES.lantern_energyDraw.get();
 	private int maximumStorage = IEConfig.MACHINES.lantern_maximumStorage.get();
 	private boolean interdictionList = false;
-	private boolean flipped = false;
 
 	public ElectricLanternTileEntity()
 	{
@@ -107,7 +108,6 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage = nbt.getInt("energyStorage");
-		flipped = nbt.getBoolean("flipped");
 	}
 
 	@Override
@@ -115,7 +115,6 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("energyStorage", energyStorage);
-		nbt.putBoolean("flipped", flipped);
 	}
 
 	@Override
@@ -142,6 +141,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 		BlockPos other = con.getOtherEnd(here).getPosition();
 		int xDif = other.getX()-pos.getX();
 		int zDif = other.getZ()-pos.getZ();
+		boolean flipped = getFacing()==Direction.UP;
 		if(Math.abs(xDif) >= Math.abs(zDif))
 			return new Vec3d(xDif < 0?.25: xDif > 0?.75: .5, flipped?.9375: .0625, .5);
 		return new Vec3d(.5, flipped?.9375: .0625, zDif < 0?.25: zDif > 0?.75: .5);
@@ -153,22 +153,11 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 		return new float[]{.1875f, 0, .1875f, .8125f, 1, .8125f};
 	}
 
-	@Override
-	public int getLightValue()
-	{
-		return getIsActive()?15: 0;
-	}
-
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return flipped?Direction.UP: Direction.NORTH;
-	}
-
-	@Override
-	public void setFacing(Direction facing)
-	{
+		return IEProperties.FACING_TOP_DOWN;
 	}
 
 	@Override
@@ -199,10 +188,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(!world.isRemote)
-		{
-			flipped = !flipped;
-			markContainingBlockForUpdate(null);
-		}
+			setFacing(getFacing().getOpposite());
 		return true;
 	}
 

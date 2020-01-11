@@ -403,7 +403,8 @@ public class IEContent
 		MetalDevices.dynamo = new GenericTileBlock("dynamo", () -> DynamoTileEntity.TYPE, defaultMetalProperties, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.thermoelectricGen = new GenericTileBlock("thermoelectric_generator", () -> ThermoelectricGenTileEntity.TYPE,
 				defaultMetalProperties);
-		MetalDevices.electricLantern = new MiscConnectorBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE);
+		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE,
+				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE);
 		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
 				defaultMetalProperties, IEProperties.FACING_HORIZONTAL)
 				.setNotNormalBlock();
@@ -414,7 +415,7 @@ public class IEContent
 				.setBlockLayer(BlockRenderLayer.CUTOUT)
 				.setNotNormalBlock();
 		MetalDevices.teslaCoil = new GenericTileBlock("tesla_coil", () -> TeslaCoilTileEntity.TYPE, defaultMetalProperties, IEProperties.FACING_ALL);
-		MetalDevices.floodlight = new MiscConnectorBlock("floodlight", () -> FloodlightTileEntity.TYPE);
+		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
 		MetalDevices.turretChem = new GenericTileBlock("turret_chem", () -> TurretChemTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties);

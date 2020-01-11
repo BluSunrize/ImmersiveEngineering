@@ -247,9 +247,7 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 
 	protected void checkLight(BlockPos pos)
 	{
-		getWorldNonnull().getProfiler().startSection("queueCheckLight");
-		getWorldNonnull().getChunkProvider().getLightManager().checkBlock(pos);
-		getWorldNonnull().getProfiler().endSection();
+		getWorldNonnull().getPendingBlockTicks().scheduleTick(pos, getBlockState().getBlock(), 4);
 	}
 
 	public void setOverrideState(BlockState state)

@@ -131,6 +131,29 @@ public class Models extends ModelGenerator
 			),
 			true
 	);
+	final GeneratedModelFile kineticDynamo = ModelHelper.createBasicCube(side -> {
+		switch(Preconditions.checkNotNull(side))
+		{
+			case DOWN:
+			case SOUTH:
+				return rl("block/metal_device/dynamo_bottom");
+			case UP:
+				return rl("block/metal_device/dynamo_top");
+			case NORTH:
+				return rl("block/metal_device/dynamo_front");
+			case WEST:
+			case EAST:
+				return rl("block/metal_device/dynamo_side");
+			default:
+				throw new IllegalArgumentException();
+		}
+	}, locForItemModel(MetalDevices.dynamo));
+	final GeneratedModelFile thermoelectricGen = ModelHelper.createBasicCube(
+			rl("block/metal_device/thermoelectric_gen_side"),
+			rl("block/metal_device/thermoelectric_gen_top"),
+			rl("block/metal_device/thermoelectric_gen_bottom"),
+			locForItemModel(MetalDevices.thermoelectricGen)
+	);
 
 	final GeneratedModelFile cushion = ModelHelper.createBasicCube(rl("block/cushion"),
 			locForItemModel(Cloth.cushion));
@@ -161,6 +184,8 @@ public class Models extends ModelGenerator
 		out.accept(steelFenceSide);
 		out.accept(aluFencePost);
 		out.accept(aluFenceSide);
+		out.accept(kineticDynamo);
+		out.accept(thermoelectricGen);
 
 		out.accept(blastFurnaceOn);
 		out.accept(cokeOvenOn);
@@ -406,6 +431,20 @@ public class Models extends ModelGenerator
 				rl("block/metal_device/blastfurnace_preheater.obj"),
 				ImmutableMap.of(),
 				rl("item/blastfurnace_preheater"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.electricLantern),
+				rl("block/metal_device/e_lantern.obj"),
+				ImmutableMap.of(),
+				rl("item/block"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.chargingStation),
+				rl("block/metal_device/charging_station.obj"),
+				ImmutableMap.of(),
+				rl("item/block"),
 				true
 		));
 	}

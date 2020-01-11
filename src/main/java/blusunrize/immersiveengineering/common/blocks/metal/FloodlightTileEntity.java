@@ -51,7 +51,7 @@ import javax.vecmath.Vector3f;
 import java.util.*;
 
 public class FloodlightTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IAdvancedDirectionalTile,
-		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<BlockState>,
+		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, IOBJModelCallback<BlockState>,
 		EnergyConnector, IStateBasedDirectional
 {
 	public static TileEntityType<FloodlightTileEntity> TYPE;
@@ -404,12 +404,6 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 				getFacing().getAxis()==Axis.Y?1: .9375f,
 				getFacing().getAxis()==Axis.Z?1: .9375f
 		};
-	}
-
-	@Override
-	public int getLightValue()
-	{
-		return getIsActive()?15: 0;
 	}
 
 	@Override

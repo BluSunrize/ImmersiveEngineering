@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.data;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
@@ -53,6 +52,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class BlockStates extends BlockstateGenerator
@@ -184,8 +184,8 @@ public class BlockStates extends BlockstateGenerator
 						true,
 						ImmutableMap.of(),
 						ImmutableMap.of(
-								ImmersiveEngineering.MODID+":block/metal_decoration/steel_scaffolding",
-								ImmersiveEngineering.MODID+":block/metal_decoration/aluminum_scaffolding"
+								MODID+":block/metal_decoration/steel_scaffolding",
+								MODID+":block/metal_decoration/aluminum_scaffolding"
 						)
 				),
 				variantBased
@@ -216,6 +216,16 @@ public class BlockStates extends BlockstateGenerator
 				ImmutableMap.of(), variantBased, BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
 		createConnector(Connectors.feedthrough, rl("block/smartmodel/feedthrough"),
 				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
+		createConnector(MetalDevices.electricLantern, state -> rl("block/metal_device/e_lantern.obj"),
+				state -> {
+					if(state.get(IEProperties.ACTIVE)==Boolean.FALSE)
+						return ImmutableMap.of();
+					else
+						return ImmutableMap.of(
+								"#"+MODID+":block/metal_device/electric_lantern", MODID+":block/metal_device/electric_lantern_on"
+						);
+				},
+				variantBased, ImmutableList.of(IEProperties.ACTIVE));
 
 		createConnector(Connectors.redstoneBreaker, rl("block/connector/redstone_breaker.obj.ie"),
 				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
@@ -282,6 +292,16 @@ public class BlockStates extends BlockstateGenerator
 			else
 				return models.furnaceHeaterOff;
 		}, IEProperties.FACING_ALL, ImmutableList.of(IEProperties.ACTIVE), variantBased);
+		createRotatedBlock(MetalDevices.dynamo, state -> models.kineticDynamo, IEProperties.FACING_HORIZONTAL,
+				ImmutableList.of(), variantBased);
+		createBasicBlock(MetalDevices.thermoelectricGen, models.thermoelectricGen, variantBased);
+		createRotatedBlock(MetalDevices.chargingStation,
+				//TODO glass
+				state -> new ExistingModelFile(rl("block/metal_device/charging_station.obj")),
+				IEProperties.FACING_HORIZONTAL,
+				ImmutableList.of(),
+				variantBased
+		);
 		for(Block b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(new UncheckedModelFile(rl("conveyor"))), variantBased);
 	}
@@ -514,7 +534,8 @@ public class BlockStates extends BlockstateGenerator
 	}
 
 	private void createConnector(Block b, Function<Map<IProperty<?>, Object>, ResourceLocation> model,
-								 ImmutableMap<String, String> textures, BiConsumer<Block, IVariantModelGenerator> out,
+								 Function<Map<IProperty<?>, Object>, ImmutableMap<String, String>> textures,
+								 BiConsumer<Block, IVariantModelGenerator> out,
 								 List<IProperty<?>> additional, BlockRenderLayer... layers)
 	{
 		final ModelFile connFile = new UncheckedModelFile(rl("connector"));
@@ -532,6 +553,11 @@ public class BlockStates extends BlockstateGenerator
 		if(b.getDefaultState().has(IEProperties.FACING_ALL))
 		{
 			facingProp = IEProperties.FACING_ALL;
+			xForHorizontal = 90;
+		}
+		else if(b.getDefaultState().has(IEProperties.FACING_TOP_DOWN))
+		{
+			facingProp = IEProperties.FACING_TOP_DOWN;
 			xForHorizontal = 90;
 		}
 		else if(b.getDefaultState().has(IEProperties.FACING_HORIZONTAL))
@@ -556,23 +582,33 @@ public class BlockStates extends BlockstateGenerator
 				if(facingProp.getAllowedValues().contains(Direction.DOWN))
 				{
 					builder.setForAllWithState(with(map, facingProp, Direction.DOWN),
-							new ConfiguredModel(connFile, 0, 0, true, customData, textures));
+							new ConfiguredModel(connFile, xForHorizontal-90, 0, true, customData,
+									textures.apply(map)));
 					builder.setForAllWithState(with(map, facingProp, Direction.UP),
-							new ConfiguredModel(connFile, 180, 0, true, customData, textures));
+							new ConfiguredModel(connFile, xForHorizontal+90, 0, true, customData,
+									textures.apply(map)));
 				}
 				for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 				{
 					int rotation = getAngle(d, 0);
 					builder.setForAllWithState(
 							with(map, facingProp, d),
-							new ConfiguredModel(connFile, xForHorizontal, rotation, true, customData, textures));
+							new ConfiguredModel(connFile, xForHorizontal, rotation, true, customData, textures.apply(map)));
 				}
 			}
 			else
 				builder.setForAllWithState(map,
-						new ConfiguredModel(connFile, 0, 0, true, customData, textures));
+						new ConfiguredModel(connFile, 0, 0, true, customData, textures.apply(map)));
 		});
 		out.accept(b, builder.build());
+	}
+
+
+	private void createConnector(Block b, Function<Map<IProperty<?>, Object>, ResourceLocation> model,
+								 ImmutableMap<String, String> textures, BiConsumer<Block, IVariantModelGenerator> out,
+								 List<IProperty<?>> additional, BlockRenderLayer... layers)
+	{
+		createConnector(b, model, state -> textures, out, additional, layers);
 	}
 
 	private <K, V> Map<K, V> with(Map<K, V> old, K newKey, V newVal)

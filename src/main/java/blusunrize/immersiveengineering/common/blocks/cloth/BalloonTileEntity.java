@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryE
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorStructuralTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -48,7 +47,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class BalloonTileEntity extends ConnectorStructuralTileEntity implements ILightValue, IPlayerInteraction, IHammerInteraction
+public class BalloonTileEntity extends ConnectorStructuralTileEntity implements IPlayerInteraction, IHammerInteraction
 {
 	public static TileEntityType<BalloonTileEntity> TYPE;
 	public int style = 0;
@@ -60,12 +59,6 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	{
 		super(TYPE);
 		reInitCapability();
-	}
-
-	@Override
-	public int getLightValue()
-	{
-		return 13;
 	}
 
 	@Override

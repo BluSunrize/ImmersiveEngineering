@@ -101,15 +101,6 @@ public class IEBlockInterfaces
 		boolean canConnectRedstone(BlockState state, Direction side);
 	}
 
-	public interface ILightValue
-	{
-		//TODO: Note: In case lighting does not work: It seems light values are now discrete and
-		//      also caches for blockstates. Either an additional Forge patch is needed (or it
-		//      is buggy?) the returned light value has to correspond to the values passed as
-		//      block property during block construction.
-		int getLightValue();
-	}
-
 	public interface IColouredBlock
 	{
 		boolean hasCustomBlockColours();

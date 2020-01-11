@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.data.model;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.CharStreams;
@@ -74,6 +75,14 @@ public class ModelHelper
 	{
 		return create(modelName, new ResourceLocation("block/cube_all"),
 				ImmutableMap.of("all", texture), true);
+	}
+
+	public static GeneratedModelFile createBasicCube(Function<Direction, ResourceLocation> getTexture, ResourceLocation modelName)
+	{
+		ImmutableMap.Builder<String, ResourceLocation> textures = ImmutableMap.builder();
+		for(Direction d : Direction.VALUES)
+			textures.put(d.getName().toLowerCase(Locale.ENGLISH), getTexture.apply(d));
+		return create(modelName, new ResourceLocation("block/cube"), textures.build(), true);
 	}
 
 	public static GeneratedModelFile createBasicCube(ResourceLocation sides, ResourceLocation top,

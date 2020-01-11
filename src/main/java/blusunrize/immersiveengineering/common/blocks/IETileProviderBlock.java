@@ -42,7 +42,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameterSets;
@@ -354,15 +353,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			if(tile instanceof INeighbourChangeTile&&!tile.getWorld().isRemote)
 				((INeighbourChangeTile)tile).onNeighborBlockChange(fromPos);
 		}
-	}
-
-	@Override
-	public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos)
-	{
-		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof ILightValue)
-			return ((ILightValue)te).getLightValue();
-		return 0;
 	}
 
 	public IETileProviderBlock setHasColours()
