@@ -115,9 +115,9 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 			return Collections.singletonList(null);
 		List<AxisAlignedBB> list = new ArrayList<>(wallL&&wallR?2: 1);
 		if(wallL)
-			list.add(new AxisAlignedBB(getFacing()==Direction.SOUTH?.8125: 0, 0, getFacing()==Direction.WEST?.8125: 0, getFacing()==Direction.NORTH?.1875: 1, 1, getFacing()==Direction.EAST?.1875: 1).offset(getPos()));
+			list.add(new AxisAlignedBB(getFacing()==Direction.SOUTH?.8125: 0, 0, getFacing()==Direction.WEST?.8125: 0, getFacing()==Direction.NORTH?.1875: 1, 1, getFacing()==Direction.EAST?.1875: 1));
 		if(wallR)
-			list.add(new AxisAlignedBB(getFacing()==Direction.NORTH?.8125: 0, 0, getFacing()==Direction.EAST?.8125: 0, getFacing()==Direction.SOUTH?.1875: 1, 1, getFacing()==Direction.WEST?.1875: 1).offset(getPos()));
+			list.add(new AxisAlignedBB(getFacing()==Direction.NORTH?.8125: 0, 0, getFacing()==Direction.EAST?.8125: 0, getFacing()==Direction.SOUTH?.1875: 1, 1, getFacing()==Direction.WEST?.1875: 1));
 		return list;
 	}
 

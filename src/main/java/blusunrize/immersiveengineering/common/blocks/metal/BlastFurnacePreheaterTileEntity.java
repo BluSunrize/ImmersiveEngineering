@@ -74,6 +74,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
+		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int i = 1; i <= 2; i++)
 		{
 			world.setBlockState(pos.add(0, i, 0), state);

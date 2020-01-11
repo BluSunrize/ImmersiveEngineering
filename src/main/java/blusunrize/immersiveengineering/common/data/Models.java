@@ -111,6 +111,26 @@ public class Models extends ModelGenerator
 			locForItemModel(WoodenDevices.sorter));
 	final GeneratedModelFile fluidRouter = createRouterModel(rl("block/wooden_device/fluid_sorter"),
 			locForItemModel(WoodenDevices.fluidSorter));
+	final GeneratedModelFile furnaceHeaterOff = ModelHelper.create(
+			locForItemModel(MetalDevices.furnaceHeater),
+			rl("block/ie_six_sides_overlay_all_but_one"),
+			ImmutableMap.of(
+					"block_all", rl("block/metal_device/furnace_heater"),
+					"block_north", rl("block/metal_device/furnace_heater_socket"),
+					"overlay_all", rl("block/metal_device/furnace_heater_overlay")
+			),
+			true
+	);
+	final GeneratedModelFile furnaceHeaterOn = ModelHelper.create(
+			rl("block/furnace_heater_on"),
+			rl("block/ie_six_sides_overlay_all_but_one"),
+			ImmutableMap.of(
+					"block_all", rl("block/metal_device/furnace_heater_active"),
+					"block_north", rl("block/metal_device/furnace_heater_socket"),
+					"overlay_all", rl("block/metal_device/furnace_heater_active_overlay")
+			),
+			true
+	);
 
 	final GeneratedModelFile cushion = ModelHelper.createBasicCube(rl("block/cushion"),
 			locForItemModel(Cloth.cushion));
@@ -152,6 +172,8 @@ public class Models extends ModelGenerator
 		out.accept(metalLadderNone);
 		out.accept(metalLadderAlu);
 		out.accept(metalLadderSteel);
+		out.accept(furnaceHeaterOff);
+		out.accept(furnaceHeaterOn);
 
 		out.accept(ModelHelper.createWithModel(rl("block/stripcurtain"), locForItemModel(Cloth.curtain)));
 		out.accept(ModelHelper.createWithModel(rl("block/balloon.obj.ie"), locForItemModel(Cloth.balloon)));
@@ -370,6 +392,20 @@ public class Models extends ModelGenerator
 				rl("block/connector/breaker_switch_off.obj.ie"),
 				ImmutableMap.of(),
 				rl("item/breaker_switch"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.razorWire),
+				rl("block/razor_wire.obj.ie"),
+				ImmutableMap.of(),
+				rl("item/block"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.blastFurnacePreheater),
+				rl("block/metal_device/blastfurnace_preheater.obj"),
+				ImmutableMap.of(),
+				rl("item/blastfurnace_preheater"),
 				true
 		));
 	}

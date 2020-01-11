@@ -41,7 +41,6 @@ import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -232,6 +231,7 @@ public class BlockStates extends BlockstateGenerator
 			else
 				return EMPTY_MODEL.name.getLocation();
 		}, ImmutableMap.of(), variantBased, ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), BlockRenderLayer.SOLID);
+		createConnector(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"), ImmutableMap.of(), variantBased);
 
 		createRotatedBlock(StoneDecoration.coresample, map -> new ExistingModelFile(rl("block/coresample.obj")),
 				IEProperties.FACING_HORIZONTAL, ImmutableList.of(), variantBased);
@@ -273,6 +273,15 @@ public class BlockStates extends BlockstateGenerator
 			createBasicBlock(cap.getKey(),
 					new UncheckedModelFile(rl("smartmodel/conf_sides_hud_metal_device/capacitor_"+cap.getValue())),
 					variantBased);
+		createMultiblock(MetalDevices.blastFurnacePreheater,
+				new ExistingModelFile(rl("block/metal_device/blastfurnace_preheater.obj")),
+				variantBased);
+		createRotatedBlock(MetalDevices.furnaceHeater, props -> {
+			if(props.get(IEProperties.ACTIVE)==Boolean.TRUE)
+				return models.furnaceHeaterOn;
+			else
+				return models.furnaceHeaterOff;
+		}, IEProperties.FACING_ALL, ImmutableList.of(IEProperties.ACTIVE), variantBased);
 		for(Block b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(new UncheckedModelFile(rl("conveyor"))), variantBased);
 	}
@@ -294,8 +303,23 @@ public class BlockStates extends BlockstateGenerator
 				baseState.put(e.getKey(), e.getValue());
 			for(Direction d : facing.getAllowedValues())
 			{
-				Preconditions.checkState(d.getAxis()!=Axis.Y);
-				ConfiguredModel configuredModel = new ConfiguredModel(modelLoc, 0, getAngle(d, 180), true,
+				int x;
+				int y;
+				switch(d)
+				{
+					case UP:
+						x = 90;
+						y = 0;
+						break;
+					case DOWN:
+						x = -90;
+						y = 0;
+						break;
+					default:
+						y = getAngle(d, 180);
+						x = 0;
+				}
+				ConfiguredModel configuredModel = new ConfiguredModel(modelLoc, x, y, true,
 						additional);
 
 				builder.setForAllWithState(with(baseState, facing, d), configuredModel);

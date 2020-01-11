@@ -85,7 +85,6 @@ public class ExternalHeaterHandler
 		return adapter;
 	}
 
-	//TODO FurnaceTE or AbstractFurnaceTE?
 	public static class DefaultFurnaceAdapter extends HeatableAdapter<FurnaceTileEntity>
 	{
 		boolean canCook(FurnaceTileEntity tileEntity)
@@ -120,6 +119,7 @@ public class ExternalHeaterHandler
 				if(burnTime < 200)
 				{
 					int heatAttempt = 4;
+					heatAttempt = Math.min(heatAttempt, 200-burnTime);
 					int heatEnergyRatio = Math.max(1, defaultFurnaceEnergyCost);
 					int energyToUse = Math.min(energyAvailable, heatAttempt*heatEnergyRatio);
 					int heat = energyToUse/heatEnergyRatio;

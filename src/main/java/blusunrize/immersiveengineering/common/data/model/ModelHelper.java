@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.state.properties.SlabType;
@@ -347,13 +348,17 @@ public class ModelHelper
 
 		public void addFromJson(String json)
 		{
-			Gson GSON = new GsonBuilder().registerTypeAdapter(TRSRTransformation.class, TRSRDeserializer.INSTANCE).create();
+			Gson GSON = new GsonBuilder()
+					.registerTypeAdapter(TRSRTransformation.class, TRSRDeserializer.INSTANCE)
+					.registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
+					.create();
 			JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
 			Vector3f baseScale;
 			if(obj.has("scale"))
 				baseScale = fromJson(obj.get("scale"));
 			else
 				baseScale = new Vector3f(1, 1, 1);
+			boolean vanilla = obj.has("type")&&"vanilla".equals(obj.get("type").getAsString());
 			for(TransformType type : TransformType.values())
 			{
 				String key = type.name().toLowerCase();
@@ -366,7 +371,13 @@ public class ModelHelper
 				TRSRTransformation transform;
 				if(forType!=null)
 				{
-					transform = GSON.fromJson(forType, TRSRTransformation.class);
+					if(vanilla)
+					{
+						ItemTransformVec3f vanillaTransform = GSON.fromJson(forType, ItemTransformVec3f.class);
+						transform = TRSRTransformation.from(vanillaTransform);
+					}
+					else
+						transform = GSON.fromJson(forType, TRSRTransformation.class);
 					Vector3f oldScale = transform.getScale();
 					Vector3f newScale = new Vector3f(
 							oldScale.x*baseScale.x,

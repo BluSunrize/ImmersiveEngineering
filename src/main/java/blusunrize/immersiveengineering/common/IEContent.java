@@ -381,9 +381,11 @@ public class IEContent
 		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
 		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE,
 				BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID);
+		//TODO hide from JEI/creative menu
 		Connectors.feedthrough = new MiscConnectorBlock("feedthrough", () -> FeedthroughTileEntity.TYPE);
 
-		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE);
+		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE,
+				IEProperties.FACING_HORIZONTAL);
 		MetalDevices.toolbox = new GenericTileBlock("toolbox_block", () -> ToolboxTileEntity.TYPE, defaultMetalProperties,
 				null, new IProperty[0]);
 		MetalDevices.capacitorLV = new GenericTileBlock("capacitor_lv", () -> CapacitorLVTileEntity.TYPE, defaultMetalProperties);
@@ -393,11 +395,11 @@ public class IEContent
 		MetalDevices.barrel = new BarrelBlock("metal_barrel", true);
 		MetalDevices.fluidPump = new GenericTileBlock("fluid_pump", () -> FluidPumpTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
-		//MetalDevices.fluidPlacer = ;
 		MetalDevices.blastFurnacePreheater = new GenericTileBlock("blastfurnace_preheater", () -> BlastFurnacePreheaterTileEntity.TYPE,
-				defaultMetalProperties);
+				defaultMetalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		MetalDevices.furnaceHeater = new GenericTileBlock("furnace_heater", () -> FurnaceHeaterTileEntity.TYPE,
-				defaultMetalProperties);
+				defaultMetalProperties, IEProperties.ACTIVE, IEProperties.FACING_ALL)
+				.setBlockLayer(BlockRenderLayer.CUTOUT);
 		MetalDevices.dynamo = new GenericTileBlock("dynamo", () -> DynamoTileEntity.TYPE, defaultMetalProperties, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.thermoelectricGen = new GenericTileBlock("thermoelectric_generator", () -> ThermoelectricGenTileEntity.TYPE,
 				defaultMetalProperties);
