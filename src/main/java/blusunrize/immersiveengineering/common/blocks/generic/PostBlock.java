@@ -73,21 +73,21 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock
 		int dummyState = state.get(POST_SLAVE);
 		HorizontalOffset offset = state.get(HORIZONTAL_OFFSET);
 		if(dummyState > 0&&offset==HorizontalOffset.NONE)
-			world.setBlockState(pos.subtract(state.get(HORIZONTAL_OFFSET).getOffset()).down(dummyState),
-					Blocks.AIR.getDefaultState());
+			world.setBlockState(pos.down(dummyState), Blocks.AIR.getDefaultState());
 		else if(dummyState==0)
 		{
 			spawnAsEntity(world, pos, new ItemStack(this));
 			final int highestBlock = 3;
-			for(int i = 0; i <= highestBlock; ++i)
-				world.setBlockState(pos.up(i), Blocks.AIR.getDefaultState());
 			BlockPos armStart = pos.up(highestBlock);
 			for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 			{
 				BlockPos armPos = armStart.offset(d);
-				if(hasArmFor(armStart, d, world))
+				BlockState armState = world.getBlockState(armPos);
+				if(armState.getBlock()==this&&armState.get(HORIZONTAL_OFFSET).getOffset().equals(d.getDirectionVec()))
 					world.setBlockState(armPos, Blocks.AIR.getDefaultState());
 			}
+			for(int i = 0; i <= highestBlock; ++i)
+				world.setBlockState(pos.up(i), Blocks.AIR.getDefaultState());
 		}
 		super.onReplaced(state, world, pos, newState, moving);
 	}
