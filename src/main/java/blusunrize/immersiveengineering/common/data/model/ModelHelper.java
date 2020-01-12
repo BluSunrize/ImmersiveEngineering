@@ -362,20 +362,18 @@ public class ModelHelper
 					.registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
 					.create();
 			JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
-			Vector3f baseScale;
-			if(obj.has("scale"))
-				baseScale = fromJson(obj.get("scale"));
-			else
-				baseScale = new Vector3f(1, 1, 1);
-			boolean vanilla = obj.has("type")&&"vanilla".equals(obj.get("type").getAsString());
+			Map<TransformType, Matrix4> transforms = new HashMap<>();
+			boolean vanilla = obj.has("type")&&"vanilla".equals(obj.remove("type").getAsString());
 			for(TransformType type : TransformType.values())
 			{
 				String key = type.name().toLowerCase();
 				JsonObject forType = obj.getAsJsonObject(key);
+				obj.remove(key);
 				if(forType==null)
 				{
 					key = key.replace("_person", "person").replace("_hand", "hand");
 					forType = obj.getAsJsonObject(key);
+					obj.remove(key);
 				}
 				TRSRTransformation transform;
 				if(forType!=null)
@@ -387,27 +385,28 @@ public class ModelHelper
 					}
 					else
 						transform = GSON.fromJson(forType, TRSRTransformation.class);
-					Vector3f oldScale = transform.getScale();
-					Vector3f newScale = new Vector3f(
-							oldScale.x*baseScale.x,
-							oldScale.y*baseScale.y,
-							oldScale.z*baseScale.z
-					);
-					transform = new TRSRTransformation(transform.getTranslation(), transform.getLeftRot(), newScale, transform.getRightRot());
 				}
 				else
-					transform = new TRSRTransformation(null, null, baseScale, null);
+					transform = TRSRTransformation.identity();
 				transforms.put(type, new Matrix4(transform.getMatrixVec()));
 			}
+			Matrix4 baseMat;
+			if(obj.size() > 0)
+			{
+				TRSRTransformation baseTransform = GSON.fromJson(obj, TRSRTransformation.class);
+				baseMat = new Matrix4(baseTransform.getMatrixVec());
+			}
+			else
+				baseMat = new Matrix4();
+			for(Entry<TransformType, Matrix4> e : transforms.entrySet())
+				this.transforms.put(e.getKey(), e.getValue().multiply(baseMat));
 		}
 
 		public JsonObject toJson()
 		{
 			JsonObject ret = new JsonObject();
 			for(Entry<TransformType, Matrix4> entry : transforms.entrySet())
-			{
 				add(ret, entry.getKey(), entry.getValue());
-			}
 			return ret;
 		}
 

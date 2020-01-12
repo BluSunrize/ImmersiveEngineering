@@ -144,6 +144,23 @@ public class BlockStates extends BlockstateGenerator
 				variantBased);
 		createBasicBlock(MetalDevices.fluidPipe, new ExistingModelFile(rl("block/metal_device/fluid_pipe.obj.ie")),
 				variantBased);
+		createConnector(
+				MetalDevices.floodlight,
+				rl("block/metal_device/floodlight.obj.ie"),
+				ImmutableMap.of(),
+				variantBased,
+				BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID
+		);
+		createMultiblock(
+				MetalDevices.turretChem,
+				new ExistingModelFile(rl("block/metal_device/chem_turret.obj.ie")),
+				variantBased
+		);
+		createMultiblock(
+				MetalDevices.turretGun,
+				new ExistingModelFile(rl("block/metal_device/gun_turret.obj.ie")),
+				variantBased
+		);
 
 		createPostBlock(MetalDecoration.aluPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
 				rl("block/metal_decoration/aluminum_post"),

@@ -178,7 +178,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	@Override
 	public void tick()
 	{
-		if(world.isRemote&&!dummy&&cycleRender > 0)
+		if(world.isRemote&&!isDummy()&&cycleRender > 0)
 			cycleRender--;
 		super.tick();
 	}
@@ -224,7 +224,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(!dummy&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==Direction.DOWN||facing==this.getFacing().getOpposite()))
+		if(!isDummy()&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==Direction.DOWN||facing==this.getFacing().getOpposite()))
 			return itemHandler.cast();
 		return super.getCapability(capability, facing);
 	}

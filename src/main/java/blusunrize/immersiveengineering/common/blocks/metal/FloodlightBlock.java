@@ -20,7 +20,6 @@ public class FloodlightBlock extends MiscConnectorBlock
 
 	public FloodlightBlock(String name, Supplier<TileEntityType<?>> tileType)
 	{
-		//TODO probably not the correct properties
 		super(name, tileType, IEProperties.ACTIVE, IEProperties.FACING_ALL);
 	}
 

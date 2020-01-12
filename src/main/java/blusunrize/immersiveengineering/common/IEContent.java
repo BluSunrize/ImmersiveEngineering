@@ -416,8 +416,10 @@ public class IEContent
 				.setNotNormalBlock();
 		MetalDevices.teslaCoil = new GenericTileBlock("tesla_coil", () -> TeslaCoilTileEntity.TYPE, defaultMetalProperties, IEProperties.FACING_ALL);
 		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
-		MetalDevices.turretChem = new GenericTileBlock("turret_chem", () -> TurretChemTileEntity.TYPE, defaultMetalProperties);
-		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.turretChem = new GenericTileBlock("turret_chem", () -> TurretChemTileEntity.TYPE, defaultMetalProperties,
+				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
+		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties,
+				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties);
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);

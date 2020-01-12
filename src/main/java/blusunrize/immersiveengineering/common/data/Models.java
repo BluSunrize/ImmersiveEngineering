@@ -316,8 +316,34 @@ public class Models extends ModelGenerator
 				rl("block/wooden_device/barrel_up_none"),
 				locForItemModel(WoodenDevices.woodenBarrel)));
 
-		out.accept(ModelHelper.createWithModel(rl("block/metal_device/teslacoil.obj"),
-				locForItemModel(MetalDevices.teslaCoil)));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.teslaCoil),
+				rl("block/metal_device/teslacoil.obj"),
+				ImmutableMap.of(),
+				rl("item/teslacoil"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.floodlight),
+				rl("block/metal_device/floodlight.obj.ie"),
+				ImmutableMap.of(),
+				rl("item/floodlight"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.turretChem),
+				rl("block/metal_device/chem_turret_inv.obj"),
+				ImmutableMap.of(),
+				rl("item/turret"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.turretGun),
+				rl("block/metal_device/gun_turret_inv.obj"),
+				ImmutableMap.of(),
+				rl("item/turret"),
+				true
+		));
 		out.accept(ModelHelper.createWithModel(rl("block/metal_device/fluid_pipe.obj.ie"),
 				locForItemModel(MetalDevices.fluidPipe)));
 		out.accept(ModelHelper.createBasicCube(
@@ -445,6 +471,13 @@ public class Models extends ModelGenerator
 				rl("block/metal_device/charging_station.obj"),
 				ImmutableMap.of(),
 				rl("item/block"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.sampleDrill),
+				rl("block/metal_device/core_drill.obj"),
+				ImmutableMap.of(),
+				rl("item/sampledrill"),
 				true
 		));
 	}
