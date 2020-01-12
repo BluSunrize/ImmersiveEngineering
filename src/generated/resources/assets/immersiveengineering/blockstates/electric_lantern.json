@@ -1,0 +1,46 @@
+{
+  "variants": {
+    "active=false,facing=up": {
+      "model": "immersiveengineering:connector",
+      "x": 180,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/metal_device/e_lantern.obj",
+        "layers": "[]"
+      }
+    },
+    "active=false,facing=down": {
+      "model": "immersiveengineering:connector",
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/metal_device/e_lantern.obj",
+        "layers": "[]"
+      }
+    },
+    "active=true,facing=up": {
+      "model": "immersiveengineering:connector",
+      "x": 180,
+      "uvlock": true,
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/metal_device/e_lantern.obj",
+        "layers": "[]"
+      },
+      "textures": {
+        "#immersiveengineering:block/metal_device/electric_lantern": "immersiveengineering:block/metal_device/electric_lantern_on"
+      }
+    },
+    "active=true,facing=down": {
+      "model": "immersiveengineering:connector",
+      "custom": {
+        "flip-v": true,
+        "base": "immersiveengineering:block/metal_device/e_lantern.obj",
+        "layers": "[]"
+      },
+      "textures": {
+        "#immersiveengineering:block/metal_device/electric_lantern": "immersiveengineering:block/metal_device/electric_lantern_on"
+      }
+    }
+  }
+}
