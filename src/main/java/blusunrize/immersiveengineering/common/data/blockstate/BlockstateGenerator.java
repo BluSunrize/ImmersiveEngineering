@@ -121,7 +121,7 @@ public abstract class BlockstateGenerator implements IDataProvider
 				}
 			}
 
-			cache.func_208316_a(target, hash);
+			cache.recordHash(target, hash);
 		} catch(IOException x)
 		{
 			IELogger.logger.error("Couldn't save data to {}", target, x);

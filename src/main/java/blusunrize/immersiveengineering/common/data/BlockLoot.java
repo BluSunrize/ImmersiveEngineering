@@ -167,7 +167,7 @@ public class BlockLoot implements IDataProvider
 	{
 		return createPoolBuilder()
 				.addEntry(ItemLootEntry.builder(item))
-				.acceptFunction(ApplyBonus.func_215870_a(ench, prob, extra));
+				.acceptFunction(ApplyBonus.binomialWithBonusCount(ench, prob, extra));
 	}
 
 	private <T extends Comparable<T>> ILootCondition.IBuilder propertyIs(Block b, IProperty<T> prop, T value)

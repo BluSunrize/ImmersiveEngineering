@@ -73,13 +73,13 @@ public class IEExplosion extends Explosion
 
 //			if(spawnParticles)
 			{
-				double d0 = (double)((float)pos.getX()+Utils.RAND.nextFloat());
-				double d1 = (double)((float)pos.getY()+Utils.RAND.nextFloat());
-				double d2 = (double)((float)pos.getZ()+Utils.RAND.nextFloat());
+				double d0 = (float)pos.getX()+Utils.RAND.nextFloat();
+				double d1 = (float)pos.getY()+Utils.RAND.nextFloat();
+				double d2 = (float)pos.getZ()+Utils.RAND.nextFloat();
 				double d3 = d0-getPosition().x;
 				double d4 = d1-getPosition().y;
 				double d5 = d2-getPosition().z;
-				double d6 = (double)MathHelper.sqrt(d3*d3+d4*d4+d5*d5);
+				double d6 = MathHelper.sqrt(d3*d3+d4*d4+d5*d5);
 				d3 = d3/d6;
 				d4 = d4/d6;
 				d5 = d5/d6;
@@ -123,9 +123,9 @@ public class IEExplosion extends Explosion
 				for(int l = 0; l < 16; ++l)
 					if(j==0||j==15||k==0||k==15||l==0||l==15)
 					{
-						double d0 = (double)((float)j/15.0F*2.0F-1.0F);
-						double d1 = (double)((float)k/15.0F*2.0F-1.0F);
-						double d2 = (double)((float)l/15.0F*2.0F-1.0F);
+						double d0 = (float)j/15.0F*2.0F-1.0F;
+						double d1 = (float)k/15.0F*2.0F-1.0F;
+						double d2 = (float)l/15.0F*2.0F-1.0F;
 						double d3 = Math.sqrt(d0*d0+d1*d1+d2*d2);
 						d0 = d0/d3;
 						d1 = d1/d3;
@@ -174,7 +174,7 @@ public class IEExplosion extends Explosion
 		int i1 = MathHelper.floor(getPosition().y+(double)f3+1.0D);
 		int j2 = MathHelper.floor(getPosition().z-(double)f3-1.0D);
 		int j1 = MathHelper.floor(getPosition().z+(double)f3+1.0D);
-		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this.getExplosivePlacedBy(), new AxisAlignedBB((double)k1, (double)i2, (double)j2, (double)l1, (double)i1, (double)j1));
+		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this.getExplosivePlacedBy(), new AxisAlignedBB(k1, i2, j2, l1, i1, j1));
 		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.world, this, list, f3);
 		Vec3d vec3 = new Vec3d(getPosition().x, getPosition().y, getPosition().z);
 
@@ -190,13 +190,13 @@ public class IEExplosion extends Explosion
 					double d5 = entity.posX-getPosition().x;
 					double d7 = entity.posY+(double)entity.getEyeHeight()-getPosition().y;
 					double d9 = entity.posZ-getPosition().z;
-					double d13 = (double)MathHelper.sqrt(d5*d5+d7*d7+d9*d9);
+					double d13 = MathHelper.sqrt(d5*d5+d7*d7+d9*d9);
 					if(d13!=0.0D)
 					{
 						d5 = d5/d13;
 						d7 = d7/d13;
 						d9 = d9/d13;
-						double d14 = func_222259_a(vec3, entity);
+						double d14 = getBlockDensity(vec3, entity);
 						double d10 = (1.0D-d12)*d14;
 						entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), (float)((int)((d10*d10+d10)/2.0D*8.0D*(double)f3+1.0D)));
 						double d11 = entity instanceof LivingEntity?ProtectionEnchantment.getBlastDamageReduction((LivingEntity)entity, d10): d10;

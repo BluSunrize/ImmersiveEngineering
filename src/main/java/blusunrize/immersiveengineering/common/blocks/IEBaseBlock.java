@@ -176,11 +176,11 @@ public class IEBaseBlock extends Block
 		return this;
 	}
 
-	//TODO what is this?
+
 	@Override
-	public float func_220080_a(BlockState p_220080_1_, IBlockReader p_220080_2_, BlockPos p_220080_3_)
+	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader world, BlockPos pos)
 	{
-		return notNormalBlock?1: super.func_220080_a(p_220080_1_, p_220080_2_, p_220080_3_);
+		return notNormalBlock?1: super.getAmbientOcclusionLightValue(state, world, pos);
 	}
 
 	@Override

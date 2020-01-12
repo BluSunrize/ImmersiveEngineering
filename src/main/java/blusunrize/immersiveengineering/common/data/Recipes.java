@@ -162,43 +162,43 @@ public class Recipes extends RecipeProvider
 		addStairs(StoneDecoration.concreteTile, StoneDecoration.concreteStairs[1], out);
 		addStairs(StoneDecoration.concreteLeaded, StoneDecoration.concreteStairs[2], out);
 
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete))
-				.func_218643_a("has_hempcrete", hasItem(StoneDecoration.hempcrete))
-				.func_218647_a(out, toRL("hempcrete_slab_from_hempcrete_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.hempcrete), StoneDecoration.hempcreteStairs)
-			.func_218643_a("has_hempcrete", hasItem(StoneDecoration.hempcrete))
-			.func_218647_a(out, toRL("hempcrete_stairs_from_hempcrete_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete))
-			.func_218643_a("has_concrete", hasItem(StoneDecoration.concrete))
-			.func_218647_a(out, toRL("concrete_slab_from_concrete_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteStairs[0])
-			.func_218643_a("has_concrete", hasItem(StoneDecoration.concrete))
-			.func_218647_a(out, toRL("concrete_stairs_from_concrete_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteTile), IEBlocks.toSlab.get(StoneDecoration.concreteTile))
-			.func_218643_a("has_concrete", hasItem(StoneDecoration.concrete))
-			.func_218647_a(out, toRL("concrete_tile_slab_from_concrete_tile_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteTile), StoneDecoration.concreteStairs[1])
-			.func_218643_a("has_concrete", hasItem(StoneDecoration.concrete))
-			.func_218647_a(out, toRL("concrete_tile_stairs_from_concrete_tile_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded))
-			.func_218643_a("has_concrete", hasItem(StoneDecoration.concrete))
-			.func_218647_a(out, toRL("concrete_leaded_slab_from_concrete_leaded_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concreteLeaded), StoneDecoration.concreteStairs[2])
-			.func_218643_a("has_concrete", hasItem(StoneDecoration.concrete))
-			.func_218647_a(out, toRL("concrete_leaded_stairs_from_concrete_leaded_stonecutting"));
-		SingleItemRecipeBuilder.func_218648_a(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteTile)
-			.func_218643_a("has_concrete", hasItem(StoneDecoration.concrete))
-			.func_218647_a(out, toRL("concrete_tile_from_concrete_stonecutting"));
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete))
+				.addCriterion("has_hempcrete", hasItem(StoneDecoration.hempcrete))
+				.build(out, toRL("hempcrete_slab_from_hempcrete_stonecutting"));
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.hempcrete), StoneDecoration.hempcreteStairs)
+				.addCriterion("has_hempcrete", hasItem(StoneDecoration.hempcrete))
+				.build(out, toRL("hempcrete_stairs_from_hempcrete_stonecutting"));
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete))
+				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
+				.build(out, toRL("concrete_slab_from_concrete_stonecutting"));
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteStairs[0])
+				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
+				.build(out, toRL("concrete_stairs_from_concrete_stonecutting"));
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteTile), IEBlocks.toSlab.get(StoneDecoration.concreteTile))
+				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
+				.build(out, toRL("concrete_tile_slab_from_concrete_tile_stonecutting"));
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteTile), StoneDecoration.concreteStairs[1])
+				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
+				.build(out, toRL("concrete_tile_stairs_from_concrete_tile_stonecutting"));
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded))
+				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
+				.build(out, toRL("concrete_leaded_slab_from_concrete_leaded_stonecutting"));
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), StoneDecoration.concreteStairs[2])
+				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
+				.build(out, toRL("concrete_leaded_stairs_from_concrete_leaded_stonecutting"));
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteTile)
+				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
+				.build(out, toRL("concrete_tile_from_concrete_stonecutting"));
 
 		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.alloybrick, 2)
-			.patternLine("sb")
-			.patternLine("bs")
-			.key('s', Tags.Items.SANDSTONE)
-			.key('b', Tags.Items.INGOTS_BRICK)
-			.addCriterion("has_brick", hasItem(Tags.Items.INGOTS_BRICK))
-			.build(out);
+				.patternLine("sb")
+				.patternLine("bs")
+				.key('s', Tags.Items.SANDSTONE)
+				.key('b', Tags.Items.INGOTS_BRICK)
+				.addCriterion("has_brick", hasItem(Tags.Items.INGOTS_BRICK))
+				.build(out);
 		ShapelessRecipeBuilder.shapelessRecipe(StoneDecoration.blastbrickReinforced)
-			.addIngredient(StoneDecoration.blastbrick)
+				.addIngredient(StoneDecoration.blastbrick)
 			.addIngredient(IETags.getTagsFor(EnumMetals.STEEL).plate)
 			.addCriterion("has_blastbrick", hasItem(StoneDecoration.blastbrick))
 			.build(out);
