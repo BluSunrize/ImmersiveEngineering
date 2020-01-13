@@ -22,17 +22,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-class CatenaryTracerTest
+public class CatenaryTracerTest
 {
 	private static final BlockPos OFFSET = new BlockPos(1, 2, 3);
 
@@ -44,7 +44,7 @@ class CatenaryTracerTest
 	}
 
 	@Test
-	void calculateIntegerIntersections()
+	public void calculateIntegerIntersections()
 	{
 		testIntegerIntersections(new Vec3d(.5, .9, -.5), new Vec3d(.5, .9, .5), 0.001, 0, 0.5, 1);
 		//Diagonal
@@ -73,7 +73,7 @@ class CatenaryTracerTest
 	}
 
 	@Test
-	void forEachSegment()
+	public void forEachSegment()
 	{
 		//TODO more tests?
 		{
@@ -83,7 +83,7 @@ class CatenaryTracerTest
 				double[] minDist = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
 				for(Vec3d p : new Vec3d[]{segment.relativeSegmentStart, segment.relativeSegmentEnd})
 				{
-					assertEquals(0.75+OFFSET.getZ(), p.z+segment.mainPos.getZ());
+					assertEquals(0.75+OFFSET.getZ(), p.z+segment.mainPos.getZ(), 1e-3);
 					for(int i = 0; i < 3; ++i)
 					{
 						double pos = ApiUtils.getDim(p, i);
@@ -112,9 +112,7 @@ class CatenaryTracerTest
 			);
 			Object2IntMap<BlockPos> expected = new Object2IntOpenHashMap<>();
 			for(Entry<BlockPos, Integer> x : expectedBase.entrySet())
-			{
-				expected.put(x.getKey().add(OFFSET), x.getValue());
-			}
+				expected.put(x.getKey().add(OFFSET), (int)x.getValue());
 			assertEquals(expected, inCounts);
 		}
 	}
@@ -128,7 +126,7 @@ class CatenaryTracerTest
 	}
 
 	@Test
-	void forEachCloseCoordinate()
+	public void forEachCloseCoordinate()
 	{
 		Set<BlockPos> center = ImmutableSet.of(BlockPos.ZERO);
 		Set<BlockPos> cube2 = new HashSet<>();
@@ -158,7 +156,7 @@ class CatenaryTracerTest
 		return new CatenaryTracer(conn.catData, OFFSET);
 	}
 
-	private class TestWiretype extends WireType
+	private static class TestWiretype extends WireType
 	{
 		private final double slack;
 

@@ -115,12 +115,12 @@ repositories {
         }
     }
  }
-
 dependencies {
     minecraft 'net.minecraftforge:forge:1.14.4-28.1.114'
     runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11")
     runtimeOnly fg.deobf("nbtedit:NBTEdit:0.8.2")
     compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11:api")
+    testImplementation('junit:junit:4.13')
 }
 
 def reobfFile = file("$buildDir/reobfJar/output.jar")
