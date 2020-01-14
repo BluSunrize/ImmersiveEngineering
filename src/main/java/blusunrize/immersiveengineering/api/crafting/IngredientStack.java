@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tags.Tag;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -32,6 +33,11 @@ public class IngredientStack
 	public FluidStack fluid;
 	public int inputSize;
 	public boolean useNBT;
+
+	public IngredientStack(IItemProvider item)
+	{
+		this(new ItemStack(item));
+	}
 
 	public IngredientStack(ItemStack stack)
 	{
@@ -300,5 +306,10 @@ public class IngredientStack
 					return new IngredientStack(fs);
 			}
 		return null;
+	}
+
+	public boolean isValid()
+	{
+		return !getStackList().isEmpty();
 	}
 }

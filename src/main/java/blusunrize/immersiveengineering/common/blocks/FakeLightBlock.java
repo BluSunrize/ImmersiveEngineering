@@ -87,13 +87,6 @@ public class FakeLightBlock extends IETileProviderBlock
 		public FakeLightTileEntity()
 		{
 			super(TYPE);
-			if(IEConfig.MACHINES.floodlight_spawnPrevent.get())
-				synchronized(EventHandler.interdictionTiles)
-				{
-					Set<ISpawnInterdiction> forDim = EventHandler.interdictionTiles.computeIfAbsent(world.getDimension().getType(), x -> new HashSet<>());
-					if(!forDim.contains(this))
-						forDim.add(this);
-				}
 		}
 
 		@Override
@@ -140,6 +133,19 @@ public class FakeLightBlock extends IETileProviderBlock
 				EventHandler.interdictionTiles.remove(this);
 			}
 			super.onChunkUnloaded();
+		}
+
+		@Override
+		public void onLoad()
+		{
+			if(IEConfig.MACHINES.floodlight_spawnPrevent.get())
+				synchronized(EventHandler.interdictionTiles)
+				{
+					Set<ISpawnInterdiction> forDim = EventHandler.interdictionTiles.computeIfAbsent(
+							world.getDimension().getType(), x -> new HashSet<>()
+					);
+					forDim.add(this);
+				}
 		}
 
 		@Override

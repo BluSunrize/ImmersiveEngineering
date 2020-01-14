@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -1160,15 +1161,14 @@ public class IEContent
 		BelljarHandler.registerHandler(hempBelljarHandler);
 		hempBelljarHandler.register(new ItemStack(IEItems.Misc.hempSeeds), new ItemStack[]{new ItemStack(Ingredients.hempFiber), new ItemStack(IEItems.Misc.hempSeeds, 2)}, new ItemStack(Blocks.DIRT), Misc.hempPlant.getDefaultState());
 
-		/*TODO
-		ThermoelectricHandler.registerSource(new IngredientStack(new ItemStack(Blocks.MAGMA)), 1300);
-		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
-		ThermoelectricHandler.registerSourceInKelvin("blockPackedIce", 200);
-		ThermoelectricHandler.registerSourceInKelvin("blockUranium", 2000);
-		ThermoelectricHandler.registerSourceInKelvin("blockYellorium", 2000);
-		ThermoelectricHandler.registerSourceInKelvin("blockPlutonium", 4000);
-		ThermoelectricHandler.registerSourceInKelvin("blockBlutonium", 4000);
-		 */
+		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.MAGMA_BLOCK), 1300);
+		//TODO tags?
+		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.ICE), 273);
+		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.PACKED_ICE), 200);
+		ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/uranium"), 2000);
+		ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/yellorium"), 2000);
+		ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/plutonium"), 4000);
+		ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/blutonium"), 4000);
 
 		/*MULTIBLOCKS*/
 		/*TODO

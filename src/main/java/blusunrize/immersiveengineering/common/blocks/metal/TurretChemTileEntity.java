@@ -76,7 +76,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 	protected void activate()
 	{
 		FluidStack fs = this.tank.getFluid();
-		if(fs!=null&&fs.getFluid()!=null)
+		if(!fs.isEmpty())
 		{
 			int consumed = IEConfig.TOOLS.chemthrower_consumption.get();
 			int energy = IEConfig.MACHINES.turret_chem_consumption.get();
@@ -117,7 +117,6 @@ public class TurretChemTileEntity extends TurretTileEntity
 			}
 		}
 	}
-
 
 	@Override
 	public void receiveMessageFromClient(CompoundNBT message)

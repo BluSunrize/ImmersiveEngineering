@@ -161,6 +161,7 @@ public class BlockStates extends BlockstateGenerator
 				new ExistingModelFile(rl("block/metal_device/gun_turret.obj.ie")),
 				variantBased
 		);
+		createBasicBlock(Misc.fakeLight, EMPTY_MODEL, variantBased);
 
 		createPostBlock(MetalDecoration.aluPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
 				rl("block/metal_decoration/aluminum_post"),

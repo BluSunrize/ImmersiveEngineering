@@ -60,7 +60,8 @@ public class Lib
 	public static final ResourceLocation GUIID_ArcFurnace = new ResourceLocation(MODID, "arcfurnace");
 	public static final ResourceLocation GUIID_AutoWorkbench = new ResourceLocation(MODID, "autoworkbench");
 	public static final ResourceLocation GUIID_Mixer = new ResourceLocation(MODID, "mixer");
-	public static final ResourceLocation GUIID_Turret = new ResourceLocation(MODID, "turret");
+	public static final ResourceLocation GUIID_Turret_Gun = new ResourceLocation(MODID, "turret_gun");
+	public static final ResourceLocation GUIID_Turret_Chem = new ResourceLocation(MODID, "turret_chem");
 	public static final ResourceLocation GUIID_FluidSorter = new ResourceLocation(MODID, "fluidsorter");
 	public static final ResourceLocation GUIID_Belljar = new ResourceLocation(MODID, "belljar");
 	public static final ResourceLocation GUIID_ToolboxBlock = new ResourceLocation(MODID, "toolboxblock");

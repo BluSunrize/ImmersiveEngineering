@@ -69,7 +69,8 @@ public class GuiHandler
 		register(ArcFurnaceTileEntity.class, Lib.GUIID_ArcFurnace, ArcFurnaceContainer::new);
 		register(AutoWorkbenchTileEntity.class, Lib.GUIID_AutoWorkbench, AutoWorkbenchContainer::new);
 		register(MixerTileEntity.class, Lib.GUIID_Mixer, MixerContainer::new);
-		register(TurretTileEntity.class, Lib.GUIID_Turret, TurretContainer::new);
+		register(TurretGunTileEntity.class, Lib.GUIID_Turret_Gun, TurretContainer::new);
+		register(TurretChemTileEntity.class, Lib.GUIID_Turret_Chem, TurretContainer::new);
 		register(FluidSorterTileEntity.class, Lib.GUIID_FluidSorter, FluidSorterContainer::new);
 		register(BelljarTileEntity.class, Lib.GUIID_Belljar, BelljarContainer::new);
 		register(ToolboxTileEntity.class, Lib.GUIID_ToolboxBlock, ToolboxBlockContainer::new);
@@ -80,7 +81,7 @@ public class GuiHandler
 		useSameContainerItem(RevolverItem.class, SpeedloaderItem.class);
 	}
 
-	public static <T extends TileEntity, C extends IEBaseContainer<T>>
+	public static <T extends TileEntity, C extends IEBaseContainer<? super T>>
 	void register(Class<T> tileClass, ResourceLocation name,
 				  TileContainerConstructor<T, C> container)
 	{
@@ -95,7 +96,7 @@ public class GuiHandler
 		ALL_TYPES.put(name, type);
 	}
 
-	public static <T0 extends TileEntity, T extends T0> void useSameContainerTile(Class<T0> existing, Class<T> toAdd)
+	public static void useSameContainerTile(Class<? extends TileEntity> existing, Class<? extends TileEntity> toAdd)
 	{
 		Preconditions.checkArgument(TILE_CONTAINERS.containsKey(existing));
 		TILE_CONTAINERS.put(toAdd, TILE_CONTAINERS.get(existing));
@@ -162,12 +163,12 @@ public class GuiHandler
 		C construct(int windowId, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack stack);
 	}
 
-	public interface TileContainerConstructor<T extends TileEntity, C extends IEBaseContainer<T>>
+	public interface TileContainerConstructor<T extends TileEntity, C extends IEBaseContainer<? super T>>
 	{
 		C construct(int windowId, PlayerInventory inventoryPlayer, T te);
 	}
 
-	private static class TileContainer<T extends TileEntity, C extends IEBaseContainer<T>>
+	private static class TileContainer<T extends TileEntity, C extends IEBaseContainer<? super T>>
 	{
 		final ContainerType<C> type;
 		final TileContainerConstructor<T, C> factory;

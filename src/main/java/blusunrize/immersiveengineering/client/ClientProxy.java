@@ -500,6 +500,7 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "bottling_machine"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "automated_workbench"));
 		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "refinery"));
+		//TODO needs to change on world reload
 		String[][] table = formatToTable_ItemIntHashmap(ThermoelectricHandler.getThermalValuesSorted(true), "K");
 		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 		builder.addSpecialElement("values", 0, new ManualElementTable(ieMan, table, false));
@@ -1401,7 +1402,8 @@ public class ClientProxy extends CommonProxy
 		registerScreen(Lib.GUIID_ArcFurnace, ArcFurnaceScreen::new);
 		registerScreen(Lib.GUIID_AutoWorkbench, AutoWorkbenchScreen::new);
 		registerScreen(Lib.GUIID_Mixer, MixerScreen::new);
-		registerScreen(Lib.GUIID_Turret, TurretScreen::new);
+		registerScreen(Lib.GUIID_Turret_Gun, GunTurretScreen::new);
+		registerScreen(Lib.GUIID_Turret_Chem, ChemTurretScreen::new);
 		registerScreen(Lib.GUIID_FluidSorter, FluidSorterScreen::new);
 		registerScreen(Lib.GUIID_Belljar, BelljarScreen::new);
 		registerScreen(Lib.GUIID_ToolboxBlock, ToolboxBlockScreen::new);

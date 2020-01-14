@@ -67,10 +67,12 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double x, double y, double z, double ax, double ay, double az)
 	{
 		this(type, world);
-		this.setLocationAndAngles(x, y, z, living.rotationYaw, living.rotationPitch);
+		float yaw = living!=null?living.rotationYaw: 0;
+		float pitch = living!=null?living.rotationPitch: 0;
+		this.setLocationAndAngles(x, y, z, yaw, pitch);
 		this.setPosition(this.posX, this.posY, this.posZ);
 		setMotion(ax, ay, az);
-		this.shootingEntity = living.getUniqueID();
+		this.shootingEntity = living!=null?living.getUniqueID(): UUID.randomUUID();
 		this.setShooterSynced();
 		Vec3d motion = getMotion();
 		this.shoot(motion.x, motion.y, motion.z, 2*1.5F, 1.0F);

@@ -27,19 +27,19 @@ public class ThermoelectricHandler
 {
 	public static HashMap<IngredientStack, Integer> temperatureMap = new HashMap<IngredientStack, Integer>();
 
-	public static void registerSource(IngredientStack source, int value)
+	public static void registerSourceInKelvin(IngredientStack source, int value)
 	{
 		temperatureMap.put(source, value);
 	}
 
 	public static void registerSourceInKelvin(ResourceLocation source, int value)
 	{
-		registerSource(new IngredientStack(source), value);
+		registerSourceInKelvin(new IngredientStack(source), value);
 	}
 
 	public static void registerSourceInCelsius(ResourceLocation source, int value)
 	{
-		registerSource(new IngredientStack(source), value+273);
+		registerSourceInKelvin(new IngredientStack(source), value+273);
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class ThermoelectricHandler
 	 */
 	public static void registerSourceInFarenheit(ResourceLocation source, int value)
 	{
-		registerSource(new IngredientStack(source), (int)Math.round((value-32)/1.8D+273));
+		registerSourceInKelvin(new IngredientStack(source), (int)Math.round((value-32)/1.8D+273));
 	}
 
 	public static int getTemperature(Block block)
@@ -64,11 +64,12 @@ public class ThermoelectricHandler
 	{
 		HashMap<String, Integer> existingMap = new HashMap<>();
 		for(IngredientStack ingr : temperatureMap.keySet())
-		{
-			ItemStack example = ingr.getExampleStack();
-			if(!example.isEmpty())
-				existingMap.put(example.getDisplayName().getFormattedText(), temperatureMap.get(ingr));
-		}
+			if(ingr.isValid())
+			{
+				ItemStack example = ingr.getExampleStack();
+				if(!example.isEmpty())
+					existingMap.put(example.getDisplayName().getFormattedText(), temperatureMap.get(ingr));
+			}
 		return ApiUtils.sortMap(existingMap, inverse);
 	}
 }

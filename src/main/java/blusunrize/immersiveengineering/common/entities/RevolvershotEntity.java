@@ -67,7 +67,6 @@ public class RevolvershotEntity extends IEProjectileEntity
 							  double ax, double ay, double az, IBullet type)
 	{
 		super(eType, world, shooter, x, y, z, ax, ay, az);
-		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);
 		this.bulletType = type;
 	}
