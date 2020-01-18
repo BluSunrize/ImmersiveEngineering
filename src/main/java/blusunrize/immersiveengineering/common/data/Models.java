@@ -293,6 +293,9 @@ public class Models extends ModelGenerator
 		addItemModel("drillhead_iron", out, Tools.drillheadIron);
 		addItemModel("drillhead_steel", out, Tools.drillheadSteel);
 
+		for(Item bag : Misc.shaderBag.values())
+			out.accept(ModelHelper.createBasicItem(rl("item/shader_bag"), locForItemModel(bag)));
+
 		out.accept(ModelHelper.createInventoryFence(ALU_FENCE_TEXTURE, locForItemModel(MetalDecoration.aluFence)));
 		out.accept(ModelHelper.createInventoryFence(STEEL_FENCE_TEXTURE, locForItemModel(MetalDecoration.steelFence)));
 		out.accept(ModelHelper.createInventoryFence(TREATED_FENCE_TEXTURE, locForItemModel(WoodenDecoration.treatedFence)));

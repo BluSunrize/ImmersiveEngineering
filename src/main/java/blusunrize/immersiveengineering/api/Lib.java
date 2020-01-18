@@ -133,5 +133,5 @@ public class Lib
 			return Ingredient.fromTag(ItemTags.getCollection().get(IERecipes.getIngot("steel")));
 		}
 	};
-	public static final Rarity RARITY_Masterwork = Rarity.create("IE:MASTERWORK", TextFormatting.GOLD);
+	public static final Rarity RARITY_Masterwork = Rarity.create("IE_MASTERWORK", TextFormatting.GOLD);
 }

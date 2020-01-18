@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -36,19 +37,19 @@ public class CapabilityShader
 
 	public abstract static class ShaderWrapper
 	{
-		protected String shaderType;
+		protected ResourceLocation shaderType;
 
-		public ShaderWrapper(String type)
+		public ShaderWrapper(ResourceLocation type)
 		{
 			this.shaderType = type;
 		}
 
-		public void setShaderType(String shaderType)
+		public void setShaderType(ResourceLocation shaderType)
 		{
 			this.shaderType = shaderType;
 		}
 
-		public String getShaderType()
+		public ResourceLocation getShaderType()
 		{
 			return shaderType;
 		}
@@ -64,7 +65,7 @@ public class CapabilityShader
 		public static final String SHADER_NBT_KEY = "IE:Shader";
 		protected final ItemStack container;
 
-		public ShaderWrapper_Item(String type, ItemStack container)
+		public ShaderWrapper_Item(ResourceLocation type, ItemStack container)
 		{
 			super(type);
 			this.container = container;
@@ -102,7 +103,7 @@ public class CapabilityShader
 		@Nonnull
 		protected ItemStack shader = ItemStack.EMPTY;
 
-		public ShaderWrapper_Direct(String type)
+		public ShaderWrapper_Direct(ResourceLocation type)
 		{
 			super(type);
 		}
@@ -139,7 +140,7 @@ public class CapabilityShader
 				shader.write(nbt);
 			else
 				nbt.putString("IE:NoShader", "");
-			nbt.putString("IE:ShaderType", getShaderType());
+			nbt.putString("IE:ShaderType", getShaderType().toString());
 			return nbt;
 		}
 
@@ -147,7 +148,7 @@ public class CapabilityShader
 		public void deserializeNBT(CompoundNBT nbt)
 		{
 			CompoundNBT tags = nbt;
-			setShaderType(tags.getString("IE:ShaderType"));
+			setShaderType(new ResourceLocation(tags.getString("IE:ShaderType")));
 			if(!tags.contains("IE:NoShader"))
 				setShaderItem(ItemStack.read(tags));
 		}
@@ -166,7 +167,7 @@ public class CapabilityShader
 					shader.write(nbt);
 				else
 					nbt.putString("IE:NoShader", "");
-				nbt.putString("IE:ShaderType", instance.getShaderType());
+				nbt.putString("IE:ShaderType", instance.getShaderType().toString());
 				return nbt;
 			}
 
@@ -174,7 +175,7 @@ public class CapabilityShader
 			public void readNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, Direction side, INBT nbt)
 			{
 				CompoundNBT tags = (CompoundNBT)nbt;
-				instance.setShaderType(tags.getString("IE:ShaderType"));
+				instance.setShaderType(new ResourceLocation(tags.getString("IE:ShaderType")));
 				if(!tags.contains("IE:NoShader"))
 					instance.setShaderItem(ItemStack.read(tags));
 			}
@@ -183,7 +184,7 @@ public class CapabilityShader
 			@Override
 			public ShaderWrapper call()
 			{
-				return new ShaderWrapper_Direct("");
+				return new ShaderWrapper_Direct(new ResourceLocation(""));
 			}
 		});
 	}

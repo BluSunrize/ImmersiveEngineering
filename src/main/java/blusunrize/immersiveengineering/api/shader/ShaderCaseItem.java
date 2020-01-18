@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
 
@@ -25,9 +27,9 @@ public class ShaderCaseItem extends ShaderCase
 	}
 
 	@Override
-	public String getShaderType()
+	public ResourceLocation getShaderType()
 	{
-		return "immersiveengineering:item";
+		return new ResourceLocation(ImmersiveEngineering.MODID, "item");
 	}
 
 	@Override

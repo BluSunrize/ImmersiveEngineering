@@ -12,7 +12,7 @@
           "functions": [
             {
               "function": "set_nbt",
-              "tag": "{rarity:\"IE:MASTERWORK\"}"
+              "tag": "{rarity:\"IE_MASTERWORK\"}"
             }
           ]
         }
