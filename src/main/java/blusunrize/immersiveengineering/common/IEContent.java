@@ -60,6 +60,7 @@ import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
+import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -548,6 +549,10 @@ public class IEContent
 		ConveyorHandler.createConveyorBlocks();
 		BulletHandler.emptyCasing = new ItemStack(Ingredients.emptyCasing);
 		BulletHandler.emptyShell = new ItemStack(Ingredients.emptyShell);
+		IEWireTypes.setup();
+		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
+
+		IELootFunctions.preInit();
 	}
 
 	@SubscribeEvent
@@ -842,14 +847,6 @@ public class IEContent
 
 		IECompatModule.doModulesRecipes();
 
-	}
-
-	public static void preInit()
-	{
-		IEWireTypes.setup();
-		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
-
-		IELootFunctions.preInit();
 	}
 
 	public static void registerOres()
@@ -1236,6 +1233,7 @@ public class IEContent
 
 	public static void postInit()
 	{
+		Villages.init();
 		/*POTIONS*/
 		try
 		{

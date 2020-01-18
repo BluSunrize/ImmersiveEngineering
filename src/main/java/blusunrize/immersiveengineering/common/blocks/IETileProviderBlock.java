@@ -384,7 +384,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
 	{
 		//TODO caching?
-		if(world.getBlockState(pos).getBlock()==this)
+		if(state.getBlock()==this)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof IAdvancedCollisionBounds)

@@ -18,6 +18,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootFunction;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
+import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 
 import javax.annotation.Nonnull;
@@ -57,6 +58,7 @@ public class IELootFunctions
 			@Override
 			public void serialize(@Nonnull JsonObject object, @Nonnull Bluprintz functionClazz, @Nonnull JsonSerializationContext serializationContext)
 			{
+				super.serialize(object, functionClazz, serializationContext);
 			}
 
 			@Override
@@ -65,7 +67,27 @@ public class IELootFunctions
 			{
 				return new Bluprintz(conditionsIn);
 			}
+		}
 
+		public static class Builder extends LootFunction.Builder<Builder>
+		{
+
+			@Override
+			protected Builder doCast()
+			{
+				return this;
+			}
+
+			@Override
+			public ILootFunction build()
+			{
+				return new Bluprintz(getConditions());
+			}
+		}
+
+		public static Builder builder()
+		{
+			return new Builder();
 		}
 	}
 }

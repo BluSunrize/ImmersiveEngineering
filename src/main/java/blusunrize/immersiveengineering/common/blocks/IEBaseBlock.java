@@ -147,14 +147,13 @@ public class IEBaseBlock extends Block
 	@SuppressWarnings("deprecation")
 	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
-		if(state.isOpaqueCube(worldIn, pos))
-		{
+		if(notNormalBlock)
+			return 0;
+			//TODO this sometimes locks up when generating IE blocks as part of worldgen
+		else if(state.isOpaqueCube(worldIn, pos))
 			return lightOpacity;
-		}
 		else
-		{
 			return state.propagatesSkylightDown(worldIn, pos)?0: 1;
-		}
 	}
 
 	public IEBaseBlock setMobility(PushReaction flag)

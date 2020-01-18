@@ -314,7 +314,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onRenderItemFrame(RenderItemInFrameEvent event)
 	{
-		if(!event.getItem().isEmpty()&&event.getItem().getItem() instanceof EngineersBlueprintItem)
+		if(event.getItem().getItem() instanceof EngineersBlueprintItem)
 		{
 			double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(event.getEntityItemFrame());
 
@@ -348,6 +348,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						GlStateManager.enableAlphaTest();
 						GlStateManager.enableTexture();
 						GlStateManager.enableCull();
+						GlStateManager.disableBlend();
 
 						event.setCanceled(true);
 					}
