@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -19,10 +20,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import java.util.Locale;
 
 public class ShaderBagItem extends IEBaseItem
 {
@@ -50,7 +52,9 @@ public class ShaderBagItem extends IEBaseItem
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack)
 	{
-		return new StringTextComponent(rarity.name()+" ").appendSibling(super.getDisplayName(stack));
+		return new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.rarity.name().toLowerCase(Locale.US))
+				.appendText(" ")
+				.appendSibling(super.getDisplayName(stack));
 	}
 
 	@Override
@@ -66,8 +70,10 @@ public class ShaderBagItem extends IEBaseItem
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (this.isInGroup(group) && ShaderRegistry.sortedRarityMap.contains(this.rarity)) {
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	{
+		if(this.isInGroup(group)&&ShaderRegistry.sortedRarityMap.contains(this.rarity))
+		{
 			items.add(new ItemStack(this));
 		}
 	}
