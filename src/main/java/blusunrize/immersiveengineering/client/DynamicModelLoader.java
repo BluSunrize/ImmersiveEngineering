@@ -114,13 +114,15 @@ public class DynamicModelLoader
 					unbaked = new RawConveyorModel();
 				else if(name.getPath().contains(ModelConfigurableSides.RESOURCE_LOCATION))
 					unbaked = new ModelConfigurableSides.Loader().loadModel(name);
-				else
+				else if(name.getPath().contains(".obj"))
 				{
 					IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
 					unbaked = new OBJModel.Parser(asResource, manager).parse();
 					if(name.getPath().endsWith(".obj.ie"))
 						unbaked = new IEOBJModel(((OBJModel)unbaked).getMatLib(), name);
 				}
+				else
+					unbaked = ModelLoader.defaultModelGetter().apply(name);
 				unbaked = unbaked
 						.process(reqModel.model.getAddtionalDataAsStrings())
 						.retexture(reqModel.model.retexture);

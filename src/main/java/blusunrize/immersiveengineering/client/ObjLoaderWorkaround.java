@@ -141,7 +141,7 @@ public class ObjLoaderWorkaround
 					if(json.has("parent"))
 					{
 						ResourceLocation parent = new ResourceLocation(json.get("parent").getAsString());
-						if(shouldLoad(parent))
+						if(shouldLoad(parent)||json.has("display-trsr"))
 						{
 							Map<TransformType, TRSRTransformation> perspectives = new HashMap<>();
 							if(json.has("display-trsr"))
