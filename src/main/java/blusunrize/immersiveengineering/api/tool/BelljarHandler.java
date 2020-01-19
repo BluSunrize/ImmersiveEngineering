@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -391,7 +392,7 @@ public class BelljarHandler
 
 	public static void init()
 	{
-		soilTextureMap.put(new ComparableItemStack(new ItemStack(Blocks.DIRT), false, false), new ResourceLocation("minecraft:block/farmland_wet"));
+		soilTextureMap.put(new ComparableItemStack(new ItemStack(Blocks.DIRT), false, false), new ResourceLocation("block/farmland_moist"));
 		registerHandler(cropHandler);
 		registerHandler(stemHandler);
 		registerHandler(stackingHandler);
@@ -405,8 +406,8 @@ public class BelljarHandler
 		stemHandler.register(new ItemStack(Items.PUMPKIN_SEEDS), new ItemStack[]{new ItemStack(Blocks.PUMPKIN)}, new ItemStack(Blocks.DIRT), Blocks.PUMPKIN_STEM.getDefaultState());
 		stemHandler.register(new ItemStack(Items.MELON_SEEDS), new ItemStack[]{new ItemStack(Blocks.MELON)}, new ItemStack(Blocks.DIRT), Blocks.MELON_STEM.getDefaultState());
 
-		stackingHandler.register(new ItemStack(Items.SUGAR_CANE), new ItemStack[]{new ItemStack(Items.SUGAR_CANE, 2)}, "sand", Blocks.SUGAR_CANE.getDefaultState(), Blocks.SUGAR_CANE.getDefaultState());
-		stackingHandler.register(new ItemStack(Blocks.CACTUS), new ItemStack[]{new ItemStack(Blocks.CACTUS, 2)}, "sand", Blocks.CACTUS.getDefaultState(), Blocks.CACTUS.getDefaultState());
+		stackingHandler.register(new ItemStack(Items.SUGAR_CANE), new ItemStack[]{new ItemStack(Items.SUGAR_CANE, 2)}, BlockTags.SAND, Blocks.SUGAR_CANE.getDefaultState(), Blocks.SUGAR_CANE.getDefaultState());
+		stackingHandler.register(new ItemStack(Blocks.CACTUS), new ItemStack[]{new ItemStack(Blocks.CACTUS, 2)}, BlockTags.SAND, Blocks.CACTUS.getDefaultState(), Blocks.CACTUS.getDefaultState());
 		stackingHandler.register(new ItemStack(Blocks.CHORUS_FLOWER), new ItemStack[]{new ItemStack(Items.CHORUS_FRUIT, 1)}, new ItemStack(Blocks.END_STONE), Blocks.CHORUS_PLANT.getDefaultState().with(ChorusPlantBlock.DOWN, true).with(ChorusPlantBlock.UP, true), Blocks.CHORUS_PLANT.getDefaultState().with(ChorusPlantBlock.DOWN, true).with(ChorusPlantBlock.UP, true), Blocks.CHORUS_FLOWER.getDefaultState());
 
 		IngredientStack shroomSoil = new IngredientStack(ImmutableList.of(new ItemStack(Blocks.MYCELIUM), new ItemStack(Blocks.PODZOL)));

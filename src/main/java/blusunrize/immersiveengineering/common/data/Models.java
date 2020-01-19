@@ -200,8 +200,20 @@ public class Models extends ModelGenerator
 		out.accept(furnaceHeaterOff);
 		out.accept(furnaceHeaterOn);
 
-		out.accept(ModelHelper.createWithModel(rl("block/stripcurtain"), locForItemModel(Cloth.curtain)));
-		out.accept(ModelHelper.createWithModel(rl("block/balloon.obj.ie"), locForItemModel(Cloth.balloon)));
+		out.accept(ModelHelper.create(
+				locForItemModel(Cloth.curtain),
+				rl("block/stripcurtain"),
+				ImmutableMap.of(),
+				rl("item/stripcurtain"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(Cloth.balloon),
+				rl("block/balloon.obj.ie"),
+				ImmutableMap.of(),
+				rl("item/block"),
+				true
+		));
 		out.accept(cushion);
 
 		addSimpleBlockModel(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"), out);
@@ -292,16 +304,25 @@ public class Models extends ModelGenerator
 		addItemModel("seed_hemp", out, Misc.hempSeeds);
 		addItemModel("drillhead_iron", out, Tools.drillheadIron);
 		addItemModel("drillhead_steel", out, Tools.drillheadSteel);
-
-		for(Item bag : Misc.shaderBag.values())
-			out.accept(ModelHelper.createBasicItem(rl("item/shader_bag"), locForItemModel(bag)));
+		out.accept(ModelHelper.create(
+				locForItemModel(Tools.toolbox),
+				rl("item/toolbox.obj"),
+				ImmutableMap.of(),
+				rl("item/toolbox"),
+				true
+		));
 
 		out.accept(ModelHelper.createInventoryFence(ALU_FENCE_TEXTURE, locForItemModel(MetalDecoration.aluFence)));
 		out.accept(ModelHelper.createInventoryFence(STEEL_FENCE_TEXTURE, locForItemModel(MetalDecoration.steelFence)));
 		out.accept(ModelHelper.createInventoryFence(TREATED_FENCE_TEXTURE, locForItemModel(WoodenDecoration.treatedFence)));
 
-		out.accept(ModelHelper.createWithModel(rl("block/sprayed_concrete.obj"),
-				locForItemModel(StoneDecoration.concreteSprayed)));
+		out.accept(ModelHelper.create(
+				locForItemModel(StoneDecoration.concreteSprayed),
+				rl("block/sprayed_concrete.obj"),
+				ImmutableMap.of(),
+				rl("item/block"),
+				true
+		));
 		out.accept(quarterConcreteBlock);
 		out.accept(threeQuarterConcreteBlock);
 		out.accept(sheetConcreteBlock);
@@ -309,8 +330,13 @@ public class Models extends ModelGenerator
 		out.accept(gunpowderBarrel);
 		out.accept(crate);
 		out.accept(reinforcedCrate);
-		out.accept(ModelHelper.createWithModel(rl("block/wooden_device/workbench.obj.ie"),
-				locForItemModel(WoodenDevices.workbench)));
+		out.accept(ModelHelper.create(
+				locForItemModel(WoodenDevices.workbench),
+				rl("block/wooden_device/workbench.obj.ie"),
+				ImmutableMap.of(),
+				rl("item/workbench"),
+				true
+		));
 		out.accept(router);
 		out.accept(fluidRouter);
 		out.accept(ModelHelper.createBasicCube(
@@ -319,6 +345,13 @@ public class Models extends ModelGenerator
 				rl("block/wooden_device/barrel_up_none"),
 				locForItemModel(WoodenDevices.woodenBarrel)));
 
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.belljar),
+				rl("block/metal_device/belljar.obj.ie"),
+				ImmutableMap.of(),
+				rl("item/belljar"),
+				true
+		));
 		out.accept(ModelHelper.create(
 				locForItemModel(MetalDevices.teslaCoil),
 				rl("block/metal_device/teslacoil.obj"),

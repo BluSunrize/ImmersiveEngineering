@@ -347,11 +347,11 @@ public class ModelHelper
 
 	public static class TransformationMap
 	{
-		private final Map<TransformType, Matrix4> transforms = new TreeMap<>();
+		private final Map<TransformType, TRSRTransformation> transforms = new TreeMap<>();
 
 		public TransformationMap setTransformations(TransformType t, Matrix4 mat)
 		{
-			transforms.put(t, mat);
+			transforms.put(t, new TRSRTransformation(mat.toMatrix4f()));
 			return this;
 		}
 
@@ -362,7 +362,7 @@ public class ModelHelper
 					.registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
 					.create();
 			JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
-			Map<TransformType, Matrix4> transforms = new HashMap<>();
+			Map<TransformType, TRSRTransformation> transforms = new HashMap<>();
 			boolean vanilla = obj.has("type")&&"vanilla".equals(obj.remove("type").getAsString());
 			for(TransformType type : TransformType.values())
 			{
@@ -388,49 +388,33 @@ public class ModelHelper
 				}
 				else
 					transform = TRSRTransformation.identity();
-				transforms.put(type, new Matrix4(transform.getMatrixVec()));
+				transforms.put(type, transform);
 			}
-			Matrix4 baseMat;
+			TRSRTransformation baseTransform;
 			if(obj.size() > 0)
-			{
-				TRSRTransformation baseTransform = GSON.fromJson(obj, TRSRTransformation.class);
-				baseMat = new Matrix4(baseTransform.getMatrixVec());
-			}
+				baseTransform = GSON.fromJson(obj, TRSRTransformation.class);
 			else
-				baseMat = new Matrix4();
-			for(Entry<TransformType, Matrix4> e : transforms.entrySet())
-				this.transforms.put(e.getKey(), e.getValue().multiply(baseMat));
+				baseTransform = TRSRTransformation.identity();
+			for(Entry<TransformType, TRSRTransformation> e : transforms.entrySet())
+				this.transforms.put(e.getKey(), TRSRTransformation.blockCenterToCorner(e.getValue().compose(baseTransform)));
 		}
 
 		public JsonObject toJson()
 		{
 			JsonObject ret = new JsonObject();
-			for(Entry<TransformType, Matrix4> entry : transforms.entrySet())
+			for(Entry<TransformType, TRSRTransformation> entry : transforms.entrySet())
 				add(ret, entry.getKey(), entry.getValue());
 			return ret;
 		}
 
-		private void add(JsonObject main, TransformType type, Matrix4 mat)
+		private void add(JsonObject main, TransformType type, TRSRTransformation trsr)
 		{
-			TRSRTransformation trsr = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(mat.toMatrix4f()));
 			JsonObject result = new JsonObject();
 			result.add("translation", toJson(trsr.getTranslation()));
 			result.add("rotation", toJson(trsr.getLeftRot()));
 			result.add("scale", toJson(trsr.getScale()));
 			result.add("post-rotation", toJson(trsr.getRightRot()));
 			Gson tmp = new GsonBuilder().registerTypeAdapter(TRSRTransformation.class, TRSRDeserializer.INSTANCE).create();
-			TRSRTransformation check = tmp.fromJson(result, TRSRTransformation.class);
-			check = TRSRTransformation.blockCornerToCenter(check);
-			for(int i = 0; i < 4; ++i)
-			{
-				for(int j = 0; j < 4; ++j)
-				{
-					float checkVal = check.getMatrixVec().getElement(i, j);
-					double origVal = mat.getElement(i, j);
-					Preconditions.checkState(Math.abs(checkVal-origVal) < 1e-3);
-				}
-
-			}
 			main.add(type.name().toLowerCase(), result);
 		}
 

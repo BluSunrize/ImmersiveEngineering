@@ -152,6 +152,11 @@ public class BlockStates extends BlockstateGenerator
 				BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID
 		);
 		createMultiblock(
+				MetalDevices.belljar,
+				new ExistingModelFile(rl("block/metal_device/belljar.obj.ie")),
+				variantBased
+		);
+		createMultiblock(
 				MetalDevices.turretChem,
 				new ExistingModelFile(rl("block/metal_device/chem_turret.obj.ie")),
 				variantBased

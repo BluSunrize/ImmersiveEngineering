@@ -90,7 +90,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		}
 
 		@Override
-		public boolean isFluidValid(FluidStack stack)
+		public boolean isFluidValid(FluidStack fluid)
 		{
 			return BelljarHandler.getFluidFertilizerHandler(fluid)!=null;
 		}
@@ -373,7 +373,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	@Override
 	public float[] getBlockBounds()
 	{
-		return null;//new float[]{facing==EnumFacing.EAST?0:.25f,facing==EnumFacing.UP?0:facing==EnumFacing.DOWN?.125f:.0625f,facing==EnumFacing.SOUTH?0:.25f, facing==EnumFacing.WEST?1:.75f,facing==EnumFacing.DOWN?1:.875f,facing==EnumFacing.NORTH?1:.75f};
+		return null;
 	}
 
 	@Override
@@ -385,6 +385,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
+		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int i = 1; i <= 2; i++)
 		{
 			world.setBlockState(pos.up(i), state);

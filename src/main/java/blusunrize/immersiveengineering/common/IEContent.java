@@ -423,7 +423,8 @@ public class IEContent
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
-		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties,
+				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
@@ -734,7 +735,7 @@ public class IEContent
 		//IERecipes.initFurnaceRecipes();
 
 		/*BELLJAR*/
-		//BelljarHandler.init();
+		BelljarHandler.init();
 
 		/*EXCAVATOR*/
 		//TODO remove
