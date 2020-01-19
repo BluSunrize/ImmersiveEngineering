@@ -1,0 +1,25 @@
+{
+  "scale": 0.5,
+  "rotation": [
+    {
+      "x": 37.5
+    }, {
+      "y": 45
+    }
+  ],
+  "translation": [-0.1875, -0.1875, 0],
+  "thirdperson_lefthand": {
+    "scale": 0.6,
+    "translation": [0, 0.2, 0],
+    "rotation": {
+      "x": 62.5
+    }
+  },
+  "thirdperson_righthand": {
+    "scale": 0.6,
+    "translation": [0, 0.2, 0],
+    "rotation": {
+      "x": 62.5
+    }
+  }
+}
