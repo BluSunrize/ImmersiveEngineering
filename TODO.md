@@ -5,7 +5,6 @@ Things to do before the release. Not a complete list, but a list of things that 
    - Render OBJs/block models directly rather than item models?
  - Wire sync is currently broken due to a Forge bug, see [here](https://github.com/MinecraftForge/MinecraftForge/pull/6453)
  - Hemp seeds dropping from grass is broken, also waiting for a Forge PR to be merged: either [this](https://github.com/MinecraftForge/MinecraftForge/pull/5871) or [this](https://github.com/MinecraftForge/MinecraftForge/pull/6267)
- - Blocks breaking wires isn't implemented yet, the relevant hook has been removed. More ASM (faster than events)? Or was the hook moved somewhere silly?
  
 From TODO_1.13.md:
  - Split `ApiUtils` in a client and a server class

@@ -45,10 +45,7 @@ public class MessageWireSync implements IMessage
 		added = buf.readBoolean();
 		start = readConnPoint(buf);
 		end = readConnPoint(buf);
-		if(added)
-			type = WireType.getValue(buf.readString(128));
-		else
-			type = null;
+		type = WireType.getValue(buf.readString(128));
 	}
 
 	private ConnectionPoint readConnPoint(PacketBuffer buf)
@@ -69,8 +66,7 @@ public class MessageWireSync implements IMessage
 		pb.writeBoolean(added);
 		writeConnPoint(start, pb);
 		writeConnPoint(end, pb);
-		if(added)
-			pb.writeString(type.getUniqueName());
+		pb.writeString(type.getUniqueName());
 	}
 
 	@Override
@@ -89,7 +85,7 @@ public class MessageWireSync implements IMessage
 			if(added)
 				globalNet.addConnection(new Connection(type, start, end));
 			else
-				globalNet.removeConnection(new Connection(WireType.STEEL, start, end));
+				globalNet.removeConnection(new Connection(type, start, end));
 			TileEntity startTE = w.getTileEntity(start.getPosition());
 			if(startTE!=null)
 				startTE.requestModelDataUpdate();

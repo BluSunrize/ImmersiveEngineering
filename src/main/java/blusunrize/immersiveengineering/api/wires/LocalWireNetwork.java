@@ -257,7 +257,7 @@ public class LocalWireNetwork implements IWorldTickable
 	{
 		for(ResourceLocation loc : iic.getRequestedHandlers())
 		{
-			Preconditions.checkState(handlers.containsKey(loc), "Expected to find handler for "+loc);
+			Preconditions.checkState(handlers.containsKey(loc), "Expected to find handler for "+loc+"(provided by "+iic+")");
 			int remaining = handlerUserCount.getInt(loc)-1;
 			handlerUserCount.put(loc, remaining);
 			IELogger.logger.info("Decreasing {} to {}", loc, remaining);

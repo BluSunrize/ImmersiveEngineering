@@ -1,4 +1,5 @@
 {
   "IE wire damage": "asm/wiredamage.js",
-  "IE arm angle adjustment": "asm/arm_angles.js"
+  "IE arm angle adjustment": "asm/arm_angles.js",
+  "IE block update callback": "asm/blockwirecollisions.js"
 }
