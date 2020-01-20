@@ -424,7 +424,6 @@ public class ModelHelper
 			result.add("rotation", toJson(trsr.getLeftRot()));
 			result.add("scale", toJson(trsr.getScale()));
 			result.add("post-rotation", toJson(trsr.getRightRot()));
-			Gson tmp = new GsonBuilder().registerTypeAdapter(TRSRTransformation.class, TRSRDeserializer.INSTANCE).create();
 			main.add(type.name().toLowerCase(), result);
 		}
 

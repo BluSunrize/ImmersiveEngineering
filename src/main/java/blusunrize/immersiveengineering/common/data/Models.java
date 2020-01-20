@@ -311,6 +311,13 @@ public class Models extends ModelGenerator
 				rl("item/toolbox"),
 				true
 		));
+		out.accept(ModelHelper.create(
+				locForItemModel(Tools.voltmeter),
+				rl("item/voltmeter.obj"),
+				ImmutableMap.of(),
+				rl("item/voltmeter"),
+				true
+		));
 
 		out.accept(ModelHelper.createInventoryFence(ALU_FENCE_TEXTURE, locForItemModel(MetalDecoration.aluFence)));
 		out.accept(ModelHelper.createInventoryFence(STEEL_FENCE_TEXTURE, locForItemModel(MetalDecoration.steelFence)));
@@ -380,8 +387,20 @@ public class Models extends ModelGenerator
 				rl("item/turret"),
 				true
 		));
-		out.accept(ModelHelper.createWithModel(rl("block/metal_device/fluid_pipe.obj.ie"),
-				locForItemModel(MetalDevices.fluidPipe)));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.fluidPipe),
+				rl("block/metal_device/fluid_pipe.obj.ie"),
+				ImmutableMap.of(),
+				rl("item/block"),
+				true
+		));
+		out.accept(ModelHelper.create(
+				locForItemModel(MetalDevices.fluidPump),
+				rl("block/metal_device/fluid_pump_inv.obj"),
+				ImmutableMap.of(),
+				rl("item/fluid_pump"),
+				true
+		));
 		out.accept(ModelHelper.createBasicCube(
 				rl("block/metal_device/barrel_side"),
 				rl("block/metal_device/barrel_up_none"),
