@@ -808,7 +808,7 @@ public class IEContent
 		ExcavatorHandler.addMineral("Coal", 25, .1f, new ResourceLocation[]{oreCoal, denseoreCoal, oreDiamond, oreEmerald}, new float[]{.92f, .1f, .015f, .015f});
 		ExcavatorHandler.addMineral("Silt", 25, .05f, new ResourceLocation[]{blockClay, sand, gravel}, new float[]{.5f, .3f, .2f});
 		/*MULTIBLOCK RECIPES*/
-		Tag<Block> coalBlock = BlockTags.CORAL_BLOCKS;
+		Tag<Block> coalBlock = Tags.Blocks.STORAGE_BLOCKS_COAL;
 		Tag<Block> logWood = BlockTags.LOGS;
 		CokeOvenRecipe.addRecipe(new ItemStack(Ingredients.coalCoke), new ItemStack(Items.COAL), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(StoneDecoration.coke), coalBlock, 1800*9, 5000);
