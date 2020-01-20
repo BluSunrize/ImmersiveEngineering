@@ -9,7 +9,9 @@
 package blusunrize.immersiveengineering.common.data.model;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.UncheckedModelFile;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -95,15 +97,13 @@ public class ModelHelper
 		), true);
 	}
 
-	public static JsonObject createJson(ResourceLocation parent, Map<String, ResourceLocation> textures,
-										@Nullable ResourceLocation transforms, boolean existingModel)
+	public static JsonObject createJson(ModelFile parent, Map<String, ResourceLocation> textures,
+										@Nullable ResourceLocation transforms)
 	{
 		for(ResourceLocation rl : textures.values())
 			assertTextureExists(rl);
-		if(existingModel)
-			assertModelExists(parent);
 		JsonObject model = new JsonObject();
-		model.addProperty("parent", parent.toString());
+		model.addProperty("parent", parent.getLocation().toString());
 		if(!textures.isEmpty())
 		{
 			JsonObject textureJson = new JsonObject();
@@ -132,13 +132,24 @@ public class ModelHelper
 											Map<String, ResourceLocation> textures, ResourceLocation transforms,
 											boolean existingModel)
 	{
-		return new GeneratedModelFile(outName, createJson(parent, textures, transforms, existingModel));
+		ModelFile parentFile;
+		if(existingModel)
+			parentFile = new ExistingModelFile(parent);
+		else
+			parentFile = new UncheckedModelFile(parent);
+		return create(outName, parentFile, textures, transforms);
+	}
+
+	public static GeneratedModelFile create(ResourceLocation outName, ModelFile parent,
+											Map<String, ResourceLocation> textures, ResourceLocation transforms)
+	{
+		return new GeneratedModelFile(outName, createJson(parent, textures, transforms));
 	}
 
 	public static GeneratedModelFile create(ResourceLocation outName, ResourceLocation parent,
 											Map<String, ResourceLocation> textures, boolean existingModel)
 	{
-		return new GeneratedModelFile(outName, createJson(parent, textures, null, existingModel));
+		return create(outName, parent, textures, null, existingModel);
 	}
 
 	public static GeneratedModelFile createCarpetBlock(ResourceLocation texture, ResourceLocation modelName)
@@ -275,10 +286,10 @@ public class ModelHelper
 
 	public static GeneratedModelFile createVariants(ResourceLocation fileName, Enum[] types, GeneratedModelFile... models)
 	{
-		assert types.length == models.length;
+		assert types.length==models.length;
 		JsonObject model = new JsonObject();
 		JsonObject variants = new JsonObject();
-		for(int i=0; i<types.length; i++)
+		for(int i = 0; i < types.length; i++)
 			variants.addProperty(types[i].name().toLowerCase(Locale.US), models[i].getUncheckedLocation().toString());
 		model.add("variants", variants);
 		return new GeneratedModelFile(fileName, model);
@@ -304,8 +315,7 @@ public class ModelHelper
 
 	public static GeneratedModelFile createConnectorModel(ResourceLocation out, Map<String, ResourceLocation> retexture, ResourceLocation model)
 	{
-		JsonObject json = createJson(model, retexture, rl("item/connector"), true);
-		return new GeneratedModelFile(out, json);
+		return create(out, model, retexture, rl("item/connector"), true);
 	}
 
 	public enum BasicStairsShape

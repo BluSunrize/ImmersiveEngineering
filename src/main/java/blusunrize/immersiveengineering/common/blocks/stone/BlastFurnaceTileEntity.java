@@ -122,7 +122,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 						BlastFurnaceRecipe recipe = getRecipe();
 						if(recipe!=null)
 						{
-							Utils.modifyInvStackSize(inventory, 0, -(recipe.input instanceof ItemStack?((ItemStack)recipe.input).getCount(): 1));
+							Utils.modifyInvStackSize(inventory, 0, -recipe.input.inputSize);
 							if(!inventory.get(2).isEmpty())
 								inventory.get(2).grow(recipe.output.copy().getCount());
 							else
@@ -190,11 +190,8 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory.get(0));
 		if(recipe==null)
 			return null;
-		if((inventory.get(0).getCount() >= ((recipe.input instanceof ItemStack)?((ItemStack)recipe.input).getCount(): 1)
-				&&inventory.get(2).isEmpty()||(ItemStack.areItemsEqual(inventory.get(2), recipe.output)&&
-				inventory.get(2).getCount()+recipe.output.getCount() <= getSlotLimit(2)))
-				&&(inventory.get(3).isEmpty()||(ItemStack.areItemsEqual(inventory.get(3), recipe.slag)&&
-				inventory.get(3).getCount()+recipe.slag.getCount() <= getSlotLimit(3))))
+		if((inventory.get(2).isEmpty()||(ItemStack.areItemsEqual(inventory.get(2), recipe.output)&&inventory.get(2).getCount()+recipe.output.getCount() <= getSlotLimit(2)))
+				&&(inventory.get(3).isEmpty()||(ItemStack.areItemsEqual(inventory.get(3), recipe.slag)&&inventory.get(3).getCount()+recipe.slag.getCount() <= getSlotLimit(3))))
 			return recipe;
 		return null;
 	}

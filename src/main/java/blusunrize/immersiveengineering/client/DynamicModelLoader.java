@@ -18,8 +18,8 @@ import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerato
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
@@ -126,7 +126,7 @@ public class DynamicModelLoader
 				unbaked = unbaked
 						.process(reqModel.model.getAddtionalDataAsStrings())
 						.retexture(reqModel.model.retexture);
-				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), ImmutableSet.of()));
+				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), Sets.newHashSet()));
 				unbakedModels.put(reqModel, unbaked);
 			}
 		} catch(Exception x)

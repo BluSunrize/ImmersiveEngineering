@@ -111,7 +111,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 					CokeOvenRecipe recipe = getRecipe();
 					if(recipe!=null)
 					{
-						Utils.modifyInvStackSize(inventory, 0, -1);
+						Utils.modifyInvStackSize(inventory, 0, recipe.input.inputSize);
 						if(!inventory.get(1).isEmpty())
 							inventory.get(1).grow(recipe.output.copy().getCount());
 						else if(inventory.get(1).isEmpty())
@@ -172,6 +172,8 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	@Nullable
 	public CokeOvenRecipe getRecipe()
 	{
+		if(inventory.get(0).isEmpty())
+			return null;
 		CokeOvenRecipe recipe = CokeOvenRecipe.findRecipe(inventory.get(0));
 		if(recipe==null)
 			return null;
