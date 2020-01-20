@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class BlastFurnaceRecipe
 {
-	public final Object input;
+	public final IngredientStack input;
 	public final ItemStack output;
 	@Nonnull
 	public final ItemStack slag;
@@ -32,7 +32,7 @@ public class BlastFurnaceRecipe
 	public BlastFurnaceRecipe(ItemStack output, Object input, int time, @Nonnull ItemStack slag)
 	{
 		this.output = output;
-		this.input = ApiUtils.convertToValidRecipeInput(input);
+		this.input = ApiUtils.createIngredientStack(input);
 		this.time = time;
 		this.slag = slag;
 	}

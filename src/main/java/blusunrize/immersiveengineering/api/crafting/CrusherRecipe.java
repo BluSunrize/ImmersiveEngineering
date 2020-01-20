@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,7 +84,10 @@ public class CrusherRecipe extends MultiblockRecipe
 			if(outputs[i*2]!=null)
 			{
 				Object o = ApiUtils.convertToValidRecipeInput(outputs[i*2]);
-				ItemStack ss = o instanceof ItemStack?(ItemStack)o: o instanceof List?IEApi.getPreferredStackbyMod((Collection<ItemStack>)o): ItemStack.EMPTY;
+				ItemStack ss = o instanceof ItemStack?(ItemStack)o
+						: o instanceof List?IEApi.getPreferredStackbyMod((Collection<ItemStack>)o)
+						: o instanceof ResourceLocation?IEApi.getPreferredTagStack((ResourceLocation)o)
+						: ItemStack.EMPTY;
 				if(!ss.isEmpty())
 				{
 					newSecondaryOutput.add(ss);

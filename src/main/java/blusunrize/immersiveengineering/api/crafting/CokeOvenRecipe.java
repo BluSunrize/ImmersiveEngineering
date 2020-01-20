@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class CokeOvenRecipe
 {
-	public final Object input;
+	public final IngredientStack input;
 	public final ItemStack output;
 	public final int time;
 	public final int creosoteOutput;
@@ -30,7 +30,7 @@ public class CokeOvenRecipe
 	public CokeOvenRecipe(ItemStack output, Object input, int time, int creosoteOutput)
 	{
 		this.output = output;
-		this.input = ApiUtils.convertToValidRecipeInput(input);
+		this.input = ApiUtils.createIngredientStack(input);
 		this.time = time;
 		this.creosoteOutput = creosoteOutput;
 	}

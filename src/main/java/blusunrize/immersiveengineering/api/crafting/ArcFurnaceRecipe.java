@@ -35,7 +35,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public final IngredientStack input;
 	public final String oreInputString;
 	public final IngredientStack[] additives;
-	public final ItemStack output;
+	public final NonNullList<ItemStack> output;
 	@Nonnull
 	public final ItemStack slag;
 
@@ -45,7 +45,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public ArcFurnaceRecipe(ItemStack output, Object input, @Nonnull ItemStack slag, int time, int energyPerTick, Object... additives)
 	{
-		this.output = output;
+		this.output = ListUtils.fromItem(output);
 		this.input = ApiUtils.createIngredientStack(input);
 		this.oreInputString = input instanceof String?(String)input: null;
 		this.slag = slag;
@@ -63,7 +63,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		this.inputList = Lists.newArrayList(this.input);
 		if(this.additives.length > 0)
 			this.inputList.addAll(Lists.newArrayList(this.additives));
-		this.outputList = ListUtils.fromItem(this.output);
+		this.outputList = this.output;
 	}
 
 	@Override
@@ -131,9 +131,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public NonNullList<ItemStack> getOutputs(ItemStack input, NonNullList<ItemStack> additives)
 	{
-		NonNullList<ItemStack> outputs = NonNullList.create();
-		outputs.add(output);
-		return outputs;
+		return this.output;
 	}
 
 	public boolean matches(ItemStack input, NonNullList<ItemStack> additives)
@@ -240,11 +238,13 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		while(it.hasNext())
 		{
 			ArcFurnaceRecipe ir = it.next();
-			if(ItemStack.areItemStacksEqual(ir.output, stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
+			for(ItemStack out : ir.output)
+				if(ItemStack.areItemStacksEqual(out, stack))
+				{
+					list.add(ir);
+					it.remove();
+					break;
+				}
 		}
 		return list;
 	}
