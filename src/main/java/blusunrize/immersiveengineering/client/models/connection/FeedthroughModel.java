@@ -9,16 +9,21 @@
 package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
+import blusunrize.immersiveengineering.client.utils.CombinedModelData;
+import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.FeedthroughData;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -36,12 +41,16 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -79,26 +88,48 @@ public class FeedthroughModel extends BakedIEModel
 		Int2IntFunction colorMultiplier = i -> 0xffffffff;
 
 		if(extraData.hasProperty(Model.FEEDTHROUGH))
-			{
-				FeedthroughData data = extraData.getData(Model.FEEDTHROUGH);
-				assert (data!=null);
-				baseState = data.baseState;
-				wire = data.wire;
-				facing = data.facing;
-				offset = data.offset;
-				colorMultiplier = data.colorMultiplier;
-			}
+		{
+			FeedthroughData data = extraData.getData(Model.FEEDTHROUGH);
+			assert (data!=null);
+			baseState = data.baseState;
+			wire = data.wire;
+			facing = data.facing;
+			offset = data.offset;
+			colorMultiplier = data.colorMultiplier;
+		}
 		final Int2IntFunction colorMultiplierFinal = colorMultiplier;
 		FeedthroughCacheKey key = new FeedthroughCacheKey(wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer(), colorMultiplier);
-		try
+		SpecificFeedthroughModel ret = CACHE.getIfPresent(key);
+		//if(ret==null)
 		{
-			return CACHE.get(key,
-					() -> new SpecificFeedthroughModel(key, colorMultiplierFinal)).getQuads(state, side, rand);
-		} catch(ExecutionException e)
-		{
-			e.printStackTrace();
-			return ImmutableList.of();
+			ret = new SpecificFeedthroughModel(key, colorMultiplierFinal);
+			Preconditions.checkState(key.usedColorMultipliers!=null);
+			CACHE.put(key, ret);
 		}
+		return ret.getQuads(state, side, rand);
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	{
+		List<IModelData> ret = new ArrayList<>();
+		ret.add(tileData);
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof FeedthroughTileEntity)
+		{
+			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)te;
+			FeedthroughData d = new FeedthroughData(
+					feedthrough.stateForMiddle,
+					feedthrough.reference,
+					state.get(IEProperties.FACING_ALL),
+					feedthrough.offset,
+					//TODO
+					i -> 0xffffffff
+			);
+			ret.add(new SinglePropertyModelData<>(d, Model.FEEDTHROUGH));
+		}
+		return new CombinedModelData(ret.toArray(new IModelData[0]));
 	}
 
 	@Override
@@ -191,7 +222,7 @@ public class FeedthroughModel extends BakedIEModel
 		final Direction facing;
 		final BlockRenderLayer layer;
 		@Nullable
-		final Int2IntMap usedColorMultipliers;
+		Int2IntMap usedColorMultipliers;
 		@Nullable
 		final Int2IntFunction allColorMultipliers;
 
@@ -291,6 +322,7 @@ public class FeedthroughModel extends BakedIEModel
 				colorMultiplierBasic = (i) -> colors.getColor(stack, i);
 			}
 			Int2IntFunction colorMultiplierFinal = colorMultiplierBasic;
+			k.usedColorMultipliers = new Int2IntOpenHashMap();
 			Int2IntFunction colorMultiplier = i -> {
 				int ret = colorMultiplierFinal.get(i);
 				k.usedColorMultipliers.put(i, ret);
@@ -307,7 +339,9 @@ public class FeedthroughModel extends BakedIEModel
 						{
 							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(new Matrix4(),
 									DefaultVertexFormats.ITEM, colorMultiplier);
-							quads.add(model.getQuads(k.baseState, side, Utils.RAND).stream().map(tintTransformer)
+							quads.add(model.getQuads(k.baseState, side, Utils.RAND, EmptyModelData.INSTANCE)
+									.stream()
+									.map(tintTransformer)
 									.collect(Collectors.toCollection(ArrayList::new)));
 						}
 						break;
@@ -362,6 +396,13 @@ public class FeedthroughModel extends BakedIEModel
 				return conn.stream().map(transf).collect(Collectors.toList());
 			else
 				return conn;
+		}
+
+		@Nonnull
+		@Override
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+		{
+			return quads.get(side==null?6: side.getIndex());
 		}
 	}
 }

@@ -66,17 +66,17 @@ public class IEWireTypes
 	public static void setup()
 	{
 		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
-				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
-				.5, Connectors.getEnergyConnector(LV_CATEGORY, false).getDefaultState());
+				new ResourceLocation(MODID, "block/connector/connector_lv"), new float[]{0, 4, 8, 12},
+				.5, () -> Connectors.getEnergyConnector(LV_CATEGORY, false).getDefaultState());
 		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
-				new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
-				.5625, Connectors.getEnergyConnector(MV_CATEGORY, false).getDefaultState());
+				new ResourceLocation(MODID, "block/connector/connector_mv"), new float[]{0, 4, 8, 12},
+				.5625, () -> Connectors.getEnergyConnector(MV_CATEGORY, false).getDefaultState());
 		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
-				new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
-				.75, Connectors.getEnergyConnector(HV_CATEGORY, false).getDefaultState());
+				new ResourceLocation(MODID, "block/connector/connector_hv"), new float[]{0, 4, 8, 12},
+				.75, () -> Connectors.getEnergyConnector(HV_CATEGORY, false).getDefaultState());
 		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
-				ImmutableMap.of(), new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
-				.5625, .5, Connectors.connectorRedstone.getDefaultState()
+				ImmutableMap.of(), new ResourceLocation(MODID, "block/connector/connector_redstone"), new float[]{3, 8, 11, 16},
+				.5625, .5, () -> Connectors.connectorRedstone.getDefaultState()
 		);
 	}
 

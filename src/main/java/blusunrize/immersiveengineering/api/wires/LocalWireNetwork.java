@@ -39,6 +39,7 @@ public class LocalWireNetwork implements IWorldTickable
 	private final Map<BlockPos, IImmersiveConnectable> connectors = new HashMap<>();
 	private final Map<ResourceLocation, LocalNetworkHandler> handlers = new HashMap<>();
 	private final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
+	private final List<Runnable> runNextTick = new ArrayList<>();
 
 	public LocalWireNetwork(CompoundNBT subnet, GlobalWireNetwork globalNet)
 	{
@@ -346,6 +347,9 @@ public class LocalWireNetwork implements IWorldTickable
 		for(LocalNetworkHandler handler : handlers.values())
 			if(handler instanceof IWorldTickable)
 				((IWorldTickable)handler).update(w);
+		for(Runnable r : runNextTick)
+			r.run();
+		runNextTick.clear();
 	}
 
 	@Nullable
@@ -366,5 +370,10 @@ public class LocalWireNetwork implements IWorldTickable
 	public Collection<LocalNetworkHandler> getAllHandlers()
 	{
 		return handlers.values();
+	}
+
+	public void addAsFutureTask(Runnable r)
+	{
+		runNextTick.add(r);
 	}
 }

@@ -64,7 +64,7 @@ public class FeedthroughLoader implements ICustomModelLoader
 		return new FeedthroughModelRaw();
 	}
 
-	private class FeedthroughModelRaw implements IUnbakedModel
+	public static class FeedthroughModelRaw implements IUnbakedModel
 	{
 		@Nonnull
 		@Override

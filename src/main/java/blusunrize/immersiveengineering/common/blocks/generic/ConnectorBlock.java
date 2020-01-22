@@ -42,33 +42,6 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 		setNotNormalBlock();
 	}
 
-		/*
-		TODO when unlisted properties are back
-	@Override
-	protected void fillStateContainer(Builder<Block, IBlockState> builder)
-	{
-		IUnlistedProperty[] unlisted = (base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray(new IUnlistedProperty[0]): new IUnlistedProperty[0];
-		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
-		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;
-		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
-	}
-
-	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		state = super.getExtendedState(state, world, pos);
-		if(state instanceof IExtendedBlockState)
-		{
-			IExtendedBlockState ext = (IExtendedBlockState)state;
-			TileEntity te = world.getTileEntity(pos);
-			if(!(te instanceof ImmersiveConnectableTileEntity))
-				return state;
-			state = ext.with(IEProperties.CONNECTIONS, ((ImmersiveConnectableTileEntity)te).genConnBlockstate());
-		}
-		return state;
-	}
-	*/
-
 	@Override
 	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving)
 	{

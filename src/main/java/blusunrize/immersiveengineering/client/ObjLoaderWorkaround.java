@@ -200,6 +200,7 @@ public class ObjLoaderWorkaround
 				"connector".equals(name.getPath())||
 				"coresample".equals(name.getPath())||
 				"conveyor".equals(name.getPath())||
+				"feedthrough".equals(name.getPath())||
 				name.getPath().contains(ModelConfigurableSides.RESOURCE_LOCATION);
 	}
 }

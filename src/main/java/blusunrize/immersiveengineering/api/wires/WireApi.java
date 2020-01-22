@@ -17,33 +17,34 @@ import net.minecraftforge.client.model.BasicState;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public final class WireApi
 {
 	public static final Map<WireType, FeedthroughModelInfo> INFOS = new HashMap<>();
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-													  ResourceLocation texLoc, float[] uvs, double connLength, BlockState conn)
+													  ResourceLocation texLoc, float[] uvs, double connLength, Supplier<BlockState> conn)
 	{
 		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connLength, conn));
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
 													  ResourceLocation texLoc, float[] uvs, double connLength, double connOffset,
-													  BlockState conn)
+													  Supplier<BlockState> conn)
 	{
 		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connOffset, conn));
 	}
 
 	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ResourceLocation texLoc, float[] uvs,
-													  double connLength, BlockState conn)
+													  double connLength, Supplier<BlockState> conn)
 	{
 		INFOS.put(w, new FeedthroughModelInfo(model, ImmutableMap.of(), texLoc, uvs, connLength, connLength, conn));
 	}
@@ -87,8 +88,7 @@ public final class WireApi
 	{
 		public final ResourceLocation modelLoc;
 		final ImmutableMap<String, String> texReplacements;
-		@Nonnull
-		public BlockState conn;
+		public Supplier<BlockState> conn;
 		@OnlyIn(Dist.CLIENT)
 		public IBakedModel model;
 		final ResourceLocation texLoc;
@@ -99,7 +99,7 @@ public final class WireApi
 		public final double connOffset;
 
 		public FeedthroughModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
-									double connLength, double connOffset, @Nonnull BlockState conn)
+									double connLength, double connOffset, Supplier<BlockState> conn)
 		{
 			modelLoc = model;
 			this.texLoc = texLoc;
@@ -109,10 +109,13 @@ public final class WireApi
 			this.connLength = connLength;
 			this.connOffset = connOffset;
 			this.conn = conn;
+			//TODO this will crash on servers
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onModelBake);
 		}
 
 		public boolean isValidConnector(BlockState state)
 		{
+			BlockState conn = this.conn.get();
 			if(state.getBlock()!=conn.getBlock())
 				return false;
 			for(IProperty<?> p : state.getProperties())
@@ -139,7 +142,6 @@ public final class WireApi
 				obj = (OBJModel)obj.retexture(texReplacements);
 				model = obj.process(ImmutableMap.of("flip-v", "true"));
 			}
-			//TODO why doesn't this work with a lambda???
 			this.model = model.bake(evt.getModelLoader(), rl -> Minecraft.getInstance().getTextureMap().getSprite(rl),
 					new BasicState(model.getDefaultState(), false), DefaultVertexFormats.ITEM);
 			tex = Minecraft.getInstance().getTextureMap().getSprite(texLoc);

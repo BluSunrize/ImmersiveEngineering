@@ -41,6 +41,7 @@ import java.util.Map;
 
 @SuppressWarnings("deprecation")
 @OnlyIn(Dist.CLIENT)
+//TODO remove?
 public class ImmersiveModelRegistry
 {
 	public static ImmersiveModelRegistry instance = new ImmersiveModelRegistry();

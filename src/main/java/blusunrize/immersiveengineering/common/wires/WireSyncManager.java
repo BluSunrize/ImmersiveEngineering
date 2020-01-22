@@ -72,11 +72,13 @@ public class WireSyncManager
 
 	private static <T> void sendToPlayersForConnection(T msg, ServerWorld world, Connection c)
 	{
-		Set<ServerPlayerEntity> targets = new HashSet<>();
-		addPlayersTrackingPoint(targets, c.getEndA().getX(), c.getEndA().getZ(), world);
-		addPlayersTrackingPoint(targets, c.getEndB().getX(), c.getEndB().getZ(), world);
-		for(ServerPlayerEntity p : targets)
-			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> p), msg);
+		ApiUtils.addFutureServerTask(world, () -> {
+			Set<ServerPlayerEntity> targets = new HashSet<>();
+			addPlayersTrackingPoint(targets, c.getEndA().getX(), c.getEndA().getZ(), world);
+			addPlayersTrackingPoint(targets, c.getEndB().getX(), c.getEndB().getZ(), world);
+			for(ServerPlayerEntity p : targets)
+				ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> p), msg);
+		}, true);
 	}
 
 	public static void onConnectionAdded(Connection c, World w)

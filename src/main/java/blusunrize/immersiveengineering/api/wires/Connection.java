@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import com.google.common.base.Preconditions;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -96,6 +97,7 @@ public class Connection
 	public void generateCatenaryData(World world)
 	{
 		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(endA);
+		Preconditions.checkState(net==GlobalWireNetwork.getNetwork(world).getLocalNet(endB));
 		Vec3d vecA = ApiUtils.getVecForIICAt(net, endA, this, false);
 		Vec3d vecB = ApiUtils.getVecForIICAt(net, endB, this, true);
 		generateCatenaryData(vecA, vecB);

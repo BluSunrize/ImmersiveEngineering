@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.FourWayBlock;
 import net.minecraft.state.Property;
@@ -32,7 +33,7 @@ public class IEMultiblocks
 	public static IETemplateMultiblock DIESEL_GENERATOR;
 	public static IETemplateMultiblock EXCAVATOR;
 	public static IETemplateMultiblock EXCAVATOR_DEMO;
-	public static IETemplateMultiblock FEEDTHROUGH;
+	public static IMultiblock FEEDTHROUGH;
 	public static IETemplateMultiblock FERMENTER;
 	public static IETemplateMultiblock LIGHTNING_ROD;
 	public static IETemplateMultiblock METAL_PRESS;
@@ -78,7 +79,7 @@ public class IEMultiblocks
 		DIESEL_GENERATOR = new DieselGeneratorMultiblock();
 		EXCAVATOR = new ExcavatorMultiblock();
 		EXCAVATOR_DEMO = CRUSHER;
-		FEEDTHROUGH = CRUSHER;
+		FEEDTHROUGH = new FeedthroughMultiblock();
 		FERMENTER = new FermenterMultiblock();
 		LIGHTNING_ROD = new LightningRodMultiblock();
 		METAL_PRESS = new MetalPressMultiblock();

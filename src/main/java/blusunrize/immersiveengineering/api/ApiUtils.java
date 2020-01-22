@@ -870,22 +870,10 @@ public class ApiUtils
 
 	public static void moveConnectionEnd(Connection conn, ConnectionPoint currEnd, ConnectionPoint newEnd, World world)
 	{
-		//TODO too lazy to move this to ConnPoints right now :)
-		//ConnectionPoint fixedPos = conn.getOtherEnd(currEnd);
-		//LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(newEnd);
-		//IImmersiveConnectable otherSide = net.getConnector(fixedPos);
-		//Vec3d start = ApiUtils.getVecForIICAt(net, fixedPos, conn);
-		//Vec3d end = ApiUtils.getVecForIICAt(net, currEnd, conn);
-		//if(otherSide==null||otherSide.moveConnectionTo(conn, newEnd))
-		{
-			//TODO
-			//ImmersiveNetHandler.INSTANCE.removeConnection(world, conn, start, end);
-			//Connection newConn = new Connection(fixedPos, newEnd, conn.cableType, conn.length);
-			//ImmersiveNetHandler.INSTANCE.addConnection(world, fixedPos, newConn);
-			//ImmersiveNetHandler.INSTANCE.addConnection(world, newEnd,
-			//		new Connection(newEnd, fixedPos, conn.cableType, conn.length));
-			//ImmersiveNetHandler.INSTANCE.addBlockData(world, newConn);
-		}
+		ConnectionPoint fixedPos = conn.getOtherEnd(currEnd);
+		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
+		globalNet.removeConnection(conn);
+		globalNet.addConnection(new Connection(conn.type, fixedPos, newEnd));
 	}
 
 	public static <T> LazyOptional<T> constantOptional(T val)

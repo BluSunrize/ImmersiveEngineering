@@ -8,11 +8,13 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.wires.WireSyncManager;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -193,6 +195,11 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		});
 	}
 
+	public LocalWireNetwork getNullableLocalNet(BlockPos pos)
+	{
+		return localNets.get(new ConnectionPoint(pos, 0));
+	}
+
 	public LocalWireNetwork getNullableLocalNet(ConnectionPoint pos)
 	{
 		return localNets.get(pos);
@@ -235,25 +242,48 @@ public class GlobalWireNetwork implements ITickableTileEntity
 				addConnection(c);
 			}
 		}
-		for(ConnectionPoint cp : iic.getConnectionPoints())
-			for(Connection c : getLocalNet(cp).getConnections(cp))
-			{
-				ConnectionPoint otherEnd = c.getOtherEnd(cp);
-				LocalWireNetwork otherLocal = getNullableLocalNet(otherEnd);
-				if(otherLocal!=null)
+		ApiUtils.addFutureServerTask(w, () -> {
+			for(ConnectionPoint cp : iic.getConnectionPoints())
+				for(Connection c : getLocalNet(cp).getConnections(cp))
 				{
-					IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
-					if(!(iicEnd instanceof IICProxy))
+					ConnectionPoint otherEnd = c.getOtherEnd(cp);
+					LocalWireNetwork otherLocal = getNullableLocalNet(otherEnd);
+					if(otherLocal!=null)
 					{
-						c.generateCatenaryData(w);
-						if(!w.isRemote)
+						IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
+						if(!(iicEnd instanceof IICProxy))
 						{
-							IELogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
-							collisionData.addConnection(c);
+							c.generateCatenaryData(w);
+							if(!w.isRemote)
+							{
+								IELogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
+								collisionData.addConnection(c);
+							}
 						}
 					}
 				}
+		}, true);
+		//TODO this really should be somewhere else...
+		if(world.isRemote)
+		{
+			for(ConnectionPoint cp : iic.getConnectionPoints())
+			{
+				LocalWireNetwork localNet = getLocalNet(cp);
+				for(Connection c : getLocalNet(cp).getConnections(cp))
+				{
+					ConnectionPoint otherEnd = c.getOtherEnd(cp);
+					IImmersiveConnectable otherIIC = localNet.getConnector(otherEnd);
+					if(otherIIC instanceof TileEntity)
+						((TileEntity)otherIIC).requestModelDataUpdate();
+					BlockState state = world.getBlockState(otherEnd.getPosition());
+					world.notifyBlockUpdate(otherEnd.getPosition(), state, state, 3);
+				}
+				BlockState state = world.getBlockState(cp.getPosition());
+				world.notifyBlockUpdate(cp.getPosition(), state, state, 3);
 			}
+			if(iic instanceof TileEntity)
+				((TileEntity)iic).requestModelDataUpdate();
+		}
 		IELogger.logger.info("Validating after loading {} at {}...", iic, iic.getConnectionPoints());
 		validate();
 	}
@@ -286,8 +316,11 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	private void validate()
 	{
-		if(world.isRemote)
+		if(world.isRemote||true)
+		{
+			IELogger.info("Skipping validation!");
 			return;
+		}
 		localNets.values().stream().distinct().forEach(
 				(local) -> {
 					Object2IntMap<ResourceLocation> handlers = new Object2IntOpenHashMap<>();

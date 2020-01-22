@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.client.models.ModelConfigurableSides;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.RawConveyorModel;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.RawCoresampleModel;
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader.ConnectorModel;
+import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJModel;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -110,6 +111,8 @@ public class DynamicModelLoader
 					unbaked = new ConnectorModel();
 				else if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "coresample")))
 					unbaked = new RawCoresampleModel();
+				else if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "feedthrough")))
+					unbaked = new FeedthroughLoader.FeedthroughModelRaw();
 				else if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor")))
 					unbaked = new RawConveyorModel();
 				else if(name.getPath().contains(ModelConfigurableSides.RESOURCE_LOCATION))

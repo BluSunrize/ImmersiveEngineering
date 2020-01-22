@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.wires;
 
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -161,10 +160,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	{
 		super.onLoad();
 		IELogger.info("Loading connector at {}", pos);
-		if(world.isRemote)
-			globalNet.onConnectorLoad(this, world);
-		else
-			ApiUtils.addFutureServerTask(world, () -> globalNet.onConnectorLoad(this, world), true);
+		globalNet.onConnectorLoad(this, world);
 	}
 
 	@Override
@@ -172,10 +168,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	{
 		super.remove();
 		IELogger.logger.info("Removing connector at {}", pos);
-		if(world.isRemote)
-			globalNet.removeConnector(this);
-		else
-			ApiUtils.addFutureServerTask(world, () -> globalNet.removeConnector(this), true);
+		globalNet.removeConnector(this);
 	}
 
 	@Override
