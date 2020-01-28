@@ -20,24 +20,22 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.client.renderer.model.ModelRotation;
+import net.minecraft.client.renderer.texture.ISprite;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.BasicState;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.SimpleModelState;
+import net.minecraftforge.client.model.*;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -46,11 +44,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import javax.annotation.Nullable;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
@@ -95,6 +94,23 @@ public class DynamicModelLoader
 			evt.addSprite(rl);
 	}
 
+	private static Class<? extends IUnbakedModel> VANILLA_MODEL_WRAPPER;
+	private static Field BASE_MODEL;
+
+	static
+	{
+		try
+		{
+			VANILLA_MODEL_WRAPPER = (Class<? extends IUnbakedModel>)Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaModelWrapper");
+			BASE_MODEL = VANILLA_MODEL_WRAPPER.getDeclaredField("model");
+			BASE_MODEL.setAccessible(true);
+		} catch(ClassNotFoundException|NoSuchFieldException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void modelRegistry(ModelRegistryEvent evt)
 	{
@@ -117,6 +133,8 @@ public class DynamicModelLoader
 					unbaked = new RawConveyorModel();
 				else if(name.getPath().contains(ModelConfigurableSides.RESOURCE_LOCATION))
 					unbaked = new ModelConfigurableSides.Loader().loadModel(name);
+				else if(new ResourceLocation("forge", "dynbucket").equals(name))
+					unbaked = new UnbakedDynBucket(new ModelDynBucket());
 				else if(name.getPath().contains(".obj"))
 				{
 					IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
@@ -125,11 +143,33 @@ public class DynamicModelLoader
 						unbaked = new IEOBJModel(((OBJModel)unbaked).getMatLib(), name);
 				}
 				else
-					unbaked = ModelLoader.defaultModelGetter().apply(name);
+				{
+					IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()+".json"));
+					BlockModel model = BlockModel.deserialize(new InputStreamReader(asResource.getInputStream()));
+					if(model.getParentLocation()!=null)
+					{
+						if(model.getParentLocation().getPath().equals("builtin/generated"))
+							model.parent = Util.make(BlockModel.deserialize("{}"), (p_209273_0_) -> {
+								p_209273_0_.name = "generation marker";
+							});
+						else
+						{
+							IUnbakedModel parent = ModelLoaderRegistry.getModelOrLogError(model.getParentLocation(), "Could not load vanilla model parent '"+model.getParentLocation()+"' for '"+model);
+							if(VANILLA_MODEL_WRAPPER.isInstance(parent))
+								model.parent = (BlockModel)BASE_MODEL.get(parent);
+							else
+								throw new IllegalStateException("vanilla model '"+model+"' can't have non-vanilla parent");
+						}
+					}
+					unbaked = model;
+				}
 				unbaked = unbaked
 						.process(reqModel.model.getAddtionalDataAsStrings())
 						.retexture(reqModel.model.retexture);
-				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), Sets.newHashSet()));
+				Set<String> missingTexErrors = new HashSet<>();
+				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), missingTexErrors));
+				if(!missingTexErrors.isEmpty())
+					throw new RuntimeException("Missing textures: "+missingTexErrors);
 				unbakedModels.put(reqModel, unbaked);
 			}
 		} catch(Exception x)
@@ -165,6 +205,51 @@ public class DynamicModelLoader
 		{
 			this.model = model;
 			this.transforms = transforms;
+		}
+	}
+
+	//Forge's one crashes because the RL is quoted.
+	//TODO is this a bug in Forge or on our side?
+	private static class UnbakedDynBucket implements IUnbakedModel
+	{
+		private final ModelDynBucket actual;
+
+		private UnbakedDynBucket(ModelDynBucket actual)
+		{
+			this.actual = actual;
+		}
+
+		@Override
+		public Collection<ResourceLocation> getDependencies()
+		{
+			return actual.getDependencies();
+		}
+
+		@Override
+		public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
+		{
+			return actual.getTextures(modelGetter, missingTextureErrors);
+		}
+
+		@Nullable
+		@Override
+		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
+		{
+			return actual.bake(bakery, spriteGetter, sprite, format);
+		}
+
+		@Override
+		public IUnbakedModel process(ImmutableMap<String, String> customData)
+		{
+			Map<String, String> fixedData = new HashMap<>(customData);
+			fixedData.compute("fluid", (key, value) -> value.replace("\"", ""));
+			return actual.process(ImmutableMap.copyOf(fixedData));
+		}
+
+		@Override
+		public IUnbakedModel retexture(ImmutableMap<String, String> textures)
+		{
+			return new UnbakedDynBucket(actual.retexture(textures));
 		}
 	}
 }

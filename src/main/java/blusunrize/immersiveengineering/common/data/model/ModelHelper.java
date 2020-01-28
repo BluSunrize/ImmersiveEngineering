@@ -20,6 +20,7 @@ import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.state.properties.SlabType;
@@ -98,10 +99,11 @@ public class ModelHelper
 	}
 
 	public static JsonObject createJson(ModelFile parent, Map<String, ResourceLocation> textures,
-										@Nullable ResourceLocation transforms)
+										@Nullable ResourceLocation transforms, boolean texturesExist)
 	{
-		for(ResourceLocation rl : textures.values())
-			assertTextureExists(rl);
+		if(texturesExist)
+			for(ResourceLocation rl : textures.values())
+				assertTextureExists(rl);
 		JsonObject model = new JsonObject();
 		model.addProperty("parent", parent.getLocation().toString());
 		if(!textures.isEmpty())
@@ -143,7 +145,7 @@ public class ModelHelper
 	public static GeneratedModelFile create(ResourceLocation outName, ModelFile parent,
 											Map<String, ResourceLocation> textures, ResourceLocation transforms)
 	{
-		return new GeneratedModelFile(outName, createJson(parent, textures, transforms));
+		return new GeneratedModelFile(outName, createJson(parent, textures, transforms, true));
 	}
 
 	public static GeneratedModelFile create(ResourceLocation outName, ResourceLocation parent,
@@ -353,6 +355,21 @@ public class ModelHelper
 			}
 			throw new NullPointerException();
 		}
+	}
+
+	public static GeneratedModelFile createBucket(ResourceLocation output, Fluid fluid)
+	{
+		JsonObject ret = createJson(
+				new UncheckedModelFile(new ResourceLocation("forge:dynbucket")),
+				ImmutableMap.of(
+						"base", new ResourceLocation("item/bucket"),
+						"fluid", new ResourceLocation("forge", "items/bucket_fluid")
+				),
+				null,
+				false//TODO provide correct "existing" path for forge textures
+		);
+		ret.addProperty("fluid", fluid.getRegistryName().toString());
+		return new GeneratedModelFile(output, ret);
 	}
 
 	public static class TransformationMap

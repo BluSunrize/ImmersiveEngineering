@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -112,16 +111,6 @@ public final class IEBlocks
 		public static Block watermill;
 		//TODO move to deco?
 		public static Block treatedWallmount;
-	}
-
-
-	public static final class FluidBlocks
-	{
-		public static FlowingFluidBlock creosote;
-		public static FlowingFluidBlock plantoil;
-		public static FlowingFluidBlock ethanol;
-		public static FlowingFluidBlock biodiesel;
-		public static FlowingFluidBlock concrete;
 	}
 
 

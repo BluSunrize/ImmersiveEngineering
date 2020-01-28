@@ -57,6 +57,7 @@ import blusunrize.immersiveengineering.common.util.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEShaders;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.fluids.ConcreteFluid;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
@@ -108,7 +109,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -118,9 +118,9 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+import static blusunrize.immersiveengineering.common.util.fluids.IEFluid.createBuilder;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class IEContent
@@ -138,13 +138,6 @@ public class IEContent
 
 	public static Fluid fluidPotion;
 
-	private static Consumer<FluidAttributes.Builder> createBuilder(int density, int viscosity)
-	{
-		return builder -> {
-			builder.viscosity(viscosity)
-					.density(density);
-		};
-	}
 
 	public static void modConstruction()
 	{
@@ -172,12 +165,16 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ExtractCoveredConveyor.class, ExtractCoveredConveyor::new);
 		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
 
-		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:block/fluid/creosote_still"), new ResourceLocation("immersiveengineering:block/fluid/creosote_flow"), createBuilder(1100, 3000));
-		fluidPlantoil = new IEFluid("plantoil", new ResourceLocation("immersiveengineering:block/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:block/fluid/plantoil_flow"), createBuilder(925, 2000));
-		fluidEthanol = new IEFluid("ethanol", new ResourceLocation("immersiveengineering:block/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:block/fluid/ethanol_flow"), createBuilder(789, 1000));
-		fluidBiodiesel = new IEFluid("biodiesel", new ResourceLocation("immersiveengineering:block/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:block/fluid/biodiesel_flow"), createBuilder(789, 1000));
-		fluidConcrete = new IEFluid("concrete", new ResourceLocation("immersiveengineering:block/fluid/concrete_still"), new ResourceLocation("immersiveengineering:block/fluid/concrete_flow"), createBuilder(2400, 4000));
-		fluidPotion = new PotionFluid("potion", new ResourceLocation("immersiveengineering:block/fluid/potion_still"), new ResourceLocation("immersiveengineering:block/fluid/potion_flow"));
+		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:block/fluid/creosote_still"),
+				new ResourceLocation("immersiveengineering:block/fluid/creosote_flow"), createBuilder(1100, 3000));
+		fluidPlantoil = new IEFluid("plantoil", new ResourceLocation("immersiveengineering:block/fluid/plantoil_still"),
+				new ResourceLocation("immersiveengineering:block/fluid/plantoil_flow"), createBuilder(925, 2000));
+		fluidEthanol = new IEFluid("ethanol", new ResourceLocation("immersiveengineering:block/fluid/ethanol_still"),
+				new ResourceLocation("immersiveengineering:block/fluid/ethanol_flow"), createBuilder(789, 1000));
+		fluidBiodiesel = new IEFluid("biodiesel", new ResourceLocation("immersiveengineering:block/fluid/biodiesel_still"),
+				new ResourceLocation("immersiveengineering:block/fluid/biodiesel_flow"), createBuilder(789, 1000));
+		fluidConcrete = new ConcreteFluid();
+		fluidPotion = new PotionFluid();
 
 		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);

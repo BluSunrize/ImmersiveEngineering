@@ -201,6 +201,7 @@ public class ObjLoaderWorkaround
 				"coresample".equals(name.getPath())||
 				"conveyor".equals(name.getPath())||
 				"feedthrough".equals(name.getPath())||
-				name.getPath().contains(ModelConfigurableSides.RESOURCE_LOCATION);
+				name.getPath().contains(ModelConfigurableSides.RESOURCE_LOCATION)||
+				new ResourceLocation("forge", "dynbucket").equals(name);
 	}
 }

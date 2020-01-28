@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairs
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.*;
+import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
@@ -304,6 +305,8 @@ public class Models extends ModelGenerator
 		addItemModel("seed_hemp", out, Misc.hempSeeds);
 		addItemModel("drillhead_iron", out, Tools.drillheadIron);
 		addItemModel("drillhead_steel", out, Tools.drillheadSteel);
+		for(IEFluid f : IEFluid.IE_FLUIDS)
+			out.accept(ModelHelper.createBucket(locForItemModel(f.getFilledBucket()), f));
 		out.accept(ModelHelper.create(
 				locForItemModel(Tools.toolbox),
 				rl("item/toolbox.obj"),
