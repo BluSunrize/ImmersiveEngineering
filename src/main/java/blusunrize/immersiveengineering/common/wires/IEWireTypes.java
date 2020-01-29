@@ -33,6 +33,7 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.wires.WireApi.registerFeedthroughForWiretype;
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
+import static blusunrize.immersiveengineering.common.IEConfig.CACHED;
 import static blusunrize.immersiveengineering.common.IEConfig.WIRES;
 
 public class IEWireTypes
@@ -175,13 +176,13 @@ public class IEWireTypes
 
 		public double getLossRatio()
 		{
-			return Math.abs(WIRES.wireLossRatio.get().get(ordinal%6));
+			return Math.abs(CACHED.wireLossRatio[ordinal%6]);
 		}
 
 		@Override
 		public int getTransferRate()
 		{
-			return Math.abs(WIRES.wireTransferRate.get().get(ordinal%6));
+			return Math.abs(CACHED.wireTransferRate[ordinal%6]);
 		}
 
 		@Override

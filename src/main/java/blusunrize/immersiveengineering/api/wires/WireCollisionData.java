@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.wires;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -64,7 +65,10 @@ public class WireCollisionData
 	@Nonnull
 	public Collection<CollisionInfo> getCollisionInfo(BlockPos pos)
 	{
-		return blockToWires.get(pos);
+		Collection<CollisionInfo> ret = blockToWires.asMap().get(pos);
+		if(ret==null)
+			ret = ImmutableList.of();
+		return ret;
 	}
 
 	public class CollisionInfo

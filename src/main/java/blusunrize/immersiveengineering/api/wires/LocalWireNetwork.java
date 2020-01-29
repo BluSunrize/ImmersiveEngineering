@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -37,7 +38,8 @@ public class LocalWireNetwork implements IWorldTickable
 	private final GlobalWireNetwork globalNet;
 	private final Map<ConnectionPoint, Collection<Connection>> connections = new HashMap<>();
 	private final Map<BlockPos, IImmersiveConnectable> connectors = new HashMap<>();
-	private final Map<ResourceLocation, LocalNetworkHandler> handlers = new HashMap<>();
+	//This is an array map since it will generally be tiny, and needs to be fast at those sizes
+	private final Map<ResourceLocation, LocalNetworkHandler> handlers = new Object2ObjectArrayMap<>();
 	private final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
 	private final List<Runnable> runNextTick = new ArrayList<>();
 

@@ -38,31 +38,30 @@ public class WireCollisions
 {
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if(!e.world.isRemote&&IEConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity&&
+		if(!e.world.isRemote&&IEConfig.CACHED.wireDamage&&e instanceof LivingEntity&&
 				!e.isInvulnerableTo(IEDamageSources.wireShock)&&
 				!(e instanceof PlayerEntity&&((PlayerEntity)e).abilities.disableDamage))
 		{
 			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.world);
 			WireCollisionData wireData = global.getCollisionData();
 			Collection<WireCollisionData.CollisionInfo> atBlock = wireData.getCollisionInfo(p);
-			if(atBlock!=null)
-				for(WireCollisionData.CollisionInfo info : atBlock)
-				{
-					LocalWireNetwork local = info.getLocalNet();
-					for(LocalNetworkHandler h : local.getAllHandlers())
-						if(h instanceof ICollisionHandler)
-							((ICollisionHandler)h).onCollided((LivingEntity)e, p, info);
-				}
+			for(CollisionInfo info : atBlock)
+			{
+				LocalWireNetwork local = info.getLocalNet();
+				for(LocalNetworkHandler h : local.getAllHandlers())
+					if(h instanceof ICollisionHandler)
+						((ICollisionHandler)h).onCollided((LivingEntity)e, p, info);
+			}
 		}
 	}
 
 	public static void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, @Nonnull BlockState newState, int flags)
 	{
-		if(!worldIn.isRemote&&(flags&1)!=0&&!newState.getCollisionShape(worldIn, pos).isEmpty())
+		if(IEConfig.CACHED.blocksBreakWires&&!worldIn.isRemote&&(flags&1)!=0&&!newState.getCollisionShape(worldIn, pos).isEmpty())
 		{
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(worldIn);
 			Collection<CollisionInfo> data = globalNet.getCollisionData().getCollisionInfo(pos);
-			if(data!=null&&!data.isEmpty())
+			if(!data.isEmpty())
 			{
 				Map<Connection, BlockPos> toBreak = new HashMap<>();
 				for(CollisionInfo info : data)

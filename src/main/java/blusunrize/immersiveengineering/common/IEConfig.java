@@ -15,6 +15,10 @@ import com.google.common.collect.Lists;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.*;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.config.ModConfig;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +27,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 @SuppressWarnings("WeakerAccess")
+@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class IEConfig
 {
 	//TODO replace fixed-length lists with push's/pop's
@@ -578,6 +583,7 @@ public class IEConfig
 	public static final Machines MACHINES;
 	public static final Ores ORES;
 	public static final Tools TOOLS;
+	public static final CachedConfigValues CACHED = new CachedConfigValues();
 
 	static
 	{
@@ -589,5 +595,46 @@ public class IEConfig
 		TOOLS = new Tools(builder);
 
 		ALL = builder.build();
+	}
+
+	private static double[] toDoubleArray(ConfigValue<List<Double>> in)
+	{
+		Double[] temp = in.get().toArray(new Double[0]);
+		double[] ret = new double[temp.length];
+		for(int i = 0; i < temp.length; ++i)
+			ret[i] = temp[i];
+		return ret;
+	}
+
+	private static int[] toIntArray(ConfigValue<List<Integer>> in)
+	{
+		Integer[] temp = in.get().toArray(new Integer[0]);
+		int[] ret = new int[temp.length];
+		for(int i = 0; i < temp.length; ++i)
+			ret[i] = temp[i];
+		return ret;
+	}
+
+	@SubscribeEvent
+	public static void onConfigReload(ModConfig.ConfigReloading ev)
+	{
+		CACHED.wireLossRatio = toDoubleArray(WIRES.wireLossRatio);
+		CACHED.wireTransferRate = toIntArray(WIRES.wireTransferRate);
+		CACHED.blocksBreakWires = WIRES.blocksBreakWires.get();
+		CACHED.wireDamage = WIRES.enableWireDamage.get();
+	}
+
+	@SubscribeEvent
+	public static void onConfigLoad(ModConfig.Loading ev)
+	{
+		onConfigReload(null);
+	}
+
+	public static class CachedConfigValues
+	{
+		public double[] wireLossRatio;
+		public int[] wireTransferRate;
+		public boolean blocksBreakWires;
+		public boolean wireDamage;
 	}
 }
