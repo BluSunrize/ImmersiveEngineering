@@ -41,12 +41,13 @@ import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-public class ItemEarmuffs extends DyeableArmorItem implements IConfigurableTool, ITool, IColouredItem
+public class EarmuffsItem extends DyeableArmorItem implements IConfigurableTool, ITool, IColouredItem
 {
-	public ItemEarmuffs()
+	public EarmuffsItem()
 	{
 		super(ArmorMaterial.LEATHER, EquipmentSlotType.HEAD, new Properties().group(ImmersiveEngineering.itemGroup)
-		.maxStackSize(1));
+				.maxStackSize(1));
+		setRegistryName(ImmersiveEngineering.MODID, "earmuffs");
 		IEContent.registeredIEItems.add(this);
 	}
 

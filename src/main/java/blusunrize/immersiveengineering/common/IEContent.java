@@ -519,6 +519,7 @@ public class IEContent
 		for(Rarity r : Rarity.values())
 			IEItems.Misc.shaderBag.put(r, new ShaderBagItem(r));
 		IEItems.Misc.blueprint = new EngineersBlueprintItem();
+		IEItems.Misc.earmuffs = new EarmuffsItem();
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
@@ -529,7 +530,6 @@ public class IEContent
 		itemRailgun = new ItemRailgun();
 		itemSkyhook = new ItemSkyhook();
 		itemToolUpgrades = new ItemToolUpgrade();
-		itemEarmuffs = new ItemEarmuffs();
 		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("faradayChains", "immersiveengineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0);
 		for(int i = 0; i < itemsFaradaySuit.length; i++)
 			itemsFaradaySuit[i] = new ItemFaradaySuit(EquipmentSlotType.values()[2+i]);

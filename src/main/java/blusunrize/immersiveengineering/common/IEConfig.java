@@ -415,6 +415,7 @@ public class IEConfig
 		Ores(Builder builder)
 		{
 			builder.push("ores");
+			//TODO these may need to be adjusted
 			ore_copper = new OreConfig(builder, "copper", 8, 40, 72, 8, 1);
 			ore_bauxite = new OreConfig(builder, "bauxite", 4, 40, 85, 8, 1);
 			ore_lead = new OreConfig(builder, "lead", 6, 8, 36, 4, 1);

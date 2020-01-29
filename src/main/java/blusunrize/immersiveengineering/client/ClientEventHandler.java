@@ -264,7 +264,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			event.getSound().getCategory();
 		}
-		if(!ItemEarmuffs.affectedSoundCategories.contains(event.getSound().getCategory().getName()))
+		if(!EarmuffsItem.affectedSoundCategories.contains(event.getSound().getCategory().getName()))
 			return;
 		if(ClientUtils.mc().player!=null&&!ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty())
 		{
@@ -279,9 +279,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					if(blacklist!=null&&blacklist.equalsIgnoreCase(event.getSound().getSoundLocation().toString()))
 						return;
 				if(event.getSound() instanceof ITickableSound)
-					event.setResultSound(new IEMuffledTickableSound((ITickableSound)event.getSound(), ItemEarmuffs.getVolumeMod(earmuffs)));
+					event.setResultSound(new IEMuffledTickableSound((ITickableSound)event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 				else
-					event.setResultSound(new IEMuffledSound(event.getSound(), ItemEarmuffs.getVolumeMod(earmuffs)));
+					event.setResultSound(new IEMuffledSound(event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 
 				if(event.getSound().getCategory()==SoundCategory.RECORDS)
 				{

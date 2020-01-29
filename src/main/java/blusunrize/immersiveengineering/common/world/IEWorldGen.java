@@ -46,7 +46,7 @@ public class IEWorldGen
 	{
 		OreFeatureConfig cfg = new OreFeatureConfig(FillerBlockType.NATURAL_STONE, state, maxVeinSize);
 		ConfiguredFeature<?> feature = Biome.createDecoratedFeature(Feature.ORE, cfg, Placement.COUNT_RANGE,
-				new CountRangeConfig(chunkOccurence, minY, 0, maxY));
+				new CountRangeConfig(chunkOccurence, minY, minY, maxY));
 		for(Biome biome : Biome.BIOMES)
 			biome.addFeature(Decoration.UNDERGROUND_ORES, feature);
 		features.put(name, feature);
@@ -70,6 +70,7 @@ public class IEWorldGen
 	}
 
 	@SubscribeEvent
+	//TODO this is broken in Forge
 	public void chunkLoad(ChunkDataEvent.Load event)
 	{
 		DimensionType dimension = event.getWorld().getDimension().getType();

@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.util.sound;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
+import blusunrize.immersiveengineering.common.items.EarmuffsItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.ItemEarmuffs;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.Sound;
@@ -170,7 +170,7 @@ public class IETileSound implements ITickableSound
 			if(ItemNBTHelper.hasKey(stack, "IE:Earmuffs"))
 				stack = ItemNBTHelper.getItemStack(stack, "IE:Earmuffs");
 			if(!stack.isEmpty()&&Misc.earmuffs.equals(stack.getItem()))
-				volumeAjustment = ItemEarmuffs.getVolumeMod(stack);
+				volumeAjustment = EarmuffsItem.getVolumeMod(stack);
 		}
 		//TODO uncomment when XU updates and maybe look for a better solution (API)
 		//if(volumeAjustment > .1f)
