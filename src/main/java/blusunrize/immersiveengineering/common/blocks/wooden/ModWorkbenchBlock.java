@@ -27,6 +27,7 @@ public class ModWorkbenchBlock extends IETileProviderBlock
 	{
 		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5), BlockItemIE.class,
 				IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
+		setNotNormalBlock();
 	}
 
 	@Nullable

@@ -27,7 +27,7 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 	@Override
 	public void render(ModWorkbenchTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(te.dummy||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
+		if(te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 
 		GlStateManager.pushMatrix();
