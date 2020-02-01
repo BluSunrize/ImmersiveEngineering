@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.RawConveyorModel;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.RawCoresampleModel;
+import blusunrize.immersiveengineering.client.models.WrappedUnbakedModel;
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader.ConnectorModel;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJModel;
@@ -47,8 +48,11 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -161,7 +165,7 @@ public class DynamicModelLoader
 								throw new IllegalStateException("vanilla model '"+model+"' can't have non-vanilla parent");
 						}
 					}
-					unbaked = model;
+					unbaked = new PerspectiveWrappingUnbaked(model);
 				}
 				unbaked = unbaked
 						.process(reqModel.model.getAddtionalDataAsStrings())
@@ -210,32 +214,11 @@ public class DynamicModelLoader
 
 	//Forge's one crashes because the RL is quoted.
 	//TODO is this a bug in Forge or on our side?
-	private static class UnbakedDynBucket implements IUnbakedModel
+	private static class UnbakedDynBucket extends WrappedUnbakedModel
 	{
-		private final ModelDynBucket actual;
-
-		private UnbakedDynBucket(ModelDynBucket actual)
+		private UnbakedDynBucket(IUnbakedModel actual)
 		{
-			this.actual = actual;
-		}
-
-		@Override
-		public Collection<ResourceLocation> getDependencies()
-		{
-			return actual.getDependencies();
-		}
-
-		@Override
-		public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
-		{
-			return actual.getTextures(modelGetter, missingTextureErrors);
-		}
-
-		@Nullable
-		@Override
-		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
-		{
-			return actual.bake(bakery, spriteGetter, sprite, format);
+			super(actual);
 		}
 
 		@Override
@@ -243,13 +226,41 @@ public class DynamicModelLoader
 		{
 			Map<String, String> fixedData = new HashMap<>(customData);
 			fixedData.compute("fluid", (key, value) -> value.replace("\"", ""));
-			return actual.process(ImmutableMap.copyOf(fixedData));
+			return super.process(ImmutableMap.copyOf(fixedData));
 		}
 
 		@Override
-		public IUnbakedModel retexture(ImmutableMap<String, String> textures)
+		protected WrappedUnbakedModel newInstance(IUnbakedModel base)
 		{
-			return new UnbakedDynBucket(actual.retexture(textures));
+			return new UnbakedDynBucket(base);
+		}
+	}
+
+	private static class PerspectiveWrappingUnbaked extends WrappedUnbakedModel
+	{
+
+		public PerspectiveWrappingUnbaked(IUnbakedModel base)
+		{
+			super(base);
+		}
+
+		@Nullable
+		@Override
+		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
+		{
+			IBakedModel base = super.bake(bakery, spriteGetter, sprite, format);
+			if(base!=null)
+				return new PerspectiveMapWrapper(
+						base, sprite.getState()
+				);
+			else
+				return base;
+		}
+
+		@Override
+		protected WrappedUnbakedModel newInstance(IUnbakedModel base)
+		{
+			return new PerspectiveWrappingUnbaked(base);
 		}
 	}
 }
