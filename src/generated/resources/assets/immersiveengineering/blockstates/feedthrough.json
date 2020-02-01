@@ -4,7 +4,7 @@
       "model": "immersiveengineering:connector",
       "custom": {
         "flip-v": true,
-        "base": "immersiveengineering:block/smartmodel/feedthrough",
+        "base": "immersiveengineering:feedthrough",
         "layers": "[SOLID]"
       }
     },
@@ -14,7 +14,7 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "immersiveengineering:block/smartmodel/feedthrough",
+        "base": "immersiveengineering:feedthrough",
         "layers": "[SOLID]"
       }
     },
@@ -25,7 +25,7 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "immersiveengineering:block/smartmodel/feedthrough",
+        "base": "immersiveengineering:feedthrough",
         "layers": "[SOLID]"
       }
     },
@@ -35,7 +35,7 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "immersiveengineering:block/smartmodel/feedthrough",
+        "base": "immersiveengineering:feedthrough",
         "layers": "[SOLID]"
       }
     },
@@ -46,7 +46,7 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "immersiveengineering:block/smartmodel/feedthrough",
+        "base": "immersiveengineering:feedthrough",
         "layers": "[SOLID]"
       }
     },
@@ -57,7 +57,7 @@
       "uvlock": true,
       "custom": {
         "flip-v": true,
-        "base": "immersiveengineering:block/smartmodel/feedthrough",
+        "base": "immersiveengineering:feedthrough",
         "layers": "[SOLID]"
       }
     }

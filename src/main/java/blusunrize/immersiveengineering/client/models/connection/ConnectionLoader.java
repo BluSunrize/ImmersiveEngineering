@@ -28,7 +28,6 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,11 +36,8 @@ import java.util.function.Function;
 
 public class ConnectionLoader implements ICustomModelLoader
 {
-	public static final String RESOURCE_LOCATION = "models/block/smartmodel/conn_";
-	public static final ResourceLocation DATA_BASED_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "models/block/smartmodel/connector");
+	public static final ResourceLocation DATA_BASED_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "models/connector");
 	public static final ImmutableSet<BlockRenderLayer> ALL_LAYERS = ImmutableSet.copyOf(BlockRenderLayer.values());
-	public static Map<String, ImmutableMap<String, String>> textureReplacements = new HashMap<>();
-	public static Map<String, ResourceLocation> baseModels = new HashMap<>();
 
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
@@ -52,31 +48,14 @@ public class ConnectionLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts(@Nonnull ResourceLocation modelLocation)
 	{
-		return modelLocation.equals(DATA_BASED_LOC)||modelLocation.getPath().contains(RESOURCE_LOCATION);
+		return modelLocation.equals(DATA_BASED_LOC);
 	}
 
 	@Nonnull
 	@Override
 	public IUnbakedModel loadModel(@Nonnull ResourceLocation modelLocation)
 	{
-		if(modelLocation.equals(DATA_BASED_LOC))
-			return new ConnectorModel();
-		String resourcePath = modelLocation.getPath();
-		int pos = resourcePath.indexOf("conn_");
-		if(pos >= 0)
-		{
-			pos += 5;// length of "conn_"
-			String name = resourcePath.substring(pos);
-			ResourceLocation r = baseModels.get(name);
-			if(r!=null)
-			{
-				ImmutableMap<String, String> texRepl = ImmutableMap.of();
-				if(textureReplacements.containsKey(name))
-					texRepl = textureReplacements.get(name);
-				return new ConnectorModel(r, texRepl, ImmutableMap.of("flip-v", "true"), ALL_LAYERS);
-			}
-		}
-		return ModelLoaderRegistry.getMissingModel();
+		return new ConnectorModel();
 	}
 
 	public static class ConnectorModel implements IUnbakedModel
@@ -88,17 +67,6 @@ public class ConnectionLoader implements ICustomModelLoader
 		private final ImmutableSet<BlockRenderLayer> layers;
 		@Nonnull
 		private final ImmutableMap<String, String> externalTextures;
-
-		public ConnectorModel(@Nonnull ResourceLocation b, @Nonnull ImmutableMap<String, String> t,
-							  @Nonnull ImmutableMap<String, String> customBase, @Nonnull ImmutableSet<BlockRenderLayer> layers)
-		{
-			this(new ModelData(b, ModelData.asJsonObject(customBase), t), layers, ImmutableMap.of());
-		}
-
-		public ConnectorModel(@Nonnull ResourceLocation b)
-		{
-			this(b, ImmutableMap.of(), ImmutableMap.of(), ALL_LAYERS);
-		}
 
 		public ConnectorModel()
 		{

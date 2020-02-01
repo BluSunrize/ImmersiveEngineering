@@ -184,18 +184,7 @@ public abstract class BlockstateGenerator implements IDataProvider
 				modelJson.addProperty("uvlock", uvLock);
 			if(!additionalData.isEmpty())
 			{
-				JsonObject custom = new JsonObject();
-				for(Entry<String, Object> e : additionalData.entrySet())
-				{
-					if(e.getValue() instanceof Boolean)
-						custom.addProperty(e.getKey(), (Boolean)e.getValue());
-					else if(e.getValue() instanceof Number)
-						custom.addProperty(e.getKey(), (Number)e.getValue());
-					else if(e.getValue() instanceof Character)
-						custom.addProperty(e.getKey(), (Character)e.getValue());
-					else
-						custom.addProperty(e.getKey(), e.getValue().toString());
-				}
+				JsonObject custom = toJson(additionalData);
 				modelJson.add("custom", custom);
 			}
 			if(!retexture.isEmpty())
@@ -206,6 +195,25 @@ public abstract class BlockstateGenerator implements IDataProvider
 				modelJson.add("textures", textures);
 			}
 			return modelJson;
+		}
+
+		private JsonObject toJson(Map<String, Object> map)
+		{
+			JsonObject custom = new JsonObject();
+			for(Entry<String, Object> e : map.entrySet())
+			{
+				if(e.getValue() instanceof Boolean)
+					custom.addProperty(e.getKey(), (Boolean)e.getValue());
+				else if(e.getValue() instanceof Number)
+					custom.addProperty(e.getKey(), (Number)e.getValue());
+				else if(e.getValue() instanceof Character)
+					custom.addProperty(e.getKey(), (Character)e.getValue());
+				else if(e.getValue() instanceof Map)
+					custom.add(e.getKey(), toJson((Map<String, Object>)e.getValue()));
+				else
+					custom.addProperty(e.getKey(), e.getValue().toString());
+			}
+			return custom;
 		}
 
 		@Override

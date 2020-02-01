@@ -407,7 +407,8 @@ public class IEContent
 				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE);
 		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
 				defaultMetalProperties, IEProperties.FACING_HORIZONTAL)
-				.setNotNormalBlock();
+				.setNotNormalBlock()
+				.setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties)
 				.setNotNormalBlock();
 		MetalDevices.sampleDrill = new GenericTileBlock("sample_drill", () -> SampleDrillTileEntity.TYPE, defaultMetalProperties,

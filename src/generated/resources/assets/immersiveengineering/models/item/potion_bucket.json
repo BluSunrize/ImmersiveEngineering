@@ -1,8 +1,0 @@
-{
-  "parent": "forge:dynbucket",
-  "textures": {
-    "base": "minecraft:item/bucket",
-    "fluid": "forge:items/bucket_fluid"
-  },
-  "fluid": "immersiveengineering:potion"
-}

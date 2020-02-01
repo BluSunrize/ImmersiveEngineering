@@ -25,6 +25,7 @@ import net.minecraft.resources.IResource;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ForgeBlockStateV1.TRSRDeserializer;
@@ -355,6 +356,25 @@ public class ModelHelper
 			}
 			throw new NullPointerException();
 		}
+	}
+
+	public static GeneratedModelFile createMultilayer(ResourceLocation output,
+													  ImmutableMap<BlockRenderLayer, ModelFile> models,
+													  @Nullable ResourceLocation transforms)
+	{
+		JsonObject ret = createJson(
+				new UncheckedModelFile(rl("multilayer")),
+				ImmutableMap.of(),
+				transforms,
+				true
+		);
+		for(BlockRenderLayer layer : models.keySet())
+		{
+			JsonObject forLayer = new JsonObject();
+			forLayer.addProperty("model", models.get(layer).getLocation().toString());
+			ret.add(layer.name(), forLayer);
+		}
+		return new GeneratedModelFile(output, ret);
 	}
 
 	public static GeneratedModelFile createBucket(ResourceLocation output, Fluid fluid)

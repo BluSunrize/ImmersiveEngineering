@@ -86,12 +86,12 @@ public class ImmersiveModelRegistry
 	}
 
 
-	public abstract static class ItemModelReplacement
+	public interface ItemModelReplacement
 	{
-		public abstract IBakedModel createBakedModel(IBakedModel existingModel);
+		IBakedModel createBakedModel(IBakedModel existingModel);
 	}
 
-	public static class ItemModelReplacement_OBJ extends ItemModelReplacement
+	public static class ItemModelReplacement_OBJ implements ItemModelReplacement
 	{
 		String objPath;
 		HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();

@@ -24,7 +24,7 @@ public class MultiLayerLoader implements ICustomModelLoader
 	}
 
 	private static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID,
-			"models/block/multilayer");
+			"models/multilayer");
 
 	@Override
 	public boolean accepts(@Nonnull ResourceLocation modelLocation)

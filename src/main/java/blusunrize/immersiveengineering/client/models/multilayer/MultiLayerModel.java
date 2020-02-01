@@ -104,6 +104,7 @@ public class MultiLayerModel implements IUnbakedModel
 		}
 		return new BakedMultiLayerModel(baked);
 	}
+
 	@Nonnull
 	@Override
 	public IUnbakedModel process(ImmutableMap<String, String> customData)
@@ -114,7 +115,6 @@ public class MultiLayerModel implements IUnbakedModel
 		for(String layerStr : customData.keySet())
 			if(LAYERS_BY_NAME.containsKey(layerStr))
 			{
-
 				BlockRenderLayer layer = LAYERS_BY_NAME.get(layerStr);
 				JsonElement ele = parser.parse(customData.get(layerStr));
 				if(ele.isJsonObject())

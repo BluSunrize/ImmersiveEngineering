@@ -9,13 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.models.ModelConfigurableSides;
-import blusunrize.immersiveengineering.client.models.ModelConveyor.RawConveyorModel;
-import blusunrize.immersiveengineering.client.models.ModelCoresample.RawCoresampleModel;
 import blusunrize.immersiveengineering.client.models.WrappedUnbakedModel;
-import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader.ConnectorModel;
-import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
-import blusunrize.immersiveengineering.client.models.obj.IEOBJModel;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
@@ -37,7 +31,6 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.*;
-import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -127,51 +120,23 @@ public class DynamicModelLoader
 			{
 				ResourceLocation name = reqModel.model.name.getLocation();
 				IUnbakedModel unbaked;
-				if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "connector")))
-					unbaked = new ConnectorModel();
-				else if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "coresample")))
-					unbaked = new RawCoresampleModel();
-				else if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "feedthrough")))
-					unbaked = new FeedthroughLoader.FeedthroughModelRaw();
-				else if(name.equals(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor")))
-					unbaked = new RawConveyorModel();
-				else if(name.getPath().contains(ModelConfigurableSides.RESOURCE_LOCATION))
-					unbaked = new ModelConfigurableSides.Loader().loadModel(name);
-				else if(new ResourceLocation("forge", "dynbucket").equals(name))
+				if(new ResourceLocation("forge", "dynbucket").equals(name))
 					unbaked = new UnbakedDynBucket(new ModelDynBucket());
-				else if(name.getPath().contains(".obj"))
-				{
-					IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()));
-					unbaked = new OBJModel.Parser(asResource, manager).parse();
-					if(name.getPath().endsWith(".obj.ie"))
-						unbaked = new IEOBJModel(((OBJModel)unbaked).getMatLib(), name);
-				}
 				else
+					unbaked = ModelLoader.defaultModelGetter().apply(name);
+				if(VANILLA_MODEL_WRAPPER.isInstance(unbaked))
 				{
 					IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()+".json"));
 					BlockModel model = BlockModel.deserialize(new InputStreamReader(asResource.getInputStream()));
 					if(model.getParentLocation()!=null)
-					{
-						if(model.getParentLocation().getPath().equals("builtin/generated"))
-							model.parent = Util.make(BlockModel.deserialize("{}"), (p_209273_0_) -> {
-								p_209273_0_.name = "generation marker";
-							});
-						else
-						{
-							IUnbakedModel parent = ModelLoaderRegistry.getModelOrLogError(model.getParentLocation(), "Could not load vanilla model parent '"+model.getParentLocation()+"' for '"+model);
-							if(VANILLA_MODEL_WRAPPER.isInstance(parent))
-								model.parent = (BlockModel)BASE_MODEL.get(parent);
-							else
-								throw new IllegalStateException("vanilla model '"+model+"' can't have non-vanilla parent");
-						}
-					}
-					unbaked = new PerspectiveWrappingUnbaked(model);
+						model.parent = (BlockModel)getVanillaModel(model.getParentLocation());
+					unbaked = new BlockModelWrapper(model);
 				}
 				unbaked = unbaked
 						.process(reqModel.model.getAddtionalDataAsStrings())
 						.retexture(reqModel.model.retexture);
 				Set<String> missingTexErrors = new HashSet<>();
-				requestedTextures.addAll(unbaked.getTextures(ModelLoader.defaultModelGetter(), missingTexErrors));
+				requestedTextures.addAll(unbaked.getTextures(DynamicModelLoader::getVanillaModel, missingTexErrors));
 				if(!missingTexErrors.isEmpty())
 					throw new RuntimeException("Missing textures: "+missingTexErrors);
 				unbakedModels.put(reqModel, unbaked);
@@ -181,6 +146,30 @@ public class DynamicModelLoader
 			x.printStackTrace();
 			//TODO mostly for dev
 			System.exit(1);
+		}
+	}
+
+	private static IUnbakedModel getVanillaModel(ResourceLocation loc)
+	{
+		if(loc.getPath().equals("builtin/generated"))
+			return Util.make(BlockModel.deserialize("{}"), (p_209273_0_) -> {
+				p_209273_0_.name = "generation marker";
+			});
+		else
+		{
+			IUnbakedModel wrapper = ModelLoader.defaultModelGetter().apply(loc);
+			if(VANILLA_MODEL_WRAPPER.isInstance(wrapper))
+			{
+				try
+				{
+					return (BlockModel)BASE_MODEL.get(wrapper);
+				} catch(IllegalAccessException e)
+				{
+					throw new RuntimeException(e);
+				}
+			}
+			else
+				return wrapper;
 		}
 	}
 
@@ -236,10 +225,10 @@ public class DynamicModelLoader
 		}
 	}
 
-	private static class PerspectiveWrappingUnbaked extends WrappedUnbakedModel
+	private static class BlockModelWrapper extends WrappedUnbakedModel
 	{
 
-		public PerspectiveWrappingUnbaked(IUnbakedModel base)
+		public BlockModelWrapper(IUnbakedModel base)
 		{
 			super(base);
 		}
@@ -258,9 +247,28 @@ public class DynamicModelLoader
 		}
 
 		@Override
+		public IUnbakedModel retexture(ImmutableMap<String, String> newTextures)
+		{
+			BlockModel b = (BlockModel)base;
+			Map<String, String> textures = new HashMap<>(b.textures);
+			for(Map.Entry<String, String> e : textures.entrySet())
+				if(e.getValue().charAt(0)=='#')
+				{
+					String key = e.getValue().substring(1);
+					if(newTextures.containsKey(key))
+						textures.put(e.getKey(), newTextures.get(key));
+				}
+			textures.putAll(newTextures);
+			return newInstance(new BlockModel(
+					b.getParentLocation(), b.getElements(), textures, b.isAmbientOcclusion(), b.isGui3d(),
+					b.getAllTransforms(), b.getOverrides()
+			));
+		}
+
+		@Override
 		protected WrappedUnbakedModel newInstance(IUnbakedModel base)
 		{
-			return new PerspectiveWrappingUnbaked(base);
+			return new BlockModelWrapper(base);
 		}
 	}
 }

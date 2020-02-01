@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models.connection;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
@@ -36,7 +37,7 @@ import static net.minecraftforge.resource.VanillaResourceType.TEXTURES;
 
 public class FeedthroughLoader implements ICustomModelLoader
 {
-	public static final String RESOURCE_LOCATION = "models/block/smartmodel/feedthrough";
+	public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/feedthrough");
 
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
@@ -54,7 +55,7 @@ public class FeedthroughLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts(@Nonnull ResourceLocation modelLocation)
 	{
-		return modelLocation.getPath().equals(RESOURCE_LOCATION);
+		return LOCATION.equals(modelLocation);
 	}
 
 	@Nonnull

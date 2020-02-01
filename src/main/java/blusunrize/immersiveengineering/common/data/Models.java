@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelGenerator;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper;
@@ -32,6 +33,7 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.state.properties.SlabType;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
@@ -154,6 +156,14 @@ public class Models extends ModelGenerator
 			rl("block/metal_device/thermoelectric_gen_top"),
 			rl("block/metal_device/thermoelectric_gen_bottom"),
 			locForItemModel(MetalDevices.thermoelectricGen)
+	);
+	final GeneratedModelFile chargingStation = ModelHelper.createMultilayer(
+			locForItemModel(MetalDevices.chargingStation),
+			ImmutableMap.of(
+					BlockRenderLayer.SOLID, new ExistingModelFile(rl("block/metal_device/charging_station.obj")),
+					BlockRenderLayer.TRANSLUCENT, new ExistingModelFile(rl("block/metal_device/charging_station_glass.obj"))
+			),
+			rl("item/block")
 	);
 
 	final GeneratedModelFile cushion = ModelHelper.createBasicCube(rl("block/cushion"),
@@ -524,13 +534,7 @@ public class Models extends ModelGenerator
 				rl("item/block"),
 				true
 		));
-		out.accept(ModelHelper.create(
-				locForItemModel(MetalDevices.chargingStation),
-				rl("block/metal_device/charging_station.obj"),
-				ImmutableMap.of(),
-				rl("item/block"),
-				true
-		));
+		out.accept(chargingStation);
 		out.accept(ModelHelper.create(
 				locForItemModel(MetalDevices.sampleDrill),
 				rl("block/metal_device/core_drill.obj"),

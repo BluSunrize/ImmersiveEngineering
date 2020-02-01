@@ -14,15 +14,18 @@ import com.google.common.collect.ImmutableList.Builder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.IModelData;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -102,5 +105,12 @@ public class BakedMultiLayerModel extends BakedIEModel
 	public ItemOverrideList getOverrides()
 	{
 		return model.getOverrides();
+	}
+
+	@Override
+	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
+	{
+		Pair<? extends IBakedModel, Matrix4f> base = model.handlePerspective(cameraTransformType);
+		return Pair.of(this, base.getRight());
 	}
 }

@@ -30,6 +30,8 @@ import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.models.*;
+import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
+import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
 import blusunrize.immersiveengineering.client.models.connection.*;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
@@ -58,7 +60,6 @@ import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -175,32 +176,8 @@ public class ClientProxy extends CommonProxy
 		IEOBJLoader.instance.addDomain("immersiveengineering");
 		MinecraftForge.EVENT_BUS.register(ImmersiveModelRegistry.instance);
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Misc.shader), new ImmersiveModelRegistry.ItemModelReplacement()
-		{
-			@Override
-			public IBakedModel createBakedModel(IBakedModel existingModel)
-			{
-				return new ModelItemDynamicOverride(existingModel, null);
-			}
-		});
-
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Tools.voltmeter), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/tool/voltmeter.obj", false)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .375, .3125).rotate(-Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(-.25, .375, -.625).rotate(-Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-0.25, .125, .25).scale(.625f, .625f, .625f).rotate(-Math.PI*.375, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-0.5, .125, -.3125).scale(.625f, .625f, .625f).rotate(-Math.PI*.375, 0, 1, 0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.5, .5, -.5).scale(1, 1, 1).rotate(Math.PI, 0, 1, 0))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(0, .5, 0).scale(1.125, 1.125, 1.125).rotate(-Math.PI*.25, 0, 1, 0))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25, .25, .25).scale(.5, .5, .5)));
-
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Tools.toolbox), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/toolbox.obj", false)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.75, 1.25, .3125).rotate(-Math.PI*.75, 0, 1, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.375, .375, .375).translate(-.125, 1.25, .9375).rotate(Math.PI*.25, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .1875, .3125).scale(.625, .625, .625).rotate(Math.PI, 0, 1, 0).rotate(-Math.PI*.5, 1, 0, 0))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-.25, -.4375, .3125).scale(.625, .625, .625).rotate(Math.PI*.5, 1, 0, 0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(.5, .875, -.5).scale(1, 1, 1).rotate(Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(-.625, .75, 0).scale(.875, .875, .875).rotate(-Math.PI*.6875, 0, 1, 0))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25, .5, .25).scale(.5, .5, .5)));
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Misc.shader),
+				existingModel -> new ModelItemDynamicOverride(existingModel, null));
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Misc.fluorescentTube), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/fluorescent_tube.obj", true)
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(.2, .1, 0).rotate(-Math.PI/3, 1, 0, 0))
@@ -230,7 +207,8 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
 		ModelLoaderRegistry.registerLoader(new MultiLayerLoader());
-
+		ModelLoaderRegistry.registerLoader(new CoresampleLoader());
+		ModelLoaderRegistry.registerLoader(new ConveyorLoader());
 	}
 
 	@Override

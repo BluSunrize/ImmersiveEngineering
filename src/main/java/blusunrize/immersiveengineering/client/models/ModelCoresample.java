@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
@@ -30,11 +31,13 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
@@ -333,6 +336,28 @@ public class ModelCoresample extends BakedIEModel
 		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
 		{
 			return new ModelCoresample(null);
+		}
+	}
+
+	public static class CoresampleLoader implements ICustomModelLoader
+	{
+		private static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/coresample");
+
+		@Override
+		public void onResourceManagerReload(IResourceManager resourceManager)
+		{
+		}
+
+		@Override
+		public boolean accepts(ResourceLocation modelLocation)
+		{
+			return modelLocation.equals(LOCATION);
+		}
+
+		@Override
+		public IUnbakedModel loadModel(ResourceLocation modelLocation) throws Exception
+		{
+			return new RawCoresampleModel();
 		}
 	}
 }

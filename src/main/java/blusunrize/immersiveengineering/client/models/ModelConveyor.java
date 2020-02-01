@@ -34,6 +34,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -41,6 +42,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -500,6 +502,28 @@ public class ModelConveyor extends BakedIEModel
 		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
 		{
 			return new ModelConveyor();
+		}
+	}
+
+	public static class ConveyorLoader implements ICustomModelLoader
+	{
+		private static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/conveyor");
+
+		@Override
+		public void onResourceManagerReload(IResourceManager resourceManager)
+		{
+		}
+
+		@Override
+		public boolean accepts(ResourceLocation modelLocation)
+		{
+			return LOCATION.equals(modelLocation);
+		}
+
+		@Override
+		public IUnbakedModel loadModel(ResourceLocation modelLocation) throws Exception
+		{
+			return new RawConveyorModel();
 		}
 	}
 }

@@ -59,6 +59,7 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 			if(state.getBlock()!=MetalDevices.belljar)
 				return;
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
+			//TODO use a multi layer model?
 			IModelData data = new SinglePropertyModelData<>(new OBJState(Collections.singletonList("glass"), true),
 					Model.OBJ_STATE);
 			quads.put(tile.getFacing(), model.getQuads(state, null, Utils.RAND, data));

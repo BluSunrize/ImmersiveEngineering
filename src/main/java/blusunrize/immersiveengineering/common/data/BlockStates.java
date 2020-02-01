@@ -237,7 +237,7 @@ public class BlockStates extends BlockstateGenerator
 				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
 		createConnector(Connectors.connectorProbe, rl("block/connector/connector_probe.obj.ie"),
 				ImmutableMap.of(), variantBased, BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
-		createConnector(Connectors.feedthrough, rl("block/smartmodel/feedthrough"),
+		createConnector(Connectors.feedthrough, rl("feedthrough"),
 				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
 		createConnector(MetalDevices.electricLantern, state -> rl("block/metal_device/e_lantern.obj"),
 				state -> {
@@ -267,7 +267,7 @@ public class BlockStates extends BlockstateGenerator
 		createConnector(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"), ImmutableMap.of(), variantBased);
 
 		createRotatedBlock(StoneDecoration.coresample, map -> new ExistingModelFile(rl("block/coresample.obj")),
-				IEProperties.FACING_HORIZONTAL, ImmutableList.of(), variantBased);
+				IEProperties.FACING_HORIZONTAL, ImmutableList.of(), ImmutableMap.of(), variantBased);
 		createBasicBlock(StoneDecoration.concreteSheet, models.sheetConcreteBlock, variantBased);
 		createBasicBlock(StoneDecoration.concreteQuarter, models.quarterConcreteBlock, variantBased);
 		createBasicBlock(StoneDecoration.concreteThreeQuarter, models.threeQuarterConcreteBlock, variantBased);
@@ -291,7 +291,7 @@ public class BlockStates extends BlockstateGenerator
 								"block/stripcurtain":
 								"block/stripcurtain_middle"
 				)), IEProperties.FACING_HORIZONTAL, ImmutableList.of(StripCurtainBlock.CEILING_ATTACHED),
-				variantBased);
+				ImmutableMap.of(), variantBased);
 		createBasicBlock(Cloth.cushion, models.cushion, variantBased);
 		createMultistateSingleModel(Cloth.shaderBanner, EMPTY_MODEL, variantBased);
 
@@ -310,37 +310,44 @@ public class BlockStates extends BlockstateGenerator
 				new ExistingModelFile(rl("block/metal_device/blastfurnace_preheater.obj")),
 				variantBased);
 		createRotatedBlock(MetalDevices.furnaceHeater, props -> {
-			if(props.get(IEProperties.ACTIVE)==Boolean.TRUE)
-				return models.furnaceHeaterOn;
-			else
-				return models.furnaceHeaterOff;
-		}, IEProperties.FACING_ALL, ImmutableList.of(IEProperties.ACTIVE), variantBased);
+					if(props.get(IEProperties.ACTIVE)==Boolean.TRUE)
+						return models.furnaceHeaterOn;
+					else
+						return models.furnaceHeaterOff;
+				}, IEProperties.FACING_ALL, ImmutableList.of(IEProperties.ACTIVE),
+				ImmutableMap.of(), variantBased);
 		createRotatedBlock(MetalDevices.dynamo, state -> models.kineticDynamo, IEProperties.FACING_HORIZONTAL,
-				ImmutableList.of(), variantBased);
+				ImmutableList.of(), ImmutableMap.of(), variantBased);
 		createBasicBlock(MetalDevices.thermoelectricGen, models.thermoelectricGen, variantBased);
-		createRotatedBlock(MetalDevices.chargingStation,
-				//TODO glass
-				state -> new ExistingModelFile(rl("block/metal_device/charging_station.obj")),
-				IEProperties.FACING_HORIZONTAL,
-				ImmutableList.of(),
-				variantBased
-		);
+		{
+			ModelFile solid = new ExistingModelFile(rl("block/metal_device/charging_station.obj"));
+			ModelFile translucent = new ExistingModelFile(rl("block/metal_device/charging_station_glass.obj"));
+			ImmutableMap.Builder<String, Object> additional = ImmutableMap.builder();
+			additional.put(BlockRenderLayer.SOLID.name(), ImmutableMap.of("model", solid.getLocation()));
+			additional.put(BlockRenderLayer.TRANSLUCENT.name(), ImmutableMap.of("model", translucent.getLocation()));
+			createRotatedBlock(MetalDevices.chargingStation,
+					state -> new UncheckedModelFile(rl("multilayer")),
+					IEProperties.FACING_HORIZONTAL,
+					ImmutableList.of(),
+					additional.build(),
+					variantBased
+			);
+		}
 		for(Block b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(new UncheckedModelFile(rl("conveyor"))), variantBased);
 	}
 
 	private void createRotatedBlock(Block block, Function<Map<IProperty<?>, Object>, ModelFile> model, IProperty<Direction> facing,
-									List<IProperty<?>> additionalProps,
+									List<IProperty<?>> additionalProps, ImmutableMap<String, Object> additional,
 									BiConsumer<Block, IVariantModelGenerator> out)
 	{
 		Builder builder = new Builder(block);
 		forEachState(additionalProps, state -> {
-			ImmutableMap<String, Object> additional;
+			ImmutableMap.Builder<String, Object> additionalForState = ImmutableMap.builder();
 			ModelFile modelLoc = model.apply(state);
 			if(modelLoc.getLocation().getPath().contains(".obj"))
-				additional = ImmutableMap.of("flip-v", true);
-			else
-				additional = ImmutableMap.of();
+				additionalForState.put("flip-v", true);
+			additionalForState.putAll(additional);
 			Map<IProperty<?>, Object> baseState = new HashMap<>();
 			for(Entry<IProperty<?>, Object> e : state.entrySet())
 				baseState.put(e.getKey(), e.getValue());
@@ -363,7 +370,7 @@ public class BlockStates extends BlockstateGenerator
 						x = 0;
 				}
 				ConfiguredModel configuredModel = new ConfiguredModel(modelLoc, x, y, true,
-						additional);
+						additionalForState.build());
 
 				builder.setForAllWithState(with(baseState, facing, d), configuredModel);
 			}

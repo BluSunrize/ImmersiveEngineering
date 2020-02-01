@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.models.ModelConfigurableSides;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
@@ -84,7 +83,7 @@ public class ObjLoaderWorkaround
 						continue;
 					JsonObject val = entry.getValue().getAsJsonObject();
 					ResourceLocation name = new ResourceLocation(val.get("model").getAsString());
-					if(shouldLoad(name))
+					if(shouldLoad(name, manager))
 					{
 						int xRot = Optional.ofNullable(val.get("x")).map(JsonElement::getAsInt).orElse(0);
 						int yRot = Optional.ofNullable(val.get("y")).map(JsonElement::getAsInt).orElse(0);
@@ -141,7 +140,7 @@ public class ObjLoaderWorkaround
 					if(json.has("parent"))
 					{
 						ResourceLocation parent = new ResourceLocation(json.get("parent").getAsString());
-						if(shouldLoad(parent)||json.has("display-trsr"))
+						if(shouldLoad(parent, manager)||json.has("display-trsr"))
 						{
 							Map<TransformType, TRSRTransformation> perspectives = new HashMap<>();
 							if(json.has("display-trsr"))
@@ -159,11 +158,11 @@ public class ObjLoaderWorkaround
 									}
 								}
 							}
-							ImmutableMap.Builder<String, String> textures = ImmutableMap.builder();
+							Builder<String, String> textures = ImmutableMap.builder();
 							if(json.has("textures"))
 								for(Entry<String, JsonElement> replacement : json.getAsJsonObject("textures").entrySet())
 									textures.put(replacement.getKey(), replacement.getValue().getAsString());
-							ImmutableMap.Builder<String, Object> remaining = new Builder<>();
+							Builder<String, Object> remaining = new Builder<>();
 							for(Entry<String, JsonElement> e : json.entrySet())
 							{
 								String key = e.getKey();
@@ -177,6 +176,7 @@ public class ObjLoaderWorkaround
 					}
 				} catch(IOException ioxcp)
 				{
+					ioxcp.printStackTrace();
 				}
 			}
 		} catch(NoSuchFieldException|IllegalAccessException x)
@@ -193,15 +193,9 @@ public class ObjLoaderWorkaround
 		ClientUtils.mc().getItemRenderer().getItemModelMesher().rebuildCache();
 	}
 
-	private static boolean shouldLoad(ResourceLocation name)
+	private static boolean shouldLoad(ResourceLocation name, IResourceManager manager)
 	{
-		return name.getPath().endsWith(".obj")||
-				name.getPath().endsWith(".obj.ie")||
-				"connector".equals(name.getPath())||
-				"coresample".equals(name.getPath())||
-				"conveyor".equals(name.getPath())||
-				"feedthrough".equals(name.getPath())||
-				name.getPath().contains(ModelConfigurableSides.RESOURCE_LOCATION)||
-				new ResourceLocation("forge", "dynbucket").equals(name);
+		ResourceLocation jsonLoc = new ResourceLocation(name.getNamespace(), "models/"+name.getPath()+".json");
+		return !manager.hasResource(jsonLoc);
 	}
 }
