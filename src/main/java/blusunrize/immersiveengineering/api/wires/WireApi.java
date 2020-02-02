@@ -17,6 +17,7 @@ import net.minecraftforge.client.model.BasicState;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import javax.annotation.Nullable;
@@ -109,8 +110,8 @@ public final class WireApi
 			this.connLength = connLength;
 			this.connOffset = connOffset;
 			this.conn = conn;
-			//TODO this will crash on servers
-			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onModelBake);
+			DistExecutor.runWhenOn(Dist.CLIENT,
+					() -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onModelBake));
 		}
 
 		public boolean isValidConnector(BlockState state)
