@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemGroup;
@@ -51,15 +51,17 @@ public class EngineersBlueprintItem extends IEBaseItem
 		{
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;
 			String formatted = I18n.format(formatKey);
-			if(formatKey.equals(formatted)) list.add(new StringTextComponent(key));
-			else list.add(new TranslationTextComponent(formatKey));
-			if(Minecraft.getInstance().player!=null&&Minecraft.getInstance().player.isSneaking())
+			if(formatKey.equals(formatted))
+				list.add(new StringTextComponent(key));
+			else
+				list.add(new TranslationTextComponent(formatKey));
+			if(ClientUtils.isSneakKeyPressed())
 			{
 				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates1"));
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
 				if(recipes.length > 0)
-					for(int i = 0; i < recipes.length; i++)
-						list.add(new StringTextComponent(" "+recipes[i].output.getDisplayName()));
+					for(BlueprintCraftingRecipe recipe : recipes)
+						list.add(new StringTextComponent(" ").appendSibling(recipe.output.getDisplayName()));
 			}
 			else
 				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates0"));

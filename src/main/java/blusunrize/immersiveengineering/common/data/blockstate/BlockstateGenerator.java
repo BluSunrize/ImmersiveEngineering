@@ -12,10 +12,7 @@ import blusunrize.immersiveengineering.common.data.model.ModelFile;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.data.DataGenerator;
@@ -184,7 +181,7 @@ public abstract class BlockstateGenerator implements IDataProvider
 				modelJson.addProperty("uvlock", uvLock);
 			if(!additionalData.isEmpty())
 			{
-				JsonObject custom = toJson(additionalData);
+				JsonElement custom = toJson(additionalData);
 				modelJson.add("custom", custom);
 			}
 			if(!retexture.isEmpty())
@@ -197,23 +194,33 @@ public abstract class BlockstateGenerator implements IDataProvider
 			return modelJson;
 		}
 
-		private JsonObject toJson(Map<String, Object> map)
+		private JsonElement toJson(Object obj)
 		{
-			JsonObject custom = new JsonObject();
-			for(Entry<String, Object> e : map.entrySet())
+			if(obj instanceof Boolean)
+				return new JsonPrimitive((Boolean)obj);
+			else if(obj instanceof Number)
+				return new JsonPrimitive((Number)obj);
+			else if(obj instanceof Character)
+				return new JsonPrimitive((Character)obj);
+			else if(obj instanceof String)
+				return new JsonPrimitive((String)obj);
+			else if(obj instanceof ResourceLocation)
+				return new JsonPrimitive(obj.toString());
+			else if(obj instanceof List)
 			{
-				if(e.getValue() instanceof Boolean)
-					custom.addProperty(e.getKey(), (Boolean)e.getValue());
-				else if(e.getValue() instanceof Number)
-					custom.addProperty(e.getKey(), (Number)e.getValue());
-				else if(e.getValue() instanceof Character)
-					custom.addProperty(e.getKey(), (Character)e.getValue());
-				else if(e.getValue() instanceof Map)
-					custom.add(e.getKey(), toJson((Map<String, Object>)e.getValue()));
-				else
-					custom.addProperty(e.getKey(), e.getValue().toString());
+				JsonArray ret = new JsonArray();
+				for(Object o : (List<?>)obj)
+					ret.add(toJson(o));
+				return ret;
 			}
-			return custom;
+			else if(obj instanceof Map)
+			{
+				JsonObject ret = new JsonObject();
+				for(Entry<String, Object> e : ((Map<String, Object>)obj).entrySet())
+					ret.add(e.getKey(), toJson(e.getValue()));
+				return ret;
+			}
+			throw new IllegalArgumentException("Unsupported type for JSON conversion: "+obj+" (class "+obj.getClass()+")");
 		}
 
 		@Override

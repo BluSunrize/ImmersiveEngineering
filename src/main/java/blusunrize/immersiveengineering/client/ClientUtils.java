@@ -50,7 +50,10 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -1415,5 +1418,17 @@ public class ClientUtils
 			lightmapState = null;
 		}
 		GlStateManager.activeTexture(GLX.GL_TEXTURE0);
+	}
+
+	public static boolean isSneakKeyPressed()
+	{
+		if(Minecraft.getInstance().gameSettings==null)
+			return false;
+		KeyBinding keybind = Minecraft.getInstance().gameSettings.keyBindSneak;
+		Input keyCode = keybind.getKey();
+		if(keyCode.getType()==InputMappings.Type.KEYSYM&&keyCode.getKeyCode()!=InputMappings.INPUT_INVALID.getKeyCode())
+			return InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), keyCode.getKeyCode());
+		else
+			return false;
 	}
 }

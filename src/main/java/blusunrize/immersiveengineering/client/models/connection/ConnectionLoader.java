@@ -37,7 +37,6 @@ import java.util.function.Function;
 public class ConnectionLoader implements ICustomModelLoader
 {
 	public static final ResourceLocation DATA_BASED_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "models/connector");
-	public static final ImmutableSet<BlockRenderLayer> ALL_LAYERS = ImmutableSet.copyOf(BlockRenderLayer.values());
 
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
@@ -71,7 +70,7 @@ public class ConnectionLoader implements ICustomModelLoader
 		public ConnectorModel()
 		{
 			baseData = null;
-			layers = ALL_LAYERS;
+			layers = ImmutableSet.of(BlockRenderLayer.SOLID);
 			externalTextures = ImmutableMap.of();
 		}
 
@@ -139,7 +138,7 @@ public class ConnectionLoader implements ICustomModelLoader
 				return this;
 			JsonObject obj = ModelData.asJsonObject(customData);
 			ModelData newData = ModelData.fromJson(obj, ownKeys, "base", externalTextures);
-			Collection<BlockRenderLayer> layers = ALL_LAYERS;
+			Collection<BlockRenderLayer> layers = ImmutableSet.of(BlockRenderLayer.SOLID);
 			if(obj.has("layers")&&obj.get("layers").isJsonArray())
 			{
 				JsonArray arr = obj.get("layers").getAsJsonArray();

@@ -43,14 +43,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
@@ -258,6 +256,29 @@ public class BlockStates extends BlockstateGenerator
 			else
 				return rl("block/connector/breaker_switch_on.obj.ie");
 		}, ImmutableMap.of(), variantBased, ImmutableList.of(IEProperties.ACTIVE), BlockRenderLayer.SOLID);
+		createConnector(Connectors.transformer, map -> {
+			if(map.get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
+				return EMPTY_MODEL.name.getLocation();
+			else if(map.get(IEProperties.MIRRORED)==Boolean.FALSE)
+				return rl("block/connector/transformer_mv_left.obj");
+			else
+				return rl("block/connector/transformer_mv_right.obj");
+		}, ImmutableMap.of(), variantBased, ImmutableList.of(
+				IEProperties.MULTIBLOCKSLAVE,
+				IEProperties.MIRRORED
+		), BlockRenderLayer.SOLID);
+		createConnector(Connectors.transformerHV, map -> {
+			if(map.get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
+				return EMPTY_MODEL.name.getLocation();
+			else if(map.get(IEProperties.MIRRORED)==Boolean.FALSE)
+				return rl("block/connector/transformer_hv_left.obj");
+			else
+				return rl("block/connector/transformer_hv_right.obj");
+		}, ImmutableMap.of(), variantBased, ImmutableList.of(
+				IEProperties.MULTIBLOCKSLAVE,
+				IEProperties.MIRRORED
+		), BlockRenderLayer.SOLID);
+
 		createConnector(Connectors.currentTransformer, map -> {
 			if(map.get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
 				return rl("block/connector/e_meter.obj");
@@ -569,15 +590,6 @@ public class BlockStates extends BlockstateGenerator
 								 List<IProperty<?>> additional, BlockRenderLayer... layers)
 	{
 		final ModelFile connFile = new UncheckedModelFile(rl("connector"));
-		StringBuilder layerString = new StringBuilder("[");
-		for(int i = 0; i < layers.length; i++)
-		{
-			BlockRenderLayer l = layers[i];
-			layerString.append(l.name());
-			if(i+1 < layers.length)
-				layerString.append(", ");
-		}
-		layerString.append("]");
 		final IProperty<Direction> facingProp;
 		final int xForHorizontal;
 		if(b.getDefaultState().has(IEProperties.FACING_ALL))
@@ -605,8 +617,11 @@ public class BlockStates extends BlockstateGenerator
 		Builder builder = new Builder(b);
 		forEachState(additional, map -> {
 			final ImmutableMap<String, Object> customData = ImmutableMap.of("flip-v", true,
-					"base", model.apply(map).toString(),
-					"layers", layerString.toString());
+					"base", model.apply(map),
+					"layers", Arrays.stream(layers)
+							.map(BlockRenderLayer::name)
+							.collect(Collectors.toList())
+			);
 			if(facingProp!=null)
 			{
 				if(facingProp.getAllowedValues().contains(Direction.DOWN))

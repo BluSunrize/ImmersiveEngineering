@@ -86,8 +86,6 @@ public class BakedConnectionModel extends BakedIEModel
 			ModelKey key = new ModelKey(data, ad, orig.here);
 			try
 			{
-				//TODO
-				cache.invalidateAll();
 				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(key, textureAtlasSprite, base));
 				return ret.getQuads(state, null, rand, extraData);
 			} catch(ExecutionException e)
