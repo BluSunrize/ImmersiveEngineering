@@ -5,7 +5,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:feedthrough",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=up": {
@@ -15,7 +17,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:feedthrough",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=north": {
@@ -26,7 +30,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:feedthrough",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=south": {
@@ -36,7 +42,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:feedthrough",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=west": {
@@ -47,7 +55,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:feedthrough",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=east": {
@@ -58,7 +68,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:feedthrough",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     }
   }

@@ -5,7 +5,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/relay_hv.obj",
-        "layers": "[TRANSLUCENT]"
+        "layers": [
+          "TRANSLUCENT"
+        ]
       }
     },
     "facing=up": {
@@ -15,7 +17,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/relay_hv.obj",
-        "layers": "[TRANSLUCENT]"
+        "layers": [
+          "TRANSLUCENT"
+        ]
       }
     },
     "facing=north": {
@@ -26,7 +30,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/relay_hv.obj",
-        "layers": "[TRANSLUCENT]"
+        "layers": [
+          "TRANSLUCENT"
+        ]
       }
     },
     "facing=south": {
@@ -36,7 +42,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/relay_hv.obj",
-        "layers": "[TRANSLUCENT]"
+        "layers": [
+          "TRANSLUCENT"
+        ]
       }
     },
     "facing=west": {
@@ -47,7 +55,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/relay_hv.obj",
-        "layers": "[TRANSLUCENT]"
+        "layers": [
+          "TRANSLUCENT"
+        ]
       }
     },
     "facing=east": {
@@ -58,7 +68,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/relay_hv.obj",
-        "layers": "[TRANSLUCENT]"
+        "layers": [
+          "TRANSLUCENT"
+        ]
       }
     }
   }

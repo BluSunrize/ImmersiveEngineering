@@ -7,7 +7,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/ie_empty",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=north,multiblockslave=true": {
@@ -17,7 +19,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/e_meter.obj",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=south,multiblockslave=false": {
@@ -25,7 +29,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/ie_empty",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=south,multiblockslave=true": {
@@ -33,7 +39,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/e_meter.obj",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=west,multiblockslave=false": {
@@ -43,7 +51,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/ie_empty",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=west,multiblockslave=true": {
@@ -53,7 +63,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/e_meter.obj",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=east,multiblockslave=false": {
@@ -63,7 +75,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/ie_empty",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     },
     "facing=east,multiblockslave=true": {
@@ -73,7 +87,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/e_meter.obj",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     }
   }

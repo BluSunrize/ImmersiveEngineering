@@ -7,7 +7,7 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/razor_wire.obj.ie",
-        "layers": "[]"
+        "layers": []
       }
     },
     "facing=south": {
@@ -15,7 +15,7 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/razor_wire.obj.ie",
-        "layers": "[]"
+        "layers": []
       }
     },
     "facing=west": {
@@ -25,7 +25,7 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/razor_wire.obj.ie",
-        "layers": "[]"
+        "layers": []
       }
     },
     "facing=east": {
@@ -35,7 +35,7 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/razor_wire.obj.ie",
-        "layers": "[]"
+        "layers": []
       }
     }
   }

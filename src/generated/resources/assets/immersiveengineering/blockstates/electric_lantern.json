@@ -7,7 +7,7 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/e_lantern.obj",
-        "layers": "[]"
+        "layers": []
       }
     },
     "active=false,facing=down": {
@@ -15,7 +15,7 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/e_lantern.obj",
-        "layers": "[]"
+        "layers": []
       }
     },
     "active=true,facing=up": {
@@ -25,7 +25,7 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/e_lantern.obj",
-        "layers": "[]"
+        "layers": []
       },
       "textures": {
         "#immersiveengineering:block/metal_device/electric_lantern": "immersiveengineering:block/metal_device/electric_lantern_on"
@@ -36,7 +36,7 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/e_lantern.obj",
-        "layers": "[]"
+        "layers": []
       },
       "textures": {
         "#immersiveengineering:block/metal_device/electric_lantern": "immersiveengineering:block/metal_device/electric_lantern_on"

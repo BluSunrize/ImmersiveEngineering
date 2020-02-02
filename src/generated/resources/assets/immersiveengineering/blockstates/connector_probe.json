@@ -5,7 +5,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_probe.obj.ie",
-        "layers": "[CUTOUT, TRANSLUCENT]"
+        "layers": [
+          "CUTOUT",
+          "TRANSLUCENT"
+        ]
       }
     },
     "facing=up": {
@@ -15,7 +18,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_probe.obj.ie",
-        "layers": "[CUTOUT, TRANSLUCENT]"
+        "layers": [
+          "CUTOUT",
+          "TRANSLUCENT"
+        ]
       }
     },
     "facing=north": {
@@ -26,7 +32,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_probe.obj.ie",
-        "layers": "[CUTOUT, TRANSLUCENT]"
+        "layers": [
+          "CUTOUT",
+          "TRANSLUCENT"
+        ]
       }
     },
     "facing=south": {
@@ -36,7 +45,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_probe.obj.ie",
-        "layers": "[CUTOUT, TRANSLUCENT]"
+        "layers": [
+          "CUTOUT",
+          "TRANSLUCENT"
+        ]
       }
     },
     "facing=west": {
@@ -47,7 +59,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_probe.obj.ie",
-        "layers": "[CUTOUT, TRANSLUCENT]"
+        "layers": [
+          "CUTOUT",
+          "TRANSLUCENT"
+        ]
       }
     },
     "facing=east": {
@@ -58,7 +73,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_probe.obj.ie",
-        "layers": "[CUTOUT, TRANSLUCENT]"
+        "layers": [
+          "CUTOUT",
+          "TRANSLUCENT"
+        ]
       }
     }
   }

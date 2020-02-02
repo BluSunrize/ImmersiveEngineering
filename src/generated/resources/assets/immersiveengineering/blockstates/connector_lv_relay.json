@@ -5,7 +5,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_lv.obj",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       },
       "textures": {
         "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
@@ -18,7 +20,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_lv.obj",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       },
       "textures": {
         "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
@@ -32,7 +36,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_lv.obj",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       },
       "textures": {
         "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
@@ -45,7 +51,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_lv.obj",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       },
       "textures": {
         "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
@@ -59,7 +67,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_lv.obj",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       },
       "textures": {
         "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"
@@ -73,7 +83,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/connector/connector_lv.obj",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       },
       "textures": {
         "#immersiveengineering:block/connector/connector_lv": "immersiveengineering:block/connector/relay_lv"

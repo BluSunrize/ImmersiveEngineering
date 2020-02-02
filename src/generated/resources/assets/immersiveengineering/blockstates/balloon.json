@@ -5,7 +5,9 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/balloon.obj.ie",
-        "layers": "[SOLID]"
+        "layers": [
+          "SOLID"
+        ]
       }
     }
   }

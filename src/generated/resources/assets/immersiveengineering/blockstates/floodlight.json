@@ -5,7 +5,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=false,facing=up": {
@@ -15,7 +18,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=false,facing=north": {
@@ -26,7 +32,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=false,facing=south": {
@@ -36,7 +45,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=false,facing=west": {
@@ -47,7 +59,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=false,facing=east": {
@@ -58,7 +73,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=true,facing=down": {
@@ -66,7 +84,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=true,facing=up": {
@@ -76,7 +97,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=true,facing=north": {
@@ -87,7 +111,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=true,facing=south": {
@@ -97,7 +124,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=true,facing=west": {
@@ -108,7 +138,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     },
     "active=true,facing=east": {
@@ -119,7 +152,10 @@
       "custom": {
         "flip-v": true,
         "base": "immersiveengineering:block/metal_device/floodlight.obj.ie",
-        "layers": "[TRANSLUCENT, SOLID]"
+        "layers": [
+          "TRANSLUCENT",
+          "SOLID"
+        ]
       }
     }
   }
