@@ -63,6 +63,7 @@ import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.Villages;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -370,8 +371,10 @@ public class IEContent
 		}
 
 		Connectors.connectorStructural = new MiscConnectorBlock("connector_structural", () -> ConnectorStructuralTileEntity.TYPE);
+		Connectors.postTransformer = new PostTransformerBlock();
 		Connectors.transformer = new MiscConnectorBlock("transformer", () -> TransformerTileEntity.TYPE,
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, IEProperties.MIRRORED);
+				ImmutableList.of(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, IEProperties.MIRRORED),
+				ImmutableList.of(), TransformerItemBlock.class);
 		Connectors.transformerHV = new MiscConnectorBlock("transformer_hv", () -> TransformerHVTileEntity.TYPE,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, IEProperties.MIRRORED);
 		Connectors.breakerswitch = new MiscConnectorBlock("breaker_switch", () -> BreakerSwitchTileEntity.TYPE,
@@ -677,6 +680,7 @@ public class IEContent
 
 		registerTile(ConnectorStructuralTileEntity.class, event, Connectors.connectorStructural);
 		registerTile(TransformerTileEntity.class, event, Connectors.transformer);
+		registerTile(PostTransformerTileEntity.class, event, Connectors.postTransformer);
 		registerTile(TransformerHVTileEntity.class, event, Connectors.transformerHV);
 		registerTile(BreakerSwitchTileEntity.class, event, Connectors.breakerswitch);
 		registerTile(RedstoneBreakerTileEntity.class, event, Connectors.redstoneBreaker);

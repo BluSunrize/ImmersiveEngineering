@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
@@ -48,11 +49,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class PostBlock extends IEBaseBlock implements IModelDataBlock
+public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBlock
 {
 	public static final IntegerProperty POST_SLAVE = IntegerProperty.create("post_slave", 0, 3);
 	public static final EnumProperty<HorizontalOffset> HORIZONTAL_OFFSET = EnumProperty.create("horizontal_offset",
 			HorizontalOffset.class);
+
 	public PostBlock(String name, Properties blockProps)
 	{
 		super(name, blockProps, BlockItemIE.class, POST_SLAVE, HORIZONTAL_OFFSET);
@@ -365,7 +367,12 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock
 		return new SinglePropertyModelData<>(modelState, Model.OBJ_STATE);
 	}
 
-	//TODO transformers
+	@Override
+	public boolean canConnectTransformer(IBlockReader world, BlockPos pos)
+	{
+		int offset = world.getBlockState(pos).get(POST_SLAVE);
+		return offset > 0;
+	}
 
 	enum HorizontalOffset implements IStringSerializable
 	{

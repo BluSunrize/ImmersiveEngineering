@@ -30,16 +30,22 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+
 public abstract class ConnectorBlock extends IETileProviderBlock
 {
-
-	public ConnectorBlock(String name, IProperty... additional)
+	public ConnectorBlock(String name, @Nullable Class<? extends BlockItemIE> item, IProperty... additional)
 	{
 		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
-				BlockItemIE.class, additional);
+				item, additional);
 		lightOpacity = 0;
 		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setNotNormalBlock();
+	}
+
+	public ConnectorBlock(String name, IProperty... additional)
+	{
+		this(name, BlockItemIE.class, additional);
 	}
 
 	@Override

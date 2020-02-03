@@ -267,6 +267,8 @@ public class BlockStates extends BlockstateGenerator
 				IEProperties.MULTIBLOCKSLAVE,
 				IEProperties.MIRRORED
 		), BlockRenderLayer.SOLID);
+		createConnector(Connectors.postTransformer, rl("block/connector/transformer_post.obj"),
+				ImmutableMap.of(), variantBased, BlockRenderLayer.SOLID);
 		createConnector(Connectors.transformerHV, map -> {
 			if(map.get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
 				return EMPTY_MODEL.name.getLocation();

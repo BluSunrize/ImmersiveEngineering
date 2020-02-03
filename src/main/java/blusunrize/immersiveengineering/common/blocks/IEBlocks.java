@@ -172,6 +172,7 @@ public final class IEBlocks
 		public static final BiMap<Pair<String, Boolean>, Block> ENERGY_CONNECTORS = HashBiMap.create();
 		public static Block connectorStructural;
 		public static Block transformer;
+		public static Block postTransformer;
 		public static Block transformerHV;
 		public static Block breakerswitch;
 		public static Block redstoneBreaker;
