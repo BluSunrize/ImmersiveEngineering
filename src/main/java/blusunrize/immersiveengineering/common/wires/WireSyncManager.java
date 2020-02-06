@@ -21,8 +21,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.event.world.ChunkWatchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -93,21 +91,21 @@ public class WireSyncManager
 			sendToPlayersForConnection(new MessageWireSync(c, false), (ServerWorld)w, c);
 	}
 
-	@SubscribeEvent
-	public static void onChunkWatch(ChunkWatchEvent.Watch ev)
+	//TODO uncomment once the event is working in Forge @SubscribeEvent
+	public static void onChunkWatch(ServerWorld world, ChunkPos pos, ServerPlayerEntity player)
 	{
-		Chunk chunk = ev.getWorld().getChunk(ev.getPos().x, ev.getPos().z);
+		Chunk chunk = world.getChunk(pos.x, pos.z);
 		if(chunk!=null)
 			//TODO this is a hack
-			ApiUtils.addFutureServerTask(ev.getWorld(), () -> sendMessagesForChunk(chunk, ev.getPlayer(), true), true);
+			ApiUtils.addFutureServerTask(world, () -> sendMessagesForChunk(chunk, player, true), true);
 	}
 
-	@SubscribeEvent
-	public static void onChunkUnWatch(ChunkWatchEvent.UnWatch ev)
+	//TODO uncomment once the event is working in Forge @SubscribeEvent
+	public static void onChunkUnWatch(ServerWorld world, ChunkPos pos, ServerPlayerEntity player)
 	{
-		Chunk chunk = ev.getWorld().getChunk(ev.getPos().x, ev.getPos().z);
+		Chunk chunk = world.getChunk(pos.x, pos.z);
 		if(chunk!=null)
 			//TODO this is a hack
-			ApiUtils.addFutureServerTask(ev.getWorld(), () -> sendMessagesForChunk(chunk, ev.getPlayer(), false), true);
+			ApiUtils.addFutureServerTask(world, () -> sendMessagesForChunk(chunk, player, false), true);
 	}
 }
