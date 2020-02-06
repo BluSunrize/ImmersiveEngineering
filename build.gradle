@@ -15,7 +15,14 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.13-testing'
+version = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return "0.14-testing-"+stdout.toString().trim();
+}()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ImmersiveEngineering'
 
