@@ -35,7 +35,7 @@ public class HempBlock extends BushBlock implements IGrowable
 
 	public HempBlock(String name)
 	{
-		super(Block.Properties.create(Material.PLANTS).hardnessAndResistance(0));
+		super(Block.Properties.create(Material.PLANTS).doesNotBlockMovement().hardnessAndResistance(0));
 		this.name = name;
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEBlocks.add(this);

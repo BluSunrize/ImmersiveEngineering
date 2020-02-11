@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
+import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
@@ -51,6 +52,7 @@ public class Models extends ModelGenerator
 	final Map<Block, Map<BasicStairsShape, ModelFile>> stairs = new HashMap<>();
 	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> aluScaffoldingStairs = new HashMap<>();
 	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> steelScaffoldingStairs = new HashMap<>();
+	final Map<EnumHempGrowth, ModelFile> hempGrowth = new EnumMap<>(EnumHempGrowth.class);
 
 	private static final ResourceLocation ALU_FENCE_TEXTURE = rl("block/metal/storage_aluminum");
 	private static final ResourceLocation STEEL_FENCE_TEXTURE = rl("block/metal/storage_steel");
@@ -681,6 +683,19 @@ public class Models extends ModelGenerator
 				rl("item/multiblock"),
 				true
 		));
+		for(EnumHempGrowth g : EnumHempGrowth.values())
+		{
+			GeneratedModelFile gen = ModelHelper.create(
+					rl("block/hemp/"+g.getName()),
+					new ResourceLocation("block/crop"),
+					ImmutableMap.of(
+							"crop", g.getTextureName()
+					),
+					null, true
+			);
+			out.accept(gen);
+			hempGrowth.put(g, gen);
+		}
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)

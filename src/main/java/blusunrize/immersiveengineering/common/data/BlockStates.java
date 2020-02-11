@@ -18,6 +18,8 @@ import blusunrize.immersiveengineering.common.blocks.generic.PostBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
+import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
+import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.data.Models.MetalModels;
 import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator;
 import blusunrize.immersiveengineering.common.data.blockstate.VariantBlockstate.Builder;
@@ -358,6 +360,7 @@ public class BlockStates extends BlockstateGenerator
 		}
 		for(Block b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(new UncheckedModelFile(rl("conveyor"))), variantBased);
+		createHemp(variantBased);
 	}
 
 	private void createRotatedBlock(Block block, Function<Map<IProperty<?>, Object>, ModelFile> model, IProperty<Direction> facing,
@@ -669,5 +672,14 @@ public class BlockStates extends BlockstateGenerator
 								 BiConsumer<Block, IVariantModelGenerator> out, BlockRenderLayer... layers)
 	{
 		createConnector(b, map -> model, textures, out, ImmutableList.of(), layers);
+	}
+
+	private void createHemp(BiConsumer<Block, IVariantModelGenerator> out)
+	{
+		Builder builder = new Builder(Misc.hempPlant);
+		for(EnumHempGrowth g : EnumHempGrowth.values())
+			builder.setModel(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, g),
+					new ConfiguredModel(models.hempGrowth.get(g)));
+		out.accept(Misc.hempPlant, builder.build());
 	}
 }
