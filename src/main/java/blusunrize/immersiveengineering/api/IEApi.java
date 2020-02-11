@@ -33,7 +33,7 @@ public class IEApi
 	/**
 	 * A list of mod-ids, representing the mods an ore should be used from in order of priority
 	 */
-	public static List<String> modPreference;
+	public static List<? extends String> modPreference;
 
 	/**
 	 * This map caches the preferred ores for the given OreDict name
