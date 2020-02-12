@@ -312,6 +312,7 @@ public class Models extends ModelGenerator
 		addItemModels("", out, Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
 		addItemModels("bullet_", out, Ingredients.emptyCasing, Ingredients.emptyShell);
 		addItemModels("bullet_", out, Weapons.bullets.values());
+		addItemModels("", out, Misc.faradaySuit.values());
 		out.accept(ModelHelper.createWithDynamicModel(rl("coresample"), locForItemModel(Misc.coresample)));
 		addItemModel("blueprint", out, Misc.blueprint);
 		addItemModel("seed_hemp", out, Misc.hempSeeds);

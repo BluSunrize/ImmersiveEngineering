@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.data.loot.LootGenerator;
@@ -50,6 +51,7 @@ public class BlockLoot extends LootGenerator
 	protected void registerTables()
 	{
 		registerHemp();
+		register(StoneDecoration.concreteSprayed, LootTable.builder());
 		registerAllRemainingAsDefault();
 	}
 

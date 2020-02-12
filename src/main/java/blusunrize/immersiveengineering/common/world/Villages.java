@@ -32,6 +32,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.merchant.villager.VillagerTrades.ITrade;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
@@ -190,10 +191,10 @@ public class Villages
 
 				trades.get(4).add(new ItemsForEmerald(toolUpgrades.get(ToolUpgrade.RAILGUN_CAPACITORS), new PriceInterval(8, 12)));
 				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.fluorescentTube, new PriceInterval(8, 12)));
-				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.faradaySuit[0], new PriceInterval(5, 7)));
-				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.faradaySuit[1], new PriceInterval(9, 11)));
-				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.faradaySuit[2], new PriceInterval(5, 7)));
-				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.faradaySuit[3], new PriceInterval(11, 15)));
+				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.FEET), new PriceInterval(5, 7)));
+				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.LEGS), new PriceInterval(9, 11)));
+				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.CHEST), new PriceInterval(11, 15)));
+				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.HEAD), new PriceInterval(5, 7)));
 			}
 			else if(OUTFITTER.equals(ev.getType().getRegistryName()))
 			{

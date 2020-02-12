@@ -21,20 +21,25 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Map;
 
 public class ItemFaradaySuit extends ArmorItem implements IElectricEquipment
 {
-	public static IArmorMaterial mat;
+	public static IArmorMaterial mat = new FaradayArmorMaterial();
 
 	public ItemFaradaySuit(EquipmentSlotType type)
 	{
 		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.itemGroup));
-		String name = "faraday_suit_"+type.getName().toLowerCase(Locale.ENGLISH);
+		String name = "armor_faraday_"+type.getName().toLowerCase(Locale.ENGLISH);
+		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEItems.add(this);
 	}
 
@@ -66,6 +71,76 @@ public class ItemFaradaySuit extends ArmorItem implements IElectricEquipment
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
 	{
-		return "immersiveengineering:textures/models/armor_faraday"+(slot==EquipmentSlotType.LEGS?"_legs": "")+".png";
+		return ImmersiveEngineering.MODID+":textures/models/armor_faraday"+(slot==EquipmentSlotType.LEGS?"_legs": "")+".png";
+	}
+
+	private static class FaradayArmorMaterial implements IArmorMaterial
+	{
+
+		@Override
+		public int getDurability(@Nonnull EquipmentSlotType slotIn)
+		{
+			switch(slotIn)
+			{
+				case FEET:
+					return 13;
+				case LEGS:
+					return 15;
+				case CHEST:
+					return 16;
+				case HEAD:
+					return 11;
+			}
+			return 0;
+		}
+
+		@Override
+		public int getDamageReductionAmount(EquipmentSlotType slotIn)
+		{
+			switch(slotIn)
+			{
+				case FEET:
+				case HEAD:
+					return 1;
+				case LEGS:
+					return 2;
+				case CHEST:
+					return 3;
+			}
+			return 0;
+		}
+
+		@Override
+		public int getEnchantability()
+		{
+			return 0;
+		}
+
+		@Nonnull
+		@Override
+		public SoundEvent getSoundEvent()
+		{
+			return SoundEvents.ITEM_ARMOR_EQUIP_CHAIN;
+		}
+
+		@Nonnull
+		@Override
+		public Ingredient getRepairMaterial()
+		{
+			return Ingredient.EMPTY;
+		}
+
+		@Nonnull
+		@Override
+		public String getName()
+		{
+			return ImmersiveEngineering.MODID+":faraday";
+		}
+
+		@Override
+		public float getToughness()
+		{
+			return 0;
+		}
 	}
 }

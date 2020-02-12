@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 
@@ -124,7 +125,7 @@ public final class IEItems
 		public static Item earmuffs;
 		public static Item coresample;
 		public static Item graphiteElectrode;
-		public static Item[] faradaySuit = new ItemFaradaySuit[4];
+		public static Map<EquipmentSlotType, Item> faradaySuit = new EnumMap<>(EquipmentSlotType.class);
 		public static Item fluorescentTube;
 		public static Item powerpack;
 		public static Item shield;
