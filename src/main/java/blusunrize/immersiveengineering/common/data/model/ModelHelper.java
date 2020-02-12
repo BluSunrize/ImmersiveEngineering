@@ -392,6 +392,18 @@ public class ModelHelper
 		return new GeneratedModelFile(output, ret);
 	}
 
+	public static GeneratedModelFile createTEIR_IEOBJ(ResourceLocation output, ResourceLocation ieobj, ResourceLocation transforms)
+	{
+		JsonObject ret = createJson(
+				new ExistingModelFile(ieobj),
+				ImmutableMap.of(),
+				transforms,
+				false
+		);
+		ret.addProperty("dynamic", true);
+		return new GeneratedModelFile(output, ret);
+	}
+
 	public static class TransformationMap
 	{
 		private final Map<TransformType, TRSRTransformation> transforms = new TreeMap<>();

@@ -697,6 +697,11 @@ public class Models extends ModelGenerator
 			out.accept(gen);
 			hempGrowth.put(g, gen);
 		}
+		out.accept(ModelHelper.createTEIR_IEOBJ(
+				locForItemModel(Misc.fluorescentTube),
+				rl("item/fluorescent_tube.obj.ie"),
+				rl("item/fluorescent_tube")
+		));
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)

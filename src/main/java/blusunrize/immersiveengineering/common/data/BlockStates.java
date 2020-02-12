@@ -42,6 +42,7 @@ import net.minecraft.state.properties.SlabType;
 import net.minecraft.state.properties.StairsShape;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -166,6 +167,9 @@ public class BlockStates extends BlockstateGenerator
 				new ExistingModelFile(rl("block/metal_device/gun_turret.obj.ie")),
 				variantBased
 		);
+		createMultiblock(MetalDevices.teslaCoil, new ExistingModelFile(rl("block/metal_device/teslacoil.obj")),
+				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_ALL, null,
+				180, variantBased);
 		createBasicBlock(Misc.fakeLight, EMPTY_MODEL, variantBased);
 
 		createPostBlock(MetalDecoration.aluPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
@@ -513,9 +517,23 @@ public class BlockStates extends BlockstateGenerator
 		else
 			possibleMirrorStates = new boolean[1];
 		for(boolean mirrored : possibleMirrorStates)
-			for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
+			for(Direction dir : facing.getAllowedValues())
 			{
-				int angle = getAngle(dir, rotationOffset);
+				final int angleY;
+				final int angleX;
+				if(facing.getAllowedValues().contains(Direction.UP))
+				{
+					angleX = -90*dir.getYOffset();
+					if(dir.getAxis()!=Axis.Y)
+						angleY = getAngle(dir, rotationOffset);
+					else
+						angleY = 0;
+				}
+				else
+				{
+					angleY = getAngle(dir, rotationOffset);
+					angleX = 0;
+				}
 				ModelFile model = mirrored?mirroredModel: masterModel;
 				ImmutableMap.Builder<IProperty<?>, Object> partialState = ImmutableMap.builder();
 				partialState.put(isSlave, Boolean.FALSE)
@@ -523,7 +541,7 @@ public class BlockStates extends BlockstateGenerator
 				if(mirroredState!=null)
 					partialState.put(mirroredState, mirrored);
 				builder.setForAllWithState(partialState.build(),
-						new ConfiguredModel(model, 0, angle, true, ImmutableMap.of("flip-v", true)));
+						new ConfiguredModel(model, angleX, angleY, true, ImmutableMap.of("flip-v", true)));
 			}
 		out.accept(b, builder.build());
 	}

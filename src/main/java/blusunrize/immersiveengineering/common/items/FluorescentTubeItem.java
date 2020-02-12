@@ -32,7 +32,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -70,14 +69,13 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 				Vec3d look = player.getLookVec();
 				float angle = (float)Math.toDegrees(Math.atan2(look.x, look.z));
 				FluorescentTubeEntity tube = new FluorescentTubeEntity(world, stack.copy(), angle);
-				BlockPos pos = ctx.getPos();
-				tube.setPosition(pos.getX()+ctx.getHitVec().x, pos.getY()+1.5, pos.getZ()+ctx.getHitVec().z);
+				tube.setPosition(ctx.getHitVec().x, ctx.getHitVec().y+1.5, ctx.getHitVec().z);
 				world.addEntity(tube);
 				stack.split(1);
 				if(stack.getCount() > 0)
-					player.setItemStackToSlot(EquipmentSlotType.MAINHAND, stack);
+					player.setHeldItem(ctx.getHand(), stack);
 				else
-					player.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+					player.setHeldItem(ctx.getHand(), ItemStack.EMPTY);
 			}
 			return ActionResultType.SUCCESS;
 		}

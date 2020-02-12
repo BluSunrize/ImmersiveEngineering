@@ -176,17 +176,6 @@ public class ClientProxy extends CommonProxy
 		IEOBJLoader.instance.addDomain("immersiveengineering");
 		MinecraftForge.EVENT_BUS.register(ImmersiveModelRegistry.instance);
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Misc.shader),
-				existingModel -> new ModelItemDynamicOverride(existingModel, null));
-
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Misc.fluorescentTube), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/fluorescent_tube.obj", true)
-				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(.2, .1, 0).rotate(-Math.PI/3, 1, 0, 0))
-				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(.2, .1, 0).rotate(-Math.PI/3, 1, 0, 0))
-				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .5, .1))
-				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .5, .1))
-				.setTransformations(TransformType.FIXED, new Matrix4())
-				.setTransformations(TransformType.GUI, new Matrix4().rotate(-Math.PI/4, 0, 0, 1).rotate(Math.PI/8, 0, 1, 0))
-				.setTransformations(TransformType.GROUND, new Matrix4().scale(.5, .5, .5).translate(0, .5, 0)));
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(Misc.shield), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/shield.obj", true)
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(90), 0, 1, 0).rotate(.1, 1, 0, 0).translate(.5, .125, .5))

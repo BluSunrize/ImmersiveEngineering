@@ -390,7 +390,9 @@ public class IEContent
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
 				.setBlockLayer(BlockRenderLayer.CUTOUT)
 				.setNotNormalBlock();
-		MetalDevices.teslaCoil = new GenericTileBlock("tesla_coil", () -> TeslaCoilTileEntity.TYPE, defaultMetalProperties, IEProperties.FACING_ALL);
+		MetalDevices.teslaCoil = new GenericTileBlock("tesla_coil", () -> TeslaCoilTileEntity.TYPE, defaultMetalProperties,
+				IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE)
+				.setNotNormalBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
 		MetalDevices.turretChem = new GenericTileBlock("turret_chem", () -> TurretChemTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
@@ -499,11 +501,11 @@ public class IEContent
 		for(EquipmentSlotType slot : EquipmentSlotType.values())
 			if(slot.getSlotType()==Group.ARMOR)
 				IEItems.Misc.faradaySuit.put(slot, new ItemFaradaySuit(slot));
+		IEItems.Misc.fluorescentTube = new FluorescentTubeItem();
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
 		itemSkyhook = new ItemSkyhook();
-		itemFluorescentTube = new ItemFluorescentTube();
 		itemShield = new ItemIEShield();
 		itemMaintenanceKit = new ItemMaintenanceKit();
 

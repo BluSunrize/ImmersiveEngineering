@@ -25,8 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-import java.util.Random;
-
 public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntity>
 {
 	static double sqrt2Half = Math.sqrt(2)/2;
@@ -34,8 +32,6 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 			{1, 0}, {sqrt2Half, sqrt2Half}, {0, 1}, {-sqrt2Half, sqrt2Half},
 			{-1, 0}, {-sqrt2Half, -sqrt2Half}, {0, -1}, {sqrt2Half, -sqrt2Half}
 	};
-	private static Random r = new Random();
-	ResourceLocation modelLocation = new ResourceLocation("immersiveengineering:fluorescent_tube.obj");
 	TextureAtlasSprite tex;
 
 	public FluorescentTubeRenderer(EntityRendererManager renderManager)
@@ -65,7 +61,7 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		GlStateManager.translated(0, 0, .03125);
 		GlStateManager.rotatef(entity.angleHorizontal, 1, 0, 0);
 		GlStateManager.translated(0, -entity.TUBE_LENGTH/2, 0);
-		drawTube(entity.active, entity.rgb, entity.TUBE_LENGTH, wr, tes);
+		drawTube(entity.active, entity.rgb);
 		GlStateManager.popMatrix();
 		GlStateManager.translated(-0.25, -1, 0);
 		GlStateManager.color3f(1, 1, 1);
@@ -83,7 +79,7 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 	private static ItemStack tube = ItemStack.EMPTY;
 	private static ItemStack tubeActive = ItemStack.EMPTY;
 
-	static void drawTube(boolean active, float[] rgb, double length, BufferBuilder wr, Tessellator tes)
+	static void drawTube(boolean active, float[] rgb)
 	{
 		if(tube.isEmpty())
 			tube = new ItemStack(Misc.fluorescentTube);

@@ -124,7 +124,7 @@ public class DynamicModelLoader
 					unbaked = new UnbakedDynBucket(new ModelDynBucket());
 				else
 					unbaked = ModelLoader.defaultModelGetter().apply(name);
-				if(VANILLA_MODEL_WRAPPER.isInstance(unbaked))
+				if(!name.getPath().startsWith("builtin/")&&VANILLA_MODEL_WRAPPER.isInstance(unbaked))
 				{
 					IResource asResource = manager.getResource(new ResourceLocation(name.getNamespace(), "models/"+name.getPath()+".json"));
 					BlockModel model = BlockModel.deserialize(new InputStreamReader(asResource.getInputStream()));
