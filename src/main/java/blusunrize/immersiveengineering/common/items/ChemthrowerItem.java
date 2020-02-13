@@ -64,7 +64,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 {
 	public ChemthrowerItem()
 	{
-		super("chemthrower", new Item.Properties().setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "CHEMTHROWER");
+		super("chemthrower", new Item.Properties().setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE).maxStackSize(1), "CHEMTHROWER");
 	}
 
 	@Override

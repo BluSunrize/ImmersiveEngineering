@@ -702,6 +702,13 @@ public class Models extends ModelGenerator
 				rl("item/fluorescent_tube.obj.ie"),
 				rl("item/fluorescent_tube")
 		));
+		out.accept(ModelHelper.create(
+				locForItemModel(Misc.shield),
+				rl("item/shield.obj.ie.ie"),
+				ImmutableMap.of(),
+				rl("item/shield"),
+				true
+		));
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
