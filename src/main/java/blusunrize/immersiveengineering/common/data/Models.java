@@ -704,7 +704,7 @@ public class Models extends ModelGenerator
 		));
 		out.accept(ModelHelper.create(
 				locForItemModel(Misc.shield),
-				rl("item/shield.obj.ie.ie"),
+				rl("item/shield.obj.ie"),
 				ImmutableMap.of(),
 				rl("item/shield"),
 				true

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "bi ",
+    "ibi",
+    " ic"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "b": {
+      "item": "immersiveengineering:plantoil_bucket"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:toolupgrade_drill_lube"
+  }
+}

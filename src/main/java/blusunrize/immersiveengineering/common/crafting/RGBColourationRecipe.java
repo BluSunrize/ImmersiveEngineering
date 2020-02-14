@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.passive.SheepEntity;
@@ -31,7 +32,6 @@ public class RGBColourationRecipe implements ICraftingRecipe
 
 	public RGBColourationRecipe(Ingredient target, String colorKey, ResourceLocation id)
 	{
-
 		this.target = target;
 		this.colorKey = colorKey;
 		this.id = id;
@@ -143,7 +143,7 @@ public class RGBColourationRecipe implements ICraftingRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return RGBRecipeSerializer.INSTANCE;
+		return RecipeSerializers.RGB_SERIALIZER.get();
 	}
 
 	public Ingredient getTarget()

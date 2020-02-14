@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -31,6 +32,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
@@ -39,11 +41,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+
+import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class Recipes extends RecipeProvider
 {
@@ -123,13 +128,18 @@ public class Recipes extends RecipeProvider
 		recipesMisc(out);
 
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.SPEEDLOADER_LOAD.get())
-			.build(out, ImmersiveEngineering.MODID+":speedloader_load");
+				.build(out, ImmersiveEngineering.MODID+":speedloader_load");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.FLARE_BULLET_COLOR.get())
-			.build(out, ImmersiveEngineering.MODID+":flare_bullet_color");
+				.build(out, ImmersiveEngineering.MODID+":flare_bullet_color");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POTION_BULLET_FILL.get())
-			.build(out, ImmersiveEngineering.MODID+":potion_bullet_fill");
+				.build(out, ImmersiveEngineering.MODID+":potion_bullet_fill");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POWERPACK_SERIALIZER.get())
+				.build(out, ImmersiveEngineering.MODID+":powerpack_attach");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.EARMUFF_SERIALIZER.get())
+				.build(out, ImmersiveEngineering.MODID+":earmuffs_attach");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.JERRYCAN_REFILL.get())
-			.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
+				.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
+		addRGBRecipe(out, rl("curtain_colour"), Ingredient.fromItems(Cloth.curtain), "colour");
 
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
@@ -1186,33 +1196,34 @@ public class Recipes extends RecipeProvider
 			.build(out);
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.DRILL_WATERPROOF))
-			.patternLine("bl ")
-			.patternLine("lbl")
-			.patternLine(" lc")
-			.key('b', Items.BUCKET)
-			.key('l', Tags.Items.GEMS_LAPIS)
-			.key('c', Ingredients.componentIron)
-			.addCriterion("has_bucket", hasItem(Items.BUCKET))
-			.build(out);
-//		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.DRILL_LUBE))
-//			.patternLine("bi ")
-//			.patternLine("ibi")
-//			.patternLine(" iv")
-//			.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-//			.key('c', Ingredients.componentIron)
-//			.key('b', Ingredients.plantOil) // TODO Plant Oil Bucket missing for ToolUpgrade.DRILL_LUBE recipe
-//			.addCriterion("has_"+toPath(Ingredients.plantOil), hasItem(Ingredients.plantOil))
-//			.build(out);
+				.patternLine("bl ")
+				.patternLine("lbl")
+				.patternLine(" lc")
+				.key('b', Items.BUCKET)
+				.key('l', Tags.Items.GEMS_LAPIS)
+				.key('c', Ingredients.componentIron)
+				.addCriterion("has_bucket", hasItem(Items.BUCKET))
+				.build(out);
+		Item plantoilBucket = IEContent.fluidPlantoil.getFilledBucket();
+		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.DRILL_LUBE))
+				.patternLine("bi ")
+				.patternLine("ibi")
+				.patternLine(" ic")
+				.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.key('c', Ingredients.componentIron)
+				.key('b', plantoilBucket)
+				.addCriterion("has_"+toPath(plantoilBucket), hasItem(plantoilBucket))
+				.build(out);
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.DRILL_DAMAGE))
-			.patternLine("iii")
-			.patternLine(" c ")
-			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
-			.key('c', Ingredients.componentIron)
-			.addCriterion("has_"+toPath(Ingredients.componentIron), hasItem(Ingredients.componentIron))
-			.build(out);
+				.patternLine("iii")
+				.patternLine(" c ")
+				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.key('c', Ingredients.componentIron)
+				.addCriterion("has_"+toPath(Ingredients.componentIron), hasItem(Ingredients.componentIron))
+				.build(out);
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.DRILL_CAPACITY))
-			.patternLine("ci ")
-			.patternLine("ibr")
+				.patternLine("ci ")
+				.patternLine("ibr")
 			.patternLine(" rb")
 			.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 			.key('c', Ingredients.componentIron)
@@ -1477,7 +1488,7 @@ public class Recipes extends RecipeProvider
 			.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 			.addCriterion("has_"+toPath(MetalDevices.capacitorLV), hasItem(MetalDevices.capacitorLV))
 			.addCriterion("has_"+toPath(IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)), hasItem(IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)))
-			.build(out);
+				.build(out);
 		// TODO Uncomment below when maintenanceKit is implemented
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.maintenanceKit)
 //			.patternLine("rc ")
@@ -1487,16 +1498,15 @@ public class Recipes extends RecipeProvider
 //			.key('f', IETags.fabricHemp)
 //			.addCriterion("has_"+toPath(Tools.wirecutter)), hasItem(Tools.wirecutter))
 //			.build(out);
-		// TODO Uncomment below when shield is implemented
-//		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.shield)
-//			.patternLine("sws")
-//			.patternLine("scs")
-//			.patternLine("sws")
-//			.key('s', IETags.getTagsFor(EnumMetals.STEEL).plate)
-//			.key('w', IETags.getItemTag(IETags.treatedWood))
-//			.key('c', Items.SHIELD)
-//			.addCriterion("has_shield", hasItem(Items.SHIELD))
-//			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.shield)
+				.patternLine("sws")
+				.patternLine("scs")
+				.patternLine("sws")
+				.key('s', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.key('w', IETags.getItemTag(IETags.treatedWood))
+				.key('c', Items.SHIELD)
+				.addCriterion("has_shield", hasItem(Items.SHIELD))
+				.build(out);
 	}
 
 	private void add3x3Conversion(IItemProvider bigItem, Tag<Item> bigTag, IItemProvider smallItem, Tag<Item> smallTag, Consumer<IFinishedRecipe> out)
@@ -1651,5 +1661,45 @@ public class Recipes extends RecipeProvider
 	private void addStandardSmeltingBlastingRecipe(IItemProvider input, IItemProvider output, float xp, Consumer<IFinishedRecipe> out, String extraPostfix)
 	{
 		addStandardSmeltingBlastingRecipe(input, output, xp, standardSmeltingTime, out, extraPostfix, false);
+	}
+
+	private void addRGBRecipe(Consumer<IFinishedRecipe> out, ResourceLocation recipeName, Ingredient target, String nbtKey)
+	{
+		out.accept(new IFinishedRecipe()
+		{
+
+			@Override
+			public void serialize(JsonObject json)
+			{
+				json.add("target", target.serialize());
+				json.addProperty("key", nbtKey);
+			}
+
+			@Override
+			public ResourceLocation getID()
+			{
+				return recipeName;
+			}
+
+			@Override
+			public IRecipeSerializer<?> getSerializer()
+			{
+				return RecipeSerializers.RGB_SERIALIZER.get();
+			}
+
+			@Nullable
+			@Override
+			public JsonObject getAdvancementJson()
+			{
+				return null;
+			}
+
+			@Nullable
+			@Override
+			public ResourceLocation getAdvancementID()
+			{
+				return null;
+			}
+		});
 	}
 }
