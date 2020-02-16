@@ -81,7 +81,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.state.IProperty;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.FurnaceTileEntity;
@@ -362,14 +361,16 @@ public class IEContent
 		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE,
 				IEProperties.FACING_HORIZONTAL);
 		MetalDevices.toolbox = new GenericTileBlock("toolbox_block", () -> ToolboxTileEntity.TYPE, defaultMetalProperties,
-				null, new IProperty[0]);
+				(Class<? extends BlockItemIE>)null, IEProperties.FACING_HORIZONTAL)
+				.setNotNormalBlock();
 		MetalDevices.capacitorLV = new GenericTileBlock("capacitor_lv", () -> CapacitorLVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorMV = new GenericTileBlock("capacitor_mv", () -> CapacitorMVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorHV = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_creative", () -> CapacitorCreativeTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.barrel = new BarrelBlock("metal_barrel", true);
 		MetalDevices.fluidPump = new GenericTileBlock("fluid_pump", () -> FluidPumpTileEntity.TYPE, defaultMetalProperties,
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
+				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
+				.setNotNormalBlock();
 		MetalDevices.blastFurnacePreheater = new GenericTileBlock("blastfurnace_preheater", () -> BlastFurnacePreheaterTileEntity.TYPE,
 				defaultMetalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		MetalDevices.furnaceHeater = new GenericTileBlock("furnace_heater", () -> FurnaceHeaterTileEntity.TYPE,

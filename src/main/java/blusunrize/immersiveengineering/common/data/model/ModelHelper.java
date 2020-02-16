@@ -321,6 +321,16 @@ public class ModelHelper
 		return create(out, model, retexture, rl("item/connector"), true);
 	}
 
+	public static GeneratedModelFile createFluid(ResourceLocation outName, ResourceLocation stillTexture)
+	{
+		JsonObject ret = new JsonObject();
+		assertTextureExists(stillTexture);
+		JsonObject textures = new JsonObject();
+		textures.addProperty("particle", stillTexture.toString());
+		ret.add("textures", textures);
+		return new GeneratedModelFile(outName, ret);
+	}
+
 	public enum BasicStairsShape
 	{
 		STRAIGHT,

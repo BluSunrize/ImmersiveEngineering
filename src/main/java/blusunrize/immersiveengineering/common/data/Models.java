@@ -171,6 +171,8 @@ public class Models extends ModelGenerator
 	final GeneratedModelFile cushion = ModelHelper.createBasicCube(rl("block/cushion"),
 			locForItemModel(Cloth.cushion));
 
+	final Map<Block, ModelFile> fluidModels = new HashMap<>();
+
 	public Models(DataGenerator gen)
 	{
 		super(gen);
@@ -709,6 +711,15 @@ public class Models extends ModelGenerator
 				rl("item/shield"),
 				true
 		));
+		for(IEFluid f : IEFluid.IE_FLUIDS)
+		{
+			GeneratedModelFile model = ModelHelper.createFluid(
+					rl("block/fluid/"+f.getRegistryName().getPath()),
+					f.getAttributes().getStillTexture()
+			);
+			out.accept(model);
+			fluidModels.put(f.block, model);
+		}
 	}
 
 	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)

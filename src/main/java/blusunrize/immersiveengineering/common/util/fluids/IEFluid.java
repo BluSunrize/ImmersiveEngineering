@@ -61,7 +61,7 @@ public class IEFluid extends FlowingFluid
 	protected IEFluid source;
 	@Nullable
 	protected final Consumer<FluidAttributes.Builder> buildAttributes;
-	protected Block block;
+	public Block block;
 	protected Item bucket;
 
 	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex)

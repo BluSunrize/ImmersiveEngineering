@@ -345,6 +345,7 @@ public class BlockStates extends BlockstateGenerator
 						return models.furnaceHeaterOff;
 				}, IEProperties.FACING_ALL, ImmutableList.of(IEProperties.ACTIVE),
 				ImmutableMap.of(), variantBased);
+		createPump(variantBased);
 		createRotatedBlock(MetalDevices.dynamo, state -> models.kineticDynamo, IEProperties.FACING_HORIZONTAL,
 				ImmutableList.of(), ImmutableMap.of(), variantBased);
 		createBasicBlock(MetalDevices.thermoelectricGen, models.thermoelectricGen, variantBased);
@@ -365,6 +366,22 @@ public class BlockStates extends BlockstateGenerator
 		for(Block b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(new UncheckedModelFile(rl("conveyor"))), variantBased);
 		createHemp(variantBased);
+		for(Block b : models.fluidModels.keySet())
+			createMultistateSingleModel(b, new ConfiguredModel(models.fluidModels.get(b)), variantBased);
+		createRotatedBlock(MetalDevices.toolbox, state -> new ExistingModelFile(rl("block/toolbox.obj")),
+				IEProperties.FACING_HORIZONTAL, ImmutableList.of(),
+				ImmutableMap.of(), variantBased);
+	}
+
+	private void createPump(BiConsumer<Block, IVariantModelGenerator> variantBased)
+	{
+		Builder builder = new Builder(MetalDevices.fluidPump);
+		builder.setForAllWithState(ImmutableMap.of(IEProperties.MULTIBLOCKSLAVE, true),
+				new ConfiguredModel(new ExistingModelFile(rl("block/metal_device/fluid_pump.obj")),
+						0, 0, false, ImmutableMap.of("flip-v", true)));
+		builder.setForAllWithState(ImmutableMap.of(IEProperties.MULTIBLOCKSLAVE, false),
+				new ConfiguredModel(new UncheckedModelFile(rl("smartmodel/conf_sides_hv_metal_device/fluid_pump"))));
+		variantBased.accept(MetalDevices.fluidPump, builder.build());
 	}
 
 	private void createRotatedBlock(Block block, Function<Map<IProperty<?>, Object>, ModelFile> model, IProperty<Direction> facing,

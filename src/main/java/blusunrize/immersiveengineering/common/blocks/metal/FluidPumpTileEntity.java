@@ -66,7 +66,13 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 {
 	public static TileEntityType<FluidPumpTileEntity> TYPE;
 
-	public int[] sideConfig = new int[]{0, -1, -1, -1, -1, -1};
+	public Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
+
+	{
+		for(Direction d : Direction.VALUES)
+			sideConfig.put(d, IOSideConfig.NONE);
+	}
+
 	public FluidTank tank = new FluidTank(4000);
 	public FluxStorage energyStorage = new FluxStorage(8000);
 	public boolean placeCobble = true;
@@ -106,7 +112,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		if(world.getRedstonePowerFromNeighbors(getPos()) > 0||world.getRedstonePowerFromNeighbors(getPos().add(0, 1, 0)) > 0)
 		{
 			for(Direction f : Direction.values())
-				if(sideConfig[f.ordinal()]==0)
+				if(sideConfig.get(f)==IOSideConfig.INPUT)
 				{
 					CapabilityReference<IFluidHandler> input = neighborFluids.get(f);
 					if(input.isPresent())
@@ -173,7 +179,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		closedList.clear();
 		checked.clear();
 		for(Direction f : Direction.values())
-			if(sideConfig[f.ordinal()]==0)
+			if(sideConfig.get(f)==IOSideConfig.INPUT)
 			{
 				openList.add(getPos().offset(f));
 				checkingArea = true;
@@ -231,7 +237,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		int sum = 0;
 		HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<>();
 		for(Direction f : Direction.values())
-			if(sideConfig[f.ordinal()]==1)
+			if(sideConfig.get(f)==IOSideConfig.OUTPUT)
 			{
 				CapabilityReference<IFluidHandler> output = neighborFluids.get(f);
 				if(output.isPresent())
@@ -280,9 +286,9 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		sideConfig = nbt.getIntArray("sideConfig");
-		if(sideConfig==null||sideConfig.length!=6)
-			sideConfig = new int[]{0, -1, -1, -1, -1, -1};
+		int[] sideConfigArray = nbt.getIntArray("sideConfig");
+		for(Direction d : Direction.VALUES)
+			sideConfig.put(d, IOSideConfig.VALUES[sideConfigArray[d.ordinal()]]);
 		if(nbt.contains("placeCobble", NBT.TAG_BYTE))
 			placeCobble = nbt.getBoolean("placeCobble");
 		tank.readFromNBT(nbt.getCompound("tank"));
@@ -294,7 +300,10 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putIntArray("sideConfig", sideConfig);
+		int[] sideConfigArray = new int[6];
+		for(Direction d : Direction.VALUES)
+			sideConfigArray[d.ordinal()] = sideConfig.get(d).ordinal();
+		nbt.putIntArray("sideConfig", sideConfigArray);
 		nbt.putBoolean("placeCobble", placeCobble);
 		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
 		energyStorage.writeToNBT(nbt);
@@ -303,7 +312,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public IOSideConfig getSideConfig(Direction side)
 	{
-		return IOSideConfig.values()[this.sideConfig[side.ordinal()]+1];
+		return sideConfig.get(side);
 	}
 
 	@Override
@@ -311,9 +320,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	{
 		if(side!=Direction.UP&&!isDummy())
 		{
-			sideConfig[side.ordinal()]++;
-			if(sideConfig[side.ordinal()] > 1)
-				sideConfig[side.ordinal()] = -1;
+			sideConfig.put(side, IOSideConfig.next(sideConfig.get(side)));
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);
 			getWorldNonnull().addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
@@ -356,13 +363,13 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&!isDummy()&&mop instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
-			int i = sideConfig[Math.min(sideConfig.length-1, brtr.getFace().ordinal())];
-			int j = sideConfig[Math.min(sideConfig.length-1, brtr.getFace().getOpposite().ordinal())];
+			IOSideConfig i = sideConfig.get(brtr.getFace());
+			IOSideConfig j = sideConfig.get(brtr.getFace().getOpposite());
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i),
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i.getName()),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j)
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j.getName())
 			};
 		}
 		return null;
@@ -414,7 +421,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		@Override
 		public boolean isFluidValid(int tank, @Nonnull FluidStack stack)
 		{
-			if(pump.sideConfig[facing.ordinal()]!=1)
+			if(pump.sideConfig.get(facing)!=IOSideConfig.INPUT)
 				return false;
 			return pump.tank.isFluidValid(tank, stack);
 		}
@@ -422,7 +429,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		@Override
 		public int fill(FluidStack resource, FluidAction action)
 		{
-			if(resource.isEmpty()||pump.sideConfig[facing.ordinal()]!=0)
+			if(resource.isEmpty()||pump.sideConfig.get(facing)!=IOSideConfig.INPUT)
 				return 0;
 			return pump.tank.fill(resource, action);
 		}
@@ -436,7 +443,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		@Override
 		public FluidStack drain(int maxDrain, FluidAction action)
 		{
-			if(pump.sideConfig[facing.ordinal()]!=1)
+			if(pump.sideConfig.get(facing)!=IOSideConfig.OUTPUT)
 				return FluidStack.EMPTY;
 			return pump.tank.drain(maxDrain, action);
 		}
@@ -520,6 +527,6 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public boolean hasOutputConnection(Direction side)
 	{
-		return side!=null&&this.sideConfig[side.ordinal()]==1;
+		return side!=null&&this.sideConfig.get(side)==IOSideConfig.OUTPUT;
 	}
 }

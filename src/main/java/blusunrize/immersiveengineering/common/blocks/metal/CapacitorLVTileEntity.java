@@ -198,9 +198,9 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 			IOSideConfig opposite = sideConfig.get(bmop.getFace().getOpposite());
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+here),
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+here.getName()),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+opposite)
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+opposite.getName())
 			};
 		}
 		return null;

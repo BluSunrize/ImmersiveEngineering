@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
@@ -23,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -37,13 +39,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.List;
 
-public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalTile, IBlockBounds, IIEInventory, IInteractionObjectIE, ITileDrop, IPlayerInteraction
+public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IBlockBounds, IIEInventory,
+		IInteractionObjectIE, ITileDrop, IPlayerInteraction
 {
 	public static TileEntityType<ToolboxTileEntity> TYPE;
 
 	NonNullList<ItemStack> inventory = NonNullList.withSize(ToolboxItem.SLOT_COUNT, ItemStack.EMPTY);
 	public ITextComponent name;
-	private Direction facing = Direction.NORTH;
 	private ListNBT enchantments;
 
 	public ToolboxTileEntity()
@@ -54,7 +56,6 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		if(nbt.contains("name", NBT.TAG_STRING))
 			this.name = ITextComponent.Serializer.fromJson(nbt.getString("name"));
 		if(nbt.contains("enchantments", NBT.TAG_LIST))
@@ -66,7 +67,6 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putInt("facing", facing.ordinal());
 		if(this.name!=null)
 			nbt.putString("name", ITextComponent.Serializer.toJson(this.name));
 		if(this.enchantments!=null)
@@ -174,15 +174,9 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return facing;
-	}
-
-	@Override
-	public void setFacing(Direction facing)
-	{
-		this.facing = facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
@@ -215,6 +209,6 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	@Override
 	public float[] getBlockBounds()
 	{
-		return facing.getAxis()==Axis.Z?boundsZ: boundsX;
+		return getFacing().getAxis()==Axis.Z?boundsZ: boundsX;
 	}
 }
