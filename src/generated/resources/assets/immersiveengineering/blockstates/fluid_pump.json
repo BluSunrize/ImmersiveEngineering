@@ -1,0 +1,40 @@
+{
+  "variants": {
+    "facing=north,multiblockslave=false": {
+      "model": "immersiveengineering:smartmodel/conf_sides_hv_metal_device/fluid_pump"
+    },
+    "facing=north,multiblockslave=true": {
+      "model": "immersiveengineering:block/metal_device/fluid_pump.obj",
+      "custom": {
+        "flip-v": true
+      }
+    },
+    "facing=south,multiblockslave=false": {
+      "model": "immersiveengineering:smartmodel/conf_sides_hv_metal_device/fluid_pump"
+    },
+    "facing=south,multiblockslave=true": {
+      "model": "immersiveengineering:block/metal_device/fluid_pump.obj",
+      "custom": {
+        "flip-v": true
+      }
+    },
+    "facing=west,multiblockslave=false": {
+      "model": "immersiveengineering:smartmodel/conf_sides_hv_metal_device/fluid_pump"
+    },
+    "facing=west,multiblockslave=true": {
+      "model": "immersiveengineering:block/metal_device/fluid_pump.obj",
+      "custom": {
+        "flip-v": true
+      }
+    },
+    "facing=east,multiblockslave=false": {
+      "model": "immersiveengineering:smartmodel/conf_sides_hv_metal_device/fluid_pump"
+    },
+    "facing=east,multiblockslave=true": {
+      "model": "immersiveengineering:block/metal_device/fluid_pump.obj",
+      "custom": {
+        "flip-v": true
+      }
+    }
+  }
+}
