@@ -82,38 +82,10 @@ public class DynamicModelLoader
 	@SubscribeEvent
 	public static void textureStitch(TextureStitchEvent.Pre evt)
 	{
-		IELogger.logger.debug("Stitching textures!");
 		if(evt.getMap()!=mc().getTextureMap())
 			return;
-		for(ResourceLocation rl : manualTextureRequests)
-			evt.addSprite(rl);
-		for(ResourceLocation rl : requestedTextures)
-			evt.addSprite(rl);
-	}
-
-	private static Class<? extends IUnbakedModel> VANILLA_MODEL_WRAPPER;
-	private static Field BASE_MODEL;
-
-	static
-	{
-		try
-		{
-			VANILLA_MODEL_WRAPPER = (Class<? extends IUnbakedModel>)Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaModelWrapper");
-			BASE_MODEL = VANILLA_MODEL_WRAPPER.getDeclaredField("model");
-			BASE_MODEL.setAccessible(true);
-		} catch(ClassNotFoundException|NoSuchFieldException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public static void modelRegistry(ModelRegistryEvent evt)
-	{
+		IELogger.logger.debug("Loading dynamic models");
 		final IResourceManager manager = Minecraft.getInstance().getResourceManager();
-		requestedTextures.clear();
-		unbakedModels.clear();
 		try
 		{
 			for(ModelWithTransforms reqModel : requestedModels.keySet())
@@ -147,6 +119,34 @@ public class DynamicModelLoader
 			//TODO mostly for dev
 			System.exit(1);
 		}
+		IELogger.logger.debug("Stitching textures!");
+		for(ResourceLocation rl : manualTextureRequests)
+			evt.addSprite(rl);
+		for(ResourceLocation rl : requestedTextures)
+			evt.addSprite(rl);
+	}
+
+	private static Class<? extends IUnbakedModel> VANILLA_MODEL_WRAPPER;
+	private static Field BASE_MODEL;
+
+	static
+	{
+		try
+		{
+			VANILLA_MODEL_WRAPPER = (Class<? extends IUnbakedModel>)Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaModelWrapper");
+			BASE_MODEL = VANILLA_MODEL_WRAPPER.getDeclaredField("model");
+			BASE_MODEL.setAccessible(true);
+		} catch(ClassNotFoundException|NoSuchFieldException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOW)
+	public static void modelRegistry(ModelRegistryEvent evt)
+	{
+		requestedTextures.clear();
+		unbakedModels.clear();
 	}
 
 	private static IUnbakedModel getVanillaModel(ResourceLocation loc)
