@@ -59,7 +59,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IDirectiona
 			if(this.redstone)
 			{
 				BlockPos target = pos.offset(facing);
-				RotationUtil.rotateBlock(this.world, target, invert?facing: facing.getOpposite());
+				RotationUtil.rotateBlock(this.world, target);
 			}
 		}
 	}

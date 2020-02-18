@@ -41,7 +41,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
@@ -110,7 +109,7 @@ public class HammerItem extends IEBaseItem implements ITool
 					return ActionResultType.FAIL;
 			}
 			else if(!(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction))
-				if(RotationUtil.rotateBlock(world, pos, side))
+				if(RotationUtil.rotateBlock(world, pos))
 					return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
@@ -204,12 +203,6 @@ public class HammerItem extends IEBaseItem implements ITool
 	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
 	{
 		return enchantment==Enchantments.EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
-	}
-
-	@Override
-	public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player)
-	{
-		return true;
 	}
 
 	@Override

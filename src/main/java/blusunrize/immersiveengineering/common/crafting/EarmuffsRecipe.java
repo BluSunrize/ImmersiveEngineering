@@ -22,6 +22,7 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -181,5 +182,11 @@ public class EarmuffsRecipe implements ICraftingRecipe
 	public IRecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.EARMUFF_SERIALIZER.get();
+	}
+
+	@Override
+	public NonNullList<Ingredient> getIngredients()
+	{
+		return NonNullList.withSize(1, Ingredient.fromItems(Misc.earmuffs));
 	}
 }
