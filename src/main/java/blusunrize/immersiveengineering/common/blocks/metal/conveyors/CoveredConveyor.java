@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.Lists;
@@ -111,7 +112,8 @@ public class CoveredConveyor extends BasicConveyor
 		return key;
 	}
 
-	static final ItemStack defaultCover = new ItemStack(Blocks.GLASS);
+	static final ItemStack defaultCover = new ItemStack(MetalDecoration.steelScaffolding.get(
+			MetalScaffoldingType.STANDARD));
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
