@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
@@ -33,10 +32,10 @@ public class WireCollisionData
 	{
 		if(!conn.isInternal())
 		{
-			IELogger.logger.info("Adding block data for {}", conn);
+			WireLogger.logger.info("Adding block data for {}", conn);
 			if(!conn.blockDataGenerated)
 			{
-				IELogger.logger.info("Raytracing for addition of {}", conn);
+				WireLogger.logger.info("Raytracing for addition of {}", conn);
 				if((net.getLocalNet(conn.getEndA())!=net.getLocalNet(conn.getEndB()))) throw new AssertionError();
 				ApiUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()), (p) ->
 								blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, true))
@@ -50,10 +49,10 @@ public class WireCollisionData
 
 	public void removeConnection(Connection conn)
 	{
-		IELogger.logger.info("Removing block data for {}", conn);
+		WireLogger.logger.info("Removing block data for {}", conn);
 		if(conn.blockDataGenerated)
 		{
-			IELogger.info("Raytracing for removal of {}", conn);
+			WireLogger.logger.info("Raytracing for removal of {}", conn);
 			ApiUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()),
 					(p) -> blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn),
 					(p) -> blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn)

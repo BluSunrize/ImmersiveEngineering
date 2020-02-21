@@ -97,7 +97,7 @@ public class Connection
 	public void generateCatenaryData(World world)
 	{
 		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(endA);
-		Preconditions.checkState(net==GlobalWireNetwork.getNetwork(world).getLocalNet(endB));
+		Preconditions.checkState(net==GlobalWireNetwork.getNetwork(world).getLocalNet(endB), endA+" and "+endB+" are in different local nets?");
 		Vec3d vecA = ApiUtils.getVecForIICAt(net, endA, this, false);
 		Vec3d vecB = ApiUtils.getVecForIICAt(net, endB, this, true);
 		generateCatenaryData(vecA, vecB);
@@ -167,8 +167,7 @@ public class Connection
 	//pos is relative to 1. 0 is the end corresponding to from, 1 is the other end.
 	public Vec3d getPoint(double pos, ConnectionPoint from)
 	{
-		if(endB.equals(from))
-			pos = 1-pos;
+		pos = transformPosition(pos, from);
 		Vec3d basic = catData.getPoint(pos);
 		Vec3d add = Vec3d.ZERO;
 		if(endB.equals(from))
@@ -178,12 +177,19 @@ public class Connection
 
 	public double getSlope(double pos, ConnectionPoint from)
 	{
-		if(endB.equals(from))
-			pos = 1-pos;
+		pos = transformPosition(pos, from);
 		double slope = catData.getSlope(pos);
 		if(endB.equals(from))
 			slope *= -1;
 		return slope;
+	}
+
+	public double transformPosition(double pos, ConnectionPoint from)
+	{
+		if(endB.equals(from))
+			return 1-pos;
+		else
+			return pos;
 	}
 
 	public ConnectionPoint getEndFor(BlockPos pos)

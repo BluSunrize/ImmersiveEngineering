@@ -93,7 +93,7 @@ public class SkylineHookEntity extends Entity
 		Vec3d motion = getMotion();
 		float f1 = MathHelper.sqrt(motion.x*motion.x+motion.z*motion.z);
 		this.rotationYaw = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
-		this.rotationPitch = (float)(Math.atan2((double)f1, motion.y)*180.0D/Math.PI)-90.0F;
+		this.rotationPitch = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
 		while(this.rotationPitch-this.prevRotationPitch < -180.0F)
 			this.prevRotationPitch -= 360.0F;
 		while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
@@ -111,15 +111,15 @@ public class SkylineHookEntity extends Entity
 		this.horizontalSpeed = speed;
 		this.connection = c;
 		this.start = start;
-		Vec3d pos = connection.getPoint(this.linePos, start);
+		Vec3d pos = connection.getPoint(this.linePos, start).add(new Vec3d(start.getPosition()));
 		this.setLocationAndAngles(pos.x, pos.y, pos.z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(pos.x, pos.y, pos.z);
 		if(!connection.catData.isVertical())
 			this.angle = Math.atan2(connection.catData.getDeltaZ(), connection.catData.getDeltaX());
 		ignoreCollisions.clear();
 		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(start);
-		IImmersiveConnectable iicStart = ApiUtils.toIIC(net.getConnector(start), world, false);
-		IImmersiveConnectable iicEnd = ApiUtils.toIIC(net.getConnector(c.getOtherEnd(start)), world, false);
+		IImmersiveConnectable iicStart = net.getConnector(start);
+		IImmersiveConnectable iicEnd = net.getConnector(c.getOtherEnd(start));
 		if(iicStart!=null&&iicEnd!=null)
 		{
 			ignoreCollisions.addAll(iicStart.getIgnored(iicEnd));
@@ -162,7 +162,6 @@ public class SkylineHookEntity extends Entity
 			sendUpdatePacketTo(player);
 		boolean moved = false;
 		double inLineDirection;
-		double horSpeedToUse = horizontalSpeed;
 		if(connection.catData.isVertical())
 			inLineDirection = -player.moveForward*Math.sin(Math.toRadians(player.rotationPitch))
 					*Math.signum(connection.catData.getDeltaY());
@@ -176,7 +175,7 @@ public class SkylineHookEntity extends Entity
 		}
 		if(inLineDirection!=0)
 		{
-			double slope = connection.catData.getSlope(linePos);
+			double slope = connection.getSlope(linePos, start);
 			double slopeInDirection = Math.signum(inLineDirection)*slope;
 			double speed = MOVE_SPEED_VERT;
 			double slopeFactor = 1;
@@ -202,7 +201,8 @@ public class SkylineHookEntity extends Entity
 				deltaVHor = -GRAVITY*Math.signum(connection.catData.getDeltaY());
 			else
 			{
-				double param = (linePos*connection.catData.getHorLength()-connection.catData.getOffsetX())/connection.catData.getScale();
+				final double realLinePos = connection.transformPosition(linePos, start);
+				double param = (realLinePos*connection.catData.getHorLength()-connection.catData.getOffsetX())/connection.catData.getScale();
 				double pos = Math.exp(param);
 				double neg = 1/pos;
 				double cosh = (pos+neg)/2;
@@ -211,6 +211,8 @@ public class SkylineHookEntity extends Entity
 				//after plugging in the correct function
 				double vSquared = horizontalSpeed*horizontalSpeed*cosh*cosh*20*20;//cosh^2=1+sinh^2 and horSpeed*sinh=vertSpeed. 20 to convert from blocks/tick to block/s
 				deltaVHor = -sinh/(cosh*cosh)*(GRAVITY+vSquared/(connection.catData.getScale()*cosh));
+				if(connection.getEndB().equals(start))
+					deltaVHor *= -1;
 			}
 			horizontalSpeed += deltaVHor/(20*20);// First 20 is because this happens in one tick rather than one second, second 20 is to convert units
 		}
@@ -222,10 +224,11 @@ public class SkylineHookEntity extends Entity
 			if(totSpeed > max)
 				horizontalSpeed *= max/totSpeed;
 		}
+		double horSpeedToUse = horizontalSpeed;
 		if(horizontalSpeed > 0)
 		{
 			double distToEnd = connection.catData.getHorLength()*(1-linePos);
-			if (horizontalSpeed>distToEnd)
+			if(horizontalSpeed > distToEnd)
 			{
 				switchingAtPos = connection.getOtherEnd(start);
 				horSpeedToUse = distToEnd;
@@ -234,7 +237,7 @@ public class SkylineHookEntity extends Entity
 		else
 		{
 			double distToStart = -connection.catData.getHorLength()*linePos;
-			if (horizontalSpeed<distToStart)
+			if(horizontalSpeed < distToStart)
 			{
 				switchingAtPos = start;
 				horSpeedToUse = distToStart;
@@ -242,7 +245,7 @@ public class SkylineHookEntity extends Entity
 		}
 		horizontalSpeed *= friction;
 		linePos += horSpeedToUse/connection.catData.getHorLength();
-		Vec3d pos = connection.getPoint(linePos, start);
+		Vec3d pos = connection.getPoint(linePos, start).add(new Vec3d(start.getPosition()));
 		setMotion(pos.x-posX, pos.z-posZ, pos.y-posY);
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
 		{
@@ -257,7 +260,7 @@ public class SkylineHookEntity extends Entity
 		Vec3d motion = getMotion();
 		float f1 = MathHelper.sqrt(motion.x*motion.x+motion.z*motion.z);
 		this.rotationYaw = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
-		this.rotationPitch = (float)(Math.atan2((double)f1, motion.y)*180.0D/Math.PI)-90.0F;
+		this.rotationPitch = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
 
 		while(this.rotationPitch-this.prevRotationPitch < -180.0F)
 			this.prevRotationPitch -= 360.0F;
@@ -511,10 +514,11 @@ public class SkylineHookEntity extends Entity
 	protected void removePassenger(Entity passenger)
 	{
 		super.removePassenger(passenger);
-		if (!world.isRemote)
+		if(!world.isRemote)
 			ApiUtils.addFutureServerTask(world, () -> handleDismount(passenger));
-		//TODO else
-		//	ApiUtils.callFromOtherThread(Minecraft.getInstance()::addScheduledTask, () -> handleDismount(passenger));
+		else
+			//TODO is this still needed?
+			ApiUtils.addFutureServerTask(world, () -> handleDismount(passenger), true);
 	}
 
 	@Override

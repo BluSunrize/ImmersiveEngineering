@@ -504,10 +504,10 @@ public class IEContent
 				IEItems.Misc.faradaySuit.put(slot, new ItemFaradaySuit(slot));
 		IEItems.Misc.fluorescentTube = new FluorescentTubeItem();
 		IEItems.Misc.shield = new IEShieldItem();
+		IEItems.Misc.skyhook = new SkyhookItem();
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
-		itemSkyhook = new ItemSkyhook();
 		itemMaintenanceKit = new ItemMaintenanceKit();
 
 		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky", "drillbreak")

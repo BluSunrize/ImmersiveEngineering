@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
@@ -120,7 +119,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			Collection<Connection> conns = local.getConnections(cp);
 			if(conns==null)
 			{
-				IELogger.logger.debug("Aborting and returning empty data: null connections at {}", cp);
+				WireLogger.logger.debug("Aborting and returning empty data: null connections at {}", cp);
 				return new ConnectionModelData(ImmutableSet.of(), pos);
 			}
 			//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
@@ -135,7 +134,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 				}
 			}
 		}
-		IELogger.logger.info("Model data has connections {}", ret);
+		WireLogger.logger.info("Model data has connections {}", ret);
 		return new ConnectionModelData(ret, pos);
 	}
 
@@ -151,7 +150,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public void onChunkUnloaded()
 	{
 		super.onChunkUnloaded();
-		IELogger.logger.info("Unloading connector at {}", pos);
+		WireLogger.logger.info("Unloading connector at {}", pos);
 		globalNet.onConnectorUnload(pos, this);
 	}
 
@@ -159,7 +158,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public void onLoad()
 	{
 		super.onLoad();
-		IELogger.info("Loading connector at {}", pos);
+		WireLogger.logger.info("Loading connector at {}", pos);
 		globalNet.onConnectorLoad(this, world);
 	}
 
@@ -167,7 +166,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public void remove()
 	{
 		super.remove();
-		IELogger.logger.info("Removing connector at {}", pos);
+		WireLogger.logger.info("Removing connector at {}", pos);
 		globalNet.removeConnector(this);
 	}
 

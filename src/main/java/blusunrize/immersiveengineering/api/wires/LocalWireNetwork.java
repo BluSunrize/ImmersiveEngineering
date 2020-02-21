@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.wires;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -63,7 +62,7 @@ public class LocalWireNetwork implements IWorldTickable
 			if(connectors.containsKey(wire.getEndA().getPosition())&&connectors.containsKey(wire.getEndB().getPosition()))
 				addConnection(wire);
 			else
-				IELogger.logger.error("Wire from {} to {}, but connector points are {}", wire.getEndA(), wire.getEndB(), connectors);
+				WireLogger.logger.error("Wire from {} to {}, but connector points are {}", wire.getEndA(), wire.getEndB(), connectors);
 		}
 	}
 
@@ -159,7 +158,7 @@ public class LocalWireNetwork implements IWorldTickable
 			handlerUserCount.put(loc, handlerUserCount.getInt(loc)+1);
 			if(!handlers.containsKey(loc))
 				handlers.put(loc, LocalNetworkHandler.createHandler(loc, this));
-			IELogger.logger.info("Increasing {} to {}", loc, handlerUserCount.getInt(loc));
+			WireLogger.logger.info("Increasing {} to {}", loc, handlerUserCount.getInt(loc));
 		}
 	}
 
@@ -185,7 +184,7 @@ public class LocalWireNetwork implements IWorldTickable
 		{
 			result.handlers.merge(loc.getKey(), loc.getValue(), LocalNetworkHandler::merge);
 			result.handlerUserCount.merge(loc.getKey(), handlerUserCount.getInt(loc.getKey()), (a, b) -> a+b);
-			IELogger.logger.info("Merged {} to {}", loc.getKey(), result.handlers.get(loc.getKey()));
+			WireLogger.logger.info("Merged {} to {}", loc.getKey(), result.handlers.get(loc.getKey()));
 		}
 		for(Entry<ResourceLocation, LocalNetworkHandler> loc : result.handlers.entrySet())
 			loc.getValue().setLocalNet(result);
@@ -202,9 +201,9 @@ public class LocalWireNetwork implements IWorldTickable
 		if(connsB!=null)
 			successB = connsB.removeIf(c::hasSameConnectors);
 		if(!successA)
-			IELogger.logger.info("Failed to remove {} from {} (A)", c, c.getEndA());
+			WireLogger.logger.info("Failed to remove {} from {} (A)", c, c.getEndA());
 		if(!successB)
-			IELogger.logger.info("Failed to remove {} from {} (B)", c, c.getEndB());
+			WireLogger.logger.info("Failed to remove {} from {} (B)", c, c.getEndB());
 		for(LocalNetworkHandler h : handlers.values())
 			h.onConnectionRemoved(c);
 		removeHandlersFor(c.type);
@@ -217,9 +216,9 @@ public class LocalWireNetwork implements IWorldTickable
 		{
 			for(ConnectionPoint point : getConnectionPoints())
 				if(point.getPosition().equals(p))
-					IELogger.logger.info("Cancelling, but connections {} at {} still exist!", connections.get(point),
+					WireLogger.logger.info("Cancelling, but connections {} at {} still exist!", connections.get(point),
 							point);
-			IELogger.logger.info("Cancelled");
+			WireLogger.logger.info("Cancelled");
 			return;
 		}
 		for(ConnectionPoint point : iic.getConnectionPoints())
@@ -263,10 +262,10 @@ public class LocalWireNetwork implements IWorldTickable
 			Preconditions.checkState(handlers.containsKey(loc), "Expected to find handler for "+loc+"(provided by "+iic+")");
 			int remaining = handlerUserCount.getInt(loc)-1;
 			handlerUserCount.put(loc, remaining);
-			IELogger.logger.info("Decreasing {} to {}", loc, remaining);
+			WireLogger.logger.info("Decreasing {} to {}", loc, remaining);
 			if(remaining <= 0)
 			{
-				IELogger.logger.info("Removing: {}", loc);
+				WireLogger.logger.info("Removing: {}", loc);
 				handlers.remove(loc);
 				handlerUserCount.remove(loc);
 			}
@@ -323,7 +322,7 @@ public class LocalWireNetwork implements IWorldTickable
 			}
 			ret.add(newNet);
 		}
-		IELogger.info("Split net! Now {} nets: {}", ret.size(), ret);
+		WireLogger.logger.info("Split net! Now {} nets: {}", ret.size(), ret);
 		return ret;
 	}
 

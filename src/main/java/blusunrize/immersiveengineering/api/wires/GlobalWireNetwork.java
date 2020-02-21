@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.wires.WireSyncManager;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -63,7 +62,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		LocalWireNetwork joined;
 		if(netA==null&&netB==null)
 		{
-			IELogger.info("null-null");
+			WireLogger.logger.info("null-null");
 			joined = new LocalWireNetwork(this);
 			toSet.add(posA);
 			toSet.add(posB);
@@ -72,35 +71,35 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		}
 		else if(netA==null)
 		{
-			IELogger.info("null-non");
+			WireLogger.logger.info("null-non");
 			toSet.add(posA);
 			joined = netB;
 			joined.loadConnector(posA, iicA);
 		}
 		else if(netB==null)
 		{
-			IELogger.info("non-null");
+			WireLogger.logger.info("non-null");
 			toSet.add(posB);
 			joined = netA;
 			joined.loadConnector(posB, iicB);
 		}
 		else if(netA!=netB)
 		{
-			IELogger.logger.info("non-non-different: {} and {}", netA, netB);
+			WireLogger.logger.info("non-non-different: {} and {}", netA, netB);
 			joined = netA.merge(netB);
 			toSet = joined.getConnectionPoints();
 		}
 		else
 		{
-			IELogger.info("non-non-same");
+			WireLogger.logger.info("non-non-same");
 			joined = netA;
 		}
-		IELogger.logger.info("Result: {}, to set: {}", joined, toSet);
+		WireLogger.logger.info("Result: {}, to set: {}", joined, toSet);
 		for(ConnectionPoint p : toSet)
 			localNets.put(p, joined);
 		joined.addConnection(conn);
 		WireSyncManager.onConnectionAdded(conn, world);
-		IELogger.logger.info("Validating after adding connection...");
+		WireLogger.logger.info("Validating after adding connection...");
 		validate();
 	}
 
@@ -120,7 +119,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			handler.accept(conn);
 			removeConnection(conn);
 		}
-		IELogger.logger.info("Validating after removing all connections at {}...", pos);
+		WireLogger.logger.info("Validating after removing all connections at {}...", pos);
 		validate();
 	}
 
@@ -163,7 +162,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		{
 			CompoundNBT subnet = (CompoundNBT)b;
 			LocalWireNetwork localNet = new LocalWireNetwork(subnet, this);
-			IELogger.logger.info("Loading net {}", localNet);
+			WireLogger.logger.info("Loading net {}", localNet);
 			for(ConnectionPoint p : localNet.getConnectionPoints())
 				localNets.put(p, localNet);
 		}
@@ -207,20 +206,20 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	public void removeConnector(IImmersiveConnectable iic)
 	{
-		IELogger.logger.info("Removing {}", iic);
+		WireLogger.logger.info("Removing {}", iic);
 		for(ConnectionPoint c : iic.getConnectionPoints())
 		{
-			IELogger.logger.info("Sub-point {}", c);
+			WireLogger.logger.info("Sub-point {}", c);
 			LocalWireNetwork local = getNullableLocalNet(c);
 			if(local!=null)
 			{
-				IELogger.logger.info("Removing");
+				WireLogger.logger.info("Removing");
 				local.removeConnector(c.getPosition());
 				localNets.remove(c);
 				splitNet(local);
 			}
 		}
-		IELogger.logger.info("Validating after removal...");
+		WireLogger.logger.info("Validating after removal...");
 		validate();
 	}
 
@@ -256,7 +255,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 							c.generateCatenaryData(w);
 							if(!w.isRemote)
 							{
-								IELogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
+								WireLogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
 								collisionData.addConnection(c);
 							}
 						}
@@ -284,7 +283,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			if(iic instanceof TileEntity)
 				((TileEntity)iic).requestModelDataUpdate();
 		}
-		IELogger.logger.info("Validating after loading {} at {}...", iic, iic.getConnectionPoints());
+		WireLogger.logger.info("Validating after loading {} at {}...", iic, iic.getConnectionPoints());
 		validate();
 	}
 
@@ -299,9 +298,9 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		}
 		if(!world.isRemote)
 			for(ConnectionPoint cp : iic.getConnectionPoints())
-			for(Connection c : getLocalNet(cp).getConnections(cp))
-				collisionData.removeConnection(c);
-		IELogger.logger.info("Validating after unload...");
+				for(Connection c : getLocalNet(cp).getConnections(cp))
+					collisionData.removeConnection(c);
+		WireLogger.logger.info("Validating after unload...");
 		validate();
 	}
 
@@ -318,7 +317,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	{
 		if(world.isRemote||true)
 		{
-			IELogger.info("Skipping validation!");
+			WireLogger.logger.info("Skipping validation!");
 			return;
 		}
 		localNets.values().stream().distinct().forEach(
@@ -329,15 +328,15 @@ public class GlobalWireNetwork implements ITickableTileEntity
 						for(ResourceLocation rl : local.getConnector(cp).getRequestedHandlers())
 							handlers.put(rl, handlers.getInt(rl)+1);
 						if(localNets.get(cp)!=local)
-							IELogger.logger.warn("{} has net {}, but is in net {}", cp, localNets.get(cp), local);
+							WireLogger.logger.warn("{} has net {}, but is in net {}", cp, localNets.get(cp), local);
 						else
 							for(Connection c : local.getConnections(cp))
 							{
 								if(localNets.get(c.getOtherEnd(cp))!=local)
-									IELogger.logger.warn("{} is connected to {}, but nets are {} and {}", cp,
+									WireLogger.logger.warn("{} is connected to {}, but nets are {} and {}", cp,
 											c.getOtherEnd(cp), localNets.get(c.getOtherEnd(cp)), local);
 								else if(!local.getConnections(c.getOtherEnd(cp)).contains(c))
-									IELogger.logger.warn("Connection {} from {} to {} is a diode!", c, cp,
+									WireLogger.logger.warn("Connection {} from {} to {} is a diode!", c, cp,
 											c.getOtherEnd(cp));
 								if(c.isPositiveEnd(cp))
 									for(ResourceLocation rl : c.type.getRequestedHandlers())
@@ -350,11 +349,11 @@ public class GlobalWireNetwork implements ITickableTileEntity
 							IImmersiveConnectable inNet = local.getConnector(p);
 							TileEntity inWorld = world.getTileEntity(p);
 							if(inNet!=inWorld)
-								IELogger.logger.warn("Connector at {}: {} in Net, {} in World (Net is {})", p, inNet, inWorld, local);
+								WireLogger.logger.warn("Connector at {}: {} in Net, {} in World (Net is {})", p, inNet, inWorld, local);
 						}
 				}
 		);
-		IELogger.logger.info("Validated!");
+		WireLogger.logger.info("Validated!");
 	}
 
 	public WireCollisionData getCollisionData()

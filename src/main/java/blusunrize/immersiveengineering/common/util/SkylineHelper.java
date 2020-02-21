@@ -56,8 +56,8 @@ public class SkylineHelper
 			ConnectionPoint cpB = connection.getEndB();
 			IImmersiveConnectable iicB = ApiUtils.toIIC(cpB, player.world);
 			IImmersiveConnectable iicA = ApiUtils.toIIC(cpA, player.world);
-			Vec3d vStart = new Vec3d(cpB.getPosition());
-			Vec3d vEnd = new Vec3d(cpA.getPosition());
+			Vec3d vStart = new Vec3d(cpA.getPosition());
+			Vec3d vEnd = new Vec3d(cpB.getPosition());
 
 			if(iicB!=null)
 				vStart = Utils.addVectors(vStart, iicB.getConnectionOffset(connection, cpB));
@@ -101,6 +101,11 @@ public class SkylineHelper
 					data.hook = hook;
 				});
 				player.startRiding(hook);
+				IELogger.logger.debug("Started riding");
+			}
+			else
+			{
+				IELogger.logger.debug("Invalid pos");
 			}
 		}
 	}
@@ -154,13 +159,10 @@ public class SkylineHelper
 					}
 				}
 
-				VoxelShape voxelshape3;
 				while(true)
 				{
 					if(!it.hasNext())
-					{
 						return false;
-					}
 
 					int currX = it.getX();
 					int currY = it.getY();
@@ -176,12 +178,15 @@ public class SkylineHelper
 							currPos.setPos(currX, currY, currZ);
 							BlockState blockstate = ichunk.getBlockState(currPos);
 							if((numBounderies!=1||blockstate.isCollisionShapeLargerThanFullBlock())&&
-									(numBounderies!=2||blockstate.getBlock()==Blocks.MOVING_PISTON))
+									(numBounderies!=2||blockstate.getBlock()==Blocks.MOVING_PISTON)&&
+									!ignored.contains(currPos)
+							)
 							{
 								VoxelShape blockShape = blockstate.getCollisionShape(w, currPos, selectionCtx);
-								voxelshape3 = blockShape.withOffset((double)currX, (double)currY, (double)currZ);
-								if(VoxelShapes.compare(searchShape, voxelshape3, IBooleanFunction.AND))
+								VoxelShape blockShapeWithOffset = blockShape.withOffset(currX, currY, currZ);
+								if(VoxelShapes.compare(searchShape, blockShapeWithOffset, IBooleanFunction.AND))
 								{
+									add.accept(blockShapeWithOffset);
 									break;
 								}
 							}
@@ -189,7 +194,6 @@ public class SkylineHelper
 					}
 				}
 
-				add.accept(voxelshape3);
 				return true;
 			}
 		}, false)

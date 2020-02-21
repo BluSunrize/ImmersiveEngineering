@@ -9,11 +9,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.wires.Connection;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
-import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.api.wires.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -73,13 +69,13 @@ public class MessageWireSync implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		context.get().enqueueWork(() -> {
-			IELogger.logger.debug("Processing sync for connection from {} to {}, type {}, adding {}",
+			WireLogger.logger.debug("Processing sync for connection from {} to {}, type {}, adding {}",
 					start, end, type, added);
 			PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 			World w = player.world;
 			IChunk startChunk = w.getChunk(start.getPosition().getX() >> 4, start.getPosition().getZ() >> 4, ChunkStatus.FULL, false);
 			if(startChunk==null)
-				IELogger.logger.debug("Start chunk is null");
+				WireLogger.logger.debug("Start chunk is null");
 
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
 			if(added)

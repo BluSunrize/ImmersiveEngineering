@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
+import blusunrize.immersiveengineering.api.wires.WireLogger;
 import blusunrize.immersiveengineering.common.network.MessageWireSync;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -63,7 +63,7 @@ public class WireSyncManager
 		ServerChunkProvider chunkProvider = world.getChunkProvider();
 		Stream<ServerPlayerEntity> watching = chunkProvider.chunkManager.getTrackingPlayers(new ChunkPos(x >> 4, z >> 4), false);
 		watching.forEach(e -> {
-			IELogger.logger.debug("Watching player for {}, {}: {}", x, z, e);
+			WireLogger.logger.debug("Watching player for {}, {}: {}", x, z, e);
 			receivers.add(e);
 		});
 	}
