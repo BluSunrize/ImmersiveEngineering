@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ci",
+    "c ",
+    "ci"
+  ],
+  "key": {
+    "c": {
+      "item": "immersiveengineering:conveyor_basic"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:conveyor_vertical",
+    "count": 3
+  }
+}

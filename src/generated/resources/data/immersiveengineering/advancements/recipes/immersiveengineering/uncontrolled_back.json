@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:uncontrolled_back"
+    ]
+  },
+  "criteria": {
+    "has_conveyor": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:conveyor_uncontrolled"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:uncontrolled_back"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_conveyor",
+      "has_the_recipe"
+    ]
+  ]
+}

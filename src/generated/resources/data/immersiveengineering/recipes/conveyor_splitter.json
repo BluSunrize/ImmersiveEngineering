@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "cic",
+    " c "
+  ],
+  "key": {
+    "c": {
+      "item": "immersiveengineering:conveyor_basic"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:conveyor_splitter",
+    "count": 3
+  }
+}
