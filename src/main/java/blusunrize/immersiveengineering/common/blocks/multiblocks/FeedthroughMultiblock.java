@@ -13,13 +13,16 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -36,6 +39,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,7 +49,7 @@ public class FeedthroughMultiblock implements IMultiblock
 {
 	private static final ITextComponent ARBITRARY_SOLID = new TranslationTextComponent("tile.immersiveengineering.arb_solid.name");
 	public static FeedthroughMultiblock instance = new FeedthroughMultiblock();
-	static List<BlockInfo> structure;
+	static List<BlockInfo> structure = new ArrayList<>();
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -65,18 +69,17 @@ public class FeedthroughMultiblock implements IMultiblock
 	@OnlyIn(Dist.CLIENT)
 	public void renderFormedStructure()
 	{
-		//TODO
-		//if(renderStack==null||renderStack.isEmpty())
-		//	renderStack = new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.FEEDTHROUGH.getMeta());
+		if(renderStack==null||renderStack.isEmpty())
+			renderStack = new ItemStack(Connectors.feedthrough);
 
-		//GlStateManager.translate(.5, .5, 1.5);
-		//GlStateManager.rotate(-45, 0, 1, 0);
-		//GlStateManager.rotate(-30, 1, 0, 0);
-		//GlStateManager.scale(1.75, 1.75, 1.75);
+		GlStateManager.translated(.5, .5, 1.5);
+		GlStateManager.rotated(-45, 0, 1, 0);
+		GlStateManager.rotated(-30, 1, 0, 0);
+		GlStateManager.scaled(1.75, 1.75, 1.75);
 
-		//GlStateManager.disableCull();
-		//ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
-		//GlStateManager.enableCull();
+		GlStateManager.disableCull();
+		ClientUtils.mc().getItemRenderer().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
+		GlStateManager.enableCull();
 	}
 
 	@Override
