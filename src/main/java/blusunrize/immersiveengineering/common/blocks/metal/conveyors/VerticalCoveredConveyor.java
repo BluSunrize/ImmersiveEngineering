@@ -28,6 +28,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -40,11 +41,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+
 /**
  * @author BluSunrize - 20.08.2016
  */
 public class VerticalCoveredConveyor extends VerticalConveyor
 {
+	public static final ResourceLocation NAME = new ResourceLocation(MODID, "verticalcovered");
 	public ItemStack cover = ItemStack.EMPTY;
 
 	public VerticalCoveredConveyor(TileEntity tile)

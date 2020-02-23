@@ -23,11 +23,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+
 /**
  * @author BluSunrize - 20.08.2016
  */
 public class DropConveyor extends BasicConveyor
 {
+	public static final ResourceLocation NAME = new ResourceLocation(MODID, "dropper");
+
 	public DropConveyor(TileEntity tile)
 	{
 		super(tile);

@@ -81,9 +81,11 @@ public class ConveyorHandler
 
 	/**
 	 * Registers a valid substitute for the given key conveyor. This substitute is allowed in the construction of multiblocks in place of the key
-	 * @param key			A unique ResourceLocation to identify the conveyor by
-	 * @param substitute	A unique ResourceLocation to identify the substitute
+	 *
+	 * @param key        A unique ResourceLocation to identify the conveyor by
+	 * @param substitute A unique ResourceLocation to identify the substitute
 	 */
+	//TODO this is probably broken?
 	public static void registerSubstitute(ResourceLocation key, ResourceLocation substitute)
 	{
 		Set<ResourceLocation> registeredSubstitutes = substituteRegistry.computeIfAbsent(key, k -> new HashSet<>());

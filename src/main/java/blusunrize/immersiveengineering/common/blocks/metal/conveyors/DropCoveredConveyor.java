@@ -21,17 +21,21 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+
 /**
  * @author BluSunrize - 17.02.2019
  */
 public class DropCoveredConveyor extends DropConveyor
 {
+	public static final ResourceLocation NAME = new ResourceLocation(MODID, "droppercovered");
 	public ItemStack cover = ItemStack.EMPTY;
 
 	public DropCoveredConveyor(TileEntity tile)

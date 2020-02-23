@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
+import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+
 public class IETags
 {
 
@@ -37,6 +39,8 @@ public class IETags
 	public static final Tag<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
 	public static final Tag<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));
 	public static final Tag<Block> coalCokeBlock = createBlockTag(IERecipes.getStorageBlock("coal_coke"));
+	public static final Tag<Block> scaffoldingSteel = createBlockTag(rl("scaffolding/steel"));
+	public static final Tag<Block> scaffoldingAlu = createBlockTag(rl("scaffolding/aluminum"));
 	//IE Items
 	public static final Tag<Item> treatedStick = new ItemTags.Wrapper(forgeLoc("rods/treated_wood"));
 	public static final Tag<Item> ironRod = new ItemTags.Wrapper(forgeLoc("rods/iron"));

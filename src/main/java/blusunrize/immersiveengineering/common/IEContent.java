@@ -142,15 +142,15 @@ public class IEContent
 			entity.getPersistentData().remove(Lib.MAGNET_PREVENT_NBT);
 		});
 		ConveyorHandler.registerConveyorHandler(BasicConveyor.NAME, BasicConveyor.class, BasicConveyor::new);
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "uncontrolled"), UncontrolledConveyor.class, UncontrolledConveyor::new);
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "dropper"), DropConveyor.class, DropConveyor::new);
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "vertical"), VerticalConveyor.class, VerticalConveyor::new);
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "splitter"), SplitConveyor.class, SplitConveyor::new);
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extract"), ExtractConveyor.class, ExtractConveyor::new);
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "covered"), CoveredConveyor.class, CoveredConveyor::new);
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "droppercovered"), DropCoveredConveyor.class, DropCoveredConveyor::new);
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "verticalcovered"), VerticalCoveredConveyor.class, VerticalCoveredConveyor::new);
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(MODID, "extractcovered"), ExtractCoveredConveyor.class, ExtractCoveredConveyor::new);
+		ConveyorHandler.registerConveyorHandler(UncontrolledConveyor.NAME, UncontrolledConveyor.class, UncontrolledConveyor::new);
+		ConveyorHandler.registerConveyorHandler(DropConveyor.NAME, DropConveyor.class, DropConveyor::new);
+		ConveyorHandler.registerConveyorHandler(VerticalConveyor.NAME, VerticalConveyor.class, VerticalConveyor::new);
+		ConveyorHandler.registerConveyorHandler(SplitConveyor.NAME, SplitConveyor.class, SplitConveyor::new);
+		ConveyorHandler.registerConveyorHandler(ExtractConveyor.NAME, ExtractConveyor.class, ExtractConveyor::new);
+		ConveyorHandler.registerConveyorHandler(CoveredConveyor.NAME, CoveredConveyor.class, CoveredConveyor::new);
+		ConveyorHandler.registerConveyorHandler(DropCoveredConveyor.NAME, DropCoveredConveyor.class, DropCoveredConveyor::new);
+		ConveyorHandler.registerConveyorHandler(VerticalCoveredConveyor.NAME, VerticalCoveredConveyor.class, VerticalCoveredConveyor::new);
+		ConveyorHandler.registerConveyorHandler(ExtractCoveredConveyor.NAME, ExtractCoveredConveyor.class, ExtractCoveredConveyor::new);
 		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
 
 		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:block/fluid/creosote_still"),

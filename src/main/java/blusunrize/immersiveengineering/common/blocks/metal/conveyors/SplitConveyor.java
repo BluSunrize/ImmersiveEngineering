@@ -31,6 +31,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.List;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.common.util.Utils.withCoordinate;
 
 /**
@@ -38,6 +39,7 @@ import static blusunrize.immersiveengineering.common.util.Utils.withCoordinate;
  */
 public class SplitConveyor extends BasicConveyor
 {
+	public static final ResourceLocation NAME = new ResourceLocation(MODID, "splitter");
 	boolean nextOutputLeft = true;
 
 	public SplitConveyor(TileEntity tile)

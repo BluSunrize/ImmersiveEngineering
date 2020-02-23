@@ -33,6 +33,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -51,11 +52,14 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+
 /**
  * @author BluSunrize - 29.03.2017
  */
 public class CoveredConveyor extends BasicConveyor
 {
+	public static final ResourceLocation NAME = new ResourceLocation(MODID, "covered");
 	public static ArrayList<Predicate<ItemStack>> validCoveyorCovers = new ArrayList<>();
 
 	static

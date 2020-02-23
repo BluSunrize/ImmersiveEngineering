@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import net.minecraft.block.Block;
 import net.minecraft.data.BlockTagsProvider;
@@ -58,6 +59,11 @@ class BlockTags extends BlockTagsProvider
 		{
 			getBuilder(IETags.treatedWood).add(WoodenDecoration.treatedWood.get(style));
 			getBuilder(IETags.treatedWoodSlab).add(IEBlocks.toSlab.get(IEBlocks.WoodenDecoration.treatedWood.get(style)));
+		}
+		for(MetalScaffoldingType t : MetalScaffoldingType.values())
+		{
+			getBuilder(IETags.scaffoldingSteel).add(MetalDecoration.steelScaffolding.get(t));
+			getBuilder(IETags.scaffoldingAlu).add(MetalDecoration.aluScaffolding.get(t));
 		}
 		getBuilder(IETags.coalCokeBlock)
 				.add(StoneDecoration.coke);

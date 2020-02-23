@@ -42,11 +42,14 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import java.util.List;
 import java.util.function.Function;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+
 /**
  * @author BluSunrize - 19.05.2017
  */
 public class ExtractConveyor extends BasicConveyor
 {
+	public static final ResourceLocation NAME = new ResourceLocation(MODID, "extract");
 	private int transferCooldown = -1;
 	private int transferTickrate = 8;
 	private float extension = -1;

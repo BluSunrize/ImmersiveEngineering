@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
@@ -120,6 +120,7 @@ public class Recipes extends RecipeProvider
 		recipesMetalDecorations(out);
 		recipesMetalDevices(out);
 		recipesConnectors(out);
+		recipesConveyors(out);
 		recipesCloth(out);
 
 		recipesTools(out);
@@ -923,26 +924,111 @@ public class Recipes extends RecipeProvider
 			.key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
 			.key('c', Blocks.TERRACOTTA)
 			.addCriterion("has_aluminum_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
-			.build(out);
+				.build(out);
 		ShapedRecipeBuilder.shapedRecipe(IEBlocks.Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), 8)
-			.patternLine(" i ")
-			.patternLine("cic")
-			.patternLine("cic")
-			.key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
-			.key('c', StoneDecoration.insulatingGlass)
-			.addCriterion("has_aluminum_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
-			.build(out);
+				.patternLine(" i ")
+				.patternLine("cic")
+				.patternLine("cic")
+				.key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
+				.key('c', StoneDecoration.insulatingGlass)
+				.addCriterion("has_aluminum_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+				.build(out);
+	}
+
+	private void recipesConveyors(@Nonnull Consumer<IFinishedRecipe> out)
+	{
+		IItemProvider basic = ConveyorHandler.getBlock(BasicConveyor.NAME);
+		IItemProvider covered = ConveyorHandler.getBlock(CoveredConveyor.NAME);
+		IItemProvider dropper = ConveyorHandler.getBlock(DropConveyor.NAME);
+		IItemProvider dropperCovered = ConveyorHandler.getBlock(DropCoveredConveyor.NAME);
+		IItemProvider extract = ConveyorHandler.getBlock(ExtractConveyor.NAME);
+		IItemProvider extractCovered = ConveyorHandler.getBlock(ExtractCoveredConveyor.NAME);
+		IItemProvider splitter = ConveyorHandler.getBlock(SplitConveyor.NAME);
+		IItemProvider uncontrolled = ConveyorHandler.getBlock(UncontrolledConveyor.NAME);
+		IItemProvider vertical = ConveyorHandler.getBlock(VerticalConveyor.NAME);
+		IItemProvider verticalCovered = ConveyorHandler.getBlock(VerticalCoveredConveyor.NAME);
+		addCoveyorCoveringRecipe(verticalCovered, vertical, out);
+		addCoveyorCoveringRecipe(covered, basic, out);
+		addCoveyorCoveringRecipe(dropperCovered, covered, out);
+		addCoveyorCoveringRecipe(extractCovered, extract, out);
+		ShapedRecipeBuilder.shapedRecipe(basic, 8)
+				.patternLine("lll")
+				.patternLine("iri")
+				.key('l', Tags.Items.LEATHER)
+				.key('i', Tags.Items.INGOTS_IRON)
+				.key('r', Tags.Items.DUSTS_REDSTONE)
+				.addCriterion("has_leather", hasItem(Items.LEATHER))
+				.build(out);
+		//TODO
+		//ShapedRecipeBuilder.shapedRecipe(basic, 8)
+		//		.patternLine("rrr")
+		//		.patternLine("iri")
+		//		.key('r', RUBBER)
+		//		.key('i', Tags.Items.INGOTS_IRON)
+		//		.key('r', Tags.Items.DUSTS_REDSTONE)
+		//		.build(out);
+		ShapedRecipeBuilder.shapedRecipe(dropper)
+				.patternLine("c")
+				.patternLine("t")
+				.key('c', basic)
+				.key('t', Blocks.IRON_TRAPDOOR)
+				.addCriterion("has_trapdoor", hasItem(Blocks.IRON_TRAPDOOR))
+				.addCriterion("has_conveyor", hasItem(basic))
+				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(extract)
+				.patternLine("ws")
+				.patternLine("mc")
+				.key('w', IETags.getItemTag(IETags.treatedWood))
+				.key('s', Cloth.curtain)
+				.key('m', Ingredients.componentIron)
+				.key('c', basic)
+				.addCriterion("has_conveyor", hasItem(basic))
+				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(splitter, 3)
+				.patternLine("cic")
+				.patternLine(" c ")
+				.key('c', basic)
+				.key('i', Tags.Items.INGOTS_IRON)
+				.addCriterion("has_conveyor", hasItem(basic))
+				.build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(uncontrolled)
+				.addIngredient(basic)
+				.addCriterion("has_conveyor", hasItem(basic))
+				.build(out);
+		ShapelessRecipeBuilder.shapelessRecipe(basic)
+				.addIngredient(uncontrolled)
+				.addCriterion("has_conveyor", hasItem(uncontrolled))
+				.build(out, rl("uncontrolled_back"));
+		ShapedRecipeBuilder.shapedRecipe(vertical, 3)
+				.patternLine("ci")
+				.patternLine("c ")
+				.patternLine("ci")
+				.key('c', basic)
+				.key('i', Tags.Items.INGOTS_IRON)
+				.addCriterion("has_conveyor", hasItem(basic))
+				.build(out);
+	}
+
+	private void addCoveyorCoveringRecipe(IItemProvider covered, IItemProvider base, Consumer<IFinishedRecipe> out)
+	{
+		ShapedRecipeBuilder.shapedRecipe(covered)
+				.patternLine("s")
+				.patternLine("c")
+				.key('s', IETags.getItemTag(IETags.scaffoldingSteel))
+				.key('c', base)
+				.addCriterion("has_vertical_conveyor", hasItem(base))
+				.build(out);
 	}
 
 	private void recipesCloth(@Nonnull Consumer<IFinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shapedRecipe(IEBlocks.Cloth.balloon, 2)
-			.patternLine(" f ")
-			.patternLine("ftf")
-			.patternLine(" s ")
-			.key('f', IEItems.Ingredients.hempFabric)
-			.key('t', Items.TORCH)
-			.key('s', IETags.getItemTag(IETags.treatedWoodSlab))
+				.patternLine(" f ")
+				.patternLine("ftf")
+				.patternLine(" s ")
+				.key('f', IEItems.Ingredients.hempFabric)
+				.key('t', Items.TORCH)
+				.key('s', IETags.getItemTag(IETags.treatedWoodSlab))
 			.addCriterion("has_hemp_fabric", hasItem(IETags.fabricHemp))
 			.build(out);
 		ShapedRecipeBuilder.shapedRecipe(IEBlocks.Cloth.cushion, 3)
