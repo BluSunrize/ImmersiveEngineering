@@ -158,6 +158,10 @@ public class ManualElementBlueprint extends SpecialManualElements
 	@Override
 	public int getPixelsTaken()
 	{
-		return 0;//TODO
+		int maxY = 0;
+		for(PositionedItemStack[] recipe : recipes)
+			for(PositionedItemStack pstack : recipe)
+				maxY = Math.max(maxY, pstack.y);
+		return maxY+18;
 	}
 }

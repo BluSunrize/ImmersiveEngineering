@@ -91,7 +91,7 @@ public class TextSplitter
 		{
 			List<String> page = new ArrayList<>(overflow);
 			overflow.clear();
-			boolean forceNewPage = false;
+			boolean forceNewPage = getLinesOnPage(entry.size()) <= 0;
 			page:
 			while(page.size() < getLinesOnPage(entry.size())&&pos < wordsAndSpaces.length)
 			{

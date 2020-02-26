@@ -8,10 +8,10 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -236,10 +236,21 @@ public class ManualUtils
 							e.printStackTrace();
 							throw new RuntimeException(e);
 						}
-						ManualEntry bEntry = Objects.requireNonNull(manual.getEntry(bkey), bkey+" is not a known entry!");
-						Preconditions.checkArgument(bEntry.hasAnchor(bAnchor), "Entry "+bkey+" does not contain anchor "+bAnchor);
+						ManualInstance.ManualLink link;
+						ManualEntry bEntry = manual.getEntry(bkey);
+						if(bEntry!=null&&bEntry.hasAnchor(bAnchor))
+							link = new ManualInstance.ManualLink(bEntry, bAnchor, bOffset);
+						else
+						{
+							if(bEntry==null)
+								IELogger.logger.error("Unknown manual entry: {} (link from {})", bkey, entry.getLocation());
+							else if(!bEntry.hasAnchor(bAnchor))
+								IELogger.logger.error("Unknown anchor {} in entry {} (link from {})", bAnchor, bkey,
+										entry.getLocation());
+							link = null;
+						}
 						GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(manual.fontRenderer().FONT_HEIGHT*1.5),
-								new ManualInstance.ManualLink(bEntry, bAnchor, bOffset), linkText);
+								link, linkText);
 						parts.add(btn);
 						pageButtons.add(btn);
 						s = s.replaceFirst(formatIdent, "");

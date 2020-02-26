@@ -233,16 +233,26 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry)
 	{
-		node.addNewLeaf(entry);
+		addEntry(node, entry, 0);
+	}
+
+	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry, int priority)
+	{
+		node.addNewLeaf(entry, priority);
 		contentsByName.put(entry.getLocation(), entry);
 		initialized = false;
 	}
 
 	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source)
 	{
+		addEntry(node, source, 0);
+	}
+
+	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source, int priority)
+	{
 		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 		builder.readFromFile(source);
-		addEntry(node, builder.create());
+		addEntry(node, builder.create(), priority);
 	}
 
 	@Nullable

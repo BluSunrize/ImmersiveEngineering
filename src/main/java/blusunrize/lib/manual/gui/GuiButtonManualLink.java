@@ -16,19 +16,24 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
 public class GuiButtonManualLink extends Button
 {
 	public String localized;
+	@Nullable
 	public ManualLink link;
 	ManualScreen gui;
 	public List<GuiButtonManualLink> otherParts = ImmutableList.of();
 
-	public GuiButtonManualLink(ManualScreen gui, int x, int y, int w, int h, ManualLink link, String localized)
+	public GuiButtonManualLink(ManualScreen gui, int x, int y, int w, int h, @Nullable ManualLink link, String localized)
 	{
-		super(x, y, w, h, "", btn -> link.changePage(gui, true));
+		super(x, y, w, h, "", btn -> {
+			if(link!=null)
+				link.changePage(gui, true);
+		});
 		this.gui = gui;
 		this.link = link;
 		this.localized = localized;
@@ -55,7 +60,12 @@ public class GuiButtonManualLink extends Button
 	{
 		FontRenderer font = gui.manual.fontRenderer();
 		font.drawString(localized, x, y, gui.manual.getHighlightColour());
-		gui.renderTooltip(Collections.singletonList(gui.manual.formatLink(link)), mx+8, my+4, font);
+		List<String> tooltip;
+		if(link!=null)
+			tooltip = Collections.singletonList(gui.manual.formatLink(link));
+		else
+			tooltip = Collections.singletonList("Invalid link");
+		gui.renderTooltip(tooltip, mx+8, my+4, font);
 		GlStateManager.disableLighting();
 	}
 }

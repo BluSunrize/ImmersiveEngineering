@@ -457,6 +457,7 @@ public class IEConfig
 			retrogen_log_remaining = builder
 					.comment("Set this to false to disable the logging of the chunks that are still left to retrogen.")
 					.define("retrogen_log_remaining", true);
+			builder.pop();
 		}
 
 
