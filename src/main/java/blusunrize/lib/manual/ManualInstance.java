@@ -71,9 +71,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 						JsonArray inner = el.getAsJsonArray();
 						Object[] innerSaR = new Object[inner.size()];
 						for(int j = 0; j < inner.size(); ++j)
-						{
 							innerSaR[j] = ManualUtils.getRecipeObjFromJson(this, inner.get(j));
-						}
 						stacksAndRecipes[i] = innerSaR;
 					}
 					else if(el.isJsonObject())

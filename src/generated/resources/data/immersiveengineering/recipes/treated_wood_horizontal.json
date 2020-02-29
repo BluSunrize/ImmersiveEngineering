@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "www",
+    "wbw",
+    "www"
+  ],
+  "key": {
+    "w": {
+      "tag": "minecraft:planks"
+    },
+    "b": {
+      "item": "immersiveengineering:creosote_bucket"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:treated_wood_horizontal",
+    "count": 8
+  }
+}

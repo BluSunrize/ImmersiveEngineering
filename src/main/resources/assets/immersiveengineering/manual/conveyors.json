@@ -4,46 +4,46 @@
     "recipes": [
       [
         {
-          "recipe": "conveyors/conveyor_basic"
+          "recipe": "conveyor_basic"
         },
         {
-          "recipe": "conveyors/conveyor_uncontrolled"
+          "recipe": "conveyor_uncontrolled"
         }
       ]
     ]
   },
-  "conveyor_dropping_recipe": {
+  "conveyor_dropper_recipe": {
     "type": "crafting",
-    "recipe": "conveyors/conveyor_dropper"
+    "recipe": "conveyor_dropper"
   },
   "conveyor_extract_recipe": {
     "type": "crafting",
-    "recipe": "conveyors/conveyor_extract"
+    "recipe": "conveyor_extract"
   },
   "conveyor_vertical_recipe": {
     "type": "crafting",
-    "recipe": "conveyors/conveyor_vertical"
+    "recipe": "conveyor_vertical"
   },
   "conveyor_splitter_recipe": {
     "type": "crafting",
-    "recipe": "conveyors/conveyor_splitter"
+    "recipe": "conveyor_splitter"
   },
   "conveyor_covered_recipe": {
     "type": "crafting",
-    "recipe": "conveyors/conveyor_covered"
+    "recipe": "conveyor_covered"
   },
   "conveyor_other_covered_recipes": {
     "type": "crafting",
     "recipes": [
       [
         {
-        "recipe": "conveyors/conveyor_droppercovered"
+          "recipe": "conveyor_droppercovered"
         },
         {
-          "recipe": "conveyors/conveyor_extractcovered"
+          "recipe": "conveyor_extractcovered"
         },
         {
-          "recipe": "conveyors/conveyor_verticalcovered"
+          "recipe": "conveyor_verticalcovered"
         }
       ]
     ]

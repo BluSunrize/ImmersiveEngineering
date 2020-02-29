@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "strip_curtain",
   "pattern": [
     "sss",
     "fff",
@@ -8,7 +7,7 @@
   ],
   "key": {
     "s": {
-      "tag": "forge:rods/aluminum"
+      "tag": "forge:rods/all_metal"
     },
     "f": {
       "item": "immersiveengineering:hemp_fabric"

@@ -4,33 +4,32 @@
     "recipes": [
       [
       {
-        "recipe": "material/wire_copper"
+        "recipe": "wire_copper"
       },
       {
-        "recipe": "wirecoils/wirecoil_lv"
+        "recipe": "wirecoil_copper"
       },
       {
-        "recipe": "wirecoils/wirecoil_lv_ins"
-      },
-
-      {
-        "recipe": "material/wire_electrum"
-      },
-      {
-        "recipe": "wirecoils/wirecoil_mv"
-      },
-      {
-        "recipe": "wirecoils/wirecoil_mv_ins"
+        "recipe": "wirecoil_copper_ins"
       },
 
       {
-        "recipe": "material/wire_steel"
+        "recipe": "wire_electrum"
       },
       {
-        "recipe": "material/wire_aluminum"
+        "recipe": "wirecoil_electrum"
       },
       {
-        "recipe": "wirecoils/wirecoil_hv"
+        "recipe": "wirecoil_electrum_ins"
+      },
+      {
+        "recipe": "wire_steel"
+      },
+      {
+        "recipe": "wire_aluminum"
+      },
+      {
+        "recipe": "wirecoil_steel"
       }
       ]
     ]
@@ -81,22 +80,22 @@
     "recipes": [
       [
       {
-        "recipe": "connectors/connector_lv"
+        "recipe": "connector_lv"
       },
       {
-        "recipe": "connectors/relay_lv"
+        "recipe": "connector_lv_relay"
       },
       {
-        "recipe": "connectors/connector_mv"
+        "recipe": "connector_mv"
       },
       {
-        "recipe": "connectors/relay_mv"
+        "recipe": "connector_mv_relay"
       },
       {
-        "recipe": "connectors/connector_hv"
+        "recipe": "connector_hv"
       },
       {
-        "recipe": "connectors/relay_hv"
+        "recipe": "connector_hv_relay"
       }
       ]
     ]
@@ -106,13 +105,13 @@
     "recipes": [
       [
       {
-        "recipe": "metal_devices/capacitor_lv"
+        "recipe": "capacitor_lv"
       },
       {
-        "recipe": "metal_devices/capacitor_mv"
+        "recipe": "capacitor_mv"
       },
       {
-        "recipe": "metal_devices/capacitor_hv"
+        "recipe": "capacitor_hv"
       }
       ]
     ]
@@ -122,21 +121,21 @@
     "recipes": [
       [
       {
-        "recipe": "connectors/transformer"
+        "recipe": "transformer"
       },
       {
-        "recipe": "connectors/transformer_hv"
+        "recipe": "transformer_hv"
       }
       ]
     ]
   },
   "wirecutter_recipe": {
     "type": "crafting",
-    "recipe": "tool/wirecutters"
+    "recipe": "wirecutter"
   },
   "voltmeter_recipe": {
     "type": "crafting",
-    "recipe": "tool/voltmeter"
+    "recipe": "voltmeter"
   },
   "feedthrough": {
     "type": "multiblock",

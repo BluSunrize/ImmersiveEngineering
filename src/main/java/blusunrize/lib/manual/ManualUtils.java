@@ -15,6 +15,7 @@ import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -35,6 +36,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
@@ -380,10 +382,20 @@ public class ManualUtils
 			return new ResourceLocation(instance.getDefaultResourceDomain(), s);
 	}
 
+	public static boolean isNumber(JsonObject main, String name)
+	{
+		return main.has(name)&&main.get(name).isJsonPrimitive()&&main.get(name).getAsJsonPrimitive().isNumber();
+	}
+
+	@Nullable
 	public static PositionedItemStack parsePosItemStack(JsonElement ele)
 	{
 		JsonObject json = ele.getAsJsonObject();
+		if(!isNumber(json, "x"))
+			return null;
 		int x = JSONUtils.getInt(json, "x");
+		if(!isNumber(json, "y"))
+			return null;
 		int y = JSONUtils.getInt(json, "y");
 		if(JSONUtils.isString(json, "item"))
 			return new PositionedItemStack(CraftingHelper.getItemStack(json, true), x, y);
@@ -396,7 +408,13 @@ public class ManualUtils
 			return new PositionedItemStack(stacks, x, y);
 		}
 		else
-			return new PositionedItemStack(CraftingHelper.getIngredient(json), x, y);
+			try
+			{
+				return new PositionedItemStack(CraftingHelper.getIngredient(json), x, y);
+			} catch(JsonSyntaxException xcp)
+			{
+				return null;
+			}
 	}
 
 	public static Object getRecipeObjFromJson(ManualInstance m, JsonElement jsonEle)
@@ -416,7 +434,13 @@ public class ManualUtils
 			JsonArray json = jsonEle.getAsJsonArray();
 			PositionedItemStack[] stacks = new PositionedItemStack[json.size()];
 			for(int i = 0; i < json.size(); i++)
-				stacks[i] = parsePosItemStack(json.get(i));
+			{
+				PositionedItemStack posStack = parsePosItemStack(json.get(i));
+				if(posStack!=null)
+					stacks[i] = posStack;
+				else
+					throw new RuntimeException("Failed to load positional item stack from "+json.get(i));
+			}
 			return stacks;
 		}
 		throw new RuntimeException("Could not find recipe for "+jsonEle);

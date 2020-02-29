@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GeG",
+    "GgG",
+    "GgG"
+  ],
+  "key": {
+    "g": {
+      "tag": "forge:dusts/glowstone"
+    },
+    "e": {
+      "item": "immersiveengineering:graphite_electrode"
+    },
+    "G": {
+      "tag": "forge:glass"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:fluorescent_tube"
+  }
+}

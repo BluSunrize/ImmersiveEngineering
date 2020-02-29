@@ -1,0 +1,7 @@
+{
+  "type": "immersiveengineering:rgb",
+  "target": {
+    "item": "immersiveengineering:strip_curtain"
+  },
+  "key": "colour"
+}

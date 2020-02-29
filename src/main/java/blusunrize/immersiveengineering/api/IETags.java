@@ -45,6 +45,7 @@ public class IETags
 	public static final Tag<Item> treatedStick = new ItemTags.Wrapper(forgeLoc("rods/treated_wood"));
 	public static final Tag<Item> ironRod = new ItemTags.Wrapper(forgeLoc("rods/iron"));
 	public static final Tag<Item> steelRod = new ItemTags.Wrapper(forgeLoc("rods/steel"));
+	public static final Tag<Item> metalRods = new ItemTags.Wrapper(forgeLoc("rods/all_metal"));
 	public static final Tag<Item> aluminumRod = new ItemTags.Wrapper(forgeLoc("rods/aluminum"));
 	public static final Tag<Item> fiberHemp = new ItemTags.Wrapper(forgeLoc("fiber_hemp"));
 	public static final Tag<Item> fabricHemp = new ItemTags.Wrapper(forgeLoc("fabric_hemp"));

@@ -1,14 +1,14 @@
 {
   "pipe_recipe": {
     "type": "crafting",
-    "recipe": "metal_devices/fluid_pipe"
+    "recipe": "fluid_pipe"
   },
   "pump_recipe": {
     "type": "crafting",
-    "recipe": "metal_devices/fluid_pump"
+    "recipe": "fluid_pump"
   },
   "outlet_recipe": {
     "type": "crafting",
-    "recipe": "metal_devices/fluid_outlet"
+    "recipe": "fluid_outlet"
   }
 }

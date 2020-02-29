@@ -288,10 +288,9 @@ public class ManualEntry implements Comparable<ManualEntry>
 					Pattern backslashNewline = Pattern.compile("[^\\\\][\\\\][\r]?\n[\r]?");
 					String rawText = backslashNewline.matcher(content).replaceAll("").replace("\\\\", "\\");
 					return new String[]{title, subtext, rawText};
-				} catch(IOException e)
+				} catch(Exception e)
 				{
-					e.printStackTrace();
-					return new String[]{"ERROR", "This is not a good thing", "Please check the log file for errors"};
+					throw new RuntimeException("Failed to load manual entry from "+name, e);
 				}
 			};
 		}
