@@ -143,13 +143,12 @@ public class ManualElementBlueprint extends SpecialManualElements
 		RenderHelper.disableStandardItemLighting();
 	}
 
-
 	@Override
 	public boolean listForSearch(String searchTag)
 	{
 		for(PositionedItemStack[] recipe : this.recipes)
 			for(PositionedItemStack pStack : recipe)
-				for(ItemStack stack : pStack.displayList)
+				for(ItemStack stack : pStack.getDisplayList())
 					if(ManualUtils.listStack(searchTag, stack))
 						return true;
 		return false;

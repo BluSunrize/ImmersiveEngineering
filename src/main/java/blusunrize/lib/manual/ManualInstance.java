@@ -35,6 +35,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -310,7 +311,19 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public void reload()
 	{
-		getAllEntries().forEach(ManualEntry::refreshPages);
+		AtomicInteger numErrors = new AtomicInteger(0);
+		getAllEntries().forEach(manualEntry -> {
+			try
+			{
+				manualEntry.refreshPages();
+			} catch(Exception x)
+			{
+				x.printStackTrace();
+				numErrors.incrementAndGet();
+			}
+		});
+		if(numErrors.get()!=0)
+			throw new RuntimeException(numErrors.get()+" manual entries failed to load, see log for details!");
 		contentTree.sortAll();
 		indexRecipes();
 		initialized = true;

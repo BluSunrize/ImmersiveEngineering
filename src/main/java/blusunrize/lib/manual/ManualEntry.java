@@ -18,9 +18,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.crash.ReportedException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResource;
 import net.minecraft.util.JSONUtils;
@@ -83,13 +80,11 @@ public class ManualEntry implements Comparable<ManualEntry>
 				pages.add(new ManualPage(text.get(i), special));
 			}
 			manual.entryRenderPost();
-		} catch(Throwable throwable)
+		} catch(Exception x)
 		{
-			CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Refreshing an IE manual entry");
-			CrashReportCategory crashreportcategory = crashreport.makeCategory("Entry being refreshed:");
-			crashreportcategory.addDetail("Entry name", location);
-			crashreportcategory.addDetail("Manual", manual.getManualName());
-			throw new ReportedException(crashreport);
+			throw new RuntimeException(
+					"Exception while refreshing manual entry "+location+" for manual "+manual.getManualName(),
+					x);
 		}
 	}
 

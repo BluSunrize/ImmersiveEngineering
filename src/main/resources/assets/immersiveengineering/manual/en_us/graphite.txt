@@ -1,0 +1,5 @@
+Graphite
+Coal stuff
+Highly Ordered Pyrolytic Graphite (HOP) is a complex, highly compressed, carbon material used in special engineering constructs.
+HOP Graphite Dust is created by compressing eight pieces of Coke Dust in the <link;squeezer;§o§nIndustrial §o§nSqueezer§r>. That dust can then be smelted into an ingot.
+<&electrode>The most common use for HOP Graphite is the creation of electrodes to be used in the <link;arcfurnace;§o§nArc §o§nFurnace§r>. These electrodes are created with an <link;blueprints;§o§nEngineer's §o§nBlueprint§r>, which you can<config;b;machines.arcfurnace_electrodeCrafting; craft,> find in certain chests or trade with a villager. You can also create electrodes in the metal press, using the rod mold on 4 ingots, but the electrodes crafted this way have less durability.

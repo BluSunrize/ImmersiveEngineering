@@ -176,14 +176,14 @@ public class ManualUtils
 			String[] segment = rep.substring(0, rep.length()-1).split(";");
 			if(segment.length < 3)
 				break;
-			String anchor = segment.length > 3?segment[3]: "-1";
+			String anchor = segment.length > 3?segment[3]: TextSplitter.START;
 			String[] resultParts = segment[2].split("(?<= )");// Split and keep the whitespace at the end of the tokens
 			StringBuilder result = new StringBuilder();
 			List<String> forCompleteLink = new ArrayList<>(3*resultParts.length);
 			for(String resultPart : resultParts)
 			{
 				//prefixing replacements with MC's formatting character and an unused char to keep them unique, but not counted for size
-				String part = format+'\u00a7'+String.valueOf((char)(128+repList.size()))+resultPart;
+				String part = format+'\u00a7'+(char)(128+repList.size())+resultPart;
 				forCompleteLink.add(part);
 				forCompleteLink.add(segment[1]);
 				forCompleteLink.add(anchor);
@@ -348,7 +348,7 @@ public class ManualUtils
 		for(String s : text)
 		{
 			fontRenderer.drawString(s, x, y, colour);
-			y += 9;
+			y += fontRenderer.FONT_HEIGHT;
 		}
 	}
 

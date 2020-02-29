@@ -190,9 +190,7 @@ public class TextSplitter
 	{
 		int pixels = pixelsPerPage;
 		if(specialByPage.containsKey(id))
-		{
 			pixels = pixelsPerPage-specialByPage.get(id).getPixelsTaken();
-		}
 		return Math.max(0, MathHelper.floor(pixels/(double)pixelsPerLine.getAsInt()));
 	}
 

@@ -1,0 +1,18 @@
+{
+  "recipe": {
+    "type": "crafting",
+    "recipe": "shield"
+  },
+  "flashbulb": {
+    "type": "crafting",
+    "recipe": "toolupgrade_shield_flash"
+  },
+  "electric": {
+    "type": "crafting",
+    "recipe": "toolupgrade_shield_shock"
+  },
+  "magnetic": {
+    "type": "crafting",
+    "recipe": "toolupgrade_shield_magnet"
+  }
+}

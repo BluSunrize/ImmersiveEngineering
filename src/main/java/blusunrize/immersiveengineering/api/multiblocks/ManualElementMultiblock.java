@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
@@ -69,9 +68,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 	public ManualElementMultiblock(ManualInstance manual, IMultiblock multiblock)
 	{
 		super(manual);
-		//TODO remove
-		if(multiblock==null)
-			multiblock = IEMultiblocks.CRUSHER;
 		this.multiblock = multiblock;
 		renderInfo = new MultiblockRenderInfo(multiblock);
 		float diagLength = (float)Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+

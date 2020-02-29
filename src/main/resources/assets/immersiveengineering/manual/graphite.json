@@ -1,0 +1,19 @@
+{
+  "start": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:dust_hop_graphite"
+      },
+      {
+        "item": "immersiveengineering:ingot_hop_graphite"
+      }
+    ]
+  },
+  "electrode": {
+    "type": "blueprint",
+    "recipe": {
+      "item": "graphite_electrode"
+    }
+  }
+}

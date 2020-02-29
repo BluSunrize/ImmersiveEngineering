@@ -19,7 +19,6 @@ import java.util.List;
 
 public class IEMultiblocks
 {
-	//TODO replace with correct instances
 	public static IETemplateMultiblock CRUSHER;
 	public static IETemplateMultiblock ALLOY_SMELTER;
 	public static IETemplateMultiblock ARC_FURNACE;

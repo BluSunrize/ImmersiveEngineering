@@ -39,7 +39,7 @@ public class IEManualInstance extends ManualInstance
 	public IEManualInstance()
 	{
 		super("immersiveengineering:textures/gui/manual.png",
-				120, 179-28, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
+				120, 143, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
 		/*
 		TODO no longer easily possible?
 		this.fontRenderer.colorCode[0+6] = Lib.COLOUR_I_ImmersiveOrange;
@@ -57,14 +57,6 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatText(String s)
 	{
-//		if(!s.contains(" "))//if it contains spaces, it's probably already translated.
-//		{
-//			s = ManualUtils.attemptStringTranslation("ie.manual.entry.%s",s);
-//			String translKey =  + s;
-//			String translated = I18n.format(translKey);
-//			if(!translKey.equals(translated))
-//				s = translated;
-//		}
 		String splitKey = ";";
 
 		s = s.replaceAll("<br>", "\n");

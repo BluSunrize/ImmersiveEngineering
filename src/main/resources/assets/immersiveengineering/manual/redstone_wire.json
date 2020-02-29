@@ -1,0 +1,14 @@
+{
+  "coil": {
+    "type": "crafting",
+    "recipe": "wirecoil_redstone"
+  },
+  "connector": {
+    "type": "crafting",
+    "recipe": "connector_redstone"
+  },
+  "probe": {
+    "type": "crafting",
+    "recipe": "connector_probe"
+  }
+}

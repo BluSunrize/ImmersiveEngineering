@@ -1,0 +1,33 @@
+{
+  "recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "treated_planks_horizontal"
+        },
+        {
+          "recipe": "treated_wood_horizontal_from_planks"
+        },
+        {
+          "recipe": "stairs_treated_wood_horizontal"
+        }
+      ],
+      {
+        "recipe": "stick_treated"
+      },
+      [
+        {
+          "recipe": "treated_fence"
+        },
+        {
+          "recipe": "treated_scaffold"
+        }
+      ]
+    ]
+  },
+  "posts": {
+    "type": "crafting",
+    "recipe": "treated_post"
+  }
+}

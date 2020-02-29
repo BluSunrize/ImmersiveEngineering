@@ -139,6 +139,6 @@
   },
   "feedthrough": {
     "type": "multiblock",
-    "name": "immersiveengineering:feedthrough"
+    "name": "feedthrough"
   }
 }

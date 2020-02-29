@@ -30,26 +30,36 @@ public class PositionedItemStack
 		this.y = y;
 	}
 
-	public ArrayList<ItemStack> displayList;
+	private List<ItemStack> displayList;
+
+	public List<ItemStack> getDisplayList()
+	{
+		if(displayList==null)
+			init();
+		return displayList;
+	}
+
+	private void init()
+	{
+		displayList = new ArrayList<>();
+		if(stack instanceof ItemStack)
+			displayList.add((ItemStack)stack);
+		else if(stack instanceof Ingredient)
+			displayList.addAll(Arrays.asList(((Ingredient)stack).getMatchingStacks()));
+		else if(stack instanceof List&&!((List)stack).isEmpty())
+			displayList.addAll((List<ItemStack>)this.stack);
+		else if(stack instanceof Tag)
+			((Tag<?>)stack).getAllElements().stream()
+					.map(o -> ((IItemProvider)o).asItem())
+					.map(ItemStack::new)
+					.forEach(displayList::add);
+	}
 
 	public ItemStack getStack()
 	{
 		if(displayList==null)
-		{
-			displayList = new ArrayList<ItemStack>();
-			if(stack instanceof ItemStack)
-				displayList.add((ItemStack)stack);
-			else if(stack instanceof Ingredient)
-				displayList.addAll(Arrays.asList(((Ingredient)stack).getMatchingStacks()));
-			else if(stack instanceof List&&!((List)stack).isEmpty())
-				displayList.addAll((List<ItemStack>)this.stack);
-			else if(stack instanceof Tag)
-				((Tag<?>)stack).getAllElements().stream()
-						.map(o -> ((IItemProvider)o).asItem())
-						.map(ItemStack::new)
-						.forEach(displayList::add);
-		}
-		if(displayList==null||displayList.isEmpty())
+			init();
+		if(displayList.isEmpty())
 			return ItemStack.EMPTY;
 
 		int perm = (int)(System.currentTimeMillis()/1000%displayList.size());

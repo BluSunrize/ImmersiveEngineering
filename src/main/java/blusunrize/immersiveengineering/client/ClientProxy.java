@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.multiblocks.ManualElementMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -69,6 +70,7 @@ import blusunrize.lib.manual.ManualElementTable;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.ManualInstance;
+import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.InnerNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
@@ -322,23 +324,34 @@ public class ClientProxy extends CommonProxy
 					return new ManualElementBlueprint(ieMan, stacks);
 				});
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "multiblock"),
-				s -> new ManualElementMultiblock(ieMan,
-						MultiblockHandler.getByUniqueName(new ResourceLocation(JSONUtils.getString(s, "name")))));
+				s -> {
+					ResourceLocation name = ManualUtils.getLocationForManual(
+							JSONUtils.getString(s, "name"),
+							ieMan
+					);
+					IMultiblock mb = MultiblockHandler.getByUniqueName(name);
+					if(mb==null)
+						throw new NullPointerException("Multiblock "+name+" does not exist");
+					return new ManualElementMultiblock(ieMan, mb);
+				});
 		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_ENERGY), 1);
+				ManualHelper.CAT_ENERGY));
 		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_GENERAL), 0);
+				ManualHelper.CAT_GENERAL), -1);
 		InnerNode<ResourceLocation, ManualEntry> constructionCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_CONSTRUCTION), 1);
+				ManualHelper.CAT_CONSTRUCTION));
 		InnerNode<ResourceLocation, ManualEntry> toolsCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_TOOLS), 1);
+				ManualHelper.CAT_TOOLS));
 		InnerNode<ResourceLocation, ManualEntry> machinesCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_MACHINES), 1);
+				ManualHelper.CAT_MACHINES));
 		InnerNode<ResourceLocation, ManualEntry> heavyMachinesCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_HEAVYMACHINES), 1);
+				ManualHelper.CAT_HEAVYMACHINES));
 
 		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "wiring"));
 		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "generator"));
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "breaker"));
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "current_transformer"));
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "redstone_wire"));
 
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "introduction"), -1);
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "ores"));
@@ -346,12 +359,25 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "alloys"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "components"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "plates"));
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "alloykiln"));
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "cokeoven"));
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "crude_blast_furnace"));
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "improved_blast_furnace"));
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "graphite"));
 
 		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "balloon"));
 		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "metalconstruction"));
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "concrete"));
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "crate"));
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "barrel"));
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "lighting"));
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "treated_wood"));
 
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "jerrycan"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "mining_drill"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "ear_defenders"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "shield"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "toolbox"));
 
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "conveyors"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "external_heater"));
@@ -369,6 +395,7 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "automated_workbench"));
 
 		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "refinery"));
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "metal_press"));
 
 		//TODO needs to change on world reload
 		String[][] table = formatToTable_ItemIntHashmap(ThermoelectricHandler.getThermalValuesSorted(true), "K");
@@ -555,7 +582,7 @@ public class ClientProxy extends CommonProxy
 
 		ManualInstance ieMan = ManualHelper.getManual();
 		InnerNode<ResourceLocation, ManualEntry> updateCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_UPDATE), -1);
+				ManualHelper.CAT_UPDATE), -2);
 		for(ManualEntry entry : allChanges.values())
 			ManualHelper.getManual().addEntry(updateCat, entry);
 	}

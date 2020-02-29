@@ -1468,6 +1468,16 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "components"), rl("blueprint_components"));
+		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
+				.patternLine(" P ")
+				.patternLine("ddd")
+				.patternLine("ppp")
+				.key('P', IETags.getTagsFor(EnumMetals.IRON).plate)
+				.key('d', Tags.Items.DYES_BLUE)
+				//TODO tag?
+				.key('p', Items.PAPER)
+				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
+				.build(buildBlueprint(out, "molds"), rl("blueprint_molds"));
 	}
 
 	private Consumer<IFinishedRecipe> buildBlueprint(Consumer<IFinishedRecipe> out, String blueprint)
@@ -1688,6 +1698,23 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_electrode", hasItem(Misc.graphiteElectrode))
 				.build(out);
 		addArmor(IETags.getTagsFor(EnumMetals.ALUMINUM).plate, Misc.faradaySuit, "alu_plate", out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.earmuffs)
+				.patternLine(" S ")
+				.patternLine("S S")
+				.patternLine("W W")
+				.key('S', IETags.ironRod)
+				.key('W', ItemTags.WOOL)
+				.addCriterion("has_iron_rod", hasItem(IETags.ironRod))
+				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.lantern)
+				.patternLine(" I ")
+				.patternLine("PGP")
+				.patternLine(" I ")
+				.key('I', IETags.getTagsFor(EnumMetals.IRON).plate)
+				.key('G', Tags.Items.DUSTS_GLOWSTONE)
+				.key('P', Items.GLASS_PANE)
+				.addCriterion("has_glowstone", hasItem(Tags.Items.DUSTS_GLOWSTONE))
+				.build(out);
 	}
 
 	private void addArmor(Tag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
