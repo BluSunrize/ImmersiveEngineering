@@ -485,11 +485,9 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
+	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
 	{
-		if(!transform.isPresent())
-			transform = Optional.of(new TRSRTransformation((Matrix4f)null));
-		Matrix4f mat = transform.get().getMatrixVec();//TODO is this correct?
+		Matrix4f mat = transform.getMatrixVec();
 		Vector3f transl = new Vector3f(.5f, .5f, .5f);
 
 		double yaw = 0;
@@ -543,7 +541,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		}
 		mat.setRotation(ClientUtils.degreeToQuaterion(pitch, yaw, roll));
 		mat.setTranslation(transl);
-		return Optional.of(new TRSRTransformation(mat));
+		return new TRSRTransformation(mat);
 	}
 
 	@OnlyIn(Dist.CLIENT)

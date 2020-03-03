@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "top": "immersiveengineering:block/metal/storage_lead",
-    "bottom": "immersiveengineering:block/metal/storage_lead",
-    "side": "immersiveengineering:block/metal/storage_lead"
-  }
-}

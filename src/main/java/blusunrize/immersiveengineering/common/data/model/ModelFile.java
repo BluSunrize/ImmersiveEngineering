@@ -54,10 +54,10 @@ public abstract class ModelFile
 		}
 	}
 
-	public static class ExistingModelFile extends ModelFile
+	public static class ExistingModelFileIE extends ModelFile
 	{
 
-		public ExistingModelFile(ResourceLocation location)
+		public ExistingModelFileIE(ResourceLocation location)
 		{
 			super(location);
 		}

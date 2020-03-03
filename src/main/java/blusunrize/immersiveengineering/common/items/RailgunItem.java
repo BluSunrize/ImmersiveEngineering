@@ -61,7 +61,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
@@ -353,7 +352,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
+	public TRSRTransformation applyTransformations(ItemStack stack, String group, TRSRTransformation transform)
 	{
 		//		if(transform.isPresent())
 		//		{

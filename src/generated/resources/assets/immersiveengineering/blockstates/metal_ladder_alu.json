@@ -1,40 +1,7 @@
 {
   "variants": {
-    "facing=north,waterlogged=true": {
-      "model": "immersiveengineering:item/metal_ladder_alu"
-    },
-    "facing=north,waterlogged=false": {
-      "model": "immersiveengineering:item/metal_ladder_alu"
-    },
-    "facing=south,waterlogged=true": {
-      "model": "immersiveengineering:item/metal_ladder_alu",
-      "y": 180,
-      "uvlock": true
-    },
-    "facing=south,waterlogged=false": {
-      "model": "immersiveengineering:item/metal_ladder_alu",
-      "y": 180,
-      "uvlock": true
-    },
-    "facing=west,waterlogged=true": {
-      "model": "immersiveengineering:item/metal_ladder_alu",
-      "y": 270,
-      "uvlock": true
-    },
-    "facing=west,waterlogged=false": {
-      "model": "immersiveengineering:item/metal_ladder_alu",
-      "y": 270,
-      "uvlock": true
-    },
-    "facing=east,waterlogged=true": {
-      "model": "immersiveengineering:item/metal_ladder_alu",
-      "y": 90,
-      "uvlock": true
-    },
-    "facing=east,waterlogged=false": {
-      "model": "immersiveengineering:item/metal_ladder_alu",
-      "y": 90,
-      "uvlock": true
+    "": {
+      "model": "immersiveengineering:block/metal_ladder_alu"
     }
   }
 }

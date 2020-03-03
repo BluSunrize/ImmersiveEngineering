@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.data.model;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFileIE;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.UncheckedModelFile;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -137,7 +137,7 @@ public class ModelHelper
 	{
 		ModelFile parentFile;
 		if(existingModel)
-			parentFile = new ExistingModelFile(parent);
+			parentFile = new ExistingModelFileIE(parent);
 		else
 			parentFile = new UncheckedModelFile(parent);
 		return create(outName, parentFile, textures, transforms);
@@ -229,7 +229,7 @@ public class ModelHelper
 				ImmutableMap.of("texture", texture), true);
 	}
 
-	private static void assertModelExists(ResourceLocation name)
+	public static void assertModelExists(ResourceLocation name)
 	{
 		if(EXISTING_FILE_HELPER!=null)
 		{
@@ -405,7 +405,7 @@ public class ModelHelper
 	public static GeneratedModelFile createTEIR_IEOBJ(ResourceLocation output, ResourceLocation ieobj, ResourceLocation transforms)
 	{
 		JsonObject ret = createJson(
-				new ExistingModelFile(ieobj),
+				new ExistingModelFileIE(ieobj),
 				ImmutableMap.of(),
 				transforms,
 				false

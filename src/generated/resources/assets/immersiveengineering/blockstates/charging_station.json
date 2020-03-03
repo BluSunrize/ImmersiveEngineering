@@ -1,54 +1,7 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "immersiveengineering:multilayer",
-      "custom": {
-        "SOLID": {
-          "model": "immersiveengineering:block/metal_device/charging_station.obj"
-        },
-        "TRANSLUCENT": {
-          "model": "immersiveengineering:block/metal_device/charging_station_glass.obj"
-        }
-      }
-    },
-    "facing=south": {
-      "model": "immersiveengineering:multilayer",
-      "y": 180,
-      "uvlock": true,
-      "custom": {
-        "SOLID": {
-          "model": "immersiveengineering:block/metal_device/charging_station.obj"
-        },
-        "TRANSLUCENT": {
-          "model": "immersiveengineering:block/metal_device/charging_station_glass.obj"
-        }
-      }
-    },
-    "facing=west": {
-      "model": "immersiveengineering:multilayer",
-      "y": 270,
-      "uvlock": true,
-      "custom": {
-        "SOLID": {
-          "model": "immersiveengineering:block/metal_device/charging_station.obj"
-        },
-        "TRANSLUCENT": {
-          "model": "immersiveengineering:block/metal_device/charging_station_glass.obj"
-        }
-      }
-    },
-    "facing=east": {
-      "model": "immersiveengineering:multilayer",
-      "y": 90,
-      "uvlock": true,
-      "custom": {
-        "SOLID": {
-          "model": "immersiveengineering:block/metal_device/charging_station.obj"
-        },
-        "TRANSLUCENT": {
-          "model": "immersiveengineering:block/metal_device/charging_station_glass.obj"
-        }
-      }
+    "": {
+      "model": "immersiveengineering:block/charging_station"
     }
   }
 }

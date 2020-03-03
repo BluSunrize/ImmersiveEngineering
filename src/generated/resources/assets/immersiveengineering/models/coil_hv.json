@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "top": "immersiveengineering:block/metal_decoration/coil_hv_top",
-    "bottom": "immersiveengineering:block/metal_decoration/coil_hv_top",
-    "side": "immersiveengineering:block/metal_decoration/coil_hv_side"
-  }
-}

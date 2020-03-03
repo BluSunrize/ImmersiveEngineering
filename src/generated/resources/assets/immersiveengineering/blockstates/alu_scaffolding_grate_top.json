@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:alu_scaffolding_grate_top"
+      "model": "immersiveengineering:block/alu_scaffolding_grate_top"
     }
   }
 }

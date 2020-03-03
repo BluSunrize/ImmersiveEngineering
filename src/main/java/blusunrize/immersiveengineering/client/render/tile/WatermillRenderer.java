@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -36,7 +37,7 @@ public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 	private static List<BakedQuad> quads;
 	private final DynamicModel<Void> model = DynamicModel.createSimple(
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/watermill.obj.ie"),
-			"watermill");
+			"watermill", ModelType.IE_OBJ);
 
 	@Override
 	public void render(WatermillTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)

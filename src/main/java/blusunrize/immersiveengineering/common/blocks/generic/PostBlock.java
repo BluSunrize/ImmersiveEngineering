@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
@@ -363,8 +365,8 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 					}
 			}
 		}
-		OBJState modelState = new OBJState(visible, true);
-		return new SinglePropertyModelData<>(modelState, Model.OBJ_STATE);
+		IEObjState modelState = new IEObjState(VisibilityList.show(visible));
+		return new SinglePropertyModelData<>(modelState, Model.IE_OBJ_STATE);
 	}
 
 	@Override

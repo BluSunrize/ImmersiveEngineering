@@ -221,14 +221,14 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
+	public TRSRTransformation applyTransformations(ItemStack stack, String group, TRSRTransformation transform)
 	{
 		CompoundNBT upgrades = this.getUpgrades(stack);
 		if(group.equals("drill_head")&&upgrades.getInt("damage") <= 0)
 		{
-			Matrix4 mat = new Matrix4(transform.orElse(TRSRTransformation.identity()).getMatrixVec());
+			Matrix4 mat = new Matrix4(transform.getMatrixVec());
 			mat.translate(-.25f, 0, 0);
-			return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
+			return new TRSRTransformation(mat.toMatrix4f());
 		}
 		return transform;
 	}

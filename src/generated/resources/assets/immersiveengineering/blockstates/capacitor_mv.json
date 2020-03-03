@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:smartmodel/conf_sides_hud_metal_device/capacitor_mv"
+      "model": "immersiveengineering:block/capacitor_mv"
     }
   }
 }

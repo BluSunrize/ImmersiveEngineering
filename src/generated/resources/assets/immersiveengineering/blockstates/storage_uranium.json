@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/metal/storage_uranium"
+      "model": "immersiveengineering:block/storage_uranium"
     }
   }
 }

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "top": "immersiveengineering:block/stone_decoration/insulating_glass",
-    "bottom": "immersiveengineering:block/stone_decoration/insulating_glass",
-    "side": "immersiveengineering:block/stone_decoration/insulating_glass"
-  }
-}

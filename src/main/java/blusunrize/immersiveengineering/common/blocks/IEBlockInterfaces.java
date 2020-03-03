@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -44,7 +46,7 @@ import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
+import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -372,18 +374,18 @@ public class IEBlockInterfaces
 
 	public interface IHasObjProperty extends IAdvancedHasObjProperty
 	{
-		List<String> compileDisplayList(BlockState state);
+		VisibilityList compileDisplayList(BlockState state);
 
 		@Override
-		default OBJState getOBJState(BlockState state)
+		default IEObjState getIEObjState(BlockState state)
 		{
-			return new OBJState(compileDisplayList(state), true);
+			return new IEObjState(compileDisplayList(state), TRSRTransformation.identity());
 		}
 	}
 
 	public interface IAdvancedHasObjProperty
 	{
-		OBJState getOBJState(BlockState state);
+		IEObjState getIEObjState(BlockState state);
 	}
 
 	public interface IDynamicTexture

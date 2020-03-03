@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/wooden_decoration/treated_wood_packaged"
+      "model": "immersiveengineering:block/treated_wood_packaged"
     }
   }
 }

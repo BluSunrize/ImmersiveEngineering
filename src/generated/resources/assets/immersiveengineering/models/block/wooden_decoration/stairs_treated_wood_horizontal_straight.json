@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "top": "immersiveengineering:block/wooden_decoration/treated_wood_horizontal",
-    "bottom": "immersiveengineering:block/wooden_decoration/treated_wood_horizontal",
-    "side": "immersiveengineering:block/wooden_decoration/treated_wood_horizontal"
-  }
-}

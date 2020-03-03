@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/metal/sheetmetal_constantan"
+      "model": "immersiveengineering:block/sheetmetal_constantan"
     }
   }
 }

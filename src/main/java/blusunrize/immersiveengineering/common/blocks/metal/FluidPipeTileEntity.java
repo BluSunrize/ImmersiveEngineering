@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -328,7 +330,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
+	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
 	{
 		return transform;
 	}
@@ -617,7 +619,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		return list;
 	}
 
-	public static HashMap<String, OBJState> cachedOBJStates = new HashMap<>();
+	public static HashMap<String, IEObjState> cachedOBJStates = new HashMap<>();
 
 	String getRenderCacheKey()
 	{
@@ -664,13 +666,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	}
 
 	@Override
-	public OBJState getOBJState(BlockState state)
+	public IEObjState getIEObjState(BlockState state)
 	{
 		String key = getRenderCacheKey();
 		return getStateFromKey(key);
 	}
 
-	public static OBJState getStateFromKey(String key)
+	public static IEObjState getStateFromKey(String key)
 	{
 		if(!cachedOBJStates.containsKey(key))
 		{
@@ -919,11 +921,11 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			tempMatr.invert();
 			rotationMatrix = rotationMatrix.multiply(tempMatr);
 
-			cachedOBJStates.put(key, new OBJState(parts, true, new TRSRTransformation(rotationMatrix.toMatrix4f())));
+			cachedOBJStates.put(key, new IEObjState(VisibilityList.show(parts),
+					new TRSRTransformation(rotationMatrix.toMatrix4f())));
 		}
 		return cachedOBJStates.get(key);
 	}
-
 
 	@Override
 	public int getRenderColour(int tintIndex)

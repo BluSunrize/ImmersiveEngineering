@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
@@ -32,7 +33,7 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 {
 	private final DynamicModel<Void> drill = DynamicModel.createSimple(
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_device/core_drill_center.obj"),
-			"sample_drill"
+			"sample_drill", ModelType.OBJ
 	);
 
 

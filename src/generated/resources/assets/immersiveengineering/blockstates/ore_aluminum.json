@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/metal/ore_aluminum"
+      "model": "immersiveengineering:block/ore_aluminum"
     }
   }
 }

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -35,7 +36,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IHasDummyBlocks, IHasObjProperty
 {
@@ -337,11 +337,9 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 				}
 	}
 
-	static ArrayList<String> emptyDisplayList = new ArrayList<>();
-
 	@Override
-	public List<String> compileDisplayList(BlockState state)
+	public VisibilityList compileDisplayList(BlockState state)
 	{
-		return emptyDisplayList;
+		return VisibilityList.hideAll();
 	}
 }

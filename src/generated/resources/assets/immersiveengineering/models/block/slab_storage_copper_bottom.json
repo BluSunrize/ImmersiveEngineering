@@ -1,0 +1,8 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "side": "immersiveengineering:block/metal/storage_copper",
+    "bottom": "immersiveengineering:block/metal/storage_copper",
+    "top": "immersiveengineering:block/metal/storage_copper"
+  }
+}

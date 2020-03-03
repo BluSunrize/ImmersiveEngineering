@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -33,7 +34,7 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 {
 	private final DynamicModel<Direction> barrel = DynamicModel.createSided(
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/crusher_drum.obj"),
-			"crusher_barrel"
+			"crusher_barrel", ModelType.OBJ
 	);
 
 	@Override

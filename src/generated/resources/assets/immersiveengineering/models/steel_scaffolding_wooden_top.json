@@ -1,8 +1,0 @@
-{
-  "parent": "immersiveengineering:block/ie_scaffolding",
-  "textures": {
-    "top": "immersiveengineering:block/metal_decoration/steel_scaffolding_top_wooden_top",
-    "side": "immersiveengineering:block/metal_decoration/steel_scaffolding",
-    "bottom": "immersiveengineering:block/metal_decoration/steel_scaffolding"
-  }
-}

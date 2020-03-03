@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/fence_post",
+  "parent": "block/fence_post",
   "textures": {
     "texture": "immersiveengineering:block/metal/storage_aluminum"
   }

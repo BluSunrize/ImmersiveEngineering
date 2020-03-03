@@ -8,7 +8,10 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler.IPlantHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
@@ -60,8 +63,9 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 				return;
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 			//TODO use a multi layer model?
-			IModelData data = new SinglePropertyModelData<>(new OBJState(Collections.singletonList("glass"), true),
-					Model.OBJ_STATE);
+			IModelData data = new SinglePropertyModelData<>(
+					new IEObjState(VisibilityList.show(Collections.singletonList("glass"))),
+					Model.IE_OBJ_STATE);
 			quads.put(tile.getFacing(), model.getQuads(state, null, Utils.RAND, data));
 		}
 		ClientUtils.bindAtlas();

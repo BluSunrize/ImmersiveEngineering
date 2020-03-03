@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "side": "immersiveengineering:block/metal/storage_aluminum",
+    "bottom": "immersiveengineering:block/metal/storage_aluminum",
+    "top": "immersiveengineering:block/metal/storage_aluminum"
+  }
+}

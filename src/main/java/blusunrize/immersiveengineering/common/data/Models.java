@@ -19,7 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.model.ModelFile;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFileIE;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
 import blusunrize.immersiveengineering.common.data.model.ModelGenerator;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper;
@@ -47,28 +47,7 @@ import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 public class Models extends ModelGenerator
 {
 	final Map<EnumMetals, MetalModels> metalModels = new HashMap<>();
-	final Map<Block, ModelFile> simpleBlocks = new HashMap<>();
-	final Map<Block, Map<SlabType, ModelFile>> slabs = new HashMap<>();
-	final Map<Block, Map<BasicStairsShape, ModelFile>> stairs = new HashMap<>();
-	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> aluScaffoldingStairs = new HashMap<>();
-	final Map<MetalScaffoldingType, Map<BasicStairsShape, ModelFile>> steelScaffoldingStairs = new HashMap<>();
 	final Map<EnumHempGrowth, ModelFile> hempGrowth = new EnumMap<>(EnumHempGrowth.class);
-
-	private static final ResourceLocation ALU_FENCE_TEXTURE = rl("block/metal/storage_aluminum");
-	private static final ResourceLocation STEEL_FENCE_TEXTURE = rl("block/metal/storage_steel");
-	private static final ResourceLocation TREATED_FENCE_TEXTURE = rl("block/wooden_decoration/treated_wood_horizontal");
-	final GeneratedModelFile treatedFencePost = ModelHelper.createFencePost(TREATED_FENCE_TEXTURE,
-			rl("block/wooden_decoration/treated_fence_post"));
-	final GeneratedModelFile steelFencePost = ModelHelper.createFencePost(STEEL_FENCE_TEXTURE,
-			rl("block/steel_fence_post"));
-	final GeneratedModelFile aluFencePost = ModelHelper.createFencePost(ALU_FENCE_TEXTURE,
-			rl("block/alu_fence_post"));
-	final GeneratedModelFile treatedFenceSide = ModelHelper.createFenceSide(TREATED_FENCE_TEXTURE,
-			rl("block/wooden_decoration/treated_fence_side"));
-	final GeneratedModelFile steelFenceSide = ModelHelper.createFenceSide(STEEL_FENCE_TEXTURE,
-			rl("block/steel_fence_side"));
-	final GeneratedModelFile aluFenceSide = ModelHelper.createFenceSide(ALU_FENCE_TEXTURE,
-			rl("block/alu_fence_side"));
 
 	final GeneratedModelFile blastFurnaceOff = ModelHelper.createThreeCubed(rl("block/multiblocks/blast_furnace_off"),
 			rl("block/multiblocks/blast_furnace"), rl("block/multiblocks/blast_furnace_off"));
@@ -162,8 +141,8 @@ public class Models extends ModelGenerator
 	final GeneratedModelFile chargingStation = ModelHelper.createMultilayer(
 			locForItemModel(MetalDevices.chargingStation),
 			ImmutableMap.of(
-					BlockRenderLayer.SOLID, new ExistingModelFile(rl("block/metal_device/charging_station.obj")),
-					BlockRenderLayer.TRANSLUCENT, new ExistingModelFile(rl("block/metal_device/charging_station_glass.obj"))
+					BlockRenderLayer.SOLID, new ExistingModelFileIE(rl("block/metal_device/charging_station.obj")),
+					BlockRenderLayer.TRANSLUCENT, new ExistingModelFileIE(rl("block/metal_device/charging_station_glass.obj"))
 			),
 			rl("item/block")
 	);
@@ -183,22 +162,6 @@ public class Models extends ModelGenerator
 	@Override
 	protected void registerModels(Consumer<GeneratedModelFile> out)
 	{
-		for(MetalModels mm : metalModels.values())
-		{
-			mm.register(out);
-			if(mm.storage!=null)
-				if(mm.metal==EnumMetals.URANIUM)
-					addSlabModel(Metals.storage.get(mm.metal), mm.storage, rl("block/metal/storage_"+mm.metal.tagName()+"_side"), rl("block/metal/storage_"+mm.metal.tagName()+"_top"), rl("block/metal/storage_"+mm.metal.tagName()+"_top"), out);
-				else
-					addSlabModel(Metals.storage.get(mm.metal), mm.storage, rl("block/metal/storage_"+mm.metal.tagName()), out);
-			addSlabModel(Metals.sheetmetal.get(mm.metal), mm.sheetmetal, rl("block/metal/sheetmetal_"+mm.metal.tagName()), out);
-		}
-		out.accept(treatedFencePost);
-		out.accept(treatedFenceSide);
-		out.accept(steelFencePost);
-		out.accept(steelFenceSide);
-		out.accept(aluFencePost);
-		out.accept(aluFenceSide);
 		out.accept(kineticDynamo);
 		out.accept(thermoelectricGen);
 
@@ -230,66 +193,6 @@ public class Models extends ModelGenerator
 				true
 		));
 		out.accept(cushion);
-
-		addSimpleBlockModel(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"), out);
-		addSimpleBlockModel(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"), out);
-		addSimpleBlockModel(StoneDecoration.blastbrickReinforced, rl("block/stone_decoration/blastbrick_reinforced"), out);
-		addSimpleBlockModel(StoneDecoration.coke, rl("block/stone_decoration/coke"), out);
-		addSimpleBlockModel(StoneDecoration.concrete, rl("block/stone_decoration/concrete"), out);
-		addSimpleBlockModel(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"), out);
-		addSimpleBlockModel(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"), out);
-		addSimpleBlockModel(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"), out);
-		addSimpleBlockModel(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"), out);
-		addSimpleBlockModel(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"), out);
-
-		for(TreatedWoodStyles style : TreatedWoodStyles.values())
-			addSimpleBlockModel(WoodenDecoration.treatedWood.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)), out);
-		addScaffoldingModel(WoodenDecoration.treatedScaffolding, rl("block/wooden_decoration/scaffolding"), rl("block/wooden_decoration/scaffolding_top"), out);
-
-		addSimpleBlockModel(MetalDecoration.lvCoil, rl("block/metal_decoration/coil_lv_side"), rl("block/metal_decoration/coil_lv_top"), out);
-		addSimpleBlockModel(MetalDecoration.mvCoil, rl("block/metal_decoration/coil_mv_side"), rl("block/metal_decoration/coil_mv_top"), out);
-		addSimpleBlockModel(MetalDecoration.hvCoil, rl("block/metal_decoration/coil_hv_side"), rl("block/metal_decoration/coil_hv_top"), out);
-		addSimpleBlockModel(MetalDecoration.engineeringRS, rl("block/metal_decoration/redstone_engineering"), out);
-		addSimpleBlockModel(MetalDecoration.engineeringHeavy, rl("block/metal_decoration/heavy_engineering"), out);
-		addSimpleBlockModel(MetalDecoration.engineeringLight, rl("block/metal_decoration/light_engineering"), out);
-		addSimpleBlockModel(MetalDecoration.generator, rl("block/metal_decoration/generator"), out);
-		addSimpleBlockModel(MetalDecoration.radiator, rl("block/metal_decoration/radiator"), out);
-		ResourceLocation aluSide = rl("block/metal_decoration/aluminum_scaffolding");
-		ResourceLocation steelSide = rl("block/metal_decoration/steel_scaffolding");
-		for(MetalScaffoldingType type : MetalScaffoldingType.values())
-		{
-			String suffix = "_"+type.name().toLowerCase(Locale.ENGLISH);
-			ResourceLocation aluTop = rl("block/metal_decoration/aluminum_scaffolding_top"+suffix);
-			ResourceLocation steelTop = rl("block/metal_decoration/steel_scaffolding_top"+suffix);
-			addScaffoldingModel(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop, out);
-			addScaffoldingModel(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, out);
-			addSlabModel(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop, aluSide, out);
-			addSlabModel(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, steelSide, out);
-			addStairModel(MetalDecoration.aluScaffoldingStair.get(type), "metal_decoration/stairs_alu_scaffolding"+suffix, aluSide, aluTop, aluSide, out);
-			addStairModel(MetalDecoration.steelScaffoldingStair.get(type), "metal_decoration/stairs_steel_scaffolding"+suffix, steelSide, steelTop, steelSide, out);
-		}
-
-		/* SLABS */
-		addSlabModel(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"), out);
-		addSlabModel(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"), out);
-		addSlabModel(StoneDecoration.blastbrickReinforced, rl("block/stone_decoration/blastbrick_reinforced"), out);
-		addSlabModel(StoneDecoration.coke, rl("block/stone_decoration/coke"), out);
-		addSlabModel(StoneDecoration.concrete, rl("block/stone_decoration/concrete"), out);
-		addSlabModel(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"), out);
-		addSlabModel(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"), out);
-		addSlabModel(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"), out);
-		addSlabModel(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"), out);
-		addSlabModel(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"), out);
-		for(TreatedWoodStyles style : TreatedWoodStyles.values())
-			addSlabModel(WoodenDecoration.treatedWood.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)), out);
-
-		/* STAIRS */
-		addStairModel(StoneDecoration.hempcreteStairs, "stone_decoration/stairs_hempcrete", rl("block/stone_decoration/hempcrete"), out);
-		addStairModel(StoneDecoration.concreteStairs[0], "stone_decoration/stairs_concrete", rl("block/stone_decoration/concrete"), out);
-		addStairModel(StoneDecoration.concreteStairs[1], "stone_decoration/stairs_concrete_tile", rl("block/stone_decoration/concrete_tile"), out);
-		addStairModel(StoneDecoration.concreteStairs[2], "stone_decoration/stairs_concrete_leaded", rl("block/stone_decoration/concrete_leaded"), out);
-		for(TreatedWoodStyles style : TreatedWoodStyles.values())
-			addStairModel(WoodenDecoration.treatedStairs.get(style), "wooden_decoration/stairs_treated_wood_"+style.name().toLowerCase(Locale.ENGLISH), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)), out);
 
 		/* ITEMS */
 		addItemModels("metal_", out, IEItems.Metals.ingots.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getRegistryName().getNamespace())).toArray(Item[]::new));
@@ -336,10 +239,6 @@ public class Models extends ModelGenerator
 				rl("item/voltmeter"),
 				true
 		));
-
-		out.accept(ModelHelper.createInventoryFence(ALU_FENCE_TEXTURE, locForItemModel(MetalDecoration.aluFence)));
-		out.accept(ModelHelper.createInventoryFence(STEEL_FENCE_TEXTURE, locForItemModel(MetalDecoration.steelFence)));
-		out.accept(ModelHelper.createInventoryFence(TREATED_FENCE_TEXTURE, locForItemModel(WoodenDecoration.treatedFence)));
 
 		out.accept(ModelHelper.create(
 				locForItemModel(StoneDecoration.concreteSprayed),
@@ -720,88 +619,6 @@ public class Models extends ModelGenerator
 			out.accept(model);
 			fluidModels.put(f.block, model);
 		}
-	}
-
-	private void addScaffoldingModel(Block block, ResourceLocation side, ResourceLocation top, Consumer<GeneratedModelFile> out)
-	{
-		addSimpleBlockModel(block, ModelHelper.createScaffolding(side, top, block.getRegistryName()), out);
-	}
-
-	private void addSlabModel(Block block, ResourceLocation texture, Consumer<GeneratedModelFile> out)
-	{
-		addSlabModel(block, texture, texture, texture, out);
-	}
-
-	private void addSlabModel(Block block, GeneratedModelFile blockModel, ResourceLocation texture, Consumer<GeneratedModelFile> out)
-	{
-		addSlabModel(block, blockModel, texture, texture, texture, out);
-	}
-
-	private void addSlabModel(Block block, ResourceLocation side, ResourceLocation top, ResourceLocation bottom, Consumer<GeneratedModelFile> out)
-	{
-		addSlabModel(block, (GeneratedModelFile)simpleBlocks.get(block), side, top, bottom, out);
-	}
-
-	private void addSlabModel(Block block, GeneratedModelFile blockModel, ResourceLocation side, ResourceLocation top, ResourceLocation bottom, Consumer<GeneratedModelFile> out)
-	{
-		Map<SlabType, ModelFile> map = new HashMap<>();
-		String defaultPath = blockModel.getUncheckedLocation().getPath();
-		GeneratedModelFile bottomModel = ModelHelper.createSlab(SlabType.BOTTOM, side, top, bottom, rl(defaultPath+"_slab"));
-		GeneratedModelFile topModel = ModelHelper.createSlab(SlabType.TOP, side, top, bottom, rl(defaultPath+"_slab_top"));
-		out.accept(topModel);
-		out.accept(bottomModel);
-		out.accept(bottomModel.createChild(locForItemModel(Item.getItemFromBlock(IEBlocks.toSlab.get(block)))));
-		map.put(SlabType.TOP, topModel);
-		map.put(SlabType.BOTTOM, bottomModel);
-		map.put(SlabType.DOUBLE, blockModel);
-		slabs.put(IEBlocks.toSlab.get(block), map);
-	}
-
-	private void addStairModel(Block stairBlock, String path, ResourceLocation texture, Consumer<GeneratedModelFile> out)
-	{
-		addStairModel(stairBlock, path, texture, texture, texture, out);
-	}
-
-	private void addStairModel(Block stairBlock, String path, ResourceLocation side, ResourceLocation top, ResourceLocation bottom, Consumer<GeneratedModelFile> out)
-	{
-		Map<BasicStairsShape, ModelFile> map = new HashMap<>();
-		for(BasicStairsShape s : BasicStairsShape.values())
-		{
-			String stairSuffix = "_"+s.name().toLowerCase(Locale.ENGLISH);
-			GeneratedModelFile model = ModelHelper.createStairs(s, side, top, bottom, rl("block/"+path+stairSuffix));
-			map.put(s, model);
-			out.accept(model);
-			if(s==BasicStairsShape.STRAIGHT)
-				out.accept(model.createChild(rl("item/"+path.substring(path.lastIndexOf("/")+1))));
-		}
-		stairs.put(stairBlock, map);
-	}
-
-	private void addSimpleBlockModel(Block b, ResourceLocation side, ResourceLocation topAndBottom,
-									 Consumer<GeneratedModelFile> out)
-	{
-		addSimpleBlockModel(b, side, topAndBottom, topAndBottom, out);
-	}
-
-	private void addSimpleBlockModel(Block b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom,
-									 Consumer<GeneratedModelFile> out)
-	{
-		GeneratedModelFile model = ModelHelper.createBasicCube(side, top, bottom, b.getRegistryName());
-		addSimpleBlockModel(b, model, out);
-	}
-
-	private void addSimpleBlockModel(Block b, ResourceLocation texture, Consumer<GeneratedModelFile> out)
-	{
-		GeneratedModelFile model = ModelHelper.createBasicCube(texture);
-		addSimpleBlockModel(b, model, out);
-	}
-
-	private void addSimpleBlockModel(Block b, GeneratedModelFile model, Consumer<GeneratedModelFile> out)
-	{
-		out.accept(model);
-//		out.accept(model.withLoc(locForItemModel(Item.getItemFromBlock(b))));
-		out.accept(model.createChild(locForItemModel(b)));
-		Preconditions.checkState(simpleBlocks.put(b, model)==null);
 	}
 
 	private void addItemModels(String texturePrefix, Consumer<GeneratedModelFile> out, Item... items)

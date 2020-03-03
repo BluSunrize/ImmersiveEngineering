@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -610,10 +611,10 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		return null;
 	}
 
-	static ArrayList<String> displayList = Lists.newArrayList("base");
+	static VisibilityList displayList = VisibilityList.show("base");
 
 	@Override
-	public List<String> compileDisplayList(BlockState state)
+	public VisibilityList compileDisplayList(BlockState state)
 	{
 		return displayList;
 	}

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:item/crate"
+      "model": "immersiveengineering:block/crate"
     }
   }
 }

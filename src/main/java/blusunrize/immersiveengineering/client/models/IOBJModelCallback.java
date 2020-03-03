@@ -22,7 +22,6 @@ import net.minecraftforge.common.model.TRSRTransformation;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 
 @SuppressWarnings("deprecation")
 //T must be ItemStack for Items or IBlockState for TileEntities implementing this
@@ -43,7 +42,7 @@ public interface IOBJModelCallback<T>
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	default Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform)
+	default TRSRTransformation applyTransformations(T object, String group, TRSRTransformation transform)
 	{
 		return transform;
 	}

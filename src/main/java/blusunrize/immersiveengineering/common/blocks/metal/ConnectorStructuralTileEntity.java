@@ -98,11 +98,11 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	}
 
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
+	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
 	{
-		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrixVec())).orElseGet(Matrix4::new);
+		Matrix4 mat = new Matrix4(transform.getMatrixVec());
 		mat = mat.translate(.5, 0, .5).rotate(Math.toRadians(rotation), 0, 1, 0).translate(-.5, 0, -.5);
-		transform = Optional.of(new TRSRTransformation(mat.toMatrix4f()));
+		transform = new TRSRTransformation(mat.toMatrix4f());
 		return transform;
 	}
 

@@ -50,6 +50,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 	@Override
 	public void renderByItem(ItemStack stack)
 	{
+		/*TODO
 		GlStateManager.enableCull();
 		float partialTicks = mc().getRenderPartialTicks();
 		if(stack.getItem() instanceof IOBJModelCallback)
@@ -80,12 +81,12 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 				}
 				IESmartObjModel obj = (IESmartObjModel)model;
 				Map<String, Boolean> visible;
-				if(obj.getState() instanceof OBJState)
-					visible = new HashMap<>(((OBJModel.OBJState)obj.getState()).getVisibilityMap());
+				if(obj.baseOld.getState() instanceof OBJState)
+					visible = new HashMap<>(((OBJModel.OBJState)obj.baseOld.getState()).getVisibilityMap());
 				else
 				{
 					visible = new HashMap<>();
-					for(String g : obj.getModel().getMatLib().getGroups().keySet())
+					for(String g : obj.baseOld.getModel().getMatLib().getGroups().keySet())
 						visible.put(g, true);
 				}
 				Tessellator tes = Tessellator.getInstance();
@@ -127,10 +128,11 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 				GlStateManager.enableCull();
 			}
 		}
+		 */
 	}
 
 	private void renderQuadsForGroups(String[] groups, IOBJModelCallback<ItemStack> callback, IESmartObjModel model,
-									  List<Pair<BakedQuad, ShaderLayer>> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
+									  List<BakedQuad> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
 									  boolean dynamic,
 									  BufferBuilder bb, Tessellator tes, Map<String, Boolean> visible, float partialTicks)
 	{
@@ -148,11 +150,10 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 		VertexBufferConsumer vbc = new VertexBufferConsumer(bb);
 		ShaderLayer lastShaderLayer = null;
-		for(Pair<BakedQuad, ShaderLayer> pair : quadsForGroup)
+		for(BakedQuad bq : quadsForGroup)
 		{
-			BakedQuad bq = pair.getKey();
-			ShaderLayer layer = pair.getValue();
 			//Switch to or between dynamic layers
+			/*TODO
 			boolean switchDynamic = layer!=lastShaderLayer;
 			if(switchDynamic)
 			{
@@ -174,6 +175,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
 			}
+			 */
 			bq.pipe(vbc);
 		}
 		tes.draw();

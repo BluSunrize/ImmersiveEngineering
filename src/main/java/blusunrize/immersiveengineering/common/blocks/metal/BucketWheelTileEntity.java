@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDynamicTexture;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
@@ -36,7 +37,6 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelTileEntity> implements IHasObjProperty, IDynamicTexture
 {
@@ -145,12 +145,10 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 		return new HashMap<>();
 	}
 
-	static ArrayList<String> emptyDisplayList = new ArrayList<>();
-
 	@Override
-	public List<String> compileDisplayList(BlockState state)
+	public VisibilityList compileDisplayList(BlockState state)
 	{
-		return emptyDisplayList;
+		return VisibilityList.hideAll();
 	}
 
 	@Override

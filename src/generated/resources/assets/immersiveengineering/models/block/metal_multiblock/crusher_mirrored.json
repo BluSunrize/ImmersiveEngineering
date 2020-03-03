@@ -1,0 +1,6 @@
+{
+  "parent": "block/block",
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_multiblock/crusher_mirrored.obj",
+  "flip-v": true
+}

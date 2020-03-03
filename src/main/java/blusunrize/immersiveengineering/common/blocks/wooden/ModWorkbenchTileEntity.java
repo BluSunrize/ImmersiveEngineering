@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -40,7 +41,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional,
 		IHasDummyBlocks, IInteractionObjectIE, IHasObjProperty
@@ -200,11 +200,11 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 		return null;
 	}
 
-	private static ArrayList<String> normalDisplayList = Lists.newArrayList("cube0");
-	private static ArrayList<String> blueprintDisplayList = Lists.newArrayList("cube0", "blueprint");
+	private static VisibilityList normalDisplayList = VisibilityList.show("cube0");
+	private static VisibilityList blueprintDisplayList = VisibilityList.show("cube0", "blueprint");
 
 	@Override
-	public List<String> compileDisplayList(BlockState state)
+	public VisibilityList compileDisplayList(BlockState state)
 	{
 		if(this.inventory.get(0).getItem() instanceof EngineersBlueprintItem)
 			return blueprintDisplayList;

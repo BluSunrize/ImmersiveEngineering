@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
@@ -195,12 +196,10 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 		return false;
 	}
 
-	static ArrayList<String> emptyDisplayList = new ArrayList();
-
 	@Override
-	public List<String> compileDisplayList(BlockState state)
+	public VisibilityList compileDisplayList(BlockState state)
 	{
-		return emptyDisplayList;
+		return VisibilityList.hideAll();
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/stone_decoration/blastbrick_reinforced"
+      "model": "immersiveengineering:block/blastbrick_reinforced"
     }
   }
 }

@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "side": "immersiveengineering:block/metal_decoration/coil_lv_side",
+    "bottom": "immersiveengineering:block/metal_decoration/coil_lv_top",
+    "top": "immersiveengineering:block/metal_decoration/coil_lv_top"
+  }
+}

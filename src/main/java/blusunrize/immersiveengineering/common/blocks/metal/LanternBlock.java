@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import com.google.common.collect.ImmutableMap;
@@ -52,13 +53,13 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 			.put(Direction.WEST, VoxelShapes.create(0.25, 0.0625, 0.25, 1, 0.875, 0.75))
 			.build();
 
-	private static final Map<Direction, List<String>> DISPLAY_LISTS = ImmutableMap.<Direction, List<String>>builder()
-			.put(Direction.DOWN, Lists.newArrayList("base", "attach_t"))
-			.put(Direction.UP, Lists.newArrayList("base", "attach_b"))
-			.put(Direction.NORTH, Lists.newArrayList("base", "attach_n"))
-			.put(Direction.SOUTH, Lists.newArrayList("base", "attach_s"))
-			.put(Direction.WEST, Lists.newArrayList("base", "attach_w"))
-			.put(Direction.EAST, Lists.newArrayList("base", "attach_e"))
+	private static final Map<Direction, VisibilityList> DISPLAY_LISTS = ImmutableMap.<Direction, VisibilityList>builder()
+			.put(Direction.DOWN, VisibilityList.show("base", "attach_t"))
+			.put(Direction.UP, VisibilityList.show("base", "attach_b"))
+			.put(Direction.NORTH, VisibilityList.show("base", "attach_n"))
+			.put(Direction.SOUTH, VisibilityList.show("base", "attach_s"))
+			.put(Direction.WEST, VisibilityList.show("base", "attach_w"))
+			.put(Direction.EAST, VisibilityList.show("base", "attach_e"))
 			.build();
 
 	@Override
@@ -68,7 +69,7 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 	}
 
 	@Override
-	public List<String> compileDisplayList(BlockState state)
+	public VisibilityList compileDisplayList(BlockState state)
 	{
 		return DISPLAY_LISTS.get(state.get(FACING));
 	}

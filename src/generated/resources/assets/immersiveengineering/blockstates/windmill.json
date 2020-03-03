@@ -1,28 +1,7 @@
 {
   "variants": {
-    "facing=north,multiblockslave=false": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=north,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=south,multiblockslave=false": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=south,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=west,multiblockslave=false": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=west,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=east,multiblockslave=false": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=east,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
+    "": {
+      "model": "immersiveengineering:block/windmill"
     }
   }
 }

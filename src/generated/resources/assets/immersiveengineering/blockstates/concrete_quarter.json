@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:item/concrete_quarter"
+      "model": "immersiveengineering:block/concrete_quarter"
     }
   }
 }

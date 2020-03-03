@@ -10,7 +10,10 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
@@ -44,7 +47,7 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 	private static List<BakedQuad>[] quads = new List[9];
 	private final DynamicModel<Void> model = DynamicModel.createSimple(
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/windmill.obj.ie"),
-			"windmill");
+			"windmill", ModelType.IE_OBJ);
 
 	@Override
 	public void render(WindmillTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
@@ -64,7 +67,8 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 			parts.add("base");
 			for(int i = 1; i <= tile.sails; i++)
 				parts.add("sail_"+i);
-			IModelData data = new SinglePropertyModelData<>(new OBJState(parts, true), IEProperties.Model.OBJ_STATE);
+			IModelData data = new SinglePropertyModelData<>(
+					new IEObjState(VisibilityList.show(parts)), IEProperties.Model.IE_OBJ_STATE);
 			quads[tile.sails] = model.getQuads(state, null, Utils.RAND, data);
 		}
 		Tessellator tessellator = Tessellator.getInstance();

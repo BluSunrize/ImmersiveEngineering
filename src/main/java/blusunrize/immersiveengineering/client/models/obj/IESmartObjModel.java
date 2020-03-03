@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
@@ -31,10 +32,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
@@ -46,17 +46,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.*;
+import net.minecraftforge.client.model.obj.OBJModel2;
+import net.minecraftforge.client.model.obj.OBJModel2.ModelGroup;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad.Builder;
-import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -65,35 +64,73 @@ import javax.vecmath.Matrix4f;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
-public class IESmartObjModel extends OBJBakedModel
+public class IESmartObjModel implements IBakedModel
 {
 	public static Cache<ComparableItemStack, IBakedModel> cachedBakedItemModels = CacheBuilder.newBuilder()
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
 	public static HashMap<RenderCacheKey, List<BakedQuad>> modelCache = new HashMap<>();
-	IBakedModel baseModel;
+
+	//TODO check which ones are still needed
 	HashMap<TransformType, Matrix4> transformationMap;
 	ImmutableList<BakedQuad> bakedQuads;
 	ItemStack tempStack = ItemStack.EMPTY;
 	BlockState tempState;
 	public LivingEntity tempEntity;
 	public static LivingEntity tempEntityStatic;
-	VertexFormat format;
-	Map<String, String> texReplace = null;
-	public TransformType lastCameraTransform = TransformType.FIXED;
-	boolean isDynamic;
+	public TransformType lastCameraTransform;
+	public boolean isDynamic;
 
-	public IESmartObjModel(IBakedModel baseModel, OBJModel model, IModelState state, VertexFormat format,
-						   ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4> transformationMap,
-						   boolean isDynamic)
+	private final OBJModel2 baseModel;
+	private final IBakedModel baseBaked;
+	private final IModelConfiguration owner;
+	private final ModelBakery bakery;
+	private final Function<ResourceLocation, TextureAtlasSprite> spriteGetter;
+	private final ISprite sprite;
+	private final VertexFormat format;
+
+	private final IEObjState state;
+
+	private static Field partsField;
+	static
 	{
-		model.super(model, state, format, textures);
+		try
+		{
+			partsField = OBJModel2.class.getDeclaredField("parts");
+			partsField.setAccessible(true);
+		} catch(NoSuchFieldException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private Map<String, ModelGroup> getParts()
+	{
+		try
+		{
+			return (Map<String, ModelGroup>)partsField.get(baseModel);
+		} catch(IllegalAccessException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	public IESmartObjModel(OBJModel2 baseModel, IBakedModel baseBaked, IModelConfiguration owner, ModelBakery bakery,
+						   Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite,
+						   VertexFormat format, IEObjState state)
+	{
+
 		this.baseModel = baseModel;
-		this.transformationMap = transformationMap;
+		this.baseBaked = baseBaked;
+		this.owner = owner;
+		this.bakery = bakery;
+		this.spriteGetter = spriteGetter;
+		this.sprite = sprite;
 		this.format = format;
-		this.isDynamic = isDynamic;
+		this.state = state;
 	}
 
 	@Override
@@ -102,13 +139,7 @@ public class IESmartObjModel extends OBJBakedModel
 		this.lastCameraTransform = cameraTransformType;
 		Matrix4 matrix;
 		if(transformationMap==null||transformationMap.isEmpty())
-		{
-			Matrix4f superMatrix = super.handlePerspective(cameraTransformType).getRight();
-			if(superMatrix!=null)
-				matrix = new Matrix4(superMatrix);
-			else
 				matrix = new Matrix4();
-		}
 		else
 			matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType).copy(): new Matrix4();
 
@@ -140,12 +171,39 @@ public class IESmartObjModel extends OBJBakedModel
 		return this.format;
 	}
 
+	@Nonnull
+	@Override
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand)
+	{
+		return ImmutableList.of();
+	}
+
+	@Override
+	public boolean isAmbientOcclusion()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isGui3d()
+	{
+		return true;
+	}
+
 	@Override
 	public boolean isBuiltInRenderer()
 	{
 		return isDynamic;
 	}
 
+	@Nonnull
+	@Override
+	public TextureAtlasSprite getParticleTexture()
+	{
+		return baseBaked.getParticleTexture();
+	}
+
+	@Nonnull
 	@Override
 	public ItemOverrideList getOverrides()
 	{
@@ -158,6 +216,8 @@ public class IESmartObjModel extends OBJBakedModel
 		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
 												 @Nullable World world, @Nullable LivingEntity entity)
 		{
+			return baseBaked;
+			/*TODO
 			tempEntityStatic = entity;
 			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack, false, true);
 			if(comp==null)
@@ -174,7 +234,7 @@ public class IESmartObjModel extends OBJBakedModel
 					TextureAtlasSprite missing = Minecraft.getInstance().getTextureMap()
 							.getAtlasSprite(new ResourceLocation("missingno").toString());
 
-					for(String s : newModel.getModel().getMatLib().getMaterialNames())
+					for(String s : newModel.baseOld.getModel().getMatLib().getMaterialNames())
 					{
 						TextureAtlasSprite sprite;
 						{
@@ -202,12 +262,12 @@ public class IESmartObjModel extends OBJBakedModel
 							sprite = ((IOBJModelCallback)stack.getItem()).getTextureReplacement(stack, s);
 						if(sprite==null)
 							sprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(
-									newModel.getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
+									newModel.baseOld.getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
 						builder.put(s, sprite);
 					}
 					builder.put("missingno", missing);
-					IESmartObjModel bakedModel = new IESmartObjModel(newModel.baseModel, newModel.getModel(), newModel.getState(),
-							newModel.getFormat(), builder.build(), transformationMap, isDynamic);
+					IESmartObjModel bakedModel = new IESmartObjModel(newModel.baseModel, baseBaked, newModel.baseOld.getModel(),
+							newModel.state, newModel.getFormat(), builder.build(), transformationMap, isDynamic);
 					bakedModel.tempStack = stack;
 					bakedModel.tempEntity = entity;
 					model = bakedModel;
@@ -223,18 +283,20 @@ public class IESmartObjModel extends OBJBakedModel
 				((IESmartObjModel)model).tempEntity = entity;
 			}
 			return model;
+			*/
 		}
 	};
 
+	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(BlockState blockState, Direction side, Random rand, IModelData modelData)
+	public List<BakedQuad> getQuads(BlockState blockState, Direction side, @Nonnull Random rand, @Nonnull IModelData modelData)
 	{
 		if(side!=null)
 			return ImmutableList.of();
-		OBJState objState = null;
+		IEObjState objState = null;
 		Map<String, String> tex = ImmutableMap.of();
-		if(modelData.hasProperty(Model.OBJ_STATE))
-			objState = modelData.getData(Model.OBJ_STATE);
+		if(modelData.hasProperty(Model.IE_OBJ_STATE))
+			objState = modelData.getData(Model.IE_OBJ_STATE);
 		if(modelData.hasProperty(Model.TEXTURE_REMAP))
 			tex = modelData.getData(Model.TEXTURE_REMAP);
 		return getQuads(blockState, side, rand.nextLong(), objState, tex, true, modelData);
@@ -247,8 +309,8 @@ public class IESmartObjModel extends OBJBakedModel
 		List<IModelData> customData = new ArrayList<>();
 		if(state.getBlock() instanceof IAdvancedHasObjProperty)
 			customData.add(new SinglePropertyModelData<>(
-					((IAdvancedHasObjProperty)state.getBlock()).getOBJState(state),
-					Model.OBJ_STATE
+					((IAdvancedHasObjProperty)state.getBlock()).getIEObjState(state),
+					Model.IE_OBJ_STATE
 			));
 		if(state.getBlock() instanceof IModelDataBlock)
 			customData.add(((IModelDataBlock)state.getBlock()).getModelData(world, pos, state, tileData));
@@ -258,7 +320,8 @@ public class IESmartObjModel extends OBJBakedModel
 			if(te instanceof IOBJModelCallback)
 				customData.add(new SinglePropertyModelData<>((IOBJModelCallback)te, IOBJModelCallback.PROPERTY));
 			if(te instanceof IAdvancedHasObjProperty)
-				customData.add(new SinglePropertyModelData<>(((IAdvancedHasObjProperty)te).getOBJState(state), Model.OBJ_STATE));
+				customData.add(new SinglePropertyModelData<>(((IAdvancedHasObjProperty)te).getIEObjState(state),
+						Model.IE_OBJ_STATE));
 			if(te!=null)
 			{
 				LazyOptional<ShaderWrapper> shaderCap = te.getCapability(CapabilityShader.SHADER_CAPABILITY);
@@ -271,7 +334,7 @@ public class IESmartObjModel extends OBJBakedModel
 		return new CombinedModelData(customData.toArray(new IModelData[0]));
 	}
 
-	public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand, OBJState objstate, Map<String, String> tex,
+	public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand, IEObjState visibility, Map<String, String> tex,
 									boolean addAnimationAndTex, IModelData modelData)
 	{
 		if(blockState==null)
@@ -280,35 +343,25 @@ public class IESmartObjModel extends OBJBakedModel
 				bakedQuads = ImmutableList.copyOf(buildQuads(modelData));
 			return bakedQuads;
 		}
-		texReplace = tex;
 		this.tempState = blockState;
 		RenderCacheKey adapter;
-		if(objstate!=null)
-		{
-			if(objstate.parent==null||objstate.parent==TRSRTransformation.identity())
-				objstate.parent = this.getState();
-			if(objstate.getVisibilityMap().containsKey(Group.ALL)||objstate.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
-				this.updateStateVisibilityMap(objstate);
-		}
 		String cacheKey = "";
 		if(blockState!=null&&modelData.hasProperty(IOBJModelCallback.PROPERTY))
 			cacheKey = modelData.getData(IOBJModelCallback.PROPERTY).getCacheKey(blockState);
 		if(addAnimationAndTex)
-			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), objstate, tex, cacheKey);
+			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), visibility, tex, cacheKey);
 		else
 			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), cacheKey);
 		List<BakedQuad> quads = modelCache.get(adapter);
 		if(quads==null)
 		{
-			IESmartObjModel model = null;
-			if(objstate!=null)
-				model = new IESmartObjModel(baseModel, getModel(), objstate, getFormat(), getTextures(),
-						transformationMap, isDynamic);
-			if(model==null)
-				model = new IESmartObjModel(baseModel, getModel(), this.getState(), getFormat(), getTextures(),
-						transformationMap, isDynamic);
+			IESmartObjModel model;
+			if(visibility!=null)
+				model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, visibility);
+			else
+				model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, this.state);
+
 			model.tempState = blockState;
-			model.texReplace = tex;
 			quads = model.buildQuads(modelData);
 			modelCache.put(adapter, quads);
 		}
@@ -351,10 +404,10 @@ public class IESmartObjModel extends OBJBakedModel
 			callback = data.getData(IOBJModelCallback.PROPERTY);
 			callbackObject = this.tempState;
 		}
-		for(String groupName : getModel().getMatLib().getGroups().keySet())
+		for(String groupName : getParts().keySet())
 		{
-			List<Pair<BakedQuad, ShaderLayer>> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, true);
-			quads.addAll(temp.stream().filter(Objects::nonNull).map(Pair::getKey).collect(Collectors.toList()));
+			List<BakedQuad> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, true);
+			quads.addAll(temp.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 		}
 
 		if(callback!=null)
@@ -362,150 +415,34 @@ public class IESmartObjModel extends OBJBakedModel
 		return ImmutableList.copyOf(quads);
 	}
 
-	private Cache<Pair<String, String>, List<Pair<BakedQuad, ShaderLayer>>> groupCache = CacheBuilder.newBuilder()
+	private Cache<Pair<String, String>, List<BakedQuad>> groupCache = CacheBuilder.newBuilder()
 			.maximumSize(100)
 			.build();
 
-	public <T> List<Pair<BakedQuad, ShaderLayer>> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject,
-																   String groupName, ShaderCase sCase,
-																   ItemStack shader, boolean allowCaching)
+	//TODO shaders
+	public <T> List<BakedQuad> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject,
+												String groupName, ShaderCase sCase,
+												ItemStack shader, boolean allowCaching)
 	{
 		String objCacheKey = callback!=null?callback.getCacheKey(callbackObject): "<none>";
 		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
 		if(allowCaching)
 		{
-			List<Pair<BakedQuad, ShaderLayer>> cached = groupCache.getIfPresent(cacheKey);
+			List<BakedQuad> cached = groupCache.getIfPresent(cacheKey);
 			if(cached!=null)
 				return cached;
 		}
 		int maxPasses = 1;
 		if(sCase!=null)
 			maxPasses = sCase.getLayers().length;
-		Group g = getModel().getMatLib().getGroups().get(groupName);
-		List<Face> faces = new ArrayList<>();
-		Optional<TRSRTransformation> transform = Optional.empty();
-		if(this.getState() instanceof OBJState)
-		{
-			OBJState state = (OBJState)this.getState();
-			if(state.parent!=null)
-				transform = state.parent.apply(Optional.empty());
-			if(callback!=null)
-				transform = callback.applyTransformations(callbackObject, groupName, transform);
-			if(state.getGroupsWithVisibility(true).contains(groupName))
-				faces.addAll(g.applyTransform(transform));
-		}
-		else
-		{
-			transform = getState().apply(Optional.empty());
-			if(callback!=null)
-				transform = callback.applyTransformations(callbackObject, groupName, transform);
-			faces.addAll(g.applyTransform(transform));
-		}
-		List<Pair<BakedQuad, ShaderLayer>> quads = new ArrayList<>(faces.size());
-		for(int pass = 0; pass < maxPasses; pass++)
-		{
-			ShaderLayer shaderLayer = sCase!=null?sCase.getLayers()[pass]: null;
-			if(callback!=null)
-				if(!callback.shouldRenderGroup(callbackObject, groupName))
-					continue;
-			if(sCase!=null)
-				if(!sCase.renderModelPartForPass(shader, tempStack, groupName, pass))
-					continue;
-
-			int argb = 0xffffffff;
-			if(sCase!=null)
-				argb = sCase.getARGBColourModifier(shader, tempStack, groupName, pass);
-			else if(callback!=null)
-				argb = callback.getRenderColour(callbackObject, groupName);
-
-			boolean dynQuad = false;
-
-			float[] colour = {(argb >> 16&255)/255f, (argb >> 8&255)/255f, (argb&255)/255f, (argb >> 24&255)/255f};
-
-			for(int faceId = 0; faceId < faces.size(); faceId++)
-			{
-				Face f = faces.get(faceId);
-				TextureAtlasSprite tempSprite = null;
-				if(this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite()&&!"null".equals(f.getMaterialName()))
-				{
-					for(Vertex v : f.getVertices())
-						if(!v.getMaterial().equals(this.getModel().getMatLib().getMaterial(v.getMaterial().getName())))
-							v.setMaterial(this.getModel().getMatLib().getMaterial(v.getMaterial().getName()));
-					tempSprite = ModelLoader.White.INSTANCE;
-				}
-				else
-				{
-					if(sCase!=null)
-					{
-						ResourceLocation rl = sCase.getReplacementSprite(shader, tempStack, groupName, pass);
-						if(rl!=null)
-							tempSprite = ClientUtils.getSprite(rl);
-					}
-					if(tempSprite==null&&callback!=null)
-						tempSprite = callback.getTextureReplacement(callbackObject, f.getMaterialName());
-					if(tempSprite==null&&tempState!=null&&texReplace!=null)
-					{
-						String s = texReplace.get(groupName);
-						if(s!=null)
-							tempSprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(s);
-					}
-					if(tempSprite==null&&!"null".equals(f.getMaterialName()))
-						tempSprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
-				}
-				if(tempSprite!=null)
-				{
-					Builder builder = new Builder(getFormat());
-					builder.setQuadOrientation(Direction.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
-					builder.setTexture(tempSprite);
-					builder.setQuadTint(pass);
-					Normal faceNormal = f.getNormal();
-					TextureCoordinate[] uvs = new TextureCoordinate[4];
-					boolean renderFace = true;
-					for(int i = 0; i < 4; i++)
-					{
-						Vertex vertex = f.getVertices()[i];
-						//V-Flip is processed here already, rather than in the later method, since it's needed for easy UV comparissons on the Shader Layers
-						uvs[i] = vertex.hasTextureCoordinate()?new TextureCoordinate(vertex.getTextureCoordinate().u, 1-vertex.getTextureCoordinate().v, vertex.getTextureCoordinate().w): TextureCoordinate.getDefaultUVs()[i];
-
-						if(shaderLayer!=null)
-						{
-							double[] texBounds = shaderLayer.getTextureBounds();
-							if(texBounds!=null)
-							{
-								if(texBounds[0] > uvs[i].u||uvs[i].u > texBounds[2]||texBounds[1] > uvs[i].v||uvs[i].v > texBounds[3])//if any uvs are outside the layers bounds
-								{
-									renderFace = false;
-									break;
-								}
-								double dU = texBounds[2]-texBounds[0];
-								double dV = texBounds[3]-texBounds[1];
-								//Rescaling to the partial bounds that the texture represents
-								uvs[i].u = (float)((uvs[i].u-texBounds[0])/dU);
-								uvs[i].v = (float)((uvs[i].v-texBounds[1])/dV);
-							}
-							//Rescaling to the selective area of the texture that is used
-							double[] cutBounds = shaderLayer.getCutoutBounds();
-							if(cutBounds!=null)
-							{
-								double dU = cutBounds[2]-cutBounds[0];
-								double dV = cutBounds[3]-cutBounds[1];
-								uvs[i].u = (float)(cutBounds[0]+dU*uvs[i].u);
-								uvs[i].v = (float)(cutBounds[1]+dV*uvs[i].v);
-							}
-						}
-					}
-					if(renderFace)
-					{
-						for(int i = 0; i < 4; i++)
-							putVertexData(builder, f.getVertices()[i], faceNormal, uvs[i], tempSprite, colour);
-						quads.add(new ImmutablePair<>(builder.build(),
-								shaderLayer!=null&&shaderLayer.isDynamicLayer()?shaderLayer: null));
-					}
-				}
-			}
-		}
-		if(allowCaching)
-			groupCache.put(cacheKey, quads);
+		ModelGroup g = getParts().get(groupName);
+		List<BakedQuad> quads = new ArrayList<>();
+		TRSRTransformation transform = state.transform;
+		if(callback!=null)
+			transform = callback.applyTransformations(callbackObject, groupName, transform);
+		if(state.visibility.isVisible(groupName))
+			//TODO transform?
+			g.addQuads(owner, new QuadListAdder(quads::add), bakery, spriteGetter, sprite, format);
 		return quads;
 	}
 
@@ -547,38 +484,6 @@ public class IESmartObjModel extends OBJBakedModel
 					break;
 				default:
 					builder.put(e);
-			}
-		}
-	}
-
-	protected void updateStateVisibilityMap(OBJState state)
-	{
-		if(state.getVisibilityMap().containsKey(Group.ALL))
-		{
-			boolean operation = state.getVisibilityMap().get(Group.ALL);
-			state.getVisibilityMap().clear();
-			for(String s : this.getModel().getMatLib().getGroups().keySet())
-			{
-				state.getVisibilityMap().put(s, OBJState.Operation.SET_TRUE.performOperation(operation));
-			}
-		}
-		else if(state.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
-		{
-			List<String> exceptList = state.getGroupNamesFromMap().subList(1, state.getGroupNamesFromMap().size());
-			state.getVisibilityMap().remove(Group.ALL_EXCEPT);
-			for(String s : this.getModel().getMatLib().getGroups().keySet())
-			{
-				if(!exceptList.contains(s))
-				{
-					state.getVisibilityMap().put(s, OBJState.Operation.SET_TRUE.performOperation(state.getVisibilityMap().get(s)));
-				}
-			}
-		}
-		else
-		{
-			for(String s : state.getVisibilityMap().keySet())
-			{
-				state.getVisibilityMap().put(s, OBJState.Operation.SET_TRUE.performOperation(state.getVisibilityMap().get(s)));
 			}
 		}
 	}

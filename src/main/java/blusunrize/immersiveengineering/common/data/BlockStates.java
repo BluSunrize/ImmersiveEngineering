@@ -10,7 +10,9 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
@@ -18,14 +20,18 @@ import blusunrize.immersiveengineering.common.blocks.generic.PostBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
+import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.Models.MetalModels;
-import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator;
+import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.IVariantModelGenerator;
+import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.MultiPart;
 import blusunrize.immersiveengineering.common.data.blockstate.VariantBlockstate.Builder;
-import blusunrize.immersiveengineering.common.data.model.ModelFile;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFile;
+import blusunrize.immersiveengineering.common.data.loadermodels.LoadedModelBuilder;
+import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFileIE;
 import blusunrize.immersiveengineering.common.data.model.ModelFile.UncheckedModelFile;
+import blusunrize.immersiveengineering.common.data.model.ModelHelper;
 import blusunrize.immersiveengineering.common.data.model.ModelHelper.BasicStairsShape;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -44,6 +50,9 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
+import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -56,94 +65,262 @@ import java.util.stream.Collectors;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
-public class BlockStates extends BlockstateGenerator
+public class BlockStates extends BlockStateProvider
 {
-	private static final ConfiguredModel EMPTY_MODEL = new ConfiguredModel(new ExistingModelFile(rl("block/ie_empty")));
-	private final Models models;
+	private static final ResourceLocation ALU_FENCE_TEXTURE = rl("block/metal/storage_aluminum");
+	private static final ResourceLocation STEEL_FENCE_TEXTURE = rl("block/metal/storage_steel");
+	private static final ResourceLocation TREATED_FENCE_TEXTURE = rl("block/wooden_decoration/treated_wood_horizontal");
+	private final ConfiguredModel EMPTY_MODEL = new ConfiguredModel(
+			new ExistingModelFile(modLoc("block/ie_empty"), existingFileHelper)
+	);
+	private final LoadedModels loadedModels;
 
-	public BlockStates(DataGenerator gen, Models models)
+	public BlockStates(DataGenerator gen, ExistingFileHelper exHelper, LoadedModels loaded)
 	{
-		super(gen);
-		this.models = models;
+		super(gen, MODID, exHelper);
+		loadedModels = loaded;
+	}
+
+	private String name(Block b)
+	{
+		return b.getRegistryName().getPath();
+	}
+
+	private void cubeSideVertical(Block b, ResourceLocation side, ResourceLocation vertical)
+	{
+		simpleBlock(b, cubeBottomTop(name(b), side, vertical, vertical));
+	}
+
+	private void cubeAll(Block b, ResourceLocation texture)
+	{
+		simpleBlock(b, cubeAll(name(b), texture));
+	}
+
+	private void scaffold(Block b, ResourceLocation others, ResourceLocation top)
+	{
+		simpleBlock(
+				b,
+				withExistingParent(name(b), modLoc("block/ie_scaffolding"))
+						.texture("side", others)
+						.texture("bottom", others)
+						.texture("top", top)
+		);
+	}
+
+	private void slabFor(Block b, ResourceLocation texture) {
+		slabFor(b, texture, texture, texture);
+	}
+
+	private void slabFor(Block b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom) {
+		slab(IEBlocks.toSlab.get(b), side, top, bottom);
+	}
+
+	private void slab(SlabBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom) {
+		slabBlock(
+				b,
+				cubeBottomTop(name(b)+"_double", side, bottom, top),
+				slabTop(name(b)+"_top", side, bottom, top),
+				slab(name(b)+"_bottom", side, bottom, top)
+		);
+	}
+
+	private void stairs(StairsBlock b, ResourceLocation texture) {
+		stairs(b, texture, texture, texture);
+	}
+
+	private void stairs(StairsBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom) {
+		stairsBlock(b, name(b), side, bottom, top);
+	}
+
+	private ResourceLocation forgeLoc(String path) {
+		return new ResourceLocation("forge", path);
+	}
+
+	private ResourceLocation addModelsPrefix(ResourceLocation in) {
+		return new ResourceLocation(in.getNamespace(), "models/"+in.getPath());
+	}
+
+	private void postBlock(Block b, ResourceLocation texture) {
+		ResourceLocation model = rl("block/wooden_device/wooden_post.obj.ie");
+		ModelHelper.assertModelExists(model);
+		LoadedModelBuilder modelFile = loadedModels.withExistingParent(name(b), mcLoc("block"))
+				.loader(modLoc("ie_obj"))
+				.additional("model", addModelsPrefix(model))
+				.additional("flip-v", true)
+				.texture("texture", texture);
+		getVariantBuilder(b)
+				.partialState()
+				.with(PostBlock.POST_SLAVE, 0)
+				.setModels(new ConfiguredModel(modelFile));
+		for (int i = 1;i<=3;++i)
+			getVariantBuilder(b)
+					.partialState()
+					.with(PostBlock.POST_SLAVE, i)
+					.setModels(EMPTY_MODEL);
+	}
+
+	private ModelFile obj(String loc) {
+		Preconditions.checkArgument(loc.endsWith(".obj"));
+		return obj(loc.substring(0, loc.length()-4), modLoc(loc));
+	}
+		private ModelFile obj(String name, ResourceLocation model) {
+		return loadedModels.withExistingParent(name, mcLoc("block"))
+				.loader(forgeLoc("obj"))
+				.additional("model", addModelsPrefix(model))
+				.additional("flip-v", true);
 	}
 
 	@Override
-	protected void registerStates(BiConsumer<Block, IVariantModelGenerator> variantBased, BiConsumer<Block, List<MultiPart>> multipartBased)
+	protected void registerStatesAndModels()
 	{
+		BiConsumer<Block, IVariantModelGenerator> variantBased = null;
+		BiConsumer<Block, List<MultiPart>> multipartBased = null;
 		for(EnumMetals m : EnumMetals.values())
 		{
-			MetalModels metalModels = models.metalModels.get(m);
+			String name = m.tagName();
 			if(!m.isVanillaMetal())
 			{
 				if(m.shouldAddOre())
-					createBasicBlock(Metals.ores.get(m), metalModels.ore, variantBased);
-				createBasicBlock(Metals.storage.get(m), metalModels.storage, variantBased);
+					cubeAll(Metals.ores.get(m), modLoc("block/metal/ore_"+name));
+				ResourceLocation defaultStorageTexture = modLoc("block/metal/storage_"+name);
+				Block storage = Metals.storage.get(m);
+				String storageName = name(storage);
+				BlockModelBuilder storageModel;
+				if(m==EnumMetals.URANIUM)
+				{
+					ResourceLocation side = modLoc("block/metal/storage_"+name+"_side");
+					ResourceLocation top = modLoc("block/metal/storage_"+name+"_top");
+					storageModel = cubeBottomTop(storageName, side, top, top);
+					slabFor(storage, side, top, top);
+				}
+				else
+				{
+					storageModel = cubeAll(storageName, defaultStorageTexture);
+					slabFor(storage, defaultStorageTexture);
+				}
+				simpleBlock(storage, storageModel);
 			}
-			createBasicBlock(Metals.sheetmetal.get(m), metalModels.sheetmetal, variantBased);
+			ResourceLocation sheetmetalName = modLoc("block/metal/sheetmetal_"+name);
+			cubeAll(Metals.sheetmetal.get(m), sheetmetalName);
+			slabFor(Metals.sheetmetal.get(m), sheetmetalName);
 		}
-		createFenceBlock(WoodenDecoration.treatedFence, models.treatedFencePost, models.treatedFenceSide, multipartBased);
-		createFenceBlock(MetalDecoration.steelFence, models.steelFencePost, models.steelFenceSide, multipartBased);
-		createFenceBlock(MetalDecoration.aluFence, models.aluFencePost, models.aluFenceSide, multipartBased);
-		for(Entry<Block, ModelFile> entry : models.simpleBlocks.entrySet())
-			createBasicBlock(entry.getKey(), entry.getValue(), variantBased);
-		for(Entry<Block, Map<SlabType, ModelFile>> entry : models.slabs.entrySet())
-			createSlabBlock(entry.getKey(), entry.getValue(), SlabBlock.TYPE, variantBased);
-		for(Entry<Block, Map<BasicStairsShape, ModelFile>> entry : models.stairs.entrySet())
-			createStairsBlock(entry.getKey(), entry.getValue(), StairsBlock.FACING, StairsBlock.HALF, StairsBlock.SHAPE, variantBased);
+		fenceBlock(WoodenDecoration.treatedFence, TREATED_FENCE_TEXTURE);
+		fenceBlock(MetalDecoration.steelFence, STEEL_FENCE_TEXTURE);
+		fenceBlock(MetalDecoration.aluFence, ALU_FENCE_TEXTURE);
 
-		createMultiblock(Multiblocks.excavator, new ExistingModelFile(rl("block/metal_multiblock/excavator.obj")),
-				new ExistingModelFile(rl("block/metal_multiblock/excavator_mirrored.obj")),
-				variantBased);
-		createMultiblock(Multiblocks.crusher, new ExistingModelFile(rl("block/metal_multiblock/crusher_mirrored.obj")),
-				new ExistingModelFile(rl("block/metal_multiblock/crusher.obj")),
-				variantBased);
-		createMultiblock(Multiblocks.metalPress, new ExistingModelFile(rl("block/metal_multiblock/metal_press.obj")), variantBased);
-		createMultiblock(Multiblocks.assembler, new ExistingModelFile(rl("block/metal_multiblock/assembler.obj")), variantBased);
+		cubeAll(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"));
+		cubeAll(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"));
+		cubeAll(StoneDecoration.blastbrickReinforced, rl("block/stone_decoration/blastbrick_reinforced"));
+		cubeAll(StoneDecoration.coke, rl("block/stone_decoration/coke"));
+		cubeAll(StoneDecoration.concrete, rl("block/stone_decoration/concrete"));
+		cubeAll(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"));
+		cubeAll(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"));
+		cubeAll(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"));
+		cubeAll(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"));
+		cubeAll(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"));
+
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
+			cubeAll(WoodenDecoration.treatedWood.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
+		cubeSideVertical(MetalDecoration.lvCoil, rl("block/metal_decoration/coil_lv_side"), rl("block/metal_decoration/coil_lv_top"));
+		cubeSideVertical(MetalDecoration.mvCoil, rl("block/metal_decoration/coil_mv_side"), rl("block/metal_decoration/coil_mv_top"));
+		cubeSideVertical(MetalDecoration.hvCoil, rl("block/metal_decoration/coil_hv_side"), rl("block/metal_decoration/coil_hv_top"));
+		cubeAll(MetalDecoration.engineeringRS, rl("block/metal_decoration/redstone_engineering"));
+		cubeAll(MetalDecoration.engineeringHeavy, rl("block/metal_decoration/heavy_engineering"));
+		cubeAll(MetalDecoration.engineeringLight, rl("block/metal_decoration/light_engineering"));
+		cubeAll(MetalDecoration.generator, rl("block/metal_decoration/generator"));
+		cubeAll(MetalDecoration.radiator, rl("block/metal_decoration/radiator"));
+
+		scaffold(WoodenDecoration.treatedScaffolding, rl("block/wooden_decoration/scaffolding"), rl("block/wooden_decoration/scaffolding_top"));
+
+		ResourceLocation aluSide = rl("block/metal_decoration/aluminum_scaffolding");
+		ResourceLocation steelSide = rl("block/metal_decoration/steel_scaffolding");
+		for(MetalScaffoldingType type : MetalScaffoldingType.values())
+		{
+			String suffix = "_"+type.name().toLowerCase(Locale.ENGLISH);
+			ResourceLocation aluTop = rl("block/metal_decoration/aluminum_scaffolding_top"+suffix);
+			ResourceLocation steelTop = rl("block/metal_decoration/steel_scaffolding_top"+suffix);
+			scaffold(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop);
+			scaffold(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop);
+			slabFor(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop, aluSide);
+			slabFor(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, steelSide);
+			stairs(MetalDecoration.aluScaffoldingStair.get(type), aluSide, aluTop, aluSide);
+			stairs(MetalDecoration.steelScaffoldingStair.get(type), steelSide, steelTop, steelSide);
+		}
+		slabFor(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"));
+		slabFor(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"));
+		slabFor(StoneDecoration.blastbrickReinforced, rl("block/stone_decoration/blastbrick_reinforced"));
+		slabFor(StoneDecoration.coke, rl("block/stone_decoration/coke"));
+		slabFor(StoneDecoration.concrete, rl("block/stone_decoration/concrete"));
+		slabFor(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"));
+		slabFor(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"));
+		slabFor(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"));
+		slabFor(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"));
+		slabFor(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"));
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
+			slabFor(WoodenDecoration.treatedWood.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
+
+		stairs(StoneDecoration.hempcreteStairs, rl("block/stone_decoration/hempcrete"));
+		stairs(StoneDecoration.concreteStairs[0], rl("block/stone_decoration/concrete"));
+		stairs(StoneDecoration.concreteStairs[1], rl("block/stone_decoration/concrete_tile"));
+		stairs(StoneDecoration.concreteStairs[2], rl("block/stone_decoration/concrete_leaded"));
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
+			stairs(WoodenDecoration.treatedStairs.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
+
+		postBlock(WoodenDecoration.treatedPost, rl("block/wooden_decoration/post"));
+		postBlock(MetalDecoration.steelPost, rl("block/metal_decoration/steel_post"));
+		postBlock(MetalDecoration.aluPost, rl("block/metal_decoration/aluminum_post"));
+		createMultiblock(Multiblocks.excavator, obj("block/metal_multiblock/excavator.obj"),
+				obj("block/metal_multiblock/excavator_mirrored.obj"));
+		createMultiblock(Multiblocks.crusher, obj("block/metal_multiblock/crusher_mirrored.obj"),
+				obj("block/metal_multiblock/crusher.obj"));
+		createMultiblock(Multiblocks.metalPress, obj("block/metal_multiblock/metal_press.obj"));
+		createMultiblock(Multiblocks.assembler, obj("block/metal_multiblock/assembler.obj"));
+		/*
 		{
 			IVariantModelGenerator gen = new Builder(Multiblocks.bucketWheel)
 					.setForAllWithState(ImmutableMap.of(), EMPTY_MODEL)
 					.build();
 			variantBased.accept(Multiblocks.bucketWheel, gen);
 		}
-		createMultiblock(Multiblocks.arcFurnace, new ExistingModelFile(rl("block/metal_multiblock/arc_furnace.obj")),
-				new ExistingModelFile(rl("block/metal_multiblock/arc_furnace_mirrored.obj")), variantBased);
+		createMultiblock(Multiblocks.arcFurnace, new ExistingModelFileIE(rl("block/metal_multiblock/arc_furnace.obj")),
+				new ExistingModelFileIE(rl("block/metal_multiblock/arc_furnace_mirrored.obj")), variantBased);
 
-		createMultiblock(Multiblocks.blastFurnaceAdv, new ExistingModelFile(rl("block/blastfurnace_advanced.obj")), variantBased);
+		createMultiblock(Multiblocks.blastFurnaceAdv, new ExistingModelFileIE(rl("block/blastfurnace_advanced.obj")), variantBased);
 		createMultiblock(Multiblocks.cokeOven, models.cokeOvenOff, models.cokeOvenOn, IEProperties.MULTIBLOCKSLAVE,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
 		createMultiblock(Multiblocks.alloySmelter, models.alloySmelterOff, models.alloySmelterOn, IEProperties.MULTIBLOCKSLAVE,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
 		createMultiblock(Multiblocks.blastFurnace, models.blastFurnaceOff, models.blastFurnaceOn, IEProperties.MULTIBLOCKSLAVE,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180, variantBased);
-		createMultiblock(Multiblocks.silo, new ExistingModelFile(rl("block/metal_multiblock/silo.obj")), variantBased);
-		createMultiblock(Multiblocks.tank, new ExistingModelFile(rl("block/metal_multiblock/tank.obj")), variantBased);
+		createMultiblock(Multiblocks.silo, new ExistingModelFileIE(rl("block/metal_multiblock/silo.obj")), variantBased);
+		createMultiblock(Multiblocks.tank, new ExistingModelFileIE(rl("block/metal_multiblock/tank.obj")), variantBased);
 		createMultiblock(Multiblocks.bottlingMachine,
-				new ExistingModelFile(rl("block/metal_multiblock/bottling_machine.obj")),
-				new ExistingModelFile(rl("block/metal_multiblock/bottling_machine_mirrored.obj")), variantBased);
+				new ExistingModelFileIE(rl("block/metal_multiblock/bottling_machine.obj")),
+				new ExistingModelFileIE(rl("block/metal_multiblock/bottling_machine_mirrored.obj")), variantBased);
 		createMultiblock(Multiblocks.fermenter,
-				new ExistingModelFile(rl("block/metal_multiblock/fermenter.obj")),
-				new ExistingModelFile(rl("block/metal_multiblock/fermenter_mirrored.obj")), variantBased);
+				new ExistingModelFileIE(rl("block/metal_multiblock/fermenter.obj")),
+				new ExistingModelFileIE(rl("block/metal_multiblock/fermenter_mirrored.obj")), variantBased);
 		createMultiblock(Multiblocks.squeezer,
-				new ExistingModelFile(rl("block/metal_multiblock/squeezer.obj")),
-				new ExistingModelFile(rl("block/metal_multiblock/squeezer_mirrored.obj")), variantBased);
+				new ExistingModelFileIE(rl("block/metal_multiblock/squeezer.obj")),
+				new ExistingModelFileIE(rl("block/metal_multiblock/squeezer_mirrored.obj")), variantBased);
 		createMultiblock(Multiblocks.mixer,
-				new ExistingModelFile(rl("block/metal_multiblock/mixer.obj")),
-				new ExistingModelFile(rl("block/metal_multiblock/mixer_mirrored.obj")), variantBased);
+				new ExistingModelFileIE(rl("block/metal_multiblock/mixer.obj")),
+				new ExistingModelFileIE(rl("block/metal_multiblock/mixer_mirrored.obj")), variantBased);
 		createMultiblock(Multiblocks.refinery,
-				new ExistingModelFile(rl("block/metal_multiblock/refinery.obj")),
-				new ExistingModelFile(rl("block/metal_multiblock/refinery_mirrored.obj")), variantBased);
+				new ExistingModelFileIE(rl("block/metal_multiblock/refinery.obj")),
+				new ExistingModelFileIE(rl("block/metal_multiblock/refinery_mirrored.obj")), variantBased);
 		createMultiblock(Multiblocks.dieselGenerator,
-				new ExistingModelFile(rl("block/metal_multiblock/diesel_generator.obj")),
-				new ExistingModelFile(rl("block/metal_multiblock/diesel_generator_mirrored.obj")), variantBased);
+				new ExistingModelFileIE(rl("block/metal_multiblock/diesel_generator.obj")),
+				new ExistingModelFileIE(rl("block/metal_multiblock/diesel_generator_mirrored.obj")), variantBased);
 		createMultiblock(Multiblocks.lightningrod,
-				new ExistingModelFile(rl("block/metal_multiblock/lightningrod.obj")), variantBased);
-		createMultiblock(WoodenDevices.workbench, new ExistingModelFile(rl("block/wooden_device/workbench.obj.ie")),
+				new ExistingModelFileIE(rl("block/metal_multiblock/lightningrod.obj")), variantBased);
+		createMultiblock(WoodenDevices.workbench, new ExistingModelFileIE(rl("block/wooden_device/workbench.obj.ie")),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180,
 				variantBased);
-		createMultiblock(MetalDevices.sampleDrill, new ExistingModelFile(rl("block/metal_device/core_drill.obj")),
+		createMultiblock(MetalDevices.sampleDrill, new ExistingModelFileIE(rl("block/metal_device/core_drill.obj")),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180,
 				variantBased);
-		createBasicBlock(MetalDevices.fluidPipe, new ExistingModelFile(rl("block/metal_device/fluid_pipe.obj.ie")),
+		createBasicBlock(MetalDevices.fluidPipe, new ExistingModelFileIE(rl("block/metal_device/fluid_pipe.obj.ie")),
 				variantBased);
 		createConnector(
 				MetalDevices.floodlight,
@@ -154,37 +331,37 @@ public class BlockStates extends BlockstateGenerator
 		);
 		createMultiblock(
 				MetalDevices.belljar,
-				new ExistingModelFile(rl("block/metal_device/belljar.obj.ie")),
+				new ExistingModelFileIE(rl("block/metal_device/belljar.obj.ie")),
 				variantBased
 		);
 		createMultiblock(
 				MetalDevices.turretChem,
-				new ExistingModelFile(rl("block/metal_device/chem_turret.obj.ie")),
+				new ExistingModelFileIE(rl("block/metal_device/chem_turret.obj.ie")),
 				variantBased
 		);
 		createMultiblock(
 				MetalDevices.turretGun,
-				new ExistingModelFile(rl("block/metal_device/gun_turret.obj.ie")),
+				new ExistingModelFileIE(rl("block/metal_device/gun_turret.obj.ie")),
 				variantBased
 		);
-		createMultiblock(MetalDevices.teslaCoil, new ExistingModelFile(rl("block/metal_device/teslacoil.obj")),
+		createMultiblock(MetalDevices.teslaCoil, new ExistingModelFileIE(rl("block/metal_device/teslacoil.obj")),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_ALL, null,
 				180, variantBased);
 		createBasicBlock(Misc.fakeLight, EMPTY_MODEL, variantBased);
 
-		createPostBlock(MetalDecoration.aluPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
+		createPostBlock(MetalDecoration.aluPost, new ExistingModelFileIE(rl("block/wooden_device/wooden_post.obj.ie")),
 				rl("block/metal_decoration/aluminum_post"),
 				variantBased);
-		createPostBlock(MetalDecoration.steelPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
+		createPostBlock(MetalDecoration.steelPost, new ExistingModelFileIE(rl("block/wooden_device/wooden_post.obj.ie")),
 				rl("block/metal_decoration/steel_post"),
 				variantBased);
-		createPostBlock(WoodenDecoration.treatedPost, new ExistingModelFile(rl("block/wooden_device/wooden_post.obj.ie")),
+		createPostBlock(WoodenDecoration.treatedPost, new ExistingModelFileIE(rl("block/wooden_device/wooden_post.obj.ie")),
 				rl("block/wooden_decoration/post"),
 				variantBased);
 		createMultistateSingleModel(WoodenDevices.windmill, EMPTY_MODEL, variantBased);
 		createMultistateSingleModel(WoodenDevices.watermill, EMPTY_MODEL, variantBased);
 		createMultistateSingleModel(MetalDecoration.lantern,
-				new ConfiguredModel(new ExistingModelFile(rl("block/lantern.obj.ie"))),
+				new ConfiguredModel(new ExistingModelFileIE(rl("block/lantern.obj.ie"))),
 				variantBased);
 
 		createDirectionalBlock(MetalDecoration.metalLadder.get(CoverType.NONE), IEProperties.FACING_HORIZONTAL,
@@ -199,13 +376,13 @@ public class BlockStates extends BlockstateGenerator
 		createWallmount(MetalDecoration.steelWallmount, rl("block/metal_decoration/steel_wallmount"), variantBased);
 		createMultistateSingleModel(
 				MetalDecoration.slopeSteel,
-				new ConfiguredModel(new ExistingModelFile(rl("block/slope.obj.ie"))),
+				new ConfiguredModel(new ExistingModelFileIE(rl("block/slope.obj.ie"))),
 				variantBased
 		);
 		createMultistateSingleModel(
 				MetalDecoration.slopeAlu,
 				new ConfiguredModel(
-						new ExistingModelFile(rl("block/slope.obj.ie")),
+						new ExistingModelFileIE(rl("block/slope.obj.ie")),
 						0,
 						0,
 						true,
@@ -295,12 +472,12 @@ public class BlockStates extends BlockstateGenerator
 		}, ImmutableMap.of(), variantBased, ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), BlockRenderLayer.SOLID);
 		createConnector(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"), ImmutableMap.of(), variantBased);
 
-		createRotatedBlock(StoneDecoration.coresample, map -> new ExistingModelFile(rl("block/coresample.obj")),
+		createRotatedBlock(StoneDecoration.coresample, map -> new ExistingModelFileIE(rl("block/coresample.obj")),
 				IEProperties.FACING_HORIZONTAL, ImmutableList.of(), ImmutableMap.of(), variantBased);
 		createBasicBlock(StoneDecoration.concreteSheet, models.sheetConcreteBlock, variantBased);
 		createBasicBlock(StoneDecoration.concreteQuarter, models.quarterConcreteBlock, variantBased);
 		createBasicBlock(StoneDecoration.concreteThreeQuarter, models.threeQuarterConcreteBlock, variantBased);
-		createBasicBlock(StoneDecoration.concreteSprayed, new ExistingModelFile(rl("block/sprayed_concrete.obj")),
+		createBasicBlock(StoneDecoration.concreteSprayed, new ExistingModelFileIE(rl("block/sprayed_concrete.obj")),
 				variantBased);
 
 		createBasicBlock(WoodenDevices.crate, models.crate, variantBased);
@@ -315,7 +492,7 @@ public class BlockStates extends BlockstateGenerator
 		createConnector(Cloth.balloon, map -> rl("block/balloon.obj.ie"), ImmutableMap.of(), variantBased,
 				ImmutableList.of(), BlockRenderLayer.SOLID);
 		createRotatedBlock(Cloth.curtain,
-				state -> new ExistingModelFile(rl(
+				state -> new ExistingModelFileIE(rl(
 						state.get(StripCurtainBlock.CEILING_ATTACHED)==Boolean.FALSE?
 								"block/stripcurtain":
 								"block/stripcurtain_middle"
@@ -336,7 +513,7 @@ public class BlockStates extends BlockstateGenerator
 					new UncheckedModelFile(rl("smartmodel/conf_sides_hud_metal_device/capacitor_"+cap.getValue())),
 					variantBased);
 		createMultiblock(MetalDevices.blastFurnacePreheater,
-				new ExistingModelFile(rl("block/metal_device/blastfurnace_preheater.obj")),
+				new ExistingModelFileIE(rl("block/metal_device/blastfurnace_preheater.obj")),
 				variantBased);
 		createRotatedBlock(MetalDevices.furnaceHeater, props -> {
 					if(props.get(IEProperties.ACTIVE)==Boolean.TRUE)
@@ -350,8 +527,8 @@ public class BlockStates extends BlockstateGenerator
 				ImmutableList.of(), ImmutableMap.of(), variantBased);
 		createBasicBlock(MetalDevices.thermoelectricGen, models.thermoelectricGen, variantBased);
 		{
-			ModelFile solid = new ExistingModelFile(rl("block/metal_device/charging_station.obj"));
-			ModelFile translucent = new ExistingModelFile(rl("block/metal_device/charging_station_glass.obj"));
+			ModelFile solid = new ExistingModelFileIE(rl("block/metal_device/charging_station.obj"));
+			ModelFile translucent = new ExistingModelFileIE(rl("block/metal_device/charging_station_glass.obj"));
 			ImmutableMap.Builder<String, Object> additional = ImmutableMap.builder();
 			additional.put(BlockRenderLayer.SOLID.name(), ImmutableMap.of("model", solid.getLocation()));
 			additional.put(BlockRenderLayer.TRANSLUCENT.name(), ImmutableMap.of("model", translucent.getLocation()));
@@ -368,16 +545,24 @@ public class BlockStates extends BlockstateGenerator
 		createHemp(variantBased);
 		for(Block b : models.fluidModels.keySet())
 			createMultistateSingleModel(b, new ConfiguredModel(models.fluidModels.get(b)), variantBased);
-		createRotatedBlock(MetalDevices.toolbox, state -> new ExistingModelFile(rl("block/toolbox.obj")),
+		createRotatedBlock(MetalDevices.toolbox, state -> new ExistingModelFileIE(rl("block/toolbox.obj")),
 				IEProperties.FACING_HORIZONTAL, ImmutableList.of(),
 				ImmutableMap.of(), variantBased);
+		 */
+		//TODO remove, this is a workaround for the broken missing model
+		for (Block b : IEContent.registeredIEBlocks) {
+			if (!registeredBlocks.containsKey(b)) {
+				cubeAll(b, rl("block/metal_decoration/radiator"));
+			}
+		}
+		loadedModels.backupModels();
 	}
-
+/*
 	private void createPump(BiConsumer<Block, IVariantModelGenerator> variantBased)
 	{
 		Builder builder = new Builder(MetalDevices.fluidPump);
 		builder.setForAllWithState(ImmutableMap.of(IEProperties.MULTIBLOCKSLAVE, true),
-				new ConfiguredModel(new ExistingModelFile(rl("block/metal_device/fluid_pump.obj")),
+				new ConfiguredModel(new ExistingModelFileIE(rl("block/metal_device/fluid_pump.obj")),
 						0, 0, false, ImmutableMap.of("flip-v", true)));
 		builder.setForAllWithState(ImmutableMap.of(IEProperties.MULTIBLOCKSLAVE, false),
 				new ConfiguredModel(new UncheckedModelFile(rl("smartmodel/conf_sides_hv_metal_device/fluid_pump"))));
@@ -503,31 +688,29 @@ public class BlockStates extends BlockstateGenerator
 		}
 		out.accept(block, parts);
 	}
+	*/
 
-	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel, int rotationOffset,
-								  BiConsumer<Block, IVariantModelGenerator> out)
+	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel, int rotationOffset)
 	{
-		createMultiblock(b, masterModel, mirroredModel, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED, rotationOffset, out);
+		createMultiblock(b, masterModel, mirroredModel, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED, rotationOffset);
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel,
-								  BiConsumer<Block, IVariantModelGenerator> out)
+	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel)
 	{
-		createMultiblock(b, masterModel, mirroredModel, 180, out);
+		createMultiblock(b, masterModel, mirroredModel, 180);
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel, BiConsumer<Block, IVariantModelGenerator> out)
+	private void createMultiblock(Block b, ModelFile masterModel)
 	{
-		createMultiblock(b, masterModel, null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180, out);
+		createMultiblock(b, masterModel, null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180);
 	}
 
 	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, IProperty<Boolean> isSlave,
-								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset,
-								  BiConsumer<Block, IVariantModelGenerator> out)
+								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset)
 	{
 		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
-		Builder builder = new Builder(b);
-		builder.setForAllWithState(ImmutableMap.of(isSlave, true), EMPTY_MODEL);
+		VariantBlockStateBuilder builder = getVariantBuilder(b);
+		builder.partialState().with(isSlave, true).setModels(EMPTY_MODEL);
 		boolean[] possibleMirrorStates;
 		if(mirroredState!=null)
 			possibleMirrorStates = new boolean[]{false, true};
@@ -552,27 +735,13 @@ public class BlockStates extends BlockstateGenerator
 					angleX = 0;
 				}
 				ModelFile model = mirrored?mirroredModel: masterModel;
-				ImmutableMap.Builder<IProperty<?>, Object> partialState = ImmutableMap.builder();
-				partialState.put(isSlave, Boolean.FALSE)
-						.put(facing, dir);
+				PartialBlockstate partialState = builder.partialState()
+						.with(isSlave, false)
+						.with(facing, dir);
 				if(mirroredState!=null)
-					partialState.put(mirroredState, mirrored);
-				builder.setForAllWithState(partialState.build(),
-						new ConfiguredModel(model, angleX, angleY, true, ImmutableMap.of("flip-v", true)));
+					partialState = partialState.with(mirroredState, mirrored);
+				partialState.setModels(new ConfiguredModel(model, angleX, angleY, true));
 			}
-		out.accept(b, builder.build());
-	}
-
-	private void createPostBlock(Block b, ModelFile masterModel, ResourceLocation texture, BiConsumer<Block, IVariantModelGenerator> out)
-	{
-		Builder builder = new Builder(b);
-		for(int i : PostBlock.POST_SLAVE.getAllowedValues())
-			if(i!=0)
-				builder.setForAllWithState(ImmutableMap.of(PostBlock.POST_SLAVE, i), EMPTY_MODEL);
-		builder.setForAllWithState(ImmutableMap.of(PostBlock.POST_SLAVE, 0),
-				new ConfiguredModel(masterModel, 0, 0, true, ImmutableMap.of("flip-v", true),
-						ImmutableMap.of("#immersiveengineering:block/wooden_decoration/post", texture.toString())));
-		out.accept(b, builder.build());
 	}
 
 	private int getAngle(Direction dir, int offset)
@@ -580,6 +749,7 @@ public class BlockStates extends BlockstateGenerator
 		return (int)((dir.getHorizontalAngle()+offset)%360);
 	}
 
+	/*
 	private void createDirectionalBlock(Block b, IProperty<Direction> prop, ModelFile model, BiConsumer<Block, IVariantModelGenerator> out)
 	{
 		Builder builder = new Builder(b);
@@ -600,7 +770,7 @@ public class BlockStates extends BlockstateGenerator
 				ResourceLocation model = rl("block/wooden_device/wallmount"+or.modelSuffix()+".obj");
 				builder.setForAllWithState(
 						ImmutableMap.of(IEProperties.FACING_HORIZONTAL, d, WallmountBlock.ORIENTATION, or),
-						new ConfiguredModel(new ExistingModelFile(model), 0, rotation, true,
+						new ConfiguredModel(new ExistingModelFileIE(model), 0, rotation, true,
 								ImmutableMap.of("flip-v", true),
 								ImmutableMap.of("#immersiveengineering:block/wooden_device/wallmount", texture.toString())));
 			}
@@ -717,4 +887,5 @@ public class BlockStates extends BlockstateGenerator
 					new ConfiguredModel(models.hempGrowth.get(g)));
 		out.accept(Misc.hempPlant, builder.build());
 	}
+ */
 }
