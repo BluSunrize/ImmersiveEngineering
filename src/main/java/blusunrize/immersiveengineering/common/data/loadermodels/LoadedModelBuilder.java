@@ -9,12 +9,14 @@
 package blusunrize.immersiveengineering.common.data.loadermodels;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 public class LoadedModelBuilder extends ModelBuilder<LoadedModelBuilder>
@@ -26,22 +28,41 @@ public class LoadedModelBuilder extends ModelBuilder<LoadedModelBuilder>
 		super(outputLocation, existingFileHelper);
 	}
 
-	public LoadedModelBuilder loader(ResourceLocation loader) {
+	public LoadedModelBuilder loader(ResourceLocation loader)
+	{
 		this.loader = loader;
 		return this;
 	}
 
-	public LoadedModelBuilder additional(String name, ResourceLocation value) {
+	public LoadedModelBuilder additional(String name, ResourceLocation value)
+	{
 		return additional(name, value.toString());
 	}
 
-	public LoadedModelBuilder additional(String name, boolean value) {
+	public LoadedModelBuilder additional(String name, List<String> value)
+	{
+		JsonArray arr = new JsonArray();
+		for(String s : value)
+			arr.add(s);
+		additional.add(name, arr);
+		return this;
+	}
+
+	public LoadedModelBuilder additional(String name, boolean value)
+	{
 		additional.addProperty(name, value);
 		return this;
 	}
 
-	public LoadedModelBuilder additional(String name, String value) {
+	public LoadedModelBuilder additional(String name, String value)
+	{
 		additional.addProperty(name, value);
+		return this;
+	}
+
+	public LoadedModelBuilder additional(String name, JsonElement value)
+	{
+		additional.add(name, value);
 		return this;
 	}
 
@@ -51,7 +72,8 @@ public class LoadedModelBuilder extends ModelBuilder<LoadedModelBuilder>
 		Preconditions.checkNotNull(loader);
 		JsonObject ret = super.toJson();
 		ret.addProperty("loader", loader.toString());
-		for (Entry<String, JsonElement> entry : additional.entrySet()) {
+		for(Entry<String, JsonElement> entry : additional.entrySet())
+		{
 			Preconditions.checkState(!ret.has(entry.getKey()));
 			ret.add(entry.getKey(), entry.getValue());
 		}

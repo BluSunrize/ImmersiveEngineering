@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
+//This still uses the old model loader system
+@Deprecated
 public class ModelData
 {
 	@Nonnull
