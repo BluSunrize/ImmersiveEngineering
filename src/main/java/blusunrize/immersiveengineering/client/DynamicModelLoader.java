@@ -195,7 +195,7 @@ public class DynamicModelLoader
 		private static ModelRequest withModel(ResourceLocation model, ResourceLocation loader, int rotY)
 		{
 			JsonObject json = new JsonObject();
-			json.addProperty("model", model.toString());
+			json.addProperty("model", new ResourceLocation(model.getNamespace(), "models/"+model.getPath()).toString());
 			json.addProperty("flip-v", true);
 			return new ModelRequest(loader, json, 0, rotY, true);
 		}
