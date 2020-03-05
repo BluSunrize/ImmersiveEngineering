@@ -60,9 +60,9 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 		else
 			model = null;
 		List<BlockRenderLayer> layers = ImmutableList.of(BlockRenderLayer.SOLID);
-		if(baseModelData.has("layers")&&baseModelData.get("layers").isJsonArray())
+		if(modelContents.has("layers")&&modelContents.get("layers").isJsonArray())
 		{
-			JsonArray arr = baseModelData.get("layers").getAsJsonArray();
+			JsonArray arr = modelContents.get("layers").getAsJsonArray();
 			layers = new ArrayList<>(arr.size());
 			for(JsonElement ele : arr)
 			{
