@@ -1,7 +1,10 @@
 {
   "parent": "immersiveengineering:block/wooden_device/wooden_post_inv.obj",
-  "display-trsr": {
-    "first_person_right_hand": {
+  "textures": {
+    "post": "immersiveengineering:block/wooden_decoration/post"
+  },
+  "display": {
+    "firstperson_righthand": {
       "translation": [0.4375, 0.4375, 0.4375],
       "rotation": [0.0, 0.0, 0.0, 1.0],
       "scale": [0.125, 0.125, 0.125],
@@ -31,13 +34,13 @@
       "scale": [0.18749999, 0.1875, 0.18749999],
       "post-rotation": [0.0, 0.0, 0.0, 1.0]
     },
-    "first_person_left_hand": {
+    "firstperson_lefthand": {
       "translation": [0.4375, 0.4375, 0.4375],
       "rotation": [0.0, 0.0, 0.0, 1.0],
       "scale": [0.125, 0.125, 0.125],
       "post-rotation": [0.0, 0.0, 0.0, 1.0]
     },
-    "third_person_right_hand": {
+    "thirdperson_righthand": {
       "translation": [0.4375, 0.6623545, 0.24801795],
       "rotation": [0.57357645, 0.0, 0.0, 0.819152],
       "scale": [0.125, 0.12500001, 0.12500001],
@@ -49,7 +52,7 @@
       "scale": [0.125, 0.125, 0.125],
       "post-rotation": [0.0, 0.0, 0.0, 1.0]
     },
-    "third_person_left_hand": {
+    "thirdperson_lefthand": {
       "translation": [0.4375, 0.6623545, 0.24801795],
       "rotation": [0.57357645, 0.0, 0.0, 0.819152],
       "scale": [0.125, 0.12500001, 0.12500001],

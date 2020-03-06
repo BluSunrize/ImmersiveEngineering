@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
+import net.minecraft.block.FenceBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.data.DataGenerator;
@@ -65,6 +66,7 @@ public class BlockStates extends BlockStateProvider
 			new ExistingModelFile(modLoc("block/ie_empty"), existingFileHelper)
 	);
 	private final LoadedModels loadedModels;
+	final Map<Block, ModelFile> itemModels = new HashMap<>();
 
 	public BlockStates(DataGenerator gen, ExistingFileHelper exHelper, LoadedModels loaded)
 	{
@@ -77,19 +79,30 @@ public class BlockStates extends BlockStateProvider
 		return b.getRegistryName().getPath();
 	}
 
+	private void simpleBlockItem(Block b, ModelFile model)
+	{
+		simpleBlockItem(b, new ConfiguredModel(model));
+	}
+
+	private void simpleBlockItem(Block b, ConfiguredModel model)
+	{
+		simpleBlock(b, model);
+		itemModels.put(b, model.model);
+	}
+
 	private void cubeSideVertical(Block b, ResourceLocation side, ResourceLocation vertical)
 	{
-		simpleBlock(b, cubeBottomTop(name(b), side, vertical, vertical));
+		simpleBlockItem(b, cubeBottomTop(name(b), side, vertical, vertical));
 	}
 
 	private void cubeAll(Block b, ResourceLocation texture)
 	{
-		simpleBlock(b, cubeAll(name(b), texture));
+		simpleBlockItem(b, cubeAll(name(b), texture));
 	}
 
 	private void scaffold(Block b, ResourceLocation others, ResourceLocation top)
 	{
-		simpleBlock(
+		simpleBlockItem(
 				b,
 				withExistingParent(name(b), modLoc("block/ie_scaffolding"))
 						.texture("side", others)
@@ -106,21 +119,30 @@ public class BlockStates extends BlockStateProvider
 		slab(IEBlocks.toSlab.get(b), side, top, bottom);
 	}
 
-	private void slab(SlabBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom) {
+	private void slab(SlabBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
+	{
+		ModelFile mainModel = slab(name(b)+"_bottom", side, bottom, top);
 		slabBlock(
 				b,
 				cubeBottomTop(name(b)+"_double", side, bottom, top),
 				slabTop(name(b)+"_top", side, bottom, top),
-				slab(name(b)+"_bottom", side, bottom, top)
+				mainModel
 		);
+		itemModels.put(b, mainModel);
 	}
 
 	private void stairs(StairsBlock b, ResourceLocation texture) {
 		stairs(b, texture, texture, texture);
 	}
 
-	private void stairs(StairsBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom) {
-		stairsBlock(b, name(b), side, bottom, top);
+	private void stairs(StairsBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
+	{
+		String baseName = name(b);
+		ModelFile stairs = stairs(baseName, side, bottom, top);
+		ModelFile stairsInner = stairsInner(baseName+"_inner", side, bottom, top);
+		ModelFile stairsOuter = stairsOuter(baseName+"_outer", side, bottom, top);
+		stairsBlock(b, stairs, stairsInner, stairsOuter);
+		itemModels.put(b, stairs);
 	}
 
 	private ResourceLocation forgeLoc(String path) {
@@ -235,7 +257,7 @@ public class BlockStates extends BlockStateProvider
 					storageModel = cubeAll(storageName, defaultStorageTexture);
 					slabFor(storage, defaultStorageTexture);
 				}
-				simpleBlock(storage, storageModel);
+				simpleBlockItem(storage, storageModel);
 			}
 			ResourceLocation sheetmetalName = modLoc("block/metal/sheetmetal_"+name);
 			cubeAll(Metals.sheetmetal.get(m), sheetmetalName);
@@ -328,7 +350,7 @@ public class BlockStates extends BlockStateProvider
 		createMultiblock(MetalDevices.teslaCoil, obj("block/metal_device/teslacoil.obj"),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_ALL, null,
 				180);
-		simpleBlock(Misc.fakeLight, EMPTY_MODEL);
+		simpleBlockItem(Misc.fakeLight, EMPTY_MODEL);
 
 		createMultistateSingleModel(WoodenDevices.windmill, EMPTY_MODEL);
 		createMultistateSingleModel(WoodenDevices.watermill, EMPTY_MODEL);
@@ -371,22 +393,26 @@ public class BlockStates extends BlockStateProvider
 		createRotatedBlock(StoneDecoration.coresample, map -> obj("block/coresample.obj"),
 				IEProperties.FACING_HORIZONTAL, ImmutableList.of());
 		ResourceLocation concreteTexture = rl("block/stone_decoration/concrete");
-		simpleBlock(StoneDecoration.concreteSheet, carpet("concrete_sheet", concreteTexture));
-		simpleBlock(StoneDecoration.concreteQuarter, quarter("concrete_quarter", concreteTexture));
-		simpleBlock(StoneDecoration.concreteThreeQuarter, threeQuarter("concrete_quarter", concreteTexture));
+		simpleBlockItem(StoneDecoration.concreteSheet, carpet("concrete_sheet", concreteTexture));
+		simpleBlockItem(StoneDecoration.concreteQuarter, quarter("concrete_quarter", concreteTexture));
+		simpleBlockItem(StoneDecoration.concreteThreeQuarter, threeQuarter("concrete_quarter", concreteTexture));
 		simpleBlock(StoneDecoration.concreteSprayed, obj("block/sprayed_concrete.obj"));
 
 		cubeAll(WoodenDevices.crate, modLoc("block/wooden_device/crate"));
 		cubeAll(WoodenDevices.reinforcedCrate, modLoc("block/wooden_device/reinforced_crate"));
-		createMultistateSingleModel(WoodenDevices.gunpowderBarrel, new ConfiguredModel(cubeBottomTop(
-				"gunpowder_barrel", rl("block/wooden_device/gunpowder_barrel"),
-				rl("block/wooden_device/barrel_up_none"), rl("block/wooden_device/gunpowder_barrel_top")
-		)));
-		simpleBlock(WoodenDevices.sorter, createRouterModel(rl("block/wooden_device/sorter"),
+		{
+			ModelFile gunpowderModel = cubeBottomTop(
+					"gunpowder_barrel", rl("block/wooden_device/gunpowder_barrel"),
+					rl("block/wooden_device/barrel_up_none"), rl("block/wooden_device/gunpowder_barrel_top")
+			);
+			createMultistateSingleModel(WoodenDevices.gunpowderBarrel, new ConfiguredModel(gunpowderModel));
+			itemModels.put(WoodenDevices.gunpowderBarrel, gunpowderModel);
+		}
+		simpleBlockItem(WoodenDevices.sorter, createRouterModel(rl("block/wooden_device/sorter"),
 				"router"));
-		simpleBlock(WoodenDevices.fluidSorter, createRouterModel(rl("block/wooden_device/fluid_sorter"),
+		simpleBlockItem(WoodenDevices.fluidSorter, createRouterModel(rl("block/wooden_device/fluid_sorter"),
 				"fluid_router"));
-		simpleBlock(WoodenDevices.woodenBarrel,
+		simpleBlockItem(WoodenDevices.woodenBarrel,
 				new UncheckedModelFile(rl("smartmodel/conf_sides_v_wooden_device/barrel")));
 
 		createRotatedBlock(Cloth.curtain,
@@ -399,7 +425,7 @@ public class BlockStates extends BlockStateProvider
 		cubeAll(Cloth.cushion, modLoc("block/cushion"));
 		createMultistateSingleModel(Cloth.shaderBanner, EMPTY_MODEL);
 
-		simpleBlock(MetalDevices.barrel,
+		simpleBlockItem(MetalDevices.barrel,
 				new UncheckedModelFile(rl("smartmodel/conf_sides_v_metal_device/barrel")));
 		for(Entry<Block, String> cap : ImmutableMap.of(
 				MetalDevices.capacitorCreative, "creative",
@@ -407,7 +433,7 @@ public class BlockStates extends BlockStateProvider
 				MetalDevices.capacitorMV, "mv",
 				MetalDevices.capacitorHV, "hv"
 		).entrySet())
-			simpleBlock(cap.getKey(),
+			simpleBlockItem(cap.getKey(),
 					new UncheckedModelFile(rl("smartmodel/conf_sides_hud_metal_device/capacitor_"+cap.getValue())));
 		createMultiblock(MetalDevices.blastFurnacePreheater,
 				obj("block/metal_device/blastfurnace_preheater.obj"));
@@ -439,7 +465,7 @@ public class BlockStates extends BlockStateProvider
 			createRotatedBlock(MetalDevices.dynamo, state -> kineticDynamo, IEProperties.FACING_HORIZONTAL,
 					ImmutableList.of());
 		}
-		simpleBlock(MetalDevices.thermoelectricGen, new ConfiguredModel(cubeBottomTop(
+		simpleBlockItem(MetalDevices.thermoelectricGen, new ConfiguredModel(cubeBottomTop(
 				"thermoelectric_generator",
 				modLoc("block/metal_device/thermoelectric_gen_side"),
 				modLoc("block/metal_device/thermoelectric_gen_bottom"),
@@ -473,6 +499,14 @@ public class BlockStates extends BlockStateProvider
 				IEProperties.FACING_HORIZONTAL, ImmutableList.of());
 
 		loadedModels.backupModels();
+	}
+
+	protected void fenceBlock(FenceBlock b, ResourceLocation texture)
+	{
+		super.fenceBlock(b, texture);
+		itemModels.put(b,
+				withExistingParent(b.getRegistryName().getPath()+"_inventory", mcLoc("block/fence_inventory"))
+						.texture("texture", texture));
 	}
 
 	private ModelFile retexture(String name, ResourceLocation baseModel, ImmutableMap<String, ResourceLocation> textures)

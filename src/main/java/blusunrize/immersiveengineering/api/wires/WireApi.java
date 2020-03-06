@@ -135,8 +135,9 @@ public final class WireApi
 			} catch(Exception e)
 			{
 				e.printStackTrace();
-				model = ModelLoaderRegistry.getMissingModel();
 			}
+			//TODO
+			model = ModelLoaderRegistry.getMissingModel();
 			if(model instanceof OBJModel)
 			{
 				OBJModel obj = (OBJModel)model;

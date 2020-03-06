@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
-public class Models extends ModelGenerator
+public class ModelsOld extends ModelGenerator
 {
 	final Map<EnumMetals, MetalModels> metalModels = new HashMap<>();
 	final Map<EnumHempGrowth, ModelFile> hempGrowth = new EnumMap<>(EnumHempGrowth.class);
@@ -147,7 +147,7 @@ public class Models extends ModelGenerator
 
 	final Map<Block, ModelFile> fluidModels = new HashMap<>();
 
-	public Models(DataGenerator gen)
+	public ModelsOld(DataGenerator gen)
 	{
 		super(gen);
 		for(EnumMetals m : EnumMetals.values())

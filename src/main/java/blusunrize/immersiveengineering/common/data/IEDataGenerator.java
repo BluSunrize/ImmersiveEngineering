@@ -33,10 +33,12 @@ public class IEDataGenerator
 			gen.addProvider(new BlockLoot(gen));
 			gen.addProvider(new GeneralLoot(gen));
 			ModelHelper.EXISTING_FILE_HELPER = event.getExistingFileHelper();
-			gen.addProvider(new Models(gen));
+			gen.addProvider(new ModelsOld(gen));
 			LoadedModels loadedModels = new LoadedModels(gen, event.getExistingFileHelper());
-			gen.addProvider(new BlockStates(gen, event.getExistingFileHelper(), loadedModels));
+			BlockStates blockStates = new BlockStates(gen, event.getExistingFileHelper(), loadedModels);
+			gen.addProvider(blockStates);
 			gen.addProvider(loadedModels);
+			gen.addProvider(new ItemModels(gen, event.getExistingFileHelper(), blockStates));
 		}
 	}
 
