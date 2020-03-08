@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.data.loadermodels.LoadedModelBuilder;
-import blusunrize.immersiveengineering.common.data.loadermodels.LoadedModelProvider;
+import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
+import blusunrize.immersiveengineering.common.data.models.LoadedModelProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;

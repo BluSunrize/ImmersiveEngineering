@@ -6,9 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.data.model;
+package blusunrize.immersiveengineering.common.data.model_old;
 
-import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
+import blusunrize.immersiveengineering.common.data.model_old.ModelFile.GeneratedModelFile;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -3,8 +3,8 @@
   "textures": {
     "#immersiveengineering:block/metal_decoration/steel_scaffolding": "immersiveengineering:block/metal_decoration/aluminum_scaffolding"
   },
-  "display-trsr": {
-    "third_person_left_hand": {
+  "transform": {
+    "thirdperson_lefthand": {
       "translation": [0.0, 0.0, 0.0],
       "rotation": [0.0, 0.0, 0.0, 1.0],
       "scale": [1.0, 1.0, 1.0],
@@ -34,13 +34,13 @@
       "scale": [0.5, 0.5, 0.5],
       "post-rotation": [0.0, 0.0, 0.0, 1.0]
     },
-    "first_person_right_hand": {
+    "firstperson_righthand": {
       "translation": [0.2171573, 0.3, 0.5],
       "rotation": [0.0, 0.38268346, 0.0, 0.9238795],
       "scale": [0.4, 0.4, 0.4],
       "post-rotation": [0.0, 0.0, 0.0, 1.0]
     },
-    "first_person_left_hand": {
+    "firstperson_lefthand": {
       "translation": [0.78284276, 0.3, 0.50000006],
       "rotation": [0.0, 0.9238796, 0.0, -0.3826834],
       "scale": [0.40000007, 0.40000004, 0.40000007],
@@ -52,7 +52,7 @@
       "scale": [1.0, 1.0, 1.0],
       "post-rotation": [0.0, 0.0, 0.0, 1.0]
     },
-    "third_person_right_hand": {
+    "thirdperson_righthand": {
       "translation": [0.23483497, 2.9514713, 0.31888893],
       "rotation": [0.5624222, 0.3036032, 0.23296294, 0.7329629],
       "scale": [0.37499994, 0.3749999, 0.37499994],

@@ -6,9 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.data.blockstate;
+package blusunrize.immersiveengineering.common.data.blockstate_old;
 
-import blusunrize.immersiveengineering.common.data.model.ModelFile;
+import blusunrize.immersiveengineering.common.data.model_old.ModelFile;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;

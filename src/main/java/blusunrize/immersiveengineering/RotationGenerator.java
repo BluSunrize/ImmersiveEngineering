@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering;
 
-import blusunrize.immersiveengineering.common.data.model.ModelHelper.TransformationMap;
+import blusunrize.immersiveengineering.common.data.model_old.ModelHelperOld.TransformationMap;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 

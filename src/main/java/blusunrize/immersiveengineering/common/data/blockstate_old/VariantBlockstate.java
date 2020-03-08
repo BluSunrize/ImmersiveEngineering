@@ -6,9 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.data.blockstate;
+package blusunrize.immersiveengineering.common.data.blockstate_old;
 
-import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator.ConfiguredModel;
+import blusunrize.immersiveengineering.common.data.blockstate_old.BlockstateGenerator.ConfiguredModel;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

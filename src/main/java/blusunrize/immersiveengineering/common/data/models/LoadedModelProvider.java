@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.data.loadermodels;
+package blusunrize.immersiveengineering.common.data.models;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;

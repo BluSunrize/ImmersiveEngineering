@@ -8,21 +8,18 @@
 
 package blusunrize.immersiveengineering.common.data;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.blocks.EnumMetals;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
-import blusunrize.immersiveengineering.common.data.model.ModelFile;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFileIE;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
-import blusunrize.immersiveengineering.common.data.model.ModelGenerator;
-import blusunrize.immersiveengineering.common.data.model.ModelHelper;
+import blusunrize.immersiveengineering.common.data.model_old.ModelFile;
+import blusunrize.immersiveengineering.common.data.model_old.ModelFile.ExistingModelFileIE;
+import blusunrize.immersiveengineering.common.data.model_old.ModelFile.GeneratedModelFile;
+import blusunrize.immersiveengineering.common.data.model_old.ModelGenerator;
+import blusunrize.immersiveengineering.common.data.model_old.ModelHelperOld;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.IEItems.*;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -33,7 +30,9 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
@@ -41,56 +40,55 @@ import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class ModelsOld extends ModelGenerator
 {
-	final Map<EnumMetals, MetalModels> metalModels = new HashMap<>();
 	final Map<EnumHempGrowth, ModelFile> hempGrowth = new EnumMap<>(EnumHempGrowth.class);
 
-	final GeneratedModelFile blastFurnaceOff = ModelHelper.createThreeCubed(rl("block/multiblocks/blast_furnace_off"),
+	final GeneratedModelFile blastFurnaceOff = ModelHelperOld.createThreeCubed(rl("block/multiblocks/blast_furnace_off"),
 			rl("block/multiblocks/blast_furnace"), rl("block/multiblocks/blast_furnace_off"));
-	final GeneratedModelFile blastFurnaceOn = ModelHelper.createThreeCubed(rl("block/multiblocks/blast_furnace_on"),
+	final GeneratedModelFile blastFurnaceOn = ModelHelperOld.createThreeCubed(rl("block/multiblocks/blast_furnace_on"),
 			rl("block/multiblocks/blast_furnace"), rl("block/multiblocks/blast_furnace_on"));
-	final GeneratedModelFile cokeOvenOff = ModelHelper.createThreeCubed(rl("block/multiblocks/coke_oven_off"),
+	final GeneratedModelFile cokeOvenOff = ModelHelperOld.createThreeCubed(rl("block/multiblocks/coke_oven_off"),
 			rl("block/multiblocks/coke_oven"), rl("block/multiblocks/coke_oven_off"));
-	final GeneratedModelFile cokeOvenOn = ModelHelper.createThreeCubed(rl("block/multiblocks/coke_oven_on"),
+	final GeneratedModelFile cokeOvenOn = ModelHelperOld.createThreeCubed(rl("block/multiblocks/coke_oven_on"),
 			rl("block/multiblocks/coke_oven"), rl("block/multiblocks/coke_oven_on"));
-	final GeneratedModelFile alloySmelterOff = ModelHelper.createTwoCubed(rl("block/multiblocks/alloy_smelter_off"),
+	final GeneratedModelFile alloySmelterOff = ModelHelperOld.createTwoCubed(rl("block/multiblocks/alloy_smelter_off"),
 			rl("block/multiblocks/alloy_smelter_bottom"), rl("block/multiblocks/alloy_smelter_top"),
 			rl("block/multiblocks/alloy_smelter_side"), rl("block/multiblocks/alloy_smelter_off"));
-	final GeneratedModelFile alloySmelterOn = ModelHelper.createTwoCubed(rl("block/multiblocks/alloy_smelter_on"),
+	final GeneratedModelFile alloySmelterOn = ModelHelperOld.createTwoCubed(rl("block/multiblocks/alloy_smelter_on"),
 			rl("block/multiblocks/alloy_smelter_bottom"), rl("block/multiblocks/alloy_smelter_top"),
 			rl("block/multiblocks/alloy_smelter_side"), rl("block/multiblocks/alloy_smelter_on"));
 
-	final GeneratedModelFile metalLadderNone = ModelHelper.createMetalLadder(
+	final GeneratedModelFile metalLadderNone = ModelHelperOld.createMetalLadder(
 			locForItemModel(MetalDecoration.metalLadder.get(CoverType.NONE)),
 			null, null);
-	final GeneratedModelFile metalLadderAlu = ModelHelper.createMetalLadder(
+	final GeneratedModelFile metalLadderAlu = ModelHelperOld.createMetalLadder(
 			locForItemModel(MetalDecoration.metalLadder.get(CoverType.ALU)),
 			rl("block/metal_decoration/aluminum_scaffolding_open"),
 			rl("block/metal_decoration/aluminum_scaffolding"));
-	final GeneratedModelFile metalLadderSteel = ModelHelper.createMetalLadder(
+	final GeneratedModelFile metalLadderSteel = ModelHelperOld.createMetalLadder(
 			locForItemModel(MetalDecoration.metalLadder.get(CoverType.STEEL)),
 			rl("block/metal_decoration/steel_scaffolding_open"),
 			rl("block/metal_decoration/steel_scaffolding"));
 
-	final GeneratedModelFile quarterConcreteBlock = ModelHelper.createQuarterBlock(rl("block/stone_decoration/concrete"),
+	final GeneratedModelFile quarterConcreteBlock = ModelHelperOld.createQuarterBlock(rl("block/stone_decoration/concrete"),
 			locForItemModel(StoneDecoration.concreteQuarter));
-	final GeneratedModelFile threeQuarterConcreteBlock = ModelHelper.createThreeQuarterBlock(rl("block/stone_decoration/concrete"),
+	final GeneratedModelFile threeQuarterConcreteBlock = ModelHelperOld.createThreeQuarterBlock(rl("block/stone_decoration/concrete"),
 			locForItemModel(StoneDecoration.concreteThreeQuarter));
-	final GeneratedModelFile sheetConcreteBlock = ModelHelper.createCarpetBlock(rl("block/stone_decoration/concrete"),
+	final GeneratedModelFile sheetConcreteBlock = ModelHelperOld.createCarpetBlock(rl("block/stone_decoration/concrete"),
 			locForItemModel(StoneDecoration.concreteSheet));
 
 
-	final GeneratedModelFile gunpowderBarrel = ModelHelper.createBasicCube(rl("block/wooden_device/gunpowder_barrel"),
+	final GeneratedModelFile gunpowderBarrel = ModelHelperOld.createBasicCube(rl("block/wooden_device/gunpowder_barrel"),
 			rl("block/wooden_device/gunpowder_barrel_top"), rl("block/wooden_device/barrel_up_none"),
 			locForItemModel(WoodenDevices.gunpowderBarrel));
-	final GeneratedModelFile crate = ModelHelper.createBasicCube(rl("block/wooden_device/crate"),
+	final GeneratedModelFile crate = ModelHelperOld.createBasicCube(rl("block/wooden_device/crate"),
 			locForItemModel(WoodenDevices.crate));
-	final GeneratedModelFile reinforcedCrate = ModelHelper.createBasicCube(rl("block/wooden_device/reinforced_crate"),
+	final GeneratedModelFile reinforcedCrate = ModelHelperOld.createBasicCube(rl("block/wooden_device/reinforced_crate"),
 			locForItemModel(WoodenDevices.reinforcedCrate));
 	final GeneratedModelFile router = createRouterModel(rl("block/wooden_device/sorter"),
 			locForItemModel(WoodenDevices.sorter));
 	final GeneratedModelFile fluidRouter = createRouterModel(rl("block/wooden_device/fluid_sorter"),
 			locForItemModel(WoodenDevices.fluidSorter));
-	final GeneratedModelFile furnaceHeaterOff = ModelHelper.create(
+	final GeneratedModelFile furnaceHeaterOff = ModelHelperOld.create(
 			locForItemModel(MetalDevices.furnaceHeater),
 			rl("block/ie_six_sides_overlay_all_but_one"),
 			ImmutableMap.of(
@@ -100,7 +98,7 @@ public class ModelsOld extends ModelGenerator
 			),
 			true
 	);
-	final GeneratedModelFile furnaceHeaterOn = ModelHelper.create(
+	final GeneratedModelFile furnaceHeaterOn = ModelHelperOld.create(
 			rl("block/furnace_heater_on"),
 			rl("block/ie_six_sides_overlay_all_but_one"),
 			ImmutableMap.of(
@@ -110,7 +108,7 @@ public class ModelsOld extends ModelGenerator
 			),
 			true
 	);
-	final GeneratedModelFile kineticDynamo = ModelHelper.createBasicCube(side -> {
+	final GeneratedModelFile kineticDynamo = ModelHelperOld.createBasicCube(side -> {
 		switch(Preconditions.checkNotNull(side))
 		{
 			case DOWN:
@@ -127,13 +125,13 @@ public class ModelsOld extends ModelGenerator
 				throw new IllegalArgumentException();
 		}
 	}, locForItemModel(MetalDevices.dynamo));
-	final GeneratedModelFile thermoelectricGen = ModelHelper.createBasicCube(
+	final GeneratedModelFile thermoelectricGen = ModelHelperOld.createBasicCube(
 			rl("block/metal_device/thermoelectric_gen_side"),
 			rl("block/metal_device/thermoelectric_gen_top"),
 			rl("block/metal_device/thermoelectric_gen_bottom"),
 			locForItemModel(MetalDevices.thermoelectricGen)
 	);
-	final GeneratedModelFile chargingStation = ModelHelper.createMultilayer(
+	final GeneratedModelFile chargingStation = ModelHelperOld.createMultilayer(
 			locForItemModel(MetalDevices.chargingStation),
 			ImmutableMap.of(
 					BlockRenderLayer.SOLID, new ExistingModelFileIE(rl("block/metal_device/charging_station.obj")),
@@ -142,7 +140,7 @@ public class ModelsOld extends ModelGenerator
 			rl("item/block")
 	);
 
-	final GeneratedModelFile cushion = ModelHelper.createBasicCube(rl("block/cushion"),
+	final GeneratedModelFile cushion = ModelHelperOld.createBasicCube(rl("block/cushion"),
 			locForItemModel(Cloth.cushion));
 
 	final Map<Block, ModelFile> fluidModels = new HashMap<>();
@@ -150,8 +148,6 @@ public class ModelsOld extends ModelGenerator
 	public ModelsOld(DataGenerator gen)
 	{
 		super(gen);
-		for(EnumMetals m : EnumMetals.values())
-			metalModels.put(m, new MetalModels(m));
 	}
 
 	@Override
@@ -173,14 +169,14 @@ public class ModelsOld extends ModelGenerator
 		out.accept(furnaceHeaterOff);
 		out.accept(furnaceHeaterOn);
 
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Cloth.curtain),
 				rl("block/stripcurtain"),
 				ImmutableMap.of(),
 				rl("item/stripcurtain"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Cloth.balloon),
 				rl("block/balloon.obj.ie"),
 				ImmutableMap.of(),
@@ -190,44 +186,19 @@ public class ModelsOld extends ModelGenerator
 		out.accept(cushion);
 
 		/* ITEMS */
-		addItemModels("metal_", out, IEItems.Metals.ingots.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getRegistryName().getNamespace())).toArray(Item[]::new));
-		addItemModels("metal_", out, IEItems.Metals.nuggets.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getRegistryName().getNamespace())).toArray(Item[]::new));
-		addItemModels("metal_", out, IEItems.Metals.dusts.values().toArray(new Item[IEItems.Metals.ingots.size()]));
-		addItemModels("metal_", out, IEItems.Metals.plates.values().toArray(new Item[IEItems.Metals.ingots.size()]));
-		for(Item bag : Misc.shaderBag.values())
-			addItemModel("shader_bag", out, bag);
 
-		addItemModels("material_", out, Ingredients.stickTreated, Ingredients.stickIron, Ingredients.stickSteel, Ingredients.stickAluminum,
-				Ingredients.hempFiber, Ingredients.hempFabric, Ingredients.coalCoke, Ingredients.slag,
-				Ingredients.componentIron, Ingredients.componentSteel, Ingredients.waterwheelSegment, Ingredients.windmillBlade, Ingredients.windmillSail,
-				Ingredients.woodenGrip, Ingredients.gunpartBarrel, Ingredients.gunpartDrum, Ingredients.gunpartHammer,
-				Ingredients.dustCoke, Ingredients.dustHopGraphite, Ingredients.ingotHopGraphite,
-				Ingredients.wireCopper, Ingredients.wireElectrum, Ingredients.wireAluminum, Ingredients.wireSteel,
-				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.electronTube, Ingredients.circuitBoard);
+		out.accept(ModelHelperOld.createWithDynamicModel(rl("coresample"), locForItemModel(IEItems.Misc.coresample)));
 
-		addItemModels("tool_", out, Tools.hammer, Tools.wirecutter, Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelSword);
-		addItemModels("", out, Misc.wireCoils.values().toArray(new Item[0]));
-		addItemModels("", out, Misc.graphiteElectrode);
-		addItemModels("", out, Misc.toolUpgrades.values().toArray(new Item[0]));
-		addItemModels("", out, Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
-		addItemModels("bullet_", out, Ingredients.emptyCasing, Ingredients.emptyShell);
-		addItemModels("bullet_", out, Weapons.bullets.values());
-		addItemModels("", out, Misc.faradaySuit.values());
-		out.accept(ModelHelper.createWithDynamicModel(rl("coresample"), locForItemModel(Misc.coresample)));
-		addItemModel("blueprint", out, Misc.blueprint);
-		addItemModel("seed_hemp", out, Misc.hempSeeds);
-		addItemModel("drillhead_iron", out, Tools.drillheadIron);
-		addItemModel("drillhead_steel", out, Tools.drillheadSteel);
 		for(IEFluid f : IEFluid.IE_FLUIDS)
-			out.accept(ModelHelper.createBucket(locForItemModel(f.getFilledBucket()), f));
-		out.accept(ModelHelper.create(
+			out.accept(ModelHelperOld.createBucket(locForItemModel(f.getFilledBucket()), f));
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Tools.toolbox),
 				rl("item/toolbox.obj"),
 				ImmutableMap.of(),
 				rl("item/toolbox"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Tools.voltmeter),
 				rl("item/voltmeter.obj"),
 				ImmutableMap.of(),
@@ -235,7 +206,7 @@ public class ModelsOld extends ModelGenerator
 				true
 		));
 
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(StoneDecoration.concreteSprayed),
 				rl("block/sprayed_concrete.obj"),
 				ImmutableMap.of(),
@@ -249,7 +220,7 @@ public class ModelsOld extends ModelGenerator
 		out.accept(gunpowderBarrel);
 		out.accept(crate);
 		out.accept(reinforcedCrate);
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(WoodenDevices.workbench),
 				rl("block/wooden_device/workbench.obj.ie"),
 				ImmutableMap.of(),
@@ -258,62 +229,62 @@ public class ModelsOld extends ModelGenerator
 		));
 		out.accept(router);
 		out.accept(fluidRouter);
-		out.accept(ModelHelper.createBasicCube(
+		out.accept(ModelHelperOld.createBasicCube(
 				rl("block/wooden_device/barrel_side"),
 				rl("block/wooden_device/barrel_up_none"),
 				rl("block/wooden_device/barrel_up_none"),
 				locForItemModel(WoodenDevices.woodenBarrel)));
 
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.belljar),
 				rl("block/metal_device/belljar.obj.ie"),
 				ImmutableMap.of(),
 				rl("item/belljar"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.teslaCoil),
 				rl("block/metal_device/teslacoil.obj"),
 				ImmutableMap.of(),
 				rl("item/teslacoil"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.floodlight),
 				rl("block/metal_device/floodlight.obj.ie"),
 				ImmutableMap.of(),
 				rl("item/floodlight"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.turretChem),
 				rl("block/metal_device/chem_turret_inv.obj"),
 				ImmutableMap.of(),
 				rl("item/turret"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.turretGun),
 				rl("block/metal_device/gun_turret_inv.obj"),
 				ImmutableMap.of(),
 				rl("item/turret"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.fluidPipe),
 				rl("block/metal_device/fluid_pipe.obj.ie"),
 				ImmutableMap.of(),
 				rl("item/block"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.fluidPump),
 				rl("block/metal_device/fluid_pump_inv.obj"),
 				ImmutableMap.of(),
 				rl("item/fluid_pump"),
 				true
 		));
-		out.accept(ModelHelper.createBasicCube(
+		out.accept(ModelHelperOld.createBasicCube(
 				rl("block/metal_device/barrel_side"),
 				rl("block/metal_device/barrel_up_none"),
 				rl("block/metal_device/barrel_up_none"),
@@ -324,109 +295,109 @@ public class ModelsOld extends ModelGenerator
 				MetalDevices.capacitorMV, "mv",
 				MetalDevices.capacitorHV, "hv"
 		).entrySet())
-			out.accept(ModelHelper.createWithDynamicModel(rl("smartmodel/conf_sides_hud_metal_device/capacitor_"+cap.getValue()),
+			out.accept(ModelHelperOld.createWithDynamicModel(rl("smartmodel/conf_sides_hud_metal_device/capacitor_"+cap.getValue()),
 					locForItemModel(cap.getKey())));
 		for(Block b : MetalDevices.CONVEYORS.values())
-			out.accept(ModelHelper.createWithDynamicModel(rl("conveyor"), locForItemModel(b)));
+			out.accept(ModelHelperOld.createWithDynamicModel(rl("conveyor"), locForItemModel(b)));
 
-		out.accept(ModelHelper.createConnectorModel(
+		out.accept(ModelHelperOld.createConnectorModel(
 				locForItemModel(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)),
 				ImmutableMap.of(),
 				rl("block/connector/connector_lv.obj")
 		));
-		out.accept(ModelHelper.createConnectorModel(
+		out.accept(ModelHelperOld.createConnectorModel(
 				locForItemModel(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true)),
 				ImmutableMap.of("#immersiveengineering:block/connector/connector_lv", rl("block/connector/relay_lv")),
 				rl("block/connector/connector_lv.obj")
 		));
 
-		out.accept(ModelHelper.createConnectorModel(
+		out.accept(ModelHelperOld.createConnectorModel(
 				locForItemModel(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false)),
 				ImmutableMap.of(),
 				rl("block/connector/connector_mv.obj")
 		));
-		out.accept(ModelHelper.createConnectorModel(
+		out.accept(ModelHelperOld.createConnectorModel(
 				locForItemModel(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true)),
 				ImmutableMap.of("#immersiveengineering:block/connector/connector_mv", rl("block/connector/relay_mv")),
 				rl("block/connector/connector_mv.obj")
 		));
 
-		out.accept(ModelHelper.createConnectorModel(
+		out.accept(ModelHelperOld.createConnectorModel(
 				locForItemModel(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false)),
 				ImmutableMap.of(),
 				rl("block/connector/connector_hv.obj")
 		));
-		out.accept(ModelHelper.createConnectorModel(
+		out.accept(ModelHelperOld.createConnectorModel(
 				locForItemModel(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true)),
 				ImmutableMap.of(),
 				rl("block/connector/relay_hv.obj")
 		));
 
-		out.accept(ModelHelper.createConnectorModel(
+		out.accept(ModelHelperOld.createConnectorModel(
 				locForItemModel(Connectors.connectorRedstone),
 				ImmutableMap.of(),
 				rl("block/connector/connector_redstone.obj.ie")
 		));
-		out.accept(ModelHelper.createConnectorModel(
+		out.accept(ModelHelperOld.createConnectorModel(
 				locForItemModel(Connectors.connectorProbe),
 				ImmutableMap.of(),
 				rl("block/connector/connector_probe.obj.ie")
 		));
-		out.accept(ModelHelper.createConnectorModel(
+		out.accept(ModelHelperOld.createConnectorModel(
 				locForItemModel(Connectors.connectorStructural),
 				ImmutableMap.of(),
 				rl("block/connector/connector_structural.obj.ie")
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Connectors.transformer),
 				rl("block/connector/transformer_mv_left.obj"),
 				ImmutableMap.of(),
 				rl("item/transformer"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Connectors.transformerHV),
 				rl("block/connector/transformer_hv_left.obj"),
 				ImmutableMap.of(),
 				rl("item/transformer"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Connectors.redstoneBreaker),
 				rl("block/connector/redstone_breaker.obj.ie"),
 				ImmutableMap.of(),
 				rl("item/redstone_breaker"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Connectors.currentTransformer),
 				rl("block/connector/e_meter.obj"),
 				ImmutableMap.of(),
 				rl("item/current_transformer"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Connectors.breakerswitch),
 				rl("block/connector/breaker_switch_off.obj.ie"),
 				ImmutableMap.of(),
 				rl("item/breaker_switch"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.razorWire),
 				rl("block/razor_wire.obj.ie"),
 				ImmutableMap.of(),
 				rl("item/block"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.blastFurnacePreheater),
 				rl("block/metal_device/blastfurnace_preheater.obj"),
 				ImmutableMap.of(),
 				rl("item/blastfurnace_preheater"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.electricLantern),
 				rl("block/metal_device/e_lantern.obj"),
 				ImmutableMap.of(),
@@ -434,7 +405,7 @@ public class ModelsOld extends ModelGenerator
 				true
 		));
 		out.accept(chargingStation);
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(MetalDevices.sampleDrill),
 				rl("block/metal_device/core_drill.obj"),
 				ImmutableMap.of(),
@@ -442,25 +413,25 @@ public class ModelsOld extends ModelGenerator
 				true
 		));
 
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.alloySmelter),
 				alloySmelterOn,
 				ImmutableMap.of(),
 				rl("item/alloysmelter")
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.blastFurnace),
 				blastFurnaceOn,
 				ImmutableMap.of(),
 				rl("item/blastfurnace")
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.cokeOven),
 				cokeOvenOn,
 				ImmutableMap.of(),
 				rl("item/blastfurnace")
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.blastFurnaceAdv),
 				rl("block/blastfurnace_advanced.obj"),
 				ImmutableMap.of(),
@@ -468,112 +439,112 @@ public class ModelsOld extends ModelGenerator
 				true
 		));
 
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.metalPress),
 				rl("block/metal_multiblock/metal_press.obj"),
 				ImmutableMap.of(),
 				rl("item/multiblock"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.crusher),
 				rl("block/metal_multiblock/crusher.obj"),
 				ImmutableMap.of(),
 				rl("item/crusher"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.tank),
 				rl("block/metal_multiblock/tank.obj"),
 				ImmutableMap.of(),
 				rl("item/tank"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.silo),
 				rl("block/metal_multiblock/silo.obj"),
 				ImmutableMap.of(),
 				rl("item/silo"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.assembler),
 				rl("block/metal_multiblock/assembler.obj"),
 				ImmutableMap.of(),
 				rl("item/multiblock"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.autoWorkbench),
 				rl("block/metal_multiblock/auto_workbench.obj"),
 				ImmutableMap.of(),
 				rl("item/multiblock"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.bottlingMachine),
 				rl("block/metal_multiblock/bottling_machine.obj"),
 				ImmutableMap.of(),
 				rl("item/bottling_machine"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.squeezer),
 				rl("block/metal_multiblock/squeezer.obj"),
 				ImmutableMap.of(),
 				rl("item/multiblock"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.fermenter),
 				rl("block/metal_multiblock/fermenter.obj"),
 				ImmutableMap.of(),
 				rl("item/multiblock"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.refinery),
 				rl("block/metal_multiblock/refinery.obj"),
 				ImmutableMap.of(),
 				rl("item/refinery"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.dieselGenerator),
 				rl("block/metal_multiblock/diesel_generator.obj"),
 				ImmutableMap.of(),
 				rl("item/crusher"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.excavator),
 				rl("block/metal_multiblock/excavator.obj"),
 				ImmutableMap.of(),
 				rl("item/excavator"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.bucketWheel),
 				rl("block/metal_multiblock/bucket_wheel.obj.ie"),
 				ImmutableMap.of(),
 				rl("item/bucket_wheel"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.arcFurnace),
 				rl("block/metal_multiblock/arc_furnace.obj"),
 				ImmutableMap.of(),
 				rl("item/arc_furnace"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.lightningrod),
 				rl("block/metal_multiblock/lightningrod.obj"),
 				ImmutableMap.of(),
 				rl("item/multiblock"),
 				true
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Multiblocks.mixer),
 				rl("block/metal_multiblock/mixer.obj"),
 				ImmutableMap.of(),
@@ -582,7 +553,7 @@ public class ModelsOld extends ModelGenerator
 		));
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 		{
-			GeneratedModelFile gen = ModelHelper.create(
+			GeneratedModelFile gen = ModelHelperOld.create(
 					rl("block/hemp/"+g.getName()),
 					new ResourceLocation("block/crop"),
 					ImmutableMap.of(
@@ -593,12 +564,12 @@ public class ModelsOld extends ModelGenerator
 			out.accept(gen);
 			hempGrowth.put(g, gen);
 		}
-		out.accept(ModelHelper.createTEIR_IEOBJ(
+		out.accept(ModelHelperOld.createTEIR_IEOBJ(
 				locForItemModel(Misc.fluorescentTube),
 				rl("item/fluorescent_tube.obj.ie"),
 				rl("item/fluorescent_tube")
 		));
-		out.accept(ModelHelper.create(
+		out.accept(ModelHelperOld.create(
 				locForItemModel(Misc.shield),
 				rl("item/shield.obj.ie"),
 				ImmutableMap.of(),
@@ -608,24 +579,6 @@ public class ModelsOld extends ModelGenerator
 
 	}
 
-	private void addItemModels(String texturePrefix, Consumer<GeneratedModelFile> out, Item... items)
-	{
-		addItemModels(texturePrefix, out, Arrays.asList(items));
-	}
-
-	private void addItemModels(String texturePrefix, Consumer<GeneratedModelFile> out, Collection<Item> items)
-	{
-		for(Item item : items)
-			addItemModel(texturePrefix==null?null: (texturePrefix+item.getRegistryName().getPath()), out, item);
-	}
-
-	private void addItemModel(String texture, Consumer<GeneratedModelFile> out, Item item)
-	{
-		ResourceLocation path = locForItemModel(item);
-		ResourceLocation textureLoc = texture==null?path: new ResourceLocation(path.getNamespace(), "item/"+texture);
-		out.accept(ModelHelper.createBasicItem(textureLoc, path));
-	}
-
 	private GeneratedModelFile createRouterModel(ResourceLocation baseTexName, ResourceLocation outName)
 	{
 		Map<String, ResourceLocation> textures = new HashMap<>();
@@ -633,7 +586,7 @@ public class ModelsOld extends ModelGenerator
 			textures.put(d.getName(), new ResourceLocation(baseTexName.getNamespace(),
 					baseTexName.getPath()+"_"+d.ordinal()));
 		textures.put("particle", textures.get("down"));
-		return ModelHelper.create(outName, rl("block/ie_six_sides"), textures, true);
+		return ModelHelperOld.create(outName, rl("block/ie_six_sides"), textures, true);
 	}
 
 	private ResourceLocation locForItemModel(Block b)
@@ -647,51 +600,4 @@ public class ModelsOld extends ModelGenerator
 		return new ResourceLocation(itemName.getNamespace(), "item/"+itemName.getPath());
 	}
 
-	public static class MetalModels
-	{
-		EnumMetals metal;
-		GeneratedModelFile ore;
-		GeneratedModelFile storage;
-		GeneratedModelFile sheetmetal;
-
-		public MetalModels(EnumMetals metal)
-		{
-			this.metal = metal;
-			String name = metal.tagName();
-			if(metal.shouldAddOre())
-				ore = ModelHelper.createBasicCube(rl("block/metal/ore_"+name));
-			if(!metal.isVanillaMetal())
-			{
-				ResourceLocation defaultName = rl("block/metal/storage_"+name);
-				if(metal==EnumMetals.URANIUM)
-				{
-					ResourceLocation side = rl("block/metal/storage_"+name+"_side");
-					ResourceLocation top = rl("block/metal/storage_"+name+"_top");
-					storage = ModelHelper.createBasicCube(side, top, top, defaultName);
-				}
-				else
-				{
-					storage = ModelHelper.createBasicCube(defaultName);
-				}
-			}
-			ResourceLocation sheetmetalName = rl("block/metal/sheetmetal_"+name);
-			sheetmetal = ModelHelper.createBasicCube(sheetmetalName);
-		}
-
-		void register(Consumer<GeneratedModelFile> out)
-		{
-			if(ore!=null)
-			{
-				out.accept(ore);
-				out.accept(ore.createChild(locForItemModel(Item.getItemFromBlock(Metals.ores.get(metal)))));
-			}
-			if(storage!=null)
-			{
-				out.accept(storage);
-				out.accept(storage.createChild(locForItemModel(Item.getItemFromBlock(Metals.storage.get(metal)))));
-			}
-			out.accept(sheetmetal);
-			out.accept(sheetmetal.createChild(locForItemModel(Item.getItemFromBlock(Metals.sheetmetal.get(metal)))));
-		}
-	}
 }

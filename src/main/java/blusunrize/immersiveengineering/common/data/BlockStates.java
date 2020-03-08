@@ -24,8 +24,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
-import blusunrize.immersiveengineering.common.data.loadermodels.LoadedModelBuilder;
-import blusunrize.immersiveengineering.common.data.model.ModelHelper;
+import blusunrize.immersiveengineering.common.data.model_old.ModelHelperOld;
+import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -153,9 +153,10 @@ public class BlockStates extends BlockStateProvider
 		return new ResourceLocation(in.getNamespace(), "models/"+in.getPath());
 	}
 
-	private void postBlock(Block b, ResourceLocation texture) {
+	private void postBlock(Block b, ResourceLocation texture)
+	{
 		ResourceLocation model = rl("block/wooden_device/wooden_post.obj.ie");
-		ModelHelper.assertModelExists(model);
+		ModelHelperOld.assertModelExists(model);
 		LoadedModelBuilder modelFile = loadedModels.withExistingParent(name(b), mcLoc("block"))
 				.loader(modLoc("ie_obj"))
 				.additional("model", addModelsPrefix(model))

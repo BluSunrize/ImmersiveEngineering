@@ -6,9 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.data.model;
+package blusunrize.immersiveengineering.common.data.model_old;
 
-import blusunrize.immersiveengineering.common.data.blockstate.BlockstateGenerator;
+import blusunrize.immersiveengineering.common.data.blockstate_old.BlockstateGenerator;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import net.minecraft.data.DirectoryCache;
@@ -65,10 +65,10 @@ public abstract class ModelFile
 		@Override
 		protected boolean exists()
 		{
-			if(ModelHelper.EXISTING_FILE_HELPER!=null)
+			if(ModelHelperOld.EXISTING_FILE_HELPER!=null)
 			{
 				String suffix = getUncheckedLocation().getPath().contains(".")?"": ".json";
-				return ModelHelper.EXISTING_FILE_HELPER.exists(getUncheckedLocation(),
+				return ModelHelperOld.EXISTING_FILE_HELPER.exists(getUncheckedLocation(),
 						ResourcePackType.CLIENT_RESOURCES, suffix, "models");
 			}
 			return true;

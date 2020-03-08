@@ -6,12 +6,12 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.data.model;
+package blusunrize.immersiveengineering.common.data.model_old;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.ExistingModelFileIE;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.GeneratedModelFile;
-import blusunrize.immersiveengineering.common.data.model.ModelFile.UncheckedModelFile;
+import blusunrize.immersiveengineering.common.data.model_old.ModelFile.ExistingModelFileIE;
+import blusunrize.immersiveengineering.common.data.model_old.ModelFile.GeneratedModelFile;
+import blusunrize.immersiveengineering.common.data.model_old.ModelFile.UncheckedModelFile;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -46,11 +46,11 @@ import java.util.TreeMap;
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 import static net.minecraft.util.Direction.NORTH;
 
-public class ModelHelper
+public class ModelHelperOld
 {
 	public static ExistingFileHelper EXISTING_FILE_HELPER;
 
-	private ModelHelper()
+	private ModelHelperOld()
 	{
 	}
 
@@ -430,7 +430,7 @@ public class ModelHelper
 				obj.remove(key);
 				if(forType==null)
 				{
-					key = key.replace("_person", "person").replace("_hand", "hand");
+					key = vanillaName(type);
 					forType = obj.getAsJsonObject(key);
 					obj.remove(key);
 				}
@@ -455,7 +455,15 @@ public class ModelHelper
 			else
 				baseTransform = TRSRTransformation.identity();
 			for(Entry<TransformType, TRSRTransformation> e : transforms.entrySet())
-				this.transforms.put(e.getKey(), TRSRTransformation.blockCenterToCorner(e.getValue().compose(baseTransform)));
+				this.transforms.put(e.getKey(), e.getValue().compose(baseTransform));
+		}
+
+		private String vanillaName(TransformType type)
+		{
+			return type.name()
+					.toLowerCase()
+					.replace("_person", "person")
+					.replace("_hand", "hand");
 		}
 
 		public JsonObject toJson()
@@ -473,7 +481,7 @@ public class ModelHelper
 			result.add("rotation", toJson(trsr.getLeftRot()));
 			result.add("scale", toJson(trsr.getScale()));
 			result.add("post-rotation", toJson(trsr.getRightRot()));
-			main.add(type.name().toLowerCase(), result);
+			main.add(vanillaName(type), result);
 		}
 
 		private static JsonArray toJson(Quat4f v)
