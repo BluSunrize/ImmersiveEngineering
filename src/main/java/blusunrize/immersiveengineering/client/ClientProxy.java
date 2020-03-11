@@ -176,8 +176,10 @@ public class ClientProxy extends CommonProxy
 		 */
 		ModelLoaderRegistry2.registerLoader(new ResourceLocation(MODID, "ie_obj"), IEOBJLoader.instance);
 		ModelLoaderRegistry2.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
-		OBJLoader.INSTANCE.addDomain("immersiveengineering");
-		IEOBJLoader.instance.addDomain("immersiveengineering");
+		ModelLoaderRegistry2.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
+		ModelLoaderRegistry2.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
+		ModelLoaderRegistry2.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
+		ModelLoaderRegistry2.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
 
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.class, RevolvershotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(SkylineHookEntity.class, NoneRenderer::new);
@@ -186,10 +188,6 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(IEExplosiveEntity.class, IEExplosiveRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(FluorescentTubeEntity.class, FluorescentTubeRenderer::new);
 		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
-		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
-		ModelLoaderRegistry.registerLoader(new MultiLayerLoader());
-		ModelLoaderRegistry.registerLoader(new CoresampleLoader());
-		ModelLoaderRegistry.registerLoader(new ConveyorLoader());
 	}
 
 	@Override
@@ -1001,8 +999,8 @@ public class ClientProxy extends CommonProxy
 	public void removeStateFromSmartModelCache(BlockState state)
 	{
 		for(BlockRenderLayer r : BlockRenderLayer.values())
-			IESmartObjModel.modelCache.remove(new RenderCacheKey(state, r));
-		IESmartObjModel.modelCache.remove(new RenderCacheKey(state, null));
+			IESmartObjModel.modelCache.invalidate(new RenderCacheKey(state, r));
+		IESmartObjModel.modelCache.invalidate(new RenderCacheKey(state, null));
 	}
 
 	@Override
@@ -1029,7 +1027,7 @@ public class ClientProxy extends CommonProxy
 
 	static
 	{
-		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::clear);
+		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::invalidateAll);
 		IEApi.renderCacheClearers.add(IESmartObjModel.cachedBakedItemModels::invalidateAll);
 		IEApi.renderCacheClearers.add(BakedConnectionModel.cache::invalidateAll);
 		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);

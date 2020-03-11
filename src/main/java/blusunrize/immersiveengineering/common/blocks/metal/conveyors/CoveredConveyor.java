@@ -40,6 +40,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
@@ -116,8 +117,15 @@ public class CoveredConveyor extends BasicConveyor
 		return key;
 	}
 
-	static final ItemStack defaultCover = new ItemStack(MetalDecoration.steelScaffolding.get(
-			MetalScaffoldingType.STANDARD));
+	private static ItemStack defaultCover;
+
+	public static ItemStack getDefaultCover()
+	{
+		if(defaultCover==null)
+			defaultCover = new ItemStack(MetalDecoration.steelScaffolding.get(
+					MetalScaffoldingType.STANDARD));
+		return defaultCover;
+	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -131,13 +139,13 @@ public class CoveredConveyor extends BasicConveyor
 
 	static void addCoverToQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, Direction facing, Supplier<ItemStack> coverGet, ConveyorDirection conDir, boolean[] walls)
 	{
-		ItemStack cover = !coverGet.get().isEmpty()?coverGet.get(): defaultCover;
+		ItemStack cover = !coverGet.get().isEmpty()?coverGet.get(): getDefaultCover();
 		Block b = Block.getBlockFromItem(cover.getItem());
 		BlockState state = !cover.isEmpty()?b.getDefaultState(): Blocks.STONE.getDefaultState();
 		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
 		if(model!=null)
 		{
-			TextureAtlasSprite sprite = model.getParticleTexture();
+			TextureAtlasSprite sprite = model.getParticleTexture(EmptyModelData.INSTANCE);
 			HashMap<Direction, TextureAtlasSprite> sprites = new HashMap<>();
 
 			for(Direction f : Direction.VALUES)

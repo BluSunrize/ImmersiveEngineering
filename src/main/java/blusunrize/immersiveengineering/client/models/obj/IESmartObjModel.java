@@ -63,6 +63,7 @@ import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -72,7 +73,8 @@ public class IESmartObjModel implements IBakedModel
 {
 	public static Cache<ComparableItemStack, IBakedModel> cachedBakedItemModels = CacheBuilder.newBuilder()
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
-	public static HashMap<RenderCacheKey, List<BakedQuad>> modelCache = new HashMap<>();
+	public static Cache<RenderCacheKey, List<BakedQuad>> modelCache = CacheBuilder.newBuilder()
+			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
 
 	//TODO check which ones are still needed
 	HashMap<TransformType, Matrix4> transformationMap;
@@ -216,8 +218,6 @@ public class IESmartObjModel implements IBakedModel
 		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
 												 @Nullable World world, @Nullable LivingEntity entity)
 		{
-			return baseBaked;
-			/*TODO
 			tempEntityStatic = entity;
 			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack, false, true);
 			if(comp==null)
@@ -225,6 +225,7 @@ public class IESmartObjModel implements IBakedModel
 			IBakedModel model = cachedBakedItemModels.getIfPresent(comp);
 			if(model==null)
 			{
+					/*TODO
 				if(originalModel instanceof IESmartObjModel)
 				{
 					IESmartObjModel newModel = (IESmartObjModel)originalModel;
@@ -273,7 +274,8 @@ public class IESmartObjModel implements IBakedModel
 					model = bakedModel;
 				}
 				else
-					model = originalModel;
+					 */
+				model = originalModel;
 				comp.copy();
 				cachedBakedItemModels.put(comp, model);
 			}
@@ -283,7 +285,6 @@ public class IESmartObjModel implements IBakedModel
 				((IESmartObjModel)model).tempEntity = entity;
 			}
 			return model;
-			*/
 		}
 	};
 
@@ -339,8 +340,8 @@ public class IESmartObjModel implements IBakedModel
 	{
 		if(blockState==null)
 		{
-			if(bakedQuads==null)
-				bakedQuads = ImmutableList.copyOf(buildQuads(modelData));
+			//if(bakedQuads==null)
+			bakedQuads = ImmutableList.copyOf(buildQuads(modelData));
 			return bakedQuads;
 		}
 		this.tempState = blockState;
@@ -352,20 +353,26 @@ public class IESmartObjModel implements IBakedModel
 			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), visibility, tex, cacheKey);
 		else
 			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), cacheKey);
-		List<BakedQuad> quads = modelCache.get(adapter);
-		if(quads==null)
+		try
 		{
-			IESmartObjModel model;
-			if(visibility!=null)
-				model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, visibility);
-			else
-				model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, this.state);
+			modelCache.invalidateAll();
+			//TODO is the cache working as intended? It grew to 3 GB when it was a HashMap
+			List<BakedQuad> quads = modelCache.get(adapter, () ->
+			{
+				IESmartObjModel model;
+				if(visibility!=null)
+					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, visibility);
+				else
+					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, this.state);
 
-			model.tempState = blockState;
-			quads = model.buildQuads(modelData);
-			modelCache.put(adapter, quads);
+				model.tempState = blockState;
+				return model.buildQuads(modelData);
+			});
+			return Collections.synchronizedList(Lists.newArrayList(quads));
+		} catch(ExecutionException e)
+		{
+			throw new RuntimeException(e);
 		}
-		return Collections.synchronizedList(Lists.newArrayList(quads));
 	}
 
 	private ImmutableList<BakedQuad> buildQuads(IModelData data)
@@ -426,7 +433,7 @@ public class IESmartObjModel implements IBakedModel
 	{
 		String objCacheKey = callback!=null?callback.getCacheKey(callbackObject): "<none>";
 		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
-		if(allowCaching)
+		if(false&&allowCaching)
 		{
 			List<BakedQuad> cached = groupCache.getIfPresent(cacheKey);
 			if(cached!=null)
@@ -440,7 +447,7 @@ public class IESmartObjModel implements IBakedModel
 		TRSRTransformation transform = state.transform;
 		if(callback!=null)
 			transform = callback.applyTransformations(callbackObject, groupName, transform);
-		if(state.visibility.isVisible(groupName))
+		if(state.visibility.isVisible(groupName)&&callback.shouldRenderGroup(callbackObject, groupName))
 			//TODO transform?
 			g.addQuads(owner, new QuadListAdder(quads::add), bakery, spriteGetter, sprite, format);
 		return quads;

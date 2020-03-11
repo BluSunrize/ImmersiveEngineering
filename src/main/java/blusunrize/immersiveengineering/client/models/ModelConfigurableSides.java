@@ -20,6 +20,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.*;
@@ -35,8 +37,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraftforge.client.model.ICustomModelLoader;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.VanillaResourceType;
 
@@ -53,24 +58,11 @@ import static net.minecraft.util.Direction.*;
 
 public class ModelConfigurableSides extends BakedIEModel
 {
-	public static final String MODEL_PREFIX = "conf_sides_";
-	public static final String RESOURCE_LOCATION = "smartmodel/"+MODEL_PREFIX;
 	private static HashMap<String, ITextureNamer> TYPES = new HashMap<>();
 
 	static
 	{
-		TYPES.put("all6_", new ITextureNamer()
-		{
-		});//every side seperately
-		TYPES.put("s_", new ITextureNamer()
-		{//all sides, same texture
-			@Override
-			public String nameFromSide(Direction side, IOSideConfig cfg)
-			{
-				return "side";
-			}
-		});
-		TYPES.put("hud_", new ITextureNamer()
+		TYPES.put("side_top_bottom", new ITextureNamer()
 		{//horizontal, up, down
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
@@ -78,7 +70,7 @@ public class ModelConfigurableSides extends BakedIEModel
 				return side.getAxis()==Axis.Y?side.getName(): "side";
 			}
 		});
-		TYPES.put("hv_", new ITextureNamer()
+		TYPES.put("side_vertical", new ITextureNamer()
 		{//horizontal, vertical
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
@@ -86,21 +78,7 @@ public class ModelConfigurableSides extends BakedIEModel
 				return side.getAxis()==Axis.Y?"up": "side";
 			}
 		});
-		TYPES.put("ud_", new ITextureNamer()
-		{//up, down, sides not configureable
-			@Override
-			public String nameFromSide(Direction side, IOSideConfig cfg)
-			{
-				return side.getAxis()==Axis.Y?side.getName(): "side";
-			}
-
-			@Override
-			public String nameFromCfg(Direction side, IOSideConfig cfg)
-			{
-				return side.getAxis()==Axis.Y?cfg.getTextureName(): null;
-			}
-		});
-		TYPES.put("v_", new ITextureNamer()
+		TYPES.put("vertical", new ITextureNamer()
 		{//vertical, sides not configureable
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
@@ -214,6 +192,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
@@ -232,103 +211,77 @@ public class ModelConfigurableSides extends BakedIEModel
 			new ItemTransformVec3f(new Vector3f(0, 0, 0), new Vector3f(0, .1875f, 0), new Vector3f(.25f, .25f, .25f)), //ground
 			new ItemTransformVec3f(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(.5f, .5f, .5f))); //fixed
 
+	@Nonnull
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
 		return defaultTransforms;
 	}
 
+	@Nonnull
 	@Override
 	public ItemOverrideList getOverrides()
 	{
 		return ItemOverrideList.EMPTY;
 	}
 
-	public static class Loader implements ICustomModelLoader
+	public static class Loader implements IModelLoader<ConfigSidesModelBase>
 	{
+		public static ResourceLocation NAME = new ResourceLocation(ImmersiveEngineering.MODID, "conf_sides");
 
 		@Override
-		public void onResourceManagerReload(IResourceManager resourceManager)
+		public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
 		{
 			modelCache.invalidateAll();
 		}
 
 		@Override
-		public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
+		public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
 		{
 			if(resourcePredicate.test(VanillaResourceType.MODELS)||resourcePredicate.test(VanillaResourceType.TEXTURES))
 				onResourceManagerReload(resourceManager);
 		}
 
+		@Nonnull
 		@Override
-		public boolean accepts(ResourceLocation modelLocation)
+		public ConfigSidesModelBase read(@Nonnull JsonDeserializationContext deserializationContext, JsonObject modelContents)
 		{
-			return modelLocation.getPath().contains(RESOURCE_LOCATION);
-		}
-
-		@Override
-		public IUnbakedModel loadModel(ResourceLocation modelLocation)
-		{
-			//TODO put the data in the JSON, not the model name
-			String resourcePath = modelLocation.getPath();
-			int pos = resourcePath.indexOf(MODEL_PREFIX);
-			if(pos >= 0)
-			{
-				pos += MODEL_PREFIX.length();
-				String sub = resourcePath.substring(pos);
-				String name = sub;
-				String type = null;
-				ImmutableMap.Builder<String, ResourceLocation> builder = ImmutableMap.builder();
-				for(Entry<String, ITextureNamer> e : TYPES.entrySet())
-					if(sub.startsWith(e.getKey()))
-					{
-						type = e.getKey();
-						name = sub.substring(type.length());
-						for(Direction f : Direction.VALUES)
-							for(IOSideConfig cfg : IOSideConfig.values())
-							{
-								String key = f.getName()+"_"+cfg.getTextureName();
-								String tex = name+"_"+e.getValue().getTextureName(f, cfg);
-								builder.put(key, new ResourceLocation(ImmersiveEngineering.MODID, "block/"+tex));
-							}
-					}
-				return new ConfigSidesModelBase(name, type, builder.build());
-			}
-			return ModelLoaderRegistry.getMissingModel();
+			final String name = modelContents.get("base_name").getAsString();
+			final String type = modelContents.get("type").getAsString();
+			ImmutableMap.Builder<String, ResourceLocation> builder = ImmutableMap.builder();
+			ITextureNamer namer = TYPES.get(type);
+			for(Direction f : Direction.VALUES)
+				for(IOSideConfig cfg : IOSideConfig.values())
+				{
+					String key = f.getName()+"_"+cfg.getTextureName();
+					String tex = name+"_"+namer.getTextureName(f, cfg);
+					builder.put(key, new ResourceLocation(ImmersiveEngineering.MODID, "block/"+tex));
+				}
+			return new ConfigSidesModelBase(name, type, builder.build());
 		}
 	}
 
-	private static class ConfigSidesModelBase implements IUnbakedModel
+	private static class ConfigSidesModelBase implements IModelGeometry<ConfigSidesModelBase>
 	{
 		final String name;
 		final String type;
-		ImmutableMap<String, ResourceLocation> textures;
+		Map<String, ResourceLocation> textures;
 
-		public ConfigSidesModelBase(String name, String type, ImmutableMap<String, ResourceLocation> textures)
+		public ConfigSidesModelBase(String name, String type, Map<String, ResourceLocation> textures)
 		{
 			this.name = name;
 			this.type = type;
 			this.textures = textures;
 		}
 
-		@Nonnull
 		@Override
-		public Collection<ResourceLocation> getDependencies()
-		{
-			return ImmutableList.of();
-		}
-
-		@Nonnull
-		@Override
-		public Collection<ResourceLocation> getTextures(@Nonnull Function<ResourceLocation, IUnbakedModel> modelGetter,
-														@Nonnull Set<String> missingTextureErrors)
+		public Collection<ResourceLocation> getTextureDependencies(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
 		{
 			return textures.values();
 		}
 
-		@Nullable
 		@Override
-		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format, ItemOverrideList overrides)
 		{
 			Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> tex = new EnumMap<>(Direction.class);
 			for(Direction f : Direction.VALUES)
@@ -343,41 +296,6 @@ public class ModelConfigurableSides extends BakedIEModel
 				tex.put(f, forSide);
 			}
 			return new ModelConfigurableSides(name, tex);
-		}
-
-		@Override
-		public IUnbakedModel retexture(ImmutableMap<String, String> textures)
-		{
-			String newName = this.name;
-			ImmutableMap.Builder<String, ResourceLocation> builder = ImmutableMap.builder();
-			for(Direction f : Direction.VALUES)
-				for(IOSideConfig cfg : IOSideConfig.values())
-				{
-					String key = f.getName()+"_"+cfg.getTextureName();
-					ResourceLocation rl = this.textures.get(key);
-					if(textures.containsKey(key))
-						rl = new ResourceLocation(textures.get(key));
-					else if(textures.containsKey(f.getName()))
-					{
-						ITextureNamer namer = TYPES.get(type);
-						rl = new ResourceLocation(textures.get(f.getName()));
-						if(namer!=null)
-						{
-							String c = namer.nameFromCfg(f, cfg);
-							if(c!=null)
-								rl = new ResourceLocation(textures.get(f.getName())+"_"+c);
-						}
-					}
-					else if(textures.containsKey("name"))
-					{
-						ITextureNamer namer = TYPES.get(type);
-						newName = textures.get("name");
-						if(namer!=null)
-							rl = new ResourceLocation(newName+"_"+namer.getTextureName(f, cfg));
-					}
-					builder.put(key, rl);
-				}
-			return new ConfigSidesModelBase(newName, type, builder.build());
 		}
 	}
 
@@ -414,7 +332,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		@Nonnull
 		final Map<Direction, IOSideConfig> config;
 
-		private ModelKey(String name, Map<Direction, IOSideConfig> config)
+		private ModelKey(@Nonnull String name, @Nonnull Map<Direction, IOSideConfig> config)
 		{
 			this.name = name;
 			this.config = config;

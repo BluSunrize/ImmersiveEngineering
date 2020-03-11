@@ -19,6 +19,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -38,7 +40,10 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ICustomModelLoader;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import org.apache.commons.lang3.tuple.Pair;
@@ -54,7 +59,6 @@ import java.util.function.Function;
 @SuppressWarnings("deprecation")
 public class ModelCoresample extends BakedIEModel
 {
-	private static final List<BakedQuad> EMPTY_QUADS = Lists.newArrayList();
 	private static final Cache<String, ModelCoresample> modelCache = CacheBuilder.newBuilder()
 			.expireAfterAccess(60, TimeUnit.SECONDS)
 			.build();
@@ -317,31 +321,24 @@ public class ModelCoresample extends BakedIEModel
 		return Pair.of(this, id);
 	}
 
-	public static class RawCoresampleModel implements IUnbakedModel
+	public static class RawCoresampleModel implements IModelGeometry<RawCoresampleModel>
 	{
 		@Override
-		public Collection<ResourceLocation> getDependencies()
-		{
-			return ImmutableList.of();
-		}
-
-		@Override
-		public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
-		{
-			return ImmutableList.of();
-		}
-
-		@Nullable
-		@Override
-		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format, ItemOverrideList overrides)
 		{
 			return new ModelCoresample(null);
 		}
+
+		@Override
+		public Collection<ResourceLocation> getTextureDependencies(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
+		{
+			return ImmutableList.of();
+		}
 	}
 
-	public static class CoresampleLoader implements ICustomModelLoader
+	public static class CoresampleLoader implements IModelLoader<RawCoresampleModel>
 	{
-		private static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/coresample");
+		public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/coresample");
 
 		@Override
 		public void onResourceManagerReload(IResourceManager resourceManager)
@@ -349,13 +346,7 @@ public class ModelCoresample extends BakedIEModel
 		}
 
 		@Override
-		public boolean accepts(ResourceLocation modelLocation)
-		{
-			return modelLocation.equals(LOCATION);
-		}
-
-		@Override
-		public IUnbakedModel loadModel(ResourceLocation modelLocation) throws Exception
+		public RawCoresampleModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
 		{
 			return new RawCoresampleModel();
 		}

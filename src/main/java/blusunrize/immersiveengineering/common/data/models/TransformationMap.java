@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.TreeMap;
 
 public class TransformationMap
@@ -68,15 +69,16 @@ public class TransformationMap
 				.create();
 		JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
 		Map<Perspective, TRSRTransformation> transforms = new HashMap<>();
-		boolean vanilla = obj.has("type")&&"vanilla".equals(obj.remove("type").getAsString());
-		for(Perspective type : Perspective.values())
+		Optional<String> type = Optional.ofNullable(obj.remove("type")).map(JsonElement::getAsString);
+		boolean vanilla = type.map("vanilla"::equals).orElse(false);
+		for(Perspective perspective : Perspective.values())
 		{
-			String key = getName(type);
+			String key = getName(perspective);
 			JsonObject forType = obj.getAsJsonObject(key);
 			obj.remove(key);
 			if(forType==null)
 			{
-				key = alternateName(type);
+				key = alternateName(perspective);
 				forType = obj.getAsJsonObject(key);
 				obj.remove(key);
 			}
@@ -93,7 +95,9 @@ public class TransformationMap
 			}
 			else
 				transform = TRSRTransformation.identity();
-			transforms.put(type, transform);
+			if(type.map("no_corner_offset"::equals).orElse(false))
+				transform = TRSRTransformation.blockCornerToCenter(transform);
+			transforms.put(perspective, transform);
 		}
 		TRSRTransformation baseTransform;
 		if(obj.size() > 0)
@@ -101,7 +105,7 @@ public class TransformationMap
 		else
 			baseTransform = TRSRTransformation.identity();
 		for(Entry<Perspective, TRSRTransformation> e : transforms.entrySet())
-			this.transforms.put(e.getKey(), TRSRTransformation.blockCornerToCenter(e.getValue().compose(baseTransform)));
+			this.transforms.put(e.getKey(), e.getValue().compose(baseTransform));
 	}
 
 	private String alternateName(Perspective type)

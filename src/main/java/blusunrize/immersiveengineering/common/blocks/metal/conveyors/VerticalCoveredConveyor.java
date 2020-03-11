@@ -34,6 +34,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -131,13 +132,13 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 		else
 			walls = new boolean[]{true, true};
 
-		ItemStack cover = !this.cover.isEmpty()?this.cover: CoveredConveyor.defaultCover;
+		ItemStack cover = !this.cover.isEmpty()?this.cover: CoveredConveyor.getDefaultCover();
 		Block b = Block.getBlockFromItem(cover.getItem());
 		BlockState state = b.getDefaultState();
 		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
 		if(model!=null)
 		{
-			TextureAtlasSprite sprite = model.getParticleTexture();
+			TextureAtlasSprite sprite = model.getParticleTexture(EmptyModelData.INSTANCE);
 			HashMap<Direction, TextureAtlasSprite> sprites = new HashMap<>();
 
 			for(Direction f : Direction.VALUES)

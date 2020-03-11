@@ -21,6 +21,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.*;
@@ -43,7 +45,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ICustomModelLoader;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -482,32 +487,26 @@ public class ModelConveyor extends BakedIEModel
 			return tileData;
 	}
 
-	public static class RawConveyorModel implements IUnbakedModel
+	public static class RawConveyorModel implements IModelGeometry<RawConveyorModel>
 	{
+
 		@Override
-		public Collection<ResourceLocation> getDependencies()
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format, ItemOverrideList overrides)
 		{
-			return ImmutableList.of();
+			return new ModelConveyor();
 		}
 
 		@Override
-		public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
+		public Collection<ResourceLocation> getTextureDependencies(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
 		{
 			//TODO?
 			return ImmutableList.of();
 		}
-
-		@Nullable
-		@Override
-		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
-		{
-			return new ModelConveyor();
-		}
 	}
 
-	public static class ConveyorLoader implements ICustomModelLoader
+	public static class ConveyorLoader implements IModelLoader<RawConveyorModel>
 	{
-		private static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/conveyor");
+		public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/conveyor");
 
 		@Override
 		public void onResourceManagerReload(IResourceManager resourceManager)
@@ -515,13 +514,7 @@ public class ModelConveyor extends BakedIEModel
 		}
 
 		@Override
-		public boolean accepts(ResourceLocation modelLocation)
-		{
-			return LOCATION.equals(modelLocation);
-		}
-
-		@Override
-		public IUnbakedModel loadModel(ResourceLocation modelLocation) throws Exception
+		public RawConveyorModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
 		{
 			return new RawConveyorModel();
 		}

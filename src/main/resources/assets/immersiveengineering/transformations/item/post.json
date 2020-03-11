@@ -1,4 +1,5 @@
 {
+  "type": "no_corner_offset",
   "firstperson_righthand": {
     "translation": [0.4375, 0.4375, 0.4375],
     "rotation": [0.0, 0.0, 0.0, 1.0],
