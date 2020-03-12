@@ -1,8 +1,5 @@
 {
-  "parent": "forge:dynbucket",
-  "textures": {
-    "base": "minecraft:item/bucket",
-    "fluid": "forge:items/bucket_fluid"
-  },
+  "parent": "forge:item/bucket",
+  "loader": "forge:bucket",
   "fluid": "immersiveengineering:creosote"
 }

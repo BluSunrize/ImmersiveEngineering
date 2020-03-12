@@ -1,7 +1,42 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/current_transformer"
+    "facing=north,multiblockslave=false": {
+      "model": "immersiveengineering:block/ie_empty",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=south,multiblockslave=false": {
+      "model": "immersiveengineering:block/ie_empty",
+      "uvlock": true
+    },
+    "facing=west,multiblockslave=false": {
+      "model": "immersiveengineering:block/ie_empty",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=east,multiblockslave=false": {
+      "model": "immersiveengineering:block/ie_empty",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=north,multiblockslave=true": {
+      "model": "immersiveengineering:connector/block/connector/e_meter",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=south,multiblockslave=true": {
+      "model": "immersiveengineering:connector/block/connector/e_meter",
+      "uvlock": true
+    },
+    "facing=west,multiblockslave=true": {
+      "model": "immersiveengineering:connector/block/connector/e_meter",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=east,multiblockslave=true": {
+      "model": "immersiveengineering:connector/block/connector/e_meter",
+      "y": 270,
+      "uvlock": true
     }
   }
 }

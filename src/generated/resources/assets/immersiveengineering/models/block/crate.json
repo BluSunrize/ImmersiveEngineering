@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "immersiveengineering:block/metal_decoration/radiator"
+    "all": "immersiveengineering:block/wooden_device/crate"
   }
 }

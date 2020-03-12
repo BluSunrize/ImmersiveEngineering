@@ -1,7 +1,45 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/coke_oven"
+    "active=false,facing=north,multiblockslave=false": {
+      "model": "immersiveengineering:block/coke_oven_off",
+      "uvlock": true
+    },
+    "active=true,facing=north,multiblockslave=false": {
+      "model": "immersiveengineering:block/coke_oven_on",
+      "uvlock": true
+    },
+    "active=false,facing=south,multiblockslave=false": {
+      "model": "immersiveengineering:block/coke_oven_off",
+      "y": 180,
+      "uvlock": true
+    },
+    "active=true,facing=south,multiblockslave=false": {
+      "model": "immersiveengineering:block/coke_oven_on",
+      "y": 180,
+      "uvlock": true
+    },
+    "active=false,facing=west,multiblockslave=false": {
+      "model": "immersiveengineering:block/coke_oven_off",
+      "y": 270,
+      "uvlock": true
+    },
+    "active=true,facing=west,multiblockslave=false": {
+      "model": "immersiveengineering:block/coke_oven_on",
+      "y": 270,
+      "uvlock": true
+    },
+    "active=false,facing=east,multiblockslave=false": {
+      "model": "immersiveengineering:block/coke_oven_off",
+      "y": 90,
+      "uvlock": true
+    },
+    "active=true,facing=east,multiblockslave=false": {
+      "model": "immersiveengineering:block/coke_oven_on",
+      "y": 90,
+      "uvlock": true
+    },
+    "multiblockslave=true": {
+      "model": "immersiveengineering:block/ie_empty"
     }
   }
 }

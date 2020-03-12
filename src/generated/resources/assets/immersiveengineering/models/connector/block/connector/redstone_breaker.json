@@ -1,0 +1,11 @@
+{
+  "loader": "immersiveengineering:connector",
+  "base_model": {
+    "loader": "immersiveengineering:ie_obj",
+    "model": "immersiveengineering:models/block/connector/redstone_breaker.obj.ie",
+    "flip-v": true
+  },
+  "layers": [
+    "SOLID"
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/ethanol_fluid_block"
+      "model": "immersiveengineering:block/fluid/ethanol"
     }
   }
 }

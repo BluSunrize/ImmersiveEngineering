@@ -1,7 +1,45 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/diesel_generator"
+    "facing=north,mirrored=false,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/diesel_generator",
+      "uvlock": true
+    },
+    "facing=south,mirrored=false,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/diesel_generator",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west,mirrored=false,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/diesel_generator",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=east,mirrored=false,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/diesel_generator",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=north,mirrored=true,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/diesel_generator_mirrored",
+      "uvlock": true
+    },
+    "facing=south,mirrored=true,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/diesel_generator_mirrored",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west,mirrored=true,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/diesel_generator_mirrored",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=east,mirrored=true,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/diesel_generator_mirrored",
+      "y": 90,
+      "uvlock": true
+    },
+    "multiblockslave=true": {
+      "model": "immersiveengineering:block/ie_empty"
     }
   }
 }

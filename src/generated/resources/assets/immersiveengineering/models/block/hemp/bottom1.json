@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/crop",
+  "parent": "block/crop",
   "textures": {
     "crop": "immersiveengineering:block/hemp/bottom1"
   }

@@ -1,7 +1,68 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/breaker_switch"
+    "active=false,facing=down": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_off",
+      "uvlock": true
+    },
+    "active=true,facing=down": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_on",
+      "uvlock": true
+    },
+    "active=false,facing=up": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_off",
+      "x": 180,
+      "uvlock": true
+    },
+    "active=true,facing=up": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_on",
+      "x": 180,
+      "uvlock": true
+    },
+    "active=false,facing=north": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_off",
+      "x": 90,
+      "y": 180,
+      "uvlock": true
+    },
+    "active=true,facing=north": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_on",
+      "x": 90,
+      "y": 180,
+      "uvlock": true
+    },
+    "active=false,facing=south": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_off",
+      "x": 90,
+      "uvlock": true
+    },
+    "active=true,facing=south": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_on",
+      "x": 90,
+      "uvlock": true
+    },
+    "active=false,facing=west": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_off",
+      "x": 90,
+      "y": 90,
+      "uvlock": true
+    },
+    "active=true,facing=west": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_on",
+      "x": 90,
+      "y": 90,
+      "uvlock": true
+    },
+    "active=false,facing=east": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_off",
+      "x": 90,
+      "y": 270,
+      "uvlock": true
+    },
+    "active=true,facing=east": {
+      "model": "immersiveengineering:connector/block/connector/breaker_switch_on",
+      "x": 90,
+      "y": 270,
+      "uvlock": true
     }
   }
 }

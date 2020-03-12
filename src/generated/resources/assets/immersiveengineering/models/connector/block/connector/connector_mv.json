@@ -1,0 +1,14 @@
+{
+  "textures": {
+    "texture": "immersiveengineering:block/connector/relay_mv"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": {
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/connector/connector_mv.obj",
+    "flip-v": true
+  },
+  "layers": [
+    "SOLID"
+  ]
+}

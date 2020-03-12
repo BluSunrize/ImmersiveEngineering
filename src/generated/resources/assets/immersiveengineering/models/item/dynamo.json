@@ -1,11 +1,3 @@
 {
-  "parent": "minecraft:block/cube",
-  "textures": {
-    "down": "immersiveengineering:block/metal_device/dynamo_bottom",
-    "up": "immersiveengineering:block/metal_device/dynamo_top",
-    "north": "immersiveengineering:block/metal_device/dynamo_front",
-    "south": "immersiveengineering:block/metal_device/dynamo_bottom",
-    "west": "immersiveengineering:block/metal_device/dynamo_side",
-    "east": "immersiveengineering:block/metal_device/dynamo_side"
-  }
+  "parent": "immersiveengineering:block/kinetic_dynamo"
 }

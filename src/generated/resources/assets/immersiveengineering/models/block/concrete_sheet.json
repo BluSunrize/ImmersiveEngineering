@@ -1,6 +1,6 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/carpet",
   "textures": {
-    "all": "immersiveengineering:block/metal_decoration/radiator"
+    "wool": "immersiveengineering:block/stone_decoration/concrete"
   }
 }

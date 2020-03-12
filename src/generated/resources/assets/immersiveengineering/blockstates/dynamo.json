@@ -1,7 +1,23 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/dynamo"
+    "facing=north": {
+      "model": "immersiveengineering:block/kinetic_dynamo",
+      "uvlock": true
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/kinetic_dynamo",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/kinetic_dynamo",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=east": {
+      "model": "immersiveengineering:block/kinetic_dynamo",
+      "y": 90,
+      "uvlock": true
     }
   }
 }

@@ -1,7 +1,26 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/silo"
+    "facing=north,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/silo",
+      "uvlock": true
+    },
+    "facing=south,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/silo",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/silo",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=east,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/silo",
+      "y": 90,
+      "uvlock": true
+    },
+    "multiblockslave=true": {
+      "model": "immersiveengineering:block/ie_empty"
     }
   }
 }

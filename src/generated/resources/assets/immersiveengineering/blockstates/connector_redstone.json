@@ -1,7 +1,36 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/connector_redstone"
+    "facing=down": {
+      "model": "immersiveengineering:connector/block/connector/connector_redstone",
+      "uvlock": true
+    },
+    "facing=up": {
+      "model": "immersiveengineering:connector/block/connector/connector_redstone",
+      "x": 180,
+      "uvlock": true
+    },
+    "facing=north": {
+      "model": "immersiveengineering:connector/block/connector/connector_redstone",
+      "x": 90,
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=south": {
+      "model": "immersiveengineering:connector/block/connector/connector_redstone",
+      "x": 90,
+      "uvlock": true
+    },
+    "facing=west": {
+      "model": "immersiveengineering:connector/block/connector/connector_redstone",
+      "x": 90,
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=east": {
+      "model": "immersiveengineering:connector/block/connector/connector_redstone",
+      "x": 90,
+      "y": 270,
+      "uvlock": true
     }
   }
 }

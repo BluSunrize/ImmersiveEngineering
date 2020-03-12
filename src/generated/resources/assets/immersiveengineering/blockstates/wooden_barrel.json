@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/wooden_barrel"
+      "model": "immersiveengineering:wooden_devices/barrel"
     }
   }
 }

@@ -1,209 +1,209 @@
 {
   "variants": {
     "facing=north,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical",
       "x": 180,
       "y": 270,
       "uvlock": true
     },
     "facing=south,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical",
       "x": 180,
       "y": 90,
       "uvlock": true
     },
     "facing=west,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical",
       "x": 180,
       "y": 180,
       "uvlock": true
     },
     "facing=east,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical",
       "x": 180,
       "uvlock": true
     },
     "facing=north,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical",
       "y": 270,
       "uvlock": true
     },
     "facing=south,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical",
       "y": 90,
       "uvlock": true
     },
     "facing=west,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical",
       "y": 180,
       "uvlock": true
     },
     "facing=east,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs"
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical"
     },
     "facing=north,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "x": 180,
       "y": 270,
       "uvlock": true
     },
     "facing=south,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "x": 180,
       "y": 90,
       "uvlock": true
     },
     "facing=west,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "x": 180,
       "y": 180,
       "uvlock": true
     },
     "facing=east,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "x": 180,
       "uvlock": true
     },
     "facing=north,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "y": 180,
       "uvlock": true
     },
     "facing=south,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner"
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner"
     },
     "facing=west,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "y": 90,
       "uvlock": true
     },
     "facing=east,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "y": 270,
       "uvlock": true
     },
     "facing=north,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "x": 180,
       "uvlock": true
     },
     "facing=south,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "x": 180,
       "y": 180,
       "uvlock": true
     },
     "facing=west,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "x": 180,
       "y": 270,
       "uvlock": true
     },
     "facing=east,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "x": 180,
       "y": 90,
       "uvlock": true
     },
     "facing=north,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "y": 270,
       "uvlock": true
     },
     "facing=south,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "y": 90,
       "uvlock": true
     },
     "facing=west,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner",
       "y": 180,
       "uvlock": true
     },
     "facing=east,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_inner"
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_inner"
     },
     "facing=north,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "x": 180,
       "y": 270,
       "uvlock": true
     },
     "facing=south,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "x": 180,
       "y": 90,
       "uvlock": true
     },
     "facing=west,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "x": 180,
       "y": 180,
       "uvlock": true
     },
     "facing=east,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "x": 180,
       "uvlock": true
     },
     "facing=north,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "y": 180,
       "uvlock": true
     },
     "facing=south,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer"
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer"
     },
     "facing=west,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "y": 90,
       "uvlock": true
     },
     "facing=east,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "y": 270,
       "uvlock": true
     },
     "facing=north,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "x": 180,
       "uvlock": true
     },
     "facing=south,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "x": 180,
       "y": 180,
       "uvlock": true
     },
     "facing=west,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "x": 180,
       "y": 270,
       "uvlock": true
     },
     "facing=east,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "x": 180,
       "y": 90,
       "uvlock": true
     },
     "facing=north,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "y": 270,
       "uvlock": true
     },
     "facing=south,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "y": 90,
       "uvlock": true
     },
     "facing=west,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer",
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer",
       "y": 180,
       "uvlock": true
     },
     "facing=east,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_treated_wood_vertical_stairs_outer"
+      "model": "immersiveengineering:block/stairs_treated_wood_vertical_outer"
     }
   }
 }

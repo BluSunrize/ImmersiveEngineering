@@ -1,8 +1,3 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "top": "immersiveengineering:block/metal_device/thermoelectric_gen_top",
-    "bottom": "immersiveengineering:block/metal_device/thermoelectric_gen_bottom",
-    "side": "immersiveengineering:block/metal_device/thermoelectric_gen_side"
-  }
+  "parent": "immersiveengineering:block/thermoelectric_generator"
 }

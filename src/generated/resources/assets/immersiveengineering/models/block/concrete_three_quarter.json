@@ -1,6 +1,6 @@
 {
-  "parent": "block/cube_all",
+  "parent": "immersiveengineering:block/ie_three_quarter_block",
   "textures": {
-    "all": "immersiveengineering:block/metal_decoration/radiator"
+    "texture": "immersiveengineering:block/stone_decoration/concrete"
   }
 }

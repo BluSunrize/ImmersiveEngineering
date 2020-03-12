@@ -1,0 +1,6 @@
+{
+  "parent": "block/block",
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/wooden_device/workbench.obj.ie",
+  "flip-v": true
+}

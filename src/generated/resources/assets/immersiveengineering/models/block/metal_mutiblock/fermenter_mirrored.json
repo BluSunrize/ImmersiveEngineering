@@ -1,0 +1,6 @@
+{
+  "parent": "block/block",
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_mutiblock/fermenter_mirrored.obj",
+  "flip-v": true
+}

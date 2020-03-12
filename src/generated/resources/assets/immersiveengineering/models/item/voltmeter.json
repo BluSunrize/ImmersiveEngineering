@@ -1,46 +1,24 @@
 {
-  "parent": "immersiveengineering:item/voltmeter.obj",
-  "display-trsr": {
-    "none": {
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/item/voltmeter.obj",
+  "flip-v": true,
+  "transform": {
+    "thirdperson_righthand": {
       "translation": [
-        0.0,
-        0.0,
-        0.0
+        -0.25,
+        0.125,
+        0.25
       ],
       "rotation": [
         0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ]
-    },
-    "third_person_left_hand": {
-      "translation": [
-        0.16912383,
-        0.3125,
-        -0.220801
-      ],
-      "rotation": [
-        0.0,
-        -0.5555703,
+        -0.55557024,
         0.0,
         0.83146966
       ],
       "scale": [
-        0.6250002,
+        0.62500006,
         0.625,
-        0.6250002
+        0.62500006
       ],
       "post-rotation": [
         0.0,
@@ -49,22 +27,22 @@
         1.0
       ]
     },
-    "third_person_right_hand": {
+    "thirdperson_lefthand": {
       "translation": [
-        0.41912383,
-        0.3125,
-        0.341699
+        -0.5,
+        0.125,
+        -0.3125
       ],
       "rotation": [
         0.0,
-        -0.5555703,
+        -0.55557024,
         0.0,
         0.83146966
       ],
       "scale": [
-        0.6250002,
+        0.62500006,
         0.625,
-        0.6250002
+        0.62500006
       ],
       "post-rotation": [
         0.0,
@@ -73,46 +51,46 @@
         1.0
       ]
     },
-    "first_person_left_hand": {
+    "firstperson_righthand": {
       "translation": [
-        0.74999994,
-        0.375,
-        -0.625
-      ],
-      "rotation": [
-        0.0,
-        -0.7071067,
-        0.0,
-        0.70710677
-      ],
-      "scale": [
-        0.99999994,
-        1.0,
-        0.99999994
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ]
-    },
-    "first_person_right_hand": {
-      "translation": [
-        0.74999994,
+        -0.25,
         0.375,
         0.3125
       ],
       "rotation": [
         0.0,
-        -0.7071067,
+        -0.70710677,
         0.0,
         0.70710677
       ],
       "scale": [
-        0.99999994,
         1.0,
-        0.99999994
+        1.0,
+        1.0
+      ],
+      "post-rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "firstperson_lefthand": {
+      "translation": [
+        -0.25,
+        0.375,
+        -0.625
+      ],
+      "rotation": [
+        0.0,
+        -0.70710677,
+        0.0,
+        0.70710677
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
       ],
       "post-rotation": [
         0.0,
@@ -147,20 +125,20 @@
     },
     "gui": {
       "translation": [
-        0.49999994,
-        0.43749994,
-        -0.2954952
+        0.0,
+        0.5,
+        0.0
       ],
       "rotation": [
         0.0,
         -0.3826834,
         0.0,
-        0.9238796
+        0.9238795
       ],
       "scale": [
-        1.1250002,
-        1.1250002,
-        1.1250002
+        1.1250001,
+        1.1250001,
+        1.1250001
       ],
       "post-rotation": [
         0.0,
@@ -171,9 +149,9 @@
     },
     "ground": {
       "translation": [
-        0.5,
-        0.5,
-        0.5
+        0.25,
+        0.25,
+        0.25
       ],
       "rotation": [
         0.0,
@@ -195,9 +173,9 @@
     },
     "fixed": {
       "translation": [
+        -0.5,
         0.5,
-        0.5,
-        0.5
+        -0.5
       ],
       "rotation": [
         0.0,

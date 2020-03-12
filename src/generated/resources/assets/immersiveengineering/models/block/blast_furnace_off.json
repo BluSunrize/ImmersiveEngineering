@@ -1,0 +1,11 @@
+{
+  "parent": "immersiveengineering:block/ie_three_cubed",
+  "textures": {
+    "north": "immersiveengineering:block/multiblocks/blast_furnace_off",
+    "top": "immersiveengineering:block/multiblocks/blast_furnace",
+    "bottom": "immersiveengineering:block/multiblocks/blast_furnace",
+    "east": "immersiveengineering:block/multiblocks/blast_furnace",
+    "west": "immersiveengineering:block/multiblocks/blast_furnace",
+    "south": "immersiveengineering:block/multiblocks/blast_furnace"
+  }
+}

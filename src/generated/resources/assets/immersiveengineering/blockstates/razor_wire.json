@@ -1,7 +1,23 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/razor_wire"
+    "facing=north": {
+      "model": "immersiveengineering:connector/block/razor_wire",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=south": {
+      "model": "immersiveengineering:connector/block/razor_wire",
+      "uvlock": true
+    },
+    "facing=west": {
+      "model": "immersiveengineering:connector/block/razor_wire",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=east": {
+      "model": "immersiveengineering:connector/block/razor_wire",
+      "y": 270,
+      "uvlock": true
     }
   }
 }

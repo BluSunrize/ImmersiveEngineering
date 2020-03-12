@@ -1,7 +1,22 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/hemp"
+    "growth=BOTTOM0": {
+      "model": "immersiveengineering:block/hemp/bottom0"
+    },
+    "growth=BOTTOM1": {
+      "model": "immersiveengineering:block/hemp/bottom1"
+    },
+    "growth=BOTTOM2": {
+      "model": "immersiveengineering:block/hemp/bottom2"
+    },
+    "growth=BOTTOM3": {
+      "model": "immersiveengineering:block/hemp/bottom3"
+    },
+    "growth=BOTTOM4": {
+      "model": "immersiveengineering:block/hemp/bottom4"
+    },
+    "growth=TOP0": {
+      "model": "immersiveengineering:block/hemp/top0"
     }
   }
 }

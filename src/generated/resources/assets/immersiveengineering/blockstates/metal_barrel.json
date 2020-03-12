@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/metal_barrel"
+      "model": "immersiveengineering:metal_devices/barrel"
     }
   }
 }

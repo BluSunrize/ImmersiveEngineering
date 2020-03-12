@@ -1,0 +1,6 @@
+{
+  "parent": "block/block",
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_device/blastfurnace_preheater.obj",
+  "flip-v": true
+}

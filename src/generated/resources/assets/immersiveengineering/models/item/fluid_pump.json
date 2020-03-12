@@ -1,35 +1,13 @@
 {
-  "parent": "immersiveengineering:block/metal_device/fluid_pump_inv.obj",
-  "display-trsr": {
-    "none": {
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_device/fluid_pump_inv.obj",
+  "flip-v": true,
+  "transform": {
+    "thirdperson_righthand": {
       "translation": [
-        0.359375,
-        0.359375,
-        0.359375
-      ],
-      "rotation": [
         0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        0.28124997,
-        0.28124997,
-        0.28124997
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ]
-    },
-    "third_person_left_hand": {
-      "translation": [
-        0.31975913,
-        0.46667442,
-        0.22472672
+        0.09375,
+        -0.171875
       ],
       "rotation": [
         0.46984637,
@@ -49,11 +27,11 @@
         1.0
       ]
     },
-    "third_person_right_hand": {
+    "thirdperson_lefthand": {
       "translation": [
-        0.31975913,
-        0.46667442,
-        0.22472672
+        0.0,
+        0.09375,
+        -0.171875
       ],
       "rotation": [
         0.46984637,
@@ -73,11 +51,11 @@
         1.0
       ]
     },
-    "first_person_left_hand": {
+    "firstperson_righthand": {
       "translation": [
-        0.60546875,
-        0.39453125,
-        0.60546875
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -97,11 +75,11 @@
         1.0
       ]
     },
-    "first_person_right_hand": {
+    "firstperson_lefthand": {
       "translation": [
-        0.60546875,
-        0.39453125,
-        0.60546875
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -123,9 +101,9 @@
     },
     "head": {
       "translation": [
-        0.359375,
-        0.359375,
-        0.359375
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -134,9 +112,9 @@
         1.0
       ],
       "scale": [
-        0.28124997,
-        0.28124997,
-        0.28124997
+        0.28125,
+        0.28125,
+        0.28125
       ],
       "post-rotation": [
         0.0,
@@ -147,9 +125,9 @@
     },
     "gui": {
       "translation": [
-        0.5,
-        0.011917442,
-        0.65287584
+        0.0,
+        -0.15625,
+        0.0
       ],
       "rotation": [
         0.09904578,
@@ -171,9 +149,9 @@
     },
     "ground": {
       "translation": [
-        0.359375,
-        0.359375,
-        0.359375
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -182,9 +160,9 @@
         1.0
       ],
       "scale": [
-        0.28124997,
-        0.28124997,
-        0.28124997
+        0.28125,
+        0.28125,
+        0.28125
       ],
       "post-rotation": [
         0.0,
@@ -195,9 +173,9 @@
     },
     "fixed": {
       "translation": [
-        0.21875,
-        -0.03125,
-        0.21875
+        0.0,
+        -0.25,
+        0.0
       ],
       "rotation": [
         0.0,

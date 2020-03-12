@@ -1,6 +1,6 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "immersiveengineering:block/metal_decoration/radiator"
-  }
+  "parent": "block/block",
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/coresample.obj",
+  "flip-v": true
 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/fluid_pipe"
+      "model": "immersiveengineering:block/metal_device/fluid_pipe"
     }
   }
 }

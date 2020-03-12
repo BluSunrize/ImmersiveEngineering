@@ -1,0 +1,6 @@
+{
+  "parent": "block/block",
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_multiblock/lightningrod.obj",
+  "flip-v": true
+}

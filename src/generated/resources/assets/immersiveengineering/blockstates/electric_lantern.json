@@ -1,7 +1,22 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/electric_lantern"
+    "active=false,facing=down": {
+      "model": "immersiveengineering:connector/block/metal_device/e_lantern",
+      "uvlock": true
+    },
+    "active=true,facing=down": {
+      "model": "immersiveengineering:connector/block/metal_device/e_lantern",
+      "uvlock": true
+    },
+    "active=false,facing=up": {
+      "model": "immersiveengineering:connector/block/metal_device/e_lantern",
+      "x": 180,
+      "uvlock": true
+    },
+    "active=true,facing=up": {
+      "model": "immersiveengineering:connector/block/metal_device/e_lantern",
+      "x": 180,
+      "uvlock": true
     }
   }
 }

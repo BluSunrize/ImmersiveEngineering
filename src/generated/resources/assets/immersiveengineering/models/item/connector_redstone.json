@@ -1,35 +1,13 @@
 {
-  "parent": "immersiveengineering:block/connector/connector_redstone.obj.ie",
-  "display-trsr": {
-    "none": {
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/connector/connector_redstone.obj.ie",
+  "flip-v": true,
+  "transform": {
+    "thirdperson_righthand": {
       "translation": [
-        0.25,
-        0.25,
-        0.25
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        0.5,
-        0.5,
-        0.5
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ]
-    },
-    "third_person_left_hand": {
-      "translation": [
-        0.11707181,
-        0.39908785,
-        0.5036808
+        -0.0625,
+        0.125,
+        0.1875
       ],
       "rotation": [
         0.46984625,
@@ -49,11 +27,11 @@
         1.0
       ]
     },
-    "third_person_right_hand": {
+    "thirdperson_lefthand": {
       "translation": [
-        0.11707181,
-        0.39908785,
-        0.5036808
+        -0.0625,
+        0.125,
+        0.1875
       ],
       "rotation": [
         0.46984625,
@@ -73,11 +51,11 @@
         1.0
       ]
     },
-    "first_person_left_hand": {
+    "firstperson_righthand": {
       "translation": [
+        0.0,
         0.25,
-        0.5,
-        0.375
+        0.125
       ],
       "rotation": [
         0.0,
@@ -97,11 +75,11 @@
         1.0
       ]
     },
-    "first_person_right_hand": {
+    "firstperson_lefthand": {
       "translation": [
+        0.0,
         0.25,
-        0.5,
-        0.375
+        0.125
       ],
       "rotation": [
         0.0,
@@ -123,9 +101,9 @@
     },
     "head": {
       "translation": [
-        0.25,
-        0.25,
-        0.25
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -147,9 +125,9 @@
     },
     "gui": {
       "translation": [
-        0.5,
-        0.035075426,
-        0.7717793
+        0.0,
+        0.125,
+        0.0
       ],
       "rotation": [
         0.09904577,
@@ -171,9 +149,9 @@
     },
     "ground": {
       "translation": [
-        0.25,
-        0.25,
-        0.25
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -195,7 +173,7 @@
     },
     "fixed": {
       "translation": [
-        0.99999994,
+        0.0,
         0.0,
         0.0
       ],

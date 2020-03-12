@@ -1,35 +1,13 @@
 {
-  "parent": "immersiveengineering:block/metal_device/gun_turret_inv.obj",
-  "display-trsr": {
-    "none": {
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_device/gun_turret_inv.obj",
+  "flip-v": true,
+  "transform": {
+    "thirdperson_righthand": {
       "translation": [
-        0.375,
-        0.375,
-        0.375
-      ],
-      "rotation": [
         0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        0.25,
-        0.25,
-        0.25
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ]
-    },
-    "third_person_left_hand": {
-      "translation": [
-        0.3397859,
-        0.48079392,
-        0.23621543
+        0.09375,
+        -0.171875
       ],
       "rotation": [
         0.46984625,
@@ -49,11 +27,11 @@
         1.0
       ]
     },
-    "third_person_right_hand": {
+    "thirdperson_lefthand": {
       "translation": [
-        0.3397859,
-        0.48079392,
-        0.23621543
+        0.0,
+        0.09375,
+        -0.171875
       ],
       "rotation": [
         0.46984625,
@@ -73,11 +51,11 @@
         1.0
       ]
     },
-    "first_person_left_hand": {
+    "firstperson_righthand": {
       "translation": [
-        0.40625,
-        0.40625,
-        0.59375
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -97,11 +75,11 @@
         1.0
       ]
     },
-    "first_person_right_hand": {
+    "firstperson_lefthand": {
       "translation": [
-        0.40625,
-        0.40625,
-        0.59375
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -123,9 +101,9 @@
     },
     "head": {
       "translation": [
-        0.375,
-        0.375,
-        0.375
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -147,9 +125,9 @@
     },
     "gui": {
       "translation": [
-        0.5,
-        0.08003771,
-        0.63588965
+        0.0,
+        -0.125,
+        0.0
       ],
       "rotation": [
         0.09904577,
@@ -171,9 +149,9 @@
     },
     "ground": {
       "translation": [
-        0.375,
-        0.375,
-        0.375
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -195,9 +173,9 @@
     },
     "fixed": {
       "translation": [
-        0.375,
-        0.0,
-        0.75
+        0.125,
+        -0.25,
+        0.0
       ],
       "rotation": [
         0.0,
