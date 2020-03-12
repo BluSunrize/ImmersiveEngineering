@@ -35,6 +35,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
@@ -86,6 +87,8 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3f;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -260,23 +263,30 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 			return FIXED;
 	}
 
-	private static final Matrix4 matAugers = new Matrix4().translate(.441f, 0, 0);
+	private static final TRSRTransformation matAugers = new TRSRTransformation(new Vector3f(.441f, 0, 0), null, null, null);
 
 	@Nonnull
 	@Override
-	public Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, Matrix4 mat, float partialTicks)
+	public TRSRTransformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
 	{
-		mat.setIdentity();
 		if(groups==FIXED[0])
 			return matAugers;
 		float angle = (entity.ticksExisted%60+partialTicks)/60f*(float)(2*Math.PI);
+		Quat4f rotation = null;
+		Vector3f translation = null;
 		if("drill_head".equals(groups[0]))
-			mat.rotate(angle, 1, 0, 0);
+			rotation = TRSRTransformation.quatFromXYZ(angle, 0, 0);
 		else if("upgrade_damage1".equals(groups[0]))
-			mat.translate(.441f, 0, 0).rotate(angle, 0, 1, 0);
+		{
+			translation = new Vector3f(.441f, 0, 0);
+			rotation = TRSRTransformation.quatFromXYZ(0, angle, 0);
+		}
 		else if("upgrade_damage3".equals(groups[0]))
-			mat.translate(.441f, 0, 0).rotate(angle, 0, 0, 1);
-		return mat;
+		{
+			translation = new Vector3f(.441f, 0, 0);
+			rotation = TRSRTransformation.quatFromXYZ(0, 0, angle);
+		}
+		return new TRSRTransformation(translation, rotation, null, null);
 	}
 
 	@Override

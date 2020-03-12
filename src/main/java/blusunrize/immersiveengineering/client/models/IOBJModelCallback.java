@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models;
 
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -21,6 +22,8 @@ import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
@@ -39,6 +42,15 @@ public interface IOBJModelCallback<T>
 	default boolean shouldRenderGroup(T object, String group)
 	{
 		return true;
+	}
+
+	default VisibilityList getVisibility(Collection<String> allGroups, T object)
+	{
+		List<String> visible = new ArrayList<>();
+		for(String g : allGroups)
+			if(shouldRenderGroup(object, g))
+				visible.add(g);
+		return VisibilityList.show(visible);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -81,10 +93,10 @@ public interface IOBJModelCallback<T>
 
 	@OnlyIn(Dist.CLIENT)
 	@Nonnull
-	default Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
-										  Matrix4 mat, float partialTicks)
+	default TRSRTransformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
+													 float partialTicks)
 	{
-		return mat.setIdentity();
+		return TRSRTransformation.identity();
 	}
 
 	@OnlyIn(Dist.CLIENT)

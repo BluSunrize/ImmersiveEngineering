@@ -61,6 +61,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -71,6 +72,7 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Vector3f;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -542,14 +544,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return groups;
 	}
 
-	private static final Matrix4 matOpen = new Matrix4().translate(-.625, .25, 0).rotate(-.87266, 0, 0, 1);
-	private static final Matrix4 matClose = new Matrix4().translate(-.625, .25, 0);
-	private static final Matrix4 matCylinder = new Matrix4().translate(0, .6875, 0);
+	private static final TRSRTransformation matOpen = new TRSRTransformation(new Vector3f(-.625F, .25F, 0), TRSRTransformation.quatFromXYZ(0, 0, -.87266f), null, null);
+	private static final TRSRTransformation matClose = new TRSRTransformation(new Vector3f(-.625F, .25F, 0), null, null, null);
+	private static final TRSRTransformation matCylinder = new TRSRTransformation(new Vector3f(0, .6875F, 0), null, null, null);
 
 	@Nonnull
 	@Override
-	public Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
-										 Matrix4 mat, float partialTicks)
+	public TRSRTransformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
+													float partialTicks)
 	{
 		if(entity instanceof PlayerEntity&&(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND))
 		{
@@ -565,14 +567,26 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 					if(f < .35||f > 1.95)
 						return matClose;
 					else if(f < .5)
-						return mat.setIdentity().translate(-.625, .25, 0).rotate(-2.64*(f-.35), 0, 0, 1);
+						return new TRSRTransformation(
+								new Vector3f(-.625f, .25f, 0),
+								TRSRTransformation.quatFromXYZ(0, 0, -2.64F*(f-.35F)),
+								null, null);
 					else if(f < 1.8)
 						return matOpen;
 					else
-						return mat.setIdentity().translate(-.625, .25, 0).rotate(-2.64*(1.95-f), 0, 0, 1);
+						return new TRSRTransformation(
+								new Vector3f(-.625f, .25f, 0),
+								TRSRTransformation.quatFromXYZ(0, 0, -2.64f*(1.95f-f)),
+								null, null);
 				}
 				else if(f > 2.5&&f < 2.9)
-					return mat.setIdentity().translate(0, .6875, 0).rotate(-15.70795*(f-2.5), left?-1: 1, 0, 0);
+				{
+					float angle = (left?-1: 1)*-15.70795f*(f-2.5f);
+					return new TRSRTransformation(
+							new Vector3f(0, .6875f, 0),
+							TRSRTransformation.quatFromXYZ(angle, 0, 0),
+							null, null);
+				}
 			}
 			else if("frame".equals(groups[0])&&((PlayerEntity)entity).openContainer instanceof RevolverContainer)
 				return matOpen;

@@ -42,16 +42,14 @@ import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.concurrent.ThreadTaskExecutor;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -67,6 +65,9 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -918,28 +919,25 @@ public class ApiUtils
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, @Nullable VertexFormat ignored,
-															   Int2IntFunction colorMultiplier)
+	public static Function<BakedQuad, BakedQuad> transformQuad(TRSRTransformation transform, Int2IntFunction colorMultiplier)
 	{
-		return new QuadTransformer(mat, colorMultiplier);
+		return new QuadTransformer(transform, colorMultiplier);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private static class QuadTransformer implements Function<BakedQuad, BakedQuad>
 	{
-		private final Matrix4 transform;
-		private final Matrix4 normalTransform;
+		@Nonnull
+		private final TRSRTransformation transform;
 		@Nullable
 		private final Int2IntFunction colorTransform;
 		private UnpackedBakedQuad.Builder currentQuadBuilder;
 		private final Map<VertexFormat, IVertexConsumer> consumers = new HashMap<>();
 
-		private QuadTransformer(Matrix4 transform, @Nullable Int2IntFunction colorTransform)
+		private QuadTransformer(TRSRTransformation transform, @Nullable Int2IntFunction colorTransform)
 		{
 			this.transform = transform;
 			this.colorTransform = colorTransform;
-			this.normalTransform = transform.copy();
-			normalTransform.transpose().invert();
 		}
 
 		@Override
@@ -990,9 +988,10 @@ public class ApiUtils
 				@Override
 				public void setQuadOrientation(@Nonnull Direction orientation)
 				{
-					Vec3d newFront = normalTransform.apply(new Vec3d(orientation.getDirectionVec()));
-					Direction newOrientation = Direction.getFacingFromVector((float)newFront.x, (float)newFront.y,
-							(float)newFront.z);
+					Vec3i normal = orientation.getDirectionVec();
+					Vector3f newFront = new Vector3f(normal.getX(), normal.getY(), normal.getZ());
+					transform.transformNormal(newFront);
+					Direction newOrientation = Direction.getFacingFromVector(newFront.x, newFront.y, newFront.z);
 					currentQuadBuilder.setQuadOrientation(newOrientation);
 				}
 
@@ -1013,15 +1012,17 @@ public class ApiUtils
 				{
 					if(element==posPosFinal&&transform!=null)
 					{
-						Vec3d newPos = transform.apply(new Vec3d(data[0], data[1], data[2]));
+						Vector4f newPos = new Vector4f(data[0], data[1], data[2], 1);
+						transform.transformPosition(newPos);
 						data = new float[3];
 						data[0] = (float)newPos.x;
 						data[1] = (float)newPos.y;
 						data[2] = (float)newPos.z;
 					}
-					else if(element==normPosFinal&&normalTransform!=null)
+					else if(element==normPosFinal)
 					{
-						Vec3d newNormal = normalTransform.apply(new Vec3d(data[0], data[1], data[2]));
+						Vector3f newNormal = new Vector3f(data[0], data[1], data[2]);
+						transform.transformNormal(newNormal);
 						data = new float[3];
 						data[0] = (float)newNormal.x;
 						data[1] = (float)newNormal.y;

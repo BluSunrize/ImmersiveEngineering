@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render;
 
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
@@ -28,8 +29,7 @@ import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
+import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -37,6 +37,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -50,7 +51,6 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 	@Override
 	public void renderByItem(ItemStack stack)
 	{
-		/*TODO
 		GlStateManager.enableCull();
 		float partialTicks = mc().getRenderPartialTicks();
 		if(stack.getItem() instanceof IOBJModelCallback)
@@ -80,24 +80,19 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					sCase = tmp.getRight();
 				}
 				IESmartObjModel obj = (IESmartObjModel)model;
-				Map<String, Boolean> visible;
-				if(obj.baseOld.getState() instanceof OBJState)
-					visible = new HashMap<>(((OBJModel.OBJState)obj.baseOld.getState()).getVisibilityMap());
-				else
-				{
-					visible = new HashMap<>();
-					for(String g : obj.baseOld.getModel().getMatLib().getGroups().keySet())
-						visible.put(g, true);
-				}
+				Set<String> visible = new HashSet<>();
+				for(String g : obj.getParts().keySet())
+					if(callback.shouldRenderGroup(stack, g))
+						visible.add(g);
 				Tessellator tes = Tessellator.getInstance();
 				BufferBuilder bb = tes.getBuffer();
 				TransformType transformType = obj.lastCameraTransform;
-				List<Pair<BakedQuad, ShaderLayer>> quads = new ArrayList<>();
+				List<BakedQuad> quads = new ArrayList<>();
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
 					GlStateManager.pushMatrix();
-					Matrix4 mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
-							IEOBJItemRenderer.mat, partialTicks);
+					Matrix4 mat = new Matrix4(callback.getTransformForGroups(stack, groups, transformType, mc().player,
+							partialTicks).getMatrixVec());
 					GlStateManager.multMatrix(mat.toFloatBuffer(transform));
 					boolean wasLightmapEnabled, wasLightingEnabled;
 					{
@@ -123,23 +118,22 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					}
 					GlStateManager.popMatrix();
 				}
-				renderQuadsForGroups(visible.keySet().toArray(new String[0]), callback, obj, quads, stack,
+				renderQuadsForGroups(visible.toArray(new String[0]), callback, obj, quads, stack,
 						sCase, shader, false, bb, tes, visible, partialTicks);
 				GlStateManager.enableCull();
 			}
 		}
-		 */
 	}
 
 	private void renderQuadsForGroups(String[] groups, IOBJModelCallback<ItemStack> callback, IESmartObjModel model,
 									  List<BakedQuad> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
-									  boolean dynamic,
-									  BufferBuilder bb, Tessellator tes, Map<String, Boolean> visible, float partialTicks)
+									  boolean dynamic, BufferBuilder bb, Tessellator tes, Set<String> visible,
+									  float partialTicks)
 	{
 		quadsForGroup.clear();
 		for(String g : groups)
 		{
-			if(visible.getOrDefault(g, Boolean.FALSE)&&callback.shouldRenderGroup(stack, g))
+			if(visible.contains(g)&&callback.shouldRenderGroup(stack, g))
 				quadsForGroup.addAll(model.addQuadsForGroup(callback, stack, g, sCase, shader, !dynamic)
 						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 			visible.remove(g);

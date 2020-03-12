@@ -52,6 +52,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -337,8 +338,8 @@ public class FeedthroughModel extends BakedIEModel
 					case 0:
 						if(k.layer==null||k.baseState.getBlock().canRenderInLayer(k.baseState, k.layer))
 						{
-							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(new Matrix4(),
-									DefaultVertexFormats.ITEM, colorMultiplier);
+							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TRSRTransformation.identity(),
+									colorMultiplier);
 							quads.add(model.getQuads(k.baseState, side, Utils.RAND, EmptyModelData.INSTANCE)
 									.stream()
 									.map(tintTransformer)
@@ -358,8 +359,8 @@ public class FeedthroughModel extends BakedIEModel
 						mat = new Matrix4();
 						mat.translate(0, 0, -1);
 						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat));
-						Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(new Matrix4(),
-								DefaultVertexFormats.ITEM, colorMultiplier);
+						Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TRSRTransformation.identity(),
+								colorMultiplier);
 						all.addAll(model.getQuads(k.baseState, side, Utils.RAND).stream().map(tintTransformer)
 								.collect(Collectors.toCollection(ArrayList::new)));
 						quads.add(all);
@@ -390,8 +391,7 @@ public class FeedthroughModel extends BakedIEModel
 			List<BakedQuad> conn = new ArrayList<>(info.model.getQuads(null, side, Utils.RAND));
 			if(side==facing)
 				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
-			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(mat, null,
-					null);//I hope no one uses tint index for connectors
+			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(new TRSRTransformation(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
 			if(transf!=null)
 				return conn.stream().map(transf).collect(Collectors.toList());
 			else

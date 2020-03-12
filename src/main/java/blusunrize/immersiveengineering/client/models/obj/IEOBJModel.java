@@ -44,7 +44,7 @@ public class IEOBJModel implements IModelGeometry<IEOBJModel>
 							VertexFormat format, ItemOverrideList overrides)
 	{
 		IBakedModel baseBaked = base.bake(owner, bakery, spriteGetter, sprite, format, overrides);
-		return new IESmartObjModel(base, baseBaked, owner, bakery, spriteGetter, sprite, format, state);
+		return new IESmartObjModel(base, baseBaked, owner, bakery, spriteGetter, sprite, format, state, dynamic);
 	}
 
 	@Override

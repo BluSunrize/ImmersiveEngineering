@@ -46,14 +46,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.extensions.IForgeBakedModel;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.*;
 import net.minecraftforge.client.model.obj.OBJModel2;
 import net.minecraftforge.client.model.obj.OBJModel2.ModelGroup;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
+import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
@@ -77,7 +80,6 @@ public class IESmartObjModel implements IBakedModel
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
 
 	//TODO check which ones are still needed
-	HashMap<TransformType, Matrix4> transformationMap;
 	ImmutableList<BakedQuad> bakedQuads;
 	ItemStack tempStack = ItemStack.EMPTY;
 	BlockState tempState;
@@ -86,7 +88,7 @@ public class IESmartObjModel implements IBakedModel
 	public TransformType lastCameraTransform;
 	public boolean isDynamic;
 
-	private final OBJModel2 baseModel;
+	public final OBJModel2 baseModel;
 	private final IBakedModel baseBaked;
 	private final IModelConfiguration owner;
 	private final ModelBakery bakery;
@@ -109,7 +111,7 @@ public class IESmartObjModel implements IBakedModel
 		}
 	}
 
-	private Map<String, ModelGroup> getParts()
+	public Map<String, ModelGroup> getParts()
 	{
 		try
 		{
@@ -122,7 +124,7 @@ public class IESmartObjModel implements IBakedModel
 
 	public IESmartObjModel(OBJModel2 baseModel, IBakedModel baseBaked, IModelConfiguration owner, ModelBakery bakery,
 						   Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite,
-						   VertexFormat format, IEObjState state)
+						   VertexFormat format, IEObjState state, boolean dynamic)
 	{
 
 		this.baseModel = baseModel;
@@ -133,17 +135,23 @@ public class IESmartObjModel implements IBakedModel
 		this.sprite = sprite;
 		this.format = format;
 		this.state = state;
+		this.isDynamic = dynamic;
+	}
+
+	@Override
+	public boolean doesHandlePerspectives()
+	{
+		return isDynamic;
 	}
 
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
 		this.lastCameraTransform = cameraTransformType;
-		Matrix4 matrix;
-		if(transformationMap==null||transformationMap.isEmpty())
-				matrix = new Matrix4();
-		else
-			matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType).copy(): new Matrix4();
+		Matrix4f superMatrix = TRSRTransformation.blockCornerToCenter(PerspectiveMapWrapper.getTransforms(owner.getCombinedState())
+				.getOrDefault(cameraTransformType, TRSRTransformation.identity()))
+				.getMatrixVec();
+		Matrix4 matrix = new Matrix4(superMatrix);
 
 		if(!this.tempStack.isEmpty()&&this.tempStack.getItem() instanceof IOBJModelCallback)
 			matrix = ((IOBJModelCallback)this.tempStack.getItem()).handlePerspective(this.tempStack, cameraTransformType, matrix, tempEntity);
@@ -361,9 +369,9 @@ public class IESmartObjModel implements IBakedModel
 			{
 				IESmartObjModel model;
 				if(visibility!=null)
-					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, visibility);
+					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, visibility, isDynamic);
 				else
-					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, this.state);
+					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, this.state, isDynamic);
 
 				model.tempState = blockState;
 				return model.buildQuads(modelData);
@@ -433,7 +441,7 @@ public class IESmartObjModel implements IBakedModel
 	{
 		String objCacheKey = callback!=null?callback.getCacheKey(callbackObject): "<none>";
 		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
-		if(false&&allowCaching)
+		if(allowCaching)
 		{
 			List<BakedQuad> cached = groupCache.getIfPresent(cacheKey);
 			if(cached!=null)
@@ -447,9 +455,8 @@ public class IESmartObjModel implements IBakedModel
 		TRSRTransformation transform = state.transform;
 		if(callback!=null)
 			transform = callback.applyTransformations(callbackObject, groupName, transform);
-		if(state.visibility.isVisible(groupName)&&callback.shouldRenderGroup(callbackObject, groupName))
-			//TODO transform?
-			g.addQuads(owner, new QuadListAdder(quads::add), bakery, spriteGetter, sprite, format);
+		if(state.visibility.isVisible(groupName)&&(callback==null||callback.shouldRenderGroup(callbackObject, groupName)))
+			g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
 		return quads;
 	}
 

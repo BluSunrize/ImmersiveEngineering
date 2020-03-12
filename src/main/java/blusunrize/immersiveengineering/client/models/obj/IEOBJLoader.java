@@ -41,8 +41,11 @@ public class IEOBJLoader implements IModelLoader<IEOBJModel>
 	public IEOBJModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
 	{
 		OBJModel2 model = OBJLoader2.INSTANCE.read(deserializationContext, modelContents);
-		//TODO parse some things from context
-		return new IEOBJModel(model, false, new IEObjState(VisibilityList.showAll()));
+		return new IEOBJModel(
+				model,
+				modelContents.has("dynamic")&&modelContents.get("dynamic").getAsBoolean(),
+				new IEObjState(VisibilityList.showAll())
+		);
 	}
 
 	@Override
