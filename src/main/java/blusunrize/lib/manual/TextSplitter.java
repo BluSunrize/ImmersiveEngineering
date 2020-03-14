@@ -8,10 +8,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
@@ -87,7 +85,7 @@ public class TextSplitter
 		updateSpecials(START, 0);
 		String formattingFromPreviousLine = "";
 		entry:
-		while(pos < wordsAndSpaces.length)
+		while(pos < wordsAndSpaces.length||!overflow.isEmpty())
 		{
 			List<String> page = new ArrayList<>(overflow);
 			overflow.clear();
@@ -103,7 +101,7 @@ public class TextSplitter
 				{
 					String token = tokenTransform.apply(wordsAndSpaces[pos]);
 					int textWidth = getWidth(token);
-					if(currWidth+textWidth < lineWidth||line.length()==0)
+					if(currWidth+textWidth <= lineWidth||line.length()==0)
 					{
 						pos++;
 						if(token.equals("<np>"))
@@ -120,18 +118,31 @@ public class TextSplitter
 							String id = token.substring(2, token.length()-1);
 							int pageForId = entry.size();
 							Map<Integer, SpecialManualElement> specialForId = specialByAnchor.get(id);
+							boolean specialOnNextPage = false;
+							boolean pageFull = false;
 							if(specialForId!=null&&specialForId.containsKey(0))
 							{
-								if(page.size() > getLinesOnPage(pageForId))
+								SpecialManualElement specialHere = specialForId.get(0);
+								//+1: Current line
+								if(page.size()+1 > getLinesOnPage(specialHere)&&
+										//Add long special elements on an empty page
+										!(page.isEmpty()&&getLinesOnPage(specialHere) <= 0))
 								{
 									pageForId++;
+									specialOnNextPage = true;
 								}
+								else
+									pageFull = page.size()+1 > getLinesOnPage(specialHere);
 							}
 							//New page if there is already a special element on this page
-							if(updateSpecials(id, pageForId))
+							if(!specialOnNextPage&&updateSpecials(id, pageForId))
+								specialOnNextPage = true;
+							if(specialOnNextPage||pageFull)
 							{
-								page.add(line);
-								pos--;
+								if(!line.isEmpty())
+									page.add(line);
+								if(specialOnNextPage)
+									pos--;
 								forceNewPage = true;
 								break page;
 							}
@@ -151,20 +162,27 @@ public class TextSplitter
 				line = line.trim();
 				page.add(line);
 			}
+			int linesMax = getLinesOnPage(entry.size());
+			forceNewPage |= linesMax <= 0;
 			if(forceNewPage||!page.stream().allMatch(String::isEmpty))
 			{
-				int linesMax = getLinesOnPage(entry.size());
 				if(page.size() > linesMax)
 				{
-					overflow.addAll(page.subList(linesMax, page.size()));
 					if(linesMax > 0)
+					{
+						overflow.addAll(page.subList(linesMax, page.size()));
 						page = page.subList(0, linesMax-1);
+					}
 					else
 						page = new ArrayList<>();
 				}
 				entry.add(page);
 			}
 		}
+		specialByPage.keySet().stream().max(Comparator.naturalOrder()).ifPresent(maxPageWithSpecial -> {
+			while(entry.size() <= maxPageWithSpecial)
+				entry.add(new ArrayList<>());
+		});
 	}
 
 	private int getWidth(String text)
@@ -188,10 +206,15 @@ public class TextSplitter
 
 	private int getLinesOnPage(int id)
 	{
+		return getLinesOnPage(specialByPage.get(id));
+	}
+
+	private int getLinesOnPage(@Nullable SpecialManualElement elementOnPage)
+	{
 		int pixels = pixelsPerPage;
-		if(specialByPage.containsKey(id))
-			pixels = pixelsPerPage-specialByPage.get(id).getPixelsTaken();
-		return Math.max(0, MathHelper.floor(pixels/(double)pixelsPerLine.getAsInt()));
+		if(elementOnPage!=null)
+			pixels = pixelsPerPage-elementOnPage.getPixelsTaken();
+		return MathHelper.floor(pixels/(double)pixelsPerLine.getAsInt());
 	}
 
 	private boolean updateSpecials(String ref, int page)
@@ -203,17 +226,13 @@ public class TextSplitter
 			{
 				int specialPage = page+entry.getKey();
 				if(specialByPage.containsKey(specialPage))
-				{
 					return true;
-				}
 				specialByPageTmp.put(specialPage, entry.getValue());
 			}
 			specialByPage.putAll(specialByPageTmp);
 		}
-		else if(!ref.equals(START))
-		{//Default reference for page 0
+		else if(!ref.equals(START)) //Default reference for page 0
 			System.out.println("WARNING: Reference "+ref+" was found, but no special pages were registered for it");
-		}
 		pageByAnchor.put(ref, page);
 		return false;
 	}
