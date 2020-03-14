@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultib
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
@@ -32,6 +33,7 @@ import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
+import blusunrize.immersiveengineering.client.manual.ShaderManualElement;
 import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
@@ -365,6 +367,7 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "improved_blast_furnace"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "graphite"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "workbench"));
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "shader"));
 		ResourceLocation blueprints = new ResourceLocation(MODID, "blueprints");
 		ieMan.addEntry(generalCat, blueprints);
 		ieMan.hideEntry(blueprints);
@@ -387,6 +390,9 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "shield"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "toolbox"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "revolver"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "bullets"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "chemthrower"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "skyhook"));
 
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "conveyors"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "external_heater"));
@@ -428,6 +434,36 @@ public class ClientProxy extends CommonProxy
 			builder.addSpecialElement("list", 0, new ManualElementTable(ieMan, table, false));
 			builder.readFromFile(new ResourceLocation(MODID, "squeezer"));
 			ieMan.addEntry(heavyMachinesCat, builder.create());
+		}
+		{
+			ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ieMan);
+			builder.setContent(
+					//TODO translation
+					() -> "Shader list",
+					() -> "",
+					() -> {
+						StringBuilder content = new StringBuilder();
+						for(ShaderRegistryEntry shader : ShaderRegistry.shaderRegistry.values())
+						{
+							String key = shader.name.getPath();
+							String translationKey = "desc.immersiveengineering.info.shader.details."+key;
+							String shaderDesc = I18n.format(translationKey);
+							if(content.length() > 0)
+								content.append("<np>");
+							content.append("<&").append(key).append(">").append(shaderDesc);
+						}
+						return content.toString();
+					}
+			);
+			for(ShaderRegistryEntry shader : ShaderRegistry.shaderRegistry.values())
+			{
+				String key = shader.name.getPath();
+				builder.addSpecialElement(key, 0, new ShaderManualElement(ieMan, shader));
+			}
+			builder.setLocation(new ResourceLocation(MODID, "shader_list"));
+			ManualEntry e = builder.create();
+			ieMan.addEntry(generalCat, e);
+			ieMan.hideEntry(e.getLocation());
 		}
 
 		addChangelogToManual();

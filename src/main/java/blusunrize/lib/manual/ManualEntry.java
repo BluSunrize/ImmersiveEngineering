@@ -33,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("WeakerAccess")
@@ -229,14 +230,20 @@ public class ManualEntry implements Comparable<ManualEntry>
 			hardcodedSpecials.add(new ImmutableTriple<>(anchor, offset, element));
 		}
 
-		public void setContent(String title, String subText, String mainText)
+		public void setContent(Supplier<String> title, Supplier<String> subText, Supplier<String> mainText)
 		{
-			String[] content = {title, subText, mainText};
 			getContent = (splitter) -> {
 				for(Triple<String, Integer, SpecialManualElement> special : hardcodedSpecials)
 					splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
-				return content;
+				return new String[]{
+						title.get(), subText.get(), mainText.get()
+				};
 			};
+		}
+
+		public void setContent(String title, String subText, String mainText)
+		{
+			setContent(() -> title, () -> subText, () -> mainText);
 		}
 
 		private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();

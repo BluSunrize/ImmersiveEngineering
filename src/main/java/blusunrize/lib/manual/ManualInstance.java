@@ -104,19 +104,18 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 					return new ManualElementImage(this, images);
 				}
 		);
-		//TODO test these
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "item_display"),
 				s -> {
-					JsonElement items = s.get("items");
 					NonNullList<ItemStack> stacks;
-					if(items.isJsonObject())
-						stacks = NonNullList.withSize(1, CraftingHelper.getItemStack(items.getAsJsonObject(), true));
+					if(s.has("item"))
+						stacks = NonNullList.withSize(1, ManualUtils.getItemStackFromJson(this, s.get("item")));
 					else
 					{
+						JsonElement items = s.get("items");
 						JsonArray arr = items.getAsJsonArray();
 						stacks = NonNullList.withSize(arr.size(), ItemStack.EMPTY);
 						for(int i = 0; i < arr.size(); i++)
-							stacks.set(i, CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true));
+							stacks.set(i, ManualUtils.getItemStackFromJson(this, arr.get(i)));
 					}
 					return new ManualElementItem(this, stacks);
 				}

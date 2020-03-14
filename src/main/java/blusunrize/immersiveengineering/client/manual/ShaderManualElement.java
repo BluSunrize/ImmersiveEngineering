@@ -40,8 +40,7 @@ import static blusunrize.lib.manual.ManualUtils.mc;
 /**
  * @author BluSunrize - 11.11.2016
  */
-//TODO fix and clean up. Only changed to compile
-public class ManualPageShader extends SpecialManualElements
+public class ShaderManualElement extends SpecialManualElements
 {
 	final ShaderRegistry.ShaderRegistryEntry shader;
 
@@ -53,7 +52,7 @@ public class ManualPageShader extends SpecialManualElements
 
 	String text, localizedText;
 
-	public ManualPageShader(ManualInstance manual, ShaderRegistry.ShaderRegistryEntry shader)
+	public ShaderManualElement(ManualInstance manual, ShaderRegistry.ShaderRegistryEntry shader)
 	{
 		super(manual);
 		this.shader = shader;
@@ -62,7 +61,7 @@ public class ManualPageShader extends SpecialManualElements
 	@Override
 	public int getPixelsTaken()
 	{
-		return 0;//TODO
+		return 47;
 	}
 
 	@Override
@@ -122,7 +121,7 @@ public class ManualPageShader extends SpecialManualElements
 			String cost = Integer.toString(replicationCost.inputSize);
 			if(!ApiUtils.hasPlayerIngredient(mc().player, replicationCost)&&!mc().player.abilities.isCreativeMode)
 				cost = TextFormatting.RED+cost;
-			buttons.add(new GuiButtonManual(gui, x+50, y+138, 70, 12,
+			buttons.add(new GuiButtonManual(gui, x+50, y+120, 70, 12,
 					TextFormatting.BOLD+I18n.format("ie.manual.entry.shaderList.order")+" "+cost+"x   ",
 					btn -> {
 						if(ApiUtils.hasPlayerIngredient(mc().player, replicationCost)||mc().player.abilities.isCreativeMode)
@@ -135,7 +134,7 @@ public class ManualPageShader extends SpecialManualElements
 		{
 			this.text += "<br><br>"+I18n.format("ie.manual.entry.shaderList.noInfo");
 			if(player.abilities.isCreativeMode)
-				buttons.add(new GuiButtonManual(gui, x+10, y+80, 100, 16,
+				buttons.add(new GuiButtonManual(gui, x+10, y+120, 100, 16,
 						I18n.format("ie.manual.entry.shaderList.unlock"),
 						btn -> {
 							UUID playerId = mc().player.getUniqueID();
@@ -164,7 +163,7 @@ public class ManualPageShader extends SpecialManualElements
 		GL11.glScalef(1/scale, 1/scale, 1/scale);
 
 		if(unlocked)
-			ManualUtils.renderItem().renderItemAndEffectIntoGUI(replicationCost.getRandomizedExampleStack(mc().player.ticksExisted), x+102, y+136);
+			ManualUtils.renderItem().renderItemAndEffectIntoGUI(replicationCost.getRandomizedExampleStack(mc().player.ticksExisted), x+102, y+118);
 
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);

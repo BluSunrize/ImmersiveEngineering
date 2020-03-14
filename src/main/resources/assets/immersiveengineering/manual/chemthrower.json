@@ -1,0 +1,22 @@
+{
+  "start": {
+    "type": "crafting",
+    "recipes": [
+      "chemthrower",
+      "wooden_grip",
+      "toolupgrade_drill_waterproof"
+    ]
+  },
+  "large": {
+    "type": "crafting",
+    "recipe": "toolupgrade_drill_capacity"
+  },
+  "focus": {
+    "type": "crafting",
+    "recipe": "toolupgrade_chemthrower_focus"
+  },
+  "multi": {
+    "type": "crafting",
+    "recipe": "toolupgrade_chemthrower_multitank"
+  }
+}

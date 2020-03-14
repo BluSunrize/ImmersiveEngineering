@@ -1,0 +1,45 @@
+{
+  "empty": {
+    "type": "item_display",
+    "items": [
+      "empty_casing",
+      "empty_shell"
+    ]
+  },
+  "casull": {
+    "type": "item_display",
+    "item": "casull"
+  },
+  "ap": {
+    "type": "item_display",
+    "item": "armor_piercing"
+  },
+  "buckshot": {
+    "type": "item_display",
+    "item": "buckshot"
+  },
+  "he": {
+    "type": "item_display",
+    "item": "he"
+  },
+  "silver": {
+    "type": "item_display",
+    "item": "silver"
+  },
+  "dragon": {
+    "type": "item_display",
+    "item": "dragons_breath"
+  },
+  "potion": {
+    "type": "item_display",
+    "item": "potion"
+  },
+  "flare": {
+    "type": "item_display",
+    "item": "flare"
+  },
+  "wolfpack": {
+    "type": "item_display",
+    "item": "wolfpack"
+  }
+}

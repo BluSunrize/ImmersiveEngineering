@@ -9,9 +9,11 @@
 package blusunrize.lib.manual;
 
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.lib.manual.ManualElementImage.ManualImage;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -34,6 +36,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -415,6 +418,17 @@ public class ManualUtils
 			{
 				return null;
 			}
+	}
+
+	public static ItemStack getItemStackFromJson(ManualInstance m, JsonElement jsonEle)
+	{
+		if(jsonEle.isJsonPrimitive())
+		{
+			ResourceLocation itemName = getLocationForManual(jsonEle.getAsString(), m);
+			return new ItemStack(ForgeRegistries.ITEMS.getValue(itemName));
+		}
+		else
+			return CraftingHelper.getItemStack(jsonEle.getAsJsonObject(), true);
 	}
 
 	public static Object getRecipeObjFromJson(ManualInstance m, JsonElement jsonEle)

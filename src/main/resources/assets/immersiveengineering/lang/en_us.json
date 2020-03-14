@@ -1042,5 +1042,9 @@
  "item.immersiveengineering.powerpack": "Capacitor Backpack",
  "item.immersiveengineering.shield": "Heavy Plated Shield",
  "item.immersiveengineering.maintenance_kit": "Maintenance Kit",
- "item.immersiveengineering.map_orevein": "Mineral Deposit Map"
+ "item.immersiveengineering.map_orevein": "Mineral Deposit Map",
+ "ie.manual.entry.shaderList.name": "List of Shaders",
+ "ie.manual.entry.shaderList.noInfo": "You have not unlocked this shader yet!",
+ "ie.manual.entry.shaderList.unlock": "Unlock this shader",
+ "ie.manual.entry.shaderList.order": "Acquire:"
 }

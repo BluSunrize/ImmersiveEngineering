@@ -471,9 +471,16 @@ public class ManualScreen extends Screen
 		}
 	}
 
+	//Make public as a utility
 	@Override
 	public void fillGradient(int x1, int yA, int x2, int yB, int colorA, int colorB)
 	{
 		super.fillGradient(x1, yA, x2, yB, colorA, colorB);
+	}
+
+	@Override
+	public boolean isPauseScreen()
+	{
+		return false;
 	}
 }

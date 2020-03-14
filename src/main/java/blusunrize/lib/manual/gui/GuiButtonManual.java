@@ -25,7 +25,7 @@ public class GuiButtonManual extends Button
 
 	public GuiButtonManual(ManualScreen gui, int x, int y, int w, int h, String text, IPressable handler)
 	{
-		super(w, h, x, y, text, handler);
+		super(x, y, w, h, text, handler);
 		this.gui = gui;
 	}
 
