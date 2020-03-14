@@ -34,7 +34,7 @@ import java.util.Set;
 
 public class IEManualInstance extends ManualInstance
 {
-	private final Set<String> hiddenEntries = new HashSet<>();
+	private final Set<ResourceLocation> hiddenEntries = new HashSet<>();
 
 	public IEManualInstance()
 	{
@@ -223,9 +223,9 @@ public class IEManualInstance extends ManualInstance
 	//TODO this was changed to snake_case. Where else do I need to change it
 	private static final ResourceLocation SHADER_ENTRY = new ResourceLocation(ImmersiveEngineering.MODID, "shader_list");
 
-	public void hideEntry(String name)
+	public void hideEntry(ResourceLocation name)
 	{
-		this.hiddenEntries.add(name.toLowerCase());
+		this.hiddenEntries.add(name);
 	}
 
 	@Override
@@ -235,7 +235,7 @@ public class IEManualInstance extends ManualInstance
 		if(ImmersiveEngineering.MODID.equals(nodeLoc.getNamespace())&&
 				nodeLoc.getPath().startsWith(ManualHelper.CAT_UPDATE))
 			return IEConfig.GENERAL.showUpdateNews.get();
-		return !nodeLoc.equals(SHADER_ENTRY);
+		return !nodeLoc.equals(SHADER_ENTRY)&&!hiddenEntries.contains(nodeLoc);
 	}
 
 	@Override

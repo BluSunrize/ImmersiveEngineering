@@ -75,8 +75,8 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 							innerSaR[j] = ManualUtils.getRecipeObjFromJson(this, inner.get(j));
 						stacksAndRecipes[i] = innerSaR;
 					}
-					else if(el.isJsonObject())
-						stacksAndRecipes[i] = ManualUtils.getRecipeObjFromJson(this, el.getAsJsonObject());
+					else
+						stacksAndRecipes[i] = ManualUtils.getRecipeObjFromJson(this, el);
 				}
 			}
 			else
@@ -242,16 +242,18 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		initialized = false;
 	}
 
-	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source)
+	public ManualEntry addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source)
 	{
-		addEntry(node, source, 0);
+		return addEntry(node, source, 0);
 	}
 
-	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source, int priority)
+	public ManualEntry addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source, int priority)
 	{
 		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 		builder.readFromFile(source);
-		addEntry(node, builder.create(), priority);
+		ManualEntry entry = builder.create();
+		addEntry(node, entry, priority);
+		return entry;
 	}
 
 	@Nullable

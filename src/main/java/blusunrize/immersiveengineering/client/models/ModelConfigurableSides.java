@@ -255,7 +255,7 @@ public class ModelConfigurableSides extends BakedIEModel
 				{
 					String key = f.getName()+"_"+cfg.getTextureName();
 					String tex = name+"_"+namer.getTextureName(f, cfg);
-					builder.put(key, new ResourceLocation(ImmersiveEngineering.MODID, "block/"+tex));
+					builder.put(key, new ResourceLocation(tex));
 				}
 			return new ConfigSidesModelBase(name, type, builder.build());
 		}

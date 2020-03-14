@@ -443,6 +443,8 @@ public class ManualUtils
 			}
 			return stacks;
 		}
+		else if(jsonEle.isJsonPrimitive()&&jsonEle.getAsJsonPrimitive().isString())
+			return ManualUtils.getLocationForManual(jsonEle.getAsString(), m);
 		throw new RuntimeException("Could not find recipe for "+jsonEle);
 	}
 

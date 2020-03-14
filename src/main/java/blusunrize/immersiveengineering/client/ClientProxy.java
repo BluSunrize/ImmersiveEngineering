@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
+import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.multiblocks.ManualElementMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
@@ -124,7 +126,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.ModelLoaderRegistry2;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
@@ -300,7 +301,7 @@ public class ClientProxy extends CommonProxy
 	{
 		ManualHelper.ieManualInstance = new IEManualInstance();
 
-		ManualInstance ieMan = ManualHelper.getManual();
+		IEManualInstance ieMan = ManualHelper.getManual();
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "blueprint"),
 				s -> {
 					ItemStack[] stacks;
@@ -350,6 +351,7 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "breaker"));
 		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "current_transformer"));
 		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "redstone_wire"));
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "diesel_generator"));
 
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "introduction"), -1);
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "ores"));
@@ -362,6 +364,10 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "crude_blast_furnace"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "improved_blast_furnace"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "graphite"));
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "workbench"));
+		ResourceLocation blueprints = new ResourceLocation(MODID, "blueprints");
+		ieMan.addEntry(generalCat, blueprints);
+		ieMan.hideEntry(blueprints);
 
 		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "balloon"));
 		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "metalconstruction"));
@@ -370,12 +376,17 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "barrel"));
 		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "lighting"));
 		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "treated_wood"));
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "metal_barrel"));
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "multiblocks"));
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "silo"));
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "tank"));
 
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "jerrycan"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "mining_drill"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "ear_defenders"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "shield"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "toolbox"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "revolver"));
 
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "conveyors"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "external_heater"));
@@ -394,13 +405,30 @@ public class ClientProxy extends CommonProxy
 
 		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "refinery"));
 		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "metal_press"));
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "mixer"));
 
 		//TODO needs to change on world reload
-		String[][] table = formatToTable_ItemIntHashmap(ThermoelectricHandler.getThermalValuesSorted(true), "K");
-		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-		builder.addSpecialElement("values", 0, new ManualElementTable(ieMan, table, false));
-		builder.readFromFile(new ResourceLocation(MODID, "thermoelectric"));
-		ieMan.addEntry(energyCat, builder.create());
+		{
+			String[][] table = formatToTable_ItemIntMap(ThermoelectricHandler.getThermalValuesSorted(true), "K");
+			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
+			builder.addSpecialElement("values", 0, new ManualElementTable(ieMan, table, false));
+			builder.readFromFile(new ResourceLocation(MODID, "thermoelectric"));
+			ieMan.addEntry(energyCat, builder.create());
+		}
+		{
+			String[][] table = formatToTable_ItemIntMap(FermenterRecipe.getFluidValuesSorted(IEContent.fluidEthanol, true), "mB");
+			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
+			builder.addSpecialElement("list", 0, new ManualElementTable(ieMan, table, false));
+			builder.readFromFile(new ResourceLocation(MODID, "fermenter"));
+			ieMan.addEntry(heavyMachinesCat, builder.create());
+		}
+		{
+			String[][] table = formatToTable_ItemIntMap(SqueezerRecipe.getFluidValuesSorted(IEContent.fluidPlantoil, true), "mB");
+			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
+			builder.addSpecialElement("list", 0, new ManualElementTable(ieMan, table, false));
+			builder.readFromFile(new ResourceLocation(MODID, "squeezer"));
+			ieMan.addEntry(heavyMachinesCat, builder.create());
+		}
 
 		addChangelogToManual();
 
@@ -928,7 +956,7 @@ public class ClientProxy extends CommonProxy
 		GlStateManager.popMatrix();
 	}
 
-	static <T> String[][] formatToTable_ItemIntHashmap(Map<T, Integer> map, String valueType)
+	static <T> String[][] formatToTable_ItemIntMap(Map<T, Integer> map, String valueType)
 	{
 		List<Entry<T, Integer>> sortedMapArray = new ArrayList<>(map.entrySet());
 		sortedMapArray.sort(Comparator.comparing(Entry::getValue));

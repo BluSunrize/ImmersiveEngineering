@@ -1,0 +1,6 @@
+{
+  "start": {
+    "type": "multiblock",
+    "name": "multiblocks/silo"
+  }
+}

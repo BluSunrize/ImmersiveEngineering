@@ -46,7 +46,6 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 {
 	public static final ItemStackTileEntityRenderer INSTANCE = new IEOBJItemRenderer();
 	private static FloatBuffer transform = GLAllocation.createDirectFloatBuffer(16);
-	private static final Matrix4 mat = new Matrix4();
 
 	@Override
 	public void renderByItem(ItemStack stack)

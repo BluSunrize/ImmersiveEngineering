@@ -1,0 +1,25 @@
+{
+  "recipes": [
+    {
+      "offset": 0,
+      "type": "crafting",
+      "recipes": [
+        "light_engineering",
+        "rs_engineering"
+      ]
+    },
+    {
+      "offset": 1,
+      "type": "crafting",
+      "recipes": [
+        "heavy_engineering",
+        "generator"
+      ]
+    },
+    {
+      "offset": 2,
+      "type": "crafting",
+      "recipe": "radiator"
+    }
+  ]
+}
