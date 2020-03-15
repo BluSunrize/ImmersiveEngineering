@@ -64,6 +64,5 @@ public class MessageMineralListSync implements IMessage
 		ExcavatorHandler.mineralList.clear();
 		for(MineralMix min : map.keySet())
 			ExcavatorHandler.mineralList.put(min, map.get(min));
-		ClientProxy.handleMineralManual();
 	}
 }

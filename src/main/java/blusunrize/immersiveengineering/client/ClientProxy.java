@@ -25,6 +25,8 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.OreOutput;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.font.IEFontRender;
 import blusunrize.immersiveengineering.client.font.NixieFontRender;
@@ -70,11 +72,8 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
-import blusunrize.lib.manual.ManualElementTable;
-import blusunrize.lib.manual.ManualEntry;
+import blusunrize.lib.manual.*;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
-import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.InnerNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
@@ -84,6 +83,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.platform.GlStateManager;
+import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -124,6 +127,7 @@ import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -151,6 +155,7 @@ import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -354,6 +359,7 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "current_transformer"));
 		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "redstone_wire"));
 		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "diesel_generator"));
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "lightning_rod"));
 
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "introduction"), -1);
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "ores"));
@@ -368,6 +374,7 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "graphite"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "workbench"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "shader"));
+		ieMan.addEntry(generalCat, handleMineralManual(ieMan));
 		ResourceLocation blueprints = new ResourceLocation(MODID, "blueprints");
 		ieMan.addEntry(generalCat, blueprints);
 		ieMan.hideEntry(blueprints);
@@ -393,6 +400,8 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "bullets"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "chemthrower"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "skyhook"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "powerpack"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "railgun"));
 
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "conveyors"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "external_heater"));
@@ -412,6 +421,9 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "refinery"));
 		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "metal_press"));
 		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "mixer"));
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "crusher"));
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "arc_furnace"));
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "excavator"));
 
 		//TODO needs to change on world reload
 		{
@@ -484,134 +496,100 @@ public class ClientProxy extends CommonProxy
 			}
 	}
 
-	static ManualEntry mineralEntry;
-
-	public static void handleMineralManual()
+	public static ManualEntry handleMineralManual(IEManualInstance ieManual)
 	{
-		/*if(ManualHelper.getManual()!=null)
-		{
-			ArrayList<IManualPage> pages = new ArrayList();
-			pages.add(new ManualPages.Text(ManualHelper.getManual(), "minerals0"));
-			pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "minerals1", new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta())));
-			pages.add(new ManualPages.Text(ManualHelper.getManual(), "minerals2"));
+		ManualEntryBuilder builder = new ManualEntryBuilder(ieManual);
+		builder.addSpecialElement("drill", 0, new ManualElementCrafting(ieManual, new ResourceLocation(MODID, "sample_drill")));
 
-			final ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
+		builder.setContent(
+				splitter -> {
+					final ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
 
-			ArrayList<Integer> mineralIndices = new ArrayList();
-			for(int i = 0; i < minerals.length; i++)
-				if(minerals[i].isValid())
-					mineralIndices.add(i);
-			Collections.sort(mineralIndices, new Comparator<Integer>()
-			{
-				@Override
-				public int compare(Integer paramT1, Integer paramT2)
-				{
-					String name1 = Lib.DESC_INFO+"mineral."+minerals[paramT1].name;
-					String localizedName1 = I18n.format(name1);
-					if(localizedName1==name1)
-						localizedName1 = minerals[paramT1].name;
-
-					String name2 = Lib.DESC_INFO+"mineral."+minerals[paramT2].name;
-					String localizedName2 = I18n.format(name2);
-					if(localizedName2==name2)
-						localizedName2 = minerals[paramT2].name;
-					return localizedName1.compareToIgnoreCase(localizedName2);
-				}
-			});
-			for(int i : mineralIndices)
-			{
-				String name = Lib.DESC_INFO+"mineral."+minerals[i].name;
-				String localizedName = I18n.format(name);
-				if(localizedName.equalsIgnoreCase(name))
-					localizedName = minerals[i].name;
-
-				String s0 = "";
-				if(minerals[i].dimensionWhitelist!=null&&minerals[i].dimensionWhitelist.length > 0)
-				{
-					String validDims = "";
-					for(int dim : minerals[i].dimensionWhitelist)
-						validDims += (!validDims.isEmpty()?", ": "")+"<dim;"+dim+">";
-					s0 = I18n.format("ie.manual.entry.mineralsDimValid", localizedName, validDims);
-				}
-				else if(minerals[i].dimensionBlacklist!=null&&minerals[i].dimensionBlacklist.length > 0)
-				{
-					String invalidDims = "";
-					for(int dim : minerals[i].dimensionBlacklist)
-						invalidDims += (!invalidDims.isEmpty()?", ": "")+"<dim;"+dim+">";
-					s0 = I18n.format("ie.manual.entry.mineralsDimInvalid", localizedName, invalidDims);
-				}
-				else
-					s0 = I18n.format("ie.manual.entry.mineralsDimAny", localizedName);
-
-				ArrayList<Integer> formattedOutputs = new ArrayList<Integer>();
-				for(int j = 0; j < minerals[i].oreOutput.size(); j++)
-					formattedOutputs.add(j);
-				final int fi = i;
-				Collections.sort(formattedOutputs, new Comparator<Integer>()
-				{
-					@Override
-					public int compare(Integer paramT1, Integer paramT2)
+					List<MineralMix> mineralsToAdd = new ArrayList<>();
+					for(MineralMix mineral : minerals)
 					{
-						return -Double.compare(minerals[fi].recalculatedChances[paramT1], minerals[fi].recalculatedChances[paramT2]);
+						mineral.recalculateChances();
+						if(mineral.isValid())
+							mineralsToAdd.add(mineral);
 					}
-				});
-
-				String s1 = "";
-				NonNullList<ItemStack> sortedOres = NonNullList.withSize(minerals[i].oreOutput.size(), ItemStack.EMPTY);
-				for(int j = 0; j < formattedOutputs.size(); j++)
-					if(!minerals[i].oreOutput.get(j).isEmpty())
+					Function<MineralMix, String> toName = mineral -> {
+						String name = Lib.DESC_INFO+"mineral."+mineral.name;
+						String localizedName = I18n.format(name);
+						if(localizedName.equals(name))
+							localizedName = mineral.name;
+						return localizedName;
+					};
+					mineralsToAdd.sort((i1, i2) -> toName.apply(i1).compareToIgnoreCase(toName.apply(i2)));
+					StringBuilder entry = new StringBuilder(I18n.format("ie.manual.entry.mineral_main"));
+					for(MineralMix mineral : mineralsToAdd)
 					{
-						int sorted = formattedOutputs.get(j);
-						s1 += "<br>"+new DecimalFormat("00.00").format(minerals[i].recalculatedChances[sorted]*100).replaceAll("\\G0", " ")+"% "+minerals[i].oreOutput.get(sorted).getDisplayName();
-						sortedOres.set(j, minerals[i].oreOutput.get(sorted));
-					}
-				String s2 = I18n.format("ie.manual.entry.minerals3", s0, s1);
-				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), s2, sortedOres));
-			}
+						String name = Lib.DESC_INFO+"mineral."+mineral.name;
+						String localizedName = I18n.format(name);
+						if(localizedName.equalsIgnoreCase(name))
+							localizedName = mineral.name;
 
-//			String[][][] multiTables = formatToTable_ExcavatorMinerals();
-//			for(String[][] minTable : multiTables)
-//				pages.add(new ManualPages.Table(ManualHelper.getManual(), "", minTable,true));
-			//if(mineralEntry!=null)
-			//	mineralEntry.setPages(pages.toArray(new IManualPage[pages.size()]));
-			//else
-			//{
-			//	ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
-			//	mineralEntry = ManualHelper.getManual().getEntry("minerals");
-			//}
-		}*/
-	}
+						String dimensionString;
+						if(mineral.dimensionWhitelist!=null&&mineral.dimensionWhitelist.size() > 0)
+						{
+							StringBuilder validDims = new StringBuilder();
+							for(DimensionType dim : mineral.dimensionWhitelist)
+								validDims.append((validDims.length() > 0)?", ": "")
+										.append("<dim;")
+										.append(dim)
+										.append(">");
+							dimensionString = I18n.format("ie.manual.entry.mineralsDimValid", localizedName, validDims.toString());
+						}
+						else if(mineral.dimensionBlacklist!=null&&mineral.dimensionBlacklist.size() > 0)
+						{
+							StringBuilder invalidDims = new StringBuilder();
+							for(DimensionType dim : mineral.dimensionBlacklist)
+								invalidDims.append((invalidDims.length() > 0)?", ": "")
+										.append("<dim;")
+										.append(dim)
+										.append(">");
+							dimensionString = I18n.format("ie.manual.entry.mineralsDimInvalid", localizedName, invalidDims.toString());
+						}
+						else
+							dimensionString = I18n.format("ie.manual.entry.mineralsDimAny", localizedName);
 
-	static String[][][] formatToTable_ExcavatorMinerals()
-	{
-		ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
-		String[][][] multiTables = new String[1][minerals.length][2];
-		int curTable = 0;
-		int totalLines = 0;
-		for(int i = 0; i < minerals.length; i++)
-			if(minerals[i].isValid())
-			{
-				String name = Lib.DESC_INFO+"mineral."+minerals[i].name;
-				if(I18n.format(name)==name)
-					name = minerals[i].name;
-				multiTables[curTable][i][0] = name;
-				multiTables[curTable][i][1] = "";
-				for(int j = 0; j < minerals[i].oreOutput.size(); j++)
-					if(!minerals[i].oreOutput.get(j).isEmpty())
-					{
-						multiTables[curTable][i][1] += minerals[i].oreOutput.get(j).getDisplayName()+" "+(new DecimalFormat("#.00").format(minerals[i].recalculatedChances[j]*100)+"%")+(j < minerals[i].oreOutput.size()-1?"\n": "");
-						totalLines++;
+						List<OreOutput> formattedOutputs = new ArrayList<>();
+						for(OreOutput o : mineral.outputs)
+							if(!o.stack.isEmpty())
+								formattedOutputs.add(o);
+						formattedOutputs.sort(Comparator.comparingDouble(i -> -i.recalculatedChance));
+
+						StringBuilder outputString = new StringBuilder();
+						NonNullList<ItemStack> sortedOres = NonNullList.create();
+						for(OreOutput sorted : formattedOutputs)
+						{
+							outputString
+									.append("\n")
+									.append(
+											new DecimalFormat("00.00")
+													.format(sorted.recalculatedChance*100)
+													.replaceAll("\\G0", "\u00A0")
+									).append("% ")
+									.append(sorted.stack.getDisplayName().getFormattedText());
+							sortedOres.add(sorted.stack);
+						}
+						splitter.addSpecialPage(mineral.name, 0, new ManualElementItem(ieManual, sortedOres));
+						String desc = I18n.format("ie.manual.entry.minerals_desc", dimensionString, outputString.toString());
+						if(entry.length() > 0)
+							entry.append("<np>");
+						entry.append("<&")
+								.append(mineral.name)
+								.append(">")
+								.append(desc);
 					}
-				if(i < minerals.length-1&&totalLines+minerals[i+1].oreOutput.size() >= 13)
-				{
-					String[][][] newMultiTables = new String[multiTables.length+1][minerals.length][2];
-					System.arraycopy(multiTables, 0, newMultiTables, 0, multiTables.length);
-					multiTables = newMultiTables;
-					totalLines = 0;
-					curTable++;
+					return new String[]{
+							I18n.format("ie.manual.entry.mineral_title"),
+							I18n.format("ie.manual.entry.mineral_subtitle"),
+							entry.toString()
+					};
 				}
-			}
-		return multiTables;
+		);
+		builder.setLocation(new ResourceLocation(MODID, "minerals"));
+		return builder.create();
 	}
 
 	public void addChangelogToManual()

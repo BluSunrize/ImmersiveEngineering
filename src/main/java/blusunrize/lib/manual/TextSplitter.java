@@ -28,7 +28,7 @@ public class TextSplitter
 	private final List<List<String>> entry = new ArrayList<>();
 	private final Function<String, String> tokenTransform;
 	private final int pixelsPerPage;
-	private Object2IntMap<String> pageByAnchor = new Object2IntOpenHashMap<>();
+	private final Object2IntMap<String> pageByAnchor = new Object2IntOpenHashMap<>();
 
 	public TextSplitter(Function<String, Integer> w, int lineWidthPixel, int pageHeightPixel,
 						IntSupplier pixelsPerLine, Function<String, String> tokenTransform)
@@ -63,13 +63,9 @@ public class TextSplitter
 	public void addSpecialPage(String ref, int offset, SpecialManualElement element)
 	{
 		if(offset < 0||ref==null||ref.isEmpty())
-		{
 			throw new IllegalArgumentException();
-		}
 		if(!specialByAnchor.containsKey(ref))
-		{
 			specialByAnchor.put(ref, new HashMap<>());
-		}
 		specialByAnchor.get(ref).put(offset, element);
 	}
 
@@ -77,6 +73,9 @@ public class TextSplitter
 	@SuppressWarnings({"UnnecessaryLabelOnBreakStatement", "UnusedLabel"})
 	public void split(String in)
 	{
+		for(Map<Integer, SpecialManualElement> forAnchor : specialByAnchor.values())
+			for(SpecialManualElement e : forAnchor.values())
+				e.recalculateCraftingRecipes();
 		clearSpecialByPage();
 		entry.clear();
 		String[] wordsAndSpaces = splitWhitespace(in);
@@ -179,6 +178,11 @@ public class TextSplitter
 				entry.add(page);
 			}
 		}
+		for(List<String> page : entry)
+			for(int i = 0; i < page.size(); ++i)
+				//Replace nonbreaking space (used to enforce unusual formatting, like space at the start of a line)
+				//by a normal space that can be properly rendered
+				page.set(i, page.get(i).replace('\u00A0', ' '));
 		specialByPage.keySet().stream().max(Comparator.naturalOrder()).ifPresent(maxPageWithSpecial -> {
 			while(entry.size() <= maxPageWithSpecial)
 				entry.add(new ArrayList<>());
@@ -246,7 +250,7 @@ public class TextSplitter
 			char first = in.charAt(i);
 			here.append(first);
 			i++;
-			for(; i < in.length(); )
+			while(i < in.length())
 			{
 				char hereC = in.charAt(i);
 				byte action = shouldSplit(first, hereC);
@@ -256,9 +260,7 @@ public class TextSplitter
 					i++;
 				}
 				if((action&2)!=0||(action&1)==0)
-				{
 					break;
-				}
 			}
 			parts.add(here.toString());
 		}
@@ -266,32 +268,29 @@ public class TextSplitter
 	}
 
 	/**
-	 * @return &1: add
+	 * @return &1: add character to token
 	 * &2: end here
 	 */
 	private static byte shouldSplit(char start, char here)
 	{
 		byte ret = 0b01;
 		if(Character.isWhitespace(start)^Character.isWhitespace(here))
+			ret = 0b10;
+		else if(Character.isWhitespace(here))
 		{
-			ret = 0b10;
+			if((start=='\n'&&here=='\r')||(start=='\r'&&here=='\n'))
+				ret = 0b11;
+			else if((here=='\r'||here=='\n')||(start=='\r'||start=='\n'))
+				ret = 0b10;
 		}
-		else if(here=='\n')
-			ret = 0b11;
-		else if(here=='\r')
-			ret = 0b10;
 
 		if(here=='<')
-		{
 			ret = 0b10;
-		}
 		if(start=='<')
 		{
 			ret = 0b01;
 			if(here=='>')
-			{
 				ret |= 0b10;
-			}
 		}
 		return ret;
 	}

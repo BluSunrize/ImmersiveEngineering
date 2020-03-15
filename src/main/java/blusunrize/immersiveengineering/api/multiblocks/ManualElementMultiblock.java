@@ -181,6 +181,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		int stackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
 		try
 		{
+			multiblock.getSize();
 			if(multiblock.getStructure()!=null)
 			{
 				long currentTime = System.currentTimeMillis();
@@ -199,12 +200,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 				GlStateManager.enableRescaleNormal();
 				GlStateManager.pushMatrix();
 				RenderHelper.disableStandardItemLighting();
-				int i = 0;
-				ItemStack highlighted = ItemStack.EMPTY;
 
 				final BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
-
-				float f = (float)Math.sqrt(structureHeight*structureHeight+structureWidth*structureWidth+structureLength*structureLength);
 
 				GlStateManager.translated(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
 				GlStateManager.scaled(scale, -scale, 1);

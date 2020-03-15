@@ -14,7 +14,9 @@ import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.network.MessageMineralListSync;
+import com.google.common.base.Preconditions;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.util.NonNullList;
@@ -22,12 +24,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -63,7 +67,7 @@ public class ExcavatorHandler
 		dimensionPermittedMinerals.clear();
 		if(EffectiveSide.get()==LogicalSide.SERVER&&!mutePackets)
 		{
-			HashMap<MineralMix, Integer> packetMap = new HashMap<MineralMix, Integer>();
+			HashMap<MineralMix, Integer> packetMap = new HashMap<>();
 			for(Map.Entry<MineralMix, Integer> e : ExcavatorHandler.mineralList.entrySet())
 				if(e.getKey()!=null&&e.getValue()!=null)
 					packetMap.put(e.getKey(), e.getValue());
@@ -140,24 +144,31 @@ public class ExcavatorHandler
 	{
 		public String name;
 		public float failChance;
-		public ResourceLocation[] ores;
-		public float[] chances;
-		public NonNullList<ItemStack> oreOutput;
-		public float[] recalculatedChances;
+		public List<OreOutput> outputs;
 		boolean isValid = false;
 		/**
 		 * Should an ore given to this mix not be present in the dictionary, it will attempt to draw a replacement from this list
 		 */
-		public HashMap<ResourceLocation, ResourceLocation> replacementOres;
+		public Map<ResourceLocation, ResourceLocation> replacementOres;
 		public Set<DimensionType> dimensionWhitelist = new HashSet<>();
 		public Set<DimensionType> dimensionBlacklist;
+
+		public MineralMix(String name, float failChance, List<OreOutput> outputs)
+		{
+			this.name = name;
+			this.failChance = failChance;
+			this.outputs = outputs;
+			this.dimensionBlacklist = new HashSet<>(defaultDimensionBlacklist);
+		}
 
 		public MineralMix(String name, float failChance, ResourceLocation[] ores, float[] chances)
 		{
 			this.name = name;
 			this.failChance = failChance;
-			this.ores = ores;
-			this.chances = chances;
+			Preconditions.checkArgument(ores.length==chances.length);
+			outputs = new ArrayList<>();
+			for(int i = 0; i < ores.length; ++i)
+				outputs.add(new OreOutput(ores[i], chances[i]));
 			this.dimensionBlacklist = new HashSet<>(defaultDimensionBlacklist);
 		}
 
@@ -172,11 +183,9 @@ public class ExcavatorHandler
 		public void recalculateChances()
 		{
 			double chanceSum = 0;
-			NonNullList<ItemStack> existing = NonNullList.create();
-			ArrayList<Double> reChances = new ArrayList<>();
-			for(int i = 0; i < ores.length; i++)
+			for(OreOutput output : outputs)
 			{
-				ResourceLocation ore = ores[i];
+				ResourceLocation ore = output.tag;
 				if(replacementOres!=null&&!ApiUtils.isNonemptyItemTag(ore)&&replacementOres.containsKey(ore))
 					ore = replacementOres.get(ore);
 				if(ore!=null&&ApiUtils.isNonemptyBlockOrItemTag(ore))
@@ -184,28 +193,31 @@ public class ExcavatorHandler
 					ItemStack preferredOre = IEApi.getPreferredTagStack(ore);
 					if(!preferredOre.isEmpty())
 					{
-						existing.add(preferredOre);
-						reChances.add((double)chances[i]);
-						chanceSum += chances[i];
+						output.stack = preferredOre;
+						isValid = true;
+						chanceSum += output.baseChance;
 					}
+					else
+						output.stack = ItemStack.EMPTY;
 				}
 			}
-			isValid = existing.size() > 0;
-			oreOutput = existing;
-			recalculatedChances = new float[reChances.size()];
-			for(int i = 0; i < reChances.size(); i++)
-				recalculatedChances[i] = (float)(reChances.get(i)/chanceSum);
+			for(OreOutput output : outputs)
+				if(output.stack.isEmpty())
+					output.recalculatedChance = -1;
+				else
+					output.recalculatedChance = output.baseChance/chanceSum;
 		}
 
 		public ItemStack getRandomOre(Random rand)
 		{
 			float r = rand.nextFloat();
-			for(int i = 0; i < recalculatedChances.length; i++)
-			{
-				r -= recalculatedChances[i];
-				if(r < 0)
-					return this.oreOutput.get(i);
-			}
+			for(OreOutput o : outputs)
+				if(o.recalculatedChance >= 0)
+				{
+					r -= o.recalculatedChance;
+					if(r < 0)
+						return o.stack;
+				}
 			return ItemStack.EMPTY;
 		}
 
@@ -229,25 +241,9 @@ public class ExcavatorHandler
 			tag.putString("name", this.name);
 			tag.putFloat("failChance", this.failChance);
 			ListNBT tagList = new ListNBT();
-			for(ResourceLocation ore : this.ores)
-				tagList.add(new StringNBT(ore.toString()));
-			tag.put("ores", tagList);
-
-			tagList = new ListNBT();
-			for(float chance : this.chances)
-				tagList.add(new FloatNBT(chance));
-			tag.put("chances", tagList);
-
-			tagList = new ListNBT();
-			if(this.oreOutput!=null)
-				for(ItemStack output : this.oreOutput)
-					tagList.add(output.write(new CompoundNBT()));
-			tag.put("oreOutput", tagList);
-
-			tagList = new ListNBT();
-			for(float chance : this.recalculatedChances)
-				tagList.add(new FloatNBT(chance));
-			tag.put("recalculatedChances", tagList);
+			for(OreOutput o : outputs)
+				tagList.add(o.toNBT());
+			tag.put("output", tagList);
 			tag.putBoolean("isValid", isValid);
 			tag.put("dimensionWhitelist", toNBT(dimensionWhitelist));
 			tag.put("dimensionBlacklist", toNBT(dimensionBlacklist));
@@ -275,34 +271,51 @@ public class ExcavatorHandler
 			String name = tag.getString("name");
 			float failChance = tag.getFloat("failChance");
 
-			ListNBT tagList = tag.getList("ores", 8);
-			ResourceLocation[] ores = new ResourceLocation[tagList.size()];
-			for(int i = 0; i < ores.length; i++)
-				ores[i] = new ResourceLocation(tagList.getString(i));
-
-			tagList = tag.getList("chances", 5);
-			float[] chances = new float[tagList.size()];
-			for(int i = 0; i < chances.length; i++)
-				chances[i] = tagList.getFloat(i);
-
-			tagList = tag.getList("oreOutput", 10);
-			NonNullList<ItemStack> oreOutput = NonNullList.withSize(tagList.size(), ItemStack.EMPTY);
-			for(int i = 0; i < oreOutput.size(); i++)
-				oreOutput.set(i, ItemStack.read(tagList.getCompound(i)));
-
-			tagList = tag.getList("recalculatedChances", 5);
-			float[] recalculatedChances = new float[tagList.size()];
-			for(int i = 0; i < recalculatedChances.length; i++)
-				recalculatedChances[i] = tagList.getFloat(i);
+			ListNBT list = tag.getList("output", NBT.TAG_COMPOUND);
+			List<OreOutput> outputs = new ArrayList<>();
+			for(int i = 0; i < list.size(); ++i)
+				outputs.add(new OreOutput(list.getCompound(i)));
 
 			boolean isValid = tag.getBoolean("isValid");
-			MineralMix mix = new MineralMix(name, failChance, ores, chances);
-			mix.oreOutput = oreOutput;
-			mix.recalculatedChances = recalculatedChances;
+			MineralMix mix = new MineralMix(name, failChance, outputs);
 			mix.isValid = isValid;
 			mix.dimensionWhitelist = fromNBT(tag.getList("dimensionWhitelist", NBT.TAG_STRING));
 			mix.dimensionBlacklist = fromNBT(tag.getList("dimensionBlacklist", NBT.TAG_STRING));
 			return mix;
+		}
+	}
+
+	public static class OreOutput
+	{
+		public final ResourceLocation tag;
+		public final double baseChance;
+		@Nonnull
+		public ItemStack stack = ItemStack.EMPTY;
+		public double recalculatedChance;
+
+		public OreOutput(ResourceLocation tag, double baseChance)
+		{
+			this.tag = tag;
+			this.baseChance = baseChance;
+		}
+
+		public OreOutput(CompoundNBT nbt)
+		{
+			this(new ResourceLocation(nbt.getString("tag")), nbt.getDouble("baseChance"));
+			stack = ItemStack.read(nbt.getCompound("stack"));
+			recalculatedChance = nbt.getDouble("recalculatedChance");
+		}
+
+		public CompoundNBT toNBT()
+		{
+			CompoundNBT ret = new CompoundNBT();
+			ret.putString("tag", tag.toString());
+			ret.putDouble("baseChance", baseChance);
+			CompoundNBT stackData = new CompoundNBT();
+			stack.write(stackData);
+			ret.put("stack", stackData);
+			ret.putDouble("recalculatedChance", recalculatedChance);
+			return ret;
 		}
 	}
 

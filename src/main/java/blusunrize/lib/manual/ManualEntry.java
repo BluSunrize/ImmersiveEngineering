@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -228,6 +229,15 @@ public class ManualEntry implements Comparable<ManualEntry>
 		public void addSpecialElement(String anchor, int offset, SpecialManualElement element)
 		{
 			hardcodedSpecials.add(new ImmutableTriple<>(anchor, offset, element));
+		}
+
+		public void setContent(Function<TextSplitter, String[]> get)
+		{
+			getContent = splitter -> {
+				for(Triple<String, Integer, SpecialManualElement> special : hardcodedSpecials)
+					splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
+				return get.apply(splitter);
+			};
 		}
 
 		public void setContent(Supplier<String> title, Supplier<String> subText, Supplier<String> mainText)

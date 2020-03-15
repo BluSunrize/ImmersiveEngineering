@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.OreOutput;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -96,13 +97,13 @@ public class ModelCoresample extends BakedIEModel
 				int pixelLength = 0;
 
 				Map<TextureAtlasSprite, Integer> textureOre = new HashMap<>();
-				if(mineral!=null&&mineral.oreOutput!=null&&!mineral.oreOutput.isEmpty())
+				if(mineral!=null)
 				{
-					for(int i = 0; i < mineral.oreOutput.size(); i++)
-						if(!mineral.oreOutput.get(i).isEmpty())
+					for(OreOutput o : mineral.outputs)
+						if(!o.stack.isEmpty())
 						{
-							int weight = Math.max(2, Math.round(16*mineral.recalculatedChances[i]));
-							Block b = Block.getBlockFromItem(mineral.oreOutput.get(i).getItem());
+							int weight = Math.max(2, (int)Math.round(16*o.recalculatedChance));
+							Block b = Block.getBlockFromItem(o.stack.getItem());
 							BlockState state = b!=Blocks.AIR?b.getDefaultState(): Blocks.STONE.getDefaultState();
 							IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
 							if(model!=null&&model.getParticleTexture()!=null)
