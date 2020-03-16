@@ -29,7 +29,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
-import blusunrize.immersiveengineering.common.data.model_old.ModelHelperOld;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
@@ -41,6 +40,7 @@ import net.minecraft.block.FenceBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourcePackType;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.BlockRenderLayer;
@@ -51,6 +51,7 @@ import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -168,7 +169,7 @@ public class BlockStates extends BlockStateProvider
 	private void postBlock(Block b, ResourceLocation texture)
 	{
 		ResourceLocation model = rl("block/wooden_device/wooden_post.obj.ie");
-		ModelHelperOld.assertModelExists(model);
+		assertModelExists(model);
 		LoadedModelBuilder modelFile = loadedModels.withExistingParent(name(b), mcLoc("block"))
 				.loader(modLoc("ie_obj"))
 				.additional("model", addModelsPrefix(model))
@@ -221,6 +222,7 @@ public class BlockStates extends BlockStateProvider
 
 	private ModelFile obj(String name, ResourceLocation model, Map<String, ResourceLocation> textures)
 	{
+		assertModelExists(model);
 		LoadedModelBuilder ret = loadedModels.withExistingParent(name, mcLoc("block"))
 				.loader(forgeLoc("obj"))
 				.additional("model", addModelsPrefix(model))
@@ -433,7 +435,7 @@ public class BlockStates extends BlockStateProvider
 				loadedModels.getBuilder("wooden_devices/barrel")
 						.loader(Loader.NAME)
 						.additional("type", "vertical")
-						.additional("base_name", "wooden_device/barrel")
+						.additional("base_name", modLoc("block/wooden_device/barrel"))
 		);
 
 		createRotatedBlock(Cloth.curtain,
@@ -450,7 +452,7 @@ public class BlockStates extends BlockStateProvider
 				loadedModels.getBuilder("metal_devices/barrel")
 						.loader(Loader.NAME)
 						.additional("type", "vertical")
-						.additional("base_name", "metal_device/barrel"));
+						.additional("base_name", modLoc("block/metal_device/barrel")));
 
 		for(Entry<Block, String> cap : ImmutableMap.of(
 				MetalDevices.capacitorCreative, "creative",
@@ -460,9 +462,9 @@ public class BlockStates extends BlockStateProvider
 		).entrySet())
 		{
 			ModelFile model = loadedModels.getBuilder("block/metal_device/capacitor_"+cap.getValue())
-					.loader(modLoc("conf_sides"))
+					.loader(Loader.NAME)
 					.additional("type", "side_top_bottom")
-					.additional("base_name", "metal_device/capacitor_"+cap.getValue());
+					.additional("base_name", modLoc("block/metal_device/capacitor_"+cap.getValue()));
 			simpleBlockItem(cap.getKey(), model);
 		}
 		createMultiblock(MetalDevices.blastFurnacePreheater,
@@ -666,7 +668,7 @@ public class BlockStates extends BlockStateProvider
 				obj("block/metal_multiblock/bottling_machine_mirrored.obj"));
 		createMultiblock(Multiblocks.fermenter,
 				obj("block/metal_multiblock/fermenter.obj"),
-				obj("block/metal_mutiblock/fermenter_mirrored.obj"));
+				obj("block/metal_multiblock/fermenter_mirrored.obj"));
 		createMultiblock(Multiblocks.squeezer,
 				obj("block/metal_multiblock/squeezer.obj"),
 				obj("block/metal_multiblock/squeezer_mirrored.obj"));
@@ -747,7 +749,7 @@ public class BlockStates extends BlockStateProvider
 						loadedModels.getBuilder("metal_device/pump_bottom")
 								.loader(Loader.NAME)
 								.additional("type", "side_vertical")
-								.additional("base_name", modLoc("metal_device/fluid_pump"))
+								.additional("base_name", modLoc("block/metal_device/fluid_pump"))
 				));
 	}
 
@@ -980,8 +982,8 @@ public class BlockStates extends BlockStateProvider
 	}
 
 	private ModelFile forConnectorModel(PartialBlockstate state, Function<PartialBlockstate, ResourceLocation> model,
-										List<String> layers, Function<PartialBlockstate,
-			ImmutableMap<String, ResourceLocation>> textures)
+										List<String> layers,
+										Function<PartialBlockstate, ImmutableMap<String, ResourceLocation>> textures)
 	{
 		JsonObject baseJson = new JsonObject();
 		ResourceLocation modelLoc = model.apply(state);
@@ -993,13 +995,14 @@ public class BlockStates extends BlockStateProvider
 			baseJson.addProperty("loader", loader.get().toString());
 			baseJson.addProperty("model", addModelsPrefix(modelLoc).toString());
 			baseJson.addProperty("flip-v", true);
+			ImmutableMap<String, ResourceLocation> texForState = textures.apply(state);
 			LoadedModelBuilder ret = loadedModels.getBuilder(
-					"connector/"+nameFor(modelLoc)
+					nameFor(modelLoc, texForState)
 			)
 					.loader(ConnectionLoader.LOADER_NAME)
 					.additional("base_model", baseJson)
 					.additional("layers", layers);
-			for(Entry<String, ResourceLocation> e : textures.apply(state).entrySet())
+			for(Entry<String, ResourceLocation> e : texForState.entrySet())
 				ret.texture(e.getKey(), e.getValue());
 			return ret;
 		}
@@ -1017,15 +1020,33 @@ public class BlockStates extends BlockStateProvider
 			throw new RuntimeException("Failed to guess loader for "+modelLoc);
 	}
 
-	private String nameFor(ResourceLocation model)
+	Map<ResourceLocation, Map<Map<String, ResourceLocation>, Integer>> nameCache = new HashMap<>();
+
+	private String nameFor(ResourceLocation model, ImmutableMap<String, ResourceLocation> texReplacement)
 	{
 		String path = model.getPath();
+		String base;
 		if(path.endsWith(".obj"))
-			return path.substring(0, path.length()-4);
+			base = path.substring(0, path.length()-4);
 		else if(path.endsWith(".obj.ie"))
-			return path.substring(0, path.length()-7);
+			base = path.substring(0, path.length()-7);
 		else
 			throw new RuntimeException("Unknown model type: "+model);
+		if(!nameCache.containsKey(model))
+			nameCache.put(model, new HashMap<>());
+		Map<Map<String, ResourceLocation>, Integer> namesForModel = nameCache.get(model);
+		int index;
+		if(namesForModel.containsKey(texReplacement))
+			index = namesForModel.get(texReplacement);
+		else
+		{
+			index = namesForModel.size();
+			namesForModel.put(texReplacement, index);
+		}
+		if(index==0)
+			return base;
+		else
+			return base+"_"+index;
 	}
 
 	private void createConnector(Block b, Function<PartialBlockstate, ResourceLocation> model,
@@ -1077,4 +1098,13 @@ public class BlockStates extends BlockStateProvider
 				baseTexName.getPath()+"_0"));
 		return builder;
 	}
+
+	public void assertModelExists(ResourceLocation name)
+	{
+		String suffix = name.getPath().contains(".")?"": ".json";
+		Preconditions.checkState(
+				existingFileHelper.exists(name, ResourcePackType.CLIENT_RESOURCES, suffix, "models"),
+				"Model \""+name+"\" does not exist");
+	}
+
 }

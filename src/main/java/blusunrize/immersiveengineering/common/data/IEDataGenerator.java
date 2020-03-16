@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.data.model_old.ModelHelperOld;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,8 +31,6 @@ public class IEDataGenerator
 			gen.addProvider(new ItemTags(gen));
 			gen.addProvider(new BlockLoot(gen));
 			gen.addProvider(new GeneralLoot(gen));
-			ModelHelperOld.EXISTING_FILE_HELPER = event.getExistingFileHelper();
-			gen.addProvider(new ModelsOld(gen));
 			LoadedModels loadedModels = new LoadedModels(gen, event.getExistingFileHelper());
 			BlockStates blockStates = new BlockStates(gen, event.getExistingFileHelper(), loadedModels);
 			gen.addProvider(blockStates);

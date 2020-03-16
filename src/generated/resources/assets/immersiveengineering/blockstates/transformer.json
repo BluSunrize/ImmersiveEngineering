@@ -1,40 +1,40 @@
 {
   "variants": {
     "facing=north,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:connector/block/connector/transformer_mv_left",
+      "model": "immersiveengineering:block/connector/transformer_mv_left",
       "y": 180,
       "uvlock": true
     },
     "facing=south,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:connector/block/connector/transformer_mv_left",
+      "model": "immersiveengineering:block/connector/transformer_mv_left",
       "uvlock": true
     },
     "facing=west,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:connector/block/connector/transformer_mv_left",
+      "model": "immersiveengineering:block/connector/transformer_mv_left",
       "y": 90,
       "uvlock": true
     },
     "facing=east,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:connector/block/connector/transformer_mv_left",
+      "model": "immersiveengineering:block/connector/transformer_mv_left",
       "y": 270,
       "uvlock": true
     },
     "facing=north,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:connector/block/connector/transformer_mv_right",
+      "model": "immersiveengineering:block/connector/transformer_mv_right",
       "y": 180,
       "uvlock": true
     },
     "facing=south,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:connector/block/connector/transformer_mv_right",
+      "model": "immersiveengineering:block/connector/transformer_mv_right",
       "uvlock": true
     },
     "facing=west,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:connector/block/connector/transformer_mv_right",
+      "model": "immersiveengineering:block/connector/transformer_mv_right",
       "y": 90,
       "uvlock": true
     },
     "facing=east,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:connector/block/connector/transformer_mv_right",
+      "model": "immersiveengineering:block/connector/transformer_mv_right",
       "y": 270,
       "uvlock": true
     },

@@ -20,21 +20,21 @@
       "uvlock": true
     },
     "facing=north,multiblockslave=true": {
-      "model": "immersiveengineering:connector/block/connector/e_meter",
+      "model": "immersiveengineering:block/connector/e_meter",
       "y": 180,
       "uvlock": true
     },
     "facing=south,multiblockslave=true": {
-      "model": "immersiveengineering:connector/block/connector/e_meter",
+      "model": "immersiveengineering:block/connector/e_meter",
       "uvlock": true
     },
     "facing=west,multiblockslave=true": {
-      "model": "immersiveengineering:connector/block/connector/e_meter",
+      "model": "immersiveengineering:block/connector/e_meter",
       "y": 90,
       "uvlock": true
     },
     "facing=east,multiblockslave=true": {
-      "model": "immersiveengineering:connector/block/connector/e_meter",
+      "model": "immersiveengineering:block/connector/e_meter",
       "y": 270,
       "uvlock": true
     }

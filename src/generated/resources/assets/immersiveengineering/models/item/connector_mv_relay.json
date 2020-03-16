@@ -1,6 +1,6 @@
 {
   "textures": {
-    "texture": "immersiveengineering:block/connector/relay_lv"
+    "texture": "immersiveengineering:block/connector/relay_mv"
   },
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/connector/connector_mv.obj",

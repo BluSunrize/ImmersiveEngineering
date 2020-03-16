@@ -1,3 +1,6 @@
 {
-  "parent": "immersiveengineering:block/concrete_quarter"
+  "parent": "immersiveengineering:block/ie_quarter_block",
+  "textures": {
+    "texture": "immersiveengineering:block/stone_decoration/concrete"
+  }
 }

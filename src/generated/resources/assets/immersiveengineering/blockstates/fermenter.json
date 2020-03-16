@@ -20,21 +20,21 @@
       "uvlock": true
     },
     "facing=north,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_mutiblock/fermenter_mirrored",
+      "model": "immersiveengineering:block/metal_multiblock/fermenter_mirrored",
       "uvlock": true
     },
     "facing=south,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_mutiblock/fermenter_mirrored",
+      "model": "immersiveengineering:block/metal_multiblock/fermenter_mirrored",
       "y": 180,
       "uvlock": true
     },
     "facing=west,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_mutiblock/fermenter_mirrored",
+      "model": "immersiveengineering:block/metal_multiblock/fermenter_mirrored",
       "y": 270,
       "uvlock": true
     },
     "facing=east,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_mutiblock/fermenter_mirrored",
+      "model": "immersiveengineering:block/metal_multiblock/fermenter_mirrored",
       "y": 90,
       "uvlock": true
     },

@@ -114,7 +114,7 @@ public class IEShaders
 				(layer, superColour) -> ClientUtils.pulseRGBAlpha(0xff80fcf2, 60, .05f, .5f),
 				(pre, partialTick) -> ClientUtils.toggleLightmap(pre, true));
 		addLayer(entry, "circuit", 0x99bc9377);
-		((ShaderCaseDrill)entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill"))).addHeadLayers(new ShaderLayer(new ResourceLocation(ImmersiveEngineering.MODID, "items/drill_iron"), 0xff80fcf2));
+		((ShaderCaseDrill)entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill"))).addHeadLayers(new ShaderLayer(new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_iron"), 0xff80fcf2));
 
 		addShader("glacis", 6, Rarity.RARE, 0xff499bc2, 0x3376d0f9, 0x33bdfffd, 0x33bdfffd).setInfo(null, null, "glacis");
 		addShader("phoenix", 5, Rarity.RARE, 0xff750000, 0xffd00000, 0xffff7f00, 0xffff7f00).setInfo(null, null, "phoenix");

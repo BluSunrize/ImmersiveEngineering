@@ -156,7 +156,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				true,
 				true,
 				() -> BulletHandler.emptyShell,
-				new ResourceLocation("immersiveengineering:item/bullet_dragonsbreath"))
+				new ResourceLocation("immersiveengineering:item/bullet_dragons_breath"))
 		{
 			@Override
 			public int getProjectileCount(PlayerEntity shooter)

@@ -1,33 +1,33 @@
 {
   "variants": {
     "facing=down": {
-      "model": "immersiveengineering:connector/block/connector/connector_lv",
+      "model": "immersiveengineering:block/connector/connector_lv_1",
       "uvlock": true
     },
     "facing=up": {
-      "model": "immersiveengineering:connector/block/connector/connector_lv",
+      "model": "immersiveengineering:block/connector/connector_lv_1",
       "x": 180,
       "uvlock": true
     },
     "facing=north": {
-      "model": "immersiveengineering:connector/block/connector/connector_lv",
+      "model": "immersiveengineering:block/connector/connector_lv_1",
       "x": 90,
       "y": 180,
       "uvlock": true
     },
     "facing=south": {
-      "model": "immersiveengineering:connector/block/connector/connector_lv",
+      "model": "immersiveengineering:block/connector/connector_lv_1",
       "x": 90,
       "uvlock": true
     },
     "facing=west": {
-      "model": "immersiveengineering:connector/block/connector/connector_lv",
+      "model": "immersiveengineering:block/connector/connector_lv_1",
       "x": 90,
       "y": 90,
       "uvlock": true
     },
     "facing=east": {
-      "model": "immersiveengineering:connector/block/connector/connector_lv",
+      "model": "immersiveengineering:block/connector/connector_lv_1",
       "x": 90,
       "y": 270,
       "uvlock": true

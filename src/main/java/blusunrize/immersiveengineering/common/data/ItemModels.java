@@ -10,14 +10,10 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
-import blusunrize.immersiveengineering.client.models.ModelCoresample;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
-import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
-import blusunrize.immersiveengineering.common.data.model_old.ModelHelperOld;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelProvider;
 import blusunrize.immersiveengineering.common.items.IEItems;
@@ -27,7 +23,6 @@ import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.fluid.Fluid;
@@ -283,10 +278,10 @@ public class ItemModels extends LoadedModelProvider
 				.transforms(rl("item/connector"));
 
 		obj(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false), rl("block/connector/connector_mv.obj"))
-				.texture("texture", modLoc("block/connector/connector_lv"))
+				.texture("texture", modLoc("block/connector/connector_mv"))
 				.transforms(rl("item/connector"));
 		obj(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), rl("block/connector/connector_mv.obj"))
-				.texture("texture", modLoc("block/connector/relay_lv"))
+				.texture("texture", modLoc("block/connector/relay_mv"))
 				.transforms(rl("item/connector"));
 
 		obj(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), rl("block/connector/connector_hv.obj"))
