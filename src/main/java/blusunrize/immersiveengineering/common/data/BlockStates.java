@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Load
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader;
+import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
@@ -593,9 +594,7 @@ public class BlockStates extends BlockStateProvider
 				ImmutableMap.of(), BlockRenderLayer.SOLID);
 		createConnector(Connectors.connectorProbe, rl("block/connector/connector_probe.obj.ie"),
 				ImmutableMap.of(), BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
-		//TODO
-		//createConnector(Connectors.feedthrough, rl("feedthrough"),
-		//		ImmutableMap.of(), BlockRenderLayer.SOLID);
+		createConnector(Connectors.feedthrough, FeedthroughLoader.LOCATION, ImmutableMap.of(), BlockRenderLayer.values());
 		createConnector(MetalDevices.electricLantern, state -> rl("block/metal_device/e_lantern.obj"),
 				state -> {
 					if(state.getSetStates().get(IEProperties.ACTIVE)==Boolean.FALSE)
@@ -993,8 +992,11 @@ public class BlockStates extends BlockStateProvider
 		else
 		{
 			baseJson.addProperty("loader", loader.get().toString());
-			baseJson.addProperty("model", addModelsPrefix(modelLoc).toString());
-			baseJson.addProperty("flip-v", true);
+			if(!FeedthroughLoader.LOCATION.equals(loader.get()))
+			{
+				baseJson.addProperty("model", addModelsPrefix(modelLoc).toString());
+				baseJson.addProperty("flip-v", true);
+			}
 			ImmutableMap<String, ResourceLocation> texForState = textures.apply(state);
 			LoadedModelBuilder ret = loadedModels.getBuilder(
 					nameFor(modelLoc, texForState)
@@ -1016,6 +1018,8 @@ public class BlockStates extends BlockStateProvider
 			return Optional.of(modLoc("ie_obj"));
 		else if(modelLoc.equals(EMPTY_MODEL.model.getLocation()))
 			return Optional.empty();
+		else if(modelLoc.equals(FeedthroughLoader.LOCATION))
+			return Optional.of(FeedthroughLoader.LOCATION);
 		else
 			throw new RuntimeException("Failed to guess loader for "+modelLoc);
 	}
@@ -1030,6 +1034,8 @@ public class BlockStates extends BlockStateProvider
 			base = path.substring(0, path.length()-4);
 		else if(path.endsWith(".obj.ie"))
 			base = path.substring(0, path.length()-7);
+		else if(FeedthroughLoader.LOCATION.equals(model))
+			base = "feedthrough";
 		else
 			throw new RuntimeException("Unknown model type: "+model);
 		if(!nameCache.containsKey(model))

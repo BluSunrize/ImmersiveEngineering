@@ -39,7 +39,7 @@ public class IEManualInstance extends ManualInstance
 	public IEManualInstance()
 	{
 		super("immersiveengineering:textures/gui/manual.png",
-				120, 143, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
+				120, 148, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
 		/*
 		TODO no longer easily possible?
 		this.fontRenderer.colorCode[0+6] = Lib.COLOUR_I_ImmersiveOrange;

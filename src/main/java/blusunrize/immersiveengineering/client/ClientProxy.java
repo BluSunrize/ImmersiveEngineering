@@ -188,6 +188,7 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry2.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
 		ModelLoaderRegistry2.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
 		ModelLoaderRegistry2.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
+		ModelLoaderRegistry2.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
 
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.class, RevolvershotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(SkylineHookEntity.class, NoneRenderer::new);
@@ -195,7 +196,6 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(RailgunShotEntity.class, RailgunShotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(IEExplosiveEntity.class, IEExplosiveRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(FluorescentTubeEntity.class, FluorescentTubeRenderer::new);
-		ModelLoaderRegistry.registerLoader(new FeedthroughLoader());
 	}
 
 	@Override

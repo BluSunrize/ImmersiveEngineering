@@ -1,22 +1,15 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.BasicState;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -31,23 +24,16 @@ public final class WireApi
 {
 	public static final Map<WireType, FeedthroughModelInfo> INFOS = new HashMap<>();
 
-	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-													  ResourceLocation texLoc, float[] uvs, double connLength, Supplier<BlockState> conn)
-	{
-		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connLength, conn));
-	}
-
-	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ImmutableMap<String, String> texRepl,
-													  ResourceLocation texLoc, float[] uvs, double connLength, double connOffset,
-													  Supplier<BlockState> conn)
-	{
-		INFOS.put(w, new FeedthroughModelInfo(model, texRepl, texLoc, uvs, connLength, connOffset, conn));
-	}
-
-	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation model, ResourceLocation texLoc, float[] uvs,
+	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation texLoc, float[] uvs,
 													  double connLength, Supplier<BlockState> conn)
 	{
-		INFOS.put(w, new FeedthroughModelInfo(model, ImmutableMap.of(), texLoc, uvs, connLength, connLength, conn));
+		INFOS.put(w, new FeedthroughModelInfo(texLoc, uvs, connLength, connLength, conn));
+	}
+
+	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation texLoc, float[] uvs,
+													  double connLength, double connOffset, Supplier<BlockState> conn)
+	{
+		INFOS.put(w, new FeedthroughModelInfo(texLoc, uvs, connLength, connOffset, conn));
 	}
 
 	@Nullable
@@ -87,11 +73,7 @@ public final class WireApi
 
 	public static class FeedthroughModelInfo
 	{
-		public final ResourceLocation modelLoc;
-		final ImmutableMap<String, String> texReplacements;
 		public Supplier<BlockState> conn;
-		@OnlyIn(Dist.CLIENT)
-		public IBakedModel model;
 		final ResourceLocation texLoc;
 		@OnlyIn(Dist.CLIENT)
 		public TextureAtlasSprite tex;
@@ -99,14 +81,12 @@ public final class WireApi
 		public final double connLength;
 		public final double connOffset;
 
-		public FeedthroughModelInfo(ResourceLocation model, ImmutableMap<String, String> texRepl, ResourceLocation texLoc, float[] uvs,
+		public FeedthroughModelInfo(ResourceLocation texLoc, float[] uvs,
 									double connLength, double connOffset, Supplier<BlockState> conn)
 		{
-			modelLoc = model;
 			this.texLoc = texLoc;
 			for(int i = 0; i < 4; i++)
 				this.uvs[i] = uvs[i];
-			texReplacements = texRepl;
 			this.connLength = connLength;
 			this.connOffset = connOffset;
 			this.conn = conn;
@@ -126,26 +106,9 @@ public final class WireApi
 		}
 
 		@OnlyIn(Dist.CLIENT)
+		//TODO use more appropriate event
 		public void onModelBake(ModelBakeEvent evt)
 		{
-			IModel<?> model;
-			try
-			{
-				model = ModelLoaderRegistry.getModel(modelLoc);
-			} catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-			//TODO
-			model = ModelLoaderRegistry.getMissingModel();
-			if(model instanceof OBJModel)
-			{
-				OBJModel obj = (OBJModel)model;
-				obj = (OBJModel)obj.retexture(texReplacements);
-				model = obj.process(ImmutableMap.of("flip-v", "true"));
-			}
-			this.model = model.bake(evt.getModelLoader(), rl -> Minecraft.getInstance().getTextureMap().getSprite(rl),
-					new BasicState(model.getDefaultState(), false), DefaultVertexFormats.ITEM);
 			tex = Minecraft.getInstance().getTextureMap().getSprite(texLoc);
 		}
 	}

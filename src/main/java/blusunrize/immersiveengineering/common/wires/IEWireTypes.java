@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -66,18 +65,18 @@ public class IEWireTypes
 
 	public static void setup()
 	{
-		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
-				new ResourceLocation(MODID, "block/connector/connector_lv"), new float[]{0, 4, 8, 12},
-				.5, () -> Connectors.getEnergyConnector(LV_CATEGORY, false).getDefaultState());
-		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
-				new ResourceLocation(MODID, "block/connector/connector_mv"), new float[]{0, 4, 8, 12},
-				.5625, () -> Connectors.getEnergyConnector(MV_CATEGORY, false).getDefaultState());
-		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
-				new ResourceLocation(MODID, "block/connector/connector_hv"), new float[]{0, 4, 8, 12},
-				.75, () -> Connectors.getEnergyConnector(HV_CATEGORY, false).getDefaultState());
-		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
-				ImmutableMap.of(), new ResourceLocation(MODID, "block/connector/connector_redstone"), new float[]{3, 8, 11, 16},
-				.5625, .5, () -> Connectors.connectorRedstone.getDefaultState()
+		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv"),
+				new float[]{0, 4, 8, 12}, .5,
+				() -> Connectors.getEnergyConnector(LV_CATEGORY, false).getDefaultState());
+		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv"),
+				new float[]{0, 4, 8, 12}, .5625,
+				() -> Connectors.getEnergyConnector(MV_CATEGORY, false).getDefaultState());
+		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv"),
+				new float[]{0, 4, 8, 12}, .75,
+				() -> Connectors.getEnergyConnector(HV_CATEGORY, false).getDefaultState());
+		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone"),
+				new float[]{3, 8, 11, 16}, .5625, .5,
+				() -> Connectors.connectorRedstone.getDefaultState()
 		);
 	}
 

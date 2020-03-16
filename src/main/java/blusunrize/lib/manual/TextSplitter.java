@@ -105,7 +105,8 @@ public class TextSplitter
 						pos++;
 						if(token.equals("<np>"))
 						{
-							page.add(line);
+							if(!page.isEmpty()||!line.isEmpty())
+								page.add(line);
 							break page;
 						}
 						else if(LINEBREAK.matcher(token).matches())
@@ -159,7 +160,8 @@ public class TextSplitter
 					}
 				}
 				line = line.trim();
-				page.add(line);
+				if(!page.isEmpty()||!line.isEmpty())
+					page.add(line);
 			}
 			int linesMax = getLinesOnPage(entry.size());
 			forceNewPage |= linesMax <= 0;

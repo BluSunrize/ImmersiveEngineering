@@ -32,7 +32,9 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -101,7 +103,7 @@ public class FeedthroughModel extends BakedIEModel
 		final Int2IntFunction colorMultiplierFinal = colorMultiplier;
 		FeedthroughCacheKey key = new FeedthroughCacheKey(wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer(), colorMultiplier);
 		SpecificFeedthroughModel ret = CACHE.getIfPresent(key);
-		//if(ret==null)
+		if(ret==null)
 		{
 			ret = new SpecificFeedthroughModel(key, colorMultiplierFinal);
 			Preconditions.checkState(key.usedColorMultipliers!=null);
@@ -120,13 +122,13 @@ public class FeedthroughModel extends BakedIEModel
 		if(te instanceof FeedthroughTileEntity)
 		{
 			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)te;
+			int color = Minecraft.getInstance().getBlockColors().getColor(feedthrough.stateForMiddle, world, pos, 0);
 			FeedthroughData d = new FeedthroughData(
 					feedthrough.stateForMiddle,
 					feedthrough.reference,
 					state.get(IEProperties.FACING_ALL),
 					feedthrough.offset,
-					//TODO
-					i -> 0xffffffff
+					i -> color
 			);
 			ret.add(new SinglePropertyModelData<>(d, Model.FEEDTHROUGH));
 		}
@@ -388,7 +390,9 @@ public class FeedthroughModel extends BakedIEModel
 						rotateAround.getZOffset());
 			}
 			mat.translate(-.5, -.5, -.5);
-			List<BakedQuad> conn = new ArrayList<>(info.model.getQuads(null, side, Utils.RAND));
+			IBakedModel model = mc().getBlockRendererDispatcher().getBlockModelShapes()
+					.getModel(info.conn.get().with(IEProperties.FACING_ALL, Direction.DOWN));
+			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, Utils.RAND, EmptyModelData.INSTANCE));
 			if(side==facing)
 				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
 			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(new TRSRTransformation(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
