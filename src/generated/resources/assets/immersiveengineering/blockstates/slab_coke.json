@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_coke_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_coke_double"
+      "model": "immersiveengineering:block/slab_coke_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_coke_bottom"
+      "model": "immersiveengineering:block/slab_coke_double"
     }
   }
 }

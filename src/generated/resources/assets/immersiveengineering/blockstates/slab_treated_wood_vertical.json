@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_treated_wood_vertical_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_treated_wood_vertical_double"
+      "model": "immersiveengineering:block/slab_treated_wood_vertical_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_treated_wood_vertical_bottom"
+      "model": "immersiveengineering:block/slab_treated_wood_vertical_double"
     }
   }
 }

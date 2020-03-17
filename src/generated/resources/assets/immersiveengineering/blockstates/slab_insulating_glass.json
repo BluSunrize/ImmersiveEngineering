@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_insulating_glass_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_insulating_glass_double"
+      "model": "immersiveengineering:block/slab_insulating_glass_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_insulating_glass_bottom"
+      "model": "immersiveengineering:block/slab_insulating_glass_double"
     }
   }
 }

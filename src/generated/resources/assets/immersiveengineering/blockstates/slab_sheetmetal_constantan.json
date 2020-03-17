@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_sheetmetal_constantan_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_sheetmetal_constantan_double"
+      "model": "immersiveengineering:block/slab_sheetmetal_constantan_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_sheetmetal_constantan_bottom"
+      "model": "immersiveengineering:block/slab_sheetmetal_constantan_double"
     }
   }
 }

@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_cokebrick_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_cokebrick_double"
+      "model": "immersiveengineering:block/slab_cokebrick_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_cokebrick_bottom"
+      "model": "immersiveengineering:block/slab_cokebrick_double"
     }
   }
 }

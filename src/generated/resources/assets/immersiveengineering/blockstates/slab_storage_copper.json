@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_storage_copper_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_storage_copper_double"
+      "model": "immersiveengineering:block/slab_storage_copper_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_storage_copper_bottom"
+      "model": "immersiveengineering:block/slab_storage_copper_double"
     }
   }
 }

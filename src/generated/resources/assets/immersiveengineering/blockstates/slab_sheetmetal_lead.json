@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_sheetmetal_lead_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_sheetmetal_lead_double"
+      "model": "immersiveengineering:block/slab_sheetmetal_lead_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_sheetmetal_lead_bottom"
+      "model": "immersiveengineering:block/slab_sheetmetal_lead_double"
     }
   }
 }

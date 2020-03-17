@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_blastbrick_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_blastbrick_double"
+      "model": "immersiveengineering:block/slab_blastbrick_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_blastbrick_bottom"
+      "model": "immersiveengineering:block/slab_blastbrick_double"
     }
   }
 }

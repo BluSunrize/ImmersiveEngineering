@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_sheetmetal_nickel_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_sheetmetal_nickel_double"
+      "model": "immersiveengineering:block/slab_sheetmetal_nickel_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_sheetmetal_nickel_bottom"
+      "model": "immersiveengineering:block/slab_sheetmetal_nickel_double"
     }
   }
 }

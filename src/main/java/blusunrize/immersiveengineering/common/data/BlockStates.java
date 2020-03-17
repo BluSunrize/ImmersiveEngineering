@@ -138,9 +138,9 @@ public class BlockStates extends BlockStateProvider
 		ModelFile mainModel = slab(name(b)+"_bottom", side, bottom, top);
 		slabBlock(
 				b,
-				cubeBottomTop(name(b)+"_double", side, bottom, top),
+				mainModel,
 				slabTop(name(b)+"_top", side, bottom, top),
-				mainModel
+				cubeBottomTop(name(b)+"_double", side, bottom, top)
 		);
 		itemModels.put(b, mainModel);
 	}
@@ -697,6 +697,11 @@ public class BlockStates extends BlockStateProvider
 		createMultiblock(MetalDevices.sampleDrill,
 				obj("block/metal_device/core_drill.obj"),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180);
+		createMultiblock(Multiblocks.autoWorkbench,
+				obj("block/metal_multiblock/auto_workbench.obj"),
+				obj("block/metal_multiblock/auto_workbench_mirrored.obj"),
+				IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL,
+				IEProperties.MIRRORED, 180);
 	}
 
 	private void createStoneMultiblocks()

@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_storage_silver_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_storage_silver_double"
+      "model": "immersiveengineering:block/slab_storage_silver_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_storage_silver_bottom"
+      "model": "immersiveengineering:block/slab_storage_silver_double"
     }
   }
 }

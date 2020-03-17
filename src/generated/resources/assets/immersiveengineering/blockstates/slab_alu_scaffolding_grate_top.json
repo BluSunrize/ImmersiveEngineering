@@ -4,10 +4,10 @@
       "model": "immersiveengineering:block/slab_alu_scaffolding_grate_top_top"
     },
     "type=bottom": {
-      "model": "immersiveengineering:block/slab_alu_scaffolding_grate_top_double"
+      "model": "immersiveengineering:block/slab_alu_scaffolding_grate_top_bottom"
     },
     "type=double": {
-      "model": "immersiveengineering:block/slab_alu_scaffolding_grate_top_bottom"
+      "model": "immersiveengineering:block/slab_alu_scaffolding_grate_top_double"
     }
   }
 }

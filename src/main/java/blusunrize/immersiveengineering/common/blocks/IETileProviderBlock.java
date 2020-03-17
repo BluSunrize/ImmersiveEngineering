@@ -32,9 +32,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -42,6 +41,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameterSets;
@@ -344,6 +344,37 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			return true;
 		}
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
+	}
+
+	@Override
+	public BlockState rotate(BlockState state, Rotation rot)
+	{
+		IProperty<Direction> facingProp = null;
+		if(state.has(IEProperties.FACING_ALL))
+			facingProp = IEProperties.FACING_ALL;
+		else if(state.has(IEProperties.FACING_HORIZONTAL))
+			facingProp = IEProperties.FACING_HORIZONTAL;
+		if(facingProp!=null&&canRotate())
+		{
+			Direction currentDirection = state.get(facingProp);
+			Direction newDirection = rot.rotate(currentDirection);
+			return state.with(facingProp, newDirection);
+		}
+		return super.rotate(state, rot);
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirrorIn)
+	{
+		if(state.has(IEProperties.MIRRORED)&&canRotate()&&mirrorIn==Mirror.LEFT_RIGHT)
+			return state.with(IEProperties.MIRRORED, !state.get(IEProperties.MIRRORED));
+		return super.mirror(state, mirrorIn);
+	}
+
+	protected boolean canRotate()
+	{
+		//Basic heuristic: Multiblocks should not be rotated depending on state
+		return !getStateContainer().getProperties().contains(IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Override
