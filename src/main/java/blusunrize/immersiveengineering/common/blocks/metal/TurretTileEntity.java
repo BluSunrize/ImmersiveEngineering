@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -455,7 +454,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}

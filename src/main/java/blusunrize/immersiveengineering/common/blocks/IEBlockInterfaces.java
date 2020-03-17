@@ -179,7 +179,7 @@ public class IEBlockInterfaces
 
 		boolean mirrorFacingOnPlacement(LivingEntity placer);
 
-		boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity);
+		boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity);
 
 		boolean canRotate(Direction axis);
 

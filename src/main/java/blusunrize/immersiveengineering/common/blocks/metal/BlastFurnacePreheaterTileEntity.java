@@ -26,6 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nonnull;
 
@@ -158,7 +159,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return true;
 	}

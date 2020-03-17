@@ -115,7 +115,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return !entity.isSneaking();
 	}

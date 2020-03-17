@@ -30,7 +30,6 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.STRUCTURE_CATEGORY;
 
@@ -131,7 +130,7 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}

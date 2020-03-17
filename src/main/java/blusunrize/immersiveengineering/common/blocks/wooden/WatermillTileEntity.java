@@ -35,7 +35,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 
 public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IHasDummyBlocks, IHasObjProperty
 {
@@ -284,7 +283,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}

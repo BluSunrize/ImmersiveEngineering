@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,10 +36,9 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.ArrayList;
 
 public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional,
 		IHasDummyBlocks, IInteractionObjectIE, IHasObjProperty
@@ -113,7 +111,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}

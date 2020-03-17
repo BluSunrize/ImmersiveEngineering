@@ -173,7 +173,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}

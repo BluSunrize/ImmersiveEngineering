@@ -34,11 +34,11 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, ITileDrop, IPlayerInteraction, IHasObjProperty
@@ -185,7 +185,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}

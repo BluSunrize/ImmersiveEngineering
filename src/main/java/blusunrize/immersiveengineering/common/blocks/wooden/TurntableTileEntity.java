@@ -8,23 +8,24 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.RotationUtil;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public class TurntableTileEntity extends IEBaseTileEntity implements IDirectionalTile, INeighbourChangeTile, IHammerInteraction
+public class TurntableTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, INeighbourChangeTile, IHammerInteraction
 {
 	public static TileEntityType<TurntableTileEntity> TYPE;
-	private Direction facing = Direction.UP;
 	private boolean redstone = false;
 	public boolean invert = false;
 
@@ -36,7 +37,6 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IDirectiona
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		redstone = nbt.getBoolean("redstone");
 		invert = nbt.getBoolean("invert");
 	}
@@ -44,7 +44,6 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IDirectiona
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putInt("facing", facing.ordinal());
 		nbt.putBoolean("redstone", redstone);
 		nbt.putBoolean("invert", invert);
 	}
@@ -58,22 +57,10 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IDirectiona
 			this.redstone = r;
 			if(this.redstone)
 			{
-				BlockPos target = pos.offset(facing);
-				RotationUtil.rotateBlock(this.world, target);
+				BlockPos target = pos.offset(getFacing());
+				RotationUtil.rotateBlock(this.world, target, invert);
 			}
 		}
-	}
-
-	@Override
-	public Direction getFacing()
-	{
-		return facing;
-	}
-
-	@Override
-	public void setFacing(Direction facing)
-	{
-		this.facing = facing;
 	}
 
 	@Override
@@ -89,7 +76,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IDirectiona
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return !entity.isSneaking();
 	}
@@ -114,5 +101,11 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IDirectiona
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public EnumProperty<Direction> getFacingProperty()
+	{
+		return IEProperties.FACING_ALL;
 	}
 }

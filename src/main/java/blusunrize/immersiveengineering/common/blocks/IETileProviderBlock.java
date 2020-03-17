@@ -299,7 +299,10 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		final float hitZ = (float)hit.getHitVec().z-pos.getZ();
 		ItemStack heldItem = player.getHeldItem(hand);
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player)&&!world.isRemote)
+		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(
+				side,
+				hit.getHitVec().subtract(new Vec3d(pos)),
+				player)&&!world.isRemote)
 		{
 			Direction f = ((IDirectionalTile)tile).getFacing();
 			Direction oldF = f;

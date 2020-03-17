@@ -2,61 +2,49 @@
   "variants": {
     "active=false,facing=down": {
       "model": "immersiveengineering:block/furnace_heater_off",
-      "x": -90,
-      "uvlock": true
+      "x": -90
     },
     "active=true,facing=down": {
       "model": "immersiveengineering:block/furnace_heater_on",
-      "x": -90,
-      "uvlock": true
+      "x": -90
     },
     "active=false,facing=up": {
       "model": "immersiveengineering:block/furnace_heater_off",
-      "x": 90,
-      "uvlock": true
+      "x": 90
     },
     "active=true,facing=up": {
       "model": "immersiveengineering:block/furnace_heater_on",
-      "x": 90,
-      "uvlock": true
+      "x": 90
     },
     "active=false,facing=north": {
-      "model": "immersiveengineering:block/furnace_heater_off",
-      "uvlock": true
+      "model": "immersiveengineering:block/furnace_heater_off"
     },
     "active=true,facing=north": {
-      "model": "immersiveengineering:block/furnace_heater_on",
-      "uvlock": true
+      "model": "immersiveengineering:block/furnace_heater_on"
     },
     "active=false,facing=south": {
       "model": "immersiveengineering:block/furnace_heater_off",
-      "y": 180,
-      "uvlock": true
+      "y": 180
     },
     "active=true,facing=south": {
       "model": "immersiveengineering:block/furnace_heater_on",
-      "y": 180,
-      "uvlock": true
+      "y": 180
     },
     "active=false,facing=west": {
       "model": "immersiveengineering:block/furnace_heater_off",
-      "y": 270,
-      "uvlock": true
+      "y": 270
     },
     "active=true,facing=west": {
       "model": "immersiveengineering:block/furnace_heater_on",
-      "y": 270,
-      "uvlock": true
+      "y": 270
     },
     "active=false,facing=east": {
       "model": "immersiveengineering:block/furnace_heater_off",
-      "y": 90,
-      "uvlock": true
+      "y": 90
     },
     "active=true,facing=east": {
       "model": "immersiveengineering:block/furnace_heater_on",
-      "y": 90,
-      "uvlock": true
+      "y": 90
     }
   }
 }

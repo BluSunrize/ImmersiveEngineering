@@ -395,6 +395,15 @@ public class BlockStates extends BlockStateProvider
 		}
 
 		createWallmount(WoodenDevices.treatedWallmount, rl("block/wooden_device/wallmount"));
+		{
+			ModelFile turntableModel = cubeBottomTop("turntable",
+					modLoc("block/wooden_device/turntable"),
+					modLoc("block/wooden_device/turntable_bottom"),
+					modLoc("block/wooden_device/turntable_top")
+			);
+			createRotatedBlock(WoodenDevices.turntable, s -> turntableModel, IEProperties.FACING_ALL, ImmutableList.of(), -90, 0);
+			itemModels.put(WoodenDevices.turntable, turntableModel);
+		}
 		createWallmount(MetalDecoration.aluWallmount, rl("block/metal_decoration/aluminum_wallmount"));
 		createWallmount(MetalDecoration.steelWallmount, rl("block/metal_decoration/steel_wallmount"));
 		{
@@ -755,6 +764,12 @@ public class BlockStates extends BlockStateProvider
 	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, IProperty<Direction> facing,
 									List<IProperty<?>> additionalProps)
 	{
+		createRotatedBlock(block, model, facing, additionalProps, 0, 180);
+	}
+
+	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, IProperty<Direction> facing,
+									List<IProperty<?>> additionalProps, int offsetRotX, int offsetRotY)
+	{
 		VariantBlockStateBuilder stateBuilder = getVariantBuilder(block);
 		forEachState(stateBuilder.partialState(), additionalProps, state -> {
 			ModelFile modelLoc = model.apply(state);
@@ -773,10 +788,10 @@ public class BlockStates extends BlockStateProvider
 						y = 0;
 						break;
 					default:
-						y = getAngle(d, 180);
+						y = getAngle(d, offsetRotY);
 						x = 0;
 				}
-				state.with(facing, d).setModels(new ConfiguredModel(modelLoc, x, y, true));
+				state.with(facing, d).setModels(new ConfiguredModel(modelLoc, x+offsetRotX, y, false));
 			}
 		});
 	}
