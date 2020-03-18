@@ -26,7 +26,6 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -222,8 +221,8 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public ManualScreen getGui()
 	{
-		if(ManualScreen.activeManual!=null&&ManualScreen.activeManual.getManual()==this)
-			return ManualScreen.activeManual;
+		if(ManualScreen.lastActiveManual!=null&&ManualScreen.lastActiveManual.getManual()==this)
+			return ManualScreen.lastActiveManual;
 		if(!initialized)
 			reload();
 		return new ManualScreen(this, texture);

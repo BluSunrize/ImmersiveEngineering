@@ -43,7 +43,7 @@ public class ManualScreen extends Screen
 	public AbstractNode<ResourceLocation, ManualEntry> currentNode;
 	public Stack<ManualLink> previousSelectedEntry = new Stack<>();
 	public int page;
-	public static ManualScreen activeManual;
+	public static ManualScreen lastActiveManual;
 
 	ManualInstance manual;
 	String texture;
@@ -64,7 +64,6 @@ public class ManualScreen extends Screen
 		prevGuiScale = mc.gameSettings.guiScale;
 		if(prevGuiScale!=0&&prevGuiScale!=2&&manual.allowGuiRescale())
 			mc.gameSettings.guiScale = 2;
-		activeManual = this;
 	}
 
 	public ManualEntry getCurrentPage()
@@ -154,6 +153,7 @@ public class ManualScreen extends Screen
 		}
 		else if(searchField!=null)
 			searchField = null;
+		lastActiveManual = this;
 	}
 
 	public void fullInit()
@@ -257,7 +257,6 @@ public class ManualScreen extends Screen
 		super.onClose();
 		if(prevGuiScale!=-1&&manual.allowGuiRescale())
 			mc.gameSettings.guiScale = prevGuiScale;
-		activeManual = null;
 	}
 
 	private void drawCenteredStringScaled(FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)
