@@ -18,13 +18,15 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.tags.BlockTags;
 
-class BlockTags extends BlockTagsProvider
+class IEBlockTags extends BlockTagsProvider
 {
 
-	public BlockTags(DataGenerator gen)
+	public IEBlockTags(DataGenerator gen)
 	{
 		super(gen);
 	}
@@ -32,12 +34,16 @@ class BlockTags extends BlockTagsProvider
 	@Override
 	protected void registerTags()
 	{
-		getBuilder(net.minecraft.tags.BlockTags.FENCES)
+		getBuilder(BlockTags.FENCES)
 				.add(MetalDecoration.aluFence)
 				.add(MetalDecoration.steelFence)
 				.add(WoodenDecoration.treatedFence);
-		getBuilder(net.minecraft.tags.BlockTags.WOODEN_FENCES)
+		getBuilder(BlockTags.WOODEN_FENCES)
 				.add(WoodenDecoration.treatedFence);
+		getBuilder(IETags.clayBlock)
+				.add(Blocks.CLAY);
+		getBuilder(IETags.glowstoneBlock)
+				.add(Blocks.GLOWSTONE);
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);

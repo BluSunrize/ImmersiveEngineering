@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.CrusherRecipe.SecondaryOutput;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
@@ -35,10 +36,9 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,24 +53,6 @@ import static blusunrize.immersiveengineering.common.items.IEItems.Molds.*;
 
 public class IERecipes
 {
-
-	public static void initCraftingRecipes(IForgeRegistry<?> registry)
-	{
-		//TODO move to JSON recipes
-		/*
-		//Loop, special or colouration recipes
-		registry.register(new RecipeBannerAdvanced().setRegistryName(ImmersiveEngineering.MODID, "banners"));
-		registry.register(new RecipeShaderBags(id).setRegistryName(ImmersiveEngineering.MODID, "shader_bags"));
-		registry.register(new RecipeEarmuffs().setRegistryName(ImmersiveEngineering.MODID, "earmuffs"));
-		registry.register(new RecipePowerpack(id).setRegistryName(ImmersiveEngineering.MODID, "powerpack"));
-		final ItemStack stripCurtain = new ItemStack(IEContent.blockClothDevice, 1, BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
-		registry.register(new RecipeRGBColouration((s) -> (OreDictionary.itemMatches(stripCurtain, s, true)),
-				(s) -> (ItemNBTHelper.hasKey(s, "colour")?ItemNBTHelper.getInt(s, "colour"): 0xffffff),
-				(s, i) -> ItemNBTHelper.putInt(s, "colour", i))
-				.setRegistryName(ImmersiveEngineering.MODID, "stripcurtain_colour"));
-		*/
-	}
-
 	public static void initBlueprintRecipes()
 	{
 		//
@@ -184,10 +166,9 @@ public class IERecipes
 
 		BlastFurnaceRecipe.addBlastFuel(IETags.coalCoke, 1200);
 		BlastFurnaceRecipe.addBlastFuel(IETags.coalCokeBlock, 1200*10);
-		/*TODO
-		BlastFurnaceRecipe.addBlastFuel("charcoal", 300);
-		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 300*10);
-		 */
+
+		BlastFurnaceRecipe.addBlastFuel(IETags.charCoal, 300);
+		BlastFurnaceRecipe.addBlastFuel(IETags.getItemTag(IETags.charCoalBlocks), 300*10);
 	}
 
 	public static void initMetalPressRecipes()
@@ -201,7 +182,7 @@ public class IERecipes
 		MetalPressRecipe.addRecipe(shoddyElectrode, IETags.hopGraphiteIngot, new ItemStack(moldRod), 4800).setInputSize(4);
 
 		//Slicing Melons
-		MetalPressRecipe.addRecipe(new ItemStack(Items.MELON, 9), new ItemStack(Blocks.MELON), new ItemStack(moldUnpacking), 3200);
+		MetalPressRecipe.addRecipe(new ItemStack(Items.MELON_SLICE, 9), new ItemStack(Blocks.MELON), new ItemStack(moldUnpacking), 3200);
 
 		//Packing & Unpacking
 		ComparableItemStack pack2x2 = ApiUtils.createComparableItemStack(new ItemStack(moldPacking4), false);
@@ -212,66 +193,63 @@ public class IERecipes
 		MetalPressRecipe.recipeList.put(unpack, new MetalPressUnpackingRecipe(unpack, 3200));
 	}
 
-	public static HashMap<String, ItemStack> oreOutputModifier = new HashMap<String, ItemStack>();
-	public static HashMap<String, Object[]> oreOutputSecondaries = new HashMap<String, Object[]>();
-	public static ArrayList<String> hammerCrushingList = new ArrayList<String>();
+	public static HashMap<String, ItemStack> oreOutputModifier = new HashMap<>();
+	public static HashMap<String, SecondaryOutput> oreOutputSecondaries = new HashMap<>();
+	public static ArrayList<String> hammerCrushingList = new ArrayList<>();
 
 	public static void initCrusherRecipes()
 	{
-		//TODO replace oredict names with tags
-		if(true) return;
-		oreOutputSecondaries.put("Iron", new Object[]{getDust("nickel"), .1f});
-		oreOutputSecondaries.put("Gold", new Object[]{"crystalCinnabar", .05f});
-		oreOutputSecondaries.put("Copper", new Object[]{getDust("gold"), .1f});
-		oreOutputSecondaries.put("Lead", new Object[]{getDust("silver"), .1f});
-		oreOutputSecondaries.put("Silver", new Object[]{"dustLead", .1f});
-		oreOutputSecondaries.put("Nickel", new Object[]{"dustPlatinum", .1f});
+		oreOutputSecondaries.put("iron", new SecondaryOutput(getDust("nickel"), .1f));
+		oreOutputSecondaries.put("gold", new SecondaryOutput(getCrystal("cinnabar"), .05f));
+		oreOutputSecondaries.put("copper", new SecondaryOutput(getDust("gold"), .1f));
+		oreOutputSecondaries.put("lead", new SecondaryOutput(getDust("silver"), .1f));
+		oreOutputSecondaries.put("silver", new SecondaryOutput(getDust("lead"), .1f));
+		oreOutputSecondaries.put("nickel", new SecondaryOutput(getDust("platinum"), .1f));
 
-		oreOutputModifier.put("Lapis", new ItemStack(Items.LAPIS_LAZULI, 9));
-		oreOutputSecondaries.put("Lapis", new Object[]{"dustSulfur", .15f});
-		oreOutputModifier.put("Diamond", new ItemStack(Items.DIAMOND, 2));
-		oreOutputModifier.put("Redstone", new ItemStack(Items.REDSTONE, 6));
-		oreOutputSecondaries.put("Redstone", new Object[]{"crystalCinnabar", .25f});
-		oreOutputModifier.put("Emerald", new ItemStack(Items.EMERALD, 2));
-		oreOutputModifier.put("Quartz", new ItemStack(Items.QUARTZ, 3));
-		oreOutputSecondaries.put("Quartz", new Object[]{"dustSulfur", .15f});
-		oreOutputModifier.put("Coal", new ItemStack(Items.COAL, 4));
+		oreOutputModifier.put("lapis", new ItemStack(Items.LAPIS_LAZULI, 9));
+		oreOutputSecondaries.put("lapis", new SecondaryOutput(getDust("sulfur"), .15f));
+		oreOutputModifier.put("diamond", new ItemStack(Items.DIAMOND, 2));
+		oreOutputModifier.put("redstone", new ItemStack(Items.REDSTONE, 6));
+		oreOutputSecondaries.put("redstone", new SecondaryOutput(getCrystal("cinnabar"), .25f));
+		oreOutputModifier.put("emerald", new ItemStack(Items.EMERALD, 2));
+		oreOutputModifier.put("quartz", new ItemStack(Items.QUARTZ, 3));
+		oreOutputSecondaries.put("quartz", new SecondaryOutput(getDust("sulfur"), .15f));
+		oreOutputModifier.put("coal", new ItemStack(Items.COAL, 4));
 
-		oreOutputSecondaries.put("Platinum", new Object[]{getDust("nickel"), .1f});
-		oreOutputSecondaries.put("Tungsten", new Object[]{"dustManganese", .1f});
-		oreOutputSecondaries.put("Uranium", new Object[]{"dustLead", .1f});
-		oreOutputSecondaries.put("Yellorium", new Object[]{"dustLead", .1f});
-		oreOutputSecondaries.put("Plutonium", new Object[]{"dustUranium", .1f});
-		Item item = GameRegistry.findRegistry(Item.class).getValue(new ResourceLocation("IC2", "itemOreIridium"));
-		oreOutputSecondaries.put("Osmium", new Object[]{item, .01f});
-		oreOutputSecondaries.put("Iridium", new Object[]{"dustPlatium", .1f});
-		oreOutputSecondaries.put("FzDarkIron", new Object[]{getDust("iron"), .1f});
-		item = GameRegistry.findRegistry(Item.class).getValue(new ResourceLocation("Railcraft", "firestone.raw"));
-		if(item!=null)
-			oreOutputModifier.put("Firestone", new ItemStack(item));
-		oreOutputSecondaries.put("Nikolite", new Object[]{Items.DIAMOND, .025f});
+		oreOutputSecondaries.put("platinum", new SecondaryOutput(getDust("nickel"), .1f));
+		oreOutputSecondaries.put("tungsten", new SecondaryOutput(getDust("manganese"), .1f));
+		oreOutputSecondaries.put("uranium", new SecondaryOutput(getDust("lead"), .1f));
+		oreOutputSecondaries.put("yellorium", new SecondaryOutput(getDust("lead"), .1f));
+		oreOutputSecondaries.put("plutonium", new SecondaryOutput(getDust("uranium"), .1f));
+		oreOutputSecondaries.put("iridium", new SecondaryOutput(getDust("platium"), .1f));
+		oreOutputSecondaries.put("nikolite", new SecondaryOutput(Tags.Items.GEMS_DIAMOND, .025f));
 
-		addCrusherRecipe(new ItemStack(Blocks.GRAVEL), "cobblestone", 1600);
-		addCrusherRecipe(new ItemStack(Blocks.SAND), Blocks.GRAVEL, 1600);
-		addCrusherRecipe(new ItemStack(Blocks.SAND), "itemSlag", 1600);
-		addCrusherRecipe(new ItemStack(Blocks.SAND), "blockGlass", 3200);
-		addCrusherRecipe(new ItemStack(Blocks.SAND, 2), "sandstone", 1600, new ItemStack(dustSaltpeter), .5f);
-		addCrusherRecipe(new ItemStack(Items.CLAY_BALL, 4), "blockClay", 1600);
-		addCrusherRecipe(new ItemStack(Items.QUARTZ, 4), "blockQuartz", 3200);
-		addCrusherRecipe(new ItemStack(Items.GLOWSTONE_DUST, 4), "glowstone", 3200);
-		addCrusherRecipe(new ItemStack(Items.BLAZE_POWDER, 4), "rodBlaze", 3200, new ItemStack(dustSulfur), .5f);
-		addCrusherRecipe(new ItemStack(Items.BONE_MEAL), Items.BONE, 3200);
-		addCrusherRecipe(new ItemStack(dustCoke), "fuelCoke", 2400);
-		addCrusherRecipe(new ItemStack(dustCoke, 9), "blockFuelCoke", 4800);
+		addCrusherRecipe(new ItemStack(Blocks.GRAVEL), Tags.Items.COBBLESTONE, 1600);
+		addCrusherRecipe(new ItemStack(Blocks.SAND), Tags.Items.GRAVEL, 1600);
+		addCrusherRecipe(new ItemStack(Blocks.SAND), IETags.slag, 1600);
+		addCrusherRecipe(new ItemStack(Blocks.SAND), Tags.Items.GLASS, 3200);
+		addCrusherRecipe(new ItemStack(Blocks.SAND, 2), Tags.Items.SANDSTONE, 1600, new SecondaryOutput(dustSaltpeter, .5f));
+		addCrusherRecipeBlockTag(new ItemStack(Items.CLAY_BALL, 4), IETags.clayBlock, 1600);
+		addCrusherRecipe(new ItemStack(Items.QUARTZ, 4), Tags.Items.STORAGE_BLOCKS_QUARTZ, 3200);
+		addCrusherRecipeBlockTag(new ItemStack(Items.GLOWSTONE_DUST, 4), IETags.glowstoneBlock, 3200);
+		addCrusherRecipe(new ItemStack(Items.BLAZE_POWDER, 4), Tags.Items.RODS_BLAZE, 3200, new SecondaryOutput(dustSulfur, .5f));
+		addCrusherRecipe(new ItemStack(Items.BONE_MEAL, 6), Tags.Items.BONES, 3200);
+		addCrusherRecipe(new ItemStack(dustCoke), IETags.coalCoke, 2400);
+		addCrusherRecipeBlockTag(new ItemStack(dustCoke, 9), IETags.coalCokeBlock, 4800);
 		addItemToOreDictCrusherRecipe(getDust("coal"), 1, new ItemStack(Items.COAL), 2400);
 		addItemToOreDictCrusherRecipe(getDust("obsidian"), 4, Blocks.OBSIDIAN, 6000);
-		//TODO is there a better way than enumerating these?
-		//for(int i = 0; i < 16; i++)
-		//{
-		//	CrusherRecipe r = CrusherRecipe.addRecipe(new ItemStack(Items.STRING, 4), new ItemStack(Blocks.WOOL, 1, i), 3200);
-		//	if(i!=0)
-		//		r.addToSecondaryOutput(new ItemStack(Items.DYE, 1, 15-i), .05f);
-		//}
+		for(Entry<Tag<Item>, Item> dyeAndWool : Utils.WOOL_DYE_BIMAP.entrySet())
+		{
+			CrusherRecipe r = CrusherRecipe.addRecipe(new ItemStack(Items.STRING, 4), dyeAndWool.getValue(), 3200);
+			if(dyeAndWool.getValue()!=Blocks.WHITE_WOOL.asItem())
+				r.addToSecondaryOutput(new SecondaryOutput(dyeAndWool.getKey(), .05f));
+		}
+	}
+
+	public static ResourceLocation getCrystal(String type)
+	{
+		//TODO dos anyone use this?
+		return new ResourceLocation("forge", "crystal/"+type);
 	}
 
 	public static ResourceLocation getGem(String type)
@@ -364,10 +342,8 @@ public class IERecipes
 					}
 					if(out!=null&&!out.isEmpty())
 					{
-						Object[] secondaries = oreOutputSecondaries.get(baseName);
-						Object s = secondaries!=null&&secondaries.length > 1?secondaries[0]: null;
-						float f = secondaries!=null&&secondaries.length > 1&&secondaries[1] instanceof Float?(Float)secondaries[1]: 0;
-						addOreProcessingRecipe(out, baseName, 6000, true, s, f);
+						SecondaryOutput secondaries = oreOutputSecondaries.get(baseName);
+						addOreProcessingRecipe(out, baseName, 6000, true, secondaries);
 					}
 					out = arcOutputModifier.get(baseName);
 					if(out==null||out.isEmpty())
@@ -390,7 +366,7 @@ public class IERecipes
 					String ore = path.substring("gems/".length());
 					ResourceLocation dust = getDust(ore);
 					if(ApiUtils.isNonemptyItemTag(dust))
-						addCrusherRecipe(IEApi.getPreferredTagStack(dust), getGem(ore), 6000, null, 0);
+						addCrusherRecipe(IEApi.getPreferredTagStack(dust), getGem(ore), 6000);
 				}
 				else if(path.startsWith("dusts/"))
 				{
@@ -406,7 +382,7 @@ public class IERecipes
 					if(out!=null&&!out.isEmpty()&&!arcBlacklist.contains(ore))
 						addArcRecipe(out, getDust(ore), 100, 512, ItemStack.EMPTY);
 					if(ApiUtils.isNonemptyItemTag(getIngot(ore)))
-						addCrusherRecipe(IEApi.getPreferredTagStack(getDust(ore)), getIngot(ore), 3600, null, 0);
+						addCrusherRecipe(IEApi.getPreferredTagStack(getDust(ore)), getIngot(ore), 3600);
 				}
 				else if(path.startsWith("plates/"))
 				{
@@ -438,10 +414,24 @@ public class IERecipes
 								getIngot(ore), compMoldWire, 2400);
 				}
 			}
-		//TODO Config.manual_bool.put("crushingOreRecipe", !hammerCrushingList.isEmpty());
 	}
 
-	public static CrusherRecipe addCrusherRecipe(ItemStack output, Object input, int energy, Object... secondary)
+	public static CrusherRecipe addCrusherRecipeBlockTag(ItemStack output, Tag<Block> input, int energy, SecondaryOutput... secondary)
+	{
+		return addCrusherRecipe(output, IETags.getItemTag(input), energy, secondary);
+	}
+
+	public static CrusherRecipe addCrusherRecipe(ItemStack output, Tag<Item> input, int energy, SecondaryOutput... secondary)
+	{
+		return addCrusherRecipe(output, new IngredientStack(input), energy, secondary);
+	}
+
+	public static CrusherRecipe addCrusherRecipe(ItemStack output, ResourceLocation input, int energy, SecondaryOutput... secondary)
+	{
+		return addCrusherRecipe(output, new IngredientStack(input), energy, secondary);
+	}
+
+	public static CrusherRecipe addCrusherRecipe(ItemStack output, IngredientStack input, int energy, SecondaryOutput... secondary)
 	{
 		CrusherRecipe r = CrusherRecipe.addRecipe(output, input, energy);
 		if(secondary!=null&&secondary.length > 0)
@@ -449,25 +439,12 @@ public class IERecipes
 		return r;
 	}
 
-	public static void addOreProcessingRecipe(ItemStack output, String ore, int energy, boolean ingot, Object secondary, float secChance)
+	public static void addOreProcessingRecipe(ItemStack output, String ore, int energy, boolean ingot, @Nullable SecondaryOutput secondary)
 	{
 		if(ingot&&ApiUtils.isNonemptyItemTag(getIngot(ore)))
 			addCrusherRecipe(Utils.copyStackWithAmount(output, output.getCount()/2), getIngot(ore), (int)(energy*.6f));
-		if(ApiUtils.isNonemptyItemTag(getOre(ore)))
-			addCrusherRecipe(output, getOre(ore), energy, secondary, secChance);
-	}
-
-	public static void addOreDictCrusherRecipe(String ore, Object secondary, float chance)
-	{
-		if(!ApiUtils.isNonemptyItemTag(getDust(ore)))
-			return;
-		ItemStack dust = IEApi.getPreferredTagStack(getDust(ore));
-		if(dust.isEmpty())
-			return;
-		if(ApiUtils.isNonemptyItemTag(getOre(ore)))
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), getOre(ore), 6000, secondary, chance);
-		if(ApiUtils.isNonemptyItemTag(getIngot(ore)))
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, 1), getIngot(ore), 3600);
+		if(secondary!=null)
+			addCrusherRecipe(output, getOre(ore), energy, secondary);
 	}
 
 	public static CrusherRecipe addItemToOreDictCrusherRecipe(ResourceLocation tagOutput, int outSize, Object input, int energy)

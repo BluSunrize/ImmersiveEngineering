@@ -17,8 +17,7 @@ import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
+import com.google.common.collect.*;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -47,6 +46,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
@@ -159,24 +159,44 @@ public class Utils
 		return s2;
 	}
 
-	public static Map<ResourceLocation, DyeColor> dyesByTag =
-			ImmutableMap.<ResourceLocation, DyeColor>builder()
-					.put(Tags.Items.DYES_BLACK.getId(), DyeColor.BLACK)
-					.put(Tags.Items.DYES_RED.getId(), DyeColor.RED)
-					.put(Tags.Items.DYES_GREEN.getId(), DyeColor.GREEN)
-					.put(Tags.Items.DYES_BROWN.getId(), DyeColor.BROWN)
-					.put(Tags.Items.DYES_BLUE.getId(), DyeColor.BLUE)
-					.put(Tags.Items.DYES_PURPLE.getId(), DyeColor.PURPLE)
-					.put(Tags.Items.DYES_CYAN.getId(), DyeColor.CYAN)
-					.put(Tags.Items.DYES_LIGHT_GRAY.getId(), DyeColor.LIGHT_GRAY)
-					.put(Tags.Items.DYES_GRAY.getId(), DyeColor.GRAY)
-					.put(Tags.Items.DYES_PINK.getId(), DyeColor.PINK)
-					.put(Tags.Items.DYES_LIME.getId(), DyeColor.LIME)
-					.put(Tags.Items.DYES_YELLOW.getId(), DyeColor.YELLOW)
-					.put(Tags.Items.DYES_LIGHT_BLUE.getId(), DyeColor.LIGHT_BLUE)
-					.put(Tags.Items.DYES_MAGENTA.getId(), DyeColor.MAGENTA)
-					.put(Tags.Items.DYES_ORANGE.getId(), DyeColor.ORANGE)
-					.put(Tags.Items.DYES_WHITE.getId(), DyeColor.WHITE)
+	public static final BiMap<Tag<Item>, DyeColor> DYES_BY_TAG =
+			ImmutableBiMap.<Tag<Item>, DyeColor>builder()
+					.put(Tags.Items.DYES_BLACK, DyeColor.BLACK)
+					.put(Tags.Items.DYES_RED, DyeColor.RED)
+					.put(Tags.Items.DYES_GREEN, DyeColor.GREEN)
+					.put(Tags.Items.DYES_BROWN, DyeColor.BROWN)
+					.put(Tags.Items.DYES_BLUE, DyeColor.BLUE)
+					.put(Tags.Items.DYES_PURPLE, DyeColor.PURPLE)
+					.put(Tags.Items.DYES_CYAN, DyeColor.CYAN)
+					.put(Tags.Items.DYES_LIGHT_GRAY, DyeColor.LIGHT_GRAY)
+					.put(Tags.Items.DYES_GRAY, DyeColor.GRAY)
+					.put(Tags.Items.DYES_PINK, DyeColor.PINK)
+					.put(Tags.Items.DYES_LIME, DyeColor.LIME)
+					.put(Tags.Items.DYES_YELLOW, DyeColor.YELLOW)
+					.put(Tags.Items.DYES_LIGHT_BLUE, DyeColor.LIGHT_BLUE)
+					.put(Tags.Items.DYES_MAGENTA, DyeColor.MAGENTA)
+					.put(Tags.Items.DYES_ORANGE, DyeColor.ORANGE)
+					.put(Tags.Items.DYES_WHITE, DyeColor.WHITE)
+					.build();
+
+	public static final BiMap<Tag<Item>, Item> WOOL_DYE_BIMAP =
+			ImmutableBiMap.<Tag<Item>, Item>builder()
+					.put(Tags.Items.DYES_BLACK, Items.BLACK_WOOL)
+					.put(Tags.Items.DYES_RED, Items.RED_WOOL)
+					.put(Tags.Items.DYES_GREEN, Items.GREEN_WOOL)
+					.put(Tags.Items.DYES_BROWN, Items.BROWN_WOOL)
+					.put(Tags.Items.DYES_BLUE, Items.BLUE_WOOL)
+					.put(Tags.Items.DYES_PURPLE, Items.PURPLE_WOOL)
+					.put(Tags.Items.DYES_CYAN, Items.CYAN_WOOL)
+					.put(Tags.Items.DYES_LIGHT_GRAY, Items.LIGHT_GRAY_WOOL)
+					.put(Tags.Items.DYES_GRAY, Items.GRAY_WOOL)
+					.put(Tags.Items.DYES_PINK, Items.PINK_WOOL)
+					.put(Tags.Items.DYES_LIME, Items.LIME_WOOL)
+					.put(Tags.Items.DYES_YELLOW, Items.YELLOW_WOOL)
+					.put(Tags.Items.DYES_LIGHT_BLUE, Items.LIGHT_BLUE_WOOL)
+					.put(Tags.Items.DYES_MAGENTA, Items.MAGENTA_WOOL)
+					.put(Tags.Items.DYES_ORANGE, Items.ORANGE_WOOL)
+					.put(Tags.Items.DYES_WHITE, Items.WHITE_WOOL)
 					.build();
 
 	@Nullable
@@ -188,8 +208,8 @@ public class Utils
 		if(owners.contains(Tags.Items.DYES.getId()))
 		{
 			for(ResourceLocation tag : owners)
-				if(dyesByTag.containsKey(tag))
-					return dyesByTag.get(tag);
+				if(DYES_BY_TAG.containsKey(tag))
+					return DYES_BY_TAG.get(tag);
 		}
 		return null;
 	}

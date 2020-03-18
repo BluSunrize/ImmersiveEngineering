@@ -49,9 +49,11 @@ class ItemTags extends ItemTagsProvider
 		IETags.forAllBlocktags(this::copy);
 
 		getBuilder(IETags.clay).add(Items.CLAY_BALL);
+		getBuilder(IETags.charCoal).add(Items.CHARCOAL);
 
 		getBuilder(Tags.Items.RODS_WOODEN).add(Ingredients.stickTreated);
 		getBuilder(IETags.treatedStick).add(Ingredients.stickTreated);
+		getBuilder(IETags.slag).add(Ingredients.slag);
 		getBuilder(IETags.ironRod).add(Ingredients.stickIron);
 		getBuilder(IETags.steelRod).add(Ingredients.stickSteel);
 		getBuilder(IETags.aluminumRod).add(Ingredients.stickAluminum);

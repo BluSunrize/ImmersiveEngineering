@@ -35,6 +35,11 @@ public class IETags
 
 	//Vanilla
 	public static final Tag<Item> clay = new ItemTags.Wrapper(forgeLoc("clay"));
+	public static final Tag<Block> clayBlock = createBlockTag(IERecipes.getStorageBlock("clay"));
+	public static final Tag<Item> charCoal = new ItemTags.Wrapper(forgeLoc("charcoal"));
+	public static final Tag<Block> glowstoneBlock = createBlockTag(IERecipes.getStorageBlock("glowstone"));
+	//Other mods
+	public static final Tag<Block> charCoalBlocks = createBlockTag(IERecipes.getStorageBlock("charcoal"));
 	//IE Blocks
 	public static final Tag<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
 	public static final Tag<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));

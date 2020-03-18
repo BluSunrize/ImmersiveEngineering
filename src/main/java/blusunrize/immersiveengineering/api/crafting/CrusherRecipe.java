@@ -12,17 +12,17 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -37,8 +37,7 @@ public class CrusherRecipe extends MultiblockRecipe
 	public final String oreInputString;
 	public final IngredientStack input;
 	public final ItemStack output;
-	public ItemStack[] secondaryOutput;
-	public float[] secondaryChance;
+	public final List<SecondaryOutput> secondaryOutputs = new ArrayList<>();
 
 	public CrusherRecipe(ItemStack output, Object input, int energy)
 	{
@@ -57,59 +56,24 @@ public class CrusherRecipe extends MultiblockRecipe
 	{
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(output);
-		if(secondaryOutput!=null&&secondaryChance!=null)
-			for(int i = 0; i < secondaryOutput.length; i++)
-				if(Utils.RAND.nextFloat() < secondaryChance[i])
-					list.add(secondaryOutput[i]);
+		for(SecondaryOutput output : secondaryOutputs)
+			if(output.stack.isValid()&&Utils.RAND.nextFloat() < output.chance)
+				list.add(output.stack.getExampleStack());
 		return list;
 	}
 
 	/**
-	 * Adds secondary outputs to the recipe. Should the recipe have secondary outputs, these will be added /in addition/<br>
-	 * The array should be alternating between Item/Block/ItemStack/ArrayList and a float for the chance
+	 * Adds secondary outputs to the recipe. Should the recipe have secondary outputs, these will be added /in addition/
 	 */
-	public CrusherRecipe addToSecondaryOutput(Object... outputs)
+	public CrusherRecipe addToSecondaryOutput(SecondaryOutput... outputs)
 	{
-		if(outputs.length%2!=0)
-			return this;
-		ArrayList<ItemStack> newSecondaryOutput = new ArrayList<ItemStack>();
-		ArrayList<Float> newSecondaryChance = new ArrayList<Float>();
-		if(secondaryOutput!=null)
-			for(int i = 0; i < secondaryOutput.length; i++)
-			{
-				newSecondaryOutput.add(secondaryOutput[i]);
-				newSecondaryChance.add(secondaryChance[i]);
-			}
-		for(int i = 0; i < (outputs.length/2); i++)
-			if(outputs[i*2]!=null)
-			{
-				Object o = ApiUtils.convertToValidRecipeInput(outputs[i*2]);
-				ItemStack ss = o instanceof ItemStack?(ItemStack)o
-						: o instanceof List?IEApi.getPreferredStackbyMod((Collection<ItemStack>)o)
-						: o instanceof ResourceLocation?IEApi.getPreferredTagStack((ResourceLocation)o)
-						: ItemStack.EMPTY;
-				if(!ss.isEmpty())
-				{
-					newSecondaryOutput.add(ss);
-					newSecondaryChance.add((Float)outputs[i*2+1]);
-				}
-			}
-		secondaryOutput = newSecondaryOutput.toArray(new ItemStack[0]);
-		secondaryChance = new float[newSecondaryChance.size()];
-		int i = 0;
-		for(Float f : newSecondaryChance)
-			secondaryChance[i++] = f;
-
-		this.outputList = ListUtils.fromItems(this.secondaryOutput);
-		if(this.outputList.isEmpty())
-			this.outputList.add(this.output);
-		else
-			this.outputList.add(0, this.output);
-
+		for(SecondaryOutput o : outputs)
+			Preconditions.checkNotNull(o);
+		secondaryOutputs.addAll(Arrays.asList(outputs));
 		return this;
 	}
 
-	public static ArrayList<CrusherRecipe> recipeList = new ArrayList<CrusherRecipe>();
+	public static ArrayList<CrusherRecipe> recipeList = new ArrayList<>();
 
 	public static CrusherRecipe addRecipe(ItemStack output, Object input, int energy)
 	{
@@ -179,5 +143,34 @@ public class CrusherRecipe extends MultiblockRecipe
 			if(recipe.input.equals(input))
 				return recipe;
 		return null;
+	}
+
+
+	public static class SecondaryOutput
+	{
+		public final IngredientStack stack;
+		public final float chance;
+
+		public SecondaryOutput(Item item, float chance)
+		{
+			this(new IngredientStack(item), chance);
+		}
+
+		public SecondaryOutput(Tag<Item> tag, float chance)
+		{
+			this(new IngredientStack(tag), chance);
+		}
+
+		public SecondaryOutput(ResourceLocation tag, float chance)
+		{
+			this(new IngredientStack(tag), chance);
+		}
+
+		public SecondaryOutput(IngredientStack stack, float chance)
+		{
+			Preconditions.checkNotNull(stack);
+			this.stack = stack;
+			this.chance = chance;
+		}
 	}
 }

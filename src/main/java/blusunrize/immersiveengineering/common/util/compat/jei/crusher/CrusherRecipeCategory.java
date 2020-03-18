@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.crusher;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
+import blusunrize.immersiveengineering.api.crafting.CrusherRecipe.SecondaryOutput;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -27,6 +28,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 {
 	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "crusher");
@@ -43,10 +47,9 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	{
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
 		NonNullList<ItemStack> l = ListUtils.fromItems(recipe.output);
-		if(recipe.secondaryOutput!=null)
-			for(ItemStack stack : recipe.secondaryOutput)
-				if(!stack.isEmpty())
-					l.add(stack);
+		for(SecondaryOutput output : recipe.secondaryOutputs)
+			if(output.stack.isValid())
+				l.add(output.stack.getExampleStack());
 		ingredients.setOutputs(VanillaTypes.ITEM, l);
 	}
 
@@ -58,38 +61,49 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 		guiItemStacks.set(0, recipe.input.getSizedStackList());
 		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 
-		int y = recipe.secondaryOutput==null||recipe.secondaryOutput.length==0?18: recipe.secondaryOutput.length < 2?9: 0;
+		List<SecondaryOutput> validSecondaries = getValidSecondaryOutputs(recipe);
+		int y = validSecondaries.isEmpty()?18: validSecondaries.size() < 2?9: 0;
 		guiItemStacks.init(1, false, 77, y);
 		guiItemStacks.set(1, recipe.output);
 		guiItemStacks.setBackground(1, JEIHelper.slotDrawable);
 
-		if(recipe.secondaryOutput!=null)
-			for(int i = 0; i < recipe.secondaryOutput.length; i++)
-			{
-				guiItemStacks.init(2+i, false, 77+i/2*44, y+18+i%2*18);
-				guiItemStacks.set(2+i, recipe.secondaryOutput[i]);
-				guiItemStacks.setBackground(2+i, JEIHelper.slotDrawable);
-			}
+		for(int i = 0; i < validSecondaries.size(); i++)
+		{
+			guiItemStacks.init(2+i, false, 77+i/2*44, y+18+i%2*18);
+			guiItemStacks.set(2+i, validSecondaries.get(i).stack.getExampleStack());
+			guiItemStacks.setBackground(2+i, JEIHelper.slotDrawable);
+		}
 	}
 
 	@Override
 	public void draw(CrusherRecipe recipe, double mouseX, double mouseY)
 	{
-		int yBase = recipe.secondaryOutput==null||recipe.secondaryOutput.length==0?36: recipe.secondaryOutput.length < 2?27: 18;
-		if(recipe.secondaryOutput!=null)
-			for(int i = 0; i < recipe.secondaryOutput.length; i++)
-			{
-				int x = 77+i/2*44;
-				int y = yBase+i%2*18;
-				if(i < recipe.secondaryChance.length)
-				{
-					ClientUtils.font().drawString(Utils.formatDouble(recipe.secondaryChance[i]*100, "0.##")+"%", x+21, y+6, 0x777777);
-					GlStateManager.color4f(1, 1, 1, 1);
-				}
-			}
+		List<SecondaryOutput> validSecondaries = getValidSecondaryOutputs(recipe);
+		int yBase = validSecondaries.isEmpty()?36: validSecondaries.size() < 2?27: 18;
+		for(int i = 0; i < validSecondaries.size(); i++)
+		{
+			int x = 77+i/2*44;
+			int y = yBase+i%2*18;
+			ClientUtils.font().drawString(
+					Utils.formatDouble(validSecondaries.get(i).chance*100, "0.##")+"%",
+					x+21,
+					y+6,
+					0x777777
+			);
+			GlStateManager.color4f(1, 1, 1, 1);
+		}
 		GlStateManager.pushMatrix();
 		GlStateManager.scalef(3f, 3f, 1);
 		this.getIcon().draw(8, 0);
 		GlStateManager.popMatrix();
+	}
+
+	private List<SecondaryOutput> getValidSecondaryOutputs(CrusherRecipe recipe)
+	{
+		List<SecondaryOutput> validSecondaries = new ArrayList<>();
+		for(SecondaryOutput out : recipe.secondaryOutputs)
+			if(out.stack.isValid()&&out.chance > 0)
+				validSecondaries.add(out);
+		return validSecondaries;
 	}
 }
