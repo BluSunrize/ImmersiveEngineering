@@ -1728,6 +1728,12 @@ public class Recipes extends RecipeProvider
 				.key('P', Items.GLASS_PANE)
 				.addCriterion("has_glowstone", hasItem(Tags.Items.DUSTS_GLOWSTONE))
 				.build(out);
+
+		ShapelessRecipeBuilder.shapelessRecipe(Misc.hempSeeds)
+				.addIngredient(Tags.Items.STRING)
+				.addIngredient(Tags.Items.SEEDS)
+				.addCriterion("has_seeds", hasItem(Tags.Items.SEEDS))
+				.build(out);
 	}
 
 	private void addArmor(Tag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
