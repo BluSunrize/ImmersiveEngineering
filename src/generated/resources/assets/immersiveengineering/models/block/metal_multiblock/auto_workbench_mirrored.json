@@ -1,0 +1,6 @@
+{
+  "parent": "block/block",
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_multiblock/auto_workbench_mirrored.obj",
+  "flip-v": true
+}
