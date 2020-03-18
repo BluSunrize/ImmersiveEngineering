@@ -190,7 +190,7 @@ public class BlockStates extends BlockStateProvider
 	private ModelFile cubeTwo(String name, ResourceLocation top, ResourceLocation bottom,
 							  ResourceLocation side, ResourceLocation front)
 	{
-		return withExistingParent(name, modLoc("ie_three_cubed"))
+		return withExistingParent(name, modLoc("ie_two_cubed"))
 				.texture("north", front)
 				.texture("top", top)
 				.texture("bottom", bottom)

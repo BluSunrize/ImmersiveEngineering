@@ -9,41 +9,25 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
-
-public class IEStairsBlock extends StairsBlock
+public class IEStairsBlock extends StairsBlock implements IIEBlock
 {
-	public boolean hasFlavour = false;
 	private BlockRenderLayer layer = BlockRenderLayer.SOLID;
-	public IEStairsBlock(String name, BlockState state, Block.Properties properties)
+	private final IIEBlock base;
+
+	public <T extends Block & IIEBlock> IEStairsBlock(String name, Properties properties, T base)
 	{
-		super(state, properties);
+		super(base.getDefaultState(), properties);
+		this.base = base;
 		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, name));
 		IEContent.registeredIEBlocks.add(this);
 		IEContent.registeredIEItems.add(new BlockItemIE(this));
-	}
-
-	public IEStairsBlock setHasFlavour(boolean hasFlavour)
-	{
-		this.hasFlavour = hasFlavour;
-		return this;
 	}
 
 	public IEStairsBlock setRenderLayer(BlockRenderLayer layer)
@@ -52,16 +36,21 @@ public class IEStairsBlock extends StairsBlock
 		return this;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
-	{
-		if(hasFlavour)
-			tooltip.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+getRegistryName().getPath()));
-	}
-
 	@Override
 	public BlockRenderLayer getRenderLayer()
 	{
 		return layer;
+	}
+
+	@Override
+	public boolean hasFlavour()
+	{
+		return base.hasFlavour();
+	}
+
+	@Override
+	public String getNameForFlavour()
+	{
+		return base.getNameForFlavour();
 	}
 }

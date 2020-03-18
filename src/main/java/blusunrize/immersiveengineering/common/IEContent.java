@@ -176,7 +176,7 @@ public class IEContent
 			Item ingot;
 			Item plate = new IEBaseItem("plate_"+name);
 			Item dust = new IEBaseItem("dust_"+name);
-			Block sheetmetal = new IEBaseBlock("sheetmetal_"+name, sheetmetalProperties, BlockItemIE.class);
+			IEBaseBlock sheetmetal = new IEBaseBlock("sheetmetal_"+name, sheetmetalProperties, BlockItemIE.class);
 			addSlabFor(sheetmetal);
 			if(m.shouldAddOre())
 			{
@@ -188,7 +188,7 @@ public class IEContent
 				storage = new IEBaseBlock("storage_"+name, storageProperties, BlockItemIE.class);
 				nugget = new IEBaseItem("nugget_"+name);
 				ingot = new IEBaseItem("ingot_"+name);
-				addSlabFor(storage);
+				addSlabFor((IEBaseBlock)storage);
 			}
 			else if(m==EnumMetals.IRON)
 			{
@@ -238,34 +238,33 @@ public class IEContent
 				.setNotNormalBlock()
 				.setHammerHarvest()
 				.setBlockLayer(BlockRenderLayer.CUTOUT);
-		addSlabFor(IEBlocks.StoneDecoration.cokebrick);
-		addSlabFor(IEBlocks.StoneDecoration.blastbrick);
-		addSlabFor(IEBlocks.StoneDecoration.blastbrickReinforced);
-		addSlabFor(IEBlocks.StoneDecoration.coke);
-		addSlabFor(IEBlocks.StoneDecoration.hempcrete);
-		addSlabFor(IEBlocks.StoneDecoration.concrete);
-		addSlabFor(IEBlocks.StoneDecoration.concreteTile);
-		addSlabFor(IEBlocks.StoneDecoration.concreteLeaded);
-		addSlabFor(IEBlocks.StoneDecoration.insulatingGlass);
-		addSlabFor(IEBlocks.StoneDecoration.alloybrick);
+		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.cokebrick);
+		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.blastbrick);
+		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.blastbrickReinforced);
+		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.coke);
+		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.hempcrete);
+		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.concrete);
+		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.concreteTile);
+		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.concreteLeaded);
+		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.insulatingGlass);
+		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.alloybrick);
 
-		StoneDecoration.hempcreteStairs = new IEStairsBlock("stairs_hempcrete", StoneDecoration.hempcrete.getDefaultState(), stoneDecoProps);
-		StoneDecoration.concreteStairs[0] = new IEStairsBlock("stairs_concrete", StoneDecoration.concrete.getDefaultState(), stoneDecoProps);
-		StoneDecoration.concreteStairs[1] = new IEStairsBlock("stairs_concrete_tile", StoneDecoration.concreteTile.getDefaultState(), stoneDecoProps);
-		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stairs_concrete_leaded", StoneDecoration.concreteLeaded.getDefaultState(), stoneDecoLeadedProps);
+		StoneDecoration.hempcreteStairs = new IEStairsBlock("stairs_hempcrete", stoneDecoProps, (IEBaseBlock)StoneDecoration.hempcrete);
+		StoneDecoration.concreteStairs[0] = new IEStairsBlock("stairs_concrete", stoneDecoProps, (IEBaseBlock)StoneDecoration.concrete);
+		StoneDecoration.concreteStairs[1] = new IEStairsBlock("stairs_concrete_tile", stoneDecoProps, (IEBaseBlock)StoneDecoration.concreteTile);
+		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stairs_concrete_leaded", stoneDecoLeadedProps, (IEBaseBlock)StoneDecoration.concreteLeaded);
 		StoneDecoration.coresample = new GenericTileBlock("coresample", () -> CoresampleTileEntity.TYPE,
 				stoneDecoProps, (Class<? extends BlockItemIE>)null, IEProperties.FACING_HORIZONTAL).setNotNormalBlock();
 
 		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5);
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
-			Block baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, BlockItemIE.class)
+			IEBaseBlock baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, BlockItemIE.class)
 					.setHasFlavour(true);
 			WoodenDecoration.treatedWood.put(style, baseBlock);
 			addSlabFor(baseBlock);
 			WoodenDecoration.treatedStairs.put(style,
-					new IEStairsBlock("stairs_treated_wood_"+style.name().toLowerCase(), baseBlock.getDefaultState(), standardWoodProperties)
-							.setHasFlavour(true));
+					new IEStairsBlock("stairs_treated_wood_"+style.name().toLowerCase(), standardWoodProperties, baseBlock));
 		}
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodProperties);
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodProperties);
@@ -316,16 +315,32 @@ public class IEContent
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
 			String name = type.name().toLowerCase(Locale.ENGLISH);
-			Block steelBlock = new ScaffoldingBlock("steel_scaffolding_"+name, defaultMetalProperties);
-			Block aluBlock = new ScaffoldingBlock("alu_scaffolding_"+name, defaultMetalProperties);
+			IEBaseBlock steelBlock = new ScaffoldingBlock("steel_scaffolding_"+name, defaultMetalProperties);
+			IEBaseBlock aluBlock = new ScaffoldingBlock("alu_scaffolding_"+name, defaultMetalProperties);
 			MetalDecoration.steelScaffolding.put(type, steelBlock);
 			MetalDecoration.aluScaffolding.put(type, aluBlock);
 			MetalDecoration.steelScaffoldingStair.put(type, new IEStairsBlock("stairs_steel_scaffolding_"+name,
-					steelBlock.getDefaultState(), defaultMetalProperties).setRenderLayer(BlockRenderLayer.CUTOUT));
+					defaultMetalProperties, steelBlock).setRenderLayer(BlockRenderLayer.CUTOUT));
 			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("stairs_alu_scaffolding_"+name,
-					aluBlock.getDefaultState(), defaultMetalProperties).setRenderLayer(BlockRenderLayer.CUTOUT));
-			IEBlocks.toSlab.put(steelBlock, new ScaffoldingSlabBlock("slab_"+steelBlock.getRegistryName().getPath(), Block.Properties.from(steelBlock), BlockItemIE.class, true));
-			IEBlocks.toSlab.put(aluBlock, new ScaffoldingSlabBlock("slab_"+aluBlock.getRegistryName().getPath(), Block.Properties.from(aluBlock), BlockItemIE.class, true));
+					defaultMetalProperties, aluBlock).setRenderLayer(BlockRenderLayer.CUTOUT));
+			IEBlocks.toSlab.put(
+					steelBlock,
+					new ScaffoldingSlabBlock(
+							"slab_"+steelBlock.getRegistryName().getPath(),
+							Block.Properties.from(steelBlock),
+							BlockItemIE.class,
+							steelBlock
+					)
+			);
+			IEBlocks.toSlab.put(
+					aluBlock,
+					new ScaffoldingSlabBlock(
+							"slab_"+aluBlock.getRegistryName().getPath(),
+							Block.Properties.from(aluBlock),
+							BlockItemIE.class,
+							aluBlock
+					)
+			);
 		}
 		for(String cat : new String[]{WireType.LV_CATEGORY, WireType.MV_CATEGORY, WireType.HV_CATEGORY})
 		{
@@ -593,9 +608,14 @@ public class IEContent
 		IEPotions.init();
 	}
 
-	private static Block addSlabFor(Block b)
+	private static <T extends Block & IIEBlock> BlockIESlab addSlabFor(T b)
 	{
-		BlockIESlab ret = new BlockIESlab("slab_"+b.getRegistryName().getPath(), Block.Properties.from(b), BlockItemIE.class, true);
+		BlockIESlab ret = new BlockIESlab(
+				"slab_"+b.getRegistryName().getPath(),
+				Block.Properties.from(b),
+				BlockItemIE.class,
+				b
+		);
 		IEBlocks.toSlab.put(b, ret);
 		return ret;
 	}

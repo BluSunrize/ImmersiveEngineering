@@ -20,6 +20,8 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
@@ -118,7 +120,20 @@ public class IEFluid extends FlowingFluid
 			IEContent.registeredIEBlocks.add(this.block);
 			this.bucket = new BucketItem(() -> this.source, new Item.Properties()
 					.maxStackSize(1)
-					.group(ImmersiveEngineering.itemGroup));
+					.group(ImmersiveEngineering.itemGroup))
+			{
+				@Override
+				public ItemStack getContainerItem(ItemStack itemStack)
+				{
+					return new ItemStack(Items.BUCKET);
+				}
+
+				@Override
+				public boolean hasContainerItem(ItemStack stack)
+				{
+					return true;
+				}
+			};
 			this.bucket.setRegistryName(ImmersiveEngineering.MODID, fluidName+"_bucket");
 			IEContent.registeredIEItems.add(this.bucket);
 			flowing = createFlowingVariant();

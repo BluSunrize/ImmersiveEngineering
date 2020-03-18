@@ -19,9 +19,9 @@ import net.minecraft.world.IBlockReader;
  */
 public class ScaffoldingSlabBlock extends BlockIESlab
 {
-	public ScaffoldingSlabBlock(String name, Properties props, Class<? extends BlockItem> itemBlock, boolean isSlab)
+	public ScaffoldingSlabBlock(String name, Properties props, Class<? extends BlockItem> itemBlock, IIEBlock base)
 	{
-		super(name, props, itemBlock, isSlab);
+		super(name, props, itemBlock, base);
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:block/ie_three_cubed",
+  "parent": "immersiveengineering:block/ie_two_cubed",
   "textures": {
     "north": "immersiveengineering:block/multiblocks/alloy_smelter_on",
     "top": "immersiveengineering:block/multiblocks/alloy_smelter_top",

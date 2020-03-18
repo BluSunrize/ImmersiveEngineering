@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class IEBaseBlock extends Block
+public class IEBaseBlock extends Block implements IIEBlock
 {
 	protected static IProperty[] tempProperties;
 
@@ -112,6 +112,13 @@ public class IEBaseBlock extends Block
 		return this;
 	}
 
+	@Override
+	public String getNameForFlavour()
+	{
+		return name;
+	}
+
+	@Override
 	public boolean hasFlavour()
 	{
 		return hasFlavour;

@@ -19,15 +19,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 
-public class BlockIESlab extends SlabBlock
+public class BlockIESlab extends SlabBlock implements IIEBlock
 {
+	private final IIEBlock base;
 
-	private final boolean isSlab;
-
-	public BlockIESlab(String name, Properties props, Class<? extends BlockItem> itemBlock, boolean isSlab)
+	public BlockIESlab(String name, Properties props, Class<? extends BlockItem> itemBlock, IIEBlock base)
 	{
 		super(props);
-		this.isSlab = isSlab;
 		ResourceLocation registryName = new ResourceLocation(ImmersiveEngineering.MODID, name);
 		setRegistryName(registryName);
 
@@ -41,24 +39,34 @@ public class BlockIESlab extends SlabBlock
 			//TODO e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+		this.base = base;
 	}
 
 	@Override
 	public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
 	{
-		if(isSlab)
+		double relativeEntityPosition = entity.getPosition().getY()-pos.getY();
+		switch(state.get(SlabBlock.TYPE))
 		{
-			double relativeEntityPosition = entity.getPosition().getY()-pos.getY();
-			switch(state.get(SlabBlock.TYPE))
-			{
-				case TOP:
-					return 0.5 < relativeEntityPosition&&relativeEntityPosition < 1;
-				case BOTTOM:
-					return 0 < relativeEntityPosition&&relativeEntityPosition < 0.5;
-				case DOUBLE:
-					return true;
-			}
+			case TOP:
+				return 0.5 < relativeEntityPosition&&relativeEntityPosition < 1;
+			case BOTTOM:
+				return 0 < relativeEntityPosition&&relativeEntityPosition < 0.5;
+			case DOUBLE:
+				return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean hasFlavour()
+	{
+		return base.hasFlavour();
+	}
+
+	@Override
+	public String getNameForFlavour()
+	{
+		return base.getNameForFlavour();
 	}
 }
