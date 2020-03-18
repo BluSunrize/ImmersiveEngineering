@@ -27,6 +27,9 @@ public class RecipeSerializers
 	public static final RegistryObject<SpecialRecipeSerializer<PowerpackRecipe>> POWERPACK_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"powerpack", () -> new SpecialRecipeSerializer<>(PowerpackRecipe::new)
 	);
+	public static final RegistryObject<SpecialRecipeSerializer<OreCrushingRecipe>> ORE_CRUSHING_SERIALIZER = RECIPE_SERIALIZERS.register(
+			"ore_crushing", () -> new SpecialRecipeSerializer<>(OreCrushingRecipe::new)
+	);
 	public static final RegistryObject<SpecialRecipeSerializer<EarmuffsRecipe>> EARMUFF_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"earmuffs", () -> new SpecialRecipeSerializer<>(EarmuffsRecipe::new)
 	);

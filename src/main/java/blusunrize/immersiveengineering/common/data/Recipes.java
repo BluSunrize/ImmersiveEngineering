@@ -142,6 +142,8 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":potion_bullet_fill");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POWERPACK_SERIALIZER.get())
 				.build(out, ImmersiveEngineering.MODID+":powerpack_attach");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.ORE_CRUSHING_SERIALIZER.get())
+				.build(out, ImmersiveEngineering.MODID+":ore_crushing");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.EARMUFF_SERIALIZER.get())
 				.build(out, ImmersiveEngineering.MODID+":earmuffs_attach");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.JERRYCAN_REFILL.get())

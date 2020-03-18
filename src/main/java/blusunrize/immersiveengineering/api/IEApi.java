@@ -80,7 +80,7 @@ public class IEApi
 				return new ItemStack(getPreferredElementbyMod(BlockTags.getCollection().get(name).getAllElements()));
 			else
 				return ItemStack.EMPTY;
-		});
+		}).copy();
 	}
 
 	public static <T extends IForgeRegistryEntry<T>> T getPreferredElementbyMod(Collection<T> list)

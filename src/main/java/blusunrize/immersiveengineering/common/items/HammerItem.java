@@ -188,8 +188,10 @@ public class HammerItem extends IEBaseItem implements ITool
 	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
-		container.attemptDamageItem(1, Utils.RAND, null);
-		return container;
+		if(container.attemptDamageItem(1, Utils.RAND, null))
+			return ItemStack.EMPTY;
+		else
+			return container;
 	}
 
 	@Override

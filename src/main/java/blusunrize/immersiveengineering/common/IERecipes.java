@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipe;
 import blusunrize.immersiveengineering.common.crafting.MetalPressUnpackingRecipe;
+import blusunrize.immersiveengineering.common.crafting.OreCrushingRecipe;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEBaseItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -36,6 +37,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -311,7 +313,8 @@ public class IERecipes
 		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(moldRod), false);
 		ComparableItemStack compMoldWire = ApiUtils.createComparableItemStack(new ItemStack(Molds.moldWire), false);
 
-		for(Entry<ResourceLocation, Tag<Block>> tag : BlockTags.getCollection().getTagMap().entrySet())
+		OreCrushingRecipe.CRUSHABLE_ORES_WITH_OUTPUT.clear();
+		for(Entry<ResourceLocation, Tag<Item>> tag : ItemTags.getCollection().getTagMap().entrySet())
 			if(!tag.getValue().getAllElements().isEmpty()&&tag.getKey().getNamespace().equals("forge"))
 			{
 				String path = tag.getKey().getPath();
@@ -328,16 +331,8 @@ public class IERecipes
 						{
 							ResourceLocation dust = getDust(baseName);
 							if(ApiUtils.isNonemptyItemTag(dust))
-							{
-								ItemStack preferredDust = IEApi.getPreferredTagStack(dust);
-								out = Utils.copyStackWithAmount(preferredDust, 2);
-								//TODO custom singleton recipe or similar
-								//if(allowHammerCrushing)
-								//{
-								//	addShapelessOredictRecipe("hammercrushing_"+baseName, preferredDust, tag, new ItemStack(IEContent.itemTool));
-								//	hammerCrushingList.add(baseName);
-								//}
-							}
+								OreCrushingRecipe.CRUSHABLE_ORES_WITH_OUTPUT.add(new ImmutablePair<>(tag.getValue(),
+										ItemTags.getCollection().get(dust)));
 						}
 					}
 					if(out!=null&&!out.isEmpty())
@@ -355,13 +350,7 @@ public class IERecipes
 					if(out!=null&&!out.isEmpty()&&!arcBlacklist.contains(baseName))
 						addArcOreSmelting(out, baseName);
 				}
-			}
-
-		for(Entry<ResourceLocation, Tag<Item>> tag : ItemTags.getCollection().getTagMap().entrySet())
-			if(!tag.getValue().getAllElements().isEmpty()&&tag.getKey().getNamespace().equals("forge"))
-			{
-				String path = tag.getKey().getPath();
-				if(path.startsWith("gems/"))
+				else if(path.startsWith("gems/"))
 				{
 					String ore = path.substring("gems/".length());
 					ResourceLocation dust = getDust(ore);

@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 
 public class PowerpackRecipe implements ICraftingRecipe
 {
-
 	private final ResourceLocation id;
 
 	public PowerpackRecipe(ResourceLocation id)
