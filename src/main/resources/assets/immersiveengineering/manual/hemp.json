@@ -1,4 +1,8 @@
 {
+  "seed_recipe": {
+    "type": "crafting",
+    "recipe": "seed"
+  },
   "items": {
     "type": "item_display",
     "items": [
