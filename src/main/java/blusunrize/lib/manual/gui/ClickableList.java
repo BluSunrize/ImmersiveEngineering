@@ -57,6 +57,8 @@ public class ClickableList extends Button
 	@Override
 	public void render(int mx, int my, float partialTicks)
 	{
+		if(!visible)
+			return;
 		FontRenderer fr = gui.manual.fontRenderer();
 
 		int mmY = my-this.y;
@@ -89,17 +91,15 @@ public class ClickableList extends Button
 		GlStateManager.popMatrix();
 		if(maxOffset > 0)
 		{
-			int h1 = offset*getFontHeight();
-			int h2 = height-8-maxOffset*getFontHeight();
-			fill(x+width, y+h1, x+width+8, y+h1+h2, 0x0a000000);
-			fill(x+width+1, y+h1, x+width+6, y+h1+h2, 0x28000000);
-			if(offset > 0)
-				fill(x+width, y, x+width+8, y+h1, 0x0a000000);
-			if(offset < maxOffset)
-			{
-				int h3 = (maxOffset-offset)*getFontHeight();
-				fill(x+width, y+height-8-h3, x+width+8, y+height-8, 0x0a000000);
-			}
+			final int minVisibleBlack = 0x1B<<24;
+			final int mainBarBlack = 0x28<<24;
+			final float totalHeight = maxOffset*getFontHeight()+getHeight();
+			final float heightTopRel = (offset*getFontHeight())/totalHeight;
+			final float heightBottomRel = (offset*getFontHeight()+getHeight())/totalHeight;
+			final int heightTopAbs = (int)(heightTopRel*getHeight());
+			final int heightBottomAbs = (int)(heightBottomRel*getHeight());
+			fill(x+width, y, x+width+8, y+height, minVisibleBlack);
+			fill(x+width+1, y+heightTopAbs, x+width+7, y+heightBottomAbs, mainBarBlack);
 		}
 	}
 
@@ -157,6 +157,8 @@ public class ClickableList extends Button
 
 		if(perPage < headers.length)
 			maxOffset = headers.length-perPage;
+		else
+			maxOffset = 0;
 		height = getFontHeight()*Math.min(perPage, headers.length);
 	}
 }
