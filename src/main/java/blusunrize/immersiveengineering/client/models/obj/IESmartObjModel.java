@@ -98,30 +98,6 @@ public class IESmartObjModel implements IBakedModel
 
 	private final IEObjState state;
 
-	private static Field partsField;
-	static
-	{
-		try
-		{
-			partsField = OBJModel2.class.getDeclaredField("parts");
-			partsField.setAccessible(true);
-		} catch(NoSuchFieldException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	public Map<String, ModelGroup> getParts()
-	{
-		try
-		{
-			return (Map<String, ModelGroup>)partsField.get(baseModel);
-		} catch(IllegalAccessException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-
 	public IESmartObjModel(OBJModel2 baseModel, IBakedModel baseBaked, IModelConfiguration owner, ModelBakery bakery,
 						   Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite,
 						   VertexFormat format, IEObjState state, boolean dynamic)
@@ -419,7 +395,7 @@ public class IESmartObjModel implements IBakedModel
 			callback = data.getData(IOBJModelCallback.PROPERTY);
 			callbackObject = this.tempState;
 		}
-		for(String groupName : getParts().keySet())
+		for(String groupName : OBJHelper.getGroups(baseModel).keySet())
 		{
 			List<BakedQuad> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, true);
 			quads.addAll(temp.stream().filter(Objects::nonNull).collect(Collectors.toList()));
@@ -447,94 +423,21 @@ public class IESmartObjModel implements IBakedModel
 			if(cached!=null)
 				return cached;
 		}
-		int maxPasses = 1;
+		final int numPasses;
 		if(sCase!=null)
-			maxPasses = sCase.getLayers().length;
-		ModelGroup g = getParts().get(groupName);
+			numPasses = sCase.getLayers().length;
+		else
+			numPasses = 1;
+		ModelGroup g = OBJHelper.getGroups(baseModel).get(groupName);
 		List<BakedQuad> quads = new ArrayList<>();
 		TRSRTransformation transform = state.transform;
 		if(callback!=null)
 			transform = callback.applyTransformations(callbackObject, groupName, transform);
 		if(state.visibility.isVisible(groupName)&&(callback==null||callback.shouldRenderGroup(callbackObject, groupName)))
-			g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
+			for(int pass = 0; pass < numPasses; ++pass)
+			{
+				g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
+			}
 		return quads;
-	}
-
-	protected final void putVertexData(IVertexConsumer builder, Vertex v, Normal faceNormal, TextureCoordinate texCoord, TextureAtlasSprite sprite, float[] colour)
-	{
-		for(int e = 0; e < getFormat().getElementCount(); e++)
-		{
-			switch(getFormat().getElement(e).getUsage())
-			{
-				case POSITION:
-					builder.put(e, v.getPos().x, v.getPos().y, v.getPos().z, v.getPos().w);
-					break;
-				case COLOR:
-					float d;
-					if(v.hasNormal())
-						d = LightUtil.diffuseLight(v.getNormal().x, v.getNormal().y, v.getNormal().z);
-					else
-						d = LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
-					if(v.getMaterial()!=null)
-						builder.put(e,
-								d*v.getMaterial().getColor().x*colour[0],
-								d*v.getMaterial().getColor().y*colour[1],
-								d*v.getMaterial().getColor().z*colour[2],
-								v.getMaterial().getColor().w*colour[3]);
-					else
-						builder.put(e, d*colour[0], d*colour[1], d*colour[2], 1*colour[3]);
-					break;
-				case UV:
-					builder.put(e,
-							sprite.getInterpolatedU(texCoord.u*16),
-							sprite.getInterpolatedV((texCoord.v)*16),//v-flip used to be processed here but was moved because of shader layers
-							0, 1);
-					break;
-				case NORMAL:
-					if(!v.hasNormal())
-						builder.put(e, faceNormal.x, faceNormal.y, faceNormal.z, 0);
-					else
-						builder.put(e, v.getNormal().x, v.getNormal().y, v.getNormal().z, 0);
-					break;
-				default:
-					builder.put(e);
-			}
-		}
-	}
-
-	static Field f_textures;
-
-	public static ImmutableMap<String, TextureAtlasSprite> getTexturesForOBJModel(IBakedModel model)
-	{
-		try
-		{
-			if(f_textures==null)
-			{
-				f_textures = OBJBakedModel.class.getDeclaredField("textures");
-				f_textures.setAccessible(true);
-			}
-			return (ImmutableMap<String, TextureAtlasSprite>)f_textures.get(model);
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public ImmutableMap<String, TextureAtlasSprite> getTextures()
-	{
-		try
-		{
-			if(f_textures==null)
-			{
-				f_textures = OBJBakedModel.class.getDeclaredField("textures");
-				f_textures.setAccessible(true);
-			}
-			return (ImmutableMap<String, TextureAtlasSprite>)f_textures.get(this);
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
 	}
 }
