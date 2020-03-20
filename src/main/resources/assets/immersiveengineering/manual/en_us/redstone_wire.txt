@@ -5,8 +5,8 @@ Using the Engineer's Hammer, the connectors can be switched between in- and outp
 <&probe>§6Redstone Probe Connectors§r have a functionality partially comparable to Redstone Comparators. While they are not able to actively compare signals, they are able to read inventories for how full they are. Additionally, these probes can operate on two channels, sending their read signal on one, and still receiving signals on another. These channels can be changed by using the Engineer's Hammer.
 
 Note that many of IE's multiblocks feature comparator-functionality, as described on the following pages. Where available, the redstone control surface of the multiblock is the designated spot to connect a comparator.<np>
-§lTank: §rAs detailed in its <link;tank;§o§nmanual §o§nentry§r>
-§lSilo: §rAs detailed in its <link;silo;§o§nmanual §o§nentry§r>
+§lTank: §rAs detailed in its <link;tank;manual entry>
+§lSilo: §rAs detailed in its <link;silo;manual entry>
 §lAssembler: §rOutputs a signal relative to the fill of the inventory.
 §lAutoWorkbench: §rOutputs a signal relative to the fill of the inventory.
 §lSqueezer: §rOutputs a signal relative to the fill of the inventory.

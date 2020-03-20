@@ -8,7 +8,7 @@ Energy is input through the three connectors at the back, and supplying the cont
 §lInterface:§r
 The interface may look confusing upon first seeing it, but it's quite straight forward.
 
-The three slots at the top are for the <link;graphite;§o§nGraphite §o§nElectrodes§r;electrode>.
+The three slots at the top are for the <link;graphite;Graphite Electrodes;electrode>.
 The twelve slots on the left are the input slots for metals and ores. Each slot has a temperature bar next to it, representing the progress of smelting.
 The four slots on the right are for "additives", different materials added to the molten metal during the crafting process. An example of these would be adding Coke Dust to melting Iron in order to create Steel.
 Inputs and additives are inserted through the two hatches at the top of the structure, inputs to the left and additives to the right of the electrodes.

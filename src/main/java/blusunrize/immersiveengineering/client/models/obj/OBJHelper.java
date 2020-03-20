@@ -29,7 +29,7 @@ public class OBJHelper
 			ModelGroup_parts.setAccessible(true);
 			ModelObject_meshes = ModelObject.class.getDeclaredField("meshes");
 			ModelObject_meshes.setAccessible(true);
-			ModelMesh = Class.forName("net.minecraftforge.client.model.obj.OBJModel2.ModelMesh");
+			ModelMesh = Class.forName("net.minecraftforge.client.model.obj.OBJModel2$ModelMesh");
 			ModelMesh_faces = ModelMesh.getDeclaredField("faces");
 			ModelMesh_faces.setAccessible(true);
 			ModelMesh_mat = ModelMesh.getDeclaredField("mat");

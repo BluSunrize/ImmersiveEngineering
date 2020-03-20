@@ -185,8 +185,7 @@ public class ManualUtils
 			List<String> forCompleteLink = new ArrayList<>(3*resultParts.length);
 			for(String resultPart : resultParts)
 			{
-				//prefixing replacements with MC's formatting character and an unused char to keep them unique, but not counted for size
-				String part = format+'\u00a7'+(char)(128+repList.size())+resultPart;
+				String part = format+resultPart;
 				forCompleteLink.add(part);
 				forCompleteLink.add(segment[1]);
 				forCompleteLink.add(anchor);
@@ -202,9 +201,8 @@ public class ManualUtils
 	public static void addLinks(ManualEntry entry, ManualInstance manual, ManualScreen gui, List<String> text, int x, int y,
 								List<Button> pageButtons, List<String[]> repList)
 	{
-		for(int linkIndex = 0; linkIndex < repList.size(); linkIndex++)
+		for(String[] repComplete : repList)
 		{
-			String[] repComplete = repList.get(linkIndex);
 			String[] rep = new String[3];
 			List<GuiButtonManualLink> parts = new ArrayList<>();
 			for(int i = 0; i < repComplete.length/3; i++)
@@ -216,8 +214,7 @@ public class ManualUtils
 					int start;
 					if((start = s.indexOf(rep[0].trim())) >= 0)
 					{
-						String formatIdent = rep[0].substring(0, 2);
-						String linkText = rep[0].substring(2);
+						String linkText = rep[0];
 						if(!s.substring(start).startsWith(rep[0]))//This can happen when whitespace is cut off at the end of a line
 							linkText = linkText.trim();
 						int bx = manual.fontRenderer().getStringWidth(s.substring(0, start));
@@ -258,7 +255,6 @@ public class ManualUtils
 								link, linkText);
 						parts.add(btn);
 						pageButtons.add(btn);
-						s = s.replaceFirst(formatIdent, "");
 						text.set(line, s);
 						break;
 					}

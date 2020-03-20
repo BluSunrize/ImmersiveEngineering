@@ -1,8 +1,8 @@
 Revolver
 Wanted: Dead or Alive
 <&recipe>The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.
-Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>, as detailed on the last pages.
-There are different <link;bullets;§o§ntypes §o§nof §o§nammunition§r;> the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.
+Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;Engineer's Workbench>, as detailed on the last pages.
+There are different <link;bullets;types of ammunition;> the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.
 <&speedloader>A loaded Speedloader in your inventory will be used to refill the revolver after you've fired your last shot.
 
 Note that firing the revolver is quite noisy, and will attract the attention of hostile mobs in the area!
