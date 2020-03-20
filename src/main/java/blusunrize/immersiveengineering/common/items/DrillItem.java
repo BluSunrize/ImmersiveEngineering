@@ -597,9 +597,9 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 			ret = new CompoundNBT();
 		else
 			ret = ret.copy();
-		CompoundNBT tmp = new CompoundNBT();
-		getHead(stack).write(tmp);
-		ret.put("head", tmp);
+		ItemStack head = getHead(stack);
+		if(!head.isEmpty())
+			ret.put("head", head.write(new CompoundNBT()));
 		return ret;
 	}
 }
