@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -80,7 +81,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 				}
 				IESmartObjModel obj = (IESmartObjModel)model;
 				Set<String> visible = new HashSet<>();
-				for(String g : obj.getParts().keySet())
+				for(String g : OBJHelper.getGroups(obj.baseModel).keySet())
 					if(callback.shouldRenderGroup(stack, g))
 						visible.add(g);
 				Tessellator tes = Tessellator.getInstance();
