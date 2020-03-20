@@ -35,7 +35,6 @@ import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
@@ -89,7 +88,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
@@ -187,9 +189,9 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
+	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String group, String material)
 	{
-		if(material.equals("head")&&!this.getHead(stack).isEmpty()&&this.getHead(stack).getItem() instanceof IDrillHead)
+		if("head".equals(material)&&!this.getHead(stack).isEmpty()&&this.getHead(stack).getItem() instanceof IDrillHead)
 		{
 			return ((IDrillHead)this.getHead(stack).getItem()).getDrillTexture(stack, this.getHead(stack));
 		}

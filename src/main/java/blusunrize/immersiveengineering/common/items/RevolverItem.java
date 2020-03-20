@@ -138,12 +138,12 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			return true;
 
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld->{
+		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w->ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
 		});
-		if (!sameShader.orElse(true))
+		if(!sameShader.orElse(true))
 			return true;
 		if(ItemNBTHelper.hasKey(oldStack, "elite")||ItemNBTHelper.hasKey(newStack, "elite"))
 			return !ItemNBTHelper.getString(oldStack, "elite").equals(ItemNBTHelper.getString(newStack, "elite"));
@@ -380,7 +380,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	public boolean isEmpty(ItemStack stack, boolean allowCasing)
 	{
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		return invCap.map(inv-> {
+		return invCap.map(inv -> {
 			for(int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack b = inv.getStackInSlot(i);
@@ -444,7 +444,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
+	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String group, String material)
 	{
 		String tag = ItemNBTHelper.getString(stack, "elite");
 		if(!tag.isEmpty())
@@ -658,7 +658,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
 	{
 		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-				.ifPresent(inv-> {
+				.ifPresent(inv -> {
 					if(!inv.getStackInSlot(18).isEmpty()&&!inv.getStackInSlot(19).isEmpty())
 						Utils.unlockIEAdvancement(player, "main/upgrade_revolver");
 				});
@@ -680,7 +680,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		else
 			ret = ret.copy();
 		final CompoundNBT retFinal = ret;
-		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler->
+		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler ->
 		{
 			NonNullList<ItemStack> bullets = NonNullList.withSize(getBulletCount(stack), ItemStack.EMPTY);
 			for(int i = 0; i < getBulletCount(stack); i++)
