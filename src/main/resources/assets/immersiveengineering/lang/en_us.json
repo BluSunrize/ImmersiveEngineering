@@ -5,7 +5,7 @@
  "itemGroup.immersiveengineering": "Immersive Engineering",
  "immersiveengineering.config.title": "",
  "tile.harvesterTrolley.ieCrop.name": "Industrial Hemp Harvester Trolley",
- "fluid.creosote": "Creosote Oil",
+ "fluid.immersiveengineering.creosote": "Creosote Oil",
  "fluid.immersiveengineering.plantoil": "Plant Oil",
  "fluid.immersiveengineering.ethanol": "Ethanol",
  "fluid.immersiveengineering.biodiesel": "Biodiesel",

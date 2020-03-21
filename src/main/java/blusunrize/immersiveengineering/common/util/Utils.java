@@ -838,7 +838,7 @@ public class Utils
 							return false;
 					return true;
 				})
-				.orElse(false);
+				.orElse(true);
 	}
 
 	public static boolean isFluidRelatedItemStack(ItemStack stack)
