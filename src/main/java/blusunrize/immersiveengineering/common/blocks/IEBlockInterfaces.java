@@ -243,7 +243,7 @@ public class IEBlockInterfaces
 		boolean toggleSide(Direction side, PlayerEntity p);
 	}
 
-	public interface ITileDrop
+	public interface ITileDrop extends IReadOnPlacement
 	{
 		List<ItemStack> getTileDrops(Builder context);
 
@@ -262,12 +262,15 @@ public class IEBlockInterfaces
 			).get(0);
 		}
 
-		void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack);
-
 		default boolean preventInventoryDrop()
 		{
 			return false;
 		}
+	}
+
+	public interface IReadOnPlacement
+	{
+		void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack);
 	}
 
 	public interface IAdditionalDrops

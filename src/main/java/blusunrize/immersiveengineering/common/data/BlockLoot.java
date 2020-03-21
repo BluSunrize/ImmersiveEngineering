@@ -11,11 +11,14 @@ package blusunrize.immersiveengineering.common.data;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.data.loot.LootGenerator;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.util.loot.WindmillLootFunction;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.enchantment.Enchantment;
@@ -52,6 +55,11 @@ public class BlockLoot extends LootGenerator
 	{
 		registerHemp();
 		register(StoneDecoration.concreteSprayed, LootTable.builder());
+		register(WoodenDevices.windmill, LootTable.builder().addLootPool(
+				createPoolBuilder().addEntry(
+						ItemLootEntry.builder(WoodenDevices.windmill)
+								.acceptFunction(new WindmillLootFunction.Builder())
+				)));
 		registerAllRemainingAsDefault();
 	}
 

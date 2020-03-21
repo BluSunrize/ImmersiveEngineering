@@ -263,18 +263,12 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			if(tile instanceof IAdvancedDirectionalTile)
 				((IAdvancedDirectionalTile)tile).onDirectionalPlacement(side, hitX, hitY, hitZ, placer);
 		}
-		if(tile instanceof ITileDrop)
-		{
-			((ITileDrop)tile).readOnPlacement(placer, stack);
-		}
+		if(tile instanceof IReadOnPlacement)
+			((IReadOnPlacement)tile).readOnPlacement(placer, stack);
 		if(tile instanceof IHasDummyBlocks)
-		{
 			((IHasDummyBlocks)tile).placeDummies(context, state);
-		}
 		if(tile instanceof IPlacementInteraction)
-		{
 			((IPlacementInteraction)tile).onTilePlaced(world, pos, state, side, hitX, hitY, hitZ, placer, stack);
-		}
 	}
 
 	@Override
@@ -573,9 +567,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		{
 			TileEntity te = ctx.get(LootParameters.BLOCK_ENTITY);
 			if(te instanceof ITileDrop)
-			{
 				ret.addAll(((ITileDrop)te).getTileDrops(builder));
-			}
 		}
 		return ret;
 	}

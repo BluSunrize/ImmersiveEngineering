@@ -346,8 +346,8 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 			getWorldNonnull().removeBlock(pos, false);
 		getWorldNonnull().setBlockState(pos, state);
 		TileEntity tile = getWorldNonnull().getTileEntity(pos);
-		if(tile instanceof ITileDrop)
-			((ITileDrop)tile).readOnPlacement(null, stack);
+		if(tile instanceof IReadOnPlacement)
+			((IReadOnPlacement)tile).readOnPlacement(null, stack);
 	}
 
 	//	=================================

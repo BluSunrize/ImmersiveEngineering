@@ -2,10 +2,15 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 1,
+      "rolls": 1.0,
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "immersiveengineering:windmill"
+            }
+          ],
           "name": "immersiveengineering:windmill"
         }
       ],

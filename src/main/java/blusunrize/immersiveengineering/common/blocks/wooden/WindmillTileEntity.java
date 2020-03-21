@@ -12,10 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -41,7 +38,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
-public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, ITileDrop, IPlayerInteraction, IHasObjProperty
+public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional,
+		IReadOnPlacement, IPlayerInteraction, IHasObjProperty
 {
 	public static TileEntityType<WindmillTileEntity> TYPE;
 	public float prevRotation = 0;
@@ -80,12 +78,12 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = Utils.getExistingTileEntity(world, pos.offset(getFacing()));
+			TileEntity tileEntity = Utils.getExistingTileEntity(world, pos.offset(getFacing().getOpposite()));
 			if(tileEntity instanceof IRotationAcceptor)
 			{
 				IRotationAcceptor dynamo = (IRotationAcceptor)tileEntity;
 				double power = turnSpeed*mod*800;
-				dynamo.inputRotation(Math.abs(power), getFacing());
+				dynamo.inputRotation(Math.abs(power), getFacing().getOpposite());
 			}
 		}
 	}
@@ -140,7 +138,6 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		sails = nbt.getInt("sails");
-		//prevRotation = nbt.getFloat("prevRotation");
 		rotation = nbt.getFloat("rotation");
 		turnSpeed = nbt.getFloat("turnSpeed");
 	}
@@ -149,7 +146,6 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putInt("sails", sails);
-		//nbt.putFloat("prevRotation", prevRotation);
 		nbt.putFloat("rotation", rotation);
 		nbt.putFloat("turnSpeed", turnSpeed);
 	}
@@ -213,15 +209,6 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public List<ItemStack> getTileDrops(Builder context)
-	{
-		ItemStack stack = new ItemStack(getBlockState().getBlock());
-		if(sails > 0)
-			ItemNBTHelper.putInt(stack, "sails", sails);
-		return ImmutableList.of(stack);
 	}
 
 	@Override

@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.data.loot.LootGenerator;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
-import blusunrize.immersiveengineering.common.util.IELootFunctions.Bluprintz;
+import blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -69,7 +69,7 @@ public class GeneralLoot extends LootGenerator
 	{
 		return createEntry(BlueprintCraftingRecipe.getTypedBlueprint(type), weight)
 				.acceptFunction(
-						Bluprintz.builder()
+						BluprintzLootFunction.builder()
 								.acceptCondition(RandomChance.builder(0.125F))
 				);
 	}
