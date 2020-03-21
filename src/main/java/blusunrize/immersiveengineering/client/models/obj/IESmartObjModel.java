@@ -419,9 +419,8 @@ public class IESmartObjModel implements IBakedModel
 			.maximumSize(100)
 			.build();
 
-	public <T> List<BakedQuad> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject,
-												String groupName, ShaderCase sCase,
-												boolean allowCaching)
+	public <T> List<BakedQuad> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject, String groupName,
+												ShaderCase sCase, boolean allowCaching)
 	{
 		String objCacheKey = callback!=null?callback.getCacheKey(callbackObject): "<none>";
 		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);

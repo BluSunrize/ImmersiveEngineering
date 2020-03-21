@@ -39,7 +39,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
@@ -50,8 +49,8 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 {
 	public static TileEntityType<BalloonTileEntity> TYPE;
 	public int style = 0;
-	public int colour0 = 0xffffff;
-	public int colour1 = 0xffffff;
+	public DyeColor colour0 = null;
+	public DyeColor colour1 = null;
 	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
 
 	public BalloonTileEntity()
@@ -65,11 +64,13 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	{
 		super.readCustomNBT(nbt, descPacket);
 		final int oldStyle = style;
-		final int oldC0 = colour0;
-		final int oldC1 = colour1;
+		final DyeColor oldC0 = colour0;
+		final DyeColor oldC1 = colour1;
 		style = nbt.getInt("style");
-		colour0 = nbt.getInt("colour0");
-		colour1 = nbt.getInt("colour1");
+		int tmpIdx = nbt.getInt("colour0");
+		colour0 = tmpIdx >= 0&&tmpIdx < DyeColor.values().length?DyeColor.byId(tmpIdx): null;
+		tmpIdx = nbt.getInt("colour1");
+		colour1 = tmpIdx >= 0&&tmpIdx < DyeColor.values().length?DyeColor.byId(tmpIdx): null;
 		if(oldStyle!=style||oldC0!=colour0||oldC1!=colour1)
 			requestModelDataUpdate();
 		if(nbt.contains("shader", NBT.TAG_COMPOUND))
@@ -85,8 +86,8 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("style", style);
-		nbt.putInt("colour0", colour0);
-		nbt.putInt("colour1", colour1);
+		nbt.putInt("colour0", colour0!=null?colour0.getId(): -1);
+		nbt.putInt("colour1", colour1!=null?colour1.getId(): -1);
 		nbt.put("shader", shader.serializeNBT());
 	}
 
@@ -140,22 +141,20 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	{
 		if(shader!=null&&!shader.getShaderItem().isEmpty()&&shader.getShaderItem().getItem() instanceof IShaderItem)
 			return original;
-		/* TODO: Fix this, change variable type of colour0 and colour1
-
 		if(style==0)
 		{
 			if(group.startsWith("balloon1_"))
-				return 0xff000000|colour1;
+				return Utils.vec4fFromDye(colour1);
 			if(group.startsWith("balloon0_"))
-				return 0xff000000|colour0;
+				return Utils.vec4fFromDye(colour0);
 		}
 		else
 		{
 			if(group.endsWith("_1"))
-				return 0xff000000|colour1;
+				return Utils.vec4fFromDye(colour1);
 			if(group.endsWith("_0"))
-				return 0xff000000|colour0;
-		}*/
+				return Utils.vec4fFromDye(colour0);
+		}
 		return original;
 	}
 
@@ -209,19 +208,17 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 		DyeColor heldDye = Utils.getDye(heldItem);
 		if(heldDye==null)
 			return false;
-		int color = ObfuscationReflectionHelper.getPrivateValue(DyeColor.class, heldDye,
-				"field_193351_w");
 		if(target==0)
 		{
-			if(colour0==color)
+			if(colour0==heldDye)
 				return false;
-			colour0 = color;
+			colour0 = heldDye;
 		}
 		else
 		{
-			if(colour1==color)
+			if(colour1==heldDye)
 				return false;
-			colour1 = color;
+			colour1 = heldDye;
 		}
 		markContainingBlockForUpdate(null);
 		return true;

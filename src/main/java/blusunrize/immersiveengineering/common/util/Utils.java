@@ -160,24 +160,24 @@ public class Utils
 		return s2;
 	}
 
-	public static final BiMap<Tag<Item>, DyeColor> DYES_BY_TAG =
-			ImmutableBiMap.<Tag<Item>, DyeColor>builder()
-					.put(Tags.Items.DYES_BLACK, DyeColor.BLACK)
-					.put(Tags.Items.DYES_RED, DyeColor.RED)
-					.put(Tags.Items.DYES_GREEN, DyeColor.GREEN)
-					.put(Tags.Items.DYES_BROWN, DyeColor.BROWN)
-					.put(Tags.Items.DYES_BLUE, DyeColor.BLUE)
-					.put(Tags.Items.DYES_PURPLE, DyeColor.PURPLE)
-					.put(Tags.Items.DYES_CYAN, DyeColor.CYAN)
-					.put(Tags.Items.DYES_LIGHT_GRAY, DyeColor.LIGHT_GRAY)
-					.put(Tags.Items.DYES_GRAY, DyeColor.GRAY)
-					.put(Tags.Items.DYES_PINK, DyeColor.PINK)
-					.put(Tags.Items.DYES_LIME, DyeColor.LIME)
-					.put(Tags.Items.DYES_YELLOW, DyeColor.YELLOW)
-					.put(Tags.Items.DYES_LIGHT_BLUE, DyeColor.LIGHT_BLUE)
-					.put(Tags.Items.DYES_MAGENTA, DyeColor.MAGENTA)
-					.put(Tags.Items.DYES_ORANGE, DyeColor.ORANGE)
-					.put(Tags.Items.DYES_WHITE, DyeColor.WHITE)
+	public static final BiMap<ResourceLocation, DyeColor> DYES_BY_TAG =
+			ImmutableBiMap.<ResourceLocation, DyeColor>builder()
+					.put(Tags.Items.DYES_BLACK.getId(), DyeColor.BLACK)
+					.put(Tags.Items.DYES_RED.getId(), DyeColor.RED)
+					.put(Tags.Items.DYES_GREEN.getId(), DyeColor.GREEN)
+					.put(Tags.Items.DYES_BROWN.getId(), DyeColor.BROWN)
+					.put(Tags.Items.DYES_BLUE.getId(), DyeColor.BLUE)
+					.put(Tags.Items.DYES_PURPLE.getId(), DyeColor.PURPLE)
+					.put(Tags.Items.DYES_CYAN.getId(), DyeColor.CYAN)
+					.put(Tags.Items.DYES_LIGHT_GRAY.getId(), DyeColor.LIGHT_GRAY)
+					.put(Tags.Items.DYES_GRAY.getId(), DyeColor.GRAY)
+					.put(Tags.Items.DYES_PINK.getId(), DyeColor.PINK)
+					.put(Tags.Items.DYES_LIME.getId(), DyeColor.LIME)
+					.put(Tags.Items.DYES_YELLOW.getId(), DyeColor.YELLOW)
+					.put(Tags.Items.DYES_LIGHT_BLUE.getId(), DyeColor.LIGHT_BLUE)
+					.put(Tags.Items.DYES_MAGENTA.getId(), DyeColor.MAGENTA)
+					.put(Tags.Items.DYES_ORANGE.getId(), DyeColor.ORANGE)
+					.put(Tags.Items.DYES_WHITE.getId(), DyeColor.WHITE)
 					.build();
 
 	public static final BiMap<Tag<Item>, Item> WOOL_DYE_BIMAP =
@@ -660,6 +660,14 @@ public class Utils
 		ret = (ret<<8)+(int)(255*rgba[1]);
 		ret = (ret<<8)+(int)(255*rgba[2]);
 		return ret;
+	}
+
+	public static Vector4f vec4fFromDye(DyeColor dyeColor)
+	{
+		if(dyeColor==null)
+			return new Vector4f(1,1,1,1);
+		float[] rgb = dyeColor.getColorComponentValues();
+		return new Vector4f(rgb[0],rgb[1],rgb[2],1);
 	}
 
 	public static FluidStack drainFluidBlock(World world, BlockPos pos, FluidAction action)
