@@ -1,27 +1,29 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2018
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.shader;
+package blusunrize.immersiveengineering.api.shader.impl;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
 
-public class ShaderCaseItem extends ShaderCase
+public class ShaderCaseBanner extends ShaderCase
 {
-	public ShaderCaseItem(ShaderLayer... layers)
+	public ShaderCaseBanner(ShaderLayer... layers)
 	{
 		super(layers);
 	}
 
-	public ShaderCaseItem(Collection<ShaderLayer> layers)
+	public ShaderCaseBanner(Collection<ShaderLayer> layers)
 	{
 		super(layers);
 	}
@@ -29,7 +31,7 @@ public class ShaderCaseItem extends ShaderCase
 	@Override
 	public ResourceLocation getShaderType()
 	{
-		return new ResourceLocation(ImmersiveEngineering.MODID, "item");
+		return new ResourceLocation(ImmersiveEngineering.MODID, "banner");
 	}
 
 	@Override
