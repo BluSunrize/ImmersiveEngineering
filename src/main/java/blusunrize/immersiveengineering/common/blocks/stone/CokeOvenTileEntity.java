@@ -46,6 +46,10 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 		IActiveState, IInteractionObjectIE, IProcessTile
 {
 	public static TileEntityType<CokeOvenTileEntity> TYPE;
+	public static final int INPUT_SLOT = 0;
+	public static final int OUTPUT_SLOT = 1;
+	public static final int EMPTY_CONTAINER_SLOT = 2;
+	public static final int FULL_CONTAINER_SLOT = 3;
 
 	public FluidTank tank = new FluidTank(12000);
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -85,7 +89,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 			final boolean activeBeforeTick = getIsActive();
 			if(process > 0)
 			{
-				if(inventory.get(0).isEmpty())
+				if(inventory.get(INPUT_SLOT).isEmpty())
 				{
 					process = 0;
 					processMax = 0;
@@ -111,11 +115,11 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 					CokeOvenRecipe recipe = getRecipe();
 					if(recipe!=null)
 					{
-						Utils.modifyInvStackSize(inventory, 0, recipe.input.inputSize);
-						if(!inventory.get(1).isEmpty())
-							inventory.get(1).grow(recipe.output.copy().getCount());
-						else if(inventory.get(1).isEmpty())
-							inventory.set(1, recipe.output.copy());
+						Utils.modifyInvStackSize(inventory, INPUT_SLOT, -recipe.input.inputSize);
+						if(!inventory.get(OUTPUT_SLOT).isEmpty())
+							inventory.get(OUTPUT_SLOT).grow(recipe.output.copy().getCount());
+						else if(inventory.get(OUTPUT_SLOT).isEmpty())
+							inventory.set(OUTPUT_SLOT, recipe.output.copy());
 						this.tank.fill(new FluidStack(IEContent.fluidCreosote, recipe.creosoteOutput), FluidAction.EXECUTE);
 					}
 					processMax = 0;
@@ -130,25 +134,23 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 				}
 			}
 
-			if(tank.getFluidAmount() > 0&&tank.getFluid()!=null&&(inventory.get(3).isEmpty()||inventory.get(3).getCount()+1 <= inventory.get(3).getMaxStackSize()))
+			ItemStack inFullSlot = inventory.get(FULL_CONTAINER_SLOT);
+			if(tank.getFluidAmount() > 0&&tank.getFluid()!=null&&(inFullSlot.isEmpty()||inFullSlot.getCount()+1 <= inFullSlot.getMaxStackSize()))
 			{
-				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory.get(2), inventory.get(3), null);
+				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory.get(EMPTY_CONTAINER_SLOT), inFullSlot, null);
 				if(!filledContainer.isEmpty())
 				{
-					if(inventory.get(2).getCount()==1&&!Utils.isFluidContainerFull(filledContainer))
-					{
-						inventory.set(2, filledContainer.copy());
-						markDirty();
-					}
+					if(inventory.get(EMPTY_CONTAINER_SLOT).getCount()==1&&!Utils.isFluidContainerFull(filledContainer))
+						inventory.set(EMPTY_CONTAINER_SLOT, filledContainer.copy());
 					else
 					{
-						if(!inventory.get(3).isEmpty()&&ItemHandlerHelper.canItemStacksStack(inventory.get(3), filledContainer))
-							inventory.get(3).grow(filledContainer.getCount());
-						else if(inventory.get(3).isEmpty())
-							inventory.set(3, filledContainer.copy());
-						Utils.modifyInvStackSize(inventory, 2, -filledContainer.getCount());
-						markDirty();
+						if(!inFullSlot.isEmpty()&&ItemHandlerHelper.canItemStacksStack(inFullSlot, filledContainer))
+							inFullSlot.grow(filledContainer.getCount());
+						else if(inFullSlot.isEmpty())
+							inventory.set(FULL_CONTAINER_SLOT, filledContainer.copy());
+						Utils.modifyInvStackSize(inventory, EMPTY_CONTAINER_SLOT, -filledContainer.getCount());
 					}
+					markDirty();
 				}
 			}
 
@@ -172,14 +174,14 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	@Nullable
 	public CokeOvenRecipe getRecipe()
 	{
-		if(inventory.get(0).isEmpty())
+		if(inventory.get(INPUT_SLOT).isEmpty())
 			return null;
-		CokeOvenRecipe recipe = CokeOvenRecipe.findRecipe(inventory.get(0));
+		CokeOvenRecipe recipe = CokeOvenRecipe.findRecipe(inventory.get(INPUT_SLOT));
 		if(recipe==null)
 			return null;
 
-		if(inventory.get(1).isEmpty()||(ItemStack.areItemsEqual(inventory.get(1), recipe.output)&&
-				inventory.get(1).getCount()+recipe.output.getCount() <= getSlotLimit(1)))
+		if(inventory.get(OUTPUT_SLOT).isEmpty()||(ItemStack.areItemsEqual(inventory.get(OUTPUT_SLOT), recipe.output)&&
+				inventory.get(OUTPUT_SLOT).getCount()+recipe.output.getCount() <= getSlotLimit(OUTPUT_SLOT)))
 			if(tank.getFluidAmount()+recipe.creosoteOutput <= tank.getCapacity())
 				return recipe;
 		return null;
@@ -277,9 +279,9 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	{
 		if(stack.isEmpty())
 			return false;
-		if(slot==0)
+		if(slot==INPUT_SLOT)
 			return CokeOvenRecipe.findRecipe(stack)!=null;
-		if(slot==2)
+		if(slot==EMPTY_CONTAINER_SLOT)
 			return Utils.isFluidRelatedItemStack(stack);
 		return false;
 	}
