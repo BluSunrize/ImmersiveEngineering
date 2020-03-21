@@ -12,6 +12,7 @@ import net.minecraftforge.client.model.obj.OBJModel2.ModelObject;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.vecmath.Vector2f;
 import javax.vecmath.Vector4f;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +23,7 @@ import java.util.*;
 public class OBJHelper
 {
 	private static Field OBJModel2_parts;
+	private static Field OBJModel2_texCoords;
 	private static Method OBJModel2_makeQuad;
 	private static Field ModelGroup_parts;
 	private static Field ModelObject_meshes;
@@ -36,6 +38,8 @@ public class OBJHelper
 		{
 			OBJModel2_parts = OBJModel2.class.getDeclaredField("parts");
 			OBJModel2_parts.setAccessible(true);
+			OBJModel2_texCoords = OBJModel2.class.getDeclaredField("texCoords");
+			OBJModel2_texCoords.setAccessible(true);
 			OBJModel2_makeQuad = OBJModel2.class.getDeclaredMethod("makeQuad", int[][].class, int.class, Vector4f.class,
 					Vector4f.class, boolean.class, TextureAtlasSprite.class, VertexFormat.class, Optional.class);
 			OBJModel2_makeQuad.setAccessible(true);
@@ -60,6 +64,11 @@ public class OBJHelper
 	public static Map<String, ModelGroup> getGroups(OBJModel2 model)
 	{
 		return get(OBJModel2_parts, model);
+	}
+
+	public static List<Vector2f> getTexCoords(OBJModel2 model)
+	{
+		return get(OBJModel2_texCoords, model);
 	}
 
 	public static Map<String, ModelObject> getParts(ModelGroup group)

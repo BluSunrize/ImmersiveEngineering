@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.connection.RenderCacheKey;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper.MeshWrapper;
@@ -64,6 +65,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector2f;
 import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -447,6 +449,7 @@ public class IESmartObjModel implements IBakedModel
 
 		final MaterialSpriteGetter spriteGetter = new MaterialSpriteGetter(this.spriteGetter, groupName, callback, callbackObject, sCase);
 		final MaterialColorGetter colorGetter = new MaterialColorGetter(groupName, callback, callbackObject, sCase);
+		final TextureCoordinateRemapper coordinateRemapper = new TextureCoordinateRemapper(this.baseModel, sCase);
 
 		if(state.visibility.isVisible(groupName)
 				&&(callback==null||callback.shouldRenderGroup(callbackObject, groupName)))
@@ -455,12 +458,13 @@ public class IESmartObjModel implements IBakedModel
 				{
 					spriteGetter.setRenderPass(pass);
 					colorGetter.setRenderPass(pass);
+					coordinateRemapper.setRenderPass(pass);
 					//g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
 					IModelBuilder modelBuilder = new QuadListAdder(quads::add, transform);
-					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, format, optionalTransform);
+					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, format, optionalTransform);
 					Optional<TRSRTransformation> finalOptionalTransform = optionalTransform;
 					g.getParts().stream().filter(part -> owner.getPartVisibility(part)&&part instanceof ModelObject)
-							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter, colorGetter, format, finalOptionalTransform));
+							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, format, finalOptionalTransform));
 				}
 		return quads;
 	}
@@ -470,7 +474,8 @@ public class IESmartObjModel implements IBakedModel
 	 */
 	private void addModelObjectQuads(ModelObject modelObject, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
 									 MaterialSpriteGetter spriteGetter, MaterialColorGetter colorGetter,
-									 VertexFormat format, Optional<TRSRTransformation> transform)
+									 TextureCoordinateRemapper coordinateRemapper, VertexFormat format,
+									 Optional<TRSRTransformation> transform)
 	{
 		List<MeshWrapper> meshes = OBJHelper.getMeshes(modelObject);
 		for(MeshWrapper mesh : meshes)
@@ -491,12 +496,17 @@ public class IESmartObjModel implements IBakedModel
 
 			for(int[][] face : mesh.getFaces())
 			{
-				Pair<BakedQuad, Direction> quad = OBJHelper.makeQuad(baseModel, face, tintIndex, colorTint,
-						mat.ambientColor, isFullbright, texture, format, transform);
-				if(quad.getRight()==null)
-					modelBuilder.addGeneralQuad(quad.getLeft());
-				else
-					modelBuilder.addFaceQuad(quad.getRight(), quad.getLeft());
+				boolean drawFace = coordinateRemapper.remapCoord(face);
+				if(drawFace)
+				{
+					Pair<BakedQuad, Direction> quad = OBJHelper.makeQuad(baseModel, face, tintIndex, colorTint,
+							mat.ambientColor, isFullbright, texture, format, transform);
+					if(quad.getRight()==null)
+						modelBuilder.addGeneralQuad(quad.getLeft());
+					else
+						modelBuilder.addFaceQuad(quad.getRight(), quad.getLeft());
+				}
+				coordinateRemapper.resetCoords();
 			}
 		}
 	}
@@ -584,6 +594,107 @@ public class IESmartObjModel implements IBakedModel
 			if(shaderCase!=null&&shaderCase.renderModelPartForPass(null, null, groupName, renderPass))
 				color = makeColor(shaderCase.getARGBColourModifier(null, null, groupName, renderPass));
 			return color;
+		}
+	}
+
+	public static class TextureCoordinateRemapper
+	{
+		private final List<Vector2f> texCoords;
+		private final HashMap<Integer, Vector2f> backup;
+		private final ShaderCase shaderCase;
+		private final boolean flipV;
+
+		private ShaderLayer shaderLayer;
+
+		public TextureCoordinateRemapper(OBJModel2 model, ShaderCase shaderCase)
+		{
+			this.texCoords = OBJHelper.getTexCoords(model);
+			this.shaderCase = shaderCase;
+			this.backup = new HashMap<>();
+			this.flipV = model.flipV;
+		}
+
+		/**
+		 * Select the shader layer for the current renderpass
+		 *
+		 * @param pass
+		 */
+		public void setRenderPass(int pass)
+		{
+			if(this.shaderCase!=null)
+				this.shaderLayer = this.shaderCase.getLayers()[pass];
+		}
+
+		/**
+		 * Remap texture coordinates for the given face
+		 *
+		 * @param face
+		 * @return whether to render the face or skip it
+		 */
+		public boolean remapCoord(int[][] face)
+		{
+			if(shaderCase==null||texCoords.size() < 1)
+				return true;
+
+			double[] texBounds = shaderLayer.getTextureBounds();
+			double[] cutBounds = shaderLayer.getCutoutBounds();
+			if(texBounds==null&&cutBounds==null)
+				return true;
+
+			for(int i = 0; i < 4; i++)
+			{
+				int[] index = face[Math.min(i, face.length-1)];
+				if(index.length < 2)
+					continue;
+
+				int texIndex = index[1];
+				if(this.backup.containsKey(texIndex)) // if this coordinate has already been modified, abort
+					continue;
+				Vector2f texCoord = texCoords.get(texIndex);
+				this.backup.put(texIndex, new Vector2f(texCoord));
+
+				if(flipV)
+					texCoord.y = 1-texCoord.y;
+
+				if(texBounds!=null)
+				{
+					//if any uvs are outside the layers bounds
+					if(texBounds[0] > texCoord.x||texCoord.x > texBounds[2]||texBounds[1] > texCoord.y||texCoord.y > texBounds[3])
+					{
+						if(flipV) // early exit, flip v back
+							texCoord.y = 1-texCoord.y;
+						return false;
+					}
+
+					double dU = texBounds[2]-texBounds[0];
+					double dV = texBounds[3]-texBounds[1];
+					//Rescaling to the partial bounds that the texture represents
+					texCoord.x = (float)((texCoord.x-texBounds[0])/dU);
+					texCoord.y = (float)((texCoord.y-texBounds[1])/dV);
+				}
+				//Rescaling to the selective area of the texture that is used
+
+				if(cutBounds!=null)
+				{
+					double dU = cutBounds[2]-cutBounds[0];
+					double dV = cutBounds[3]-cutBounds[1];
+					texCoord.x = (float)(cutBounds[0]+dU*texCoord.x);
+					texCoord.y = (float)(cutBounds[1]+dV*texCoord.y);
+				}
+				if(flipV)
+					texCoord.y = 1-texCoord.y;
+			}
+			return true;
+		}
+
+		/**
+		 * Reset any coordinates that were manipulated to their backed up state
+		 */
+		public void resetCoords()
+		{
+			for(Map.Entry<Integer, Vector2f> entry : this.backup.entrySet())
+				this.texCoords.get(entry.getKey()).set(entry.getValue());
+			this.backup.clear();
 		}
 	}
 }
