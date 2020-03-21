@@ -22,6 +22,7 @@ import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Vector4f;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -66,9 +67,9 @@ public interface IOBJModelCallback<T>
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	default int getRenderColour(T object, String group)
+	default Vector4f getRenderColor(T object, String group, Vector4f original)
 	{
-		return 0xffffffff;
+		return original;
 	}
 
 	@OnlyIn(Dist.CLIENT)

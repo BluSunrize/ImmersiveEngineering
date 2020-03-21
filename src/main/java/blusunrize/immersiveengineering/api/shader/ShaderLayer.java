@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.api.shader;
 
 import net.minecraft.util.ResourceLocation;
 
+import javax.vecmath.Vector4f;
+
 public class ShaderLayer
 {
 	/**
@@ -11,7 +13,7 @@ public class ShaderLayer
 	/**
 	 * An ARGB formatted colour
 	 */
-	private final int colour;
+	private final Vector4f color;
 	/**
 	 * An optional double array (uMin, vMin, uMax, vMax; values of 0-1) to define which part of the original texture is overriden<br>
 	 * The model will then only render faces who's coords lie within that limited space.<br>
@@ -24,15 +26,15 @@ public class ShaderLayer
 	 */
 	private double[] cutoutBounds;
 
-	public ShaderLayer(ResourceLocation texture, int colour)
+	public ShaderLayer(ResourceLocation texture, int color)
 	{
 		this.texture = texture;
-		this.colour = colour;
+		this.color = new Vector4f((color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f);
 		if(ShaderRegistry.defaultLayerBounds.containsKey(texture))
 			this.setTextureBounds(ShaderRegistry.defaultLayerBounds.get(texture));
 	}
 
-	public blusunrize.immersiveengineering.api.shader.ShaderLayer setTextureBounds(double... bounds)
+	public ShaderLayer setTextureBounds(double... bounds)
 	{
 		if(bounds==null)
 			return this;
@@ -51,7 +53,7 @@ public class ShaderLayer
 		return this.textureBounds;
 	}
 
-	public blusunrize.immersiveengineering.api.shader.ShaderLayer setCutoutBounds(double... bounds)
+	public ShaderLayer setCutoutBounds(double... bounds)
 	{
 		if(bounds==null)
 			return this;
@@ -74,9 +76,9 @@ public class ShaderLayer
 		return texture;
 	}
 
-	public int getColour()
+	public Vector4f getColor()
 	{
-		return colour;
+		return color;
 	}
 
 	/**

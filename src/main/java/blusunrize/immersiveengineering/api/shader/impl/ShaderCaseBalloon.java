@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.shader.impl;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
@@ -41,7 +40,7 @@ public class ShaderCaseBalloon extends ShaderCase
 	}
 
 	@Override
-	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
+	public boolean shouldRenderGroupForPass(String modelPart, int pass)
 	{
 		return true;
 	}

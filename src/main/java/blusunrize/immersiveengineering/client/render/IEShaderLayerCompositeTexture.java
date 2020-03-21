@@ -21,6 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nonnull;
+import javax.vecmath.Vector4f;
 import java.io.IOException;
 import java.util.function.IntFunction;
 
@@ -69,12 +70,13 @@ public class IEShaderLayerCompositeTexture extends Texture
 					if(!texPath.endsWith(".png"))
 						texPath += ".png";
 					String texture = this.layers[layer].getTexture().getNamespace()+":"+texPath;
-					int colour = this.layers[layer].getColour();
+					Vector4f colour = this.layers[layer].getColor();
 
 					iresource1 = resourceManager.getResource(new ResourceLocation(texture));
 					NativeImage texureImage = NativeImage.read(iresource1.getInputStream());
 
-					float[] mod = {(colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f, (colour >> 24&255)/255f};
+					float[] mod = new float[4];
+					colour.get(mod);
 
 					IntFunction<Integer> uInterpolate = uIn -> uIn;
 					IntFunction<Integer> vInterpolate = vIn -> vIn;

@@ -406,7 +406,7 @@ public class IESmartObjModel implements IBakedModel
 		}
 		for(String groupName : OBJHelper.getGroups(baseModel).keySet())
 		{
-			List<BakedQuad> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, shader, true);
+			List<BakedQuad> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, true);
 			quads.addAll(temp.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 		}
 
@@ -421,7 +421,7 @@ public class IESmartObjModel implements IBakedModel
 
 	public <T> List<BakedQuad> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject,
 												String groupName, ShaderCase sCase,
-												ItemStack shader, boolean allowCaching)
+												boolean allowCaching)
 	{
 		String objCacheKey = callback!=null?callback.getCacheKey(callbackObject): "<none>";
 		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
@@ -447,10 +447,9 @@ public class IESmartObjModel implements IBakedModel
 		final MaterialColorGetter<T> colorGetter = new MaterialColorGetter<>(groupName, callback, callbackObject, sCase);
 		final TextureCoordinateRemapper coordinateRemapper = new TextureCoordinateRemapper(this.baseModel, sCase);
 
-		if(state.visibility.isVisible(groupName)
-				&&(callback==null||callback.shouldRenderGroup(callbackObject, groupName)))
+		if(state.visibility.isVisible(groupName)&&(callback==null||callback.shouldRenderGroup(callbackObject, groupName)))
 			for(int pass = 0; pass < numPasses; ++pass)
-				if(sCase==null||sCase.renderModelPartForPass(null, null, groupName, pass))
+				if(sCase==null||sCase.shouldRenderGroupForPass(groupName, pass))
 				{
 					spriteGetter.setRenderPass(pass);
 					colorGetter.setRenderPass(pass);

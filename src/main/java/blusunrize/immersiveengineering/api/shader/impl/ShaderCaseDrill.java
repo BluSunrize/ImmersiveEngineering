@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.shader.impl;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
@@ -43,7 +42,7 @@ public class ShaderCaseDrill extends ShaderCase
 	}
 
 	@Override
-	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
+	public boolean shouldRenderGroupForPass(String modelPart, int pass)
 	{
 		if("drill_head".equals(modelPart)||"upgrade_damage0".equals(modelPart)||"upgrade_damage1".equals(modelPart)||"upgrade_damage2".equals(modelPart)||"upgrade_damage3".equals(modelPart)||"upgrade_damage4".equals(modelPart))
 			return pass >= getLayers().length-headLayers;

@@ -33,23 +33,14 @@ public class MaterialColorGetter<T> implements BiFunction<String, Vector4f, Vect
 		this.renderPass = pass;
 	}
 
-	private Vector4f makeColor(int rgba)
-	{
-		float alpha = (rgba >> 24&255)/255.0F;
-		float red = (rgba >> 16&255)/255.0F;
-		float green = (rgba >> 8&255)/255.0F;
-		float blue = (rgba&255)/255.0F;
-		return new Vector4f(red, green, blue, alpha);
-	}
-
 	@Override
 	public Vector4f apply(String material, Vector4f originalColor)
 	{
 		Vector4f color = originalColor;
 		if(callback!=null)
-			color = makeColor(callback.getRenderColour(callbackObject, groupName));
-		if(shaderCase!=null&&shaderCase.renderModelPartForPass(null, null, groupName, renderPass))
-			color = makeColor(shaderCase.getARGBColourModifier(null, null, groupName, renderPass));
+			color = callback.getRenderColor(callbackObject, groupName, color);
+		if(shaderCase!=null)
+			color = shaderCase.getRenderColor(groupName, renderPass, color);
 		return color;
 	}
 }

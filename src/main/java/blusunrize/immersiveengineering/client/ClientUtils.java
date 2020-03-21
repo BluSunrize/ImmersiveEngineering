@@ -73,6 +73,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.vecmath.Quat4d;
+import javax.vecmath.Vector4f;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1124,18 +1125,13 @@ public class ClientUtils
 		return quads.get(0).getSprite().getName();
 	}
 
-	public static int pulseRGBAlpha(int rgb, int tickrate, float min, float max)
+	public static Vector4f pulseRGBAlpha(Vector4f rgba, int tickrate, float min, float max)
 	{
 		float f_alpha = mc().player.ticksExisted%(tickrate*2)/(float)tickrate;
 		if(f_alpha > 1)
 			f_alpha = 2-f_alpha;
-		return changeRGBAlpha(rgb, MathHelper.clamp(f_alpha, min, max));
-
-	}
-
-	public static int changeRGBAlpha(int rgb, float alpha)
-	{
-		return (rgb&0x00ffffff)|((int)(alpha*255)<<24);
+		rgba.w = MathHelper.clamp(f_alpha, min, max);
+		return rgba;
 	}
 
 	public static void renderBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1)

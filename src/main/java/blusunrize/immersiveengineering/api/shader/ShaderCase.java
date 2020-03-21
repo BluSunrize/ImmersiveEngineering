@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import javax.vecmath.Vector4f;
 import java.util.Collection;
 
 /**
@@ -63,7 +63,7 @@ public abstract class ShaderCase
 	/**
 	 * @return if the given part of the model renders on the pass
 	 */
-	public abstract boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass);
+	public abstract boolean shouldRenderGroupForPass(String modelPart, int pass);
 
 	/**
 	 * @return A string representing which item this shader case applies to. e.g.: "immersiveengineering:revolver"
@@ -83,7 +83,7 @@ public abstract class ShaderCase
 	/**
 	 * @return which icon is to be used for the given pass and model part. These obviously need to be stitched on the given sheet (mind the revolvers!)
 	 */
-	public ResourceLocation getReplacementSprite(ItemStack shader, ItemStack item, String modelPart, int pass)
+	public ResourceLocation getTextureReplacement(String modelPart, int pass)
 	{
 		return getLayers()[pass].getTexture();
 	}
@@ -91,20 +91,8 @@ public abstract class ShaderCase
 	/**
 	 * @return the ARGB values to be appleid to the given part in the given pass
 	 */
-	public int getARGBColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
+	public Vector4f getRenderColor(String modelPart, int pass, Vector4f original)
 	{
-		return getLayers()[pass].getColour();
+		return getLayers()[pass].getColor();
 	}
-
-	/**
-	 * DEPRECATED. WILL BE REMOVED IN 1.13
-	 *
-	 * @param pre indicates whether this is before or after the part was rendered
-	 * @return make specific changes to the render, like GL calls
-	 */
-	@Deprecated
-	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
-	{
-	}
-
 }

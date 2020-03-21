@@ -43,7 +43,6 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -54,6 +53,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -1035,10 +1035,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	}
 
 	@Override
-	public int getRenderColour(BlockState object, String group)
+	public Vector4f getRenderColor(BlockState object, String group, Vector4f original)
 	{
 		if(color!=null)
-			return color.colorValue|(0xff000000);
-		return 0xffffffff;
+		{
+			float[] rgb = color.getColorComponentValues();
+			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
+		}
+		return original;
 	}
 }

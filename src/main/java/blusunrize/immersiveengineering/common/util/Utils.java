@@ -87,6 +87,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Vector4f;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -643,6 +644,22 @@ public class Utils
 		tag.put("Explosions", list);
 
 		return tag;
+	}
+
+	public static int intFromRGBA(Vector4f rgba)
+	{
+		float[] array = new float[4];
+		rgba.get(array);
+		return intFromRGBA(array);
+	}
+
+	public static int intFromRGBA(float[] rgba)
+	{
+		int ret = (int)(255*rgba[3]);
+		ret = (ret<<8)+(int)(255*rgba[0]);
+		ret = (ret<<8)+(int)(255*rgba[1]);
+		ret = (ret<<8)+(int)(255*rgba[2]);
+		return ret;
 	}
 
 	public static FluidStack drainFluidBlock(World world, BlockPos pos, FluidAction action)

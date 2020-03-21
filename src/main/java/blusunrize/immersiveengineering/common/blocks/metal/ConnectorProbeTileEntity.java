@@ -31,6 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import javax.annotation.Nonnull;
+import javax.vecmath.Vector4f;
 import java.util.List;
 
 public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
@@ -178,13 +179,19 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public int getRenderColour(BlockState object, String group)
+	public Vector4f getRenderColor(BlockState object, String group, Vector4f original)
 	{
 		if("colour_in".equals(group))
-			return 0xff000000|redstoneChannel.colorValue;
+		{
+			float[] rgb = redstoneChannel.getColorComponentValues();
+			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
+		}
 		else if("colour_out".equals(group))
-			return 0xff000000|redstoneChannelSending.colorValue;
-		return 0xffffffff;
+		{
+			float[] rgb = redstoneChannelSending.getColorComponentValues();
+			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
+		}
+		return original;
 	}
 
 	@Override

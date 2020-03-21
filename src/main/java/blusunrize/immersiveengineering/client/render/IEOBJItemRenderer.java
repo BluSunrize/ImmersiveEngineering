@@ -131,7 +131,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 		for(String g : groups)
 		{
 			if(visible.contains(g)&&callback.shouldRenderGroup(stack, g))
-				quadsForGroup.addAll(model.addQuadsForGroup(callback, stack, g, sCase, shader, !dynamic)
+				quadsForGroup.addAll(model.addQuadsForGroup(callback, stack, g, sCase, !dynamic)
 						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 			visible.remove(g);
 		}

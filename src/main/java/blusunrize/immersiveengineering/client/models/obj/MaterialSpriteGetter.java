@@ -44,9 +44,9 @@ public class MaterialSpriteGetter<T> implements BiFunction<String, ResourceLocat
 		TextureAtlasSprite sprite = null;
 		if(callback!=null)
 			sprite = callback.getTextureReplacement(callbackObject, groupName, material);
-		if(shaderCase!=null&&shaderCase.renderModelPartForPass(null, null, groupName, renderPass))
+		if(shaderCase!=null)
 		{
-			ResourceLocation rl = shaderCase.getReplacementSprite(null, null, groupName, renderPass);
+			ResourceLocation rl = shaderCase.getTextureReplacement(groupName, renderPass);
 			if(rl!=null)
 				sprite = getter.apply(rl);
 		}

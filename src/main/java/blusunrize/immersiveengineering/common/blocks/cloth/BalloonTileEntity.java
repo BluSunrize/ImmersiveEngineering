@@ -44,6 +44,7 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Vector4f;
 
 public class BalloonTileEntity extends ConnectorStructuralTileEntity implements IPlayerInteraction, IHammerInteraction
 {
@@ -135,10 +136,12 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	}
 
 	@Override
-	public int getRenderColour(BlockState object, String group)
+	public Vector4f getRenderColor(BlockState object, String group, Vector4f original)
 	{
 		if(shader!=null&&!shader.getShaderItem().isEmpty()&&shader.getShaderItem().getItem() instanceof IShaderItem)
-			return 0xffffffff;
+			return original;
+		/* TODO: Fix this, change variable type of colour0 and colour1
+
 		if(style==0)
 		{
 			if(group.startsWith("balloon1_"))
@@ -152,8 +155,8 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 				return 0xff000000|colour1;
 			if(group.endsWith("_0"))
 				return 0xff000000|colour0;
-		}
-		return 0xffffffff;
+		}*/
+		return original;
 	}
 
 	@Override
