@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.connection.RenderCacheKey;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper.MeshWrapper;
@@ -65,12 +64,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector2f;
 import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -422,7 +419,6 @@ public class IESmartObjModel implements IBakedModel
 			.maximumSize(100)
 			.build();
 
-	//TODO shaders
 	public <T> List<BakedQuad> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject,
 												String groupName, ShaderCase sCase,
 												ItemStack shader, boolean allowCaching)
@@ -447,8 +443,8 @@ public class IESmartObjModel implements IBakedModel
 		if(callback!=null)
 			optionalTransform = Optional.of(callback.applyTransformations(callbackObject, groupName, optionalTransform.get()));
 
-		final MaterialSpriteGetter spriteGetter = new MaterialSpriteGetter(this.spriteGetter, groupName, callback, callbackObject, sCase);
-		final MaterialColorGetter colorGetter = new MaterialColorGetter(groupName, callback, callbackObject, sCase);
+		final MaterialSpriteGetter<T> spriteGetter = new MaterialSpriteGetter<>(this.spriteGetter, groupName, callback, callbackObject, sCase);
+		final MaterialColorGetter<T> colorGetter = new MaterialColorGetter<>(groupName, callback, callbackObject, sCase);
 		final TextureCoordinateRemapper coordinateRemapper = new TextureCoordinateRemapper(this.baseModel, sCase);
 
 		if(state.visibility.isVisible(groupName)
@@ -473,7 +469,7 @@ public class IESmartObjModel implements IBakedModel
 	 * Yep, this is 90% a copy of ModelObject.addQuads. We need custom hooks in there, so we copy the rest around it.
 	 */
 	private void addModelObjectQuads(ModelObject modelObject, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
-									 MaterialSpriteGetter spriteGetter, MaterialColorGetter colorGetter,
+									 MaterialSpriteGetter<?> spriteGetter, MaterialColorGetter<?> colorGetter,
 									 TextureCoordinateRemapper coordinateRemapper, VertexFormat format,
 									 Optional<TRSRTransformation> transform)
 	{
@@ -511,190 +507,4 @@ public class IESmartObjModel implements IBakedModel
 		}
 	}
 
-	private static class MaterialSpriteGetter<T> implements BiFunction<String, ResourceLocation, TextureAtlasSprite>
-	{
-		private final Function<ResourceLocation, TextureAtlasSprite> getter;
-		private final String groupName;
-		private final IOBJModelCallback<T> callback;
-		private final T callbackObject;
-		private final ShaderCase shaderCase;
-
-		private int renderPass = 0;
-
-		private MaterialSpriteGetter(Function<ResourceLocation, TextureAtlasSprite> getter, String groupName,
-									 IOBJModelCallback<T> callback, T callbackObject, ShaderCase shaderCase)
-		{
-			this.getter = getter;
-			this.groupName = groupName;
-			this.callback = callback;
-			this.callbackObject = callbackObject;
-			this.shaderCase = shaderCase;
-		}
-
-		public void setRenderPass(int pass)
-		{
-			this.renderPass = pass;
-		}
-
-		@Override
-		public TextureAtlasSprite apply(String material, ResourceLocation resourceLocation)
-		{
-			TextureAtlasSprite sprite = null;
-			if(callback!=null)
-				sprite = callback.getTextureReplacement(callbackObject, groupName, material);
-			if(shaderCase!=null&&shaderCase.renderModelPartForPass(null, null, groupName, renderPass))
-			{
-				ResourceLocation rl = shaderCase.getReplacementSprite(null, null, groupName, renderPass);
-				if(rl!=null)
-					sprite = getter.apply(rl);
-			}
-			if(sprite==null)
-				sprite = getter.apply(resourceLocation);
-			return sprite;
-		}
-	}
-
-	private static class MaterialColorGetter<T> implements BiFunction<String, Vector4f, Vector4f>
-	{
-		private final String groupName;
-		private final IOBJModelCallback<T> callback;
-		private final T callbackObject;
-		private final ShaderCase shaderCase;
-
-		private int renderPass = 0;
-
-		private MaterialColorGetter(String groupName, IOBJModelCallback<T> callback, T callbackObject, ShaderCase shaderCase)
-		{
-			this.groupName = groupName;
-			this.callback = callback;
-			this.callbackObject = callbackObject;
-			this.shaderCase = shaderCase;
-		}
-
-		public void setRenderPass(int pass)
-		{
-			this.renderPass = pass;
-		}
-
-		private Vector4f makeColor(int rgba)
-		{
-			float alpha = (rgba >> 24&255)/255.0F;
-			float red = (rgba >> 16&255)/255.0F;
-			float green = (rgba >> 8&255)/255.0F;
-			float blue = (rgba&255)/255.0F;
-			return new Vector4f(red, green, blue, alpha);
-		}
-
-		@Override
-		public Vector4f apply(String material, Vector4f originalColor)
-		{
-			Vector4f color = originalColor;
-			if(callback!=null)
-				color = makeColor(callback.getRenderColour(callbackObject, groupName));
-			if(shaderCase!=null&&shaderCase.renderModelPartForPass(null, null, groupName, renderPass))
-				color = makeColor(shaderCase.getARGBColourModifier(null, null, groupName, renderPass));
-			return color;
-		}
-	}
-
-	public static class TextureCoordinateRemapper
-	{
-		private final List<Vector2f> texCoords;
-		private final HashMap<Integer, Vector2f> backup;
-		private final ShaderCase shaderCase;
-		private final boolean flipV;
-
-		private ShaderLayer shaderLayer;
-
-		public TextureCoordinateRemapper(OBJModel2 model, ShaderCase shaderCase)
-		{
-			this.texCoords = OBJHelper.getTexCoords(model);
-			this.shaderCase = shaderCase;
-			this.backup = new HashMap<>();
-			this.flipV = model.flipV;
-		}
-
-		/**
-		 * Select the shader layer for the current renderpass
-		 *
-		 * @param pass
-		 */
-		public void setRenderPass(int pass)
-		{
-			if(this.shaderCase!=null)
-				this.shaderLayer = this.shaderCase.getLayers()[pass];
-		}
-
-		/**
-		 * Remap texture coordinates for the given face
-		 *
-		 * @param face
-		 * @return whether to render the face or skip it
-		 */
-		public boolean remapCoord(int[][] face)
-		{
-			if(shaderCase==null||texCoords.size() < 1)
-				return true;
-
-			double[] texBounds = shaderLayer.getTextureBounds();
-			double[] cutBounds = shaderLayer.getCutoutBounds();
-			if(texBounds==null&&cutBounds==null)
-				return true;
-
-			for(int i = 0; i < 4; i++)
-			{
-				int[] index = face[Math.min(i, face.length-1)];
-				if(index.length < 2)
-					continue;
-
-				int texIndex = index[1];
-				if(this.backup.containsKey(texIndex)) // if this coordinate has already been modified, abort
-					continue;
-				Vector2f texCoord = texCoords.get(texIndex);
-				this.backup.put(texIndex, new Vector2f(texCoord));
-
-				if(flipV)
-					texCoord.y = 1-texCoord.y;
-
-				if(texBounds!=null)
-				{
-					//if any uvs are outside the layers bounds
-					if(texBounds[0] > texCoord.x||texCoord.x > texBounds[2]||texBounds[1] > texCoord.y||texCoord.y > texBounds[3])
-					{
-						if(flipV) // early exit, flip v back
-							texCoord.y = 1-texCoord.y;
-						return false;
-					}
-
-					double dU = texBounds[2]-texBounds[0];
-					double dV = texBounds[3]-texBounds[1];
-					//Rescaling to the partial bounds that the texture represents
-					texCoord.x = (float)((texCoord.x-texBounds[0])/dU);
-					texCoord.y = (float)((texCoord.y-texBounds[1])/dV);
-				}
-				//Rescaling to the selective area of the texture that is used
-
-				if(cutBounds!=null)
-				{
-					double dU = cutBounds[2]-cutBounds[0];
-					double dV = cutBounds[3]-cutBounds[1];
-					texCoord.x = (float)(cutBounds[0]+dU*texCoord.x);
-					texCoord.y = (float)(cutBounds[1]+dV*texCoord.y);
-				}
-				if(flipV)
-					texCoord.y = 1-texCoord.y;
-			}
-			return true;
-		}
-
-		/**
-		 * Reset any coordinates that were manipulated to their backed up state
-		 */
-		public void resetCoords()
-		{
-			for(Map.Entry<Integer, Vector2f> entry : this.backup.entrySet())
-				this.texCoords.get(entry.getKey()).set(entry.getValue());
-			this.backup.clear();
-		}
-	}
 }
