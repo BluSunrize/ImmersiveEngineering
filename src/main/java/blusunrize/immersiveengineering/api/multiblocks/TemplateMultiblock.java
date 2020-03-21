@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -104,6 +105,11 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 					{
 						blocks.remove(i);
 						i--;
+					}
+					else if(info.state.isAir())
+					{
+						// Usually means it contains a block that has been renamed
+						IELogger.error("Found non-default air block in template "+loc);
 					}
 				}
 				materials = null;
