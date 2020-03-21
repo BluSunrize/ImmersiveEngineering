@@ -260,6 +260,15 @@ public class IESmartObjModel implements IBakedModel
 				}
 				else
 					 */
+				//todo: maybe this an approach to clone models?
+//				IESmartObjModel smrtModel = (IESmartObjModel)originalModel;
+//
+//				model = new IESmartObjModel(smrtModel.baseModel, smrtModel.baseBaked, smrtModel.owner, smrtModel.bakery,
+//						smrtModel.spriteGetter, smrtModel.sprite,
+//						smrtModel.format, smrtModel.state, smrtModel.isDynamic);
+//				((IESmartObjModel)model).tempStack = stack;
+//				((IESmartObjModel)model).tempEntity = entity;
+
 				model = originalModel;
 				comp.copy();
 				cachedBakedItemModels.put(comp, model);
@@ -436,17 +445,23 @@ public class IESmartObjModel implements IBakedModel
 		if(callback!=null)
 			optionalTransform = Optional.of(callback.applyTransformations(callbackObject, groupName, optionalTransform.get()));
 
-		final MaterialSpriteGetter spriteGetter = new MaterialSpriteGetter(this.spriteGetter, groupName, callback, callbackObject);
-		if(state.visibility.isVisible(groupName)&&(callback==null||callback.shouldRenderGroup(callbackObject, groupName)))
+		final MaterialSpriteGetter spriteGetter = new MaterialSpriteGetter(this.spriteGetter, groupName, callback, callbackObject, sCase);
+		final MaterialColorGetter colorGetter = new MaterialColorGetter(groupName, callback, callbackObject, sCase);
+
+		if(state.visibility.isVisible(groupName)
+				&&(callback==null||callback.shouldRenderGroup(callbackObject, groupName)))
 			for(int pass = 0; pass < numPasses; ++pass)
-			{
-				//g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
-				IModelBuilder modelBuilder = new QuadListAdder(quads::add, transform);
-				addModelObjectQuads(g, owner, modelBuilder, spriteGetter, format, optionalTransform);
-				Optional<TRSRTransformation> finalOptionalTransform = optionalTransform;
-				g.getParts().stream().filter(part -> owner.getPartVisibility(part)&&part instanceof ModelObject)
-						.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter, format, finalOptionalTransform));
-			}
+				if(sCase==null||sCase.renderModelPartForPass(null, null, groupName, pass))
+				{
+					spriteGetter.setRenderPass(pass);
+					colorGetter.setRenderPass(pass);
+					//g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
+					IModelBuilder modelBuilder = new QuadListAdder(quads::add, transform);
+					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, format, optionalTransform);
+					Optional<TRSRTransformation> finalOptionalTransform = optionalTransform;
+					g.getParts().stream().filter(part -> owner.getPartVisibility(part)&&part instanceof ModelObject)
+							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter, colorGetter, format, finalOptionalTransform));
+				}
 		return quads;
 	}
 
@@ -454,7 +469,8 @@ public class IESmartObjModel implements IBakedModel
 	 * Yep, this is 90% a copy of ModelObject.addQuads. We need custom hooks in there, so we copy the rest around it.
 	 */
 	private void addModelObjectQuads(ModelObject modelObject, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
-									 MaterialSpriteGetter spriteGetter, VertexFormat format, Optional<TRSRTransformation> transform)
+									 MaterialSpriteGetter spriteGetter, MaterialColorGetter colorGetter,
+									 VertexFormat format, Optional<TRSRTransformation> transform)
 	{
 		List<MeshWrapper> meshes = OBJHelper.getMeshes(modelObject);
 		for(MeshWrapper mesh : meshes)
@@ -464,7 +480,7 @@ public class IESmartObjModel implements IBakedModel
 				continue;
 			TextureAtlasSprite texture = spriteGetter.apply(mat.name, ModelLoaderRegistry2.resolveTexture(mat.diffuseColorMap, owner));
 			int tintIndex = mat.diffuseTintIndex;
-			Vector4f colorTint = mat.diffuseColor;
+			Vector4f colorTint = colorGetter.apply(mat.name, mat.diffuseColor);
 
 			boolean isFullbright = baseModel.ambientToFullbright&&mesh.isFullbright();
 
@@ -491,25 +507,83 @@ public class IESmartObjModel implements IBakedModel
 		private final String groupName;
 		private final IOBJModelCallback<T> callback;
 		private final T callbackObject;
+		private final ShaderCase shaderCase;
 
-		private MaterialSpriteGetter(Function<ResourceLocation, TextureAtlasSprite> getter, String groupName, IOBJModelCallback<T> callback, T callbackObject)
+		private int renderPass = 0;
+
+		private MaterialSpriteGetter(Function<ResourceLocation, TextureAtlasSprite> getter, String groupName,
+									 IOBJModelCallback<T> callback, T callbackObject, ShaderCase shaderCase)
 		{
 			this.getter = getter;
 			this.groupName = groupName;
 			this.callback = callback;
 			this.callbackObject = callbackObject;
+			this.shaderCase = shaderCase;
+		}
+
+		public void setRenderPass(int pass)
+		{
+			this.renderPass = pass;
 		}
 
 		@Override
 		public TextureAtlasSprite apply(String material, ResourceLocation resourceLocation)
 		{
+			TextureAtlasSprite sprite = null;
 			if(callback!=null)
+				sprite = callback.getTextureReplacement(callbackObject, groupName, material);
+			if(shaderCase!=null&&shaderCase.renderModelPartForPass(null, null, groupName, renderPass))
 			{
-				TextureAtlasSprite sprite = callback.getTextureReplacement(callbackObject, groupName, material);
-				if(sprite!=null)
-					return sprite;
+				ResourceLocation rl = shaderCase.getReplacementSprite(null, null, groupName, renderPass);
+				if(rl!=null)
+					sprite = getter.apply(rl);
 			}
-			return getter.apply(resourceLocation);
+			if(sprite==null)
+				sprite = getter.apply(resourceLocation);
+			return sprite;
+		}
+	}
+
+	private static class MaterialColorGetter<T> implements BiFunction<String, Vector4f, Vector4f>
+	{
+		private final String groupName;
+		private final IOBJModelCallback<T> callback;
+		private final T callbackObject;
+		private final ShaderCase shaderCase;
+
+		private int renderPass = 0;
+
+		private MaterialColorGetter(String groupName, IOBJModelCallback<T> callback, T callbackObject, ShaderCase shaderCase)
+		{
+			this.groupName = groupName;
+			this.callback = callback;
+			this.callbackObject = callbackObject;
+			this.shaderCase = shaderCase;
+		}
+
+		public void setRenderPass(int pass)
+		{
+			this.renderPass = pass;
+		}
+
+		private Vector4f makeColor(int rgba)
+		{
+			float alpha = (rgba >> 24&255)/255.0F;
+			float red = (rgba >> 16&255)/255.0F;
+			float green = (rgba >> 8&255)/255.0F;
+			float blue = (rgba&255)/255.0F;
+			return new Vector4f(red, green, blue, alpha);
+		}
+
+		@Override
+		public Vector4f apply(String material, Vector4f originalColor)
+		{
+			Vector4f color = originalColor;
+			if(callback!=null)
+				color = makeColor(callback.getRenderColour(callbackObject, groupName));
+			if(shaderCase!=null&&shaderCase.renderModelPartForPass(null, null, groupName, renderPass))
+				color = makeColor(shaderCase.getARGBColourModifier(null, null, groupName, renderPass));
+			return color;
 		}
 	}
 }
