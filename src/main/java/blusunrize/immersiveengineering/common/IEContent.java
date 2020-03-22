@@ -415,7 +415,8 @@ public class IEContent
 		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties,
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
+				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
+				.setNotNormalBlock();
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
