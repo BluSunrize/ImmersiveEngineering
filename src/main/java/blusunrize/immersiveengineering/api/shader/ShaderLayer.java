@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.api.shader;
 
+import com.google.common.base.Preconditions;
 import net.minecraft.util.ResourceLocation;
 
 import javax.vecmath.Vector4f;
@@ -38,7 +39,7 @@ public class ShaderLayer
 	{
 		if(bounds==null)
 			return this;
-		assert (bounds.length==4);
+		Preconditions.checkArgument(bounds.length==4);
 		this.textureBounds = bounds;
 		return this;
 	}
@@ -57,7 +58,7 @@ public class ShaderLayer
 	{
 		if(bounds==null)
 			return this;
-		assert (bounds.length==4);
+		Preconditions.checkArgument(bounds.length==4);
 		this.cutoutBounds = bounds;
 		return this;
 	}
