@@ -21,7 +21,8 @@ version = { ->
         commandLine 'git', 'rev-parse', '--short', 'HEAD'
         standardOutput = stdout
     }
-    return "0.14-testing-"+stdout.toString().trim();
+    //return "0.14-testing-"+stdout.toString().trim();
+    return "0.14-93"
 }()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ImmersiveEngineering'
