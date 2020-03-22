@@ -73,6 +73,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.vecmath.Quat4d;
+import javax.vecmath.Vector4f;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -393,25 +394,27 @@ public class ClientUtils
 	{
 		List<RendererModel> newRenderers = new ArrayList<>(oldRenderers.size());
 		for(int i = 0; i < oldRenderers.size(); i++)
-			{
-				RendererModel oldM = oldRenderers.get(i);
-				RendererModel newM = new RendererModel(model, oldM.boxName);
-				int toX = oldM.textureOffsetX;
-				int toY = oldM.textureOffsetY;
-				newM.setTextureOffset(toX, toY);
-				newM.mirror = oldM.mirror;
-				newM.cubeList.clear();
-				for(ModelBox cube : oldM.cubeList)
-					newM.cubeList.add(new ModelBox(newM, toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
-				newM.setRotationPoint(oldM.rotationPointX, oldM.rotationPointY, oldM.rotationPointZ);
-				newM.rotateAngleX = oldM.rotateAngleX;
-				newM.rotateAngleY = oldM.rotateAngleY;
-				newM.rotateAngleZ = oldM.rotateAngleZ;
-				newM.offsetX = oldM.offsetX;
-				newM.offsetY = oldM.offsetY;
-				newM.offsetZ = oldM.offsetZ;
-				newRenderers.add(newM);
-			}
+		{
+			RendererModel oldM = oldRenderers.get(i);
+			RendererModel newM = new RendererModel(model, oldM.boxName);
+			// remove the freshly added box, because the constructor adds it
+			model.boxList.remove(model.boxList.size()-1);
+			int toX = oldM.textureOffsetX;
+			int toY = oldM.textureOffsetY;
+			newM.setTextureOffset(toX, toY);
+			newM.mirror = oldM.mirror;
+			newM.cubeList.clear();
+			for(ModelBox cube : oldM.cubeList)
+				newM.cubeList.add(new ModelBox(newM, toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
+			newM.setRotationPoint(oldM.rotationPointX, oldM.rotationPointY, oldM.rotationPointZ);
+			newM.rotateAngleX = oldM.rotateAngleX;
+			newM.rotateAngleY = oldM.rotateAngleY;
+			newM.rotateAngleZ = oldM.rotateAngleZ;
+			newM.offsetX = oldM.offsetX;
+			newM.offsetY = oldM.offsetY;
+			newM.offsetZ = oldM.offsetZ;
+			newRenderers.add(newM);
+		}
 		return newRenderers;
 	}
 
@@ -1124,18 +1127,13 @@ public class ClientUtils
 		return quads.get(0).getSprite().getName();
 	}
 
-	public static int pulseRGBAlpha(int rgb, int tickrate, float min, float max)
+	public static Vector4f pulseRGBAlpha(Vector4f rgba, int tickrate, float min, float max)
 	{
 		float f_alpha = mc().player.ticksExisted%(tickrate*2)/(float)tickrate;
 		if(f_alpha > 1)
 			f_alpha = 2-f_alpha;
-		return changeRGBAlpha(rgb, MathHelper.clamp(f_alpha, min, max));
-
-	}
-
-	public static int changeRGBAlpha(int rgb, float alpha)
-	{
-		return (rgb&0x00ffffff)|((int)(alpha*255)<<24);
+		rgba.w = MathHelper.clamp(f_alpha, min, max);
+		return rgba;
 	}
 
 	public static void renderBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1)
@@ -1293,11 +1291,11 @@ public class ClientUtils
 				}
 				//generate the normal vector
 				Vec3d side1 = new Vec3d(quadCoords[1][0]-quadCoords[3][0],
-				quadCoords[1][1]-quadCoords[3][1],
-				quadCoords[1][2]-quadCoords[3][2]);
+						quadCoords[1][1]-quadCoords[3][1],
+						quadCoords[1][2]-quadCoords[3][2]);
 				Vec3d side2 = new Vec3d(quadCoords[2][0]-quadCoords[0][0],
-				quadCoords[2][1]-quadCoords[0][1],
-				quadCoords[2][2]-quadCoords[0][2]);
+						quadCoords[2][1]-quadCoords[0][1],
+						quadCoords[2][2]-quadCoords[0][2]);
 				Vec3d normal = side1.crossProduct(side2);
 				normal = normal.normalize();
 				// calculate the final light values and do the rendering

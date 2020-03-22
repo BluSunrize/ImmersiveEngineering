@@ -50,6 +50,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -132,17 +133,21 @@ public class EventHandler
 	{
 		PlayerEntity player = event.getEntityPlayer();
 		ItemStack stack = event.getItemStack();
-		if(!(event.getEntity() instanceof MinecartEntity))
+		if(!(event.getTarget() instanceof MinecartEntity))
 			return;
-		MinecartEntity cart = (MinecartEntity)event.getEntity();
-		if(!player.world.isRemote&&!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
+		MinecartEntity cart = (MinecartEntity)event.getTarget();
+		if(!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
+		{
 			cart.getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
 			{
 				wrapper.setShaderItem(Utils.copyStackWithAmount(stack, 1));
-				ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
-						new MessageMinecartShaderSync(cart, wrapper));
-				event.setCanceled(true);
+				if(!player.world.isRemote)
+					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
+							new MessageMinecartShaderSync(cart, wrapper));
 			});
+			event.setCanceled(true);
+			event.setCancellationResult(ActionResultType.SUCCESS);
+		}
 	}
 
 	/*TODO re-add when the event exists again!

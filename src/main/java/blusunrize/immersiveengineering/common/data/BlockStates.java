@@ -654,7 +654,7 @@ public class BlockStates extends BlockStateProvider
 		}, ImmutableMap.of(), ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), BlockRenderLayer.SOLID);
 		createConnector(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"), ImmutableMap.of());
 		createConnector(Cloth.balloon, map -> rl("block/balloon.obj.ie"), ImmutableMap.of(),
-				ImmutableList.of(), BlockRenderLayer.SOLID);
+				ImmutableList.of(), BlockRenderLayer.TRANSLUCENT);
 	}
 
 	private void createMetalMultiblocks()

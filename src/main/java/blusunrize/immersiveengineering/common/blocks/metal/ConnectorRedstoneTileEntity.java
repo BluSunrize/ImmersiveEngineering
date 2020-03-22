@@ -40,6 +40,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
+import javax.vecmath.Vector4f;
 import java.util.Collection;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
@@ -248,11 +249,14 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public int getRenderColour(BlockState object, String group)
+	public Vector4f getRenderColor(BlockState object, String group, Vector4f original)
 	{
 		if("coloured".equals(group))
-			return 0xff000000|redstoneChannel.colorValue;
-		return 0xffffffff;
+		{
+			float[] rgb = redstoneChannel.getColorComponentValues();
+			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
+		}
+		return original;
 	}
 
 	@Override

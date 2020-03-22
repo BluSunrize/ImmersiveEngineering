@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.api.multiblocks.ManualElementMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
+import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
@@ -83,10 +83,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.platform.GlStateManager;
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -99,8 +95,11 @@ import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.MinecartModel;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
@@ -130,7 +129,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.ModelLoaderRegistry2;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
@@ -788,19 +786,18 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void onWorldLoad()
 	{
-		/*TODO
 		if(!ShaderMinecartModel.rendersReplaced)
 		{
 			for(Object render : mc().getRenderManager().renderers.values())
-				if(MinecartRenderer.class.isAssignableFrom(render.getClass()))
+				if(render instanceof MinecartRenderer)
 				{
-					Object wrapped = ObfuscationReflectionHelper.getPrivateValue(MinecartRenderer.class, (MinecartRenderer)render, "field_77013_a");//modelMinecart
+					EntityModel<?> wrapped = ((MinecartRenderer<?>)render).field_77013_a;
 					if(wrapped instanceof MinecartModel)
-						ObfuscationReflectionHelper.setPrivateValue(MinecartRenderer.class, (MinecartRenderer)render,
-								new ShaderMinecartModel((MinecartModel)wrapped), "field_77013_a");//modelMinecart
+						((MinecartRenderer<?>)render).field_77013_a = new ShaderMinecartModel((MinecartModel<?>)wrapped);
 				}
 			ShaderMinecartModel.rendersReplaced = true;
 		}
+		/*TODO
 		if(!IEBipedLayerRenderer.rendersAssigned)
 		{
 			for(Object render : mc().getRenderManager().renderers.values())

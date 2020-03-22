@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
-import blusunrize.immersiveengineering.api.shader.ShaderCaseItem;
+import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseItem;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
@@ -67,7 +67,6 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	}
 
 
-
 	@Override
 	public ResourceLocation getShaderName(ItemStack stack)
 	{
@@ -110,7 +109,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 			else if(tile instanceof ShaderBannerTileEntity)
 			{
 				ItemStack current = ((ShaderBannerTileEntity)tile).shader.getShaderItem();
-				if(!current.isEmpty() && !world.isRemote && (ctx.getPlayer()==null || !ctx.getPlayer().abilities.isCreativeMode))
+				if(!current.isEmpty()&&!world.isRemote&&(ctx.getPlayer()==null||!ctx.getPlayer().abilities.isCreativeMode))
 				{
 					double dx = pos.getX()+.5+ctx.getFace().getXOffset();
 					double dy = pos.getY()+.5+ctx.getFace().getYOffset();
@@ -205,7 +204,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 			{
 				ShaderLayer[] layers = sCase.getLayers();
 				if(pass < layers.length&&layers[pass]!=null)
-					return layers[pass].getColour();
+					return Utils.intFromRGBA(layers[pass].getColor());
 				return 0xffffffff;
 			}
 		}

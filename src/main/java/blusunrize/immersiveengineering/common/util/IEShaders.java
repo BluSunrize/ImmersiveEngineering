@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.shader.ShaderCase.DynamicShaderLayer;
-import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
-import blusunrize.immersiveengineering.api.shader.ShaderCaseDrill;
-import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
+import blusunrize.immersiveengineering.api.shader.DynamicShaderLayer;
+import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
+import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseDrill;
+import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -26,6 +26,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
+import javax.vecmath.Vector4f;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
@@ -110,8 +111,8 @@ public class IEShaders
 		addShader("twili", 5, Rarity.EPIC, 0xff555d70, 0xff1a1e2b, 0xff222739, 0xff1db58e, "circuit", false, 0xff1db58e).setInfo(null, "The Legend of Zelda: Twilight Princess", "twili");
 		addShader("usurper", 3, Rarity.EPIC, 0xff3e1e1e, 0xff5c6156, 0xff111010, 0xff737a6c, "circuit", false, 0xffca2f38).setInfo(null, "The Legend of Zelda: Twilight Princess", "usurper");
 		entry = addShader("ancient", 6, Lib.RARITY_Masterwork, 0xff9c3a2d, 0xff514848, 0xfff6ae4a, 0xff80fcf2).setInfo(null, "The Legend of Zelda: Breath of the Wild", "ancient");
-		addDynamicLayer(entry, "1_6", 0xaafaf307,
-				(layer, superColour) -> ClientUtils.pulseRGBAlpha(0xff80fcf2, 60, .05f, .5f),
+		addDynamicLayer(entry, "1_6", 0xff80fcf2,//0xaafaf307,
+				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 60, .05f, .5f),
 				(pre, partialTick) -> ClientUtils.toggleLightmap(pre, true));
 		addLayer(entry, "circuit", 0x99bc9377);
 		((ShaderCaseDrill)entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill"))).addHeadLayers(new ShaderLayer(new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_iron"), 0xff80fcf2));
@@ -129,7 +130,7 @@ public class IEShaders
 		addShader("omnitool", 2, Rarity.RARE, 0x40ff952c, 0x30ff952c, 0x40ff952c, 0x20ff952c).setInfo(null, "Mass Effect", "omnitool");
 
 		entry = addShader("kindled", 5, Rarity.EPIC, 0xff2b160b, 0xff3a3a3a, 0x80bf541f, 0xff4f4f4f).setInfo(null, "Dark Souls", "kindled");
-		addBlockScaledLayer(entry, "minecraft:block/fire_layer_0", 0x80ffffff);
+		addBlockScaledLayer(entry, "minecraft:block/fire_0", 0x80ffffff);
 
 		entry = addShader("darkfire", 5, Rarity.EPIC, 0xff1e131b, 0xff211633, 0xff330812, 0xff412965).setInfo(null, "Kingdom Hearts", "darkfire");
 		addBlockScaledLayer(entry, "immersiveengineering:block/shaders/greyscale_fire", 0xff9e83eb);
@@ -173,7 +174,7 @@ public class IEShaders
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_"+texture), colour));
 	}
 
-	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Integer, Integer> func_getColour, final BiConsumer<Boolean, Float> func_modifyRender)
+	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, final BiConsumer<Boolean, Float> func_modifyRender)
 	{
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour, func_getColour, func_modifyRender));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour, func_getColour, func_modifyRender));
@@ -192,10 +193,10 @@ public class IEShaders
 
 	private static class InternalDynamicShaderLayer extends DynamicShaderLayer
 	{
-		private final BiFunction<ShaderLayer, Integer, Integer> func_getColour;
+		private final BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour;
 		private final BiConsumer<Boolean, Float> func_modifyRender;
 
-		public InternalDynamicShaderLayer(ResourceLocation texture, int colour, BiFunction<ShaderLayer, Integer, Integer> func_getColour, BiConsumer<Boolean, Float> func_modifyRender)
+		public InternalDynamicShaderLayer(ResourceLocation texture, int colour, BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, BiConsumer<Boolean, Float> func_modifyRender)
 		{
 			super(texture, colour);
 			this.func_getColour = func_getColour;
@@ -204,11 +205,11 @@ public class IEShaders
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public int getColour()
+		public Vector4f getColor()
 		{
 			if(func_getColour!=null)
-				return func_getColour.apply(this, super.getColour());
-			return super.getColour();
+				return func_getColour.apply(this, super.getColor());
+			return super.getColor();
 		}
 
 		@Override

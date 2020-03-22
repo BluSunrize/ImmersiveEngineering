@@ -6,22 +6,23 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.shader;
+package blusunrize.immersiveengineering.api.shader.impl;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
 
-public class ShaderCaseShield extends ShaderCase
+public class ShaderCaseItem extends ShaderCase
 {
-	public ShaderCaseShield(ShaderLayer... layers)
+	public ShaderCaseItem(ShaderLayer... layers)
 	{
 		super(layers);
 	}
 
-	public ShaderCaseShield(Collection<ShaderLayer> layers)
+	public ShaderCaseItem(Collection<ShaderLayer> layers)
 	{
 		super(layers);
 	}
@@ -29,7 +30,7 @@ public class ShaderCaseShield extends ShaderCase
 	@Override
 	public ResourceLocation getShaderType()
 	{
-		return new ResourceLocation(ImmersiveEngineering.MODID, "shield");
+		return new ResourceLocation(ImmersiveEngineering.MODID, "item");
 	}
 
 	@Override
@@ -39,10 +40,8 @@ public class ShaderCaseShield extends ShaderCase
 	}
 
 	@Override
-	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
+	public boolean shouldRenderGroupForPass(String modelPart, int pass)
 	{
-		if("flash".equals(modelPart)||"shock".equals(modelPart))
-			return pass==getLayers().length-1;
 		return true;
 	}
 }

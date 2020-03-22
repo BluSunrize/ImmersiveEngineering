@@ -6,10 +6,11 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.shader;
+package blusunrize.immersiveengineering.api.shader.impl;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
@@ -39,7 +40,7 @@ public class ShaderCaseBanner extends ShaderCase
 	}
 
 	@Override
-	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
+	public boolean shouldRenderGroupForPass(String modelPart, int pass)
 	{
 		return true;
 	}

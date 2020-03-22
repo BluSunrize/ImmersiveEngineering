@@ -487,7 +487,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public TextureAtlasSprite getTextureReplacement(BlockState object, String material)
+	public TextureAtlasSprite getTextureReplacement(BlockState object, String group, String material)
 	{
 		if(!inventory.get(SLOT_SOIL).isEmpty()&&"farmland".equals(material))
 		{
