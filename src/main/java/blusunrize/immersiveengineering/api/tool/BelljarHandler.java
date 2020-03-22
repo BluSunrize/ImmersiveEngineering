@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.tool;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.*;
@@ -32,6 +33,7 @@ import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 09.03.2017
@@ -170,9 +172,10 @@ public class BelljarHandler
 		float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile);
 	}
 
-	private static HashMap<ComparableItemStack, IngredientStack> seedSoilMap = new HashMap<>();
-	private static HashMap<ComparableItemStack, ItemStack[]> seedOutputMap = new HashMap<>();
-	private static HashMap<ComparableItemStack, BlockState[]> seedRenderMap = new HashMap<>();
+	private static Map<ComparableItemStack, IngredientStack> seedSoilMap = new HashMap<>();
+	private static Map<ComparableItemStack, ItemStack[]> seedOutputMap = new HashMap<>();
+	private static Map<ComparableItemStack, BlockState[]> seedRenderMap = new HashMap<>();
+	private static Map<StemBlock, AttachedStemBlock> stemToAttachedStem = new HashMap<>();
 
 	public abstract static class DefaultPlantHandler implements IPlantHandler
 	{
@@ -272,6 +275,7 @@ public class BelljarHandler
 			return null;
 		}
 	};
+
 	public static DefaultPlantHandler stemHandler = new DefaultPlantHandler()
 	{
 		private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
@@ -317,16 +321,23 @@ public class BelljarHandler
 			if(renderStates.length > 0&&renderStates[0]!=null&&renderStates[0].getBlock() instanceof StemBlock)
 			{
 				GlStateManager.rotatef(-90, 0, 1, 0);
+				boolean renderFruit = growth >= 0.5;
 				StemBlock stem = (StemBlock)renderStates[0].getBlock();
-				BlockState state = stem.getDefaultState().with(StemBlock.AGE, (int)(growth >= .5?7: 2*growth*7));
-				if(growth >= .5)
-					state = state.with(HorizontalBlock.HORIZONTAL_FACING, Direction.NORTH);
+				BlockState state;
+				if(renderFruit)
+				{
+					Preconditions.checkArgument(stemToAttachedStem.containsKey(stem));
+					AttachedStemBlock attached = stemToAttachedStem.get(stem);
+					state = attached.getDefaultState().with(HorizontalBlock.HORIZONTAL_FACING, Direction.NORTH);
+				}
+				else
+					state = stem.getDefaultState().with(StemBlock.AGE, (int)(renderFruit?7: 2*growth*7));
 				IBakedModel model = blockRenderer.getModelForState(state);
 				GlStateManager.translatef(.25f, .0625f, 0);
 				GlStateManager.pushMatrix();
 				blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
 				GlStateManager.popMatrix();
-				if(growth >= .5)
+				if(renderFruit)
 				{
 					ItemStack[] fruit = seedOutputMap.get(new ComparableItemStack(seed, false, false));
 					if(fruit!=null&&fruit.length > 0&&!fruit[0].isEmpty())
@@ -405,6 +416,8 @@ public class BelljarHandler
 
 		stemHandler.register(new ItemStack(Items.PUMPKIN_SEEDS), new ItemStack[]{new ItemStack(Blocks.PUMPKIN)}, new ItemStack(Blocks.DIRT), Blocks.PUMPKIN_STEM.getDefaultState());
 		stemHandler.register(new ItemStack(Items.MELON_SEEDS), new ItemStack[]{new ItemStack(Blocks.MELON)}, new ItemStack(Blocks.DIRT), Blocks.MELON_STEM.getDefaultState());
+		stemToAttachedStem.put((StemBlock)Blocks.PUMPKIN_STEM, (AttachedStemBlock)Blocks.ATTACHED_PUMPKIN_STEM);
+		stemToAttachedStem.put((StemBlock)Blocks.MELON_STEM, (AttachedStemBlock)Blocks.ATTACHED_MELON_STEM);
 
 		stackingHandler.register(new ItemStack(Items.SUGAR_CANE), new ItemStack[]{new ItemStack(Items.SUGAR_CANE, 2)}, BlockTags.SAND, Blocks.SUGAR_CANE.getDefaultState(), Blocks.SUGAR_CANE.getDefaultState());
 		stackingHandler.register(new ItemStack(Blocks.CACTUS), new ItemStack[]{new ItemStack(Blocks.CACTUS, 2)}, BlockTags.SAND, Blocks.CACTUS.getDefaultState(), Blocks.CACTUS.getDefaultState());
