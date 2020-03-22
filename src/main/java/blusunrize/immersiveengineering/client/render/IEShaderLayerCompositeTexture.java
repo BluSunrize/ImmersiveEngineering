@@ -77,6 +77,8 @@ public class IEShaderLayerCompositeTexture extends Texture
 
 					float[] mod = new float[4];
 					colour.get(mod);
+					if(mod[3] < 0.2)
+						mod[3] *= 2.5f;
 
 					IntFunction<Integer> uInterpolate = uIn -> uIn;
 					IntFunction<Integer> vInterpolate = vIn -> vIn;
@@ -113,18 +115,38 @@ public class IEShaderLayerCompositeTexture extends Texture
 
 								int iRGB = texureImage.getPixelRGBA(interU, interV);
 
-								float[] rgb = {(iRGB >> 16&255)/255f, (iRGB >> 8&255)/255f, (iRGB&255)/255f, (iRGB >> 24&255)/255f};
+								float[] rgb = {(iRGB&255)/255f, (iRGB >> 8&255)/255f, (iRGB >> 16&255)/255f, (iRGB >> 24&255)/255f};
 								if((iRGB&0xff000000)!=0)
 								{
 									int iNoise = originalImage.getPixelRGBA(u, v);
-									float[] noise = {(iNoise >> 16&255)/255f, (iNoise >> 8&255)/255f, (iNoise&255)/255f, (iNoise >> 24&255)/255f};
+									float[] noise = {(iNoise&255)/255f, (iNoise >> 8&255)/255f, (iNoise >> 16&255)/255f, (iNoise >> 24&255)/255f};
 
 									for(int m = 0; m < 4; m++)
 										rgb[m] = rgb[m]*mod[m]*noise[m];
 									int[] irgb = {(int)(rgb[0]*255), (int)(rgb[1]*255), (int)(rgb[2]*255), (int)(rgb[3]*255)};
 
 									int i2 = (irgb[0])+(irgb[1]<<8)+(irgb[2]<<16)+(irgb[3]<<24);
-									finalTexture.setPixelRGBA(u, v, i2);
+
+									// the final product may end up with low alpha, so we check for that
+									int pre = finalTexture.getPixelRGBA(u, v) >> 24&255;
+
+									// if we just set it, we also set alpha values, we gotta blend it
+									//finalTexture.setPixelRGBA(u, v, i2);
+									finalTexture.blendPixel(u, v, i2);
+
+									// if the image was blank, or the resulting alpha is lower than how it started,
+									// we fix it.
+									int post = finalTexture.getPixelRGBA(u, v);
+									if(pre==0)
+									{
+										int color = (irgb[3]<<24)|(post&0x00ffffff);
+										finalTexture.setPixelRGBA(u, v, color);
+									}
+									else if((post >> 24&255) < pre)
+									{
+										int color = (pre<<24)|(post&0x00ffffff);
+										finalTexture.setPixelRGBA(u, v, color);
+									}
 								}
 							}
 					} catch(Exception e)

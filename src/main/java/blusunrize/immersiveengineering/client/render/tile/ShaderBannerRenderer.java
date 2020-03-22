@@ -101,7 +101,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 		if(sCase!=null)
 		{
 			ShaderLayer[] layers = sCase.getLayers();
-			ResourceLocation textureLocation = new ResourceLocation(ImmersiveEngineering.MODID, "bannershader/"+name);
+			ResourceLocation textureLocation = new ResourceLocation(name.getNamespace(), "bannershader/"+name.getPath());
 			ClientUtils.mc().getTextureManager().loadTexture(textureLocation, new IEShaderLayerCompositeTexture(BASE_TEXTURE, layers));
 			CACHE.put(name, textureLocation);
 			return textureLocation;
