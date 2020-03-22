@@ -394,25 +394,27 @@ public class ClientUtils
 	{
 		List<RendererModel> newRenderers = new ArrayList<>(oldRenderers.size());
 		for(int i = 0; i < oldRenderers.size(); i++)
-			{
-				RendererModel oldM = oldRenderers.get(i);
-				RendererModel newM = new RendererModel(model, oldM.boxName);
-				int toX = oldM.textureOffsetX;
-				int toY = oldM.textureOffsetY;
-				newM.setTextureOffset(toX, toY);
-				newM.mirror = oldM.mirror;
-				newM.cubeList.clear();
-				for(ModelBox cube : oldM.cubeList)
-					newM.cubeList.add(new ModelBox(newM, toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
-				newM.setRotationPoint(oldM.rotationPointX, oldM.rotationPointY, oldM.rotationPointZ);
-				newM.rotateAngleX = oldM.rotateAngleX;
-				newM.rotateAngleY = oldM.rotateAngleY;
-				newM.rotateAngleZ = oldM.rotateAngleZ;
-				newM.offsetX = oldM.offsetX;
-				newM.offsetY = oldM.offsetY;
-				newM.offsetZ = oldM.offsetZ;
-				newRenderers.add(newM);
-			}
+		{
+			RendererModel oldM = oldRenderers.get(i);
+			RendererModel newM = new RendererModel(model, oldM.boxName);
+			// remove the freshly added box, because the constructor adds it
+			model.boxList.remove(model.boxList.size()-1);
+			int toX = oldM.textureOffsetX;
+			int toY = oldM.textureOffsetY;
+			newM.setTextureOffset(toX, toY);
+			newM.mirror = oldM.mirror;
+			newM.cubeList.clear();
+			for(ModelBox cube : oldM.cubeList)
+				newM.cubeList.add(new ModelBox(newM, toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
+			newM.setRotationPoint(oldM.rotationPointX, oldM.rotationPointY, oldM.rotationPointZ);
+			newM.rotateAngleX = oldM.rotateAngleX;
+			newM.rotateAngleY = oldM.rotateAngleY;
+			newM.rotateAngleZ = oldM.rotateAngleZ;
+			newM.offsetX = oldM.offsetX;
+			newM.offsetY = oldM.offsetY;
+			newM.offsetZ = oldM.offsetZ;
+			newRenderers.add(newM);
+		}
 		return newRenderers;
 	}
 
@@ -1289,11 +1291,11 @@ public class ClientUtils
 				}
 				//generate the normal vector
 				Vec3d side1 = new Vec3d(quadCoords[1][0]-quadCoords[3][0],
-				quadCoords[1][1]-quadCoords[3][1],
-				quadCoords[1][2]-quadCoords[3][2]);
+						quadCoords[1][1]-quadCoords[3][1],
+						quadCoords[1][2]-quadCoords[3][2]);
 				Vec3d side2 = new Vec3d(quadCoords[2][0]-quadCoords[0][0],
-				quadCoords[2][1]-quadCoords[0][1],
-				quadCoords[2][2]-quadCoords[0][2]);
+						quadCoords[2][1]-quadCoords[0][1],
+						quadCoords[2][2]-quadCoords[0][2]);
 				Vec3d normal = side1.crossProduct(side2);
 				normal = normal.normalize();
 				// calculate the final light values and do the rendering
