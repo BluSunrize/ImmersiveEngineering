@@ -130,7 +130,7 @@ public class IEShaders
 		addShader("omnitool", 2, Rarity.RARE, 0x40ff952c, 0x30ff952c, 0x40ff952c, 0x20ff952c).setInfo(null, "Mass Effect", "omnitool");
 
 		entry = addShader("kindled", 5, Rarity.EPIC, 0xff2b160b, 0xff3a3a3a, 0x80bf541f, 0xff4f4f4f).setInfo(null, "Dark Souls", "kindled");
-		addBlockScaledLayer(entry, "minecraft:block/fire_layer_0", 0x80ffffff);
+		addBlockScaledLayer(entry, "minecraft:block/fire_0", 0x80ffffff);
 
 		entry = addShader("darkfire", 5, Rarity.EPIC, 0xff1e131b, 0xff211633, 0xff330812, 0xff412965).setInfo(null, "Kingdom Hearts", "darkfire");
 		addBlockScaledLayer(entry, "immersiveengineering:block/shaders/greyscale_fire", 0xff9e83eb);
