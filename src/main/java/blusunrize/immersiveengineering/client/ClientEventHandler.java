@@ -163,7 +163,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					this.shieldToggleButton = ClientUtils.mc().gameSettings.keyBindBack.isKeyDown();
 
 
-				if(ClientProxy.keybind_chemthrowerSwitch.isPressed())
+				if(!ClientProxy.keybind_chemthrowerSwitch.isInvalid()&&ClientProxy.keybind_chemthrowerSwitch.isPressed())
 				{
 					ItemStack held = event.player.getHeldItem(Hand.MAIN_HAND);
 					if(held.getItem() instanceof ChemthrowerItem&&((ChemthrowerItem)held.getItem()).getUpgrades(held).getBoolean("multitank"))

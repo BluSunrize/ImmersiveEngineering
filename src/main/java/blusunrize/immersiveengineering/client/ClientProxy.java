@@ -170,7 +170,7 @@ public class ClientProxy extends CommonProxy
 	public static IEFontRender itemFont;
 	public static boolean stencilBufferEnabled = false;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.gameplay");
-	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", 0, "key.categories.gameplay");
+	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", -1, "key.categories.gameplay");
 
 	@Override
 	public void preInit()
