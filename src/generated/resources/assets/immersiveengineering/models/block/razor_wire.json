@@ -5,5 +5,7 @@
     "model": "immersiveengineering:models/block/razor_wire.obj.ie",
     "flip-v": true
   },
-  "layers": []
+  "layers": [
+    "SOLID"
+  ]
 }

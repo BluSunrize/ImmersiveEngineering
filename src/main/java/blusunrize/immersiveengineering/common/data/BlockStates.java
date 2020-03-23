@@ -53,6 +53,7 @@ import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.openal.SOFTOutputLimiter;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -611,7 +612,7 @@ public class BlockStates extends BlockStateProvider
 					else
 						return ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on"));
 				},
-				ImmutableList.of(IEProperties.ACTIVE));
+				ImmutableList.of(IEProperties.ACTIVE), BlockRenderLayer.SOLID);
 
 		createConnector(Connectors.redstoneBreaker, rl("block/connector/redstone_breaker.obj.ie"),
 				ImmutableMap.of(), BlockRenderLayer.SOLID);
@@ -652,7 +653,8 @@ public class BlockStates extends BlockStateProvider
 			else
 				return EMPTY_MODEL.model.getLocation();
 		}, ImmutableMap.of(), ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), BlockRenderLayer.SOLID);
-		createConnector(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"), ImmutableMap.of());
+		createConnector(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"), ImmutableMap.of(),
+				BlockRenderLayer.SOLID);
 		createConnector(Cloth.balloon, map -> rl("block/balloon.obj.ie"), ImmutableMap.of(),
 				ImmutableList.of(), BlockRenderLayer.TRANSLUCENT);
 	}
@@ -937,6 +939,7 @@ public class BlockStates extends BlockStateProvider
 								 Function<PartialBlockstate, ImmutableMap<String, ResourceLocation>> textures,
 								 List<IProperty<?>> additional, BlockRenderLayer... layers)
 	{
+		Preconditions.checkArgument(layers.length > 0);
 		final IProperty<Direction> facingProp;
 		final int xForHorizontal;
 		if(b.getDefaultState().has(IEProperties.FACING_ALL))

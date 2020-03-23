@@ -8,5 +8,7 @@
     "model": "immersiveengineering:models/block/metal_device/e_lantern.obj",
     "flip-v": true
   },
-  "layers": []
+  "layers": [
+    "SOLID"
+  ]
 }
