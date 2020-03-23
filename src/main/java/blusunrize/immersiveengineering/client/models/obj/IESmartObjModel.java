@@ -52,6 +52,7 @@ import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry2;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.MaterialLibrary2;
 import net.minecraftforge.client.model.obj.OBJModel2;
@@ -117,7 +118,7 @@ public class IESmartObjModel implements IBakedModel
 	@Override
 	public boolean doesHandlePerspectives()
 	{
-		return isDynamic;
+		return true;
 	}
 
 	@Override
@@ -152,16 +153,11 @@ public class IESmartObjModel implements IBakedModel
 		return Pair.of(this, matrix.toMatrix4f());
 	}
 
-	VertexFormat getFormat()
-	{
-		return this.format;
-	}
-
 	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand)
 	{
-		return ImmutableList.of();
+		return getQuads(state, side, rand, EmptyModelData.INSTANCE);
 	}
 
 	@Override
