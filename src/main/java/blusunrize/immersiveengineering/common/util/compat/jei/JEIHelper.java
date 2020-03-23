@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.client.gui.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
@@ -20,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace.ArcFurn
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceFuelCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.bottlingmachine.BottlingMachineRecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.cloche.ClocheRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.cokeoven.CokeOvenRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.crusher.CrusherRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.fermenter.FermenterRecipeCategory;
@@ -90,6 +92,7 @@ public class JEIHelper implements IModPlugin
 				new AlloySmelterRecipeCategory(guiHelper),
 				new BlastFurnaceRecipeCategory(guiHelper),
 				new BlastFurnaceFuelCategory(guiHelper),
+				new ClocheRecipeCategory(guiHelper),
 				new MetalPressRecipeCategory(guiHelper),
 				new CrusherRecipeCategory(guiHelper),
 				new WorkbenchRecipeCategory(guiHelper),
@@ -119,6 +122,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipes(new ArrayList<>(AlloyRecipe.recipeList), AlloySmelterRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(BlastFurnaceRecipe.recipeList), BlastFurnaceRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(BlastFurnaceRecipe.blastFuels), BlastFurnaceFuelCategory.UID);
+		registration.addRecipes(new ArrayList<>(ClocheRecipe.recipeList), ClocheRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(MetalPressRecipe.recipeList.values(), IJEIRecipe::listInJEI)), MetalPressRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(CrusherRecipe.recipeList, IJEIRecipe::listInJEI)), CrusherRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(BlueprintCraftingRecipe.recipeList.values(), IJEIRecipe::listInJEI)), WorkbenchRecipeCategory.UID);
@@ -149,6 +153,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.alloySmelter), AlloySmelterRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.blastFurnaceAdv), BlastFurnaceRecipeCategory.UID, BlastFurnaceFuelCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.blastFurnace), BlastFurnaceRecipeCategory.UID, BlastFurnaceFuelCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(MetalDevices.belljar), ClocheRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.metalPress), MetalPressRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.crusher), CrusherRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(WoodenDevices.workbench), WorkbenchRecipeCategory.UID);
