@@ -301,14 +301,17 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public void onLoad()
 	{
-		super.onLoad();
 		shuntConnection = new Connection(pos, 0, 1);
+		super.onLoad();
 	}
 
 	@Override
 	public Iterable<? extends Connection> getInternalConnections()
 	{
-		return ImmutableList.of(shuntConnection);
+		if(shuntConnection!=null)
+			return ImmutableList.of(shuntConnection);
+		else
+			return ImmutableList.of();
 	}
 
 	@Override
