@@ -372,7 +372,7 @@ public class IEContent
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
 				.setNotNormalBlock();
 		MetalDevices.blastFurnacePreheater = new GenericTileBlock("blastfurnace_preheater", () -> BlastFurnacePreheaterTileEntity.TYPE,
-				defaultMetalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
+				defaultMetalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE).setNotNormalBlock();
 		MetalDevices.furnaceHeater = new GenericTileBlock("furnace_heater", () -> FurnaceHeaterTileEntity.TYPE,
 				defaultMetalProperties, IEProperties.ACTIVE, IEProperties.FACING_ALL)
 				.setBlockLayer(BlockRenderLayer.CUTOUT);
@@ -401,7 +401,7 @@ public class IEContent
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
-				.setNotNormalBlock();
+				.setNotNormalBlock().setLightOpacity(0).setBlockLayer(BlockRenderLayer.TRANSLUCENT);
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
