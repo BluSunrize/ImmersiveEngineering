@@ -133,9 +133,9 @@ public class EventHandler
 	{
 		PlayerEntity player = event.getEntityPlayer();
 		ItemStack stack = event.getItemStack();
-		if(!(event.getTarget() instanceof MinecartEntity))
+		if(!(event.getTarget() instanceof AbstractMinecartEntity))
 			return;
-		MinecartEntity cart = (MinecartEntity)event.getTarget();
+		AbstractMinecartEntity cart = (AbstractMinecartEntity)event.getTarget();
 		if(!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
 		{
 			cart.getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->

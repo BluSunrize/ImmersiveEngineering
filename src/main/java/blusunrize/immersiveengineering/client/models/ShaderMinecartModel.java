@@ -20,7 +20,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.renderer.entity.model.MinecartModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ModelBox;
-import net.minecraft.entity.item.minecart.MinecartEntity;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -28,7 +28,7 @@ import javax.vecmath.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShaderMinecartModel<T extends MinecartEntity> extends MinecartModel<T>
+public class ShaderMinecartModel<T extends AbstractMinecartEntity> extends MinecartModel<T>
 {
 	public static Int2ObjectMap<ItemStack> shadedCarts = new Int2ObjectOpenHashMap<>();
 	public static boolean rendersReplaced = false;
