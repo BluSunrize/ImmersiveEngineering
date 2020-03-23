@@ -15,15 +15,17 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 
-public class BlockIESlab extends SlabBlock implements IIEBlock
+public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implements IIEBlock
 {
-	private final IIEBlock base;
+	private final T base;
 
-	public BlockIESlab(String name, Properties props, Class<? extends BlockItem> itemBlock, IIEBlock base)
+	public BlockIESlab(String name, Properties props, Class<? extends BlockItem> itemBlock, T base)
 	{
 		super(props);
 		ResourceLocation registryName = new ResourceLocation(ImmersiveEngineering.MODID, name);
@@ -68,5 +70,44 @@ public class BlockIESlab extends SlabBlock implements IIEBlock
 	public String getNameForFlavour()
 	{
 		return base.getNameForFlavour();
+	}
+
+	@Override
+	public BlockRenderLayer getRenderLayer()
+	{
+		return base.getRenderLayer();
+	}
+
+	@Override
+	public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer)
+	{
+		return base.canRenderInLayer(base.getDefaultState(), layer);
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos)
+	{
+		return base.getOpacity(state, worldIn, pos);
+	}
+
+	@Override
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
+	{
+		return base.propagatesSkylightDown(state, reader, pos);
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos)
+	{
+		return base.causesSuffocation(state, worldIn, pos);
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
+	{
+		return base.isNormalCube(state, worldIn, pos);
 	}
 }

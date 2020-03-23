@@ -323,24 +323,8 @@ public class IEContent
 					defaultMetalProperties, steelBlock).setRenderLayer(BlockRenderLayer.CUTOUT));
 			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("stairs_alu_scaffolding_"+name,
 					defaultMetalProperties, aluBlock).setRenderLayer(BlockRenderLayer.CUTOUT));
-			IEBlocks.toSlab.put(
-					steelBlock,
-					new ScaffoldingSlabBlock(
-							"slab_"+steelBlock.getRegistryName().getPath(),
-							Block.Properties.from(steelBlock),
-							BlockItemIE.class,
-							steelBlock
-					)
-			);
-			IEBlocks.toSlab.put(
-					aluBlock,
-					new ScaffoldingSlabBlock(
-							"slab_"+aluBlock.getRegistryName().getPath(),
-							Block.Properties.from(aluBlock),
-							BlockItemIE.class,
-							aluBlock
-					)
-			);
+			addSlabFor(steelBlock);
+			addSlabFor(aluBlock);
 		}
 		for(String cat : new String[]{WireType.LV_CATEGORY, WireType.MV_CATEGORY, WireType.HV_CATEGORY})
 		{
@@ -611,7 +595,7 @@ public class IEContent
 
 	private static <T extends Block & IIEBlock> BlockIESlab addSlabFor(T b)
 	{
-		BlockIESlab ret = new BlockIESlab(
+		BlockIESlab<T> ret = new BlockIESlab<>(
 				"slab_"+b.getRegistryName().getPath(),
 				Block.Properties.from(b),
 				BlockItemIE.class,
