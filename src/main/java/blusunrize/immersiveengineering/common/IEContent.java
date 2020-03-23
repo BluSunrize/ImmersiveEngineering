@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
@@ -1001,10 +1002,10 @@ public class IEContent
 				int age = Math.min(4, Math.round(growth*4));
 				if(age==4)
 					return new BlockState[]{
-							Misc.hempPlant.getDefaultState().with(CropsBlock.AGE, age),
-							Misc.hempPlant.getDefaultState().with(CropsBlock.AGE, age)
+							Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4),
+							Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.TOP0)
 					};
-				return new BlockState[]{Misc.hempPlant.getDefaultState().with(CropsBlock.AGE, age)};
+				return new BlockState[]{Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.values()[age])};
 			}
 
 			@Override
