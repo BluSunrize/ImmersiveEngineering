@@ -15,15 +15,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'rev-parse', '--short', 'HEAD'
-        standardOutput = stdout
-    }
-    //return "0.14-testing-"+stdout.toString().trim();
-    return "0.14-93"
-}()
+version = "0.14-93"+getBuildNumber()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ImmersiveEngineering'
 
@@ -146,18 +138,7 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
     type 'jar'
     builtBy 'reobfJar'
 }
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact reobfArtifact
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
-    }
-}
+
 task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
         project.hasProperty('keyStore')
@@ -175,3 +156,56 @@ task signJar(type: SignJar, dependsOn: jar) {
 }
 
 build.dependsOn signJar
+
+String getBuildNumber() {
+    boolean includeGitRev = System.getenv("ie_add_git_rev") != null;
+    if (includeGitRev) {
+    def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-parse', '--short', 'HEAD'
+            standardOutput = stdout
+        }
+        return "-"+stdout.toString().trim()
+    }
+    return ""
+}
+
+apply plugin: 'maven'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven")))
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = project.archivesBaseName
+                project {
+                    name project.archivesBaseName
+                    packaging 'jar'
+                    description project.archivesBaseName
+                    url ''
+                    scm {
+                        url 'https://github.com/BluSunrize/ImmersiveEngineering'
+                        connection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
+                        developerConnection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
+                    }
+                    issueManagement {
+                        system 'github'
+                        url 'https://github.com/BluSunrize/ImmersiveEngineering/issues'
+                    }
+
+                    developers {
+                        developer {
+                            id 'BluSunrize'
+                            name 'BluSunrize'
+                            roles { role 'developer' }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+uploadArchives.dependsOn build
+
+//TODO auto-generate update JSON
