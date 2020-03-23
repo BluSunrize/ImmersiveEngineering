@@ -27,14 +27,15 @@ import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -171,6 +172,26 @@ public class IERecipes
 
 		BlastFurnaceRecipe.addBlastFuel(IETags.charCoal, 300);
 		BlastFurnaceRecipe.addBlastFuel(IETags.getItemTag(IETags.charCoalBlocks), 300*10);
+	}
+
+	public static void initClocheRecipes()
+	{
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.WHEAT, 2), new ItemStack(Items.WHEAT_SEEDS, 1)), Items.WHEAT_SEEDS, Tags.Blocks.DIRT, 320);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.POTATO, 2)), Items.POTATO, Tags.Blocks.DIRT, 320);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.CARROT, 2)), Items.CARROT, Tags.Blocks.DIRT, 320);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.BEETROOT, 2), new ItemStack(Items.BEETROOT_SEEDS, 1)), Items.BEETROOT_SEEDS, Tags.Blocks.DIRT, 320);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.NETHER_WART, 2)), Items.NETHER_WART, Tags.Blocks.NETHERRACK, 320);
+
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.PUMPKIN)), Items.PUMPKIN_SEEDS, Tags.Blocks.DIRT, 640);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.MELON)), Items.WHEAT_SEEDS, Tags.Blocks.DIRT, 640);
+
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.SUGAR_CANE, 2)), Items.SUGAR_CANE, Tags.Blocks.SAND, 640);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.CACTUS, 2)), Items.CACTUS, Tags.Blocks.SAND, 640);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.CHORUS_FRUIT)), Items.CHORUS_FLOWER, Tags.Blocks.END_STONES, 640);
+
+		IngredientStack shroomSoil = new IngredientStack(ImmutableList.of(new ItemStack(Blocks.MYCELIUM), new ItemStack(Blocks.PODZOL)));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.RED_MUSHROOM, 2)), Items.RED_MUSHROOM, shroomSoil, 480);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.BROWN_MUSHROOM, 2)), Items.BROWN_MUSHROOM, shroomSoil, 480);
 	}
 
 	public static void initMetalPressRecipes()

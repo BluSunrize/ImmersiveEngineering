@@ -790,6 +790,8 @@ public class IEContent
 
 		IERecipes.initBlastFurnaceRecipes();
 
+		IERecipes.initClocheRecipes();
+
 		IERecipes.initMetalPressRecipes();
 
 		IERecipes.initAlloySmeltingRecipes();
