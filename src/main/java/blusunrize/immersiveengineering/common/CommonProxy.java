@@ -37,6 +37,10 @@ import java.util.UUID;
 
 public class CommonProxy
 {
+	public void modConstruction()
+	{
+	}
+
 	public void preInit()
 	{
 	}

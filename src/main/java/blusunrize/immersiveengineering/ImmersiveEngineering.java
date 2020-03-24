@@ -83,6 +83,7 @@ public class ImmersiveEngineering
 		//TODO separate client/server config?
 		ModLoadingContext.get().registerConfig(Type.COMMON, IEConfig.ALL);
 		IEContent.modConstruction();
+		proxy.modConstruction();
 		//TODO FluidRegistry.enableUniversalBucket();
 	}
 

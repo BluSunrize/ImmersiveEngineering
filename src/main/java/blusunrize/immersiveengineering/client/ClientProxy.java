@@ -171,6 +171,20 @@ public class ClientProxy extends CommonProxy
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", -1, "key.categories.gameplay");
 
 	@Override
+	public void modConstruction()
+	{
+		super.modConstruction();
+
+		ModelLoaderRegistry2.registerLoader(new ResourceLocation(MODID, "ie_obj"), IEOBJLoader.instance);
+		ModelLoaderRegistry2.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
+		ModelLoaderRegistry2.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
+		ModelLoaderRegistry2.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
+		ModelLoaderRegistry2.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
+		ModelLoaderRegistry2.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
+		ModelLoaderRegistry2.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
+	}
+
+	@Override
 	public void preInit()
 	{
 		Framebuffer fb = mc().getFramebuffer();
@@ -180,13 +194,6 @@ public class ClientProxy extends CommonProxy
 			stencilBufferEnabled = fb.enableStencil();//Enabling FBO stencils
 		}
 		 */
-		ModelLoaderRegistry2.registerLoader(new ResourceLocation(MODID, "ie_obj"), IEOBJLoader.instance);
-		ModelLoaderRegistry2.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
-		ModelLoaderRegistry2.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
-		ModelLoaderRegistry2.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
-		ModelLoaderRegistry2.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
-		ModelLoaderRegistry2.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
-		ModelLoaderRegistry2.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
 
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.class, RevolvershotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(SkylineHookEntity.class, NoneRenderer::new);
