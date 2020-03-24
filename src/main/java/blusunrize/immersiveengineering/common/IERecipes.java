@@ -33,6 +33,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.NonNullList;
@@ -176,6 +177,10 @@ public class IERecipes
 
 	public static void initClocheRecipes()
 	{
+		ClocheRecipe.registerSoilTexture(Tags.Blocks.DIRT, new ResourceLocation("block/farmland_moist"));
+
+		ClocheRecipe.addFertilizer(Items.BONE_MEAL, 1.25f);
+
 		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.WHEAT, 2), new ItemStack(Items.WHEAT_SEEDS, 1)), Items.WHEAT_SEEDS, Tags.Blocks.DIRT, 320);
 		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.POTATO, 2)), Items.POTATO, Tags.Blocks.DIRT, 320);
 		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.CARROT, 2)), Items.CARROT, Tags.Blocks.DIRT, 320);
@@ -542,7 +547,7 @@ public class IERecipes
 
 	public static void addArcOreSmelting(ItemStack output, String ore)
 	{
-		if(ApiUtils.isNonemptyItemTag(getOre(ore)))
+		if(ApiUtils.isNonemptyItemTag(getOre(ore)))//ToDo this should allow blocks too
 			addArcRecipe(output, getOre(ore), 200, 512, new ItemStack(slag)).setSpecialRecipeType("Ores");
 	}
 

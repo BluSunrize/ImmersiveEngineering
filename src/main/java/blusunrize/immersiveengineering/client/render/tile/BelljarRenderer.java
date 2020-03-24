@@ -85,42 +85,42 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 
 
 		GlStateManager.enableCull();
-		IPlantHandler plantHandler = tile.getCurrentPlantHandler();
-		if(plantHandler!=null)
-		{
-			GlStateManager.pushMatrix();
-			GlStateManager.translated(0, 1.0625, 0);
-			GlStateManager.color3f(1, 1, 1);
-			NonNullList<ItemStack> inventory = tile.getInventory();
-			float scale = plantHandler.getRenderSize(inventory.get(1), inventory.get(0), tile.renderGrowth, tile);
-			GlStateManager.translated((1-scale)/2, 0, (1-scale)/2);
-			GlStateManager.scalef(scale, scale, scale);
-			if(!plantHandler.overrideRender(inventory.get(1), inventory.get(0), tile.renderGrowth, tile, blockRenderer))
-			{
-				BlockState[] states = plantHandler.getRenderedPlant(inventory.get(1), inventory.get(0), tile.renderGrowth, tile);
-				if(states==null||states.length < 1)
-					return;
-				for(BlockState s : states)
-				{
-					List<BakedQuad> plantQuadList = plantQuads.get(s);
-					if(plantQuadList==null)
-					{
-						IBakedModel plantModel = blockRenderer.getModelForState(s);
-						plantQuadList = new ArrayList<>(plantModel.getQuads(s, null, Utils.RAND, EmptyModelData.INSTANCE));
-						for(Direction f : Direction.values())
-							plantQuadList.addAll(plantModel.getQuads(s, f, Utils.RAND, EmptyModelData.INSTANCE));
-						plantQuads.put(s, plantQuadList);
-					}
-					GlStateManager.pushMatrix();
-					worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-					ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorldNonnull(), blockPos, false);
-					Tessellator.getInstance().draw();
-					GlStateManager.popMatrix();
-					GlStateManager.translated(0, 1, 0);
-				}
-			}
-			GlStateManager.popMatrix();
-		}
+//		IPlantHandler plantHandler = tile.getCurrentPlantHandler();
+//		if(plantHandler!=null)
+//		{
+//			GlStateManager.pushMatrix();
+//			GlStateManager.translated(0, 1.0625, 0);
+//			GlStateManager.color3f(1, 1, 1);
+//			NonNullList<ItemStack> inventory = tile.getInventory();
+//			float scale = plantHandler.getRenderSize(inventory.get(1), inventory.get(0), tile.renderGrowth, tile);
+//			GlStateManager.translated((1-scale)/2, 0, (1-scale)/2);
+//			GlStateManager.scalef(scale, scale, scale);
+//			if(!plantHandler.overrideRender(inventory.get(1), inventory.get(0), tile.renderGrowth, tile, blockRenderer))
+//			{
+//				BlockState[] states = plantHandler.getRenderedPlant(inventory.get(1), inventory.get(0), tile.renderGrowth, tile);
+//				if(states==null||states.length < 1)
+//					return;
+//				for(BlockState s : states)
+//				{
+//					List<BakedQuad> plantQuadList = plantQuads.get(s);
+//					if(plantQuadList==null)
+//					{
+//						IBakedModel plantModel = blockRenderer.getModelForState(s);
+//						plantQuadList = new ArrayList<>(plantModel.getQuads(s, null, Utils.RAND, EmptyModelData.INSTANCE));
+//						for(Direction f : Direction.values())
+//							plantQuadList.addAll(plantModel.getQuads(s, f, Utils.RAND, EmptyModelData.INSTANCE));
+//						plantQuads.put(s, plantQuadList);
+//					}
+//					GlStateManager.pushMatrix();
+//					worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+//					ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorldNonnull(), blockPos, false);
+//					Tessellator.getInstance().draw();
+//					GlStateManager.popMatrix();
+//					GlStateManager.translated(0, 1, 0);
+//				}
+//			}
+//			GlStateManager.popMatrix();
+//		}
 
 		GlStateManager.depthMask(false);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
