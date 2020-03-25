@@ -125,7 +125,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 				ClocheRecipe recipe = getRecipe();
 				if(recipe!=null&&fertilizerAmount > 0)
 				{
-					if(renderGrowth < recipe.time)
+					if(renderGrowth < recipe.time + IEConfig.MACHINES.belljar_growth_mod.get()*fertilizerMod)
 					{
 						renderGrowth += IEConfig.MACHINES.belljar_growth_mod.get()*fertilizerMod;
 						fertilizerAmount--;
