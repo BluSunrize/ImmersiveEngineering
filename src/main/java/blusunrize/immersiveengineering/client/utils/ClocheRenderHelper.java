@@ -1,6 +1,9 @@
 package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe.ClocheRenderFunction;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
+import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
+import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.*;
@@ -186,6 +189,29 @@ public class ClocheRenderHelper
 					Pair.of(stem, bottom),
 					Pair.of(stem, middle),
 					Pair.of(Blocks.CHORUS_FLOWER.getDefaultState(), top));
+		}
+	}
+
+	public static class RenderFunctionHemp implements ClocheRenderFunction
+	{
+		@Override
+		public float getScale(ItemStack seed, float growth)
+		{
+			return 0.6875f;
+		}
+
+		@Override
+		public Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth)
+		{
+			int age = Math.min(4, Math.round(growth*4));
+			if(age==4){
+				TRSRTransformation top = new TRSRTransformation(new Vector3f(0, 1, 0), null, null, null);
+				return ImmutableList.of(
+						Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new TRSRTransformation(null)),
+						Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.TOP0), top)
+				);
+			}
+			return ImmutableList.of(Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.values()[age]), new TRSRTransformation(null)));
 		}
 	}
 }

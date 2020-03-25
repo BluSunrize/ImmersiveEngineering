@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe.SecondaryOutput;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionChorus;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionHemp;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipe;
@@ -52,6 +53,7 @@ import static blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals.ores
 import static blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals.storage;
 import static blusunrize.immersiveengineering.common.items.IEItems.Ingredients.*;
 import static blusunrize.immersiveengineering.common.items.IEItems.Metals.ingots;
+import static blusunrize.immersiveengineering.common.items.IEItems.Misc.hempSeeds;
 import static blusunrize.immersiveengineering.common.items.IEItems.Molds.*;
 
 public class IERecipes
@@ -205,6 +207,8 @@ public class IERecipes
 				ClocheRecipe.RENDER_FUNCTION_STACK.apply(Blocks.CACTUS));
 		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.CHORUS_FRUIT)), Items.CHORUS_FLOWER, Tags.Blocks.END_STONES, 480,
 				new RenderFunctionChorus());
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(hempFiber), new ItemStack(hempSeeds, 2)), hempSeeds, Tags.Blocks.DIRT, 800,
+				new RenderFunctionHemp());
 
 		IngredientStack shroomSoil = new IngredientStack(ImmutableList.of(new ItemStack(Blocks.MYCELIUM), new ItemStack(Blocks.PODZOL)));
 		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.RED_MUSHROOM, 1)), Items.RED_MUSHROOM, shroomSoil, 480,
