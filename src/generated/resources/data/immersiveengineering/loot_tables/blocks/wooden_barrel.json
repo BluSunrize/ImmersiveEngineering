@@ -2,11 +2,10 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 1,
+      "rolls": 1.0,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "immersiveengineering:wooden_barrel"
+          "type": "immersiveengineering:tile_drop"
         }
       ],
       "conditions": [
