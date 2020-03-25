@@ -176,10 +176,10 @@ public class IERecipes
 
 	public static void initClocheRecipes()
 	{
-		ClocheRecipe.registerSoilTexture(Tags.Blocks.DIRT, new ResourceLocation("block/farmland_moist"));
+		ClocheRecipe.registerSoilTexture(new ItemStack[]{new ItemStack(Items.DIRT), new ItemStack(Items.COARSE_DIRT),
+				new ItemStack(Items.GRASS_BLOCK), new ItemStack(Items.GRASS_PATH),}, new ResourceLocation("block/farmland_moist"));
 
 		ClocheRecipe.addFertilizer(Items.BONE_MEAL, 1.25f);
-
 
 		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.WHEAT, 2), new ItemStack(Items.WHEAT_SEEDS, 1)),
 				Items.WHEAT_SEEDS, Tags.Blocks.DIRT, 640, ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.WHEAT));
@@ -191,10 +191,12 @@ public class IERecipes
 				Items.BEETROOT_SEEDS, Tags.Blocks.DIRT, 800, ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.BEETROOTS));
 		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.NETHER_WART, 2)), Items.NETHER_WART, Tags.Blocks.NETHERRACK, 800,
 				ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.CARROTS));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.SWEET_BERRIES, 2)), Items.SWEET_BERRIES, Tags.Blocks.DIRT, 560,
+				ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.SWEET_BERRY_BUSH));
 
 		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.PUMPKIN)), Items.PUMPKIN_SEEDS, Tags.Blocks.DIRT, 800,
 				ClocheRecipe.RENDER_FUNCTION_STEM.apply(Blocks.PUMPKIN));
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.MELON)), Items.WHEAT_SEEDS, Tags.Blocks.DIRT, 800,
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.MELON)), Items.MELON_SEEDS, Tags.Blocks.DIRT, 800,
 				ClocheRecipe.RENDER_FUNCTION_STEM.apply(Blocks.MELON));
 
 		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.SUGAR_CANE)), Items.SUGAR_CANE, Tags.Blocks.SAND, 560,
@@ -207,8 +209,8 @@ public class IERecipes
 		IngredientStack shroomSoil = new IngredientStack(ImmutableList.of(new ItemStack(Blocks.MYCELIUM), new ItemStack(Blocks.PODZOL)));
 		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.RED_MUSHROOM, 1)), Items.RED_MUSHROOM, shroomSoil, 480,
 				ClocheRecipe.RENDER_FUNCTION_GENERIC.apply(Blocks.RED_MUSHROOM));
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.RED_MUSHROOM, 1)), Items.RED_MUSHROOM, shroomSoil, 480,
-				ClocheRecipe.RENDER_FUNCTION_GENERIC.apply(Blocks.RED_MUSHROOM));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.BROWN_MUSHROOM, 1)), Items.BROWN_MUSHROOM, shroomSoil, 480,
+				ClocheRecipe.RENDER_FUNCTION_GENERIC.apply(Blocks.BROWN_MUSHROOM));
 	}
 
 	public static void initMetalPressRecipes()

@@ -12,9 +12,13 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.tool.*;
+import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
+import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.api.tool.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -39,8 +43,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity.SLOT_SEED;
-import static blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity.SLOT_SOIL;
+import static blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity.SLOT_FERTILIZER;
 
 public abstract class IESlot extends Slot
 {
@@ -554,10 +557,9 @@ public abstract class IESlot extends Slot
 		{
 			if(itemStack.isEmpty())
 				return false;
-			if(type==SLOT_SEED)
-				return BelljarHandler.getHandler(itemStack)!=null;
-			else
-				return type==SLOT_SOIL||BelljarHandler.getItemFertilizerHandler(itemStack)!=null;
+			if(type==SLOT_FERTILIZER)
+				return ClocheRecipe.isValidFertilizer(itemStack);
+			return true;
 		}
 	}
 
