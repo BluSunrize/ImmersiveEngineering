@@ -88,6 +88,8 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 		if(recipe!=null)
 		{
 			GlStateManager.pushMatrix();
+			GlStateManager.color4f(1,1,1,1);
+			GlStateManager.disableBlend();
 			GlStateManager.translated(0, 1.0625, 0);
 
 			NonNullList<ItemStack> inventory = tile.getInventory();
@@ -119,6 +121,7 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 				GlStateManager.popMatrix();
 			}
 
+			GlStateManager.enableBlend();
 			GlStateManager.popMatrix();
 		}
 

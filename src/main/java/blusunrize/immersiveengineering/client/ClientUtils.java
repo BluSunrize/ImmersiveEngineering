@@ -1244,7 +1244,7 @@ public class ClientUtils
 	public static void renderModelTESRFancy(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, boolean useCached, int color)
 	{//TODO include matrix transformations?, cache normals?
 		if(IEConfig.GENERAL.disableFancyTESR.get())
-			renderModelTESRFast(quads, renderer, world, pos);
+			renderModelTESRFast(quads, renderer, world, pos, color);
 		else
 		{
 			if(!useCached)

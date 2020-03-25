@@ -154,14 +154,15 @@ public class ClocheRenderHelper
 		@Override
 		public float getScale(ItemStack seed, float growth)
 		{
-			return 0.675f;
+			return 0.75f;
 		}
 
 		@Override
 		public Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth)
 		{
-			return ImmutableList.of(Pair.of(this.cropBlock.getDefaultState(),
-					new TRSRTransformation(null, null, new Vector3f(growth, growth, growth), null)));
+			Vector3f transl = new Vector3f(0.5f-growth/2, 0, 0.5f-growth/2);
+			Vector3f scale = new Vector3f(growth, growth, growth);
+			return ImmutableList.of(Pair.of(this.cropBlock.getDefaultState(), new TRSRTransformation(transl, null, scale, null)));
 		}
 	}
 
