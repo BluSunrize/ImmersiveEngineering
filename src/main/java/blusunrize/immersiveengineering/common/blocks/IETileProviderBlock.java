@@ -126,29 +126,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			else
 				dropHandler = c -> {
 				};
-			if(tile!=null&&(!(tile instanceof ITileDrop)||!((ITileDrop)tile).preventInventoryDrop())&&!(tile instanceof MultiblockPartTileEntity))
-			{
-				if(tile instanceof IIEInventory&&((IIEInventory)tile).getDroppedItems()!=null)
-					InventoryHelper.dropItems(world, pos, ((IIEInventory)tile).getDroppedItems());
-				else
-				{
-					LazyOptional<IItemHandler> itemHandler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-					itemHandler.ifPresent((h) ->
-					{
-						if(h instanceof IEInventoryHandler)
-						{
-							NonNullList<ItemStack> drops = NonNullList.create();
-							for(int i = 0; i < h.getSlots(); i++)
-								if(!h.getStackInSlot(i).isEmpty())
-								{
-									drops.add(h.getStackInSlot(i));
-									((IEInventoryHandler)h).setStackInSlot(i, ItemStack.EMPTY);
-								}
-							InventoryHelper.dropItems(world, pos, drops);
-						}
-					});
-				}
-			}
 			if(tile instanceof IImmersiveConnectable&&!world.isRemote)
 				for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
 					getNetwork(world).removeAllConnectionsAt(cp, dropHandler);
@@ -162,6 +139,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	{
 		if(tile instanceof IAdditionalDrops)
 		{
+			//TODO remove or turn into loot entries?
 			Collection<ItemStack> stacks = ((IAdditionalDrops)tile).getExtraDrops(player, state);
 			if(stacks!=null&&!stacks.isEmpty())
 				for(ItemStack s : stacks)
@@ -207,41 +185,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	{
 		return Direction.NORTH;
 	}
-
-	/*TODO why isn't there an axis/EnumFacing parameter any more
-	@Override
-	public IBlockState rotate(IBlockState state, IWorld world, BlockPos pos, Rotation direction)
-	{
-		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof IDirectionalTile)
-		{
-			if(!((IDirectionalTile)tile).canRotate(axis))
-				return false;
-			IBlockState state = world.getBlockState(pos);
-			if(state.getProperties().contains(IEProperties.FACING_ALL)||state.getProperties().contains(IEProperties.FACING_HORIZONTAL))
-			{
-				DirectionProperty prop = state.getProperties().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
-				EnumFacing f = ((IDirectionalTile)tile).getFacing();
-				int limit = ((IDirectionalTile)tile).getFacingLimitation();
-
-				if(limit==0)
-					f = EnumFacing.VALUES[(f.ordinal()+1)%EnumFacing.VALUES.length];
-				else if(limit==1)
-					f = axis.getAxisDirection()==AxisDirection.POSITIVE?f.rotateAround(axis.getAxis()).getOpposite(): f.rotateAround(axis.getAxis());
-				else if(limit==2||limit==5)
-					f = axis.getAxisDirection()==AxisDirection.POSITIVE?f.rotateY(): f.rotateYCCW();
-				if(f!=((IDirectionalTile)tile).getFacing())
-				{
-					EnumFacing old = ((IDirectionalTile)tile).getFacing();
-					((IDirectionalTile)tile).setFacing(f);
-					((IDirectionalTile)tile).afterRotation(old, f);
-					state = applyProperty(state, prop, ((IDirectionalTile)tile).getFacing());
-					world.setBlockState(pos, state.cycleProperty(prop));
-				}
-			}
-		}
-		return false;
-	}*/
 
 	@Override
 	public void onIEBlockPlacedBy(BlockItemUseContext context, BlockState state)
@@ -556,19 +499,5 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBaseTileEntity)
 			((IEBaseTileEntity)te).onEntityCollision(world, entity);
-	}
-
-	@Override
-	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
-	{
-		List<ItemStack> ret = super.getDrops(state, builder);
-		LootContext ctx = builder.build(LootParameterSets.BLOCK);
-		if(ctx.has(LootParameters.BLOCK_ENTITY))
-		{
-			TileEntity te = ctx.get(LootParameters.BLOCK_ENTITY);
-			if(te instanceof ITileDrop)
-				ret.addAll(((ITileDrop)te).getTileDrops(builder));
-		}
-		return ret;
 	}
 }

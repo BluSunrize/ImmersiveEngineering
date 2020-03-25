@@ -36,7 +36,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
-import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
@@ -174,7 +174,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	}
 
 	@Override
-	public List<ItemStack> getTileDrops(Builder context)
+	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		return ImmutableList.of(this.coresample);
 	}
@@ -183,12 +183,6 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	public void readOnPlacement(LivingEntity placer, ItemStack stack)
 	{
 		this.coresample = stack.copy();
-	}
-
-	@Override
-	public boolean preventInventoryDrop()
-	{
-		return true;
 	}
 
 	private String[] overlay = null;

@@ -34,7 +34,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraft.world.storage.loot.LootTable;
@@ -209,7 +208,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	}
 
 	@Override
-	public List<ItemStack> getTileDrops(Builder context)
+	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundNBT tag = new CompoundNBT();
@@ -233,12 +232,6 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 				this.name = stack.getDisplayName().getString();
 			enchantments = stack.getEnchantmentTagList();
 		}
-	}
-
-	@Override
-	public boolean preventInventoryDrop()
-	{
-		return true;
 	}
 
 	@Override

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
+import net.minecraft.world.storage.loot.LootEntryManager;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 
 /**
@@ -19,6 +20,10 @@ public class IELootFunctions
 	{
 		LootFunctionManager.registerFunction(new BluprintzLootFunction.Serializer());
 		LootFunctionManager.registerFunction(new WindmillLootFunction.Serializer());
+
+		LootEntryManager.func_216194_a(new DropInventoryLootEntry.Serializer());
+		LootEntryManager.func_216194_a(new TileDropLootEntry.Serializer());
+		LootEntryManager.func_216194_a(new MBOriginalBlockLootEntry.Serializer());
 	}
 
 }

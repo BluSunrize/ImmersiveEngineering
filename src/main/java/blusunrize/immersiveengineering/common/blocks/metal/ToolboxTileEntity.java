@@ -33,7 +33,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -138,7 +138,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	}
 
 	@Override
-	public List<ItemStack> getTileDrops(Builder context)
+	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		ItemStack stack = new ItemStack(Tools.toolbox);
 		((InternalStorageItem)Tools.toolbox).setContainedItems(stack, inventory);
@@ -165,12 +165,6 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 				this.name = stack.getDisplayName();
 			enchantments = stack.getEnchantmentTagList();
 		}
-	}
-
-	@Override
-	public boolean preventInventoryDrop()
-	{
-		return true;
 	}
 
 	@Override

@@ -41,7 +41,9 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -245,7 +247,7 @@ public class IEBlockInterfaces
 
 	public interface ITileDrop extends IReadOnPlacement
 	{
-		List<ItemStack> getTileDrops(Builder context);
+		List<ItemStack> getTileDrops(LootContext context);
 
 		default ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
 		{
@@ -259,12 +261,8 @@ public class IEBlockInterfaces
 							.withNullableParameter(LootParameters.TOOL, ItemStack.EMPTY)
 							.withNullableParameter(LootParameters.BLOCK_STATE, world.getBlockState(tile.getPos()))
 							.withNullableParameter(LootParameters.POSITION, tile.getPos())
+							.build(LootParameterSets.BLOCK)
 			).get(0);
-		}
-
-		default boolean preventInventoryDrop()
-		{
-			return false;
 		}
 	}
 

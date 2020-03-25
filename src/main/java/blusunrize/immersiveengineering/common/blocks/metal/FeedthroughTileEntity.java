@@ -24,7 +24,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootParameters;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -124,11 +126,16 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public List<ItemStack> getTileDrops(Builder context)
+	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
 		if(offset==0)
-			return Utils.getDrops(stateForMiddle, context);
+		{
+			LootContext.Builder builder = new LootContext.Builder(context.getWorld())
+					.withNullableParameter(LootParameters.TOOL, context.get(LootParameters.TOOL))
+					.withNullableParameter(LootParameters.THIS_ENTITY, context.get(LootParameters.THIS_ENTITY));
+			return Utils.getDrops(stateForMiddle, builder);
+		}
 		else
 		{
 			return NonNullList.from(ItemStack.EMPTY,

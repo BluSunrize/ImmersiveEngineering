@@ -62,6 +62,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	protected boolean redstoneControlInverted = false;
 	//Absent means no controlling computers
 	public Optional<Boolean> computerOn = Optional.empty();
+	private T tempMasterTE;
 
 	protected MultiblockPartTileEntity(IETemplateMultiblock multiblockInstance, TileEntityType<? extends T> type, boolean hasRSControl)
 	{
@@ -288,6 +289,9 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	{
 		if(offsetToMaster.equals(Vec3i.NULL_VECTOR))
 			return (T)this;
+		// Used to provide tile-dependant drops after disassembly
+		if(tempMasterTE!=null)
+			return tempMasterTE;
 		BlockPos masterPos = getPos().subtract(offsetToMaster);
 		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
 		return this.getClass().isInstance(te)?(T)te: null;
@@ -322,6 +326,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	{
 		if(formed&&!world.isRemote)
 		{
+			tempMasterTE = master();
 			BlockPos startPos = getOrigin();
 			multiblockInstance.disassemble(world, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
 			world.removeBlock(pos, false);

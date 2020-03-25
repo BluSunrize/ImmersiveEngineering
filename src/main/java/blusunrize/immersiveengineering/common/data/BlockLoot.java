@@ -10,14 +10,15 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.data.loot.LootGenerator;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.util.loot.DropInventoryLootEntry;
+import blusunrize.immersiveengineering.common.util.loot.MBOriginalBlockLootEntry;
+import blusunrize.immersiveengineering.common.util.loot.TileDropLootEntry;
 import blusunrize.immersiveengineering.common.util.loot.WindmillLootFunction;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -33,6 +34,9 @@ import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraft.world.storage.loot.conditions.SurvivesExplosion;
 import net.minecraft.world.storage.loot.functions.ApplyBonus;
 
+import javax.annotation.Nonnull;
+import java.util.Arrays;
+
 public class BlockLoot extends LootGenerator
 {
 	public BlockLoot(DataGenerator gen)
@@ -40,6 +44,7 @@ public class BlockLoot extends LootGenerator
 		super(gen);
 	}
 
+	@Nonnull
 	public String getName()
 	{
 		return "LootTablesBlock";
@@ -60,7 +65,51 @@ public class BlockLoot extends LootGenerator
 						ItemLootEntry.builder(WoodenDevices.windmill)
 								.acceptFunction(new WindmillLootFunction.Builder())
 				)));
+		register(WoodenDevices.crate, tileDrop());
+		register(WoodenDevices.reinforcedCrate, tileDrop());
+		register(StoneDecoration.coresample, tileDrop());
+		register(MetalDevices.toolbox, tileDrop());
+		register(Cloth.shaderBanner, tileDrop());
+		register(Cloth.curtain, tileDrop());
+		for(Block cap : new Block[]{MetalDevices.capacitorLV, MetalDevices.capacitorMV, MetalDevices.capacitorHV, MetalDevices.capacitorCreative})
+			register(cap, tileDrop());
+		register(Connectors.feedthrough, tileDrop());
+		register(MetalDevices.turretChem, tileDrop());
+		register(MetalDevices.turretGun, tileDrop(), dropInv());
+		register(WoodenDevices.woodenBarrel, tileDrop());
+		register(MetalDevices.barrel, tileDrop());
+
+		registerMultiblocks();
+
+		registerSelfDropping(WoodenDevices.workbench, dropInv());
+		registerSelfDropping(MetalDevices.belljar, dropInv());
+		registerSelfDropping(MetalDevices.chargingStation, dropInv());
+
 		registerAllRemainingAsDefault();
+	}
+
+	private void registerMultiblocks()
+	{
+		registerMultiblock(Multiblocks.cokeOven);
+		registerMultiblock(Multiblocks.blastFurnace);
+		registerMultiblock(Multiblocks.alloySmelter);
+		registerMultiblock(Multiblocks.blastFurnaceAdv);
+
+		registerMultiblock(Multiblocks.crusher);
+		registerMultiblock(Multiblocks.tank);
+		registerMultiblock(Multiblocks.silo);
+		registerMultiblock(Multiblocks.assembler);
+		registerMultiblock(Multiblocks.autoWorkbench);
+		registerMultiblock(Multiblocks.bottlingMachine);
+		registerMultiblock(Multiblocks.squeezer);
+		registerMultiblock(Multiblocks.fermenter);
+		registerMultiblock(Multiblocks.refinery);
+		registerMultiblock(Multiblocks.dieselGenerator);
+		registerMultiblock(Multiblocks.excavator);
+		registerMultiblock(Multiblocks.bucketWheel);
+		registerMultiblock(Multiblocks.arcFurnace);
+		registerMultiblock(Multiblocks.lightningrod);
+		registerMultiblock(Multiblocks.mixer);
 	}
 
 	private void registerAllRemainingAsDefault()
@@ -68,6 +117,37 @@ public class BlockLoot extends LootGenerator
 		for(Block b : IEContent.registeredIEBlocks)
 			if(!tables.containsKey(toTableLoc(b.getRegistryName())))
 				registerSelfDropping(b);
+	}
+
+	private void registerMultiblock(Block b)
+	{
+		register(b, dropInv(), dropOriginalBlock());
+	}
+
+	private LootPool.Builder dropInv()
+	{
+		return createPoolBuilder()
+				.addEntry(DropInventoryLootEntry.builder());
+	}
+
+	private LootPool.Builder tileDrop()
+	{
+		return createPoolBuilder()
+				.addEntry(TileDropLootEntry.builder());
+	}
+
+	private LootPool.Builder dropOriginalBlock()
+	{
+		return createPoolBuilder()
+				.addEntry(MBOriginalBlockLootEntry.builder());
+	}
+
+	private void register(Block b, LootPool.Builder... pools)
+	{
+		LootTable.Builder builder = LootTable.builder();
+		for(LootPool.Builder pool : pools)
+			builder.addLootPool(pool);
+		register(b, builder);
 	}
 
 	private void register(Block b, LootTable.Builder table)
@@ -81,20 +161,22 @@ public class BlockLoot extends LootGenerator
 			throw new IllegalStateException("Duplicate loot table "+name);
 	}
 
-	private void registerSelfDropping(Block b)
+	private void registerSelfDropping(Block b, LootPool.Builder... pool)
 	{
-		register(b.getRegistryName(), dropProvider(b));
+		LootPool.Builder[] withSelf = Arrays.copyOf(pool, pool.length+1);
+		withSelf[withSelf.length-1] = singleItem(b);
+		register(b, withSelf);
 	}
 
 	private Builder dropProvider(IItemProvider in)
 	{
 		return LootTable
 				.builder()
-				.addLootPool(singleItemPool(in)
+				.addLootPool(singleItem(in)
 				);
 	}
 
-	private LootPool.Builder singleItemPool(IItemProvider in)
+	private LootPool.Builder singleItem(IItemProvider in)
 	{
 		return createPoolBuilder()
 				.rolls(ConstantRange.of(1))
@@ -109,7 +191,7 @@ public class BlockLoot extends LootGenerator
 	private void registerHemp()
 	{
 		LootTable.Builder ret = LootTable.builder()
-				.addLootPool(singleItemPool(Misc.hempSeeds));
+				.addLootPool(singleItem(Misc.hempSeeds));
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 			if(g==HempBlock.getMaxGrowth(g))
 			{
