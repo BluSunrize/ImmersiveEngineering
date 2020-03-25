@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
+import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -44,7 +46,7 @@ public class ClocheRecipe
 
 	public static ArrayList<ClocheRecipe> recipeList = new ArrayList<>();
 	public static List<ClocheFertilizer> fertilizerList = new ArrayList<>();
-	private static HashMap<ComparableItemStack, ResourceLocation> soilTextureMap = new HashMap<>();
+	private static List<Pair<IngredientStack, ResourceLocation>> soilTextureList = new ArrayList<>();
 
 	public ClocheRecipe(List<ItemStack> outputs, Object seed, Object soil, int time, ClocheRenderFunction renderFunction)
 	{
@@ -151,31 +153,22 @@ public class ClocheRecipe
 	/* ========== SOIL TEXTURE ========== */
 
 	/**
-	 * Registers a given Block Tag to cause a replacement of the rendered soil texture
+	 * Registers a given input (Item, Block, ItemStack, Tag) to cause a replacement of the rendered soil texture
 	 *
 	 * @param soil
 	 * @param texture
 	 */
-	public static void registerSoilTexture(Tag<Block> soil, ResourceLocation texture)
+	public static void registerSoilTexture(Object soil, ResourceLocation texture)
 	{
-		for(Block b : soil.getAllElements())
-		soilTextureMap.put(new ComparableItemStack(soil.getId()), texture);
-	}
-
-	/**
-	 * Registers a given ItemStack to cause a replacement of the rendered soil texture
-	 *
-	 * @param soil
-	 * @param texture
-	 */
-	public static void registerSoilTexture(ItemStack soil, ResourceLocation texture)
-	{
-		soilTextureMap.put(new ComparableItemStack(soil, false, false), texture);
+		soilTextureList.add(Pair.of(ApiUtils.createIngredientStack(soil), texture));
 	}
 
 	public static ResourceLocation getSoilTexture(ItemStack soil)
 	{
-		return soilTextureMap.get(new ComparableItemStack(soil, false, false));
+		for(Pair<IngredientStack, ResourceLocation> entry : soilTextureList)
+			if(entry.getKey().matches(soil))
+				return entry.getValue();
+		return null;
 	}
 
 	/* ========== CUSTOM RENDERING ========== */
