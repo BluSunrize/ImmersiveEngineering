@@ -717,7 +717,7 @@ public class IEContent
 		//IERecipes.initCraftingRecipes(event.getRegistry());
 
 		/*BELLJAR*/
-		BelljarHandler.init();
+		IERecipes.initClocheRecipes();
 
 		/*EXCAVATOR*/
 		//TODO remove
@@ -797,8 +797,6 @@ public class IEContent
 		CokeOvenRecipe.addRecipe(new ItemStack(Items.CHARCOAL), logWood, 900, 250);
 
 		IERecipes.initBlastFurnaceRecipes();
-
-		IERecipes.initClocheRecipes();
 
 		IERecipes.initMetalPressRecipes();
 
@@ -994,39 +992,6 @@ public class IEContent
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();
 		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
-
-		BelljarHandler.DefaultPlantHandler hempBelljarHandler = new BelljarHandler.DefaultPlantHandler()
-		{
-			private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
-
-			@Override
-			protected HashSet<ComparableItemStack> getSeedSet()
-			{
-				return validSeeds;
-			}
-
-			@Override
-			@OnlyIn(Dist.CLIENT)
-			public BlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
-			{
-				int age = Math.min(4, Math.round(growth*4));
-				if(age==4)
-					return new BlockState[]{
-							Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4),
-							Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.TOP0)
-					};
-				return new BlockState[]{Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.values()[age])};
-			}
-
-			@Override
-			@OnlyIn(Dist.CLIENT)
-			public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
-			{
-				return .6875f;
-			}
-		};
-		BelljarHandler.registerHandler(hempBelljarHandler);
-		hempBelljarHandler.register(new ItemStack(IEItems.Misc.hempSeeds), new ItemStack[]{new ItemStack(Ingredients.hempFiber), new ItemStack(IEItems.Misc.hempSeeds, 2)}, new ItemStack(Blocks.DIRT), Misc.hempPlant.getDefaultState());
 
 		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.MAGMA_BLOCK), 1300);
 		//TODO tags?

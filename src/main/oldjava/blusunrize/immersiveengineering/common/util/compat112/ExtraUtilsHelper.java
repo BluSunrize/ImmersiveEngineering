@@ -9,8 +9,6 @@
 package blusunrize.immersiveengineering.common.util.compat112;
 
 import blusunrize.immersiveengineering.api.ComparableItemStack;
-import blusunrize.immersiveengineering.api.tool.BelljarHandler;
-import blusunrize.immersiveengineering.api.tool.BelljarHandler.DefaultPlantHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
