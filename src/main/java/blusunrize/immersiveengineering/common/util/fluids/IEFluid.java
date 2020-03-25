@@ -39,8 +39,10 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -132,6 +134,12 @@ public class IEFluid extends FlowingFluid
 				public boolean hasContainerItem(ItemStack stack)
 				{
 					return true;
+				}
+
+				@Override
+				public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
+				{
+					return new FluidBucketWrapper(stack);
 				}
 			};
 			this.bucket.setRegistryName(ImmersiveEngineering.MODID, fluidName+"_bucket");
