@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe.SecondaryOutput;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionChorus;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipe;
@@ -33,10 +34,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -181,22 +180,35 @@ public class IERecipes
 
 		ClocheRecipe.addFertilizer(Items.BONE_MEAL, 1.25f);
 
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.WHEAT, 2), new ItemStack(Items.WHEAT_SEEDS, 1)), Items.WHEAT_SEEDS, Tags.Blocks.DIRT, 320);
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.POTATO, 2)), Items.POTATO, Tags.Blocks.DIRT, 320);
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.CARROT, 2)), Items.CARROT, Tags.Blocks.DIRT, 320);
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.BEETROOT, 2), new ItemStack(Items.BEETROOT_SEEDS, 1)), Items.BEETROOT_SEEDS, Tags.Blocks.DIRT, 320);
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.NETHER_WART, 2)), Items.NETHER_WART, Tags.Blocks.NETHERRACK, 320);
 
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.PUMPKIN)), Items.PUMPKIN_SEEDS, Tags.Blocks.DIRT, 640);
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.MELON)), Items.WHEAT_SEEDS, Tags.Blocks.DIRT, 640);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.WHEAT, 2), new ItemStack(Items.WHEAT_SEEDS, 1)),
+				Items.WHEAT_SEEDS, Tags.Blocks.DIRT, 640, ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.WHEAT));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.POTATO, 2)), Items.POTATO, Tags.Blocks.DIRT, 800,
+				ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.POTATOES));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.CARROT, 2)), Items.CARROT, Tags.Blocks.DIRT, 800,
+				ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.CARROTS));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.BEETROOT, 2), new ItemStack(Items.BEETROOT_SEEDS, 1)),
+				Items.BEETROOT_SEEDS, Tags.Blocks.DIRT, 800, ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.BEETROOTS));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.NETHER_WART, 2)), Items.NETHER_WART, Tags.Blocks.NETHERRACK, 800,
+				ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.CARROTS));
 
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.SUGAR_CANE, 2)), Items.SUGAR_CANE, Tags.Blocks.SAND, 640);
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.CACTUS, 2)), Items.CACTUS, Tags.Blocks.SAND, 640);
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.CHORUS_FRUIT)), Items.CHORUS_FLOWER, Tags.Blocks.END_STONES, 640);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.PUMPKIN)), Items.PUMPKIN_SEEDS, Tags.Blocks.DIRT, 800,
+				ClocheRecipe.RENDER_FUNCTION_STEM.apply(Blocks.PUMPKIN));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.MELON)), Items.WHEAT_SEEDS, Tags.Blocks.DIRT, 800,
+				ClocheRecipe.RENDER_FUNCTION_STEM.apply(Blocks.MELON));
+
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.SUGAR_CANE)), Items.SUGAR_CANE, Tags.Blocks.SAND, 560,
+				ClocheRecipe.RENDER_FUNCTION_STACK.apply(Blocks.SUGAR_CANE));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.CACTUS)), Items.CACTUS, Tags.Blocks.SAND, 560,
+				ClocheRecipe.RENDER_FUNCTION_STACK.apply(Blocks.CACTUS));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.CHORUS_FRUIT)), Items.CHORUS_FLOWER, Tags.Blocks.END_STONES, 480,
+				new RenderFunctionChorus());
 
 		IngredientStack shroomSoil = new IngredientStack(ImmutableList.of(new ItemStack(Blocks.MYCELIUM), new ItemStack(Blocks.PODZOL)));
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.RED_MUSHROOM, 2)), Items.RED_MUSHROOM, shroomSoil, 480);
-		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.BROWN_MUSHROOM, 2)), Items.BROWN_MUSHROOM, shroomSoil, 480);
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.RED_MUSHROOM, 1)), Items.RED_MUSHROOM, shroomSoil, 480,
+				ClocheRecipe.RENDER_FUNCTION_GENERIC.apply(Blocks.RED_MUSHROOM));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.RED_MUSHROOM, 1)), Items.RED_MUSHROOM, shroomSoil, 480,
+				ClocheRecipe.RENDER_FUNCTION_GENERIC.apply(Blocks.RED_MUSHROOM));
 	}
 
 	public static void initMetalPressRecipes()

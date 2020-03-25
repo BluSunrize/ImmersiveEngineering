@@ -117,13 +117,12 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		ApiUtils.checkForNeedlessTicking(this);
 		if(dummy!=0||world.getRedstonePowerFromNeighbors(getPos()) > 0)
 			return;
-		ItemStack soil = inventory.get(SLOT_SOIL);
 		ItemStack seed = inventory.get(SLOT_SEED);
 		if(world.isRemote)
 		{
 			if(energyStorage.getEnergyStored() > IEConfig.MACHINES.belljar_consumption.get()&&fertilizerAmount > 0&&renderActive)
 			{
-				ClocheRecipe recipe = ClocheRecipe.findRecipe(seed, soil);
+				ClocheRecipe recipe = getRecipe();
 				if(recipe!=null&&fertilizerAmount > 0)
 				{
 					if(renderGrowth < recipe.time)
@@ -147,7 +146,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		{
 			if(!seed.isEmpty())
 			{
-				ClocheRecipe recipe = ClocheRecipe.findRecipe(seed, soil);
+				ClocheRecipe recipe = getRecipe();
 				int consumption = IEConfig.MACHINES.belljar_consumption.get();
 				if(recipe!=null&&fertilizerAmount > 0&&energyStorage.extractEnergy(consumption, true)==consumption)
 				{
@@ -261,6 +260,13 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 					}
 			}
 		}
+	}
+
+	@Nullable
+	public ClocheRecipe getRecipe(){
+		ItemStack soil = inventory.get(SLOT_SOIL);
+		ItemStack seed = inventory.get(SLOT_SEED);
+		return ClocheRecipe.findRecipe(seed, soil);
 	}
 
 	protected void sendSyncPacket(int type)
