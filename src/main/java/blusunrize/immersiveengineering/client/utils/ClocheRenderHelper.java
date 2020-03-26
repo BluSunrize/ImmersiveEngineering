@@ -124,12 +124,12 @@ public class ClocheRenderHelper
 			Set<Pair<BlockState, TRSRTransformation>> ret = new HashSet();
 			Matrix4f stemMatrix = new Matrix4f();
 			stemMatrix.setIdentity();
-			stemMatrix.rotY(-1.571f); //-90 deg
+			stemMatrix.rotY(-(float)Math.PI/2); //-90 deg
 			stemMatrix.setTranslation(new Vector3f(.75f, .0625f, 0));
 
 			if(growth < .375)
 			{
-				int age = Math.min(7, Math.round(7*growth/.375f));
+				int age = Math.round(7*growth/.375f);
 				return ImmutableList.of(Pair.of(this.stemBlock.getDefaultState().with(StemBlock.AGE, age), new TRSRTransformation(stemMatrix)));
 			}
 			else
