@@ -8,11 +8,10 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.tool.BelljarHandler.IPlantHandler;
+import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
@@ -34,15 +33,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
+import net.minecraftforge.common.model.TRSRTransformation;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 {
@@ -85,40 +83,45 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 
 
 		GlStateManager.enableCull();
-		IPlantHandler plantHandler = tile.getCurrentPlantHandler();
-		if(plantHandler!=null)
+
+		ClocheRecipe recipe = tile.getRecipe();
+		if(recipe!=null)
 		{
 			GlStateManager.pushMatrix();
+			GlStateManager.color4f(1,1,1,1);
+			GlStateManager.disableBlend();
 			GlStateManager.translated(0, 1.0625, 0);
-			GlStateManager.color3f(1, 1, 1);
+
 			NonNullList<ItemStack> inventory = tile.getInventory();
-			float scale = plantHandler.getRenderSize(inventory.get(1), inventory.get(0), tile.renderGrowth, tile);
+			ItemStack seed = inventory.get(BelljarTileEntity.SLOT_SEED);
+			float growth = MathHelper.clamp(tile.renderGrowth/recipe.time, 0, 1);
+			float scale = recipe.renderFunction.getScale(seed, growth);
 			GlStateManager.translated((1-scale)/2, 0, (1-scale)/2);
 			GlStateManager.scalef(scale, scale, scale);
-			if(!plantHandler.overrideRender(inventory.get(1), inventory.get(0), tile.renderGrowth, tile, blockRenderer))
+
+			Collection<Pair<BlockState, TRSRTransformation>> blocks = recipe.renderFunction.getBlocks(seed, growth);
+			for(Pair<BlockState, TRSRTransformation> block : blocks)
 			{
-				BlockState[] states = plantHandler.getRenderedPlant(inventory.get(1), inventory.get(0), tile.renderGrowth, tile);
-				if(states==null||states.length < 1)
-					return;
-				for(BlockState s : states)
+				BlockState state = block.getLeft();
+				List<BakedQuad> plantQuadList = plantQuads.get(state);
+				if(plantQuadList==null)
 				{
-					List<BakedQuad> plantQuadList = plantQuads.get(s);
-					if(plantQuadList==null)
-					{
-						IBakedModel plantModel = blockRenderer.getModelForState(s);
-						plantQuadList = new ArrayList<>(plantModel.getQuads(s, null, Utils.RAND, EmptyModelData.INSTANCE));
-						for(Direction f : Direction.values())
-							plantQuadList.addAll(plantModel.getQuads(s, f, Utils.RAND, EmptyModelData.INSTANCE));
-						plantQuads.put(s, plantQuadList);
-					}
-					GlStateManager.pushMatrix();
-					worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-					ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorldNonnull(), blockPos, false);
-					Tessellator.getInstance().draw();
-					GlStateManager.popMatrix();
-					GlStateManager.translated(0, 1, 0);
+					IBakedModel plantModel = blockRenderer.getModelForState(state);
+					plantQuadList = new ArrayList<>(plantModel.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE));
+					for(Direction f : Direction.values())
+						plantQuadList.addAll(plantModel.getQuads(state, f, Utils.RAND, EmptyModelData.INSTANCE));
+					plantQuads.put(state, plantQuadList);
 				}
+				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);
+				GlStateManager.pushMatrix();
+				GlStateManager.multMatrix(TRSRTransformation.toMojang(block.getRight().getMatrixVec()));
+				worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+				ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorldNonnull(), blockPos, false, col);
+				Tessellator.getInstance().draw();
+				GlStateManager.popMatrix();
 			}
+
+			GlStateManager.enableBlend();
 			GlStateManager.popMatrix();
 		}
 

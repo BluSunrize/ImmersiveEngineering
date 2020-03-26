@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.util.compat112;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.IRecipeAdapter;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
-import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import ic2.api.recipe.IRecipeInput;
 import ic2.core.recipe.AdvRecipe;
 import net.minecraft.item.Item;

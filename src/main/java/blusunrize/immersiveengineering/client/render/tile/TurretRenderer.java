@@ -101,7 +101,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 		List<BakedQuad> quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(
 				new IEObjState(VisibilityList.show(parts)),
 				Model.IE_OBJ_STATE));
-		ClientUtils.renderModelTESRFancy(quads, worldRenderer, world, pos, !isFirst);
+		ClientUtils.renderModelTESRFancy(quads, worldRenderer, world, pos, !isFirst, -1);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		RenderHelper.enableStandardItemLighting();

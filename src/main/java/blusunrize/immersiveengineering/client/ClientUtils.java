@@ -1239,11 +1239,12 @@ public class ClientUtils
 	 * @param world     the world the model is in. Will be used to obtain lighting information
 	 * @param pos       the position that this model is in. Use the position the the quads are actually in, not the rendering block
 	 * @param useCached Whether to use cached information for world local data. Set to true if the previous call to this method was in the same tick and for the same world+pos
+	 * @param color 	the render color (mostly used for plants)
 	 */
-	public static void renderModelTESRFancy(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, boolean useCached)
+	public static void renderModelTESRFancy(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, boolean useCached, int color)
 	{//TODO include matrix transformations?, cache normals?
 		if(IEConfig.GENERAL.disableFancyTESR.get())
-			renderModelTESRFast(quads, renderer, world, pos);
+			renderModelTESRFast(quads, renderer, world, pos, color);
 		else
 		{
 			if(!useCached)
@@ -1276,6 +1277,13 @@ public class ClientUtils
 					}
 			}
 			int localBrightness = world.getCombinedLight(pos, 0);
+			int rgba[] = {255, 255, 255, 255};
+			if(color >= 0)
+			{
+				rgba[0] = color >> 16&255;
+				rgba[1] = color >> 8&255;
+				rgba[2] = color&255;
+			}
 			for(BakedQuad quad : quads)
 			{
 				int[] vData = quad.getVertexData();
@@ -1305,7 +1313,7 @@ public class ClientUtils
 				{
 					renderer
 							.pos(quadCoords[i][0], quadCoords[i][1], quadCoords[i][2])
-							.color(255, 255, 255, 255)
+							.color(rgba[0], rgba[1], rgba[2], rgba[3])
 							.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
 							.lightmap(l1, l2)
 							.endVertex();
@@ -1352,9 +1360,21 @@ public class ClientUtils
 
 	public static void renderModelTESRFast(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos)
 	{
+		renderModelTESRFast(quads, renderer, world, pos, -1);
+	}
+
+	public static void renderModelTESRFast(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, int color)
+	{
 		int brightness = world.getCombinedLight(pos, 0);
 		int l1 = (brightness >> 0x10)&0xFFFF;
 		int l2 = brightness&0xFFFF;
+		int rgba[] = {255, 255, 255, 255};
+		if(color >= 0)
+		{
+			rgba[0] = color >> 16&255;
+			rgba[1] = color >> 8&255;
+			rgba[2] = color&255;
+		}
 		for(BakedQuad quad : quads)
 		{
 			int[] vData = quad.getVertexData();
@@ -1367,7 +1387,7 @@ public class ClientUtils
 						.pos(Float.intBitsToFloat(vData[size*i]),
 								Float.intBitsToFloat(vData[size*i+1]),
 								Float.intBitsToFloat(vData[size*i+2]))
-						.color(255, 255, 255, 255)
+						.color(rgba[0], rgba[1], rgba[2], rgba[3])
 						.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
 						.lightmap(l1, l2)
 						.endVertex();

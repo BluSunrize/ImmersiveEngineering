@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe.SecondaryOutput;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionChorus;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionHemp;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipe;
@@ -27,12 +29,12 @@ import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
@@ -51,6 +53,7 @@ import static blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals.ores
 import static blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals.storage;
 import static blusunrize.immersiveengineering.common.items.IEItems.Ingredients.*;
 import static blusunrize.immersiveengineering.common.items.IEItems.Metals.ingots;
+import static blusunrize.immersiveengineering.common.items.IEItems.Misc.hempSeeds;
 import static blusunrize.immersiveengineering.common.items.IEItems.Molds.*;
 
 public class IERecipes
@@ -171,6 +174,47 @@ public class IERecipes
 
 		BlastFurnaceRecipe.addBlastFuel(IETags.charCoal, 300);
 		BlastFurnaceRecipe.addBlastFuel(IETags.getItemTag(IETags.charCoalBlocks), 300*10);
+	}
+
+	public static void initClocheRecipes()
+	{
+		ClocheRecipe.registerSoilTexture(new ItemStack[]{new ItemStack(Items.DIRT), new ItemStack(Items.COARSE_DIRT),
+				new ItemStack(Items.GRASS_BLOCK), new ItemStack(Items.GRASS_PATH),}, new ResourceLocation("block/farmland_moist"));
+
+		ClocheRecipe.addFertilizer(Items.BONE_MEAL, 1.25f);
+
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.WHEAT, 2), new ItemStack(Items.WHEAT_SEEDS, 1)),
+				Items.WHEAT_SEEDS, Tags.Blocks.DIRT, 640, ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.WHEAT));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.POTATO, 2)), Items.POTATO, Tags.Blocks.DIRT, 800,
+				ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.POTATOES));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.CARROT, 2)), Items.CARROT, Tags.Blocks.DIRT, 800,
+				ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.CARROTS));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.BEETROOT, 2), new ItemStack(Items.BEETROOT_SEEDS, 1)),
+				Items.BEETROOT_SEEDS, Tags.Blocks.DIRT, 800, ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.BEETROOTS));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.NETHER_WART, 2)), Items.NETHER_WART, Tags.Blocks.NETHERRACK, 800,
+				ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.CARROTS));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.SWEET_BERRIES, 2)), Items.SWEET_BERRIES, Tags.Blocks.DIRT, 560,
+				ClocheRecipe.RENDER_FUNCTION_CROP.apply(Blocks.SWEET_BERRY_BUSH));
+
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.PUMPKIN)), Items.PUMPKIN_SEEDS, Tags.Blocks.DIRT, 800,
+				ClocheRecipe.RENDER_FUNCTION_STEM.apply(Blocks.PUMPKIN));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.MELON)), Items.MELON_SEEDS, Tags.Blocks.DIRT, 800,
+				ClocheRecipe.RENDER_FUNCTION_STEM.apply(Blocks.MELON));
+
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.SUGAR_CANE)), Items.SUGAR_CANE, Tags.Blocks.SAND, 560,
+				ClocheRecipe.RENDER_FUNCTION_STACK.apply(Blocks.SUGAR_CANE));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Blocks.CACTUS)), Items.CACTUS, Tags.Blocks.SAND, 560,
+				ClocheRecipe.RENDER_FUNCTION_STACK.apply(Blocks.CACTUS));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.CHORUS_FRUIT)), Items.CHORUS_FLOWER, Tags.Blocks.END_STONES, 480,
+				new RenderFunctionChorus());
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(hempFiber), new ItemStack(hempSeeds, 2)), hempSeeds, Tags.Blocks.DIRT, 800,
+				new RenderFunctionHemp());
+
+		IngredientStack shroomSoil = new IngredientStack(ImmutableList.of(new ItemStack(Blocks.MYCELIUM), new ItemStack(Blocks.PODZOL)));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.RED_MUSHROOM, 1)), Items.RED_MUSHROOM, shroomSoil, 480,
+				ClocheRecipe.RENDER_FUNCTION_GENERIC.apply(Blocks.RED_MUSHROOM));
+		ClocheRecipe.addRecipe(ImmutableList.of(new ItemStack(Items.BROWN_MUSHROOM, 1)), Items.BROWN_MUSHROOM, shroomSoil, 480,
+				ClocheRecipe.RENDER_FUNCTION_GENERIC.apply(Blocks.BROWN_MUSHROOM));
 	}
 
 	public static void initMetalPressRecipes()
@@ -521,7 +565,7 @@ public class IERecipes
 
 	public static void addArcOreSmelting(ItemStack output, String ore)
 	{
-		if(ApiUtils.isNonemptyItemTag(getOre(ore)))
+		if(ApiUtils.isNonemptyItemTag(getOre(ore)))//ToDo this should allow blocks too
 			addArcRecipe(output, getOre(ore), 200, 512, new ItemStack(slag)).setSpecialRecipeType("Ores");
 	}
 

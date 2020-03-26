@@ -79,7 +79,7 @@ public class ApiUtils
 {
 	public static boolean compareToOreName(ItemStack stack, ResourceLocation oreName)
 	{
-		if(!isNonemptyItemTag(oreName))
+		if(!isNonemptyBlockOrItemTag(oreName))
 			return false;
 		Tag<Item> itemTag = ItemTags.getCollection().get(oreName);
 		if(itemTag!=null&&itemTag.getAllElements().contains(stack.getItem()))

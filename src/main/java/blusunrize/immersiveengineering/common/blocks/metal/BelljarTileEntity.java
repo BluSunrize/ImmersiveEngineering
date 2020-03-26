@@ -13,11 +13,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.tool.BelljarHandler;
-import blusunrize.immersiveengineering.api.tool.BelljarHandler.FluidFertilizerHandler;
-import blusunrize.immersiveengineering.api.tool.BelljarHandler.IPlantHandler;
-import blusunrize.immersiveengineering.api.tool.BelljarHandler.ItemFertilizerHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -41,6 +38,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -69,6 +67,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
 		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE, IOBJModelCallback<BlockState>
@@ -92,12 +91,11 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		@Override
 		public boolean isFluidValid(FluidStack fluid)
 		{
-			return BelljarHandler.getFluidFertilizerHandler(fluid)!=null;
+			return FluidTags.WATER.contains(fluid.getFluid());
 		}
 	};
 	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEConfig.MACHINES.belljar_consumption.get()));
 
-	private IPlantHandler curPlantHandler;
 	public int fertilizerAmount = 0;
 	public float fertilizerMod = 1;
 	private float growth = 0;
@@ -119,22 +117,21 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		ApiUtils.checkForNeedlessTicking(this);
 		if(dummy!=0||world.getRedstonePowerFromNeighbors(getPos()) > 0)
 			return;
-		ItemStack soil = inventory.get(SLOT_SOIL);
 		ItemStack seed = inventory.get(SLOT_SEED);
 		if(world.isRemote)
 		{
 			if(energyStorage.getEnergyStored() > IEConfig.MACHINES.belljar_consumption.get()&&fertilizerAmount > 0&&renderActive)
 			{
-				IPlantHandler handler = getCurrentPlantHandler();
-				if(handler!=null&&handler.isCorrectSoil(seed, soil)&&fertilizerAmount > 0)
+				ClocheRecipe recipe = getRecipe();
+				if(recipe!=null&&fertilizerAmount > 0)
 				{
-					if(renderGrowth < 1)
+					if(renderGrowth < recipe.time + IEConfig.MACHINES.belljar_growth_mod.get()*fertilizerMod)
 					{
-						renderGrowth += handler.getGrowthStep(seed, soil, renderGrowth, this, fertilizerMod, true);
+						renderGrowth += IEConfig.MACHINES.belljar_growth_mod.get()*fertilizerMod;
 						fertilizerAmount--;
 					}
 					else
-						renderGrowth = handler.resetGrowth(seed, soil, renderGrowth, this, true);
+						renderGrowth = 0;
 					if(Utils.RAND.nextInt(8)==0)
 					{
 						double partX = getPos().getX()+.5;
@@ -149,15 +146,14 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		{
 			if(!seed.isEmpty())
 			{
+				ClocheRecipe recipe = getRecipe();
 				int consumption = IEConfig.MACHINES.belljar_consumption.get();
-				IPlantHandler handler = getCurrentPlantHandler();
-				if(handler!=null&&handler.isCorrectSoil(seed, soil)&&fertilizerAmount > 0&&
-						energyStorage.extractEnergy(consumption, true)==consumption)
+				if(recipe!=null&&fertilizerAmount > 0&&energyStorage.extractEnergy(consumption, true)==consumption)
 				{
 					boolean consume = false;
-					if(growth >= 1)
+					if(growth >= recipe.time)
 					{
-						ItemStack[] outputs = handler.getOutput(seed, soil, this);
+						List<ItemStack> outputs = recipe.outputs;
 						int canFit = 0;
 						boolean[] emptySlotsUsed = new boolean[4];
 						for(ItemStack output : outputs)
@@ -173,7 +169,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 										break;
 									}
 								}
-						if(canFit >= outputs.length)
+						if(canFit >= outputs.size())
 						{
 							for(ItemStack output : outputs)
 								for(int j = 3; j < 7; j++)
@@ -190,13 +186,13 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 										break;
 									}
 								}
-							growth = handler.resetGrowth(seed, soil, growth, this, false);
+							growth = 0;
 							consume = true;
 						}
 					}
-					else if(growth < 1)
+					else
 					{
-						growth += IEConfig.MACHINES.belljar_growth_mod.get()*handler.getGrowthStep(seed, soil, growth, this, fertilizerMod, false);
+						growth += IEConfig.MACHINES.belljar_growth_mod.get()*fertilizerMod;
 						consume = true;
 						if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
 							sendSyncPacket(0);
@@ -223,24 +219,22 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 				int fluidConsumption = IEConfig.MACHINES.belljar_fluid.get();
 				if(fertilizerAmount <= 0&&tank.getFluidAmount() >= fluidConsumption)
 				{
-					FluidFertilizerHandler fluidFert = BelljarHandler.getFluidFertilizerHandler(tank.getFluid());
-					if(fluidFert!=null)
+					fertilizerMod = 1;
+					tank.drain(fluidConsumption, FluidAction.EXECUTE);
+					ItemStack fertilizer = inventory.get(SLOT_FERTILIZER);
+					if(!fertilizer.isEmpty())
 					{
-						fertilizerMod = fluidFert.getGrowthMultiplier(tank.getFluid(), seed, soil, this);
-						tank.drain(fluidConsumption, FluidAction.EXECUTE);
-						ItemStack fertilizer = inventory.get(SLOT_FERTILIZER);
-						if(!fertilizer.isEmpty())
+						float itemMod = ClocheRecipe.getFertilizerGrowthModifier(fertilizer);
+						if(itemMod > 0)
 						{
-							ItemFertilizerHandler itemFert = BelljarHandler.getItemFertilizerHandler(fertilizer);
-							if(itemFert!=null)
-								fertilizerMod *= itemFert.getGrowthMultiplier(fertilizer, seed, soil, this);
+							fertilizerMod *= itemMod;
 							fertilizer.shrink(1);
 							if(fertilizer.getCount() <= 0)
 								inventory.set(2, ItemStack.EMPTY);
 						}
-						fertilizerAmount = IEConfig.MACHINES.belljar_fertilizer.get();
-						sendSyncPacket(1);
 					}
+					fertilizerAmount = IEConfig.MACHINES.belljar_fertilizer.get();
+					sendSyncPacket(1);
 				}
 			}
 			else
@@ -269,12 +263,10 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	}
 
 	@Nullable
-	public IPlantHandler getCurrentPlantHandler()
-	{
+	public ClocheRecipe getRecipe(){
+		ItemStack soil = inventory.get(SLOT_SOIL);
 		ItemStack seed = inventory.get(SLOT_SEED);
-		if(curPlantHandler==null||!curPlantHandler.isValid(seed))
-			curPlantHandler = BelljarHandler.getHandler(seed);
-		return curPlantHandler;
+		return ClocheRecipe.findRecipe(seed, soil);
 	}
 
 	protected void sendSyncPacket(int type)
@@ -415,7 +407,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		if(slot==SLOT_FERTILIZER)
-			return BelljarHandler.getItemFertilizerHandler(stack)!=null;
+			return ClocheRecipe.isValidFertilizer(stack);
 		else
 			return true;
 	}
@@ -529,9 +521,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	private ResourceLocation getSoilTexture()
 	{
 		ItemStack soil = inventory.get(SLOT_SOIL);
-		ResourceLocation rl = curPlantHandler!=null?curPlantHandler.getSoilTexture(inventory.get(SLOT_SEED), soil, this): null;
-		if(rl==null)
-			rl = BelljarHandler.getSoilTexture(soil);
+		ResourceLocation rl = ClocheRecipe.getSoilTexture(soil);
 		if(rl==null)
 		{
 			try

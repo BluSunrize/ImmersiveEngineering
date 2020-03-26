@@ -26,6 +26,10 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionCrop;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionGeneric;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionStacking;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionStem;
 import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
@@ -51,13 +55,13 @@ import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEShaders;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.fluids.ConcreteFluid;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
+import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.Villages;
@@ -66,7 +70,6 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CropsBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -401,7 +404,7 @@ public class IEContent
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
-				.setNotNormalBlock().setLightOpacity(0).setBlockLayer(BlockRenderLayer.TRANSLUCENT);
+				.setNotNormalBlock().setLightOpacity(0).setBlockLayer(BlockRenderLayer.CUTOUT);
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
@@ -524,6 +527,11 @@ public class IEContent
 		BulletHandler.emptyShell = new ItemStack(Ingredients.emptyShell);
 		IEWireTypes.setup();
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
+
+		ClocheRecipe.RENDER_FUNCTION_CROP = RenderFunctionCrop::new;
+		ClocheRecipe.RENDER_FUNCTION_STACK = RenderFunctionStacking::new;
+		ClocheRecipe.RENDER_FUNCTION_STEM = RenderFunctionStem::new;
+		ClocheRecipe.RENDER_FUNCTION_GENERIC = RenderFunctionGeneric::new;
 
 		IELootFunctions.preInit();
 		IEShaders.preInit();
@@ -709,7 +717,7 @@ public class IEContent
 		//IERecipes.initCraftingRecipes(event.getRegistry());
 
 		/*BELLJAR*/
-		BelljarHandler.init();
+		IERecipes.initClocheRecipes();
 
 		/*EXCAVATOR*/
 		//TODO remove
@@ -984,39 +992,6 @@ public class IEContent
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();
 		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
-
-		BelljarHandler.DefaultPlantHandler hempBelljarHandler = new BelljarHandler.DefaultPlantHandler()
-		{
-			private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
-
-			@Override
-			protected HashSet<ComparableItemStack> getSeedSet()
-			{
-				return validSeeds;
-			}
-
-			@Override
-			@OnlyIn(Dist.CLIENT)
-			public BlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
-			{
-				int age = Math.min(4, Math.round(growth*4));
-				if(age==4)
-					return new BlockState[]{
-							Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4),
-							Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.TOP0)
-					};
-				return new BlockState[]{Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.values()[age])};
-			}
-
-			@Override
-			@OnlyIn(Dist.CLIENT)
-			public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
-			{
-				return .6875f;
-			}
-		};
-		BelljarHandler.registerHandler(hempBelljarHandler);
-		hempBelljarHandler.register(new ItemStack(IEItems.Misc.hempSeeds), new ItemStack[]{new ItemStack(Ingredients.hempFiber), new ItemStack(IEItems.Misc.hempSeeds, 2)}, new ItemStack(Blocks.DIRT), Misc.hempPlant.getDefaultState());
 
 		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.MAGMA_BLOCK), 1300);
 		//TODO tags?
