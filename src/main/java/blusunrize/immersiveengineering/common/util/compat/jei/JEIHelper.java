@@ -153,7 +153,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.alloySmelter), AlloySmelterRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.blastFurnaceAdv), BlastFurnaceRecipeCategory.UID, BlastFurnaceFuelCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.blastFurnace), BlastFurnaceRecipeCategory.UID, BlastFurnaceFuelCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(MetalDevices.belljar), ClocheRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(MetalDevices.cloche), ClocheRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.metalPress), MetalPressRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.crusher), CrusherRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(WoodenDevices.workbench), WorkbenchRecipeCategory.UID);

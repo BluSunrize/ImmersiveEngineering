@@ -72,7 +72,7 @@ public class GuiHandler
 		register(TurretGunTileEntity.class, Lib.GUIID_Turret_Gun, TurretContainer::new);
 		register(TurretChemTileEntity.class, Lib.GUIID_Turret_Chem, TurretContainer::new);
 		register(FluidSorterTileEntity.class, Lib.GUIID_FluidSorter, FluidSorterContainer::new);
-		register(BelljarTileEntity.class, Lib.GUIID_Belljar, BelljarContainer::new);
+		register(ClocheTileEntity.class, Lib.GUIID_Cloche, ClocheContainer::new);
 		register(ToolboxTileEntity.class, Lib.GUIID_ToolboxBlock, ToolboxBlockContainer::new);
 
 		register(ToolboxItem.class, Lib.GUIID_Toolbox, ToolboxContainer::new);

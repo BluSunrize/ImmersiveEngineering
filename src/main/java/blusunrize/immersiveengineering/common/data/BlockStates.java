@@ -11,9 +11,7 @@ package blusunrize.immersiveengineering.common.data;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.client.models.ModelConfigurableSides;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Loader;
-import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
@@ -50,10 +48,7 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
-import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
-import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.openal.SOFTOutputLimiter;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -353,8 +348,8 @@ public class BlockStates extends BlockStateProvider
 		simpleBlock(MetalDevices.fluidPipe, ieObj("block/metal_device/fluid_pipe.obj.ie"));
 
 		createMultiblock(
-				MetalDevices.belljar,
-				ieObj("block/metal_device/belljar.obj.ie")
+				MetalDevices.cloche,
+				ieObj("block/metal_device/cloche.obj.ie")
 		);
 		createMultiblock(
 				MetalDevices.turretChem,

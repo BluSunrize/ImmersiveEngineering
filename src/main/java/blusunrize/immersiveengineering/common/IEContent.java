@@ -40,7 +40,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
@@ -68,7 +67,6 @@ import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
@@ -92,8 +90,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -402,7 +398,7 @@ public class IEContent
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
-		MetalDevices.belljar = new GenericTileBlock("cloche", () -> BelljarTileEntity.TYPE, defaultMetalProperties,
+		MetalDevices.cloche = new GenericTileBlock("cloche", () -> ClocheTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
 				.setNotNormalBlock().setLightOpacity(0).setBlockLayer(BlockRenderLayer.CUTOUT);
 
@@ -690,7 +686,7 @@ public class IEContent
 		registerTile(FloodlightTileEntity.class, event, MetalDevices.floodlight);
 		registerTile(TurretChemTileEntity.class, event, MetalDevices.turretChem);
 		registerTile(TurretGunTileEntity.class, event, MetalDevices.turretGun);
-		registerTile(BelljarTileEntity.class, event, MetalDevices.belljar);
+		registerTile(ClocheTileEntity.class, event, MetalDevices.cloche);
 
 		registerTile(MetalPressTileEntity.class, event, Multiblocks.metalPress);
 		registerTile(CrusherTileEntity.class, event, Multiblocks.crusher);
@@ -716,7 +712,7 @@ public class IEContent
 		/*CRAFTING*/
 		//IERecipes.initCraftingRecipes(event.getRegistry());
 
-		/*BELLJAR*/
+		/*CLOCHE*/
 		IERecipes.initClocheRecipes();
 
 		/*EXCAVATOR*/

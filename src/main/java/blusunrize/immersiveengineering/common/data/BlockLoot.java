@@ -82,7 +82,7 @@ public class BlockLoot extends LootGenerator
 		registerMultiblocks();
 
 		registerSelfDropping(WoodenDevices.workbench, dropInv());
-		registerSelfDropping(MetalDevices.belljar, dropInv());
+		registerSelfDropping(MetalDevices.cloche, dropInv());
 		registerSelfDropping(MetalDevices.chargingStation, dropInv());
 
 		registerAllRemainingAsDefault();

@@ -87,8 +87,8 @@ public class ItemModels extends LoadedModelProvider
 				.texture("post", modLoc("block/metal_decoration/aluminum_post"))
 				.transforms(modLoc("item/post"));
 
-		obj(MetalDevices.belljar, rl("block/metal_device/belljar.obj.ie"))
-				.transforms(rl("item/belljar"));
+		obj(MetalDevices.cloche, rl("block/metal_device/cloche.obj.ie"))
+				.transforms(rl("item/cloche"));
 		obj(MetalDevices.teslaCoil, rl("block/metal_device/teslacoil.obj"))
 				.transforms(rl("item/teslacoil"));
 

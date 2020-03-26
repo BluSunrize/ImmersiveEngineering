@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity;
-import blusunrize.immersiveengineering.common.gui.BelljarContainer;
+import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
+import blusunrize.immersiveengineering.common.gui.ClocheContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -23,11 +23,11 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 
-public class BelljarScreen extends IEContainerScreen<BelljarContainer>
+public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 {
-	private BelljarTileEntity tile;
+	private ClocheTileEntity tile;
 
-	public BelljarScreen(BelljarContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public ClocheScreen(ClocheContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
 		super(container, inventoryPlayer, title);
 		this.tile = container.tile;
@@ -38,10 +38,10 @@ public class BelljarScreen extends IEContainerScreen<BelljarContainer>
 	{
 		super.render(mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
-		ClientUtils.handleGuiTank(tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, "immersiveengineering:textures/gui/belljar.png", tooltip);
+		ClientUtils.handleGuiTank(tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, "immersiveengineering:textures/gui/cloche.png", tooltip);
 		if(mx > guiLeft+30&&mx < guiLeft+37&&my > guiTop+22&&my < guiTop+68)
 		{
-			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fertFill", Utils.formatDouble(tile.fertilizerAmount/(float)IEConfig.MACHINES.belljar_fertilizer.get(), "0.00")));
+			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fertFill", Utils.formatDouble(tile.fertilizerAmount/(float)IEConfig.MACHINES.cloche_fertilizer.get(), "0.00")));
 			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fertMod", Utils.formatDouble(tile.fertilizerMod, "0.00")));
 
 		}
@@ -60,12 +60,12 @@ public class BelljarScreen extends IEContainerScreen<BelljarContainer>
 	{
 		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		GlStateManager.enableBlend();
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/belljar.png");
+		ClientUtils.bindTexture("immersiveengineering:textures/gui/cloche.png");
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 		GlStateManager.disableBlend();
 
-		ClientUtils.handleGuiTank(tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, "immersiveengineering:textures/gui/belljar.png", null);
-		int stored = (int)(46*(tile.fertilizerAmount/(float)IEConfig.MACHINES.belljar_fertilizer.get()));
+		ClientUtils.handleGuiTank(tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, "immersiveengineering:textures/gui/cloche.png", null);
+		int stored = (int)(46*(tile.fertilizerAmount/(float)IEConfig.MACHINES.cloche_fertilizer.get()));
 		ClientUtils.drawGradientRect(guiLeft+30, guiTop+22+(46-stored), guiLeft+37, guiTop+68, 0xff95ed00, 0xff8a5a00);
 
 		stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));

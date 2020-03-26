@@ -32,7 +32,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlabBlock;
-import net.minecraft.block.StairsBlock;
 import net.minecraft.data.*;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -833,7 +832,7 @@ public class Recipes extends RecipeProvider
 			.key('e', MetalDecoration.engineeringRS)
 			.addCriterion("has_"+toPath(Weapons.revolver), hasItem(Weapons.revolver))
 			.build(out);
-		ShapedRecipeBuilder.shapedRecipe(MetalDevices.belljar)
+		ShapedRecipeBuilder.shapedRecipe(MetalDevices.cloche)
 				.patternLine("geg")
 				.patternLine("g g")
 				.patternLine("wcw")

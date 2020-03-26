@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.util.compat.jei.cloche;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
@@ -34,7 +33,7 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 	{
 		super(ClocheRecipe.class, helper, UID, "block.immersiveengineering.cloche");
 		setBackground(helper.createBlankDrawable(100, 50));
-		setIcon(new ItemStack(IEBlocks.MetalDevices.belljar));
+		setIcon(new ItemStack(IEBlocks.MetalDevices.cloche));
 	}
 
 	@Override

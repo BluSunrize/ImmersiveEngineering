@@ -245,17 +245,17 @@ public class IEConfig
 			turret_consumption = addPositive(builder, "turret_consumption", 64, "The Flux per tick any turret consumes to monitor the area");
 			turret_chem_consumption = addPositive(builder, "turret_chem_consumption", 32, "The Flux per tick the chemthrower turret consumes to shoot");
 			turret_gun_consumption = addPositive(builder, "turret_gun_consumption", 32, "The Flux per tick the gun turret consumes to shoot");
-			belljar_consumption = addPositive(builder, "garden_cloche_consumption", 8, "The Flux per tick the belljar consumes to grow plants");
-			belljar_fertilizer = addPositive(builder, "garden_cloche_fertilizer", 6000, "The amount of ticks one dose of fertilizer lasts in the belljar");
-			belljar_fluid = addPositive(builder, "garden_cloche_fluid", 250, "The amount of fluid the belljar uses per dose of fertilizer");
-			belljar_growth_mod = builder
-					.comment("A modifier to apply to the belljars total growing speed")
+			cloche_consumption = addPositive(builder, "garden_cloche_consumption", 8, "The Flux per tick the cloche consumes to grow plants");
+			cloche_fertilizer = addPositive(builder, "garden_cloche_fertilizer", 6000, "The amount of ticks one dose of fertilizer lasts in the cloche");
+			cloche_fluid = addPositive(builder, "garden_cloche_fluid", 250, "The amount of fluid the cloche uses per dose of fertilizer");
+			cloche_growth_mod = builder
+					.comment("A modifier to apply to the cloches total growing speed")
 					.defineInRange("garden_cloche_growth_modifier", 1, 1e-3, 1e3);
-			belljar_solid_fertilizer_mod = builder
-					.comment("A base-modifier for all solid fertilizers in the belljar")
+			cloche_solid_fertilizer_mod = builder
+					.comment("A base-modifier for all solid fertilizers in the cloche")
 					.defineInRange("garden_cloche_solid_fertilizer_mod", 1, 1e-3, 1e3);
-			belljar_fluid_fertilizer_mod = builder
-					.comment("A base-modifier for all fluid fertilizers in the belljar")
+			cloche_fluid_fertilizer_mod = builder
+					.comment("A base-modifier for all fluid fertilizers in the cloche")
 					.defineInRange("garden_cloche_fluid_fertilizer_mod", 1, 1e-3, 1e3);
 			lantern_spawnPrevent = builder
 					.comment("Set this to false to disable the mob-spawn prevention of the Powered Lantern")
@@ -378,12 +378,12 @@ public class IEConfig
 		public final IntValue turret_consumption;
 		public final IntValue turret_chem_consumption;
 		public final IntValue turret_gun_consumption;
-		public final IntValue belljar_consumption;
-		public final IntValue belljar_fertilizer;
-		public final IntValue belljar_fluid;
-		public final DoubleValue belljar_growth_mod;
-		public final DoubleValue belljar_solid_fertilizer_mod;
-		public final DoubleValue belljar_fluid_fertilizer_mod;
+		public final IntValue cloche_consumption;
+		public final IntValue cloche_fertilizer;
+		public final IntValue cloche_fluid;
+		public final DoubleValue cloche_growth_mod;
+		public final DoubleValue cloche_solid_fertilizer_mod;
+		public final DoubleValue cloche_fluid_fertilizer_mod;
 
 		//Lights
 		public final BooleanValue lantern_spawnPrevent;

@@ -69,10 +69,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
+public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
 		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE, IOBJModelCallback<BlockState>
 {
-	public static TileEntityType<BelljarTileEntity> TYPE;
+	public static TileEntityType<ClocheTileEntity> TYPE;
 
 	public static final int SLOT_SOIL = 0;
 	public static final int SLOT_SEED = 1;
@@ -85,7 +85,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		@Override
 		protected void onContentsChanged()
 		{
-			BelljarTileEntity.this.sendSyncPacket(2);
+			ClocheTileEntity.this.sendSyncPacket(2);
 		}
 
 		@Override
@@ -94,7 +94,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 			return FluidTags.WATER.contains(fluid.getFluid());
 		}
 	};
-	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEConfig.MACHINES.belljar_consumption.get()));
+	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEConfig.MACHINES.cloche_consumption.get()));
 
 	public int fertilizerAmount = 0;
 	public float fertilizerMod = 1;
@@ -102,7 +102,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	public float renderGrowth = 0;
 	public boolean renderActive = false;
 
-	public BelljarTileEntity()
+	public ClocheTileEntity()
 	{
 		super(TYPE);
 	}
@@ -120,14 +120,14 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		ItemStack seed = inventory.get(SLOT_SEED);
 		if(world.isRemote)
 		{
-			if(energyStorage.getEnergyStored() > IEConfig.MACHINES.belljar_consumption.get()&&fertilizerAmount > 0&&renderActive)
+			if(energyStorage.getEnergyStored() > IEConfig.MACHINES.cloche_consumption.get()&&fertilizerAmount > 0&&renderActive)
 			{
 				ClocheRecipe recipe = getRecipe();
 				if(recipe!=null&&fertilizerAmount > 0)
 				{
-					if(renderGrowth < recipe.time + IEConfig.MACHINES.belljar_growth_mod.get()*fertilizerMod)
+					if(renderGrowth < recipe.time + IEConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
 					{
-						renderGrowth += IEConfig.MACHINES.belljar_growth_mod.get()*fertilizerMod;
+						renderGrowth += IEConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
 						fertilizerAmount--;
 					}
 					else
@@ -147,7 +147,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 			if(!seed.isEmpty())
 			{
 				ClocheRecipe recipe = getRecipe();
-				int consumption = IEConfig.MACHINES.belljar_consumption.get();
+				int consumption = IEConfig.MACHINES.cloche_consumption.get();
 				if(recipe!=null&&fertilizerAmount > 0&&energyStorage.extractEnergy(consumption, true)==consumption)
 				{
 					boolean consume = false;
@@ -192,7 +192,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 					}
 					else
 					{
-						growth += IEConfig.MACHINES.belljar_growth_mod.get()*fertilizerMod;
+						growth += IEConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
 						consume = true;
 						if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
 							sendSyncPacket(0);
@@ -216,7 +216,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 				else
 					growth = 0;
 
-				int fluidConsumption = IEConfig.MACHINES.belljar_fluid.get();
+				int fluidConsumption = IEConfig.MACHINES.cloche_fluid.get();
 				if(fertilizerAmount <= 0&&tank.getFluidAmount() >= fluidConsumption)
 				{
 					fertilizerMod = 1;
@@ -233,7 +233,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 								inventory.set(2, ItemStack.EMPTY);
 						}
 					}
-					fertilizerAmount = IEConfig.MACHINES.belljar_fertilizer.get();
+					fertilizerAmount = IEConfig.MACHINES.cloche_fertilizer.get();
 					sendSyncPacket(1);
 				}
 			}
@@ -381,8 +381,8 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		for(int i = 1; i <= 2; i++)
 		{
 			world.setBlockState(pos.up(i), state);
-			((BelljarTileEntity)world.getTileEntity(pos.up(i))).dummy = i;
-			((BelljarTileEntity)world.getTileEntity(pos.up(i))).setFacing(getFacing());
+			((ClocheTileEntity)world.getTileEntity(pos.up(i))).dummy = i;
+			((ClocheTileEntity)world.getTileEntity(pos.up(i))).setFacing(getFacing());
 		}
 	}
 
@@ -392,7 +392,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		for(int i = 0; i <= 2; i++)
 		{
 			BlockPos p = getPos().down(dummy).up(i);
-			if(world.getTileEntity(p) instanceof BelljarTileEntity)
+			if(world.getTileEntity(p) instanceof ClocheTileEntity)
 				world.removeBlock(p, false);
 		}
 	}
@@ -449,7 +449,7 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 				return inputHandler.cast();
 			if(dummy==1&&(facing==null||facing==this.getFacing().getOpposite()))
 			{
-				BelljarTileEntity te = getGuiMaster();
+				ClocheTileEntity te = getGuiMaster();
 				if(te!=null)
 					return te.outputHandler.cast();
 			}
@@ -466,13 +466,13 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 	}
 
 	@Override
-	public BelljarTileEntity getGuiMaster()
+	public ClocheTileEntity getGuiMaster()
 	{
 		if(dummy==0)
 			return this;
 		TileEntity te = world.getTileEntity(getPos().down(dummy));
-		if(te instanceof BelljarTileEntity)
-			return (BelljarTileEntity)te;
+		if(te instanceof ClocheTileEntity)
+			return (ClocheTileEntity)te;
 		return null;
 	}
 
@@ -546,8 +546,8 @@ public class BelljarTileEntity extends IEBaseTileEntity implements ITickableTile
 		if(dummy!=0)
 		{
 			TileEntity te = world.getTileEntity(getPos().down(dummy));
-			if(te instanceof BelljarTileEntity)
-				return ((BelljarTileEntity)te).energyStorage;
+			if(te instanceof ClocheTileEntity)
+				return ((ClocheTileEntity)te).energyStorage;
 		}
 		return this.energyStorage;
 	}

@@ -63,7 +63,7 @@ public class Lib
 	public static final ResourceLocation GUIID_Turret_Gun = new ResourceLocation(MODID, "turret_gun");
 	public static final ResourceLocation GUIID_Turret_Chem = new ResourceLocation(MODID, "turret_chem");
 	public static final ResourceLocation GUIID_FluidSorter = new ResourceLocation(MODID, "fluidsorter");
-	public static final ResourceLocation GUIID_Belljar = new ResourceLocation(MODID, "belljar");
+	public static final ResourceLocation GUIID_Cloche = new ResourceLocation(MODID, "cloche");
 	public static final ResourceLocation GUIID_ToolboxBlock = new ResourceLocation(MODID, "toolboxblock");
 	//Items
 	public static final ResourceLocation GUIID_Manual = new ResourceLocation(MODID, "manual");

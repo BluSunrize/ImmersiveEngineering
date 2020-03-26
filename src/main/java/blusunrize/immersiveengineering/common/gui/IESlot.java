@@ -43,7 +43,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity.SLOT_FERTILIZER;
+import static blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity.SLOT_FERTILIZER;
 
 public abstract class IESlot extends Slot
 {
@@ -536,11 +536,11 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class Belljar extends IESlot
+	public static class Cloche extends IESlot
 	{
 		int type = 0;
 
-		public Belljar(int type, Container container, IInventory inv, int id, int x, int y)
+		public Cloche(int type, Container container, IInventory inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 			this.type = type;

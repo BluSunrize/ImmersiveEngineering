@@ -165,7 +165,7 @@ public final class IEBlocks
 		public static Block floodlight;
 		public static Block turretChem;
 		public static Block turretGun;
-		public static Block belljar;
+		public static Block cloche;
 		public static final Map<ResourceLocation, Block> CONVEYORS = new HashMap<>();
 	}
 

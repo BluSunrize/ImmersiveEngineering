@@ -260,7 +260,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(SampleDrillTileEntity.class, new SampleDrillRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TeslaCoilTileEntity.class, new TeslaCoilRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TurretTileEntity.class, new TurretRenderer());
-		ClientRegistry.bindTileEntitySpecialRenderer(BelljarTileEntity.class, new BelljarRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(ClocheTileEntity.class, new ClocheRenderer());
 		// MULTIBLOCKS
 		ClientRegistry.bindTileEntitySpecialRenderer(MetalPressTileEntity.class, new MetalPressRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(CrusherTileEntity.class, new CrusherRenderer());
@@ -1083,7 +1083,7 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::invalidateAll);
 		IEApi.renderCacheClearers.add(FluidPipeTileEntity.cachedOBJStates::clear);
-		IEApi.renderCacheClearers.add(BelljarRenderer::reset);
+		IEApi.renderCacheClearers.add(ClocheRenderer::reset);
 		IEApi.renderCacheClearers.add(WatermillRenderer::reset);
 		IEApi.renderCacheClearers.add(WindmillRenderer::reset);
 		IEApi.renderCacheClearers.add(ModelCoresample::clearCache);
@@ -1133,7 +1133,7 @@ public class ClientProxy extends CommonProxy
 		registerScreen(Lib.GUIID_Turret_Gun, GunTurretScreen::new);
 		registerScreen(Lib.GUIID_Turret_Chem, ChemTurretScreen::new);
 		registerScreen(Lib.GUIID_FluidSorter, FluidSorterScreen::new);
-		registerScreen(Lib.GUIID_Belljar, BelljarScreen::new);
+		registerScreen(Lib.GUIID_Cloche, ClocheScreen::new);
 		registerScreen(Lib.GUIID_ToolboxBlock, ToolboxBlockScreen::new);
 
 		registerScreen(Lib.GUIID_Toolbox, ToolboxScreen::new);

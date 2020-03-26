@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
@@ -42,13 +42,13 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
-public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
+public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 {
 	private static HashMap<Direction, List<BakedQuad>> quads = new HashMap<>();
 	private static HashMap<BlockState, List<BakedQuad>> plantQuads = new HashMap<>();
 
 	@Override
-	public void render(BelljarTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(ClocheTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if(tile.dummy!=0||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
@@ -57,7 +57,7 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 		if(!quads.containsKey(tile.getFacing()))
 		{
 			BlockState state = getWorld().getBlockState(blockPos);
-			if(state.getBlock()!=MetalDevices.belljar)
+			if(state.getBlock()!=MetalDevices.cloche)
 				return;
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 			//TODO use a multi layer model?
@@ -93,7 +93,7 @@ public class BelljarRenderer extends TileEntityRenderer<BelljarTileEntity>
 			GlStateManager.translated(0, 1.0625, 0);
 
 			NonNullList<ItemStack> inventory = tile.getInventory();
-			ItemStack seed = inventory.get(BelljarTileEntity.SLOT_SEED);
+			ItemStack seed = inventory.get(ClocheTileEntity.SLOT_SEED);
 			float growth = MathHelper.clamp(tile.renderGrowth/recipe.time, 0, 1);
 			float scale = recipe.renderFunction.getScale(seed, growth);
 			GlStateManager.translated((1-scale)/2, 0, (1-scale)/2);

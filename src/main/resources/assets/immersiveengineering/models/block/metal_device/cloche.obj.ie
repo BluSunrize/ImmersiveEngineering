@@ -1,6 +1,6 @@
 # Model created by BluSunrize
-mtllib belljar.mtl
-usemtl belljar
+mtllib cloche.mtl
+usemtl cloche
 
 o glass
 v 0.000000 2.625001 0.750001
@@ -506,7 +506,7 @@ usemtl farmland
 f 153/141 173/142 176/143 174/144
 f 178/145 177/146 175/147 152/148
 f 178/145 153/141 174/144 177/149
-usemtl belljar
+usemtl cloche
 f 59/150 60/151 61/152 62/153
 f 60/150 63/151 64/152 61/153
 f 63/152 65/153 66/150 64/151
