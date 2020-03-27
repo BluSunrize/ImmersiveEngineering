@@ -500,4 +500,13 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		if(te instanceof IEBaseTileEntity)
 			((IEBaseTileEntity)te).onEntityCollision(world, entity);
 	}
+
+	public static boolean areAllReplaceable(World w, BlockPos start, BlockPos end, BlockItemUseContext context)
+	{
+		return BlockPos.getAllInBox(start, end).allMatch(
+				pos -> {
+					BlockItemUseContext subContext = BlockItemUseContext.func_221536_a(context, pos, context.getFace());
+					return w.getBlockState(pos).isReplaceable(subContext);
+				});
+	}
 }

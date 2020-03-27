@@ -367,11 +367,8 @@ public class IEContent
 		MetalDevices.capacitorHV = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_creative", () -> CapacitorCreativeTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.barrel = new BarrelBlock("metal_barrel", true);
-		MetalDevices.fluidPump = new GenericTileBlock("fluid_pump", () -> FluidPumpTileEntity.TYPE, defaultMetalProperties,
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
-				.setNotNormalBlock();
-		MetalDevices.blastFurnacePreheater = new GenericTileBlock("blastfurnace_preheater", () -> BlastFurnacePreheaterTileEntity.TYPE,
-				defaultMetalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE).setNotNormalBlock();
+		MetalDevices.fluidPump = new FluidPumpBlock();
+		MetalDevices.blastFurnacePreheater = new BlastFurnacePreheaterBlock();
 		MetalDevices.furnaceHeater = new GenericTileBlock("furnace_heater", () -> FurnaceHeaterTileEntity.TYPE,
 				defaultMetalProperties, IEProperties.ACTIVE, IEProperties.FACING_ALL)
 				.setBlockLayer(BlockRenderLayer.CUTOUT);
@@ -386,21 +383,14 @@ public class IEContent
 				.setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties)
 				.setNotNormalBlock();
-		MetalDevices.sampleDrill = new GenericTileBlock("sample_drill", () -> SampleDrillTileEntity.TYPE, defaultMetalProperties,
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
-				.setBlockLayer(BlockRenderLayer.CUTOUT)
-				.setNotNormalBlock();
-		MetalDevices.teslaCoil = new GenericTileBlock("tesla_coil", () -> TeslaCoilTileEntity.TYPE, defaultMetalProperties,
-				IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE)
-				.setNotNormalBlock();
+		MetalDevices.sampleDrill = new SampleDrillBlock();
+		MetalDevices.teslaCoil = new TeslaCoilBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
 		MetalDevices.turretChem = new GenericTileBlock("turret_chem", () -> TurretChemTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
-		MetalDevices.cloche = new GenericTileBlock("cloche", () -> ClocheTileEntity.TYPE, defaultMetalProperties,
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE)
-				.setNotNormalBlock().setLightOpacity(0).setBlockLayer(BlockRenderLayer.CUTOUT);
+		MetalDevices.cloche = new ClocheBlock();
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
