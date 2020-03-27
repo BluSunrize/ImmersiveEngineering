@@ -28,6 +28,7 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class ManualScreen extends Screen
 {
@@ -112,19 +113,19 @@ public class ManualScreen extends Screen
 			for(AbstractNode<ResourceLocation, ManualEntry> node : currentNode.getChildren())
 				if(manual.showNodeInList(node))
 					children.add(node);
-			entryList = new ClickableList(this, guiLeft+40, guiTop+20, 100, 168,
-					1f, children, sel -> {
+			Consumer<AbstractNode<ResourceLocation, ManualEntry>> openEntry = sel -> {
 				if(sel!=null)
 				{
 					previousSelectedEntry.clear();
 					setCurrentNode(sel);
 					ManualScreen.this.fullInit();
 				}
-			});
+			};
+			entryList = new ClickableList(this, guiLeft+40, guiTop+20, 100, 168,
+					1f, children, openEntry);
 			addButton(entryList);
 			suggestionList = new ClickableList(this, guiLeft+180, guiTop+138, 100, 80, 1f,
-					new ArrayList<>(), sel -> {
-			});
+					new ArrayList<>(), openEntry);
 			suggestionList.visible = false;
 			addButton(suggestionList);
 			textField = true;
