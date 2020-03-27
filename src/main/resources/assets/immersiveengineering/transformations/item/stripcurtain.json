@@ -54,7 +54,9 @@
     "scale": 0.625
   },
   "ground": {
-    "translation": [0, 3, 0],
-    "scale": 0.25
+    "translation": [0, 0.125, 0.125],
+    "rotation": [0.0, 0.0, 0.0, 1.0],
+    "scale": [0.25, 0.25, 0.25],
+    "post-rotation": [0.0, 0.0, 0.0, 1.0]
   }
 }
