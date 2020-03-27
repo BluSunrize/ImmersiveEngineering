@@ -68,7 +68,7 @@ public class SkylineHelper
 			Vec3d across = new Vec3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
 			double linePos = Utils.getCoeffForMinDistance(pos, vStart, across);
 			connection.generateCatenaryData(player.world);
-			CatenaryData catData = connection.catData;
+			CatenaryData catData = connection.getCatenaryData();
 
 			Vec3d playerMovement = new Vec3d(player.getMotion().x, player.getMotion().y,
 					player.getMotion().z);

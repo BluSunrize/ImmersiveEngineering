@@ -17,6 +17,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class Connection
 {
@@ -27,7 +29,8 @@ public class Connection
 	@Nonnull
 	private final ConnectionPoint endB;
 	private final boolean internal;
-	public final CatenaryData catData = new CatenaryData();
+	@Nullable
+	private CatenaryData catData;
 	boolean blockDataGenerated = false;
 
 	public Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB)
@@ -105,22 +108,18 @@ public class Connection
 
 	public void generateCatenaryData(Vec3d vecA, Vec3d vecB)
 	{
-		catData.vecA = vecA;
-		catData.deltaX = vecB.x-vecA.x;
-		catData.deltaY = vecB.y-vecA.y;
-		catData.deltaZ = vecB.z-vecA.z;
-		catData.horLength = Math.sqrt(catData.deltaX*catData.deltaX+catData.deltaZ*catData.deltaZ);
-		if(Math.abs(catData.deltaX) < 0.05&&Math.abs(catData.deltaZ) < 0.05)
+		Vec3d delta = vecB.subtract(vecA);
+		double horLength = Math.sqrt(delta.x*delta.x+delta.z*delta.z);
+
+		if(Math.abs(delta.x) < 0.05&&Math.abs(delta.z) < 0.05)
 		{
-			catData.isVertical = true;
-			catData.scale = 1;
-			catData.offsetX = catData.offsetY = 0;
+			catData = new CatenaryData(true, 0, 0, 1, delta, 0, vecA);
 			return;
 		}
-		double wireLength = catData.getDelta().length()*type.getSlack();
+		double wireLength = delta.length()*type.getSlack();
 		double l;
 		{
-			double goal = Math.sqrt(wireLength*wireLength-catData.deltaY*catData.deltaY)/catData.horLength;
+			double goal = Math.sqrt(wireLength*wireLength-delta.y*delta.y)/horLength;
 			double lower = 0;
 			double upper = 1;
 			while(Math.sinh(upper)/upper < goal)
@@ -149,14 +148,15 @@ public class Connection
 			}
 			l = (lower+upper)/2;
 		}
-		catData.scale = catData.horLength/(2*l);
-		catData.offsetX = (0+catData.horLength-catData.scale*Math.log((wireLength+catData.deltaY)/(wireLength-catData.deltaY)))*0.5;
-		catData.offsetY = (catData.deltaY+0-wireLength*Math.cosh(l)/Math.sinh(l))*0.5;
+		double scale = horLength/(2*l);
+		double offsetX = (0+horLength-scale*Math.log((wireLength+delta.y)/(wireLength-delta.y)))*0.5;
+		double offsetY = (delta.y+0-wireLength*Math.cosh(l)/Math.sinh(l))*0.5;
+		catData = new CatenaryData(false, offsetX, offsetY, scale, delta, horLength, vecA);
 	}
 
 	public boolean hasCatenaryData()
 	{
-		return !Double.isNaN(catData.offsetY);
+		return catData!=null;
 	}
 
 	public boolean isEnd(ConnectionPoint p)
@@ -168,7 +168,11 @@ public class Connection
 	public Vec3d getPoint(double pos, ConnectionPoint from)
 	{
 		pos = transformPosition(pos, from);
-		Vec3d basic = catData.getPoint(pos);
+		Vec3d basic;
+		if(hasCatenaryData())
+			basic = getCatenaryData().getPoint(pos);
+		else
+			basic = new Vec3d(endB.getPosition().subtract(endA.getPosition())).scale(pos);
 		Vec3d add = Vec3d.ZERO;
 		if(endB.equals(from))
 			add = new Vec3d(endA.getPosition().subtract(endB.getPosition()));
@@ -177,11 +181,16 @@ public class Connection
 
 	public double getSlope(double pos, ConnectionPoint from)
 	{
-		pos = transformPosition(pos, from);
-		double slope = catData.getSlope(pos);
-		if(endB.equals(from))
-			slope *= -1;
-		return slope;
+		if(hasCatenaryData())
+		{
+			pos = transformPosition(pos, from);
+			double slope = getCatenaryData().getSlope(pos);
+			if(endB.equals(from))
+				slope *= -1;
+			return slope;
+		}
+		else
+			return 0;
 	}
 
 	public double transformPosition(double pos, ConnectionPoint from)
@@ -195,6 +204,12 @@ public class Connection
 	public ConnectionPoint getEndFor(BlockPos pos)
 	{
 		return endA.getPosition().equals(pos)?endA: endB;
+	}
+
+	@Nonnull
+	public CatenaryData getCatenaryData()
+	{
+		return Preconditions.checkNotNull(catData);
 	}
 
 	@Override
@@ -241,15 +256,7 @@ public class Connection
 			assert (conn.hasCatenaryData());
 			pointsToRender = count;
 			color = type.getColour(conn);
-			data = conn.catData.copy();
-			if(startAtB)
-			{
-				data.vecA = conn.getPoint(0, conn.getEndB());
-				data.deltaX *= -1;
-				data.deltaZ *= -1;
-				data.offsetX = conn.catData.horLength-conn.catData.offsetX;
-				data.offsetY = -data.scale*Math.cosh(-data.offsetX/data.scale);
-			}
+			data = new CatenaryData(conn.getCatenaryData(), startAtB, conn.getPoint(0, conn.getEndB()));
 		}
 
 		@Override
@@ -282,30 +289,45 @@ public class Connection
 
 	public static class CatenaryData
 	{
-		private boolean isVertical;
+		private final boolean isVertical;
 		//Relative to endA
-		private double offsetX = Double.NaN;
-		private double offsetY = Double.NaN;
-		private double scale = Double.NaN;
-		private double deltaX = Double.NaN;
-		private double deltaY = Double.NaN;
-		private double deltaZ = Double.NaN;
-		private double horLength = Double.NaN;
-		private Vec3d vecA = Vec3d.ZERO;
+		private final double offsetX;
+		private final double offsetY;
+		private final double scale;
+		private final Vec3d delta;
+		private final double horLength;
+		private final Vec3d vecA;
 
-		public CatenaryData copy()
+		public CatenaryData(boolean isVertical, double offsetX, double offsetY, double scale, Vec3d delta, double horLength, Vec3d vecA)
 		{
-			CatenaryData ret = new CatenaryData();
-			ret.isVertical = isVertical;
-			ret.offsetX = offsetX;
-			ret.offsetY = offsetY;
-			ret.scale = scale;
-			ret.deltaX = deltaX;
-			ret.deltaY = deltaY;
-			ret.deltaZ = deltaZ;
-			ret.horLength = horLength;
-			ret.vecA = vecA;
-			return ret;
+			this.isVertical = isVertical;
+			this.offsetX = offsetX;
+			this.offsetY = offsetY;
+			this.scale = scale;
+			this.delta = delta;
+			this.horLength = horLength;
+			this.vecA = vecA;
+		}
+
+		public CatenaryData(CatenaryData old, boolean reverse, Vec3d otherEndAVec)
+		{
+			this.isVertical = old.isVertical;
+			if(reverse)
+			{
+				this.vecA = otherEndAVec;
+				this.delta = old.delta.scale(-1);
+				this.offsetX = old.horLength-old.offsetX;
+				this.offsetY = -old.scale*Math.cosh(-offsetX/old.scale);
+			}
+			else
+			{
+				this.vecA = old.vecA;
+				this.delta = old.delta;
+				this.offsetX = old.offsetX;
+				this.offsetY = old.offsetY;
+			}
+			this.scale = old.scale;
+			this.horLength = old.horLength;
 		}
 
 		public double getSlope(double pos)
@@ -320,14 +342,14 @@ public class Connection
 		public Vec3d getPoint(double pos)
 		{
 			if(pos==1)
-				return vecA.add(deltaX, deltaY, deltaZ);
-			double x = deltaX*pos;
+				return vecA.add(delta);
+			double x = delta.x*pos;
 			double y;
 			if(isVertical)
-				y = deltaY*pos;
+				y = delta.y*pos;
 			else
 				y = scale*Math.cosh((horLength*pos-offsetX)/scale)+offsetY;
-			double z = deltaZ*pos;
+			double z = delta.z*pos;
 			return vecA.add(x, y, z);
 		}
 
@@ -353,17 +375,17 @@ public class Connection
 
 		public double getDeltaX()
 		{
-			return deltaX;
+			return delta.x;
 		}
 
 		public double getDeltaY()
 		{
-			return deltaY;
+			return delta.y;
 		}
 
 		public double getDeltaZ()
 		{
-			return deltaZ;
+			return delta.z;
 		}
 
 		public double getHorLength()
@@ -380,7 +402,12 @@ public class Connection
 		public String toString()
 		{
 			return "Vertical: "+isVertical+", offset: x "+offsetX+" y "+offsetY+", Factor A: "+scale+", Vector at end A: "+
-					vecA+", horizontal length: "+horLength+", delta: "+deltaX+", "+deltaY+", "+deltaZ;
+					vecA+", horizontal length: "+horLength+", delta: "+delta.x+", "+delta.y+", "+delta.z;
+		}
+
+		public Vec3d getDelta()
+		{
+			return delta;
 		}
 
 		@Override
@@ -388,47 +415,20 @@ public class Connection
 		{
 			if(this==o) return true;
 			if(o==null||getClass()!=o.getClass()) return false;
-
 			CatenaryData that = (CatenaryData)o;
-
-			if(isVertical!=that.isVertical) return false;
-			if(Double.compare(that.offsetX, offsetX)!=0) return false;
-			if(Double.compare(that.offsetY, offsetY)!=0) return false;
-			if(Double.compare(that.scale, scale)!=0) return false;
-			if(Double.compare(that.deltaX, deltaX)!=0) return false;
-			if(Double.compare(that.deltaY, deltaY)!=0) return false;
-			if(Double.compare(that.deltaZ, deltaZ)!=0) return false;
-			if(Double.compare(that.horLength, horLength)!=0) return false;
-			return vecA.equals(that.vecA);
+			return isVertical==that.isVertical&&
+					Double.compare(that.offsetX, offsetX)==0&&
+					Double.compare(that.offsetY, offsetY)==0&&
+					Double.compare(that.scale, scale)==0&&
+					Double.compare(that.horLength, horLength)==0&&
+					delta.equals(that.delta)&&
+					vecA.equals(that.vecA);
 		}
 
 		@Override
 		public int hashCode()
 		{
-			int result;
-			long temp;
-			result = (isVertical?1: 0);
-			temp = Double.doubleToLongBits(offsetX);
-			result = 31*result+(int)(temp^(temp >>> 32));
-			temp = Double.doubleToLongBits(offsetY);
-			result = 31*result+(int)(temp^(temp >>> 32));
-			temp = Double.doubleToLongBits(scale);
-			result = 31*result+(int)(temp^(temp >>> 32));
-			temp = Double.doubleToLongBits(deltaX);
-			result = 31*result+(int)(temp^(temp >>> 32));
-			temp = Double.doubleToLongBits(deltaY);
-			result = 31*result+(int)(temp^(temp >>> 32));
-			temp = Double.doubleToLongBits(deltaZ);
-			result = 31*result+(int)(temp^(temp >>> 32));
-			temp = Double.doubleToLongBits(horLength);
-			result = 31*result+(int)(temp^(temp >>> 32));
-			result = 31*result+vecA.hashCode();
-			return result;
-		}
-
-		public Vec3d getDelta()
-		{
-			return new Vec3d(deltaX, deltaY, deltaZ);
+			return Objects.hash(isVertical, offsetX, offsetY, scale, delta, horLength, vecA);
 		}
 	}
 }

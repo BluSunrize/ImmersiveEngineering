@@ -114,8 +114,8 @@ public class SkylineHookEntity extends Entity
 		Vec3d pos = connection.getPoint(this.linePos, start).add(new Vec3d(start.getPosition()));
 		this.setLocationAndAngles(pos.x, pos.y, pos.z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(pos.x, pos.y, pos.z);
-		if(!connection.catData.isVertical())
-			this.angle = Math.atan2(connection.catData.getDeltaZ(), connection.catData.getDeltaX());
+		if(!connection.getCatenaryData().isVertical())
+			this.angle = Math.atan2(connection.getCatenaryData().getDeltaZ(), connection.getCatenaryData().getDeltaX());
 		ignoreCollisions.clear();
 		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(start);
 		IImmersiveConnectable iicStart = net.getConnector(start);
@@ -162,9 +162,9 @@ public class SkylineHookEntity extends Entity
 			sendUpdatePacketTo(player);
 		boolean moved = false;
 		double inLineDirection;
-		if(connection.catData.isVertical())
+		if(connection.getCatenaryData().isVertical())
 			inLineDirection = -player.moveForward*Math.sin(Math.toRadians(player.rotationPitch))
-					*Math.signum(connection.catData.getDeltaY());
+					*Math.signum(connection.getCatenaryData().getDeltaY());
 		else
 		{
 			float forward = player.moveForward;
@@ -179,7 +179,7 @@ public class SkylineHookEntity extends Entity
 			double slopeInDirection = Math.signum(inLineDirection)*slope;
 			double speed = MOVE_SPEED_VERT;
 			double slopeFactor = 1;
-			if(!connection.catData.isVertical())
+			if(!connection.getCatenaryData().isVertical())
 			{
 				//Linear interpolation w.r.t. the angle of the line
 				double lambda = Math.atan(slopeInDirection)/(Math.PI/2);
@@ -197,12 +197,12 @@ public class SkylineHookEntity extends Entity
 		if(!moved)//Gravity based motion
 		{
 			double deltaVHor;
-			if(connection.catData.isVertical())
-				deltaVHor = -GRAVITY*Math.signum(connection.catData.getDeltaY());
+			if(connection.getCatenaryData().isVertical())
+				deltaVHor = -GRAVITY*Math.signum(connection.getCatenaryData().getDeltaY());
 			else
 			{
 				final double realLinePos = connection.transformPosition(linePos, start);
-				double param = (realLinePos*connection.catData.getHorLength()-connection.catData.getOffsetX())/connection.catData.getScale();
+				double param = (realLinePos*connection.getCatenaryData().getHorLength()-connection.getCatenaryData().getOffsetX())/connection.getCatenaryData().getScale();
 				double pos = Math.exp(param);
 				double neg = 1/pos;
 				double cosh = (pos+neg)/2;
@@ -210,7 +210,7 @@ public class SkylineHookEntity extends Entity
 				//Formula taken from https://physics.stackexchange.com/a/83592 (x coordinate of the final vector),
 				//after plugging in the correct function
 				double vSquared = horizontalSpeed*horizontalSpeed*cosh*cosh*20*20;//cosh^2=1+sinh^2 and horSpeed*sinh=vertSpeed. 20 to convert from blocks/tick to block/s
-				deltaVHor = -sinh/(cosh*cosh)*(GRAVITY+vSquared/(connection.catData.getScale()*cosh));
+				deltaVHor = -sinh/(cosh*cosh)*(GRAVITY+vSquared/(connection.getCatenaryData().getScale()*cosh));
 				if(connection.getEndB().equals(start))
 					deltaVHor *= -1;
 			}
@@ -227,7 +227,7 @@ public class SkylineHookEntity extends Entity
 		double horSpeedToUse = horizontalSpeed;
 		if(horizontalSpeed > 0)
 		{
-			double distToEnd = connection.catData.getHorLength()*(1-linePos);
+			double distToEnd = connection.getCatenaryData().getHorLength()*(1-linePos);
 			if(horizontalSpeed > distToEnd)
 			{
 				switchingAtPos = connection.getOtherEnd(start);
@@ -236,7 +236,7 @@ public class SkylineHookEntity extends Entity
 		}
 		else
 		{
-			double distToStart = -connection.catData.getHorLength()*linePos;
+			double distToStart = -connection.getCatenaryData().getHorLength()*linePos;
 			if(horizontalSpeed < distToStart)
 			{
 				switchingAtPos = start;
@@ -244,7 +244,7 @@ public class SkylineHookEntity extends Entity
 			}
 		}
 		horizontalSpeed *= friction;
-		linePos += horSpeedToUse/connection.catData.getHorLength();
+		linePos += horSpeedToUse/connection.getCatenaryData().getHorLength();
 		Vec3d pos = connection.getPoint(linePos, start).add(new Vec3d(start.getPosition()));
 		setMotion(pos.x-posX, pos.z-posZ, pos.y-posY);
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
@@ -323,7 +323,7 @@ public class SkylineHookEntity extends Entity
 			line = possible.stream().filter(c -> !c.hasSameConnectors(connection))
 					.max(Comparator.comparingDouble(c -> {
 						c.generateCatenaryData(world);
-						return c.catData.getDelta().normalize().dotProduct(look);
+						return c.getCatenaryData().getDelta().normalize().dotProduct(look);
 					}));//Maximum dot product=>Minimum angle=>Player goes in as close to a straight line as possible
 		}
 		if (line.isPresent())
@@ -343,7 +343,7 @@ public class SkylineHookEntity extends Entity
 
 	private static double getSpeedPerHor(Connection connection, ConnectionPoint start, double pos)
 	{
-		if(connection.catData.isVertical())
+		if(connection.getCatenaryData().isVertical())
 			return 1;
 		else
 		{
@@ -354,7 +354,7 @@ public class SkylineHookEntity extends Entity
 
 	public boolean isValidPosition(double x, double y, double z, @Nonnull LivingEntity player)
 	{
-		final double tolerance = connection.catData.isVertical()?5: 10;//TODO are these values good?
+		final double tolerance = connection.getCatenaryData().isVertical()?5: 10;//TODO are these values good?
 		double radius = player.getWidth()/2;
 		double height = player.getHeight();
 		double yOffset = getMountedYOffset()+player.getYOffset();
@@ -377,7 +377,7 @@ public class SkylineHookEntity extends Entity
 			totalCollisionVolume += getVolume(intersection);
 			if(totalCollisionVolume*tolerance > playerVolume)
 				return false;
-			if(!connection.catData.isVertical()&&VoxelShapes.compare(feetShape, shape, IBooleanFunction.AND))
+			if(!connection.getCatenaryData().isVertical()&&VoxelShapes.compare(feetShape, shape, IBooleanFunction.AND))
 			{
 				VoxelShape feetIntersectShape = VoxelShapes.combine(feetShape, shape, IBooleanFunction.AND);
 				for(AxisAlignedBB feetIntersect : feetIntersectShape.toBoundingBoxList())
@@ -536,7 +536,7 @@ public class SkylineHookEntity extends Entity
 	{
 		if(connection==null)
 			return 0;
-		if(connection.catData.isVertical())
+		if(connection.getCatenaryData().isVertical())
 		{
 			return Math.abs(horizontalSpeed);//In this case vertical speed
 		}

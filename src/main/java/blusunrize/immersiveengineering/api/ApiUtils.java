@@ -490,7 +490,7 @@ public class ApiUtils
 	{
 		conn.generateCatenaryData(vStart, vEnd);
 		final BlockPos offset = conn.getEndA().getPosition();
-		CatenaryTracer ct = new CatenaryTracer(conn.catData, offset);
+		CatenaryTracer ct = new CatenaryTracer(conn.getCatenaryData(), offset);
 		ct.calculateIntegerIntersections();
 		ct.forEachSegment(segment -> {
 			if(segment.inBlock)

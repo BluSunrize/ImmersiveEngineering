@@ -153,7 +153,7 @@ public class CatenaryTracerTest
 				new ConnectionPoint(new BlockPos(start), 0),
 				new ConnectionPoint(new BlockPos(end), 0));
 		conn.generateCatenaryData(start, end);
-		return new CatenaryTracer(conn.catData, OFFSET);
+		return new CatenaryTracer(conn.getCatenaryData(), OFFSET);
 	}
 
 	private static class TestWiretype extends WireType
