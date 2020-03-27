@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
@@ -17,14 +18,13 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.function.Function;
 
 public abstract class IEMinecartItem extends IEBaseItem
 {
@@ -57,6 +57,12 @@ public abstract class IEMinecartItem extends IEBaseItem
 				IEMinecartEntity minecartEntity = this.createCart(world, (double)blockpos.getX()+0.5D, (double)blockpos.getY()+0.0625D+d0, (double)blockpos.getZ()+0.5D, itemstack);
 				if(itemstack.hasDisplayName())
 					minecartEntity.setCustomName(itemstack.getDisplayName());
+
+				IEBaseTileEntity tile = minecartEntity.getContainedTileEntity();
+				CompoundNBT tag = itemstack.getTag();
+				if(tile!=null&&tag!=null)
+					tile.readCustomNBT(tag, false);
+
 				world.addEntity(minecartEntity);
 			}
 
@@ -106,6 +112,12 @@ public abstract class IEMinecartItem extends IEBaseItem
 			IEMinecartEntity minecartEntity = ((IEMinecartItem)stack.getItem()).createCart(world, d0, d1+d3, d2, stack);
 			if(stack.hasDisplayName())
 				minecartEntity.setCustomName(stack.getDisplayName());
+
+			IEBaseTileEntity tile = minecartEntity.getContainedTileEntity();
+			CompoundNBT tag = stack.getTag();
+			if(tile!=null&&tag!=null)
+				tile.readCustomNBT(tag, false);
+
 			world.addEntity(minecartEntity);
 			stack.shrink(1);
 			return stack;

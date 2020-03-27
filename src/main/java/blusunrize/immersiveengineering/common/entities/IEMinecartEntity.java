@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import net.minecraft.entity.EntityType;
@@ -62,6 +63,14 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	protected abstract void invalidateCaps();
 
 	@Override
+	public int getComparatorLevel()
+	{
+		if(this.containedTileEntity instanceof IComparatorOverride)
+			return ((IComparatorOverride)this.containedTileEntity).getComparatorInputOverride();
+		return super.getComparatorLevel();
+	}
+
+	@Override
 	public void remove(boolean keepData)
 	{
 		super.remove(keepData);
@@ -74,7 +83,7 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	{
 		if(super.processInitialInteract(player, hand))
 			return true;
-		if(!world.isRemote && this.containedTileEntity instanceof IInteractionObjectIE && hand == Hand.OFF_HAND)
+		if(!world.isRemote&&this.containedTileEntity instanceof IInteractionObjectIE)
 		{
 			NetworkHooks.openGui((ServerPlayerEntity)player, this, buffer -> buffer.writeInt(this.getEntityId()));
 			return true;
