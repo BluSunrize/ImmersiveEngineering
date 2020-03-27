@@ -6,15 +6,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.tileentity.TileEntityType;
 
-public class BlastFurnacePreheaterBlock extends GenericTileBlock
+import java.util.function.Supplier;
+
+public class TurretBlock extends GenericTileBlock
 {
-	public BlastFurnacePreheaterBlock()
+	public TurretBlock(String name, Supplier<TileEntityType<?>> tileType)
 	{
-		super("blastfurnace_preheater", () -> BlastFurnacePreheaterTileEntity.TYPE,
-				Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15),
+		super(name, tileType, Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15),
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		setNotNormalBlock();
 	}
@@ -22,8 +22,10 @@ public class BlastFurnacePreheaterBlock extends GenericTileBlock
 	@Override
 	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
 	{
-		BlockPos start = context.getPos();
-		World w = context.getWorld();
-		return areAllReplaceable(start, start.up(2), context);
+		return areAllReplaceable(
+				context.getPos(),
+				context.getPos().up(),
+				context
+		);
 	}
 }

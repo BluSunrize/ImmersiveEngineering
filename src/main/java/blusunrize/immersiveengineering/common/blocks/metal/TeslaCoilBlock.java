@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -24,6 +23,6 @@ public class TeslaCoilBlock extends GenericTileBlock
 	{
 		BlockPos start = context.getPos();
 		World w = context.getWorld();
-		return areAllReplaceable(w, start, start.up(1), context);
+		return areAllReplaceable(start, start.up(1), context);
 	}
 }

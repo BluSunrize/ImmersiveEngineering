@@ -26,6 +26,6 @@ public class ClocheBlock extends GenericTileBlock
 	{
 		BlockPos start = context.getPos();
 		World w = context.getWorld();
-		return areAllReplaceable(w, start, start.up(2), context);
+		return areAllReplaceable(start, start.up(2), context);
 	}
 }

@@ -104,7 +104,7 @@ public class BlockItemIE extends BlockItem
 	@Override
 	protected boolean placeBlock(BlockItemUseContext context, BlockState newState)
 	{
-		Block b = getBlock();
+		Block b = newState.getBlock();
 		if(b instanceof IEBaseBlock)
 		{
 			IEBaseBlock ieBlock = (IEBaseBlock)b;

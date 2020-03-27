@@ -340,17 +340,13 @@ public class IEContent
 
 		Connectors.connectorStructural = new MiscConnectorBlock("connector_structural", () -> ConnectorStructuralTileEntity.TYPE);
 		Connectors.postTransformer = new PostTransformerBlock();
-		Connectors.transformer = new MiscConnectorBlock("transformer", () -> TransformerTileEntity.TYPE,
-				ImmutableList.of(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, IEProperties.MIRRORED),
-				ImmutableList.of(), TransformerItemBlock.class);
-		Connectors.transformerHV = new MiscConnectorBlock("transformer_hv", () -> TransformerHVTileEntity.TYPE,
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, IEProperties.MIRRORED);
+		Connectors.transformer = new TransformerBlock();
+		Connectors.transformerHV = new TransformerHVBlock();
 		Connectors.breakerswitch = new MiscConnectorBlock("breaker_switch", () -> BreakerSwitchTileEntity.TYPE,
 				IEProperties.ACTIVE, IEProperties.FACING_ALL);
 		Connectors.redstoneBreaker = new MiscConnectorBlock("redstone_breaker", () -> RedstoneBreakerTileEntity.TYPE,
 				IEProperties.ACTIVE, IEProperties.FACING_ALL);
-		Connectors.currentTransformer = new MiscConnectorBlock("current_transformer", () -> EnergyMeterTileEntity.TYPE,
-				IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
+		Connectors.currentTransformer = new EnergyMeterBlock();
 		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
 		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE,
 				BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID);
@@ -386,10 +382,8 @@ public class IEContent
 		MetalDevices.sampleDrill = new SampleDrillBlock();
 		MetalDevices.teslaCoil = new TeslaCoilBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
-		MetalDevices.turretChem = new GenericTileBlock("turret_chem", () -> TurretChemTileEntity.TYPE, defaultMetalProperties,
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
-		MetalDevices.turretGun = new GenericTileBlock("turret_gun", () -> TurretGunTileEntity.TYPE, defaultMetalProperties,
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
+		MetalDevices.turretChem = new TurretBlock("turret_chem", () -> TurretChemTileEntity.TYPE);
+		MetalDevices.turretGun = new TurretBlock("turret_gun", () -> TurretGunTileEntity.TYPE);
 		MetalDevices.cloche = new ClocheBlock();
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
