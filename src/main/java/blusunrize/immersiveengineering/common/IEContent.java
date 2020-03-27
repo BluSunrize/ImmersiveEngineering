@@ -90,6 +90,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -505,6 +506,14 @@ public class IEContent
 		IEItems.Misc.fluorescentTube = new FluorescentTubeItem();
 		IEItems.Misc.shield = new IEShieldItem();
 		IEItems.Misc.skyhook = new SkyhookItem();
+		IEItems.Misc.cartWoodenCrate = new IEMinecartItem("woodencrate")
+		{
+			@Override
+			public IEMinecartEntity createCart(World world, double x, double y, double z, ItemStack stack)
+			{
+				return new CrateMinecartEntity(CrateMinecartEntity.TYPE, world, x, y, z);
+			}
+		};
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
@@ -622,7 +631,8 @@ public class IEContent
 				RevolvershotFlareEntity.TYPE,
 				RevolvershotHomingEntity.TYPE,
 				SkylineHookEntity.TYPE,
-				WolfpackShotEntity.TYPE
+				WolfpackShotEntity.TYPE,
+				CrateMinecartEntity.TYPE
 		);
 	}
 
