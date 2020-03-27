@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
 import blusunrize.immersiveengineering.api.wires.utils.CatenaryTracer;
 import blusunrize.immersiveengineering.common.EventHandler;
@@ -476,12 +477,12 @@ public class ApiUtils
 		return p.add(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
 	}
 
-	public static void raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Consumer<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
+	public static void raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
 											 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
 	{
 		Vec3d vStart = getVecForIICAt(net, conn.getEndA(), conn, false);
 		Vec3d vEnd = getVecForIICAt(net, conn.getEndB(), conn, true);
-		raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart, vEnd);
+		raytraceAlongCatenaryRelative(conn, in, close, vStart, vEnd);
 	}
 
 	public static void raytraceAlongCatenaryRelative(Connection conn, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
@@ -490,7 +491,13 @@ public class ApiUtils
 	{
 		conn.generateCatenaryData(vStart, vEnd);
 		final BlockPos offset = conn.getEndA().getPosition();
-		CatenaryTracer ct = new CatenaryTracer(conn.getCatenaryData(), offset);
+		raytraceAlongCatenary(conn.getCatenaryData(), offset, in, close);
+	}
+
+	public static void raytraceAlongCatenary(CatenaryData data, BlockPos offset, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
+											 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
+	{
+		CatenaryTracer ct = new CatenaryTracer(data, offset);
 		ct.calculateIntegerIntersections();
 		ct.forEachSegment(segment -> {
 			if(segment.inBlock)

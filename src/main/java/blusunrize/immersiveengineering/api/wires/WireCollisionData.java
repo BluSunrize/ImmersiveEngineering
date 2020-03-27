@@ -53,7 +53,7 @@ public class WireCollisionData
 		if(conn.blockDataGenerated)
 		{
 			WireLogger.logger.info("Raytracing for removal of {}", conn);
-			ApiUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()),
+			ApiUtils.raytraceAlongCatenary(conn.getCatenaryData(), conn.getEndA().getPosition(),
 					(p) -> blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn),
 					(p) -> blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn)
 			);
