@@ -37,7 +37,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -457,26 +460,28 @@ public class ConveyorHandler
 
 		default void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 		{
+			if(getTile().getWorld().isRemote)
+				return;
 			BlockPos invPos = getTile().getPos().offset(getFacing()).add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0);
 			World world = getTile().getWorld();
-			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
 			boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
-			if(!getTile().getWorld().isRemote)
-			{
-				if(contact&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
-				{
-					ItemStack stack = entity.getItem();
-					if(!stack.isEmpty())
-					{
-						ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, getFacing().getOpposite());
-						if(ret.isEmpty())
-							entity.remove();
-						else if(ret.getCount() < stack.getCount())
-							entity.setItem(ret);
-					}
-				}
-			}
+			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
+			if(inventoryTile instanceof IConveyorTile || !contact)
+				return;
 
+			LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
+			cap.ifPresent(itemHandler -> {
+				ItemStack stack = entity.getItem();
+				ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
+				if(temp.isEmpty()||temp.getCount() < stack.getCount())
+				{
+					temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
+					if(temp.isEmpty())
+						entity.remove();
+					else if(temp.getCount() < stack.getCount())
+						entity.setItem(temp);
+				}
+			});
 		}
 
 		default boolean isTicking()

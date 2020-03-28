@@ -108,6 +108,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ArmorItem;
@@ -125,6 +126,7 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -205,6 +207,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(RailgunShotEntity.class, RailgunShotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(IEExplosiveEntity.class, IEExplosiveRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(FluorescentTubeEntity.class, FluorescentTubeRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(IEMinecartEntity.class, IEMinecartRenderer::new);
 	}
 
 	@Override
@@ -1139,6 +1142,9 @@ public class ClientProxy extends CommonProxy
 		registerScreen(Lib.GUIID_Toolbox, ToolboxScreen::new);
 		registerScreen(Lib.GUIID_Revolver, RevolverScreen::new);
 		registerScreen(Lib.GUIID_MaintenanceKit, MaintenanceKitScreen::new);
+
+		registerScreen(Lib.GUIID_CartCrate, CrateScreen::new);
+		registerScreen(Lib.GUIID_CartReinforcedCrate, CrateScreen::new);
 	}
 
 

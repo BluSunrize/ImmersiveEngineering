@@ -135,6 +135,10 @@ public final class IEItems
 		public static Item bucketEthanol;
 		public static Item bucketBiodiesel;
 		public static Item bucketConcrete;
+		public static Item cartWoodenCrate;
+		public static Item cartReinforcedCrate;
+		public static Item cartWoodenBarrel;
+		public static Item cartMetalBarrel;
 
 		public static Item iconBirthday;
 		public static Item iconLucky;

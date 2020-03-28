@@ -22,6 +22,9 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -44,21 +47,24 @@ public class DropConveyor extends BasicConveyor
 		TileEntity inventoryTile = getTile().getWorld().getTileEntity(posDown);
 		boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getTile().getPos().getZ()+.5-entity.posZ): (getTile().getPos().getX()+.5-entity.posX)) < .2;
 
-		if(contact&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
-		{
-			if(!getTile().getWorld().isRemote)
+		LazyOptional<IItemHandler> cap = LazyOptional.empty();
+		if(contact && !(inventoryTile instanceof IConveyorTile))
+			 cap = ApiUtils.findItemHandlerAtPos( getTile().getWorld(), posDown, Direction.UP, true);
+
+		if(cap.isPresent())
+			cap.ifPresent(itemHandler ->
 			{
 				ItemStack stack = entity.getItem();
-				if(!stack.isEmpty())
+				ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
+				if(temp.isEmpty()||temp.getCount() < stack.getCount())
 				{
-					ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, Direction.UP);
-					if(ret.isEmpty())
+					temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
+					if(temp.isEmpty())
 						entity.remove();
-					else if(ret.getCount() < stack.getCount())
-						entity.setItem(ret);
+					else if(temp.getCount() < stack.getCount())
+						entity.setItem(temp);
 				}
-			}
-		}
+			});
 		else if(contact&&isEmptySpace(getTile().getWorld(), posDown, inventoryTile))
 		{
 			entity.setMotion(0, entity.getMotion().y, 0);
