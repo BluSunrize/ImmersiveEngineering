@@ -31,11 +31,11 @@ import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Map;
 
-public class ItemFaradaySuit extends ArmorItem implements IElectricEquipment
+public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 {
 	public static IArmorMaterial mat = new FaradayArmorMaterial();
 
-	public ItemFaradaySuit(EquipmentSlotType type)
+	public FaradaySuitItem(EquipmentSlotType type)
 	{
 		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.itemGroup));
 		String name = "armor_faraday_"+type.getName().toLowerCase(Locale.ENGLISH);

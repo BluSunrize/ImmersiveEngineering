@@ -64,7 +64,6 @@ import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.Villages;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -486,7 +485,7 @@ public class IEContent
 		IEItems.Misc.earmuffs = new EarmuffsItem();
 		for(EquipmentSlotType slot : EquipmentSlotType.values())
 			if(slot.getSlotType()==Group.ARMOR)
-				IEItems.Misc.faradaySuit.put(slot, new ItemFaradaySuit(slot));
+				IEItems.Misc.faradaySuit.put(slot, new FaradaySuitItem(slot));
 		IEItems.Misc.fluorescentTube = new FluorescentTubeItem();
 		IEItems.Misc.shield = new IEShieldItem();
 		IEItems.Misc.skyhook = new SkyhookItem();
