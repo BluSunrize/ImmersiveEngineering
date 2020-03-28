@@ -8,11 +8,15 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IIEBlock;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IDispenseItemBehavior;
@@ -24,7 +28,17 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class IEMinecartItem extends IEBaseItem
 {
@@ -65,6 +79,21 @@ public abstract class IEMinecartItem extends IEBaseItem
 			return ActionResultType.SUCCESS;
 		}
 	}
+
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag advanced)
+	{
+		super.addInformation(stack, world, tooltip, advanced);
+		if(ItemNBTHelper.hasKey(stack, "tank"))
+		{
+			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
+			if(fs!=null)
+				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fluidStored",
+						fs.getDisplayName(), fs.getAmount()).setStyle(new Style().setColor(TextFormatting.GRAY)));
+		}
+	}
+
 
 	private static final IDispenseItemBehavior MINECART_DISPENSER_BEHAVIOR = new DefaultDispenseItemBehavior()
 	{

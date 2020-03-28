@@ -78,13 +78,13 @@ public class BlockItemIE extends BlockItem
 		super.addInformation(stack, world, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
 			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"energyStored",
-					ItemNBTHelper.getInt(stack, "energyStorage")));
+					ItemNBTHelper.getInt(stack, "energyStorage")).setStyle(new Style().setColor(TextFormatting.GRAY)));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
 				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fluidStored",
-						fs.getDisplayName(), fs.getAmount()));
+						fs.getDisplayName(), fs.getAmount()).setStyle(new Style().setColor(TextFormatting.GRAY)));
 		}
 	}
 
