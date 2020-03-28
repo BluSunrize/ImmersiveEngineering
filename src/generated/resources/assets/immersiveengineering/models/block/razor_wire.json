@@ -1,4 +1,7 @@
 {
+  "textures": {
+    "particle": "immersiveengineering:block/metal_decoration/razor_wire"
+  },
   "loader": "immersiveengineering:connector",
   "base_model": {
     "loader": "immersiveengineering:ie_obj",

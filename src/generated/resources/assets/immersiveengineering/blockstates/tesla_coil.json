@@ -30,7 +30,7 @@
       "uvlock": true
     },
     "multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
+      "model": "immersiveengineering:block/tesla_coil_empty"
     }
   }
 }

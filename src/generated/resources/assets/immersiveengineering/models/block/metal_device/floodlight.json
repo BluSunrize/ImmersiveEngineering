@@ -1,4 +1,7 @@
 {
+  "textures": {
+    "particle": "immersiveengineering:block/metal_device/floodlight"
+  },
   "loader": "immersiveengineering:connector",
   "base_model": {
     "loader": "immersiveengineering:ie_obj",

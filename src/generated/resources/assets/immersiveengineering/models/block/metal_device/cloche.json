@@ -1,5 +1,8 @@
 {
   "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/metal_device/cloche"
+  },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/metal_device/cloche.obj.ie",
   "flip-v": true

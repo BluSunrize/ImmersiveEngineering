@@ -1,5 +1,8 @@
 {
   "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/conveyor/conveyor"
+  },
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/metal_multiblock/metal_press.obj",
   "flip-v": true

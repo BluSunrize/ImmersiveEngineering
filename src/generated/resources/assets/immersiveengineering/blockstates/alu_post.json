@@ -4,13 +4,13 @@
       "model": "immersiveengineering:block/alu_post"
     },
     "post_slave=1": {
-      "model": "immersiveengineering:block/ie_empty"
+      "model": "immersiveengineering:block/empty_alu_post"
     },
     "post_slave=2": {
-      "model": "immersiveengineering:block/ie_empty"
+      "model": "immersiveengineering:block/empty_alu_post"
     },
     "post_slave=3": {
-      "model": "immersiveengineering:block/ie_empty"
+      "model": "immersiveengineering:block/empty_alu_post"
     }
   }
 }

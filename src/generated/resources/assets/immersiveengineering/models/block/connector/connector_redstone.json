@@ -1,4 +1,7 @@
 {
+  "textures": {
+    "particle": "immersiveengineering:block/connector/connector_redstone"
+  },
   "loader": "immersiveengineering:connector",
   "base_model": {
     "loader": "immersiveengineering:ie_obj",

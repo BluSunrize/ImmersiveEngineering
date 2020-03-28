@@ -1,6 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
+    "particle": "#texture",
     "texture": "immersiveengineering:block/wooden_device/wallmount"
   },
   "loader": "forge:obj",

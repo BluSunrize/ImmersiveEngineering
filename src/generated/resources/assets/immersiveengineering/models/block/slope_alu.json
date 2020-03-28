@@ -1,6 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
+    "particle": "#texture",
     "texture": "immersiveengineering:block/metal_decoration/aluminum_scaffolding"
   },
   "loader": "immersiveengineering:ie_obj",

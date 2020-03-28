@@ -1,4 +1,7 @@
 {
+  "textures": {
+    "particle": "immersiveengineering:block/connector/transformer_hv"
+  },
   "loader": "immersiveengineering:connector",
   "base_model": {
     "loader": "forge:obj",

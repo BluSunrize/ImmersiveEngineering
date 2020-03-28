@@ -1,5 +1,8 @@
 {
   "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/silo"
+  },
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/metal_multiblock/silo.obj",
   "flip-v": true

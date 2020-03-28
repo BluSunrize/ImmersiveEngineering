@@ -1,4 +1,7 @@
 {
+  "textures": {
+    "particle": "immersiveengineering:block/connector/energy_meter"
+  },
   "loader": "immersiveengineering:connector",
   "base_model": {
     "loader": "forge:obj",

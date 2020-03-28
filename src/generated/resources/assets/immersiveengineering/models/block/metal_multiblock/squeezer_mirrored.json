@@ -1,5 +1,8 @@
 {
   "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/squeezer"
+  },
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/metal_multiblock/squeezer_mirrored.obj",
   "flip-v": true

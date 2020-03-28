@@ -39,7 +39,7 @@
       "uvlock": true
     },
     "multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
+      "model": "immersiveengineering:block/coke_oven_empty"
     }
   }
 }
