@@ -18,10 +18,14 @@ classes
 build
 .gradle
 
+# visual studio code
+.vscode
+
 # other
 eclipse
 run
 libs
+logs
 
 gradle.properties
 *.jks
