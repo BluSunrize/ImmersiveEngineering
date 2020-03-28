@@ -227,7 +227,7 @@ public class Utils
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
 	{
 		if(stack==null)
-			return null;
+			return FluidStack.EMPTY;
 		FluidStack fs = new FluidStack(stack, amount);
 		if(stripPressure&&fs.hasTag()&&fs.getOrCreateTag().contains("pressurized"))
 		{
