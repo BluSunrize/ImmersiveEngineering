@@ -530,6 +530,16 @@ public class IEContent
 				return new BarrelMinecartEntity(BarrelMinecartEntity.TYPE, world, x, y, z);
 			}
 		};
+		IEItems.Misc.cartMetalBarrel = new IEMinecartItem("metalbarrel")
+		{
+			@Override
+			public IEMinecartEntity createCart(World world, double x, double y, double z, ItemStack stack)
+			{
+				return new MetalBarrelMinecartEntity(MetalBarrelMinecartEntity.TYPE, world, x, y, z);
+			}
+		};
+
+
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
@@ -650,7 +660,8 @@ public class IEContent
 				WolfpackShotEntity.TYPE,
 				CrateMinecartEntity.TYPE,
 				ReinforcedCrateMinecartEntity.TYPE,
-				BarrelMinecartEntity.TYPE
+				BarrelMinecartEntity.TYPE,
+				MetalBarrelMinecartEntity.TYPE
 		);
 	}
 

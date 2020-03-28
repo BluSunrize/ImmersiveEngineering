@@ -1755,6 +1755,13 @@ public class Recipes extends RecipeProvider
 				.key('C', Items.MINECART)
 				.addCriterion("has_minecart", hasItem(Items.MINECART))
 				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.cartMetalBarrel)
+				.patternLine("B")
+				.patternLine("C")
+				.key('B', MetalDevices.barrel)
+				.key('C', Items.MINECART)
+				.addCriterion("has_minecart", hasItem(Items.MINECART))
+				.build(out);
 	}
 
 	private void addArmor(Tag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
