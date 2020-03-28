@@ -49,6 +49,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -70,6 +72,8 @@ public class BlockStates extends BlockStateProvider
 	);
 	private final LoadedModels loadedModels;
 	final Map<Block, ModelFile> itemModels = new HashMap<>();
+	//The one in super doesn't properly do getResource
+	private final ExistingFileHelper goodExistingFileHelper;
 
 	public ModelFile blastFurnaceOff;
 	public ModelFile blastFurnaceOn;
@@ -82,6 +86,7 @@ public class BlockStates extends BlockStateProvider
 	{
 		super(gen, MODID, exHelper);
 		loadedModels = loaded;
+		this.goodExistingFileHelper = exHelper;
 	}
 
 	private String name(Block b)
@@ -171,7 +176,8 @@ public class BlockStates extends BlockStateProvider
 				.loader(modLoc("ie_obj"))
 				.additional("model", addModelsPrefix(model))
 				.additional("flip-v", true)
-				.texture("texture", texture);
+				.texture("texture", texture)
+				.texture("particle", texture);
 		getVariantBuilder(b)
 				.partialState()
 				.with(PostBlock.POST_SLAVE, 0)
@@ -180,7 +186,10 @@ public class BlockStates extends BlockStateProvider
 			getVariantBuilder(b)
 					.partialState()
 					.with(PostBlock.POST_SLAVE, i)
-					.setModels(EMPTY_MODEL);
+					.setModels(new ConfiguredModel(
+							withExistingParent("empty_"+b.getRegistryName().getPath(), EMPTY_MODEL.model.getLocation())
+									.texture("particle", texture)
+					));
 	}
 
 	private ModelFile cubeTwo(String name, ResourceLocation top, ResourceLocation bottom,
@@ -223,7 +232,8 @@ public class BlockStates extends BlockStateProvider
 		LoadedModelBuilder ret = loadedModels.withExistingParent(name, mcLoc("block"))
 				.loader(forgeLoc("obj"))
 				.additional("model", addModelsPrefix(model))
-				.additional("flip-v", true);
+				.additional("flip-v", true)
+				.texture("particle", DataGenUtils.getTextureFromObj(model, goodExistingFileHelper));
 		for(Entry<String, ResourceLocation> e : textures.entrySet())
 			ret.texture(e.getKey(), e.getValue());
 		return ret;
@@ -240,7 +250,8 @@ public class BlockStates extends BlockStateProvider
 		return loadedModels.withExistingParent(name, mcLoc("block"))
 				.loader(modLoc("ie_obj"))
 				.additional("model", addModelsPrefix(model))
-				.additional("flip-v", true);
+				.additional("flip-v", true)
+				.texture("particle", DataGenUtils.getTextureFromObj(model, goodExistingFileHelper));
 	}
 
 	@Override
@@ -524,7 +535,11 @@ public class BlockStates extends BlockStateProvider
 					.loader(MultiLayerLoader.LOCATION)
 					.additional("solid", solid)
 					.additional("translucent", translucent)
-					.transforms(modLoc("item/block"));
+					.transforms(modLoc("item/block"))
+					.texture("particle", DataGenUtils.getTextureFromObj(
+							modLoc("block/metal_device/charging_station.obj"),
+							goodExistingFileHelper
+					));
 			createRotatedBlock(MetalDevices.chargingStation,
 					state -> full,
 					IEProperties.FACING_HORIZONTAL,
@@ -617,37 +632,50 @@ public class BlockStates extends BlockStateProvider
 			else
 				return rl("block/connector/breaker_switch_on.obj.ie");
 		}, ImmutableMap.of(), ImmutableList.of(IEProperties.ACTIVE), BlockRenderLayer.SOLID);
-		createConnector(Connectors.transformer, map -> {
-			if(map.getSetStates().get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
-				return EMPTY_MODEL.model.getLocation();
-			else if(map.getSetStates().get(IEProperties.MIRRORED)==Boolean.FALSE)
-				return rl("block/connector/transformer_mv_left.obj");
-			else
-				return rl("block/connector/transformer_mv_right.obj");
-		}, ImmutableMap.of(), ImmutableList.of(
-				IEProperties.MULTIBLOCKSLAVE,
-				IEProperties.MIRRORED
-		), BlockRenderLayer.SOLID);
+		{
+			ResourceLocation leftModel = rl("block/connector/transformer_mv_left.obj");
+			createConnector(Connectors.transformer, map -> {
+				if(map.getSetStates().get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
+					return EMPTY_MODEL.model.getLocation();
+				else if(map.getSetStates().get(IEProperties.MIRRORED)==Boolean.FALSE)
+					return leftModel;
+				else
+					return rl("block/connector/transformer_mv_right.obj");
+			}, ImmutableMap.of(
+					"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(leftModel, goodExistingFileHelper))
+			), ImmutableList.of(
+					IEProperties.MULTIBLOCKSLAVE,
+					IEProperties.MIRRORED
+			), BlockRenderLayer.SOLID);
+		}
 		createConnector(Connectors.postTransformer, rl("block/connector/transformer_post.obj"),
 				ImmutableMap.of(), BlockRenderLayer.SOLID);
-		createConnector(Connectors.transformerHV, map -> {
-			if(map.getSetStates().get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
-				return EMPTY_MODEL.model.getLocation();
-			else if(map.getSetStates().get(IEProperties.MIRRORED)==Boolean.FALSE)
-				return rl("block/connector/transformer_hv_left.obj");
-			else
-				return rl("block/connector/transformer_hv_right.obj");
-		}, ImmutableMap.of(), ImmutableList.of(
-				IEProperties.MULTIBLOCKSLAVE,
-				IEProperties.MIRRORED
-		), BlockRenderLayer.SOLID);
+		{
+			ResourceLocation leftModel = rl("block/connector/transformer_hv_left.obj");
+			createConnector(Connectors.transformerHV, map -> {
+				if(map.getSetStates().get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
+					return EMPTY_MODEL.model.getLocation();
+				else if(map.getSetStates().get(IEProperties.MIRRORED)==Boolean.FALSE)
+					return leftModel;
+				else
+					return rl("block/connector/transformer_hv_right.obj");
+			}, ImmutableMap.of(
+					"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(leftModel, goodExistingFileHelper))
+			), ImmutableList.of(
+					IEProperties.MULTIBLOCKSLAVE,
+					IEProperties.MIRRORED
+			), BlockRenderLayer.SOLID);
+		}
 
+		ResourceLocation ctModel = rl("block/connector/e_meter.obj");
 		createConnector(Connectors.currentTransformer, map -> {
 			if(map.getSetStates().get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
-				return rl("block/connector/e_meter.obj");
+				return ctModel;
 			else
 				return EMPTY_MODEL.model.getLocation();
-		}, ImmutableMap.of(), ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), BlockRenderLayer.SOLID);
+		}, ImmutableMap.of(
+				"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(ctModel, goodExistingFileHelper))
+		), ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), BlockRenderLayer.SOLID);
 		createConnector(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"), ImmutableMap.of(),
 				BlockRenderLayer.SOLID);
 		createConnector(Cloth.balloon, map -> rl("block/balloon.obj.ie"), ImmutableMap.of(),
@@ -732,11 +760,14 @@ public class BlockStates extends BlockStateProvider
 				modLoc("block/multiblocks/alloy_smelter_on")
 		);
 		createMultiblock(Multiblocks.cokeOven, cokeOvenOff, cokeOvenOn, IEProperties.MULTIBLOCKSLAVE,
-				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180);
+				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180,
+				modLoc("block/multiblocks/coke_oven"));
 		createMultiblock(Multiblocks.alloySmelter, alloySmelterOff, alloySmelterOn, IEProperties.MULTIBLOCKSLAVE,
-				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180);
+				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180,
+				modLoc("block/multiblocks/alloy_smelter_side"));
 		createMultiblock(Multiblocks.blastFurnace, blastFurnaceOff, blastFurnaceOn, IEProperties.MULTIBLOCKSLAVE,
-				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180);
+				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180,
+				modLoc("block/multiblocks/blast_furnace"));
 	}
 
 	private void createMultistateSingleModel(Block block, ConfiguredModel model)
@@ -816,9 +847,27 @@ public class BlockStates extends BlockStateProvider
 	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, IProperty<Boolean> isSlave,
 								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset)
 	{
+		String objLoc = ((ModelBuilder<?>)masterModel).toJson().get("model").getAsString();
+		objLoc = objLoc.substring(0, objLoc.indexOf(':')+1)+objLoc.substring(objLoc.indexOf('/')+1);
+		createMultiblock(b, masterModel, mirroredModel, isSlave, facing, mirroredState, rotationOffset,
+				new ResourceLocation(DataGenUtils.getTextureFromObj(
+						new ResourceLocation(objLoc),
+						goodExistingFileHelper
+				)));
+	}
+
+	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, IProperty<Boolean> isSlave,
+								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset,
+								  ResourceLocation particleTex)
+	{
 		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
-		builder.partialState().with(isSlave, true).setModels(EMPTY_MODEL);
+		builder.partialState()
+				.with(isSlave, true)
+				.setModels(new ConfiguredModel(
+						withExistingParent(b.getRegistryName().getPath()+"_empty", EMPTY_MODEL.model.getLocation())
+								.texture("particle", particleTex)
+				));
 		boolean[] possibleMirrorStates;
 		if(mirroredState!=null)
 			possibleMirrorStates = new boolean[]{false, true};
@@ -1006,7 +1055,7 @@ public class BlockStates extends BlockStateProvider
 		ResourceLocation modelLoc = model.apply(state);
 		Optional<ResourceLocation> loader = guessLoader(modelLoc);
 		if(!loader.isPresent())
-			return EMPTY_MODEL.model;
+			baseJson.addProperty("parent", EMPTY_MODEL.model.getLocation().toString());
 		else
 		{
 			baseJson.addProperty("loader", loader.get().toString());
@@ -1015,17 +1064,19 @@ public class BlockStates extends BlockStateProvider
 				baseJson.addProperty("model", addModelsPrefix(modelLoc).toString());
 				baseJson.addProperty("flip-v", true);
 			}
-			ImmutableMap<String, ResourceLocation> texForState = textures.apply(state);
-			LoadedModelBuilder ret = loadedModels.getBuilder(
-					nameFor(modelLoc, texForState)
-			)
-					.loader(ConnectionLoader.LOADER_NAME)
-					.additional("base_model", baseJson)
-					.additional("layers", layers);
-			for(Entry<String, ResourceLocation> e : texForState.entrySet())
-				ret.texture(e.getKey(), e.getValue());
-			return ret;
 		}
+		ImmutableMap<String, ResourceLocation> texForState = textures.apply(state);
+		LoadedModelBuilder ret = loadedModels.getBuilder(
+				nameFor(state.getOwner(), modelLoc, texForState)
+		)
+				.loader(ConnectionLoader.LOADER_NAME)
+				.additional("base_model", baseJson)
+				.additional("layers", layers);
+		for(Entry<String, ResourceLocation> e : texForState.entrySet())
+			ret.texture(e.getKey(), e.getValue());
+		if(!texForState.containsKey("particle")&&loader.isPresent()&&loader.get().getPath().contains("obj"))
+			ret.texture("particle", DataGenUtils.getTextureFromObj(modelLoc, goodExistingFileHelper));
+		return ret;
 	}
 
 	private Optional<ResourceLocation> guessLoader(ResourceLocation modelLoc)
@@ -1042,23 +1093,26 @@ public class BlockStates extends BlockStateProvider
 			throw new RuntimeException("Failed to guess loader for "+modelLoc);
 	}
 
-	Map<ResourceLocation, Map<Map<String, ResourceLocation>, Integer>> nameCache = new HashMap<>();
+	Map<String, Map<Map<String, ResourceLocation>, Integer>> nameCache = new HashMap<>();
 
-	private String nameFor(ResourceLocation model, ImmutableMap<String, ResourceLocation> texReplacement)
+	private String nameFor(Block b, ResourceLocation model, ImmutableMap<String, ResourceLocation> texReplacement)
 	{
-		String path = model.getPath();
+		String modelPath = model.getPath();
+		String blockName = b.getRegistryName().getPath();
 		String base;
-		if(path.endsWith(".obj"))
-			base = path.substring(0, path.length()-4);
-		else if(path.endsWith(".obj.ie"))
-			base = path.substring(0, path.length()-7);
+		if(modelPath.endsWith(".obj"))
+			base = modelPath.substring(0, modelPath.length()-4);
+		else if(modelPath.endsWith(".obj.ie"))
+			base = modelPath.substring(0, modelPath.length()-7);
 		else if(FeedthroughLoader.LOCATION.equals(model))
 			base = "feedthrough";
+		else if(EMPTY_MODEL.model.getLocation().equals(model))
+			base = blockName+"_empty";
 		else
 			throw new RuntimeException("Unknown model type: "+model);
-		if(!nameCache.containsKey(model))
-			nameCache.put(model, new HashMap<>());
-		Map<Map<String, ResourceLocation>, Integer> namesForModel = nameCache.get(model);
+		if(!nameCache.containsKey(base))
+			nameCache.put(base, new HashMap<>());
+		Map<Map<String, ResourceLocation>, Integer> namesForModel = nameCache.get(base);
 		int index;
 		if(namesForModel.containsKey(texReplacement))
 			index = namesForModel.get(texReplacement);

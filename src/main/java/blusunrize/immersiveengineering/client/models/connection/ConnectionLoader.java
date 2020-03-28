@@ -52,13 +52,12 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 	{
 		JsonObject baseModelData = modelContents.getAsJsonObject("base_model");
 		IModelGeometry<?> model;
+		ResourceLocation subloader;
 		if(baseModelData.has("loader"))
-		{
-			ResourceLocation subloader = new ResourceLocation(baseModelData.get("loader").getAsString());
-			model = ModelLoaderRegistry2.getModel(subloader, deserializationContext, baseModelData);
-		}
+			subloader = new ResourceLocation(baseModelData.get("loader").getAsString());
 		else
-			model = null;
+			subloader = new ResourceLocation("minecraft", "elements");
+		model = ModelLoaderRegistry2.getModel(subloader, deserializationContext, baseModelData);
 		List<BlockRenderLayer> layers = ImmutableList.of(BlockRenderLayer.SOLID);
 		if(modelContents.has("layers")&&modelContents.get("layers").isJsonArray())
 		{
