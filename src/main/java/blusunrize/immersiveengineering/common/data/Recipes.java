@@ -116,6 +116,11 @@ public class Recipes extends RecipeProvider
 		}
 		addStandardSmeltingBlastingRecipe(IEItems.Ingredients.dustHopGraphite, Ingredients.ingotHopGraphite, 0.5F, out);
 
+		addStandardSmeltingBlastingRecipe(Tools.steelAxe, Metals.nuggets.get(EnumMetals.STEEL), 0.1F, out, "_recycle_axe");
+		addStandardSmeltingBlastingRecipe(Tools.steelPick, Metals.nuggets.get(EnumMetals.STEEL), 0.1F, out, "_recycle_pick");
+		addStandardSmeltingBlastingRecipe(Tools.steelShovel, Metals.nuggets.get(EnumMetals.STEEL), 0.1F, out, "_recycle_shovel");
+		addStandardSmeltingBlastingRecipe(Tools.steelSword, Metals.nuggets.get(EnumMetals.STEEL), 0.1F, out, "_recycle_sword");
+
 		for(Entry<Block, SlabBlock> blockSlab : IEBlocks.toSlab.entrySet())
 			addSlab(blockSlab.getKey(), blockSlab.getValue(), out);
 
