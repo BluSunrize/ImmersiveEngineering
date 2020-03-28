@@ -92,12 +92,13 @@ public final class IEItems
 		public static Item steelShovel;
 		public static Item steelAxe;
 		public static Item steelSword;
+		public static Map<EquipmentSlotType, Item> steelArmor = new EnumMap<>(EquipmentSlotType.class);
+
 		public static Item toolbox;
 
 		public static Item drill;
 		public static Item drillheadSteel;
 		public static Item drillheadIron;
-
 	}
 
 	public static final class Weapons

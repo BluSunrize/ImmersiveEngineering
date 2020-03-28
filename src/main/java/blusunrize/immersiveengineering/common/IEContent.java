@@ -416,6 +416,9 @@ public class IEContent
 		IEItems.Tools.steelShovel = IETools.createShovel(Lib.MATERIAL_Steel, "shovel_steel");
 		IEItems.Tools.steelAxe = IETools.createAxe(Lib.MATERIAL_Steel, "axe_steel");
 		IEItems.Tools.steelSword = IETools.createSword(Lib.MATERIAL_Steel, "sword_steel");
+		for(EquipmentSlotType slot : EquipmentSlotType.values())
+			if(slot.getSlotType()==Group.ARMOR)
+				IEItems.Tools.steelArmor.put(slot, new SteelArmorItem(slot));
 		Tools.toolbox = new ToolboxItem();
 		IEItems.Misc.hempSeeds = new IESeedItem(Misc.hempPlant);
 		IEItems.Ingredients.stickTreated = new IEBaseItem("stick_treated");

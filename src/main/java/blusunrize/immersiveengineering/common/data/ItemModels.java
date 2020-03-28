@@ -211,6 +211,7 @@ public class ItemModels extends LoadedModelProvider
 		addItemModels("bullet_", Ingredients.emptyCasing, Ingredients.emptyShell);
 		addItemModels("bullet_", Weapons.bullets.values());
 		addItemModels("", IEItems.Misc.faradaySuit.values());
+		addItemModels("", IEItems.Tools.steelArmor.values());
 		addItemModel("blueprint", IEItems.Misc.blueprint);
 		addItemModel("seed_hemp", IEItems.Misc.hempSeeds);
 		addItemModel("drillhead_iron", Tools.drillheadIron);

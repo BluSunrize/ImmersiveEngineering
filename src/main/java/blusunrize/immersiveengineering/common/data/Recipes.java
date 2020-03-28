@@ -1147,6 +1147,9 @@ public class Recipes extends RecipeProvider
 				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out);
+
+		addArmor(IETags.getTagsFor(EnumMetals.STEEL).plate, Tools.steelArmor, "steel_plate", out);
+
 		ShapedRecipeBuilder.shapedRecipe(Tools.toolbox)
 				.patternLine("ppp")
 				.patternLine("rcr")
