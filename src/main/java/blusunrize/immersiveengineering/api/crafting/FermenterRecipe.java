@@ -118,7 +118,7 @@ public class FermenterRecipe extends MultiblockRecipe
 	{
 		HashMap<String, Integer> map = new HashMap<>();
 		for(FermenterRecipe recipe : recipeList)
-			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f&&recipe.input.isValid())
+			if(recipe.fluidOutput.getFluid()==f&&recipe.input.isValid())
 			{
 				ItemStack is = recipe.input.getExampleStack();
 				map.put(is.getDisplayName().getFormattedText(), recipe.fluidOutput.getAmount());

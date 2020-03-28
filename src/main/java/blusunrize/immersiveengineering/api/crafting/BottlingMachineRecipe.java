@@ -46,13 +46,12 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	public static void addRecipe(ItemStack output, Object input, FluidStack fluidInput)
 	{
 		BottlingMachineRecipe recipe = new BottlingMachineRecipe(output, input, fluidInput);
-		if(recipe.input!=null)
-			recipeList.add(recipe);
+		recipeList.add(recipe);
 	}
 
 	public static BottlingMachineRecipe findRecipe(ItemStack input, FluidStack fluid)
 	{
-		if(!input.isEmpty()&&fluid!=null)
+		if(!input.isEmpty()&&!fluid.isEmpty())
 			for(BottlingMachineRecipe recipe : recipeList)
 				if(ApiUtils.stackMatchesObject(input, recipe.input)&&fluid.containsFluid(recipe.fluidInput))
 					return recipe;
