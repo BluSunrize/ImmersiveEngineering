@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -37,7 +38,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.List;
 import java.util.function.Function;
@@ -224,29 +227,27 @@ public class ExtractConveyor extends BasicConveyor
 				BlockPos neighbour = getTile().getPos().offset(this.getExtractDirection());
 				if(!world.isAirBlock(neighbour))
 				{
-					TileEntity neighbourTile = world.getTileEntity(neighbour);
-					if(neighbourTile!=null)
-						neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getExtractDirection().getOpposite())
-								.ifPresent(itemHandler ->
-								{
-									for(int i = 0; i < itemHandler.getSlots(); i++)
-									{
-										ItemStack extractItem = itemHandler.extractItem(i, 1, true);
-										if(!extractItem.isEmpty())
-										{
-											extractItem = itemHandler.extractItem(i, 1, false);
-											ItemEntity entity = new ItemEntity(world,
-													getTile().getPos().getX()+.5,
-													getTile().getPos().getY()+.1875,
-													getTile().getPos().getZ()+.5, extractItem);
-											entity.setMotion(Vec3d.ZERO);
-											world.addEntity(entity);
-											this.onItemDeployed(entity);
-											this.transferCooldown = this.transferTickrate;
-											return;
-										}
-									}
-								});
+					LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, neighbour, this.getExtractDirection().getOpposite(), true);
+					cap.ifPresent(itemHandler ->
+					{
+						for(int i = 0; i < itemHandler.getSlots(); i++)
+						{
+							ItemStack extractItem = itemHandler.extractItem(i, 1, true);
+							if(!extractItem.isEmpty())
+							{
+								extractItem = itemHandler.extractItem(i, 1, false);
+								ItemEntity entity = new ItemEntity(world,
+										getTile().getPos().getX()+.5,
+										getTile().getPos().getY()+.1875,
+										getTile().getPos().getZ()+.5, extractItem);
+								entity.setMotion(Vec3d.ZERO);
+								world.addEntity(entity);
+								this.onItemDeployed(entity);
+								this.transferCooldown = this.transferTickrate;
+								return;
+							}
+						}
+					});
 				}
 			}
 		}
