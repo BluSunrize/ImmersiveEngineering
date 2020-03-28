@@ -65,7 +65,7 @@ public abstract class CapabilityReference<T>
 		@Nonnull
 		private LazyOptional<T> currentCap = LazyOptional.empty();
 		private DirectionalBlockPos lastPos;
-		private World lastWorld;//TODO does this leak anywhere?
+		private int lastWorldHash;
 
 		public TECapReference(Supplier<World> world, Supplier<DirectionalBlockPos> pos, Capability<T> cap)
 		{
@@ -96,17 +96,17 @@ public abstract class CapabilityReference<T>
 			if(currWorld==null||currPos==null)
 			{
 				currentCap = LazyOptional.empty();
-				lastWorld = null;
+				lastWorldHash = 0;
 				lastPos = null;
 			}
-			else if(currWorld!=lastWorld||!currPos.equals(lastPos)||!currentCap.isPresent())
+			else if(currWorld.hashCode()!=lastWorldHash||!currPos.equals(lastPos)||!currentCap.isPresent())
 			{
 				TileEntity te = Utils.getExistingTileEntity(currWorld, currPos);
 				if(te!=null)
 					currentCap = te.getCapability(cap, currPos.direction);
 				else
 					currentCap = LazyOptional.empty();
-				lastWorld = currWorld;
+				lastWorldHash = currWorld.hashCode();
 				lastPos = currPos;
 			}
 		}
