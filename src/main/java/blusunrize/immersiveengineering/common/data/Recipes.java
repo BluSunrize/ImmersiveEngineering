@@ -34,6 +34,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.*;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -120,6 +121,13 @@ public class Recipes extends RecipeProvider
 		addStandardSmeltingBlastingRecipe(Tools.steelPick, Metals.nuggets.get(EnumMetals.STEEL), 0.1F, out, "_recycle_pick");
 		addStandardSmeltingBlastingRecipe(Tools.steelShovel, Metals.nuggets.get(EnumMetals.STEEL), 0.1F, out, "_recycle_shovel");
 		addStandardSmeltingBlastingRecipe(Tools.steelSword, Metals.nuggets.get(EnumMetals.STEEL), 0.1F, out, "_recycle_sword");
+
+		for(EquipmentSlotType slot : EquipmentSlotType.values())
+			if(slot.getSlotType()==Group.ARMOR)
+			{
+				addStandardSmeltingBlastingRecipe(Tools.steelArmor.get(slot), Metals.nuggets.get(EnumMetals.STEEL), 0.1F, out, "_recycle_steel_"+slot.getName());
+				addStandardSmeltingBlastingRecipe(Misc.faradaySuit.get(slot), Metals.nuggets.get(EnumMetals.ALUMINUM), 0.1F, out, "_recycle_faraday_"+slot.getName());
+			}
 
 		for(Entry<Block, SlabBlock> blockSlab : IEBlocks.toSlab.entrySet())
 			addSlab(blockSlab.getKey(), blockSlab.getValue(), out);
