@@ -46,8 +46,6 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 
 	protected abstract Supplier<T> getTileProvider();
 
-	protected abstract ItemStack getCartItemStack();
-
 	public T getContainedTileEntity()
 	{
 		return containedTileEntity;
@@ -60,7 +58,7 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	@Override
 	public Type getMinecartType()
 	{
-		return null;
+		return Type.CHEST;
 	}
 
 	@Override
@@ -77,7 +75,7 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 		this.remove();
 		if(this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
 		{
-			ItemStack itemstack = getCartItemStack();
+			ItemStack itemstack = getCartItem();
 			this.writeTileToItem(itemstack);
 			if(this.hasCustomName())
 				itemstack.setDisplayName(this.getCustomName());

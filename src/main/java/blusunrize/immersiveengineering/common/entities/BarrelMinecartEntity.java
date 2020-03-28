@@ -44,7 +44,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	}
 
 	@Override
-	protected ItemStack getCartItemStack()
+	public ItemStack getCartItem()
 	{
 		return new ItemStack(IEItems.Misc.cartWoodenBarrel);
 	}
