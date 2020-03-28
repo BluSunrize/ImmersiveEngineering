@@ -42,6 +42,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.*;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
@@ -181,6 +182,12 @@ public class HammerItem extends IEBaseItem implements ITool
 				}
 			}
 		return ActionResultType.PASS;
+	}
+
+	@Override
+	public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player)
+	{
+		return true;
 	}
 
 	@Nonnull
