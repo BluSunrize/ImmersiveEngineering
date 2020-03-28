@@ -75,8 +75,8 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 				int myRelative = guiTop+58-my;
 				for(int i = tile.tank.getFluidTypes()-1; i >= 0; i--)
 				{
-					FluidStack fs = tile.tank.fluids.get(i);
-					if(fs!=null&&fs.getFluid()!=null)
+					FluidStack fs = tile.tank.fluids.get(i); //TODO: Assert nonnull FluidStack.EMPTY
+					if(fs!=null&&(!fs.isEmpty()))
 					{
 						fluidUpToNow += fs.getAmount();
 						int newY = (int)(47*(fluidUpToNow/capacity));
