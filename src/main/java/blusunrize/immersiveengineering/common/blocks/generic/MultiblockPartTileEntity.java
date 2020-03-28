@@ -199,14 +199,14 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		@Override
 		public int fill(FluidStack resource, FluidAction doFill)
 		{
-			if(!this.multiblock.formed||resource==null)
+			if(!this.multiblock.formed||resource.isEmpty())
 				return 0;
 			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
 			int fill = -1;
 			for(int i = 0; i < tanks.length; i++)
 			{
 				IFluidTank tank = tanks[i];
-				if(tank!=null&&this.multiblock.canFillTankFrom(i, side, resource)&&tank.getFluid()!=null&&tank.getFluid().isFluidEqual(resource))
+				if(this.multiblock.canFillTankFrom(i, side, resource)&&resource.isFluidEqual(tank.getFluid()))
 				{
 					fill = tank.fill(resource, doFill);
 					if(fill > 0)
@@ -217,7 +217,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 				for(int i = 0; i < tanks.length; i++)
 				{
 					IFluidTank tank = tanks[i];
-					if(tank!=null&&this.multiblock.canFillTankFrom(i, side, resource))
+					if(this.multiblock.canFillTankFrom(i, side, resource))
 					{
 						fill = tank.fill(resource, doFill);
 						if(fill > 0)
@@ -240,7 +240,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 			for(int i = 0; i < tanks.length; i++)
 			{
 				IFluidTank tank = tanks[i];
-				if(tank!=null&&this.multiblock.canDrainTankFrom(i, side))
+				if(this.multiblock.canDrainTankFrom(i, side))
 				{
 					if(tank instanceof IFluidHandler)
 						drain = ((IFluidHandler)tank).drain(resource, doDrain);
@@ -266,7 +266,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 			for(int i = 0; i < tanks.length; i++)
 			{
 				IFluidTank tank = tanks[i];
-				if(tank!=null&&this.multiblock.canDrainTankFrom(i, side))
+				if(this.multiblock.canDrainTankFrom(i, side))
 				{
 					drain = tank.drain(maxDrain, doDrain);
 					if(!drain.isEmpty())

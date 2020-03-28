@@ -60,7 +60,7 @@ public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTil
 			GlStateManager.enableAlphaTest();
 			GlStateManager.enableTexture();
 
-			if(fs!=null)
+			if(!fs.isEmpty())
 			{
 				float h = fs.getAmount()/(float)tile.tank.getCapacity();
 				GlStateManager.depthMask(false);

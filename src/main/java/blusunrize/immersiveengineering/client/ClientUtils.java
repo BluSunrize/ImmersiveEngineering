@@ -759,7 +759,7 @@ public class ClientUtils
 	{
 		if(tooltip==null)
 		{
-			if(fluid!=null&&fluid.getFluid()!=null)
+			if(!fluid.isEmpty())
 			{
 				int fluidHeight = (int)(h*(fluid.getAmount()/(float)capacity));
 				drawRepeatedFluidSprite(fluid, x, y+h-fluidHeight, w, fluidHeight);

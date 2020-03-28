@@ -153,7 +153,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					int target = closedList.size()-1;
 					BlockPos pos = closedList.get(target);
 					FluidStack fs = Utils.drainFluidBlock(world, pos, FluidAction.SIMULATE);
-					if(fs==null)
+					if(fs.isEmpty())
 						closedList.remove(target);
 					else if(tank.fill(fs, FluidAction.SIMULATE)==fs.getAmount()
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)

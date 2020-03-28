@@ -288,9 +288,9 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			{
 				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query:
 						(recipeQuery.query instanceof IngredientStack
-								&&((IngredientStack)recipeQuery.query).fluid!=null)?((IngredientStack)recipeQuery.query).fluid: null;
+								&&((IngredientStack)recipeQuery.query).fluid!=null)?((IngredientStack)recipeQuery.query).fluid: FluidStack.EMPTY;
 				int querySize = recipeQuery.querySize;
-				if(fs!=null)
+				if(!fs.isEmpty())
 				{
 					boolean hasFluid = false;
 					for(FluidTank tank : tanks)

@@ -43,8 +43,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 			for(int i = 0; i < tagList.size(); i++)
 			{
 				FluidStack fs = FluidStack.loadFluidStackFromNBT(tagList.getCompound(i));
-				if(fs!=null)
-					this.fluids.add(fs);
+				this.fluids.add(fs);
 			}
 		}
 		return this;
@@ -54,7 +53,6 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 	{
 		ListNBT tagList = new ListNBT();
 		for(FluidStack fs : this.fluids)
-			if(fs!=null)
 				tagList.add(fs.writeToNBT(new CompoundNBT()));
 		nbt.put("fluids", tagList);
 		return nbt;
@@ -183,7 +181,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 	public FluidStack drain(int maxDrain, FluidAction doDrain)
 	{
 		if(this.fluids.isEmpty())
-			return null;
+			return FluidStack.EMPTY;
 		return drain(new FluidStack(getFluid(), maxDrain), doDrain);
 	}
 }

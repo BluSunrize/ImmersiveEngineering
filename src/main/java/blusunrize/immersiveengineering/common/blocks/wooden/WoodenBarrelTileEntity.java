@@ -118,7 +118,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
 		{
 			String s = null;
-			if(!tank.getFluid().isEmpty())
+			if(!tank.isEmpty())
 				s = tank.getFluid().getDisplayName().getFormattedText()+": "+tank.getFluidAmount()+"mB";
 			else
 				s = I18n.format(Lib.GUI+"empty");
@@ -273,7 +273,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 
 	public boolean isFluidValid(FluidStack fluid)
 	{
-		return !fluid.isEmpty()&&fluid.getFluid()!=null
+		return !fluid.isEmpty()
 				&&fluid.getFluid().getAttributes().getTemperature(fluid) < IGNITION_TEMPERATURE
 				&&!fluid.getFluid().getAttributes().isGaseous(fluid);
 	}

@@ -85,7 +85,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 
 	private ITextComponent formatFluidStack(FluidStack fs, int capacity)
 	{
-		if(fs!=null)
+		if(!fs.isEmpty())
 		{
 			FluidAttributes attr = fs.getFluid().getAttributes();
 			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY:

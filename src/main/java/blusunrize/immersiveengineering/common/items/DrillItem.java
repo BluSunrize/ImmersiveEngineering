@@ -135,7 +135,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	{
 		super.recalculateUpgrades(stack, w);
 		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, 2000))
+		if(fs.getAmount() > this.getCapacity(stack, 2000))
 		{
 			fs.setAmount(this.getCapacity(stack, 2000));
 			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
@@ -146,7 +146,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	public void finishUpgradeRecalculation(ItemStack stack)
 	{
 		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.getAmount() > getCapacity(stack, 2000))
+		if(fs.getAmount() > getCapacity(stack, 2000))
 		{
 			fs.setAmount(getCapacity(stack, 2000));
 			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
@@ -355,7 +355,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	{
 		if(player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
 			return false;
-		return getFluid(drill)!=null;
+		return !getFluid(drill).isEmpty();
 	}
 
 	public int getMaxHeadDamage(ItemStack stack)
@@ -372,7 +372,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 
 	public boolean isDrillBroken(ItemStack stack)
 	{
-		return getHeadDamage(stack) >= getMaxHeadDamage(stack)||getFluid(stack)==null||getFluid(stack).isEmpty();
+		return getHeadDamage(stack) >= getMaxHeadDamage(stack)||getFluid(stack).isEmpty();
 	}
 
 	@Override

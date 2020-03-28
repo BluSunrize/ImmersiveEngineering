@@ -105,8 +105,8 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 			{
 				if(Utils.RAND.nextInt(8)==0)
 				{
-					FluidStack fs = !tank.fluids.isEmpty()?tank.fluids.get(0): null;
-					if(fs!=null)
+					FluidStack fs = !tank.fluids.isEmpty()?tank.fluids.get(0): FluidStack.EMPTY;
+					if(!fs.isEmpty())
 					{
 						float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
 						Vec3d partPos = new Vec3d(getPos().getX()+.5f+getFacing().getXOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+getFacing().getZOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getZOffset()*.5f);
@@ -167,7 +167,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 					if(!outputAll)
 					{
 						FluidStack inTank = this.tank.getFluid();
-						if(inTank!=null)
+						if(!inTank.isEmpty())
 						{
 							FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.getAmount(), 80), false);
 							int accepted = output.fill(out, FluidAction.SIMULATE);
@@ -187,7 +187,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 						while(it.hasNext())
 						{
 							FluidStack fs = it.next();
-							if(fs!=null)
+							if(!fs.isEmpty())
 							{
 								FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.getAmount(), 80-totalOut), false);
 								int accepted = output.fill(out, FluidAction.SIMULATE);

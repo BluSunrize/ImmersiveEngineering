@@ -1409,7 +1409,7 @@ public class Utils
 	public static Map<String, Object> saveFluidTank(FluidTank tank)
 	{
 		HashMap<String, Object> ret = new HashMap<>();
-		if(tank!=null&&tank.getFluid()!=null)
+		if(!tank.isEmpty())
 		{
 			ret.put("name", tank.getFluid().getDisplayName().getFormattedText());
 			ret.put("amount", tank.getFluidAmount());

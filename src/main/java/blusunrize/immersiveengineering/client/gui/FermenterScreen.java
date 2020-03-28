@@ -61,7 +61,7 @@ public class FermenterScreen extends IEContainerScreen<FermenterContainer>
 		//			this.blit(guiLeft+59,guiTop+37+12-h, 179, 1+12-h, 9, h);
 		//		}
 
-		//		if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
+		//		if(!tile.tank. isEmpty())
 		//		{
 		//			int h = (int)(47*(tile.tank.getFluid().amount/(float)tile.tank.getCapacity()));
 		//			ClientUtils.drawRepeatedFluidIcon(tile.tank.getFluid().getFluid(), guiLeft+129,guiTop+20+47-h, 16, h);

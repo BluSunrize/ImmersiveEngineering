@@ -38,6 +38,6 @@ public class MetalBarrelTileEntity extends WoodenBarrelTileEntity
 	@Override
 	public boolean isFluidValid(FluidStack fluid)
 	{
-		return fluid!=null&&fluid.getFluid()!=null;
+		return !fluid.isEmpty();
 	}
 }

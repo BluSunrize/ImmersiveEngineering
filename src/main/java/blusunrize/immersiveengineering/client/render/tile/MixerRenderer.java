@@ -92,7 +92,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 		for(int i = te.tank.getFluidTypes()-1; i >= 0; i--)
 		{
 			FluidStack fs = te.tank.fluids.get(i);
-			if(fs!=null&&fs.getFluid()!=null)
+			if(!fs.isEmpty())
 			{
 				int col = fs.getFluid().getAttributes().getColor(fs);
 				GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);

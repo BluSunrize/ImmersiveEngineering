@@ -51,7 +51,7 @@ public class IEItemInterfaces
 			if(optional.isPresent())
 				return optional.orElseThrow(RuntimeException::new);
 			else
-				return null;
+				return FluidStack.EMPTY;
 		}
 	}
 
