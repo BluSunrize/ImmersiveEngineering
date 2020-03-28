@@ -37,7 +37,7 @@ public class RefineryContainer extends IEBaseContainer<RefineryTileEntity>
 							FluidStack fs = h.getFluidInTank(0);
 							if(fs.isEmpty())
 								return false;
-							if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
+							if(RefineryRecipe.findIncompleteRefineryRecipe(fs, FluidStack.EMPTY)==null)
 								return false;
 							if(tileF.tanks[0].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[0].getFluid()))
 								return false;
@@ -62,7 +62,7 @@ public class RefineryContainer extends IEBaseContainer<RefineryTileEntity>
 							FluidStack fs = h.getFluidInTank(0);
 							if(fs.isEmpty())
 								return false;
-							if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
+							if(RefineryRecipe.findIncompleteRefineryRecipe(fs, FluidStack.EMPTY)==null)
 								return false;
 							if(tileF.tanks[1].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[1].getFluid()))
 								return false;

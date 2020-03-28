@@ -54,25 +54,25 @@ public class RefineryRecipe extends MultiblockRecipe
 	{
 		for(RefineryRecipe recipe : recipeList)
 		{
-			if(input0!=null)
+			if(!input0.isEmpty())
 			{
-				if(recipe.input0!=null&&input0.containsFluid(recipe.input0))
+				if((!recipe.input0.isEmpty())&&input0.containsFluid(recipe.input0))
 				{
-					if((recipe.input1==null&&input1==null)||(recipe.input1!=null&&input1!=null&&input1.containsFluid(recipe.input1)))
+					if((recipe.input1.isEmpty()&&input1.isEmpty())||((!recipe.input1.isEmpty())&&(!input1.isEmpty())&&input1.containsFluid(recipe.input1)))
 						return recipe;
 				}
 
-				if(recipe.input1!=null&&input0.containsFluid(recipe.input1))
+				if((!recipe.input1.isEmpty())&&input0.containsFluid(recipe.input1))
 				{
-					if((recipe.input0==null&&input1==null)||(recipe.input0!=null&&input1!=null&&input1.containsFluid(recipe.input0)))
+					if(((recipe.input0.isEmpty())&&(input1.isEmpty()))||((!recipe.input0.isEmpty())&&(!input1.isEmpty())&&input1.containsFluid(recipe.input0)))
 						return recipe;
 				}
 			}
-			else if(input1!=null)
+			else if(!input1.isEmpty())
 			{
-				if(recipe.input0!=null&&input1.containsFluid(recipe.input0)&&recipe.input1==null)
+				if((recipe.input0.isEmpty())&&input1.containsFluid(recipe.input0)&&(recipe.input1.isEmpty()))
 					return recipe;
-				if(recipe.input1!=null&&input1.containsFluid(recipe.input1)&&recipe.input0==null)
+				if((!recipe.input1.isEmpty())&&input1.containsFluid(recipe.input1)&&(recipe.input0.isEmpty()))
 					return recipe;
 			}
 		}
@@ -81,12 +81,12 @@ public class RefineryRecipe extends MultiblockRecipe
 
 	public static List<RefineryRecipe> findIncompleteRefineryRecipe(FluidStack input0, FluidStack input1)
 	{
-		if(input0==null&&input1==null)
+		if((input0.isEmpty())&&(input1.isEmpty()))
 			return null;
 		List<RefineryRecipe> list = Lists.newArrayList();
 		for(RefineryRecipe recipe : recipeList)
 		{
-			if(input0!=null&&input1==null)
+			if((!input0.isEmpty())&&(input1.isEmpty()))
 			{
 				if(input0.isFluidEqual(recipe.input0)||input0.isFluidEqual(recipe.input1))
 				{
@@ -94,7 +94,7 @@ public class RefineryRecipe extends MultiblockRecipe
 					break;
 				}
 			}
-			else if(input0==null&&input1!=null)
+			else if((input0.isEmpty())&&(!input1.isEmpty()))
 			{
 				if(input1.isFluidEqual(recipe.input0)||input1.isFluidEqual(recipe.input1))
 				{

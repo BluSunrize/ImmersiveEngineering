@@ -418,7 +418,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 				return false;
 			if(master.tanks[0].getFluid().isEmpty()&&master.tanks[1].getFluid().isEmpty())
 			{
-				List<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource, null);
+				List<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource, FluidStack.EMPTY);
 				return incompleteRecipes!=null&&!incompleteRecipes.isEmpty();
 			}
 			else
