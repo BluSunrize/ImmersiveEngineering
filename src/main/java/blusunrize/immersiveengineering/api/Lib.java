@@ -72,6 +72,7 @@ public class Lib
 	public static final ResourceLocation GUIID_MaintenanceKit = new ResourceLocation(MODID, "maintenancekit");
 	//Entities
 	public static final ResourceLocation GUIID_CartCrate = new ResourceLocation(MODID, "cart_crate");
+	public static final ResourceLocation GUIID_CartReinforcedCrate = new ResourceLocation(MODID, "cart_reinforcedcrate");
 
 	public static final String NBT_Earmuffs = "IE:Earmuffs";
 	public static final String NBT_EarmuffColour = "IE:EarmuffColour";

@@ -1041,6 +1041,8 @@
  "item.immersiveengineering.maintenance_kit": "Maintenance Kit",
  "item.immersiveengineering.map_orevein": "Mineral Deposit Map",
  "item.immersiveengineering.minecart_woodencrate": "Minecart with Wooden Storage Crate",
+ "item.immersiveengineering.minecart_reinforcedcrate": "Minecart with Reinforced Storage Crate",
+ "item.immersiveengineering.minecart_woodenbarrel": "Minecart with Wooden Barrel",
  "ie.manual.entry.shaderList.name": "List of Shaders",
  "ie.manual.entry.shaderList.noInfo": "You have not unlocked this shader yet!",
  "ie.manual.entry.shaderList.unlock": "Unlock this shader",

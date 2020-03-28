@@ -8,10 +8,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -41,20 +40,24 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	}
 
 	@Override
-	public void killMinecart(DamageSource source)
+	protected ItemStack getCartItemStack()
 	{
-		this.remove();
-		if(this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
-		{
-			ItemStack itemstack = new ItemStack(IEItems.Misc.cartWoodenCrate);
-			CompoundNBT tag = new CompoundNBT();
-			this.containedTileEntity.writeCustomNBT(tag, false);
-			if(!tag.isEmpty())
-				itemstack.setTag(tag);
-			if(this.hasCustomName())
-				itemstack.setDisplayName(this.getCustomName());
-			this.entityDropItem(itemstack);
-		}
+		return new ItemStack(IEItems.Misc.cartWoodenCrate);
+	}
+
+	@Override
+	public void writeTileToItem(ItemStack itemStack)
+	{
+		CompoundNBT tag = new CompoundNBT();
+		this.containedTileEntity.writeInv(tag, true);
+		if(!tag.isEmpty())
+			itemStack.setTag(tag);
+	}
+
+	@Override
+	public void readTileFromItem(LivingEntity placer, ItemStack itemStack)
+	{
+		this.containedTileEntity.readOnPlacement(placer, itemStack);
 	}
 
 	@Nonnull

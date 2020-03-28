@@ -1737,7 +1737,21 @@ public class Recipes extends RecipeProvider
 		ShapedRecipeBuilder.shapedRecipe(Misc.cartWoodenCrate)
 				.patternLine("B")
 				.patternLine("C")
-				.key('B', IEBlocks.WoodenDevices.crate)
+				.key('B', WoodenDevices.crate)
+				.key('C', Items.MINECART)
+				.addCriterion("has_minecart", hasItem(Items.MINECART))
+				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.cartReinforcedCrate)
+				.patternLine("B")
+				.patternLine("C")
+				.key('B', WoodenDevices.reinforcedCrate)
+				.key('C', Items.MINECART)
+				.addCriterion("has_minecart", hasItem(Items.MINECART))
+				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Misc.cartWoodenBarrel)
+				.patternLine("B")
+				.patternLine("C")
+				.key('B', WoodenDevices.woodenBarrel)
 				.key('C', Items.MINECART)
 				.addCriterion("has_minecart", hasItem(Items.MINECART))
 				.build(out);

@@ -4,17 +4,22 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
+import blusunrize.immersiveengineering.common.items.IEItems;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -41,10 +46,16 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 
 	protected abstract Supplier<T> getTileProvider();
 
+	protected abstract ItemStack getCartItemStack();
+
 	public T getContainedTileEntity()
 	{
 		return containedTileEntity;
 	}
+
+	public abstract void writeTileToItem(ItemStack itemStack);
+
+	public abstract void readTileFromItem(LivingEntity placer, ItemStack itemStack);
 
 	@Override
 	public Type getMinecartType()
@@ -58,6 +69,20 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 		if(this.isAlive()&&this.containedTileEntity!=null)
 			return this.containedTileEntity.getCapability(capability, facing);
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public void killMinecart(DamageSource source)
+	{
+		this.remove();
+		if(this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
+		{
+			ItemStack itemstack = getCartItemStack();
+			this.writeTileToItem(itemstack);
+			if(this.hasCustomName())
+				itemstack.setDisplayName(this.getCustomName());
+			this.entityDropItem(itemstack);
+		}
 	}
 
 	protected abstract void invalidateCaps();

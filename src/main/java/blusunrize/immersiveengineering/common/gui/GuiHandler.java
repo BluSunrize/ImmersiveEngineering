@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEnti
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import blusunrize.immersiveengineering.common.entities.CrateMinecartEntity;
+import blusunrize.immersiveengineering.common.entities.ReinforcedCrateMinecartEntity;
 import blusunrize.immersiveengineering.common.items.MaintenanceKitItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.SpeedloaderItem;
@@ -85,6 +86,9 @@ public class GuiHandler
 
 
 		register(CrateMinecartEntity.class, Lib.GUIID_CartCrate,
+				(EntityContainerConstructor<CrateMinecartEntity, Container>)(windowId, inventoryPlayer, entity)
+						-> new CrateEntityContainer(windowId, inventoryPlayer, entity.getContainedTileEntity(), entity));
+		register(ReinforcedCrateMinecartEntity.class, Lib.GUIID_CartReinforcedCrate,
 				(EntityContainerConstructor<CrateMinecartEntity, Container>)(windowId, inventoryPlayer, entity)
 						-> new CrateEntityContainer(windowId, inventoryPlayer, entity.getContainedTileEntity(), entity));
 	}

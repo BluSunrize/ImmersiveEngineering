@@ -514,6 +514,22 @@ public class IEContent
 				return new CrateMinecartEntity(CrateMinecartEntity.TYPE, world, x, y, z);
 			}
 		};
+		IEItems.Misc.cartReinforcedCrate = new IEMinecartItem("reinforcedcrate")
+		{
+			@Override
+			public IEMinecartEntity createCart(World world, double x, double y, double z, ItemStack stack)
+			{
+				return new ReinforcedCrateMinecartEntity(ReinforcedCrateMinecartEntity.TYPE, world, x, y, z);
+			}
+		};
+		IEItems.Misc.cartWoodenBarrel = new IEMinecartItem("woodenbarrel")
+		{
+			@Override
+			public IEMinecartEntity createCart(World world, double x, double y, double z, ItemStack stack)
+			{
+				return new BarrelMinecartEntity(BarrelMinecartEntity.TYPE, world, x, y, z);
+			}
+		};
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
@@ -632,7 +648,9 @@ public class IEContent
 				RevolvershotHomingEntity.TYPE,
 				SkylineHookEntity.TYPE,
 				WolfpackShotEntity.TYPE,
-				CrateMinecartEntity.TYPE
+				CrateMinecartEntity.TYPE,
+				ReinforcedCrateMinecartEntity.TYPE,
+				BarrelMinecartEntity.TYPE
 		);
 	}
 

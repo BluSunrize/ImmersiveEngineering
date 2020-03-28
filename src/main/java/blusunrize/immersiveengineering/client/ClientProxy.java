@@ -1144,6 +1144,7 @@ public class ClientProxy extends CommonProxy
 		registerScreen(Lib.GUIID_MaintenanceKit, MaintenanceKitScreen::new);
 
 		registerScreen(Lib.GUIID_CartCrate, CrateScreen::new);
+		registerScreen(Lib.GUIID_CartReinforcedCrate, CrateScreen::new);
 	}
 
 
