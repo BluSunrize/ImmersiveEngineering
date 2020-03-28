@@ -160,8 +160,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		CompoundNBT tag = new CompoundNBT();
 		tag.putInt("filter_side", side);
 		tag.putInt("filter_slot", slot);
-		if(fluid!=null)
-			tag.put("filter", fluid.writeToNBT(new CompoundNBT()));
+		tag.put("filter", fluid.writeToNBT(new CompoundNBT()));
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 	}
 }
