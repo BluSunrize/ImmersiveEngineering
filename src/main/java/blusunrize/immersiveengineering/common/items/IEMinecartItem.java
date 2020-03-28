@@ -57,12 +57,7 @@ public abstract class IEMinecartItem extends IEBaseItem
 				IEMinecartEntity minecartEntity = this.createCart(world, (double)blockpos.getX()+0.5D, (double)blockpos.getY()+0.0625D+d0, (double)blockpos.getZ()+0.5D, itemstack);
 				if(itemstack.hasDisplayName())
 					minecartEntity.setCustomName(itemstack.getDisplayName());
-
-				IEBaseTileEntity tile = minecartEntity.getContainedTileEntity();
-				CompoundNBT tag = itemstack.getTag();
-				if(tile!=null&&tag!=null)
-					tile.readCustomNBT(tag, false);
-
+				minecartEntity.readTileFromItem(context.getPlayer(), itemstack);
 				world.addEntity(minecartEntity);
 			}
 
@@ -112,11 +107,7 @@ public abstract class IEMinecartItem extends IEBaseItem
 			IEMinecartEntity minecartEntity = ((IEMinecartItem)stack.getItem()).createCart(world, d0, d1+d3, d2, stack);
 			if(stack.hasDisplayName())
 				minecartEntity.setCustomName(stack.getDisplayName());
-
-			IEBaseTileEntity tile = minecartEntity.getContainedTileEntity();
-			CompoundNBT tag = stack.getTag();
-			if(tile!=null&&tag!=null)
-				tile.readCustomNBT(tag, false);
+			minecartEntity.readTileFromItem(null, stack);
 
 			world.addEntity(minecartEntity);
 			stack.shrink(1);
