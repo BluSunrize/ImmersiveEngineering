@@ -397,15 +397,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	@Override
 	public NonNullList<ItemStack> getBullets(ItemStack revolver, boolean remote)
 	{
-		//This might not be necessary anymore? Will have to be tested on servers.
-//		if(!remote&&isEmpty(revolver, true))
-//			remote = true;
-//		else if(remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
-//			remote = false;
-//		if(!remote)
+		if(!remote&&isEmpty(revolver, true))
+			remote = true;
+		else if(remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
+			remote = false;
+		if(!remote)
 			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
-//		else
-//			return Utils.readInventory(revolver.getOrCreateTag().getList("bullets", NBT.TAG_COMPOUND), getBulletCount(revolver));
+		else
+			return Utils.readInventory(revolver.getOrCreateTag().getList("bullets", NBT.TAG_COMPOUND), getBulletCount(revolver));
 	}
 
 	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets)
