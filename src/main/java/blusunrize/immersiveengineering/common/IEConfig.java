@@ -476,7 +476,6 @@ public class IEConfig
 			public final IntValue minY;
 			public final IntValue maxY;
 			public final IntValue veinsPerChunk;
-			public final DoubleValue spawnChance;
 			public final BooleanValue retrogenEnabled;
 
 			private OreConfig(Builder builder, String name, int defSize, int defMinY, int defMaxY, int defNumPerChunk, double defSpawnChance)
@@ -495,10 +494,7 @@ public class IEConfig
 						.defineInRange("max_y", defMaxY, Integer.MIN_VALUE, Integer.MAX_VALUE);
 				veinsPerChunk = builder
 						.comment("The average number of veins per chunk")
-						.defineInRange("veins_per_chunk", defNumPerChunk, 0, Integer.MAX_VALUE);
-				spawnChance = builder
-						.comment("The chance for a vein to spawn (relative to 1)")
-						.defineInRange("veins_per_chunk", defSpawnChance, 0, 1);
+						.defineInRange("avg_veins_per_chunk", defNumPerChunk, 0, Integer.MAX_VALUE);
 				retrogenEnabled = builder
 						.comment("Set this to true to allow retro-generation of "+name+" Ore.")
 						.define("retrogen_enable", false);

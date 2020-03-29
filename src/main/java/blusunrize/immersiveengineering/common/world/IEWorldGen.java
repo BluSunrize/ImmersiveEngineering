@@ -42,7 +42,7 @@ public class IEWorldGen
 	public static List<ResourceLocation> oreDimBlacklist = new ArrayList<>();
 	public static Map<String, Boolean> retrogenMap = new HashMap<>();
 
-	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence, double weight)
+	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence)
 	{
 		OreFeatureConfig cfg = new OreFeatureConfig(FillerBlockType.NATURAL_STONE, state, maxVeinSize);
 		ConfiguredFeature<?> feature = Biome.createDecoratedFeature(Feature.ORE, cfg, Placement.COUNT_RANGE,

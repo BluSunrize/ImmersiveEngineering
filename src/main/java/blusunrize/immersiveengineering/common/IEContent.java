@@ -1240,8 +1240,7 @@ public class IEContent
 			IEWorldGen.addOreGen(name, state.getDefaultState(), config.veinSize.get(),
 					config.minY.get(),
 					config.maxY.get(),
-					config.veinsPerChunk.get(),
-					config.spawnChance.get());
+					config.veinsPerChunk.get());
 	}
 
 	public static void addBanner(String name, String id, Object item, int... offset)
