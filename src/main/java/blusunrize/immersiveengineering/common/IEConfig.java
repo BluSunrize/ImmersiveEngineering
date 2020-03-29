@@ -435,12 +435,12 @@ public class IEConfig
 		{
 			builder.push("ores");
 			//TODO these may need to be adjusted
-			ore_copper = new OreConfig(builder, "copper", 8, 40, 72, 8, 1);
-			ore_bauxite = new OreConfig(builder, "bauxite", 4, 40, 85, 8, 1);
-			ore_lead = new OreConfig(builder, "lead", 6, 8, 36, 4, 1);
-			ore_silver = new OreConfig(builder, "silver", 8, 8, 40, 4, .8);
-			ore_nickel = new OreConfig(builder, "nickel", 6, 8, 24, 2, 1);
-			ore_uranium = new OreConfig(builder, "uranium", 4, 8, 24, 2, .6);
+			ore_copper = new OreConfig(builder, "copper", 8, 40, 72, 8);
+			ore_bauxite = new OreConfig(builder, "bauxite", 4, 40, 85, 8);
+			ore_lead = new OreConfig(builder, "lead", 6, 8, 36, 4);
+			ore_silver = new OreConfig(builder, "silver", 8, 8, 40, 4);
+			ore_nickel = new OreConfig(builder, "nickel", 6, 8, 24, 2);
+			ore_uranium = new OreConfig(builder, "uranium", 4, 8, 24, 2);
 			oreDimBlacklist = builder
 					.comment("A blacklist of dimensions in which IE ores won't spawn. By default this is Nether and End")
 					.defineList("dimension_blocklist", ImmutableList.of(
@@ -478,7 +478,7 @@ public class IEConfig
 			public final IntValue veinsPerChunk;
 			public final BooleanValue retrogenEnabled;
 
-			private OreConfig(Builder builder, String name, int defSize, int defMinY, int defMaxY, int defNumPerChunk, double defSpawnChance)
+			private OreConfig(Builder builder, String name, int defSize, int defMinY, int defMaxY, int defNumPerChunk)
 			{
 				builder
 						.comment("Ore generation config - "+name)
