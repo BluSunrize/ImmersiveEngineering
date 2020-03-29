@@ -865,6 +865,14 @@ public class Recipes extends RecipeProvider
 				.key('c', Ingredients.componentIron)
 				.addCriterion("has_"+toPath(Ingredients.electronTube), hasItem(Ingredients.electronTube))
 				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(MetalDevices.fluidPlacer)
+				.patternLine("ibi")
+				.patternLine("b b")
+				.patternLine("ibi")
+				.key('i', IETags.getTagsFor(EnumMetals.IRON).plate)
+				.key('b', Items.IRON_BARS)
+				.addCriterion("has_iron_plate", hasItem(IETags.getTagsFor(EnumMetals.IRON).plate))
+				.build(out);
 	}
 
 	private void recipesConnectors(@Nonnull Consumer<IFinishedRecipe> out)

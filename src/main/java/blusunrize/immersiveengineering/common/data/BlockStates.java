@@ -373,6 +373,7 @@ public class BlockStates extends BlockStateProvider
 		createMultiblock(MetalDevices.teslaCoil, obj("block/metal_device/teslacoil.obj"),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_ALL, null,
 				180);
+
 		simpleBlockItem(Misc.fakeLight, EMPTY_MODEL);
 
 		createMultistateSingleModel(WoodenDevices.windmill, EMPTY_MODEL);
@@ -483,6 +484,13 @@ public class BlockStates extends BlockStateProvider
 					.additional("type", "side_top_bottom")
 					.additional("base_name", modLoc("block/metal_device/capacitor_"+cap.getValue()));
 			simpleBlockItem(cap.getKey(), model);
+		}
+		{
+			ModelFile model = loadedModels.getBuilder("block/metal_device/fluid_placer")
+					.loader(Loader.NAME)
+					.additional("type", "all_same_texture")
+					.additional("base_name", modLoc("block/metal_device/fluid_placer"));
+			simpleBlockItem(MetalDevices.fluidPlacer, model);
 		}
 		createMultiblock(MetalDevices.blastFurnacePreheater,
 				obj("block/metal_device/blastfurnace_preheater.obj"));

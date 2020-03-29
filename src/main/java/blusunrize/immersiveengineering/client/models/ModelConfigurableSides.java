@@ -92,6 +92,14 @@ public class ModelConfigurableSides extends BakedIEModel
 				return side.getAxis()==Axis.Y?cfg.getTextureName(): null;
 			}
 		});
+		TYPES.put("all_same_texture", new ITextureNamer()
+		{//all sides, same texture
+			@Override
+			public String nameFromSide(Direction side, IOSideConfig cfg)
+			{
+				return "side";
+			}
+		});
 	}
 
 	public static Cache<ModelKey, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build();

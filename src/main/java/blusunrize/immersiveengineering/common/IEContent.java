@@ -353,6 +353,10 @@ public class IEContent
 
 		Connectors.feedthrough = new FeedthroughBlock();
 
+		MetalDevices.fluidPlacer = new GenericTileBlock("fluid_placer", () -> FluidPlacerTileEntity.TYPE,
+				defaultMetalProperties)
+				.setBlockLayer(BlockRenderLayer.CUTOUT)
+				.setNotNormalBlock();
 		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE,
 				IEProperties.FACING_HORIZONTAL);
 		MetalDevices.toolbox = new GenericTileBlock("toolbox_block", () -> ToolboxTileEntity.TYPE, defaultMetalProperties,
@@ -697,7 +701,7 @@ public class IEContent
 		registerTile(CapacitorCreativeTileEntity.class, event, MetalDevices.capacitorCreative);
 		registerTile(MetalBarrelTileEntity.class, event, MetalDevices.barrel);
 		registerTile(FluidPumpTileEntity.class, event, MetalDevices.fluidPump);
-		//registerTile(FluidPlacerTileEntity.class, event, MetalDevices.fluidPlacer);
+		registerTile(FluidPlacerTileEntity.class, event, MetalDevices.fluidPlacer);
 
 		registerTile(BlastFurnacePreheaterTileEntity.class, event, MetalDevices.blastFurnacePreheater);
 		registerTile(FurnaceHeaterTileEntity.class, event, MetalDevices.furnaceHeater);
