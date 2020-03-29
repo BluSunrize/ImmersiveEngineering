@@ -50,11 +50,15 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -73,8 +77,12 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.vecmath.Vector3f;
 import java.util.*;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoublePredicate;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallback<ItemStack>, ITool, IBulletContainer
@@ -85,6 +93,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	public static UUID speedModUUID = Utils.generateNewUUID();
+	public static UUID luckModUUID = Utils.generateNewUUID();
 	public static HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap<>();
 	public static TextureAtlasSprite revolverDefaultTexture;
 
@@ -221,6 +230,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
 		else
 			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"revolver"));
+
+		CompoundNBT perks = getPerks(stack);
+		for(String key : perks.keySet())
+		{
+			RevolverPerk perk = RevolverPerk.get(key);
+			if(perk!=null)
+				list.add(new StringTextComponent("  ").appendSibling(perk.getDisplayString(perks.getDouble(key))));
+		}
 	}
 
 	/* ------------- ATTRIBUTES, UPDATE, RIGHTCLICK ------------- */
@@ -245,6 +262,10 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			double speed = getUpgradeValue_d(stack, "speed");
 			if(speed!=0)
 				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
+
+			double luck = getUpgradeValue_d(stack, RevolverPerk.LUCK.getNBTKey());
+			if(luck!=0)
+				multimap.put(SharedMonsterAttributes.LUCK.getName(), new AttributeModifier(luckModUUID, "Weapon modifier", luck, Operation.ADDITION));
 		}
 		return multimap;
 	}
@@ -348,7 +369,9 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 									}
 								bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
 
-								float noise = 1;
+								float noise = 0.5f;
+								if(hasUpgradeValue(revolver, RevolverPerk.NOISE.getNBTKey()))
+									noise *= (float)getUpgradeValue_d(revolver, RevolverPerk.NOISE.getNBTKey());
 								Utils.attractEnemies(player, 64*noise);
 								SoundEvent sound = bullet.getSound();
 								if(sound==null)
@@ -394,6 +417,8 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	public int getMaxShootCooldown(ItemStack stack)
 	{
+		if(hasUpgradeValue(stack, RevolverPerk.COOLDOWN.getNBTKey()))
+			return (int)Math.ceil(15*getUpgradeValue_d(stack, RevolverPerk.COOLDOWN.getNBTKey()));
 		return 15;
 	}
 
@@ -476,7 +501,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		}).orElse(true);
 	}
 
-	/* ------------- UPGRADES ------------- */
+	/* ------------- UPGRADES & PERKS ------------- */
 
 	@Override
 	public CompoundNBT getUpgradeBase(ItemStack stack)
@@ -497,14 +522,19 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return "";
 	}
 
+	public CompoundNBT getPerks(ItemStack stack)
+	{
+		return ItemNBTHelper.getTagCompound(stack, "perks");
+	}
+
 	public boolean hasUpgradeValue(ItemStack stack, String key)
 	{
-		return getUpgrades(stack).contains(key);
+		return getUpgrades(stack).contains(key)||getPerks(stack).contains(key);
 	}
 
 	public double getUpgradeValue_d(ItemStack stack, String key)
 	{
-		return getUpgrades(stack).getDouble(key);
+		return getUpgrades(stack).getDouble(key)+getPerks(stack).getDouble(key);
 	}
 
 	/* ------------- CRAFTING ------------- */
@@ -763,6 +793,137 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			this.flavour = flavour;
 			this.baseUpgrades = baseUpgrades;
 			this.renderAdditions = renderAdditions;
+		}
+	}
+
+	@ParametersAreNonnullByDefault
+	public enum RevolverPerk
+	{
+		COOLDOWN(f -> f > 1,
+				f -> Utils.NUMBERFORMAT_PREFIXED.format((1-f)*100),
+				(l, r) -> l*r,
+				1, -0.75, -0.05),
+		NOISE(f -> f > 1,
+				f -> Utils.NUMBERFORMAT_PREFIXED.format((f-1)*100),
+				(l, r) -> l*r,
+				1, -.9, -0.1),
+		LUCK(f -> f < 0,
+				f -> Utils.NUMBERFORMAT_PREFIXED.format(f*100),
+				(l, r) -> l+r,
+				0, 3, 0.5);
+
+		private final DoublePredicate isBadValue;
+		private final Function<Double, String> valueFormatter;
+		private final DoubleBinaryOperator valueConcat;
+		private final double generate_median;
+		private final double generate_deviation;
+		private final double generate_luckScale;
+
+		RevolverPerk(DoublePredicate isBadValue, Function<Double, String> valueFormatter, DoubleBinaryOperator valueConcat, double generate_median, double generate_deviation, double generate_luckScale)
+		{
+			this.isBadValue = isBadValue;
+			this.valueFormatter = valueFormatter;
+			this.valueConcat = valueConcat;
+			this.generate_median = generate_median;
+			this.generate_deviation = generate_deviation;
+			this.generate_luckScale = generate_luckScale;
+		}
+
+		public String getNBTKey()
+		{
+			return name().toLowerCase();
+		}
+
+		public ITextComponent getDisplayString(double value)
+		{
+			String key = Lib.DESC_INFO+"revolver.perk."+this.toString();
+			return new TranslationTextComponent(key, valueFormatter.apply(value))
+					.applyTextStyle(isBadValue.test(value)?TextFormatting.RED: TextFormatting.BLUE);
+		}
+
+		public static ITextComponent getFormattedName(ITextComponent name, CompoundNBT perksTag)
+		{
+			double averageTier = 0;
+			for(String key : perksTag.keySet())
+			{
+				RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
+				double value = perksTag.getDouble(key);
+				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
+				averageTier += dTier;
+				int iTier = (int)MathHelper.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
+				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase()+".tier"+iTier;
+				name = new TranslationTextComponent(translate).appendSibling(name);
+			}
+
+			int rarityTier = (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
+			Rarity rarity = rarityTier==5?Lib.RARITY_Masterwork: rarityTier==4?Rarity.EPIC: rarityTier==3?Rarity.RARE: rarityTier==2?Rarity.UNCOMMON: Rarity.COMMON;
+			return name.applyTextStyle(rarity.color);
+		}
+
+		public static int calculateTier(CompoundNBT perksTag)
+		{
+			double averageTier = 0;
+			for(String key : perksTag.keySet())
+			{
+				RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
+				double value = perksTag.getDouble(key);
+				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
+				averageTier += dTier;
+			}
+			return (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
+		}
+
+		public double concat(double left, double right)
+		{
+			return this.valueConcat.applyAsDouble(left, right);
+		}
+
+		public double generateValue(Random rand, boolean isBad, float luck)
+		{
+			double d = Utils.generateLuckInfluencedDouble(generate_median, generate_deviation, luck, rand, isBad, generate_luckScale);
+			int i = (int)(d*100);
+			d = i/100d;
+			return d;
+		}
+
+		@Override
+		public String toString()
+		{
+			return this.name().toLowerCase();
+		}
+
+		public static RevolverPerk get(String name)
+		{
+			try
+			{
+				return valueOf(name.toUpperCase());
+			} catch(Exception e)
+			{
+				return null;
+			}
+		}
+
+		public static RevolverPerk getRandom(Random rand)
+		{
+			int i = rand.nextInt(values().length);
+			return values()[i];
+		}
+
+		public static CompoundNBT generatePerkSet(Random rand, float luck)
+		{
+			RevolverPerk goodPerk = RevolverPerk.getRandom(rand);
+			RevolverPerk badPerk = RevolverPerk.LUCK;
+			//RevolverPerk.getRandom(rand);
+			double val = goodPerk.generateValue(rand, false, luck);
+
+			CompoundNBT perkCompound = new CompoundNBT();
+			if(goodPerk==badPerk)
+				val = (val+badPerk.generateValue(rand, true, luck))/2;
+			else
+				perkCompound.putDouble(badPerk.getNBTKey(), badPerk.generateValue(rand, true, luck));
+			perkCompound.putDouble(goodPerk.getNBTKey(), val);
+
+			return perkCompound;
 		}
 	}
 

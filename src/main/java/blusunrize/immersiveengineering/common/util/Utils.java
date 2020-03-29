@@ -30,6 +30,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -102,6 +103,7 @@ import static java.lang.Math.min;
 public class Utils
 {
 	public static final Random RAND = new Random();
+	public static final DecimalFormat NUMBERFORMAT_PREFIXED = new DecimalFormat("+#;-#");
 
 	public static boolean isInTag(ItemStack stack, ResourceLocation tagName)
 	{
@@ -279,6 +281,29 @@ public class Utils
 		BlockPos other = pos.offset(facing);
 		BlockState state = world.getBlockState(other);
 		return ((FenceBlock)Blocks.ACACIA_FENCE).func_220111_a(state, Block.hasSolidSide(state, world, pos, facing), facing);
+	}
+
+	public static int generatePlayerInfluencedInt(int median, int deviation, PlayerEntity player, boolean isBad, double luckScale)
+	{
+		int number = player.getRNG().nextInt(deviation);
+		if(isBad)
+			number = -number;
+		number += (int)(luckScale*player.getAttribute(SharedMonsterAttributes.LUCK).getValue());
+
+		return median+Math.min(number, deviation);
+	}
+
+	public static double generateLuckInfluencedDouble(double median, double deviation, double luck, Random rng, boolean isBad, double luckScale)
+	{
+		double number = rng.nextDouble()*deviation;
+		if(isBad)
+			number = -number;
+		number += luckScale*luck;
+		if(deviation < 0)
+			number = Math.max(number, deviation);
+		else
+			number = Math.min(number, deviation);
+		return median+number;
 	}
 
 	public static String formatDouble(double d, String s)
