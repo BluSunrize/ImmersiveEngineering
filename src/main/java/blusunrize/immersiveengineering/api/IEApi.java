@@ -98,19 +98,19 @@ public class IEApi
 		T preferredStack = null;
 		int currBest = modPreference.size();
 		for(T stack : list)
+		{
+			ResourceLocation rl = getName.apply(stack);
+			if(rl!=null)
 			{
-				ResourceLocation rl = getName.apply(stack);
-				if(rl!=null)
+				String modId = rl.getNamespace();
+				int idx = modPreference.indexOf(modId);
+				if(preferredStack==null||(idx >= 0&&idx < currBest))
 				{
-					String modId = rl.getNamespace();
-					int idx = modPreference.indexOf(modId);
-					if(idx >= 0&&idx < currBest)
-					{
-						preferredStack = stack;
-						currBest = idx;
-					}
+					preferredStack = stack;
+					currBest = idx;
 				}
 			}
+		}
 		return preferredStack;
 	}
 

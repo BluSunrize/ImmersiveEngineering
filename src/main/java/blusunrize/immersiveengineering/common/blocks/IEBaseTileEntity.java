@@ -43,6 +43,7 @@ import java.util.*;
 public abstract class IEBaseTileEntity extends TileEntity implements BlockstateProvider
 {
 	private BlockState overrideBlockState = null;
+
 	public IEBaseTileEntity(TileEntityType<? extends TileEntity> type)
 	{
 		super(type);
@@ -159,7 +160,8 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 
 	public void markContainingBlockForUpdate(@Nullable BlockState newState)
 	{
-		markBlockForUpdate(getPos(), newState);
+		if(this.world!=null)
+			markBlockForUpdate(getPos(), newState);
 	}
 
 	public void markBlockForUpdate(BlockPos pos, @Nullable BlockState newState)

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "immersiveengineering:armor_steel_head"
+  },
+  "result": "immersiveengineering:nugget_steel",
+  "experience": 0.1,
+  "cookingtime": 100
+}

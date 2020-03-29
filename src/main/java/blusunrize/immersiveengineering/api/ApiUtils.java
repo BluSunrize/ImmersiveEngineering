@@ -19,10 +19,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralM
 import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -50,6 +51,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
+import net.minecraftforge.common.extensions.IForgeEntityMinecart;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -58,6 +60,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -66,7 +69,6 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 import java.util.*;
@@ -329,6 +331,31 @@ public class ApiUtils
 			}
 		}
 		return null;
+	}
+
+	public static LazyOptional<IItemHandler> findItemHandlerAtPos(World world, BlockPos pos, Direction side, boolean allowCart)
+	{
+		TileEntity neighbourTile = world.getTileEntity(pos);
+		if(neighbourTile!=null)
+		{
+			LazyOptional<IItemHandler> cap = neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+			if(cap.isPresent())
+				return cap;
+		}
+		if(allowCart)
+		{
+			if(AbstractRailBlock.isRail(world, pos))
+			{
+				List<Entity> list = world.getEntitiesInAABBexcluding(null, new AxisAlignedBB(pos), entity -> entity instanceof IForgeEntityMinecart);
+				if(!list.isEmpty())
+				{
+					LazyOptional<IItemHandler> cap = list.get(world.rand.nextInt(list.size())).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+					if(cap.isPresent())
+						return cap;
+				}
+			}
+		}
+		return LazyOptional.empty();
 	}
 
 	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side)
@@ -687,7 +714,7 @@ public class ApiUtils
 			return new IngredientStack(((Tag)input).getId());
 		else if(input instanceof List)
 		{
-			if (!((List)input).isEmpty())
+			if(!((List)input).isEmpty())
 			{
 				if(((List)input).get(0) instanceof ItemStack)
 					return new IngredientStack(((List<ItemStack>)input));
@@ -868,6 +895,7 @@ public class ApiUtils
 		else
 			addFutureServerTask(world, task);
 	}
+
 	public static void addFutureServerTask(World world, Runnable task)
 	{
 		LogicalSide side = world.isRemote?LogicalSide.CLIENT: LogicalSide.SERVER;

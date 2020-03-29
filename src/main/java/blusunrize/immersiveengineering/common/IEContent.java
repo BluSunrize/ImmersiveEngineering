@@ -64,7 +64,6 @@ import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.Villages;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -90,6 +89,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -416,6 +416,9 @@ public class IEContent
 		IEItems.Tools.steelShovel = IETools.createShovel(Lib.MATERIAL_Steel, "shovel_steel");
 		IEItems.Tools.steelAxe = IETools.createAxe(Lib.MATERIAL_Steel, "axe_steel");
 		IEItems.Tools.steelSword = IETools.createSword(Lib.MATERIAL_Steel, "sword_steel");
+		for(EquipmentSlotType slot : EquipmentSlotType.values())
+			if(slot.getSlotType()==Group.ARMOR)
+				IEItems.Tools.steelArmor.put(slot, new SteelArmorItem(slot));
 		Tools.toolbox = new ToolboxItem();
 		IEItems.Misc.hempSeeds = new IESeedItem(Misc.hempPlant);
 		IEItems.Ingredients.stickTreated = new IEBaseItem("stick_treated");
@@ -485,10 +488,44 @@ public class IEContent
 		IEItems.Misc.earmuffs = new EarmuffsItem();
 		for(EquipmentSlotType slot : EquipmentSlotType.values())
 			if(slot.getSlotType()==Group.ARMOR)
-				IEItems.Misc.faradaySuit.put(slot, new ItemFaradaySuit(slot));
+				IEItems.Misc.faradaySuit.put(slot, new FaradaySuitItem(slot));
 		IEItems.Misc.fluorescentTube = new FluorescentTubeItem();
 		IEItems.Misc.shield = new IEShieldItem();
 		IEItems.Misc.skyhook = new SkyhookItem();
+		IEItems.Misc.cartWoodenCrate = new IEMinecartItem("woodencrate")
+		{
+			@Override
+			public IEMinecartEntity createCart(World world, double x, double y, double z, ItemStack stack)
+			{
+				return new CrateMinecartEntity(CrateMinecartEntity.TYPE, world, x, y, z);
+			}
+		};
+		IEItems.Misc.cartReinforcedCrate = new IEMinecartItem("reinforcedcrate")
+		{
+			@Override
+			public IEMinecartEntity createCart(World world, double x, double y, double z, ItemStack stack)
+			{
+				return new ReinforcedCrateMinecartEntity(ReinforcedCrateMinecartEntity.TYPE, world, x, y, z);
+			}
+		};
+		IEItems.Misc.cartWoodenBarrel = new IEMinecartItem("woodenbarrel")
+		{
+			@Override
+			public IEMinecartEntity createCart(World world, double x, double y, double z, ItemStack stack)
+			{
+				return new BarrelMinecartEntity(BarrelMinecartEntity.TYPE, world, x, y, z);
+			}
+		};
+		IEItems.Misc.cartMetalBarrel = new IEMinecartItem("metalbarrel")
+		{
+			@Override
+			public IEMinecartEntity createCart(World world, double x, double y, double z, ItemStack stack)
+			{
+				return new MetalBarrelMinecartEntity(MetalBarrelMinecartEntity.TYPE, world, x, y, z);
+			}
+		};
+
+
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
@@ -606,7 +643,11 @@ public class IEContent
 				RevolvershotFlareEntity.TYPE,
 				RevolvershotHomingEntity.TYPE,
 				SkylineHookEntity.TYPE,
-				WolfpackShotEntity.TYPE
+				WolfpackShotEntity.TYPE,
+				CrateMinecartEntity.TYPE,
+				ReinforcedCrateMinecartEntity.TYPE,
+				BarrelMinecartEntity.TYPE,
+				MetalBarrelMinecartEntity.TYPE
 		);
 	}
 

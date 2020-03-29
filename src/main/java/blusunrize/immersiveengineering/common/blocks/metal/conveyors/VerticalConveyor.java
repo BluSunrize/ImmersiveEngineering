@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
@@ -83,6 +84,8 @@ public class VerticalConveyor extends BasicConveyor
 		key += "a"+(isActive()?1: 0);
 		key += "b"+(renderBottomBelt(getTile(), getFacing())?("1"+(renderBottomWall(getTile(), getFacing(), 0)?"1": "0")+(renderBottomWall(getTile(), getFacing(), 1)?"1": "0")): "000");
 		key += "c"+getDyeColour();
+		if(allowCovers()&&cover!=Blocks.AIR)
+			key += "s"+cover.getRegistryName();
 		return key;
 	}
 
@@ -261,6 +264,9 @@ public class VerticalConveyor extends BasicConveyor
 				}
 			}
 		}
+
+		if(allowCovers()&&entity instanceof ItemEntity)
+			((ItemEntity)entity).setPickupDelay(10);
 	}
 
 	static final AxisAlignedBB[] verticalBounds = {new AxisAlignedBB(0, 0, 0, 1, 1, .125f), new AxisAlignedBB(0, 0, .875f, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .125f, 1, 1), new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)};
