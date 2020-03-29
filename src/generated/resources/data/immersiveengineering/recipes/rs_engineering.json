@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "immersiveengineering:turn_and_copy",
   "pattern": [
     "iri",
     "rcr",
@@ -19,5 +19,6 @@
   "result": {
     "item": "immersiveengineering:rs_engineering",
     "count": 2
-  }
+  },
+  "quarter_turn": true
 }

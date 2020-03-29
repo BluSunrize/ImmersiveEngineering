@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:conveyor_droppercovered"
+      "immersiveengineering:firework"
     ]
   },
   "criteria": {
-    "has_vertical_conveyor": {
+    "has_firework": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:conveyor_dropper"
+            "item": "minecraft:firework_rocket"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:conveyor_droppercovered"
+        "recipe": "immersiveengineering:firework"
       }
     }
   },
   "requirements": [
     [
-      "has_vertical_conveyor",
+      "has_firework",
       "has_the_recipe"
     ]
   ]

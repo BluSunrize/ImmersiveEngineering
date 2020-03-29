@@ -7,10 +7,10 @@
   ],
   "key": {
     "i": {
-      "item": "immersiveengineering:component_iron"
+      "tag": "forge:ingots/steel"
     },
     "c": {
-      "tag": "forge:ingots/steel"
+      "item": "immersiveengineering:component_iron"
     },
     "g": {
       "item": "immersiveengineering:wooden_grip"

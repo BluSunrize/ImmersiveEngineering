@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "immersiveengineering:turn_and_copy",
   "group": "ie_concrete",
   "pattern": [
     "scs",
@@ -23,5 +23,6 @@
   "result": {
     "item": "immersiveengineering:concrete",
     "count": 12
-  }
+  },
+  "quarter_turn": true
 }

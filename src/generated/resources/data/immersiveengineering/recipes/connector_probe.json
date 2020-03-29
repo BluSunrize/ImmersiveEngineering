@@ -13,7 +13,7 @@
       "tag": "forge:glass_panes"
     },
     "p": {
-      "tag": "forge:ingots/electrum"
+      "item": "immersiveengineering:circuit_board"
     },
     "q": {
       "tag": "forge:gems/quartz"
