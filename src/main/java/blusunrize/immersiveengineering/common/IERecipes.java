@@ -99,7 +99,7 @@ public class IERecipes
 				moldUnpacking})
 			if(!((IEBaseItem)curr).isHidden())
 				BlueprintCraftingRecipe.addRecipe("molds", new ItemStack(curr),
-						steelPlate, steelPlate, steelPlate, steelPlate, steelPlate, new ItemStack(Tools.hammer));
+						steelPlate, steelPlate, steelPlate, steelPlate, steelPlate, new ItemStack(Tools.wirecutter));
 
 		//
 		//BULLETS

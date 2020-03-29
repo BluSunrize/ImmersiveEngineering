@@ -194,25 +194,25 @@ public class Recipes extends RecipeProvider
 		addStairs(StoneDecoration.concreteTile, StoneDecoration.concreteStairs[1], out);
 		addStairs(StoneDecoration.concreteLeaded, StoneDecoration.concreteStairs[2], out);
 
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete))
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete), 2)
 				.addCriterion("has_hempcrete", hasItem(StoneDecoration.hempcrete))
 				.build(out, toRL("hempcrete_slab_from_hempcrete_stonecutting"));
 		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.hempcrete), StoneDecoration.hempcreteStairs)
 				.addCriterion("has_hempcrete", hasItem(StoneDecoration.hempcrete))
 				.build(out, toRL("hempcrete_stairs_from_hempcrete_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete))
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete), 2)
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_slab_from_concrete_stonecutting"));
 		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteStairs[0])
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_stairs_from_concrete_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteTile), IEBlocks.toSlab.get(StoneDecoration.concreteTile))
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteTile), IEBlocks.toSlab.get(StoneDecoration.concreteTile), 2)
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_tile_slab_from_concrete_tile_stonecutting"));
 		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteTile), StoneDecoration.concreteStairs[1])
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_tile_stairs_from_concrete_tile_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded))
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded),2 )
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_leaded_slab_from_concrete_leaded_stonecutting"));
 		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), StoneDecoration.concreteStairs[2])
@@ -767,7 +767,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("eee")
 				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.key('l', MetalDecoration.lvCoil)
-				.key('e', IETags.getTagsFor(EnumMetals.ELECTRUM).plate)
+				.key('e', IETags.getTagsFor(EnumMetals.CONSTANTAN).plate)
 				.addCriterion("has_"+toPath(MetalDecoration.lvCoil), hasItem(MetalDecoration.lvCoil))
 				.build(out);
 		ShapedRecipeBuilder.shapedRecipe(MetalDevices.electricLantern)
@@ -940,7 +940,7 @@ public class Recipes extends RecipeProvider
 				.patternLine(" q ")
 				.key('c', IEBlocks.Connectors.connectorRedstone)
 				.key('g', Tags.Items.GLASS_PANES)
-				.key('p', IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)
+				.key('p', Ingredients.circuitBoard)
 				.key('q', Tags.Items.GEMS_QUARTZ)
 				.addCriterion("has_electrum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
 				.build(out);
@@ -1008,7 +1008,7 @@ public class Recipes extends RecipeProvider
 		IItemProvider verticalCovered = ConveyorHandler.getBlock(VerticalCoveredConveyor.NAME);
 		addCoveyorCoveringRecipe(verticalCovered, vertical, out);
 		addCoveyorCoveringRecipe(covered, basic, out);
-		addCoveyorCoveringRecipe(dropperCovered, covered, out);
+		addCoveyorCoveringRecipe(dropperCovered, dropper, out);
 		addCoveyorCoveringRecipe(extractCovered, extract, out);
 		ShapedRecipeBuilder.shapedRecipe(basic, 8)
 				.patternLine("lll")
@@ -1581,8 +1581,8 @@ public class Recipes extends RecipeProvider
 				.patternLine("ii ")
 				.patternLine("ic ")
 				.patternLine(" gg")
-				.key('i', Ingredients.componentIron)
-				.key('c', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.key('c', Ingredients.componentIron)
 				.key('g', Ingredients.woodenGrip)
 				.addCriterion("has_"+toPath(Ingredients.woodenGrip), hasItem(Ingredients.woodenGrip))
 				.build(out);
