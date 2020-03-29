@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "immersiveengineering:turn_and_copy",
   "pattern": [
     "wpw",
     "rcr",
@@ -21,5 +21,7 @@
   },
   "result": {
     "item": "immersiveengineering:reinforced_crate"
-  }
+  },
+  "quarter_turn": true,
+  "copy_nbt": 4
 }

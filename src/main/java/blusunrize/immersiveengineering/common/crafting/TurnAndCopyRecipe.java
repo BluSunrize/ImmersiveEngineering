@@ -93,6 +93,7 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 				if(!s.isEmpty()&&s.hasTag())
 					tag = ItemNBTHelper.combineTags(tag, s.getOrCreateTag(), nbtCopyPredicate);
 			}
+			out.setTag(tag);
 			return out;
 		}
 		else

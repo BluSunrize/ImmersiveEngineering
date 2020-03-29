@@ -36,4 +36,7 @@ public class RecipeSerializers
 	public static final RegistryObject<RGBRecipeSerializer> RGB_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"rgb", RGBRecipeSerializer::new
 	);
+	public static final RegistryObject<TurnAndCopyRecipeSerializer> TURN_AND_COPY_SERIALIZER = RECIPE_SERIALIZERS.register(
+			"turn_and_copy", TurnAndCopyRecipeSerializer::new
+	);
 }

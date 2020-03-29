@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -341,7 +342,9 @@ public class Recipes extends RecipeProvider
 				.key('p', IETags.getItemTag(IETags.treatedWood))
 				.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
 				.build(out);
-		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.reinforcedCrate) // TODO Needs NBT copying
+		TurnAndCopyRecipeBuilder.builder(WoodenDevices.reinforcedCrate)
+				.setNBTCopyTargetRecipe(4)
+				.allowQuarterTurn()
 				.patternLine("wpw")
 				.patternLine("rcr")
 				.patternLine("wpw")
