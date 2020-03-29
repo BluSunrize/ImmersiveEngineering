@@ -38,12 +38,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.concurrent.ThreadTaskExecutor;
+import net.minecraft.util.concurrent.TickDelayedTask;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -890,18 +892,25 @@ public class ApiUtils
 
 	public static void addFutureServerTask(World world, Runnable task, boolean forceFuture)
 	{
+		LogicalSide side = world.isRemote?LogicalSide.CLIENT: LogicalSide.SERVER;
+		//TODO this sometimes causes NPEs?
+		ThreadTaskExecutor<? super TickDelayedTask> tmp = LogicalSidedProvider.WORKQUEUE.get(side);
 		if(forceFuture)
-			new Thread(() -> addFutureServerTask(world, task)).start();
+		{
+			int tick;
+			if(world.isRemote)
+				tick = 0;
+			else
+				tick = ((MinecraftServer)tmp).getTickCounter();
+			tmp.enqueue(new TickDelayedTask(tick, task));
+		}
 		else
-			addFutureServerTask(world, task);
+			tmp.deferTask(task);
 	}
 
 	public static void addFutureServerTask(World world, Runnable task)
 	{
-		LogicalSide side = world.isRemote?LogicalSide.CLIENT: LogicalSide.SERVER;
-		//TODO this sometimes causes NPEs?
-		ThreadTaskExecutor<?> tmp = LogicalSidedProvider.WORKQUEUE.get(side);
-		tmp.deferTask(task);
+		addFutureServerTask(world, task, false);
 	}
 
 	public static void moveConnectionEnd(Connection conn, ConnectionPoint currEnd, ConnectionPoint newEnd, World world)

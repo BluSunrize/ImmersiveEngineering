@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.network.MessageWireSync;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -32,27 +31,26 @@ import java.util.stream.Stream;
 @EventBusSubscriber
 public class WireSyncManager
 {
-	private static void sendMessagesForChunk(Chunk chunk, ServerPlayerEntity player, boolean add)
+	private static void sendMessagesForChunk(World w, ChunkPos pos, ServerPlayerEntity player, boolean add)
 	{
-		World w = chunk.getWorld();
 		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(w);
-		Collection<ConnectionPoint> connsInChunk = net.getAllConnectorsIn(chunk.getPos());
+		Collection<ConnectionPoint> connsInChunk = net.getAllConnectorsIn(pos);
 		for(ConnectionPoint cp : connsInChunk)
 			for(Connection conn : net.getLocalNet(cp).getConnections(cp))
-				if(shouldSendConnection(conn, chunk, player, add, cp))
+				if(shouldSendConnection(conn, w, pos, player, add, cp))
 					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> player), new MessageWireSync(conn, add));
 	}
 
-	private static boolean shouldSendConnection(Connection conn, Chunk chunk, ServerPlayerEntity player, boolean add,
+	private static boolean shouldSendConnection(Connection conn, World w, ChunkPos pos, ServerPlayerEntity player, boolean add,
 												ConnectionPoint currEnd)
 	{
 		if(conn.isInternal())
 			return false;
 		ConnectionPoint other = conn.getOtherEnd(currEnd);
 		ChunkPos otherChunk = new ChunkPos(other.getPosition());
-		if(otherChunk.equals(chunk.getPos()))
+		if(otherChunk.equals(pos))
 			return conn.isPositiveEnd(currEnd);
-		ServerChunkProvider chunkProvider = (ServerChunkProvider)chunk.getWorld().getChunkProvider();
+		ServerChunkProvider chunkProvider = (ServerChunkProvider)w.getChunkProvider();
 		Stream<ServerPlayerEntity> watching = chunkProvider.chunkManager.getTrackingPlayers(otherChunk, false);
 		boolean playerTracking = watching.anyMatch(p -> p==player);
 		return add==playerTracking;
@@ -94,18 +92,14 @@ public class WireSyncManager
 	//TODO uncomment once the event is working in Forge @SubscribeEvent
 	public static void onChunkWatch(ServerWorld world, ChunkPos pos, ServerPlayerEntity player)
 	{
-		Chunk chunk = world.getChunk(pos.x, pos.z);
-		if(chunk!=null)
-			//TODO this is a hack
-			ApiUtils.addFutureServerTask(world, () -> sendMessagesForChunk(chunk, player, true), true);
+		//TODO this is a hack
+		ApiUtils.addFutureServerTask(world, () -> sendMessagesForChunk(world, pos, player, true), true);
 	}
 
 	//TODO uncomment once the event is working in Forge @SubscribeEvent
 	public static void onChunkUnWatch(ServerWorld world, ChunkPos pos, ServerPlayerEntity player)
 	{
-		Chunk chunk = world.getChunk(pos.x, pos.z);
-		if(chunk!=null)
-			//TODO this is a hack
-			ApiUtils.addFutureServerTask(world, () -> sendMessagesForChunk(chunk, player, false), true);
+		//TODO this is a hack
+		ApiUtils.addFutureServerTask(world, () -> sendMessagesForChunk(world, pos, player, false), true);
 	}
 }
