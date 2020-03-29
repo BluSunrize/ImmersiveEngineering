@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.data;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -22,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
+import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -212,7 +214,7 @@ public class Recipes extends RecipeProvider
 		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteTile), StoneDecoration.concreteStairs[1])
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_tile_stairs_from_concrete_tile_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded),2 )
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded), 2)
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_leaded_slab_from_concrete_leaded_stonecutting"));
 		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), StoneDecoration.concreteStairs[2])
@@ -1604,6 +1606,16 @@ public class Recipes extends RecipeProvider
 				.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.key('s', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.build(out);
+
+		BulletHandler.getBulletStack(BulletItem.FLARE);
+		TurnAndCopyRecipeBuilder.builder(BulletHandler.getBulletItem(BulletItem.FIREWORK))
+				.setNBTCopyTargetRecipe(0, 1, 2, 3, 4, 5, 6) //Since this isn't relative positioning, we have to account for the top 6 slots >_>
+				.patternLine("f")
+				.patternLine("c")
+				.key('f', Items.FIREWORK_ROCKET)
+				.key('c', Ingredients.emptyShell)
+				.addCriterion("has_firework", hasItem(Items.FIREWORK_ROCKET))
 				.build(out);
 	}
 
