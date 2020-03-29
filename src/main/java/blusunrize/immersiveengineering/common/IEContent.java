@@ -439,9 +439,9 @@ public class IEContent
 		IEItems.Ingredients.windmillBlade = new IEBaseItem("windmill_blade");
 		IEItems.Ingredients.windmillSail = new IEBaseItem("windmill_sail");
 		IEItems.Ingredients.woodenGrip = new IEBaseItem("wooden_grip");
-		IEItems.Ingredients.gunpartBarrel = new IEBaseItem("gunpart_barrel");
-		IEItems.Ingredients.gunpartDrum = new IEBaseItem("gunpart_drum");
-		IEItems.Ingredients.gunpartHammer = new IEBaseItem("gunpart_hammer");
+		IEItems.Ingredients.gunpartBarrel = new RevolverpartItem("gunpart_barrel");
+		IEItems.Ingredients.gunpartDrum = new RevolverpartItem("gunpart_drum");
+		IEItems.Ingredients.gunpartHammer = new RevolverpartItem("gunpart_hammer");
 		IEItems.Ingredients.dustCoke = new IEBaseItem("dust_coke");
 		IEItems.Ingredients.dustHopGraphite = new IEBaseItem("dust_hop_graphite");
 		IEItems.Ingredients.ingotHopGraphite = new IEBaseItem("ingot_hop_graphite");
