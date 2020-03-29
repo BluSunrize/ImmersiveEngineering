@@ -113,42 +113,32 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			}
 	}
 
+	/* ------------- CORE ITEM METHODS ------------- */
+
 	@Override
-	public int getSlotCount(ItemStack stack)
+	public boolean isTool(ItemStack item)
 	{
-		return 18+2+1;
+		return true;
 	}
 
+	@Nullable
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public CompoundNBT getShareTag(ItemStack stack)
 	{
-		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-				.orElseThrow(RuntimeException::new);
-		return new Slot[]
-				{
-						new IESlot.Upgrades(container, inv, 18+0, 80, 32, "REVOLVER", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 18+1, 100, 32, "REVOLVER", stack, true, getWorld)
-				};
-	}
-
-	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
-	{
-		if(slotChanged)
-			return true;
-
-		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
-			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
-					.orElse(true);
+		CompoundNBT ret = super.getShareTag(stack);
+		if(ret==null)
+			ret = new CompoundNBT();
+		else
+			ret = ret.copy();
+		final CompoundNBT retFinal = ret;
+		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler ->
+		{
+			NonNullList<ItemStack> bullets = NonNullList.withSize(getBulletCount(stack), ItemStack.EMPTY);
+			for(int i = 0; i < getBulletCount(stack); i++)
+				bullets.set(i, handler.getStackInSlot(i));
+			retFinal.put("bullets", Utils.writeInventory(bullets));
 		});
-		if(!sameShader.orElse(true))
-			return true;
-		if(ItemNBTHelper.hasKey(oldStack, "elite")||ItemNBTHelper.hasKey(newStack, "elite"))
-			return !ItemNBTHelper.getString(oldStack, "elite").equals(ItemNBTHelper.getString(newStack, "elite"));
-
-		return false;
+		return retFinal;
 	}
 
 	@Override
@@ -172,6 +162,54 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return null;
 	}
 
+	/* ------------- INTERNAL INVENTORY ------------- */
+
+	@Override
+	public int getSlotCount(ItemStack stack)
+	{
+		return 18+2+1;
+	}
+
+	@Override
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	{
+		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+				.orElseThrow(RuntimeException::new);
+		return new Slot[]
+				{
+						new IESlot.Upgrades(container, inv, 18+0, 80, 32, "REVOLVER", stack, true, getWorld),
+						new IESlot.Upgrades(container, inv, 18+1, 100, 32, "REVOLVER", stack, true, getWorld)
+				};
+	}
+
+	@Override
+	public boolean canModify(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
+	{
+		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+				.ifPresent(inv -> {
+					if(!inv.getStackInSlot(18).isEmpty()&&!inv.getStackInSlot(19).isEmpty())
+						Utils.unlockIEAdvancement(player, "main/upgrade_revolver");
+				});
+	}
+
+	/* ------------- NAME, TOOLTIP, SUB-ITEMS ------------- */
+
+	@Nonnull
+	@Override
+	public String getTranslationKey(ItemStack stack)
+	{
+		String tag = getRevolverDisplayTag(stack);
+		if(!tag.isEmpty())
+			return this.getTranslationKey()+"."+tag;
+		return super.getTranslationKey(stack);
+	}
+
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
@@ -184,15 +222,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"revolver"));
 	}
 
-	@Nonnull
-	@Override
-	public String getTranslationKey(ItemStack stack)
-	{
-		String tag = getRevolverDisplayTag(stack);
-		if(!tag.isEmpty())
-			return this.getTranslationKey()+"."+tag;
-		return super.getTranslationKey(stack);
-	}
+	/* ------------- ATTRIBUTES, UPDATE, RIGHTCLICK ------------- */
 
 	@Override
 	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
@@ -213,12 +243,6 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
 		}
 		return multimap;
-	}
-
-	@Override
-	public UseAction getUseAction(ItemStack p_77661_1_)
-	{
-		return UseAction.BOW;
 	}
 
 	@Override
@@ -243,6 +267,12 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 					ItemNBTHelper.putInt(stack, "cooldown", cooldown);
 			}
 		}
+	}
+
+	@Override
+	public UseAction getUseAction(ItemStack p_77661_1_)
+	{
+		return UseAction.BOW;
 	}
 
 	@Nonnull
@@ -358,6 +388,39 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return new ActionResult<>(ActionResultType.SUCCESS, revolver);
 	}
 
+	public int getShootCooldown(ItemStack stack)
+	{
+		return ItemNBTHelper.getInt(stack, "cooldown");
+	}
+
+	public int getMaxShootCooldown(ItemStack stack)
+	{
+		return 15;
+	}
+
+	/* ------------- IBulletContainer ------------- */
+
+	@Override
+	public int getBulletCount(ItemStack revolver)
+	{
+		return 8+this.getUpgrades(revolver).getInt("bullets");
+	}
+
+	@Override
+	public NonNullList<ItemStack> getBullets(ItemStack revolver, boolean remote)
+	{
+		if(!remote&&isEmpty(revolver, true))
+			remote = true;
+		else if(remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
+			remote = false;
+		if(!remote)
+			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
+		else
+			return Utils.readInventory(revolver.getOrCreateTag().getList("bullets", NBT.TAG_COMPOUND), getBulletCount(revolver));
+	}
+
+	/* ------------- BULLET UTILITY ------------- */
+
 	private RevolvershotEntity getBullet(PlayerEntity player, Vec3d vecDir, IBullet type, boolean electro)
 	{
 		IELogger.logger.info("Starting with motion vector {}", vecDir);
@@ -367,14 +430,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return bullet;
 	}
 
-	public int getShootCooldown(ItemStack stack)
+	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets)
 	{
-		return ItemNBTHelper.getInt(stack, "cooldown");
-	}
-
-	public int getMaxShootCooldown(ItemStack stack)
-	{
-		return 15;
+		IItemHandlerModifiable inv = (IItemHandlerModifiable)revolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+				.orElseThrow(RuntimeException::new);
+		for(int i = 0; i < 18; i++)
+			inv.setStackInSlot(i, ItemStack.EMPTY);
+		for(int i = 0; i < bullets.size(); i++)
+			inv.setStackInSlot(i, bullets.get(i));
 	}
 
 	public boolean isEmpty(ItemStack stack, boolean allowCasing)
@@ -394,34 +457,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		}).orElse(true);
 	}
 
-	@Override
-	public NonNullList<ItemStack> getBullets(ItemStack revolver, boolean remote)
-	{
-		if(!remote&&isEmpty(revolver, true))
-			remote = true;
-		else if(remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
-			remote = false;
-		if(!remote)
-			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
-		else
-			return Utils.readInventory(revolver.getOrCreateTag().getList("bullets", NBT.TAG_COMPOUND), getBulletCount(revolver));
-	}
-
-	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets)
-	{
-		IItemHandlerModifiable inv = (IItemHandlerModifiable)revolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-				.orElseThrow(RuntimeException::new);
-		for(int i = 0; i < 18; i++)
-			inv.setStackInSlot(i, ItemStack.EMPTY);
-		for(int i = 0; i < bullets.size(); i++)
-			inv.setStackInSlot(i, bullets.get(i));
-	}
-
-	@Override
-	public int getBulletCount(ItemStack revolver)
-	{
-		return 8+this.getUpgrades(revolver).getInt("bullets");
-	}
+	/* ------------- UPGRADES ------------- */
 
 	@Override
 	public CompoundNBT getUpgradeBase(ItemStack stack)
@@ -440,6 +476,90 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			return tag.substring(0, split);
 		}
 		return "";
+	}
+
+	/* ------------- CRAFTING ------------- */
+
+	@Override
+	public void onCreated(ItemStack stack, World world, PlayerEntity player)
+	{
+		if(stack.isEmpty()||player==null)
+			return;
+
+		String uuid = player.getUniqueID().toString();
+		if(specialRevolvers.containsKey(uuid))
+		{
+			ArrayList<SpecialRevolver> list = new ArrayList<>(specialRevolvers.get(uuid));
+			if(!list.isEmpty())
+			{
+				list.add(null);
+				String existingTag = ItemNBTHelper.getString(stack, "elite");
+				if(existingTag.isEmpty())
+					applySpecialCrafting(stack, list.get(0));
+				else
+				{
+					int i = 0;
+					for(; i < list.size(); i++)
+						if(list.get(i)!=null&&existingTag.equals(list.get(i).tag))
+							break;
+					int next = (i+1)%list.size();
+					applySpecialCrafting(stack, list.get(next));
+				}
+			}
+		}
+		this.recalculateUpgrades(stack, world);
+	}
+
+	public void applySpecialCrafting(ItemStack stack, SpecialRevolver r)
+	{
+		if(r==null)
+		{
+			ItemNBTHelper.remove(stack, "elite");
+			ItemNBTHelper.remove(stack, "flavour");
+			ItemNBTHelper.remove(stack, "baseUpgrades");
+			return;
+		}
+		if(r.tag!=null&&!r.tag.isEmpty())
+			ItemNBTHelper.putString(stack, "elite", r.tag);
+		if(r.flavour!=null&&!r.flavour.isEmpty())
+			ItemNBTHelper.putString(stack, "flavour", r.flavour);
+		CompoundNBT baseUpgrades = new CompoundNBT();
+		for(Map.Entry<String, Object> e : r.baseUpgrades.entrySet())
+		{
+			if(e.getValue() instanceof Boolean)
+				baseUpgrades.putBoolean(e.getKey(), (Boolean)e.getValue());
+			else if(e.getValue() instanceof Integer)
+				baseUpgrades.putInt(e.getKey(), (Integer)e.getValue());
+			else if(e.getValue() instanceof Float)
+				baseUpgrades.putDouble(e.getKey(), (Float)e.getValue());
+			else if(e.getValue() instanceof Double)
+				baseUpgrades.putDouble(e.getKey(), (Double)e.getValue());
+			else if(e.getValue() instanceof String)
+				baseUpgrades.putString(e.getKey(), (String)e.getValue());
+		}
+		ItemNBTHelper.setTagCompound(stack, "baseUpgrades", baseUpgrades);
+	}
+
+	/* ------------- RENDERING ------------- */
+
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+	{
+		if(slotChanged)
+			return true;
+
+		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
+			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+					.orElse(true);
+		});
+		if(!sameShader.orElse(true))
+			return true;
+		if(ItemNBTHelper.hasKey(oldStack, "elite")||ItemNBTHelper.hasKey(newStack, "elite"))
+			return !ItemNBTHelper.getString(oldStack, "elite").equals(ItemNBTHelper.getString(newStack, "elite"));
+
+		return false;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -594,101 +714,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return "frame".equals(groups[0])?matClose: matCylinder;
 	}
 
-	@Override
-	public void onCreated(ItemStack stack, World world, PlayerEntity player)
-	{
-		if(stack.isEmpty()||player==null)
-			return;
-
-		String uuid = player.getUniqueID().toString();
-		if(specialRevolvers.containsKey(uuid))
-		{
-			ArrayList<SpecialRevolver> list = new ArrayList<>(specialRevolvers.get(uuid));
-			if(!list.isEmpty())
-			{
-				list.add(null);
-				String existingTag = ItemNBTHelper.getString(stack, "elite");
-				if(existingTag.isEmpty())
-					applySpecialCrafting(stack, list.get(0));
-				else
-				{
-					int i = 0;
-					for(; i < list.size(); i++)
-						if(list.get(i)!=null&&existingTag.equals(list.get(i).tag))
-							break;
-					int next = (i+1)%list.size();
-					applySpecialCrafting(stack, list.get(next));
-				}
-			}
-		}
-		this.recalculateUpgrades(stack, world);
-	}
-
-	public void applySpecialCrafting(ItemStack stack, SpecialRevolver r)
-	{
-		if(r==null)
-		{
-			ItemNBTHelper.remove(stack, "elite");
-			ItemNBTHelper.remove(stack, "flavour");
-			ItemNBTHelper.remove(stack, "baseUpgrades");
-			return;
-		}
-		if(r.tag!=null&&!r.tag.isEmpty())
-			ItemNBTHelper.putString(stack, "elite", r.tag);
-		if(r.flavour!=null&&!r.flavour.isEmpty())
-			ItemNBTHelper.putString(stack, "flavour", r.flavour);
-		CompoundNBT baseUpgrades = new CompoundNBT();
-		for(Map.Entry<String, Object> e : r.baseUpgrades.entrySet())
-		{
-			if(e.getValue() instanceof Boolean)
-				baseUpgrades.putBoolean(e.getKey(), (Boolean)e.getValue());
-			else if(e.getValue() instanceof Integer)
-				baseUpgrades.putInt(e.getKey(), (Integer)e.getValue());
-			else if(e.getValue() instanceof Float)
-				baseUpgrades.putDouble(e.getKey(), (Float)e.getValue());
-			else if(e.getValue() instanceof Double)
-				baseUpgrades.putDouble(e.getKey(), (Double)e.getValue());
-			else if(e.getValue() instanceof String)
-				baseUpgrades.putString(e.getKey(), (String)e.getValue());
-		}
-		ItemNBTHelper.setTagCompound(stack, "baseUpgrades", baseUpgrades);
-	}
-
-	@Override
-	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
-	{
-		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-				.ifPresent(inv -> {
-					if(!inv.getStackInSlot(18).isEmpty()&&!inv.getStackInSlot(19).isEmpty())
-						Utils.unlockIEAdvancement(player, "main/upgrade_revolver");
-				});
-	}
-
-	@Override
-	public boolean canModify(ItemStack stack)
-	{
-		return true;//TODO
-	}
-
-	@Nullable
-	@Override
-	public CompoundNBT getShareTag(ItemStack stack)
-	{
-		CompoundNBT ret = super.getShareTag(stack);
-		if(ret==null)
-			ret = new CompoundNBT();
-		else
-			ret = ret.copy();
-		final CompoundNBT retFinal = ret;
-		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler ->
-		{
-			NonNullList<ItemStack> bullets = NonNullList.withSize(getBulletCount(stack), ItemStack.EMPTY);
-			for(int i = 0; i < getBulletCount(stack); i++)
-				bullets.set(i, handler.getStackInSlot(i));
-			retFinal.put("bullets", Utils.writeInventory(bullets));
-		});
-		return retFinal;
-	}
+	/* ------------- INNER CLASSES ------------- */
 
 	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();
 	public static final Map<String, SpecialRevolver> specialRevolversByTag = new HashMap<String, SpecialRevolver>();
@@ -711,9 +737,4 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		}
 	}
 
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
-	}
 }
