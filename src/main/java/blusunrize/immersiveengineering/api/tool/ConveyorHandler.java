@@ -456,6 +456,7 @@ public class ConveyorHandler
 		 */
 		default void onItemDeployed(ItemEntity entity)
 		{
+			ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)getTile());
 		}
 
 		default void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)

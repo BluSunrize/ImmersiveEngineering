@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -50,7 +51,6 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 public class VerticalCoveredConveyor extends VerticalConveyor
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "verticalcovered");
-	public ItemStack cover = ItemStack.EMPTY;
 
 	public VerticalCoveredConveyor(TileEntity tile)
 	{
@@ -58,44 +58,9 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 	}
 
 	@Override
-	public String getModelCacheKey()
+	protected boolean allowCovers()
 	{
-		String key = ConveyorHandler.reverseClassRegistry.get(this.getClass()).toString();
-		key += "f"+getFacing().ordinal();
-		key += "a"+(isActive()?1: 0);
-		key += "b"+(renderBottomBelt(getTile(), getFacing())?("1"+(isInwardConveyor(getTile(), getFacing().getOpposite())?"1": "0")+(renderBottomWall(getTile(), getFacing(), 0)?"1": "0")+(renderBottomWall(getTile(), getFacing(), 1)?"1": "0")): "0000");
-		key += "c"+getDyeColour();
-		if(!cover.isEmpty())
-			key += "s"+cover.getItem().getRegistryName();
-		return key;
-	}
-
-	@Override
-	public void onEntityCollision(Entity entity)
-	{
-		super.onEntityCollision(entity);
-		if(entity instanceof ItemEntity)
-			((ItemEntity)entity).setPickupDelay(10);
-	}
-
-	@Override
-	public void onItemDeployed(ItemEntity entity)
-	{
-		entity.setPickupDelay(10);
-	}
-
-	@Override
-	public boolean playerInteraction(PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
-	{
-		return CoveredConveyor.handleCoverInteraction(getTile(), player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
-	}
-
-	static final List<AxisAlignedBB> selectionBoxes = Collections.singletonList(VoxelShapes.fullCube().getBoundingBox());
-
-	@Override
-	public List<AxisAlignedBB> getSelectionBoxes()
-	{
-		return selectionBoxes;
+		return true;
 	}
 
 	static final AxisAlignedBB[] topBounds = {new AxisAlignedBB(0, 0, .75, 1, 1, 1), new AxisAlignedBB(0, 0, 0, 1, 1, .25), new AxisAlignedBB(.75, 0, 0, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .25, 1, 1)};
@@ -132,8 +97,7 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 		else
 			walls = new boolean[]{true, true};
 
-		ItemStack cover = !this.cover.isEmpty()?this.cover: CoveredConveyor.getDefaultCover();
-		Block b = Block.getBlockFromItem(cover.getItem());
+		Block b = this.cover!=Blocks.AIR?this.cover: getDefaultCover();
 		BlockState state = b.getDefaultState();
 		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
 		if(model!=null)
@@ -185,21 +149,5 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 			}
 		}
 		return baseModel;
-	}
-
-	@Override
-	public CompoundNBT writeConveyorNBT()
-	{
-		CompoundNBT nbt = super.writeConveyorNBT();
-		if(cover!=null)
-			nbt.put("cover", cover.write(new CompoundNBT()));
-		return nbt;
-	}
-
-	@Override
-	public void readConveyorNBT(CompoundNBT nbt)
-	{
-		super.readConveyorNBT(nbt);
-		cover = ItemStack.read(nbt.getCompound("cover"));
 	}
 }

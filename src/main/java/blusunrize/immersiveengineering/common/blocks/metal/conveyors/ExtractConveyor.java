@@ -135,6 +135,9 @@ public class ExtractConveyor extends BasicConveyor
 			float off = i*.125f;
 			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.203125f+off, .1875f, .09375f), new Vec3d(.296875f+off, .625f, .125f), matrix, getFacing(), vertexTransformer, (facing1) -> texture_curtain, colour));
 		}
+
+		super.modifyQuads(baseModel);
+
 		return baseModel;
 	}
 
@@ -256,6 +259,8 @@ public class ExtractConveyor extends BasicConveyor
 	@Override
 	public boolean playerInteraction(PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 	{
+		if(super.playerInteraction(player, hand, heldItem, hitX, hitY, hitZ, side))
+			return true;
 		if(Utils.isHammer(heldItem)&&player.isSneaking())
 		{
 			do
@@ -278,15 +283,6 @@ public class ExtractConveyor extends BasicConveyor
 			return true;
 		}
 		return false;
-	}
-
-	static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
-
-	@Override
-	public List<AxisAlignedBB> getColisionBoxes()
-	{
-		List<AxisAlignedBB> list = Lists.newArrayList(conveyorBounds);
-		return list;
 	}
 
 	@Override
