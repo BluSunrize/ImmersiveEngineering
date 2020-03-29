@@ -45,6 +45,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
@@ -232,13 +233,16 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		{
 			if(getUpgrades(stack).getBoolean("fancyAnimation"))
 				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, Operation.ADDITION));
-			double melee = getUpgrades(stack).getDouble("melee");
+			double melee = getUpgradeValue_d(stack, "melee");
 			if(melee!=0)
 			{
 				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, Operation.ADDITION));
 				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
 			}
-			double speed = getUpgrades(stack).getDouble("speed");
+		}
+		if(slot.getSlotType()==Group.HAND)
+		{
+			double speed = getUpgradeValue_d(stack, "speed");
 			if(speed!=0)
 				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
 		}
@@ -307,7 +311,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 								for(ItemStack b : bullets)
 									if(!b.isEmpty())
 										world.addEntity(new ItemEntity(world, player.posX, player.posY, player.posZ, b));
-								setBullets(revolver, ((SpeedloaderItem)stack.getItem()).getContainedItems(stack));
+								setBullets(revolver, ((SpeedloaderItem)stack.getItem()).getContainedItems(stack), true);
 								((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 								player.inventory.markDirty();
 								if(player instanceof ServerPlayerEntity)
@@ -357,12 +361,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 						else
 							world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1f, 1f);
 
-						NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletCount(revolver), ItemStack.EMPTY);
-						for(int i = 1; i < cycled.size(); i++)
-							cycled.set(i-1, bullets.get(i));
-						cycled.set(cycled.size()-1, bullets.get(0));
-						setBullets(revolver, cycled);
-						player.inventory.markDirty();
+						rotateCylinder(revolver, player, true, bullets);
 						ItemNBTHelper.putInt(revolver, "cooldown", getMaxShootCooldown(revolver));
 						return new ActionResult<>(ActionResultType.SUCCESS, revolver);
 					}
@@ -430,14 +429,34 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return bullet;
 	}
 
-	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets)
+	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets, boolean ignoreExtendedMag)
 	{
 		IItemHandlerModifiable inv = (IItemHandlerModifiable)revolver.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
 		for(int i = 0; i < 18; i++)
 			inv.setStackInSlot(i, ItemStack.EMPTY);
-		for(int i = 0; i < bullets.size(); i++)
-			inv.setStackInSlot(i, bullets.get(i));
+		if(ignoreExtendedMag&&getUpgrades(revolver).getInt("bullets") > 0)
+			for(int i = 0; i < bullets.size(); i++)
+				inv.setStackInSlot(i < 2?i: i+getUpgrades(revolver).getInt("bullets"), bullets.get(i));
+		else
+			for(int i = 0; i < bullets.size(); i++)
+				inv.setStackInSlot(i, bullets.get(i));
+	}
+
+	public void rotateCylinder(ItemStack revolver, PlayerEntity player, boolean forward, NonNullList<ItemStack> bullets)
+	{
+		NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletCount(revolver), ItemStack.EMPTY);
+		int offset = forward?-1: 1;
+		for(int i = 0; i < cycled.size(); i++)
+			cycled.set((i+offset+cycled.size())%cycled.size(), bullets.get(i));
+		setBullets(revolver, cycled, false);
+		player.inventory.markDirty();
+	}
+
+	public void rotateCylinder(ItemStack revolver, PlayerEntity player, boolean forward)
+	{
+		NonNullList<ItemStack> bullets = getBullets(revolver);
+		rotateCylinder(revolver, player, forward, bullets);
 	}
 
 	public boolean isEmpty(ItemStack stack, boolean allowCasing)
@@ -476,6 +495,16 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			return tag.substring(0, split);
 		}
 		return "";
+	}
+
+	public boolean hasUpgradeValue(ItemStack stack, String key)
+	{
+		return getUpgrades(stack).contains(key);
+	}
+
+	public double getUpgradeValue_d(ItemStack stack, String key)
+	{
+		return getUpgrades(stack).getDouble(key);
 	}
 
 	/* ------------- CRAFTING ------------- */
