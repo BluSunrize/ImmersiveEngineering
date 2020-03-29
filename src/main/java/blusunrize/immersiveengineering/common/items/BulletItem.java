@@ -320,7 +320,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 								}
 
 					}
-					else if(((EntityRayTraceResult)target).getEntity() instanceof LivingEntity)
+					else if(target instanceof EntityRayTraceResult && ((EntityRayTraceResult)target).getEntity() instanceof LivingEntity)
 						for(EffectInstance p : effects)
 						{
 							if(p.getDuration() < 1)
