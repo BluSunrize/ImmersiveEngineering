@@ -235,7 +235,8 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_blastbrick", hasItem(StoneDecoration.blastbrick))
 				.build(out);
 
-		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concrete, 8)
+		TurnAndCopyRecipeBuilder.builder(StoneDecoration.concrete, 8)
+				.allowQuarterTurn()
 				.setGroup("ie_concrete")
 				.patternLine("scs")
 				.patternLine("gbg")
@@ -246,7 +247,8 @@ public class Recipes extends RecipeProvider
 				.key('b', Items.WATER_BUCKET)
 				.addCriterion("has_clay", hasItem(IETags.clay))
 				.build(out, toRL("concrete"));
-		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concrete, 12)
+		TurnAndCopyRecipeBuilder.builder(StoneDecoration.concrete, 12)
+				.allowQuarterTurn()
 				.setGroup("ie_concrete")
 				.patternLine("scs")
 				.patternLine("gbg")
@@ -270,7 +272,8 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out);
 
-		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.insulatingGlass, 2)
+		TurnAndCopyRecipeBuilder.builder(StoneDecoration.insulatingGlass, 2)
+				.allowQuarterTurn()
 				.patternLine(" g ")
 				.patternLine("idi")
 				.patternLine(" g ")
@@ -543,7 +546,8 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_"+toPath(Misc.wireCoils.get(WireType.STEEL)), hasItem(Misc.wireCoils.get(WireType.STEEL)))
 				.build(out);
 
-		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.engineeringRS, 2)
+		TurnAndCopyRecipeBuilder.builder(MetalDecoration.engineeringRS, 2)
+				.allowQuarterTurn()
 				.patternLine("iri")
 				.patternLine("rcr")
 				.patternLine("iri")
@@ -588,7 +592,8 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_electrum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
 				.addCriterion("has_"+toPath(MetalDevices.dynamo), hasItem(MetalDevices.dynamo))
 				.build(out);
-		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.radiator, 2)
+		TurnAndCopyRecipeBuilder.builder(MetalDecoration.radiator, 2)
+				.allowQuarterTurn()
 				.patternLine("ici")
 				.patternLine("cbc")
 				.patternLine("ici")
