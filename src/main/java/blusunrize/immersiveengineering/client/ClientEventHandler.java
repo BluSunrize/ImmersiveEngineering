@@ -213,7 +213,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				&&BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
 			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack()))
 					.setStyle(gray));
-		if(IEConfig.GENERAL.oreTooltips.get()&&event.getFlags().isAdvanced())
+
+		if(IEConfig.GENERAL.tagTooltips.get()&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
 				event.getToolTip().add(new StringTextComponent(oid.toString()).setStyle(gray));

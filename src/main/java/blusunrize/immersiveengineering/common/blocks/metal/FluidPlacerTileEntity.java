@@ -195,7 +195,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public String[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
 	{
-		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&rtr instanceof BlockRayTraceResult)
+		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&rtr instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
 			int i = sideConfig[Math.min(sideConfig.length-1, brtr.getFace().ordinal())];

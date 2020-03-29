@@ -360,7 +360,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&!isDummy()&&mop instanceof BlockRayTraceResult)
+		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&!isDummy()&&mop instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
 			IOSideConfig i = sideConfig.get(brtr.getFace());

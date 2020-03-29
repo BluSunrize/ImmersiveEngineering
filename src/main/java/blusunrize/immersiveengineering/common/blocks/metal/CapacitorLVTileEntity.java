@@ -191,7 +191,7 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&mop instanceof BlockRayTraceResult)
+		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&mop instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult bmop = (BlockRayTraceResult)mop;
 			IOSideConfig here = sideConfig.get(bmop.getFace());

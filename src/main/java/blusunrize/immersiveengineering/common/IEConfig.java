@@ -102,10 +102,9 @@ public class IEConfig
 					.comment("Disables most lighting code for certain models that are rendered dynamically (TESR). May improve FPS.",
 							"Affects turrets and garden cloches")
 					.define("disableFancyTESR", false);
-			//TODO rename, change description?
-			colourblindSupport = builder
-					.comment("Support for colourblind people, gives a text-based output on capacitor sides")
-					.define("colourblindSupport", false);
+			showTextOverlay = builder
+					.comment("Show the text overlay for various blocks, such as the configuration of capacitors or pumps")
+					.define("showTextOverlay", true);
 			nixietubeFont = builder
 					.comment("Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things")
 					.define("nixietubeFont", true);
@@ -118,10 +117,9 @@ public class IEConfig
 					.comment("Set this to true if you suffer from bad eyesight. The Engineer's manual will be switched to a bold and darker text to improve readability.",
 							"Note that this may lead to a break of formatting and have text go off the page in some instances. This is unavoidable.")
 					.define("badEyesight", false);
-			//TODO is this still necessary? Oredict is no more, do tags show automatically?
-			oreTooltips = builder
-					.comment("Controls if item tooltips should contain the OreDictionary names of items. These tooltips are only visible in advanced tooltip mod (F3+H)")
-					.define("oreTooltips", true);
+			tagTooltips = builder
+					.comment("Controls if item tooltips should contain the tags names of items. These tooltips are only visible in advanced tooltip mode (F3+H)")
+					.define("tagTooltips", true);
 			increasedTileRenderdistance = builder
 					.comment("Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.")
 					.defineInRange("increasedTileRenderdistance", 1.5, 0, Double.MAX_VALUE);
@@ -163,11 +161,11 @@ public class IEConfig
 		}
 
 		public final BooleanValue disableFancyTESR;
-		public final BooleanValue colourblindSupport;
+		public final BooleanValue showTextOverlay;
 		public final BooleanValue nixietubeFont;
 		public final BooleanValue adjustManualScale;
 		public final BooleanValue badEyesight;
-		public final BooleanValue oreTooltips;
+		public final BooleanValue tagTooltips;
 		public final DoubleValue increasedTileRenderdistance;
 		public final ConfigValue<List<? extends String>> preferredOres;
 		public final BooleanValue showUpdateNews;

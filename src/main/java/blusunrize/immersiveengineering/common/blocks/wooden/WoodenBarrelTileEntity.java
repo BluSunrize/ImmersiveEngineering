@@ -124,7 +124,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};
 		}
-		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&brtr.getFace().getAxis()==Axis.Y)
+		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&brtr.getFace().getAxis()==Axis.Y)
 		{
 			IOSideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
 			IOSideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);
