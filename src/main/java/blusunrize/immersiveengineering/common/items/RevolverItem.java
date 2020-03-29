@@ -435,7 +435,10 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	{
 		if(!remote&&isEmpty(revolver, true))
 			remote = true;
-		else if(remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
+		else if(remote&&(
+				!ItemNBTHelper.hasKey(revolver, "bullets", NBT.TAG_LIST)
+						||revolver.getOrCreateTag().getList("bullets", NBT.TAG_COMPOUND).isEmpty()
+		))
 			remote = false;
 		if(!remote)
 			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
