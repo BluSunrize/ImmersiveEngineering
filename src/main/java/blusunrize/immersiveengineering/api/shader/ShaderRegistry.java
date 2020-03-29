@@ -475,7 +475,7 @@ public class ShaderRegistry
 
 		ResourceLocation shader = null;
 		int minWeight = rarityWeightMap.get(minRarity);
-		int weight = total < 1?total: rand.nextInt(total);
+		int weight = total < 1?total: 1+rand.nextInt(total);
 		for(ShaderRegistryEntry entry : shaderRegistry.values())
 			if(entry.getIsBagLoot())
 			{
