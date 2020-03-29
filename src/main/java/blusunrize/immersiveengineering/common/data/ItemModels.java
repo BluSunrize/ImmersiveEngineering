@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
@@ -31,6 +32,7 @@ import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
+import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
 
@@ -209,7 +211,8 @@ public class ItemModels extends LoadedModelProvider
 		addItemModels("", IEItems.Misc.toolUpgrades.values().toArray(new Item[0]));
 		addItemModels("", Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
 		addItemModels("bullet_", Ingredients.emptyCasing, Ingredients.emptyShell);
-		addItemModels("bullet_", Weapons.bullets.values());
+		for(Entry<IBullet, Item> bullet : Weapons.bullets.entrySet())
+			addLayeredItemModel(bullet.getValue(), bullet.getKey().getTextures());
 		addItemModels("", IEItems.Misc.faradaySuit.values());
 		addItemModels("", IEItems.Tools.steelArmor.values());
 		addItemModel("blueprint", IEItems.Misc.blueprint);
@@ -391,5 +394,14 @@ public class ItemModels extends LoadedModelProvider
 		String textureLoc = texture==null?path: ("item/"+texture);
 		withExistingParent(path, mcLoc("item/generated"))
 				.texture("layer0", modLoc(textureLoc));
+	}
+
+	private void addLayeredItemModel(Item item, ResourceLocation... layers)
+	{
+		String path = name(item);
+		ModelBuilder<LoadedModelBuilder> modelBuilder = withExistingParent(path, mcLoc("item/generated"));
+		int layerIdx = 0;
+		for(ResourceLocation layer : layers)
+			modelBuilder.texture("layer"+(layerIdx++), layer);
 	}
 }
