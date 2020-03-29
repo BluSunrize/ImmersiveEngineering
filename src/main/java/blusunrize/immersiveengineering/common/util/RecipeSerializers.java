@@ -39,4 +39,7 @@ public class RecipeSerializers
 	public static final RegistryObject<TurnAndCopyRecipeSerializer> TURN_AND_COPY_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"turn_and_copy", TurnAndCopyRecipeSerializer::new
 	);
+	public static final RegistryObject<RevolverAssemblyRecipeSerializer> REVOLVER_ASSEMBLY_SERIALIZER = RECIPE_SERIALIZERS.register(
+			"revolver_assembly", RevolverAssemblyRecipeSerializer::new
+	);
 }

@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "immersiveengineering:revolver_assembly",
   "pattern": [
     " i ",
     "bdh",
@@ -24,5 +24,10 @@
   },
   "result": {
     "item": "immersiveengineering:revolver"
-  }
+  },
+  "copy_nbt": [
+    3,
+    4,
+    5
+  ]
 }

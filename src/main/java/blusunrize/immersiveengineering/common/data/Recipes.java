@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
@@ -1596,7 +1597,8 @@ public class Recipes extends RecipeProvider
 				.key('g', Ingredients.woodenGrip)
 				.addCriterion("has_"+toPath(Ingredients.woodenGrip), hasItem(Ingredients.woodenGrip))
 				.build(out);
-		ShapedRecipeBuilder.shapedRecipe(Weapons.revolver)
+		RevolverAssemblyRecipeBuilder.builder(Weapons.revolver)
+				.setNBTCopyTargetRecipe(3, 4, 5)
 				.patternLine(" i ")
 				.patternLine("bdh")
 				.patternLine("gig")

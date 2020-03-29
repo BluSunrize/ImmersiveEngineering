@@ -30,13 +30,13 @@ import java.util.regex.Pattern;
 
 public class TurnAndCopyRecipe extends ShapedRecipe
 {
-	private NonNullList<Ingredient> ingredientsQuarterTurn;
-	private NonNullList<Ingredient> ingredientsEighthTurn;
-	private int[] nbtCopyTargetSlot = null;
-	private Pattern nbtCopyPredicate = null;
-	private int lastMatch = 0;
-	private int lastStartX = 0;
-	private int lastStartY = 0;
+	protected NonNullList<Ingredient> ingredientsQuarterTurn;
+	protected NonNullList<Ingredient> ingredientsEighthTurn;
+	protected int[] nbtCopyTargetSlot = null;
+	protected Pattern nbtCopyPredicate = null;
+	protected int lastMatch = 0;
+	protected int lastStartX = 0;
+	protected int lastStartY = 0;
 
 	public TurnAndCopyRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingr,
 							 ItemStack output)
