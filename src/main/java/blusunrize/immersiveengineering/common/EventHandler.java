@@ -123,9 +123,7 @@ public class EventHandler
 	public void onTagsUpdated(TagsUpdatedEvent tagsChanged)
 	{
 		if(EffectiveSide.get().isServer())
-		{
-			IERecipes.addTagBasedRecipes();//TODO does this already have the new tags?
-		}
+			IERecipes.addTagBasedRecipes();
 	}
 
 	@SubscribeEvent

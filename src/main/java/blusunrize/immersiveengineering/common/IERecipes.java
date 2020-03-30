@@ -375,8 +375,11 @@ public class IERecipes
 						{
 							ResourceLocation dust = getDust(baseName);
 							if(ApiUtils.isNonemptyItemTag(dust))
+							{
 								OreCrushingRecipe.CRUSHABLE_ORES_WITH_OUTPUT.add(new ImmutablePair<>(tag.getValue(),
 										ItemTags.getCollection().get(dust)));
+								out = Utils.copyStackWithAmount(IEApi.getPreferredTagStack(dust), 2);
+							}
 						}
 					}
 					if(out!=null&&!out.isEmpty())
