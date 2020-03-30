@@ -22,10 +22,6 @@ import javax.annotation.Nonnull;
 
 public class TurnAndCopyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<TurnAndCopyRecipe>
 {
-	public static final IRecipeSerializer<TurnAndCopyRecipe> INSTANCE = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+"turn_and_copy", new TurnAndCopyRecipeSerializer()
-	);
-
 	@Nonnull
 	@Override
 	public TurnAndCopyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)

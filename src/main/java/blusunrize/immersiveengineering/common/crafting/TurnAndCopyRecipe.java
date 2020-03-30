@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -192,7 +193,7 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return TurnAndCopyRecipeSerializer.INSTANCE;
+		return RecipeSerializers.TURN_AND_COPY_SERIALIZER.get();
 	}
 
 	public boolean isQuarterTurn()
