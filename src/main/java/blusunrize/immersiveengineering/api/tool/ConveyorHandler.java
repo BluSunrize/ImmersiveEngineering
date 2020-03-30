@@ -442,7 +442,7 @@ public class ConveyorHandler
 					ItemEntity item = (ItemEntity)entity;
 					if(!contact)
 					{
-						if(item.getAge() > item.lifespan-60*20)
+						if(item.age > item.lifespan-60*20)
 							item.setAgeToCreativeDespawnTime();
 					}
 					else
