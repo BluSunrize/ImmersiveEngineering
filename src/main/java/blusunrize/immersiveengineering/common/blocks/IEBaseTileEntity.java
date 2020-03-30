@@ -234,6 +234,7 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 		for(LazyOptional<?> cap : caps)
 			if(cap.isPresent())
 				cap.invalidate();
+		caps.clear();
 	}
 
 	@Nonnull
