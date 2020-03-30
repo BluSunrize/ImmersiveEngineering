@@ -153,6 +153,7 @@
   "entity.minecraft.villager.immersiveengineering.machinist": "Machinist",
   "entity.minecraft.villager.immersiveengineering.electrician": "Electrician",
   "entity.minecraft.villager.immersiveengineering.outfitter": "Outfitter",
+  "entity.minecraft.villager.immersiveengineering.gunsmith": "Gunsmith",
   "key.immersiveengineering.magnetEquip": "Magnetic Shield Glove (doubletap)",
   "key.immersiveengineering.chemthrowerSwitch": "Switch Chemthrower Tanks",
   "desc.immersiveengineering.info.attachedTo": "Linking from %1$s, %2$s, %3$s",

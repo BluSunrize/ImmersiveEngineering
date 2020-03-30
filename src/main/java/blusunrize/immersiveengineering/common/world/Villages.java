@@ -41,6 +41,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.village.PointOfInterestType;
@@ -72,6 +73,9 @@ import static blusunrize.immersiveengineering.common.items.IEItems.Misc.wireCoil
 
 public class Villages
 {
+	public static final PointOfInterestType IE_POI = new PointOfInterestType(MODID+":engineer",
+			ImmutableSet.copyOf(WoodenDevices.workbench.getStateContainer().getValidStates()), 1,
+			SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH, 1).setRegistryName(new ResourceLocation(MODID, "engineer"));
 	public static final ResourceLocation ENGINEER = new ResourceLocation(MODID, "engineer");
 	public static final ResourceLocation MACHINIST = new ResourceLocation(MODID, "machinist");
 	public static final ResourceLocation ELECTRICIAN = new ResourceLocation(MODID, "electrician");
@@ -114,11 +118,18 @@ public class Villages
 			return new VillagerProfession(
 					name.toString(),
 					//TODO
-					PointOfInterestType.NITWIT,
+					IE_POI,
 					ImmutableSet.of(),
 					//TODO
-					ImmutableSet.of(WoodenDevices.crate)
+					ImmutableSet.of()
+					//ImmutableSet.of(WoodenDevices.crate)
 			).setRegistryName(name);
+		}
+
+		@SubscribeEvent
+		public static void registerPOI(RegistryEvent.Register<PointOfInterestType> ev)
+		{
+			ev.getRegistry().register(IE_POI);
 		}
 
 		@SubscribeEvent
@@ -169,7 +180,8 @@ public class Villages
 
 				trades.get(3).add(new ItemsForEmerald(Tools.toolbox, new PriceInterval(6, 8), 12, 10, 0.2f));
 				trades.get(3).add(new ItemsForEmerald(Ingredients.waterwheelSegment, new PriceInterval(1, 3), 12, 10, 0.2f));
-				trades.get(3).add(new ItemsForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new PriceInterval(5, 9), 12, 10, 0.2f));
+				// Todo, replace with somethign more appropriate
+				// trades.get(3).add(new ItemsForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new PriceInterval(5, 9), 12, 10, 0.2f));
 
 				trades.get(4).add(new ItemsForEmerald(Tools.drillheadIron, new PriceInterval(28, 40), 3, 15, 0.2f));
 				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.earmuffs, new PriceInterval(4, 9), 3, 15, 0.2f));
