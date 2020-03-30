@@ -88,26 +88,26 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 	@SuppressWarnings("deprecation")
 	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
-		return base.getOpacity(state, worldIn, pos);
+		return Math.min(base.getOpacity(state, worldIn, pos), super.getOpacity(state, worldIn, pos));
 	}
 
 	@Override
 	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
 	{
-		return base.propagatesSkylightDown(state, reader, pos);
+		return super.propagatesSkylightDown(state, reader, pos)||base.propagatesSkylightDown(state, reader, pos);
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
 	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
-		return base.causesSuffocation(state, worldIn, pos);
+		return super.causesSuffocation(state, worldIn, pos)&&base.causesSuffocation(state, worldIn, pos);
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
 	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
-		return base.isNormalCube(state, worldIn, pos);
+		return super.isNormalCube(state, worldIn, pos)&&base.isNormalCube(state, worldIn, pos);
 	}
 }
