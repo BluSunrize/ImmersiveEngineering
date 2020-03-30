@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
@@ -100,13 +101,12 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 		return list.size()==1?list.get(0): null;
 	}
 
-	//TODO
-	//@Override
-	//public void updateInput(byte[] signals)
-	//{
-	//	signals[redstoneChannelSending] = (byte)Math.max(lastOutput, signals[redstoneChannelSending]);
-	//	rsDirty = false;
-	//}
+	@Override
+	public void updateInput(byte[] signals, ConnectionPoint cp)
+	{
+		signals[redstoneChannelSending.ordinal()] = (byte)Math.max(lastOutput, signals[redstoneChannelSending.ordinal()]);
+		rsDirty = false;
+	}
 
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
@@ -118,8 +118,9 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 			else
 				redstoneChannelSending = DyeColor.byId(redstoneChannelSending.getId()+1);
 			markDirty();
-			//TODO wireNetwork.updateValues();
-			//TODO onChange();
+			globalNet.getLocalNet(pos)
+					.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
+					.updateValues();
 			this.markContainingBlockForUpdate(null);
 			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
 		}
@@ -206,8 +207,8 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 		if(!hammer)
 			return null;
 		return new String[]{
-				I18n.format(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.fireworksCharge."+redstoneChannel.getTranslationKey())),
-				I18n.format(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.fireworksCharge."+redstoneChannelSending.getTranslationKey()))
+				I18n.format(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.minecraft.firework_star."+redstoneChannel.getTranslationKey())),
+				I18n.format(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.minecraft.firework_star."+redstoneChannelSending.getTranslationKey()))
 		};
 	}
 

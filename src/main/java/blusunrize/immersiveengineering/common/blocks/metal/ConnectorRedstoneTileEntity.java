@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
@@ -49,7 +50,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 		IRedstoneOutput, IHammerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
 		IRedstoneConnector, INeighbourChangeTile
 {
-	public int ioMode = 0; // 0 - input, 1 -output
+	public IOSideConfig ioMode = IOSideConfig.INPUT;
 	public DyeColor redstoneChannel = DyeColor.WHITE;
 	public boolean rsDirty = false;
 	//Only write to this in wire network updates!
@@ -114,7 +115,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 
 	public boolean isRSInput()
 	{
-		return ioMode==0;
+		return ioMode==IOSideConfig.INPUT;
 	}
 
 	@Override
@@ -142,7 +143,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 
 	public boolean isRSOutput()
 	{
-		return ioMode==1;
+		return ioMode==IOSideConfig.OUTPUT;
 	}
 
 	@Override
@@ -154,7 +155,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 			if(player.isSneaking())
 				redstoneChannel = DyeColor.byId(redstoneChannel.getId()+1);
 			else
-				ioMode = ioMode==0?1: 0;
+				ioMode = ioMode==IOSideConfig.INPUT?IOSideConfig.OUTPUT: IOSideConfig.INPUT;
 			markDirty();
 			globalNet.getLocalNet(pos)
 					.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
@@ -206,7 +207,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putInt("ioMode", ioMode);
+		nbt.putInt("ioMode", ioMode.ordinal());
 		nbt.putInt("redstoneChannel", redstoneChannel.getId());
 		nbt.putInt("output", output);
 	}
@@ -215,7 +216,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		ioMode = nbt.getInt("ioMode");
+		ioMode = IOSideConfig.VALUES[nbt.getInt("ioMode")];
 		redstoneChannel = DyeColor.byId(nbt.getInt("redstoneChannel"));
 		output = nbt.getInt("output");
 	}
@@ -241,9 +242,9 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public boolean shouldRenderGroup(BlockState object, String group)
 	{
 		if("io_out".equals(group))
-			return this.ioMode==1;
+			return this.ioMode==IOSideConfig.OUTPUT;
 		else if("io_in".equals(group))
-			return this.ioMode==0;
+			return this.ioMode==IOSideConfig.INPUT;
 		return true;
 	}
 
@@ -271,8 +272,8 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 		if(!hammer)
 			return null;
 		return new String[]{
-				I18n.format(Lib.DESC_INFO+"redstoneChannel", I18n.format("item.fireworksCharge."+redstoneChannel.getTranslationKey())),
-				I18n.format(Lib.DESC_INFO+"blockSide.io."+this.ioMode)
+				I18n.format(Lib.DESC_INFO+"redstoneChannel", I18n.format("item.minecraft.firework_star."+redstoneChannel.getTranslationKey())),
+				I18n.format(Lib.DESC_INFO+"blockSide.io."+this.ioMode.getName())
 		};
 	}
 
