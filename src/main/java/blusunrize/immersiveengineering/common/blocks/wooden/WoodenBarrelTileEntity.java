@@ -52,7 +52,7 @@ import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.NONE;
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.OUTPUT;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
-public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
+public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride, ICapabilityReferenceHolder
 {
 	public static final int IGNITION_TEMPERATURE = 573;
 	public static TileEntityType<WoodenBarrelTileEntity> TYPE;
@@ -363,5 +363,14 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	public int getComparatorInputOverride()
 	{
 		return (int)(15*(tank.getFluidAmount()/(float)tank.getCapacity()));
+	}
+
+	@Override
+	public void invalidateCapabilityReference(@Nullable Direction side)
+	{
+		if(side==null)
+			neighbors.values().forEach(CapabilityReference::invalidate);
+		else if(neighbors.containsKey(side))
+			neighbors.get(side).invalidate();
 	}
 }

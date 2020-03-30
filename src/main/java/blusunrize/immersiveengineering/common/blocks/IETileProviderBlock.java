@@ -36,6 +36,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -312,6 +313,16 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			if(tile instanceof INeighbourChangeTile&&!tile.getWorld().isRemote)
 				((INeighbourChangeTile)tile).onNeighborBlockChange(fromPos);
 		}
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos)
+	{
+		TileEntity tile = world.getTileEntity(currentPos);
+		if(tile instanceof ICapabilityReferenceHolder)
+			((ICapabilityReferenceHolder)tile).invalidateCapabilityReference(facing);
+		return state;
 	}
 
 	public IETileProviderBlock setHasColours()

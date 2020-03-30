@@ -449,4 +449,15 @@ public class IEBlockInterfaces
 		IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
 								@Nonnull IModelData tileData);
 	}
+
+	public interface ICapabilityReferenceHolder
+	{
+		void invalidateCapabilityReference(@Nullable Direction side);
+
+		default void invalidateCapabilityReferences()
+		{
+			invalidateCapabilityReference(null);
+		}
+	}
+
 }

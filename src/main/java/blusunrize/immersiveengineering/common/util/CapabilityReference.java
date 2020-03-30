@@ -58,6 +58,8 @@ public abstract class CapabilityReference<T>
 
 	public abstract boolean isPresent();
 
+	public abstract void invalidate();
+
 	private static class TECapReference<T> extends CapabilityReference<T>
 	{
 		private final Supplier<World> world;
@@ -87,6 +89,12 @@ public abstract class CapabilityReference<T>
 		{
 			updateLazyOptional();
 			return currentCap.isPresent();
+		}
+
+		@Override
+		public void invalidate()
+		{
+			lastWorld = null;
 		}
 
 		private void updateLazyOptional()
