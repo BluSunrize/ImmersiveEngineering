@@ -95,7 +95,8 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 
 	public boolean checkArea()
 	{
-		if(getFacing().getAxis()==Direction.Axis.Y)
+		Direction facing = getFacing();
+		if(facing.getAxis()==Direction.Axis.Y)
 			return false;
 
 		turnSpeed = 0;
@@ -103,7 +104,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 		{
 			int r = Math.abs(hh)==4?1: Math.abs(hh)==3?2: Math.abs(hh)==2?3: 4;
 			for(int ww = -r; ww <= r; ww++)
-				if((hh!=0||ww!=0)&&!world.isAirBlock(getPos().add((getFacing().getAxis()==Axis.Z?ww: 0), hh, (getFacing().getAxis()==Axis.Z?0: ww))))
+				if((hh!=0||ww!=0)&&!world.isAirBlock(getPos().offset(facing.rotateY(), ww).up(hh)))
 					return false;
 		}
 
@@ -115,8 +116,10 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 			{
 				for(int dd = 1; dd < 8; dd++)
 				{
-					BlockPos pos = getPos().add(0, hh, 0).offset(getFacing().getOpposite(), dd).offset(getFacing().rotateY(), ww);
-					if(!world.isBlockLoaded(pos)||world.isAirBlock(pos))
+					BlockPos pos = getPos().up(hh)
+							.offset(facing, dd)
+							.offset(facing.rotateY(), ww);
+					if(!world.isAreaLoaded(pos, 1)||world.isAirBlock(pos))
 						turnSpeed++;
 					else if(world.getTileEntity(pos) instanceof WindmillTileEntity)
 					{
@@ -158,7 +161,17 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			renderAABB = new AxisAlignedBB(getPos().getX()-(getFacing().getAxis()==Axis.Z?6: 0), getPos().getY()-6, getPos().getZ()-(getFacing().getAxis()==Axis.Z?0: 6), getPos().getX()+(getFacing().getAxis()==Axis.Z?7: 0), getPos().getY()+7, getPos().getZ()+(getFacing().getAxis()==Axis.Z?0: 7));
+		{
+			Direction facing = getFacing();
+			renderAABB = new AxisAlignedBB(
+					getPos().getX()-(facing.getAxis()==Axis.Z?6: 0),
+					getPos().getY()-6,
+					getPos().getZ()-(facing.getAxis()==Axis.Z?0: 6),
+					getPos().getX()+(facing.getAxis()==Axis.Z?7: 0),
+					getPos().getY()+7,
+					getPos().getZ()+(facing.getAxis()==Axis.Z?0: 7)
+			);
+		}
 		return renderAABB;
 	}
 
