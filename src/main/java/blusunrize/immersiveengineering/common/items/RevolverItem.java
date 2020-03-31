@@ -859,7 +859,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			}
 
 			int rarityTier = (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
-			Rarity rarity = rarityTier==5?Lib.RARITY_Masterwork: rarityTier==4?Rarity.EPIC: rarityTier==3?Rarity.RARE: rarityTier==2?Rarity.UNCOMMON: Rarity.COMMON;
+			Rarity rarity = rarityTier==5?Lib.RARITY_MASTERWORK: rarityTier==4?Rarity.EPIC: rarityTier==3?Rarity.RARE: rarityTier==2?Rarity.UNCOMMON: Rarity.COMMON;
 			return name.applyTextStyle(rarity.color);
 		}
 
