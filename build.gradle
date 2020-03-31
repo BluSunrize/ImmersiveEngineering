@@ -15,7 +15,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "0.14-95"+getBuildNumber()
+version = "0.14-95" + getBuildNumber()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ImmersiveEngineering'
 
@@ -124,7 +124,7 @@ repositories {
             url = "https://minecraft.curseforge.com/api/maven/"
         }
     }
- }
+}
 dependencies {
     minecraft 'net.minecraftforge:forge:1.14.4-28.2.3'
     runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11")
@@ -160,14 +160,23 @@ build.dependsOn signJar
 String getBuildNumber() {
     boolean includeGitRev = System.getenv("ie_add_git_rev") != null;
     if (includeGitRev) {
-    def stdout = new ByteArrayOutputStream()
+        def stdout = new ByteArrayOutputStream()
         exec {
             commandLine 'git', 'rev-parse', '--short', 'HEAD'
             standardOutput = stdout
         }
-        return "-"+stdout.toString().trim()
+        return "-" + stdout.toString().trim()
     }
     return ""
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
 }
 
 apply plugin: 'maven'
