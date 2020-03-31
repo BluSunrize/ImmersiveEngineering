@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.world;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -32,6 +33,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
@@ -41,6 +43,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -54,15 +57,21 @@ import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration.Type;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -73,14 +82,13 @@ import static blusunrize.immersiveengineering.common.items.IEItems.Misc.wireCoil
 
 public class Villages
 {
-	public static final PointOfInterestType IE_POI = new PointOfInterestType(MODID+":engineer",
-			ImmutableSet.copyOf(WoodenDevices.workbench.getStateContainer().getValidStates()), 1,
-			SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH, 1).setRegistryName(new ResourceLocation(MODID, "engineer"));
 	public static final ResourceLocation ENGINEER = new ResourceLocation(MODID, "engineer");
 	public static final ResourceLocation MACHINIST = new ResourceLocation(MODID, "machinist");
 	public static final ResourceLocation ELECTRICIAN = new ResourceLocation(MODID, "electrician");
 	public static final ResourceLocation OUTFITTER = new ResourceLocation(MODID, "outfitter");
 	public static final ResourceLocation GUNSMITH = new ResourceLocation(MODID, "gunsmith");
+
+	private static Method blockStatesInjector = ObfuscationReflectionHelper.findMethod(PointOfInterestType.class, "func_221052_a", PointOfInterestType.class);
 
 	public static void init()
 	{
@@ -94,6 +102,15 @@ public class Villages
 		})
 			addToPool(new ResourceLocation("village/"+biome+"/houses"),
 					rl("villages/engineers_house_"+biome), 5);
+
+		// We have to do this to allow workstations to be used. Otherwise they just won't work when placed in village
+		try
+		{
+			blockStatesInjector.invoke(null, Registers.POI_WORKBENCH.get());
+		} catch(IllegalAccessException|IllegalArgumentException|InvocationTargetException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
@@ -113,34 +130,74 @@ public class Villages
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 	public static class Registers
 	{
-		private static VillagerProfession create(ResourceLocation name)
+		public static final DeferredRegister<PointOfInterestType> POINTS_OF_INTEREST = new DeferredRegister(ForgeRegistries.POI_TYPES, ImmersiveEngineering.MODID);
+		public static final DeferredRegister<VillagerProfession> PROFESSIONS = new DeferredRegister(ForgeRegistries.PROFESSIONS, ImmersiveEngineering.MODID);
+
+		// TODO: Add more workstations. We need a different one for each profession
+		public static final RegistryObject<PointOfInterestType> POI_WORKBENCH = POINTS_OF_INTEREST.register(
+				"workbench", () -> createPOI("workbench", WoodenDevices.workbench.getStateContainer().getValidStates(), SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH)
+		);
+
+		public static final RegistryObject<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(
+				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_WORKBENCH.get())
+		);
+		public static final RegistryObject<VillagerProfession> PROF_MACHINIST = PROFESSIONS.register(
+				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_WORKBENCH.get())
+		);
+		public static final RegistryObject<VillagerProfession> PROF_ELECTRICIAN = PROFESSIONS.register(
+				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_WORKBENCH.get())
+		);
+		public static final RegistryObject<VillagerProfession> PROF_OUTFITTER = PROFESSIONS.register(
+				OUTFITTER.getPath(), () -> createProf(OUTFITTER, POI_WORKBENCH.get())
+		);
+		public static final RegistryObject<VillagerProfession> PROF_GUNSMITH = PROFESSIONS.register(
+				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH.get())
+		);
+
+
+		private static PointOfInterestType createPOI(String name, Collection<BlockState> block, SoundEvent sound)
+		{
+			return new PointOfInterestType(MODID+":"+name, ImmutableSet.copyOf(block), 1, sound, 1);
+		}
+
+		private static VillagerProfession createProf(ResourceLocation name, PointOfInterestType poi)
 		{
 			return new VillagerProfession(
 					name.toString(),
-					//TODO
-					IE_POI,
+					poi,
 					ImmutableSet.of(),
 					//TODO
 					ImmutableSet.of()
 					//ImmutableSet.of(WoodenDevices.crate)
-			).setRegistryName(name);
+			);
 		}
-
+/*
 		@SubscribeEvent
 		public static void registerPOI(RegistryEvent.Register<PointOfInterestType> ev)
 		{
-			ev.getRegistry().register(IE_POI);
+			workbench =
+					.setRegistryName(new ResourceLocation(MODID, "workbench"));
+			ev.getRegistry().register(workbench);
+
+			try
+			{
+				blockStatesInjector.invoke(null, Registers.workbench);
+			} catch(IllegalAccessException|IllegalArgumentException|InvocationTargetException e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
 
 		@SubscribeEvent
 		public static void registerProfessions(RegistryEvent.Register<VillagerProfession> ev)
 		{
-			ev.getRegistry().register(create(ENGINEER));
+			ev.getRegistry().register(create(ENGINEER, workbench));
 			ev.getRegistry().register(create(MACHINIST));
 			ev.getRegistry().register(create(ELECTRICIAN));
 			ev.getRegistry().register(create(OUTFITTER));
 			ev.getRegistry().register(create(GUNSMITH));
 		}
+		*/
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.FORGE)

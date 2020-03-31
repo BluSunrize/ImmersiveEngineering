@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
+import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
@@ -80,6 +81,8 @@ public class ImmersiveEngineering
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
+		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
+		Villages.Registers.PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		//TODO separate client/server config?
 		ModLoadingContext.get().registerConfig(Type.COMMON, IEConfig.ALL);
 		IEContent.modConstruction();
