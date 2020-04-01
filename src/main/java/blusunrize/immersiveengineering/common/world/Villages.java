@@ -134,12 +134,15 @@ public class Villages
 		public static final DeferredRegister<VillagerProfession> PROFESSIONS = new DeferredRegister(ForgeRegistries.PROFESSIONS, ImmersiveEngineering.MODID);
 
 		// TODO: Add more workstations. We need a different one for each profession
+		public static final RegistryObject<PointOfInterestType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
+				"craftingtable", () -> createPOI("craftingtable", WoodenDevices.craftingTable.getStateContainer().getValidStates(), SoundEvents.ENTITY_VILLAGER_WORK_MASON)
+		);
 		public static final RegistryObject<PointOfInterestType> POI_WORKBENCH = POINTS_OF_INTEREST.register(
 				"workbench", () -> createPOI("workbench", WoodenDevices.workbench.getStateContainer().getValidStates(), SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH)
 		);
 
 		public static final RegistryObject<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(
-				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_WORKBENCH.get())
+				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_CRAFTINGTABLE.get())
 		);
 		public static final RegistryObject<VillagerProfession> PROF_MACHINIST = PROFESSIONS.register(
 				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_WORKBENCH.get())
