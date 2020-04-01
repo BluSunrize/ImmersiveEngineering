@@ -1,0 +1,9 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/wooden_device/craftingtable"
+  },
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/wooden_device/craftingtable.obj",
+  "flip-v": true
+}

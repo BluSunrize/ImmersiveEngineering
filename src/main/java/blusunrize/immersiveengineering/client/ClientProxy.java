@@ -63,6 +63,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEnti
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
 import blusunrize.immersiveengineering.common.entities.*;
+import blusunrize.immersiveengineering.common.gui.CraftingTableContainer;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
@@ -1123,6 +1124,7 @@ public class ClientProxy extends CommonProxy
 		registerScreen(Lib.GUIID_CokeOven, CokeOvenScreen::new);
 		registerScreen(Lib.GUIID_AlloySmelter, AlloySmelterScreen::new);
 		registerScreen(Lib.GUIID_BlastFurnace, BlastFurnaceScreen::new);
+		registerScreen(Lib.GUIID_CraftingTable, CraftingTableScreen::new);
 		registerScreen(Lib.GUIID_WoodenCrate, CrateScreen::new);
 		registerScreen(Lib.GUIID_Workbench, ModWorkbenchScreen::new);
 		registerScreen(Lib.GUIID_Assembler, AssemblerScreen::new);

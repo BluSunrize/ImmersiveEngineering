@@ -101,6 +101,7 @@ public final class IEBlocks
 
 	public static final class WoodenDevices
 	{
+		public static Block craftingTable;
 		public static Block workbench;
 		public static Block gunpowderBarrel;
 		public static Block woodenBarrel;

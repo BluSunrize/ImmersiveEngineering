@@ -269,6 +269,9 @@ public class IEContent
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodProperties);
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodProperties);
 
+		WoodenDevices.craftingTable = new GenericTileBlock("craftingtable", () -> CraftingTableTileEntity.TYPE,
+				standardWoodProperties, IEProperties.FACING_HORIZONTAL)
+				.setNotNormalBlock();
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
 		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
@@ -671,6 +674,7 @@ public class IEContent
 		registerTile(CoresampleTileEntity.class, event, StoneDecoration.coresample);
 		registerTile(AlloySmelterTileEntity.class, event, Multiblocks.alloySmelter);
 
+		registerTile(CraftingTableTileEntity.class, event, WoodenDevices.craftingTable);
 		registerTile(WoodenCrateTileEntity.class, event, WoodenDevices.crate);
 		registerTile(WoodenBarrelTileEntity.class, event, WoodenDevices.woodenBarrel);
 		registerTile(ModWorkbenchTileEntity.class, event, WoodenDevices.workbench);

@@ -139,6 +139,10 @@ public class IEShaders
 		addBlockScaledLayer(entry, "minecraft:block/destroy_stage_8", 0xffff6314);
 
 		addShader("waaagh", 5, Rarity.RARE, 0xff0f0f0f, 0xffdea712, 0xffc15b09, 0xff2f2f2f, "1_7", true, 0xff2f2f2f).setInfo(null, "Warhammer 40k", "waaagh");
+
+		addShader("garry", 7, Rarity.RARE, 0xff7a7c79, 0xffcc7b20, 0xff898b88, 0xffcc7b20).setInfo(null, "Source Engine", "garry");
+
+		addShader("development", 7, Rarity.RARE, 0xff000000, 0xffff00dc, 0xff000000, 0xffff00dc).setInfo(null, "Source Engine", "garry");
 	}
 
 	public static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)

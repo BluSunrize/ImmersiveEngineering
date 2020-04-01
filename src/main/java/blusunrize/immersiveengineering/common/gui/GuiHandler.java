@@ -15,10 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntit
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedTileEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
-import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
-import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
-import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
-import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.CrateMinecartEntity;
 import blusunrize.immersiveengineering.common.entities.ReinforcedCrateMinecartEntity;
 import blusunrize.immersiveengineering.common.items.MaintenanceKitItem;
@@ -63,6 +60,7 @@ public class GuiHandler
 		register(AlloySmelterTileEntity.class, Lib.GUIID_AlloySmelter, AlloySmelterContainer::new);
 		register(BlastFurnaceTileEntity.class, Lib.GUIID_BlastFurnace, BlastFurnaceContainer::new);
 		useSameContainerTile(BlastFurnaceTileEntity.class, BlastFurnaceAdvancedTileEntity.class);
+		register(CraftingTableTileEntity.class, Lib.GUIID_CraftingTable, CraftingTableContainer::new);
 		register(WoodenCrateTileEntity.class, Lib.GUIID_WoodenCrate, CrateContainer::new);
 		register(ModWorkbenchTileEntity.class, Lib.GUIID_Workbench, ModWorkbenchContainer::new);
 		register(AssemblerTileEntity.class, Lib.GUIID_Assembler, AssemblerContainer::new);

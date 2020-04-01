@@ -49,8 +49,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -435,6 +433,8 @@ public class BlockStates extends BlockStateProvider
 		simpleBlockItem(StoneDecoration.concreteThreeQuarter, threeQuarter("concrete_three_quarter", concreteTexture));
 		simpleBlock(StoneDecoration.concreteSprayed, obj("block/sprayed_concrete.obj"));
 
+		createRotatedBlock(WoodenDevices.craftingTable, state -> obj("block/wooden_device/craftingtable.obj"),
+				IEProperties.FACING_HORIZONTAL, ImmutableList.of());
 		cubeAll(WoodenDevices.crate, modLoc("block/wooden_device/crate"));
 		cubeAll(WoodenDevices.reinforcedCrate, modLoc("block/wooden_device/reinforced_crate"));
 		{

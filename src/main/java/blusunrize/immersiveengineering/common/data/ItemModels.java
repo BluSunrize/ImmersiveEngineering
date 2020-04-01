@@ -159,6 +159,9 @@ public class ItemModels extends LoadedModelProvider
 
 	private void createWoodenModels()
 	{
+		obj(WoodenDevices.craftingTable, rl("block/wooden_device/craftingtable.obj"))
+				.transforms(rl("item/block"));
+
 		cubeBottomTop(name(WoodenDevices.woodenBarrel),
 				rl("block/wooden_device/barrel_side"),
 				rl("block/wooden_device/barrel_up_none"),
