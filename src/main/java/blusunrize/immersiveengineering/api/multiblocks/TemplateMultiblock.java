@@ -48,7 +48,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	private final ResourceLocation loc;
 	private final BlockPos masterFromOrigin;
 	public final BlockPos triggerFromOrigin;
-	private final List<BlockMatcher.MatcherPredicate> additionalPredicates;
+	protected final List<BlockMatcher.MatcherPredicate> additionalPredicates;
 	@Nullable
 	private Template template;
 	@Nullable
@@ -88,7 +88,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	}
 
 	@Nonnull
-	private Template getTemplate()
+	protected Template getTemplate()
 	{
 		if(template==null)//TODO reset on resource reload
 		{
