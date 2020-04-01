@@ -29,7 +29,7 @@ public class CraftingTableScreen extends IEContainerScreen<CraftingTableContaine
 	{
 		TileEntity te = container.tile;
 		this.font.drawString(((CraftingTableTileEntity)te).getDisplayName().getFormattedText(),
-				8, 6, 0x0a0a0a);
+				8, 6, 0x190b06);
 	}
 
 	@Override

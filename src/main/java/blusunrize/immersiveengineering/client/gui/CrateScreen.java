@@ -29,7 +29,7 @@ public class CrateScreen extends IEContainerScreen<CrateContainer>
 	{
 		TileEntity te = container.tile;
 		this.font.drawString(((WoodenCrateTileEntity)te).getDisplayName().getFormattedText(),
-				8, 6, 0x0a0a0a);
+				8, 6, 0x190b06);
 	}
 
 	@Override
