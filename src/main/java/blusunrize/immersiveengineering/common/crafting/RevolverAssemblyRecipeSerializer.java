@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 public class RevolverAssemblyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RevolverAssemblyRecipe>
 {
 	public static final IRecipeSerializer<RevolverAssemblyRecipe> INSTANCE = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+"revolver_assembly", new RevolverAssemblyRecipeSerializer()
+			ImmersiveEngineering.MODID+":revolver_assembly", new RevolverAssemblyRecipeSerializer()
 	);
 
 	@Nonnull
