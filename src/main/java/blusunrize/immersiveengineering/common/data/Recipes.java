@@ -341,6 +341,15 @@ public class Recipes extends RecipeProvider
 
 	private void recipesWoodenDevices(@Nonnull Consumer<IFinishedRecipe> out)
 	{
+		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.craftingTable)
+				.patternLine("sss")
+				.patternLine("rcr")
+				.patternLine("r r")
+				.key('s', IETags.getItemTag(IETags.treatedWoodSlab))
+				.key('r', IETags.treatedStick)
+				.key('c', Blocks.CRAFTING_TABLE)
+				.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
+				.build(out);
 		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.crate)
 				.patternLine("ppp")
 				.patternLine("p p")
@@ -430,10 +439,11 @@ public class Recipes extends RecipeProvider
 				.build(out);
 
 		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.workbench)
-				.patternLine("ppp")
+				.patternLine("iss")
 				.patternLine("c f")
-				.key('p', IETags.getItemTag(IETags.treatedWood))
-				.key('c', Blocks.CRAFTING_TABLE)
+				.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.key('s', IETags.getItemTag(IETags.treatedWoodSlab))
+				.key('c', WoodenDevices.craftingTable)
 				.key('f', WoodenDecoration.treatedFence)
 				.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
 				.build(out);

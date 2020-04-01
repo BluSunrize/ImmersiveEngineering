@@ -1,15 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "ppp",
+    "iss",
     "c f"
   ],
   "key": {
-    "p": {
-      "tag": "forge:treated_wood"
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "s": {
+      "tag": "forge:treated_wood_slab"
     },
     "c": {
-      "item": "minecraft:crafting_table"
+      "item": "immersiveengineering:craftingtable"
     },
     "f": {
       "item": "immersiveengineering:treated_fence"
