@@ -137,7 +137,7 @@ public class PostTransformerTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public void removeCable(Connection connection)
+	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 		WireType type = connection!=null?connection.type: null;
 		if(type==null)

@@ -283,7 +283,8 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	@Override
 	public void setState(BlockState state)
 	{
-		getWorldNonnull().setBlockState(pos, state);
+		if(getWorldNonnull().getBlockState(pos)==getState())
+			getWorldNonnull().setBlockState(pos, state);
 	}
 
 	@Override

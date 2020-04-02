@@ -25,7 +25,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootParameters;
 
 import javax.annotation.Nonnull;
@@ -108,7 +107,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public void removeCable(Connection connection)
+	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 
 	}

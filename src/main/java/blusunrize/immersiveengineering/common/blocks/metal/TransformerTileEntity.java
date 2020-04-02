@@ -167,14 +167,14 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public void removeCable(Connection connection)
+	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 		WireType type = connection!=null?connection.type: null;
 		if(type==null)
 			leftType = rightType = null;
 		else
 		{
-			switch(connection.getEndFor(pos).getIndex())
+			switch(attachedPoint.getIndex())
 			{
 				case LEFT_INDEX:
 					leftType = null;

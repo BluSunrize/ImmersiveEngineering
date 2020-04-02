@@ -81,7 +81,7 @@ public class IICProxy implements IImmersiveConnectable
 	}
 
 	@Override
-	public void removeCable(Connection connection)
+	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 		//TODO clean up
 		//this will load the chunk the TE is in for 1 tick since it needs to be notified about the removed wires
@@ -94,7 +94,7 @@ public class IICProxy implements IImmersiveConnectable
 		TileEntity te = w.getTileEntity(pos);
 		if(!(te instanceof IImmersiveConnectable))
 			return;
-		((IImmersiveConnectable)te).removeCable(connection);
+		((IImmersiveConnectable)te).removeCable(connection, attachedPoint);
 	}
 
 	@Override

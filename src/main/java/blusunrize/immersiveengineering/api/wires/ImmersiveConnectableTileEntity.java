@@ -58,7 +58,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	}
 
 	@Override
-	public void removeCable(Connection connection)
+	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 		this.markDirty();
 		if(world!=null)

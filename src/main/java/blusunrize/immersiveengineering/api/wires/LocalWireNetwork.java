@@ -193,17 +193,21 @@ public class LocalWireNetwork implements IWorldTickable
 
 	void removeConnection(Connection c)
 	{
-		boolean successA = false, successB = false;
-		Collection<Connection> connsA = connections.get(c.getEndA());
-		if(connsA!=null)
-			successA = connsA.removeIf(c::hasSameConnectors);
-		Collection<Connection> connsB = connections.get(c.getEndB());
-		if(connsB!=null)
-			successB = connsB.removeIf(c::hasSameConnectors);
-		if(!successA)
-			WireLogger.logger.info("Failed to remove {} from {} (A)", c, c.getEndA());
-		if(!successB)
-			WireLogger.logger.info("Failed to remove {} from {} (B)", c, c.getEndB());
+		for(ConnectionPoint end : new ConnectionPoint[]{c.getEndA(), c.getEndB()})
+		{
+			boolean success = false;
+			Collection<Connection> conns = connections.get(end);
+			if(conns!=null)
+				success = conns.removeIf(c::hasSameConnectors);
+			if(!success)
+				WireLogger.logger.info("Failed to remove {} from {}", c, c.getEndB());
+		}
+		for(ConnectionPoint end : new ConnectionPoint[]{c.getEndA(), c.getEndB()})
+		{
+			IImmersiveConnectable connector = connectors.get(end.getPosition());
+			if(connector!=null)
+				connector.removeCable(c, end);
+		}
 		for(LocalNetworkHandler h : handlers.values())
 			h.onConnectionRemoved(c);
 		removeHandlersFor(c.type);
