@@ -513,7 +513,7 @@ public class BlockStates extends BlockStateProvider
 					return furnaceHeaterOn;
 				else
 					return furnaceHeaterOff;
-			}, IEProperties.FACING_ALL, ImmutableList.of(IEProperties.ACTIVE));
+			}, IEProperties.FACING_ALL, ImmutableList.of(IEProperties.ACTIVE), 180, 0);
 			itemModels.put(MetalDevices.furnaceHeater, furnaceHeaterOff);
 		}
 		createPump();
