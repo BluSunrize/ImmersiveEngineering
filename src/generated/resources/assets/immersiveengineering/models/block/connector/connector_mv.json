@@ -1,7 +1,7 @@
 {
   "textures": {
     "texture": "immersiveengineering:block/connector/connector_mv",
-    "particle": "#texture"
+    "particle": "immersiveengineering:block/connector/connector_mv"
   },
   "loader": "immersiveengineering:connector",
   "base_model": {

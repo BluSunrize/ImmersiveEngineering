@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "#texture",
+    "particle": "immersiveengineering:block/metal_decoration/aluminum_wallmount",
     "texture": "immersiveengineering:block/metal_decoration/aluminum_wallmount"
   },
   "loader": "forge:obj",

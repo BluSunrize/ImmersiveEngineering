@@ -230,8 +230,11 @@ public class BlockStates extends BlockStateProvider
 		LoadedModelBuilder ret = loadedModels.withExistingParent(name, mcLoc("block"))
 				.loader(forgeLoc("obj"))
 				.additional("model", addModelsPrefix(model))
-				.additional("flip-v", true)
-				.texture("particle", DataGenUtils.getTextureFromObj(model, goodExistingFileHelper));
+				.additional("flip-v", true);
+		String particleTex = DataGenUtils.getTextureFromObj(model, goodExistingFileHelper);
+		if(particleTex.charAt(0)=='#')
+			particleTex = textures.get(particleTex.substring(1)).toString();
+		ret.texture("particle", particleTex);
 		for(Entry<String, ResourceLocation> e : textures.entrySet())
 			ret.texture(e.getKey(), e.getValue());
 		return ret;
@@ -415,9 +418,11 @@ public class BlockStates extends BlockStateProvider
 		{
 			ModelFile steelModel = ieObj("block/slope.obj.ie")
 					.texture("texture", modLoc("block/metal_decoration/steel_scaffolding"))
+					.texture("particle", modLoc("block/metal_decoration/steel_scaffolding"))
 					.transforms(modLoc("item/block"));
 			ModelFile aluModel = ieObj("slope_alu", modLoc("block/slope.obj.ie"))
 					.texture("texture", modLoc("block/metal_decoration/aluminum_scaffolding"))
+					.texture("particle", modLoc("block/metal_decoration/aluminum_scaffolding"))
 					.transforms(modLoc("item/block"));
 			createMultistateSingleModel(MetalDecoration.slopeSteel, new ConfiguredModel(steelModel));
 			itemModels.put(MetalDecoration.slopeSteel, steelModel);
@@ -1083,7 +1088,12 @@ public class BlockStates extends BlockStateProvider
 		for(Entry<String, ResourceLocation> e : texForState.entrySet())
 			ret.texture(e.getKey(), e.getValue());
 		if(!texForState.containsKey("particle")&&loader.isPresent()&&loader.get().getPath().contains("obj"))
-			ret.texture("particle", DataGenUtils.getTextureFromObj(modelLoc, goodExistingFileHelper));
+		{
+			String particleTex = DataGenUtils.getTextureFromObj(modelLoc, goodExistingFileHelper);
+			if(particleTex.charAt(0)=='#')
+				particleTex = texForState.get(particleTex.substring(1)).toString();
+			ret.texture("particle", particleTex);
+		}
 		return ret;
 	}
 
