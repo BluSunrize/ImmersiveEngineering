@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
+import blusunrize.immersiveengineering.common.gui.CraftingTableContainer;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.jei.alloysmelter.AlloySmelterRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace.ArcFurnaceRecipeCategory;
@@ -142,6 +143,7 @@ public class JEIHelper implements IModPlugin
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
 	{
 		registration.addRecipeTransferHandler(new AssemblerRecipeTransferHandler(registration.getTransferHelper()), VanillaRecipeCategoryUid.CRAFTING);
+		registration.addRecipeTransferHandler(CraftingTableContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 18+36);
 	}
 
 	@Override
@@ -181,6 +183,8 @@ public class JEIHelper implements IModPlugin
 
 		registration.addRecipeClickArea(ModWorkbenchScreen.class, 4, 41, 53, 18, WorkbenchRecipeCategory.UID);
 		registration.addRecipeClickArea(AutoWorkbenchScreen.class, 90, 12, 39, 37, WorkbenchRecipeCategory.UID);
+
+		registration.addRecipeClickArea(CraftingTableScreen.class, 88, 31, 28, 23, VanillaRecipeCategoryUid.CRAFTING);
 
 		registration.addGhostIngredientHandler(IEContainerScreen.class, new IEGhostItemHandler());
 		registration.addGhostIngredientHandler(FluidSorterScreen.class, new FluidSorterGhostHandler());
