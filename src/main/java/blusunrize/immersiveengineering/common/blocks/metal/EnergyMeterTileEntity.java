@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
@@ -46,6 +47,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
 		IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride,
@@ -100,7 +102,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 		}
 		lastPackets.add(transferred);
 		if(lastPackets.size() > 20)
-			lastPackets.remove(0);
+			lastPackets.removeDouble(0);
 	}
 
 	@Override
@@ -118,8 +120,28 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 			if(below instanceof EnergyMeterTileEntity)
 				return ((EnergyMeterTileEntity)below).canConnectCable(cableType, target, offset);
 		}
-		//TODO correct condition. Energy wire + same voltage as any existing ones?
-		return cableType instanceof IEnergyWire;
+		if(!(cableType instanceof IEnergyWire)||cableType.getCategory()==null)
+			return false;
+		for(ConnectionPoint cp : getConnectionPoints())
+			for(Connection c : globalNet.getLocalNet(pos).getConnections(cp))
+				if(!c.isInternal()&&(c.type.getCategory()==null||!c.type.getCategory().equals(cableType.getCategory())))
+					return false;
+		return true;
+	}
+
+	@Override
+	public Set<BlockPos> getIgnored(IImmersiveConnectable other)
+	{
+		if(isDummy())
+			return ImmutableSet.of(
+					pos,
+					pos.down()
+			);
+		else
+			return ImmutableSet.of(
+					pos,
+					pos.up()
+			);
 	}
 
 	@Nullable
