@@ -46,8 +46,8 @@ import java.util.Map;
 public abstract class TemplateMultiblock implements MultiblockHandler.IMultiblock
 {
 	private final ResourceLocation loc;
-	private final BlockPos masterFromOrigin;
-	public final BlockPos triggerFromOrigin;
+	protected final BlockPos masterFromOrigin;
+	protected final BlockPos triggerFromOrigin;
 	protected final List<BlockMatcher.MatcherPredicate> additionalPredicates;
 	@Nullable
 	private Template template;

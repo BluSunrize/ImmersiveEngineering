@@ -58,17 +58,17 @@ public class BlockMatcher
 			this.type = type;
 		}
 
-		boolean isAllow()
+		public boolean isAllow()
 		{
 			return type==Event.Result.ALLOW;
 		}
 
-		boolean isDefault()
+		public boolean isDefault()
 		{
 			return type==Event.Result.DEFAULT;
 		}
 
-		boolean isDeny()
+		public boolean isDeny()
 		{
 			return type==Event.Result.DENY;
 		}
