@@ -10,7 +10,9 @@
       "tag": "minecraft:planks"
     },
     "b": {
-      "item": "immersiveengineering:creosote_bucket"
+      "amount": 1000,
+      "fluid": "immersiveengineering:creosote",
+      "type": "immersiveengineering:fluid"
     }
   },
   "result": {

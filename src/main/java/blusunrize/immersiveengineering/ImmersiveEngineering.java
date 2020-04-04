@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.*;
+import blusunrize.immersiveengineering.common.crafting.IngredientSerializers;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.network.*;
@@ -88,6 +89,7 @@ public class ImmersiveEngineering
 		IEContent.modConstruction();
 		proxy.modConstruction();
 		//TODO FluidRegistry.enableUniversalBucket();
+		IngredientSerializers.init();
 	}
 
 	public void setup(FMLCommonSetupEvent event)

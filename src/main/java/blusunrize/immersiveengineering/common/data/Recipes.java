@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
 import blusunrize.immersiveengineering.common.items.BulletItem;
@@ -334,7 +335,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("wbw")
 				.patternLine("www")
 				.key('w', ItemTags.PLANKS)
-				.key('b', IEContent.fluidCreosote.getFilledBucket())
+				.key('b', new IngredientFluidStack(IEContent.fluidCreosote, 1000))
 				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
 				.build(out);
 	}
