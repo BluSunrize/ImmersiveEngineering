@@ -409,6 +409,7 @@ public class ClientProxy extends CommonProxy
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "ear_defenders"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "shield"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "toolbox"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "maintenance_kit"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "revolver"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "bullets"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "chemthrower"));

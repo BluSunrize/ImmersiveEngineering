@@ -2,5 +2,9 @@
   "hammer": {
     "type": "crafting",
     "recipe": "hammer"
+  },
+  "screwdriver": {
+    "type": "crafting",
+    "recipe": "screwdriver"
   }
 }
