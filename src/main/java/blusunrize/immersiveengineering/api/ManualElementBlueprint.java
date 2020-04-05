@@ -137,8 +137,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 
-		if(!highlighted.isEmpty())
-			gui.renderTooltip(gui.getTooltipFromItem(highlighted), mouseX, mouseY);
+		this.renderHighlightedTooltip(gui, mouseX, mouseY);
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 	}

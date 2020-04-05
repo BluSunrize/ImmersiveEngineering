@@ -100,8 +100,7 @@ public class ManualElementItem extends SpecialManualElements
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.enableBlend();
 
-		if(!highlighted.isEmpty())
-			gui.renderTooltip(gui.getTooltipFromItem(highlighted), mx, my);
+		this.renderHighlightedTooltip(gui, mx, my);
 		RenderHelper.disableStandardItemLighting();
 	}
 
