@@ -36,6 +36,7 @@ public class IEDataGenerator
 			gen.addProvider(blockStates);
 			gen.addProvider(loadedModels);
 			gen.addProvider(new ItemModels(gen, event.getExistingFileHelper(), blockStates));
+			gen.addProvider(new Advancements(gen));
 		}
 	}
 

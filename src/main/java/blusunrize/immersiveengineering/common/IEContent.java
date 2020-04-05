@@ -537,15 +537,12 @@ public class IEContent
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
 		itemMaintenanceKit = new ItemMaintenanceKit();
-
-		itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky", "drillbreak")
-		{
-			@Override
-			public void fillItemGroup(CreativeTabs tab, NonNullList<ItemStack> list)
-			{
-			}
-		};
 		 */
+
+		IEItems.Misc.iconBirthday = new FakeIconItem("birthday");
+		IEItems.Misc.iconLucky = new FakeIconItem("lucky");
+		IEItems.Misc.iconDrillbreak = new FakeIconItem("drillbreak");
+
 		ConveyorHandler.createConveyorBlocks();
 		BulletHandler.emptyCasing = new ItemStack(Ingredients.emptyCasing);
 		BulletHandler.emptyShell = new ItemStack(Ingredients.emptyShell);

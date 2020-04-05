@@ -8,15 +8,18 @@
 
 package blusunrize.immersiveengineering.common.data;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.data.loot.LootGenerator;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.StandaloneLootEntry.Builder;
@@ -57,6 +60,23 @@ public class GeneralLoot extends LootGenerator
 		LootTable.Builder builder = LootTable.builder();
 		builder.addLootPool(mainPool);
 		tables.put(IEDataGenerator.rl("chests/engineers_house"), builder.build());
+
+		/* Add Advancement Loot Tables */
+
+		builder = LootTable.builder();
+		builder.addLootPool(LootPool.builder().name("rare_shader").rolls(new ConstantRange(1))
+				.addEntry(createEntry(Misc.shaderBag.get(Rarity.RARE), 1, 1, 1)));
+		tables.put(IEDataGenerator.rl("advancements/shader_rare"), builder.build());
+
+		builder = LootTable.builder();
+		builder.addLootPool(LootPool.builder().name("epic_shader").rolls(new ConstantRange(1))
+				.addEntry(createEntry(Misc.shaderBag.get(Rarity.EPIC), 1, 1, 1)));
+		tables.put(IEDataGenerator.rl("advancements/shader_epic"), builder.build());
+
+		builder = LootTable.builder();
+		builder.addLootPool(LootPool.builder().name("masterwork_shader").rolls(new ConstantRange(1))
+				.addEntry(createEntry(Misc.shaderBag.get(Lib.RARITY_MASTERWORK), 1, 1, 1)));
+		tables.put(IEDataGenerator.rl("advancements/shader_masterwork"), builder.build());
 	}
 
 	private LootEntry.Builder<?> createEntry(IItemProvider item, int weight, int min, int max)

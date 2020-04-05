@@ -223,6 +223,7 @@ public class ItemModels extends LoadedModelProvider
 		addItemModel("drillhead_iron", Tools.drillheadIron);
 		addItemModel("drillhead_steel", Tools.drillheadSteel);
 		addItemModels("", IEItems.Misc.cartWoodenCrate, IEItems.Misc.cartReinforcedCrate, IEItems.Misc.cartWoodenBarrel, IEItems.Misc.cartMetalBarrel);
+		addItemModels("", IEItems.Misc.iconBirthday, IEItems.Misc.iconLucky, IEItems.Misc.iconDrillbreak);
 
 		obj(Tools.voltmeter, rl("item/voltmeter.obj"))
 				.transforms(rl("item/voltmeter"));
