@@ -1,0 +1,31 @@
+{
+  "parent": "immersiveengineering:main/connect_wire",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:floodlight"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.place_floodlight"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.place_floodlight.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "floodlight": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "immersiveengineering:floodlight"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "floodlight"
+    ]
+  ]
+}

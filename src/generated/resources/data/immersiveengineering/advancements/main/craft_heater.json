@@ -1,0 +1,35 @@
+{
+  "parent": "immersiveengineering:main/connect_wire",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:furnace_heater"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_heater"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_heater.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "heater": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:furnace_heater"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "heater"
+    ]
+  ]
+}
