@@ -2,9 +2,11 @@
   "start": {
     "type": "crafting",
     "recipes": [
-      "chemthrower",
-      "wooden_grip",
-      "toolupgrade_drill_waterproof"
+      [
+        "chemthrower",
+        "wooden_grip",
+        "toolupgrade_drill_waterproof"
+      ]
     ]
   },
   "large": {

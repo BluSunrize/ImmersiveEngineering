@@ -11,28 +11,28 @@
     "type": "blueprint",
     "recipes": [
       {
-        "item": "mold_plate"
+        "item": "immersiveengineering:mold_plate"
       },
       {
-        "item": "mold_gear"
+        "item": "immersiveengineering:mold_gear"
       },
       {
-        "item": "mold_rod"
+        "item": "immersiveengineering:mold_rod"
       },
       {
-        "item": "mold_bullet_casing"
+        "item": "immersiveengineering:mold_bullet_casing"
       },
       {
-        "item": "mold_wire"
+        "item": "immersiveengineering:mold_wire"
       },
       {
-        "item": "mold_packing_4"
+        "item": "immersiveengineering:mold_packing_4"
       },
       {
-        "item": "mold_packing_9"
+        "item": "immersiveengineering:mold_packing_9"
       },
       {
-        "item": "mold_unpacking"
+        "item": "immersiveengineering:mold_unpacking"
       }
     ]
   },
@@ -40,10 +40,13 @@
     "type": "item_display",
     "items": [
       {
-        "item": "mold_packing_4"
+        "item": "immersiveengineering:mold_packing_4"
       },
       {
-        "item": "mold_packing_9"
+        "item": "immersiveengineering:mold_packing_9"
+      },
+      {
+        "item": "immersiveengineering:mold_unpacking"
       }
     ]
   }

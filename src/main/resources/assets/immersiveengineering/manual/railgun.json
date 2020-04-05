@@ -2,8 +2,10 @@
   "start": {
     "type": "crafting",
     "recipes": [
-      "railgun",
-      "wooden_grip"
+      [
+        "railgun",
+        "wooden_grip"
+      ]
     ]
   },
   "caps": {

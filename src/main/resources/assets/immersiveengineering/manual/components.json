@@ -2,12 +2,14 @@
     "mech_components": {
         "type": "crafting",
         "recipes": [
-            {
-                "recipe": "component_iron"
-            },
-            {
-                "recipe": "component_steel"
-            }
+            [
+                {
+                    "recipe": "component_iron"
+                },
+                {
+                    "recipe": "component_steel"
+                }
+            ]
         ]
     },
     "create_bp": {
