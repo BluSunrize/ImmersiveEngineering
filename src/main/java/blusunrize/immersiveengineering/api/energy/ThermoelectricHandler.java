@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,22 +32,14 @@ public class ThermoelectricHandler
 		temperatureMap.put(source, value);
 	}
 
-	public static void registerSourceInKelvin(ResourceLocation source, int value)
+	public static void registerSourceInKelvin(Tag tag, int value)
 	{
-		registerSourceInKelvin(new IngredientStack(source), value);
+		registerSourceInKelvin(new IngredientStack(tag), value);
 	}
 
-	public static void registerSourceInCelsius(ResourceLocation source, int value)
+	public static void registerSourceInCelsius(Tag tag, int value)
 	{
-		registerSourceInKelvin(new IngredientStack(source), value+273);
-	}
-
-	/**
-	 * 'murica!
-	 */
-	public static void registerSourceInFarenheit(ResourceLocation source, int value)
-	{
-		registerSourceInKelvin(new IngredientStack(source), (int)Math.round((value-32)/1.8D+273));
+		registerSourceInKelvin(new IngredientStack(tag), value+273);
 	}
 
 	public static int getTemperature(Block block)

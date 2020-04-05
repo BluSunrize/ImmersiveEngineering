@@ -1025,10 +1025,10 @@ public class IEContent
 		//TODO tags?
 		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.ICE), 273);
 		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.PACKED_ICE), 200);
-		ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/uranium"), 2000);
-		ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/yellorium"), 2000);
-		ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/plutonium"), 4000);
-		ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/blutonium"), 4000);
+		ThermoelectricHandler.registerSourceInKelvin(IETags.getTagsFor(EnumMetals.URANIUM).storage, 2000);
+		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/yellorium"), 2000);
+		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/plutonium"), 4000);
+		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/blutonium"), 4000);
 
 		/*MULTIBLOCKS*/
 		IEMultiblocks.init();
