@@ -111,6 +111,5 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 			}
 		}
 
-		GlStateManager.disableDepthTest();
 	}
 }
