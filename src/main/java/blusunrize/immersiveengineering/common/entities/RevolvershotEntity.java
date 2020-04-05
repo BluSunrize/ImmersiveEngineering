@@ -17,8 +17,11 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -120,7 +123,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 			if(mop instanceof EntityRayTraceResult)
 			{
 				Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
-				if(headshot&&hitEntity instanceof AgeableEntity&&((AgeableEntity)hitEntity).isChild()&&((LivingEntity)hitEntity).getHealth() <= 0)
+				if(headshot&&hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isChild()&&((LivingEntity)hitEntity).getHealth() <= 0)
 				{
 					PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
 					if(shooter!=null)
