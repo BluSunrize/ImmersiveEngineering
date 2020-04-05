@@ -72,14 +72,14 @@ public class IERecipes
 		Tag<Item> leadNugget = IETags.getTagsFor(LEAD).nugget;
 		Tag<Item> silverNugget = IETags.getTagsFor(SILVER).nugget;
 		Tag<Item> steelNugget = IETags.getTagsFor(LEAD).nugget;
-		Tag<Item> aluDust = IETags.getTagsFor(ALUMINUM).nugget;
+		Tag<Item> aluDust = IETags.getTagsFor(ALUMINUM).dust;
 		Tag<Item> constantanNugget = IETags.getTagsFor(CONSTANTAN).nugget;
 		Tag<Item> glassBlock = Tags.Items.GLASS;
 		Tag<Item> dustRedstone = Tags.Items.DUSTS_REDSTONE;
 		Tag<Item> copperWire = IETags.copperWire;
 		Tag<Item> redDye = Tags.Items.DYES_RED;
 		Tag<Item> greenDye = Tags.Items.DYES_GREEN;
-		Tag<Item> blueDye = Tags.Items.DYES_BLUE;
+		Tag<Item> yellowDye = Tags.Items.DYES_YELLOW;
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(componentIron), ironPlate, ironPlate, copperIngot);
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(componentSteel), steelPlate, steelPlate, copperIngot);
 		BlueprintCraftingRecipe.addRecipe("components", new ItemStack(electronTube, 3), glassBlock, nickelPlate, copperWire, dustRedstone);
@@ -140,7 +140,7 @@ public class IERecipes
 		ItemNBTHelper.putInt(bullet, "flareColour", 0x2ca30b);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, aluDust, greenDye);
 		ItemNBTHelper.putInt(bullet, "flareColour", 0xffff82);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, aluDust, blueDye);
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(emptyShell), Items.GUNPOWDER, aluDust, yellowDye);
 
 		//Wolfpack
 		/*TODO new condition, or maybe an event?

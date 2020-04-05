@@ -1636,6 +1636,24 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out);
 
+		ShapedRecipeBuilder.shapedRecipe(BulletHandler.emptyShell.getItem(), 5)
+				.patternLine("prp")
+				.patternLine("prp")
+				.patternLine(" c ")
+				.key('p', Items.PAPER)
+				.key('r', Tags.Items.DYES_RED)
+				.key('c', IETags.getTagsFor(EnumMetals.COPPER).plate)
+				.addCriterion("has_coppper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+				.build(out);
+
+		ShapedRecipeBuilder.shapedRecipe(BulletHandler.emptyCasing.getItem(), 5)
+				.patternLine("c c")
+				.patternLine("c c")
+				.patternLine(" c ")
+				.key('c', IETags.getTagsFor(EnumMetals.COPPER).plate)
+				.addCriterion("has_coppper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+				.build(out);
+
 		BulletHandler.getBulletStack(BulletItem.FLARE);
 		TurnAndCopyRecipeBuilder.builder(BulletHandler.getBulletItem(BulletItem.FIREWORK))
 				.setNBTCopyTargetRecipe(0, 1, 2, 3, 4, 5, 6) //Since this isn't relative positioning, we have to account for the top 6 slots >_>
