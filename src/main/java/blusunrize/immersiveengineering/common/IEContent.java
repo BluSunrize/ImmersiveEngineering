@@ -499,6 +499,7 @@ public class IEContent
 		IEItems.Misc.fluorescentTube = new FluorescentTubeItem();
 		IEItems.Misc.shield = new IEShieldItem();
 		IEItems.Misc.skyhook = new SkyhookItem();
+		IEItems.Misc.maintenanceKit = new MaintenanceKitItem();
 		IEItems.Misc.cartWoodenCrate = new IEMinecartItem("woodencrate")
 		{
 			@Override
@@ -536,7 +537,6 @@ public class IEContent
 		/*TODO
 		if(IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
-		itemMaintenanceKit = new ItemMaintenanceKit();
 		 */
 
 		IEItems.Misc.iconBirthday = new FakeIconItem("birthday");
