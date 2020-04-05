@@ -27,12 +27,16 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import static blusunrize.lib.manual.ManualUtils.mc;
@@ -50,7 +54,7 @@ public class ShaderManualElement extends SpecialManualElements
 	int example = 0;
 	boolean unlocked;
 
-	String text, localizedText;
+	String name, text;
 
 	public ShaderManualElement(ManualInstance manual, ShaderRegistry.ShaderRegistryEntry shader)
 	{
@@ -104,7 +108,10 @@ public class ShaderManualElement extends SpecialManualElements
 		else
 			exampleItems = null;
 
-		this.text = "§lRarity: §r"+" "+shader.rarity.name();
+		this.name = shaderItem.getDisplayName().applyTextStyle(TextFormatting.BOLD).getFormattedText();
+		ITextComponent textAssembly = new StringTextComponent("");
+		textAssembly.appendSibling(new TranslationTextComponent("desc.immersiveengineering.info.shader.level").applyTextStyle(TextFormatting.BOLD));
+		textAssembly.appendSibling(new TranslationTextComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
 		if(unlocked)
 		{
 			String set = shader.info_set==null||shader.info_set.isEmpty()?null: ManualUtils.attemptStringTranslation(Lib.DESC_INFO+"shader.set.%s", shader.info_set);
@@ -112,11 +119,17 @@ public class ShaderManualElement extends SpecialManualElements
 			String details = shader.info_details==null||shader.info_details.isEmpty()?null: ManualUtils.attemptStringTranslation(Lib.DESC_INFO+"shader.details.%s", shader.info_details);
 
 			if(set!=null)
-				this.text += "<br><br>"+I18n.format("desc.immersiveengineering.info.shader.set")+" "+set;
+				textAssembly.appendText("\n")
+						.appendSibling(new TranslationTextComponent("desc.immersiveengineering.info.shader.set").applyTextStyle(TextFormatting.BOLD))
+						.appendText(" "+set);
 			if(reference!=null)
-				this.text += "<br><br>"+I18n.format("desc.immersiveengineering.info.shader.reference")+"<br>"+reference;
+				textAssembly.appendText("\n")
+						.appendSibling(new TranslationTextComponent("desc.immersiveengineering.info.shader.reference").applyTextStyle(TextFormatting.BOLD))
+						.appendText("\n"+reference);
 			if(details!=null)
-				this.text += "<br><br>"+I18n.format("desc.immersiveengineering.info.shader.details")+"<br>"+details;
+				textAssembly.appendText("\n")
+						.appendSibling(new TranslationTextComponent("desc.immersiveengineering.info.shader.details").applyTextStyle(TextFormatting.BOLD))
+						.appendText("\n"+details);
 
 			String cost = Integer.toString(replicationCost.inputSize);
 			if(!ApiUtils.hasPlayerIngredient(mc().player, replicationCost)&&!mc().player.abilities.isCreativeMode)
@@ -132,7 +145,7 @@ public class ShaderManualElement extends SpecialManualElements
 		}
 		else
 		{
-			this.text += "<br><br>"+I18n.format("ie.manual.entry.shaderList.noInfo");
+			textAssembly.appendText("\n\n").appendSibling(new TranslationTextComponent("ie.manual.entry.shaderList.noInfo"));
 			if(player.abilities.isCreativeMode)
 				buttons.add(new GuiButtonManual(gui, x+10, y+120, 100, 16,
 						I18n.format("ie.manual.entry.shaderList.unlock"),
@@ -145,6 +158,7 @@ public class ShaderManualElement extends SpecialManualElements
 						.setTextColour(gui.getManual().getTextColour(), gui.getManual().getHighlightColour())
 				);
 		}
+		this.text = textAssembly.getFormattedText();
 	}
 
 	@Override
@@ -168,11 +182,10 @@ public class ShaderManualElement extends SpecialManualElements
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
-		String name = "§l"+shader.getName();
-		int w = manual.fontRenderer().getStringWidth(name);
-		manual.fontRenderer().drawString(name, x+60-w/2, y+24, manual.getTextColour());
-		if(localizedText!=null&&!localizedText.isEmpty())
-			manual.fontRenderer().drawSplitString(localizedText, x, y+38, 120, manual.getTextColour());
+		int w = manual.fontRenderer().getStringWidth(this.name);
+		manual.fontRenderer().drawString(this.name, x+60-w/2, y+24, manual.getTextColour());
+		if(this.text!=null&&!this.text.isEmpty())
+			manual.fontRenderer().drawSplitString(this.text, x, y+38, 120, manual.getTextColour());
 
 	}
 

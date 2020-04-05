@@ -140,9 +140,15 @@ public class IEShaders
 
 		addShader("waaagh", 5, Rarity.RARE, 0xff0f0f0f, 0xffdea712, 0xffc15b09, 0xff2f2f2f, "1_7", true, 0xff2f2f2f).setInfo(null, "Warhammer 40k", "waaagh");
 
-		addShader("garry", 7, Rarity.RARE, 0xff7a7c79, 0xffcc7b20, 0xff898b88, 0xffcc7b20).setInfo(null, "Source Engine", "garry");
+		entry = addShader("astartes", 3, Rarity.RARE, 0xff212429, 0xff8e3334, 0xff7b7e87, 0xff7b7e87).setInfo(null, "Warhammer 40k", "astartes");
+		addLayer(entry, "1_8", 0xff8e3334);
 
-		addShader("development", 7, Rarity.RARE, 0xff000000, 0xffff00dc, 0xff000000, 0xffff00dc).setInfo(null, "Source Engine", "garry");
+		entry = addShader("netherforged", 0, Rarity.EPIC, 0xff575046, 0xff323c2c, 0x80bf541f, 0xff4f4f4f).setInfo(null, null, "netherforged");
+		addBlockScaledLayer(entry, "minecraft:block/magma", 0xffffffff);
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[4].setTextureBounds(0, 0, .3125, .3125);
+		addLayer(entry, "1_8", 0xff323c2c);
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[5].setTextureBounds(0, 0, 1, .1875).setCutoutBounds(0, 0, 1, .1875);
+		addLayer(entry, "1_0", 0xff323c2c);
 	}
 
 	public static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)

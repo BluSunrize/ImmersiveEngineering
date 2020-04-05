@@ -966,6 +966,7 @@ public class IEContent
 		ShaderRegistry.itemExamples.add(new ItemStack(Tools.drill));
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.chemthrower));
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.railgun));
+		ShaderRegistry.itemExamples.add(new ItemStack(IEItems.Misc.shield));
 
 		/*SMELTING*/
 		/*TODO

@@ -472,11 +472,7 @@ public class ClientProxy extends CommonProxy
 						for(ShaderRegistryEntry shader : ShaderRegistry.shaderRegistry.values())
 						{
 							String key = shader.name.getPath();
-							String translationKey = "desc.immersiveengineering.info.shader.details."+key;
-							String shaderDesc = I18n.format(translationKey);
-							if(content.length() > 0)
-								content.append("<np>");
-							content.append("<&").append(key).append(">").append(shaderDesc);
+							content.append("<&").append(key).append(">").append("<np>");
 						}
 						return content.toString();
 					}
