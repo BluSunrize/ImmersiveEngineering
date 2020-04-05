@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.items.HammerItem;
+import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
@@ -571,6 +572,13 @@ public class Utils
 		if(stack.isEmpty())
 			return false;
 		return stack.getItem().getToolTypes(stack).contains(WirecutterItem.CUTTER_TOOL);
+	}
+
+	public static boolean isScrewdriver(ItemStack stack)
+	{
+		if(stack.isEmpty())
+			return false;
+		return stack.getItem().getToolTypes(stack).contains(ScrewdriverItem.SCREWDRIVER_TOOL);
 	}
 
 	public static boolean canBlockDamageSource(LivingEntity entity, DamageSource damageSourceIn)

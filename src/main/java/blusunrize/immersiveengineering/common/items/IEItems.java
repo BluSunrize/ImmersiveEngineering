@@ -85,6 +85,7 @@ public final class IEItems
 	{
 		public static Item hammer;
 		public static Item wirecutter;
+		public static Item screwdriver;
 		public static Item manual;
 		public static Item voltmeter;
 

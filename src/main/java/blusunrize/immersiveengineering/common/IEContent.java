@@ -415,8 +415,9 @@ public class IEContent
 		Multiblocks.dieselGenerator = new MetalMultiblockBlock("diesel_generator", () -> DieselGeneratorTileEntity.TYPE);
 		Multiblocks.lightningrod = new MetalMultiblockBlock("lightning_rod", () -> LightningrodTileEntity.TYPE);
 
-		Tools.wirecutter = new WirecutterItem();
 		Tools.hammer = new HammerItem();
+		Tools.wirecutter = new WirecutterItem();
+		Tools.screwdriver = new ScrewdriverItem();
 		Tools.voltmeter = new VoltmeterItem();
 		Tools.manual = new ManualItem();
 		IEItems.Tools.steelPick = IETools.createPickaxe(Lib.MATERIAL_Steel, "pickaxe_steel");

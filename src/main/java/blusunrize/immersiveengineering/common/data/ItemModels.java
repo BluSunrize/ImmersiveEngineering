@@ -208,7 +208,7 @@ public class ItemModels extends LoadedModelProvider
 				Ingredients.wireCopper, Ingredients.wireElectrum, Ingredients.wireAluminum, Ingredients.wireSteel,
 				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.electronTube, Ingredients.circuitBoard);
 
-		addItemModels("tool_", Tools.hammer, Tools.wirecutter, Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelSword);
+		addItemModels("tool_", Tools.hammer, Tools.wirecutter, Tools.screwdriver, Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelSword);
 		addItemModels("", IEItems.Misc.wireCoils.values().toArray(new Item[0]));
 		addItemModels("", IEItems.Misc.graphiteElectrode);
 		addItemModels("", IEItems.Misc.toolUpgrades.values().toArray(new Item[0]));

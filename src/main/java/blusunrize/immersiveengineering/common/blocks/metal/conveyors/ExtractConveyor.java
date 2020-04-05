@@ -269,7 +269,7 @@ public class ExtractConveyor extends BasicConveyor
 			} while(relativeExtractDir==Rotation.NONE);
 			return true;
 		}
-		if(Utils.isWirecutter(heldItem))
+		if(Utils.isScrewdriver(heldItem))
 		{
 			if(this.transferTickrate==4)
 				this.transferTickrate = 8;

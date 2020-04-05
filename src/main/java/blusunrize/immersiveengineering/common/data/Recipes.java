@@ -1148,6 +1148,13 @@ public class Recipes extends RecipeProvider
 				.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.addCriterion("has_iron_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
 				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.screwdriver)
+				.patternLine(" i")
+				.patternLine("s ")
+				.key('s', Tags.Items.RODS_WOODEN)
+				.key('i', IETags.ironRod)
+				.addCriterion("has_iron_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+				.build(out);
 		ShapelessRecipeBuilder.shapelessRecipe(Tools.manual)
 				.addIngredient(Items.BOOK)
 				.addIngredient(Items.LEVER)
@@ -1739,15 +1746,14 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_"+toPath(MetalDevices.capacitorLV), hasItem(MetalDevices.capacitorLV))
 				.addCriterion("has_"+toPath(IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)), hasItem(IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)))
 				.build(out);
-		// TODO Uncomment below when maintenanceKit is implemented
-//		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.maintenanceKit)
-//			.patternLine("rc ")
-//			.patternLine("fff")
-//			.key('c', Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
-//			.key('r', IETags.ironRod)
-//			.key('f', IETags.fabricHemp)
-//			.addCriterion("has_"+toPath(Tools.wirecutter)), hasItem(Tools.wirecutter))
-//			.build(out);
+		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.maintenanceKit)
+			.patternLine("sc ")
+			.patternLine("fff")
+			.key('c', Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+			.key('s', Tools.screwdriver)
+			.key('f', IETags.fabricHemp)
+			.addCriterion("has_"+toPath(Tools.wirecutter), hasItem(Tools.wirecutter))
+			.build(out);
 		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.shield)
 				.patternLine("sws")
 				.patternLine("scs")
