@@ -59,7 +59,7 @@ public class ManualScreen extends Screen
 	{
 		super(new StringTextComponent("manual"));
 		this.manual = manual;
-		this.currentNode = manual.contentTree.getRoot();
+		this.currentNode = manual.getRoot();
 		this.texture = texture;
 
 		prevGuiScale = mc.gameSettings.guiScale;
@@ -439,7 +439,7 @@ public class ManualScreen extends Screen
 			ArrayList<AbstractNode<ResourceLocation, ManualEntry>> lHeaders = new ArrayList<>();
 			Set<AbstractNode<ResourceLocation, ManualEntry>> lSpellcheck = new HashSet<>();
 			final String searchFinal = search;
-			manual.contentTree.fullStream().forEach((node) ->
+			manual.getAllEntriesAndCategories().forEach((node) ->
 			{
 				if(manual.showNodeInList(node))
 				{

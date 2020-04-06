@@ -183,7 +183,8 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	public Tree.AbstractNode<ResourceLocation, ManualEntry> getTreeNode()
 	{
-		return manual.contentTree.fullStream().filter((e) -> e.getLeafData()==this).findAny().orElse(null);
+		return manual.getAllEntriesAndCategories()
+				.filter((e) -> e.getLeafData()==this).findAny().orElse(null);
 	}
 
 	@Override

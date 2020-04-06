@@ -254,9 +254,6 @@ public class ClientProxy extends CommonProxy
 		itemFont = new IEFontRender(false);
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 
-		//TODO remove once the turntable is back, if it ever comes back
-		DynamicModelLoader.requestTexture(new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/turntable_bottom"));
-
 		ClientRegistry.bindTileEntitySpecialRenderer(ChargingStationTileEntity.class, new ChargingStationRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(SampleDrillTileEntity.class, new SampleDrillRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TeslaCoilTileEntity.class, new TeslaCoilRenderer());
@@ -350,17 +347,17 @@ public class ClientProxy extends CommonProxy
 						throw new NullPointerException("Multiblock "+name+" does not exist");
 					return new ManualElementMultiblock(ieMan, mb);
 				});
-		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_ENERGY));
-		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_GENERAL), -1);
-		InnerNode<ResourceLocation, ManualEntry> constructionCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> constructionCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_CONSTRUCTION));
-		InnerNode<ResourceLocation, ManualEntry> toolsCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> toolsCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_TOOLS));
-		InnerNode<ResourceLocation, ManualEntry> machinesCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> machinesCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_MACHINES));
-		InnerNode<ResourceLocation, ManualEntry> heavyMachinesCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> heavyMachinesCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_HEAVYMACHINES));
 
 		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "wiring"));
@@ -628,7 +625,7 @@ public class ClientProxy extends CommonProxy
 				allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
 
 		ManualInstance ieMan = ManualHelper.getManual();
-		InnerNode<ResourceLocation, ManualEntry> updateCat = ieMan.contentTree.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> updateCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_UPDATE), -2);
 		for(ManualEntry entry : allChanges.values())
 			ManualHelper.getManual().addEntry(updateCat, entry);

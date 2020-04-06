@@ -43,7 +43,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 {
 	public String texture;
 	private Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
-	public final Tree<ResourceLocation, ManualEntry> contentTree;
+	private final Tree<ResourceLocation, ManualEntry> contentTree;
 	public Map<ResourceLocation, ManualEntry> contentsByName = new HashMap<>();
 	public final int pageWidth;
 	public final int pageHeight;
@@ -141,6 +141,16 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		if(specialElements.containsKey(resLoc))
 			throw new IllegalArgumentException("Tried adding manual element type "+resLoc+" twice!");
 		specialElements.put(resLoc, factory);
+	}
+
+	public Tree.InnerNode<ResourceLocation, ManualEntry> getRoot()
+	{
+		return contentTree.getRoot();
+	}
+
+	public Stream<Tree.AbstractNode<ResourceLocation, ManualEntry>> getAllEntriesAndCategories()
+	{
+		return contentTree.fullStream();
 	}
 
 	public Function<JsonObject, SpecialManualElement> getElementFactory(ResourceLocation loc)
