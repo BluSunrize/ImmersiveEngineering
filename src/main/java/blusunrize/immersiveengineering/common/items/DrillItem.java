@@ -104,6 +104,72 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		super("drill", withIEOBJRender().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
 	}
 
+	/* ------------- CORE ITEM METHODS ------------- */
+
+	@Override
+	public boolean isTool(ItemStack item)
+	{
+		return true;
+	}
+
+	@Override
+	public int getItemEnchantability()
+	{
+		return 0;
+	}
+
+	@Nullable
+	@Override
+	public CompoundNBT getShareTag(ItemStack stack)
+	{
+		CompoundNBT ret = super.getShareTag(stack);
+		if(ret==null)
+			ret = new CompoundNBT();
+		else
+			ret = ret.copy();
+		ItemStack head = getHead(stack);
+		if(!head.isEmpty())
+			ret.put("head", head.write(new CompoundNBT()));
+		return ret;
+	}
+
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	{
+		if(!stack.isEmpty())
+			return new IEItemStackHandler(stack)
+			{
+				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
+				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "drill"), stack));
+
+				@Nonnull
+				@Override
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
+				{
+					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+						return fluids.cast();
+					if(capability==CapabilityShader.SHADER_CAPABILITY)
+						return shaders.cast();
+					return super.getCapability(capability, facing);
+				}
+			};
+		return null;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return (double)getHeadDamage(stack)/(double)getMaxHeadDamage(stack);
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return getHeadDamage(stack) > 0;
+	}
+
+	/* ------------- WORKBENCH & INVENTORY ------------- */
+
 	@Override
 	public int getSlotCount(ItemStack stack)
 	{
@@ -131,6 +197,16 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	}
 
 	@Override
+	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
+	{
+		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		invCap.ifPresent(inv -> {
+			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
+				Utils.unlockIEAdvancement(player, "main/upgrade_drill");
+		});
+	}
+
+	@Override
 	public void recalculateUpgrades(ItemStack stack, World w)
 	{
 		super.recalculateUpgrades(stack, w);
@@ -153,6 +229,32 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		}
 	}
 
+	public ItemStack getHead(ItemStack drill)
+	{
+		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
+			return ItemStack.EMPTY;
+		ItemStack head;
+		boolean remote = EffectiveSide.get()==LogicalSide.CLIENT;
+		LazyOptional<IItemHandler> cap = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		if(!remote&&cap.map(h -> h.getStackInSlot(0).isEmpty()).orElse(false))
+			remote = true;
+		else if(remote&&!ItemNBTHelper.hasKey(drill, "head"))
+			remote = false;
+		if(remote)
+			head = ItemStack.read(ItemNBTHelper.getTagCompound(drill, "head"));
+		else
+			head = cap.orElseThrow(RuntimeException::new).getStackInSlot(0);
+		return !head.isEmpty()&&head.getItem() instanceof IDrillHead?head: ItemStack.EMPTY;
+	}
+
+	public void setHead(ItemStack drill, ItemStack head)
+	{
+		IItemHandler inv = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
+		((IItemHandlerModifiable)inv).setStackInSlot(0, head);
+	}
+
+	/* ------------- NAME, TOOLTIP, SUB-ITEMS ------------- */
+
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
@@ -169,10 +271,229 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		}
 	}
 
-	/*RENDER STUFF*/
+	/* ------------- ATTRIBUTES ------------- */
 
-	//TODO is this still used by anything?
+	@Override
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
+	{
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		if(slot==EquipmentSlotType.MAINHAND)
+		{
+			ItemStack head = getHead(stack);
+			if(!head.isEmpty())
+			{
+				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage"), Operation.ADDITION));
+				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
+			}
+		}
+		return multimap;
+	}
+
+	@Override
+	public UseAction getUseAction(ItemStack p_77661_1_)
+	{
+		return UseAction.BOW;
+	}
+
+	@Override
+	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity player)
+	{
+		return true;
+	}
+
+	/* ------------- DIGGING ------------- */
+
+	public boolean canDrillBeUsed(ItemStack drill, LivingEntity player)
+	{
+		if(player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
+			return false;
+		return getFluid(drill)!=null;
+	}
+
+	public int getMaxHeadDamage(ItemStack stack)
+	{
+		ItemStack head = getHead(stack);
+		return !head.isEmpty()?((IDrillHead)head.getItem()).getMaximumHeadDamage(head): 0;
+	}
+
+	public int getHeadDamage(ItemStack stack)
+	{
+		ItemStack head = getHead(stack);
+		return !head.isEmpty()?((IDrillHead)head.getItem()).getHeadDamage(head): 0;
+	}
+
+	public boolean isDrillBroken(ItemStack stack)
+	{
+		return getHeadDamage(stack) >= getMaxHeadDamage(stack)||getFluid(stack)==null||getFluid(stack).isEmpty();
+	}
+
+	@Override
+	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
+	{
+		if((double)state.getBlockHardness(world, pos)!=0.0D)
+		{
+			int dmg = ForgeHooks.isToolEffective(world, pos, stack)?1: 3;
+			ItemStack head = getHead(stack);
+			if(!head.isEmpty())
+			{
+				if(living instanceof PlayerEntity)
+				{
+					if(((PlayerEntity)living).abilities.isCreativeMode)
+						return true;
+					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (PlayerEntity)living);
+				}
+				if(!getUpgrades(stack).getBoolean("oiled")||Utils.RAND.nextInt(4)==0)
+					((IDrillHead)head.getItem()).damageHead(head, dmg);
+				this.setHead(stack, head);
+				IFluidHandler handler = FluidUtil.getFluidHandler(stack).orElseThrow(RuntimeException::new);
+				handler.drain(1, FluidAction.EXECUTE);
+
+				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
+				if(shader!=null)
+					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), new Vec3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
+			}
+		}
+
+		return true;
+	}
+
+	@Override
+	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
+	{
+		ItemStack head = getHead(stack);
+		if(!head.isEmpty())
+			return ((IDrillHead)head.getItem()).getMiningLevel(head)+ItemNBTHelper.getInt(stack, "harvestLevel");
+		return 0;
+	}
+
+	@Override
+	public Set<ToolType> getToolTypes(ItemStack stack)
+	{
+		if(!getHead(stack).isEmpty()&&!isDrillBroken(stack))
+			return ImmutableSet.of(ToolType.PICKAXE, ToolType.SHOVEL);
+		return super.getToolTypes(stack);
+	}
+
+	public boolean isEffective(Material mat)
+	{
+		for(Material m : validMaterials)
+			if(m==mat)
+				return true;
+		return false;
+	}
+
+	@Override
+	public boolean canHarvestBlock(ItemStack stack, BlockState state)
+	{
+		return isEffective(state.getMaterial())&&!isDrillBroken(stack);
+	}
+
+	@Override
+	public float getDestroySpeed(ItemStack stack, BlockState state)
+	{
+		ItemStack head = getHead(stack);
+		if(!head.isEmpty()&&!isDrillBroken(stack))
+			return ((IDrillHead)head.getItem()).getMiningSpeed(head)+getUpgrades(stack).getFloat("speed");
+		return super.getDestroySpeed(stack, state);
+	}
+
+	public boolean canBreakExtraBlock(World world, Block block, BlockPos pos, BlockState state, PlayerEntity player, ItemStack drill, ItemStack head, boolean inWorld)
+	{
+		if(block.canHarvestBlock(state, world, pos, player)&&isEffective(state.getMaterial())&&!isDrillBroken(drill))
+		{
+			if(inWorld)
+				return !((IDrillHead)head.getItem()).beforeBlockbreak(drill, head, player);
+			else
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, PlayerEntity player)
+	{
+		World world = player.world;
+		if(player.isSneaking()||world.isRemote||!(player instanceof ServerPlayerEntity))
+			return false;
+		RayTraceResult mop = rayTrace(world, player, FluidMode.NONE);
+		ItemStack head = getHead(stack);
+		if(mop==null||head.isEmpty()||this.isDrillBroken(stack))
+			return false;
+		ImmutableList<BlockPos> additional = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world, player, mop);
+		for(BlockPos pos : additional)
+		{
+			if(!world.isBlockLoaded(pos))
+				continue;
+			BlockState state = world.getBlockState(pos);
+			Block block = state.getBlock();
+
+			if(block!=null&&!block.isAir(state, world, pos)&&state.getPlayerRelativeBlockHardness(player, world, pos)!=0)
+			{
+				if(!this.canBreakExtraBlock(world, block, pos, state, player, stack, head, true))
+					continue;
+				int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayerEntity)player).interactionManager.getGameType(), (ServerPlayerEntity)player, pos);
+				if(xpDropEvent < 0)
+					continue;
+
+				if(player.abilities.isCreativeMode)
+				{
+					block.onBlockHarvested(world, pos, state, player);
+					if(block.removedByPlayer(state, world, pos, player, false, state.getFluidState()))
+						block.onPlayerDestroy(world, pos, state);
+				}
+				else
+				{
+					block.onBlockHarvested(world, pos, state, player);
+					TileEntity te = world.getTileEntity(pos);
+					//implicitly damages head
+					stack.onBlockDestroyed(world, state, pos, player);
+					if(block.removedByPlayer(state, world, pos, player, true, state.getFluidState()))
+					{
+						block.onPlayerDestroy(world, pos, state);
+						block.harvestBlock(world, player, pos, state, te, stack);
+						block.dropXpOnBlockBreak(world, pos, xpDropEvent);
+					}
+				}
+				world.playEvent(2001, pos, Block.getStateId(state));
+				((ServerPlayerEntity)player).connection.sendPacket(new SChangeBlockPacket(world, pos));
+			}
+		}
+		return false;
+	}
+
+	/* ------------- FLUID ------------- */
+
+	@Override
+	public int getCapacity(ItemStack container, int baseCapacity)
+	{
+		return baseCapacity+getUpgrades(container).getInt("capacity");
+	}
+
+	@Override
+	public boolean allowFluid(ItemStack container, FluidStack fluid)
+	{
+		return fluid!=null&&DieselHandler.isValidDrillFuel(fluid.getFluid());
+	}
+
+	/* ------------- RENDERING ------------- */
+
 	public static HashMap<UUID, Integer> animationTimer = new HashMap<>();
+
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+	{
+		if(slotChanged)
+			return true;
+		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
+			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
+			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+					.orElse(true);
+		});
+		if(!sameShader.orElse(true))
+			return true;
+		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
+	}
 
 	@Override
 	public boolean onEntitySwing(ItemStack stack, LivingEntity entity)
@@ -289,317 +610,5 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 			rotation = TRSRTransformation.quatFromXYZ(0, 0, angle);
 		}
 		return new TRSRTransformation(translation, rotation, null, null);
-	}
-
-	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
-	{
-		return (double)getHeadDamage(stack)/(double)getMaxHeadDamage(stack);
-	}
-
-	@Override
-	public boolean showDurabilityBar(ItemStack stack)
-	{
-		return getHeadDamage(stack) > 0;
-	}
-
-	@Override
-	public UseAction getUseAction(ItemStack p_77661_1_)
-	{
-		return UseAction.BOW;
-	}
-
-	@Override
-	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
-	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		invCap.ifPresent(inv -> {
-			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
-				Utils.unlockIEAdvancement(player, "main/upgrade_drill");
-		});
-	}
-
-	/*INVENTORY STUFF*/
-	public ItemStack getHead(ItemStack drill)
-	{
-		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
-			return ItemStack.EMPTY;
-		ItemStack head;
-		boolean remote = EffectiveSide.get()==LogicalSide.CLIENT;
-		LazyOptional<IItemHandler> cap = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		if(!remote&&cap.map(h -> h.getStackInSlot(0).isEmpty()).orElse(false))
-			remote = true;
-		else if(remote&&!ItemNBTHelper.hasKey(drill, "head"))
-			remote = false;
-		if(remote)
-			head = ItemStack.read(ItemNBTHelper.getTagCompound(drill, "head"));
-		else
-			head = cap.orElseThrow(RuntimeException::new).getStackInSlot(0);
-		return !head.isEmpty()&&head.getItem() instanceof IDrillHead?head: ItemStack.EMPTY;
-	}
-
-	public void setHead(ItemStack drill, ItemStack head)
-	{
-		IItemHandler inv = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
-		((IItemHandlerModifiable)inv).setStackInSlot(0, head);
-	}
-
-	/*TOOL STUFF*/
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
-	}
-
-	public boolean canDrillBeUsed(ItemStack drill, LivingEntity player)
-	{
-		if(player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
-			return false;
-		return getFluid(drill)!=null;
-	}
-
-	public int getMaxHeadDamage(ItemStack stack)
-	{
-		ItemStack head = getHead(stack);
-		return !head.isEmpty()?((IDrillHead)head.getItem()).getMaximumHeadDamage(head): 0;
-	}
-
-	public int getHeadDamage(ItemStack stack)
-	{
-		ItemStack head = getHead(stack);
-		return !head.isEmpty()?((IDrillHead)head.getItem()).getHeadDamage(head): 0;
-	}
-
-	public boolean isDrillBroken(ItemStack stack)
-	{
-		return getHeadDamage(stack) >= getMaxHeadDamage(stack)||getFluid(stack)==null||getFluid(stack).isEmpty();
-	}
-
-	@Override
-	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity player)
-	{
-		return true;
-	}
-
-	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
-	{
-		if((double)state.getBlockHardness(world, pos)!=0.0D)
-		{
-			int dmg = ForgeHooks.isToolEffective(world, pos, stack)?1: 3;
-			ItemStack head = getHead(stack);
-			if(!head.isEmpty())
-			{
-				if(living instanceof PlayerEntity)
-				{
-					if(((PlayerEntity)living).abilities.isCreativeMode)
-						return true;
-					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (PlayerEntity)living);
-				}
-				if(!getUpgrades(stack).getBoolean("oiled")||Utils.RAND.nextInt(4)==0)
-					((IDrillHead)head.getItem()).damageHead(head, dmg);
-				this.setHead(stack, head);
-				IFluidHandler handler = FluidUtil.getFluidHandler(stack).orElseThrow(RuntimeException::new);
-				handler.drain(1, FluidAction.EXECUTE);
-
-				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
-				if(shader!=null)
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), new Vec3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
-			}
-		}
-
-		return true;
-	}
-
-	@Override
-	public int getItemEnchantability()
-	{
-		return 0;
-	}
-
-	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
-	{
-		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		if(slot==EquipmentSlotType.MAINHAND)
-		{
-			ItemStack head = getHead(stack);
-			if(!head.isEmpty())
-			{
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage"), Operation.ADDITION));
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
-			}
-		}
-		return multimap;
-	}
-
-	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
-	{
-		ItemStack head = getHead(stack);
-		if(!head.isEmpty())
-			return ((IDrillHead)head.getItem()).getMiningLevel(head)+ItemNBTHelper.getInt(stack, "harvestLevel");
-		return 0;
-	}
-
-	@Override
-	public Set<ToolType> getToolTypes(ItemStack stack)
-	{
-		if(!getHead(stack).isEmpty()&&!isDrillBroken(stack))
-			return ImmutableSet.of(ToolType.PICKAXE, ToolType.SHOVEL);
-		return super.getToolTypes(stack);
-	}
-
-	public boolean isEffective(Material mat)
-	{
-		for(Material m : validMaterials)
-			if(m==mat)
-				return true;
-		return false;
-	}
-
-	@Override
-	public boolean canHarvestBlock(ItemStack stack, BlockState state)
-	{
-		return isEffective(state.getMaterial())&&!isDrillBroken(stack);
-	}
-
-	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
-	{
-		ItemStack head = getHead(stack);
-		if(!head.isEmpty()&&!isDrillBroken(stack))
-			return ((IDrillHead)head.getItem()).getMiningSpeed(head)+getUpgrades(stack).getFloat("speed");
-		return super.getDestroySpeed(stack, state);
-	}
-
-	public boolean canBreakExtraBlock(World world, Block block, BlockPos pos, BlockState state, PlayerEntity player, ItemStack drill, ItemStack head, boolean inWorld)
-	{
-		if(block.canHarvestBlock(state, world, pos, player)&&isEffective(state.getMaterial())&&!isDrillBroken(drill))
-		{
-			if(inWorld)
-				return !((IDrillHead)head.getItem()).beforeBlockbreak(drill, head, player);
-			else
-				return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, PlayerEntity player)
-	{
-		World world = player.world;
-		if(player.isSneaking()||world.isRemote||!(player instanceof ServerPlayerEntity))
-			return false;
-		RayTraceResult mop = rayTrace(world, player, FluidMode.NONE);
-		ItemStack head = getHead(stack);
-		if(mop==null||head.isEmpty()||this.isDrillBroken(stack))
-			return false;
-		ImmutableList<BlockPos> additional = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world, player, mop);
-		for(BlockPos pos : additional)
-		{
-			if(!world.isBlockLoaded(pos))
-				continue;
-			BlockState state = world.getBlockState(pos);
-			Block block = state.getBlock();
-
-			if(block!=null&&!block.isAir(state, world, pos)&&state.getPlayerRelativeBlockHardness(player, world, pos)!=0)
-			{
-				if(!this.canBreakExtraBlock(world, block, pos, state, player, stack, head, true))
-					continue;
-				int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayerEntity)player).interactionManager.getGameType(), (ServerPlayerEntity)player, pos);
-				if(xpDropEvent < 0)
-					continue;
-
-				if(player.abilities.isCreativeMode)
-				{
-					block.onBlockHarvested(world, pos, state, player);
-					if(block.removedByPlayer(state, world, pos, player, false, state.getFluidState()))
-						block.onPlayerDestroy(world, pos, state);
-				}
-				else
-				{
-					block.onBlockHarvested(world, pos, state, player);
-					TileEntity te = world.getTileEntity(pos);
-					//implicitly damages head
-					stack.onBlockDestroyed(world, state, pos, player);
-					if(block.removedByPlayer(state, world, pos, player, true, state.getFluidState()))
-					{
-						block.onPlayerDestroy(world, pos, state);
-						block.harvestBlock(world, player, pos, state, te, stack);
-						block.dropXpOnBlockBreak(world, pos, xpDropEvent);
-					}
-				}
-				world.playEvent(2001, pos, Block.getStateId(state));
-				((ServerPlayerEntity)player).connection.sendPacket(new SChangeBlockPacket(world, pos));
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
-	{
-		if(slotChanged)
-			return true;
-		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
-			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
-					.orElse(true);
-		});
-		if(!sameShader.orElse(true))
-			return true;
-		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
-	}
-
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
-	{
-		if(!stack.isEmpty())
-			return new IEItemStackHandler(stack)
-			{
-				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
-				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "drill"), stack));
-
-				@Nonnull
-				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
-				{
-					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-						return fluids.cast();
-					if(capability==CapabilityShader.SHADER_CAPABILITY)
-						return shaders.cast();
-					return super.getCapability(capability, facing);
-				}
-			};
-		return null;
-	}
-
-	@Override
-	public int getCapacity(ItemStack container, int baseCapacity)
-	{
-		return baseCapacity+getUpgrades(container).getInt("capacity");
-	}
-
-	@Override
-	public boolean allowFluid(ItemStack container, FluidStack fluid)
-	{
-		return fluid!=null&&DieselHandler.isValidDrillFuel(fluid.getFluid());
-	}
-
-	@Nullable
-	@Override
-	public CompoundNBT getShareTag(ItemStack stack)
-	{
-		CompoundNBT ret = super.getShareTag(stack);
-		if(ret==null)
-			ret = new CompoundNBT();
-		else
-			ret = ret.copy();
-		ItemStack head = getHead(stack);
-		if(!head.isEmpty())
-			ret.put("head", head.write(new CompoundNBT()));
-		return ret;
 	}
 }
