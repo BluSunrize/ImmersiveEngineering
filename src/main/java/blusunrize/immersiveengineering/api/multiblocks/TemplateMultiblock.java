@@ -139,7 +139,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
 		if(side.getAxis()==Axis.Y)
-			side = Direction.fromAngle(player.rotationYaw);
+			side = Direction.fromAngle(player.rotationYaw).getOpposite();
 		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, side.getOpposite());
 		if(rot==null)
 			return false;
