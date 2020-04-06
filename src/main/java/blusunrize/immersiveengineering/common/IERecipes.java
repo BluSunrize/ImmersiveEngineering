@@ -442,9 +442,9 @@ public class IERecipes
 						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredTagStack(tag.getKey()), 2),
 								getIngot(ore), compMoldRod, 2400);
 				}
-				else if(path.startsWith("wires/"))
+				else if(path.startsWith("wire/"))
 				{
-					String ore = path.substring("wires/".length());
+					String ore = path.substring("wire/".length());
 					if(ApiUtils.isNonemptyItemTag(getIngot(ore)))
 						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredTagStack(tag.getKey()), 2),
 								getIngot(ore), compMoldWire, 2400);
