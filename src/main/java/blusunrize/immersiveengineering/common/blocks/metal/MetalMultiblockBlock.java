@@ -33,7 +33,6 @@ public class MetalMultiblockBlock extends IEMultiblockBlock
 				ArrayUtils.addAll(additionalProperties,
 						IEProperties.MIRRORED));
 		tileType = te;
-		setNotNormalBlock();
 		lightOpacity = 0;
 	}
 

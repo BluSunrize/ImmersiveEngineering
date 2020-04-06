@@ -229,6 +229,7 @@ public class BlockStates extends BlockStateProvider
 		assertModelExists(model);
 		LoadedModelBuilder ret = loadedModels.withExistingParent(name, mcLoc("block"))
 				.loader(forgeLoc("obj"))
+				.additional("detectCullableFaces", false)
 				.additional("model", addModelsPrefix(model))
 				.additional("flip-v", true);
 		String particleTex = DataGenUtils.getTextureFromObj(model, goodExistingFileHelper);
@@ -538,10 +539,12 @@ public class BlockStates extends BlockStateProvider
 		{
 			JsonObject solid = new JsonObject();
 			solid.addProperty("loader", forgeLoc("obj").toString());
+			solid.addProperty("detectCullableFaces", false);
 			solid.addProperty("flip-v", true);
 			solid.addProperty("model", modLoc("models/block/metal_device/charging_station.obj").toString());
 			JsonObject translucent = new JsonObject();
 			translucent.addProperty("loader", forgeLoc("obj").toString());
+			translucent.addProperty("detectCullableFaces", false);
 			translucent.addProperty("flip-v", true);
 			translucent.addProperty("model", modLoc("models/block/metal_device/charging_station_glass.obj").toString());
 			ModelFile full = loadedModels.getBuilder("metal_device/charging_station")
@@ -1093,6 +1096,7 @@ public class BlockStates extends BlockStateProvider
 			if(particleTex.charAt(0)=='#')
 				particleTex = texForState.get(particleTex.substring(1)).toString();
 			ret.texture("particle", particleTex);
+			ret.additional("detectCullableFaces", false);
 		}
 		return ret;
 	}
