@@ -213,7 +213,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		TextSplitter splitter;
 		Function<TextSplitter, String[]> getContent = null;
 		private ResourceLocation location;
-		private List<Triple<String, Integer, SpecialManualElement>> hardcodedSpecials = new ArrayList<>();
+		private List<Triple<String, Integer, Supplier<? extends SpecialManualElement>>> hardcodedSpecials = new ArrayList<>();
 
 		public ManualEntryBuilder(ManualInstance manual)
 		{
@@ -227,29 +227,42 @@ public class ManualEntry implements Comparable<ManualEntry>
 			this.splitter = splitter;
 		}
 
-		public void addSpecialElement(String anchor, int offset, SpecialManualElement element)
+		public void addSpecialElement(String anchor, int offset, Supplier<? extends SpecialManualElement> element)
 		{
 			hardcodedSpecials.add(new ImmutableTriple<>(anchor, offset, element));
+		}
+
+		public void addSpecialElement(String anchor, int offset, SpecialManualElement element)
+		{
+			hardcodedSpecials.add(new ImmutableTriple<>(anchor, offset, () -> element));
 		}
 
 		public void setContent(Function<TextSplitter, String[]> get)
 		{
 			getContent = splitter -> {
-				for(Triple<String, Integer, SpecialManualElement> special : hardcodedSpecials)
-					splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
+				addHardcodedSpecials(splitter);
 				return get.apply(splitter);
 			};
 		}
 
 		public void setContent(Supplier<String> title, Supplier<String> subText, Supplier<String> mainText)
 		{
-			getContent = (splitter) -> {
-				for(Triple<String, Integer, SpecialManualElement> special : hardcodedSpecials)
-					splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
+			getContent = splitter -> {
+				addHardcodedSpecials(splitter);
 				return new String[]{
 						title.get(), subText.get(), mainText.get()
 				};
 			};
+		}
+
+		private void addHardcodedSpecials(TextSplitter splitter)
+		{
+			for(Triple<String, Integer, Supplier<? extends SpecialManualElement>> special : hardcodedSpecials)
+				splitter.addSpecialPage(
+						special.getLeft(),
+						special.getMiddle(),
+						special.getRight().get()
+				);
 		}
 
 		public void setContent(String title, String subText, String mainText)
@@ -288,8 +301,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 							JsonObject.class, true);
 					byte[] bytesLang = IOUtils.toByteArray(resLang.getInputStream());
 					String content = new String(bytesLang, StandardCharsets.UTF_8);
-					for(Triple<String, Integer, SpecialManualElement> special : hardcodedSpecials)
-						splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
+					addHardcodedSpecials(splitter);
 					assert json!=null;
 					ManualUtils.parseSpecials(json, splitter, manual);
 					int titleEnd = content.indexOf('\n');

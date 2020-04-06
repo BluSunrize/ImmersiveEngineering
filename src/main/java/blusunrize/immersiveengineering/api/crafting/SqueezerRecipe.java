@@ -17,9 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -114,15 +112,17 @@ public class SqueezerRecipe extends MultiblockRecipe
 		return null;
 	}
 
-	public static Map<String, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
+	public static SortedMap<String, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
 	{
-		HashMap<String, Integer> map = new HashMap<>();
+		SortedMap<String, Integer> map = new TreeMap<>(
+				inverse?Comparator.<String>reverseOrder(): Comparator.<String>naturalOrder()
+		);
 		for(SqueezerRecipe recipe : recipeList)
 			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f)
 			{
 				ItemStack is = recipe.input.getExampleStack();
 				map.put(is.getDisplayName().getFormattedText(), recipe.fluidOutput.getAmount());
 			}
-		return ApiUtils.sortMap(map, inverse);
+		return map;
 	}
 }

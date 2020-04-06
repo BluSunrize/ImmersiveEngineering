@@ -14,8 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author BluSunrize - 08.05.2015
@@ -52,9 +51,11 @@ public class ThermoelectricHandler
 		return -1;
 	}
 
-	public static Map<String, Integer> getThermalValuesSorted(boolean inverse)
+	public static SortedMap<String, Integer> getThermalValuesSorted(boolean inverse)
 	{
-		HashMap<String, Integer> existingMap = new HashMap<>();
+		SortedMap<String, Integer> existingMap = new TreeMap<>(
+				inverse?Comparator.<String>reverseOrder(): Comparator.<String>reverseOrder()
+		);
 		for(IngredientStack ingr : temperatureMap.keySet())
 			if(ingr.isValid())
 			{
@@ -62,6 +63,6 @@ public class ThermoelectricHandler
 				if(!example.isEmpty())
 					existingMap.put(example.getDisplayName().getFormattedText(), temperatureMap.get(ingr));
 			}
-		return ApiUtils.sortMap(existingMap, inverse);
+		return existingMap;
 	}
 }
