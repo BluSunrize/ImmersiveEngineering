@@ -261,7 +261,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
-		return false;
+		return true;
 	}
 
 	@Override

@@ -11,12 +11,15 @@ package blusunrize.immersiveengineering.common.world;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
@@ -28,12 +31,15 @@ import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
@@ -74,6 +80,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
@@ -106,6 +113,10 @@ public class Villages
 		// We have to do this to allow workstations to be used. Otherwise they just won't work when placed in village
 		try
 		{
+			blockStatesInjector.invoke(null, Registers.POI_CRAFTINGTABLE.get());
+			blockStatesInjector.invoke(null, Registers.POI_ANVIL.get());
+			blockStatesInjector.invoke(null, Registers.POI_ENERGYMETER.get());
+			blockStatesInjector.invoke(null, Registers.POI_BANNER.get());
 			blockStatesInjector.invoke(null, Registers.POI_WORKBENCH.get());
 		} catch(IllegalAccessException|IllegalArgumentException|InvocationTargetException e)
 		{
@@ -135,23 +146,32 @@ public class Villages
 
 		// TODO: Add more workstations. We need a different one for each profession
 		public static final RegistryObject<PointOfInterestType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
-				"craftingtable", () -> createPOI("craftingtable", WoodenDevices.craftingTable.getStateContainer().getValidStates(), SoundEvents.ENTITY_VILLAGER_WORK_MASON)
+				"craftingtable", () -> createPOI("craftingtable", assembleStates(WoodenDevices.craftingTable), SoundEvents.ENTITY_VILLAGER_WORK_MASON)
+		);
+		public static final RegistryObject<PointOfInterestType> POI_ANVIL = POINTS_OF_INTEREST.register(
+				"anvil", () -> createPOI("anvil", assembleStates(Blocks.ANVIL), SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH)
+		);
+		public static final RegistryObject<PointOfInterestType> POI_ENERGYMETER = POINTS_OF_INTEREST.register(
+				"energymeter", () -> createPOI("energymeter", assembleStates(Connectors.currentTransformer), IESounds.spark)
+		);
+		public static final RegistryObject<PointOfInterestType> POI_BANNER = POINTS_OF_INTEREST.register(
+				"shaderbanner", () -> createPOI("shaderbanner", assembleStates(Cloth.shaderBanner), SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER)
 		);
 		public static final RegistryObject<PointOfInterestType> POI_WORKBENCH = POINTS_OF_INTEREST.register(
-				"workbench", () -> createPOI("workbench", WoodenDevices.workbench.getStateContainer().getValidStates(), SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH)
+				"workbench", () -> createPOI("workbench", assembleStates(WoodenDevices.workbench), IESounds.revolverReload)
 		);
 
 		public static final RegistryObject<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(
 				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_CRAFTINGTABLE.get())
 		);
 		public static final RegistryObject<VillagerProfession> PROF_MACHINIST = PROFESSIONS.register(
-				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_WORKBENCH.get())
+				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_ANVIL.get())
 		);
 		public static final RegistryObject<VillagerProfession> PROF_ELECTRICIAN = PROFESSIONS.register(
-				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_WORKBENCH.get())
+				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_ENERGYMETER.get())
 		);
 		public static final RegistryObject<VillagerProfession> PROF_OUTFITTER = PROFESSIONS.register(
-				OUTFITTER.getPath(), () -> createProf(OUTFITTER, POI_WORKBENCH.get())
+				OUTFITTER.getPath(), () -> createProf(OUTFITTER, POI_BANNER.get())
 		);
 		public static final RegistryObject<VillagerProfession> PROF_GUNSMITH = PROFESSIONS.register(
 				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH.get())
@@ -173,6 +193,15 @@ public class Villages
 					ImmutableSet.of()
 					//ImmutableSet.of(WoodenDevices.crate)
 			);
+		}
+
+		private static Collection<BlockState> assembleStates(Block block)
+		{
+			return block.getStateContainer().getValidStates().stream().filter(blockState -> {
+				if(blockState.has(IEProperties.MULTIBLOCKSLAVE))
+					return !blockState.get(IEProperties.MULTIBLOCKSLAVE);
+				return true;
+			}).collect(Collectors.toList());
 		}
 /*
 		@SubscribeEvent
