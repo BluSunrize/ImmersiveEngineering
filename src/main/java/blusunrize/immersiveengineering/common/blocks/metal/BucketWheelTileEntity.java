@@ -10,15 +10,16 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDynamicTexture;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -26,6 +27,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,10 +37,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelTileEntity> implements IHasObjProperty, IDynamicTexture
+public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelTileEntity> implements IOBJModelCallback<BlockState>
 {
 	public static TileEntityType<BucketWheelTileEntity> TYPE;
 
@@ -125,30 +126,24 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public HashMap<String, String> getTextureReplacements()
+	public TextureAtlasSprite getTextureReplacement(BlockState object, String group, String material)
 	{
-		//TODO
-		//synchronized(digStacks)
-		//{
-		//	HashMap<String, String> texMap = new HashMap<String, String>();
-		//	for(int i = 0; i < this.digStacks.size(); i++)
-		//		if(!this.digStacks.get(i).isEmpty())
-		//		{
-		//			Block b = Block.getBlockFromItem(this.digStacks.get(i).getItem());
-		//			IBlockState state = b!=null?b.getStateFromMeta(this.digStacks.get(i).getMetadata()): Blocks.STONE.getDefaultState();
-		//			IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
-		//			if(model!=null&&model.getParticleTexture()!=null)
-		//				texMap.put("dig"+i, model.getParticleTexture().getIconName());
-		//		}
-		//	return texMap;
-		//}
-		return new HashMap<>();
-	}
-
-	@Override
-	public VisibilityList compileDisplayList(BlockState state)
-	{
-		return VisibilityList.hideAll();
+		if(group.startsWith("dig"))
+		{
+			int index = Integer.parseInt(group.substring(3));
+			if(!this.digStacks.get(index).isEmpty())
+			{
+				ResourceLocation rl = null;
+				BlockState state = Utils.getStateFromItemStack(this.digStacks.get(index));
+				if(state!=null)
+					rl = ClientUtils.getSideTexture(state, Direction.UP);
+				else
+					rl = ClientUtils.getSideTexture(this.digStacks.get(index), Direction.UP);
+				if(rl!=null)
+					return ClientUtils.getSprite(rl);
+			}
+		}
+		return null;
 	}
 
 	@Override

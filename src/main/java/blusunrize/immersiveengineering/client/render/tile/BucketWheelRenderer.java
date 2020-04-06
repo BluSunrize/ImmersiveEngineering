@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
@@ -103,7 +104,8 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
-		IModelData modelData = new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE);
+//		IModelData modelData = new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE);
+		IModelData modelData = new SinglePropertyModelData<>(tile, IOBJModelCallback.PROPERTY);
 		List<BakedQuad> quads;
 		if(model instanceof IESmartObjModel)
 			quads = ((IESmartObjModel)model).getQuads(state, null, 0, objState, texMap, true,

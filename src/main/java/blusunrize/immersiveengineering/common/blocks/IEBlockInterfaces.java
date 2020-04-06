@@ -389,12 +389,6 @@ public class IEBlockInterfaces
 		IEObjState getIEObjState(BlockState state);
 	}
 
-	public interface IDynamicTexture
-	{
-		@OnlyIn(Dist.CLIENT)
-		HashMap<String, String> getTextureReplacements();
-	}
-
 	public interface IInteractionObjectIE extends INamedContainerProvider
 	{
 		@Nullable
