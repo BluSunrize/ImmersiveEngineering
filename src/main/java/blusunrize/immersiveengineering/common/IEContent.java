@@ -399,7 +399,8 @@ public class IEContent
 		Multiblocks.blastFurnaceAdv = new StoneMultiBlock("advanced_blast_furnace", () -> BlastFurnaceAdvancedTileEntity.TYPE);
 		Multiblocks.crusher = new MetalMultiblockBlock("crusher", () -> CrusherTileEntity.TYPE);
 		Multiblocks.silo = new MetalMultiblockBlock("silo", () -> SiloTileEntity.TYPE);
-		Multiblocks.tank = new MetalMultiblockBlock("tank", () -> SheetmetalTankTileEntity.TYPE);
+		Multiblocks.tank = new MetalMultiblockBlock("tank", () -> SheetmetalTankTileEntity.TYPE)
+				.setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);
 		Multiblocks.arcFurnace = new MetalMultiblockBlock("arc_furnace", () -> ArcFurnaceTileEntity.TYPE);
 		Multiblocks.assembler = new MetalMultiblockBlock("assembler", () -> AssemblerTileEntity.TYPE);
 		Multiblocks.autoWorkbench = new MetalMultiblockBlock("auto_workbench", () -> AutoWorkbenchTileEntity.TYPE);
