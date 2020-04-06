@@ -4,6 +4,7 @@
     "particle": "immersiveengineering:block/metal_device/blast_furnace_preheater"
   },
   "loader": "forge:obj",
+  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/metal_device/blastfurnace_preheater.obj",
   "flip-v": true
 }

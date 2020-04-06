@@ -4,6 +4,7 @@
     "particle": "immersiveengineering:block/multiblocks/arc_furnace"
   },
   "loader": "forge:obj",
+  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/metal_multiblock/arc_furnace_mirrored.obj",
   "flip-v": true
 }

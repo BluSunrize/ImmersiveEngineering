@@ -4,6 +4,7 @@
     "particle": "immersiveengineering:block/multiblocks/tank"
   },
   "loader": "forge:obj",
+  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/metal_multiblock/tank.obj",
   "flip-v": true
 }

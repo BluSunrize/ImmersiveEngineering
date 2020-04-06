@@ -10,5 +10,6 @@
   },
   "layers": [
     "SOLID"
-  ]
+  ],
+  "detectCullableFaces": false
 }

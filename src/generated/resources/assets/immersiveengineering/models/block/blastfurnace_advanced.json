@@ -4,6 +4,7 @@
     "particle": "immersiveengineering:block/multiblocks/blast_furnace_advanced"
   },
   "loader": "forge:obj",
+  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/blastfurnace_advanced.obj",
   "flip-v": true
 }

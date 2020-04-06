@@ -5,11 +5,13 @@
   "loader": "immersiveengineering:models/multilayer",
   "solid": {
     "loader": "forge:obj",
+    "detectCullableFaces": false,
     "flip-v": true,
     "model": "immersiveengineering:models/block/metal_device/charging_station.obj"
   },
   "translucent": {
     "loader": "forge:obj",
+    "detectCullableFaces": false,
     "flip-v": true,
     "model": "immersiveengineering:models/block/metal_device/charging_station_glass.obj"
   },

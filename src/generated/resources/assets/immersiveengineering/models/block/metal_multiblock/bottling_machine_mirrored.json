@@ -4,6 +4,7 @@
     "particle": "immersiveengineering:block/conveyor/conveyor"
   },
   "loader": "forge:obj",
+  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine_mirrored.obj",
   "flip-v": true
 }

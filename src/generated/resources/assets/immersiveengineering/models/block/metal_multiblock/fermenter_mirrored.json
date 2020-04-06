@@ -4,6 +4,7 @@
     "particle": "immersiveengineering:block/multiblocks/fermenter"
   },
   "loader": "forge:obj",
+  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/metal_multiblock/fermenter_mirrored.obj",
   "flip-v": true
 }
