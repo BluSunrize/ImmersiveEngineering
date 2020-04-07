@@ -477,6 +477,8 @@ public class IEContent
 		Tools.drill = new DrillItem();
 		Tools.drillheadIron = new DrillheadItem(DrillheadItem.IRON);
 		Tools.drillheadSteel = new DrillheadItem(DrillheadItem.STEEL);
+		Tools.buzzsaw = new BuzzsawItem();
+		Tools.sawblade = new SawbladeItem("sawblade", 10000, 8f, 9f);
 		Weapons.revolver = new RevolverItem();
 		Weapons.speedloader = new SpeedloaderItem();
 		Weapons.chemthrower = new ChemthrowerItem();
