@@ -1241,6 +1241,24 @@ public class Recipes extends RecipeProvider
 				.key('b', makeIngredientFromBlock(IETags.getTagsFor(EnumMetals.STEEL).storage))
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out);
+
+		ShapedRecipeBuilder.shapedRecipe(Tools.buzzsaw)
+				.patternLine("  g")
+				.patternLine("rcg")
+				.patternLine("r  ")
+				.key('g', Ingredients.woodenGrip)
+				.key('c', Ingredients.componentSteel)
+				.key('r', IETags.steelRod)
+				.addCriterion("has_"+toPath(Ingredients.componentSteel), hasItem(Ingredients.componentSteel))
+				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.sawblade)
+				.patternLine("ipi")
+				.patternLine("p p")
+				.patternLine("ipi")
+				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.key('p', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.build(out);
 	}
 
 	private void recipesIngredients(@Nonnull Consumer<IFinishedRecipe> out)
