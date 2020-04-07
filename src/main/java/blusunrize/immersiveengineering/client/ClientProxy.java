@@ -61,6 +61,7 @@ import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.sound.IETickableSound;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import com.google.common.base.Preconditions;
@@ -103,12 +104,9 @@ import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.Direction;
+import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -131,6 +129,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -415,8 +414,23 @@ public class ClientProxy extends CommonProxy
 	}
 
 
-	HashMap<String, IETileSound> soundMap = new HashMap<String, IETileSound>();
-	HashMap<BlockPos, IETileSound> tileSoundMap = new HashMap<BlockPos, IETileSound>();
+	HashMap<String, IETickableSound> tickableSoundMap = new HashMap<>();
+	HashMap<BlockPos, IETileSound> tileSoundMap = new HashMap<>();
+
+	@Override
+	public boolean isSoundPlaying(String key)
+	{
+		return tickableSoundMap.containsKey(key);
+	}
+
+	@Override
+	public void playTickableSound(SoundEvent soundEvent, SoundCategory category, String key, float volume, float pitch, Supplier<Boolean> tickFunction)
+	{
+		IETickableSound sound = new IETickableSound(soundEvent, category, volume, pitch, tickFunction,
+				ieTickableSound -> tickableSoundMap.remove(key));
+		mc().getSoundHandler().play(sound);
+		tickableSoundMap.put(key, sound);
+	}
 
 	@Override
 	public void handleTileSound(SoundEvent soundEvent, TileEntity tile, boolean tileActive, float volume, float pitch)
@@ -439,8 +453,8 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void stopTileSound(String soundName, TileEntity tile)
 	{
-		IETileSound sound = soundMap.get(soundName);
-		if(sound!=null&&new BlockPos(sound.getX(), sound.getY(), sound.getZ()).equals(tile.getPos()))
+		IETileSound sound = tileSoundMap.get(tile.getPos());
+		if(sound!=null)
 			mc().getSoundHandler().stop(sound);
 	}
 
