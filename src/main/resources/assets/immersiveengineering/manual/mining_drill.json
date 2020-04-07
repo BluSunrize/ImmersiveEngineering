@@ -17,10 +17,10 @@
     "recipes": [
       [
         {
-          "recipe": "drillhead_steel"
+          "recipe": "drillhead_iron"
         },
         {
-          "recipe": "drillhead_iron"
+          "recipe": "drillhead_steel"
         }
       ]
     ]
