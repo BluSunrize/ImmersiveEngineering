@@ -9,24 +9,17 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.*;
-import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
-import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
-import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
-import blusunrize.immersiveengineering.api.multiblocks.ManualElementMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.OreOutput;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.font.IEFontRender;
 import blusunrize.immersiveengineering.client.font.NixieFontRender;
@@ -34,8 +27,6 @@ import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.client.gui.*;
-import blusunrize.immersiveengineering.client.manual.IEManualInstance;
-import blusunrize.immersiveengineering.client.manual.ShaderManualElement;
 import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
@@ -72,15 +63,8 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
-import blusunrize.lib.manual.*;
-import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
-import blusunrize.lib.manual.Tree.InnerNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
@@ -104,7 +88,6 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -120,40 +103,34 @@ import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry2;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.VersionChecker;
-import net.minecraftforge.fml.VersionChecker.CheckResult;
-import net.minecraftforge.fml.VersionChecker.Status;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.DecimalFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Function;
+import java.util.UUID;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -331,6 +308,7 @@ public class ClientProxy extends CommonProxy
 				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
 			}
 	}
+
 	@Override
 	public void serverStarting()
 	{

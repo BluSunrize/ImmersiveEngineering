@@ -1,0 +1,9 @@
+Buzzsaw
+We Don't Go To Ravenholm
+<&recipes>This large, portable buzzsaw is designed to make quick work of trees and other pieces of foliage that may stand in the way of a pristine factory building.
+After using the <link;workbench;Engineer's Workbench;start> to place a sawblade in it, and loading it with  <link;refinery;Biodiesel;start> or another fuel, it can be used to carve through everything from small birches to large jungle trees.
+
+Like some other tools, the buzzsaw can be modified in the <link;workbench;Engineer's Workbench>. These upgrades affect the size of the internal tank and the durability of its sawblade.
+<np>
+<&tank_recipe>The §2Large Tank§r increases the fluid capacity of the buzzsaw by 2000 mb.<np>
+<&lube_recipe>The §2Advanced Lubrication System§r applies additional lubricant to the sawblade, reducing the speed at which it loses durability.<np>

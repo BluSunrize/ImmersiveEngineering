@@ -1,0 +1,26 @@
+{
+  "recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "buzzsaw"
+        },
+        {
+          "recipe": "sawblade"
+        },
+        {
+          "recipe": "wooden_grip"
+        }
+      ]
+    ]
+  },
+  "tank_recipe": {
+    "type": "crafting",
+    "recipe": "toolupgrade_drill_capacity"
+  },
+  "lube_recipe": {
+    "type": "crafting",
+    "recipe": "toolupgrade_drill_lube"
+  }
+}
