@@ -192,8 +192,11 @@ public class Advancements extends AdvancementProvider
 			ItemStack upgraded_buzzsaw = new ItemStack(Tools.buzzsaw);
 			upgrades = new CompoundNBT();
 			upgrades.putBoolean("oiled", true);
+			upgrades.putBoolean("spareblades", true);
 			ItemNBTHelper.setTagCompound(upgraded_buzzsaw, "upgrades", upgrades);
 			ItemNBTHelper.setItemStack(upgraded_buzzsaw, "sawblade", new ItemStack(Tools.sawblade));
+			ItemNBTHelper.setItemStack(upgraded_buzzsaw, "sawblade_spare1", new ItemStack(Tools.sawblade));
+			ItemNBTHelper.setItemStack(upgraded_buzzsaw, "sawblade_spare2", new ItemStack(Tools.sawblade));
 			Advancement upgrade_buzzsaw = advancement(buzzsaw, upgraded_buzzsaw, "upgrade_buzzsaw", FrameType.CHALLENGE, true, true, false)
 					.withCriterion("code_trigger", new ImpossibleTrigger.Instance())
 					.withRewards(reward(new ResourceLocation("immersiveengineering", "advancements/shader_rare")))

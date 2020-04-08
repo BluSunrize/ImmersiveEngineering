@@ -81,7 +81,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -208,13 +207,11 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	@Override
 	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
 	{
-		/* TODO: Advancement
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
 				Utils.unlockIEAdvancement(player, "main/upgrade_buzzsaw");
 		});
-		 */
 	}
 
 	@Override
@@ -722,9 +719,9 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		if("upgrade_blades0".equals(group))
 			return upgrades.getBoolean("spareblades");
 		if("upgrade_blades1".equals(group))
-			return upgrades.getBoolean("spareblades") && !this.getSawblade(stack, 1).isEmpty();
+			return upgrades.getBoolean("spareblades")&&!this.getSawblade(stack, 1).isEmpty();
 		if("upgrade_blades2".equals(group))
-			return upgrades.getBoolean("spareblades") && !this.getSawblade(stack, 2).isEmpty();
+			return upgrades.getBoolean("spareblades")&&!this.getSawblade(stack, 2).isEmpty();
 		return true;
 	}
 
