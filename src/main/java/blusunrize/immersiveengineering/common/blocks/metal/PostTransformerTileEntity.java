@@ -22,6 +22,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
@@ -190,7 +191,7 @@ public class PostTransformerTileEntity extends ImmersiveConnectableTileEntity im
 	@Override
 	public PlacementLimitation getFacingLimitation()
 	{
-		return PlacementLimitation.HORIZONTAL;
+		return PlacementLimitation.HORIZONTAL_PREFER_SIDE;
 	}
 
 	@Override

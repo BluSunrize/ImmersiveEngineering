@@ -19,9 +19,9 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class TransformerItemBlock extends BlockItemIE
+public class TransformerBlockItem extends BlockItemIE
 {
-	public TransformerItemBlock(Block b, Properties props)
+	public TransformerBlockItem(Block b, Properties props)
 	{
 		super(b, props);
 	}
@@ -34,8 +34,7 @@ public class TransformerItemBlock extends BlockItemIE
 		BlockPos possiblePost = context.getPos();
 		if(!context.replacingClickedOnBlock())
 			possiblePost = possiblePost.offset(context.getFace(), -1);
-		BlockState postState = w.getBlockState(possiblePost);
-		if(postState.getBlock() instanceof IPostBlock&&((IPostBlock)postState.getBlock()).canConnectTransformer(w, possiblePost))
+		if(PostTransformerBlock.isAttacheablePost(possiblePost, w))
 			return Connectors.postTransformer.getDefaultState();
 		else
 			return super.getStateForPlacement(context);
