@@ -386,7 +386,8 @@ public class IEContent
 				.setNotNormalBlock()
 				.setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties)
-				.setNotNormalBlock();
+				.setNotNormalBlock()
+				.setBlockLayer(BlockRenderLayer.CUTOUT);
 		MetalDevices.sampleDrill = new SampleDrillBlock();
 		MetalDevices.teslaCoil = new TeslaCoilBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
