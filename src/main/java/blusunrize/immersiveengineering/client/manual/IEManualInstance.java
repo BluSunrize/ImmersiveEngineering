@@ -98,7 +98,9 @@ public class IEManualInstance extends ManualInstance
 			for(KeyBinding kb : ClientUtils.mc().gameSettings.keyBindings)
 				if(segment[1].equalsIgnoreCase(kb.getKeyDescription()))
 				{
-					result = Utils.toCamelCase(kb.getLocalizedName());
+					result = kb.getLocalizedName();
+					if(result!=null&&result.length() > 1)
+						result = Utils.toCamelCase(result);
 					break;
 				}
 			s = s.replaceFirst(rep, result);
