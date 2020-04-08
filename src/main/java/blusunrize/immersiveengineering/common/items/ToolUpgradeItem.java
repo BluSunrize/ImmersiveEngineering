@@ -93,7 +93,8 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 		SHIELD_FLASH(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.putBoolean("flash", true)),
 		SHIELD_SHOCK(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.putBoolean("shock", true)),
 		SHIELD_MAGNET(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.putBoolean("magnet", true)),
-		CHEMTHROWER_MULTITANK(ImmutableSet.of("CHEMTHROWER"), 1, (target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).contains("capacity"), (upgrade, modifications) -> modifications.putBoolean("multitank", true));
+		CHEMTHROWER_MULTITANK(ImmutableSet.of("CHEMTHROWER"), 1, (target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).contains("capacity"), (upgrade, modifications) -> modifications.putBoolean("multitank", true)),
+		BUZZSAW_SPAREBLADES(ImmutableSet.of("BUZZSAW"), 1, (upgrade, modifications) -> modifications.putBoolean("spareblades", true));
 
 		private ImmutableSet<String> toolset;
 		private int stackSize = 1;

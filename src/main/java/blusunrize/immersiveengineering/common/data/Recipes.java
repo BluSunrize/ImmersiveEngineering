@@ -1500,6 +1500,15 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_"+toPath(MetalDecoration.lvCoil), hasItem(MetalDecoration.lvCoil))
 				.build(out);
 
+		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES))
+				.patternLine("rht")
+				.patternLine("rt ")
+				.key('r', IETags.ironRod)
+				.key('h', IETags.fiberHemp)
+				.key('t', IETags.getItemTag(IETags.treatedWood))
+				.addCriterion("has_buzzsaw", hasItem(Tools.buzzsaw))
+				.build(out);
+
 		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireCopper)
 				.addIngredient(IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))

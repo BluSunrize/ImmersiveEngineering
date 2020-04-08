@@ -26,5 +26,9 @@
   "lube_recipe": {
     "type": "crafting",
     "recipe": "toolupgrade_drill_lube"
+  },
+  "quiver_recipe": {
+    "type": "crafting",
+    "recipe": "toolupgrade_buzzsaw_spareblades"
   }
 }

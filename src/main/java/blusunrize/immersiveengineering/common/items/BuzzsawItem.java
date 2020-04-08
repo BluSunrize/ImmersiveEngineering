@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.fluids.IEItemFluidHandler;
@@ -80,6 +81,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -93,7 +95,7 @@ import javax.vecmath.Vector3f;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
+public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool, IScrollwheel
 {
 	public static Collection<SawbladeItem> sawblades = new ArrayList(2);
 
@@ -171,7 +173,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	@Override
 	public int getSlotCount(ItemStack stack)
 	{
-		return 3;
+		return 5;
 	}
 
 	@Override
@@ -179,12 +181,22 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
-		return new Slot[]
-				{
-						new IESlot.WithPredicate(inv, 0, 98, 22, (itemStack) -> sawblades.contains(itemStack.getItem())),
-						new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld)
-				};
+		if(getUpgrades(stack).getBoolean("spareblades"))
+			return new Slot[]
+					{
+							new IESlot.WithPredicate(inv, 0, 88, 22, (itemStack) -> sawblades.contains(itemStack.getItem())),
+							new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld),
+							new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld),
+							new IESlot.WithPredicate(inv, 3, 108, 12, (itemStack) -> sawblades.contains(itemStack.getItem())),
+							new IESlot.WithPredicate(inv, 4, 108, 32, (itemStack) -> sawblades.contains(itemStack.getItem()))
+					};
+		else
+			return new Slot[]
+					{
+							new IESlot.WithPredicate(inv, 0, 98, 22, (itemStack) -> sawblades.contains(itemStack.getItem())),
+							new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld),
+							new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld)
+					};
 	}
 
 	@Override
@@ -230,26 +242,40 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 	public ItemStack getSawblade(ItemStack itemStack)
 	{
+		return getSawblade(itemStack, 0);
+	}
+
+	public ItemStack getSawblade(ItemStack itemStack, int spare)
+	{
 		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
 			return ItemStack.EMPTY;
 		ItemStack sawblade;
 		boolean remote = EffectiveSide.get()==LogicalSide.CLIENT;
 		LazyOptional<IItemHandler> cap = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		if(!remote&&cap.map(h -> h.getStackInSlot(0).isEmpty()).orElse(false))
+		// handle spares
+		int slot = spare==0?0: 2+spare;
+		String key = "sawblade"+(spare==0?"": ("_spare"+spare));
+		if(!remote&&cap.map(h -> h.getStackInSlot(slot).isEmpty()).orElse(false))
 			remote = true;
-		else if(remote&&!ItemNBTHelper.hasKey(itemStack, "sawblade"))
+		else if(remote&&!ItemNBTHelper.hasKey(itemStack, key))
 			remote = false;
 		if(remote)
-			sawblade = ItemStack.read(ItemNBTHelper.getTagCompound(itemStack, "sawblade"));
+			sawblade = ItemStack.read(ItemNBTHelper.getTagCompound(itemStack, key));
 		else
-			sawblade = cap.orElseThrow(RuntimeException::new).getStackInSlot(0);
+			sawblade = cap.orElseThrow(RuntimeException::new).getStackInSlot(slot);
 		return !sawblade.isEmpty()&&sawblades.contains(sawblade.getItem())?sawblade: ItemStack.EMPTY;
 	}
 
 	public void setSawblade(ItemStack buzzsaw, ItemStack sawblade)
 	{
+		setSawblade(buzzsaw, sawblade, 0);
+	}
+
+	public void setSawblade(ItemStack buzzsaw, ItemStack sawblade, int spare)
+	{
+		int slot = spare==0?0: 2+spare;
 		IItemHandler inv = buzzsaw.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
-		((IItemHandlerModifiable)inv).setStackInSlot(0, sawblade);
+		((IItemHandlerModifiable)inv).setStackInSlot(slot, sawblade);
 
 		ListNBT enchants = null;
 		if(sawblade.getItem() instanceof SawbladeItem)
@@ -317,6 +343,29 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity player)
 	{
 		return true;
+	}
+
+	@Override
+	public void onScrollwheel(ItemStack stack, boolean forward)
+	{
+		if(getUpgrades(stack).getBoolean("spareblades"))
+		{
+			ItemStack sawblade = getSawblade(stack);
+			ItemStack spare1 = getSawblade(stack, 1);
+			ItemStack spare2 = getSawblade(stack, 2);
+			if(forward)
+			{
+				setSawblade(stack, spare2);
+				setSawblade(stack, sawblade, 1);
+				setSawblade(stack, spare1, 2);
+			}
+			else
+			{
+				setSawblade(stack, spare1);
+				setSawblade(stack, spare2, 1);
+				setSawblade(stack, sawblade, 2);
+			}
+		}
 	}
 
 	/* ------------- DIGGING ------------- */
@@ -644,7 +693,8 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		if("blade".equals(material))
 		{
-			ItemStack sawblade = getSawblade(stack);
+			int spare = "upgrade_blades1".equals(group)?1: "upgrade_blades2".equals(group)?2: 0;
+			ItemStack sawblade = getSawblade(stack, spare);
 			if(sawblade.getItem() instanceof SawbladeItem)
 			{
 				ResourceLocation rl = ((SawbladeItem)sawblade.getItem()).getSawbladeTexture();
@@ -669,6 +719,12 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			return upgrades.getBoolean("oiled");
 		if("upgrade_launcher".equals(group))
 			return upgrades.getBoolean("launcher");
+		if("upgrade_blades0".equals(group))
+			return upgrades.getBoolean("spareblades");
+		if("upgrade_blades1".equals(group))
+			return upgrades.getBoolean("spareblades") && !this.getSawblade(stack, 1).isEmpty();
+		if("upgrade_blades2".equals(group))
+			return upgrades.getBoolean("spareblades") && !this.getSawblade(stack, 2).isEmpty();
 		return true;
 	}
 
