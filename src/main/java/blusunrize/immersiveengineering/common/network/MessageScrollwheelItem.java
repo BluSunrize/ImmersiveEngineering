@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.common.items.ChemthrowerItem;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -17,16 +17,16 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
 
-public class MessageChemthrowerSwitch implements IMessage
+public class MessageScrollwheelItem implements IMessage
 {
 	private boolean forward;
 
-	public MessageChemthrowerSwitch(boolean forward)
+	public MessageScrollwheelItem(boolean forward)
 	{
 		this.forward = forward;
 	}
 
-	public MessageChemthrowerSwitch(PacketBuffer buf)
+	public MessageScrollwheelItem(PacketBuffer buf)
 	{
 		this.forward = buf.readBoolean();
 	}
@@ -45,8 +45,8 @@ public class MessageChemthrowerSwitch implements IMessage
 		assert player!=null;
 		ctx.enqueueWork(() -> {
 			ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
-			if(equipped.getItem() instanceof ChemthrowerItem&&((ChemthrowerItem)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
-				((ChemthrowerItem)equipped.getItem()).switchTank(equipped, forward);
+			if(equipped.getItem() instanceof IScrollwheel)
+				((IScrollwheel)equipped.getItem()).onScrollwheel(equipped, forward);
 		});
 	}
 }

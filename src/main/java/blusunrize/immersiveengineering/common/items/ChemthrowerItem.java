@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.fluids.IEItemFluidHandler;
@@ -60,7 +61,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
+public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool, IScrollwheel
 {
 	public ChemthrowerItem()
 	{
@@ -202,7 +203,8 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		return 72000;
 	}
 
-	public void switchTank(ItemStack stack, boolean forward)
+	@Override
+	public void onScrollwheel(ItemStack stack, boolean forward)
 	{
 		if(getUpgrades(stack).getBoolean("multitank"))
 		{

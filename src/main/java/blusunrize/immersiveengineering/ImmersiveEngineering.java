@@ -143,7 +143,7 @@ public class ImmersiveEngineering
 		registerMessage(MessageShaderManual.class, MessageShaderManual::new);
 		registerMessage(MessageBirthdayParty.class, MessageBirthdayParty::new);
 		registerMessage(MessageMagnetEquip.class, MessageMagnetEquip::new);
-		registerMessage(MessageChemthrowerSwitch.class, MessageChemthrowerSwitch::new);
+		registerMessage(MessageScrollwheelItem.class, MessageScrollwheelItem::new);
 		registerMessage(MessageObstructedConnection.class, MessageObstructedConnection::new);
 		registerMessage(MessageSetGhostSlots.class, MessageSetGhostSlots::new);
 		registerMessage(MessageWireSync.class, MessageWireSync::new);
