@@ -8,10 +8,14 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.ResourceLocation;
 
 public class SawbladeItem extends IEBaseItem
 {
+	protected static Material[] validMaterials = {Material.WOOD, Material.PLANTS, Material.TALL_PLANTS, Material.BAMBOO};
 	private final float sawbladeSpeed;
 	private final float sawbladeDamage;
 
@@ -35,10 +39,33 @@ public class SawbladeItem extends IEBaseItem
 		return false;
 	}
 
-	public float getSawbladeSpeed(){
+	public ResourceLocation getSawbladeTexture()
+	{
+		return null;
+	}
+
+	public float getSawbladeSpeed()
+	{
 		return sawbladeSpeed;
 	}
-	public float getSawbladeDamage(){
+
+	public float getSawbladeDamage()
+	{
 		return sawbladeDamage;
+	}
+
+	public boolean canSawbladeFellTree()
+	{
+		return true;
+	}
+
+	public ListNBT getSawbladeEnchants()
+	{
+		return null;
+	}
+
+	public Material[] getSawbladeMaterials()
+	{
+		return validMaterials;
 	}
 }

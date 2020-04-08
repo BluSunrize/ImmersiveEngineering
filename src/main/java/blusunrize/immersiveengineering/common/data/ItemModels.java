@@ -222,7 +222,7 @@ public class ItemModels extends LoadedModelProvider
 		addItemModel("seed_hemp", IEItems.Misc.hempSeeds);
 		addItemModel("drillhead_iron", Tools.drillheadIron);
 		addItemModel("drillhead_steel", Tools.drillheadSteel);
-		addItemModels("", Tools.sawblade);
+		addItemModels("", Tools.sawblade, Tools.rockcutter);
 		addItemModels("", IEItems.Misc.maintenanceKit);
 		addItemModels("", IEItems.Misc.cartWoodenCrate, IEItems.Misc.cartReinforcedCrate, IEItems.Misc.cartWoodenBarrel, IEItems.Misc.cartMetalBarrel);
 		addItemModels("", IEItems.Misc.iconBirthday, IEItems.Misc.iconLucky, IEItems.Misc.iconDrillbreak);

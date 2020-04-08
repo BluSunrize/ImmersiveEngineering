@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -46,8 +47,10 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.play.server.SChangeBlockPacket;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
@@ -92,7 +95,6 @@ import java.util.function.Supplier;
 
 public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
 {
-	public static Material[] validMaterials = {Material.WOOD, Material.PLANTS, Material.TALL_PLANTS, Material.BAMBOO};
 	public static Collection<SawbladeItem> sawblades = new ArrayList(2);
 
 	public BuzzsawItem()
@@ -248,6 +250,14 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		IItemHandler inv = buzzsaw.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		((IItemHandlerModifiable)inv).setStackInSlot(0, sawblade);
+
+		ListNBT enchants = null;
+		if(sawblade.getItem() instanceof SawbladeItem)
+			enchants = ((SawbladeItem)sawblade.getItem()).getSawbladeEnchants();
+		if(enchants!=null)
+			buzzsaw.getOrCreateTag().put("Enchantments", enchants);
+		else
+			buzzsaw.getOrCreateTag().remove("Enchantments");
 	}
 
 	/* ------------- NAME, TOOLTIP, SUB-ITEMS ------------- */
@@ -268,6 +278,12 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 					.appendText(" ")
 					.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)).setStyle(new Style().setColor(status))));
 		}
+	}
+
+	@Override
+	public Rarity getRarity(ItemStack stack)
+	{
+		return Rarity.COMMON;
 	}
 
 	/* ------------- ATTRIBUTES ------------- */
@@ -329,7 +345,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		consumeDurability(stack, world, state, pos, living);
 		if(!world.isRemote&&!living.isSneaking()&&living instanceof ServerPlayerEntity)
-			if(isTree(world, pos)&&canBuzzsawBeUsed(stack, living))
+			if(canFellTree(stack)&&canBuzzsawBeUsed(stack, living)&&isTree(world, pos))
 				fellTree(world, pos, (ServerPlayerEntity)living, stack);
 		return true;
 	}
@@ -338,7 +354,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		if((double)state.getBlockHardness(world, pos)!=0.0D)
 		{
-			int dmg = ForgeHooks.isToolEffective(world, pos, stack) || isEffective(stack, state.getMaterial())?1: 3;
+			int dmg = ForgeHooks.isToolEffective(world, pos, stack)||isEffective(stack, state.getMaterial())?1: 3;
 			ItemStack sawblade = getSawblade(stack);
 			if(!sawblade.isEmpty())
 			{
@@ -374,9 +390,15 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 	public boolean isEffective(ItemStack stack, Material mat)
 	{
-		for(Material m : validMaterials)
-			if(m==mat)
-				return true;
+		Material[] validMaterials = null;
+		ItemStack sawblade = getSawblade(stack);
+		if(sawblade.getItem() instanceof SawbladeItem)
+			validMaterials = ((SawbladeItem)sawblade.getItem()).getSawbladeMaterials();
+
+		if(validMaterials!=null)
+			for(Material m : validMaterials)
+				if(m==mat)
+					return true;
 		return false;
 	}
 
@@ -447,6 +469,14 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			}
 		}
 		return logs >= 3&&leafTop;
+	}
+
+	private boolean canFellTree(ItemStack stack)
+	{
+		ItemStack sawblade = getSawblade(stack);
+		if(sawblade.getItem() instanceof SawbladeItem)
+			return ((SawbladeItem)sawblade.getItem()).canSawbladeFellTree();
+		return false;
 	}
 
 	/**
@@ -612,10 +642,16 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	@Override
 	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String group, String material)
 	{
-//		if("sawblade".equals(material)&&!this.getHead(stack).isEmpty()&&this.getHead(stack).getItem() instanceof IDrillHead)
-//		{
-//			return ((IDrillHead)this.getHead(stack).getItem()).getDrillTexture(stack, this.getHead(stack));
-//		}
+		if("blade".equals(material))
+		{
+			ItemStack sawblade = getSawblade(stack);
+			if(sawblade.getItem() instanceof SawbladeItem)
+			{
+				ResourceLocation rl = ((SawbladeItem)sawblade.getItem()).getSawbladeTexture();
+				if(rl!=null)
+					return ClientUtils.getSprite(rl);
+			}
+		}
 		return null;
 	}
 

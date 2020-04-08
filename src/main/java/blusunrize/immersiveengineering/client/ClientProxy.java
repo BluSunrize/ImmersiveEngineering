@@ -58,6 +58,7 @@ import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
+import blusunrize.immersiveengineering.common.items.RockcutterItem;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
@@ -331,6 +332,7 @@ public class ClientProxy extends CommonProxy
 
 		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
 			event.addSprite(p.texture);
+		event.addSprite(RockcutterItem.texture);
 		event.addSprite(new ResourceLocation(MODID, "block/wire"));
 		event.addSprite(new ResourceLocation(MODID, "block/shaders/greyscale_fire"));
 

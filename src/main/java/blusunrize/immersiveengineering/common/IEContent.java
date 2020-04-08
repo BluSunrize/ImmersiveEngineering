@@ -79,6 +79,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.PotionUtils;
@@ -479,6 +480,7 @@ public class IEContent
 		Tools.drillheadSteel = new DrillheadItem(DrillheadItem.STEEL);
 		Tools.buzzsaw = new BuzzsawItem();
 		Tools.sawblade = new SawbladeItem("sawblade", 10000, 8f, 9f);
+		Tools.rockcutter = new RockcutterItem("rockcutter", 5000, 5f, 9f);
 		Weapons.revolver = new RevolverItem();
 		Weapons.speedloader = new SpeedloaderItem();
 		Weapons.chemthrower = new ChemthrowerItem();
