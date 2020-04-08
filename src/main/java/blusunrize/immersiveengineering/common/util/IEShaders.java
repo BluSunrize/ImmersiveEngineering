@@ -57,6 +57,7 @@ public class IEShaders
 		((ShaderCaseMinecart)entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "minecart"))).mirrorSideForPass[2] = false;
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[4].setTextureBounds(0, 0, .25, .25);
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).getLayers()[3].setTextureBounds(10/64d, 34/64d, 26/64d, 50/64d);
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw")).getLayers()[3].setTextureBounds(2/64d, 10/64d, 23/64d, 31/64d);
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).getLayers()[3].setTextureBounds(6/64d, 16/64d, 22/64d, 32/64d);
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).getLayers()[2].setTextureBounds(0/32d, 9/32d, 14/32d, 25/32d).setCutoutBounds(.0625, 0, .9375, 1);
 
@@ -165,6 +166,7 @@ public class IEShaders
 	{
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, 0, .25, .1875));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(10/64d, 34/64d, 26/64d, 50/64d).setCutoutBounds(.1875f, 0, .8125, .75f));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/64f, 10/64f, 26/64f, 20/64f).setCutoutBounds(0, .615, 1, 1));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(6/64d, 16/64d, 22/64d, 24/64d).setCutoutBounds(0, 0, 1, .5));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "railgun")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(55/64d, 48/64d, 1, 58/64d).setCutoutBounds(.25, .125, .75, .6875));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/32f, 9/32f, 14/32f, 26/32f).setCutoutBounds(.0625, 0, .9375, 1));
@@ -176,6 +178,7 @@ public class IEShaders
 	{
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_"+texture), colour));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+texture), colour));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "railgun")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour));
@@ -188,6 +191,7 @@ public class IEShaders
 	{
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour, func_getColour, func_modifyRender));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour, func_getColour, func_modifyRender));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_"+texture), colour, func_getColour, func_modifyRender));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+texture), colour, func_getColour, func_modifyRender));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "railgun")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour, func_getColour, func_modifyRender));
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour, func_getColour, func_modifyRender));
