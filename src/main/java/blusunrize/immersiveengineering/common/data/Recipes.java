@@ -1259,6 +1259,14 @@ public class Recipes extends RecipeProvider
 				.key('p', IETags.getTagsFor(EnumMetals.STEEL).plate)
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.rockcutter)
+				.patternLine("ipi")
+				.patternLine("p p")
+				.patternLine("ipi")
+				.key('i', Tags.Items.GEMS_DIAMOND)
+				.key('p', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.build(out);
 	}
 
 	private void recipesIngredients(@Nonnull Consumer<IFinishedRecipe> out)

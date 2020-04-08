@@ -5,5 +5,6 @@ After using the <link;workbench;Engineer's Workbench;start> to place a sawblade 
 
 Like some other tools, the buzzsaw can be modified in the <link;workbench;Engineer's Workbench>. These upgrades affect the size of the internal tank and the durability of its sawblade.
 <np>
+<&rockcutter_recipe>By replacing the normal saw- blade with a §2Rockcutter Blade§r, the buzzsaw can be used to cleanly cut cubes of stone from the ground, much like the §2Silktouch§r enchantment. However, the diamond tipped blade is no longer useful in carving through wood or felling trees.<np>
 <&tank_recipe>The §2Large Tank§r increases the fluid capacity of the buzzsaw by 2000 mb.<np>
 <&lube_recipe>The §2Advanced Lubrication System§r applies additional lubricant to the sawblade, reducing the speed at which it loses durability.<np>

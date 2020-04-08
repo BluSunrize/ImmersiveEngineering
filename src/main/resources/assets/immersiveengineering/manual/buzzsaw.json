@@ -15,6 +15,10 @@
       ]
     ]
   },
+  "rockcutter_recipe": {
+    "type": "crafting",
+    "recipe": "rockcutter"
+  },
   "tank_recipe": {
     "type": "crafting",
     "recipe": "toolupgrade_drill_capacity"
