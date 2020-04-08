@@ -182,6 +182,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(IEExplosiveEntity.class, IEExplosiveRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(FluorescentTubeEntity.class, FluorescentTubeRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(IEMinecartEntity.class, IEMinecartRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(SawbladeEntity.class, SawbladeRenderer::new);
 	}
 
 	@Override

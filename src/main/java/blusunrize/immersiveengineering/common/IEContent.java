@@ -656,7 +656,8 @@ public class IEContent
 				CrateMinecartEntity.TYPE,
 				ReinforcedCrateMinecartEntity.TYPE,
 				BarrelMinecartEntity.TYPE,
-				MetalBarrelMinecartEntity.TYPE
+				MetalBarrelMinecartEntity.TYPE,
+				SawbladeEntity.TYPE
 		);
 	}
 

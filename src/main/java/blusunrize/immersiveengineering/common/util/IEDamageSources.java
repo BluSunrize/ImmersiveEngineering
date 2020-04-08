@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
+import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
@@ -168,6 +169,11 @@ public class IEDamageSources
 	public static DamageSource causeRailgunDamage(RailgunShotEntity shot, Entity shooter)
 	{
 		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).setDamageBypassesArmor();
+	}
+
+	public static DamageSource causeSawbladeDamage(SawbladeEntity shot, Entity shooter)
+	{
+		return new IEDamageSource_Indirect(Lib.DMG_Sawblade, shot, shooter).setDamageBypassesArmor();
 	}
 
 	public static DamageSource causeTeslaPrimaryDamage()
