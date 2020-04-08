@@ -11,7 +11,6 @@ package blusunrize.lib.manual;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.lib.manual.gui.ManualScreen;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -40,7 +39,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	}
 
 	@Override
-	public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, Widget button)
+	public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, int mouseButton)
 	{
 	}
 

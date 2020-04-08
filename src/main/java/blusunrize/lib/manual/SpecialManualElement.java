@@ -9,7 +9,6 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
 
@@ -25,7 +24,7 @@ public abstract class SpecialManualElement
 	public abstract void render(ManualScreen gui, int x, int y, int mouseX, int mouseY);
 
 	public abstract void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX,
-									  double lastY, Widget button);
+									  double lastY, int mouseButton);
 
 	public abstract boolean listForSearch(String searchTag);
 

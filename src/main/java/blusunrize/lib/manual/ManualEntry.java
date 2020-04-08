@@ -16,7 +16,6 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.GlStateManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResource;
@@ -32,7 +31,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -165,8 +163,8 @@ public class ManualEntry implements Comparable<ManualEntry>
 		return false;
 	}
 
-	public void mouseDragged(ManualScreen gui, int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY,
-							 Widget button)
+	public void mouseDragged(ManualScreen gui, int x, int y, double clickX, double clickY, double mx, double my,
+							 double lastX, double lastY, int button)
 	{
 		pages.get(gui.page).special.mouseDragged(x, y, clickX, clickY, mx, my, lastX, lastY, button);
 	}
@@ -366,7 +364,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 
 		@Override
-		public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, Widget button)
+		public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, int mouseButton)
 		{
 		}
 

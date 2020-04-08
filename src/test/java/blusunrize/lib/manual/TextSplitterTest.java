@@ -1,9 +1,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.item.HangingEntityItem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -137,7 +135,7 @@ public class TextSplitterTest
 		}
 
 		@Override
-		public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, Widget button)
+		public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, int mouseButton)
 		{
 		}
 

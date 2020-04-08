@@ -387,14 +387,14 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
-	public boolean mouseDragged(double mx, double my, int button, double p_mouseDragged_6_, double p_mouseDragged_8_)
+	public boolean mouseDragged(double mx, double my, int button, double deltaX, double deltaY)
 	{
 		if(lastClick!=null&&currentNode.isLeaf())
 		{
 			if(lastDrag==null)
 				lastDrag = new double[]{mx-guiLeft, my-guiTop};
 			currentNode.getLeafData().mouseDragged(this, guiLeft+32, guiTop+28, lastClick[0], lastClick[1], mx-guiLeft,
-					my-guiTop, lastDrag[0], lastDrag[1], buttons.get(button));
+					my-guiTop, lastDrag[0], lastDrag[1], button);
 			lastDrag = new double[]{mx-guiLeft, my-guiTop};
 			return true;
 		}
