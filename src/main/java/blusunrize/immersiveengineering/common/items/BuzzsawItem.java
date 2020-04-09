@@ -75,6 +75,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -398,7 +399,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 	private void consumeDurability(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
 	{
-		if((double)state.getBlockHardness(world, pos)!=0.0D)
+		if(state.getBlockHardness(world, pos)!=0.0f)
 		{
 			int dmg = ForgeHooks.isToolEffective(world, pos, stack)||isEffective(stack, state.getMaterial())?1: 3;
 			ItemStack sawblade = getSawblade(stack);
@@ -481,8 +482,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		int logs = 0;
 		boolean leafTop = false;
 		BlockPos pos = initialPos;
-		int y = 0;
-		while(y++ < 32)
+		for(int y = 0; y < 32; y++)
 		{
 			pos = pos.up();
 			BlockState state = world.getBlockState(pos);
@@ -496,8 +496,9 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 				if(!leafTop)
 				{
 					// Yay, Acacia trees grow diagonally >_>
-					for(int z = -1; z <= 1; z++)
-						for(int x = -1; x <= 1; x++)
+					boolean loop = true;
+					for(int z = -1; z <= 1&&loop; z++)
+						for(int x = -1; x <= 1&&loop; x++)
 						{
 							state = world.getBlockState(pos.add(x, 0, z));
 							if(state.isIn(BlockTags.LOGS))
@@ -505,7 +506,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 								pos = pos.add(x, 0, z);
 								foundLog = true;
 								logs++;
-								break;
+								loop = false;
 							}
 						}
 				}
@@ -535,12 +536,12 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	private boolean fellTree(World world, BlockPos initialPos, ServerPlayerEntity player, ItemStack stack)
 	{
 		int logs = 0;
-		List<BlockPos> openList = new ArrayList<>();
-		List<BlockPos> closedList = new ArrayList<>();
+		Deque<BlockPos> openList = new ArrayDeque<>();
+		Deque<BlockPos> closedList = new ArrayDeque<>();
 		openList.add(initialPos);
 		while(!openList.isEmpty()&&closedList.size() < 512&&logs < 256)
 		{
-			BlockPos next = openList.remove(0);
+			BlockPos next = openList.pollFirst();
 
 			// Ignore blocks too far away
 			if(Math.abs(next.getX()-initialPos.getX()) > MAX_HORIZONTAL_DISTANCE
@@ -583,26 +584,29 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 		if(closedList.size()==0)
 			return false;
-		// Register a Tick Handler to break the blocks, 10 at a time
+		// Register a Tick Handler to break the blocks, 5 at a time
 		MinecraftForge.EVENT_BUS.register(new Object()
 		{
 			@SubscribeEvent
 			public void onTick(TickEvent.WorldTickEvent event)
 			{
-				breakFromList(closedList, 5, world, player, stack);
-				if(closedList.isEmpty())
-					MinecraftForge.EVENT_BUS.unregister(this);
+				if(event.phase==Phase.START && event.world == world)
+				{
+					breakFromList(closedList, 5, world, player, stack);
+					if(closedList.isEmpty())
+						MinecraftForge.EVENT_BUS.unregister(this);
+				}
 			}
 		});
 		return true;
 	}
 
-	private void breakFromList(List<BlockPos> closedList, int maxAmount, World world, ServerPlayerEntity player, ItemStack stack)
+	private void breakFromList(Deque<BlockPos> closedList, int maxAmount, World world, ServerPlayerEntity player, ItemStack stack)
 	{
 		int count = 0;
 		while(count++ < maxAmount&&!closedList.isEmpty())
 		{
-			BlockPos pos = closedList.remove(0);
+			BlockPos pos = closedList.pollFirst();
 
 			int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, player.interactionManager.getGameType(), player, pos);
 			if(xpDropEvent < 0)

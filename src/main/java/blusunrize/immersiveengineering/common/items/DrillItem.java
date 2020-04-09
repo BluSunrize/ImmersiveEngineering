@@ -310,7 +310,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	{
 		if(player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
 			return false;
-		return !getFluid(drill).isEmpty();//getFluid(drill)!=null;
+		return !getFluid(drill).isEmpty();
 	}
 
 	public int getMaxHeadDamage(ItemStack stack)

@@ -287,11 +287,12 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	{
 		if(!this.world.isRemote&&(this.inGround||this.getNoClip())&&this.arrowShake <= 0)
 		{
-			boolean flag = this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED||this.pickupStatus==AbstractArrowEntity.PickupStatus.CREATIVE_ONLY&&player.abilities.isCreativeMode||this.getNoClip()&&this.getShooter().getUniqueID()==player.getUniqueID();
-			if(this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED&&!player.inventory.addItemStackToInventory(this.getArrowStack()))
-			{
+			boolean flag = this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED
+					||this.pickupStatus==AbstractArrowEntity.PickupStatus.CREATIVE_ONLY&&player.abilities.isCreativeMode
+					||this.getNoClip()&&this.getShooter().getUniqueID()==player.getUniqueID();
+			if(this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED
+					&&!player.inventory.addItemStackToInventory(this.getArrowStack()))
 				flag = false;
-			}
 
 			if(flag)
 			{
