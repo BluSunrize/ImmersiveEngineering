@@ -75,4 +75,9 @@ public class IEItemInterfaces
 
 		int getBulletCount(ItemStack container);
 	}
+
+	public interface IScrollwheel
+	{
+		void onScrollwheel(ItemStack stack, boolean forward);
+	}
 }

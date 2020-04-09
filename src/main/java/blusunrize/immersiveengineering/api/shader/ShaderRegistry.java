@@ -91,6 +91,7 @@ public class ShaderRegistry
 		registerShader_Revolver(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture, colourAdditional);
 		registerShader_Chemthrower(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Drill(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
+		registerShader_Buzzsaw(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Railgun(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Shield(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Minecart(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
@@ -219,6 +220,37 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_uncoloured"), 0xffffffff));
 		list.add(new ShaderLayer(null, 0xffffffff));//final pass is for drill head and augers
 		ShaderCaseDrill shader = new ShaderCaseDrill(list);
+		return registerShaderCase(name, shader, rarity);
+	}
+
+	/**
+	 * Method to register a default implementation of Buzzsaw Shaders<br>
+	 * Note that they have an extra layer with null for the ResourceLocation, for the sawblades
+	 *
+	 * @param name              name of the shader
+	 * @param overlayType       uses IE's existing overlays. To use custom ones, you'll need your own method.
+	 * @param rarity            Rarity of the shader item
+	 * @param colour0           grip colour
+	 * @param colour1           base colour
+	 * @param colour2           design colour
+	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @param colourAddtional   colour for the additional texture, if present
+	 * @return the registered ShaderCase
+	 */
+	public static ShaderCaseBuzzsaw registerShader_Buzzsaw(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
+	{
+		List<ShaderLayer> list = new ArrayList();
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_0"), colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_0"), colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_1_"+overlayType), colour2));
+		if(additionalTexture!=null)
+		{
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_"+additionalTexture);
+			list.add(new ShaderLayer(rl, colourAddtional));
+		}
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_uncoloured"), 0xffffffff));
+		list.add(new ShaderLayer(null, 0xffffffff));//final pass is for drill head and augers
+		ShaderCaseBuzzsaw shader = new ShaderCaseBuzzsaw(list);
 		return registerShaderCase(name, shader, rarity);
 	}
 

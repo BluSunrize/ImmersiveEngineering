@@ -1,0 +1,5 @@
+newmtl body
+map_Kd immersiveengineering:item/buzzsaw_diesel
+
+newmtl blade
+map_Kd immersiveengineering:item/sawblade_blade

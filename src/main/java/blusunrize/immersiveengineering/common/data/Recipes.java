@@ -1226,19 +1226,45 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_"+toPath(MetalDecoration.engineeringHeavy), hasItem(MetalDecoration.engineeringHeavy))
 				.build(out);
 		ShapedRecipeBuilder.shapedRecipe(Tools.drillheadIron)
+				.patternLine("  i")
 				.patternLine("ii ")
-				.patternLine("bbi")
-				.patternLine("ii ")
+				.patternLine("bi ")
 				.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.key('b', makeIngredient(Tags.Items.STORAGE_BLOCKS_IRON))
 				.addCriterion("has_iron_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
 				.build(out);
 		ShapedRecipeBuilder.shapedRecipe(Tools.drillheadSteel)
+				.patternLine("  i")
 				.patternLine("ii ")
-				.patternLine("bbi")
-				.patternLine("ii ")
+				.patternLine("bi ")
 				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.key('b', makeIngredientFromBlock(IETags.getTagsFor(EnumMetals.STEEL).storage))
+				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.build(out);
+
+		ShapedRecipeBuilder.shapedRecipe(Tools.buzzsaw)
+				.patternLine("  g")
+				.patternLine("rcg")
+				.patternLine("r  ")
+				.key('g', Ingredients.woodenGrip)
+				.key('c', Ingredients.componentSteel)
+				.key('r', IETags.steelRod)
+				.addCriterion("has_"+toPath(Ingredients.componentSteel), hasItem(Ingredients.componentSteel))
+				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.sawblade)
+				.patternLine("ipi")
+				.patternLine("p p")
+				.patternLine("ipi")
+				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.key('p', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(Tools.rockcutter)
+				.patternLine("ipi")
+				.patternLine("p p")
+				.patternLine("ipi")
+				.key('i', Tags.Items.GEMS_DIAMOND)
+				.key('p', IETags.getTagsFor(EnumMetals.STEEL).plate)
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out);
 	}
@@ -1472,6 +1498,15 @@ public class Recipes extends RecipeProvider
 				.key('l', Tags.Items.LEATHER)
 				.key('c', MetalDecoration.lvCoil)
 				.addCriterion("has_"+toPath(MetalDecoration.lvCoil), hasItem(MetalDecoration.lvCoil))
+				.build(out);
+
+		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES))
+				.patternLine("rht")
+				.patternLine("rt ")
+				.key('r', IETags.ironRod)
+				.key('h', IETags.fiberHemp)
+				.key('t', IETags.getItemTag(IETags.treatedWood))
+				.addCriterion("has_buzzsaw", hasItem(Tools.buzzsaw))
 				.build(out);
 
 		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireCopper)

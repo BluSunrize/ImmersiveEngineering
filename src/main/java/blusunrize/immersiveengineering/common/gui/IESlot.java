@@ -41,6 +41,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity.SLOT_FERTILIZER;
@@ -170,17 +171,19 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class DrillHead extends SlotItemHandler
+	public static class WithPredicate extends SlotItemHandler
 	{
-		public DrillHead(IItemHandler inv, int id, int x, int y)
+		final Predicate<ItemStack> predicate;
+		public WithPredicate(IItemHandler inv, int id, int x, int y, Predicate<ItemStack> predicate)
 		{
 			super(inv, id, x, y);
+			this.predicate = predicate;
 		}
 
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return !itemStack.isEmpty()&&itemStack.getItem() instanceof IDrillHead;
+			return !itemStack.isEmpty()&&this.predicate.test(itemStack);
 		}
 
 		@Override

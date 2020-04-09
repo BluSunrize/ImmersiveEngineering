@@ -153,6 +153,7 @@ public class IEManual
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "revolver"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "bullets"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "chemthrower"));
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "buzzsaw"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "skyhook"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "powerpack"));
 		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "railgun"));

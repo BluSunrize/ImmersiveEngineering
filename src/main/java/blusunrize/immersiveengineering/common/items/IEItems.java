@@ -100,6 +100,10 @@ public final class IEItems
 		public static Item drill;
 		public static Item drillheadSteel;
 		public static Item drillheadIron;
+
+		public static Item buzzsaw;
+		public static Item sawblade;
+		public static Item rockcutter;
 	}
 
 	public static final class Weapons

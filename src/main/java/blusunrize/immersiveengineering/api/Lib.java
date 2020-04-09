@@ -94,6 +94,7 @@ public class Lib
 	public static String DMG_Tesla = "ieTesla";
 	public static String DMG_Acid = "ieAcid";
 	public static String DMG_Railgun = "ieRailgun";
+	public static String DMG_Sawblade = "ieSawblade";
 	public static String DMG_Tesla_prim = "ieTeslaPrimary";
 	public static String DMG_RazorWire = "ieRazorWire";
 	public static String DMG_RazorShock = "ieRazorShock";

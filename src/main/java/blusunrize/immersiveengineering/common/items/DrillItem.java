@@ -61,6 +61,7 @@ import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -183,7 +184,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 				.orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.DrillHead(inv, 0, 98, 22),
+						new IESlot.WithPredicate(inv, 0, 98, 22, (itemStack) -> itemStack.getItem() instanceof IDrillHead),
 						new IESlot.Upgrades(container, inv, 1, 78, 52, "DRILL", stack, true, getWorld),
 						new IESlot.Upgrades(container, inv, 2, 98, 52, "DRILL", stack, true, getWorld),
 						new IESlot.Upgrades(container, inv, 3, 118, 52, "DRILL", stack, true, getWorld)
@@ -260,14 +261,16 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	{
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, 2000)));
 		if(getHead(stack).isEmpty())
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.noHead"));
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.noHead").setStyle(new Style().setColor(TextFormatting.GRAY)));
 		else
 		{
 			int maxDmg = getMaxHeadDamage(stack);
 			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
-			String status = ""+(quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage", status+dmg, maxDmg));
+			TextFormatting status = quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN;
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage").setStyle(new Style().setColor(TextFormatting.GRAY))
+					.appendText(" ")
+					.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)).setStyle(new Style().setColor(status))));
 		}
 	}
 
@@ -307,7 +310,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	{
 		if(player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
 			return false;
-		return getFluid(drill)!=null;
+		return !getFluid(drill).isEmpty();
 	}
 
 	public int getMaxHeadDamage(ItemStack stack)

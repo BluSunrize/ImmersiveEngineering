@@ -35,12 +35,13 @@ import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableTileEntity;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.network.MessageChemthrowerSwitch;
 import blusunrize.immersiveengineering.common.network.MessageMagnetEquip;
 import blusunrize.immersiveengineering.common.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.network.MessageRevolverRotate;
+import blusunrize.immersiveengineering.common.network.MessageScrollwheelItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -167,8 +168,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				if(!ClientProxy.keybind_chemthrowerSwitch.isInvalid()&&ClientProxy.keybind_chemthrowerSwitch.isPressed())
 				{
 					ItemStack held = event.player.getHeldItem(Hand.MAIN_HAND);
-					if(held.getItem() instanceof ChemthrowerItem&&((ChemthrowerItem)held.getItem()).getUpgrades(held).getBoolean("multitank"))
-						ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(true));
+					if(held.getItem() instanceof IScrollwheel)
+						ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(true));
 				}
 			}
 		}
@@ -837,9 +838,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						}
 					}
 				}
-				if(IEConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof ChemthrowerItem&&((ChemthrowerItem)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
+				if(IEConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
 				{
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.getScrollDelta() < 0));
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(event.getScrollDelta() < 0));
 					event.setCanceled(true);
 				}
 				if(equipped.getItem() instanceof RevolverItem)
