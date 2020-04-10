@@ -1,5 +1,10 @@
 {
 	"parent":"immersiveengineering:item/ie_item_base",
+	"display": {
+		"head": {
+			"scale": [0,0,0]
+		}
+	},
 	"textures": {
 		"layer0":"immersiveengineering:item/earmuffs",
 		"layer1":"immersiveengineering:item/earmuffs_overlay"

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
@@ -16,7 +15,6 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.Too
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Sets;
@@ -27,9 +25,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.DyeableArmorItem;
-import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.IDyeableArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -41,14 +37,17 @@ import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-public class EarmuffsItem extends DyeableArmorItem implements IConfigurableTool, ITool, IColouredItem
+public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConfigurableTool, ITool, IColouredItem
 {
 	public EarmuffsItem()
 	{
-		super(ArmorMaterial.LEATHER, EquipmentSlotType.HEAD, new Properties().group(ImmersiveEngineering.itemGroup)
-				.maxStackSize(1));
-		setRegistryName(ImmersiveEngineering.MODID, "earmuffs");
-		IEContent.registeredIEItems.add(this);
+		super("earmuffs");
+	}
+
+	@Override
+	public boolean canEquip(ItemStack stack, EquipmentSlotType armorType, Entity entity)
+	{
+		return armorType==EquipmentSlotType.HEAD;
 	}
 
 	@Override
@@ -124,12 +123,6 @@ public class EarmuffsItem extends DyeableArmorItem implements IConfigurableTool,
 	public FontRenderer getFontRenderer(ItemStack stack)
 	{
 		return ClientProxy.itemFont;
-	}
-
-	@Override
-	public IArmorMaterial getArmorMaterial()
-	{
-		return super.getArmorMaterial();//TODO
 	}
 
 	public static LinkedHashSet<String> affectedSoundCategories = Sets.newLinkedHashSet();
