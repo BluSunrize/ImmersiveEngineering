@@ -334,7 +334,7 @@ public class Connection
 		{
 			pos = MathHelper.clamp(pos, 0, 1);
 			if(isVertical)
-				return Double.POSITIVE_INFINITY;
+				return Double.POSITIVE_INFINITY*Math.signum(getDeltaY());
 			else
 				return Math.sinh((pos*horLength-offsetX)/scale);
 		}

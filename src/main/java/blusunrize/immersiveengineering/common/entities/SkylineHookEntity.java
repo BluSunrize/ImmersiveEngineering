@@ -164,14 +164,16 @@ public class SkylineHookEntity extends Entity
 		double inLineDirection;
 		if(connection.getCatenaryData().isVertical())
 			inLineDirection = -player.moveForward*Math.sin(Math.toRadians(player.rotationPitch))
-					*Math.signum(connection.getCatenaryData().getDeltaY());
+					*Math.signum(connection.getCatenaryData().getDeltaY())
+					*getStartSignum();
 		else
 		{
 			float forward = player.moveForward;
 			double strafing = player.moveStrafing;
 			double playerAngle = Math.toRadians(player.rotationYaw)+Math.PI/2;
 			double angleToLine = playerAngle-angle;
-			inLineDirection = Math.cos(angleToLine)*forward+Math.sin(angleToLine)*strafing;
+			inLineDirection = (Math.cos(angleToLine)*forward+Math.sin(angleToLine)*strafing)
+					*getStartSignum();
 		}
 		if(inLineDirection!=0)
 		{
@@ -188,7 +190,6 @@ public class SkylineHookEntity extends Entity
 			}
 			if(slopeInDirection > -.1)
 			{
-
 				horizontalSpeed = (3*horizontalSpeed+inLineDirection*speed*slopeFactor)/4;
 				moved = true;
 			}
@@ -198,11 +199,11 @@ public class SkylineHookEntity extends Entity
 		{
 			double deltaVHor;
 			if(connection.getCatenaryData().isVertical())
-				deltaVHor = -GRAVITY*Math.signum(connection.getCatenaryData().getDeltaY());
+				deltaVHor = -GRAVITY*Math.signum(connection.getCatenaryData().getDeltaY()*getStartSignum());
 			else
 			{
 				final double realLinePos = connection.transformPosition(linePos, start);
-				double param = (realLinePos*connection.getCatenaryData().getHorLength()-connection.getCatenaryData().getOffsetX())/connection.getCatenaryData().getScale();
+				double param = (realLinePos*getHorizontalLength()-connection.getCatenaryData().getOffsetX())/connection.getCatenaryData().getScale();
 				double pos = Math.exp(param);
 				double neg = 1/pos;
 				double cosh = (pos+neg)/2;
@@ -227,7 +228,7 @@ public class SkylineHookEntity extends Entity
 		double horSpeedToUse = horizontalSpeed;
 		if(horizontalSpeed > 0)
 		{
-			double distToEnd = connection.getCatenaryData().getHorLength()*(1-linePos);
+			double distToEnd = getHorizontalLength()*(1-linePos);
 			if(horizontalSpeed > distToEnd)
 			{
 				switchingAtPos = connection.getOtherEnd(start);
@@ -236,7 +237,7 @@ public class SkylineHookEntity extends Entity
 		}
 		else
 		{
-			double distToStart = -connection.getCatenaryData().getHorLength()*linePos;
+			double distToStart = -getHorizontalLength()*linePos;
 			if(horizontalSpeed < distToStart)
 			{
 				switchingAtPos = start;
@@ -244,7 +245,7 @@ public class SkylineHookEntity extends Entity
 			}
 		}
 		horizontalSpeed *= friction;
-		linePos += horSpeedToUse/connection.getCatenaryData().getHorLength();
+		linePos += horSpeedToUse/getHorizontalLength();
 		Vec3d pos = connection.getPoint(linePos, start).add(new Vec3d(start.getPosition()));
 		setMotion(pos.x-posX, pos.z-posZ, pos.y-posY);
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
@@ -323,7 +324,12 @@ public class SkylineHookEntity extends Entity
 			line = possible.stream().filter(c -> !c.hasSameConnectors(connection))
 					.max(Comparator.comparingDouble(c -> {
 						c.generateCatenaryData(world);
-						return c.getCatenaryData().getDelta().normalize().dotProduct(look);
+						double factor;
+						if(posForSwitch.equals(c.getEndA()))
+							factor = 1;
+						else
+							factor = -1;
+						return c.getCatenaryData().getDelta().normalize().dotProduct(look)*factor;
 					}));//Maximum dot product=>Minimum angle=>Player goes in as close to a straight line as possible
 		}
 		if (line.isPresent())
@@ -537,13 +543,27 @@ public class SkylineHookEntity extends Entity
 		if(connection==null)
 			return 0;
 		if(connection.getCatenaryData().isVertical())
-		{
 			return Math.abs(horizontalSpeed);//In this case vertical speed
-		}
 		else
 		{
 			double slope = connection.getSlope(linePos, start);
 			return Math.abs(horizontalSpeed)*Math.sqrt(1+slope*slope);
 		}
+	}
+
+	private double getHorizontalLength()
+	{
+		if(connection.getCatenaryData().isVertical())
+			return Math.abs(connection.getCatenaryData().getDeltaY());
+		else
+			return connection.getCatenaryData().getHorLength();
+	}
+
+	private double getStartSignum()
+	{
+		if(start.equals(connection.getEndA()))
+			return 1;
+		else
+			return -1;
 	}
 }
