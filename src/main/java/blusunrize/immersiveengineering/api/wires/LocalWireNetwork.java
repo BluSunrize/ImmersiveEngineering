@@ -40,7 +40,7 @@ public class LocalWireNetwork implements IWorldTickable
 	//This is an array map since it will generally be tiny, and needs to be fast at those sizes
 	private final Map<ResourceLocation, LocalNetworkHandler> handlers = new Object2ObjectArrayMap<>();
 	private final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
-	private final List<Runnable> runNextTick = new ArrayList<>();
+	private List<Runnable> runNextTick = new ArrayList<>();
 
 	public LocalWireNetwork(CompoundNBT subnet, GlobalWireNetwork globalNet)
 	{
@@ -352,9 +352,10 @@ public class LocalWireNetwork implements IWorldTickable
 		for(LocalNetworkHandler handler : handlers.values())
 			if(handler instanceof IWorldTickable)
 				((IWorldTickable)handler).update(w);
-		for(Runnable r : runNextTick)
+		List<Runnable> toRun = runNextTick;
+		runNextTick = new ArrayList<>();
+		for(Runnable r : toRun)
 			r.run();
-		runNextTick.clear();
 	}
 
 	@Nullable
