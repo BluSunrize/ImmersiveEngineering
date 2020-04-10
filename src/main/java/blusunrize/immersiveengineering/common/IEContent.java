@@ -591,7 +591,8 @@ public class IEContent
 	}
 
 	@SubscribeEvent
-	public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
+	public static void registerFeatures(RegistryEvent.Register<Feature<?>> event)
+	{
 		event.getRegistry().register(ORE_RETROGEN.setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "ore_retro")));
 	}
 
