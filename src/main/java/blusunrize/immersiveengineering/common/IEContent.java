@@ -79,13 +79,13 @@ import net.minecraft.item.Items;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.tileentity.SmokerTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
@@ -1028,6 +1028,8 @@ public class IEContent
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();
 		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
+		ExternalHeaterHandler.registerHeatableAdapter(SmokerTileEntity.class, new DefaultFurnaceAdapter());
+		ExternalHeaterHandler.registerHeatableAdapter(net.minecraft.tileentity.BlastFurnaceTileEntity.class, new DefaultFurnaceAdapter());
 
 		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.MAGMA_BLOCK), 1300);
 		//TODO tags?

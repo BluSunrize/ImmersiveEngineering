@@ -13,7 +13,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.HashMap;
@@ -85,9 +85,9 @@ public class ExternalHeaterHandler
 		return adapter;
 	}
 
-	public static class DefaultFurnaceAdapter extends HeatableAdapter<FurnaceTileEntity>
+	public static class DefaultFurnaceAdapter extends HeatableAdapter<AbstractFurnaceTileEntity>
 	{
-		boolean canCook(FurnaceTileEntity tileEntity)
+		boolean canCook(AbstractFurnaceTileEntity tileEntity)
 		{
 			ItemStack input = tileEntity.getStackInSlot(0);
 			if(input.isEmpty())
@@ -106,12 +106,18 @@ public class ExternalHeaterHandler
 			return stackSize <= tileEntity.getInventoryStackLimit()&&stackSize <= outStack.getMaxStackSize();
 		}
 
+		public void updateFurnace(TileEntity tileEntity, boolean active)
+		{
+			BlockState oldState = tileEntity.getWorld().getBlockState(tileEntity.getPos());
+			tileEntity.getWorld().setBlockState(tileEntity.getPos(), oldState.with(AbstractFurnaceBlock.LIT, active));
+		}
+
 		@Override
-		public int doHeatTick(FurnaceTileEntity tileEntity, int energyAvailable, boolean redstone)
+		public int doHeatTick(AbstractFurnaceTileEntity tileEntity, int energyAvailable, boolean canHeat)
 		{
 			int energyConsumed = 0;
 			boolean canCook = canCook(tileEntity);
-			if(canCook||redstone)
+			if(canCook||canHeat)
 			{
 				BlockState tileState = tileEntity.getWorld().getBlockState(tileEntity.getPos());
 				boolean burning = tileState.get(AbstractFurnaceBlock.LIT);
@@ -144,10 +150,5 @@ public class ExternalHeaterHandler
 			return energyConsumed;
 		}
 
-		public void updateFurnace(TileEntity tileEntity, boolean active)
-		{
-			BlockState oldState = tileEntity.getWorld().getBlockState(tileEntity.getPos());
-			tileEntity.getWorld().setBlockState(tileEntity.getPos(), oldState.with(AbstractFurnaceBlock.LIT, active));
-		}
 	}
 }
