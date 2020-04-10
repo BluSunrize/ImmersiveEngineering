@@ -39,6 +39,7 @@ public class HempBlock extends BushBlock implements IGrowable
 	public HempBlock(String name)
 	{
 		super(Block.Properties.create(Material.PLANTS)
+				.sound(SoundType.CROP)
 				.doesNotBlockMovement()
 				.hardnessAndResistance(0)
 				.tickRandomly());
