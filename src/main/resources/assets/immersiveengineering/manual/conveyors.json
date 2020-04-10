@@ -66,17 +66,5 @@
         }
       ]
     ]
-  },
-  "image": {
-    "type": "image",
-    "images": [
-      {
-        "location": "textures/misc/chute.png",
-        "uMin": 0,
-        "vMin": 0,
-        "uSize": 110,
-        "vSize": 80
-      }
-    ]
   }
 }
