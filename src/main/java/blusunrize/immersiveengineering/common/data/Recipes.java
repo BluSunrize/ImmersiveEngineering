@@ -148,6 +148,7 @@ public class Recipes extends RecipeProvider
 
 		recipesTools(out);
 		recipesIngredients(out);
+		recipesVanilla(out);
 		recipesWeapons(out);
 		recipesMisc(out);
 
@@ -1569,6 +1570,23 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "molds"), rl("blueprint_molds"));
+	}
+
+	private void recipesVanilla(@Nonnull Consumer<IFinishedRecipe> out) {
+		ShapedRecipeBuilder.shapedRecipe(Items.TORCH, 12)
+				.patternLine("wc ")
+				.patternLine("sss")
+				.key('w', ItemTags.WOOL)
+				.key('c', new IngredientFluidStack(IEContent.fluidCreosote, 1000))
+				.key('s', Tags.Items.RODS_WOODEN)
+				.addCriterion("has_wool", hasItem(ItemTags.WOOL))
+				.addCriterion("has_stick", hasItem(Tags.Items.RODS_WOODEN))
+				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
+				.build(out, toRL(toPath(Items.TORCH)));
+		ShapelessRecipeBuilder.shapelessRecipe(Items.STRING)
+				.addIngredient(Ingredient.fromTag(IETags.fiberHemp), 3)
+				.addCriterion("has_hemp_fiber", hasItem(Ingredients.hempFiber))
+				.build(out, toRL(toPath(Items.STRING)));
 	}
 
 	private Consumer<IFinishedRecipe> buildBlueprint(Consumer<IFinishedRecipe> out, String blueprint)
