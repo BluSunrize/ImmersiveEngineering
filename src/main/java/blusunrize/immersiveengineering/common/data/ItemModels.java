@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.fluid.Fluid;
@@ -93,6 +94,10 @@ public class ItemModels extends LoadedModelProvider
 				.transforms(rl("item/cloche"));
 		obj(MetalDevices.teslaCoil, rl("block/metal_device/teslacoil.obj"))
 				.transforms(rl("item/teslacoil"));
+		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
+			obj(chute.getValue(), rl("block/metal_device/chute.obj.ie"))
+					.texture("texture", modLoc("block/metal/sheetmetal_"+chute.getKey().tagName()))
+					.transforms(rl("item/block"));
 
 
 		obj(MetalDevices.turretChem, rl("block/metal_device/chem_turret_inv.obj"))

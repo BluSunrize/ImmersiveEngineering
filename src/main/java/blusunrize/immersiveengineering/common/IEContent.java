@@ -79,7 +79,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.PotionUtils;
@@ -395,6 +394,10 @@ public class IEContent
 		MetalDevices.turretChem = new TurretBlock("turret_chem", () -> TurretChemTileEntity.TYPE);
 		MetalDevices.turretGun = new TurretBlock("turret_gun", () -> TurretGunTileEntity.TYPE);
 		MetalDevices.cloche = new ClocheBlock();
+		for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
+			MetalDevices.chutes.put(metal, new GenericTileBlock("chute_"+metal.tagName(), () -> ChuteTileEntity.TYPE,
+					defaultMetalProperties, IEProperties.FACING_HORIZONTAL)
+					.setNotNormalBlock());
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
@@ -726,6 +729,7 @@ public class IEContent
 		registerTile(TurretChemTileEntity.class, event, MetalDevices.turretChem);
 		registerTile(TurretGunTileEntity.class, event, MetalDevices.turretGun);
 		registerTile(ClocheTileEntity.class, event, MetalDevices.cloche);
+		registerTile(ChuteTileEntity.class, event, MetalDevices.chutes.values().toArray(new Block[0]));
 
 		registerTile(MetalPressTileEntity.class, event, Multiblocks.metalPress);
 		registerTile(CrusherTileEntity.class, event, Multiblocks.crusher);
