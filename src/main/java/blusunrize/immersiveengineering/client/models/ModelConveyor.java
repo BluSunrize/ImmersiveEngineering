@@ -66,7 +66,8 @@ public class ModelConveyor extends BakedIEModel
 	public static ResourceLocation[] rl_casing = {
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_top"),
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_side"),
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_walls")
+			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_walls"),
+			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_full")
 	};
 
 	@Nullable
