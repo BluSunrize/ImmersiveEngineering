@@ -1,3 +1,62 @@
+##### Version 0.14-95
+- Added the Buzzsaw! It cuts Trees! (BluSunrize)
+- Re-Added Revolver Perks (BluSunrize)
+- Re-Added the Fluid Outlet (Malte)
+- Added 5 individual IE villagers and their workstations (BluSunrize)
+    - Added the Engineer's Crafting Table. It's a crafting table with some storage
+- Added the Firework Cartridge for the Revolver (BluSunrize)
+- Re-Added IE's Advancements (BluSunrize)
+- Re-Added the Maintenance Kit (BluSunrize)
+- Added the Engineer's Screwdriver (BluSunrize)
+- Added herbicide fluid. It kills leaves and grass (BluSunrize)
+- Re-Added Chutes (BluSunrize)
+- Changed Ear Protectors and Capacitor Backpack to no longer provide armor (BluSunrize)
+- Enabled text overlay (previously colourblind mode) by default (BluSunrize)
+- Enabled metal blocks to be used as Beacon bases (BluSunrize)
+- Expanded available methods for addons (Malte)
+- Fixed countless bits of rendering (Malte & BluSunrize)
+- Fixed a few recipes (BluSunrize)
+- Fixed rendering for revolver cartridges (BluSunrize)
+- Fixed bug in Shaderbag distribution (BluSunrize)
+- Fixed faulty ore gen (Malte)
+- Fixed sync issues (Malte)
+- Fixed worldgen lag (Malte)
+- Fixed recipes for Crusher (Malte)
+- Fixed Probe Connectors (Malte)
+- Fixed Windmills's obstruction code (Malte)
+- Fixed collision on slabs (Malte)
+- Fixed Conveyors crashing on servers (Malte)
+- Fixed connections on Current Transformers (Malte)
+- Fixed missing particles (Malte)
+- Fixed furnace heater being oriented wrong (Malte)
+- Fixed crafting of treated wood with jerrycans (Malte)
+- Fixed Manual entries for Shaders, and other entries (BluSunrize)
+- Fixed wires not being craftable in metal press (Malte)
+- Fixed crashes in the Manual (Malte)
+- Fixed wrong sound when breaking hemp (gyroplast)
+- Fixed glitches with the Skyhook (Malte)
+- Fixed missing recipes for String and Torches (gyroplast)
+- Fixed drops from metal press breaking (Malte)
+- Fixed recipes not being added properly (Malte)
+
+##### Version 0.14-94 - BUILT
+- Added Minecarts!
+    - Wooden crates, reinforced crates, wooden barrels and metal barrels can be put in carts
+    - IE's conveyors can load and unload (extracting conveyor) Minecarts (including vanilla ones!)
+- Re-Added Steel Armor
+- Added vanilla recycling (1 nugget!) for steel tools, steel armor and the faraday suit
+- Change minimum Forge version to 28.2.3
+- Fixed crash due to Minecart render
+- Fixed various rendering glitches
+- Fixed buckets not working
+- Fixed cloche and other dummy-constructed blocks replacing existing blocks
+- Fixed links in the manual's search function
+- Fixed extracting conveyors not being able to rotate their input points
+- Fixed missing vanilla materials in excavator minerals
+
+##### Version 0.14-93 - BUILT
+- Initial alpha release for Minecraft 1.14.4
+
 ##### Version 0.12-90
 - Items on conveyors now despawn after the usual time when stuck against a block (Malte)
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
