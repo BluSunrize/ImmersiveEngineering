@@ -95,6 +95,7 @@ public class BlockLoot extends LootGenerator
 		registerMultiblock(Multiblocks.alloySmelter);
 		registerMultiblock(Multiblocks.blastFurnaceAdv);
 
+		registerMultiblock(Multiblocks.metalPress);
 		registerMultiblock(Multiblocks.crusher);
 		registerMultiblock(Multiblocks.tank);
 		registerMultiblock(Multiblocks.silo);
