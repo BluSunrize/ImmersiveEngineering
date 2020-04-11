@@ -24,7 +24,8 @@ import net.minecraft.tileentity.BannerTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -87,10 +88,11 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 		return new float[]{.25f, 0, .25f, .75f, 1, .75f};
 	}
 
+	@Nonnull
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getAdvancedCollisionBounds()
 	{
-		return ImmutableList.of();
+		return VoxelShapes.empty();
 	}
 
 	@Override

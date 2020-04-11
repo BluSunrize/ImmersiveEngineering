@@ -21,6 +21,8 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
+import blusunrize.immersiveengineering.common.util.shapes.MultiblockCacheKey;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,6 +34,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -228,12 +231,20 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
+	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(MixerTileEntity::getShape);
+
 	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	public VoxelShape getAdvancedSelectionBounds()
 	{
-		Direction fl = getFacing();
-		Direction fw = getFacing().rotateY();
-		if(getIsMirrored())
+		return SHAPES.get(new MultiblockCacheKey(this));
+	}
+
+	private static List<AxisAlignedBB> getShape(MultiblockCacheKey key)
+	{
+		BlockPos posInMultiblock = key.posInMultiblock;
+		Direction fl = key.facing;
+		Direction fw = key.facing.rotateY();
+		if(key.mirrored)
 			fw = fw.getOpposite();
 		if(new BlockPos(2, 0, 2).equals(posInMultiblock))
 		{
@@ -345,7 +356,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getAdvancedCollisionBounds()
 	{
 		return getAdvancedSelectionBounds();
 	}

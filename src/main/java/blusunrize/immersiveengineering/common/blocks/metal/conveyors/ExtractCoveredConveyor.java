@@ -11,9 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 import com.google.common.collect.Lists;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-
-import java.util.List;
+import net.minecraft.util.math.shapes.VoxelShape;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -36,8 +34,8 @@ public class ExtractCoveredConveyor extends ExtractConveyor
 	}
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes()
+	public VoxelShape getSelectionShape()
 	{
-		return Lists.newArrayList(FULL_BLOCK);
+		return FULL_BLOCK;
 	}
 }

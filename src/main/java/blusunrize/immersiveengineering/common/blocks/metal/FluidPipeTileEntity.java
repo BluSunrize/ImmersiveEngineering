@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -46,6 +47,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -574,30 +576,31 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		return null;
 	}
 
+	private static final CachedVoxelShapes<BoundingBoxKey> SHAPES = new CachedVoxelShapes<>(FluidPipeTileEntity::getBoxes);
+
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getAdvancedCollisionBounds()
+	{
+		return SHAPES.get(new BoundingBoxKey(true, this));
+	}
+
+	@Override
+	public VoxelShape getAdvancedSelectionBounds()
+	{
+		return SHAPES.get(new BoundingBoxKey(false, this));
+	}
+
+	private static List<AxisAlignedBB> getBoxes(BoundingBoxKey key)
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList();
-		if(hasCover())
+		if(key.collisions&&key.hasCover)
 		{
 			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).grow(-.03125f));
 			return list;
 		}
-		return getBoxes(true);
-	}
-
-	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
-	{
-		return getBoxes(false);
-	}
-
-	private List<AxisAlignedBB> getBoxes(boolean collision)
-	{
-		List<AxisAlignedBB> list = Lists.newArrayList();
-		byte availableConnections = getAvailableConnectionByte();
-		byte activeConnections = connections;
-		double[] baseAABB = hasCover()?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
+		byte availableConnections = key.availableConnections;
+		byte activeConnections = key.connections;
+		double[] baseAABB = key.hasCover?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
 		for(Direction d : Direction.VALUES)
 		{
 			int i = d.ordinal();
@@ -608,7 +611,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 							i==4?0: i==5?0.75: 0.25, i==0?0: i==1?0.75: 0.25, i==2?0: i==3?0.75: 0.25,
 							i==4?0.25: i==5?1: 0.75, i==0?0.25: i==1?1: 0.75, i==2?0.25: i==3?1: 0.75
 					));
-				if(((activeConnections&1)==0&&!collision)||getConnectionStyle(d)==1)
+				if(((activeConnections&1)==0&&!key.collisions)||key.connectionStyles.get(d)==1)
 					list.add(new AxisAlignedBB(
 							i==4?0: i==5?0.875: 0.125, i==0?0: i==1?0.875: 0.125, i==2?0: i==3?0.875: 0.125,
 							i==4?0.125: i==5?1: 0.875, i==0?0.125: i==1?1: 0.875, i==2?0.125: i==3?1: 0.875
@@ -619,6 +622,44 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		}
 		list.add(new AxisAlignedBB(baseAABB[4], baseAABB[0], baseAABB[2], baseAABB[5], baseAABB[1], baseAABB[3]));
 		return list;
+	}
+
+	private static class BoundingBoxKey
+	{
+		private final boolean collisions;
+		private final byte connections;
+		private final byte availableConnections;
+		private final boolean hasCover;
+		private final Map<Direction, Integer> connectionStyles = new EnumMap<>(Direction.class);
+
+		private BoundingBoxKey(boolean collisions, FluidPipeTileEntity te)
+		{
+			this.collisions = collisions;
+			this.connections = te.connections;
+			this.availableConnections = te.getAvailableConnectionByte();
+			this.hasCover = te.hasCover();
+			for(Direction d : Direction.VALUES)
+				connectionStyles.put(d, te.getConnectionStyle(d));
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			BoundingBoxKey that = (BoundingBoxKey)o;
+			return collisions==that.collisions&&
+					connections==that.connections&&
+					availableConnections==that.availableConnections&&
+					hasCover==that.hasCover&&
+					connectionStyles.equals(that.connectionStyles);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(collisions, connections, availableConnections, hasCover, connectionStyles);
+		}
 	}
 
 	public static HashMap<String, IEObjState> cachedOBJStates = new HashMap<>();
@@ -991,7 +1032,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			return true;
 		hitVec = hitVec.subtract(new Vec3d(pos));
 		Direction fd = side;
-		List<AxisAlignedBB> boxes = this.getAdvancedSelectionBounds();
+		List<AxisAlignedBB> boxes = getBoxes(new BoundingBoxKey(true, this));
 		for(AxisAlignedBB box : boxes)
 			if(box.grow(.002).contains(hitVec))
 			{

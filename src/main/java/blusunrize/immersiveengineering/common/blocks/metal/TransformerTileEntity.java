@@ -32,11 +32,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.MV_CATEGORY;
@@ -322,31 +324,45 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	boolean cachedMirrored = false;
-	private List<AxisAlignedBB> advSelectionBoxes = null;
+	private VoxelShape shape = null;
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	public VoxelShape getAdvancedSelectionBounds()
 	{
 		boolean mirrored = getIsMirrored();
-		if(dummy==2&&(advSelectionBoxes==null||cachedMirrored!=mirrored))
+		if(dummy==2&&(shape==null||cachedMirrored!=mirrored))
 		{
 			double offsetA = mirrored?getHigherOffset(): getLowerOffset();
 			double offsetB = mirrored?getLowerOffset(): getHigherOffset();
 			if(getFacing()==Direction.NORTH)
-				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(0, 0, .3125, .375, offsetB, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.625, 0, .3125, 1, offsetA, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				shape = VoxelShapes.combine(
+						VoxelShapes.create(0, 0, .3125, .375, offsetB, .6875),
+						VoxelShapes.create(.625, 0, .3125, 1, offsetA, .6875),
+						IBooleanFunction.OR
+				);
 			if(getFacing()==Direction.SOUTH)
-				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(0, 0, .3125, .375, offsetA, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.625, 0, .3125, 1, offsetB, .6875).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				shape = VoxelShapes.combine(
+						VoxelShapes.create(0, 0, .3125, .375, offsetA, .6875),
+						VoxelShapes.create(.625, 0, .3125, 1, offsetB, .6875),
+						IBooleanFunction.OR
+				);
 			if(getFacing()==Direction.WEST)
-				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(.3125, 0, 0, .6875, offsetA, .375).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.3125, 0, .625, .6875, offsetB, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				shape = VoxelShapes.combine(
+						VoxelShapes.create(.3125, 0, 0, .6875, offsetA, .375),
+						VoxelShapes.create(.3125, 0, .625, .6875, offsetB, 1),
+						IBooleanFunction.OR
+				);
 			if(getFacing()==Direction.EAST)
-				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(.3125, 0, 0, .6875, offsetB, .375).offset(getPos().getX(), getPos().getY(), getPos().getZ()), new AxisAlignedBB(.3125, 0, .625, .6875, offsetA, 1).offset(getPos().getX(), getPos().getY(), getPos().getZ()));
+				shape = VoxelShapes.combine(
+						VoxelShapes.create(.3125, 0, 0, .6875, offsetB, .375),
+						VoxelShapes.create(.3125, 0, .625, .6875, offsetA, 1),
+						IBooleanFunction.OR
+				);
 			cachedMirrored = mirrored;
 		}
 		else if(dummy!=2)
-		{
-			advSelectionBoxes = null;
-		}
-		return advSelectionBoxes;
+			shape = VoxelShapes.empty();
+		return shape;
 	}
 
 	@Override

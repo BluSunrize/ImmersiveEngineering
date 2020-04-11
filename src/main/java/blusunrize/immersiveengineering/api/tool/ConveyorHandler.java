@@ -34,6 +34,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -494,18 +496,18 @@ public class ConveyorHandler
 		{
 		}
 
-		AxisAlignedBB conveyorBounds = new AxisAlignedBB(0, 0, 0, 1, .125f, 1);
-		AxisAlignedBB highConveyorBounds = new AxisAlignedBB(0, 0, 0, 1, 1.125f, 1);
-		AxisAlignedBB FULL_BLOCK = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
+		VoxelShape conveyorBounds = VoxelShapes.create(0, 0, 0, 1, .125f, 1);
+		VoxelShape highConveyorBounds = VoxelShapes.create(0, 0, 0, 1, 1.125f, 1);
+		VoxelShape FULL_BLOCK = VoxelShapes.create(0, 0, 0, 1, 1, 1);
 
-		default List<AxisAlignedBB> getSelectionBoxes()
+		default VoxelShape getSelectionShape()
 		{
-			return getConveyorDirection()==ConveyorDirection.HORIZONTAL?Lists.newArrayList(conveyorBounds): Lists.newArrayList(highConveyorBounds);
+			return getConveyorDirection()==ConveyorDirection.HORIZONTAL?conveyorBounds: highConveyorBounds;
 		}
 
-		default List<AxisAlignedBB> getColisionBoxes()
+		default VoxelShape getCollisionShape()
 		{
-			return Lists.newArrayList(conveyorBounds);
+			return conveyorBounds;
 		}
 
 		CompoundNBT writeConveyorNBT();

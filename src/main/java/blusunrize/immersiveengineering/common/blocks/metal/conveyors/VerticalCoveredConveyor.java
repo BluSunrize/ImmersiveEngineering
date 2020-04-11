@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -21,24 +21,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -63,21 +57,38 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 		return true;
 	}
 
-	static final AxisAlignedBB[] topBounds = {new AxisAlignedBB(0, 0, .75, 1, 1, 1), new AxisAlignedBB(0, 0, 0, 1, 1, .25), new AxisAlignedBB(.75, 0, 0, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .25, 1, 1)};
-	static final AxisAlignedBB[] topBoundsCorner = {new AxisAlignedBB(0, .75, .75, 1, 1, 1), new AxisAlignedBB(0, .75, 0, 1, 1, .25), new AxisAlignedBB(.75, .75, 0, 1, 1, 1), new AxisAlignedBB(0, .75, 0, .25, 1, 1)};
+	static final AxisAlignedBB[] topBounds = {
+			new AxisAlignedBB(0, 0, .75, 1, 1, 1),
+			new AxisAlignedBB(0, 0, 0, 1, 1, .25),
+			new AxisAlignedBB(.75, 0, 0, 1, 1, 1),
+			new AxisAlignedBB(0, 0, 0, .25, 1, 1)
+	};
+	static final AxisAlignedBB[] topBoundsCorner = {
+			new AxisAlignedBB(0, .75, .75, 1, 1, 1),
+			new AxisAlignedBB(0, .75, 0, 1, 1, .25),
+			new AxisAlignedBB(.75, .75, 0, 1, 1, 1),
+			new AxisAlignedBB(0, .75, 0, .25, 1, 1)
+	};
+
+	private static final CachedVoxelShapes<Pair<Boolean, Direction>> SHAPES = new CachedVoxelShapes<>(VerticalCoveredConveyor::getBoxes);
 
 	@Override
-	public List<AxisAlignedBB> getColisionBoxes()
+	public VoxelShape getCollisionShape()
 	{
-		ArrayList list = new ArrayList();
-		boolean bottom = renderBottomBelt(getTile(), getFacing());
-		if(getFacing().ordinal() > 1)
+		return SHAPES.get(Pair.of(renderBottomBelt(getTile(), getFacing()), getFacing()));
+	}
+
+	private static List<AxisAlignedBB> getBoxes(Pair<Boolean, Direction> key)
+	{
+		List<AxisAlignedBB> list = new ArrayList<>();
+		boolean bottom = key.getLeft();
+		if(key.getRight().ordinal() > 1)
 		{
-			list.add(verticalBounds[getFacing().ordinal()-2]);
-			list.add((bottom?topBoundsCorner: topBounds)[getFacing().ordinal()-2]);
+			list.add(verticalBounds[key.getRight().ordinal()-2]);
+			list.add((bottom?topBoundsCorner: topBounds)[key.getRight().ordinal()-2]);
 		}
 		if(bottom||list.isEmpty())
-			list.add(conveyorBounds);
+			list.add(conveyorBounds.getBoundingBox());
 		return list;
 	}
 
@@ -85,7 +96,7 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
 	{
-		boolean renderBottom = getTile()!=null&&this.renderBottomBelt(getTile(), getFacing());
+		boolean renderBottom = getTile()!=null&&renderBottomBelt(getTile(), getFacing());
 		boolean[] walls;
 		if(renderBottom)
 		{

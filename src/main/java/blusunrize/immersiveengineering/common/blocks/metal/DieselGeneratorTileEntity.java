@@ -20,6 +20,8 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
+import blusunrize.immersiveengineering.common.util.shapes.MultiblockCacheKey;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,6 +33,7 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -191,10 +194,16 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	@Override
 	public float[] getBlockBounds()
 	{
-		Direction fl = getFacing();
+		return getBlockBounds(new MultiblockCacheKey(this));
+	}
+
+	public static float[] getBlockBounds(MultiblockCacheKey key)
+	{
+		Direction fl = key.facing;
 		Direction fw = fl.rotateY();
-		if(getIsMirrored())
+		if(key.mirrored)
 			fw = fw.getOpposite();
+		BlockPos posInMultiblock = key.posInMultiblock;
 
 		if(new BlockPos(1, 0, 4).equals(posInMultiblock))
 			return new float[]{fl==Direction.WEST?-.625f: 0, .5f, fl==Direction.NORTH?-.625f: 0, fl==Direction.EAST?1.375f: 1, 1.5f, fl==Direction.SOUTH?1.375f: 1};
@@ -246,12 +255,20 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 
 	}
 
+	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(DieselGeneratorTileEntity::getShape);
+
 	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	public VoxelShape getAdvancedSelectionBounds()
 	{
-		Direction fl = getFacing();
+		return SHAPES.get(new MultiblockCacheKey(this));
+	}
+
+	private static List<AxisAlignedBB> getShape(MultiblockCacheKey key)
+	{
+		BlockPos posInMultiblock = key.posInMultiblock;
+		Direction fl = key.facing;
 		Direction fw = fl.rotateY();
-		if(getIsMirrored())
+		if(key.mirrored)
 			fw = fw.getOpposite();
 
 		if(new BlockPos(1, 1, 4).equals(posInMultiblock))
@@ -270,7 +287,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 
 		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
 		{
-			float[] defaultBounds = this.getBlockBounds();
+			float[] defaultBounds = getBlockBounds(key);
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(defaultBounds[0], defaultBounds[1], defaultBounds[2], defaultBounds[3], defaultBounds[4], defaultBounds[5]));
 			list.add(new AxisAlignedBB(fw==Direction.EAST?.5f: fw==Direction.WEST?0: .3125f, .25f, fw==Direction.SOUTH?.5f: fw==Direction.NORTH?0: .3125f, fw==Direction.EAST?1: fw==Direction.WEST?.5f: .6875f, .75f, fw==Direction.SOUTH?1: fw==Direction.NORTH?.5f: .6875f));
 			list.add(new AxisAlignedBB(fw==Direction.EAST?.6875f: fw==Direction.WEST?.1875f: .4375f, -.5f, fw==Direction.SOUTH?.6875f: fw==Direction.NORTH?.1875f: .4375f, fw==Direction.EAST?.8125f: fw==Direction.WEST?.3125f: .5625f, .25f, fw==Direction.SOUTH?.8125f: fw==Direction.NORTH?.3125f: .5625f));
@@ -279,7 +296,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() < 4)
 		{
-			float[] defaultBounds = this.getBlockBounds();
+			float[] defaultBounds = getBlockBounds(key);
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(defaultBounds[0], defaultBounds[1], defaultBounds[2], defaultBounds[3], defaultBounds[4], defaultBounds[5]));
 			if(posInMultiblock.getX()==2)
 				fw = fw.getOpposite();
@@ -330,7 +347,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getAdvancedCollisionBounds()
 	{
 		return getAdvancedSelectionBounds();
 	}

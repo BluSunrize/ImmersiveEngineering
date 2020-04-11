@@ -342,21 +342,12 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	@SuppressWarnings("deprecation")
 	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
 	{
-		//TODO caching?
 		if(state.getBlock()==this)
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof IAdvancedCollisionBounds)
 			{
-				List<AxisAlignedBB> bounds = ((IAdvancedCollisionBounds)te).getAdvancedCollisionBounds();
-				if(bounds!=null&&!bounds.isEmpty())
-				{
-					VoxelShape ret = VoxelShapes.empty();
-					for(AxisAlignedBB aabb : bounds)
-						if(aabb!=null)
-							ret = VoxelShapes.combineAndSimplify(ret, VoxelShapes.create(aabb), IBooleanFunction.OR);
-					return ret;
-				}
+				return ((IAdvancedCollisionBounds)te).getAdvancedCollisionBounds();
 			}
 			if(te instanceof IBlockBounds)
 			{
@@ -378,21 +369,12 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof IAdvancedSelectionBounds)
-			{
-				List<AxisAlignedBB> bounds = ((IAdvancedSelectionBounds)te).getAdvancedSelectionBounds();
-				if(bounds!=null&&!bounds.isEmpty())
-				{
-					VoxelShape ret = VoxelShapes.empty();
-					for(AxisAlignedBB aabb : bounds)
-						if(aabb!=null)
-							ret = VoxelShapes.combineAndSimplify(ret, VoxelShapes.create(aabb), IBooleanFunction.OR);
-					return ret;
-				}
-			}
+				return ((IAdvancedSelectionBounds)te).getAdvancedSelectionBounds();
 		}
 		return super.getRaytraceShape(state, world, pos);
 	}
 
+	//TODO remove? Vanilla knows about the advanced bounds now...
 	@Nullable
 	@Override
 	public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original)
@@ -400,15 +382,15 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IAdvancedSelectionBounds)
 		{
-			List<AxisAlignedBB> list = ((IAdvancedSelectionBounds)te).getAdvancedSelectionBounds();
-			if(list!=null&&!list.isEmpty())
+			List<AxisAlignedBB> list = ((IAdvancedSelectionBounds)te).getAdvancedSelectionBounds().toBoundingBoxList();
+			if(!list.isEmpty())
 			{
 				RayTraceResult min = null;
 				double minDist = Double.POSITIVE_INFINITY;
 				for(AxisAlignedBB aabb : list)
 				{
 					BlockRayTraceResult mop = VoxelShapes.create(aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()))
-																							 .rayTrace(start, end, pos);
+							.rayTrace(start, end, pos);
 					if(mop!=null)
 					{
 						//double dist = mop.hitVec.squareDistanceTo(start);

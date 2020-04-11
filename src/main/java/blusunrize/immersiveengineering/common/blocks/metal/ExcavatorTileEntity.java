@@ -22,6 +22,8 @@ import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
+import blusunrize.immersiveengineering.common.util.shapes.MultiblockCacheKey;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
@@ -39,6 +41,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootContext.Builder;
@@ -334,12 +337,20 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
+	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(ExcavatorTileEntity::getShape);
+
 	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	public VoxelShape getAdvancedSelectionBounds()
 	{
-		Direction fl = getFacing();
-		Direction fw = getFacing().rotateY();
-		if(getIsMirrored())
+		return SHAPES.get(new MultiblockCacheKey(this));
+	}
+
+	private static List<AxisAlignedBB> getShape(MultiblockCacheKey key)
+	{
+		BlockPos posInMultiblock = key.posInMultiblock;
+		Direction fl = key.facing;
+		Direction fw = key.facing.rotateY();
+		if(key.mirrored)
 			fw = fw.getOpposite();
 
 		if(posInMultiblock.getX()==2&&posInMultiblock.getZ()==4)
@@ -375,7 +386,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getAdvancedCollisionBounds()
 	{
 		return getAdvancedSelectionBounds();
 	}

@@ -32,6 +32,9 @@ import net.minecraft.util.Direction.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
@@ -41,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.putVertexData;
 import static net.minecraft.util.Direction.*;
@@ -258,21 +262,21 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		return axis.getAxis()==Axis.Y;
 	}
 
-	private List<AxisAlignedBB> bounds = null;
+	private VoxelShape bounds = null;
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	public VoxelShape getAdvancedSelectionBounds()
 	{
 		return getBounds();
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getAdvancedCollisionBounds()
 	{
 		return getBounds();
 	}
 
-	private List<AxisAlignedBB> getBounds()
+	private VoxelShape getBounds()
 	{
 		if(bounds==null)
 		{
@@ -289,9 +293,14 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 						new AxisAlignedBB(0, 1-lowerH, 0, 1, 1, 1),
 						new AxisAlignedBB(0, 1-upperH, 0, 1, 1-lowerH, .5)
 				);
-			bounds = basic.stream()
-					.map(aabb -> Utils.transformAABB(aabb, facing))
-					.collect(ImmutableList.toImmutableList());
+			bounds = VoxelShapes.empty();
+			for(AxisAlignedBB aabb : basic)
+			{
+				AxisAlignedBB transformed = Utils.transformAABB(aabb, facing);
+				VoxelShape subShape = VoxelShapes.create(transformed);
+				bounds = VoxelShapes.combine(bounds, subShape, IBooleanFunction.OR);
+			}
+			bounds = bounds.simplify();
 		}
 		return bounds;
 	}

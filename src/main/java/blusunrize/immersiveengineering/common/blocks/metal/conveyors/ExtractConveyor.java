@@ -34,6 +34,9 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -286,27 +289,30 @@ public class ExtractConveyor extends BasicConveyor
 	}
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes()
+	public VoxelShape getSelectionShape()
 	{
-		List<AxisAlignedBB> list = Lists.newArrayList(conveyorBounds);
+		VoxelShape ret = conveyorBounds;
 		if(this.extension < 0)
 			this.extension = getExtensionIntoBlock(getTile());
+		VoxelShape extensionShape = null;
 		switch(getExtractDirection())
 		{
 			case NORTH:
-				list.add(new AxisAlignedBB(.0625, .125, -extension, .9375, .75, .375-extension));
+				extensionShape = VoxelShapes.create(.0625, .125, -extension, .9375, .75, .375-extension);
 				break;
 			case SOUTH:
-				list.add(new AxisAlignedBB(.0625, .125, .625+extension, .9375, .75, 1+extension));
+				extensionShape = VoxelShapes.create(.0625, .125, .625+extension, .9375, .75, 1+extension);
 				break;
 			case WEST:
-				list.add(new AxisAlignedBB(-extension, .125, .0625, .375-extension, .75, .9375));
+				extensionShape = VoxelShapes.create(-extension, .125, .0625, .375-extension, .75, .9375);
 				break;
 			case EAST:
-				list.add(new AxisAlignedBB(.625+extension, .125, .0625, 1+extension, .75, .9375));
+				extensionShape = VoxelShapes.create(.625+extension, .125, .0625, 1+extension, .75, .9375);
 				break;
 		}
-		return list;
+		if(extensionShape!=null)
+			ret = VoxelShapes.combineAndSimplify(ret, extensionShape, IBooleanFunction.OR);
+		return ret;
 	}
 
 	@Override

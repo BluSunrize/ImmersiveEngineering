@@ -31,10 +31,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -45,15 +45,12 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 public class IEBlockInterfaces
@@ -341,13 +338,13 @@ public class IEBlockInterfaces
 
 	public interface IAdvancedSelectionBounds extends IBlockBounds
 	{
-		List<AxisAlignedBB> getAdvancedSelectionBounds();
+		VoxelShape getAdvancedSelectionBounds();
 	}
 
 	public interface IAdvancedCollisionBounds extends IBlockBounds
 	{
-		@Nullable
-		List<AxisAlignedBB> getAdvancedCollisionBounds();
+		@Nonnull
+		VoxelShape getAdvancedCollisionBounds();
 	}
 
 	//TODO move a lot of this to block states!

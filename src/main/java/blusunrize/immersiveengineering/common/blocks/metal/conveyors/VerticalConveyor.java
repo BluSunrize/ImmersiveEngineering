@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -32,10 +33,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
@@ -89,7 +92,7 @@ public class VerticalConveyor extends BasicConveyor
 		return key;
 	}
 
-	boolean renderBottomBelt(TileEntity tile, Direction facing)
+	static boolean renderBottomBelt(TileEntity tile, Direction facing)
 	{
 		TileEntity te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0));
 		if(te instanceof IConveyorTile&&((IConveyorTile)te).getConveyorSubtype()!=null)
@@ -102,7 +105,7 @@ public class VerticalConveyor extends BasicConveyor
 		return false;
 	}
 
-	protected boolean isInwardConveyor(TileEntity tile, Direction f)
+	protected static boolean isInwardConveyor(TileEntity tile, Direction f)
 	{
 		TileEntity te = tile.getWorld().getTileEntity(tile.getPos().offset(f));
 		if(te instanceof IConveyorTile)
@@ -269,28 +272,34 @@ public class VerticalConveyor extends BasicConveyor
 			((ItemEntity)entity).setPickupDelay(10);
 	}
 
-	static final AxisAlignedBB[] verticalBounds = {new AxisAlignedBB(0, 0, 0, 1, 1, .125f), new AxisAlignedBB(0, 0, .875f, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .125f, 1, 1), new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)};
+	static final AxisAlignedBB[] verticalBounds = {
+			new AxisAlignedBB(0, 0, 0, 1, 1, .125f),
+			new AxisAlignedBB(0, 0, .875f, 1, 1, 1),
+			new AxisAlignedBB(0, 0, 0, .125f, 1, 1),
+			new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)
+	};
+	private static final CachedVoxelShapes<Pair<Direction, Boolean>> SHAPES = new CachedVoxelShapes<>(VerticalConveyor::getShapes);
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes()
+	public VoxelShape getSelectionShape()
 	{
-		ArrayList list = new ArrayList();
-		if(getFacing().ordinal() > 1)
-			list.add(verticalBounds[getFacing().ordinal()-2]);
-		if(renderBottomBelt(getTile(), getFacing())||list.isEmpty())
-			list.add(conveyorBounds);
+		return SHAPES.get(Pair.of(getFacing(), renderBottomBelt(getTile(), getFacing())));
+	}
+
+	private static List<AxisAlignedBB> getShapes(Pair<Direction, Boolean> key)
+	{
+		List<AxisAlignedBB> list = new ArrayList<>();
+		if(key.getLeft().ordinal() > 1)
+			list.add(verticalBounds[key.getLeft().ordinal()-2]);
+		if(key.getRight()||list.isEmpty())
+			list.add(conveyorBounds.getBoundingBox());
 		return list;
 	}
 
 	@Override
-	public List<AxisAlignedBB> getColisionBoxes()
+	public VoxelShape getCollisionShape()
 	{
-		ArrayList list = new ArrayList();
-		if(getFacing().ordinal() > 1)
-			list.add(verticalBounds[getFacing().ordinal()-2]);
-		if(renderBottomBelt(getTile(), getFacing())||list.isEmpty())
-			list.add(conveyorBounds);
-		return list;
+		return getSelectionShape();
 	}
 
 	@Override

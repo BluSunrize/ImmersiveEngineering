@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -39,6 +40,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,6 +50,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -226,38 +230,65 @@ public class BasicConveyor implements IConveyorBelt
 
 	/* ============ AABB ============ */
 
-	static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
+	static final VoxelShape topBox = VoxelShapes.create(0, .75, 0, 1, 1, 1);
+
+	private static final CachedVoxelShapes<Pair<Boolean, Direction>> SHAPES = new CachedVoxelShapes<>(BasicConveyor::getBoxes);
 
 	@Override
-	public List<AxisAlignedBB> getColisionBoxes()
+	public VoxelShape getCollisionShape()
 	{
-		List<AxisAlignedBB> list = IConveyorBelt.super.getColisionBoxes();
+		VoxelShape ret = IConveyorBelt.super.getCollisionShape();
 		if(allowCovers())
+		{
+			VoxelShape other;
 			if(getConveyorDirection()==ConveyorDirection.HORIZONTAL)
-				list.add(topBox);
+				other = topBox;
 			else
 			{
 				boolean up = getConveyorDirection()==ConveyorDirection.UP;
-				list.add(new AxisAlignedBB((getFacing()==Direction.WEST&&!up)||(getFacing()==Direction.EAST&&up)?.5: 0, 1.75, (getFacing()==Direction.NORTH&&!up)||(getFacing()==Direction.SOUTH&&up)?.5: 0, (getFacing()==Direction.WEST&&up)||(getFacing()==Direction.EAST&&!up)?.5: 1, 2, (getFacing()==Direction.NORTH&&up)||(getFacing()==Direction.SOUTH&&!up)?.5: 1));
-				list.add(new AxisAlignedBB((getFacing()==Direction.WEST&&up)||(getFacing()==Direction.EAST&&!up)?.5: 0, 1.25, (getFacing()==Direction.NORTH&&up)||(getFacing()==Direction.SOUTH&&!up)?.5: 0, (getFacing()==Direction.WEST&&!up)||(getFacing()==Direction.EAST&&up)?.5: 1, 1.5, (getFacing()==Direction.NORTH&&!up)||(getFacing()==Direction.SOUTH&&up)?.5: 1));
+				other = SHAPES.get(Pair.of(up, getFacing()));
 			}
-		return list;
+			ret = VoxelShapes.combineAndSimplify(ret, other, IBooleanFunction.OR);
+		}
+		return ret;
 	}
 
 	@Override
-	public List<AxisAlignedBB> getSelectionBoxes()
+	public VoxelShape getSelectionShape()
 	{
 		if(allowCovers())
 			if(getConveyorDirection()==ConveyorDirection.HORIZONTAL)
-				return Lists.newArrayList(VoxelShapes.fullCube().getBoundingBox());
+				return VoxelShapes.fullCube();
 			else
 			{
 				boolean up = getConveyorDirection()==ConveyorDirection.UP;
-				return Lists.newArrayList(
-						new AxisAlignedBB((getFacing()==Direction.WEST&&!up)||(getFacing()==Direction.EAST&&up)?.5: 0, .5, (getFacing()==Direction.NORTH&&!up)||(getFacing()==Direction.SOUTH&&up)?.5: 0, (getFacing()==Direction.WEST&&up)||(getFacing()==Direction.EAST&&!up)?.5: 1, 2, (getFacing()==Direction.NORTH&&up)||(getFacing()==Direction.SOUTH&&!up)?.5: 1),
-						new AxisAlignedBB((getFacing()==Direction.WEST&&up)||(getFacing()==Direction.EAST&&!up)?.5: 0, 0, (getFacing()==Direction.NORTH&&up)||(getFacing()==Direction.SOUTH&&!up)?.5: 0, (getFacing()==Direction.WEST&&!up)||(getFacing()==Direction.EAST&&up)?.5: 1, 1.5, (getFacing()==Direction.NORTH&&!up)||(getFacing()==Direction.SOUTH&&up)?.5: 1));
+				return SHAPES.get(Pair.of(up, getFacing()));
 			}
-		return IConveyorBelt.super.getSelectionBoxes();
+		return IConveyorBelt.super.getSelectionShape();
+	}
+
+	private static List<AxisAlignedBB> getBoxes(Pair<Boolean, Direction> key)
+	{
+		boolean up = key.getLeft();
+		Direction facing = key.getRight();
+		return Lists.newArrayList(
+				new AxisAlignedBB(
+						(facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 0,
+						.5,
+						(facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 0,
+						(facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 1,
+						2,
+						(facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 1
+				),
+				new AxisAlignedBB(
+						(facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 0,
+						0,
+						(facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 0,
+						(facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 1,
+						1.5,
+						(facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 1
+				)
+		);
 	}
 
 

@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -41,6 +42,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
@@ -227,21 +229,28 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 		return new float[]{0, 0, 0, 1, 1, 1};
 	}
 
+	private static final CachedVoxelShapes<Boolean> SHAPES = new CachedVoxelShapes<>(EnergyMeterTileEntity::getShape);
+
 	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	public VoxelShape getAdvancedSelectionBounds()
+	{
+		return SHAPES.get(isDummy());
+	}
+
+	private static List<AxisAlignedBB> getShape(Boolean isDummy)
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList(
 				new AxisAlignedBB(.1875f, -.625f, .1875f, .8125f, .8125f, .8125f),
 				new AxisAlignedBB(0, -1, 0, 1, .375f-1, 1)
 		);
-		if(!isDummy())
+		if(!isDummy)
 			for(int i = 0; i < list.size(); ++i)
 				list.set(i, list.get(i).offset(0, 1, 0));
 		return list;
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getAdvancedCollisionBounds()
 	{
 		return getAdvancedSelectionBounds();
 	}
