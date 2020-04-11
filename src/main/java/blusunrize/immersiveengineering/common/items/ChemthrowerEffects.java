@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.util.IEPotions;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -23,6 +23,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -124,6 +125,35 @@ public class ChemthrowerEffects
 				world.setBlockState(pos, StoneDecoration.concreteSprayed.getDefaultState());
 				for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, aabb))
 					living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet, Integer.MAX_VALUE));
+			}
+		});
+
+		ChemthrowerHandler.registerEffect(fluidHerbicide, new ChemthrowerEffect()
+		{
+			@Override
+			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
+			{
+			}
+
+			@Override
+			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
+			{
+				if(!(mop instanceof BlockRayTraceResult))
+					return;
+				BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
+				BlockState hit = world.getBlockState(brtr.getPos());
+				// Kill leaves
+				if(hit.isIn(BlockTags.LEAVES))
+					world.removeBlock(brtr.getPos(), false);
+				// turn grass & farmland to dirt
+				else if(hit.getBlock() instanceof SnowyDirtBlock||hit.getBlock() instanceof FarmlandBlock)
+					world.setBlockState(brtr.getPos(), Blocks.DIRT.getDefaultState());
+
+				// Remove excess particles
+				AxisAlignedBB aabb = new AxisAlignedBB(brtr.getPos()).grow(.25);
+				List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesWithinAABB(ChemthrowerShotEntity.class, aabb);
+				for(ChemthrowerShotEntity shot : otherProjectiles)
+					shot.remove();
 			}
 		});
 

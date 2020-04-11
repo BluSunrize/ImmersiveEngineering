@@ -124,7 +124,7 @@ public class IEContent
 	public static Fluid fluidEthanol;
 	public static Fluid fluidBiodiesel;
 	public static Fluid fluidConcrete;
-
+	public static Fluid fluidHerbicide;
 	public static Fluid fluidPotion;
 
 
@@ -164,6 +164,8 @@ public class IEContent
 				new ResourceLocation("immersiveengineering:block/fluid/biodiesel_flow"), createBuilder(789, 1000));
 		fluidConcrete = new ConcreteFluid();
 		fluidPotion = new PotionFluid();
+		fluidHerbicide = new IEFluid("herbicide", new ResourceLocation("immersiveengineering:block/fluid/herbicide_still"),
+				new ResourceLocation("immersiveengineering:block/fluid/herbicide_flow"), createBuilder(789, 1000));
 
 		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);

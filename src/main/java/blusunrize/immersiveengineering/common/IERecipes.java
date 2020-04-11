@@ -741,6 +741,7 @@ public class IERecipes
 		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel, 16), new FluidStack(fluidPlantoil, 8), new FluidStack(fluidEthanol, 8), 80);
 
 		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(Fluids.WATER, 500), new Object[]{sand, sand, Items.CLAY_BALL, gravel}, 3200);
+		MixerRecipe.addRecipe(new FluidStack(fluidHerbicide, 500), new FluidStack(fluidEthanol, 500), new Object[]{IETags.saltpeterDust, IETags.getTagsFor(COPPER).dust}, 3200);
 
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.WET_SPONGE, 1), new ItemStack(Blocks.SPONGE, 1), new FluidStack(Fluids.WATER, 1000));
 
