@@ -95,7 +95,7 @@ public class ItemModels extends LoadedModelProvider
 		obj(MetalDevices.teslaCoil, rl("block/metal_device/teslacoil.obj"))
 				.transforms(rl("item/teslacoil"));
 		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
-			obj(chute.getValue(), rl("block/metal_device/chute.obj.ie"))
+			obj(chute.getValue(), rl("block/metal_device/chute_inv.obj"))
 					.texture("texture", modLoc("block/metal/sheetmetal_"+chute.getKey().tagName()))
 					.transforms(rl("item/block"));
 

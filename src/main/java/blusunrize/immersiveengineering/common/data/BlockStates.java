@@ -383,9 +383,8 @@ public class BlockStates extends BlockStateProvider
 		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
 		{
 			ModelFile model = ieObj("block/metal_device/chute_"+chute.getKey().tagName(), rl("block/metal_device/chute.obj.ie"))
-					.texture("texture", rl("block/metal/sheetmetal_"+chute.getKey().tagName()));
-//			createRotatedBlock(chute.getValue(), state -> model,
-//					IEProperties.FACING_HORIZONTAL, ImmutableList.of());
+					.texture("texture", rl("block/metal/sheetmetal_"+chute.getKey().tagName()))
+					.texture("particle", rl("block/metal/sheetmetal_"+chute.getKey().tagName()));
 			simpleBlock(chute.getValue(), model);
 		}
 

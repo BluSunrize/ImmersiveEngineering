@@ -3,7 +3,7 @@
     "texture": "immersiveengineering:block/metal/sheetmetal_aluminum"
   },
   "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/metal_device/chute.obj.ie",
+  "model": "immersiveengineering:models/block/metal_device/chute_inv.obj",
   "flip-v": true,
   "transform": {
     "thirdperson_righthand": {

@@ -112,14 +112,14 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 			if(opposedChute)
 				return;
 
-			long time = System.currentTimeMillis();
-			String hash = Integer.toHexString(getPos().hashCode());
+			long time = world.getGameTime();
+			long nbt_pos = getPos().toLong();
 
 			boolean prevent = entity.getPersistentData().contains(NBT_POS)
-					&&hash.equals(entity.getPersistentData().getString(NBT_POS))
-					&&time-entity.getPersistentData().getLong(NBT_TIME) < 1000;
+					&&nbt_pos==entity.getPersistentData().getLong(NBT_POS)
+					&&time-entity.getPersistentData().getLong(NBT_TIME) < 20;
 			// glitch timer resets after 60 seconds
-			boolean glitched = entity.getPersistentData().contains(NBT_GLITCH)&&time-entity.getPersistentData().getLong(NBT_GLITCH) < 60000;
+			boolean glitched = entity.getPersistentData().contains(NBT_GLITCH)&&time-entity.getPersistentData().getLong(NBT_GLITCH) < 1200;
 
 			if(entity.getWidth() > 0.75||entity.getHeight() > 0.75)
 			{
@@ -149,7 +149,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 			if(!contact&&!prevent&&!glitched)
 			{
 				world.playSound(null, entity.posX, entity.posY, entity.posZ, IESounds.chute, SoundCategory.BLOCKS, .6f+(.4f*world.rand.nextFloat()), .5f+(.5f*world.rand.nextFloat()));
-				entity.getPersistentData().putString(NBT_POS, hash);
+				entity.getPersistentData().putLong(NBT_POS, nbt_pos);
 				entity.getPersistentData().putLong(NBT_TIME, time);
 			}
 		}

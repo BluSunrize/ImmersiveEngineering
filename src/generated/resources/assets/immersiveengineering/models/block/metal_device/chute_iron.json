@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "#texture",
+    "particle": "immersiveengineering:block/metal/sheetmetal_iron",
     "texture": "immersiveengineering:block/metal/sheetmetal_iron"
   },
   "loader": "immersiveengineering:ie_obj",
