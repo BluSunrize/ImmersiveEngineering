@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.IERecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,6 +24,9 @@ public class IEDataGenerator
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent event)
 	{
+		// To work around the fact that some recipe generators need at least some recipes to be registered
+		// TODO remove once we have JSON-based machine recipes
+		IERecipes.readdRecipes();
 		DataGenerator gen = event.getGenerator();
 		if(event.includeServer())
 		{

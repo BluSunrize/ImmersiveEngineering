@@ -123,7 +123,7 @@ public class EventHandler
 	public void onTagsUpdated(TagsUpdatedEvent tagsChanged)
 	{
 		if(EffectiveSide.get().isServer())
-			IERecipes.addTagBasedRecipes();
+			IERecipes.readdRecipes();
 	}
 
 	@SubscribeEvent

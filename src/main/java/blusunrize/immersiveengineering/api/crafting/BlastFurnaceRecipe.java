@@ -88,8 +88,10 @@ public class BlastFurnaceRecipe
 
 	public static BlastFurnaceFuel addBlastFuel(Object fuel, int burnTime)
 	{
-		BlastFurnaceFuel entry = new BlastFurnaceFuel(ApiUtils.createIngredientStack(fuel), burnTime);
-		blastFuels.add(entry);
+		IngredientStack input = ApiUtils.createIngredientStack(fuel);
+		BlastFurnaceFuel entry = new BlastFurnaceFuel(input, burnTime);
+		if(input.isValid())
+			blastFuels.add(entry);
 		return entry;
 	}
 

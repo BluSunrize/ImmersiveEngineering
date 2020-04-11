@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe.SecondaryOutput;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionChorus;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionHemp;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
@@ -24,21 +25,28 @@ import blusunrize.immersiveengineering.common.crafting.MetalPressUnpackingRecipe
 import blusunrize.immersiveengineering.common.crafting.OreCrushingRecipe;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEBaseItem;
+import blusunrize.immersiveengineering.common.items.IEItems;
+import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import javax.annotation.Nonnull;
@@ -48,6 +56,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
+import static blusunrize.immersiveengineering.common.IEContent.*;
 import static blusunrize.immersiveengineering.common.blocks.EnumMetals.*;
 import static blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals.ores;
 import static blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals.storage;
@@ -58,7 +67,7 @@ import static blusunrize.immersiveengineering.common.items.IEItems.Molds.*;
 
 public class IERecipes
 {
-	public static void initBlueprintRecipes()
+	private static void initBlueprintRecipes()
 	{
 		//
 		//MATERIALS
@@ -162,7 +171,7 @@ public class IERecipes
 		BlueprintCraftingRecipe.addVillagerTrade("electrode", new ItemStack(Items.EMERALD, 1));
 	}
 
-	public static void initBlastFurnaceRecipes()
+	private static void initBlastFurnaceRecipes()
 	{
 		Tag<Item> ironIngot = IETags.getTagsFor(IRON).ingot;
 		Tag<Block> ironBlock = IETags.getTagsFor(IRON).storage;
@@ -176,7 +185,7 @@ public class IERecipes
 		BlastFurnaceRecipe.addBlastFuel(IETags.getItemTag(IETags.charCoalBlocks), 300*10);
 	}
 
-	public static void initClocheRecipes()
+	private static void initClocheRecipes()
 	{
 		ClocheRecipe.registerSoilTexture(new ItemStack[]{new ItemStack(Items.DIRT), new ItemStack(Items.COARSE_DIRT),
 				new ItemStack(Items.GRASS_BLOCK), new ItemStack(Items.GRASS_PATH),}, new ResourceLocation("block/farmland_moist"));
@@ -217,7 +226,7 @@ public class IERecipes
 				ClocheRecipe.RENDER_FUNCTION_GENERIC.apply(Blocks.BROWN_MUSHROOM));
 	}
 
-	public static void initMetalPressRecipes()
+	private static void initMetalPressRecipes()
 	{
 		//Bullet casing
 		MetalPressRecipe.addRecipe(new ItemStack(emptyCasing, 2), IETags.getTagsFor(COPPER).ingot, new ItemStack(moldBulletCasing), 2400);
@@ -243,7 +252,7 @@ public class IERecipes
 	public static HashMap<String, SecondaryOutput> oreOutputSecondaries = new HashMap<>();
 	public static ArrayList<String> hammerCrushingList = new ArrayList<>();
 
-	public static void initCrusherRecipes()
+	private static void initCrusherRecipes()
 	{
 		oreOutputSecondaries.put("iron", new SecondaryOutput(getDust("nickel"), .1f));
 		oreOutputSecondaries.put("gold", new SecondaryOutput(getCrystal("cinnabar"), .05f));
@@ -348,10 +357,44 @@ public class IERecipes
 		return new ResourceLocation("forge", "nuggets/"+type);
 	}
 
-	public static void addTagBasedRecipes()
+	public static void readdRecipes()
 	{
-		//TODO remove recipes from previous world loads!
-		boolean allowHammerCrushing = !IEConfig.TOOLS.disableHammerCrushing.get();
+		clearRecipes();
+		initCrusherRecipes();
+		addTagBasedRecipes();
+		initBlastFurnaceRecipes();
+		initMetalPressRecipes();
+		initAlloySmeltingRecipes();
+		initArcSmeltingRecipes();
+		initBlueprintRecipes();
+		initClocheRecipes();
+		addExcavatorVeins();
+		addMiscRecipes();
+	}
+
+	private static void clearRecipes()
+	{
+		AlloyRecipe.recipeList.clear();
+		ArcFurnaceRecipe.recipeList.clear();
+		BlastFurnaceRecipe.recipeList.clear();
+		BlueprintCraftingRecipe.recipeList.clear();
+		BottlingMachineRecipe.recipeList.clear();
+		ClocheRecipe.recipeList.clear();
+		CokeOvenRecipe.recipeList.clear();
+		CrusherRecipe.recipeList.clear();
+		FermenterRecipe.recipeList.clear();
+		MetalPressRecipe.recipeList.clear();
+		MixerRecipe.recipeList.clear();
+		RefineryRecipe.recipeList.clear();
+		SqueezerRecipe.recipeList.clear();
+
+		oreOutputModifier.clear();
+		oreOutputSecondaries.clear();
+		hammerCrushingList.clear();
+	}
+
+	private static void addTagBasedRecipes()
+	{
 		ComparableItemStack compMoldPlate = ApiUtils.createComparableItemStack(new ItemStack(moldPlate), false);
 		ComparableItemStack compMoldGear = ApiUtils.createComparableItemStack(new ItemStack(moldGear), false);
 		ComparableItemStack compMoldRod = ApiUtils.createComparableItemStack(new ItemStack(moldRod), false);
@@ -385,7 +428,7 @@ public class IERecipes
 					if(out!=null&&!out.isEmpty())
 					{
 						SecondaryOutput secondaries = oreOutputSecondaries.get(baseName);
-						addOreProcessingRecipe(out, baseName, 6000, true, secondaries);
+						addOreProcessingRecipe(out, baseName, 6000, secondaries);
 					}
 					out = arcOutputModifier.get(baseName);
 					if(out==null||out.isEmpty())
@@ -475,12 +518,12 @@ public class IERecipes
 		return r;
 	}
 
-	public static void addOreProcessingRecipe(ItemStack output, String ore, int energy, boolean ingot, @Nullable SecondaryOutput secondary)
+	public static void addOreProcessingRecipe(ItemStack output, String ore, int energy, @Nullable SecondaryOutput secondary)
 	{
-		if(ingot&&ApiUtils.isNonemptyItemTag(getIngot(ore)))
-			addCrusherRecipe(Utils.copyStackWithAmount(output, output.getCount()/2), getIngot(ore), (int)(energy*.6f));
 		if(secondary!=null)
 			addCrusherRecipe(output, getOre(ore), energy, secondary);
+		else
+			addCrusherRecipe(output, getOre(ore), energy);
 	}
 
 	public static CrusherRecipe addItemToOreDictCrusherRecipe(ResourceLocation tagOutput, int outSize, Object input, int energy)
@@ -493,18 +536,22 @@ public class IERecipes
 		return CrusherRecipe.addRecipe(Utils.copyStackWithAmount(out, outSize), input, energy);
 	}
 
-	public static void initAlloySmeltingRecipes()
+	private static void initAlloySmeltingRecipes()
 	{
 		//IE Alloys
-		addAlloyingRecipe(new ItemStack(ingots.get(CONSTANTAN), 2), "copper", 1, "nickel", 1, 200);
-		addAlloyingRecipe(new ItemStack(ingots.get(ELECTRUM), 2), "gold", 1, "silver", 1, 200);
+		addOreDictAlloyingRecipe(IETags.getTagsFor(CONSTANTAN).ingot, 2, "copper", 1, "nickel", 1, 200);
+		addOreDictAlloyingRecipe(IETags.getTagsFor(ELECTRUM).ingot, 2, "gold", 1, "silver", 1, 200);
 		//Common Alloys
 		addOreDictAlloyingRecipe(getIngot("invar"), 3, "iron", 2, "nickel", 1, 200);
 		addOreDictAlloyingRecipe(getIngot("bronze"), 4, "copper", 3, "tin", 1, 200);
 		addOreDictAlloyingRecipe(getIngot("brass"), 4, "copper", 3, "zinc", 1, 200);
 		//TODO addOreDictAlloyingRecipe(getIngot("blueAlloy"), 1, "silver", 1, "nikolite", 4, 200);
 		//TODO addOreDictAlloyingRecipe(getIngot("redAlloy"), 1, "copper", 1, "redstone", 4, 200);
+	}
 
+	public static void addOreDictAlloyingRecipe(Tag<Item> outName, int outSize, String input0, int size0, String input1, int size1, int time)
+	{
+		addOreDictAlloyingRecipe(outName.getId(), outSize, input0, size0, input1, size1, time);
 	}
 
 	public static void addOreDictAlloyingRecipe(ResourceLocation outName, int outSize, String input0, int size0, String input1, int size1, int time)
@@ -528,7 +575,7 @@ public class IERecipes
 	public static HashMap<String, ItemStack> arcOutputModifier = new HashMap<>();
 	public static HashSet<String> arcBlacklist = new HashSet<>();
 
-	public static void initArcSmeltingRecipes()
+	private static void initArcSmeltingRecipes()
 	{
 		//Steel
 		ArcFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), getIngot("iron"), new ItemStack(slag), 400, 512, getDust("coke"));
@@ -586,5 +633,117 @@ public class IERecipes
 	{
 		ArcFurnaceRecipe.addRecipe(out, getIngot(inputName), ItemStack.EMPTY, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
 		ArcFurnaceRecipe.addRecipe(out, getDust(inputName), ItemStack.EMPTY, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
+	}
+
+	private static void addExcavatorVeins()
+	{
+		/*EXCAVATOR*/
+		//TODO remove
+		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion.get();
+		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance.get();
+		ExcavatorHandler.defaultDimensionBlacklist = ImmutableSet.of();//IEConfig.MACHINES.excavator_dimBlacklist.get();
+		//TODO String sulfur = OreDictionary.doesOreNameExist(oreSulfur)?"oreSulfur: "dustSulfur;
+		ResourceLocation invalid = new ResourceLocation("immersiveengineering:invalid");
+		ResourceLocation sulfur = IERecipes.getDust("sulfur");
+		ResourceLocation oreIron = IERecipes.getOre("iron");
+		ResourceLocation oreNickel = IERecipes.getOre("nickel");
+		ResourceLocation oreTin = IERecipes.getOre("tin");
+		ResourceLocation oreGold = IERecipes.getOre("gold");
+		ResourceLocation oreAluminum = IERecipes.getOre("aluminum");
+		ResourceLocation oreTitanium = IERecipes.getOre("titanium");
+		ResourceLocation oreCopper = IERecipes.getOre("copper");
+		ResourceLocation orePlatinum = IERecipes.getOre("platinum");
+		ResourceLocation oreUranium = IERecipes.getOre("uranium");
+		ResourceLocation oreLead = IERecipes.getOre("lead");
+		//TODO is this the correct name?
+		ResourceLocation oreQuartz = IERecipes.getOre("quartz");
+		ResourceLocation oreIridium = IERecipes.getOre("iridium");
+		ResourceLocation orePlutonium = IERecipes.getOre("plutonium");
+		ResourceLocation oreCertusQuartz = IERecipes.getOre("certus_quartz");
+		ResourceLocation oreSilver = IERecipes.getOre("silver");
+		ResourceLocation oreSulfur = IERecipes.getOre("sulfur");
+		ResourceLocation oreLapis = IERecipes.getOre("lapis");
+		ResourceLocation oreRedstone = IERecipes.getOre("redstone");
+		ResourceLocation oreRuby = IERecipes.getOre("ruby");
+		ResourceLocation oreCinnabar = IERecipes.getOre("cinnabar");
+		ResourceLocation oreCoal = IERecipes.getOre("coal");
+		ResourceLocation oreDiamond = IERecipes.getOre("diamond");
+		ResourceLocation oreEmerald = IERecipes.getOre("emerald");
+		ResourceLocation oreYellorium = IERecipes.getOre("yellorium");
+		//TODO is this the correct name?
+		ResourceLocation blockClay = IERecipes.getStorageBlock("clay");
+		ResourceLocation sand = BlockTags.SAND.getId();
+		ResourceLocation gravel = Tags.Blocks.GRAVEL.getId();
+		ResourceLocation denseoreIron = invalid;
+		ResourceLocation denseoreAluminum = invalid;
+		ResourceLocation denseoreCopper = invalid;
+		ResourceLocation denseoreTin = invalid;
+		ResourceLocation denseoreGold = invalid;
+		ResourceLocation denseoreNickel = invalid;
+		ResourceLocation denseorePlatinum = invalid;
+		ResourceLocation denseoreLead = invalid;
+		ResourceLocation denseoreSilver = invalid;
+		ResourceLocation denseoreLapis = invalid;
+		ResourceLocation denseoreRedstone = invalid;
+		ResourceLocation denseoreCoal = invalid;
+		ResourceLocation denseoreUranium = invalid;
+
+		ExcavatorHandler.addMineral("Iron", 25, .1f, new ResourceLocation[]{oreIron, oreNickel, oreTin, denseoreIron}, new float[]{.5f, .25f, .20f, .05f});
+		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new ResourceLocation[]{oreIron, oreGold}, new float[]{.85f, .15f});
+		ExcavatorHandler.addMineral("Pyrite", 20, .1f, new ResourceLocation[]{oreIron, sulfur}, new float[]{.5f, .5f});
+		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new ResourceLocation[]{oreAluminum, oreTitanium, denseoreAluminum}, new float[]{.90f, .05f, .05f});
+		ExcavatorHandler.addMineral("Copper", 30, .2f, new ResourceLocation[]{oreCopper, oreGold, oreNickel, denseoreCopper}, new float[]{.65f, .25f, .05f, .05f});
+		ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new ResourceLocation[]{oreTin, denseoreTin}, new float[]{.95f, .05f});
+		ExcavatorHandler.addMineral("Gold", 20, .3f, new ResourceLocation[]{oreGold, oreCopper, oreNickel, denseoreGold}, new float[]{.65f, .25f, .05f, .05f});
+		ExcavatorHandler.addMineral("Nickel", 20, .3f, new ResourceLocation[]{oreNickel, orePlatinum, oreIron, denseoreNickel}, new float[]{.85f, .05f, .05f, .05f});
+		ExcavatorHandler.addMineral("Platinum", 5, .35f, new ResourceLocation[]{orePlatinum, oreNickel, oreIridium, denseorePlatinum}, new float[]{.40f, .30f, .15f, .1f});
+		ExcavatorHandler.addMineral("Uranium", 10, .35f, new ResourceLocation[]{oreUranium, oreLead, orePlutonium, denseoreUranium}, new float[]{.55f, .3f, .1f, .05f})
+				.addReplacement(oreUranium, oreYellorium);
+		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new ResourceLocation[]{oreQuartz, oreCertusQuartz}, new float[]{.6f, .4f});
+		ExcavatorHandler.addMineral("Galena", 15, .2f, new ResourceLocation[]{oreLead, oreSilver, oreSulfur, denseoreLead, denseoreSilver}, new float[]{.40f, .40f, .1f, .05f, .05f});
+		ExcavatorHandler.addMineral("Lead", 10, .15f, new ResourceLocation[]{oreLead, oreSilver, denseoreLead}, new float[]{.55f, .4f, .05f});
+		ExcavatorHandler.addMineral("Silver", 10, .2f, new ResourceLocation[]{oreSilver, oreLead, denseoreSilver}, new float[]{.55f, .4f, .05f});
+		ExcavatorHandler.addMineral("Lapis", 10, .2f, new ResourceLocation[]{oreLapis, oreIron, sulfur, denseoreLapis}, new float[]{.65f, .275f, .025f, .05f});
+		ExcavatorHandler.addMineral("Cinnabar", 15, .1f, new ResourceLocation[]{oreRedstone, denseoreRedstone, oreRuby, oreCinnabar, sulfur}, new float[]{.75f, .05f, .05f, .1f, .05f});
+		ExcavatorHandler.addMineral("Coal", 25, .1f, new ResourceLocation[]{oreCoal, denseoreCoal, oreDiamond, oreEmerald}, new float[]{.92f, .1f, .015f, .015f});
+		ExcavatorHandler.addMineral("Silt", 25, .05f, new ResourceLocation[]{blockClay, sand, gravel}, new float[]{.5f, .3f, .2f});
+	}
+
+	private static void addMiscRecipes()
+	{
+		/*MULTIBLOCK RECIPES*/
+		Tag<Block> coalBlock = Tags.Blocks.STORAGE_BLOCKS_COAL;
+		Tag<Block> logWood = BlockTags.LOGS;
+		ResourceLocation sand = BlockTags.SAND.getId();
+		ResourceLocation gravel = Tags.Blocks.GRAVEL.getId();
+		CokeOvenRecipe.addRecipe(new ItemStack(Ingredients.coalCoke), new ItemStack(Items.COAL), 1800, 500);
+		CokeOvenRecipe.addRecipe(new ItemStack(StoneDecoration.coke), coalBlock, 1800*9, 5000);
+		CokeOvenRecipe.addRecipe(new ItemStack(Items.CHARCOAL), logWood, 900, 250);
+
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), ItemStack.EMPTY, Items.WHEAT_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 60), ItemStack.EMPTY, Items.BEETROOT_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 40), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 20), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, IEItems.Misc.hempSeeds, 6400);
+		SqueezerRecipe.addRecipe(null, new ItemStack(Ingredients.dustHopGraphite, 1), new ItemStack(Ingredients.dustCoke, 8), 19200);
+		/* TODO
+		Fluid fluidBlood = FluidRegistry.getFluid("blood");
+		if(fluidBlood!=null)
+			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood, 5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
+		 */
+
+		Tag<Item> potatoes = Tags.Items.CROPS_POTATO;
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.SUGAR_CANE, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.MELON_SLICE, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, Items.APPLE, 6400);
+		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol, 80), ItemStack.EMPTY, potatoes, 6400);
+
+		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel, 16), new FluidStack(fluidPlantoil, 8), new FluidStack(fluidEthanol, 8), 80);
+
+		MixerRecipe.addRecipe(new FluidStack(fluidConcrete, 500), new FluidStack(Fluids.WATER, 500), new Object[]{sand, sand, Items.CLAY_BALL, gravel}, 3200);
+
+		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.WET_SPONGE, 1), new ItemStack(Blocks.SPONGE, 1), new FluidStack(Fluids.WATER, 1000));
+
+		IECompatModule.doModulesRecipes();
 	}
 }
