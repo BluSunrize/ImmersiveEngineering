@@ -168,6 +168,7 @@ public final class IEBlocks
 		public static Block turretGun;
 		public static Block cloche;
 		public static final Map<ResourceLocation, Block> CONVEYORS = new HashMap<>();
+		public static Map<EnumMetals, Block> chutes = new EnumMap<>(EnumMetals.class);
 	}
 
 	public static final class Connectors

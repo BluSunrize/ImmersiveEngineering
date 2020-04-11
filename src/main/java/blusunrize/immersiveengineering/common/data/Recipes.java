@@ -886,6 +886,14 @@ public class Recipes extends RecipeProvider
 				.key('b', Items.IRON_BARS)
 				.addCriterion("has_iron_plate", hasItem(IETags.getTagsFor(EnumMetals.IRON).plate))
 				.build(out);
+		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
+			ShapedRecipeBuilder.shapedRecipe(chute.getValue(), 12)
+					.patternLine("s s")
+					.patternLine("s s")
+					.patternLine("s s")
+					.key('s', IETags.getItemTag(IETags.getTagsFor(chute.getKey()).sheetmetal))
+					.addCriterion("has_plate", hasItem(IETags.getTagsFor(chute.getKey()).plate))
+					.build(out);
 	}
 
 	private void recipesConnectors(@Nonnull Consumer<IFinishedRecipe> out)
@@ -1818,13 +1826,13 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_"+toPath(IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)), hasItem(IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)))
 				.build(out);
 		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.maintenanceKit)
-			.patternLine("sc ")
-			.patternLine("fff")
-			.key('c', Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
-			.key('s', Tools.screwdriver)
-			.key('f', IETags.fabricHemp)
-			.addCriterion("has_"+toPath(Tools.wirecutter), hasItem(Tools.wirecutter))
-			.build(out);
+				.patternLine("sc ")
+				.patternLine("fff")
+				.key('c', Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+				.key('s', Tools.screwdriver)
+				.key('f', IETags.fabricHemp)
+				.addCriterion("has_"+toPath(Tools.wirecutter), hasItem(Tools.wirecutter))
+				.build(out);
 		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.shield)
 				.patternLine("sws")
 				.patternLine("scs")

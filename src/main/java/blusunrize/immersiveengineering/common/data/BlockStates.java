@@ -124,11 +124,13 @@ public class BlockStates extends BlockStateProvider
 		);
 	}
 
-	private void slabFor(Block b, ResourceLocation texture) {
+	private void slabFor(Block b, ResourceLocation texture)
+	{
 		slabFor(b, texture, texture, texture);
 	}
 
-	private void slabFor(Block b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom) {
+	private void slabFor(Block b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
+	{
 		slab(IEBlocks.toSlab.get(b), side, top, bottom);
 	}
 
@@ -144,7 +146,8 @@ public class BlockStates extends BlockStateProvider
 		itemModels.put(b, mainModel);
 	}
 
-	private void stairs(StairsBlock b, ResourceLocation texture) {
+	private void stairs(StairsBlock b, ResourceLocation texture)
+	{
 		stairs(b, texture, texture, texture);
 	}
 
@@ -158,11 +161,13 @@ public class BlockStates extends BlockStateProvider
 		itemModels.put(b, stairs);
 	}
 
-	private ResourceLocation forgeLoc(String path) {
+	private ResourceLocation forgeLoc(String path)
+	{
 		return new ResourceLocation("forge", path);
 	}
 
-	private ResourceLocation addModelsPrefix(ResourceLocation in) {
+	private ResourceLocation addModelsPrefix(ResourceLocation in)
+	{
 		return new ResourceLocation(in.getNamespace(), "models/"+in.getPath());
 	}
 
@@ -375,6 +380,13 @@ public class BlockStates extends BlockStateProvider
 		createMultiblock(MetalDevices.teslaCoil, obj("block/metal_device/teslacoil.obj"),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_ALL, null,
 				180);
+		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
+		{
+			ModelFile model = ieObj("block/metal_device/chute_"+chute.getKey().tagName(), rl("block/metal_device/chute.obj.ie"))
+					.texture("texture", rl("block/metal/sheetmetal_"+chute.getKey().tagName()))
+					.texture("particle", rl("block/metal/sheetmetal_"+chute.getKey().tagName()));
+			simpleBlock(chute.getValue(), model);
+		}
 
 		simpleBlockItem(Misc.fakeLight, EMPTY_MODEL);
 

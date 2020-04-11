@@ -53,21 +53,18 @@
     "recipes": [
       [
         {
-          "recipe": "chutes/chute_iron"
+          "recipe": "chute_iron"
+        },
+        {
+          "recipe": "chute_copper"
+        },
+        {
+          "recipe": "chute_aluminum"
+        },
+        {
+          "recipe": "chute_steel"
         }
       ]
-    ]
-  },
-  "image": {
-    "type": "image",
-    "images": [
-      {
-        "location": "textures/misc/chute.png",
-        "uMin": 0,
-        "vMin": 0,
-        "uSize": 110,
-        "vSize": 80
-      }
     ]
   }
 }
