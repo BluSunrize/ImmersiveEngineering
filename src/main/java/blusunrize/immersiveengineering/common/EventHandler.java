@@ -58,11 +58,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.storage.loot.LootPool;
+import net.minecraft.world.storage.loot.TableLootEntry;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.event.AnvilUpdateEvent;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.TagsUpdatedEvent;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.*;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -94,6 +93,8 @@ public class EventHandler
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<DimensionType, BlockPos>> requestedBlockUpdates = new LinkedList<>();
 	public static final Set<TileEntity> REMOVE_FROM_TICKING = new HashSet<>();
+
+	private static final ResourceLocation TALL_GRASS_DROP = new ResourceLocation("minecraft", "blocks/tall_grass");
 
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
@@ -176,6 +177,14 @@ public class EventHandler
 			new ResourceLocation(ImmersiveEngineering.MODID, "chests/village_blacksmith")
 	);
 	private static Field f_lootEntries;
+
+	@SubscribeEvent
+	public void lootTableLoad(LootTableLoadEvent event) {
+		if (event.getName().equals(TALL_GRASS_DROP))
+			event.getTable().addPool(LootPool.builder()
+					.addEntry(TableLootEntry.builder(new ResourceLocation(ImmersiveEngineering.MODID, "blocks/grass_drops")))
+					.name("ie_grass_drops").build());
+	}
 
 	/*TODO I think this can be done data-driven now?
 	@SubscribeEvent
