@@ -195,7 +195,21 @@ public class IETileSound implements ITickableSound
 		if(!(tile instanceof ISoundTile))
 			donePlaying = true;
 		else
-			donePlaying = !((ISoundTile)tile).shoudlPlaySound(resource.toString());
+		{
+			donePlaying = !((ISoundTile)tile).shouldPlaySound(resource.toString());
+			if(!donePlaying)
+			{
+				float radiusSq = ((ISoundTile)tile).getSoundRadiusSq();
+				if(ClientUtils.mc().player!=null)
+				{
+					double distSq = ClientUtils.mc().player.getDistanceSq(tileX, tileY, tileZ);
+					if(distSq>radiusSq)
+						donePlaying = true;
+					else
+						volumeAjustment *= (radiusSq-distSq)/radiusSq;
+				}
+			}
+		}
 	}
 
 

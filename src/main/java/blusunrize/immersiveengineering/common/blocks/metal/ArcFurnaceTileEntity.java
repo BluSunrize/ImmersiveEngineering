@@ -742,7 +742,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	}
 
 	@Override
-	public boolean shoudlPlaySound(String sound)
+	public boolean shouldPlaySound(String sound)
 	{
 		return false;
 	}

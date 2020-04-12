@@ -373,8 +373,14 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	}
 
 	@Override
-	public boolean shoudlPlaySound(String sound)
+	public boolean shouldPlaySound(String sound)
 	{
 		return active;
+	}
+
+	@Override
+	public float getSoundRadiusSq()
+	{
+		return 1024;
 	}
 }

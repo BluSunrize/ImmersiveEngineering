@@ -385,7 +385,7 @@ public class ClientUtils
 	public static IETileSound generatePositionedIESound(SoundEvent soundEvent, float volume, float pitch, boolean repeat, int delay, BlockPos pos)
 	{
 		IETileSound sound = new IETileSound(soundEvent, volume, pitch, repeat, delay, pos, AttenuationType.LINEAR, SoundCategory.BLOCKS);
-//		sound.evaluateVolume();
+		sound.evaluateVolume();
 		ClientUtils.mc().getSoundHandler().play(sound);
 		return sound;
 	}

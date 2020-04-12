@@ -561,7 +561,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	}
 
 	@Override
-	public boolean shoudlPlaySound(String sound)
+	public boolean shouldPlaySound(String sound)
 	{
 		return shouldRenderAsActive();
 	}

@@ -77,7 +77,11 @@ public class IEBlockInterfaces
 
 	public interface ISoundTile
 	{
-		boolean shoudlPlaySound(String sound);
+		boolean shouldPlaySound(String sound);
+
+		default float getSoundRadiusSq() {
+			return 256.0f;
+		}
 	}
 
 	public interface ISpawnInterdiction
