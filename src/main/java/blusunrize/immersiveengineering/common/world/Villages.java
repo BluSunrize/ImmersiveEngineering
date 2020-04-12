@@ -18,8 +18,6 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
@@ -34,6 +32,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -104,11 +103,25 @@ public class Villages
 		SavannaVillagePools.init();
 		DesertVillagePools.init();
 		TaigaVillagePools.init();
-		for(String biome : new String[]{
-				"plains", "snowy", "savanna", "desert", "taiga"
-		})
+
+		// Register engineer's houses for each biome
+		for(String biome : new String[]{"plains", "snowy", "savanna", "desert", "taiga"})
 			addToPool(new ResourceLocation("village/"+biome+"/houses"),
-					rl("villages/engineers_house_"+biome), 5);
+					rl("village/houses/"+biome+"_engineer"), 1);
+
+		// Register workstations
+		JigsawManager.REGISTRY.register(new JigsawPattern(
+				new ResourceLocation(MODID, "village/workstations"),
+				new ResourceLocation("empty"),
+				ImmutableList.of(
+						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/electrician"), 1),
+						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/engineer"), 1),
+						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/gunsmith"), 1),
+						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/machinist"), 1),
+						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/outfitter"), 1)
+				),
+				JigsawPattern.PlacementBehaviour.RIGID
+		));
 
 		// We have to do this to allow workstations to be used. Otherwise they just won't work when placed in village
 		try

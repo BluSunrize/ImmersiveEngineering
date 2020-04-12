@@ -1,9 +1,16 @@
 ##### Version 0.14-95
 - Added the Buzzsaw! It cuts Trees! (BluSunrize)
+- Added full support for the new Villages! (BluSunrize)
+    - Different houses based on biome
+    - 5 different IE Villagers and their workstations:
+        - Structural Engineer, using the new Engineer's Crafting Table
+        - Machinist, using an Anvil
+        - Electrician, using a Current Transformer
+        - Gunsmith, using the Engineer's Workbench
+        - Outfitter, using IE's Shader Banner
+    - All IE villagers vary their outfit based on profession and biome 
 - Re-Added Revolver Perks (BluSunrize)
 - Re-Added the Fluid Outlet (Malte)
-- Added 5 individual IE villagers and their workstations (BluSunrize)
-    - Added the Engineer's Crafting Table. It's a crafting table with some storage
 - Added the Firework Cartridge for the Revolver (BluSunrize)
 - Re-Added IE's Advancements (BluSunrize)
 - Re-Added the Maintenance Kit (BluSunrize)
