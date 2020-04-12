@@ -143,11 +143,9 @@ public class ModelConveyor extends BakedIEModel
 		TextureAtlasSprite tex_casing1 = ClientUtils.getSprite(rl_casing[1]);
 		TextureAtlasSprite tex_casing2 = ClientUtils.getSprite(rl_casing[2]);
 		float[] colour = {1, 1, 1, 1};
-		float[] colourStripes;
+		float[] colourStripes = {1, 1, 1, 1};
 		if(stripeColour!=null)
-			colourStripes = stripeColour.getColorComponentValues();
-		else
-			colourStripes = new float[]{1, 1, 1, 1};
+			System.arraycopy(stripeColour.getColorComponentValues(), 0, colourStripes, 0, 3);
 
 		/**
 		 * Bottom & Top
