@@ -57,7 +57,8 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 {
 	public static TileEntityType<EnergyMeterTileEntity> TYPE;
 
-	public final DoubleList lastPackets = new DoubleArrayList(25);
+	public final DoubleList lastPackets = new DoubleArrayList(20);
+	private int nextPacketIndex = 0;
 	private int compVal = -1;
 	private Connection shuntConnection;
 
@@ -99,12 +100,14 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 		double transferred = 0;
 		if(handler!=null)
 		{
-			Object2DoubleMap<Connection> map = handler.getTransferredInTick();
+			Object2DoubleMap<Connection> map = handler.getTransferredLastTick();
 			transferred = map.getDouble(shuntConnection);
 		}
-		lastPackets.add(transferred);
-		if(lastPackets.size() > 20)
-			lastPackets.removeDouble(0);
+		if(nextPacketIndex >= lastPackets.size())
+			lastPackets.add(transferred);
+		else
+			lastPackets.set(nextPacketIndex, transferred);
+		nextPacketIndex = (nextPacketIndex+1)%20;
 	}
 
 	@Override

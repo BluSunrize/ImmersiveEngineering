@@ -90,7 +90,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 					ApiUtils.knockbackNoSource(e, actualDamage/KNOCKBACK_PER_DAMAGE, v.x, v.z);
 					//Consume energy
 					double factor = actualDamage/maxPossibleDamage;
-					Object2DoubleMap<Connection> transferred = energyHandler.getTransferredInTick();
+					Object2DoubleMap<Connection> transferred = energyHandler.getTransferredNextTick();
 					for(Entry<ConnectionPoint, EnergyConnector> source : sources.entrySet())
 					{
 						Path path = paths.get(source.getKey());

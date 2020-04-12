@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap.HeapEntry;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +31,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "energy_transfer");
 
 	private final Table<ConnectionPoint, ConnectionPoint, Path> energyPaths = HashBasedTable.create();
-	private final Object2DoubleMap<Connection> transferredInTick = new Object2DoubleOpenHashMap<>();
+	private Object2DoubleMap<Connection> transferredNextTick = new Object2DoubleOpenHashMap<>();
+	private Object2DoubleMap<Connection> transferredLastTick = new Object2DoubleOpenHashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sources = new HashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sinks = new HashMap<>();
 	private boolean uninitialised = true;
@@ -84,18 +86,32 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			calcPaths();
 		transferPower();
 		burnOverloaded(w);
-		transferredInTick.clear();
+		transferredLastTick = transferredNextTick;
+		transferredNextTick = new Object2DoubleOpenHashMap<>();
 	}
 
-	public Object2DoubleMap<Connection> getTransferredInTick()
+	/**
+	 * @return the transfer map for the next transfert tick. Modify to include transfers made outside of the usual
+	 * transfer code in wire burn calculations, CT measurements etc.
+	 */
+	public Object2DoubleMap<Connection> getTransferredNextTick()
 	{
-		return transferredInTick;
+		return transferredNextTick;
+	}
+
+	/**
+	 * @return the amount of energy transferred by each connection in the last tick. Must not be modified.
+	 */
+	public Object2DoubleMap<Connection> getTransferredLastTick()
+	{
+		return Object2DoubleMaps.unmodifiable(transferredLastTick);
 	}
 
 	private void reset()
 	{
 		energyPaths.clear();
-		transferredInTick.clear();
+		transferredNextTick.clear();
+		transferredLastTick.clear();
 		sinks.clear();
 		sources.clear();
 		uninitialised = true;
@@ -205,8 +221,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					//TODO use Blu's loss formula
 					currentLoss += getBasicLoss(c);
 					double availableAtPoint = atSource*(1-currentLoss);
-					double transferred = transferredInTick.getDouble(c);
-					transferredInTick.put(c, transferred+availableAtPoint);
+					double transferred = transferredNextTick.getDouble(c);
+					transferredNextTick.put(c, transferred+availableAtPoint);
 					if(!currentPoint.equals(p.end))
 					{
 						IImmersiveConnectable iic = net.getConnector(currentPoint);
@@ -227,9 +243,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private void burnOverloaded(World world)
 	{
 		List<Pair<Connection, Double>> toBurn = new ArrayList<>();
-		for(Connection c : transferredInTick.keySet())
+		for(Connection c : transferredNextTick.keySet())
 		{
-			double transferred = transferredInTick.getDouble(c);
+			double transferred = transferredNextTick.getDouble(c);
 			if(c.type instanceof IEnergyWire&&((IEnergyWire)c.type).shouldBurn(c, transferred))
 				toBurn.add(new ImmutablePair<>(c, transferred));
 		}
