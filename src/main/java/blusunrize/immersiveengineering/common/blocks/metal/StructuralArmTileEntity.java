@@ -11,10 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
@@ -44,13 +41,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.putVertexData;
 import static net.minecraft.util.Direction.*;
 
 public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJModelCallback<BlockState>, INeighbourChangeTile,
-		IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds
+		IDirectionalTile, ICollisionBounds, ISelectionBounds, IBlockBounds
 {
 	public static TileEntityType<StructuralArmTileEntity> TYPE;
 
@@ -265,18 +261,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	private VoxelShape bounds = null;
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
-	{
-		return getBounds();
-	}
-
-	@Override
-	public VoxelShape getAdvancedCollisionBounds()
-	{
-		return getBounds();
-	}
-
-	private VoxelShape getBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if(bounds==null)
 		{
@@ -433,13 +418,5 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	public String getCacheKey(BlockState object)
 	{
 		return totalLength+","+slopePosition+","+facing.name()+","+(onCeiling?"1": "0");
-	}
-
-	@Override
-	public float[] getBlockBounds()
-	{
-		return new float[]{
-				0, 0, 0, 1, (slopePosition+.5F)/totalLength, 1
-		};
 	}
 }

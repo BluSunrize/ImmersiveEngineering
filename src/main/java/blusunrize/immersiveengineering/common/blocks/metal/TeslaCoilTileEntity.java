@@ -47,6 +47,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -363,26 +365,26 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if(!isDummy())
-			return null;
+			return VoxelShapes.fullCube();
 		switch(getFacing())
 		{
 			case DOWN:
-				return new float[]{.125f, .125f, .125f, .875f, 1, .875f};
+				return VoxelShapes.create(.125f, .125f, .125f, .875f, 1, .875f);
 			case UP:
-				return new float[]{.125f, 0, .125f, .875f, .875f, .875f};
+				return VoxelShapes.create(.125f, 0, .125f, .875f, .875f, .875f);
 			case NORTH:
-				return new float[]{.125f, .125f, .125f, .875f, .875f, 1};
+				return VoxelShapes.create(.125f, .125f, .125f, .875f, .875f, 1);
 			case SOUTH:
-				return new float[]{.125f, .125f, 0, .875f, .875f, .875f};
+				return VoxelShapes.create(.125f, .125f, 0, .875f, .875f, .875f);
 			case WEST:
-				return new float[]{.125f, .125f, .125f, 1, .875f, .875f};
+				return VoxelShapes.create(.125f, .125f, .125f, 1, .875f, .875f);
 			case EAST:
-				return new float[]{0, .125f, .125f, .875f, .875f, .875f};
+				return VoxelShapes.create(0, .125f, .125f, .875f, .875f, .875f);
 		}
-		return null;
+		return VoxelShapes.fullCube();
 	}
 
 	AxisAlignedBB renderBB;

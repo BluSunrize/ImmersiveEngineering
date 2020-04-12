@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -36,6 +37,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -56,7 +59,7 @@ import java.util.Set;
 
 //TODO powered MB or not?
 public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTileEntity, IMultiblockRecipe>
-		implements IInteractionObjectIE, IConveyorAttachable
+		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
 {
 	public static TileEntityType<AssemblerTileEntity> TYPE;
 
@@ -358,7 +361,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		Set<BlockPos> fullBlocks = ImmutableSet.of(
 				new BlockPos(1, 1, 2),
@@ -367,7 +370,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				new BlockPos(1, 2, 1)
 		);
 		if(posInMultiblock.getY()==0||fullBlocks.contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, 1, 1};
+			return VoxelShapes.create(0, 0, 0, 1, 1, 1);
 		float xMin = 0;
 		float yMin = 0;
 		float zMin = 0;
@@ -390,7 +393,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			xMin = .1875f;
 		else if((posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH)||(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH))
 			xMax = .8125f;
-		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
+		return VoxelShapes.create(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
 	@Override

@@ -11,8 +11,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -35,6 +36,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -52,7 +54,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity, MixerRecipe> implements
-		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IInteractionObjectIE
+		IInteractionObjectIE, IBlockBounds
 {
 	public static TileEntityType<MixerTileEntity> TYPE;
 	
@@ -217,24 +219,10 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		}
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		if(posInMultiblock.getY()==0&&!ImmutableSet.of(
-				new BlockPos(0, 0, 2),
-				new BlockPos(0, 0, 1),
-				new BlockPos(1, 0, 2)
-		).contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
-			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
-		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
 	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(MixerTileEntity::getShape);
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return SHAPES.get(new MultiblockCacheKey(this));
 	}
@@ -353,12 +341,6 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 
 		}
 		return null;
-	}
-
-	@Override
-	public VoxelShape getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
 	}
 
 	@Override

@@ -42,8 +42,8 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirectionalTile, IAdvancedCollisionBounds,
-		IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
+public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirectionalTile, ICollisionBounds,
+		ISelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
 		ITickableTileEntity, IGeneralMultiblock
 {
 	private final IConveyorBelt conveyorBeltSubtype;
@@ -195,17 +195,11 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 		return false;
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		return new float[]{0, 0, 0, 1, .125f, 1};
-	}
-
 	private static final VoxelShape COLISIONBB =
 			VoxelShapes.create(0, 0, 0, 1, .125F, 1);
 
 	@Override
-	public VoxelShape getAdvancedCollisionBounds()
+	public VoxelShape getCollisionShape()
 	{
 		if(conveyorBeltSubtype!=null)
 			return conveyorBeltSubtype.getCollisionShape();
@@ -213,7 +207,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	}
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getSelectionShape()
 	{
 		if(conveyorBeltSubtype!=null)
 			return conveyorBeltSubtype.getSelectionShape();

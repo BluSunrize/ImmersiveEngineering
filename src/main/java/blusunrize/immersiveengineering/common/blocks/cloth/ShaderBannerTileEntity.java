@@ -13,7 +13,9 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -38,7 +40,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvancedCollisionBounds, ITileDrop
+public class ShaderBannerTileEntity extends IEBaseTileEntity implements ICollisionBounds, ITileDrop
 {
 	public boolean wall = false;
 	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
@@ -75,15 +77,9 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 		nbt.put("shader", shader.serializeNBT());
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		return null;
-	}
-
 	@Nonnull
 	@Override
-	public VoxelShape getAdvancedCollisionBounds()
+	public VoxelShape getCollisionShape()
 	{
 		if(this.wall)
 			return WALL_SHAPES.get(getState().get(ShaderBannerWallBlock.FACING));

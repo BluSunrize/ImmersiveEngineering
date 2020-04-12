@@ -14,8 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -42,6 +41,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootContext.Builder;
@@ -57,7 +57,8 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.List;
 import java.util.Set;
 
-public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTileEntity, IMultiblockRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds
+public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTileEntity, IMultiblockRecipe> implements
+		IBlockBounds
 {
 	public static TileEntityType<ExcavatorTileEntity> TYPE;
 	private static final BlockPos wheelCenterOffset = new BlockPos(1, 1, 1);
@@ -304,43 +305,10 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		return ItemStack.EMPTY;
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		Direction fl = getFacing();
-		Direction fw = getFacing().rotateY();
-		if(getIsMirrored())
-			fw = fw.getOpposite();
-
-		if(new BlockPos(0, 2, 2).equals(posInMultiblock))
-			return new float[]{fl==Direction.EAST?.5f: 0, 0, fl==Direction.SOUTH?.5f: 0, fl==Direction.WEST?.5f: 1, .5f, fl==Direction.NORTH?.5f: 1};
-		if(new BlockPos(0, 2, 1).equals(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(new BlockPos(0, 2, 0).equals(posInMultiblock))
-			return new float[]{fl==Direction.WEST?.5f: 0, 0, fl==Direction.NORTH?.5f: 0, fl==Direction.EAST?.5f: 1, .5f, fl==Direction.SOUTH?.5f: 1};
-
-		if(new BlockPos(2, 2, 2).equals(posInMultiblock))
-			return new float[]{fl==Direction.EAST?.5f: fl==Direction.WEST?.375f: 0, 0, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.375f: 0, fl==Direction.WEST?.5f: fl==Direction.EAST?.625f: 1, 1, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.625f: 1};
-		if(new BlockPos(2, 2, 1).equals(posInMultiblock))
-			return new float[]{fw==Direction.EAST?.875f: 0, 0, fw==Direction.SOUTH?.875f: 0, fw==Direction.WEST?.125f: 1, 1, fw==Direction.NORTH?.125f: 1};
-		if(new BlockPos(2, 2, 0).equals(posInMultiblock))
-			return new float[]{fl==Direction.WEST?.5f: fl==Direction.EAST?.375f: 0, 0, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: 0, fl==Direction.EAST?.5f: fl==Direction.WEST?.625f: 1, 1, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.625f: 1};
-
-		if(posInMultiblock.getX()==2&&posInMultiblock.getZ()==4)
-			return new float[]{fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1};
-		if(posInMultiblock.getZ() < 3&&posInMultiblock.getY()==0&&posInMultiblock.getX()==0)
-			return new float[]{fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1};
-		if(posInMultiblock.getZ() < 3&&posInMultiblock.getY()==0&&posInMultiblock.getX()==2)
-			return new float[]{fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1};
-
-
-		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
 	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(ExcavatorTileEntity::getShape);
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return SHAPES.get(new MultiblockCacheKey(this));
 	}
@@ -383,12 +351,6 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 			return list;
 		}
 		return null;
-	}
-
-	@Override
-	public VoxelShape getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
 	}
 
 	@Override

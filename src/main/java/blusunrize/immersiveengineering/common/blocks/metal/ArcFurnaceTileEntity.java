@@ -11,10 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -36,6 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -52,7 +50,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnaceTileEntity, ArcFurnaceRecipe>
-		implements ISoundTile, IInteractionObjectIE, IAdvancedSelectionBounds, IAdvancedCollisionBounds
+		implements ISoundTile, IInteractionObjectIE, ISelectionBounds, ICollisionBounds
 {
 	public static TileEntityType<ArcFurnaceTileEntity> TYPE;
 	private static final int SLAG_SLOT = 22;
@@ -241,23 +239,31 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		return new AxisAlignedBB(getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getPos().getY(), getPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getPos().getY()+3, getPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
 	}
 
+	@Nonnull
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getCollisionShape()
 	{
+		return getCollisionShape(new MultiblockCacheKey(this));
+	}
+
+	private static VoxelShape getCollisionShape(MultiblockCacheKey key)
+	{
+		BlockPos posInMultiblock = key.posInMultiblock;
+		Direction facing = key.facing;
 		if(ImmutableSet.of(
 				new BlockPos(3, 0, 4),
 				new BlockPos(1, 0, 4)
 		).contains(posInMultiblock))
-			return new float[]{getFacing()==Direction.EAST?.4375f: 0, 0, getFacing()==Direction.SOUTH?.4375f: 0, getFacing()==Direction.WEST?.5625f: 1, .5f, getFacing()==Direction.NORTH?.5625f: 1};
+			return VoxelShapes.create(facing==Direction.EAST?.4375f: 0, 0, facing==Direction.SOUTH?.4375f: 0, facing==Direction.WEST?.5625f: 1, .5f, facing==Direction.NORTH?.5625f: 1);
 		else if(posInMultiblock.getY()==0&&posInMultiblock.getZ() > 0&&!posInMultiblock.equals(new BlockPos(2, 0, 4)))
-			return new float[]{0, 0, 0, 1, .5f, 1};
+			return VoxelShapes.create(0, 0, 0, 1, .5f, 1);
 		else if(new BlockPos(0, 1, 4).equals(posInMultiblock))
-			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
+			return VoxelShapes.create(facing==Direction.WEST?.5f: 0, 0, facing==Direction.NORTH?.5f: 0, facing==Direction.EAST?.5f: 1, 1, facing==Direction.SOUTH?.5f: 1);
 		else if(new MutableBoundingBox(1, 1, 1, 3, 1, 2)
 				.isVecInside(posInMultiblock))
 		{
-			Direction fw = getFacing().rotateY();
-			if(getIsMirrored()|posInMultiblock.getX()==3)
+			Direction fw = facing.rotateY();
+			if(key.mirrored|posInMultiblock.getX()==3)
 				fw = fw.getOpposite();
 			if(posInMultiblock.getX()==2)
 				fw = null;
@@ -267,31 +273,31 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			float maxZ = fw==Direction.NORTH?.875f: 1;
 			if(posInMultiblock.getZ()==2)
 			{
-				minX -= getFacing()==Direction.EAST?.875f: 0;
-				maxX += getFacing()==Direction.WEST?.875f: 0;
-				minZ -= getFacing()==Direction.SOUTH?.875f: 0;
-				maxZ += getFacing()==Direction.NORTH?.875f: 0;
+				minX -= facing==Direction.EAST?.875f: 0;
+				maxX += facing==Direction.WEST?.875f: 0;
+				minZ -= facing==Direction.SOUTH?.875f: 0;
+				maxZ += facing==Direction.NORTH?.875f: 0;
 			}
-			return new float[]{minX, .5f, minZ, maxX, 1, maxZ};
+			return VoxelShapes.create(minX, .5f, minZ, maxX, 1, maxZ);
 		}
 		else if(ImmutableSet.of(
 				new BlockPos(4, 1, 1),
 				new BlockPos(0, 1, 1)
 		).contains(posInMultiblock))
 		{
-			Direction fl = posInMultiblock.getX()==4?getFacing().getOpposite(): getFacing();
-			return new float[]{fl==Direction.NORTH?.125f: fl==Direction.SOUTH?.625f: 0, .125f, fl==Direction.EAST?.125f: fl==Direction.WEST?.625f: 0, fl==Direction.SOUTH?.875f: fl==Direction.NORTH?.375f: 1, .375f, fl==Direction.WEST?.875f: fl==Direction.EAST?.375f: 1};
+			Direction fl = posInMultiblock.getX()==4?facing.getOpposite(): facing;
+			return VoxelShapes.create(fl==Direction.NORTH?.125f: fl==Direction.SOUTH?.625f: 0, .125f, fl==Direction.EAST?.125f: fl==Direction.WEST?.625f: 0, fl==Direction.SOUTH?.875f: fl==Direction.NORTH?.375f: 1, .375f, fl==Direction.WEST?.875f: fl==Direction.EAST?.375f: 1);
 		}
 		else if(posInMultiblock.getZ()==0&&posInMultiblock.getY()==1&&posInMultiblock.getX() >= 1&&posInMultiblock.getX() <= 3)
-			return new float[]{getFacing()==Direction.WEST?.25f: 0, 0, getFacing()==Direction.NORTH?.25f: 0, getFacing()==Direction.EAST?.75f: 1, 1, getFacing()==Direction.SOUTH?.75f: 1};
+			return VoxelShapes.create(facing==Direction.WEST?.25f: 0, 0, facing==Direction.NORTH?.25f: 0, facing==Direction.EAST?.75f: 1, 1, facing==Direction.SOUTH?.75f: 1);
 		else if(new BlockPos(2, 3, 0).equals(posInMultiblock))
-			return new float[]{getFacing().getAxis()==Axis.X?.375f: 0, 0, getFacing().getAxis()==Axis.Z?.375f: 0, getFacing().getAxis()==Axis.X?.625f: 1, 1, getFacing().getAxis()==Axis.Z?.625f: 1};
+			return VoxelShapes.create(facing.getAxis()==Axis.X?.375f: 0, 0, facing.getAxis()==Axis.Z?.375f: 0, facing.getAxis()==Axis.X?.625f: 1, 1, facing.getAxis()==Axis.Z?.625f: 1);
 		else if(new BlockPos(2, 4, 0).equals(posInMultiblock))
-			return new float[]{getFacing()==Direction.WEST?.3125f: 0, 0, getFacing()==Direction.NORTH?.3125f: 0, getFacing()==Direction.EAST?.6875f: 1, .9375f, getFacing()==Direction.SOUTH?.6875f: 1};
+			return VoxelShapes.create(facing==Direction.WEST?.3125f: 0, 0, facing==Direction.NORTH?.3125f: 0, facing==Direction.EAST?.6875f: 1, .9375f, facing==Direction.SOUTH?.6875f: 1);
 		else if(new BlockPos(2, 4, 1).equals(posInMultiblock))
-			return new float[]{0, .625f, 0, 1, .9375f, 1};
+			return VoxelShapes.create(0, .625f, 0, 1, .9375f, 1);
 		else if(new BlockPos(2, 4, 2).equals(posInMultiblock))
-			return new float[]{getFacing()==Direction.EAST?.125f: 0, 0, getFacing()==Direction.SOUTH?.125f: 0, getFacing()==Direction.WEST?.875f: 1, .9375f, getFacing()==Direction.NORTH?.875f: 1};
+			return VoxelShapes.create(facing==Direction.EAST?.125f: 0, 0, facing==Direction.SOUTH?.125f: 0, facing==Direction.WEST?.875f: 1, .9375f, facing==Direction.NORTH?.875f: 1);
 		else if(ImmutableSet.of(
 				new BlockPos(3, 2, 4),
 				new BlockPos(1, 2, 4),
@@ -301,18 +307,18 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				new BlockPos(1, 4, 0)
 		).contains(posInMultiblock))
 		{
-			Direction fw = getFacing().rotateY();
-			if(getIsMirrored()^posInMultiblock.getX()==3)
+			Direction fw = facing.rotateY();
+			if(key.mirrored^posInMultiblock.getX()==3)
 				fw = fw.getOpposite();
-			return new float[]{fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1};
+			return VoxelShapes.create(fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1);
 		}
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return VoxelShapes.create(0, 0, 0, 1, 1, 1);
 	}
 
 	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(ArcFurnaceTileEntity::getShape);
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getSelectionShape()
 	{
 		return SHAPES.get(new MultiblockCacheKey(this));
 	}
@@ -444,13 +450,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			}
 			return list;
 		}
-		return null;
-	}
-
-	@Override
-	public VoxelShape getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
+		return getCollisionShape(key).toBoundingBoxList();
 	}
 
 	@Override

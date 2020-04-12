@@ -26,6 +26,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -150,7 +152,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		float wMin = .28125f;
 		float wMax = .71875f;
@@ -158,15 +160,15 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 		{
 			case UP:
 			case DOWN:
-				return new float[]{wMin, 0, wMin, wMax, 1, wMax};
+				return VoxelShapes.create(wMin, 0, wMin, wMax, 1, wMax);
 			case SOUTH:
 			case NORTH:
-				return new float[]{wMin, wMin, 0, wMax, wMax, 1};
+				return VoxelShapes.create(wMin, wMin, 0, wMax, wMax, 1);
 			case EAST:
 			case WEST:
-				return new float[]{0, wMin, wMin, 1, wMax, wMax};
+				return VoxelShapes.create(0, wMin, wMin, 1, wMax, wMax);
 		}
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return VoxelShapes.fullCube();
 	}
 
 	@OnlyIn(Dist.CLIENT)

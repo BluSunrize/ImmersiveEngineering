@@ -32,6 +32,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -197,11 +199,11 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 		return true;
 	}
 
-	private static final float[] boundsZ = {.125f, 0, .25f, .875f, .625f, .75f};
-	private static final float[] boundsX = {.25f, 0, .125f, .75f, .625f, .875f};
+	private static final VoxelShape boundsZ = VoxelShapes.create(.125f, 0, .25f, .875f, .625f, .75f);
+	private static final VoxelShape boundsX = VoxelShapes.create(.25f, 0, .125f, .75f, .625f, .875f);
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return getFacing().getAxis()==Axis.Z?boundsZ: boundsX;
 	}

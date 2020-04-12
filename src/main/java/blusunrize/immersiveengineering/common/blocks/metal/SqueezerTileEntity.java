@@ -10,8 +10,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -33,6 +34,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -49,7 +51,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTileEntity, SqueezerRecipe> implements
-		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IInteractionObjectIE
+		ISelectionBounds, ICollisionBounds, IInteractionObjectIE, IBlockBounds
 {
 	public static TileEntityType<SqueezerTileEntity> TYPE;
 	
@@ -212,24 +214,10 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 		return new DirectionalBlockPos(pos.offset(fw), fw.getOpposite());
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		if(posInMultiblock.getY()==0&&!ImmutableSet.of(
-				new BlockPos(0, 0, 0),
-				new BlockPos(2, 0, 1)
-		).contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
-			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
-
-		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
 	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(SqueezerTileEntity::getShape);
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return SHAPES.get(new MultiblockCacheKey(this));
 	}
@@ -335,12 +323,6 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 			return list;
 		}
 		return null;
-	}
-
-	@Override
-	public VoxelShape getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
 	}
 
 	@Override

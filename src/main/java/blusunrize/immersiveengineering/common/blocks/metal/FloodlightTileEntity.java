@@ -39,6 +39,8 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -394,16 +396,16 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		return new float[]{
-				getFacing().getAxis()==Axis.X?0: .0625f,
-				getFacing().getAxis()==Axis.Y?0: .0625f,
-				getFacing().getAxis()==Axis.Z?0: .0625f,
-				getFacing().getAxis()==Axis.X?1: .9375f,
-				getFacing().getAxis()==Axis.Y?1: .9375f,
-				getFacing().getAxis()==Axis.Z?1: .9375f
-		};
+		return VoxelShapes.create(
+				getFacing().getAxis()==Axis.X?0: .0625,
+				getFacing().getAxis()==Axis.Y?0: .0625,
+				getFacing().getAxis()==Axis.Z?0: .0625,
+				getFacing().getAxis()==Axis.X?1: .9375,
+				getFacing().getAxis()==Axis.Y?1: .9375,
+				getFacing().getAxis()==Axis.Z?1: .9375
+		);
 	}
 
 	@Override

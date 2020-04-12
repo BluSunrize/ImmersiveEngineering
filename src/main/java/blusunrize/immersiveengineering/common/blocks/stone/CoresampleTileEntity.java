@@ -31,6 +31,8 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -227,11 +229,11 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 		return false;
 	}
 
-	private static final float[] AABB_CORESAMPLE_X = new float[]{0, 0, .28125f, 1, 1, .71875f};
-	private static final float[] AABB_CORESAMPLE_Z = new float[]{.28125f, 0, 0, .71875f, 1, 1};
+	private static final VoxelShape AABB_CORESAMPLE_X = VoxelShapes.create(0, 0, .28125f, 1, 1, .71875f);
+	private static final VoxelShape AABB_CORESAMPLE_Z = VoxelShapes.create(.28125f, 0, 0, .71875f, 1, 1);
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return getFacing().getAxis()==Axis.Z?AABB_CORESAMPLE_Z: AABB_CORESAMPLE_X;
 	}

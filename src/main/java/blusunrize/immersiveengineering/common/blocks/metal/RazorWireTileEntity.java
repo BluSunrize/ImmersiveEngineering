@@ -15,11 +15,12 @@ import blusunrize.immersiveengineering.api.wires.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
-import blusunrize.immersiveengineering.common.util.shapes.MultiblockCacheKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -36,6 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,8 +48,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, IAdvancedCollisionBounds,
-		IOBJModelCallback<BlockState>, EnergyConnector
+public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, ICollisionBounds,
+		IOBJModelCallback<BlockState>, EnergyConnector, ISelectionBounds
 {
 	public static TileEntityType<RazorWireTileEntity> TYPE;
 
@@ -105,15 +107,15 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getSelectionShape()
 	{
-		return null;
+		return VoxelShapes.fullCube();
 	}
 
 	private static final CachedVoxelShapes<BoundingBoxKey> SHAPES = new CachedVoxelShapes<>(RazorWireTileEntity::getShape);
 
 	@Override
-	public VoxelShape getAdvancedCollisionBounds()
+	public VoxelShape getCollisionShape()
 	{
 		return SHAPES.get(new BoundingBoxKey(this));
 	}

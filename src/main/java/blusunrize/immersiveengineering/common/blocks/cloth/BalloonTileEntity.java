@@ -35,6 +35,8 @@ import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -93,9 +95,9 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 
 	@Nonnull
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		return new float[]{.125f, 0, .125f, .875f, .9375f, .875f};
+		return VoxelShapes.create(.125, 0, .125, .875, .9375, .875);
 	}
 
 	@Override

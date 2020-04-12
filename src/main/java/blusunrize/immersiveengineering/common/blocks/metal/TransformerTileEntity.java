@@ -12,13 +12,9 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -28,7 +24,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -44,7 +39,7 @@ import java.util.Set;
 import static blusunrize.immersiveengineering.api.wires.WireType.MV_CATEGORY;
 
 public class TransformerTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, IMirrorAble,
-		IHasDummyBlocks, IAdvancedSelectionBounds
+		IHasDummyBlocks, ISelectionBounds, ICollisionBounds
 {
 	public static TileEntityType<TransformerTileEntity> TYPE;
 	private static final int RIGHT_INDEX = 0;
@@ -315,19 +310,20 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 			world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0), false);
 	}
 
+	@Nonnull
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getCollisionShape()
 	{
 		if(dummy==2)
-			return new float[]{getFacing().getAxis()==Axis.Z?0: .3125f, 0, getFacing().getAxis()==Axis.X?0: .3125f, getFacing().getAxis()==Axis.Z?1: .6875f, this instanceof TransformerHVTileEntity?.75f: .5625f, getFacing().getAxis()==Axis.X?1: .6875f};
-		return null;
+			return VoxelShapes.create(getFacing().getAxis()==Axis.Z?0: .3125f, 0, getFacing().getAxis()==Axis.X?0: .3125f, getFacing().getAxis()==Axis.Z?1: .6875f, this instanceof TransformerHVTileEntity?.75f: .5625f, getFacing().getAxis()==Axis.X?1: .6875f);
+		return VoxelShapes.fullCube();
 	}
 
 	boolean cachedMirrored = false;
 	private VoxelShape shape = null;
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getSelectionShape()
 	{
 		boolean mirrored = getIsMirrored();
 		if(dummy==2&&(shape==null||cachedMirrored!=mirrored))

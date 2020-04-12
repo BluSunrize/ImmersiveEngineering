@@ -44,6 +44,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -504,11 +506,11 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if(!isDummy())
-			return null;
-		return new float[]{.1875f, 0, .1875f, .8125f, 1, .8125f};
+			return VoxelShapes.fullCube();
+		return VoxelShapes.create(.1875f, 0, .1875f, .8125f, 1, .8125f);
 	}
 
 	@Override

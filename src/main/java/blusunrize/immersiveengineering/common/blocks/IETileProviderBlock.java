@@ -30,7 +30,6 @@ import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -345,19 +344,8 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		if(state.getBlock()==this)
 		{
 			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof IAdvancedCollisionBounds)
-			{
-				return ((IAdvancedCollisionBounds)te).getAdvancedCollisionBounds();
-			}
-			if(te instanceof IBlockBounds)
-			{
-				float[] bounds = ((IBlockBounds)te).getBlockBounds();
-				if(bounds!=null)
-				{
-					AxisAlignedBB aabb = new AxisAlignedBB(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
-					return VoxelShapes.create(aabb);
-				}
-			}
+			if(te instanceof ICollisionBounds)
+				return ((ICollisionBounds)te).getCollisionShape();
 		}
 		return super.getShape(state, world, pos, context);
 	}
@@ -368,8 +356,8 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		if(world.getBlockState(pos).getBlock()==this)
 		{
 			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof IAdvancedSelectionBounds)
-				return ((IAdvancedSelectionBounds)te).getAdvancedSelectionBounds();
+			if(te instanceof ISelectionBounds)
+				return ((ISelectionBounds)te).getSelectionShape();
 		}
 		return super.getRaytraceShape(state, world, pos);
 	}
@@ -380,9 +368,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original)
 	{
 		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof IAdvancedSelectionBounds)
+		if(te instanceof ISelectionBounds)
 		{
-			List<AxisAlignedBB> list = ((IAdvancedSelectionBounds)te).getAdvancedSelectionBounds().toBoundingBoxList();
+			List<AxisAlignedBB> list = ((ISelectionBounds)te).getSelectionShape().toBoundingBoxList();
 			if(!list.isEmpty())
 			{
 				RayTraceResult min = null;

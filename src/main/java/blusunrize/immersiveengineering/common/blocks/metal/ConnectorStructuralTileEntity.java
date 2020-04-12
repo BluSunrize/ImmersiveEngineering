@@ -27,6 +27,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
@@ -112,7 +113,7 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return EnergyConnectorTileEntity.getConnectorBounds(getFacing(), .3125F, .5F);
 	}

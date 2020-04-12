@@ -12,8 +12,9 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -41,6 +42,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -57,7 +59,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEntity, CrusherRecipe> implements ISoundTile, IAdvancedSelectionBounds, IAdvancedCollisionBounds
+public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEntity, CrusherRecipe> implements ISoundTile, IBlockBounds
 {
 	public static TileEntityType<CrusherTileEntity> TYPE;
 	public List<ItemStack> inputs = new ArrayList<>();
@@ -128,9 +130,9 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		return new AxisAlignedBB(getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getPos().getY(), getPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getPos().getY()+3, getPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
 	}
 
-	@Override
-	public float[] getBlockBounds()
+	public static VoxelShape getBasicShape(MultiblockCacheKey key)
 	{
+		BlockPos posInMultiblock = key.posInMultiblock;
 		Set<BlockPos> slabs = ImmutableSet.of(
 				new BlockPos(3, 0, 2),
 				new BlockPos(1, 0, 2),
@@ -144,15 +146,15 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 				new BlockPos(0, 1, 1)
 		);
 		if(slabs.contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .5f, 1};
+			return VoxelShapes.create(0, 0, 0, 1, .5f, 1);
 		if(new BlockPos(2, 1, 1).equals(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .75f, 1};
+			return VoxelShapes.create(0, 0, 0, 1, .75f, 1);
 		if(new BlockPos(2, 2, 1).equals(posInMultiblock))
-			return new float[]{0, 0, 0, 0, 0, 0};
+			return VoxelShapes.create(0, 0, 0, 0, 0, 0);
 
-		Direction fl = getFacing();
-		Direction fw = getFacing().rotateY();
-		if(getIsMirrored())
+		Direction fl = key.facing;
+		Direction fw = key.facing.rotateY();
+		if(key.mirrored)
 			fw = fw.getOpposite();
 		if(posInMultiblock.getY() > 0&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4)
 		{
@@ -186,18 +188,18 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 					maxZ = .8125f;
 			}
 
-			return new float[]{minX, 0, minZ, maxX, 1, maxZ};
+			return VoxelShapes.create(minX, 0, minZ, maxX, 1, maxZ);
 		}
 		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
-			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
+			return VoxelShapes.create(key.facing==Direction.WEST?.5f: 0, 0, key.facing==Direction.NORTH?.5f: 0, key.facing==Direction.EAST?.5f: 1, 1, key.facing==Direction.SOUTH?.5f: 1);
 
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return VoxelShapes.fullCube();
 	}
 
 	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(CrusherTileEntity::getShape);
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return SHAPES.get(new MultiblockCacheKey(this));
 	}
@@ -206,7 +208,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	{
 		BlockPos posInMultiblock = key.posInMultiblock;
 		if(posInMultiblock.getZ()==1&&posInMultiblock.getX()==2)
-			return null;
+			return getBasicShape(key).toBoundingBoxList();
 		Direction fl = key.facing;
 		Direction fw = key.facing.rotateY();
 		if(key.mirrored)
@@ -326,13 +328,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			return list;
 		}
 
-		return null;
-	}
-
-	@Override
-	public VoxelShape getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
+		return getBasicShape(key).toBoundingBoxList();
 	}
 
 	private boolean isInInput()

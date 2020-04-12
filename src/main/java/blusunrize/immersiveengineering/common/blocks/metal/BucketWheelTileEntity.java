@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -30,6 +31,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -37,9 +40,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.util.HashMap;
-
-public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelTileEntity> implements IOBJModelCallback<BlockState>
+public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelTileEntity> implements
+		IOBJModelCallback<BlockState>, IBlockBounds
 {
 	public static TileEntityType<BucketWheelTileEntity> TYPE;
 
@@ -192,34 +194,34 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if(ImmutableSet.of(
 				new BlockPos(3, 0, 0),
 				new BlockPos(2, 1, 0),
 				new BlockPos(4, 1, 0)
 		).contains(posInMultiblock))
-			return new float[]{0, .25f, 0, 1, 1, 1};
+			return VoxelShapes.create(0, .25f, 0, 1, 1, 1);
 		else if(ImmutableSet.of(
 				new BlockPos(3, 6, 0),
 				new BlockPos(2, 5, 0),
 				new BlockPos(4, 5, 0)
 		).contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .75f, 1};
+			return VoxelShapes.create(0, 0, 0, 1, .75f, 1);
 		else if(new BlockPos(0, 3, 0).equals(posInMultiblock))
-			return new float[]{getFacing()==Direction.NORTH?.25f: 0, 0, getFacing()==Direction.WEST?.25f: 0, getFacing()==Direction.SOUTH?.75f: 1, 1, getFacing()==Direction.EAST?.75f: 1};
+			return VoxelShapes.create(getFacing()==Direction.NORTH?.25f: 0, 0, getFacing()==Direction.WEST?.25f: 0, getFacing()==Direction.SOUTH?.75f: 1, 1, getFacing()==Direction.EAST?.75f: 1);
 		else if(new BlockPos(6, 3, 0).equals(posInMultiblock))
-			return new float[]{getFacing()==Direction.SOUTH?.25f: 0, 0, getFacing()==Direction.EAST?.25f: 0, getFacing()==Direction.NORTH?.75f: 1, 1, getFacing()==Direction.WEST?.75f: 1};
+			return VoxelShapes.create(getFacing()==Direction.SOUTH?.25f: 0, 0, getFacing()==Direction.EAST?.25f: 0, getFacing()==Direction.NORTH?.75f: 1, 1, getFacing()==Direction.WEST?.75f: 1);
 		else if(ImmutableSet.of(
 				new BlockPos(1, 2, 0),
 				new BlockPos(1, 4, 0)
 		).contains(posInMultiblock))
-			return new float[]{getFacing()==Direction.NORTH?.25f: 0, 0, getFacing()==Direction.WEST?.25f: 0, getFacing()==Direction.SOUTH?.75f: 1, 1, getFacing()==Direction.EAST?.75f: 1};
+			return VoxelShapes.create(getFacing()==Direction.NORTH?.25f: 0, 0, getFacing()==Direction.WEST?.25f: 0, getFacing()==Direction.SOUTH?.75f: 1, 1, getFacing()==Direction.EAST?.75f: 1);
 		else if(ImmutableSet.of(
 				new BlockPos(5, 2, 0),
 				new BlockPos(5, 4, 0)
 		).contains(posInMultiblock))
-			return new float[]{getFacing()==Direction.SOUTH?.25f: 0, 0, getFacing()==Direction.EAST?.25f: 0, getFacing()==Direction.NORTH?.75f: 1, 1, getFacing()==Direction.WEST?.75f: 1};
-		return new float[]{0, 0, 0, 1, 1, 1};
+			return VoxelShapes.create(getFacing()==Direction.SOUTH?.25f: 0, 0, getFacing()==Direction.EAST?.25f: 0, getFacing()==Direction.NORTH?.75f: 1, 1, getFacing()==Direction.WEST?.75f: 1);
+		return VoxelShapes.create(0, 0, 0, 1, 1, 1);
 	}
 }

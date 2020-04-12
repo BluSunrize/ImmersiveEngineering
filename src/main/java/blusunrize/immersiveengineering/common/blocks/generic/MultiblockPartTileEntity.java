@@ -46,7 +46,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickableTileEntity, IDirectionalTile, IBlockBounds, IGeneralMultiblock, IHammerInteraction, IMirrorAble
+		implements ITickableTileEntity, IDirectionalTile, IGeneralMultiblock, IHammerInteraction, IMirrorAble
 {
 	public boolean formed = false;
 	//Position of this block according to the BlockInfo's returned by IMultiblock#getStructure

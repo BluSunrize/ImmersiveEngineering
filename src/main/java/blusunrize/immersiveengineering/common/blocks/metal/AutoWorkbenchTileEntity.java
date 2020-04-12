@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
@@ -31,6 +32,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -45,7 +48,7 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWorkbenchTileEntity, IMultiblockRecipe>
-		implements IInteractionObjectIE, IConveyorAttachable
+		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
 {
 	public static TileEntityType<AutoWorkbenchTileEntity> TYPE;
 
@@ -120,14 +123,14 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		Set<BlockPos> highFullBlocks = ImmutableSet.of(
 				new BlockPos(0, 1, 2),
 				new BlockPos(0, 1, 1)
 		);
 		if(posInMultiblock.getY()==0||highFullBlocks.contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, 1, 1};
+			return VoxelShapes.create(0, 0, 0, 1, 1, 1);
 		Set<BlockPos> conveyors = ImmutableSet.of(
 				new BlockPos(1, 1, 1),
 				new BlockPos(2, 1, 1),
@@ -135,7 +138,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 				new BlockPos(1, 1, 0)
 		);
 		if(conveyors.contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .125f, 1};
+			return VoxelShapes.create(0, 0, 0, 1, .125f, 1);
 		float xMin = 0;
 		float yMin = 0;
 		float zMin = 0;
@@ -199,7 +202,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 				zMax = .875f;
 			}
 		}
-		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
+		return VoxelShapes.create(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
 	@Override

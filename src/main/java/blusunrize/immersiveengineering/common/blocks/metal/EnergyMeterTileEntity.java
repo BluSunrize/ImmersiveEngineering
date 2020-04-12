@@ -43,6 +43,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
@@ -52,8 +53,8 @@ import java.util.List;
 import java.util.Set;
 
 public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
-		IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride,
-		EnergyConnector
+		IHasDummyBlocks, IPlayerInteraction, IComparatorOverride,
+		EnergyConnector, IBlockBounds
 {
 	public static TileEntityType<EnergyMeterTileEntity> TYPE;
 
@@ -227,18 +228,12 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public float[] getBlockBounds()
-	{
-		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
-	private static final CachedVoxelShapes<Boolean> SHAPES = new CachedVoxelShapes<>(EnergyMeterTileEntity::getShape);
-
-	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return SHAPES.get(isDummy());
 	}
+
+	private static final CachedVoxelShapes<Boolean> SHAPES = new CachedVoxelShapes<>(EnergyMeterTileEntity::getShape);
 
 	private static List<AxisAlignedBB> getShape(Boolean isDummy)
 	{
@@ -250,12 +245,6 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 			for(int i = 0; i < list.size(); ++i)
 				list.set(i, list.get(i).offset(0, 1, 0));
 		return list;
-	}
-
-	@Override
-	public VoxelShape getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
 	}
 
 	@Override

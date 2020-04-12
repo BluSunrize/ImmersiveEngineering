@@ -18,7 +18,10 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 
 import javax.annotation.Nonnull;
 
@@ -53,7 +56,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		Vec3d start = new Vec3d(0, .125f, 0);
 		Vec3d end = new Vec3d(1, .875f, 1);
@@ -61,8 +64,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
-		return new float[]{(float)start.x, (float)start.y, (float)start.z,
-				(float)end.x, (float)end.y, (float)end.z};
+		return VoxelShapes.create(new AxisAlignedBB(start, end));
 	}
 
 	@Override

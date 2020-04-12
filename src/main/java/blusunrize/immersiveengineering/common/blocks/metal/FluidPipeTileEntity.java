@@ -76,7 +76,7 @@ import static java.util.Collections.newSetFromMap;
 //TODO use cap references
 public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe, IAdvancedHasObjProperty,
 		IOBJModelCallback<BlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
-		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile
+		ISelectionBounds, ICollisionBounds, IAdditionalDrops, INeighbourChangeTile
 {
 	public static TileEntityType<FluidPipeTileEntity> TYPE;
 
@@ -570,22 +570,16 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		return false;
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		return null;
-	}
-
 	private static final CachedVoxelShapes<BoundingBoxKey> SHAPES = new CachedVoxelShapes<>(FluidPipeTileEntity::getBoxes);
 
 	@Override
-	public VoxelShape getAdvancedCollisionBounds()
+	public VoxelShape getCollisionShape()
 	{
 		return SHAPES.get(new BoundingBoxKey(true, this));
 	}
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getSelectionShape()
 	{
 		return SHAPES.get(new BoundingBoxKey(false, this));
 	}

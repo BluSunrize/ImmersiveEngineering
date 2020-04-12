@@ -30,6 +30,7 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootContext;
@@ -42,7 +43,7 @@ import java.util.List;
  * @author BluSunrize - 01.10.2016
  */
 public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IHammerInteraction,
-		IAdvancedCollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IColouredTile, ITileDrop
+		ICollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IColouredTile, ITileDrop, ISelectionBounds
 {
 	public static TileEntityType<StripCurtainTileEntity> TYPE;
 
@@ -139,18 +140,19 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 			new AxisAlignedBB(.46875f, .8125f, 0, .53125f, 1, 1)
 	};
 
+	@Nonnull
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getSelectionShape()
 	{
 		AxisAlignedBB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
-		return new float[]{(float)aabb.minX, (float)aabb.minY, (float)aabb.minZ, (float)aabb.maxX, (float)aabb.maxY, (float)aabb.maxZ};
+		return VoxelShapes.create(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ);
 	}
 
 	private static final CachedVoxelShapes<Pair<Boolean, Direction>> SHAPES = new CachedVoxelShapes<>(StripCurtainTileEntity::getShape);
 
 	@Nonnull
 	@Override
-	public VoxelShape getAdvancedCollisionBounds()
+	public VoxelShape getCollisionShape()
 	{
 		return SHAPES.get(Pair.of(isCeilingAttached(), getFacing()));
 	}

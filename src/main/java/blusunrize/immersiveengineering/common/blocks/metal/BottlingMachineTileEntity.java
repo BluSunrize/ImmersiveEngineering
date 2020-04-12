@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -30,6 +31,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -50,7 +53,7 @@ import java.util.List;
 import java.util.Set;
 
 public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<BottlingMachineTileEntity, IMultiblockRecipe>
-		implements IConveyorAttachable
+		implements IConveyorAttachable, IBlockBounds
 {
 	public static TileEntityType<BottlingMachineTileEntity> TYPE;
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8000)};
@@ -127,16 +130,16 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if(new BlockPos(1, 0, 0).equals(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .5f, 1};
+			return VoxelShapes.create(0, 0, 0, 1, .5f, 1);
 		if(posInMultiblock.getY()==0||new BlockPos(2, 1, 0).equals(posInMultiblock))
-			return new float[]{0, 0, 0, 1, 1, 1};
+			return VoxelShapes.create(0, 0, 0, 1, 1, 1);
 		if(posInMultiblock.getZ()==1&&posInMultiblock.getY()==1)
-			return new float[]{0, 0, 0, 1, .125f, 1};
+			return VoxelShapes.create(0, 0, 0, 1, .125f, 1);
 		if(new BlockPos(1, 1, 0).equals(posInMultiblock))
-			return new float[]{.0625f, 0, .0625f, .9375f, 1, .9375f};
+			return VoxelShapes.create(.0625f, 0, .0625f, .9375f, 1, .9375f);
 		if(new BlockPos(1, 1, 0).equals(posInMultiblock))
 		{
 			Direction f = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
@@ -144,7 +147,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			float zMin = getFacing()==Direction.NORTH?.125f: getFacing()==Direction.SOUTH?.25f: f==Direction.SOUTH?-.0625f: f==Direction.NORTH?.25f: 0;
 			float xMax = f==Direction.EAST?.75f: f==Direction.WEST?1.0625f: getFacing()==Direction.WEST?.75f: getFacing()==Direction.EAST?.875f: 1;
 			float zMax = getFacing()==Direction.NORTH?.75f: getFacing()==Direction.SOUTH?.875f: f==Direction.SOUTH?.75f: f==Direction.NORTH?1.0625f: 1;
-			return new float[]{xMin, .0625f, zMin, xMax, .6875f, zMax};
+			return VoxelShapes.create(xMin, .0625f, zMin, xMax, .6875f, zMax);
 		}
 		if(new BlockPos(1, 2, 1).equals(posInMultiblock))
 		{
@@ -152,7 +155,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			float zMin = getFacing()==Direction.NORTH?0: .21875f;
 			float xMax = getFacing()==Direction.EAST?1: .78125f;
 			float zMax = getFacing()==Direction.SOUTH?1: .78125f;
-			return new float[]{xMin, -.4375f, zMin, xMax, .5625f, zMax};
+			return VoxelShapes.create(xMin, -.4375f, zMin, xMax, .5625f, zMax);
 		}
 		if(new BlockPos(1, 2, 0).equals(posInMultiblock))
 		{
@@ -160,9 +163,9 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			float zMin = getFacing()==Direction.NORTH?.8125f: getFacing()==Direction.SOUTH?0: .125f;
 			float xMax = getFacing()==Direction.WEST?1: getFacing()==Direction.EAST?.1875f: .875f;
 			float zMax = getFacing()==Direction.NORTH?1: getFacing()==Direction.SOUTH?.1875f: .875f;
-			return new float[]{xMin, -1, zMin, xMax, .25f, zMax};
+			return VoxelShapes.create(xMin, -1, zMin, xMax, .25f, zMax);
 		}
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return VoxelShapes.create(0, 0, 0, 1, 1, 1);
 	}
 
 	@Override

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -22,6 +23,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -39,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Set;
 
-public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> implements IComparatorOverride //IDeepStorageUnit
+public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> implements IComparatorOverride, IBlockBounds
 {
 	public static TileEntityType<SiloTileEntity> TYPE;
 
@@ -147,7 +150,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ()%2==0)
 		{
@@ -155,9 +158,9 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			float xMax = (getFacing().getAxis()==Axis.X?(posInMultiblock.getX()==0^getFacing()==Direction.EAST): (posInMultiblock.getZ()==0^getFacing()==Direction.SOUTH))?.25f: 1;
 			float zMin = (getFacing().getAxis()==Axis.X?(posInMultiblock.getZ()==2^getFacing()==Direction.EAST): (posInMultiblock.getX()==0^getFacing()==Direction.SOUTH))?.75f: 0;
 			float zMax = (getFacing().getAxis()==Axis.X?(posInMultiblock.getZ()==0^getFacing()==Direction.EAST): (posInMultiblock.getX() > 0^getFacing()==Direction.SOUTH))?.25f: 1;
-			return new float[]{xMin, 0, zMin, xMax, 1, zMax};
+			return VoxelShapes.create(xMin, 0, zMin, xMax, 1, zMax);
 		}
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return VoxelShapes.fullCube();
 	}
 
 	@OnlyIn(Dist.CLIENT)

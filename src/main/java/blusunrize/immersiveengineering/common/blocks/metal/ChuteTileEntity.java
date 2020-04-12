@@ -46,7 +46,7 @@ import javax.vecmath.Matrix4f;
 import java.util.*;
 
 public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IAdvancedHasObjProperty,
-		IHammerInteraction, IAdvancedSelectionBounds, IAdvancedCollisionBounds
+		IHammerInteraction, ISelectionBounds, ICollisionBounds
 {
 	private static final String NBT_POS = "immersiveengineering:chutePos";
 	private static final String NBT_TIME = "immersiveengineering:chuteTime";
@@ -203,12 +203,6 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 		nbt.putBoolean("diagonal", diagonal);
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		return null;
-	}
-
 	static final Map<Direction, AxisAlignedBB> AABB_SIDES = new EnumMap<>(Direction.class);
 
 	static
@@ -223,7 +217,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	private static final CachedVoxelShapes<BoundingBoxKey> SHAPES = new CachedVoxelShapes<>(BoundingBoxKey::getBoxes);
 
 	@Override
-	public VoxelShape getAdvancedCollisionBounds()
+	public VoxelShape getCollisionShape()
 	{
 		return SHAPES.get(new BoundingBoxKey(this));
 	}
@@ -284,7 +278,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	static final VoxelShape selectionShape = VoxelShapes.create(0, 0, 0, 1, 1, 1);
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getSelectionShape()
 	{
 		return selectionShape;
 	}

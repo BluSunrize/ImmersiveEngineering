@@ -331,20 +331,36 @@ public class IEBlockInterfaces
 		}
 	}
 
-	public interface IBlockBounds
-	{
-		float[] getBlockBounds();
-	}
-
-	public interface IAdvancedSelectionBounds extends IBlockBounds
-	{
-		VoxelShape getAdvancedSelectionBounds();
-	}
-
-	public interface IAdvancedCollisionBounds extends IBlockBounds
+	public interface IBlockBounds extends ISelectionBounds, ICollisionBounds
 	{
 		@Nonnull
-		VoxelShape getAdvancedCollisionBounds();
+		VoxelShape getBlockBounds();
+
+		@Nonnull
+		@Override
+		default VoxelShape getCollisionShape()
+		{
+			return getBlockBounds();
+		}
+
+		@Nonnull
+		@Override
+		default VoxelShape getSelectionShape()
+		{
+			return getBlockBounds();
+		}
+	}
+
+	public interface ISelectionBounds
+	{
+		@Nonnull
+		VoxelShape getSelectionShape();
+	}
+
+	public interface ICollisionBounds
+	{
+		@Nonnull
+		VoxelShape getCollisionShape();
 	}
 
 	//TODO move a lot of this to block states!

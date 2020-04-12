@@ -12,8 +12,9 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -22,6 +23,7 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.util.shapes.MultiblockCacheKey;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundNBT;
@@ -44,7 +46,7 @@ import java.util.List;
 import java.util.Set;
 
 public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGeneratorTileEntity>
-		implements IAdvancedSelectionBounds, IAdvancedCollisionBounds, ISoundTile
+		implements IBlockBounds, ISoundTile
 {
 	public static TileEntityType<DieselGeneratorTileEntity> TYPE;
 
@@ -191,13 +193,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 		return null;
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		return getBlockBounds(new MultiblockCacheKey(this));
-	}
-
-	public static float[] getBlockBounds(MultiblockCacheKey key)
+	public static AxisAlignedBB getBlockBounds(MultiblockCacheKey key)
 	{
 		Direction fl = key.facing;
 		Direction fw = fl.rotateY();
@@ -206,39 +202,39 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 		BlockPos posInMultiblock = key.posInMultiblock;
 
 		if(new BlockPos(1, 0, 4).equals(posInMultiblock))
-			return new float[]{fl==Direction.WEST?-.625f: 0, .5f, fl==Direction.NORTH?-.625f: 0, fl==Direction.EAST?1.375f: 1, 1.5f, fl==Direction.SOUTH?1.375f: 1};
+			return new AxisAlignedBB(fl==Direction.WEST?-.625f: 0, .5f, fl==Direction.NORTH?-.625f: 0, fl==Direction.EAST?1.375f: 1, 1.5f, fl==Direction.SOUTH?1.375f: 1);
 		if(ImmutableSet.of(
 				new BlockPos(0, 0, 4),
 				new BlockPos(2, 1, 0),
 				new BlockPos(2, 2, 0)
 		).contains(posInMultiblock))
-			return new float[]{fw==Direction.WEST?.5f: (posInMultiblock.getZ()==0&&fl==Direction.EAST)?-.125f: 0, 0, fw==Direction.NORTH?.5f: (posInMultiblock.getZ()==0&&fl==Direction.SOUTH)?-.125f: 0, fw==Direction.EAST?.5f: (posInMultiblock.getZ()==0&&fl==Direction.WEST)?1.125f: 1, posInMultiblock.getY()==2?.8125f: 1, fw==Direction.SOUTH?.5f: (posInMultiblock.getZ()==0&&fl==Direction.NORTH)?1.125f: 1};
+			return new AxisAlignedBB(fw==Direction.WEST?.5f: (posInMultiblock.getZ()==0&&fl==Direction.EAST)?-.125f: 0, 0, fw==Direction.NORTH?.5f: (posInMultiblock.getZ()==0&&fl==Direction.SOUTH)?-.125f: 0, fw==Direction.EAST?.5f: (posInMultiblock.getZ()==0&&fl==Direction.WEST)?1.125f: 1, posInMultiblock.getY()==2?.8125f: 1, fw==Direction.SOUTH?.5f: (posInMultiblock.getZ()==0&&fl==Direction.NORTH)?1.125f: 1);
 		if(ImmutableSet.of(
 				new BlockPos(2, 0, 4),
 				new BlockPos(0, 1, 0),
 				new BlockPos(0, 2, 0)
 		).contains(posInMultiblock))
-			return new float[]{fw==Direction.EAST?.5f: (posInMultiblock.getZ()==0&&fl==Direction.EAST)?-.125f: 0, 0, fw==Direction.SOUTH?.5f: (posInMultiblock.getZ()==0&&fl==Direction.SOUTH)?-.125f: 0, fw==Direction.WEST?.5f: (posInMultiblock.getZ()==0&&fl==Direction.WEST)?1.125f: 1, posInMultiblock.getY()==2?.8125f: 1, fw==Direction.NORTH?.5f: (posInMultiblock.getZ()==0&&fl==Direction.NORTH)?1.125f: 1};
+			return new AxisAlignedBB(fw==Direction.EAST?.5f: (posInMultiblock.getZ()==0&&fl==Direction.EAST)?-.125f: 0, 0, fw==Direction.SOUTH?.5f: (posInMultiblock.getZ()==0&&fl==Direction.SOUTH)?-.125f: 0, fw==Direction.WEST?.5f: (posInMultiblock.getZ()==0&&fl==Direction.WEST)?1.125f: 1, posInMultiblock.getY()==2?.8125f: 1, fw==Direction.NORTH?.5f: (posInMultiblock.getZ()==0&&fl==Direction.NORTH)?1.125f: 1);
 		if(new BlockPos(1, 2, 0).equals(posInMultiblock))
-			return new float[]{posInMultiblock.getZ()==0&&fl==Direction.EAST?.375f: 0, 0, posInMultiblock.getZ()==0&&fl==Direction.SOUTH?.375f: 0, posInMultiblock.getZ()==0&&fl==Direction.WEST?.625f: 1, posInMultiblock.getY()==2?.8125f: 1, posInMultiblock.getZ()==0&&fl==Direction.NORTH?.625f: 1};
+			return new AxisAlignedBB(posInMultiblock.getZ()==0&&fl==Direction.EAST?.375f: 0, 0, posInMultiblock.getZ()==0&&fl==Direction.SOUTH?.375f: 0, posInMultiblock.getZ()==0&&fl==Direction.WEST?.625f: 1, posInMultiblock.getY()==2?.8125f: 1, posInMultiblock.getZ()==0&&fl==Direction.NORTH?.625f: 1);
 
 		if(posInMultiblock.getY()==1&&posInMultiblock.getZ()==4)
-			return new float[]{0, .5f, 0, 1, 1, 1};
+			return new AxisAlignedBB(0, .5f, 0, 1, 1, 1);
 
 		if(posInMultiblock.getX()==1&&posInMultiblock.getY() > 0&&posInMultiblock.getZ()==3)
-			return new float[]{fl==Direction.EAST?.375f: fl.getAxis()==Axis.Z?.0625f: 0, 0, fl==Direction.SOUTH?.375f: fl.getAxis()==Axis.X?.0625f: 0, fl==Direction.WEST?.625f: fl.getAxis()==Axis.Z?.9375f: 1, posInMultiblock.getY()==2?.3125f: 1, fl==Direction.NORTH?.625f: fl.getAxis()==Axis.X?.9375f: 1};
+			return new AxisAlignedBB(fl==Direction.EAST?.375f: fl.getAxis()==Axis.Z?.0625f: 0, 0, fl==Direction.SOUTH?.375f: fl.getAxis()==Axis.X?.0625f: 0, fl==Direction.WEST?.625f: fl.getAxis()==Axis.Z?.9375f: 1, posInMultiblock.getY()==2?.3125f: 1, fl==Direction.NORTH?.625f: fl.getAxis()==Axis.X?.9375f: 1);
 		if(new MutableBoundingBox(1, 2, 1, 1, 2, 2).isVecInside(posInMultiblock))
-			return new float[]{fl.getAxis()==Axis.Z?.0625f: 0, 0, fl.getAxis()==Axis.X?.0625f: 0, fl.getAxis()==Axis.Z?.9375f: 1, .3125f, fl.getAxis()==Axis.X?.9375f: 1};
+			return new AxisAlignedBB(fl.getAxis()==Axis.Z?.0625f: 0, 0, fl.getAxis()==Axis.X?.0625f: 0, fl.getAxis()==Axis.Z?.9375f: 1, .3125f, fl.getAxis()==Axis.X?.9375f: 1);
 
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0)
-			return new float[]{0, 0, 0, 1, .5f, 1};
+			return new AxisAlignedBB(0, 0, 0, 1, .5f, 1);
 
 		//TODO more sensible name
 		boolean lessThan21 = posInMultiblock.getY()==0||(posInMultiblock.getY()==1&&posInMultiblock.getZ() > 2);
 		if(posInMultiblock.getX()==0&&posInMultiblock.getY() < 2)
-			return new float[]{fw==Direction.EAST?.9375f: (lessThan21&&fl==Direction.EAST)?.375f: 0, -.5f, fw==Direction.SOUTH?.9375f: (lessThan21&&fl==Direction.SOUTH)?.375f: 0, fw==Direction.WEST?.0625f: (lessThan21&&fl==Direction.WEST)?.625f: 1, .625f, fw==Direction.NORTH?.0625f: (lessThan21&&fl==Direction.NORTH)?.625f: 1};
+			return new AxisAlignedBB(fw==Direction.EAST?.9375f: (lessThan21&&fl==Direction.EAST)?.375f: 0, -.5f, fw==Direction.SOUTH?.9375f: (lessThan21&&fl==Direction.SOUTH)?.375f: 0, fw==Direction.WEST?.0625f: (lessThan21&&fl==Direction.WEST)?.625f: 1, .625f, fw==Direction.NORTH?.0625f: (lessThan21&&fl==Direction.NORTH)?.625f: 1);
 		if(posInMultiblock.getX()==2&&posInMultiblock.getY() < 2)
-			return new float[]{fw==Direction.WEST?.9375f: (lessThan21&&fl==Direction.EAST)?.375f: 0, -.5f, fw==Direction.NORTH?.9375f: (lessThan21&&fl==Direction.SOUTH)?.375f: 0, fw==Direction.EAST?.0625f: (lessThan21&&fl==Direction.WEST)?.625f: 1, .625f, fw==Direction.SOUTH?.0625f: (lessThan21&&fl==Direction.NORTH)?.625f: 1};
+			return new AxisAlignedBB(fw==Direction.WEST?.9375f: (lessThan21&&fl==Direction.EAST)?.375f: 0, -.5f, fw==Direction.NORTH?.9375f: (lessThan21&&fl==Direction.SOUTH)?.375f: 0, fw==Direction.EAST?.0625f: (lessThan21&&fl==Direction.WEST)?.625f: 1, .625f, fw==Direction.SOUTH?.0625f: (lessThan21&&fl==Direction.NORTH)?.625f: 1);
 
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==2&&posInMultiblock.getZ()==2)
 		{
@@ -248,17 +244,17 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 			float maxX = fl==Direction.WEST?.4375f: fl==Direction.EAST?1.0625f: fw==Direction.WEST?.4375f: 1.0625f;
 			float minZ = fl==Direction.NORTH?-.0625f: fl==Direction.SOUTH?.5625f: fw==Direction.NORTH?-.0625f: .5625f;
 			float maxZ = fl==Direction.NORTH?.4375f: fl==Direction.SOUTH?1.0625f: fw==Direction.NORTH?.4375f: 1.0625f;
-			return new float[]{minX, 0, minZ, maxX, posInMultiblock.getX()==2?1.125f: .75f, maxZ};
+			return new AxisAlignedBB(minX, 0, minZ, maxX, posInMultiblock.getX()==2?1.125f: .75f, maxZ);
 		}
 
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 
 	}
 
 	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(DieselGeneratorTileEntity::getShape);
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return SHAPES.get(new MultiblockCacheKey(this));
 	}
@@ -287,8 +283,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 
 		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
 		{
-			float[] defaultBounds = getBlockBounds(key);
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(defaultBounds[0], defaultBounds[1], defaultBounds[2], defaultBounds[3], defaultBounds[4], defaultBounds[5]));
+			List<AxisAlignedBB> list = Lists.newArrayList(getBlockBounds(key));
 			list.add(new AxisAlignedBB(fw==Direction.EAST?.5f: fw==Direction.WEST?0: .3125f, .25f, fw==Direction.SOUTH?.5f: fw==Direction.NORTH?0: .3125f, fw==Direction.EAST?1: fw==Direction.WEST?.5f: .6875f, .75f, fw==Direction.SOUTH?1: fw==Direction.NORTH?.5f: .6875f));
 			list.add(new AxisAlignedBB(fw==Direction.EAST?.6875f: fw==Direction.WEST?.1875f: .4375f, -.5f, fw==Direction.SOUTH?.6875f: fw==Direction.NORTH?.1875f: .4375f, fw==Direction.EAST?.8125f: fw==Direction.WEST?.3125f: .5625f, .25f, fw==Direction.SOUTH?.8125f: fw==Direction.NORTH?.3125f: .5625f));
 			return list;
@@ -296,8 +291,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() < 4)
 		{
-			float[] defaultBounds = getBlockBounds(key);
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(defaultBounds[0], defaultBounds[1], defaultBounds[2], defaultBounds[3], defaultBounds[4], defaultBounds[5]));
+			List<AxisAlignedBB> list = Lists.newArrayList(getBlockBounds(key));
 			if(posInMultiblock.getX()==2)
 				fw = fw.getOpposite();
 
@@ -343,13 +337,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 			}
 			return list;
 		}
-		return null;
-	}
-
-	@Override
-	public VoxelShape getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
+		return ImmutableList.of(getBlockBounds(key));
 	}
 
 	@Override

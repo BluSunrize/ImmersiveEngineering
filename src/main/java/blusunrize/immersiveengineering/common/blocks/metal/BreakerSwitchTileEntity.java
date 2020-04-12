@@ -31,8 +31,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.model.TRSRTransformation;
 
@@ -225,7 +228,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		Vec3d start = new Vec3d(.25, .1875, 0);
 		Vec3d end = new Vec3d(.75, .8125, .5);
@@ -233,8 +236,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
-		return new float[]{(float)start.x, (float)start.y, (float)start.z,
-				(float)end.x, (float)end.y, (float)end.z};
+		return VoxelShapes.create(new AxisAlignedBB(start, end));
 	}
 
 	@Override

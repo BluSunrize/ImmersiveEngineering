@@ -22,9 +22,10 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -213,14 +214,16 @@ public class PostTransformerTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		return new float[]{getFacing().getAxis()==Axis.Z?.25F: getFacing()==Direction.WEST?-.375F: .6875F,
+		return VoxelShapes.create(
+				getFacing().getAxis()==Axis.Z?.25F: getFacing()==Direction.WEST?-.375F: .6875F,
 				0,
 				getFacing().getAxis()==Axis.X?.25F: getFacing()==Direction.NORTH?-.375F: .6875F,
 				getFacing().getAxis()==Axis.Z?.75F: getFacing()==Direction.EAST?1.375F: .3125F,
 				1,
-				getFacing().getAxis()==Axis.X?.75F: getFacing()==Direction.SOUTH?1.375F: .3125F};
+				getFacing().getAxis()==Axis.X?.75F: getFacing()==Direction.SOUTH?1.375F: .3125F
+		);
 	}
 
 

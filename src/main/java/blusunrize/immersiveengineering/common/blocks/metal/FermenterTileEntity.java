@@ -10,8 +10,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -32,6 +33,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -48,7 +50,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTileEntity, FermenterRecipe> implements
-		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IInteractionObjectIE
+		IBlockBounds, IInteractionObjectIE
 {
 	public static TileEntityType<FermenterTileEntity> TYPE;
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
@@ -189,27 +191,10 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 		}
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		if(posInMultiblock.getY()==0&&!ImmutableSet.of(
-				new BlockPos(2, 0, 1),
-				new BlockPos(0, 0, 2)
-		).contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
-			return new float[]{
-					getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0,
-					getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1
-			};
-
-		return new float[]{0, 0, 0, 1, 1, 1};
-	}
-
 	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(FermenterTileEntity::getShape);
 
 	@Override
-	public VoxelShape getAdvancedSelectionBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return SHAPES.get(new MultiblockCacheKey(this));
 	}
@@ -292,12 +277,6 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 			return list;
 		}
 		return null;
-	}
-
-	@Override
-	public VoxelShape getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
 	}
 
 	@Override

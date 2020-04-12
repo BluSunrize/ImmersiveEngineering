@@ -24,6 +24,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 
@@ -182,21 +184,21 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		return false;
 	}
 
-	private static float[] FULL_BLOCK = {0, 0, 0, 1, 1, 1};
-	private float[] aabb;
+	private VoxelShape aabb;
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if(offset==0)
-			return FULL_BLOCK;
+			return VoxelShapes.fullCube();
 		if(aabb==null)
 		{
 			float[] tmp = {
 					5F/16, 0, 5F/16,
 					11F/16, (float)INFOS.get(reference).connLength, 11F/16
 			};
-			aabb = Utils.rotateToFacing(tmp, offset > 0?getFacing(): getFacing().getOpposite());
+			tmp = Utils.rotateToFacing(tmp, offset > 0?getFacing(): getFacing().getOpposite());
+			aabb = VoxelShapes.create(tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5]);
 		}
 		return aabb;
 	}
