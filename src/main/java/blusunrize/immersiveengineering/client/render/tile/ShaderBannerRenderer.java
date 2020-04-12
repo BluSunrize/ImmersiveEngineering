@@ -67,6 +67,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 			this.bindTexture(resourcelocation);
 			GlStateManager.pushMatrix();
 
+			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 			GlStateManager.enableAlphaTest();
 			GlStateManager.enableBlend();
 

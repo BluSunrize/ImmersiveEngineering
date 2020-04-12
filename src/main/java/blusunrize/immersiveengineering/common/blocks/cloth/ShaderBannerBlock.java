@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
@@ -32,5 +34,12 @@ public abstract class ShaderBannerBlock extends IETileProviderBlock
 	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
 		return new ShaderBannerTileEntity();
+	}
+
+	@Nonnull
+	@Override
+	public Item asItem()
+	{
+		return Items.WHITE_BANNER;
 	}
 }
