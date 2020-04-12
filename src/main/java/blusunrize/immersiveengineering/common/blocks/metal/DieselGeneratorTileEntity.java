@@ -121,8 +121,8 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 				Direction fw = getFacing().rotateY();
 				if(getIsMirrored())
 					fw = fw.getOpposite();
-				world.addParticle(ParticleTypes.LARGE_SMOKE,
-						exhaust.getX()+.5+(fl.getXOffset()*.3125f)+(-fw.getXOffset()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getZOffset()*.3125f)+(-fw.getZOffset()*.3125f), 0, 0, 0);
+				world.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
+						exhaust.getX()+.5+(fl.getXOffset()*.3125f)+(-fw.getXOffset()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getZOffset()*.3125f)+(-fw.getZOffset()*.3125f), 0.015625-(0.03125*Math.random()), 0.0625, 0.015625-(0.03125*Math.random()));
 			}
 		}
 		else
