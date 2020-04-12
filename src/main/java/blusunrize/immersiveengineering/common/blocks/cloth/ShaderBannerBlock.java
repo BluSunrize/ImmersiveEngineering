@@ -8,23 +8,22 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ShaderBannerBlock extends IETileProviderBlock
+public abstract class ShaderBannerBlock extends IETileProviderBlock
 {
-	public ShaderBannerBlock()
+	public ShaderBannerBlock(String name, IProperty... stateProps)
 	{
-		super("shader_banner", Block.Properties.create(Material.WOOL), null,
-				IEProperties.FACING_HORIZONTAL);
+		super(name, Block.Properties.create(Material.WOOL).doesNotBlockMovement(), null, stateProps);
 		setNotNormalBlock();
 	}
 

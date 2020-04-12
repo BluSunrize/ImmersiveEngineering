@@ -16,6 +16,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -25,7 +28,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -34,14 +36,20 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
 public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvancedCollisionBounds, ITileDrop
 {
 	public boolean wall = false;
-	public byte orientation = 0;
 	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
 
 	public static TileEntityType<BannerTileEntity> TYPE;
+	private static VoxelShape SHAPE = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
+	private static Map<Direction, VoxelShape> WALL_SHAPES = Maps.newEnumMap(ImmutableMap.of(
+			Direction.NORTH, Block.makeCuboidShape(0.0D, 0.0D, 14.0D, 16.0D, 12.5D, 16.0D),
+			Direction.SOUTH, Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 12.5D, 2.0D),
+			Direction.WEST, Block.makeCuboidShape(14.0D, 0.0D, 0.0D, 16.0D, 12.5D, 16.0D),
+			Direction.EAST, Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 2.0D, 12.5D, 16.0D)));
 
 	public ShaderBannerTileEntity()
 	{
@@ -53,7 +61,6 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		this.wall = nbt.getBoolean("wall");
-		this.orientation = nbt.getByte("orientation");
 		if(nbt.contains("shader", NBT.TAG_COMPOUND))
 		{
 			shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
@@ -65,34 +72,22 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IAdvance
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putBoolean("wall", this.wall);
-		nbt.putByte("orientation", this.orientation);
 		nbt.put("shader", shader.serializeNBT());
 	}
 
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(this.wall)
-			switch(this.orientation)
-			{
-				default:
-				case 2:
-					return new float[]{0, 0, .875f, 1, .78125f, 1};
-				case 3:
-					return new float[]{0, 0, 0, 1, .78125f, .125f};
-				case 4:
-					return new float[]{.875f, 0, 0, 1, .78125f, 1};
-				case 5:
-					return new float[]{0, 0, 0, .125f, .78125f, 1};
-			}
-		return new float[]{.25f, 0, .25f, .75f, 1, .75f};
+		return null;
 	}
 
 	@Nonnull
 	@Override
 	public VoxelShape getAdvancedCollisionBounds()
 	{
-		return VoxelShapes.empty();
+		if(this.wall)
+			return WALL_SHAPES.get(getState().get(ShaderBannerWallBlock.FACING));
+		return SHAPE;
 	}
 
 	@Override

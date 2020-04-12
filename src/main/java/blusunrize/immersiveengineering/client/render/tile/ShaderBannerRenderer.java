@@ -8,17 +8,19 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEShaderLayerCompositeTexture;
+import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
+import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.model.BannerModel;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -33,11 +35,11 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 	@Override
 	public void render(ShaderBannerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		int orientation = te.orientation;
 		long time = te.getWorldNonnull().getGameTime();
 		GlStateManager.pushMatrix();
 		if(!te.wall)
 		{
+			int orientation = te.getState().get(ShaderBannerStandingBlock.ROTATION);
 			GlStateManager.translated((float)x+0.5F, (float)y+0.5F, (float)z+0.5F);
 			float f1 = (float)(orientation*360)/16.0F;
 			GlStateManager.rotatef(-f1, 0.0F, 1.0F, 0.0F);
@@ -45,7 +47,8 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 		}
 		else
 		{
-			float rotation = orientation==2?180: orientation==3?0: orientation==4?90: -90;
+			Direction facing = te.getState().get(ShaderBannerWallBlock.FACING);
+			float rotation = facing.getHorizontalAngle();
 
 			GlStateManager.translated((float)x+0.5F, (float)y-0.16666667F, (float)z+0.5F);
 			GlStateManager.rotatef(-rotation, 0.0F, 1.0F, 0.0F);

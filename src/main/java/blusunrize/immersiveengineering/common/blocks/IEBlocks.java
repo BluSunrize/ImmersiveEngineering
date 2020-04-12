@@ -197,6 +197,7 @@ public final class IEBlocks
 		public static Block balloon;
 		public static Block curtain;
 		public static Block shaderBanner;
+		public static Block shaderBannerWall;
 	}
 
 	public static final class Misc

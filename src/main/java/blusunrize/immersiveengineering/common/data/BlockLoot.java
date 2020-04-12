@@ -70,6 +70,7 @@ public class BlockLoot extends LootGenerator
 		register(StoneDecoration.coresample, tileDrop());
 		register(MetalDevices.toolbox, tileDrop());
 		register(Cloth.shaderBanner, tileDrop());
+		register(Cloth.shaderBannerWall, tileDrop());
 		register(Cloth.curtain, tileDrop());
 		for(Block cap : new Block[]{MetalDevices.capacitorLV, MetalDevices.capacitorMV, MetalDevices.capacitorHV, MetalDevices.capacitorCreative})
 			register(cap, tileDrop());

@@ -10,7 +10,8 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
-import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
@@ -56,7 +57,6 @@ import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEShaders;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.fluids.ConcreteFluid;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
@@ -70,7 +70,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.Item;
@@ -82,15 +81,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
@@ -98,7 +94,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -293,7 +288,8 @@ public class IEContent
 		Cloth.cushion = new CushionBlock();
 		Cloth.balloon = new BalloonBlock();
 		Cloth.curtain = new StripCurtainBlock();
-		Cloth.shaderBanner = new ShaderBannerBlock();
+		Cloth.shaderBanner = new ShaderBannerStandingBlock();
+		Cloth.shaderBannerWall = new ShaderBannerWallBlock();
 
 		Misc.fakeLight = new FakeLightBlock();
 
@@ -673,7 +669,7 @@ public class IEContent
 
 		registerTile(BalloonTileEntity.class, event, Cloth.balloon);
 		registerTile(StripCurtainTileEntity.class, event, Cloth.curtain);
-		registerTile(ShaderBannerTileEntity.class, event, Cloth.shaderBanner);
+		registerTile(ShaderBannerTileEntity.class, event, Cloth.shaderBanner, Cloth.shaderBannerWall);
 
 		registerTile(CokeOvenTileEntity.class, event, Multiblocks.cokeOven);
 		registerTile(BlastFurnaceTileEntity.class, event, Multiblocks.blastFurnace);

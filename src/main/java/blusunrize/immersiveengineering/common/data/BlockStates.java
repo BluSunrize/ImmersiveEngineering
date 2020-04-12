@@ -483,6 +483,7 @@ public class BlockStates extends BlockStateProvider
 				ImmutableList.of(StripCurtainBlock.CEILING_ATTACHED));
 		cubeAll(Cloth.cushion, modLoc("block/cushion"));
 		createMultistateSingleModel(Cloth.shaderBanner, EMPTY_MODEL);
+		createMultistateSingleModel(Cloth.shaderBannerWall, EMPTY_MODEL);
 
 		simpleBlockItem(MetalDevices.barrel,
 				loadedModels.getBuilder("metal_devices/barrel")
