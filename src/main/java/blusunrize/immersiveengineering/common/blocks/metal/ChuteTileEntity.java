@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -33,6 +34,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
@@ -217,25 +220,73 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	}
 
 	static final AxisAlignedBB AABB_DOWN = new AxisAlignedBB(0, 0, 0, 1, .125f, 1);
+	private static final CachedVoxelShapes<BoundingBoxKey> SHAPES = new CachedVoxelShapes<>(BoundingBoxKey::getBoxes);
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getAdvancedCollisionBounds()
 	{
-		ArrayList<AxisAlignedBB> list = new ArrayList<>();
-		for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
-			if(!isInwardConveyor(dir)&&(!diagonal||dir!=getFacing()))
-				list.add(AABB_SIDES.get(dir));
-		if(diagonal)
-			list.add(AABB_DOWN);
-		return list;
+		return SHAPES.get(new BoundingBoxKey(this));
 	}
 
-	static final List<AxisAlignedBB> selectionBoxes = Collections.singletonList(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
+	private static class BoundingBoxKey
+	{
+		private final boolean diagonal;
+		private final Set<Direction> sidesToAdd;
+
+		private BoundingBoxKey(ChuteTileEntity te)
+		{
+			this.diagonal = te.diagonal;
+			this.sidesToAdd = EnumSet.noneOf(Direction.class);
+			for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
+				if(!te.isInwardConveyor(dir)&&(!diagonal||dir!=te.getFacing()))
+					this.sidesToAdd.add(dir);
+		}
+
+		private List<AxisAlignedBB> getBoxes()
+		{
+			ArrayList<AxisAlignedBB> list = new ArrayList<>();
+			// SIDES
+			for(Direction d : sidesToAdd)
+				list.add(AABB_SIDES.get(d));
+			//CORNERS
+			for(Direction sideA : Direction.BY_HORIZONTAL_INDEX)
+			{
+				Direction sideB = sideA.rotateY();
+				if(!sidesToAdd.contains(sideA)&&!sidesToAdd.contains(sideB))
+				{
+					AxisAlignedBB boxA = AABB_SIDES.get(sideA);
+					AxisAlignedBB boxB = AABB_SIDES.get(sideB);
+					list.add(boxA.intersect(boxB));
+				}
+			}
+			if(diagonal)
+				list.add(AABB_DOWN);
+			return list;
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			BoundingBoxKey that = (BoundingBoxKey)o;
+			return diagonal==that.diagonal&&
+					sidesToAdd.equals(that.sidesToAdd);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(diagonal, sidesToAdd);
+		}
+	}
+
+	static final VoxelShape selectionShape = VoxelShapes.create(0, 0, 0, 1, 1, 1);
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	public VoxelShape getAdvancedSelectionBounds()
 	{
-		return selectionBoxes;
+		return selectionShape;
 	}
 
 	@Override
