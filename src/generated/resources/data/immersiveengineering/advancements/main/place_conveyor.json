@@ -28,12 +28,6 @@
         "block": "immersiveengineering:conveyor_extractcovered"
       }
     },
-    "uncontrolled": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_uncontrolled"
-      }
-    },
     "dropper": {
       "trigger": "minecraft:placed_block",
       "conditions": {
@@ -56,6 +50,12 @@
       "trigger": "minecraft:placed_block",
       "conditions": {
         "block": "immersiveengineering:conveyor_verticalcovered"
+      }
+    },
+    "redstone": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "immersiveengineering:conveyor_redstone"
       }
     },
     "splitter": {
@@ -81,11 +81,11 @@
     [
       "extract",
       "extractcovered",
-      "uncontrolled",
       "dropper",
       "covered",
       "vertical",
       "verticalcovered",
+      "redstone",
       "splitter",
       "basic",
       "droppercovered"

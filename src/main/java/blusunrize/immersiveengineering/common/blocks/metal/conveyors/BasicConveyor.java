@@ -62,7 +62,6 @@ import java.util.function.Predicate;
 /**
  * @author BluSunrize - 20.08.2016
  */
-//TODO support covers in here, rather than having to make a covered and a non-covered version of every belt?
 public class BasicConveyor implements IConveyorBelt
 {
 	public static final ResourceLocation NAME = new ResourceLocation(ImmersiveEngineering.MODID, "basic");
@@ -109,7 +108,7 @@ public class BasicConveyor implements IConveyorBelt
 	@Override
 	public boolean isActive()
 	{
-		return tile.getWorld().getRedstonePowerFromNeighbors(tile.getPos()) <= 0;
+		return true;
 	}
 
 	protected boolean allowCovers()
