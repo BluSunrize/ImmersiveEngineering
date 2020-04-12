@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -123,7 +124,7 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	private static List<AxisAlignedBB> getShape(BoundingBoxKey key)
 	{
 		if((!key.onGround&&!key.stacked)||!(key.wallL||key.wallR))
-			return Collections.singletonList(null);
+			return ImmutableList.of();
 		List<AxisAlignedBB> list = new ArrayList<>(key.wallL&&key.wallR?2: 1);
 		if(key.wallL)
 			list.add(new AxisAlignedBB(
