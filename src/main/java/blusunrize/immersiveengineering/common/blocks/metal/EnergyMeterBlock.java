@@ -8,6 +8,8 @@ import net.minecraft.state.IProperty;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 
 public class EnergyMeterBlock extends MiscConnectorBlock
 {
@@ -35,6 +37,21 @@ public class EnergyMeterBlock extends MiscConnectorBlock
 		Direction oldFacing = state.get(FACING);
 		Direction newFacing = mirrorIn.mirror(oldFacing);
 		return state.with(FACING, newFacing);
+	}
+
+	@Override
+	public BlockState updatePostPlacement(BlockState stateIn, Direction updateSide, BlockState updatedState,
+										  IWorld worldIn, BlockPos currentPos, BlockPos updatedPos)
+	{
+		Direction facing = stateIn.get(FACING);
+		boolean dummy = stateIn.get(DUMMY);
+		BlockPos otherHalf = currentPos.up(dummy?-1: 1);
+		BlockState otherState = worldIn.getBlockState(otherHalf);
+		// Check if current facing is correct, else assume facing of partner
+		if(otherState.getBlock()==this&&otherState.get(FACING)==facing&&otherState.get(DUMMY)==!dummy)
+			return stateIn;
+		else
+			return stateIn.with(FACING, otherState.get(FACING));
 	}
 
 	@Override
