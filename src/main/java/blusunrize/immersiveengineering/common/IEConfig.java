@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.wires.WireLogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -20,6 +21,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +63,10 @@ public class IEConfig
 					.comment("Drop connections with non-existing endpoints when loading the world. Use with care and backups and only when suspecting corrupted data.",
 							"This option will check and load all connection endpoints and may slow down the world loading process.")
 					.define("validateConnections", false);
+			enableWireLogger = builder
+					.comment("Enable detailed logging for the wire network. This can be useful for developers to track"+
+							" down issues related to wires.")
+					.define("enableWireLogger", false);
 			List<Integer> defaultTransferRates = Lists.newArrayList(2048, 8192, 32768, 0, 0, 0);
 			wireTransferRate = builder
 					.comment("The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone (no transfer) )")
@@ -85,6 +92,7 @@ public class IEConfig
 		}
 
 		public final BooleanValue validateConnections;
+		public final BooleanValue enableWireLogger;
 		public final ConfigValue<List<? extends Integer>> wireTransferRate;
 		public final ConfigValue<List<? extends Double>> wireLossRatio;
 		public final ConfigValue<List<? extends Integer>> wireColouration;
@@ -637,6 +645,12 @@ public class IEConfig
 		CACHED.wireTransferRate = toIntArray(WIRES.wireTransferRate);
 		CACHED.blocksBreakWires = WIRES.blocksBreakWires.get();
 		CACHED.wireDamage = WIRES.enableWireDamage.get();
+		Level wireLoggerLevel;
+		if(WIRES.enableWireLogger.get())
+			wireLoggerLevel = Level.ALL;
+		else
+			wireLoggerLevel = Level.WARN;
+		Configurator.setLevel(WireLogger.logger.getName(), wireLoggerLevel);
 	}
 
 	@SubscribeEvent
