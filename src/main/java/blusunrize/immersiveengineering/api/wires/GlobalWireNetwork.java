@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.wires.WireSyncManager;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -99,8 +100,11 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			localNets.put(p, joined);
 		joined.addConnection(conn);
 		WireSyncManager.onConnectionAdded(conn, world);
-		WireLogger.logger.info("Validating after adding connection...");
-		validate();
+		if(!conn.isInternal())
+		{
+			WireLogger.logger.info("Validating after adding connection...");
+			validate();
+		}
 	}
 
 	public void removeAllConnectionsAt(IImmersiveConnectable iic, Consumer<Connection> handler)
@@ -242,6 +246,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			}
 		}
 		ApiUtils.addFutureServerTask(w, () -> {
+			validate();
 			for(ConnectionPoint cp : iic.getConnectionPoints())
 				for(Connection c : getLocalNet(cp).getConnections(cp))
 				{
@@ -284,7 +289,6 @@ public class GlobalWireNetwork implements ITickableTileEntity
 				((TileEntity)iic).requestModelDataUpdate();
 		}
 		WireLogger.logger.info("Validating after loading {} at {}...", iic, iic.getConnectionPoints());
-		validate();
 	}
 
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
@@ -315,7 +319,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	private void validate()
 	{
-		if(world.isRemote||true)
+		if(world.isRemote||!IEConfig.WIRES.enableWireLogger.get())
 		{
 			WireLogger.logger.info("Skipping validation!");
 			return;
@@ -343,6 +347,16 @@ public class GlobalWireNetwork implements ITickableTileEntity
 										handlers.put(rl, handlers.getInt(rl)+1);
 							}
 					}
+					for(ResourceLocation rl : handlers.keySet())
+					{
+						int countInNet = local.handlerUserCount.getInt(rl);
+						int actualCount = handlers.getInt(rl);
+						if(countInNet!=actualCount)
+							WireLogger.logger.warn("Expected to find {} users of {}, but found {}", countInNet, rl, actualCount);
+					}
+					for(ResourceLocation rl : local.handlerUserCount.keySet())
+						if(!handlers.containsKey(rl))
+							WireLogger.logger.warn("Found no users for {}, but net expects {}", rl, local.handlerUserCount.getInt(rl));
 					for(BlockPos p : local.getConnectors())
 						if(world.isBlockLoaded(p))
 						{

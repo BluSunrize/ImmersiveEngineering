@@ -39,7 +39,8 @@ public class LocalWireNetwork implements IWorldTickable
 	private final Map<BlockPos, IImmersiveConnectable> connectors = new HashMap<>();
 	//This is an array map since it will generally be tiny, and needs to be fast at those sizes
 	private final Map<ResourceLocation, LocalNetworkHandler> handlers = new Object2ObjectArrayMap<>();
-	private final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
+	//package private to allow GlobalWireNetwork#validate to read this
+	final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
 	private List<Runnable> runNextTick = new ArrayList<>();
 
 	public LocalWireNetwork(CompoundNBT subnet, GlobalWireNetwork globalNet)
