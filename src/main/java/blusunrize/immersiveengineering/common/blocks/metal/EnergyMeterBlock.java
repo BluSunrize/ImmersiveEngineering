@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.Direction;
@@ -48,10 +49,12 @@ public class EnergyMeterBlock extends MiscConnectorBlock
 		BlockPos otherHalf = currentPos.up(dummy?-1: 1);
 		BlockState otherState = worldIn.getBlockState(otherHalf);
 		// Check if current facing is correct, else assume facing of partner
-		if(otherState.getBlock()==this&&otherState.get(FACING)==facing&&otherState.get(DUMMY)==!dummy)
-			return stateIn;
-		else
-			return stateIn.with(FACING, otherState.get(FACING));
+		if(otherState.getBlock()==this)
+			if(otherState.get(FACING)==facing&&otherState.get(DUMMY)==!dummy)
+				return stateIn;
+			else
+				return stateIn.with(FACING, otherState.get(FACING));
+		return Blocks.AIR.getDefaultState();
 	}
 
 	@Override
