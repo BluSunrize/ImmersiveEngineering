@@ -51,7 +51,7 @@ public class ChemTurretScreen extends TurretScreen
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
-					((TurretChemTileEntity)tile).ignite = !((GuiButtonState)btn).state;
+					((TurretChemTileEntity)tile).ignite = !((GuiButtonState)btn).getBoolState();
 					tag.putBoolean("ignite", ((TurretChemTileEntity)tile).ignite);
 					handleButtonClick(tag, listOffset);
 				}));

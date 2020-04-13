@@ -22,7 +22,7 @@ public class GuiButtonCheckbox extends GuiButtonState
 	public void render(int mouseX, int mouseY, float partialTicks)
 	{
 		super.render(mouseX, mouseY, partialTicks);
-		if(this.visible&&state)
+		if(this.visible&&getBoolState())
 		{
 			int color;
 			if(!this.active)

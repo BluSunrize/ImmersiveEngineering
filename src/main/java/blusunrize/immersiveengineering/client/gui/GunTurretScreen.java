@@ -49,7 +49,7 @@ public class GunTurretScreen extends TurretScreen
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
-					((TurretGunTileEntity)tile).expelCasings = ((GuiButtonState)btn).state;
+					((TurretGunTileEntity)tile).expelCasings = ((GuiButtonState)btn).getBoolState();
 					tag.putBoolean("expelCasings", ((TurretGunTileEntity)tile).expelCasings);
 					handleButtonClick(tag, listOffset);
 				}));

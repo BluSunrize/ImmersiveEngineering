@@ -49,7 +49,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 		this.addButton(new GuiButtonState(guiLeft+106, guiTop+61, 30, 16, "", tile.outputAll, "immersiveengineering:textures/gui/mixer.png", 176, 82, 1,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
-					tile.outputAll = !((GuiButtonState)btn).state;
+					tile.outputAll = !((GuiButtonState)btn).getBoolState();
 					tag.putBoolean("outputAll", tile.outputAll);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 					fullInit();

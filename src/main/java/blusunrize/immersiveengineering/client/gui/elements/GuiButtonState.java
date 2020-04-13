@@ -16,18 +16,45 @@ import net.minecraft.client.gui.FontRenderer;
 
 public class GuiButtonState extends GuiButtonIE
 {
-	public boolean state;
+	public Enum[] states;
+	private int state;
 	protected final int offsetDir;
 	public int[] textOffset = {0, 0};
+
+	public GuiButtonState(int x, int y, int w, int h, String name, Enum[] states, int initialState, String texture, int u,
+						  int v, int offsetDir, IPressable handler)
+	{
+		super(x, y, w, h, name, texture, u, v, handler);
+		this.states = states;
+		this.state = initialState;
+		this.offsetDir = offsetDir;
+		textOffset = new int[]{width+1, height/2-3};
+	}
 
 	public GuiButtonState(int x, int y, int w, int h, String name, boolean state, String texture, int u,
 						  int v, int offsetDir, IPressable handler)
 	{
-		super(x, y, w, h, name, texture, u, v, handler);
-		this.state = state;
-		this.offsetDir = offsetDir;
-		textOffset = new int[]{width+1, height/2-3};
+		this(x, y, w, h, name, BoolEnum.values(), state?1: 0, texture, u, v, offsetDir, handler);
 	}
+
+	protected int getNextStateInt(){
+		return (state+1)%states.length;
+	}
+
+	public Enum getNextState(){
+		return this.states[getNextStateInt()];
+	}
+
+	public Enum getState(){
+		return this.states[this.state];
+	}
+
+	public boolean getBoolState(){
+		if(!(states[this.state] instanceof BoolEnum))
+			throw new RuntimeException("The button "+this.getMessage()+" is not a boolean state button");
+		return ((BoolEnum)this.states[this.state]).getVal();
+	}
+
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks)
@@ -42,8 +69,8 @@ public class GuiButtonState extends GuiButtonIE
 			GlStateManager.enableBlend();
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
-			int u = texU+(!state?0: offsetDir==0?width: offsetDir==2?-width: 0);
-			int v = texV+(!state?0: offsetDir==1?height: offsetDir==3?-height: 0);
+			int u = texU+(offsetDir==0?width: offsetDir==2?-width: 0)*state;
+			int v = texV+(offsetDir==1?height: offsetDir==3?-height: 0)*state;
 			this.blit(x, y, u, v, width, height);
 			if(!getMessage().isEmpty())
 			{
@@ -62,7 +89,24 @@ public class GuiButtonState extends GuiButtonIE
 	{
 		boolean b = super.mouseClicked(mouseX, mouseY, key);
 		if(b)
-			this.state = !state;
+			this.state = getNextStateInt();
 		return b;
+	}
+
+	private enum BoolEnum
+	{
+		FALSE(false),
+		TRUE(true);
+
+		private final boolean val;
+		BoolEnum(boolean val)
+		{
+			this.val = val;
+		}
+
+		public boolean getVal()
+		{
+			return val;
+		}
 	}
 }
