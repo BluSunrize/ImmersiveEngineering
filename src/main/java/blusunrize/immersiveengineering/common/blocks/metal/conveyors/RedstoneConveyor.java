@@ -49,7 +49,6 @@ public class RedstoneConveyor extends BasicConveyor
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "redstone");
 
-	@OnlyIn(Dist.CLIENT)
 	private static final DynamicModel<Direction> MODEL_PANEL = DynamicModel.createSided(
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor_redstone.obj.ie"),
 			"conveyor_redstone", ModelType.IE_OBJ);

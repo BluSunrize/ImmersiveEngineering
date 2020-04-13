@@ -6,7 +6,6 @@ Blocks like hoppers will be able to drop items onto the belts (rightclick) or ad
 Rightclicking a conveyor with any dye will colour the walls of the conveyor to easily identify where is is going.<np>
 <&conveyor_redstone_recipe>The Redstone Controlled Conveyor Belt can be disabled with a redstone signal.
 The panel on its side allows attaching a lever, but a redstone signal may be input from any direction. Sneak + rightclick with an Engineer's Hammer to move the panel to the other side.<np>
-Using a redstone signal on a conveyor belt will turn it off, this behavior can be disabled by crafting it into a redstone-ignoring version.
 <&conveyor_dropper_recipe>The Dropping Conveyor Belt is quite simply a conveyor with a hatch in the middle, allowing it to drop items that pass over it downwards.
 Items will be inserted into inventories below or simply dropped if there is an empty space below the conveyor.<np>
 <&conveyor_extract_recipe>The Extracting Conveyor Belt possesses the ability to extract items from an inventory in a similar fashion to a Hopper. Unlike the latter however, it possesses no internal inventory and will place extracted items onto the belt.
