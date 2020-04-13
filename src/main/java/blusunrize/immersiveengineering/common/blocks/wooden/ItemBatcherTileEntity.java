@@ -194,7 +194,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing==getFacing().getOpposite())
 			return insertionCap.cast();
 		return super.getCapability(capability, facing);
 	}
