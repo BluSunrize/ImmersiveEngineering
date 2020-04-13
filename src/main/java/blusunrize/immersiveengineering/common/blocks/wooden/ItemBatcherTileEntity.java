@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
@@ -41,6 +42,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public BatchMode batchMode = BatchMode.ALL;
+	public NonNullList<DyeColor> redstoneColors = NonNullList.withSize(9, DyeColor.WHITE);
 
 	public ItemBatcherTileEntity()
 	{
@@ -120,6 +122,10 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 			ItemStackHelper.loadAllItems(nbt, this.inventory);
 		}
 		this.batchMode = BatchMode.values()[nbt.getByte("batchMode")];
+		int[] redstoneConfig = nbt.getIntArray("redstoneColors");
+		if(redstoneConfig.length >= 9)
+			for(int i = 0; i < 9; i++)
+				this.redstoneColors.set(i, DyeColor.byId(redstoneConfig[i]));
 	}
 
 	@Override
@@ -128,12 +134,18 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 		if(!descPacket)
 			ItemStackHelper.saveAllItems(nbt, this.inventory);
 		nbt.putByte("batchMode", (byte)this.batchMode.ordinal());
+		int[] redstoneConfig = new int[9];
+		for(int i = 0; i < 9; i++)
+			redstoneConfig[i] = this.redstoneColors.get(i).getId();
+		nbt.putIntArray("redstoneColors", redstoneConfig);
 	}
 
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
 		if(message.contains("batchMode"))
 			this.batchMode = BatchMode.values()[message.getByte("batchMode")];
+		if(message.contains("redstoneColor_slot") && message.contains("redstoneColor_val"))
+			this.redstoneColors.set(message.getInt("redstoneColor_slot"), DyeColor.byId(message.getInt("redstoneColor_val")));
 	}
 
 	@Override
