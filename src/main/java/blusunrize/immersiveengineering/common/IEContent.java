@@ -278,6 +278,8 @@ public class IEContent
 		WoodenDevices.reinforcedCrate = new CrateBlock("reinforced_crate", true);
 
 		WoodenDevices.sorter = new SorterBlock("sorter", false);
+		WoodenDevices.itemBatcher = new GenericTileBlock("item_batcher", () -> ItemBatcherTileEntity.TYPE,
+				standardWoodProperties, IEProperties.FACING_ALL);
 		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
 		WoodenDevices.windmill = new WindmillBlock("windmill");
 		WoodenDevices.watermill = new WatermillBlock("watermill");
@@ -682,6 +684,7 @@ public class IEContent
 		registerTile(WoodenBarrelTileEntity.class, event, WoodenDevices.woodenBarrel);
 		registerTile(ModWorkbenchTileEntity.class, event, WoodenDevices.workbench);
 		registerTile(SorterTileEntity.class, event, WoodenDevices.sorter);
+		registerTile(ItemBatcherTileEntity.class, event, WoodenDevices.itemBatcher);
 		registerTile(TurntableTileEntity.class, event, WoodenDevices.turntable);
 		registerTile(FluidSorterTileEntity.class, event, WoodenDevices.fluidSorter);
 		registerTile(WatermillTileEntity.class, event, WoodenDevices.watermill);
