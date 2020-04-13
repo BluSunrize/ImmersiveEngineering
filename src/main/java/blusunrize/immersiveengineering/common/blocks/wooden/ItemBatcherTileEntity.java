@@ -12,21 +12,19 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -36,7 +34,9 @@ import javax.annotation.Nonnull;
 public class ItemBatcherTileEntity extends IEBaseTileEntity implements IIEInventory, IInteractionObjectIE, IStateBasedDirectional
 {
 	public static TileEntityType<ItemBatcherTileEntity> TYPE;
-	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
+
+	private NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
+	public BatchMode batchMode = BatchMode.ALL;
 
 	public ItemBatcherTileEntity()
 	{
@@ -77,32 +77,25 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements IIEInvent
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getList("inventory", NBT.TAG_COMPOUND), 18);
+		{
+			inventory = NonNullList.withSize(18, ItemStack.EMPTY);
+			ItemStackHelper.loadAllItems(nbt, this.inventory);
+		}
+		this.batchMode = BatchMode.values()[nbt.getByte("batchMode")];
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(!descPacket)
-			writeInv(nbt, false);
+			ItemStackHelper.saveAllItems(nbt, this.inventory);
+		nbt.putByte("batchMode", (byte)this.batchMode.ordinal());
 	}
 
-	public void writeInv(CompoundNBT nbt, boolean toItem)
+	public void receiveMessageFromClient(CompoundNBT message)
 	{
-		boolean write = false;
-		ListNBT invList = new ListNBT();
-		for(int i = 0; i < this.inventory.size(); i++)
-			if(!this.inventory.get(i).isEmpty())
-			{
-				if(toItem)
-					write = true;
-				CompoundNBT itemTag = new CompoundNBT();
-				itemTag.putByte("Slot", (byte)i);
-				this.inventory.get(i).write(itemTag);
-				invList.add(itemTag);
-			}
-		if(!toItem||write)
-			nbt.put("inventory", invList);
+		if(message.contains("batchMode"))
+			this.batchMode = BatchMode.values()[message.getByte("batchMode")];
 	}
 
 	@Override
@@ -152,5 +145,11 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements IIEInvent
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return insertionCap.cast();
 		return super.getCapability(capability, facing);
+	}
+
+	public enum BatchMode
+	{
+		SINGLE,
+		ALL;
 	}
 }
