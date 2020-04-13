@@ -18,9 +18,16 @@ public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherTileEntity>
 	{
 		super(inventoryPlayer, tile, id);
 		for(int i = 0; i < 9; i++)
-			this.addSlot(new Slot(this.inv, i, 8+i*18, 31));
+			this.addSlot(new IESlot.Ghost(this, this.inv, i, 8+i*18, 30)
+			{
+				@Override
+				public int getSlotStackLimit()
+				{
+					return 64;
+				}
+			});
 		for(int i = 0; i < 9; i++)
-			this.addSlot(new Slot(this.inv, 9+i, 8+i*18, 63));
+			this.addSlot(new Slot(this.inv, 9+i, 8+i*18, 59));
 
 		this.slotCount = tile.getInventory().size();
 		this.tile = tile;
