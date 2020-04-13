@@ -8,10 +8,13 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.LivingEntity;
@@ -20,10 +23,10 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -31,7 +34,8 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class ItemBatcherTileEntity extends IEBaseTileEntity implements IIEInventory, IInteractionObjectIE, IStateBasedDirectional
+public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
+		IInteractionObjectIE, IStateBasedDirectional
 {
 	public static TileEntityType<ItemBatcherTileEntity> TYPE;
 
@@ -61,16 +65,50 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements IIEInvent
 		return placer.isSneaking();
 	}
 
-	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
-	{
-		return true;
-	}
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+			() -> new DirectionalBlockPos(pos.offset(getFacing()), getFacing().getOpposite()),
+			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
-	public boolean canRotate(Direction axis)
+	public void tick()
 	{
-		return true;
+		if(!world.isRemote&&world.getGameTime()%8==0&&output.isPresent())
+		{
+			boolean matched = true;
+			if(this.batchMode==BatchMode.ALL)
+			{
+				for(int slot = 0; slot < 9; slot++)
+					if(!this.inventory.get(slot).isEmpty())
+						matched &= isFilterMatched(slot);
+			}
+			if(matched)
+			{
+				for(int slot = 0; slot < 9; slot++)
+				{
+					ItemStack filterStack = this.inventory.get(slot);
+					if(filterStack.isEmpty())
+						continue;
+					if(this.batchMode==BatchMode.ALL||isFilterMatched(slot))
+					{
+						ItemStack outStack = inventory.get(slot+9);
+						int outSize = filterStack.getCount();
+						ItemStack stack = Utils.copyStackWithAmount(outStack, outSize);
+						stack = Utils.insertStackIntoInventory(output, stack, false);
+						if(!stack.isEmpty())
+							outSize -= stack.getCount();
+						outStack.shrink(outSize);
+						if(outStack.getCount() <= 0)
+							this.inventory.set(slot+9, ItemStack.EMPTY);
+					}
+				}
+			}
+		}
+	}
+
+	protected boolean isFilterMatched(int slot)
+	{
+		return ItemStack.areItemsEqualIgnoreDurability(this.inventory.get(slot), this.inventory.get(slot+9))
+				&&this.inventory.get(slot+9).getCount() >= this.inventory.get(slot).getCount();
 	}
 
 	@Override
@@ -119,6 +157,8 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements IIEInvent
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
+		if(slot >= 9)
+			return ItemStack.areItemsEqualIgnoreDurability(this.inventory.get(slot-9), stack);
 		return true;
 	}
 
