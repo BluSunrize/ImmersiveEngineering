@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:uncontrolled_back"
+      "immersiveengineering:conveyor_redstone"
     ]
   },
   "criteria": {
@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:conveyor_uncontrolled"
+            "item": "immersiveengineering:conveyor_basic"
           }
         ]
       }
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:uncontrolled_back"
+        "recipe": "immersiveengineering:conveyor_redstone"
       }
     }
   },

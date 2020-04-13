@@ -46,10 +46,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTil
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.DropConveyor;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConveyor;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.VerticalConveyor;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
@@ -354,6 +351,7 @@ public class ClientProxy extends CommonProxy
 		event.addSprite(SplitConveyor.texture_off);
 		event.addSprite(SplitConveyor.texture_on);
 		event.addSprite(SplitConveyor.texture_casing);
+		event.addSprite(RedstoneConveyor.texture_panel);
 
 		event.addSprite(new ResourceLocation(MODID, "block/fluid/creosote_still"));
 		event.addSprite(new ResourceLocation(MODID, "block/fluid/creosote_flow"));

@@ -817,7 +817,7 @@
   "block.immersiveengineering.turret_gun": "Gun Turret",
   "block.immersiveengineering.cloche": "Garden Cloche",
   "block.immersiveengineering.conveyor_basic": "Conveyor Belt",
-  "block.immersiveengineering.conveyor_uncontrolled": "Ignores Redstone Control",
+  "block.immersiveengineering.conveyor_redstone": "Redstone Controlled Conveyor Belt",
   "block.immersiveengineering.conveyor_dropper": "Dropping Conveyor Belt",
   "block.immersiveengineering.conveyor_droppercovered": "Dropping Covered Conveyor Belt",
   "block.immersiveengineering.conveyor_vertical": "Vertical Conveyor Belt",

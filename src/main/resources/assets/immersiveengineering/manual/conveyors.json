@@ -12,6 +12,10 @@
       ]
     ]
   },
+  "conveyor_redstone_recipe": {
+    "type": "crafting",
+    "recipe": "conveyor_redstone"
+  },
   "conveyor_dropper_recipe": {
     "type": "crafting",
     "recipe": "conveyor_dropper"

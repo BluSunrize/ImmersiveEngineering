@@ -1028,13 +1028,13 @@ public class Recipes extends RecipeProvider
 	private void recipesConveyors(@Nonnull Consumer<IFinishedRecipe> out)
 	{
 		IItemProvider basic = ConveyorHandler.getBlock(BasicConveyor.NAME);
+		IItemProvider redstone = ConveyorHandler.getBlock(RedstoneConveyor.NAME);
 		IItemProvider covered = ConveyorHandler.getBlock(CoveredConveyor.NAME);
 		IItemProvider dropper = ConveyorHandler.getBlock(DropConveyor.NAME);
 		IItemProvider dropperCovered = ConveyorHandler.getBlock(DropCoveredConveyor.NAME);
 		IItemProvider extract = ConveyorHandler.getBlock(ExtractConveyor.NAME);
 		IItemProvider extractCovered = ConveyorHandler.getBlock(ExtractCoveredConveyor.NAME);
 		IItemProvider splitter = ConveyorHandler.getBlock(SplitConveyor.NAME);
-		IItemProvider uncontrolled = ConveyorHandler.getBlock(UncontrolledConveyor.NAME);
 		IItemProvider vertical = ConveyorHandler.getBlock(VerticalConveyor.NAME);
 		IItemProvider verticalCovered = ConveyorHandler.getBlock(VerticalCoveredConveyor.NAME);
 		addCoveyorCoveringRecipe(verticalCovered, vertical, out);
@@ -1057,6 +1057,13 @@ public class Recipes extends RecipeProvider
 		//		.key('i', Tags.Items.INGOTS_IRON)
 		//		.key('r', Tags.Items.DUSTS_REDSTONE)
 		//		.build(out);
+		ShapedRecipeBuilder.shapedRecipe(redstone)
+				.patternLine("c")
+				.patternLine("r")
+				.key('c', basic)
+				.key('r', Blocks.REDSTONE_TORCH)
+				.addCriterion("has_conveyor", hasItem(basic))
+				.build(out);
 		ShapedRecipeBuilder.shapedRecipe(dropper)
 				.patternLine("c")
 				.patternLine("t")
@@ -1081,14 +1088,6 @@ public class Recipes extends RecipeProvider
 				.key('i', Tags.Items.INGOTS_IRON)
 				.addCriterion("has_conveyor", hasItem(basic))
 				.build(out);
-		ShapelessRecipeBuilder.shapelessRecipe(uncontrolled)
-				.addIngredient(basic)
-				.addCriterion("has_conveyor", hasItem(basic))
-				.build(out);
-		ShapelessRecipeBuilder.shapelessRecipe(basic)
-				.addIngredient(uncontrolled)
-				.addCriterion("has_conveyor", hasItem(uncontrolled))
-				.build(out, rl("uncontrolled_back"));
 		ShapedRecipeBuilder.shapedRecipe(vertical, 3)
 				.patternLine("ci")
 				.patternLine("c ")
@@ -1574,7 +1573,8 @@ public class Recipes extends RecipeProvider
 				.build(buildBlueprint(out, "molds"), rl("blueprint_molds"));
 	}
 
-	private void recipesVanilla(@Nonnull Consumer<IFinishedRecipe> out) {
+	private void recipesVanilla(@Nonnull Consumer<IFinishedRecipe> out)
+	{
 		ShapedRecipeBuilder.shapedRecipe(Items.TORCH, 12)
 				.patternLine("wc ")
 				.patternLine("sss")
