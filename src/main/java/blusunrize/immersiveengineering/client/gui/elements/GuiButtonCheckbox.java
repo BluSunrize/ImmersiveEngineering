@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 
 public class GuiButtonCheckbox extends GuiButtonState
 {
-	public GuiButtonCheckbox(int x, int y, String name, boolean state, IPressable handler)
+	public GuiButtonCheckbox(int x, int y, String name, boolean state, IIEPressable handler)
 	{
 		super(x, y, 8, 8, name, state, "immersiveengineering:textures/gui/hud_elements.png", 0, 128, -1, handler);
 	}

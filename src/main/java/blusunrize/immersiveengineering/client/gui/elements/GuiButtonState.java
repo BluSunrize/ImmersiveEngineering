@@ -14,15 +14,15 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
-public class GuiButtonState extends GuiButtonIE
+public class GuiButtonState<E extends Enum> extends GuiButtonIE
 {
-	public Enum[] states;
+	public E[] states;
 	private int state;
 	protected final int offsetDir;
 	public int[] textOffset = {0, 0};
 
-	public GuiButtonState(int x, int y, int w, int h, String name, Enum[] states, int initialState, String texture, int u,
-						  int v, int offsetDir, IPressable handler)
+	public GuiButtonState(int x, int y, int w, int h, String name, E[] states, int initialState, String texture, int u,
+						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler)
 	{
 		super(x, y, w, h, name, texture, u, v, handler);
 		this.states = states;
@@ -32,24 +32,28 @@ public class GuiButtonState extends GuiButtonIE
 	}
 
 	public GuiButtonState(int x, int y, int w, int h, String name, boolean state, String texture, int u,
-						  int v, int offsetDir, IPressable handler)
+						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler)
 	{
-		this(x, y, w, h, name, BoolEnum.values(), state?1: 0, texture, u, v, offsetDir, handler);
+		this(x, y, w, h, name, (E[])BoolEnum.values(), state?1: 0, texture, u, v, offsetDir, handler);
 	}
 
-	protected int getNextStateInt(){
+	protected int getNextStateInt()
+	{
 		return (state+1)%states.length;
 	}
 
-	public Enum getNextState(){
+	public E getNextState()
+	{
 		return this.states[getNextStateInt()];
 	}
 
-	public Enum getState(){
+	public E getState()
+	{
 		return this.states[this.state];
 	}
 
-	public boolean getBoolState(){
+	public boolean getBoolState()
+	{
 		if(!(states[this.state] instanceof BoolEnum))
 			throw new RuntimeException("The button "+this.getMessage()+" is not a boolean state button");
 		return ((BoolEnum)this.states[this.state]).getVal();
@@ -99,6 +103,7 @@ public class GuiButtonState extends GuiButtonIE
 		TRUE(true);
 
 		private final boolean val;
+
 		BoolEnum(boolean val)
 		{
 			this.val = val;

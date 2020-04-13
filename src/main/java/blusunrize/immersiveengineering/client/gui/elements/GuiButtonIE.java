@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
@@ -23,7 +24,7 @@ public class GuiButtonIE extends Button
 	protected final int texU;
 	protected final int texV;
 
-	public GuiButtonIE(int x, int y, int w, int h, String name, String texture, int u, int v, IPressable handler)
+	public GuiButtonIE(int x, int y, int w, int h, String name, String texture, int u, int v, IIEPressable handler)
 	{
 		super(x, y, w, h, name, handler);
 		this.texture = texture;
@@ -70,6 +71,24 @@ public class GuiButtonIE extends Button
 					txtCol = Lib.COLOUR_I_ImmersiveOrange;
 				this.drawCenteredString(fontrenderer, getMessage(), this.x+this.width/2, this.y+(this.height-8)/2, txtCol);
 			}
+		}
+	}
+
+	@Override
+	public void onPress()
+	{
+		this.onPress.onPress(this);
+	}
+
+	public interface IIEPressable<B extends GuiButtonIE> extends IPressable
+	{
+		void onIEPress(B var1);
+
+		@Override
+		default void onPress(Button var1)
+		{
+			Preconditions.checkArgument(var1 instanceof GuiButtonIE);
+			this.onIEPress((B)var1);
 		}
 	}
 }
