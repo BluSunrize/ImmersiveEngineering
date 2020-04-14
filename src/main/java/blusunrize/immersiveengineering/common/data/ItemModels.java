@@ -312,6 +312,8 @@ public class ItemModels extends LoadedModelProvider
 				.transforms(rl("item/connector"));
 		obj(Connectors.connectorProbe, rl("block/connector/connector_probe.obj.ie"))
 				.transforms(rl("item/connector"));
+		obj(Connectors.connectorBundled, rl("block/connector/connector_interface.obj"))
+				.transforms(rl("item/connector"));
 		obj(Connectors.connectorStructural, rl("block/connector/connector_structural.obj.ie"))
 				.transforms(rl("item/connector"));
 		obj(Connectors.transformer, rl("block/connector/transformer_mv_left.obj"))

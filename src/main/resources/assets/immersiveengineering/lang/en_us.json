@@ -802,6 +802,7 @@
   "block.immersiveengineering.current_transformer": "Current Transformer",
   "block.immersiveengineering.connector_redstone": "Redstone Wire Connector",
   "block.immersiveengineering.connector_probe": "Redstone Probe Connector",
+  "block.immersiveengineering.connector_bundled": "Redstone Interface Connector",
   "block.immersiveengineering.feedthrough": "Feedthrough Insulator",
   "block.immersiveengineering.capacitor_lv": "LV Capacitor",
   "block.immersiveengineering.capacitor_mv": "MV Capacitor",
