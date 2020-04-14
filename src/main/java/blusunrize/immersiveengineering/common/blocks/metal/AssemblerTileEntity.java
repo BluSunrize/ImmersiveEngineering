@@ -526,8 +526,8 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	private LazyOptional<IItemHandler> extractionHandler = registerConstantCap(
 			new IEInventoryHandler(3, this, 18, false, true));
 
-	private static final BlockPos inputPos = new BlockPos(0, 1, 1);
-	private static final BlockPos outputPos = new BlockPos(2, 1, 1);
+	private static final BlockPos inputPos = new BlockPos(1, 1, 2);
+	private static final BlockPos outputPos = new BlockPos(1, 1, 0);
 	private static final Set<BlockPos> itemConnections = ImmutableSet.of(inputPos, outputPos);
 	@Nonnull
 	@Override

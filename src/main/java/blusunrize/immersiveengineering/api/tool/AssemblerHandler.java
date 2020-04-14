@@ -155,9 +155,10 @@ public class AssemblerHandler
 
 	public static RecipeQuery createQueryFromItemStack(ItemStack stack)
 	{
-		return FluidUtil.getFluidContained(stack)
-				.map(fluid -> new RecipeQuery(fluid, stack.getCount()))
-				.orElseGet(() -> new RecipeQuery(stack, stack.getCount()));
+		FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+		if(!fluidStack.isEmpty())
+			return new RecipeQuery(fluidStack, stack.getCount());
+		return new RecipeQuery(stack, stack.getCount());
 	}
 
 	public static class RecipeQuery
