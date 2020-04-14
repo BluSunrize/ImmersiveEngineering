@@ -187,9 +187,9 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int id, int button, ClickType clickType, PlayerEntity player)
+	public ItemStack slotClick(int id, int dragType, ClickType clickType, PlayerEntity player)
 	{
-		ItemStack ret = super.slotClick(id, button, clickType, player);
+		ItemStack ret = super.slotClick(id, dragType, clickType, player);
 		tile.markContainingBlockForUpdate(null);
 		if(!world.isRemote)
 			detectAndSendChanges();

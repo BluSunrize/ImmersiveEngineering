@@ -65,6 +65,7 @@ public class GuiHandler
 		register(ModWorkbenchTileEntity.class, Lib.GUIID_Workbench, ModWorkbenchContainer::new);
 		register(AssemblerTileEntity.class, Lib.GUIID_Assembler, AssemblerContainer::new);
 		register(SorterTileEntity.class, Lib.GUIID_Sorter, SorterContainer::new);
+		register(ItemBatcherTileEntity.class, Lib.GUIID_ItemBatcher, ItemBatcherContainer::new);
 		register(SqueezerTileEntity.class, Lib.GUIID_Squeezer, SqueezerContainer::new);
 		register(FermenterTileEntity.class, Lib.GUIID_Fermenter, FermenterContainer::new);
 		register(RefineryTileEntity.class, Lib.GUIID_Refinery, RefineryContainer::new);

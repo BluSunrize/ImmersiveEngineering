@@ -465,6 +465,15 @@ public class BlockStates extends BlockStateProvider
 		}
 		simpleBlockItem(WoodenDevices.sorter, createRouterModel(rl("block/wooden_device/sorter"),
 				"router"));
+		{
+			ModelFile batcherModel = cubeBottomTop("item_batcher",
+					modLoc("block/wooden_device/item_batcher"),
+					modLoc("block/wooden_device/item_batcher_in"),
+					modLoc("block/wooden_device/item_batcher_out")
+			);
+			createRotatedBlock(WoodenDevices.itemBatcher, s -> batcherModel, IEProperties.FACING_ALL, ImmutableList.of(), -90, 0);
+			itemModels.put(WoodenDevices.itemBatcher, batcherModel);
+		}
 		simpleBlockItem(WoodenDevices.fluidSorter, createRouterModel(rl("block/wooden_device/fluid_sorter"),
 				"fluid_router"));
 		simpleBlockItem(WoodenDevices.woodenBarrel,

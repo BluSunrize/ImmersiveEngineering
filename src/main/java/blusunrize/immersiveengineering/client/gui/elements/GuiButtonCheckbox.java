@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.client.gui.elements;
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.client.Minecraft;
 
-public class GuiButtonCheckbox extends GuiButtonState
+public class GuiButtonCheckbox extends GuiButtonBoolean
 {
-	public GuiButtonCheckbox(int x, int y, String name, boolean state, IPressable handler)
+	public GuiButtonCheckbox(int x, int y, String name, boolean state, IIEPressable<GuiButtonState<Boolean>> handler)
 	{
 		super(x, y, 8, 8, name, state, "immersiveengineering:textures/gui/hud_elements.png", 0, 128, -1, handler);
 	}
@@ -22,7 +22,7 @@ public class GuiButtonCheckbox extends GuiButtonState
 	public void render(int mouseX, int mouseY, float partialTicks)
 	{
 		super.render(mouseX, mouseY, partialTicks);
-		if(this.visible&&state)
+		if(this.visible&&getState())
 		{
 			int color;
 			if(!this.active)

@@ -45,29 +45,30 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int id, int button, ClickType clickType, PlayerEntity player)
+	public ItemStack slotClick(int id, int dragType, ClickType clickType, PlayerEntity player)
 	{
 		Slot slot = id < 0?null: this.inventorySlots.get(id);
 		if(!(slot instanceof IESlot.Ghost))
-			return super.slotClick(id, button, clickType, player);
+			return super.slotClick(id, dragType, clickType, player);
 		//Spooky Ghost Slots!!!!
 		ItemStack stack = ItemStack.EMPTY;
 		ItemStack stackSlot = slot.getStack();
 		if(!stackSlot.isEmpty())
 			stack = stackSlot.copy();
 
-		if(button==2)
+		if(dragType==2)
 			slot.putStack(ItemStack.EMPTY);
-		else if(button==0||button==1)
+		else if(dragType==0||dragType==1)
 		{
 			PlayerInventory playerInv = player.inventory;
 			ItemStack stackHeld = playerInv.getItemStack();
+			int amount = Math.min(slot.getSlotStackLimit(), stackHeld.getCount());
+			if(dragType==1)
+				amount = 1;
 			if(stackSlot.isEmpty())
 			{
 				if(!stackHeld.isEmpty()&&slot.isItemValid(stackHeld))
-				{
-					slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
-				}
+					slot.putStack(Utils.copyStackWithAmount(stackHeld, amount));
 			}
 			else if(stackHeld.isEmpty())
 			{
@@ -75,16 +76,22 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 			}
 			else if(slot.isItemValid(stackHeld))
 			{
-				slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
+				if(ItemStack.areItemsEqual(stackSlot, stackHeld))
+					stackSlot.grow(amount);
+				else
+					slot.putStack(Utils.copyStackWithAmount(stackHeld, amount));
 			}
+			if(stackSlot.getCount()>slot.getSlotStackLimit())
+				stackSlot.setCount(slot.getSlotStackLimit());
 		}
-		else if(button==5)
+		else if(dragType==5)
 		{
 			PlayerInventory playerInv = player.inventory;
 			ItemStack stackHeld = playerInv.getItemStack();
+			int amount = Math.min(slot.getSlotStackLimit(), stackHeld.getCount());
 			if(!slot.getHasStack())
 			{
-				slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
+				slot.putStack(Utils.copyStackWithAmount(stackHeld, amount));
 			}
 		}
 		return stack;

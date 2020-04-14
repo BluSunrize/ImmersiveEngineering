@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretChemTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
@@ -47,11 +48,11 @@ public class ChemTurretScreen extends TurretScreen
 	@Override
 	protected void addCustomButtons()
 	{
-		this.addButton(new GuiButtonState(guiLeft+135, guiTop+68, 14, 14, "", ((TurretChemTileEntity)tile).ignite, "immersiveengineering:textures/gui/turret.png", 176, 51, 0,
+		this.addButton(new GuiButtonBoolean(guiLeft+135, guiTop+68, 14, 14, "", ((TurretChemTileEntity)tile).ignite, "immersiveengineering:textures/gui/turret.png", 176, 51, 0,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
-					((TurretChemTileEntity)tile).ignite = !((GuiButtonState)btn).state;
+					((TurretChemTileEntity)tile).ignite = !btn.getState();
 					tag.putBoolean("ignite", ((TurretChemTileEntity)tile).ignite);
 					handleButtonClick(tag, listOffset);
 				}));

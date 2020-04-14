@@ -48,6 +48,13 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 		}
 	}
 
+	public IEInventoryHandler blockInsert(int... blockedSlots)
+	{
+		for(int s : blockedSlots)
+			this.canInsert[s] = false;
+		return this;
+	}
+
 	@Override
 	public int getSlots()
 	{

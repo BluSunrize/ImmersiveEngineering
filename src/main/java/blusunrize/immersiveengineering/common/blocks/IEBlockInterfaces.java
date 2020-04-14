@@ -79,7 +79,8 @@ public class IEBlockInterfaces
 	{
 		boolean shouldPlaySound(String sound);
 
-		default float getSoundRadiusSq() {
+		default float getSoundRadiusSq()
+		{
 			return 256.0f;
 		}
 	}
@@ -180,11 +181,20 @@ public class IEBlockInterfaces
 			return mirrorFacingOnPlacement(placer)?f.getOpposite(): f;
 		}
 
-		boolean mirrorFacingOnPlacement(LivingEntity placer);
+		default boolean mirrorFacingOnPlacement(LivingEntity placer)
+		{
+			return false;
+		}
 
-		boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity);
+		default boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+		{
+			return true;
+		}
 
-		boolean canRotate(Direction axis);
+		default boolean canRotate(Direction axis)
+		{
+			return true;
+		}
 
 		default void afterRotation(Direction oldDir, Direction newDir)
 		{

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
@@ -45,11 +46,11 @@ public class GunTurretScreen extends TurretScreen
 	@Override
 	protected void addCustomButtons()
 	{
-		this.addButton(new GuiButtonState(guiLeft+134, guiTop+31, 16, 16, "", ((TurretGunTileEntity)tile).expelCasings, "immersiveengineering:textures/gui/turret.png", 176, 81, 0,
+		this.addButton(new GuiButtonBoolean(guiLeft+134, guiTop+31, 16, 16, "", ((TurretGunTileEntity)tile).expelCasings, "immersiveengineering:textures/gui/turret.png", 176, 81, 0,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
-					((TurretGunTileEntity)tile).expelCasings = ((GuiButtonState)btn).state;
+					((TurretGunTileEntity)tile).expelCasings = btn.getNextState();
 					tag.putBoolean("expelCasings", ((TurretGunTileEntity)tile).expelCasings);
 					handleButtonClick(tag, listOffset);
 				}));

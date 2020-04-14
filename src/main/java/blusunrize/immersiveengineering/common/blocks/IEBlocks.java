@@ -109,6 +109,7 @@ public final class IEBlocks
 		public static Block crate;
 		public static Block reinforcedCrate;
 		public static Block sorter;
+		public static Block itemBatcher;
 		public static Block fluidSorter;
 		public static Block windmill;
 		public static Block watermill;
