@@ -9,8 +9,12 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
 
 public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherTileEntity>
 {
@@ -39,4 +43,32 @@ public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherTileEntity>
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 176));
 	}
 
+	@Nonnull
+	@Override
+	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
+	{
+		ItemStack itemstack = ItemStack.EMPTY;
+		Slot slotObject = this.inventorySlots.get(slot);
+		if(slotObject!=null&&slotObject.getHasStack())
+		{
+			ItemStack itemstack1 = slotObject.getStack();
+			itemstack = itemstack1.copy();
+			if(slot < slotCount)
+			{
+				if(!this.mergeItemStack(itemstack1, slotCount, this.inventorySlots.size(), true))
+					return ItemStack.EMPTY;
+			}
+			// exclude ghost slots from shiftclick
+			else if(!this.mergeItemStack(itemstack1, 9, slotCount, false))
+			{
+				return ItemStack.EMPTY;
+			}
+
+			if(itemstack1.isEmpty())
+				slotObject.putStack(ItemStack.EMPTY);
+			else
+				slotObject.onSlotChanged();
+		}
+		return itemstack;
+	}
 }
