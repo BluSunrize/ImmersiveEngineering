@@ -67,6 +67,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	{
 		super(type);
 	}
+
 	@Override
 	public void tick()
 	{
@@ -293,6 +294,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public void onNeighborBlockChange(BlockPos otherPos)
 	{
-		rsDirty = true;
+		if(isRSInput())
+			rsDirty = true;
 	}
 }
