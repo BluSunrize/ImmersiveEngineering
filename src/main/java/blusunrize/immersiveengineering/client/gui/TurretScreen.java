@@ -87,7 +87,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
-					tile.whitelist = ((GuiButtonState)btn).getBoolState();
+					tile.whitelist = btn.getState();
 					tag.putBoolean("whitelist", tile.whitelist);
 					handleButtonClick(tag, listOffset);
 				}));
@@ -95,7 +95,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
-					tile.attackAnimals = !((GuiButtonState)btn).getBoolState();
+					tile.attackAnimals = !btn.getState();
 					tag.putBoolean("attackAnimals", tile.attackAnimals);
 					handleButtonClick(tag, listOffset);
 				}));
@@ -103,7 +103,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
-					tile.attackPlayers = !((GuiButtonState)btn).getBoolState();
+					tile.attackPlayers = !btn.getState();
 					tag.putBoolean("attackPlayers", tile.attackPlayers);
 					handleButtonClick(tag, listOffset);
 				}));
@@ -111,7 +111,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
-					tile.attackNeutrals = !((GuiButtonState)btn).getBoolState();
+					tile.attackNeutrals = !btn.getState();
 					tag.putBoolean("attackNeutrals", tile.attackNeutrals);
 					handleButtonClick(tag, listOffset);
 				}));

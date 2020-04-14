@@ -14,7 +14,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
-public class GuiButtonState<E extends Enum> extends GuiButtonIE
+public class GuiButtonState<E> extends GuiButtonIE
 {
 	public E[] states;
 	private int state;
@@ -31,12 +31,6 @@ public class GuiButtonState<E extends Enum> extends GuiButtonIE
 		textOffset = new int[]{width+1, height/2-3};
 	}
 
-	public GuiButtonState(int x, int y, int w, int h, String name, boolean state, String texture, int u,
-						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler)
-	{
-		this(x, y, w, h, name, (E[])BoolEnum.values(), state?1: 0, texture, u, v, offsetDir, handler);
-	}
-
 	protected int getNextStateInt()
 	{
 		return (state+1)%states.length;
@@ -51,14 +45,6 @@ public class GuiButtonState<E extends Enum> extends GuiButtonIE
 	{
 		return this.states[this.state];
 	}
-
-	public boolean getBoolState()
-	{
-		if(!(states[this.state] instanceof BoolEnum))
-			throw new RuntimeException("The button "+this.getMessage()+" is not a boolean state button");
-		return ((BoolEnum)this.states[this.state]).getVal();
-	}
-
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks)
@@ -95,23 +81,5 @@ public class GuiButtonState<E extends Enum> extends GuiButtonIE
 		if(b)
 			this.state = getNextStateInt();
 		return b;
-	}
-
-	private enum BoolEnum
-	{
-		FALSE(false),
-		TRUE(true);
-
-		private final boolean val;
-
-		BoolEnum(boolean val)
-		{
-			this.val = val;
-		}
-
-		public boolean getVal()
-		{
-			return val;
-		}
 	}
 }
