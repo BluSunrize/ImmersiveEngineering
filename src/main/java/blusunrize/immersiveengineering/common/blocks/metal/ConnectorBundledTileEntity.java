@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetw
 import blusunrize.immersiveengineering.api.wires.redstone.IRedstoneConnector;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -30,7 +29,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -41,7 +39,7 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
 
 public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
-		IBlockBounds, IRedstoneConnector, INeighbourChangeTile
+		IBlockBounds, IRedstoneConnector
 {
 	public static TileEntityType<ConnectorBundledTileEntity> TYPE;
 
@@ -71,7 +69,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	@Override
 	public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler)
 	{
-		if(!world.isRemote && attached.isPresent())
+		if(!world.isRemote&&attached.isPresent())
 			attached.get().onChange(cp, handler, getFacing().getOpposite());
 	}
 
@@ -153,11 +151,5 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	public Collection<ResourceLocation> getRequestedHandlers()
 	{
 		return ImmutableList.of(RedstoneNetworkHandler.ID);
-	}
-
-	@Override
-	public void onNeighborBlockChange(BlockPos otherPos)
-	{
-//		rsDirty = true;
 	}
 }
