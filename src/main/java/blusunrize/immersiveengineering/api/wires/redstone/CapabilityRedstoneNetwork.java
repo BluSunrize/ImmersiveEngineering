@@ -24,6 +24,9 @@ public class CapabilityRedstoneNetwork
 	{
 		private boolean dirty = false;
 
+		/**
+		 * Used by connectors to check if this object is dirty, resetting the flag in the process
+		 */
 		public boolean pollDirty()
 		{
 			if(dirty)
@@ -34,6 +37,9 @@ public class CapabilityRedstoneNetwork
 			return false;
 		}
 
+		/**
+		 * Marks this object as dirty, causing an attached connector to update the network
+		 */
 		public void markDirty()
 		{
 			this.dirty = true;
