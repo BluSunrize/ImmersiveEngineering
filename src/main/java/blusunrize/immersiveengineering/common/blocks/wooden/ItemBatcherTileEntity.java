@@ -39,6 +39,8 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
 		IInteractionObjectIE, IStateBasedDirectional
@@ -79,7 +81,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public void tick()
 	{
-		if(!world.isRemote&&world.getGameTime()%8==0&&output.isPresent())
+		if(!world.isRemote&&world.getGameTime()%8==0&&output.isPresent()&&isActive())
 		{
 			boolean matched = true;
 			if(this.batchMode==BatchMode.ALL)
@@ -113,13 +115,18 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 		}
 	}
 
+	protected boolean isActive()
+	{
+		return world.getRedstonePowerFromNeighbors(getPos()) <= 0;
+	}
+
 	protected boolean isFilterMatched(int slot)
 	{
 		return ItemStack.areItemsEqualIgnoreDurability(this.inventory.get(slot), this.inventory.get(slot+9))
 				&&this.inventory.get(slot+9).getCount() >= this.inventory.get(slot).getCount();
 	}
 
-	protected Map<DyeColor, Boolean> calculateRedstoneOutputs()
+	protected Set<DyeColor> calculateRedstoneOutputs()
 	{
 		Map<DyeColor, Boolean> map = new EnumMap<>(DyeColor.class);
 		for(int slot = 0; slot < 9; slot++)
@@ -127,9 +134,9 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 			{
 				DyeColor dye = redstoneColors.get(slot);
 				Boolean ex = map.get(dye);
-				map.put(dye, ex!=null?ex && isFilterMatched(slot): isFilterMatched(slot));
+				map.put(dye, ex!=null?ex&&isFilterMatched(slot): isFilterMatched(slot));
 			}
-		return map;
+		return map.keySet().stream().filter(map::get).collect(Collectors.toSet());
 	}
 
 	@Override
@@ -216,10 +223,9 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 				@Override
 				public void updateInput(byte[] signals, ConnectionPoint cp, Direction side)
 				{
-					Map<DyeColor, Boolean> outputMap = calculateRedstoneOutputs();
-					for(DyeColor dye : outputMap.keySet())
-						if(outputMap.containsKey(dye))
-							signals[dye.getId()] = (byte)Math.max(signals[dye.getId()], outputMap.get(dye)?15:0);
+					Set<DyeColor> outputMap = calculateRedstoneOutputs();
+					for(DyeColor dye : outputMap)
+						signals[dye.getId()] = (byte)Math.max(signals[dye.getId()], 15);
 				}
 			}
 	);
