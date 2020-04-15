@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -102,7 +103,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler)
 	{
-		if(!world.isRemote)
+		if(!world.isRemote&&SafeChunkUtils.isChunkSafe(world, pos))
 		{
 			output = handler.getValue(redstoneChannel.getId());
 			if(!isRemoved()&&isRSOutput())
@@ -130,12 +131,12 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 
 	protected int getLocalRS()
 	{
-		int val = world.getRedstonePowerFromNeighbors(pos);
+		int val = SafeChunkUtils.getRedstonePowerFromNeighbors(world, pos);
 		if(val==0)
 		{
 			for(Direction f : Direction.BY_HORIZONTAL_INDEX)
 			{
-				BlockState state = world.getBlockState(pos.offset(f));
+				BlockState state = SafeChunkUtils.getBlockState(world, pos.offset(f));
 				if(state.getBlock()==Blocks.REDSTONE_WIRE&&state.get(RedstoneWireBlock.POWER) > val)
 					val = state.get(RedstoneWireBlock.POWER);
 			}

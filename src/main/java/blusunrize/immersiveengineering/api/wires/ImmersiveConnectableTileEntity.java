@@ -173,7 +173,6 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
-		//TODO override in the relevant conn classes
 		return ImmutableList.of(new ConnectionPoint(pos, 0));
 	}
 }

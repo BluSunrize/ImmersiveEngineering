@@ -4,6 +4,11 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockReader;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TransformerHVBlock extends MiscConnectorBlock
 {
@@ -22,5 +27,14 @@ public class TransformerHVBlock extends MiscConnectorBlock
 				context.getPos().up(2),
 				context
 		);
+	}
+
+	@Nullable
+	@Override
+	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
+	{
+		TransformerHVTileEntity te = new TransformerHVTileEntity();
+		te.dummy = state.get(IEProperties.MULTIBLOCKSLAVE)?1: 0;
+		return te;
 	}
 }

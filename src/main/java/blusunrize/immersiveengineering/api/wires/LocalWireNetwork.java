@@ -15,6 +15,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
@@ -167,7 +168,9 @@ public class LocalWireNetwork implements IWorldTickable
 	{
 		for(LocalNetworkHandler h : handlers.values())
 			h.onConnectorUnloaded(p, iic);
-		removeHandlersFor(iic);
+		for(ConnectionPoint cp : iic.getConnectionPoints())
+			if(connections.containsKey(cp))
+				removeHandlersFor(iic);
 		connectors.put(p, new IICProxy((TileEntity)iic));
 	}
 
@@ -175,16 +178,17 @@ public class LocalWireNetwork implements IWorldTickable
 	LocalWireNetwork merge(LocalWireNetwork other)
 	{
 		LocalWireNetwork result = new LocalWireNetwork(globalNet);
-		result.connectors.putAll(connectors);
-		result.connectors.putAll(other.connectors);
-		result.connections.putAll(connections);
-		result.connections.putAll(other.connections);
+		for(LocalWireNetwork net : new LocalWireNetwork[]{this, other})
+		{
+			result.connectors.putAll(net.connectors);
+			result.connections.putAll(net.connections);
+		}
 		result.handlers.putAll(other.handlers);
 		result.handlerUserCount.putAll(other.handlerUserCount);
 		for(Entry<ResourceLocation, LocalNetworkHandler> loc : handlers.entrySet())
 		{
 			result.handlers.merge(loc.getKey(), loc.getValue(), LocalNetworkHandler::merge);
-			result.handlerUserCount.merge(loc.getKey(), handlerUserCount.getInt(loc.getKey()), (a, b) -> a+b);
+			result.handlerUserCount.mergeInt(loc.getKey(), handlerUserCount.getInt(loc.getKey()), Integer::sum);
 			WireLogger.logger.info("Merged {} to {}", loc.getKey(), result.handlers.get(loc.getKey()));
 		}
 		for(Entry<ResourceLocation, LocalNetworkHandler> loc : result.handlers.entrySet())
@@ -228,6 +232,8 @@ public class LocalWireNetwork implements IWorldTickable
 		}
 		for(ConnectionPoint point : iic.getConnectionPoints())
 		{
+			if(connections.containsKey(point))
+				removeHandlersFor(iic);
 			for(Connection c : getConnections(point))
 			{
 				ConnectionPoint other = c.getOtherEnd(point);
@@ -240,7 +246,6 @@ public class LocalWireNetwork implements IWorldTickable
 		connectors.remove(p);
 		for(LocalNetworkHandler h : handlers.values())
 			h.onConnectorRemoved(p, iic);
-		removeHandlersFor(iic);
 	}
 
 	void addConnection(Connection conn)
@@ -272,7 +277,7 @@ public class LocalWireNetwork implements IWorldTickable
 			{
 				WireLogger.logger.info("Removing: {}", loc);
 				handlers.remove(loc);
-				handlerUserCount.remove(loc);
+				handlerUserCount.removeInt(loc);
 			}
 		}
 	}
