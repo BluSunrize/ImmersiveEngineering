@@ -45,7 +45,6 @@ import java.util.Collection;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.HV_CATEGORY;
 
-//TODO ConnectionPoints for opening/closing
 public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity implements IBlockBounds, IAdvancedDirectionalTile,
 		IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<BlockState>, IStateBasedDirectional
 {

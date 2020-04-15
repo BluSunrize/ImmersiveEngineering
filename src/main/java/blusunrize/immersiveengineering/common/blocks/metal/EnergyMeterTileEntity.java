@@ -126,11 +126,11 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 			if(below instanceof EnergyMeterTileEntity)
 				return ((EnergyMeterTileEntity)below).canConnectCable(cableType, target, offset);
 		}
-		if(!(cableType instanceof IEnergyWire)||cableType.getCategory()==null)
+		if(!(cableType instanceof IEnergyWire))
 			return false;
 		for(ConnectionPoint cp : getConnectionPoints())
 			for(Connection c : globalNet.getLocalNet(pos).getConnections(cp))
-				if(!c.isInternal()&&(c.type.getCategory()==null||!c.type.getCategory().equals(cableType.getCategory())))
+				if(!c.isInternal()&&(target.equals(cp)||!c.type.getCategory().equals(cableType.getCategory())))
 					return false;
 		return true;
 	}
@@ -154,10 +154,15 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
+		ConnectionPoint targetByHit;
 		if(getFacing().getAxis()==Axis.X)
-			return info.hitZ > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
+			targetByHit = info.hitZ > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
 		else
-			return info.hitX > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
+			targetByHit = info.hitX > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
+		if(!globalNet.getLocalNet(targetByHit).getConnections(targetByHit).stream().allMatch(Connection::isInternal))
+			return new ConnectionPoint(pos, 1-targetByHit.getIndex());
+		else
+			return targetByHit;
 	}
 
 	@Override

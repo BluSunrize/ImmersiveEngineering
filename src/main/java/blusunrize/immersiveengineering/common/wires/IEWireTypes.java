@@ -26,6 +26,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 
@@ -134,7 +135,7 @@ public class IEWireTypes
 			return renderDiameter[ordinal%6];
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public String getCategory()
 		{
@@ -154,7 +155,7 @@ public class IEWireTypes
 				case 5:
 					return REDSTONE_CATEGORY;
 				default:
-					return null;
+					throw new IllegalStateException("Ordinal "+ordinal+" is not valid");
 			}
 		}
 
@@ -297,6 +298,13 @@ public class IEWireTypes
 		public double getRenderDiameter()
 		{
 			return 0;
+		}
+
+		@Nonnull
+		@Override
+		public String getCategory()
+		{
+			return "INTERNAL";
 		}
 	}
 }
