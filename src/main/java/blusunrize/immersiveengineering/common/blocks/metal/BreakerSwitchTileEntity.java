@@ -86,7 +86,10 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	{
 		if(HV_CATEGORY.equals(cableType.getCategory())&&!canTakeHV())
 			return false;
-		//TODO
+		for(ConnectionPoint cp : getConnectionPoints())
+			for(Connection c : globalNet.getLocalNet(cp).getConnections(cp))
+				if(!c.isInternal()&&(cp.equals(target)||!cableType.getCategory().equals(c.type.getCategory())))
+					return false;
 		return true;
 	}
 
