@@ -38,6 +38,7 @@ import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -256,6 +257,10 @@ public class ClientProxy extends CommonProxy
 		//CLOTH
 		ClientRegistry.bindTileEntitySpecialRenderer(ShaderBannerTileEntity.class, new ShaderBannerRenderer());
 
+		/* Initialize Dynamic Models */
+		RedstoneConveyor.MODEL_PANEL = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor_redstone.obj.ie"),
+				"conveyor_redstone", ModelType.IE_OBJ);
 
 		/*Colours*/
 		for(Item item : IEContent.registeredIEItems)
@@ -441,7 +446,7 @@ public class ClientProxy extends CommonProxy
 		IETileSound sound = tileSoundMap.get(pos);
 		if(sound==null&&tileActive)
 		{
-			if(tile instanceof ISoundTile && mc().player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()) > ((ISoundTile)tile).getSoundRadiusSq())
+			if(tile instanceof ISoundTile&&mc().player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()) > ((ISoundTile)tile).getSoundRadiusSq())
 				return;
 			sound = ClientUtils.generatePositionedIESound(soundEvent, volume, pitch, true, 0, pos);
 			tileSoundMap.put(pos, sound);
