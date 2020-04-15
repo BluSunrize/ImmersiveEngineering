@@ -1,6 +1,5 @@
-# Blender v2.79 (sub 0) OBJ File: 'IERedstoneConnectors.blend'
-# www.blender.org
-mtllib connector_interface.mtl
+# Model created by BluSunrize
+mtllib connector_bundled.mtl
 usemtl connector
 
 o connector

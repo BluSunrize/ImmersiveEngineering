@@ -312,7 +312,7 @@ public class ItemModels extends LoadedModelProvider
 				.transforms(rl("item/connector"));
 		obj(Connectors.connectorProbe, rl("block/connector/connector_probe.obj.ie"))
 				.transforms(rl("item/connector"));
-		obj(Connectors.connectorBundled, rl("block/connector/connector_interface.obj"))
+		obj(Connectors.connectorBundled, rl("block/connector/connector_bundled.obj"))
 				.transforms(rl("item/connector"));
 		obj(Connectors.connectorStructural, rl("block/connector/connector_structural.obj.ie"))
 				.transforms(rl("item/connector"));
