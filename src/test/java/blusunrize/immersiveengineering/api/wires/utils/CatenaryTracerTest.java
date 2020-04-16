@@ -206,5 +206,11 @@ public class CatenaryTracerTest
 		{
 			return 0;
 		}
+
+		@Override
+		public String getCategory()
+		{
+			return "TEST_WIRE";
+		}
 	}
 }
