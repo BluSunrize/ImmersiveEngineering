@@ -104,10 +104,13 @@ public class IEWorldGen
 	@SubscribeEvent
 	public void chunkLoad(ChunkDataEvent.Load event)
 	{
+		if(event.getChunk().getStatus()!=ChunkStatus.FULL)
+		{
+			return;
+		}
 		DimensionType dimension = event.getWorld().getDimension().getType();
 		if(!event.getData().getCompound("ImmersiveEngineering").contains(IEConfig.ORES.retrogen_key.get())&&
-				retrogenMap.size() > 0
-				&&event.getChunk().getStatus()==ChunkStatus.FULL)
+				retrogenMap.size() > 0)
 		{
 			if(IEConfig.ORES.retrogen_log_flagChunk.get())
 				IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");
