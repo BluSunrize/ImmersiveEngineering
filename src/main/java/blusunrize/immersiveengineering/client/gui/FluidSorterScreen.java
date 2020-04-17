@@ -27,6 +27,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -64,7 +65,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		}
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < 8; i++)
-				if(tile.filters[side][i]!=null)
+				if(tile.filters[side][i]!=null&&!tile.filters[side][i].isEmpty())
 				{
 					int x = guiLeft+4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
 					int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
@@ -89,10 +90,16 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 				int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 				if(mouseX > x&&mouseX < x+16&&mouseY > y&&mouseY < y+16)
 				{
-					int finalSide = side;
-					int finalI = i;
-					FluidUtil.getFluidContained(playerInventory.getItemStack())
-							.ifPresent(fs -> setFluidInSlot(finalSide, finalI, fs));
+					ItemStack stack = playerInventory.getItemStack();
+					if(stack.isEmpty())
+						setFluidInSlot(side, i, FluidStack.EMPTY);
+					else
+					{
+						int finalSide = side;
+						int finalI = i;
+						FluidUtil.getFluidContained(stack)
+								.ifPresent(fs -> setFluidInSlot(finalSide, finalI, fs));
+					}
 					return true;
 				}
 			}

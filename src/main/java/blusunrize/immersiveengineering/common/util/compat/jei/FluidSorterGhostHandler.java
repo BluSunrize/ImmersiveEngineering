@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.client.gui.FluidSorterScreen;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableList;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import net.minecraft.client.renderer.Rectangle2d;
@@ -31,8 +30,6 @@ public class FluidSorterGhostHandler implements IGhostIngredientHandler<FluidSor
 					builder.add((Target<I>)new GhostFluidTarget(side, slot, gui));
 			return builder.build();
 		}
-		else
-			IELogger.info(ingredient+" of type "+ingredient.getClass());
 		return ImmutableList.of();
 	}
 
