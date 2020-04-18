@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.world;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -20,6 +19,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -32,12 +32,10 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import java.util.*;
 import java.util.Map.Entry;
 
-@EventBusSubscriber
 public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?>> features = new HashMap<>();
@@ -66,19 +64,14 @@ public class IEWorldGen
 			if(newGeneration)
 			{
 				for(Entry<String, ConfiguredFeature<?>> gen : features.entrySet())
-				{
-
 					gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
-				}
 			}
 			else
 			{
 				for(Entry<String, ConfiguredFeature<?>> gen : retroFeatures.entrySet())
 				{
-					if(retrogenMap.containsKey("retrogen_"+gen.getKey())&&retrogenMap.get("retrogen_"+gen.getKey()))
-					{
+					if(retrogenMap.get("retrogen_"+gen.getKey()))
 						gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
-					}
 				}
 			}
 		}
@@ -93,24 +86,30 @@ public class IEWorldGen
 		nbt.putBoolean(IEConfig.ORES.retrogen_key.get(), true);
 	}
 
-	@SubscribeEvent
-	public void chunkLoad(ChunkDataEvent.Load event)
+	// @SubscribeEvent
+	// Called using ASM (chunk_load_workaround) until https://github.com/MinecraftForge/MinecraftForge/pull/6610 is
+	// merged
+	public static void chunkLoad(IChunk c, CompoundNBT data)
 	{
-		if(event.getChunk().getStatus()!=ChunkStatus.FULL)
+		if(c.getStatus()==ChunkStatus.FULL)
 		{
-			return;
-		}
-		DimensionType dimension = event.getWorld().getDimension().getType();
-		if(!event.getData().getCompound("ImmersiveEngineering").contains(IEConfig.ORES.retrogen_key.get())&&
-				retrogenMap.size() > 0)
-		{
-			if(IEConfig.ORES.retrogen_log_flagChunk.get())
-				IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");
-			retrogenChunks.put(dimension, event.getChunk().getPos());
+			DimensionType dimension = c.getWorldForge().getDimension().getType();
+			if(!data.getCompound("ImmersiveEngineering").contains(IEConfig.ORES.retrogen_key.get())&&
+					!retrogenMap.isEmpty())
+			{
+				if(IEConfig.ORES.retrogen_log_flagChunk.get())
+					IELogger.info("Chunk "+c.getPos()+" has been flagged for Ore RetroGeneration by IE.");
+				synchronized(retrogenChunks)
+				{
+					retrogenChunks.computeIfAbsent(dimension, d -> new ArrayList<>()).add(c.getPos());
+				}
+			}
 		}
 	}
 
-	public static ArrayListMultimap<DimensionType, ChunkPos> retrogenChunks = ArrayListMultimap.create();
+	public static final Map<DimensionType, List<ChunkPos>> retrogenChunks = new HashMap<>();
+
+	int indexToRemove = 0;
 
 	@SubscribeEvent
 	public void serverWorldTick(TickEvent.WorldTickEvent event)
@@ -119,32 +118,38 @@ public class IEWorldGen
 			return;
 		DimensionType dimension = event.world.getDimension().getType();
 		int counter = 0;
-		List<ChunkPos> chunks = retrogenChunks.get(dimension);
+		int remaining;
+		synchronized(retrogenChunks)
+		{
+			final List<ChunkPos> chunks = retrogenChunks.get(dimension);
 
-		if(chunks!=null&&chunks.size() > 0)
-			for(int i = 0; i < 2; i++)
+			if(chunks!=null&&chunks.size() > 0)
 			{
-				chunks = retrogenChunks.get(dimension);
-				if(chunks==null||chunks.size() <= 0)
-					break;
-				counter++;
-				ChunkPos loc = chunks.get(0);
-				if(event.world.chunkExists(loc.x, loc.z))
+				if(indexToRemove >= chunks.size())
+					indexToRemove = 0;
+				for(int i = 0; i < 2&&indexToRemove < chunks.size(); ++i)
 				{
-					long worldSeed = event.world.getSeed();
-					Random fmlRandom = new Random(worldSeed);
-					long xSeed = (fmlRandom.nextLong() >> 3);
-					long zSeed = (fmlRandom.nextLong() >> 3);
-					fmlRandom.setSeed(xSeed*loc.x+zSeed*loc.z^worldSeed);
-					this.generateOres(fmlRandom, loc.x, loc.z, event.world, false);
-					chunks.remove(0);
-				}
-				else
-				{
-					chunks.remove(0);
+					if(chunks.size() <= 0)
+						break;
+					ChunkPos loc = chunks.get(indexToRemove);
+					if(event.world.chunkExists(loc.x, loc.z))
+					{
+						long worldSeed = event.world.getSeed();
+						Random fmlRandom = new Random(worldSeed);
+						long xSeed = (fmlRandom.nextLong() >> 3);
+						long zSeed = (fmlRandom.nextLong() >> 3);
+						fmlRandom.setSeed(xSeed*loc.x+zSeed*loc.z^worldSeed);
+						this.generateOres(fmlRandom, loc.x, loc.z, event.world, false);
+						counter++;
+						chunks.remove(indexToRemove);
+					}
+					else
+						++indexToRemove;
 				}
 			}
+			remaining = chunks==null?0: chunks.size();
+		}
 		if(counter > 0&&IEConfig.ORES.retrogen_log_remaining.get())
-			IELogger.info("Retrogen was performed on "+counter+" Chunks, "+Math.max(0, chunks.size())+" chunks remaining");
+			IELogger.info("Retrogen was performed on "+counter+" Chunks, "+remaining+" chunks remaining");
 	}
 }
