@@ -354,6 +354,8 @@ public class IEContent
 		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
 		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE,
 				BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID);
+		Connectors.connectorBundled = new MiscConnectorBlock("connector_bundled", () -> ConnectorBundledTileEntity.TYPE,
+				BlockRenderLayer.CUTOUT, BlockRenderLayer.SOLID);
 
 		Connectors.feedthrough = new FeedthroughBlock();
 
@@ -703,6 +705,7 @@ public class IEContent
 		registerTile(EnergyMeterTileEntity.class, event, Connectors.currentTransformer);
 		registerTile(ConnectorRedstoneTileEntity.class, event, Connectors.connectorRedstone);
 		registerTile(ConnectorProbeTileEntity.class, event, Connectors.connectorProbe);
+		registerTile(ConnectorBundledTileEntity.class, event, Connectors.connectorBundled);
 		registerTile(FeedthroughTileEntity.class, event, Connectors.feedthrough);
 
 		registerTile(CapacitorLVTileEntity.class, event, MetalDevices.capacitorLV);

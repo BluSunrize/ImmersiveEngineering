@@ -184,6 +184,7 @@ public final class IEBlocks
 		public static Block currentTransformer;
 		public static Block connectorRedstone;
 		public static Block connectorProbe;
+		public static Block connectorBundled;
 		public static Block feedthrough;
 
 		public static Block getEnergyConnector(String cat, boolean relay)

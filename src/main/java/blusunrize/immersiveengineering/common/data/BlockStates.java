@@ -652,6 +652,8 @@ public class BlockStates extends BlockStateProvider
 				ImmutableMap.of(), BlockRenderLayer.SOLID);
 		createConnector(Connectors.connectorProbe, rl("block/connector/connector_probe.obj.ie"),
 				ImmutableMap.of(), BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
+		createConnector(Connectors.connectorBundled, rl("block/connector/connector_bundled.obj"),
+				ImmutableMap.of(), BlockRenderLayer.CUTOUT);
 		createConnector(Connectors.feedthrough, FeedthroughLoader.LOCATION, ImmutableMap.of(), BlockRenderLayer.values());
 		createConnector(MetalDevices.electricLantern, state -> rl("block/metal_device/e_lantern.obj"),
 				state -> {
