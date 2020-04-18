@@ -75,15 +75,7 @@ public class IEWorldGen
 			{
 				for(Entry<String, ConfiguredFeature<?>> gen : retroFeatures.entrySet())
 				{
-					boolean retrogen = false;
-					try
-					{
-						retrogen = retrogenMap.get("retrogen_"+gen.getKey());
-					} catch(NullPointerException e)
-					{
-						retrogen = false;
-					}
-					if(retrogen)
+					if(retrogenMap.containsKey("retrogen_"+gen.getKey())&&retrogenMap.get("retrogen_"+gen.getKey()))
 					{
 						gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
 					}
