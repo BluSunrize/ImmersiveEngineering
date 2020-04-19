@@ -13,7 +13,7 @@
       "tag": "forge:ingots/aluminum"
     },
     "l": {
-      "item": "immersiveengineering:storage_lead"
+      "tag": "forge:storage_blocks/lead"
     },
     "w": {
       "tag": "forge:treated_wood"

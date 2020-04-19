@@ -717,7 +717,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("wrw")
 				.key('s', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.key('a', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
-				.key('l', IEBlocks.Metals.storage.get(EnumMetals.LEAD))
+				.key('l', IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).storage))
 				.key('w', IETags.getItemTag(IETags.treatedWood))
 				.key('r', Tags.Items.STORAGE_BLOCKS_REDSTONE)
 				.addCriterion("has_aluminum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
