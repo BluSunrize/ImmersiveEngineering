@@ -28,7 +28,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -344,13 +347,27 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		if(state.getBlock()==this)
 		{
 			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof ICollisionBounds)
-				return ((ICollisionBounds)te).getCollisionShape();
+			if(te instanceof ISelectionBounds)
+				return ((ISelectionBounds)te).getSelectionShape();
 		}
 		return super.getShape(state, world, pos, context);
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
+	public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
+	{
+		if(state.getBlock()==this)
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if(te instanceof ICollisionBounds)
+				return ((ICollisionBounds)te).getCollisionShape();
+		}
+		return super.getCollisionShape(state, world, pos, context);
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
 	public VoxelShape getRaytraceShape(BlockState state, IBlockReader world, BlockPos pos)
 	{
 		if(world.getBlockState(pos).getBlock()==this)
