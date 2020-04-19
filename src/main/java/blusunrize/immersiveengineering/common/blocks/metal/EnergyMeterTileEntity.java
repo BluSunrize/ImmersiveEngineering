@@ -196,6 +196,18 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 			return new Vec3d(here.getIndex()==0?.8125: .1875, 1.4375, .5);
 	}
 
+	@Nullable
+	@Override
+	public IGeneralMultiblock master()
+	{
+		if(!isDummy())
+			return this;
+		BlockPos masterPos = getPos().down();
+		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+	}
+
+	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
 		world.setBlockState(pos.add(0, 1, 0), state.with(IEProperties.MULTIBLOCKSLAVE, true));

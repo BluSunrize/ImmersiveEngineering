@@ -486,6 +486,17 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		return getBlockState().get(IEProperties.MULTIBLOCKSLAVE);
 	}
 
+	@Nullable
+	@Override
+	public IGeneralMultiblock master()
+	{
+		if(!isDummy())
+			return this;
+		BlockPos masterPos = getPos().down();
+		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+	}
+
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{

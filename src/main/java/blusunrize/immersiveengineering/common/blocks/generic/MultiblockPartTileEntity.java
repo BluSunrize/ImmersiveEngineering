@@ -284,6 +284,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		return true;
 	}
 
+	@Override
 	@Nullable
 	public T master()
 	{

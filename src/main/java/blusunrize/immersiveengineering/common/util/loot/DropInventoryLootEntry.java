@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -35,8 +36,8 @@ public class DropInventoryLootEntry extends StandaloneLootEntry
 		if(context.has(LootParameters.BLOCK_ENTITY))
 		{
 			TileEntity te = context.get(LootParameters.BLOCK_ENTITY);
-			if(te instanceof MultiblockPartTileEntity<?>)
-				te = ((MultiblockPartTileEntity<?>)te).master();
+			if(te instanceof IGeneralMultiblock)
+				te = (TileEntity)((IGeneralMultiblock)te).master();
 			if(te instanceof IIEInventory&&((IIEInventory)te).getDroppedItems()!=null)
 				((IIEInventory)te).getDroppedItems().forEach(output);
 			else if(te!=null)

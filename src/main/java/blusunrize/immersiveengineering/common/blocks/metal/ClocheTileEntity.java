@@ -19,10 +19,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -127,7 +124,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 				ClocheRecipe recipe = getRecipe();
 				if(recipe!=null&&fertilizerAmount > 0)
 				{
-					if(renderGrowth < recipe.time + IEConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
+					if(renderGrowth < recipe.time+IEConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
 					{
 						renderGrowth += IEConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
 						fertilizerAmount--;
@@ -265,7 +262,8 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	}
 
 	@Nullable
-	public ClocheRecipe getRecipe(){
+	public ClocheRecipe getRecipe()
+	{
 		ItemStack soil = inventory.get(SLOT_SOIL);
 		ItemStack seed = inventory.get(SLOT_SEED);
 		return ClocheRecipe.findRecipe(seed, soil);
@@ -374,6 +372,17 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	public boolean isDummy()
 	{
 		return dummy!=0;
+	}
+
+	@Nullable
+	@Override
+	public IGeneralMultiblock master()
+	{
+		if(!isDummy())
+			return this;
+		BlockPos masterPos = getPos().down(dummy);
+		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override

@@ -390,6 +390,9 @@ public class IEBlockInterfaces
 	 */
 	public interface IGeneralMultiblock extends BlockstateProvider
 	{
+		@Nullable
+		IGeneralMultiblock master();
+
 		default boolean isDummy()
 		{
 			BlockState state = getState();

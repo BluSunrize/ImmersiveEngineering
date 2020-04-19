@@ -137,6 +137,13 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 		return this.conveyorBeltSubtype!=null&&!this.conveyorBeltSubtype.isTicking();
 	}
 
+	@Nullable
+	@Override
+	public IGeneralMultiblock master()
+	{
+		return this;
+	}
+
 	@Override
 	public void tick()
 	{
