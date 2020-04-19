@@ -59,10 +59,11 @@ public class IEConfig
 		Wires(ForgeConfigSpec.Builder builder)
 		{
 			builder.comment("Configuration related to Immersive Engineering wires").push("wires");
-			validateConnections = builder
-					.comment("Drop connections with non-existing endpoints when loading the world. Use with care and backups and only when suspecting corrupted data.",
+			sanitizeConnections = builder
+					.comment("Attempts to make the internal data structures used for wires consistent with the connectors in the world."+
+									"Use with care and backups and only when suspecting corrupted data.",
 							"This option will check and load all connection endpoints and may slow down the world loading process.")
-					.define("validateConnections", false);
+					.define("sanitizeConnections", false);
 			enableWireLogger = builder
 					.comment("Enable detailed logging for the wire network. This can be useful for developers to track"+
 							" down issues related to wires.")
@@ -91,7 +92,7 @@ public class IEConfig
 			builder.pop();
 		}
 
-		public final BooleanValue validateConnections;
+		public final BooleanValue sanitizeConnections;
 		public final BooleanValue enableWireLogger;
 		public final ConfigValue<List<? extends Integer>> wireTransferRate;
 		public final ConfigValue<List<? extends Double>> wireLossRatio;

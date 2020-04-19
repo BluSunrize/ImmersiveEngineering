@@ -388,4 +388,21 @@ public class LocalWireNetwork implements IWorldTickable
 	{
 		runNextTick.add(r);
 	}
+
+	// Internal use only, for network sanitization
+	void removeCP(ConnectionPoint cp)
+	{
+		for(Connection c : getConnections(cp).toArray(new Connection[0]))
+			removeConnection(c);
+		connections.remove(cp);
+		boolean hasMoreAtSameBlock = true;
+		for(ConnectionPoint cp2 : connections.keySet())
+			if(cp.getPosition().equals(cp2.getPosition()))
+			{
+				hasMoreAtSameBlock = false;
+				break;
+			}
+		if(hasMoreAtSameBlock)
+			removeConnector(cp.getPosition());
+	}
 }

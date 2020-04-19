@@ -35,10 +35,9 @@ public class SafeChunkUtils
 	private static final Map<IWorld, Set<ChunkPos>> unloadingChunks = new WeakHashMap<>();
 
 	//Stolen from Ellpeck and slightly extended
-	public static Chunk getSafeChunk(IWorld w, BlockPos pos)
+	public static Chunk getSafeChunk(IWorld w, ChunkPos chunkPos)
 	{
 		AbstractChunkProvider provider = w.getChunkProvider();
-		ChunkPos chunkPos = new ChunkPos(pos);
 		if(unloadingChunks.getOrDefault(w, ImmutableSet.of()).contains(chunkPos))
 			return null;
 		else if(provider.isChunkLoaded(chunkPos))
@@ -47,14 +46,19 @@ public class SafeChunkUtils
 			return null;
 	}
 
-	public static boolean isChunkSafe(IWorld w, BlockPos pos)
+	public static boolean isChunkSafe(IWorld w, ChunkPos pos)
 	{
 		return getSafeChunk(w, pos)!=null;
 	}
 
+	public static boolean isChunkSafe(IWorld w, BlockPos pos)
+	{
+		return isChunkSafe(w, new ChunkPos(pos));
+	}
+
 	public static TileEntity getSafeTE(IWorld w, BlockPos pos)
 	{
-		Chunk c = getSafeChunk(w, pos);
+		Chunk c = getSafeChunk(w, new ChunkPos(pos));
 		if(c==null)
 			return null;
 		else
@@ -64,7 +68,7 @@ public class SafeChunkUtils
 	@Nonnull
 	public static BlockState getBlockState(IWorld w, BlockPos pos)
 	{
-		Chunk c = getSafeChunk(w, pos);
+		Chunk c = getSafeChunk(w, new ChunkPos(pos));
 		if(c==null)
 			return Blocks.AIR.getDefaultState();
 		else

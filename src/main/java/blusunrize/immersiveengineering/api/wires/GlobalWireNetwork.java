@@ -333,6 +333,8 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		for(LocalWireNetwork net : localNets.values())
 			if(ticked.add(net))
 				net.update(world);
+		if(IEConfig.WIRES.sanitizeConnections.get())
+			NetworkSanitizer.tick(world, this);
 	}
 
 	boolean validating = false;
@@ -418,5 +420,23 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			if(pos.equals(new ChunkPos(cp.getPosition())))
 				ret.add(cp);
 		return ret;
+	}
+
+	// Internal use only, for network sanitization
+	void removeCP(ConnectionPoint cp)
+	{
+		LocalWireNetwork local = getNullableLocalNet(cp);
+		if(local!=null)
+			local.removeCP(cp);
+	}
+
+	public void removeConnector(BlockPos pos)
+	{
+		Collection<ConnectionPoint> cpsAtInvalid = new ArrayList<>();
+		for(ConnectionPoint cp : localNets.keySet())
+			if(cp.getPosition().equals(pos))
+				cpsAtInvalid.add(cp);
+		for(ConnectionPoint toRemove : cpsAtInvalid)
+			removeCP(toRemove);
 	}
 }
