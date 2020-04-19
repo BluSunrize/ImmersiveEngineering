@@ -300,7 +300,7 @@ public class IEManual
 				for(DimensionType dim : mineral.dimensionWhitelist)
 					validDims.append((validDims.length() > 0)?", ": "")
 							.append("<dim;")
-							.append(dim)
+							.append(DimensionType.getKey(dim))
 							.append(">");
 				dimensionString = I18n.format("ie.manual.entry.mineralsDimValid", localizedName, validDims.toString());
 			}
@@ -310,7 +310,7 @@ public class IEManual
 				for(DimensionType dim : mineral.dimensionBlacklist)
 					invalidDims.append((invalidDims.length() > 0)?", ": "")
 							.append("<dim;")
-							.append(dim)
+							.append(DimensionType.getKey(dim))
 							.append(">");
 				dimensionString = I18n.format("ie.manual.entry.mineralsDimInvalid", localizedName, invalidDims.toString());
 			}

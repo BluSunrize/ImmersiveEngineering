@@ -80,9 +80,12 @@ public class IEManualInstance extends ManualInstance
 			String[] segment = rep.substring(0, rep.length()-1).split(splitKey);
 			if(segment.length < 2)
 				break;
-			String result = segment[1];
-			//TODO better dimension name creation
-			s = s.replaceFirst(rep, result);
+			ResourceLocation dimKey = new ResourceLocation(segment[1]);
+			StringBuilder dimName = new StringBuilder();
+			for(String ss : dimKey.getPath().split("_"))
+				if(!"the".equalsIgnoreCase(ss))
+					dimName.append(Utils.toCamelCase(ss)+" ");
+			s = s.replaceFirst(rep, dimName.toString().trim());
 		}
 
 		overflow = 0;
