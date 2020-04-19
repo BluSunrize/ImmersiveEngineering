@@ -25,6 +25,7 @@
 - Re-Added Ore Retrogeneration (phit / Malte)
 - Changed Ear Protectors and Capacitor Backpack to no longer provide armor (BluSunrize)
 - Changed Dieselgen to emit more appropriate smoke particles (TwistedGate)
+- Changed Quarzite vein to only show up in the Nether (BluSunrize)
 - Enabled text overlay (previously colourblind mode) by default (BluSunrize)
 - Enabled metal blocks to be used as Beacon bases (BluSunrize)
 - Expanded available methods for addons (Malte)
