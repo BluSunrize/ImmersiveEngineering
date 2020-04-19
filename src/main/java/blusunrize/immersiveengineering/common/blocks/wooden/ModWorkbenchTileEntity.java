@@ -149,6 +149,9 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	{
 		if(!isDummy())
 			return this;
+		// Used to provide tile-dependant drops after breaking
+		if(tempMasterTE!=null)
+			return tempMasterTE;
 		Direction dummyDir = isDummy()?getFacing().rotateYCCW(): getFacing().rotateY();
 		BlockPos masterPos = getPos().offset(dummyDir);
 		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
@@ -187,6 +190,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
+		tempMasterTE = master();
 		Direction dummyDir = isDummy()?getFacing().rotateYCCW(): getFacing().rotateY();
 		world.removeBlock(pos.offset(dummyDir), false);
 	}

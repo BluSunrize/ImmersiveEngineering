@@ -380,6 +380,9 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	{
 		if(!isDummy())
 			return this;
+		// Used to provide tile-dependant drops after breaking
+		if(tempMasterTE!=null)
+			return tempMasterTE;
 		BlockPos masterPos = getPos().down(dummy);
 		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
 		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
@@ -400,6 +403,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
+		tempMasterTE = master();
 		for(int i = 0; i <= 2; i++)
 		{
 			BlockPos p = getPos().down(dummy).up(i);

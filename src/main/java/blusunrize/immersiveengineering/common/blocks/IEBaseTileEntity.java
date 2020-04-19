@@ -14,7 +14,9 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.BlockstateProvider;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPropertyPassthrough;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import net.minecraft.block.BlockState;
@@ -42,6 +44,11 @@ import java.util.*;
 
 public abstract class IEBaseTileEntity extends TileEntity implements BlockstateProvider
 {
+	/**
+	 * Set by and for those instances of IGeneralMultiblock that need to drop their inventory
+	 */
+	protected IGeneralMultiblock tempMasterTE;
+
 	private BlockState overrideBlockState = null;
 
 	public IEBaseTileEntity(TileEntityType<? extends TileEntity> type)

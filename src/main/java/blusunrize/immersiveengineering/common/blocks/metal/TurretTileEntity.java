@@ -492,6 +492,9 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	{
 		if(!isDummy())
 			return this;
+		// Used to provide tile-dependant drops after breaking
+		if(tempMasterTE!=null)
+			return tempMasterTE;
 		BlockPos masterPos = getPos().down();
 		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
 		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
@@ -508,6 +511,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
+		tempMasterTE = master();
 		if(world.getTileEntity(isDummy()?getPos().down(): getPos().up()) instanceof TurretTileEntity)
 			world.removeBlock(isDummy()?getPos().down(): getPos().up(), false);
 	}
