@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:connector_probe"
+      "immersiveengineering:connector_bundled"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:connector_probe"
+        "recipe": "immersiveengineering:connector_bundled"
       }
     }
   },

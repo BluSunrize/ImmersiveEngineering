@@ -973,7 +973,15 @@ public class Recipes extends RecipeProvider
 				.key('g', Tags.Items.GLASS_PANES)
 				.key('p', Ingredients.circuitBoard)
 				.key('q', Tags.Items.GEMS_QUARTZ)
-				.addCriterion("has_electrum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
+				.addCriterion("has_connector", hasItem(Connectors.connectorRedstone))
+				.build(out);
+		ShapedRecipeBuilder.shapedRecipe(IEBlocks.Connectors.connectorBundled)
+				.patternLine(" w ")
+				.patternLine("wcw")
+				.patternLine(" w ")
+				.key('c', IEBlocks.Connectors.connectorRedstone)
+				.key('w', IETags.aluminumWire)
+				.addCriterion("has_connector", hasItem(Connectors.connectorRedstone))
 				.build(out);
 
 		// Connectors and Relays
