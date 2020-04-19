@@ -161,6 +161,7 @@ public class IEManual
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "conveyors"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "external_heater"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "item_router"));
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "item_batcher"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "fluid_router"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "turntable"));
 		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "fluid_transport"));

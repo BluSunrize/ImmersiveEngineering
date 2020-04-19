@@ -10,5 +10,9 @@
   "probe": {
     "type": "crafting",
     "recipe": "connector_probe"
+  },
+  "bundled": {
+    "type": "crafting",
+    "recipe": "connector_bundled"
   }
 }
