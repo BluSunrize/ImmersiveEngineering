@@ -3,7 +3,7 @@
   "pattern": [
     "wrw",
     "ici",
-    "wbw"
+    "wpw"
   ],
   "key": {
     "i": {
@@ -15,14 +15,14 @@
     "w": {
       "tag": "forge:treated_wood"
     },
-    "b": {
-      "item": "immersiveengineering:fluid_pipe"
+    "p": {
+      "item": "immersiveengineering:circuit_board"
     },
     "c": {
       "item": "immersiveengineering:component_iron"
     }
   },
   "result": {
-    "item": "immersiveengineering:fluid_sorter"
+    "item": "immersiveengineering:item_batcher"
   }
 }
