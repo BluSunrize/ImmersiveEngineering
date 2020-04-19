@@ -23,6 +23,7 @@
 - Added the Item Batcher! It collects items until a specified amount is reached, then sends them on (BluSunrize)
 - Added the Redstone Interface Connector! It allows blocks (like the Item Batcher) to send bundled redstone signals (BluSunrize)
 - Re-Added Ore Retrogeneration (phit / Malte)
+- Added "Igneous Rock" mineral vein which contains Granite, Diorite, Andesite and Obsidian (BluSunrize)
 - Changed Ear Protectors and Capacitor Backpack to no longer provide armor (BluSunrize)
 - Changed Dieselgen to emit more appropriate smoke particles (TwistedGate)
 - Changed Quarzite vein to only show up in the Nether (BluSunrize)

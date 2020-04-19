@@ -711,6 +711,7 @@ public class IERecipes
 		ExcavatorHandler.addMineral("Cinnabar", 15, .1f, new ResourceLocation[]{oreRedstone, denseoreRedstone, oreRuby, oreCinnabar, sulfur}, new float[]{.75f, .05f, .05f, .1f, .05f});
 		ExcavatorHandler.addMineral("Coal", 25, .1f, new ResourceLocation[]{oreCoal, denseoreCoal, oreDiamond, oreEmerald}, new float[]{.92f, .1f, .015f, .015f});
 		ExcavatorHandler.addMineral("Silt", 25, .05f, new ResourceLocation[]{blockClay, sand, gravel}, new float[]{.5f, .3f, .2f});
+		ExcavatorHandler.addMineral("Igneous Rock", 25, .05f, new ResourceLocation[]{Blocks.GRANITE.getRegistryName(), Blocks.DIORITE.getRegistryName(), Blocks.ANDESITE.getRegistryName(), Tags.Blocks.OBSIDIAN.getId()}, new float[]{.3f, .3f, .3f, .1f});
 	}
 
 	private static void addMiscRecipes()
