@@ -93,94 +93,24 @@ public class IEManual
 	public static void addIEManualEntries()
 	{
 		IEManualInstance ieMan = ManualHelper.getManual();
-		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_ENERGY));
 		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_GENERAL), -1);
+				ManualHelper.CAT_GENERAL), 0);
 		InnerNode<ResourceLocation, ManualEntry> constructionCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_CONSTRUCTION));
+				ManualHelper.CAT_CONSTRUCTION), 10);
+		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+				ManualHelper.CAT_ENERGY), 20);
 		InnerNode<ResourceLocation, ManualEntry> toolsCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_TOOLS));
+				ManualHelper.CAT_TOOLS), 30);
 		InnerNode<ResourceLocation, ManualEntry> machinesCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_MACHINES));
+				ManualHelper.CAT_MACHINES), 40);
 		InnerNode<ResourceLocation, ManualEntry> heavyMachinesCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_HEAVYMACHINES));
+				ManualHelper.CAT_HEAVYMACHINES), 50);
 
-		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "wiring"));
-		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "generator"));
-		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "breaker"));
-		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "current_transformer"));
-		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "redstone_wire"));
-		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "diesel_generator"));
-		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "lightning_rod"));
-
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "introduction"), -1);
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "ores"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "hemp"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "alloys"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "components"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "plates"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "alloykiln"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "cokeoven"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "crude_blast_furnace"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "improved_blast_furnace"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "graphite"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "workbench"));
-		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "shader"));
-		ieMan.addEntry(generalCat, handleMineralManual(ieMan));
-		ResourceLocation blueprints = new ResourceLocation(MODID, "blueprints");
-		ieMan.addEntry(generalCat, blueprints);
-		ieMan.hideEntry(blueprints);
-
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "balloon"));
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "metalconstruction"));
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "concrete"));
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "crate"));
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "barrel"));
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "lighting"));
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "treated_wood"));
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "metal_barrel"));
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "multiblocks"));
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "silo"));
-		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "tank"));
-
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "jerrycan"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "mining_drill"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "ear_defenders"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "shield"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "toolbox"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "maintenance_kit"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "revolver"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "bullets"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "chemthrower"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "buzzsaw"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "skyhook"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "powerpack"));
-		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "railgun"));
-
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "conveyors"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "external_heater"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "item_router"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "item_batcher"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "fluid_router"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "turntable"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "fluid_transport"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "charging_station"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "garden_cloche"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "tesla_coil"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "razor_wire"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "turrets"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "assembler"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "bottling_machine"));
-		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "automated_workbench"));
-
-		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "refinery"));
-		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "metal_press"));
-		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "mixer"));
-		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "crusher"));
-		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "arc_furnace"));
-		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "excavator"));
-
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "wiring"), 0);
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "generator"), 1);
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "breaker"), 2);
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "current_transformer"), 3);
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "redstone_wire"), 4);
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.addSpecialElement("values", 0,
@@ -190,8 +120,71 @@ public class IEManual
 					)
 			);
 			builder.readFromFile(new ResourceLocation(MODID, "thermoelectric"));
-			ieMan.addEntry(energyCat, builder.create());
+			ieMan.addEntry(energyCat, builder.create(), 5);
 		}
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "diesel_generator"), 6);
+		ieMan.addEntry(energyCat, new ResourceLocation(MODID, "lightning_rod"), 7);
+
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "introduction"), -1);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "hemp"), 0);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "ores"), 1);
+		ieMan.addEntry(generalCat, handleMineralManual(ieMan), 2);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "alloys"), 3);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "components"), 4);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "plates"), 5);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "workbench"), 6);
+		ResourceLocation blueprints = new ResourceLocation(MODID, "blueprints");
+		ieMan.addEntry(generalCat, blueprints);
+		ieMan.hideEntry(blueprints);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "alloykiln"), 7);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "cokeoven"), 8);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "crude_blast_furnace"), 9);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "improved_blast_furnace"), 10);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "graphite"), 11);
+		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "shader"), 12);
+
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "treated_wood"), 0);
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "multiblocks"), 1);
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "balloon"), 2);
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "crate"), 3);
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "barrel"), 4);
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "metalconstruction"), 5);
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "metal_barrel"), 6);
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "concrete"), 7);
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "lighting"), 8);
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "silo"), 9);
+		ieMan.addEntry(constructionCat, new ResourceLocation(MODID, "tank"), 10);
+
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "toolbox"), 0);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "jerrycan"), 1);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "ear_defenders"), 2);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "buzzsaw"), 3);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "mining_drill"), 4);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "maintenance_kit"), 5);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "shield"), 6);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "revolver"), 7);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "bullets"), 8);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "chemthrower"), 9);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "skyhook"), 10);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "powerpack"), 11);
+		ieMan.addEntry(toolsCat, new ResourceLocation(MODID, "railgun"), 12);
+
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "conveyors"), 0);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "item_router"), 1);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "item_batcher"), 2);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "turntable"), 3);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "fluid_transport"), 4);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "fluid_router"), 5);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "external_heater"), 6);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "charging_station"), 7);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "garden_cloche"), 8);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "tesla_coil"), 9);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "razor_wire"), 10);
+		ieMan.addEntry(machinesCat, new ResourceLocation(MODID, "turrets"), 11);
+
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "metal_press"), 0);
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "crusher"), 1);
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "assembler"), 2);
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.addSpecialElement("list", 0,
@@ -201,7 +194,7 @@ public class IEManual
 					)
 			);
 			builder.readFromFile(new ResourceLocation(MODID, "fermenter"));
-			ieMan.addEntry(heavyMachinesCat, builder.create());
+			ieMan.addEntry(heavyMachinesCat, builder.create(), 3);
 		}
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
@@ -212,8 +205,15 @@ public class IEManual
 					)
 			);
 			builder.readFromFile(new ResourceLocation(MODID, "squeezer"));
-			ieMan.addEntry(heavyMachinesCat, builder.create());
+			ieMan.addEntry(heavyMachinesCat, builder.create(), 4);
 		}
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "refinery"), 5);
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "mixer"), 6);
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "bottling_machine"), 7);
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "automated_workbench"), 8);
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "arc_furnace"), 9);
+		ieMan.addEntry(heavyMachinesCat, new ResourceLocation(MODID, "excavator"), 10);
+
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ieMan);
 			builder.setContent(

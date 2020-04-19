@@ -9,6 +9,6 @@
   },
   "outlet_recipe": {
     "type": "crafting",
-    "recipe": "fluid_outlet"
+    "recipe": "fluid_placer"
   }
 }

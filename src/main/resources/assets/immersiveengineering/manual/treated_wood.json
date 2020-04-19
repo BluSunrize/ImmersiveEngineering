@@ -1,21 +1,22 @@
 {
+  "treated_wood": {
+    "type": "crafting",
+    "recipe": "treated_wood_horizontal"
+  },
   "recipes": {
     "type": "crafting",
     "recipes": [
       [
         {
-          "recipe": "treated_planks_horizontal"
+          "recipe": "treated_wood_vertical_from_horizontal"
         },
         {
-          "recipe": "treated_wood_horizontal_from_planks"
+          "recipe": "treated_wood_packaged_from_vertical"
         },
         {
-          "recipe": "stairs_treated_wood_horizontal"
+          "recipe": "treated_wood_horizontal_from_packaged"
         }
       ],
-      {
-        "recipe": "stick_treated"
-      },
       [
         {
           "recipe": "treated_fence"
@@ -23,11 +24,26 @@
         {
           "recipe": "treated_scaffold"
         }
+      ],
+      [
+        {
+          "recipe": "stairs_treated_wood_horizontal"
+        },
+        {
+          "recipe": "stairs_treated_wood_vertical"
+        },
+        {
+          "recipe": "stairs_treated_wood_packaged"
+        }
       ]
     ]
   },
   "posts": {
     "type": "crafting",
     "recipe": "treated_post"
+  },
+  "wallmount": {
+    "type": "crafting",
+    "recipe": "treated_wallmount"
   }
 }
