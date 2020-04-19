@@ -17,7 +17,14 @@
 - Added the Engineer's Screwdriver (BluSunrize)
 - Added herbicide fluid. It kills leaves and grass (BluSunrize)
 - Re-Added Chutes (BluSunrize)
+- Added the Redstone Controlled conveyor (BluSunrize)
+    - Normal conveyors now ignore redstone
+    - This special one can be disabled with a signal
+- Added the Item Batcher! It collects items until a specified amount is reached, then sends them on (BluSunrize)
+- Added the Redstone Interface Connector! It allows blocks (like the Item Batcher) to send bundled redstone signals (BluSunrize)
+- Re-Added Ore Retrogeneration (phit / Malte)
 - Changed Ear Protectors and Capacitor Backpack to no longer provide armor (BluSunrize)
+- Changed Dieselgen to emit more appropriate smoke particles (TwistedGate)
 - Enabled text overlay (previously colourblind mode) by default (BluSunrize)
 - Enabled metal blocks to be used as Beacon bases (BluSunrize)
 - Expanded available methods for addons (Malte)
@@ -45,6 +52,13 @@
 - Fixed missing recipes for String and Torches (gyroplast)
 - Fixed drops from metal press breaking (Malte)
 - Fixed recipes not being added properly (Malte)
+- Fixed crash with razorwire (Malte)
+- Fixed distance limit on Dieselgen Sounds (BluSunrize)
+- Fixed conveyors crashing when dyed (BluSunrize)
+- Fixed in- & output on the assembler, and bugged recipe handling (BluSunrize)
+- Fixed various issues with the wire network (Malte)
+- Fixed an issue where some blocks allowed too many wires to be attached (Malte)
+- Fixed workbench, cloche and turret not dropping their inventory when their dummy blocks are broken (BluSunrize)
 
 ##### Version 0.14-94 - BUILT
 - Added Minecarts!
