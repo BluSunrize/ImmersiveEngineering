@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDat
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FenceBlock;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,6 +30,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3i;
@@ -44,7 +44,6 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -296,9 +295,13 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		if(dummy > 0&&dummy < 3)
 		{
 			BlockState neighborState = world.getBlockState(neighborPos);
-			//TODO test
-			ret = !FenceBlock.cannotAttach(neighborState.getBlock())&&neighborState.func_224755_d(world, neighborPos,
-					dir.getOpposite());
+			VoxelShape shape = neighborState.getShape(world, neighborPos);
+			if(!shape.isEmpty())
+			{
+				AxisAlignedBB aabb = shape.getBoundingBox();
+				boolean connect = dir==Direction.NORTH?aabb.maxZ==1: dir==Direction.SOUTH?aabb.minZ==0: dir==Direction.WEST?aabb.maxX==1: aabb.minX==0;
+				ret = connect&&((dir.getAxis()==Axis.Z&&aabb.minX > 0&&aabb.maxX < 1)||(dir.getAxis()==Axis.X&&aabb.minZ > 0&&aabb.maxZ < 1));
+			}
 		}
 		else if(dummy==3)
 		{
