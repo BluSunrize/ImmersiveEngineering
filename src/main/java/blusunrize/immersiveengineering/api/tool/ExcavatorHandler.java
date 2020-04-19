@@ -16,20 +16,21 @@ import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.network.MessageMineralListSync;
 import com.google.common.base.Preconditions;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
-import net.minecraft.util.NonNullList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -188,9 +189,14 @@ public class ExcavatorHandler
 				ResourceLocation ore = output.tag;
 				if(replacementOres!=null&&!ApiUtils.isNonemptyItemTag(ore)&&replacementOres.containsKey(ore))
 					ore = replacementOres.get(ore);
-				if(ore!=null&&ApiUtils.isNonemptyBlockOrItemTag(ore))
+				if(ore!=null)
 				{
-					ItemStack preferredOre = IEApi.getPreferredTagStack(ore);
+					ItemStack preferredOre;
+					if(ApiUtils.isNonemptyBlockOrItemTag(ore))
+						preferredOre = IEApi.getPreferredTagStack(ore);
+					else
+						preferredOre = new ItemStack(ForgeRegistries.ITEMS.getValue(ore));
+
 					if(!preferredOre.isEmpty())
 					{
 						output.stack = preferredOre;
