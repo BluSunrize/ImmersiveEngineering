@@ -138,7 +138,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 			}
 
 			ItemStack inFullSlot = inventory.get(FULL_CONTAINER_SLOT);
-			if(tank.getFluidAmount() > 0&&(inFullSlot.isEmpty()||inFullSlot.getCount()+1 <= inFullSlot.getMaxStackSize()))
+			if(tank.getFluidAmount() > 0&&(inFullSlot.isEmpty()||inFullSlot.getCount() < inFullSlot.getMaxStackSize()))
 			{
 				ItemStack filledContainer = Utils.fillFluidContainer(
 						tank,
@@ -158,8 +158,9 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 							inventory.set(FULL_CONTAINER_SLOT, filledContainer.copy());
 						Utils.modifyInvStackSize(inventory, EMPTY_CONTAINER_SLOT, -filledContainer.getCount());
 					}
-					markDirty();
 				}
+				this.markDirty();
+				this.markContainingBlockForUpdate(null);
 			}
 
 			final boolean activeAfterTick = getIsActive();
