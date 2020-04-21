@@ -73,10 +73,8 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 	public static BlastFurnaceRecipe findRecipe(ItemStack input)
 	{
 		for(BlastFurnaceRecipe recipe : recipeList)
-		{
-			if(ApiUtils.stackMatchesObject(input, recipe.input))
+			if(recipe.input.test(input))
 				return recipe;
-		}
 		return null;
 	}
 
@@ -94,39 +92,5 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 			}
 		}
 		return list;
-	}
-
-	public static List<BlastFurnaceFuel> blastFuels = new ArrayList<>();
-
-	public static class BlastFurnaceFuel
-	{
-		public final Ingredient input;
-		public final int burnTime;
-
-		public BlastFurnaceFuel(Ingredient input, int burnTime)
-		{
-			this.input = input;
-			this.burnTime = burnTime;
-		}
-	}
-
-	public static BlastFurnaceFuel addBlastFuel(Ingredient fuel, int burnTime)
-	{
-		BlastFurnaceFuel entry = new BlastFurnaceFuel(fuel, burnTime);
-		blastFuels.add(entry);
-		return entry;
-	}
-
-	public static int getBlastFuelTime(ItemStack stack)
-	{
-		for(BlastFurnaceFuel e : blastFuels)
-			if(e.input.test(stack))
-				return e.burnTime;
-		return 0;
-	}
-
-	public static boolean isValidBlastFuel(ItemStack stack)
-	{
-		return getBlastFuelTime(stack) > 0;
 	}
 }

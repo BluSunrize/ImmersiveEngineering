@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -35,6 +36,7 @@ public class RecipeReloadListener implements ISelectiveResourceReloadListener
 			Collection<IRecipe<?>> recipes = ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes();
 			AlloyRecipe.recipeList = filterRecipes(recipes, AlloyRecipe.class, AlloyRecipe.TYPE);
 			BlastFurnaceRecipe.recipeList = filterRecipes(recipes, BlastFurnaceRecipe.class, BlastFurnaceRecipe.TYPE);
+			BlastFurnaceFuel.blastFuels =  filterRecipes(recipes, BlastFurnaceFuel.class, BlastFurnaceFuel.TYPE);
 		}
 	}
 
