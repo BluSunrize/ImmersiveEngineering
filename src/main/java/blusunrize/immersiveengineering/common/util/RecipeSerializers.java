@@ -2,8 +2,10 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.crafting.serializers.AlloyRecipeSerializer;
+import blusunrize.immersiveengineering.common.crafting.serializers.BlastFurnaceRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
@@ -49,6 +51,9 @@ public class RecipeSerializers
 	{
 		AlloyRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"alloy", AlloyRecipeSerializer::new
+		);
+		BlastFurnaceRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"blast_furnace", BlastFurnaceRecipeSerializer::new
 		);
 	}
 }

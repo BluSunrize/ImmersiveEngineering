@@ -9,8 +9,12 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -22,29 +26,48 @@ import java.util.List;
  * <br>
  * The recipe for the blast furnace
  */
-public class BlastFurnaceRecipe
+public class BlastFurnaceRecipe extends IESerializableRecipe
 {
+	public static IRecipeType<BlastFurnaceRecipe> TYPE = IRecipeType.register(Lib.MODID+":blast_furnace");
+	public static RegistryObject<IERecipeSerializer<BlastFurnaceRecipe>> SERIALIZER;
+
 	public final IngredientWithSize input;
 	public final ItemStack output;
 	@Nonnull
 	public final ItemStack slag;
 	public final int time;
 
-	public BlastFurnaceRecipe(ItemStack output, Ingredient input, int time, @Nonnull ItemStack slag)
+	public BlastFurnaceRecipe(ResourceLocation id, ItemStack output, Ingredient input, int time, @Nonnull ItemStack slag)
 	{
+		super(output, TYPE, id);
 		this.output = output;
 		this.input = input instanceof IngredientWithSize? (IngredientWithSize)input: new IngredientWithSize(input);
 		this.time = time;
 		this.slag = slag;
 	}
 
-	public static ArrayList<BlastFurnaceRecipe> recipeList = new ArrayList<BlastFurnaceRecipe>();
+	@Override
+	protected IERecipeSerializer getIESerializer()
+	{
+		return SERIALIZER.get();
+	}
+
+	@Override
+	public ItemStack getRecipeOutput()
+	{
+		return output;
+	}
+
+	public static List<BlastFurnaceRecipe> recipeList = new ArrayList<>();
 
 	public static void addRecipe(ItemStack output, Ingredient input, int time, @Nonnull ItemStack slag)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		BlastFurnaceRecipe recipe = new BlastFurnaceRecipe(output, input, time, slag);
 		if(recipe.input!=null)
 			recipeList.add(recipe);
+		 */
 	}
 
 	public static BlastFurnaceRecipe findRecipe(ItemStack input)

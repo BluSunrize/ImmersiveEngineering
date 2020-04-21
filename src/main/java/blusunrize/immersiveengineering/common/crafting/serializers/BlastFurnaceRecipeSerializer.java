@@ -1,0 +1,67 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2020
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
+package blusunrize.immersiveengineering.common.crafting.serializers;
+
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
+import com.google.gson.JsonObject;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nullable;
+
+public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnaceRecipe>
+{
+	@Override
+	public ItemStack getIcon()
+	{
+		return new ItemStack(Multiblocks.blastFurnace);
+	}
+
+	@Override
+	public BlastFurnaceRecipe read(ResourceLocation recipeId, JsonObject json)
+	{
+		ItemStack output = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
+		Ingredient input = Ingredient.deserialize(json.getAsJsonObject("input"));
+		int time = JSONUtils.getInt(json, "time", 200);
+		ItemStack slag = ItemStack.EMPTY;
+		if(json.has("slag"))
+			slag = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "slag"));
+		return new BlastFurnaceRecipe(recipeId, output, input, time, slag);
+	}
+
+	@Nullable
+	@Override
+	public BlastFurnaceRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	{
+		ItemStack output = buffer.readItemStack();
+		Ingredient input = Ingredient.read(buffer);
+		int time = buffer.readInt();
+		ItemStack slag = ItemStack.EMPTY;
+		if(buffer.readBoolean())
+			slag = buffer.readItemStack();
+		return new BlastFurnaceRecipe(recipeId, output, input, time, slag);
+	}
+
+	@Override
+	public void write(PacketBuffer buffer, BlastFurnaceRecipe recipe)
+	{
+		buffer.writeItemStack(recipe.output);
+		recipe.input.write(buffer);
+		buffer.writeInt(recipe.time);
+		buffer.writeBoolean(!recipe.slag.isEmpty());
+		if(!recipe.slag.isEmpty())
+			buffer.writeItemStack(recipe.slag);
+	}
+}
