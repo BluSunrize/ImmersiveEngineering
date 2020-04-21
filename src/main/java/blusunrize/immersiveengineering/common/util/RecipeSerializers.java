@@ -1,7 +1,9 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.crafting.*;
+import blusunrize.immersiveengineering.common.crafting.serializers.AlloyRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
@@ -42,4 +44,11 @@ public class RecipeSerializers
 	public static final RegistryObject<RevolverAssemblyRecipeSerializer> REVOLVER_ASSEMBLY_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"revolver_assembly", RevolverAssemblyRecipeSerializer::new
 	);
+
+	static
+	{
+		AlloyRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"alloy", AlloyRecipeSerializer::new
+		);
+	}
 }

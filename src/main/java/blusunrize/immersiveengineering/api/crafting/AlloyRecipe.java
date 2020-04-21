@@ -8,8 +8,12 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,28 +24,47 @@ import java.util.List;
  * <br>
  * The recipe for the alloy smelter
  */
-public class AlloyRecipe
+public class AlloyRecipe extends IESerializableRecipe
 {
+	public static IRecipeType<AlloyRecipe> TYPE = IRecipeType.register(Lib.MODID+":alloy");
+	public static RegistryObject<IERecipeSerializer<AlloyRecipe>> SERIALIZER;
+
 	public final IngredientWithSize input0;
 	public final IngredientWithSize input1;
 	public final ItemStack output;
 	public final int time;
 
-	public AlloyRecipe(ItemStack output, Ingredient input0, Ingredient input1, int time)
+	public AlloyRecipe(ResourceLocation id, ItemStack output, Ingredient input0, Ingredient input1, int time)
 	{
+		super(output, TYPE, id);
 		this.output = output;
 		this.input0 = input0 instanceof IngredientWithSize? (IngredientWithSize)input0: new IngredientWithSize(input0);
 		this.input1 = input1 instanceof IngredientWithSize? (IngredientWithSize)input1: new IngredientWithSize(input1);
 		this.time = time;
 	}
 
-	public static ArrayList<AlloyRecipe> recipeList = new ArrayList<AlloyRecipe>();
+	@Override
+	protected IERecipeSerializer getIESerializer()
+	{
+		return SERIALIZER.get();
+	}
+
+	@Override
+	public ItemStack getRecipeOutput()
+	{
+		return this.output;
+	}
+
+	public static List<AlloyRecipe> recipeList = new ArrayList<>();
 
 	public static void addRecipe(ItemStack output, Ingredient input0, Ingredient input1, int time)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		AlloyRecipe recipe = new AlloyRecipe(output, input0, input1, time);
 		if(recipe.input0!=null&&recipe.input1!=null)
 			recipeList.add(recipe);
+		 */
 	}
 
 	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1)

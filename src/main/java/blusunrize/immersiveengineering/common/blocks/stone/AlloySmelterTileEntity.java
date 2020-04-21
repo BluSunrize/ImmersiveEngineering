@@ -38,6 +38,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
+import java.util.function.Predicate;
+
 public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelterTileEntity> implements IIEInventory,
 		IActiveState, IInteractionObjectIE, IProcessTile, IBlockBounds
 {
