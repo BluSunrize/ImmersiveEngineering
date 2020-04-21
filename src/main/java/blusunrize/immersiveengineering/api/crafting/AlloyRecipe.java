@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,22 +22,22 @@ import java.util.List;
  */
 public class AlloyRecipe
 {
-	public final IngredientStack input0;
-	public final IngredientStack input1;
+	public final Ingredient input0;
+	public final Ingredient input1;
 	public final ItemStack output;
 	public final int time;
 
-	public AlloyRecipe(ItemStack output, Object input0, Object input1, int time)
+	public AlloyRecipe(ItemStack output, Ingredient input0, Ingredient input1, int time)
 	{
 		this.output = output;
-		this.input0 = ApiUtils.createIngredientStack(input0);
-		this.input1 = ApiUtils.createIngredientStack(input1);
+		this.input0 = input0;
+		this.input1 = input1;
 		this.time = time;
 	}
 
 	public static ArrayList<AlloyRecipe> recipeList = new ArrayList<AlloyRecipe>();
 
-	public static void addRecipe(ItemStack output, Object input0, Object input1, int time)
+	public static void addRecipe(ItemStack output, Ingredient input0, Ingredient input1, int time)
 	{
 		AlloyRecipe recipe = new AlloyRecipe(output, input0, input1, time);
 		if(recipe.input0!=null&&recipe.input1!=null)
@@ -47,7 +47,7 @@ public class AlloyRecipe
 	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1)
 	{
 		for(AlloyRecipe recipe : recipeList)
-			if((recipe.input0.matchesItemStack(input0)&&recipe.input1.matchesItemStack(input1))||(recipe.input0.matchesItemStack(input1)&&recipe.input1.matchesItemStack(input0)))
+			if((recipe.input0.test(input0)&&recipe.input1.test(input1))||(recipe.input0.test(input1)&&recipe.input1.test(input0)))
 				return recipe;
 		return null;
 	}

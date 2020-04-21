@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -23,23 +24,23 @@ import java.util.List;
  */
 public class BlastFurnaceRecipe
 {
-	public final IngredientStack input;
+	public final Ingredient input;
 	public final ItemStack output;
 	@Nonnull
 	public final ItemStack slag;
 	public final int time;
 
-	public BlastFurnaceRecipe(ItemStack output, Object input, int time, @Nonnull ItemStack slag)
+	public BlastFurnaceRecipe(ItemStack output, Ingredient input, int time, @Nonnull ItemStack slag)
 	{
 		this.output = output;
-		this.input = ApiUtils.createIngredientStack(input);
+		this.input = input;
 		this.time = time;
 		this.slag = slag;
 	}
 
 	public static ArrayList<BlastFurnaceRecipe> recipeList = new ArrayList<BlastFurnaceRecipe>();
 
-	public static void addRecipe(ItemStack output, Object input, int time, @Nonnull ItemStack slag)
+	public static void addRecipe(ItemStack output, Ingredient input, int time, @Nonnull ItemStack slag)
 	{
 		BlastFurnaceRecipe recipe = new BlastFurnaceRecipe(output, input, time, slag);
 		if(recipe.input!=null)
