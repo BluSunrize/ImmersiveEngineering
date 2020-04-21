@@ -30,7 +30,7 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 	}
 
 	@Override
-	public BlastFurnaceRecipe read(ResourceLocation recipeId, JsonObject json)
+	public BlastFurnaceRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		ItemStack output = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
 		Ingredient input = Ingredient.deserialize(json.getAsJsonObject("input"));

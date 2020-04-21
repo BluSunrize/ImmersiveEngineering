@@ -18,6 +18,7 @@ import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nullable;
 
@@ -30,7 +31,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	}
 
 	@Override
-	public AlloyRecipe read(ResourceLocation recipeId, JsonObject json)
+	public AlloyRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		ItemStack output = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
 		Ingredient input0 = Ingredient.deserialize(json.getAsJsonObject("input0"));

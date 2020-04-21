@@ -29,7 +29,7 @@ public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceF
 	}
 
 	@Override
-	public BlastFurnaceFuel read(ResourceLocation recipeId, JsonObject json)
+	public BlastFurnaceFuel readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		Ingredient input = Ingredient.deserialize(json.getAsJsonObject("input"));
 		int time = JSONUtils.getInt(json, "time", 1200);
