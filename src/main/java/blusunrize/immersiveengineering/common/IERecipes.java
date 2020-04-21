@@ -175,6 +175,7 @@ public class IERecipes
 
 	private static void initBlastFurnaceRecipes()
 	{
+		/* todo these need to be replaced with JSON
 		Tag<Item> ironIngot = IETags.getTagsFor(IRON).ingot;
 		Tag<Block> ironBlock = IETags.getTagsFor(IRON).storage;
 		BlastFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), ironIngot, 1200, new ItemStack(slag));
@@ -185,6 +186,7 @@ public class IERecipes
 
 		BlastFurnaceRecipe.addBlastFuel(IETags.charCoal, 300);
 		BlastFurnaceRecipe.addBlastFuel(IETags.getItemTag(IETags.charCoalBlocks), 300*10);
+		 */
 	}
 
 	private static void initClocheRecipes()
@@ -568,10 +570,11 @@ public class IERecipes
 
 	public static void addAlloyingRecipe(ItemStack output, String input0, int size0, String input1, int size1, int time)
 	{
-		AlloyRecipe.addRecipe(output, new IngredientStack(getIngot(input0), size0), new IngredientStack(getIngot(input1), size1), time);
-		AlloyRecipe.addRecipe(output, new IngredientStack(getDust(input0), size0), new IngredientStack(getDust(input1), size1), time);
-		AlloyRecipe.addRecipe(output, new IngredientStack(getIngot(input0), size0), new IngredientStack(getDust(input1), size1), time);
-		AlloyRecipe.addRecipe(output, new IngredientStack(getDust(input0), size0), new IngredientStack(getIngot(input1), size1), time);
+		//todo replace with JSON
+//		AlloyRecipe.addRecipe(output, new IngredientStack(getIngot(input0), size0), new IngredientStack(getIngot(input1), size1), time);
+//		AlloyRecipe.addRecipe(output, new IngredientStack(getDust(input0), size0), new IngredientStack(getDust(input1), size1), time);
+//		AlloyRecipe.addRecipe(output, new IngredientStack(getIngot(input0), size0), new IngredientStack(getDust(input1), size1), time);
+//		AlloyRecipe.addRecipe(output, new IngredientStack(getDust(input0), size0), new IngredientStack(getIngot(input1), size1), time);
 	}
 
 	public static HashMap<String, ItemStack> arcOutputModifier = new HashMap<>();

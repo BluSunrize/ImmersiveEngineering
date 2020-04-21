@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class BlastFurnaceRecipe
 {
-	public final Ingredient input;
+	public final IngredientWithSize input;
 	public final ItemStack output;
 	@Nonnull
 	public final ItemStack slag;
@@ -33,7 +33,7 @@ public class BlastFurnaceRecipe
 	public BlastFurnaceRecipe(ItemStack output, Ingredient input, int time, @Nonnull ItemStack slag)
 	{
 		this.output = output;
-		this.input = input;
+		this.input = input instanceof IngredientWithSize? (IngredientWithSize)input: new IngredientWithSize(input);
 		this.time = time;
 		this.slag = slag;
 	}

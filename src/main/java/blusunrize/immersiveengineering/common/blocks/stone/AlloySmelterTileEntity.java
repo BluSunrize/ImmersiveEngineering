@@ -119,9 +119,9 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 						AlloyRecipe recipe = getRecipe();
 						if(recipe!=null)
 						{
-							boolean flip = !recipe.input0.matchesItemStack(inventory.get(0));
-							Utils.modifyInvStackSize(inventory, flip?1: 0, -recipe.input0.inputSize);
-							Utils.modifyInvStackSize(inventory, flip?0: 1, -recipe.input1.inputSize);
+							boolean flip = !recipe.input0.test(inventory.get(0));
+							Utils.modifyInvStackSize(inventory, flip?1: 0, -recipe.input0.getCount());
+							Utils.modifyInvStackSize(inventory, flip?0: 1, -recipe.input1.getCount());
 
 							if(!inventory.get(3).isEmpty())
 								inventory.get(3).grow(recipe.output.copy().getCount());

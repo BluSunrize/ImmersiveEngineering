@@ -125,7 +125,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 						BlastFurnaceRecipe recipe = getRecipe();
 						if(recipe!=null)
 						{
-							Utils.modifyInvStackSize(inventory, 0, -recipe.input.inputSize);
+							Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
 							if(!inventory.get(2).isEmpty())
 								inventory.get(2).grow(recipe.output.copy().getCount());
 							else

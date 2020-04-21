@@ -36,13 +36,16 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 	@Override
 	public void setIngredients(BlastFurnaceRecipe recipe, IIngredients ingredients)
 	{
+		/* todo: fix this with JSON recipes
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
 		ingredients.setOutputs(VanillaTypes.ITEM, ListUtils.fromItems(recipe.output, recipe.slag));
+		 */
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, BlastFurnaceRecipe recipe, IIngredients iIngredients)
 	{
+		/* todo: fix this with JSON recipes
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 43, 8);
 		guiItemStacks.init(1, false, 103, 8);
@@ -50,5 +53,6 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 		guiItemStacks.set(0, recipe.input.getSizedStackList());
 		guiItemStacks.set(1, recipe.output);
 		guiItemStacks.set(2, recipe.slag);
+		 */
 	}
 }

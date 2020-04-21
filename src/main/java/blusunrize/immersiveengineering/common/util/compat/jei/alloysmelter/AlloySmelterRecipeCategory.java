@@ -35,13 +35,16 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 	@Override
 	public void setIngredients(AlloyRecipe recipe, IIngredients ingredients)
 	{
+		/* todo: fix this with JSON
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input0, recipe.input1).build());
 		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
+		 */
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, AlloyRecipe recipe, IIngredients iIngredients)
 	{
+		/* todo: fix this with JSON
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 5, 0);
 		guiItemStacks.set(0, recipe.input0.getSizedStackList());
@@ -51,5 +54,6 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 
 		guiItemStacks.init(2, false, 87, 18);
 		guiItemStacks.set(2, recipe.output);
+		 */
 	}
 }

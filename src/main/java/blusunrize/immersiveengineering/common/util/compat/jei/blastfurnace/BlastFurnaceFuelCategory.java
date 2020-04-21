@@ -43,15 +43,19 @@ public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 	@Override
 	public void setIngredients(BlastFurnaceFuel recipe, IIngredients ingredients)
 	{
+		/* todo: fix this with JSON recipes
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
+		 */
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, BlastFurnaceFuel recipe, IIngredients iIngredients)
 	{
+		/* todo: fix this with JSON recipes
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 0, 16);
 		guiItemStacks.set(0, recipe.input.getSizedStackList());
+		 */
 	}
 
 	@Override

@@ -22,16 +22,16 @@ import java.util.List;
  */
 public class AlloyRecipe
 {
-	public final Ingredient input0;
-	public final Ingredient input1;
+	public final IngredientWithSize input0;
+	public final IngredientWithSize input1;
 	public final ItemStack output;
 	public final int time;
 
 	public AlloyRecipe(ItemStack output, Ingredient input0, Ingredient input1, int time)
 	{
 		this.output = output;
-		this.input0 = input0;
-		this.input1 = input1;
+		this.input0 = input0 instanceof IngredientWithSize? (IngredientWithSize)input0: new IngredientWithSize(input0);
+		this.input1 = input1 instanceof IngredientWithSize? (IngredientWithSize)input1: new IngredientWithSize(input1);
 		this.time = time;
 	}
 

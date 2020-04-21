@@ -32,6 +32,11 @@ public class IngredientWithSize extends Ingredient
 		this(basePredicate, 1);
 	}
 
+	public int getCount()
+	{
+		return count;
+	}
+
 	@Override
 	public boolean test(@Nullable ItemStack itemStack)
 	{
