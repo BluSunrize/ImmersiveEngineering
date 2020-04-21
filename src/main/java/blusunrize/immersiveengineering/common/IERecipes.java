@@ -363,6 +363,7 @@ public class IERecipes
 
 	public static void readdRecipes()
 	{
+		/* todo: All of these are being replaced with JSON
 		clearRecipes();
 		initCrusherRecipes();
 		addTagBasedRecipes();
@@ -374,6 +375,7 @@ public class IERecipes
 		initClocheRecipes();
 		addExcavatorVeins();
 		addMiscRecipes();
+		 */
 	}
 
 	private static void clearRecipes()
