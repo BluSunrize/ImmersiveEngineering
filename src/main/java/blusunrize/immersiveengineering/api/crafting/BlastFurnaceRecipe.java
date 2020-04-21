@@ -77,29 +77,27 @@ public class BlastFurnaceRecipe
 
 	public static class BlastFurnaceFuel
 	{
-		public final IngredientStack input;
+		public final Ingredient input;
 		public final int burnTime;
 
-		public BlastFurnaceFuel(IngredientStack input, int burnTime)
+		public BlastFurnaceFuel(Ingredient input, int burnTime)
 		{
 			this.input = input;
 			this.burnTime = burnTime;
 		}
 	}
 
-	public static BlastFurnaceFuel addBlastFuel(Object fuel, int burnTime)
+	public static BlastFurnaceFuel addBlastFuel(Ingredient fuel, int burnTime)
 	{
-		IngredientStack input = ApiUtils.createIngredientStack(fuel);
-		BlastFurnaceFuel entry = new BlastFurnaceFuel(input, burnTime);
-		if(input.isValid())
-			blastFuels.add(entry);
+		BlastFurnaceFuel entry = new BlastFurnaceFuel(fuel, burnTime);
+		blastFuels.add(entry);
 		return entry;
 	}
 
 	public static int getBlastFuelTime(ItemStack stack)
 	{
 		for(BlastFurnaceFuel e : blastFuels)
-			if(e.input.matchesItemStack(stack))
+			if(e.input.test(stack))
 				return e.burnTime;
 		return 0;
 	}
