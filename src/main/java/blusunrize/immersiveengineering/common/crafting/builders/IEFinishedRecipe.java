@@ -23,6 +23,8 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -42,6 +44,8 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 	protected int resultCount = 0;
 	protected int maxResultCount = 1;
 
+	protected JsonArray conditions = null;
+
 	protected IEFinishedRecipe(IERecipeSerializer<?> serializer)
 	{
 		this.serializer = serializer;
@@ -59,6 +63,18 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 	{
 		Preconditions.checkArgument(id==null, "This recipe has already been finalized");
 		this.writerFunctions.add(writer);
+		return (R)this;
+	}
+
+	@SuppressWarnings("unchecked cast")
+	public R addCondition(ICondition condition)
+	{
+		if(this.conditions==null)
+		{
+			this.conditions = new JsonArray();
+			addWriter(jsonObject -> jsonObject.add("conditions", conditions));
+		}
+		this.conditions.add(CraftingHelper.serialize(condition));
 		return (R)this;
 	}
 
