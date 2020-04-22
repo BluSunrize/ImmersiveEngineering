@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.builders.AlloyRecipeBuilder;
+import blusunrize.immersiveengineering.common.crafting.builders.BlastFurnaceFuelBuilder;
 import blusunrize.immersiveengineering.common.crafting.builders.BlastFurnaceRecipeBuilder;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
@@ -247,6 +248,20 @@ public class Recipes extends RecipeProvider
 
 	private void recipesBlast(@Nonnull Consumer<IFinishedRecipe> out)
 	{
+		BlastFurnaceFuelBuilder.builder(IETags.coalCoke, 1)
+				.setTime(1200)
+				.build(out, toRL("blastfurnace/fuel_coke"));
+		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.coalCokeBlock), 1)
+				.setTime(10*1200)
+				.build(out, toRL("blastfurnace/fuel_coke_block"));
+
+		BlastFurnaceFuelBuilder.builder(IETags.charCoal, 1)
+				.setTime(300)
+				.build(out, toRL("blastfurnace/fuel_charcoal"));
+		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.charCoalBlocks), 1)
+				.setTime(10*300)
+				.build(out, toRL("blastfurnace/fuel_charcoal_block"));
+
 		BlastFurnaceRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.STEEL).ingot, 1)
 				.addInput(Tags.Items.INGOTS_IRON)
 				.addSlag(Ingredient.fromTag(IETags.slag))
