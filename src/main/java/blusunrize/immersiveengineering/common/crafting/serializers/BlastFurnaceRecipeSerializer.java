@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
@@ -32,12 +31,12 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 	@Override
 	public BlastFurnaceRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
+		ItemStack output = readOutput(JSONUtils.getJsonObject(json, "result"));
 		Ingredient input = Ingredient.deserialize(json.getAsJsonObject("input"));
 		int time = JSONUtils.getInt(json, "time", 200);
 		ItemStack slag = ItemStack.EMPTY;
 		if(json.has("slag"))
-			slag = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "slag"));
+			slag = readOutput(JSONUtils.getJsonObject(json, "slag"));
 		return new BlastFurnaceRecipe(recipeId, output, input, time, slag);
 	}
 

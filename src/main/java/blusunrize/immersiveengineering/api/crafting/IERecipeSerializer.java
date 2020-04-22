@@ -8,10 +8,13 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -26,6 +29,14 @@ public abstract class IERecipeSerializer<R extends IRecipe<?>> extends ForgeRegi
 		if(CraftingHelper.processConditions(json, "conditions"))
 			return readFromJson(recipeId, json);
 		return null;
+	}
+
+	protected ItemStack readOutput(JsonObject outputObject)
+	{
+		if(outputObject.has("item"))
+			return ShapedRecipe.deserializeItem(outputObject);
+		Ingredient outgredient = Ingredient.deserialize(outputObject);
+		return IEApi.getPreferredStackbyMod(outgredient.getMatchingStacks());
 	}
 
 	public abstract R readFromJson(ResourceLocation recipeId, JsonObject json);

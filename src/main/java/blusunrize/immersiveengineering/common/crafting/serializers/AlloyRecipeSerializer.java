@@ -14,11 +14,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nullable;
 
@@ -33,7 +31,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	@Override
 	public AlloyRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
+		ItemStack output = readOutput(JSONUtils.getJsonObject(json, "result"));
 		Ingredient input0 = Ingredient.deserialize(json.getAsJsonObject("input0"));
 		Ingredient input1 = Ingredient.deserialize(json.getAsJsonObject("input1"));
 		int time = JSONUtils.getInt(json, "time", 200);
