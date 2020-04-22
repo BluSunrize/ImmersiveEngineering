@@ -25,6 +25,8 @@ import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
+
 public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 {
 	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "mixer");
@@ -68,7 +70,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 			int x = (i%2)*18;
 			int y = i/2*18;
 			guiItemStacks.init(i, true, x, y);
-			guiItemStacks.set(i, recipe.itemInputs[i].getSizedStackList());
+			guiItemStacks.set(i, Arrays.asList(recipe.itemInputs[i].getMatchingStacks()));
 			guiItemStacks.setBackground(i, JEIHelper.slotDrawable);
 		}
 	}

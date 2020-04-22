@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
@@ -22,6 +23,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import it.unimi.dsi.fastutil.objects.Object2IntFunction;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -77,6 +79,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.common.IERecipes.getIngot;
 
@@ -142,24 +146,35 @@ public class ApiUtils
 		return s2;
 	}
 
-	public static boolean stacksMatchIngredientList(List<IngredientStack> list, NonNullList<ItemStack> stacks)
+	public static boolean stacksMatchIngredientList(List<Ingredient> list, NonNullList<ItemStack> stacks)
+	{
+		return stacksMatchList(list, stacks, i -> 1);
+	}
+
+	public static boolean stacksMatchIngredientWithSizeList(List<IngredientWithSize> list, NonNullList<ItemStack> stacks)
+	{
+		return stacksMatchList(list, stacks, IngredientWithSize::getCount);
+	}
+
+	private static <T extends Predicate<ItemStack>> boolean stacksMatchList(List<T> list, NonNullList<ItemStack> stacks,
+																			Function<T, Integer> size)
 	{
 		ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(stacks.size());
 		for(ItemStack s : stacks)
 			if(!s.isEmpty())
 				queryList.add(s.copy());
 
-		for(IngredientStack ingr : list)
+		for(T ingr : list)
 			if(ingr!=null)
 			{
-				int amount = ingr.inputSize;
+				int amount = size.apply(ingr);
 				Iterator<ItemStack> it = queryList.iterator();
 				while(it.hasNext())
 				{
 					ItemStack query = it.next();
 					if(!query.isEmpty())
 					{
-						if(ingr.matchesItemStackIgnoringSize(query))
+						if(ingr.test(query))
 						{
 							if(query.getCount() > amount)
 							{

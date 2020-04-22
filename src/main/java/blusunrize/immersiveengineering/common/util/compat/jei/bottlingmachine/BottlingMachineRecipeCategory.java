@@ -26,6 +26,8 @@ import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
+
 public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMachineRecipe>
 {
 	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "bottlingmachine");
@@ -53,7 +55,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 0, 12);
 		guiItemStacks.init(1, false, 100, 12);
-		guiItemStacks.set(0, recipe.input.getSizedStackList());
+		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
 		guiItemStacks.set(1, recipe.output);
 		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 		guiItemStacks.setBackground(1, JEIHelper.slotDrawable);

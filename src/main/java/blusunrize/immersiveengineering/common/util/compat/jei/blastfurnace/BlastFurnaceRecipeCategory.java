@@ -50,7 +50,7 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 		guiItemStacks.init(0, true, 43, 8);
 		guiItemStacks.init(1, false, 103, 8);
 		guiItemStacks.init(2, false, 103, 44);
-		guiItemStacks.set(0, recipe.input.getSizedStackList());
+		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
 		guiItemStacks.set(1, recipe.output);
 		guiItemStacks.set(2, recipe.slag);
 		 */

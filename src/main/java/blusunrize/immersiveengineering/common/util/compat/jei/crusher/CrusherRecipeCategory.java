@@ -29,6 +29,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
@@ -58,7 +59,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 0, 18);
-		guiItemStacks.set(0, recipe.input.getSizedStackList());
+		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
 		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 
 		List<SecondaryOutput> validSecondaries = getValidSecondaryOutputs(recipe);

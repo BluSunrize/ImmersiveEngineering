@@ -33,31 +33,28 @@ public class MixerRecipe extends MultiblockRecipe
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
-	public final IngredientStack[] itemInputs;
+	public final IngredientWithSize[] itemInputs;
 	public final FluidStack fluidInput;
 	public final FluidStack fluidOutput;
 	public final int fluidAmount;
 
-	public MixerRecipe(FluidStack fluidOutput, FluidStack fluidInput, Object[] itemInputs, int energy)
+	public MixerRecipe(FluidStack fluidOutput, FluidStack fluidInput, IngredientWithSize[] itemInputs, int energy)
 	{
 		this.fluidOutput = fluidOutput;
 		this.fluidAmount = fluidOutput.getAmount();
 		this.fluidInput = fluidInput;
-		this.itemInputs = new IngredientStack[itemInputs==null?0: itemInputs.length];
-		if(itemInputs!=null)
-			for(int i = 0; i < itemInputs.length; i++)
-				this.itemInputs[i] = ApiUtils.createIngredientStack(itemInputs[i]);
+		this.itemInputs = itemInputs;
 		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
 		this.totalProcessTime = (int)Math.floor(fluidOutput.getAmount()*timeModifier);
 
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);
-		this.inputList = Lists.newArrayList(this.itemInputs);
+		setInputListWithSizes(Lists.newArrayList(this.itemInputs));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
 	}
 
 	public static ArrayList<MixerRecipe> recipeList = new ArrayList<>();
 
-	public static MixerRecipe addRecipe(FluidStack fluidOutput, FluidStack fluidInput, Object[] itemInput, int energy)
+	public static MixerRecipe addRecipe(FluidStack fluidOutput, FluidStack fluidInput, IngredientWithSize[] itemInput, int energy)
 	{
 		MixerRecipe r = new MixerRecipe(fluidOutput, fluidInput, itemInput, energy);
 		recipeList.add(r);
@@ -84,26 +81,27 @@ public class MixerRecipe extends MultiblockRecipe
 		return compareToInputs(fluid, components, this.fluidInput, this.itemInputs);
 	}
 
-	protected boolean compareToInputs(FluidStack fluid, NonNullList<ItemStack> components, FluidStack fluidInput, IngredientStack[] itemInputs)
+	protected boolean compareToInputs(FluidStack fluid, NonNullList<ItemStack> components, FluidStack fluidInput,
+									  IngredientWithSize[] itemInputs)
 	{
 		if(fluid!=null&&fluid.containsFluid(fluidInput))
 		{
-			ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(components.size());
+			ArrayList<ItemStack> queryList = new ArrayList<>(components.size());
 			for(ItemStack s : components)
 				if(!s.isEmpty())
 					queryList.add(s.copy());
 
-			for(IngredientStack add : itemInputs)
+			for(IngredientWithSize add : itemInputs)
 				if(add!=null)
 				{
-					int addAmount = add.inputSize;
+					int addAmount = add.getCount();
 					Iterator<ItemStack> it = queryList.iterator();
 					while(it.hasNext())
 					{
 						ItemStack query = it.next();
 						if(!query.isEmpty())
 						{
-							if(add.matches(query))
+							if(add.test(query))
 								if(query.getCount() > addAmount)
 								{
 									query.shrink(addAmount);
@@ -131,12 +129,11 @@ public class MixerRecipe extends MultiblockRecipe
 
 	public int[] getUsedSlots(FluidStack input, NonNullList<ItemStack> components)
 	{
-		Set<Integer> usedSlotSet = new HashSet<Integer>();
-		for(int i = 0; i < itemInputs.length; i++)
+		Set<Integer> usedSlotSet = new HashSet<>();
+		for(IngredientWithSize ingr : itemInputs)
 		{
-			IngredientStack ingr = itemInputs[i];
 			for(int j = 0; j < components.size(); j++)
-				if(!usedSlotSet.contains(j)&&!components.get(j).isEmpty()&&ingr.matchesItemStack(components.get(j)))
+				if(!usedSlotSet.contains(j)&&!components.get(j).isEmpty()&&ingr.test(components.get(j)))
 				{
 					usedSlotSet.add(j);
 					break;
@@ -153,20 +150,6 @@ public class MixerRecipe extends MultiblockRecipe
 	public int getMultipleProcessTicks()
 	{
 		return 0;
-	}
-
-	@Override
-	public CompoundNBT writeToNBT(CompoundNBT nbt)
-	{
-		nbt.put("fluidInput", fluidInput.writeToNBT(new CompoundNBT()));
-		if(this.itemInputs.length > 0)
-		{
-			ListNBT list = new ListNBT();
-			for(IngredientStack add : this.itemInputs)
-				list.add(add.writeToNBT(new CompoundNBT()));
-			nbt.put("itemInputs", list);
-		}
-		return nbt;
 	}
 
 	@Nullable

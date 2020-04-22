@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
@@ -71,9 +72,8 @@ public class ArcRecyclingThreadHandler extends Thread
 		nonValidated = ArrayListMultimap.create();
 		int invalidCount = 0;
 
-		for(int i = 0; i < threads.length; i++)
+		for(RegistryIterationThread thread : threads)
 		{
-			RegistryIterationThread thread = threads[i];
 			try
 			{
 				thread.join();
@@ -121,12 +121,12 @@ public class ArcRecyclingThreadHandler extends Thread
 		HashSet<String> finishedRecycles = new HashSet<>();
 		for(RecyclingCalculation valid : validated)
 			if(finishedRecycles.add(valid.stack.toString())&&!valid.outputs.isEmpty())
-				ArcFurnaceRecipe.recipeList.add(new ArcRecyclingRecipe(valid.outputs, valid.stack, 100, 512));
+				ArcFurnaceRecipe.recipeList.add(new ArcRecyclingRecipe(valid.outputs, IngredientWithSize.of(valid.stack), 100, 512));
 		for(RecyclingCalculation invalid : Sets.newHashSet(nonValidated.values()))
 			if(finishedRecycles.add(invalid.stack.toString())&&!invalid.outputs.isEmpty())
 			{
 				IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
-				ArcFurnaceRecipe.recipeList.add(new ArcRecyclingRecipe(invalid.outputs, invalid.stack, 100, 512));
+				ArcFurnaceRecipe.recipeList.add(new ArcRecyclingRecipe(invalid.outputs, IngredientWithSize.of(invalid.stack), 100, 512));
 			}
 		hasProfiled = true;
 	}

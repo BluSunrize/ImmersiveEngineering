@@ -28,6 +28,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
+
 public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 {
 	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "arcfurnace");
@@ -69,12 +71,12 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		int i = 0;
 		guiItemStacks.init(i, true, 20, 0);
-		guiItemStacks.set(i++, recipe.input.getSizedStackList());
+		guiItemStacks.set(i++, Arrays.asList(recipe.input.getMatchingStacks()));
 
 		for(int j = 0; j < recipe.additives.length; j++)
 		{
 			guiItemStacks.init(i, true, 12+j%2*18, 18+j/2*18);
-			guiItemStacks.set(i++, recipe.additives[j].getSizedStackList());
+			guiItemStacks.set(i++, Arrays.asList(recipe.additives[j].getMatchingStacks()));
 		}
 
 		int outputSize = recipe.output.size();

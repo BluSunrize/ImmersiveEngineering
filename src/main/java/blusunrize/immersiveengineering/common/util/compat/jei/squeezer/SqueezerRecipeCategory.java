@@ -24,6 +24,8 @@ import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
+
 public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe>
 {
 	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "squeezer");
@@ -54,7 +56,7 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe>
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 1, 22);
 		guiItemStacks.init(1, false, 84, 40);
-		guiItemStacks.set(0, recipe.input.getSizedStackList());
+		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
 		if(!recipe.itemOutput.isEmpty())
 			guiItemStacks.set(1, recipe.itemOutput);
 		if(recipe.fluidOutput!=null)

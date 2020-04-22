@@ -117,14 +117,6 @@ public class RefineryRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	@Override
-	public CompoundNBT writeToNBT(CompoundNBT nbt)
-	{
-		nbt.put("input0", input0.writeToNBT(new CompoundNBT()));
-		nbt.put("input1", input1.writeToNBT(new CompoundNBT()));
-		return nbt;
-	}
-
 	public static RefineryRecipe loadFromNBT(CompoundNBT nbt)
 	{
 		FluidStack input0 = FluidStack.loadFluidStackFromNBT(nbt.getCompound("input0"));

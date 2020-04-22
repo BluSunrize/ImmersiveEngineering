@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,8 +22,8 @@ import java.util.function.Function;
 public class ClocheRecipe
 {
 	public final List<ItemStack> outputs;
-	public final IngredientStack seed;
-	public final IngredientStack soil;
+	public final Ingredient seed;
+	public final Ingredient soil;
 	public final int time;
 	public final ClocheRenderFunction renderFunction;
 
@@ -46,18 +46,18 @@ public class ClocheRecipe
 
 	public static ArrayList<ClocheRecipe> recipeList = new ArrayList<>();
 	public static List<ClocheFertilizer> fertilizerList = new ArrayList<>();
-	private static List<Pair<IngredientStack, ResourceLocation>> soilTextureList = new ArrayList<>();
+	private static List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
-	public ClocheRecipe(List<ItemStack> outputs, Object seed, Object soil, int time, ClocheRenderFunction renderFunction)
+	public ClocheRecipe(List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
 	{
 		this.outputs = outputs;
-		this.seed = ApiUtils.createIngredientStack(seed);
-		this.soil = ApiUtils.createIngredientStack(soil);
+		this.seed = seed;
+		this.soil = soil;
 		this.time = time;
 		this.renderFunction = renderFunction;
 	}
 
-	public ClocheRecipe(ItemStack output, Object seed, Object soil, int time, ClocheRenderFunction renderFunction)
+	public ClocheRecipe(ItemStack output, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
 	{
 		this(ImmutableList.of(output), seed, soil, time, renderFunction);
 	}
@@ -66,11 +66,11 @@ public class ClocheRecipe
 	 * Add a recipe for a List of ItemStack outputs
 	 *
 	 * @param outputs
-	 * @param seed    Item, Block, ItemStack or Tag
-	 * @param soil    Item, Block, ItemStack or Tag
+	 * @param seed
+	 * @param soil
 	 * @param time    time in ticks for the recipe to grow
 	 */
-	public static void addRecipe(List<ItemStack> outputs, Object seed, Object soil, int time, ClocheRenderFunction renderFunction)
+	public static void addRecipe(List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
 	{
 		ClocheRecipe recipe = new ClocheRecipe(outputs, seed, soil, time, renderFunction);
 		if(recipe.seed!=null&&recipe.soil!=null)
@@ -81,11 +81,11 @@ public class ClocheRecipe
 	 * Add a recipe for a single ItemStack output
 	 *
 	 * @param output
-	 * @param seed   Item, Block, ItemStack or Tag
-	 * @param soil   Item, Block, ItemStack or Tag
+	 * @param seed
+	 * @param soil
 	 * @param time   time in ticks for the recipe to grow
 	 */
-	public static void addRecipe(ItemStack output, Object seed, Object soil, int time, ClocheRenderFunction renderFunction)
+	public static void addRecipe(ItemStack output, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
 	{
 		addRecipe(ImmutableList.of(output), seed, soil, time, renderFunction);
 	}
@@ -104,10 +104,10 @@ public class ClocheRecipe
 
 	public static class ClocheFertilizer
 	{
-		public final IngredientStack input;
+		public final Ingredient input;
 		public final float growthModifier;
 
-		public ClocheFertilizer(IngredientStack input, float growthModifier)
+		public ClocheFertilizer(Ingredient input, float growthModifier)
 		{
 			this.input = input;
 			this.growthModifier = growthModifier;
@@ -120,15 +120,15 @@ public class ClocheRecipe
 	}
 
 	/**
-	 * Registers a fertilizer (Item, Block, ItemStack, Tag) along with its growth modifier
+	 * Registers a fertilizer along with its growth modifier
 	 *
 	 * @param input
 	 * @param growthModifer
 	 * @return the finished ClocheFertilizer object, or null if registration failed
 	 */
-	public static ClocheFertilizer addFertilizer(Object input, float growthModifer)
+	public static ClocheFertilizer addFertilizer(Ingredient input, float growthModifer)
 	{
-		ClocheFertilizer entry = new ClocheFertilizer(ApiUtils.createIngredientStack(input), growthModifer);
+		ClocheFertilizer entry = new ClocheFertilizer(input, growthModifer);
 		if(entry.input!=null)
 		{
 			fertilizerList.add(entry);
@@ -140,7 +140,7 @@ public class ClocheRecipe
 	public static float getFertilizerGrowthModifier(ItemStack stack)
 	{
 		for(ClocheFertilizer e : fertilizerList)
-			if(e.input.matchesItemStack(stack))
+			if(e.input.test(stack))
 				return e.getGrowthModifier();
 		return 0;
 	}
@@ -153,20 +153,20 @@ public class ClocheRecipe
 	/* ========== SOIL TEXTURE ========== */
 
 	/**
-	 * Registers a given input (Item, Block, ItemStack, Tag) to cause a replacement of the rendered soil texture
+	 * Registers a given input to cause a replacement of the rendered soil texture
 	 *
 	 * @param soil
 	 * @param texture
 	 */
-	public static void registerSoilTexture(Object soil, ResourceLocation texture)
+	public static void registerSoilTexture(Ingredient soil, ResourceLocation texture)
 	{
-		soilTextureList.add(Pair.of(ApiUtils.createIngredientStack(soil), texture));
+		soilTextureList.add(Pair.of(soil, texture));
 	}
 
 	public static ResourceLocation getSoilTexture(ItemStack soil)
 	{
-		for(Pair<IngredientStack, ResourceLocation> entry : soilTextureList)
-			if(entry.getKey().matches(soil))
+		for(Pair<Ingredient, ResourceLocation> entry : soilTextureList)
+			if(entry.getKey().test(soil))
 				return entry.getValue();
 		return null;
 	}

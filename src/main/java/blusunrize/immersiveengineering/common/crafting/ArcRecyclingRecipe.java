@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
@@ -23,7 +24,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
 	private Map<ItemStack, Double> outputs;
 
-	public ArcRecyclingRecipe(Map<ItemStack, Double> outputs, Object input, int time, int energyPerTick)
+	public ArcRecyclingRecipe(Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
 		super(null, input, ItemStack.EMPTY, time, energyPerTick);
 		this.outputs = outputs;
@@ -75,6 +76,6 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	@Override
 	public boolean matches(ItemStack input, NonNullList<ItemStack> additives)
 	{
-		return !input.isEmpty()&&this.input.matchesItemStack(input);
+		return !input.isEmpty()&&this.input.test(input);
 	}
 }

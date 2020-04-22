@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,22 +23,22 @@ import java.util.List;
  */
 public class CokeOvenRecipe
 {
-	public final IngredientStack input;
+	public final IngredientWithSize input;
 	public final ItemStack output;
 	public final int time;
 	public final int creosoteOutput;
 
-	public CokeOvenRecipe(ItemStack output, Object input, int time, int creosoteOutput)
+	public CokeOvenRecipe(ItemStack output, IngredientWithSize input, int time, int creosoteOutput)
 	{
 		this.output = output;
-		this.input = ApiUtils.createIngredientStack(input);
+		this.input = input;
 		this.time = time;
 		this.creosoteOutput = creosoteOutput;
 	}
 
-	public static ArrayList<CokeOvenRecipe> recipeList = new ArrayList<CokeOvenRecipe>();
+	public static List<CokeOvenRecipe> recipeList = new ArrayList<>();
 
-	public static void addRecipe(ItemStack output, Object input, int time, int creosoteOutput)
+	public static void addRecipe(ItemStack output, IngredientWithSize input, int time, int creosoteOutput)
 	{
 		CokeOvenRecipe recipe = new CokeOvenRecipe(output, input, time, creosoteOutput);
 		if(recipe.input!=null)

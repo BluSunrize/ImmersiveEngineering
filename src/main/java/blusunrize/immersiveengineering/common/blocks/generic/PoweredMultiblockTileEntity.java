@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
@@ -23,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -137,10 +139,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 
 	protected CompoundNBT writeProcessToNBT(MultiblockProcess process)
 	{
-		CompoundNBT tag = process.recipe.writeToNBT(new CompoundNBT());
-		tag.putInt("process_processTick", process.processTick);
-		process.writeExtraDataToNBT(tag);
-		return tag;
+		throw new UnsupportedOperationException();
 	}
 
 	//	=================================
@@ -579,7 +578,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			return this.inputTanks;
 		}
 
-		protected List<IngredientStack> getRecipeItemInputs(PoweredMultiblockTileEntity<?, R> multiblock)
+		protected List<IngredientWithSize> getRecipeItemInputs(PoweredMultiblockTileEntity<?, R> multiblock)
 		{
 			return recipe.getItemInputs();
 		}
@@ -599,7 +598,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 				for(int i = 0; i < inputSlots.length; i++)
 					if(inputSlots[i] >= 0&&inputSlots[i] < inv.size())
 						query.set(i, multiblock.getInventory().get(inputSlots[i]));
-				if(!ApiUtils.stacksMatchIngredientList(recipe.getItemInputs(), query))
+				if(!ApiUtils.stacksMatchIngredientWithSizeList(recipe.getItemInputs(), query))
 				{
 					this.clearProcess = true;
 					return;
@@ -613,7 +612,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		{
 			super.processFinish(multiblock);
 			NonNullList<ItemStack> inv = multiblock.getInventory();
-			List<IngredientStack> itemInputList = this.getRecipeItemInputs(multiblock);
+			List<IngredientWithSize> itemInputList = this.getRecipeItemInputs(multiblock);
 			if(inv!=null&&this.inputSlots!=null&&itemInputList!=null)
 			{
 				if(this.inputAmounts!=null&&this.inputSlots.length==this.inputAmounts.length)
@@ -624,14 +623,11 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 
 				}
 				else
-				{
-					Iterator<IngredientStack> iterator = new ArrayList<>(itemInputList).iterator();
-					while(iterator.hasNext())
+					for(IngredientWithSize ingr : new ArrayList<>(itemInputList))
 					{
-						IngredientStack ingr = iterator.next();
-						int ingrSize = ingr.inputSize;
+						int ingrSize = ingr.getCount();
 						for(int slot : this.inputSlots)
-							if(!inv.get(slot).isEmpty()&&ingr.matchesItemStackIgnoringSize(inv.get(slot)))
+							if(!inv.get(slot).isEmpty()&&ingr.test(inv.get(slot)))
 							{
 								int taken = Math.min(inv.get(slot).getCount(), ingrSize);
 								inv.get(slot).shrink(taken);
@@ -641,7 +637,6 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 									break;
 							}
 					}
-				}
 			}
 			IFluidTank[] tanks = multiblock.getInternalTanks();
 			List<FluidStack> fluidInputList = this.getRecipeFluidInputs(multiblock);
@@ -722,10 +717,10 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 
 			for(ItemStack inputItem : this.inputItems)
 			{
-				for(IngredientStack s : recipe.getItemInputs())
-					if(s.matchesItemStackIgnoringSize(inputItem))
+				for(IngredientWithSize s : recipe.getItemInputs())
+					if(s.test(inputItem))
 					{
-						size = s.inputSize;
+						size = s.getCount();
 						break;
 					}
 

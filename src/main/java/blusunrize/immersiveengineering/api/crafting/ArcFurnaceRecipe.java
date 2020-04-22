@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
@@ -32,9 +33,8 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
-	public final IngredientStack input;
-	public final String oreInputString;
-	public final IngredientStack[] additives;
+	public final IngredientWithSize input;
+	public final IngredientWithSize[] additives;
 	public final NonNullList<ItemStack> output;
 	@Nonnull
 	public final ItemStack slag;
@@ -43,26 +43,20 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public static ArrayList<String> specialRecipeTypes = new ArrayList<String>();
 	public static ArrayList<ArcFurnaceRecipe> recipeList = new ArrayList<ArcFurnaceRecipe>();
 
-	public ArcFurnaceRecipe(ItemStack output, Object input, @Nonnull ItemStack slag, int time, int energyPerTick, Object... additives)
+	public ArcFurnaceRecipe(ItemStack output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
+							int energyPerTick, IngredientWithSize... additives)
 	{
 		this.output = ListUtils.fromItem(output);
-		this.input = ApiUtils.createIngredientStack(input);
-		this.oreInputString = input instanceof String?(String)input: null;
+		this.input = input;
 		this.slag = slag;
 		this.totalProcessTime = (int)Math.floor(time*timeModifier);
 		this.totalProcessEnergy = (int)Math.floor(energyPerTick*energyModifier)*totalProcessTime;
-		if(additives==null)
-			this.additives = new IngredientStack[0];
-		else
-		{
-			this.additives = new IngredientStack[additives.length];
-			for(int i = 0; i < additives.length; i++)
-				this.additives[i] = ApiUtils.createIngredientStack(additives[i]);
-		}
+		this.additives = additives;
 
-		this.inputList = Lists.newArrayList(this.input);
+		List<IngredientWithSize> inputList = Lists.newArrayList(this.input);
 		if(this.additives.length > 0)
-			this.inputList.addAll(Lists.newArrayList(this.additives));
+			inputList.addAll(Lists.newArrayList(this.additives));
+		setInputListWithSizes(inputList);
 		this.outputList = this.output;
 	}
 
@@ -83,52 +77,6 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	@Override
-	public CompoundNBT writeToNBT(CompoundNBT nbt)
-	{
-		nbt.put("input", input.writeToNBT(new CompoundNBT()));
-		if(this.additives.length > 0)
-		{
-			ListNBT list = new ListNBT();
-			for(IngredientStack add : this.additives)
-				list.add(add.writeToNBT(new CompoundNBT()));
-			nbt.put("additives", list);
-		}
-		return nbt;
-	}
-
-	public static ArcFurnaceRecipe loadFromNBT(CompoundNBT nbt)
-	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
-		IngredientStack[] additives = null;
-		if(nbt.contains("additives", NBT.TAG_LIST))
-		{
-			ListNBT list = nbt.getList("additives", 10);
-			additives = new IngredientStack[list.size()];
-			for(int i = 0; i < additives.length; i++)
-				additives[i] = IngredientStack.readFromNBT(list.getCompound(i));
-		}
-		for(ArcFurnaceRecipe recipe : recipeList)
-			if(recipe.input.equals(input))
-			{
-				if(additives==null&&recipe.additives.length < 1)
-					return recipe;
-				else if(additives!=null&&recipe.additives.length==additives.length)
-				{
-					boolean b = true;
-					for(int i = 0; i < additives.length; i++)
-						if(!additives[i].equals(recipe.additives[i]))
-						{
-							b = false;
-							break;
-						}
-					if(b)
-						return recipe;
-				}
-			}
-		return null;
-	}
-
 	public NonNullList<ItemStack> getOutputs(ItemStack input, NonNullList<ItemStack> additives)
 	{
 		return this.output;
@@ -136,7 +84,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public boolean matches(ItemStack input, NonNullList<ItemStack> additives)
 	{
-		if(this.input!=null&&this.input.matches(input))
+		if(this.input!=null&&this.input.test(input))
 		{
 			int[] consumed = getConsumedAdditives(additives, false);
 			return consumed!=null;
@@ -148,10 +96,10 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public int[] getConsumedAdditives(NonNullList<ItemStack> additives, boolean consume)
 	{
 		int[] consumed = new int[additives.size()];
-		for(IngredientStack add : this.additives)
+		for(IngredientWithSize add : this.additives)
 			if(add!=null)
 			{
-				int addAmount = add.inputSize;
+				int addAmount = add.getCount();
 				Iterator<ItemStack> it = additives.iterator();
 				int i = 0;
 				while(it.hasNext())
@@ -159,7 +107,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 					ItemStack query = it.next();
 					if(!query.isEmpty())
 					{
-						if(add.matches(query))
+						if(add.test(query))
 						{
 							if(query.getCount() > addAmount)
 							{
@@ -196,13 +144,13 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public boolean isValidInput(ItemStack stack)
 	{
-		return this.input!=null&&this.input.matches(stack);
+		return this.input!=null&&this.input.test(stack);
 	}
 
 	public boolean isValidAdditive(ItemStack stack)
 	{
-		for(IngredientStack add : additives)
-			if(add!=null&&add.matches(stack))
+		for(IngredientWithSize add : additives)
+			if(add!=null&&add.test(stack))
 				return true;
 		return false;
 	}
@@ -215,7 +163,8 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static ArcFurnaceRecipe addRecipe(ItemStack output, Object input, @Nonnull ItemStack slag, int time, int energyPerTick, Object... additives)
+	public static ArcFurnaceRecipe addRecipe(ItemStack output, IngredientWithSize input, @Nonnull ItemStack slag,
+											 int time, int energyPerTick, IngredientWithSize... additives)
 	{
 		ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(output, input, slag, time, energyPerTick, additives);
 		if(recipe.input!=null)

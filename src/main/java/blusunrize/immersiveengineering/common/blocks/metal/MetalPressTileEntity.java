@@ -351,7 +351,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	@Override
 	protected MetalPressRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
-		return MetalPressRecipe.loadFromNBT(tag);
+throw new UnsupportedOperationException();
 	}
 
 	@Override

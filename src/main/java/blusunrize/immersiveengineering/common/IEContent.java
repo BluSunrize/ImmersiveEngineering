@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
@@ -1023,11 +1024,12 @@ public class IEContent
 		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
 			if(recipe instanceof BrewingRecipe)
 			{
-				IngredientStack ingredientStack = ApiUtils.createIngredientStack(((BrewingRecipe)recipe).getIngredient());
+				IngredientWithSize ingredientStack = new IngredientWithSize(((BrewingRecipe)recipe).getIngredient());
 				Ingredient input = ((BrewingRecipe)recipe).getInput();
 				ItemStack output = ((BrewingRecipe)recipe).getOutput();
 				if(/*TODO input.getItem()==Items.POTIONITEM&&*/output.getItem()==Items.POTION)
-					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input.getMatchingStacks()[0]), ingredientStack);
+					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output),
+							PotionUtils.getPotionFromItem(input.getMatchingStacks()[0]), ingredientStack);
 			}
 		if(arcRecycleThread!=null)
 		{

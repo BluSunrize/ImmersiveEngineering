@@ -347,7 +347,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	@Override
 	protected IMultiblockRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
-		return BlueprintCraftingRecipe.loadFromNBT(tag);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

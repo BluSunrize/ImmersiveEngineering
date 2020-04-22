@@ -24,9 +24,6 @@ public class IEDataGenerator
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent event)
 	{
-		// To work around the fact that some recipe generators need at least some recipes to be registered
-		// TODO remove once we have JSON-based machine recipes
-		IERecipes.readdRecipes();
 		DataGenerator gen = event.getGenerator();
 		if(event.includeServer())
 		{

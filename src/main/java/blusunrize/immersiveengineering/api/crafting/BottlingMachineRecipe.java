@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -26,24 +27,24 @@ import java.util.List;
  */
 public class BottlingMachineRecipe extends MultiblockRecipe
 {
-	public final IngredientStack input;
+	public final Ingredient input;
 	public final FluidStack fluidInput;
 	public final ItemStack output;
 
-	public BottlingMachineRecipe(ItemStack output, Object input, FluidStack fluidInput)
+	public BottlingMachineRecipe(ItemStack output, Ingredient input, FluidStack fluidInput)
 	{
 		this.output = output;
-		this.input = ApiUtils.createIngredientStack(input);
+		this.input = input;
 		this.fluidInput = fluidInput;
 
-		this.inputList = Lists.newArrayList(this.input);
+		setInputList(Lists.newArrayList(this.input));
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);
 		this.outputList = ListUtils.fromItem(this.output);
 	}
 
 	public static ArrayList<BottlingMachineRecipe> recipeList = new ArrayList<>();
 
-	public static void addRecipe(ItemStack output, Object input, FluidStack fluidInput)
+	public static void addRecipe(ItemStack output, Ingredient input, FluidStack fluidInput)
 	{
 		BottlingMachineRecipe recipe = new BottlingMachineRecipe(output, input, fluidInput);
 		if(recipe.input!=null)
@@ -79,13 +80,6 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	public int getMultipleProcessTicks()
 	{
 		return 0;
-	}
-
-	@Override
-	public CompoundNBT writeToNBT(CompoundNBT nbt)
-	{
-		nbt.put("input", input.writeToNBT(new CompoundNBT()));
-		return nbt;
 	}
 
 	public static BottlingMachineRecipe loadFromNBT(CompoundNBT nbt)

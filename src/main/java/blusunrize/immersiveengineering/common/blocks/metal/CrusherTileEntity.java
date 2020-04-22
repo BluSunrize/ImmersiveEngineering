@@ -557,7 +557,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	@Override
 	protected CrusherRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
-		return CrusherRecipe.loadFromNBT(tag);
+throw new UnsupportedOperationException();
 	}
 
 	@Override

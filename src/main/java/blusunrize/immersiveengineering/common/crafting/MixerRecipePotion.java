@@ -9,12 +9,13 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
@@ -34,24 +35,24 @@ public class MixerRecipePotion extends MixerRecipe
 {
 	public static final HashMap<Potion, MixerRecipePotion> REGISTERED = new HashMap<>();
 	public static final Set<String> BLACKLIST = new HashSet<>();
-	private final Set<Pair<FluidStack, IngredientStack[]>> alternateInputs = new HashSet<>();
+	private final Set<Pair<FluidStack, IngredientWithSize[]>> alternateInputs = new HashSet<>();
 
-	public MixerRecipePotion(Potion outputType, Potion inputType, IngredientStack reagent)
+	public MixerRecipePotion(Potion outputType, Potion inputType, IngredientWithSize reagent)
 	{
-		super(getFluidStackForType(outputType, 1000), getFluidStackForType(inputType, 1000), new IngredientStack[]{reagent}, 6400);
+		super(getFluidStackForType(outputType, 1000), getFluidStackForType(inputType, 1000), new IngredientWithSize[]{reagent}, 6400);
 	}
 
-	public void addAlternateInput(Potion inputType, IngredientStack reagent)
+	public void addAlternateInput(Potion inputType, IngredientWithSize reagent)
 	{
-		alternateInputs.add(Pair.of(getFluidStackForType(inputType, 1000), new IngredientStack[]{reagent}));
+		alternateInputs.add(Pair.of(getFluidStackForType(inputType, 1000), new IngredientWithSize[]{reagent}));
 	}
 
-	public Set<Pair<FluidStack, IngredientStack[]>> getAlternateInputs()
+	public Set<Pair<FluidStack, IngredientWithSize[]>> getAlternateInputs()
 	{
 		return alternateInputs;
 	}
 
-	public static void registerPotionRecipe(Potion output, Potion input, IngredientStack reagent)
+	public static void registerPotionRecipe(Potion output, Potion input, IngredientWithSize reagent)
 	{
 		if(REGISTERED.containsKey(output))
 		{
@@ -65,7 +66,7 @@ public class MixerRecipePotion extends MixerRecipe
 			REGISTERED.put(output, recipe);
 
 			BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), output),
-					new ItemStack(Items.GLASS_BOTTLE), getFluidStackForType(output, 250));
+					Ingredient.fromItems(Items.GLASS_BOTTLE), getFluidStackForType(output, 250));
 		}
 	}
 

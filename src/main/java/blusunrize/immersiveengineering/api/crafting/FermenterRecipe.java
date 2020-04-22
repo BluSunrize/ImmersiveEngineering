@@ -29,33 +29,33 @@ public class FermenterRecipe extends MultiblockRecipe
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
-	public final IngredientStack input;
+	public IngredientWithSize input;
 	public final FluidStack fluidOutput;
 	@Nonnull
 	public final ItemStack itemOutput;
 
-	public FermenterRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, Object input, int energy)
+	public FermenterRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
 	{
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
-		this.input = ApiUtils.createIngredientStack(input);
+		this.input = input;
 		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
 		this.totalProcessTime = (int)Math.floor(80*timeModifier);
 
-		this.inputList = Lists.newArrayList(this.input);
+		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
 		this.outputList = ListUtils.fromItem(this.itemOutput);
 	}
 
 	public FermenterRecipe setInputSize(int size)
 	{
-		this.input.inputSize = size;
+		this.input = this.input.withSize(size);
 		return this;
 	}
 
-	public static ArrayList<FermenterRecipe> recipeList = new ArrayList();
+	public static List<FermenterRecipe> recipeList = new ArrayList<>();
 
-	public static FermenterRecipe addRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, Object input, int energy)
+	public static FermenterRecipe addRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
 	{
 		FermenterRecipe r = new FermenterRecipe(fluidOutput, itemOutput, input, energy);
 		recipeList.add(r);
@@ -67,40 +67,15 @@ public class FermenterRecipe extends MultiblockRecipe
 		if(input.isEmpty())
 			return null;
 		for(FermenterRecipe recipe : recipeList)
-			if(recipe.input.matches(input))
+			if(recipe.input.test(input))
 				return recipe;
 		return null;
 	}
-//	public static List<SqueezerRecipe> removeRecipes(ItemStack output)
-//	{
-//		List<SqueezerRecipe> list = new ArrayList();
-//		for(ComparableItemStack mold : recipeList.keySet())
-//		{
-//			Iterator<SqueezerRecipe> it = recipeList.get(mold).iterator();
-//			while(it.hasNext())
-//			{
-//				SqueezerRecipe ir = it.next();
-//				if(OreDictionary.itemMatches(ir.output, output, true))
-//				{
-//					list.add(ir);
-//					it.remove();
-//				}
-//			}
-//		}
-//		return list;
-//	}
 
 	@Override
 	public int getMultipleProcessTicks()
 	{
 		return 0;
-	}
-
-	@Override
-	public CompoundNBT writeToNBT(CompoundNBT nbt)
-	{
-		nbt.put("input", input.writeToNBT(new CompoundNBT()));
-		return nbt;
 	}
 
 	public static FermenterRecipe loadFromNBT(CompoundNBT nbt)
@@ -118,9 +93,9 @@ public class FermenterRecipe extends MultiblockRecipe
 				inverse?Comparator.<String>reverseOrder(): Comparator.<String>reverseOrder()
 		);
 		for(FermenterRecipe recipe : recipeList)
-			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f&&recipe.input.isValid())
+			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f&&!recipe.input.hasNoMatchingItems())
 			{
-				ItemStack is = recipe.input.getExampleStack();
+				ItemStack is = recipe.input.getMatchingStacks()[0];
 				map.put(is.getDisplayName().getFormattedText(), recipe.fluidOutput.getAmount());
 			}
 		return map;

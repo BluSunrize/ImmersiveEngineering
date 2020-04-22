@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
@@ -34,20 +34,18 @@ public class CrusherRecipe extends MultiblockRecipe
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
-	public final String oreInputString;
-	public final IngredientStack input;
+	public final Ingredient input;
 	public final ItemStack output;
 	public final List<SecondaryOutput> secondaryOutputs = new ArrayList<>();
 
-	public CrusherRecipe(ItemStack output, Object input, int energy)
+	public CrusherRecipe(ItemStack output, Ingredient input, int energy)
 	{
 		this.output = output;
-		this.input = ApiUtils.createIngredientStack(input);
-		this.oreInputString = input instanceof String?(String)input: null;
+		this.input = input;
 		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
 		this.totalProcessTime = (int)Math.floor(50*timeModifier);
 
-		this.inputList = Lists.newArrayList(this.input);
+		setInputList(Lists.newArrayList(this.input));
 		this.outputList = ListUtils.fromItem(this.output);
 	}
 
@@ -75,7 +73,7 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public static ArrayList<CrusherRecipe> recipeList = new ArrayList<>();
 
-	public static CrusherRecipe addRecipe(ItemStack output, Object input, int energy)
+	public static CrusherRecipe addRecipe(ItemStack output, Ingredient input, int energy)
 	{
 		CrusherRecipe r = new CrusherRecipe(output, input, energy);
 		if(r.input!=null&&!r.output.isEmpty())
@@ -86,7 +84,7 @@ public class CrusherRecipe extends MultiblockRecipe
 	public static CrusherRecipe findRecipe(ItemStack input)
 	{
 		for(CrusherRecipe recipe : recipeList)
-			if(recipe.input.matchesItemStack(input))
+			if(recipe.input.test(input))
 				return recipe;
 		return null;
 	}
@@ -114,7 +112,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		while(it.hasNext())
 		{
 			CrusherRecipe ir = it.next();
-			if(ir.input.matchesItemStackIgnoringSize(stack))
+			if(ir.input.test(stack))
 			{
 				list.add(ir);
 				it.remove();
@@ -128,23 +126,6 @@ public class CrusherRecipe extends MultiblockRecipe
 	{
 		return 4;
 	}
-
-	@Override
-	public CompoundNBT writeToNBT(CompoundNBT nbt)
-	{
-		nbt.put("input", input.writeToNBT(new CompoundNBT()));
-		return nbt;
-	}
-
-	public static CrusherRecipe loadFromNBT(CompoundNBT nbt)
-	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
-		for(CrusherRecipe recipe : recipeList)
-			if(recipe.input.equals(input))
-				return recipe;
-		return null;
-	}
-
 
 	public static class SecondaryOutput
 	{

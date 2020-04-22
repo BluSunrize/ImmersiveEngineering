@@ -30,17 +30,17 @@ public class BlastFurnaceRecipe
 	public final ItemStack slag;
 	public final int time;
 
-	public BlastFurnaceRecipe(ItemStack output, Ingredient input, int time, @Nonnull ItemStack slag)
+	public BlastFurnaceRecipe(ItemStack output, IngredientWithSize input, int time, @Nonnull ItemStack slag)
 	{
 		this.output = output;
-		this.input = input instanceof IngredientWithSize? (IngredientWithSize)input: new IngredientWithSize(input);
+		this.input = input;
 		this.time = time;
 		this.slag = slag;
 	}
 
 	public static ArrayList<BlastFurnaceRecipe> recipeList = new ArrayList<BlastFurnaceRecipe>();
 
-	public static void addRecipe(ItemStack output, Ingredient input, int time, @Nonnull ItemStack slag)
+	public static void addRecipe(ItemStack output, IngredientWithSize input, int time, @Nonnull ItemStack slag)
 	{
 		BlastFurnaceRecipe recipe = new BlastFurnaceRecipe(output, input, time, slag);
 		if(recipe.input!=null)

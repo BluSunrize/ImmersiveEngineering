@@ -121,13 +121,6 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onTagsUpdated(TagsUpdatedEvent tagsChanged)
-	{
-		if(EffectiveSide.get().isServer())
-			IERecipes.readdRecipes();
-	}
-
-	@SubscribeEvent
 	public void onMinecartInteraction(EntityInteractSpecific event)
 	{
 		PlayerEntity player = event.getEntityPlayer();

@@ -705,7 +705,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	@Override
 	protected ArcFurnaceRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
-		return ArcFurnaceRecipe.loadFromNBT(tag);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
