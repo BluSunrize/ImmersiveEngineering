@@ -451,7 +451,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	@Override
 	protected FermenterRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
-		return FermenterRecipe.loadFromNBT(tag);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

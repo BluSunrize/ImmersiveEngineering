@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;

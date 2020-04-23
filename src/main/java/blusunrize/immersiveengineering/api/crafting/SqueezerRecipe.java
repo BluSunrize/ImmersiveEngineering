@@ -78,15 +78,6 @@ public class SqueezerRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	public static SqueezerRecipe loadFromNBT(CompoundNBT nbt)
-	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
-		for(SqueezerRecipe recipe : recipeList)
-			if(recipe.input.equals(input))
-				return recipe;
-		return null;
-	}
-
 	public static SortedMap<String, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
 	{
 		SortedMap<String, Integer> map = new TreeMap<>(

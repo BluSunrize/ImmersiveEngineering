@@ -14,8 +14,10 @@ import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSeriali
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.Tag;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 import javax.annotation.Nonnull;
@@ -38,6 +40,11 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	public IngredientWithSize(Ingredient basePredicate)
 	{
 		this(basePredicate, 1);
+	}
+
+	public IngredientWithSize(Tag<Item> basePredicate)
+	{
+		this(Ingredient.fromTag(basePredicate), 1);
 	}
 
 	@Override
@@ -95,5 +102,10 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	{
 		ItemStack[] all = getMatchingStacks();
 		return all[(rand/20)%all.length];
+	}
+
+	public boolean testIgnoringSize(ItemStack itemstack)
+	{
+		return basePredicate.test(itemstack);
 	}
 }

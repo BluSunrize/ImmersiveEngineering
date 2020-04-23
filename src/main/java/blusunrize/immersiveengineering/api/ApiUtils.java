@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
@@ -23,7 +22,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import it.unimi.dsi.fastutil.objects.Object2IntFunction;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -77,10 +75,7 @@ import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 import static blusunrize.immersiveengineering.common.IERecipes.getIngot;
 
@@ -118,8 +113,10 @@ public class ApiUtils
 				if(stackMatchesObject(stack, io, checkNBT))
 					return true;
 		}
-		else if(o instanceof IngredientStack)
-			return ((IngredientStack)o).matchesItemStack(stack);
+		else if(o instanceof IngredientWithSize)
+			return ((IngredientWithSize)o).test(stack);
+		else if(o instanceof Ingredient)
+			return ((Ingredient)o).test(stack);
 		else if(o instanceof ItemStack[])
 		{
 			for(ItemStack io : (ItemStack[])o)
@@ -148,18 +145,18 @@ public class ApiUtils
 
 	public static boolean stacksMatchIngredientList(List<Ingredient> list, NonNullList<ItemStack> stacks)
 	{
-		return stacksMatchList(list, stacks, i -> 1);
+		return stacksMatchList(list, stacks, i -> 1, Ingredient::test);
 	}
 
 	public static boolean stacksMatchIngredientWithSizeList(List<IngredientWithSize> list, NonNullList<ItemStack> stacks)
 	{
-		return stacksMatchList(list, stacks, IngredientWithSize::getCount);
+		return stacksMatchList(list, stacks, IngredientWithSize::getCount, IngredientWithSize::testIgnoringSize);
 	}
 
-	private static <T extends Predicate<ItemStack>> boolean stacksMatchList(List<T> list, NonNullList<ItemStack> stacks,
-																			Function<T, Integer> size)
+	private static <T> boolean stacksMatchList(List<T> list, NonNullList<ItemStack> stacks, Function<T, Integer> size,
+											   BiPredicate<T, ItemStack> matchesIgnoringSize)
 	{
-		ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(stacks.size());
+		List<ItemStack> queryList = new ArrayList<>(stacks.size());
 		for(ItemStack s : stacks)
 			if(!s.isEmpty())
 				queryList.add(s.copy());
@@ -174,7 +171,7 @@ public class ApiUtils
 					ItemStack query = it.next();
 					if(!query.isEmpty())
 					{
-						if(ingr.test(query))
+						if(matchesIgnoringSize.test(ingr, query))
 						{
 							if(query.getCount() > amount)
 							{
@@ -715,61 +712,14 @@ public class ApiUtils
 			throw new RuntimeException("Recipe Inputs must always be ItemStack, Item, Block or ResourceLocation (tag name), "+input+" is invalid");
 	}
 
-	public static IngredientStack createIngredientStack(Object input)
+	public static boolean hasPlayerIngredient(PlayerEntity player, IngredientWithSize ingredient)
 	{
-		if(input instanceof IngredientStack)
-			return (IngredientStack)input;
-		else if(input instanceof ItemStack)
-			return new IngredientStack((ItemStack)input);
-		else if(input instanceof Item)
-			return new IngredientStack(new ItemStack((Item)input));
-		else if(input instanceof Block)
-			return new IngredientStack(new ItemStack((Block)input));
-		else if(input instanceof Ingredient)
-			return new IngredientStack(Arrays.asList(((Ingredient)input).getMatchingStacks()));
-		else if(input instanceof Tag)
-			return new IngredientStack(((Tag)input).getId());
-		else if(input instanceof List)
-		{
-			if(!((List)input).isEmpty())
-			{
-				if(((List)input).get(0) instanceof ItemStack)
-					return new IngredientStack(((List<ItemStack>)input));
-				else if(((List)input).get(0) instanceof ResourceLocation)
-				{
-					List<ItemStack> itemList = new ArrayList<>();
-					for(ResourceLocation s : ((List<ResourceLocation>)input))
-						itemList.addAll(getItemsInTag(s));
-					return new IngredientStack(itemList);
-				}
-			}
-			else
-				return new IngredientStack(ItemStack.EMPTY);
-		}
-		else if(input instanceof ItemStack[])
-			return new IngredientStack(Arrays.asList((ItemStack[])input));
-		else if(input instanceof ResourceLocation[])
-		{
-			ArrayList<ItemStack> itemList = new ArrayList<>();
-			for(ResourceLocation s : ((ResourceLocation[])input))
-				itemList.addAll(getItemsInTag(s));
-			return new IngredientStack(itemList);
-		}
-		else if(input instanceof ResourceLocation)
-			return new IngredientStack((ResourceLocation)input);
-		else if(input instanceof FluidStack)
-			return new IngredientStack((FluidStack)input);
-		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, ResourceLocation (Tag name) or FluidStack; "+input+" is invalid");
-	}
-
-	public static boolean hasPlayerIngredient(PlayerEntity player, IngredientStack ingredient)
-	{
-		int amount = ingredient.inputSize;
+		int amount = ingredient.getCount();
 		ItemStack itemstack;
 		for(Hand hand : Hand.values())
 		{
 			itemstack = player.getHeldItem(hand);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.test(itemstack))
 			{
 				amount -= itemstack.getCount();
 				if(amount <= 0)
@@ -779,7 +729,7 @@ public class ApiUtils
 		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 		{
 			itemstack = player.inventory.getStackInSlot(i);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.test(itemstack))
 			{
 				amount -= itemstack.getCount();
 				if(amount <= 0)
@@ -789,14 +739,14 @@ public class ApiUtils
 		return amount <= 0;
 	}
 
-	public static void consumePlayerIngredient(PlayerEntity player, IngredientStack ingredient)
+	public static void consumePlayerIngredient(PlayerEntity player, IngredientWithSize ingredient)
 	{
-		int amount = ingredient.inputSize;
+		int amount = ingredient.getCount();
 		ItemStack itemstack;
 		for(Hand hand : Hand.values())
 		{
 			itemstack = player.getHeldItem(hand);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.testIgnoringSize(itemstack))
 			{
 				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;
@@ -810,7 +760,7 @@ public class ApiUtils
 		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 		{
 			itemstack = player.inventory.getStackInSlot(i);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.testIgnoringSize(itemstack))
 			{
 				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;

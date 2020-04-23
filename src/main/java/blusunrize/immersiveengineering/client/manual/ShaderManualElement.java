@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.manual;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual;
@@ -50,7 +50,7 @@ public class ShaderManualElement extends SpecialManualElements
 
 	ItemStack shaderItem;
 	ItemStack[] exampleItems;
-	IngredientStack replicationCost;
+	IngredientWithSize replicationCost;
 	int example = 0;
 	boolean unlocked;
 
@@ -131,7 +131,7 @@ public class ShaderManualElement extends SpecialManualElements
 						.appendSibling(new TranslationTextComponent("desc.immersiveengineering.info.shader.details").applyTextStyle(TextFormatting.BOLD))
 						.appendText("\n"+details);
 
-			String cost = Integer.toString(replicationCost.inputSize);
+			String cost = Integer.toString(replicationCost.getCount());
 			if(!ApiUtils.hasPlayerIngredient(mc().player, replicationCost)&&!mc().player.abilities.isCreativeMode)
 				cost = TextFormatting.RED+cost;
 			buttons.add(new GuiButtonManual(gui, x+50, y+120, 70, 12,

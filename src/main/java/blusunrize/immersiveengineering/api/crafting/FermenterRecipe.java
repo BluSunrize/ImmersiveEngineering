@@ -78,15 +78,6 @@ public class FermenterRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	public static FermenterRecipe loadFromNBT(CompoundNBT nbt)
-	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
-		for(FermenterRecipe recipe : recipeList)
-			if(recipe.input.equals(input))
-				return recipe;
-		return null;
-	}
-
 	public static SortedMap<String, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
 	{
 		SortedMap<String, Integer> map = new TreeMap<>(

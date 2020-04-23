@@ -497,7 +497,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	@Override
 	protected SqueezerRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
-		return SqueezerRecipe.loadFromNBT(tag);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

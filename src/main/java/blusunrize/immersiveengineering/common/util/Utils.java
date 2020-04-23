@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
@@ -123,35 +122,6 @@ public class Utils
 		if(hasTag1&&!stack1.getOrCreateTag().equals(stack2.getOrCreateTag()))
 			return false;
 		return stack1.areCapsCompatible(stack2);
-	}
-
-	public static boolean canCombineArrays(ItemStack[] stacks, ItemStack[] target)
-	{
-		HashSet<IngredientStack> inputSet = new HashSet<>();
-		for(ItemStack s : stacks)
-			inputSet.add(new IngredientStack(s));
-		for(ItemStack t : target)
-		{
-			int size = t.getCount();
-			Iterator<IngredientStack> it = inputSet.iterator();
-			while(it.hasNext())
-			{
-				IngredientStack in = it.next();
-				if(in.matchesItemStackIgnoringSize(t))
-				{
-					int taken = Math.min(size, in.inputSize);
-					size -= taken;
-					in.inputSize -= taken;
-					if(in.inputSize <= 0)
-						it.remove();
-					if(size <= 0)
-						break;
-				}
-			}
-			if(size > 0)
-				return false;
-		}
-		return true;
 	}
 
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)

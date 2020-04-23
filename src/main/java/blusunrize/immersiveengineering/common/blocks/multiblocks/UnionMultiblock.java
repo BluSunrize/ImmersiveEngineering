@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -13,10 +13,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class UnionMultiblock implements IMultiblock
@@ -60,24 +58,24 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public IngredientStack[] getTotalMaterials()
+	public ItemStack[] getTotalMaterials()
 	{
-		List<IngredientStack> ret = new ArrayList<>();
+		List<ItemStack> ret = new ArrayList<>();
 		for(TransformedMultiblock part : parts)
-			for(IngredientStack stack : part.multiblock.getTotalMaterials())
+			for(ItemStack stack : part.multiblock.getTotalMaterials())
 			{
 				boolean added = false;
-				for(IngredientStack ex : ret)
+				for(ItemStack ex : ret)
 					if(ex.equals(stack))
 					{
-						ex.inputSize += stack.inputSize;
+						ex.grow(stack.getCount());
 						added = true;
 						break;
 					}
 				if(!added)
-					ret.add(new IngredientStack(stack));
+					ret.add(stack.copy());
 			}
-		return ret.toArray(new IngredientStack[0]);
+		return ret.toArray(new ItemStack[0]);
 	}
 
 	@Override

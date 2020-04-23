@@ -55,8 +55,8 @@ public class CrusherRecipe extends MultiblockRecipe
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(output);
 		for(SecondaryOutput output : secondaryOutputs)
-			if(output.stack.isValid()&&Utils.RAND.nextFloat() < output.chance)
-				list.add(output.stack.getExampleStack());
+			if(!output.stack.isEmpty()&&Utils.RAND.nextFloat() < output.chance)
+				list.add(output.stack);
 		return list;
 	}
 
@@ -129,25 +129,10 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public static class SecondaryOutput
 	{
-		public final IngredientStack stack;
+		public final ItemStack stack;
 		public final float chance;
 
-		public SecondaryOutput(Item item, float chance)
-		{
-			this(new IngredientStack(item), chance);
-		}
-
-		public SecondaryOutput(Tag<Item> tag, float chance)
-		{
-			this(new IngredientStack(tag), chance);
-		}
-
-		public SecondaryOutput(ResourceLocation tag, float chance)
-		{
-			this(new IngredientStack(tag), chance);
-		}
-
-		public SecondaryOutput(IngredientStack stack, float chance)
+		public SecondaryOutput(ItemStack stack, float chance)
 		{
 			Preconditions.checkNotNull(stack);
 			this.stack = stack;

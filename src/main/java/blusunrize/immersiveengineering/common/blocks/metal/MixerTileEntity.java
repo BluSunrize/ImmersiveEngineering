@@ -508,7 +508,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	@Override
 	protected MixerRecipe readRecipeFromNBT(CompoundNBT tag)
 	{
-		return MixerRecipe.loadFromNBT(tag);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

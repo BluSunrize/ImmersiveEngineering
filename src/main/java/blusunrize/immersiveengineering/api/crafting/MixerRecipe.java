@@ -152,39 +152,6 @@ public class MixerRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	@Nullable
-	public static MixerRecipe loadFromNBT(CompoundNBT nbt)
-	{
-		FluidStack fluidInput = FluidStack.loadFluidStackFromNBT(nbt.getCompound("fluidInput"));
-		IngredientStack[] itemInputs = null;
-		if(nbt.contains("itemInputs", NBT.TAG_LIST))
-		{
-			ListNBT list = nbt.getList("itemInputs", NBT.TAG_COMPOUND);
-			itemInputs = new IngredientStack[list.size()];
-			for(int i = 0; i < itemInputs.length; i++)
-				itemInputs[i] = IngredientStack.readFromNBT(list.getCompound(i));
-		}
-		for(MixerRecipe recipe : recipeList)
-			if(recipe.fluidInput.equals(fluidInput))
-			{
-				if(itemInputs==null&&recipe.itemInputs.length < 1)
-					return recipe;
-				else if(itemInputs!=null&&recipe.itemInputs.length==itemInputs.length)
-				{
-					boolean b = true;
-					for(int i = 0; i < itemInputs.length; i++)
-						if(!itemInputs[i].equals(recipe.itemInputs[i]))
-						{
-							b = false;
-							break;
-						}
-					if(b)
-						return recipe;
-				}
-			}
-		return null;
-	}
-
 	@Override
 	public boolean shouldCheckItemAvailability()
 	{

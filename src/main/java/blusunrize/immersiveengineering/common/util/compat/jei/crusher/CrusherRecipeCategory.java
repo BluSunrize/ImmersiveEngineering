@@ -49,8 +49,8 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
 		NonNullList<ItemStack> l = ListUtils.fromItems(recipe.output);
 		for(SecondaryOutput output : recipe.secondaryOutputs)
-			if(output.stack.isValid())
-				l.add(output.stack.getExampleStack());
+			if(!output.stack.isEmpty())
+				l.add(output.stack);
 		ingredients.setOutputs(VanillaTypes.ITEM, l);
 	}
 
@@ -71,7 +71,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 		for(int i = 0; i < validSecondaries.size(); i++)
 		{
 			guiItemStacks.init(2+i, false, 77+i/2*44, y+18+i%2*18);
-			guiItemStacks.set(2+i, validSecondaries.get(i).stack.getExampleStack());
+			guiItemStacks.set(2+i, validSecondaries.get(i).stack);
 			guiItemStacks.setBackground(2+i, JEIHelper.slotDrawable);
 		}
 	}
@@ -103,7 +103,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	{
 		List<SecondaryOutput> validSecondaries = new ArrayList<>();
 		for(SecondaryOutput out : recipe.secondaryOutputs)
-			if(out.stack.isValid()&&out.chance > 0)
+			if(!out.stack.isEmpty()&&out.chance > 0)
 				validSecondaries.add(out);
 		return validSecondaries;
 	}

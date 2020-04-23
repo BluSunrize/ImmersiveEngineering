@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.multiblocks;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -85,9 +84,11 @@ public class MultiblockHandler
 
 		/**
 		 * An array of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual
+		 *
+		 * @return
 		 */
 		@OnlyIn(Dist.CLIENT)
-		IngredientStack[] getTotalMaterials();
+		ItemStack[] getTotalMaterials();
 
 		/**
 		 * Use this to overwrite the rendering of a Multiblock's Component

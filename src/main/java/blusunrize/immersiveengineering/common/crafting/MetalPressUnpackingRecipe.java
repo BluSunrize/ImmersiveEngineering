@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.ComparableItemStack;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;

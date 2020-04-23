@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -289,9 +288,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			AssemblerHandler.RecipeQuery recipeQuery = queries[i];
 			if(recipeQuery!=null&&recipeQuery.query!=null)
 			{
-				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query:
-						(recipeQuery.query instanceof IngredientStack
-								&&((IngredientStack)recipeQuery.query).fluid!=null)?((IngredientStack)recipeQuery.query).fluid: null;
+				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query: null;
 				int querySize = recipeQuery.querySize;
 				if(fs!=null)
 				{

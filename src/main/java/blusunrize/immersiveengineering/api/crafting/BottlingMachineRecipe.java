@@ -81,13 +81,4 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	{
 		return 0;
 	}
-
-	public static BottlingMachineRecipe loadFromNBT(CompoundNBT nbt)
-	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
-		for(BottlingMachineRecipe recipe : recipeList)
-			if(recipe.input.equals(input))
-				return recipe;
-		return null;
-	}
 }

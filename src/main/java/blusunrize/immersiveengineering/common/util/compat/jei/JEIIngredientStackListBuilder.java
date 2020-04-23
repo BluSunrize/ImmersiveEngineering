@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;

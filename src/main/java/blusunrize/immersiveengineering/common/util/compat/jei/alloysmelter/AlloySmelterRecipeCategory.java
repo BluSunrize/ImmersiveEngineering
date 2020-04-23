@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;

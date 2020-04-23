@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
