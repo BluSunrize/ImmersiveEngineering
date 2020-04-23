@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
@@ -45,6 +46,16 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	public IngredientWithSize(Tag<Item> basePredicate)
 	{
 		this(Ingredient.fromTag(basePredicate), 1);
+	}
+
+	public static IngredientWithSize deserialize(JsonObject input)
+	{
+		return IngredientWithSizeSerializer.INSTANCE.parse(input);
+	}
+
+	public static IngredientWithSize read(PacketBuffer input)
+	{
+		return IngredientWithSizeSerializer.INSTANCE.parse(input);
 	}
 
 	@Override
@@ -107,5 +118,10 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	public boolean testIgnoringSize(ItemStack itemstack)
 	{
 		return basePredicate.test(itemstack);
+	}
+
+	public void write(PacketBuffer out)
+	{
+		IngredientWithSizeSerializer.INSTANCE.write(out, this);
 	}
 }

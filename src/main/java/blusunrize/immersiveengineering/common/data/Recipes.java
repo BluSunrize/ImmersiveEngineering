@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.data;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -25,6 +26,9 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
+import blusunrize.immersiveengineering.common.crafting.builders.AlloyRecipeBuilder;
+import blusunrize.immersiveengineering.common.crafting.builders.BlastFurnaceFuelBuilder;
+import blusunrize.immersiveengineering.common.crafting.builders.BlastFurnaceRecipeBuilder;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
@@ -49,6 +53,8 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.conditions.NotCondition;
+import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -168,11 +174,105 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
 		addRGBRecipe(out, rl("curtain_colour"), Ingredient.fromItems(Cloth.curtain), "colour");
 
+		recipesAlloy(out);
+		recipesBlast(out);
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[1]).patternLine("iii").patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[2]).patternLine("i i").patternLine("iii").patternLine("iii").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[3]).patternLine("iii").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
+	}
+
+	private void recipesAlloy(@Nonnull Consumer<IFinishedRecipe> out)
+	{
+		AlloyRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot, 2)
+				.addInput(IETags.getTagsFor(EnumMetals.GOLD).ingot)
+				.addInput(IETags.getTagsFor(EnumMetals.SILVER).ingot)
+				.build(out, toRL("alloys/electrum"));
+		AlloyRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot, 2)
+				.addInput(IETags.getTagsFor(EnumMetals.GOLD).dust)
+				.addInput(IETags.getTagsFor(EnumMetals.SILVER).dust)
+				.build(out, toRL("alloys/electrum"));
+
+		AlloyRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.CONSTANTAN).ingot, 2)
+				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
+				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).ingot)
+				.build(out, toRL("alloys/constantan"));
+		AlloyRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.CONSTANTAN).ingot, 2)
+				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
+				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).dust)
+				.build(out, toRL("alloys/constantan"));
+
+		ResourceLocation rl_ingotInvar = new ResourceLocation("forge", "ingot/invar");
+		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotInvar), 2)
+				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotInvar)))
+				.addInput(IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).ingot)
+				.build(out, toRL("alloys/invar"));
+		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotInvar), 2)
+				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotInvar)))
+				.addInput(IETags.getTagsFor(EnumMetals.IRON).dust)
+				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).dust)
+				.build(out, toRL("alloys/invar"));
+
+		ResourceLocation rl_ingotBronze = new ResourceLocation("forge", "ingot/bronze");
+		ResourceLocation rl_ingotTin = new ResourceLocation("forge", "ingot/tin");
+		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotBronze), 2)
+				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotBronze)))
+				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotTin)))
+				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
+				.addInput(new ItemTags.Wrapper(rl_ingotTin))
+				.build(out, toRL("alloys/bronze"));
+		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotBronze), 2)
+				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotBronze)))
+				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotTin)))
+				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
+				.addInput(new ItemTags.Wrapper(new ResourceLocation("forge", "dust/tin")))
+				.build(out, toRL("alloys/bronze"));
+
+		ResourceLocation rl_ingotBrass = new ResourceLocation("forge", "ingot/brass");
+		ResourceLocation rl_ingotZinc = new ResourceLocation("forge", "ingot/zinc");
+		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotBrass), 2)
+				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotBrass)))
+				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotZinc)))
+				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
+				.addInput(new ItemTags.Wrapper(rl_ingotZinc))
+				.build(out, toRL("alloys/brass"));
+		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotBrass), 2)
+				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotBrass)))
+				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotZinc)))
+				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
+				.addInput(new ItemTags.Wrapper(new ResourceLocation("forge", "dust/zinc")))
+				.build(out, toRL("alloys/brass"));
+	}
+
+	private void recipesBlast(@Nonnull Consumer<IFinishedRecipe> out)
+	{
+		BlastFurnaceFuelBuilder.builder(IETags.coalCoke, 1)
+				.setTime(1200)
+				.build(out, toRL("blastfurnace/fuel_coke"));
+		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.coalCokeBlock), 1)
+				.setTime(10*1200)
+				.build(out, toRL("blastfurnace/fuel_coke_block"));
+
+		BlastFurnaceFuelBuilder.builder(IETags.charCoal, 1)
+				.setTime(300)
+				.build(out, toRL("blastfurnace/fuel_charcoal"));
+		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.charCoalBlocks), 1)
+				.setTime(10*300)
+				.build(out, toRL("blastfurnace/fuel_charcoal_block"));
+
+		BlastFurnaceRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.STEEL).ingot, 1)
+				.addInput(Tags.Items.INGOTS_IRON)
+				.addSlag(Ingredient.fromTag(IETags.slag))
+				.setTime(1200)
+				.build(out, toRL("blastfurnace/steel"));
+
+		BlastFurnaceRecipeBuilder.builder(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).storage), 1)
+				.addInput(Tags.Items.STORAGE_BLOCKS_IRON)
+				.addSlag(new IngredientWithSize(Ingredient.fromTag(IETags.slag), 9))
+				.setTime(9*1200)
+				.build(out, toRL("blastfurnace/steel_block"));
 	}
 
 	private void recipesStoneDecorations(@Nonnull Consumer<IFinishedRecipe> out)
@@ -1568,6 +1668,8 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_nickel_dust", hasItem(IETags.getTagsFor(EnumMetals.NICKEL).dust))
 				.build(out, toRL("constantan_mix"));
 
+		/**Fix this by transitioning {@link BlueprintCraftingRecipe} to JSON as well */
+		/* todo: Currently Broken. Without BlueprintRecipes being added, crafting recipes for those Blueprints fail their precondition
 		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
 				.patternLine("jkl")
 				.patternLine("ddd")
@@ -1590,6 +1692,7 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "molds"), rl("blueprint_molds"));
+		 */
 	}
 
 	private void recipesVanilla(@Nonnull Consumer<IFinishedRecipe> out)

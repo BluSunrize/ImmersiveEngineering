@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.crafting.IngredientSerializers;
+import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.network.*;
@@ -32,6 +33,7 @@ import com.google.gson.JsonStreamParser;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
@@ -43,6 +45,7 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -54,6 +57,8 @@ import javax.annotation.Nonnull;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.function.Function;
+
+import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 @Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
@@ -80,6 +85,7 @@ public class ImmersiveEngineering
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+		MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -206,6 +212,11 @@ public class ImmersiveEngineering
 		proxy.serverStarting();
 		//TODO do client commands exist yet? I don't think so
 		CommandHandler.registerServer(event.getCommandDispatcher());
+	}
+
+	public void serverAboutToStart(FMLServerAboutToStartEvent event)
+	{
+		event.getServer().getResourceManager().addReloadListener(new RecipeReloadListener());
 	}
 
 	public void serverStarted(FMLServerStartedEvent event)

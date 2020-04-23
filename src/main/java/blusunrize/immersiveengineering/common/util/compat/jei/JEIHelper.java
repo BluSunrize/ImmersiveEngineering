@@ -122,7 +122,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipes(new ArrayList<>(CokeOvenRecipe.recipeList), CokeOvenRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(AlloyRecipe.recipeList), AlloySmelterRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(BlastFurnaceRecipe.recipeList), BlastFurnaceRecipeCategory.UID);
-		registration.addRecipes(new ArrayList<>(BlastFurnaceRecipe.blastFuels), BlastFurnaceFuelCategory.UID);
+		registration.addRecipes(new ArrayList<>(BlastFurnaceFuel.blastFuels), BlastFurnaceFuelCategory.UID);
 		registration.addRecipes(new ArrayList<>(ClocheRecipe.recipeList), ClocheRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(MetalPressRecipe.recipeList.values(), IJEIRecipe::listInJEI)), MetalPressRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(CrusherRecipe.recipeList, IJEIRecipe::listInJEI)), CrusherRecipeCategory.UID);

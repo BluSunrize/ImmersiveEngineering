@@ -69,6 +69,7 @@ import static blusunrize.immersiveengineering.common.items.IEItems.Molds.*;
 
 public class IERecipes
 {
+	//TODO move these helpers somewhere else
 	public static ResourceLocation getCrystal(String type)
 	{
 		//TODO dos anyone use this?

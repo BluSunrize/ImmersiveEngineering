@@ -9,16 +9,13 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.resources.I18n;
