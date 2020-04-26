@@ -43,9 +43,14 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		this(basePredicate, 1);
 	}
 
+	public IngredientWithSize(Tag<Item> basePredicate, int count)
+	{
+		this(Ingredient.fromTag(basePredicate), count);
+	}
+
 	public IngredientWithSize(Tag<Item> basePredicate)
 	{
-		this(Ingredient.fromTag(basePredicate), 1);
+		this(basePredicate, 1);
 	}
 
 	public static IngredientWithSize deserialize(JsonObject input)

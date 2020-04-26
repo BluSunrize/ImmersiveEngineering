@@ -36,8 +36,7 @@ public class BlastFurnaceRecipeBuilder extends IEFinishedRecipe<BlastFurnaceReci
 
 	public static BlastFurnaceRecipeBuilder builder(Tag<Item> result, int count)
 	{
-		//todo: replace this with IngredientWithSize, once we have a Serializer for it
-		return new BlastFurnaceRecipeBuilder().addResult(Ingredient.fromTag(result));
+		return new BlastFurnaceRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
 
 

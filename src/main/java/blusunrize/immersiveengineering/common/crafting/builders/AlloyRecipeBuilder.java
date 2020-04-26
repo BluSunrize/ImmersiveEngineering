@@ -10,9 +10,9 @@
 package blusunrize.immersiveengineering.common.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.Tag;
 
 public class AlloyRecipeBuilder extends IEFinishedRecipe<AlloyRecipeBuilder>
@@ -37,8 +37,7 @@ public class AlloyRecipeBuilder extends IEFinishedRecipe<AlloyRecipeBuilder>
 
 	public static AlloyRecipeBuilder builder(Tag<Item> result, int count)
 	{
-		//todo: replace this with IngredientWithSize, once we have a Serializer for it
-		return new AlloyRecipeBuilder().addResult(Ingredient.fromTag(result));
+		return new AlloyRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
 
 }
