@@ -37,8 +37,8 @@ public class RecipeReloadListener implements ISelectiveResourceReloadListener
 			Collection<IRecipe<?>> recipes = ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes();
 			AlloyRecipe.recipeList = filterRecipes(recipes, AlloyRecipe.class, AlloyRecipe.TYPE);
 			BlastFurnaceRecipe.recipeList = filterRecipes(recipes, BlastFurnaceRecipe.class, BlastFurnaceRecipe.TYPE);
-			BlastFurnaceFuel.blastFuels =  filterRecipes(recipes, BlastFurnaceFuel.class, BlastFurnaceFuel.TYPE);
-			ClocheRecipe.recipeList =  filterRecipes(recipes, ClocheRecipe.class, ClocheRecipe.TYPE);
+			BlastFurnaceFuel.blastFuels = filterRecipes(recipes, BlastFurnaceFuel.class, BlastFurnaceFuel.TYPE);
+			ClocheRecipe.recipeList = filterRecipes(recipes, ClocheRecipe.class, ClocheRecipe.TYPE);
 		}
 	}
 

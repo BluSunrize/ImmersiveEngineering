@@ -35,7 +35,7 @@ public abstract class IERecipeSerializer<R extends IRecipe<?>> extends ForgeRegi
 	{
 		if(outputObject.has("item"))
 			return ShapedRecipe.deserializeItem(outputObject);
-		Ingredient outgredient = Ingredient.deserialize(outputObject);
+		IngredientWithSize outgredient = IngredientWithSize.deserialize(outputObject);
 		return IEApi.getPreferredStackbyMod(outgredient.getMatchingStacks());
 	}
 

@@ -37,6 +37,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 	private final List<Consumer<JsonObject>> writerFunctions;
 	private ResourceLocation id;
 
+	protected boolean useSizedIngredients = false;
 	protected int inputCount = 0;
 	protected int maxInputCount = 1;
 
@@ -52,8 +53,14 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 		this.writerFunctions = new ArrayList<>();
 	}
 
+	protected boolean isComplete()
+	{
+		return true;
+	}
+
 	public void build(Consumer<IFinishedRecipe> out, ResourceLocation id)
 	{
+		Preconditions.checkArgument(isComplete(), "This recipe is incomplete");
 		this.id = id;
 		out.accept(this);
 	}
@@ -209,6 +216,8 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 
 	public R addIngredient(String key, Ingredient ingredient)
 	{
+		if(useSizedIngredients)
+			return addIngredient(key, new IngredientWithSize(ingredient));
 		return addWriter(jsonObject -> jsonObject.add(key, ingredient.serialize()));
 	}
 

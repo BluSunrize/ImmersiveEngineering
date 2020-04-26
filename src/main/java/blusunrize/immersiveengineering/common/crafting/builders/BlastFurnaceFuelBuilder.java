@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 
@@ -34,8 +35,8 @@ public class BlastFurnaceFuelBuilder extends IEFinishedRecipe<BlastFurnaceFuelBu
 		return new BlastFurnaceFuelBuilder().addInput(input);
 	}
 
-	public static BlastFurnaceFuelBuilder builder(Tag<Item> input, int count)
+	public static BlastFurnaceFuelBuilder builder(Tag<Item> input)
 	{
-		return new BlastFurnaceFuelBuilder().addInput(new IngredientWithSize(input, count));
+		return new BlastFurnaceFuelBuilder().addInput(Ingredient.fromTag(input));
 	}
 }
