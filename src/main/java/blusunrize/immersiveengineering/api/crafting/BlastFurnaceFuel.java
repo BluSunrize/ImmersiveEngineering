@@ -50,7 +50,7 @@ public class BlastFurnaceFuel extends IESerializableRecipe
 	}
 
 	@Override
-	protected IERecipeSerializer getIESerializer()
+	protected IERecipeSerializer<BlastFurnaceFuel> getIESerializer()
 	{
 		return SERIALIZER.get();
 	}

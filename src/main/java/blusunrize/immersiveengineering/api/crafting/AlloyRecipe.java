@@ -44,7 +44,7 @@ public class AlloyRecipe extends IESerializableRecipe
 	}
 
 	@Override
-	protected IERecipeSerializer getIESerializer()
+	protected IERecipeSerializer<AlloyRecipe> getIESerializer()
 	{
 		return SERIALIZER.get();
 	}
