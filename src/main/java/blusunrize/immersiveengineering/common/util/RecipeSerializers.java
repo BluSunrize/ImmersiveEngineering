@@ -4,10 +4,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.crafting.serializers.AlloyRecipeSerializer;
 import blusunrize.immersiveengineering.common.crafting.serializers.BlastFurnaceFuelSerializer;
 import blusunrize.immersiveengineering.common.crafting.serializers.BlastFurnaceRecipeSerializer;
+import blusunrize.immersiveengineering.common.crafting.serializers.ClocheRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
@@ -59,6 +61,9 @@ public class RecipeSerializers
 		);
 		BlastFurnaceFuel.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"blast_furnace_fuel", BlastFurnaceFuelSerializer::new
+		);
+		ClocheRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"cloche", ClocheRecipeSerializer::new
 		);
 	}
 }

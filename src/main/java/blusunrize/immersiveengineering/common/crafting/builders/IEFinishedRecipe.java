@@ -97,7 +97,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 	@SuppressWarnings("unchecked cast")
 	public R addMultiResult(JsonElement obj)
 	{
-		Preconditions.checkArgument(maxResultCount <= 1, "This recipe does not support multiple results");
+		Preconditions.checkArgument(maxResultCount > 1, "This recipe does not support multiple results");
 		Preconditions.checkArgument(resultCount < maxResultCount, "Recipe can only have "+maxResultCount+" results");
 		multipleResults.add(obj);
 		resultCount++;

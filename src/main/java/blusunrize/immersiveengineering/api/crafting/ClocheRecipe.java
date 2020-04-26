@@ -1,26 +1,28 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.ComparableItemStack;
-import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
-import com.google.common.base.Preconditions;
+import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.fml.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
-public class ClocheRecipe
+public class ClocheRecipe extends IESerializableRecipe
 {
+	public static IRecipeType<ClocheRecipe> TYPE = IRecipeType.register(Lib.MODID+":cloche");
+	public static RegistryObject<IERecipeSerializer<ClocheRecipe>> SERIALIZER;
+
 	public final List<ItemStack> outputs;
 	public final Ingredient seed;
 	public final Ingredient soil;
@@ -44,12 +46,13 @@ public class ClocheRecipe
 	 */
 	public static Function<Block, ClocheRenderFunction> RENDER_FUNCTION_GENERIC;
 
-	public static ArrayList<ClocheRecipe> recipeList = new ArrayList<>();
+	public static List<ClocheRecipe> recipeList = new ArrayList<>();
 	public static List<ClocheFertilizer> fertilizerList = new ArrayList<>();
 	private static List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
-	public ClocheRecipe(List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
+	public ClocheRecipe(ResourceLocation id, List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
 	{
+		super(outputs.get(0), TYPE, id);
 		this.outputs = outputs;
 		this.seed = seed;
 		this.soil = soil;
@@ -57,9 +60,21 @@ public class ClocheRecipe
 		this.renderFunction = renderFunction;
 	}
 
-	public ClocheRecipe(ItemStack output, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
+	public ClocheRecipe(ResourceLocation id, ItemStack output, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
 	{
-		this(ImmutableList.of(output), seed, soil, time, renderFunction);
+		this(id, ImmutableList.of(output), seed, soil, time, renderFunction);
+	}
+
+	@Override
+	protected IERecipeSerializer<ClocheRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
+	}
+
+	@Override
+	public ItemStack getRecipeOutput()
+	{
+		return this.outputs.get(0);
 	}
 
 	/**
@@ -72,9 +87,12 @@ public class ClocheRecipe
 	 */
 	public static void addRecipe(List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		ClocheRecipe recipe = new ClocheRecipe(outputs, seed, soil, time, renderFunction);
 		if(recipe.seed!=null&&recipe.soil!=null)
 			recipeList.add(recipe);
+		 */
 	}
 
 	/**

@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.resources.IResourceManager;
@@ -37,6 +38,7 @@ public class RecipeReloadListener implements ISelectiveResourceReloadListener
 			AlloyRecipe.recipeList = filterRecipes(recipes, AlloyRecipe.class, AlloyRecipe.TYPE);
 			BlastFurnaceRecipe.recipeList = filterRecipes(recipes, BlastFurnaceRecipe.class, BlastFurnaceRecipe.TYPE);
 			BlastFurnaceFuel.blastFuels =  filterRecipes(recipes, BlastFurnaceFuel.class, BlastFurnaceFuel.TYPE);
+			ClocheRecipe.recipeList =  filterRecipes(recipes, ClocheRecipe.class, ClocheRecipe.TYPE);
 		}
 	}
 
