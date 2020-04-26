@@ -9,15 +9,17 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.*;
@@ -31,6 +33,9 @@ import java.util.Map.Entry;
  */
 public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<BlueprintCraftingRecipe> TYPE = IRecipeType.register(Lib.MODID+":blueprint");
+	public static RegistryObject<IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
@@ -42,8 +47,9 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public ItemStack output;
 	public IngredientWithSize[] inputs;
 
-	public BlueprintCraftingRecipe(String blueprintCategory, ItemStack output, IngredientWithSize[] inputs)
+	public BlueprintCraftingRecipe(ResourceLocation id, String blueprintCategory, ItemStack output, IngredientWithSize[] inputs)
 	{
+		super(output, TYPE, id);
 		this.blueprintCategory = blueprintCategory;
 		this.output = output;
 		this.inputs = inputs;
@@ -54,6 +60,12 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		//Time and energy values are for the automatic workbench
 		this.totalProcessEnergy = (int)Math.floor(23040*energyModifier);
 		this.totalProcessTime = (int)Math.floor(180*timeModifier);
+	}
+
+	@Override
+	protected IERecipeSerializer<BlueprintCraftingRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
 	}
 
 	public static ItemStack getTypedBlueprint(String type)
@@ -158,9 +170,12 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static void addRecipe(String blueprintCategory, ItemStack output, IngredientWithSize... inputs)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		recipeList.put(blueprintCategory, new BlueprintCraftingRecipe(blueprintCategory, output, inputs));
 		if(!blueprintCategories.contains(blueprintCategory))
 			blueprintCategories.add(blueprintCategory);
+		 */
 	}
 
 	public static BlueprintCraftingRecipe[] findRecipes(String blueprintCategory)

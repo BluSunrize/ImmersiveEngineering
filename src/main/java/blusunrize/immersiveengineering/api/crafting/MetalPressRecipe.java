@@ -10,14 +10,18 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.RegistryObject;
 
 import java.util.*;
 import java.util.function.Function;
@@ -29,6 +33,9 @@ import java.util.function.Function;
  */
 public class MetalPressRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<MetalPressRecipe> TYPE = IRecipeType.register(Lib.MODID+":metal_press");
+	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
@@ -36,8 +43,9 @@ public class MetalPressRecipe extends MultiblockRecipe
 	public final ComparableItemStack mold;
 	public final ItemStack output;
 
-	public MetalPressRecipe(ItemStack output, IngredientWithSize input, ComparableItemStack mold, int energy)
+	public MetalPressRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, ComparableItemStack mold, int energy)
 	{
+		super(output, TYPE, id);
 		this.output = output;
 		this.input = input;
 		this.mold = mold;
@@ -46,6 +54,12 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.outputList = ListUtils.fromItem(this.output);
+	}
+
+	@Override
+	protected IERecipeSerializer<MetalPressRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
 	}
 
 	public MetalPressRecipe setInputSize(int size)
@@ -83,9 +97,12 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	public static MetalPressRecipe addRecipe(ItemStack output, IngredientWithSize input, ComparableItemStack mold, int energy)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		MetalPressRecipe r = new MetalPressRecipe(output, input, mold, energy);
 		recipeList.put(mold, r);
 		return r;
+		 */
 	}
 
 	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, World world)

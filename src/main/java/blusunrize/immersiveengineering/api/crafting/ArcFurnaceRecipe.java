@@ -9,14 +9,14 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -30,6 +30,9 @@ import java.util.List;
  */
 public class ArcFurnaceRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<ArcFurnaceRecipe> TYPE = IRecipeType.register(Lib.MODID+":arc_furnace");
+	public static RegistryObject<IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
@@ -43,9 +46,10 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public static ArrayList<String> specialRecipeTypes = new ArrayList<String>();
 	public static ArrayList<ArcFurnaceRecipe> recipeList = new ArrayList<ArcFurnaceRecipe>();
 
-	public ArcFurnaceRecipe(ItemStack output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
+	public ArcFurnaceRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
 							int energyPerTick, IngredientWithSize... additives)
 	{
+		super(output, TYPE, id);
 		this.output = ListUtils.fromItem(output);
 		this.input = input;
 		this.slag = slag;
@@ -58,6 +62,12 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 			inputList.addAll(Lists.newArrayList(this.additives));
 		setInputListWithSizes(inputList);
 		this.outputList = this.output;
+	}
+
+	@Override
+	protected IERecipeSerializer<ArcFurnaceRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
 	}
 
 	@Override
@@ -166,10 +176,13 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public static ArcFurnaceRecipe addRecipe(ItemStack output, IngredientWithSize input, @Nonnull ItemStack slag,
 											 int time, int energyPerTick, IngredientWithSize... additives)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(output, input, slag, time, energyPerTick, additives);
 		if(recipe.input!=null)
 			recipeList.add(recipe);
 		return recipe;
+		 */
 	}
 
 	public static ArcFurnaceRecipe findRecipe(ItemStack input, NonNullList<ItemStack> additives)

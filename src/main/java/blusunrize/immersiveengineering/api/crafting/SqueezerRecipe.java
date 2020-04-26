@@ -9,12 +9,16 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -26,6 +30,9 @@ import java.util.*;
  */
 public class SqueezerRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<SqueezerRecipe> TYPE = IRecipeType.register(Lib.MODID+":squeezer");
+	public static RegistryObject<IERecipeSerializer<SqueezerRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
@@ -34,8 +41,9 @@ public class SqueezerRecipe extends MultiblockRecipe
 	@Nonnull
 	public final ItemStack itemOutput;
 
-	public SqueezerRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
+	public SqueezerRecipe(ResourceLocation id, FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
 	{
+		super(itemOutput, TYPE, id);
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;
@@ -45,6 +53,12 @@ public class SqueezerRecipe extends MultiblockRecipe
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
 		this.outputList = ListUtils.fromItem(this.itemOutput);
+	}
+
+	@Override
+	protected IERecipeSerializer<SqueezerRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
 	}
 
 	public SqueezerRecipe setInputSize(int size)
@@ -57,9 +71,12 @@ public class SqueezerRecipe extends MultiblockRecipe
 
 	public static SqueezerRecipe addRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		SqueezerRecipe r = new SqueezerRecipe(fluidOutput, itemOutput, input, energy);
 		recipeList.add(r);
 		return r;
+		 */
 	}
 
 	public static SqueezerRecipe findRecipe(ItemStack input)

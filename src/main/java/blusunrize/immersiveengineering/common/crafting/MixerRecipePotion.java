@@ -39,7 +39,8 @@ public class MixerRecipePotion extends MixerRecipe
 
 	public MixerRecipePotion(Potion outputType, Potion inputType, IngredientWithSize reagent)
 	{
-		super(getFluidStackForType(outputType, 1000), getFluidStackForType(inputType, 1000), new IngredientWithSize[]{reagent}, 6400);
+		//TODO: this needs an id
+		super(null, getFluidStackForType(outputType, 1000), getFluidStackForType(inputType, 1000), new IngredientWithSize[]{reagent}, 6400);
 	}
 
 	public void addAlternateInput(Potion inputType, IngredientWithSize reagent)

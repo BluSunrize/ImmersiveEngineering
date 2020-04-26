@@ -9,13 +9,17 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -30,6 +34,9 @@ import java.util.Set;
  */
 public class MixerRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<MixerRecipe> TYPE = IRecipeType.register(Lib.MODID+":mixer");
+	public static RegistryObject<IERecipeSerializer<MixerRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
@@ -38,8 +45,9 @@ public class MixerRecipe extends MultiblockRecipe
 	public final FluidStack fluidOutput;
 	public final int fluidAmount;
 
-	public MixerRecipe(FluidStack fluidOutput, FluidStack fluidInput, IngredientWithSize[] itemInputs, int energy)
+	public MixerRecipe(ResourceLocation id, FluidStack fluidOutput, FluidStack fluidInput, IngredientWithSize[] itemInputs, int energy)
 	{
+		super(ItemStack.EMPTY, TYPE, id);
 		this.fluidOutput = fluidOutput;
 		this.fluidAmount = fluidOutput.getAmount();
 		this.fluidInput = fluidInput;
@@ -52,13 +60,22 @@ public class MixerRecipe extends MultiblockRecipe
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
 	}
 
+	@Override
+	protected IERecipeSerializer<MixerRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
+	}
+
 	public static ArrayList<MixerRecipe> recipeList = new ArrayList<>();
 
 	public static MixerRecipe addRecipe(FluidStack fluidOutput, FluidStack fluidInput, IngredientWithSize[] itemInput, int energy)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		MixerRecipe r = new MixerRecipe(fluidOutput, fluidInput, itemInput, energy);
 		recipeList.add(r);
 		return r;
+		 */
 	}
 
 	public static MixerRecipe findRecipe(FluidStack fluid, NonNullList<ItemStack> components)

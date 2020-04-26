@@ -8,9 +8,14 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.Lists;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +27,9 @@ import java.util.List;
  */
 public class RefineryRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<RefineryRecipe> TYPE = IRecipeType.register(Lib.MODID+":refinery");
+	public static RegistryObject<IERecipeSerializer<RefineryRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
@@ -29,8 +37,9 @@ public class RefineryRecipe extends MultiblockRecipe
 	public final FluidStack input0;
 	public final FluidStack input1;
 
-	public RefineryRecipe(FluidStack output, FluidStack input0, FluidStack input1, int energy)
+	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidStack input0, FluidStack input1, int energy)
 	{
+		super(ItemStack.EMPTY, TYPE, id);
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;
@@ -41,13 +50,22 @@ public class RefineryRecipe extends MultiblockRecipe
 		this.fluidOutputList = Lists.newArrayList(this.output);
 	}
 
+	@Override
+	protected IERecipeSerializer<RefineryRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
+	}
+
 	public static ArrayList<RefineryRecipe> recipeList = new ArrayList<>();
 
 	public static RefineryRecipe addRecipe(FluidStack output, FluidStack input0, FluidStack input1, int energy)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		RefineryRecipe r = new RefineryRecipe(output, input0, input1, energy);
 		recipeList.add(r);
 		return r;
+		 */
 	}
 
 	public static RefineryRecipe findRecipe(FluidStack input0, FluidStack input1)

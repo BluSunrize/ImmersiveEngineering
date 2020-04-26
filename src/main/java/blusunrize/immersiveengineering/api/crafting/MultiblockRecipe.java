@@ -8,21 +8,32 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
+public abstract class MultiblockRecipe extends IESerializableRecipe implements IMultiblockRecipe, IJEIRecipe
 {
+	protected MultiblockRecipe(ItemStack outputDummy, IRecipeType<?> type, ResourceLocation id)
+	{
+		super(outputDummy, type, id);
+	}
+
+	@Override
+	public ItemStack getRecipeOutput()
+	{
+		return getItemOutputs().get(0);
+	}
+
 	private List<IngredientWithSize> inputList;
 
 	@Override

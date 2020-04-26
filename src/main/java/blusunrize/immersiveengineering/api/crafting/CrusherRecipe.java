@@ -9,18 +9,21 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.RegistryObject;
 
 import java.util.*;
 
@@ -31,6 +34,9 @@ import java.util.*;
  */
 public class CrusherRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<CrusherRecipe> TYPE = IRecipeType.register(Lib.MODID+":crusher");
+	public static RegistryObject<IERecipeSerializer<CrusherRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
@@ -38,8 +44,9 @@ public class CrusherRecipe extends MultiblockRecipe
 	public final ItemStack output;
 	public final List<SecondaryOutput> secondaryOutputs = new ArrayList<>();
 
-	public CrusherRecipe(ItemStack output, Ingredient input, int energy)
+	public CrusherRecipe(ResourceLocation id, ItemStack output, Ingredient input, int energy)
 	{
+		super(output, TYPE, id);
 		this.output = output;
 		this.input = input;
 		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
@@ -47,6 +54,12 @@ public class CrusherRecipe extends MultiblockRecipe
 
 		setInputList(Lists.newArrayList(this.input));
 		this.outputList = ListUtils.fromItem(this.output);
+	}
+
+	@Override
+	protected IERecipeSerializer<CrusherRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
 	}
 
 	@Override
@@ -75,10 +88,13 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public static CrusherRecipe addRecipe(ItemStack output, Ingredient input, int energy)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		CrusherRecipe r = new CrusherRecipe(output, input, energy);
 		if(r.input!=null&&!r.output.isEmpty())
 			recipeList.add(r);
 		return r;
+		 */
 	}
 
 	public static CrusherRecipe findRecipe(ItemStack input)

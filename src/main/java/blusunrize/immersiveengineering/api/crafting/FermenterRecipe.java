@@ -8,13 +8,15 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -26,6 +28,9 @@ import java.util.*;
  */
 public class FermenterRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<FermenterRecipe> TYPE = IRecipeType.register(Lib.MODID+":fermenter");
+	public static RegistryObject<IERecipeSerializer<FermenterRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
@@ -34,8 +39,9 @@ public class FermenterRecipe extends MultiblockRecipe
 	@Nonnull
 	public final ItemStack itemOutput;
 
-	public FermenterRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
+	public FermenterRecipe(ResourceLocation id, FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
 	{
+		super(itemOutput, TYPE, id);
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;
@@ -45,6 +51,12 @@ public class FermenterRecipe extends MultiblockRecipe
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
 		this.outputList = ListUtils.fromItem(this.itemOutput);
+	}
+
+	@Override
+	protected IERecipeSerializer<FermenterRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
 	}
 
 	public FermenterRecipe setInputSize(int size)
@@ -57,9 +69,12 @@ public class FermenterRecipe extends MultiblockRecipe
 
 	public static FermenterRecipe addRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		FermenterRecipe r = new FermenterRecipe(fluidOutput, itemOutput, input, energy);
 		recipeList.add(r);
 		return r;
+		 */
 	}
 
 	public static FermenterRecipe findRecipe(ItemStack input)

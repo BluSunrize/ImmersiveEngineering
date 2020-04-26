@@ -33,7 +33,8 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 
 	public MetalPressPackingRecipe(ComparableItemStack mold, int energy, int gridSize)
 	{
-		super(ItemStack.EMPTY, new IngredientWithSize(Ingredient.EMPTY), mold, energy);
+		//TODO: this needs an id
+		super(null, ItemStack.EMPTY, new IngredientWithSize(Ingredient.EMPTY), mold, energy);
 		this.gridSize = gridSize;
 		this.totalAmount = gridSize*gridSize;
 		this.baseEnergy = energy;
@@ -63,7 +64,8 @@ public class MetalPressPackingRecipe extends MetalPressRecipe
 
 		public PackedDelegate(ComparableItemStack mapKey, ItemStack output, ItemStack input, ComparableItemStack mold, int energy)
 		{
-			super(output, IngredientWithSize.of(input), mold, energy);
+			//TODO: this needs an id
+			super(null, output, IngredientWithSize.of(input), mold, energy);
 			this.mapKey = mapKey;
 		}
 

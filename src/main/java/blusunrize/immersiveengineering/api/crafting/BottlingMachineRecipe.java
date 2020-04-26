@@ -9,12 +9,16 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,12 +31,16 @@ import java.util.List;
  */
 public class BottlingMachineRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<BottlingMachineRecipe> TYPE = IRecipeType.register(Lib.MODID+":bottling_machine");
+	public static RegistryObject<IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
+
 	public final Ingredient input;
 	public final FluidStack fluidInput;
 	public final ItemStack output;
 
-	public BottlingMachineRecipe(ItemStack output, Ingredient input, FluidStack fluidInput)
+	public BottlingMachineRecipe(ResourceLocation id, ItemStack output, Ingredient input, FluidStack fluidInput)
 	{
+		super(output, TYPE, id);
 		this.output = output;
 		this.input = input;
 		this.fluidInput = fluidInput;
@@ -42,13 +50,22 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		this.outputList = ListUtils.fromItem(this.output);
 	}
 
+	@Override
+	protected IERecipeSerializer<BottlingMachineRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
+	}
+
 	public static ArrayList<BottlingMachineRecipe> recipeList = new ArrayList<>();
 
 	public static void addRecipe(ItemStack output, Ingredient input, FluidStack fluidInput)
 	{
+		throw new RuntimeException("This is no longer supported");
+		/*
 		BottlingMachineRecipe recipe = new BottlingMachineRecipe(output, input, fluidInput);
 		if(recipe.input!=null)
 			recipeList.add(recipe);
+		 */
 	}
 
 	public static BottlingMachineRecipe findRecipe(ItemStack input, FluidStack fluid)

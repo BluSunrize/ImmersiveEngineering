@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,7 +27,8 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 
 	public ArcRecyclingRecipe(Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
-		super(null, input, ItemStack.EMPTY, time, energyPerTick);
+		//TODO: this needs an id
+		super(null, null, input, ItemStack.EMPTY, time, energyPerTick);
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");
 		this.outputList = NonNullList.create();
