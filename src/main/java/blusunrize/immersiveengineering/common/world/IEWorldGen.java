@@ -32,6 +32,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -48,7 +49,7 @@ public class IEWorldGen
 		OreFeatureConfig cfg = new OreFeatureConfig(FillerBlockType.NATURAL_STONE, state, maxVeinSize);
 		ConfiguredFeature<?> feature = Biome.createDecoratedFeature(Feature.ORE, cfg, Placement.COUNT_RANGE,
 				new CountRangeConfig(chunkOccurence, minY, minY, maxY));
-		for(Biome biome : Biome.BIOMES)
+		for(Biome biome : ForgeRegistries.BIOMES.getValues())
 			biome.addFeature(Decoration.UNDERGROUND_ORES, feature);
 		features.put(name, feature);
 
