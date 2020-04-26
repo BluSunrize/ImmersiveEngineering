@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.client.utils;
 
-import blusunrize.immersiveengineering.api.crafting.ClocheRecipe.ClocheRenderFunction;
+import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
+import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
@@ -8,8 +9,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -19,9 +23,25 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ClocheRenderHelper
+public class ClocheRenderFunctions
 {
 	private static final TRSRTransformation DEFAULT_TRANSFORMATION = new TRSRTransformation(null);
+
+	public static void init()
+	{
+		// register farmland texture
+		ClocheRecipe.registerSoilTexture(Ingredient.fromStacks(new ItemStack(Items.DIRT), new ItemStack(Items.COARSE_DIRT),
+				new ItemStack(Items.GRASS_BLOCK), new ItemStack(Items.GRASS_PATH)), new ResourceLocation("block/farmland_moist"));
+
+		// register defaults
+		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("crop", RenderFunctionCrop::new);
+		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("stacking", RenderFunctionStacking::new);
+		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("stem", RenderFunctionStem::new);
+		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("generic", RenderFunctionGeneric::new);
+
+		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("hemp", block -> new RenderFunctionHemp());
+		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("chorus", block -> new RenderFunctionChorus());
+	}
 
 	public static class RenderFunctionCrop implements ClocheRenderFunction
 	{
@@ -204,7 +224,8 @@ public class ClocheRenderHelper
 		public Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth)
 		{
 			int age = Math.min(4, Math.round(growth*4));
-			if(age==4){
+			if(age==4)
+			{
 				TRSRTransformation top = new TRSRTransformation(new Vector3f(0, 1, 0), null, null, null);
 				return ImmutableList.of(
 						Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new TRSRTransformation(null)),

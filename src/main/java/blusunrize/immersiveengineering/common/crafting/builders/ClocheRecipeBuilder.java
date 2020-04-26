@@ -10,7 +10,9 @@
 package blusunrize.immersiveengineering.common.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
+import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import com.google.common.base.Preconditions;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -19,6 +21,8 @@ import net.minecraft.util.IItemProvider;
 
 public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 {
+	private boolean hasRender = false;
+
 	private ClocheRecipeBuilder()
 	{
 		super(ClocheRecipe.SERIALIZER.get());
@@ -53,5 +57,18 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 	public ClocheRecipeBuilder addSoil(Ingredient ingredient)
 	{
 		return addWriter(jsonObject -> jsonObject.add("soil", ingredient.serialize()));
+	}
+
+	public ClocheRecipeBuilder setRender(ClocheRenderReference renderReference)
+	{
+		Preconditions.checkArgument(!hasRender, "This recipe already has a render set.");
+		this.hasRender = true;
+		return addWriter(jsonObject -> jsonObject.add("render", renderReference.serialize()));
+	}
+
+	@Override
+	protected boolean isComplete()
+	{
+		return hasRender;
 	}
 }

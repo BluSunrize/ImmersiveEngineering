@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.data;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -251,29 +251,29 @@ public class Recipes extends RecipeProvider
 
 	private void recipesBlast(@Nonnull Consumer<IFinishedRecipe> out)
 	{
-		BlastFurnaceFuelBuilder.builder(IETags.coalCoke, 1)
+		BlastFurnaceFuelBuilder.builder(IETags.coalCoke)
 				.setTime(1200)
 				.build(out, toRL("blastfurnace/fuel_coke"));
-		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.coalCokeBlock), 1)
+		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.coalCokeBlock))
 				.setTime(10*1200)
 				.build(out, toRL("blastfurnace/fuel_coke_block"));
 
-		BlastFurnaceFuelBuilder.builder(IETags.charCoal, 1)
+		BlastFurnaceFuelBuilder.builder(IETags.charCoal)
 				.setTime(300)
 				.build(out, toRL("blastfurnace/fuel_charcoal"));
-		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.charCoalBlocks), 1)
+		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.charCoalBlocks))
 				.setTime(10*300)
 				.build(out, toRL("blastfurnace/fuel_charcoal_block"));
 
 		BlastFurnaceRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.STEEL).ingot, 1)
 				.addInput(Tags.Items.INGOTS_IRON)
-				.addSlag(Ingredient.fromTag(IETags.slag))
+				.addSlag(IETags.slag, 1)
 				.setTime(1200)
 				.build(out, toRL("blastfurnace/steel"));
 
 		BlastFurnaceRecipeBuilder.builder(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).storage), 1)
 				.addInput(Tags.Items.STORAGE_BLOCKS_IRON)
-				.addSlag(new IngredientWithSize(Ingredient.fromTag(IETags.slag), 9))
+				.addSlag(IETags.slag, 9)
 				.setTime(9*1200)
 				.build(out, toRL("blastfurnace/steel_block"));
 	}
@@ -285,65 +285,77 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.WHEAT_SEEDS)
 				.addSoil(Blocks.DIRT)
 				.setTime(640)
+				.setRender(new ClocheRenderReference("crop", Blocks.WHEAT))
 				.build(out, toRL("cloche/wheat"));
 		ClocheRecipeBuilder.builder(new ItemStack(Items.POTATO, 2))
 				.addInput(Items.POTATO)
 				.addSoil(Blocks.DIRT)
 				.setTime(800)
+				.setRender(new ClocheRenderReference("crop", Blocks.POTATOES))
 				.build(out, toRL("cloche/potato"));
 		ClocheRecipeBuilder.builder(new ItemStack(Items.CARROT, 2))
 				.addInput(Items.CARROT)
 				.addSoil(Blocks.DIRT)
 				.setTime(800)
+				.setRender(new ClocheRenderReference("crop", Blocks.CARROTS))
 				.build(out, toRL("cloche/carrot"));
 		ClocheRecipeBuilder.builder(new ItemStack(Items.BEETROOT, 2))
 				.addResult(new ItemStack(Items.BEETROOT_SEEDS, 1))
 				.addInput(Items.BEETROOT_SEEDS)
 				.addSoil(Blocks.DIRT)
 				.setTime(800)
+				.setRender(new ClocheRenderReference("crop", Blocks.BEETROOTS))
 				.build(out, toRL("cloche/beetroot"));
 		ClocheRecipeBuilder.builder(new ItemStack(Items.NETHER_WART, 2))
 				.addInput(Items.NETHER_WART)
 				.addSoil(Blocks.SOUL_SAND)
 				.setTime(800)
+				.setRender(new ClocheRenderReference("crop", Blocks.NETHER_WART))
 				.build(out, toRL("cloche/nether_wart"));
 		ClocheRecipeBuilder.builder(new ItemStack(Items.SWEET_BERRIES, 2))
 				.addInput(Items.SWEET_BERRIES)
 				.addSoil(Blocks.DIRT)
 				.setTime(560)
+				.setRender(new ClocheRenderReference("crop", Blocks.SWEET_BERRY_BUSH))
 				.build(out, toRL("cloche/sweet_berries"));
 
 		ClocheRecipeBuilder.builder(Items.PUMPKIN)
 				.addInput(Items.PUMPKIN_SEEDS)
 				.addSoil(Blocks.DIRT)
 				.setTime(800)
+				.setRender(new ClocheRenderReference("stem", Blocks.PUMPKIN))
 				.build(out, toRL("cloche/pumpkin"));
 		ClocheRecipeBuilder.builder(Items.MELON)
 				.addInput(Items.MELON_SEEDS)
 				.addSoil(Blocks.DIRT)
 				.setTime(800)
+				.setRender(new ClocheRenderReference("stem", Blocks.MELON))
 				.build(out, toRL("cloche/melon"));
 
 		ClocheRecipeBuilder.builder(Items.SUGAR_CANE)
 				.addInput(Items.SUGAR_CANE)
 				.addSoil(Blocks.SAND)
 				.setTime(560)
+				.setRender(new ClocheRenderReference("stacking", Blocks.SUGAR_CANE))
 				.build(out, toRL("cloche/sugar_cane"));
 		ClocheRecipeBuilder.builder(Items.CACTUS)
 				.addInput(Items.CACTUS)
 				.addSoil(Blocks.SAND)
 				.setTime(560)
+				.setRender(new ClocheRenderReference("stacking", Blocks.CACTUS))
 				.build(out, toRL("cloche/cactus"));
 		ClocheRecipeBuilder.builder(Items.CHORUS_FRUIT)
 				.addInput(Items.CHORUS_FLOWER)
 				.addSoil(Blocks.END_STONE)
 				.setTime(480)
+				.setRender(new ClocheRenderReference("chorus", Blocks.CHORUS_FLOWER))
 				.build(out, toRL("cloche/chorus_fruit"));
 		ClocheRecipeBuilder.builder(Ingredients.hempFiber)
 				.addResult(new ItemStack(Misc.hempSeeds, 2))
 				.addInput(Misc.hempSeeds)
 				.addSoil(Blocks.DIRT)
 				.setTime(800)
+				.setRender(new ClocheRenderReference("hemp", IEBlocks.Misc.hempPlant))
 				.build(out, toRL("cloche/hemp"));
 
 		Ingredient shroomSoil = Ingredient.fromItems(Blocks.MYCELIUM, Blocks.PODZOL);
@@ -351,11 +363,13 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.RED_MUSHROOM)
 				.addSoil(shroomSoil)
 				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.RED_MUSHROOM))
 				.build(out, toRL("cloche/red_mushroom"));
 		ClocheRecipeBuilder.builder(Items.BROWN_MUSHROOM)
 				.addInput(Items.BROWN_MUSHROOM)
 				.addSoil(shroomSoil)
 				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.BROWN_MUSHROOM))
 				.build(out, toRL("cloche/brown_mushroom"));
 	}
 

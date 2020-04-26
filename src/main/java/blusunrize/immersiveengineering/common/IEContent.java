@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
-import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
@@ -27,10 +26,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
-import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionCrop;
-import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionGeneric;
-import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionStacking;
-import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionStem;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
@@ -566,10 +562,7 @@ public class IEContent
 		IEWireTypes.setup();
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
-		ClocheRecipe.RENDER_FUNCTION_CROP = RenderFunctionCrop::new;
-		ClocheRecipe.RENDER_FUNCTION_STACK = RenderFunctionStacking::new;
-		ClocheRecipe.RENDER_FUNCTION_STEM = RenderFunctionStem::new;
-		ClocheRecipe.RENDER_FUNCTION_GENERIC = RenderFunctionGeneric::new;
+		ClocheRenderFunctions.init();
 
 		IELootFunctions.preInit();
 		IEShaders.preInit();

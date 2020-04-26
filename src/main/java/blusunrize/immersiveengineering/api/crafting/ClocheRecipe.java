@@ -2,21 +2,17 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 public class ClocheRecipe extends IESerializableRecipe
 {
@@ -27,42 +23,27 @@ public class ClocheRecipe extends IESerializableRecipe
 	public final Ingredient seed;
 	public final Ingredient soil;
 	public final int time;
+	public final ClocheRenderReference renderReference;
 	public final ClocheRenderFunction renderFunction;
-
-	/**
-	 * Builds a render function for any 1-block crops with an age property
-	 */
-	public static Function<Block, ClocheRenderFunction> RENDER_FUNCTION_CROP;
-	/**
-	 * Builds a render function for stacking plants like sugarcane or cactus
-	 */
-	public static Function<Block, ClocheRenderFunction> RENDER_FUNCTION_STACK;
-	/**
-	 * Builds a render function for stem-grown plants like melon or pumpkin
-	 */
-	public static Function<Block, ClocheRenderFunction> RENDER_FUNCTION_STEM;
-	/**
-	 * Builds a render function for any block, making it grow in size
-	 */
-	public static Function<Block, ClocheRenderFunction> RENDER_FUNCTION_GENERIC;
 
 	public static List<ClocheRecipe> recipeList = new ArrayList<>();
 	public static List<ClocheFertilizer> fertilizerList = new ArrayList<>();
 	private static List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
-	public ClocheRecipe(ResourceLocation id, List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
+	public ClocheRecipe(ResourceLocation id, List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
 	{
 		super(outputs.get(0), TYPE, id);
 		this.outputs = outputs;
 		this.seed = seed;
 		this.soil = soil;
 		this.time = time;
-		this.renderFunction = renderFunction;
+		this.renderReference = renderReference;
+		this.renderFunction = ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.get(renderReference.getType()).apply(renderReference.getBlock());
 	}
 
-	public ClocheRecipe(ResourceLocation id, ItemStack output, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
+	public ClocheRecipe(ResourceLocation id, ItemStack output, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
 	{
-		this(id, ImmutableList.of(output), seed, soil, time, renderFunction);
+		this(id, ImmutableList.of(output), seed, soil, time, renderReference);
 	}
 
 	@Override
@@ -188,14 +169,4 @@ public class ClocheRecipe extends IESerializableRecipe
 				return entry.getValue();
 		return null;
 	}
-
-	/* ========== CUSTOM RENDERING ========== */
-
-	public interface ClocheRenderFunction
-	{
-		float getScale(ItemStack seed, float growth);
-
-		Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth);
-	}
-
 }
