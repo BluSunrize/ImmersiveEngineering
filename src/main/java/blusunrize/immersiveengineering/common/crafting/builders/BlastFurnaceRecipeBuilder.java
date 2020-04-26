@@ -42,7 +42,7 @@ public class BlastFurnaceRecipeBuilder extends IEFinishedRecipe<BlastFurnaceReci
 
 	public BlastFurnaceRecipeBuilder addSlag(IItemProvider itemProvider)
 	{
-		return addResult(new ItemStack(itemProvider));
+		return addItem("slag", new ItemStack(itemProvider));
 	}
 
 	public BlastFurnaceRecipeBuilder addSlag(ItemStack itemStack)
