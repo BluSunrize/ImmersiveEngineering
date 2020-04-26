@@ -262,6 +262,7 @@ public class Recipes extends RecipeProvider
 				.setTime(300)
 				.build(out, toRL("blastfurnace/fuel_charcoal"));
 		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.charCoalBlocks))
+				.addCondition(new NotCondition(new TagEmptyCondition(IETags.charCoalBlocks.getId())))
 				.setTime(10*300)
 				.build(out, toRL("blastfurnace/fuel_charcoal_block"));
 
