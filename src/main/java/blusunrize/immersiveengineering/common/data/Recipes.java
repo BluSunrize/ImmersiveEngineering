@@ -26,10 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
-import blusunrize.immersiveengineering.common.crafting.builders.AlloyRecipeBuilder;
-import blusunrize.immersiveengineering.common.crafting.builders.BlastFurnaceFuelBuilder;
-import blusunrize.immersiveengineering.common.crafting.builders.BlastFurnaceRecipeBuilder;
-import blusunrize.immersiveengineering.common.crafting.builders.ClocheRecipeBuilder;
+import blusunrize.immersiveengineering.common.crafting.builders.*;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
@@ -50,6 +47,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
@@ -178,6 +176,7 @@ public class Recipes extends RecipeProvider
 
 		recipesAlloy(out);
 		recipesBlast(out);
+		recipesCoke(out);
 		recipesCloche(out);
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
@@ -277,6 +276,25 @@ public class Recipes extends RecipeProvider
 				.addSlag(IETags.slag, 9)
 				.setTime(9*1200)
 				.build(out, toRL("blastfurnace/steel_block"));
+	}
+
+	private void recipesCoke(@Nonnull Consumer<IFinishedRecipe> out)
+	{
+		CokeOvenRecipeBuilder.builder(IETags.coalCoke, 1)
+				.addInput(Items.COAL)
+				.setOil(500)
+				.setTime(1800)
+				.build(out, toRL("cokeoven/coke"));
+		CokeOvenRecipeBuilder.builder(IETags.getItemTag(IETags.coalCokeBlock), 1)
+				.addInput(Blocks.COAL_BLOCK)
+				.setOil(5000)
+				.setTime(9*1800)
+				.build(out, toRL("cokeoven/coke_block"));
+		CokeOvenRecipeBuilder.builder(Items.CHARCOAL)
+				.addInput(ItemTags.LOGS)
+				.setOil(250)
+				.setTime(900)
+				.build(out, toRL("cokeoven/charcoal"));
 	}
 
 	private void recipesCloche(@Nonnull Consumer<IFinishedRecipe> out)
