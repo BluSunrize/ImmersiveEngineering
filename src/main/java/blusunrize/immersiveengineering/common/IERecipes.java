@@ -8,64 +8,7 @@
 
 package blusunrize.immersiveengineering.common;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.ComparableItemStack;
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.api.crafting.CrusherRecipe.SecondaryOutput;
-import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
-import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionChorus;
-import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionHemp;
-import blusunrize.immersiveengineering.common.blocks.EnumMetals;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
-import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipe;
-import blusunrize.immersiveengineering.common.crafting.MetalPressUnpackingRecipe;
-import blusunrize.immersiveengineering.common.crafting.OreCrushingRecipe;
-import blusunrize.immersiveengineering.common.items.BulletItem;
-import blusunrize.immersiveengineering.common.items.IEBaseItem;
-import blusunrize.immersiveengineering.common.items.IEItems;
-import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.IEItems.Molds;
-import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
-
-import static blusunrize.immersiveengineering.common.IEContent.*;
-import static blusunrize.immersiveengineering.common.blocks.EnumMetals.*;
-import static blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals.ores;
-import static blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals.storage;
-import static blusunrize.immersiveengineering.common.items.IEItems.Ingredients.*;
-import static blusunrize.immersiveengineering.common.items.IEItems.Metals.ingots;
-import static blusunrize.immersiveengineering.common.items.IEItems.Misc.hempSeeds;
-import static blusunrize.immersiveengineering.common.items.IEItems.Molds.*;
 
 public class IERecipes
 {
