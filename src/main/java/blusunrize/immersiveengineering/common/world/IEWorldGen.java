@@ -55,7 +55,7 @@ public class IEWorldGen
 	public static Map<String, ConfiguredFeature<?>> features = new HashMap<>();
 	public static Map<String, ConfiguredFeature<?>> retroFeatures = new HashMap<>();
 	public static List<ResourceLocation> oreDimBlacklist = new ArrayList<>();
-	public static Map<String, Boolean> retrogenMap = new HashMap<>();
+	public static Set<String> retrogenOres = new HashSet<>();
 
 	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence)
 	{
@@ -84,7 +84,7 @@ public class IEWorldGen
 			{
 				for(Entry<String, ConfiguredFeature<?>> gen : retroFeatures.entrySet())
 				{
-					if(retrogenMap.get("retrogen_"+gen.getKey()))
+					if(retrogenOres.contains("retrogen_"+gen.getKey()))
 						gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
 				}
 			}
@@ -109,7 +109,7 @@ public class IEWorldGen
 		{
 			DimensionType dimension = c.getWorldForge().getDimension().getType();
 			if(!data.getCompound("ImmersiveEngineering").contains(IEConfig.ORES.retrogen_key.get())&&
-					!retrogenMap.isEmpty())
+					!retrogenOres.isEmpty())
 			{
 				if(IEConfig.ORES.retrogen_log_flagChunk.get())
 					IELogger.info("Chunk "+c.getPos()+" has been flagged for Ore RetroGeneration by IE.");

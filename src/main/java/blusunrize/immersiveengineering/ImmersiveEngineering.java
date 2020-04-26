@@ -121,17 +121,22 @@ public class ImmersiveEngineering
 		proxy.preInitEnd();
 		IEContent.init();
 		IEWorldGen ieWorldGen = new IEWorldGen();
-		IEWorldGen.retrogenMap.put("retrogen_bauxite", IEConfig.ORES.ore_bauxite.retrogenEnabled.get());
-		IEWorldGen.retrogenMap.put("retrogen_lead", IEConfig.ORES.ore_lead.retrogenEnabled.get());
-		IEWorldGen.retrogenMap.put("retrogen_silver", IEConfig.ORES.ore_silver.retrogenEnabled.get());
-		IEWorldGen.retrogenMap.put("retrogen_nickel", IEConfig.ORES.ore_nickel.retrogenEnabled.get());
-		IEWorldGen.retrogenMap.put("retrogen_uranium", IEConfig.ORES.ore_uranium.retrogenEnabled.get());
-		IEWorldGen.retrogenMap.put("retrogen_copper", IEConfig.ORES.ore_copper.retrogenEnabled.get());
-		//TODO GameRegistry.registerWorldGenerator(ieWorldGen, 0);
+		if(IEConfig.ORES.ore_bauxite.retrogenEnabled.get())
+			IEWorldGen.retrogenOres.add("retrogen_bauxite");
+		if(IEConfig.ORES.ore_lead.retrogenEnabled.get())
+			IEWorldGen.retrogenOres.add("retrogen_lead");
+		if(IEConfig.ORES.ore_silver.retrogenEnabled.get())
+			IEWorldGen.retrogenOres.add("retrogen_silver");
+		if(IEConfig.ORES.ore_nickel.retrogenEnabled.get())
+			IEWorldGen.retrogenOres.add("retrogen_nickel");
+		if(IEConfig.ORES.ore_uranium.retrogenEnabled.get())
+			IEWorldGen.retrogenOres.add("retrogen_uranium");
+		if(IEConfig.ORES.ore_copper.retrogenEnabled.get())
+			IEWorldGen.retrogenOres.add("retrogen_copper");
+
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
-		//TODO NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 		proxy.init();
 
 		IECompatModule.doModulesInit();
