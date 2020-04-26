@@ -62,5 +62,8 @@ public class RecipeSerializers
 		ClocheRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"cloche", ClocheRecipeSerializer::new
 		);
+		BlueprintCraftingRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"blueprint", BlueprintCraftingRecipeSerializer::new
+		);
 	}
 }

@@ -37,6 +37,13 @@ public class RecipeReloadListener implements ISelectiveResourceReloadListener
 			BlastFurnaceFuel.blastFuels = filterRecipes(recipes, BlastFurnaceFuel.class, BlastFurnaceFuel.TYPE);
 			CokeOvenRecipe.recipeList = filterRecipes(recipes, CokeOvenRecipe.class, CokeOvenRecipe.TYPE);
 			ClocheRecipe.recipeList = filterRecipes(recipes, ClocheRecipe.class, ClocheRecipe.TYPE);
+
+			// Blueprint recipes are a little more invested
+			List<BlueprintCraftingRecipe> blueprintCraftingRecipes = filterRecipes(recipes, BlueprintCraftingRecipe.class, BlueprintCraftingRecipe.TYPE);
+			BlueprintCraftingRecipe.recipeList.clear();
+			for(BlueprintCraftingRecipe r : blueprintCraftingRecipes)
+				BlueprintCraftingRecipe.recipeList.put(r.blueprintCategory, r);
+			System.out.println("test");
 		}
 	}
 

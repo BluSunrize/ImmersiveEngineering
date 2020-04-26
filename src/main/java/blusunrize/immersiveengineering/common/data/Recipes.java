@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -178,6 +179,7 @@ public class Recipes extends RecipeProvider
 		recipesBlast(out);
 		recipesCoke(out);
 		recipesCloche(out);
+		recipesBlueprint(out);
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[1]).patternLine("iii").patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
@@ -390,6 +392,29 @@ public class Recipes extends RecipeProvider
 				.setTime(480)
 				.setRender(new ClocheRenderReference("generic", Blocks.BROWN_MUSHROOM))
 				.build(out, toRL("cloche/brown_mushroom"));
+	}
+
+	private void recipesBlueprint(@Nonnull Consumer<IFinishedRecipe> out)
+	{
+		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.componentIron))
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.IRON).plate, 2))
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+				.build(out, toRL("blueprint/component_iron"));
+		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.componentSteel))
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 2))
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+				.build(out, toRL("blueprint/component_steel"));
+		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.electronTube, 3))
+				.addInput(Tags.Items.GLASS)
+				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).plate)
+				.addInput(IETags.copperWire)
+				.addInput(Tags.Items.DUSTS_REDSTONE)
+				.build(out, toRL("blueprint/electron_tube"));
+		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.circuitBoard))
+				.addInput(StoneDecoration.insulatingGlass)
+				.addInput(IETags.getTagsFor(EnumMetals.COPPER).plate)
+				.addInput(new ItemStack(Ingredients.electronTube, 2))
+				.build(out, toRL("blueprint/circuit_board"));
 	}
 
 	private void recipesStoneDecorations(@Nonnull Consumer<IFinishedRecipe> out)
