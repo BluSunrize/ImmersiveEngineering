@@ -13,13 +13,18 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Arrays;
 
 public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 {
@@ -40,19 +45,15 @@ public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 	@Override
 	public void setIngredients(BlastFurnaceFuel recipe, IIngredients ingredients)
 	{
-		/* todo: fix this with JSON recipes
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
-		 */
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, BlastFurnaceFuel recipe, IIngredients iIngredients)
 	{
-		/* todo: fix this with JSON recipes
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 0, 16);
 		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
-		 */
 	}
 
 	@Override
