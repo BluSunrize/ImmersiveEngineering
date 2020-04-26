@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -25,6 +26,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -224,6 +226,13 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 	public R addIngredient(String key, IngredientWithSize ingredient)
 	{
 		return addWriter(jsonObject -> jsonObject.add(key, ingredient.serialize()));
+	}
+
+	/* =============== Fluids =============== */
+
+	public R addFluid(String key, FluidStack fluidStack)
+	{
+		return addWriter(jsonObject -> jsonObject.add(key, Utils.jsonSerializeFluidStack(fluidStack)));
 	}
 
 	/* =============== IFinishedRecipe =============== */

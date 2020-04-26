@@ -17,12 +17,11 @@ import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
-import com.google.common.collect.*;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -75,6 +74,7 @@ import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.util.JsonUtils;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -85,6 +85,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -210,6 +211,27 @@ public class Utils
 				fs.setTag(null);
 		}
 		return fs;
+	}
+
+	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
+	{
+		if(fluidStack==null)
+			return JsonNull.INSTANCE;
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("fluid", fluidStack.getFluid().getRegistryName().toString());
+		jsonObject.addProperty("amount", fluidStack.getAmount());
+		if(fluidStack.hasTag())
+			jsonObject.addProperty("tag", fluidStack.getTag().toString());
+		return jsonObject;
+	}
+
+	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject){
+		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(JSONUtils.getString(jsonObject, "fluid")));
+		int amount = JSONUtils.getInt(jsonObject, "amount");
+		FluidStack fluidStack = new FluidStack(fluid, amount);
+		if(JSONUtils.hasField(jsonObject, "tag"))
+			fluidStack.setTag(JsonUtils.readNBT(jsonObject, "tag"));
+		return fluidStack;
 	}
 
 	private static final long UUID_BASE = 109406000905L;
@@ -668,9 +690,9 @@ public class Utils
 	public static Vector4f vec4fFromDye(DyeColor dyeColor)
 	{
 		if(dyeColor==null)
-			return new Vector4f(1,1,1,1);
+			return new Vector4f(1, 1, 1, 1);
 		float[] rgb = dyeColor.getColorComponentValues();
-		return new Vector4f(rgb[0],rgb[1],rgb[2],1);
+		return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
 	}
 
 	public static FluidStack drainFluidBlock(World world, BlockPos pos, FluidAction action)
@@ -929,10 +951,10 @@ public class Utils
 		int val = 0;
 		final int prime = 31;
 		for(IProperty<?> n : state.getProperties())
-			{
-				Object o = state.get(n);
-				val = prime*val+Objects.hash(o);
-			}
+		{
+			Object o = state.get(n);
+			val = prime*val+Objects.hash(o);
+		}
 		return val;
 	}
 
@@ -1488,7 +1510,6 @@ public class Utils
 			return Rotation.COUNTERCLOCKWISE_90;
 		return null;//This shouldn't ever happen
 	}
-
 
 
 	public static AxisAlignedBB transformAABB(AxisAlignedBB original, Direction facing)

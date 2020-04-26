@@ -69,6 +69,6 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 	@Override
 	protected boolean isComplete()
 	{
-		return hasRender;
+		return super.isComplete() && hasRender;
 	}
 }
