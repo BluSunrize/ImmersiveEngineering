@@ -40,10 +40,11 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 	private ResourceLocation id;
 
 	protected boolean useSizedIngredients = false;
+	protected JsonArray inputArray = null;
 	protected int inputCount = 0;
 	protected int maxInputCount = 1;
 
-	protected JsonArray multipleResults = null;
+	protected JsonArray resultArray = null;
 	protected int resultCount = 0;
 	protected int maxResultCount = 1;
 
@@ -98,9 +99,9 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 
 	public R setMultipleResults(int maxResultCount)
 	{
-		this.multipleResults = new JsonArray();
+		this.resultArray = new JsonArray();
 		this.maxResultCount = maxResultCount;
-		return addWriter(jsonObject -> jsonObject.add("results", multipleResults));
+		return addWriter(jsonObject -> jsonObject.add("results", resultArray));
 	}
 
 	@SuppressWarnings("unchecked cast")
@@ -108,7 +109,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 	{
 		Preconditions.checkArgument(maxResultCount > 1, "This recipe does not support multiple results");
 		Preconditions.checkArgument(resultCount < maxResultCount, "Recipe can only have "+maxResultCount+" results");
-		multipleResults.add(obj);
+		resultArray.add(obj);
 		resultCount++;
 		return (R)this;
 	}
@@ -120,7 +121,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 
 	public R addResult(ItemStack itemStack)
 	{
-		if(multipleResults!=null)
+		if(resultArray!=null)
 			return addMultiResult(serializeItemStack(itemStack));
 		else
 			return addItem("result", itemStack);
@@ -128,7 +129,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 
 	public R addResult(Ingredient ingredient)
 	{
-		if(multipleResults!=null)
+		if(resultArray!=null)
 			return addMultiResult(ingredient.serialize());
 		else
 			return addWriter(jsonObject -> jsonObject.add("result", ingredient.serialize()));
@@ -136,13 +137,42 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 
 	public R addResult(IngredientWithSize ingredientWithSize)
 	{
-		if(multipleResults!=null)
+		if(resultArray!=null)
 			return addMultiResult(ingredientWithSize.serialize());
 		else
 			return addWriter(jsonObject -> jsonObject.add("result", ingredientWithSize.serialize()));
 	}
 
 	/* =============== Input Handling =============== */
+
+	public R setUseInputArray(int maxInputCount)
+	{
+		this.inputArray = new JsonArray();
+		this.maxInputCount = maxInputCount;
+		return addWriter(jsonObject -> jsonObject.add("inputs", inputArray));
+	}
+
+	@SuppressWarnings("unchecked cast")
+	public R addMultiInput(JsonElement obj)
+	{
+		Preconditions.checkArgument(maxInputCount > 1, "This recipe does not support multiple inputs");
+		Preconditions.checkArgument(inputCount < maxInputCount, "Recipe can only have "+maxInputCount+" inputs");
+		inputArray.add(obj);
+		inputCount++;
+		return (R)this;
+	}
+
+	public R addMultiInput(Ingredient ingredient)
+	{
+		if(useSizedIngredients)
+			return addMultiInput(new IngredientWithSize(ingredient));
+		return addMultiInput(ingredient.serialize());
+	}
+
+	public R addMultiInput(IngredientWithSize ingredient)
+	{
+		return addMultiInput(ingredient.serialize());
+	}
 
 	protected String generateSafeInputKey()
 	{
@@ -154,27 +184,42 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 
 	public R addInput(IItemProvider... itemProviders)
 	{
-		return addIngredient(generateSafeInputKey(), itemProviders);
+		if(inputArray!=null)
+			return addMultiInput(Ingredient.fromItems(itemProviders));
+		else
+			return addIngredient(generateSafeInputKey(), itemProviders);
 	}
 
 	public R addInput(ItemStack... itemStacks)
 	{
-		return addIngredient(generateSafeInputKey(), itemStacks);
+		if(inputArray!=null)
+			return addMultiInput(Ingredient.fromStacks(itemStacks));
+		else
+			return addIngredient(generateSafeInputKey(), itemStacks);
 	}
 
 	public R addInput(Tag<Item> tag)
 	{
-		return addIngredient(generateSafeInputKey(), tag);
+		if(inputArray!=null)
+			return addMultiInput(Ingredient.fromTag(tag));
+		else
+			return addIngredient(generateSafeInputKey(), tag);
 	}
 
 	public R addInput(Ingredient input)
 	{
-		return addIngredient(generateSafeInputKey(), input);
+		if(inputArray!=null)
+			return addMultiInput(input);
+		else
+			return addIngredient(generateSafeInputKey(), input);
 	}
 
 	public R addInput(IngredientWithSize input)
 	{
-		return addIngredient(generateSafeInputKey(), input);
+		if(inputArray!=null)
+			return addMultiInput(input);
+		else
+			return addIngredient(generateSafeInputKey(), input);
 	}
 
 	/* =============== ItemStacks =============== */
