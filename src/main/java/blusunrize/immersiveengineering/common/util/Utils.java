@@ -1520,7 +1520,7 @@ public class Utils
 	}
 
 
-
+	// TODO test changes on slopes
 	public static AxisAlignedBB transformAABB(AxisAlignedBB original, Direction facing)
 	{
 		double minX = 0, minZ = 0, maxX = 0, maxZ = 0;
