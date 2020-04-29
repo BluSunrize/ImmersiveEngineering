@@ -8,7 +8,12 @@
 
 package blusunrize.immersiveengineering.common.util.shapes;
 
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -28,6 +33,8 @@ public class CachedShapesWithTransform<ShapeKey, TransformKey> extends CachedVox
 	{
 		super(p -> {
 			List<AxisAlignedBB> base = creator.apply(p.getLeft());
+			if(base==null)
+				return ImmutableList.of();
 			List<AxisAlignedBB> ret = new ArrayList<>(base.size());
 			for(AxisAlignedBB aabb : base)
 				ret.add(transform.apply(p.getRight(), aabb));
@@ -40,7 +47,6 @@ public class CachedShapesWithTransform<ShapeKey, TransformKey> extends CachedVox
 		return get(Pair.of(shapeKey, transformKey));
 	}
 
-	//TODO proper types
 	public static CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>>
 	createForMultiblock(Function<BlockPos, List<AxisAlignedBB>> create)
 	{
@@ -58,5 +64,10 @@ public class CachedShapesWithTransform<ShapeKey, TransformKey> extends CachedVox
 						);
 					return Utils.transformAABB(mirrored, key.getLeft());
 				});
+	}
+
+	public static VoxelShape get(CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> cache, MultiblockPartTileEntity<?> tile)
+	{
+		return cache.get(tile.posInMultiblock, Pair.of(tile.getFacing(), tile.getIsMirrored()));
 	}
 }

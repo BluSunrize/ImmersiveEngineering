@@ -16,8 +16,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
-import blusunrize.immersiveengineering.common.util.shapes.MultiblockCacheKey;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,6 +37,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Set;
@@ -171,48 +173,38 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		}
 	}
 
-	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(RefineryTileEntity::getShape);
+	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES =
+			CachedShapesWithTransform.createForMultiblock(RefineryTileEntity::getShape);
 
 	@Override
 	public VoxelShape getBlockBounds()
 	{
-		return SHAPES.get(new MultiblockCacheKey(this));
+		return CachedShapesWithTransform.get(SHAPES, this);
 	}
 
-	private static List<AxisAlignedBB> getShape(MultiblockCacheKey key)
+	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
 	{
-		BlockPos posInMultiblock = key.posInMultiblock;
-		Direction fl = key.facing;
-		Direction fw = key.facing.rotateY();
-		if(key.mirrored)
-			fw = fw.getOpposite();
 		if(posInMultiblock.getZ()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getX()%4==0)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			if(posInMultiblock.getZ()==0)
-				fl = fl.getOpposite();
-			if(posInMultiblock.getX()==0)
-				fw = fw.getOpposite();
+			final boolean flipFront = posInMultiblock.getZ()==0;
+			final boolean flipRight = posInMultiblock.getX()==0;
 
-			float minX = fl==Direction.WEST?0: fl==Direction.EAST?.75f: fw==Direction.WEST?.5f: .25f;
-			float maxX = fl==Direction.EAST?1: fl==Direction.WEST?.25f: fw==Direction.EAST?.5f: .75f;
-			float minZ = fl==Direction.NORTH?0: fl==Direction.SOUTH?.75f: fw==Direction.NORTH?.5f: .25f;
-			float maxZ = fl==Direction.SOUTH?1: fl==Direction.NORTH?.25f: fw==Direction.SOUTH?.5f: .75f;
+			float minX = flipRight?.5f: .25f;
+			float maxX = !flipRight?.5f: .75f;
+			float minZ = !flipFront?0: .75f;
+			float maxZ = flipFront?1: .25f;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1.375f, maxZ));
 
 			if(new BlockPos(4, 0, 2).equals(posInMultiblock))
 			{
-				minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
-				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .25f;
-				minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .125f;
-				maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .25f;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
+				minZ = !flipFront?.625f: .125f;
+				maxZ = flipFront?.375f: .875f;
+				list.add(new AxisAlignedBB(0.125, .5f, minZ, 0.25, 1, maxZ));
 
-				minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .75f;
-				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .875f;
-				minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .75f;
-				maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .875f;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
+				minZ = !flipFront?.625f: .125f;
+				maxZ = flipFront?.375f: .875f;
+				list.add(new AxisAlignedBB(0.75, .5f, minZ, 0.875, 1, maxZ));
 			}
 
 			return list;
@@ -220,15 +212,13 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		if(posInMultiblock.getZ()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getX()%2==1)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			if(posInMultiblock.getZ()==0)
-				fl = fl.getOpposite();
-			if(posInMultiblock.getX()==1)
-				fw = fw.getOpposite();
+			final boolean flipFront = posInMultiblock.getZ()==0;
+			final boolean flipRight = posInMultiblock.getX()==1;
 
-			float minX = fl==Direction.WEST?0: fl==Direction.EAST?.75f: fw==Direction.WEST?.75f: 0;
-			float maxX = fl==Direction.EAST?1: fl==Direction.WEST?.25f: fw==Direction.EAST?.25f: 1;
-			float minZ = fl==Direction.NORTH?0: fl==Direction.SOUTH?.75f: fw==Direction.NORTH?.75f: 0;
-			float maxZ = fl==Direction.SOUTH?1: fl==Direction.NORTH?.25f: fw==Direction.SOUTH?.25f: 1;
+			float minX = flipRight?.75f: 0;
+			float maxX = !flipRight?.25f: 1;
+			float minZ = !flipFront?0: .75f;
+			float maxZ = flipFront?1: .25f;
 			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1.375f, maxZ));
 			return list;
 		}
@@ -236,20 +226,19 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		if(posInMultiblock.getZ() < 2&&posInMultiblock.getY() > 0&&posInMultiblock.getX()%4==0)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList();
-			if(posInMultiblock.getX()==4)
-				fw = fw.getOpposite();
-			float minX = fl==Direction.WEST?-.25f: fl==Direction.EAST?-.25f: fw==Direction.WEST?-1f: .5f;
-			float maxX = fl==Direction.EAST?1.25f: fl==Direction.WEST?1.25f: fw==Direction.EAST?2: .5f;
-			float minZ = fl==Direction.NORTH?-.25f: fl==Direction.SOUTH?-.25f: fw==Direction.NORTH?-1f: .5f;
-			float maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?1.25f: fw==Direction.SOUTH?2: .5f;
+			final boolean flipRight = posInMultiblock.getX()==4;
+			float minX = flipRight?-1f: .5f;
+			float maxX = !flipRight?2: .5f;
+			float minZ = -.25f;
+			float maxZ = 1.25f;
 			float minY = posInMultiblock.getY()==1?.5f: -.5f;
 			float maxY = posInMultiblock.getY()==1?2f: 1f;
 			if(posInMultiblock.getZ()==0)
 			{
-				minX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
-				maxX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
-				minZ += fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0;
-				maxZ += fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0;
+				minX += 0;
+				maxX += 0;
+				minZ += 1;
+				maxZ += 1;
 			}
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
 			return list;
@@ -257,25 +246,35 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		if(posInMultiblock.getZ() < 2&&posInMultiblock.getY() > 0&&posInMultiblock.getX()%2==1)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList();
-			if(posInMultiblock.getX()==3)
-				fw = fw.getOpposite();
-			float minX = fl==Direction.WEST?-.25f: fl==Direction.EAST?-.25f: fw==Direction.WEST?0f: -.5f;
-			float maxX = fl==Direction.EAST?1.25f: fl==Direction.WEST?1.25f: fw==Direction.EAST?1f: 1.5f;
-			float minZ = fl==Direction.NORTH?-.25f: fl==Direction.SOUTH?-.25f: fw==Direction.NORTH?0: -.5f;
-			float maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?1.25f: fw==Direction.SOUTH?1f: 1.5f;
+			final boolean flipRight = posInMultiblock.getX()==3;
+			float minX = flipRight?0f: -.5f;
+			float maxX = !flipRight?1f: 1.5f;
+			float minZ = -.25f;
+			float maxZ = 1.25f;
 			float minY = posInMultiblock.getY()==1?.5f: -.5f;
 			float maxY = posInMultiblock.getY()==1?2f: 1f;
 			if(posInMultiblock.getZ()==0)
 			{
-				minX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
-				maxX += fl==Direction.WEST?1: fl==Direction.EAST?-1: 0;
-				minZ += fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0;
-				maxZ += fl==Direction.NORTH?1: fl==Direction.SOUTH?-1: 0;
+				minX += 0;
+				maxX += 0;
+				minZ += 1;
+				maxZ += 1;
 			}
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
 			return list;
 		}
-		return null;
+		else if(ImmutableSet.of(
+				new BlockPos(0, 0, 2),
+				new BlockPos(1, 0, 2),
+				new BlockPos(3, 0, 2)
+		).contains(posInMultiblock))
+			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
+		else if(new BlockPos(4, 1, 2).equals(posInMultiblock))
+			return ImmutableList.of(new AxisAlignedBB(0, 0, 0.5, 1, 1, 1));
+		else if(new BlockPos(2, 1, 2).equals(posInMultiblock))
+			return ImmutableList.of(new AxisAlignedBB(.0625f, 0, .0625f, .9375f, 1, .9375f));
+		else
+			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
 	}
 
 	@Override

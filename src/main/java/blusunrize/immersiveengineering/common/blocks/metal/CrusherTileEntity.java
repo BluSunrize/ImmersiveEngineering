@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
-import blusunrize.immersiveengineering.common.util.shapes.MultiblockCacheKey;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
