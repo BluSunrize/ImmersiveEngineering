@@ -279,18 +279,10 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 				new BlockPos(3, 0, 0),
 				new BlockPos(1, 0, 0)
 		).contains(posInMultiblock))
-		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			boolean flipFront = posInMultiblock.getZ()==0;
-			boolean flipRight = posInMultiblock.getX()==3;
-			float minX = flipRight?.5f: .25f;
-			float maxX = flipRight?.75f: .5f;
-			float minZ = !flipFront?.5f: .25f;
-			float maxZ = flipFront?.5f: .75f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
-
-			return list;
-		}
+			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==3,
+					new AxisAlignedBB(0.25, 0.5, 0.5, 0.5, 1, 0.75),
+					new AxisAlignedBB(0, 0, 0, 1, .5f, 1)
+			);
 
 		return getBasicShape(posInMultiblock).toBoundingBoxList();
 	}

@@ -213,14 +213,10 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 		if(new MutableBoundingBox(0, 0, 0, 1, 0, 1)
 				.isVecInside(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			final boolean flipFront = posInMultiblock.getZ()==0;
-			final boolean flipRight = posInMultiblock.getX()==1;
-			float minX = !flipRight?.0625f: .6875f;
-			float maxX = !flipRight?.3125f: .9375f;
-			float minZ = !flipFront?.6875f: .0625f;
-			float maxZ = flipFront?.3125f: .9375f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1.1875f, maxZ));
+			List<AxisAlignedBB> list = Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==1,
+					new AxisAlignedBB(0, 0, 0, 1, .5f, 1),
+					new AxisAlignedBB(0.0625, .5f, 0.6875, 0.3125, 1.1875f, 0.9375)
+			);
 
 			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
@@ -233,16 +229,10 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 		}
 		if(new MutableBoundingBox(0, 1, 0, 1, 2, 1).isVecInside(posInMultiblock))
 		{
-			final boolean flipFront = posInMultiblock.getZ()==0;
-			final boolean flipRight = posInMultiblock.getX()==1;
 			float minY = posInMultiblock.getY() < 2?.1875f: -.8125f;
 			float maxY = posInMultiblock.getY() < 2?2: 1;
-
-			float minX = !flipRight?.0625f: 0;
-			float maxX = !flipRight?1: .9375f;
-			float minZ = !flipFront?0: .0625f;
-			float maxZ = flipFront?1: .9375f;
-			return ImmutableList.of(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==1,
+					new AxisAlignedBB(0.0625, minY, 0, 1, maxY, 0.9375));
 		}
 		AxisAlignedBB ret;
 		if(posInMultiblock.getY()==0&&!ImmutableSet.of(

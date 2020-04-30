@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -34,7 +33,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -265,32 +263,22 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		else if(new MutableBoundingBox(1, 1, 1, 3, 1, 2)
 				.isVecInside(posInMultiblock))
 		{
-			final boolean flip = posInMultiblock.getX()==3;
-			final boolean none = posInMultiblock.getX()==2;
-			float minX = !none&&!flip?.125f: 0;
-			float maxX = !none&&flip?.875f: 1;
-			float minZ = !none?.125f: 0;
-			float maxZ = !none?.875f: 1;
+			AxisAlignedBB aabb;
+			if(posInMultiblock.getX()==2)
+				aabb = new AxisAlignedBB(0, 0.5, 0, 1, 1, 1);
+			else
+				aabb = Utils.flipBox(false, posInMultiblock.getX()==3,
+						new AxisAlignedBB(0.125, 0.5, 0.125, 1, 1, 0.875));
 			if(posInMultiblock.getZ()==2)
-			{
-				minX -= 0;
-				maxX += 0;
-				minZ -= 0;
-				maxZ += .875f;
-			}
-			return ImmutableList.of(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
+				aabb = aabb.offset(0, 0, 0.875);
+			return ImmutableList.of(aabb);
 		}
 		else if(ImmutableSet.of(
 				new BlockPos(4, 1, 1),
 				new BlockPos(0, 1, 1)
 		).contains(posInMultiblock))
-		{
-			boolean flip = posInMultiblock.getX()==4;
-			return ImmutableList.of(new AxisAlignedBB(
-					!flip?.125f: .625f, .125f, 0,
-					flip?.875f: .375f, .375f, 1
-			));
-		}
+			return Utils.flipBoxes(false, posInMultiblock.getX()==4,
+					new AxisAlignedBB(.125f, .125f, 0, .375f, .375f, 1));
 		else if(posInMultiblock.getZ()==0&&posInMultiblock.getY()==1&&posInMultiblock.getX() >= 1&&posInMultiblock.getX() <= 3)
 			return ImmutableList.of(new AxisAlignedBB(0, 0, .25f, 1, 1, 1));
 		else if(new BlockPos(2, 3, 0).equals(posInMultiblock))
@@ -309,14 +297,10 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				new BlockPos(3, 4, 0),
 				new BlockPos(1, 4, 0)
 		).contains(posInMultiblock))
-		{
-			final boolean flip = posInMultiblock.getX()==3;
-			return ImmutableList.of(new AxisAlignedBB(
-					!flip?.5f: 0, 0, 0,
-					flip?.5f: 1, 1, 1
-			));
-		}
-		return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
+			return Utils.flipBoxes(false, posInMultiblock.getX()==3,
+					new AxisAlignedBB(.5f, 0, 0, 1, 1, 1));
+		else
+			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
 	}
 
 	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES =

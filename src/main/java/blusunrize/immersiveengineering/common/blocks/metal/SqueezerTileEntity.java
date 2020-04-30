@@ -237,74 +237,32 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 				.isVecInside(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			final boolean flipFront = posInMultiblock.getZ()==0;
-			final boolean flipRight = posInMultiblock.getX()==1;
-			float minX = !flipRight?.0625f: .6875f;
-			float maxX = !flipRight?.3125f: .9375f;
-			float minZ = !flipFront?.6875f: .0625f;
-			float maxZ = flipFront?.3125f: .9375f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
+			list.add(new AxisAlignedBB(0.0625, .5f, 0.6875, 0.3125, 1, 0.9375));
 
 			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
-				minX = flipRight?-.125f: 0;
-				maxX = !flipRight?1.125f: 1;
-				minZ = !flipFront?.375f: .625f;
-				maxZ = flipFront?.375f: .625f;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
-
-				minX = flipRight?-.125f: .875f;
-				maxX = !flipRight?1.125f: .125f;
-				minZ = !flipFront?-.125f: .625f;
-				maxZ = flipFront?1.25f: .375f;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
-
-				minX = flipRight?-.125f: .875f;
-				maxX = !flipRight?1.125f: .125f;
-				minZ = !flipFront?-.125f: .875f;
-				maxZ = flipFront?1.25f: .125f;
-				list.add(new AxisAlignedBB(minX, .75f, minZ, maxX, 1, maxZ));
+				list.add(new AxisAlignedBB(0, .5f, 0.375, 1.125, .75f, 0.625));
+				list.add(new AxisAlignedBB(0.875, .5f, -0.125, 1.125, .75f, 0.375));
+				list.add(new AxisAlignedBB(0.875, .75f, -0.125, 1.125, 1, 0.125));
 			}
 
-			return list;
+			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==1, list);
 		}
 		if(new MutableBoundingBox(0, 1, 0, 1, 2, 1).isVecInside(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = new ArrayList<>(2);
 			if(posInMultiblock.getY()==1)
 				list.add(new AxisAlignedBB(0, 0, 0, 1, .125f, 1));
-			final boolean flipFront = posInMultiblock.getZ()==0;
-			final boolean flipRight = posInMultiblock.getX()==1;
 			float minY = posInMultiblock.getY()==1?.125f: -.875f;
 			float maxY = posInMultiblock.getY()==1?1.125f: .125f;
 
-			float minX = !flipRight?0f: .84375f;
-			float maxX = !flipRight?.15625f: 1;
-			float minZ = !flipFront?.84375f: 0f;
-			float maxZ = flipFront?.15625f: 1f;
-			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
-
-			minX = !flipRight?.0625f: .8125f;
-			maxX = !flipRight?.1875f: .9375f;
-			minZ = !flipFront?0f: .15625f;
-			maxZ = flipFront?1f: .84375f;
-			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
-
-			minX = !flipRight?.15625f: 0f;
-			maxX = !flipRight?1f: .84375f;
-			minZ = !flipFront?.8125f: .0625f;
-			maxZ = flipFront?.1875f: .9375f;
-			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+			list.add(new AxisAlignedBB(0, minY, 0.84375, 0.15625, maxY, 1));
+			list.add(new AxisAlignedBB(0.0625, minY, 0, 0.1875, maxY, 0.84375));
+			list.add(new AxisAlignedBB(0.15625, minY, 0.8125, 1, maxY, 0.9375));
 
 			if(posInMultiblock.getY()==2)
-			{
-				minX = !flipRight?.75f: -.25f;
-				maxX = !flipRight?1.25f: .25f;
-				minZ = !flipFront?-.25f: 1.25f;
-				maxZ = flipFront?.75f: .25f;
-				list.add(new AxisAlignedBB(minX, .375f, minZ, maxX, .9375f, maxZ));
-			}
-			return list;
+				list.add(new AxisAlignedBB(0.75, .375f, -0.25, 1.25, .9375f, 0.25));
+			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==1, list);
 		}
 		else if(posInMultiblock.getY()==0&&!ImmutableSet.of(
 				new BlockPos(0, 0, 0),

@@ -237,14 +237,11 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 			return new AxisAlignedBB(0, -.5f, 0, .0625f, .625f, lessThan21?.625f: 1);
 
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==2&&posInMultiblock.getZ()==2)
-		{
-			final boolean flip = posInMultiblock.getX()==2;
-			float minX = flip?-.0625f: .5625f;
-			float maxX = flip?.4375f: 1.0625f;
-			float minZ = -.0625f;
-			float maxZ = .4375f;
-			return new AxisAlignedBB(minX, 0, minZ, maxX, posInMultiblock.getX()==2?1.125f: .75f, maxZ);
-		}
+			return Utils.flipBox(false, posInMultiblock.getX()==2,
+					new AxisAlignedBB(
+							0.5625, 0, -0.0625,
+							1.0625, posInMultiblock.getX()==2?1.125f: .75f, 0.4375
+					));
 
 		return new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 	}
@@ -264,69 +261,38 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 			return Lists.newArrayList(new AxisAlignedBB(0, .5f, 0, 1, 1, 1),
 					new AxisAlignedBB(0, -.5f, -.625f, 1, .5f, 1));
 		else if(posInMultiblock.getY()==1&&posInMultiblock.getZ()==4)
-		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, .5f, 0, 1, 1, 1));
-			final boolean flip = posInMultiblock.getX()==2;
-			list.add(new AxisAlignedBB(!flip?.125f: .625f, 0, .125f, !flip?.375f: .875f, .5f, .375f));
-			list.add(new AxisAlignedBB(!flip?.125f: .625f, 0, .625f, !flip?.375f: .875f, .5f, .875f));
-			return list;
-		}
-
-
+			return Utils.flipBoxes(false, posInMultiblock.getX()==2,
+					new AxisAlignedBB(0, .5f, 0, 1, 1, 1),
+					new AxisAlignedBB(.125f, 0, .125f, .375f, .5f, .375f),
+					new AxisAlignedBB(.125f, 0, .625f, .375f, .5f, .875f)
+			);
 		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
-		{
-			List<AxisAlignedBB> list = Lists.newArrayList(getBlockBounds(posInMultiblock));
-			list.add(new AxisAlignedBB(.5f, .25f, .3125f, 1, .75f, .6875f));
-			list.add(new AxisAlignedBB(.6875f, -.5f, .4375f, .8125f, .25f, .5625f));
-			return list;
-		}
+			return ImmutableList.of(getBlockBounds(posInMultiblock),
+					new AxisAlignedBB(.5f, .25f, .3125f, 1, .75f, .6875f),
+					new AxisAlignedBB(.6875f, -.5f, .4375f, .8125f, .25f, .5625f)
+			);
 
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() < 4)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(getBlockBounds(posInMultiblock));
-			final boolean flip = posInMultiblock.getX()==2;
-
 			if(posInMultiblock.getZ() > 2)
 			{
-				float minX = flip?0: .125f;
-				float maxX = flip?.875f: 1;
-				float minZ = .25f;
-				float maxZ = .5f;
-				list.add(new AxisAlignedBB(minX, .5625f, minZ, maxX, .8125f, maxZ));
-
-				minX = flip?.625f: .125f;
-				maxX = flip?.875f: .375f;
-				minZ = .5f;
-				maxZ = (float)1;
-				list.add(new AxisAlignedBB(minX, .5625f, minZ, maxX, .8125f, maxZ));
+				list.add(new AxisAlignedBB(0.125, .5625f, 0.25, 1, .8125f, 0.5));
+				list.add(new AxisAlignedBB(0.125, .5625f, 0.5, 0.375, .8125f, 1));
 			}
 			else if(posInMultiblock.getZ() > 0)
 			{
-				float minX = (flip?0: .4375f)+(posInMultiblock.getZ() > 1?0: 0);
-				float maxX = (flip?.5626f: 1)+(posInMultiblock.getZ() > 1?0: 0);
-				float minZ = (-.5625f)+(posInMultiblock.getZ() > 1?0: 1);
-				float maxZ = (.75f)+(posInMultiblock.getZ() > 1?0: 1);
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
+				final double offset = posInMultiblock.getZ() > 1?0: 1;
+				list.add(new AxisAlignedBB(0.4375, .5f, -0.5625+offset, 1, 1, 0.75+offset));
 			}
 			if(posInMultiblock.getZ() < 2)
 			{
-				float minX = (flip?.5625f: .375f)+(posInMultiblock.getZ()==1?0: 0);
-				float maxX = (flip?.625f: .4375f)+(posInMultiblock.getZ()==1?0: 0);
-				float minZ = (.5625f)+(posInMultiblock.getZ()==1?0: 1);
-				float maxZ = (.8125f)+(posInMultiblock.getZ()==1?0: 1);
-				list.add(new AxisAlignedBB(minX, .5625f, minZ, maxX, .8125f, maxZ));
-				minX = (flip?.5f: .375f)+(posInMultiblock.getZ()==1?0: 0);
-				maxX = (flip?.625f: .5f)+(posInMultiblock.getZ()==1?0: 0);
-				minZ = (-.875f)+(posInMultiblock.getZ()==1?0: 1);
-				maxZ = (-.625f)+(posInMultiblock.getZ()==1?0: 1);
-				list.add(new AxisAlignedBB(minX, .5625f, minZ, maxX, .8125f, maxZ));
-				minX = (flip?.625f: .125f)+(posInMultiblock.getZ()==1?0: 0);
-				maxX = (flip?.875f: .375f)+(posInMultiblock.getZ()==1?0: 0);
-				minZ = (-.875f)+(posInMultiblock.getZ()==1?0: 1);
-				maxZ = (.8125f)+(posInMultiblock.getZ()==1?0: 1);
-				list.add(new AxisAlignedBB(minX, .5625f, minZ, maxX, .8125f, maxZ));
+				final double offset = posInMultiblock.getZ()==1?0: 1;
+				list.add(new AxisAlignedBB(0.375, .5625f, 0.5625+offset, 0.4375, .8125f, 0.8125+offset));
+				list.add(new AxisAlignedBB(0.375, .5625f, -0.875+offset, 0.5, .8125f, -0.625+offset));
+				list.add(new AxisAlignedBB(0.125, .5625f, -0.875+offset, 0.375, .8125f, 0.8125+offset));
 			}
-			return list;
+			return Utils.flipBoxes(false, posInMultiblock.getX()==2, list);
 		}
 		return ImmutableList.of(getBlockBounds(posInMultiblock));
 	}

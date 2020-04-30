@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -23,7 +21,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
 import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -37,7 +34,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -237,64 +233,26 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 			);
 		else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() < 2)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			final boolean flipFront = posInMultiblock.getZ()==0;
-			final boolean flipRight = posInMultiblock.getX()==2;
-			float minX = !flipRight?.0625f: .6875f;
-			float maxX = !flipRight?.3125f: .9375f;
-			float minZ = !flipFront?.6875f: .0625f;
-			float maxZ = flipFront?.3125f: .9375f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
+			List<AxisAlignedBB> list = Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==2,
+					new AxisAlignedBB(0, 0, 0, 1, .5f, 1),
+					new AxisAlignedBB(0.0625, .5f, 0.6875, 0.3125, 1, 0.9375)
+			);
 
 			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
-				minX = flipRight?-.125f: 0;
-				maxX = !flipRight?1.125f: 1;
-				minZ = !flipFront?.375f: .625f;
-				maxZ = flipFront?.375f: .625f;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
-
-				minX = flipRight?-.125f: .875f;
-				maxX = !flipRight?1.125f: .125f;
-				minZ = !flipFront?-.125f: .625f;
-				maxZ = flipFront?1.25f: .375f;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
-
-				minX = flipRight?-.125f: .875f;
-				maxX = !flipRight?1.125f: .125f;
-				minZ = !flipFront?-.125f: .875f;
-				maxZ = flipFront?1.25f: .125f;
-				list.add(new AxisAlignedBB(minX, .75f, minZ, maxX, 1, maxZ));
+				list.add(new AxisAlignedBB(0, .5f, 0.375, 1.125, .75f, 0.625));
+				list.add(new AxisAlignedBB(0.875, .5f, -0.125, 1.125, .75f, 0.375));
+				list.add(new AxisAlignedBB(0.875, .75f, -0.125, 1.125, 1, 0.125));
 			}
 
 			return list;
 		}
 		else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==1&&posInMultiblock.getZ() < 2)
-		{
-			List<AxisAlignedBB> list = new ArrayList<>(3);
-			final boolean flipFront = posInMultiblock.getZ()==0;
-			final boolean flipRight = posInMultiblock.getX()==2;
-
-			float minX = !flipRight?.1875f: 0f;
-			float maxX = !flipRight?1f: .8125f;
-			float minZ = !flipFront?0f: .1875f;
-			float maxZ = flipFront?1f: .8125f;
-			list.add(new AxisAlignedBB(minX, -.25, minZ, maxX, 0, maxZ));
-
-			minX = !flipRight?.0625f: .8125f;
-			maxX = !flipRight?.1875f: .9375f;
-			minZ = !flipFront?0f: .0625f;
-			maxZ = flipFront?1f: .9375f;
-			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, 1, maxZ));
-
-			minX = !flipRight?.1875f: 0f;
-			maxX = !flipRight?1f: .8125f;
-			minZ = !flipFront?.8125f: .0625f;
-			maxZ = flipFront?.1875f: .9375f;
-			list.add(new AxisAlignedBB(minX, 0, minZ, maxX, 1, maxZ));
-
-			return list;
-		}
+			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==2,
+					new AxisAlignedBB(0.1875, -.25, 0, 1, 0, 0.8125),
+					new AxisAlignedBB(0.0625, 0, 0, 0.1875, 1, 0.9375),
+					new AxisAlignedBB(0.1875, 0, 0.8125, 1, 1, 0.9375)
+			);
 		else if(new BlockPos(0, 2, 1).equals(posInMultiblock))
 			return ImmutableList.of(new AxisAlignedBB(0.1875, 0, 0.1875, 1, .625f, 0.6875));
 		else if(new BlockPos(1, 2, 1).equals(posInMultiblock))
