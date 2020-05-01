@@ -8,15 +8,12 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 import javax.annotation.Nonnull;
 
@@ -44,10 +41,18 @@ public class IngredientWithSizeSerializer
 	@Nonnull
 	public IngredientWithSize parse(@Nonnull JsonObject json)
 	{
-		final int count = JSONUtils.getInt(json, COUNT_KEY, 1);
-		final JsonObject baseJson = json.getAsJsonObject(BASE_KEY);
-		final Ingredient base = Ingredient.deserialize(baseJson);
-		return new IngredientWithSize(base, count);
+		if(json.has(BASE_KEY))
+		{
+			final int count = JSONUtils.getInt(json, COUNT_KEY, 1);
+			final JsonObject baseJson = json.getAsJsonObject(BASE_KEY);
+			final Ingredient base = Ingredient.deserialize(baseJson);
+			return new IngredientWithSize(base, count);
+		}
+		else //fallback for normal ingredients
+		{
+			final Ingredient base = Ingredient.deserialize(json);
+			return new IngredientWithSize(base, 1);
+		}
 	}
 
 	public void write(@Nonnull JsonObject json, @Nonnull IngredientWithSize ingredient)

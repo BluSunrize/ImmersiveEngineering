@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
@@ -43,18 +42,18 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public final ItemStack slag;
 
 	public String specialRecipeType;
-	public static ArrayList<String> specialRecipeTypes = new ArrayList<String>();
-	public static ArrayList<ArcFurnaceRecipe> recipeList = new ArrayList<ArcFurnaceRecipe>();
+	public static List<String> specialRecipeTypes = new ArrayList<>();
+	public static List<ArcFurnaceRecipe> recipeList = new ArrayList<>();
 
-	public ArcFurnaceRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
-							int energyPerTick, IngredientWithSize... additives)
+	public ArcFurnaceRecipe(ResourceLocation id, NonNullList<ItemStack> output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
+							int energy, IngredientWithSize... additives)
 	{
-		super(output, TYPE, id);
-		this.output = ListUtils.fromItem(output);
+		super(output.get(0), TYPE, id);
+		this.output = output;
 		this.input = input;
 		this.slag = slag;
 		this.totalProcessTime = (int)Math.floor(time*timeModifier);
-		this.totalProcessEnergy = (int)Math.floor(energyPerTick*energyModifier)*totalProcessTime;
+		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
 		this.additives = additives;
 
 		List<IngredientWithSize> inputList = Lists.newArrayList(this.input);

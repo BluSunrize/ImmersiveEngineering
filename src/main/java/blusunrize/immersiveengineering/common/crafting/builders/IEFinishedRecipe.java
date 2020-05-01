@@ -95,6 +95,11 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 		return addWriter(jsonObject -> jsonObject.addProperty("time", time));
 	}
 
+	public R setEnergy(int energy)
+	{
+		return addWriter(jsonObject -> jsonObject.addProperty("energy", energy));
+	}
+
 	/* =============== Result Handling =============== */
 
 	public R setMultipleResults(int maxResultCount)
@@ -145,11 +150,16 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 
 	/* =============== Input Handling =============== */
 
-	public R setUseInputArray(int maxInputCount)
+	public R setUseInputArray(int maxInputCount, String key)
 	{
 		this.inputArray = new JsonArray();
 		this.maxInputCount = maxInputCount;
-		return addWriter(jsonObject -> jsonObject.add("inputs", inputArray));
+		return addWriter(jsonObject -> jsonObject.add(key, inputArray));
+	}
+
+	public R setUseInputArray(int maxInputCount)
+	{
+		return setUseInputArray(maxInputCount, "inputs");
 	}
 
 	@SuppressWarnings("unchecked cast")

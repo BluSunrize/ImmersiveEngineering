@@ -180,6 +180,7 @@ public class Recipes extends RecipeProvider
 		recipesCoke(out);
 		recipesCloche(out);
 		recipesBlueprint(out);
+		recipesArcFurnace(out);
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[1]).patternLine("iii").patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
@@ -415,6 +416,17 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.addInput(new ItemStack(Ingredients.electronTube, 2))
 				.build(out, toRL("blueprint/circuit_board"));
+	}
+
+	private void recipesArcFurnace(@Nonnull Consumer<IFinishedRecipe> out)
+	{
+		ArcFurnaceRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.STEEL).ingot, 1)
+				.addIngredient("input", Tags.Items.INGOTS_IRON)
+				.addInput(IETags.coalCokeDust)
+				.addSlag(IETags.slag, 1)
+				.setTime(400)
+				.setEnergy(204800)
+				.build(out, toRL("arcfurnace/steel"));
 	}
 
 	private void recipesStoneDecorations(@Nonnull Consumer<IFinishedRecipe> out)

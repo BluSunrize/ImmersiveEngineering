@@ -43,7 +43,8 @@ public class RecipeReloadListener implements ISelectiveResourceReloadListener
 			BlueprintCraftingRecipe.recipeList.clear();
 			for(BlueprintCraftingRecipe r : blueprintCraftingRecipes)
 				BlueprintCraftingRecipe.recipeList.put(r.blueprintCategory, r);
-			System.out.println("test");
+
+			ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
 		}
 	}
 
