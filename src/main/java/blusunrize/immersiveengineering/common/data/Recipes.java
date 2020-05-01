@@ -50,7 +50,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
@@ -68,8 +67,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
-
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class Recipes extends RecipeProvider
 {
@@ -488,6 +485,7 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("arcfurnace/"+metal.tagName()));
 		}
 
+		/* METAL PRESS */
 		MetalPressRecipeBuilder.builder(Molds.moldBulletCasing, new ItemStack(Ingredients.emptyCasing, 2))
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.setEnergy(2400)
@@ -505,6 +503,7 @@ public class Recipes extends RecipeProvider
 				.setEnergy(3200)
 				.build(out, toRL("metalpress/melon"));
 
+		/* ARC FURNACE */
 		ArcFurnaceRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.STEEL).ingot, 1)
 				.addIngredient("input", Tags.Items.INGOTS_IRON)
 				.addInput(IETags.coalCokeDust)
@@ -513,11 +512,13 @@ public class Recipes extends RecipeProvider
 				.setEnergy(204800)
 				.build(out, toRL("arcfurnace/steel"));
 
+		/* BOTTLING */
 		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
 				.addInput(Items.SPONGE)
 				.addFluid(Fluids.WATER, 1000)
 				.build(out, toRL("bottling/sponge"));
 
+		/* CRUSHER */
 		CrusherRecipeBuilder.builder(Items.GRAVEL)
 				.addInput(Tags.Items.COBBLESTONE)
 				.setEnergy(1600)
@@ -586,6 +587,50 @@ public class Recipes extends RecipeProvider
 				.addInput(ItemTags.WOOL)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/wool"));
+
+		/* SQUEEZER */
+		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 80)
+				.addInput(Items.WHEAT_SEEDS)
+				.setEnergy(6400)
+				.build(out, toRL("squeezer/wheat_seeds"));
+		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 60)
+				.addInput(Items.BEETROOT_SEEDS)
+				.setEnergy(6400)
+				.build(out, toRL("squeezer/beetroot_seeds"));
+		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 40)
+				.addInput(Items.PUMPKIN_SEEDS)
+				.setEnergy(6400)
+				.build(out, toRL("squeezer/pumpkin_seeds"));
+		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 20)
+				.addInput(Items.MELON_SEEDS)
+				.setEnergy(6400)
+				.build(out, toRL("squeezer/melon_seeds"));
+		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 120)
+				.addInput(Misc.hempSeeds)
+				.setEnergy(6400)
+				.build(out, toRL("squeezer/hemp_seeds"));
+		SqueezerRecipeBuilder.builder()
+				.addResult(new IngredientWithSize(IETags.hopGraphiteDust))
+				.addInput(new IngredientWithSize(IETags.coalCokeDust, 8))
+				.setEnergy(19200)
+				.build(out, toRL("squeezer/graphite_dust"));
+		/* FERMENTER */
+		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 80)
+				.addInput(Items.SUGAR_CANE)
+				.setEnergy(6400)
+				.build(out, toRL("fermenter/sugar_cane"));
+		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 80)
+				.addInput(Items.MELON_SLICE)
+				.setEnergy(6400)
+				.build(out, toRL("fermenter/melon_slice"));
+		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 80)
+				.addInput(Items.APPLE)
+				.setEnergy(6400)
+				.build(out, toRL("fermenter/apple"));
+		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 80)
+				.addInput(Tags.Items.CROPS_POTATO)
+				.setEnergy(6400)
+				.build(out, toRL("fermenter/potato"));
 	}
 
 	private void recipesStoneDecorations(@Nonnull Consumer<IFinishedRecipe> out)

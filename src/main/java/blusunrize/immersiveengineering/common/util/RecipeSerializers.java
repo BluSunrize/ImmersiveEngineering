@@ -77,5 +77,11 @@ public class RecipeSerializers
 		CrusherRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"crusher", CrusherRecipeSerializer::new
 		);
+		FermenterRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"fermenter", FermenterRecipeSerializer::new
+		);
+		SqueezerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"squeezer", SqueezerRecipeSerializer::new
+		);
 	}
 }
