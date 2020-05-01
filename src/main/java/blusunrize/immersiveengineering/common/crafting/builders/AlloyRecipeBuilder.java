@@ -21,7 +21,6 @@ public class AlloyRecipeBuilder extends IEFinishedRecipe<AlloyRecipeBuilder>
 	{
 		super(AlloyRecipe.SERIALIZER.get());
 		this.maxInputCount = 2;
-		this.useSizedIngredients = true;
 		// default time for alloys is 200
 		this.setTime(200);
 	}

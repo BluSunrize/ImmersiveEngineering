@@ -39,7 +39,6 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 	private final List<Consumer<JsonObject>> writerFunctions;
 	private ResourceLocation id;
 
-	protected boolean useSizedIngredients = false;
 	protected JsonArray inputArray = null;
 	protected int inputCount = 0;
 	protected int maxInputCount = 1;
@@ -174,8 +173,6 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 
 	public R addMultiInput(Ingredient ingredient)
 	{
-		if(useSizedIngredients)
-			return addMultiInput(new IngredientWithSize(ingredient));
 		return addMultiInput(ingredient.serialize());
 	}
 
@@ -273,8 +270,6 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 
 	public R addIngredient(String key, Ingredient ingredient)
 	{
-		if(useSizedIngredients)
-			return addIngredient(key, new IngredientWithSize(ingredient));
 		return addWriter(jsonObject -> jsonObject.add(key, ingredient.serialize()));
 	}
 

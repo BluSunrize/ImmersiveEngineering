@@ -20,7 +20,6 @@ public class CokeOvenRecipeBuilder extends IEFinishedRecipe<CokeOvenRecipeBuilde
 	private CokeOvenRecipeBuilder()
 	{
 		super(CokeOvenRecipe.SERIALIZER.get());
-		this.useSizedIngredients = true;
 	}
 
 	public static CokeOvenRecipeBuilder builder(Item result)

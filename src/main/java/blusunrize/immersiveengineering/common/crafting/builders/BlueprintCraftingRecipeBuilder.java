@@ -20,7 +20,6 @@ public class BlueprintCraftingRecipeBuilder extends IEFinishedRecipe<BlueprintCr
 	private BlueprintCraftingRecipeBuilder()
 	{
 		super(BlueprintCraftingRecipe.SERIALIZER.get());
-		this.useSizedIngredients = true;
 		setUseInputArray(6);
 	}
 
