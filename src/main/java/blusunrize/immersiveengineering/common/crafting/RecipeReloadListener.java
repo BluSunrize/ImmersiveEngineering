@@ -38,13 +38,23 @@ public class RecipeReloadListener implements ISelectiveResourceReloadListener
 			CokeOvenRecipe.recipeList = filterRecipes(recipes, CokeOvenRecipe.class, CokeOvenRecipe.TYPE);
 			ClocheRecipe.recipeList = filterRecipes(recipes, ClocheRecipe.class, ClocheRecipe.TYPE);
 
-			// Blueprint recipes are a little more invested
+			// Blueprint & MetalPress recipes are a little more invested
 			List<BlueprintCraftingRecipe> blueprintCraftingRecipes = filterRecipes(recipes, BlueprintCraftingRecipe.class, BlueprintCraftingRecipe.TYPE);
 			BlueprintCraftingRecipe.recipeList.clear();
 			for(BlueprintCraftingRecipe r : blueprintCraftingRecipes)
 				BlueprintCraftingRecipe.recipeList.put(r.blueprintCategory, r);
+			List<MetalPressRecipe> metalPressRecipes = filterRecipes(recipes, MetalPressRecipe.class, MetalPressRecipe.TYPE);
+			MetalPressRecipe.recipeList.clear();
+			for(MetalPressRecipe r : metalPressRecipes)
+				MetalPressRecipe.recipeList.put(r.mold, r);
 
 			ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
+			BottlingMachineRecipe.recipeList = filterRecipes(recipes, BottlingMachineRecipe.class, BottlingMachineRecipe.TYPE);
+			CrusherRecipe.recipeList = filterRecipes(recipes, CrusherRecipe.class, CrusherRecipe.TYPE);
+			FermenterRecipe.recipeList = filterRecipes(recipes, FermenterRecipe.class, FermenterRecipe.TYPE);
+			SqueezerRecipe.recipeList = filterRecipes(recipes, SqueezerRecipe.class, SqueezerRecipe.TYPE);
+			RefineryRecipe.recipeList = filterRecipes(recipes, RefineryRecipe.class, RefineryRecipe.TYPE);
+			MixerRecipe.recipeList = filterRecipes(recipes, MixerRecipe.class, MixerRecipe.TYPE);
 		}
 	}
 

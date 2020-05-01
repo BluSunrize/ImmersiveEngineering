@@ -56,7 +56,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	public static ArrayList<BottlingMachineRecipe> recipeList = new ArrayList<>();
+	public static List<BottlingMachineRecipe> recipeList = new ArrayList<>();
 
 	public static void addRecipe(ItemStack output, Ingredient input, FluidStack fluidInput)
 	{

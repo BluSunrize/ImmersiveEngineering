@@ -56,7 +56,7 @@ public class RefineryRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	public static ArrayList<RefineryRecipe> recipeList = new ArrayList<>();
+	public static List<RefineryRecipe> recipeList = new ArrayList<>();
 
 	public static RefineryRecipe addRecipe(FluidStack output, FluidStack input0, FluidStack input1, int energy)
 	{

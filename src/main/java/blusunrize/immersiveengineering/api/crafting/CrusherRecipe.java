@@ -84,7 +84,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static ArrayList<CrusherRecipe> recipeList = new ArrayList<>();
+	public static List<CrusherRecipe> recipeList = new ArrayList<>();
 
 	public static CrusherRecipe addRecipe(ItemStack output, Ingredient input, int energy)
 	{

@@ -22,10 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -66,7 +63,7 @@ public class MixerRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	public static ArrayList<MixerRecipe> recipeList = new ArrayList<>();
+	public static List<MixerRecipe> recipeList = new ArrayList<>();
 
 	public static MixerRecipe addRecipe(FluidStack fluidOutput, FluidStack fluidInput, IngredientWithSize[] itemInput, int energy)
 	{
