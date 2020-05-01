@@ -77,7 +77,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.*;
 
-import static blusunrize.immersiveengineering.common.IERecipes.getIngot;
+import static blusunrize.immersiveengineering.api.IETags.getIngot;
 
 public class ApiUtils
 {

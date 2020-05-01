@@ -212,46 +212,49 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).dust)
 				.build(out, toRL("alloys/constantan"));
 
-		ResourceLocation rl_ingotInvar = new ResourceLocation("forge", "ingot/invar");
-		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotInvar), 2)
-				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotInvar)))
+		Tag<Item> invar = new ItemTags.Wrapper(IETags.getIngot("invar"));
+		Tag<Item> bronze = new ItemTags.Wrapper(IETags.getIngot("bronze"));
+		Tag<Item> tin = new ItemTags.Wrapper(IETags.getIngot("tin"));
+		Tag<Item> tin_dust = new ItemTags.Wrapper(IETags.getDust("tin"));
+		Tag<Item> brass = new ItemTags.Wrapper(IETags.getIngot("brass"));
+		Tag<Item> zinc = new ItemTags.Wrapper(IETags.getIngot("zinc"));
+		Tag<Item> zinc_dust = new ItemTags.Wrapper(IETags.getDust("zinc"));
+
+		AlloyRecipeBuilder.builder(invar, 2)
+				.addCondition(getTagCondition(invar))
 				.addInput(IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).ingot)
 				.build(out, toRL("alloys/invar"));
-		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotInvar), 2)
-				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotInvar)))
+		AlloyRecipeBuilder.builder(invar, 2)
+				.addCondition(getTagCondition(invar))
 				.addInput(IETags.getTagsFor(EnumMetals.IRON).dust)
 				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).dust)
 				.build(out, toRL("alloys/invar"));
 
-		ResourceLocation rl_ingotBronze = new ResourceLocation("forge", "ingot/bronze");
-		ResourceLocation rl_ingotTin = new ResourceLocation("forge", "ingot/tin");
-		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotBronze), 2)
-				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotBronze)))
-				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotTin)))
+		AlloyRecipeBuilder.builder(bronze, 2)
+				.addCondition(getTagCondition(bronze))
+				.addCondition(getTagCondition(tin))
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
-				.addInput(new ItemTags.Wrapper(rl_ingotTin))
+				.addInput(tin)
 				.build(out, toRL("alloys/bronze"));
-		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotBronze), 2)
-				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotBronze)))
-				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotTin)))
+		AlloyRecipeBuilder.builder(bronze, 2)
+				.addCondition(getTagCondition(bronze))
+				.addCondition(getTagCondition(tin_dust))
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
-				.addInput(new ItemTags.Wrapper(new ResourceLocation("forge", "dust/tin")))
+				.addInput(tin_dust)
 				.build(out, toRL("alloys/bronze"));
 
-		ResourceLocation rl_ingotBrass = new ResourceLocation("forge", "ingot/brass");
-		ResourceLocation rl_ingotZinc = new ResourceLocation("forge", "ingot/zinc");
-		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotBrass), 2)
-				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotBrass)))
-				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotZinc)))
+		AlloyRecipeBuilder.builder(brass, 2)
+				.addCondition(getTagCondition(brass))
+				.addCondition(getTagCondition(zinc))
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
-				.addInput(new ItemTags.Wrapper(rl_ingotZinc))
+				.addInput(zinc)
 				.build(out, toRL("alloys/brass"));
-		AlloyRecipeBuilder.builder(new ItemTags.Wrapper(rl_ingotBrass), 2)
-				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotBrass)))
-				.addCondition(new NotCondition(new TagEmptyCondition(rl_ingotZinc)))
+		AlloyRecipeBuilder.builder(brass, 2)
+				.addCondition(getTagCondition(brass))
+				.addCondition(getTagCondition(zinc_dust))
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
-				.addInput(new ItemTags.Wrapper(new ResourceLocation("forge", "dust/zinc")))
+				.addInput(zinc_dust)
 				.build(out, toRL("alloys/brass"));
 	}
 
@@ -433,21 +436,21 @@ public class Recipes extends RecipeProvider
 					.setEnergy(2400)
 					.build(out, toRL("metalpress/plate_"+metal.tagName()));
 
-			Tag<Item> gear = new ItemTags.Wrapper(new ResourceLocation("forge", "gear/"+metal.tagName()));
+			Tag<Item> gear = new ItemTags.Wrapper(IETags.getGear(metal.tagName()));
 			MetalPressRecipeBuilder.builder(Molds.moldGear, gear, 1)
 					.addCondition(getTagCondition(gear))
 					.addInput(new IngredientWithSize(tags.ingot, 4))
 					.setEnergy(2400)
 					.build(out, toRL("metalpress/gear_"+metal.tagName()));
 
-			Tag<Item> rods = new ItemTags.Wrapper(new ResourceLocation("forge", "rods/"+metal.tagName()));
+			Tag<Item> rods = new ItemTags.Wrapper(IETags.getRod(metal.tagName()));
 			MetalPressRecipeBuilder.builder(Molds.moldRod, rods, 2)
 					.addCondition(getTagCondition(rods))
 					.addInput(tags.ingot)
 					.setEnergy(2400)
 					.build(out, toRL("metalpress/rod_"+metal.tagName()));
 
-			Tag<Item> wire = new ItemTags.Wrapper(new ResourceLocation("forge", "wire/"+metal.tagName()));
+			Tag<Item> wire = new ItemTags.Wrapper(IETags.getWire(metal.tagName()));
 			MetalPressRecipeBuilder.builder(Molds.moldWire, wire, 2)
 					.addCondition(getTagCondition(wire))
 					.addInput(tags.ingot)

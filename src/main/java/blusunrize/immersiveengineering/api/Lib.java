@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api;
 
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IERecipes;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
@@ -136,7 +135,7 @@ public class Lib
 		@Override
 		public Ingredient getRepairMaterial()
 		{
-			return Ingredient.fromTag(ItemTags.getCollection().get(IERecipes.getIngot("steel")));
+			return Ingredient.fromTag(ItemTags.getCollection().get(IETags.getIngot("steel")));
 		}
 	};
 	public static final Rarity RARITY_MASTERWORK = Rarity.create("IE_MASTERWORK", TextFormatting.GOLD);
