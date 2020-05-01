@@ -201,13 +201,6 @@ public class ApiUtils
 		return Ingredient.fromStacks(list.toArray(new ItemStack[0]));
 	}
 
-	@Deprecated
-	public static ComparableItemStack createComparableItemStack(ItemStack stack)
-	{
-		return createComparableItemStack(stack, true);
-	}
-
-
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
 	{
 		return createComparableItemStack(stack, copy, stack.hasTag()&&!stack.getOrCreateTag().isEmpty());
@@ -215,7 +208,7 @@ public class ApiUtils
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
 	{
-		ComparableItemStack comp = new ComparableItemStack(stack, true, copy);
+		ComparableItemStack comp = new ComparableItemStack(stack, copy);
 		comp.setUseNBT(useNbt);
 		return comp;
 	}

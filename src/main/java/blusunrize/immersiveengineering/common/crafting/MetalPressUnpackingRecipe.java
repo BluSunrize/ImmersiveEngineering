@@ -72,7 +72,7 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 
 	private PackedDelegate getOutputCached(ItemStack input, World world)
 	{
-		ComparableItemStack comp = new ComparableItemStack(input, true, false);
+		ComparableItemStack comp = new ComparableItemStack(input, false);
 		if(this.cache.containsKey(comp))
 			return this.cache.get(comp);
 
