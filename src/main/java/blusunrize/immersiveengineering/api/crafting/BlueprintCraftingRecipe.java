@@ -39,7 +39,6 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
-	public static ArrayList<String> blueprintCategories = new ArrayList<>();
 	public static ArrayListMultimap<String, BlueprintCraftingRecipe> recipeList = ArrayListMultimap.create();
 	public static HashMap<String, ItemStack> villagerPrices = new HashMap<>();
 

@@ -2031,8 +2031,6 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_nickel_dust", hasItem(IETags.getTagsFor(EnumMetals.NICKEL).dust))
 				.build(out, toRL("constantan_mix"));
 
-		/**Fix this by transitioning {@link BlueprintCraftingRecipe} to JSON as well */
-		/* todo: Currently Broken. Without BlueprintRecipes being added, crafting recipes for those Blueprints fail their precondition
 		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
 				.patternLine("jkl")
 				.patternLine("ddd")
@@ -2044,7 +2042,7 @@ public class Recipes extends RecipeProvider
 				//TODO tag?
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
-				.build(buildBlueprint(out, "components"), rl("blueprint_components"));
+				.build(buildBlueprint(out, "components"), toRL("blueprint_components"));
 		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
 				.patternLine(" P ")
 				.patternLine("ddd")
@@ -2054,8 +2052,7 @@ public class Recipes extends RecipeProvider
 				//TODO tag?
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
-				.build(buildBlueprint(out, "molds"), rl("blueprint_molds"));
-		 */
+				.build(buildBlueprint(out, "molds"), toRL("blueprint_molds"));
 	}
 
 	private void recipesVanilla(@Nonnull Consumer<IFinishedRecipe> out)
@@ -2084,7 +2081,6 @@ public class Recipes extends RecipeProvider
 
 	private Consumer<IFinishedRecipe> buildBlueprint(Consumer<IFinishedRecipe> out, String blueprint)
 	{
-		Preconditions.checkArgument(BlueprintCraftingRecipe.blueprintCategories.contains(blueprint));
 		return recipe -> {
 			out.accept(new IFinishedRecipe()
 			{

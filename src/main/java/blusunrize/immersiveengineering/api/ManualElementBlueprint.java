@@ -43,10 +43,9 @@ public class ManualElementBlueprint extends SpecialManualElements
 	public void recalculateCraftingRecipes()
 	{
 		this.recipes.clear();
-		List<String> cmCategories = BlueprintCraftingRecipe.blueprintCategories;
 		ArrayListMultimap<String, BlueprintCraftingRecipe> cmRecipes = BlueprintCraftingRecipe.recipeList;
 
-		for(String category : cmCategories)
+		for(String category : cmRecipes.keySet())
 			for(BlueprintCraftingRecipe recipe : cmRecipes.get(category))
 				for(int iStack = 0; iStack < stacks.length; iStack++)
 				{
