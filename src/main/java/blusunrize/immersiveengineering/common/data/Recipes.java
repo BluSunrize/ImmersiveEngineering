@@ -631,6 +631,12 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.CROPS_POTATO)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/potato"));
+		/* REFINERY */
+		RefineryRecipeBuilder.builder(IEContent.fluidBiodiesel, 16)
+				.addInput(IEContent.fluidPlantoil, 8)
+				.addInput(IEContent.fluidEthanol, 8)
+				.setEnergy(80)
+				.build(out, toRL("refinery/biodiesel"));
 	}
 
 	private void recipesStoneDecorations(@Nonnull Consumer<IFinishedRecipe> out)
