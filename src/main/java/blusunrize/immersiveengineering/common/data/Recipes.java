@@ -637,6 +637,14 @@ public class Recipes extends RecipeProvider
 				.addInput(IEContent.fluidEthanol, 8)
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
+		/* MIXER */
+		MixerRecipeBuilder.builder(IEContent.fluidConcrete, 500)
+				.addFluid(Fluids.WATER, 500)
+				.addInput(new IngredientWithSize(Tags.Items.SAND, 2))
+				.addInput(Tags.Items.GRAVEL)
+				.addInput(IETags.clay)
+				.setEnergy(3200)
+				.build(out, toRL("mixer/concrete"));
 	}
 
 	private void recipesStoneDecorations(@Nonnull Consumer<IFinishedRecipe> out)

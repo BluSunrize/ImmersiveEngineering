@@ -86,5 +86,8 @@ public class RecipeSerializers
 		RefineryRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"refinery", RefineryRecipeSerializer::new
 		);
+		MixerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"mixer", MixerRecipeSerializer::new
+		);
 	}
 }
