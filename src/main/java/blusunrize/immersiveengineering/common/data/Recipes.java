@@ -42,6 +42,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.*;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.Item;
@@ -181,8 +182,7 @@ public class Recipes extends RecipeProvider
 		recipesCoke(out);
 		recipesCloche(out);
 		recipesBlueprint(out);
-		recipesMetalPress(out);
-		recipesArcFurnace(out);
+		recipesMultiblockMachines(out);
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[1]).patternLine("iii").patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
@@ -423,7 +423,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("blueprint/circuit_board"));
 	}
 
-	private void recipesMetalPress(@Nonnull Consumer<IFinishedRecipe> out)
+	private void recipesMultiblockMachines(@Nonnull Consumer<IFinishedRecipe> out)
 	{
 		for(EnumMetals metal : EnumMetals.values())
 		{
@@ -473,10 +473,6 @@ public class Recipes extends RecipeProvider
 				.setEnergy(3200)
 				.build(out, toRL("metalpress/melon"));
 
-	}
-
-	private void recipesArcFurnace(@Nonnull Consumer<IFinishedRecipe> out)
-	{
 		ArcFurnaceRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.STEEL).ingot, 1)
 				.addIngredient("input", Tags.Items.INGOTS_IRON)
 				.addInput(IETags.coalCokeDust)
@@ -484,6 +480,11 @@ public class Recipes extends RecipeProvider
 				.setTime(400)
 				.setEnergy(204800)
 				.build(out, toRL("arcfurnace/steel"));
+
+		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
+				.addInput(Items.SPONGE)
+				.addFluid(Fluids.WATER, 1000)
+				.build(out, toRL("bottling/sponge"));
 	}
 
 	private void recipesStoneDecorations(@Nonnull Consumer<IFinishedRecipe> out)

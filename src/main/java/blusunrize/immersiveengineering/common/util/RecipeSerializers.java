@@ -71,5 +71,8 @@ public class RecipeSerializers
 		ArcFurnaceRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"arc_furnace", ArcFurnaceRecipeSerializer::new
 		);
+		BottlingMachineRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"bottling_machine", BottlingMachineRecipeSerializer::new
+		);
 	}
 }

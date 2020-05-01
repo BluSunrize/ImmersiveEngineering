@@ -17,6 +17,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -283,6 +284,16 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 	public R addFluid(String key, FluidStack fluidStack)
 	{
 		return addWriter(jsonObject -> jsonObject.add(key, Utils.jsonSerializeFluidStack(fluidStack)));
+	}
+
+	public R addFluid(FluidStack fluidStack)
+	{
+		return addFluid("fluid", fluidStack);
+	}
+
+	public R addFluid(Fluid fluid, int amount)
+	{
+		return addFluid("fluid", new FluidStack(fluid, amount));
 	}
 
 	/* =============== IFinishedRecipe =============== */
