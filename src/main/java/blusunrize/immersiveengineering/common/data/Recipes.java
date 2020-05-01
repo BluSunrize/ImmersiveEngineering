@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
@@ -29,11 +30,13 @@ import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBui
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.builders.*;
 import blusunrize.immersiveengineering.common.items.BulletItem;
+import blusunrize.immersiveengineering.common.items.GraphiteElectrodeItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.*;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.items.ToolboxItem;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
@@ -48,12 +51,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 
@@ -180,6 +183,7 @@ public class Recipes extends RecipeProvider
 		recipesCoke(out);
 		recipesCloche(out);
 		recipesBlueprint(out);
+		recipesMetalPress(out);
 		recipesArcFurnace(out);
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
@@ -416,6 +420,58 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.addInput(new ItemStack(Ingredients.electronTube, 2))
 				.build(out, toRL("blueprint/circuit_board"));
+	}
+
+	private void recipesMetalPress(@Nonnull Consumer<IFinishedRecipe> out)
+	{
+		for(EnumMetals metal : EnumMetals.values())
+		{
+			IETags.MetalTags tags = IETags.getTagsFor(metal);
+
+			MetalPressRecipeBuilder.builder(Molds.moldPlate, tags.plate, 1)
+					.addInput(tags.ingot)
+					.setEnergy(2400)
+					.build(out, toRL("metalpress/plate_"+metal.tagName()));
+
+			Tag<Item> gear = new ItemTags.Wrapper(new ResourceLocation("forge", "gear/"+metal.tagName()));
+			MetalPressRecipeBuilder.builder(Molds.moldGear, gear, 1)
+					.addCondition(getTagCondition(gear))
+					.addInput(new IngredientWithSize(tags.ingot, 4))
+					.setEnergy(2400)
+					.build(out, toRL("metalpress/gear_"+metal.tagName()));
+
+			Tag<Item> rods = new ItemTags.Wrapper(new ResourceLocation("forge", "rods/"+metal.tagName()));
+			MetalPressRecipeBuilder.builder(Molds.moldRod, rods, 2)
+					.addCondition(getTagCondition(rods))
+					.addInput(tags.ingot)
+					.setEnergy(2400)
+					.build(out, toRL("metalpress/rod_"+metal.tagName()));
+
+			Tag<Item> wire = new ItemTags.Wrapper(new ResourceLocation("forge", "wire/"+metal.tagName()));
+			MetalPressRecipeBuilder.builder(Molds.moldWire, wire, 2)
+					.addCondition(getTagCondition(wire))
+					.addInput(tags.ingot)
+					.setEnergy(2400)
+					.build(out, toRL("metalpress/wire_"+metal.tagName()));
+		}
+
+		MetalPressRecipeBuilder.builder(Molds.moldBulletCasing, new ItemStack(Ingredients.emptyCasing, 2))
+				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
+				.setEnergy(2400)
+				.build(out, toRL("metalpress/bullet_casing"));
+
+		ItemStack electrode = new ItemStack(Misc.graphiteElectrode);
+		electrode.setDamage(IEConfig.MACHINES.arcfurnace_electrodeDamage.get()/2);
+		MetalPressRecipeBuilder.builder(Molds.moldRod, electrode)
+				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
+				.setEnergy(4800)
+				.build(out, toRL("metalpress/electrode"));
+
+		MetalPressRecipeBuilder.builder(Molds.moldUnpacking, new ItemStack(Items.MELON_SLICE, 9))
+				.addInput(Items.MELON)
+				.setEnergy(3200)
+				.build(out, toRL("metalpress/melon"));
+
 	}
 
 	private void recipesArcFurnace(@Nonnull Consumer<IFinishedRecipe> out)
@@ -2336,6 +2392,11 @@ public class Recipes extends RecipeProvider
 			itemTag = ItemTags.getCollection().getTagMap().get(in.getId());
 		Preconditions.checkNotNull(itemTag, "Failed to convert block tag "+in.getId()+" to item tag");
 		return makeIngredient(itemTag);
+	}
+
+	private ICondition getTagCondition(Tag<?> tag)
+	{
+		return new NotCondition(new TagEmptyCondition(tag.getId()));
 	}
 
 	/**
