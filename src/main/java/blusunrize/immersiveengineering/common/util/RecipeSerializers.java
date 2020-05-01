@@ -74,5 +74,8 @@ public class RecipeSerializers
 		BottlingMachineRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"bottling_machine", BottlingMachineRecipeSerializer::new
 		);
+		CrusherRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"crusher", CrusherRecipeSerializer::new
+		);
 	}
 }

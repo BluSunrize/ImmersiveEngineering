@@ -50,6 +50,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
@@ -429,13 +430,18 @@ public class Recipes extends RecipeProvider
 		{
 			IETags.MetalTags tags = IETags.getTagsFor(metal);
 
-			MetalPressRecipeBuilder.builder(Molds.moldPlate, tags.plate, 1)
-					.addInput(tags.ingot)
+			Tag<Item> plate = new ItemTags.Wrapper(IETags.getPlate(metal.tagName()));
+			Tag<Item> ingot = new ItemTags.Wrapper(IETags.getIngot(metal.tagName()));
+			MetalPressRecipeBuilder.builder(Molds.moldPlate, plate, 1)
+					.addCondition(getTagCondition(ingot))
+					.addCondition(getTagCondition(plate))
+					.addInput(ingot)
 					.setEnergy(2400)
 					.build(out, toRL("metalpress/plate_"+metal.tagName()));
 
 			Tag<Item> gear = new ItemTags.Wrapper(IETags.getGear(metal.tagName()));
 			MetalPressRecipeBuilder.builder(Molds.moldGear, gear, 1)
+					.addCondition(getTagCondition(ingot))
 					.addCondition(getTagCondition(gear))
 					.addInput(new IngredientWithSize(tags.ingot, 4))
 					.setEnergy(2400)
@@ -443,6 +449,7 @@ public class Recipes extends RecipeProvider
 
 			Tag<Item> rods = new ItemTags.Wrapper(IETags.getRod(metal.tagName()));
 			MetalPressRecipeBuilder.builder(Molds.moldRod, rods, 2)
+					.addCondition(getTagCondition(ingot))
 					.addCondition(getTagCondition(rods))
 					.addInput(tags.ingot)
 					.setEnergy(2400)
@@ -450,10 +457,35 @@ public class Recipes extends RecipeProvider
 
 			Tag<Item> wire = new ItemTags.Wrapper(IETags.getWire(metal.tagName()));
 			MetalPressRecipeBuilder.builder(Molds.moldWire, wire, 2)
+					.addCondition(getTagCondition(ingot))
 					.addCondition(getTagCondition(wire))
 					.addInput(tags.ingot)
 					.setEnergy(2400)
 					.build(out, toRL("metalpress/wire_"+metal.tagName()));
+
+			Tag<Item> dust = new ItemTags.Wrapper(IETags.getDust(metal.tagName()));
+			Tag<Item> ore = new ItemTags.Wrapper(IETags.getOre(metal.tagName()));
+			CrusherRecipeBuilder.builder(dust, 2)
+					.addCondition(getTagCondition(ore))
+					.addCondition(getTagCondition(dust))
+					.addInput(ore)
+					.setEnergy(6000)
+					.build(out, toRL("crusher/ore_"+metal.tagName()));
+			CrusherRecipeBuilder.builder(dust, 1)
+					.addCondition(getTagCondition(ingot))
+					.addCondition(getTagCondition(dust))
+					.addInput(ingot)
+					.setEnergy(3000)
+					.build(out, toRL("crusher/ingot_"+metal.tagName()));
+
+			ArcFurnaceRecipeBuilder.builder(ingot, 2)
+					.addCondition(getTagCondition(ore))
+					.addCondition(getTagCondition(ingot))
+					.addIngredient("input", ore)
+					.addSlag(IETags.slag, 1)
+					.setTime(200)
+					.setEnergy(102400)
+					.build(out, toRL("arcfurnace/"+metal.tagName()));
 		}
 
 		MetalPressRecipeBuilder.builder(Molds.moldBulletCasing, new ItemStack(Ingredients.emptyCasing, 2))
@@ -485,6 +517,75 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.SPONGE)
 				.addFluid(Fluids.WATER, 1000)
 				.build(out, toRL("bottling/sponge"));
+
+		CrusherRecipeBuilder.builder(Items.GRAVEL)
+				.addInput(Tags.Items.COBBLESTONE)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/cobblestone"));
+		CrusherRecipeBuilder.builder(Items.SAND)
+				.addSecondary(Items.FLINT, .1f)
+				.addInput(Tags.Items.GRAVEL)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/gravel"));
+		CrusherRecipeBuilder.builder(Items.SAND)
+				.addInput(IETags.slag)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/slag"));
+		CrusherRecipeBuilder.builder(Items.SAND)
+				.addInput(Tags.Items.GLASS)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/glass"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.SAND, 2))
+				.addSecondary(IETags.saltpeterDust, .5f)
+				.addInput(Tags.Items.SANDSTONE)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/sandstone"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.CLAY_BALL, 4))
+				.addInput(IETags.getItemTag(IETags.clayBlock))
+				.setEnergy(1600)
+				.build(out, toRL("crusher/clay"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.QUARTZ, 4))
+				.addInput(Tags.Items.STORAGE_BLOCKS_QUARTZ)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/quartz"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.GLOWSTONE_DUST, 4))
+				.addInput(Blocks.GLOWSTONE)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/quartz"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.BLAZE_POWDER, 4))
+				.addSecondary(IETags.sulfurDust, .5f)
+				.addInput(Tags.Items.RODS_BLAZE)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/blaze_powder"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.BONE_MEAL, 6))
+				.addInput(Items.BONE)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/bone_meal"));
+		CrusherRecipeBuilder.builder(IETags.coalCokeDust, 1)
+				.addInput(IETags.coalCoke)
+				.setEnergy(2400)
+				.build(out, toRL("crusher/coke"));
+		CrusherRecipeBuilder.builder(IETags.coalCokeDust, 9)
+				.addInput(IETags.getItemTag(IETags.coalCokeBlock))
+				.setEnergy(4800)
+				.build(out, toRL("crusher/coke_block"));
+
+		Tag<Item> coal_dust = new ItemTags.Wrapper(IETags.getDust("coal"));
+		CrusherRecipeBuilder.builder(coal_dust, 1)
+				.addCondition(getTagCondition(coal_dust))
+				.addInput(Items.COAL)
+				.setEnergy(2400)
+				.build(out, toRL("crusher/coal"));
+		CrusherRecipeBuilder.builder(coal_dust, 9)
+				.addCondition(getTagCondition(coal_dust))
+				.addInput(Items.COAL_BLOCK)
+				.setEnergy(4800)
+				.build(out, toRL("crusher/coal_block"));
+
+		CrusherRecipeBuilder.builder(new ItemStack(Items.STRING, 4))
+				.addInput(ItemTags.WOOL)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/wool"));
 	}
 
 	private void recipesStoneDecorations(@Nonnull Consumer<IFinishedRecipe> out)
