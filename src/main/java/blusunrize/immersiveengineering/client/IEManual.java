@@ -252,7 +252,7 @@ public class IEManual
 	private static ManualEntry handleMineralManual(IEManualInstance ieManual)
 	{
 		ManualEntryBuilder builder = new ManualEntryBuilder(ieManual);
-		builder.addSpecialElement("drill", 0, new ManualElementCrafting(ieManual, new ResourceLocation(MODID, "sample_drill")));
+		builder.addSpecialElement("drill", 0, new ManualElementCrafting(ieManual, new ResourceLocation(MODID, "crafting/sample_drill")));
 
 		builder.setContent(IEManual::setupMineralEntry);
 		builder.setLocation(new ResourceLocation(MODID, "minerals"));

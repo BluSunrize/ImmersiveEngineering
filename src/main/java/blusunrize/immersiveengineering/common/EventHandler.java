@@ -30,7 +30,6 @@ import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
-import blusunrize.immersiveengineering.common.network.MessageMineralListSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -261,23 +260,6 @@ public class EventHandler
 				}
 			}
 		}
-	}
-
-	@SubscribeEvent(priority = EventPriority.HIGH)
-	public void onLogin(PlayerLoggedInEvent event)
-	{
-		ExcavatorHandler.allowPacketsToPlayer.add(event.getPlayer().getUniqueID());
-		if(!event.getPlayer().world.isRemote)
-		{
-			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)event.getPlayer()),
-					new MessageMineralListSync(ExcavatorHandler.mineralList.values()));
-		}
-	}
-
-	@SubscribeEvent(priority = EventPriority.HIGH)
-	public void onLogout(PlayerLoggedOutEvent event)
-	{
-		ExcavatorHandler.allowPacketsToPlayer.remove(event.getPlayer().getUniqueID());
 	}
 
 	public static HashMap<UUID, CrusherTileEntity> crusherMap = new HashMap<UUID, CrusherTileEntity>();

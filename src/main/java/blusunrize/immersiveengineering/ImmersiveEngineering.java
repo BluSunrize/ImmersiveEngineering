@@ -142,7 +142,6 @@ public class ImmersiveEngineering
 
 		IECompatModule.doModulesInit();
 		proxy.initEnd();
-		registerMessage(MessageMineralListSync.class, MessageMineralListSync::new);
 		registerMessage(MessageTileSync.class, MessageTileSync::new);
 		registerMessage(MessageTileSync.class, MessageTileSync::new);
 		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new);

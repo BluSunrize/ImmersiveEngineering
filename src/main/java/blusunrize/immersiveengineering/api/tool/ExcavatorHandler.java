@@ -44,7 +44,6 @@ public class ExcavatorHandler
 	public static HashMap<DimensionChunkCoords, MineralWorldInfo> mineralCache = new HashMap<DimensionChunkCoords, MineralWorldInfo>();
 	public static int mineralVeinCapacity = 0;
 	public static double mineralChance = 0;
-	public static Set<UUID> allowPacketsToPlayer = new HashSet<>();
 
 	public static MineralMix getRandomMineral(World world, int chunkX, int chunkZ)
 	{
@@ -79,7 +78,7 @@ public class ExcavatorHandler
 			boolean empty = !guaranteed&&dd > mineralChance;
 			if(!empty)
 			{
-				MineralSelection selection = new MineralSelection(world, chunkCoords, 2);
+				MineralSelection selection = new MineralSelection(chunkCoords, 2);
 				if(selection.getTotalWeight() > 0)
 				{
 					int weight = selection.getRandomWeight(r);
@@ -170,58 +169,6 @@ public class ExcavatorHandler
 				return dimensions.contains(dim);
 			return true;
 		}
-
-		public CompoundNBT writeToNBT()
-		{
-			CompoundNBT tag = new CompoundNBT();
-			tag.putString("id", this.id.toString());
-			tag.putFloat("failChance", this.failChance);
-			ListNBT tagList = new ListNBT();
-			for(StackWithChance o : outputs)
-				tagList.add(o.writeToNBT());
-			tag.put("output", tagList);
-
-			tagList = new ListNBT();
-			for(DimensionType d : dimensions)
-				tagList.add(new StringNBT(DimensionType.getKey(d).toString()));
-			tag.put("dimensions", tagList);
-			return tag;
-		}
-
-		private static ListNBT toNBT(Set<DimensionType> types)
-		{
-			ListNBT ret = new ListNBT();
-			for(DimensionType t : types)
-				ret.add(new StringNBT(DimensionType.getKey(t).toString()));
-			return ret;
-		}
-
-		private static Set<DimensionType> fromNBT(ListNBT nbt)
-		{
-			Set<DimensionType> ret = new HashSet<>();
-			for(INBT entry : nbt)
-				ret.add(DimensionType.byName(new ResourceLocation(entry.getString())));
-			return ret;
-		}
-
-		public static MineralMix readFromNBT(CompoundNBT tag)
-		{
-			ResourceLocation id = new ResourceLocation(tag.getString("id"));
-
-			ListNBT list = tag.getList("output", NBT.TAG_COMPOUND);
-			StackWithChance[] outputs = new StackWithChance[list.size()];
-			for(int i = 0; i < list.size(); ++i)
-				outputs[i] = StackWithChance.readFromNBT(list.getCompound(i));
-
-			int weight = tag.getInt("weight");
-			float failChance = tag.getFloat("failChance");
-			list = tag.getList("dimensions", NBT.TAG_STRING);
-			DimensionType[] dimensions = new DimensionType[list.size()];
-			for(int i = 0; i < list.size(); ++i)
-				dimensions[i] = DimensionType.byName(new ResourceLocation(list.getString(i)));
-
-			return new MineralMix(id, outputs, weight, failChance, dimensions);
-		}
 	}
 
 	public static class MineralWorldInfo
@@ -264,7 +211,7 @@ public class ExcavatorHandler
 		private final int totalWeight;
 		private final Set<MineralMix> validMinerals;
 
-		public MineralSelection(World world, DimensionChunkCoords chunkCoords, int radius)
+		public MineralSelection(DimensionChunkCoords chunkCoords, int radius)
 		{
 			Set<MineralMix> surrounding = new HashSet<>();
 			for(int xx = -radius; xx <= radius; xx++)

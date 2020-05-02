@@ -100,13 +100,15 @@ public class ModelCoresample extends BakedIEModel
 					for(StackWithChance o : mineral.outputs)
 						if(!o.getStack().isEmpty())
 						{
-							int weight = Math.max(2, (int)Math.round(16*o.getChance()));
+							int weight = Math.max(2, Math.round(16*o.getChance()));
 							Block b = Block.getBlockFromItem(o.getStack().getItem());
-							BlockState state = b!=Blocks.AIR?b.getDefaultState(): Blocks.STONE.getDefaultState();
-							IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
-							if(model!=null&&model.getParticleTexture()!=null)
+							if(b!=Blocks.AIR)
+							{
+								BlockState state = b.getDefaultState();
+								IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
 								textureOre.put(model.getParticleTexture(), weight);
-							pixelLength += weight;
+								pixelLength += weight;
+							}
 						}
 				}
 				else
