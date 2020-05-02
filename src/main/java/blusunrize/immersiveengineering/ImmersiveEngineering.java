@@ -232,7 +232,6 @@ public class ImmersiveEngineering
 			}
 		}
 		IEContent.refreshFluidReferences();
-		ExcavatorHandler.recalculateChances(true);
 	}
 
 	public static ItemGroup itemGroup = new ItemGroup(MODID)

@@ -40,42 +40,11 @@ public class ExcavatorHandler
 	/**
 	 * A HashMap of MineralMixes and their rarity (Integer out of 100)
 	 */
-	//public static LinkedHashMap<MineralMix, Integer> mineralList = new LinkedHashMap<MineralMix, Integer>();
 	public static Map<ResourceLocation, MineralMix> mineralList = new HashMap<>();
 	public static HashMap<DimensionChunkCoords, MineralWorldInfo> mineralCache = new HashMap<DimensionChunkCoords, MineralWorldInfo>();
-	//private static HashMap<Integer, Set<MineralMix>> dimensionPermittedMinerals = new HashMap<Integer, Set<MineralMix>>();
 	public static int mineralVeinCapacity = 0;
 	public static double mineralChance = 0;
-	//public static Set<DimensionType> defaultDimensionBlacklist = new HashSet<>();
 	public static Set<UUID> allowPacketsToPlayer = new HashSet<>();
-
-	public static MineralMix addMineral(String name, int mineralWeight, float failChance, ResourceLocation[] ores, float[] chances)
-	{
-		//todo: remove
-//		assert ores.length==chances.length;
-//		MineralMix mix = new MineralMix(name, failChance, ores, chances);
-//		mineralList.put(mix, mineralWeight);
-//		return mix;
-		return null;
-	}
-
-	public static void recalculateChances(boolean mutePackets)
-	{
-		//todo remove entirely??
-//		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
-//			e.getKey().recalculateChances();
-//		dimensionPermittedMinerals.clear();
-//		if(EffectiveSide.get()==LogicalSide.SERVER&&!mutePackets)
-//		{
-//			HashMap<MineralMix, Integer> packetMap = new HashMap<>();
-//			for(Map.Entry<MineralMix, Integer> e : ExcavatorHandler.mineralList.entrySet())
-//				if(e.getKey()!=null&&e.getValue()!=null)
-//					packetMap.put(e.getKey(), e.getValue());
-//			for(ServerPlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
-//				if(allowPacketsToPlayer.contains(p.getUniqueID()))
-//					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> p), new MessageMineralListSync(packetMap));
-//		}
-	}
 
 	public static MineralMix getRandomMineral(World world, int chunkX, int chunkZ)
 	{
@@ -148,13 +117,7 @@ public class ExcavatorHandler
 		public final StackWithChance[] outputs;
 		public final int weight;
 		public final float failChance;
-		//boolean isValid = false;
-		/**
-		 * Should an ore given to this mix not be present in the dictionary, it will attempt to draw a replacement from this list
-		 */
-		public Map<ResourceLocation, ResourceLocation> replacementOres;
 		public final ImmutableSet<DimensionType> dimensions;
-//		public Set<DimensionType> dimensionBlacklist;
 
 		public MineralMix(ResourceLocation id, StackWithChance[] outputs, int weight, float failChance, DimensionType[] dimensions)
 		{
@@ -163,19 +126,7 @@ public class ExcavatorHandler
 			this.failChance = failChance;
 			this.outputs = outputs;
 			this.dimensions = ImmutableSet.copyOf(dimensions);
-//			this.dimensionBlacklist = new HashSet<>(defaultDimensionBlacklist);
 		}
-
-//		public MineralMix(String name, float failChance, ResourceLocation[] ores, float[] chances)
-//		{
-//			this.name = name;
-//			this.failChance = failChance;
-//			Preconditions.checkArgument(ores.length==chances.length);
-//			outputs = new ArrayList<>();
-//			for(int i = 0; i < ores.length; ++i)
-//				outputs.add(new OreOutput(ores[i], chances[i]));
-//			this.dimensionBlacklist = new HashSet<>(defaultDimensionBlacklist);
-//		}
 
 		@Override
 		protected IERecipeSerializer<MineralMix> getIESerializer()
@@ -189,14 +140,6 @@ public class ExcavatorHandler
 			return ItemStack.EMPTY;
 		}
 
-//		public MineralMix addReplacement(ResourceLocation original, ResourceLocation replacement)
-//		{
-//			if(replacementOres==null)
-//				replacementOres = new HashMap<>();
-//			replacementOres.put(original, replacement);
-//			return this;
-//		}
-
 		public String getPlainName()
 		{
 			String path = getId().getPath();
@@ -206,41 +149,6 @@ public class ExcavatorHandler
 		public String getTranslationKey()
 		{
 			return Lib.DESC_INFO+"mineral."+getPlainName();
-		}
-
-		public void recalculateChances()
-		{
-			/* TODO: remove
-			double chanceSum = 0;
-			for(StackWithChance output : outputs)
-			{
-				ResourceLocation ore = output.tag;
-				if(replacementOres!=null&&!ApiUtils.isNonemptyItemTag(ore)&&replacementOres.containsKey(ore))
-					ore = replacementOres.get(ore);
-				if(ore!=null)
-				{
-					ItemStack preferredOre;
-					if(ApiUtils.isNonemptyBlockOrItemTag(ore))
-						preferredOre = IEApi.getPreferredTagStack(ore);
-					else
-						preferredOre = new ItemStack(ForgeRegistries.ITEMS.getValue(ore));
-
-					if(!preferredOre.isEmpty())
-					{
-						output.stack = preferredOre;
-						isValid = true;
-						chanceSum += output.baseChance;
-					}
-					else
-						output.stack = ItemStack.EMPTY;
-				}
-			}
-			for(OreOutput output : outputs)
-				if(output.stack.isEmpty())
-					output.recalculatedChance = -1;
-				else
-					output.recalculatedChance = output.baseChance/chanceSum;
-			 */
 		}
 
 		public ItemStack getRandomOre(Random rand)
@@ -256,19 +164,10 @@ public class ExcavatorHandler
 			return ItemStack.EMPTY;
 		}
 
-		public boolean isValid()
-		{
-			return true;//isValid;
-		}
-
 		public boolean validDimension(DimensionType dim)
 		{
 			if(dimensions!=null&&!dimensions.isEmpty())
 				return dimensions.contains(dim);
-			/* todo remove
-			else if(dimensionBlacklist!=null&&!dimensionBlacklist.isEmpty())
-				return !dimensionBlacklist.contains(dim);
-			 */
 			return true;
 		}
 
@@ -286,9 +185,6 @@ public class ExcavatorHandler
 			for(DimensionType d : dimensions)
 				tagList.add(new StringNBT(DimensionType.getKey(d).toString()));
 			tag.put("dimensions", tagList);
-			//tag.putBoolean("isValid", isValid);
-			//tag.put("dimensionWhitelist", toNBT(dimensions));
-			//tag.put("dimensionBlacklist", toNBT(dimensionBlacklist));
 			return tag;
 		}
 
@@ -319,55 +215,15 @@ public class ExcavatorHandler
 
 			int weight = tag.getInt("weight");
 			float failChance = tag.getFloat("failChance");
-//			boolean isValid = tag.getBoolean("isValid");
 			list = tag.getList("dimensions", NBT.TAG_STRING);
 			DimensionType[] dimensions = new DimensionType[list.size()];
 			for(int i = 0; i < list.size(); ++i)
 				dimensions[i] = DimensionType.byName(new ResourceLocation(list.getString(i)));
 
-			MineralMix mix = new MineralMix(id, outputs, weight, failChance, dimensions);
-			//mix.isValid = isValid;
-//			mix.dimensions = fromNBT();
-			//mix.dimensionBlacklist = fromNBT(tag.getList("dimensionBlacklist", NBT.TAG_STRING));
-			return mix;
+			return new MineralMix(id, outputs, weight, failChance, dimensions);
 		}
 	}
 
-	/*
-		public static class OreOutput
-		{
-			public final ResourceLocation tag;
-			public final double baseChance;
-			@Nonnull
-			public ItemStack stack = ItemStack.EMPTY;
-			public double recalculatedChance;
-
-			public OreOutput(ResourceLocation tag, double baseChance)
-			{
-				this.tag = tag;
-				this.baseChance = baseChance;
-			}
-
-			public OreOutput(CompoundNBT nbt)
-			{
-				this(new ResourceLocation(nbt.getString("tag")), nbt.getDouble("baseChance"));
-				stack = ItemStack.read(nbt.getCompound("stack"));
-				recalculatedChance = nbt.getDouble("recalculatedChance");
-			}
-
-			public CompoundNBT toNBT()
-			{
-				CompoundNBT ret = new CompoundNBT();
-				ret.putString("tag", tag.toString());
-				ret.putDouble("baseChance", baseChance);
-				CompoundNBT stackData = new CompoundNBT();
-				stack.write(stackData);
-				ret.put("stack", stackData);
-				ret.putDouble("recalculatedChance", recalculatedChance);
-				return ret;
-			}
-		}
-	*/
 	public static class MineralWorldInfo
 	{
 		public MineralMix mineral;
@@ -424,7 +280,7 @@ public class ExcavatorHandler
 			int weight = 0;
 			this.validMinerals = new HashSet<>();
 			for(MineralMix e : mineralList.values())
-				if(e.isValid()&&e.validDimension(chunkCoords.dimension)&&!surrounding.contains(e))
+				if(e.validDimension(chunkCoords.dimension)&&!surrounding.contains(e))
 				{
 					validMinerals.add(e);
 					weight += e.weight;

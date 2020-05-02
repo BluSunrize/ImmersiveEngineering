@@ -272,13 +272,7 @@ public class IEManual
 
 	private static String[] setupMineralEntry(TextSplitter splitter)
 	{
-//		final ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
-
-		List<MineralMix> mineralsToAdd = new ArrayList<>();
-		for(MineralMix mineral : ExcavatorHandler.mineralList.values())
-		{
-			mineralsToAdd.add(mineral);
-		}
+		List<MineralMix> mineralsToAdd = new ArrayList<>(ExcavatorHandler.mineralList.values());
 		Function<MineralMix, String> toName = mineral -> {
 			String translationKey = mineral.getTranslationKey();
 			String localizedName = I18n.format(translationKey);
@@ -301,25 +295,10 @@ public class IEManual
 							.append(">");
 				dimensionString = I18n.format("ie.manual.entry.mineralsDimValid", toName.apply(mineral), validDims.toString());
 			}
-			/* todo: remove
-			else if(mineral.dimensionBlacklist!=null&&mineral.dimensionBlacklist.size() > 0)
-			{
-				StringBuilder invalidDims = new StringBuilder();
-				for(DimensionType dim : mineral.dimensionBlacklist)
-					invalidDims.append((invalidDims.length() > 0)?", ": "")
-							.append("<dim;")
-							.append(DimensionType.getKey(dim))
-							.append(">");
-				dimensionString = I18n.format("ie.manual.entry.mineralsDimInvalid", localizedName, invalidDims.toString());
-			}
-			 */
 			else
 				dimensionString = I18n.format("ie.manual.entry.mineralsDimAny", toName.apply(mineral));
 
 			List<StackWithChance> formattedOutputs = Arrays.asList(mineral.outputs);
-//			for(OreOutput o : mineral.outputs)
-//				if(!o.stack.isEmpty())
-//					formattedOutputs.add(o);
 			formattedOutputs.sort(Comparator.comparingDouble(i -> -i.getChance()));
 
 			StringBuilder outputString = new StringBuilder();
