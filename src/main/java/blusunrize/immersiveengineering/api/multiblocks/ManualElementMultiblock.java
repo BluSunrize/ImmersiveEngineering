@@ -38,10 +38,12 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class ManualElementMultiblock extends SpecialManualElements
 {
@@ -112,6 +114,12 @@ public class ManualElementMultiblock extends SpecialManualElements
 						btn -> showCompleted = !showCompleted));
 		}
 
+		checkMaterials();
+		super.onOpened(gui, x, yOff, pageButtons);
+	}
+
+	private void checkMaterials()
+	{
 		ItemStack[] totalMaterials = this.multiblock.getTotalMaterials();
 		if(totalMaterials!=null)
 		{
@@ -168,7 +176,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 					componentTooltip.add(s);
 				}
 		}
-		super.onOpened(gui, x, yOff, pageButtons);
 	}
 
 	@Override
@@ -239,8 +246,12 @@ public class ManualElementMultiblock extends SpecialManualElements
 										BufferBuilder buffer = tessellator.getBuffer();
 										buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 										openBuffer = true;
-										blockRender.renderBlock(state, pos, blockAccess, buffer, Utils.RAND,
-												EmptyModelData.INSTANCE);
+										IModelData modelData = EmptyModelData.INSTANCE;
+										TileEntity te = blockAccess.getTileEntity(pos);
+										if(te!=null)
+											modelData = te.getModelData();
+
+										blockRender.renderBlock(state, pos, blockAccess, buffer, Utils.RAND, modelData);
 										tessellator.draw();
 										openBuffer = false;
 									}
@@ -318,16 +329,37 @@ public class ManualElementMultiblock extends SpecialManualElements
 	static class MultiblockBlockAccess implements IEnviromentBlockReader
 	{
 		private final MultiblockRenderInfo data;
+		private final Map<BlockPos, TileEntity> tiles;
 
 		MultiblockBlockAccess(MultiblockRenderInfo data)
 		{
 			this.data = data;
+			this.tiles = new HashMap<>();
+			for(Entry<BlockPos, BlockInfo> p : data.data.entrySet())
+				if(p.getValue().nbt!=null&&!p.getValue().nbt.isEmpty())
+				{
+					TileEntity te = TileEntity.create(p.getValue().nbt);
+					if(te!=null)
+					{
+						te.cachedBlockState = p.getValue().state;
+						tiles.put(p.getKey(), te);
+					}
+				}
 		}
 
 		@Nullable
 		@Override
 		public TileEntity getTileEntity(BlockPos pos)
 		{
+			if(data.data.containsKey(pos))
+			{
+				int x = pos.getX();
+				int y = pos.getY();
+				int z = pos.getZ();
+				int index = y*(data.structureLength*data.structureWidth)+x*data.structureWidth+z;
+				if(index <= data.getLimiter())
+					return tiles.get(pos);
+			}
 			return null;
 		}
 
@@ -341,7 +373,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 		@Override
 		public BlockState getBlockState(BlockPos pos)
 		{
-
 			if(data.data.containsKey(pos))
 			{
 				int x = pos.getX();

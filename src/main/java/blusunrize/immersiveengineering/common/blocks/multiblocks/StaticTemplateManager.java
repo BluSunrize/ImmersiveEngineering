@@ -49,11 +49,18 @@ public class StaticTemplateManager
 
 	public static Template loadStaticTemplate(ResourceLocation loc) throws IOException
 	{
-		Optional<InputStream> optStream = getModResource(ResourcePackType.SERVER_DATA,
-				new ResourceLocation(loc.getNamespace(), loc.getPath()+".nbt"));
-		if(!optStream.isPresent())
-			throw new RuntimeException("Mod resource not found: "+loc);
-		return loadTemplate(optStream.get());
+		String[] paths = {
+				"structures/"+loc.getPath()+".nbt",
+				loc.getPath()+".nbt",
+		};
+		for(String path : paths)
+		{
+			Optional<InputStream> optStream = getModResource(ResourcePackType.SERVER_DATA,
+					new ResourceLocation(loc.getNamespace(), path));
+			if(optStream.isPresent())
+				return loadTemplate(optStream.get());
+		}
+		throw new RuntimeException("Mod resource not found: "+loc);
 	}
 
 	public static Template loadTemplate(InputStream inputStreamIn) throws IOException

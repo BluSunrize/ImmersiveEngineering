@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -42,7 +43,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirectionalTile, ICollisionBounds,
+public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ICollisionBounds,
 		ISelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
 		ITickableTileEntity, IGeneralMultiblock
 {
@@ -86,18 +87,15 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		BlockState state = getWorldNonnull().getBlockState(pos);
-		return state.get(ConveyorBlock.FACING);
+		return ConveyorBlock.FACING;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public Direction getFacing()
 	{
-		BlockState oldState = getWorldNonnull().getBlockState(pos);
-		BlockState newState = oldState.with(ConveyorBlock.FACING, facing);
-		getWorldNonnull().setBlockState(pos, newState);
+		return IStateBasedDirectional.super.getFacing();
 	}
 
 	@Override

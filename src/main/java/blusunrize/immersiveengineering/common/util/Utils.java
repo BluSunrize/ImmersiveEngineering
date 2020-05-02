@@ -1207,8 +1207,11 @@ public class Utils
 	 *
 	 * @return return value of {@link World#getTileEntity(BlockPos)} or always null if chunk is not loaded
 	 */
+	// TODO change this to use SafeChunkUtils
 	public static TileEntity getExistingTileEntity(World world, BlockPos pos)
 	{
+		if(world==null)
+			return null;
 		if(world.isBlockLoaded(pos))
 			return world.getTileEntity(pos);
 		return null;
