@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.api.crafting.CrusherRecipe.SecondaryOutput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -19,6 +19,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nullable;
 
@@ -36,16 +37,19 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 		ItemStack output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.deserialize(JSONUtils.getJsonObject(json, "input"));
 		JsonArray array = json.getAsJsonArray("secondaries");
-		SecondaryOutput[] secondaries = new SecondaryOutput[array.size()];
+		int energy = JSONUtils.getInt(json, "energy");
+		CrusherRecipe recipe = new CrusherRecipe(recipeId, output, input, energy);
 		for(int i = 0; i < array.size(); i++)
 		{
 			JsonObject element = array.get(i).getAsJsonObject();
-			float chance = JSONUtils.getFloat(element, "chance");
-			ItemStack stack = readOutput(element.get("output"));
-			secondaries[i] = new SecondaryOutput(stack, chance);
+			if(CraftingHelper.processConditions(element, "conditions"))
+			{
+				float chance = JSONUtils.getFloat(element, "chance");
+				ItemStack stack = readOutput(element.get("output"));
+				recipe.addToSecondaryOutput(new StackWithChance(stack, chance));
+			}
 		}
-		int energy = JSONUtils.getInt(json, "energy");
-		return new CrusherRecipe(recipeId, output, input, energy).addToSecondaryOutput(secondaries);
+		return recipe;
 	}
 
 	@Nullable
@@ -55,11 +59,11 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 		ItemStack output = buffer.readItemStack();
 		Ingredient input = Ingredient.read(buffer);
 		int secondaryCount = buffer.readInt();
-		SecondaryOutput[] secondaries = new SecondaryOutput[secondaryCount];
-		for(int i = 0; i < secondaryCount; i++)
-			secondaries[i] = new SecondaryOutput(buffer.readItemStack(), buffer.readFloat());
 		int energy = buffer.readInt();
-		return new CrusherRecipe(recipeId, output, input, energy).addToSecondaryOutput(secondaries);
+		CrusherRecipe recipe = new CrusherRecipe(recipeId, output, input, energy);
+		for(int i = 0; i < secondaryCount; i++)
+			recipe.addToSecondaryOutput(StackWithChance.read(buffer));
+		return recipe;
 	}
 
 	@Override
@@ -68,11 +72,8 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 		buffer.writeItemStack(recipe.output);
 		recipe.input.write(buffer);
 		buffer.writeInt(recipe.secondaryOutputs.size());
-		for(SecondaryOutput secondaryOutput : recipe.secondaryOutputs)
-		{
-			buffer.writeItemStack(secondaryOutput.stack);
-			buffer.writeFloat(secondaryOutput.chance);
-		}
+		for(StackWithChance secondaryOutput : recipe.secondaryOutputs)
+			secondaryOutput.write(buffer);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}
 }

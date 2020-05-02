@@ -8,24 +8,22 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -42,7 +40,7 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public final Ingredient input;
 	public final ItemStack output;
-	public final List<SecondaryOutput> secondaryOutputs = new ArrayList<>();
+	public final List<StackWithChance> secondaryOutputs = new ArrayList<>();
 
 	public CrusherRecipe(ResourceLocation id, ItemStack output, Ingredient input, int energy)
 	{
@@ -67,20 +65,19 @@ public class CrusherRecipe extends MultiblockRecipe
 	{
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(output);
-		for(SecondaryOutput output : secondaryOutputs)
-			if(!output.stack.isEmpty()&&Utils.RAND.nextFloat() < output.chance)
-				list.add(output.stack);
+		for(StackWithChance output : secondaryOutputs)
+			if(!output.getStack().isEmpty()&&Utils.RAND.nextFloat() < output.getChance())
+				list.add(output.getStack());
 		return list;
 	}
 
 	/**
 	 * Adds secondary outputs to the recipe. Should the recipe have secondary outputs, these will be added /in addition/
 	 */
-	public CrusherRecipe addToSecondaryOutput(SecondaryOutput... outputs)
+	public CrusherRecipe addToSecondaryOutput(StackWithChance output)
 	{
-		for(SecondaryOutput o : outputs)
-			Preconditions.checkNotNull(o);
-		secondaryOutputs.addAll(Arrays.asList(outputs));
+		Preconditions.checkNotNull(output);
+		secondaryOutputs.add(output);
 		return this;
 	}
 
@@ -143,16 +140,4 @@ public class CrusherRecipe extends MultiblockRecipe
 		return 4;
 	}
 
-	public static class SecondaryOutput
-	{
-		public final ItemStack stack;
-		public final float chance;
-
-		public SecondaryOutput(ItemStack stack, float chance)
-		{
-			Preconditions.checkNotNull(stack);
-			this.stack = stack;
-			this.chance = chance;
-		}
-	}
 }

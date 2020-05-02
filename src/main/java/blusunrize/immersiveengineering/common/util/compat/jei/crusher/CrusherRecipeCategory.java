@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.crusher;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.api.crafting.CrusherRecipe.SecondaryOutput;
+import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -48,9 +48,9 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	{
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
 		NonNullList<ItemStack> l = ListUtils.fromItems(recipe.output);
-		for(SecondaryOutput output : recipe.secondaryOutputs)
-			if(!output.stack.isEmpty())
-				l.add(output.stack);
+		for(StackWithChance output : recipe.secondaryOutputs)
+			if(!output.getStack().isEmpty())
+				l.add(output.getStack());
 		ingredients.setOutputs(VanillaTypes.ITEM, l);
 	}
 
@@ -62,7 +62,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
 		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 
-		List<SecondaryOutput> validSecondaries = getValidSecondaryOutputs(recipe);
+		List<StackWithChance> validSecondaries = getValidSecondaryOutputs(recipe);
 		int y = validSecondaries.isEmpty()?18: validSecondaries.size() < 2?9: 0;
 		guiItemStacks.init(1, false, 77, y);
 		guiItemStacks.set(1, recipe.output);
@@ -71,7 +71,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 		for(int i = 0; i < validSecondaries.size(); i++)
 		{
 			guiItemStacks.init(2+i, false, 77+i/2*44, y+18+i%2*18);
-			guiItemStacks.set(2+i, validSecondaries.get(i).stack);
+			guiItemStacks.set(2+i, validSecondaries.get(i).getStack());
 			guiItemStacks.setBackground(2+i, JEIHelper.slotDrawable);
 		}
 	}
@@ -79,14 +79,14 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	@Override
 	public void draw(CrusherRecipe recipe, double mouseX, double mouseY)
 	{
-		List<SecondaryOutput> validSecondaries = getValidSecondaryOutputs(recipe);
+		List<StackWithChance> validSecondaries = getValidSecondaryOutputs(recipe);
 		int yBase = validSecondaries.isEmpty()?36: validSecondaries.size() < 2?27: 18;
 		for(int i = 0; i < validSecondaries.size(); i++)
 		{
 			int x = 77+i/2*44;
 			int y = yBase+i%2*18;
 			ClientUtils.font().drawString(
-					Utils.formatDouble(validSecondaries.get(i).chance*100, "0.##")+"%",
+					Utils.formatDouble(validSecondaries.get(i).getChance()*100, "0.##")+"%",
 					x+21,
 					y+6,
 					0x777777
@@ -99,11 +99,11 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 		GlStateManager.popMatrix();
 	}
 
-	private List<SecondaryOutput> getValidSecondaryOutputs(CrusherRecipe recipe)
+	private List<StackWithChance> getValidSecondaryOutputs(CrusherRecipe recipe)
 	{
-		List<SecondaryOutput> validSecondaries = new ArrayList<>();
-		for(SecondaryOutput out : recipe.secondaryOutputs)
-			if(!out.stack.isEmpty()&&out.chance > 0)
+		List<StackWithChance> validSecondaries = new ArrayList<>();
+		for(StackWithChance out : recipe.secondaryOutputs)
+			if(!out.getStack().isEmpty()&&out.getChance() > 0)
 				validSecondaries.add(out);
 		return validSecondaries;
 	}
