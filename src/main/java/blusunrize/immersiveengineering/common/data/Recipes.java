@@ -2410,12 +2410,6 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_glowstone", hasItem(Tags.Items.DUSTS_GLOWSTONE))
 				.build(out, toRL(toPath(MetalDecoration.lantern)));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Misc.hempSeeds)
-				.addIngredient(Tags.Items.STRING)
-				.addIngredient(Tags.Items.SEEDS)
-				.addCriterion("has_seeds", hasItem(Tags.Items.SEEDS))
-				.build(out, toRL(toPath(Misc.hempSeeds)));
-
 		ShapedRecipeBuilder.shapedRecipe(Misc.cartWoodenCrate)
 				.patternLine("B")
 				.patternLine("C")
