@@ -1,6 +1,6 @@
 {
   "start": {
     "type": "crafting",
-    "recipe": "powerpack"
+    "recipe": "crafting/powerpack"
   }
 }

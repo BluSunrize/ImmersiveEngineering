@@ -4,72 +4,72 @@
     "recipes": [
       [
         {
-          "recipe": "ingot_copper_to_storage_copper"
+          "recipe": "crafting/ingot_copper_to_storage_copper"
         },
         {
-          "recipe": "ingot_lead_to_storage_lead"
+          "recipe": "crafting/ingot_lead_to_storage_lead"
         },
         {
-          "recipe": "ingot_silver_to_storage_silver"
+          "recipe": "crafting/ingot_silver_to_storage_silver"
         },
         {
-          "recipe": "ingot_nickel_to_storage_nickel"
+          "recipe": "crafting/ingot_nickel_to_storage_nickel"
         },
         {
-          "recipe": "ingot_uranium_to_storage_uranium"
+          "recipe": "crafting/ingot_uranium_to_storage_uranium"
         },
         {
-          "recipe": "ingot_constantan_to_storage_constantan"
+          "recipe": "crafting/ingot_constantan_to_storage_constantan"
         },
         {
-          "recipe": "ingot_electrum_to_storage_electrum"
+          "recipe": "crafting/ingot_electrum_to_storage_electrum"
         },
         {
-          "recipe": "ingot_steel_to_storage_steel"
+          "recipe": "crafting/ingot_steel_to_storage_steel"
         },
         {
-          "recipe": "ingot_iron_to_storage_iron"
+          "recipe": "crafting/ingot_iron_to_storage_iron"
         },
         {
-          "recipe": "ingot_gold_to_storage_gold"
+          "recipe": "crafting/ingot_gold_to_storage_gold"
         },
         {
-          "recipe": "ingot_aluminum_to_storage_aluminum"
+          "recipe": "crafting/ingot_aluminum_to_storage_aluminum"
         }
       ],
       [
         {
-          "recipe": "sheetmetal_copper"
+          "recipe": "crafting/sheetmetal_copper"
         },
         {
-          "recipe": "sheetmetal_lead"
+          "recipe": "crafting/sheetmetal_lead"
         },
         {
-          "recipe": "sheetmetal_silver"
+          "recipe": "crafting/sheetmetal_silver"
         },
         {
-          "recipe": "sheetmetal_nickel"
+          "recipe": "crafting/sheetmetal_nickel"
         },
         {
-          "recipe": "sheetmetal_uranium"
+          "recipe": "crafting/sheetmetal_uranium"
         },
         {
-          "recipe": "sheetmetal_constantan"
+          "recipe": "crafting/sheetmetal_constantan"
         },
         {
-          "recipe": "sheetmetal_electrum"
+          "recipe": "crafting/sheetmetal_electrum"
         },
         {
-          "recipe": "sheetmetal_steel"
+          "recipe": "crafting/sheetmetal_steel"
         },
         {
-          "recipe": "sheetmetal_iron"
+          "recipe": "crafting/sheetmetal_iron"
         },
         {
-          "recipe": "sheetmetal_gold"
+          "recipe": "crafting/sheetmetal_gold"
         },
         {
-          "recipe": "sheetmetal_aluminum"
+          "recipe": "crafting/sheetmetal_aluminum"
         }
       ]
     ]
@@ -81,18 +81,18 @@
       "recipes": [
         [
           {
-            "recipe": "steel_fence"
+            "recipe": "crafting/steel_fence"
           },
           {
-            "recipe": "alu_fence"
+            "recipe": "crafting/alu_fence"
           }
         ],
         [
           {
-            "recipe": "steel_post"
+            "recipe": "crafting/steel_post"
           },
           {
-            "recipe": "alu_post"
+            "recipe": "crafting/alu_post"
           }
         ]
       ]
@@ -103,18 +103,18 @@
       "recipes": [
         [
           {
-            "recipe": "steel_wallmount"
+            "recipe": "crafting/steel_wallmount"
           },
           {
-            "recipe": "alu_wallmount"
+            "recipe": "crafting/alu_wallmount"
           }
         ],
         [
           {
-            "recipe": "steel_scaffolding_standard"
+            "recipe": "crafting/steel_scaffolding_standard"
           },
           {
-            "recipe": "alu_scaffolding_standard"
+            "recipe": "crafting/alu_scaffolding_standard"
           }
         ]
       ]
@@ -125,13 +125,13 @@
     "recipes": [
       [
         {
-          "recipe": "connector_structural"
+          "recipe": "crafting/connector_structural"
         },
         {
-          "recipe": "wirecoil_structure_rope"
+          "recipe": "crafting/wirecoil_structure_rope"
         },
         {
-          "recipe": "wirecoil_structure_steel"
+          "recipe": "crafting/wirecoil_structure_steel"
         }
       ]
     ]
@@ -141,13 +141,13 @@
     "recipes": [
       [
         {
-          "recipe": "metal_ladder_none"
+          "recipe": "crafting/metal_ladder_none"
         },
         {
-          "recipe": "metal_ladder_alu"
+          "recipe": "crafting/metal_ladder_alu"
         },
         {
-          "recipe": "metal_ladder_steel"
+          "recipe": "crafting/metal_ladder_steel"
         }
       ]
     ]

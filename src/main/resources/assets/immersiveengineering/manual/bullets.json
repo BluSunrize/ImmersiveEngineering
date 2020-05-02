@@ -3,8 +3,8 @@
     "type": "crafting",
     "recipes": [
       [
-        "empty_casing",
-        "empty_shell"
+        "crafting/empty_casing",
+        "crafting/empty_shell"
       ]
     ]
   },

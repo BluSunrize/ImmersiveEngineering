@@ -4,32 +4,32 @@
     "recipes": [
       [
       {
-        "recipe": "wire_copper"
+        "recipe": "crafting/wire_copper"
       },
       {
-        "recipe": "wirecoil_copper"
+        "recipe": "crafting/wirecoil_copper"
       },
       {
-        "recipe": "wirecoil_copper_ins"
+        "recipe": "crafting/wirecoil_copper_ins"
       },
 
       {
-        "recipe": "wire_electrum"
+        "recipe": "crafting/wire_electrum"
       },
       {
-        "recipe": "wirecoil_electrum"
+        "recipe": "crafting/wirecoil_electrum"
       },
       {
-        "recipe": "wirecoil_electrum_ins"
+        "recipe": "crafting/wirecoil_electrum_ins"
       },
       {
-        "recipe": "wire_steel"
+        "recipe": "crafting/wire_steel"
       },
       {
-        "recipe": "wire_aluminum"
+        "recipe": "crafting/wire_aluminum"
       },
       {
-        "recipe": "wirecoil_steel"
+        "recipe": "crafting/wirecoil_steel"
       }
       ]
     ]
@@ -80,22 +80,22 @@
     "recipes": [
       [
       {
-        "recipe": "connector_lv"
+        "recipe": "crafting/connector_lv"
       },
       {
-        "recipe": "connector_lv_relay"
+        "recipe": "crafting/connector_lv_relay"
       },
       {
-        "recipe": "connector_mv"
+        "recipe": "crafting/connector_mv"
       },
       {
-        "recipe": "connector_mv_relay"
+        "recipe": "crafting/connector_mv_relay"
       },
       {
-        "recipe": "connector_hv"
+        "recipe": "crafting/connector_hv"
       },
       {
-        "recipe": "connector_hv_relay"
+        "recipe": "crafting/connector_hv_relay"
       }
       ]
     ]
@@ -105,13 +105,13 @@
     "recipes": [
       [
       {
-        "recipe": "capacitor_lv"
+        "recipe": "crafting/capacitor_lv"
       },
       {
-        "recipe": "capacitor_mv"
+        "recipe": "crafting/capacitor_mv"
       },
       {
-        "recipe": "capacitor_hv"
+        "recipe": "crafting/capacitor_hv"
       }
       ]
     ]
@@ -121,21 +121,21 @@
     "recipes": [
       [
       {
-        "recipe": "transformer"
+        "recipe": "crafting/transformer"
       },
       {
-        "recipe": "transformer_hv"
+        "recipe": "crafting/transformer_hv"
       }
       ]
     ]
   },
   "wirecutter_recipe": {
     "type": "crafting",
-    "recipe": "wirecutter"
+    "recipe": "crafting/wirecutter"
   },
   "voltmeter_recipe": {
     "type": "crafting",
-    "recipe": "voltmeter"
+    "recipe": "crafting/voltmeter"
   },
   "feedthrough": {
     "type": "multiblock",

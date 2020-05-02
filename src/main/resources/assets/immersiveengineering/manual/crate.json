@@ -1,10 +1,10 @@
 {
   "normal": {
     "type": "crafting",
-    "recipe": "crate"
+    "recipe": "crafting/crate"
   },
   "reinforced": {
     "type": "crafting",
-    "recipe": "reinforced_crate"
+    "recipe": "crafting/reinforced_crate"
   }
 }

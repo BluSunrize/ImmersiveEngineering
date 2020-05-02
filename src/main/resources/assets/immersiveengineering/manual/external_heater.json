@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "furnace_heater"
+    "recipe": "crafting/furnace_heater"
   }
 }

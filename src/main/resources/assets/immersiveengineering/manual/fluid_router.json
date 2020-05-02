@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "fluid_sorter"
+    "recipe": "crafting/fluid_sorter"
   }
 }

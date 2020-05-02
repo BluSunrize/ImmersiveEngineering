@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "maintenance_kit"
+    "recipe": "crafting/maintenance_kit"
   }
 }

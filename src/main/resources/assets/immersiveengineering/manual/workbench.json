@@ -1,6 +1,6 @@
 {
   "start": {
     "type": "crafting",
-    "recipe": "workbench"
+    "recipe": "crafting/workbench"
   }
 }

@@ -1,6 +1,6 @@
 {
   "start": {
     "type": "crafting",
-    "recipe": "craftingtable"
+    "recipe": "crafting/craftingtable"
   }
 }

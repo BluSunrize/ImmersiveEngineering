@@ -1,14 +1,14 @@
 {
   "lantern": {
     "type": "crafting",
-    "recipe": "lantern"
+    "recipe": "crafting/lantern"
   },
   "electric_lantern": {
     "type": "crafting",
-    "recipe": "electric_lantern"
+    "recipe": "crafting/electric_lantern"
   },
   "floodlight": {
     "type": "crafting",
-    "recipe": "floodlight"
+    "recipe": "crafting/floodlight"
   }
 }

@@ -1,6 +1,6 @@
 {
   "start": {
     "type": "crafting",
-    "recipe": "current_transformer"
+    "recipe": "crafting/current_transformer"
   }
 }

@@ -1,7 +1,7 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "earmuffs"
+    "recipe": "crafting/earmuffs"
   },
   "color_and_armor": {
     "type": "crafting",

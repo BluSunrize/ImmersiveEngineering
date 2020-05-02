@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "razor_wire"
+    "recipe": "crafting/razor_wire"
   }
 }

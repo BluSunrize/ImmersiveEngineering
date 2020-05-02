@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "charging_station"
+    "recipe": "crafting/charging_station"
   }
 }

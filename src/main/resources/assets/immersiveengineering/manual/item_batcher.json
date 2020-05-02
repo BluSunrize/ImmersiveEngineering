@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "item_batcher"
+    "recipe": "crafting/item_batcher"
   }
 }

@@ -3,17 +3,17 @@
     "type": "crafting",
     "recipes": [
       [
-        "railgun",
-        "wooden_grip"
+        "crafting/railgun",
+        "crafting/wooden_grip"
       ]
     ]
   },
   "caps": {
     "type": "crafting",
-    "recipe": "toolupgrade_railgun_capacitors"
+    "recipe": "crafting/toolupgrade_railgun_capacitors"
   },
   "scope": {
     "type": "crafting",
-    "recipe": "toolupgrade_railgun_scope"
+    "recipe": "crafting/toolupgrade_railgun_scope"
   }
 }

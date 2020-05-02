@@ -1,10 +1,10 @@
 {
   "hammer": {
     "type": "crafting",
-    "recipe": "hammer"
+    "recipe": "crafting/hammer"
   },
   "screwdriver": {
     "type": "crafting",
-    "recipe": "screwdriver"
+    "recipe": "crafting/screwdriver"
   }
 }
