@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/tesla_coil"
+    ]
+  },
+  "criteria": {
+    "has_capacitor_hv": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:capacitor_hv"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/tesla_coil"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_capacitor_hv",
+      "has_the_recipe"
+    ]
+  ]
+}

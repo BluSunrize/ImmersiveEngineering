@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/toolupgrade_chemthrower_focus"
+    ]
+  },
+  "criteria": {
+    "has_fluid_pipe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:fluid_pipe"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/toolupgrade_chemthrower_focus"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_fluid_pipe",
+      "has_the_recipe"
+    ]
+  ]
+}

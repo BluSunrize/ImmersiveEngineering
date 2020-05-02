@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/storage_silver_to_slab"
+    ]
+  },
+  "criteria": {
+    "has_storage_silver": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:storage_silver"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/storage_silver_to_slab"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_storage_silver",
+      "has_the_recipe"
+    ]
+  ]
+}

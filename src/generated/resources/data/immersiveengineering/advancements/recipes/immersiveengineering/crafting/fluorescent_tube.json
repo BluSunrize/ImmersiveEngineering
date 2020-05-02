@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/fluorescent_tube"
+    ]
+  },
+  "criteria": {
+    "has_electrode": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:graphite_electrode"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/fluorescent_tube"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_electrode",
+      "has_the_recipe"
+    ]
+  ]
+}

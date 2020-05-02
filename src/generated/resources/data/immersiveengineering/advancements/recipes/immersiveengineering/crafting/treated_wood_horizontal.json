@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/treated_wood_horizontal"
+    ]
+  },
+  "criteria": {
+    "has_creosote": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:creosote_bucket"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/treated_wood_horizontal"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_creosote",
+      "has_the_recipe"
+    ]
+  ]
+}

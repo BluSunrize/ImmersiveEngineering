@@ -1,0 +1,46 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "ores": [
+    {
+      "chance": 0.8,
+      "output": {
+        "count": 1,
+        "base_ingredient": {
+          "tag": "forge:ores/coal"
+        }
+      }
+    },
+    {
+      "chance": 0.2,
+      "output": {
+        "count": 1,
+        "base_ingredient": {
+          "tag": "forge:dusts/sulfur"
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:dusts/phosphorus",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ],
+      "chance": 0.2,
+      "output": {
+        "count": 1,
+        "base_ingredient": {
+          "tag": "forge:dusts/phosphorus"
+        }
+      }
+    }
+  ],
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "weight": 25,
+  "fail_chance": 0.05
+}

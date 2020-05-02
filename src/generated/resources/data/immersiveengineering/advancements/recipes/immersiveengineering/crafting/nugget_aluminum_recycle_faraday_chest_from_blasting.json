@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/nugget_aluminum_recycle_faraday_chest_from_blasting"
+    ]
+  },
+  "criteria": {
+    "has_armor_faraday_chest": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:armor_faraday_chest"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/nugget_aluminum_recycle_faraday_chest_from_blasting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_armor_faraday_chest",
+      "has_the_recipe"
+    ]
+  ]
+}

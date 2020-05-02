@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/gunpowder_from_dusts"
+    ]
+  },
+  "criteria": {
+    "has_sulfur": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dusts/sulfur"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/gunpowder_from_dusts"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sulfur",
+      "has_the_recipe"
+    ]
+  ]
+}

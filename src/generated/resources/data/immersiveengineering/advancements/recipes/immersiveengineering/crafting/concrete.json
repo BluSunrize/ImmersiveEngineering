@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/concrete"
+    ]
+  },
+  "criteria": {
+    "has_clay": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:clay"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/concrete"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_clay",
+      "has_the_recipe"
+    ]
+  ]
+}

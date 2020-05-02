@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/sheetmetal_lead"
+    ]
+  },
+  "criteria": {
+    "has_plate_lead": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:plate_lead"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/sheetmetal_lead"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_plate_lead",
+      "has_the_recipe"
+    ]
+  ]
+}

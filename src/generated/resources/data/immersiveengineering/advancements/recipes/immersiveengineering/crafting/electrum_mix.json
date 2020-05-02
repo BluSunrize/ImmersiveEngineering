@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/electrum_mix"
+    ]
+  },
+  "criteria": {
+    "has_gold_dust": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dusts/gold"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/electrum_mix"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_gold_dust",
+      "has_the_recipe"
+    ]
+  ]
+}

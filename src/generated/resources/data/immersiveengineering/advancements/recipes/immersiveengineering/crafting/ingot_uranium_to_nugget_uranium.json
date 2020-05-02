@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/ingot_uranium_to_nugget_uranium"
+    ]
+  },
+  "criteria": {
+    "has_ingot_uranium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:nugget_uranium"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/ingot_uranium_to_nugget_uranium"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ingot_uranium",
+      "has_the_recipe"
+    ]
+  ]
+}

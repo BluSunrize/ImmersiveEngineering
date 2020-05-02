@@ -1,0 +1,21 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "inputs": [
+    {
+      "item": "immersiveengineering:empty_casing"
+    },
+    {
+      "tag": "forge:gunpowder"
+    },
+    {
+      "count": 2,
+      "base_ingredient": {
+        "tag": "forge:nuggets/lead"
+      }
+    }
+  ],
+  "category": "bullet",
+  "result": {
+    "item": "immersiveengineering:casull"
+  }
+}

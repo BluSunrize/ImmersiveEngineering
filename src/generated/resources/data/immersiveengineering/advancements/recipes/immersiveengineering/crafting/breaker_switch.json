@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/breaker_switch"
+    ]
+  },
+  "criteria": {
+    "has_wirecoil_copper": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:wirecoil_copper"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/breaker_switch"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wirecoil_copper",
+      "has_the_recipe"
+    ]
+  ]
+}

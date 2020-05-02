@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/turret_chem"
+    ]
+  },
+  "criteria": {
+    "has_chemthrower": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:chemthrower"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/turret_chem"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chemthrower",
+      "has_the_recipe"
+    ]
+  ]
+}

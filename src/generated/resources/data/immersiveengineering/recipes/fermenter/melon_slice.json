@@ -1,0 +1,11 @@
+{
+  "type": "immersiveengineering:fermenter",
+  "fluid": {
+    "fluid": "immersiveengineering:ethanol",
+    "amount": 80
+  },
+  "input": {
+    "item": "minecraft:melon_slice"
+  },
+  "energy": 6400
+}

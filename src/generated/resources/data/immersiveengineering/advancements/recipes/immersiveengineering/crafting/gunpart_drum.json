@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/gunpart_drum"
+    ]
+  },
+  "criteria": {
+    "has_ingot_steel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/steel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/gunpart_drum"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ingot_steel",
+      "has_the_recipe"
+    ]
+  ]
+}

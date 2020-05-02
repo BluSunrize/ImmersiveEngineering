@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/alu_scaffolding_standard_from_slab"
+    ]
+  },
+  "criteria": {
+    "has_alu_scaffolding_standard": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:alu_scaffolding_standard"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/alu_scaffolding_standard_from_slab"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_alu_scaffolding_standard",
+      "has_the_recipe"
+    ]
+  ]
+}

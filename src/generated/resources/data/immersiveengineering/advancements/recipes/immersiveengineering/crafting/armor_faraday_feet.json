@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/armor_faraday_feet"
+    ]
+  },
+  "criteria": {
+    "has_alu_plate": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:plates/aluminum"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/armor_faraday_feet"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_alu_plate",
+      "has_the_recipe"
+    ]
+  ]
+}

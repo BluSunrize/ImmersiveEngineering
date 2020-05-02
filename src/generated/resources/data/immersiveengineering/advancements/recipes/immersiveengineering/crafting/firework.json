@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/firework"
+    ]
+  },
+  "criteria": {
+    "has_firework": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:firework_rocket"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/firework"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_firework",
+      "has_the_recipe"
+    ]
+  ]
+}

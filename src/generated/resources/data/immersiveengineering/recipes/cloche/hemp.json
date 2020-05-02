@@ -1,0 +1,23 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "immersiveengineering:hemp_fiber"
+    },
+    {
+      "item": "immersiveengineering:seed",
+      "count": 2
+    }
+  ],
+  "input": {
+    "item": "immersiveengineering:seed"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 800,
+  "render": {
+    "type": "hemp",
+    "block": "immersiveengineering:hemp"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "ores": [
+    {
+      "chance": 0.7,
+      "output": {
+        "count": 1,
+        "base_ingredient": {
+          "tag": "forge:ores/uranium"
+        }
+      }
+    },
+    {
+      "chance": 0.3,
+      "output": {
+        "count": 1,
+        "base_ingredient": {
+          "tag": "forge:ores/lead"
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:ores/thorium",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ],
+      "chance": 0.1,
+      "output": {
+        "count": 1,
+        "base_ingredient": {
+          "tag": "forge:ores/thorium"
+        }
+      }
+    }
+  ],
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "weight": 10,
+  "fail_chance": 0.15
+}

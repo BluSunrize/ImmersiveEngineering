@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/constantan_mix"
+    ]
+  },
+  "criteria": {
+    "has_nickel_dust": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dusts/nickel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/constantan_mix"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_nickel_dust",
+      "has_the_recipe"
+    ]
+  ]
+}

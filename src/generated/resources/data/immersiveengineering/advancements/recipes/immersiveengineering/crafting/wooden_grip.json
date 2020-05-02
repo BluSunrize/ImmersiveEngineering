@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/wooden_grip"
+    ]
+  },
+  "criteria": {
+    "has_treated_sticks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:rods/treated_wood"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/wooden_grip"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_treated_sticks",
+      "has_the_recipe"
+    ]
+  ]
+}

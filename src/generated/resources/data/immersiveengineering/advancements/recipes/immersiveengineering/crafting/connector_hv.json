@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/connector_hv"
+    ]
+  },
+  "criteria": {
+    "has_aluminum_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/iron"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/connector_hv"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_aluminum_ingot",
+      "has_the_recipe"
+    ]
+  ]
+}

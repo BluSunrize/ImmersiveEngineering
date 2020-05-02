@@ -1,0 +1,24 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "minecraft:red_mushroom"
+    }
+  ],
+  "input": {
+    "item": "minecraft:red_mushroom"
+  },
+  "soil": [
+    {
+      "item": "minecraft:mycelium"
+    },
+    {
+      "item": "minecraft:podzol"
+    }
+  ],
+  "time": 480,
+  "render": {
+    "type": "generic",
+    "block": "minecraft:red_mushroom"
+  }
+}

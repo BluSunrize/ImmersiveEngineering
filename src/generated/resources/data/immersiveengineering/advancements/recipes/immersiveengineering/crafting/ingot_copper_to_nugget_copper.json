@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/ingot_copper_to_nugget_copper"
+    ]
+  },
+  "criteria": {
+    "has_ingot_copper": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:nugget_copper"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/ingot_copper_to_nugget_copper"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ingot_copper",
+      "has_the_recipe"
+    ]
+  ]
+}

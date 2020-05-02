@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/alloybrick"
+    ]
+  },
+  "criteria": {
+    "has_brick": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/brick"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/alloybrick"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_brick",
+      "has_the_recipe"
+    ]
+  ]
+}

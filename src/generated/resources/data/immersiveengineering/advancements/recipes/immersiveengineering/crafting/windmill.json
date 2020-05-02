@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/windmill"
+    ]
+  },
+  "criteria": {
+    "has_windmill_blade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:windmill_blade"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/windmill"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_windmill_blade",
+      "has_the_recipe"
+    ]
+  ]
+}

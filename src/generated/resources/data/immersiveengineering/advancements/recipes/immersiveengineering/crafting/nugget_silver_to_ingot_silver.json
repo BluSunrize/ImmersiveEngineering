@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/nugget_silver_to_ingot_silver"
+    ]
+  },
+  "criteria": {
+    "has_nugget_silver": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:nugget_silver"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/nugget_silver_to_ingot_silver"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_nugget_silver",
+      "has_the_recipe"
+    ]
+  ]
+}

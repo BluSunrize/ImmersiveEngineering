@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/toolupgrade_drill_damage"
+    ]
+  },
+  "criteria": {
+    "has_component_iron": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:component_iron"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/toolupgrade_drill_damage"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_component_iron",
+      "has_the_recipe"
+    ]
+  ]
+}

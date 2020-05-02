@@ -1,0 +1,34 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "ores": [
+    {
+      "chance": 0.3,
+      "output": {
+        "item": "minecraft:granite"
+      }
+    },
+    {
+      "chance": 0.3,
+      "output": {
+        "item": "minecraft:diorite"
+      }
+    },
+    {
+      "chance": 0.3,
+      "output": {
+        "item": "minecraft:andesite"
+      }
+    },
+    {
+      "chance": 0.1,
+      "output": {
+        "item": "minecraft:obsidian"
+      }
+    }
+  ],
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "weight": 25,
+  "fail_chance": 0.05
+}

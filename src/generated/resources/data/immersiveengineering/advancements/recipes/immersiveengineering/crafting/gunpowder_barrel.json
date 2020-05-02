@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/gunpowder_barrel"
+    ]
+  },
+  "criteria": {
+    "has_wooden_barrel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:wooden_barrel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/gunpowder_barrel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wooden_barrel",
+      "has_the_recipe"
+    ]
+  ]
+}

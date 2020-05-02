@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/nugget_electrum_to_ingot_electrum"
+    ]
+  },
+  "criteria": {
+    "has_nugget_electrum": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:nugget_electrum"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/nugget_electrum_to_ingot_electrum"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_nugget_electrum",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/item_batcher"
+    ]
+  },
+  "criteria": {
+    "has_conveyor_basic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:conveyor_basic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/item_batcher"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_conveyor_basic",
+      "has_the_recipe"
+    ]
+  ]
+}

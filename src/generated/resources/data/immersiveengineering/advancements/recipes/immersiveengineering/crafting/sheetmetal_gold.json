@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/sheetmetal_gold"
+    ]
+  },
+  "criteria": {
+    "has_plate_gold": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:plate_gold"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/sheetmetal_gold"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_plate_gold",
+      "has_the_recipe"
+    ]
+  ]
+}

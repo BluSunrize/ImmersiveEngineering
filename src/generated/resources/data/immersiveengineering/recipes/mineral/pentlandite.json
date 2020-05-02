@@ -1,0 +1,37 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "ores": [
+    {
+      "chance": 0.35,
+      "output": {
+        "count": 1,
+        "base_ingredient": {
+          "tag": "forge:ores/iron"
+        }
+      }
+    },
+    {
+      "chance": 0.35,
+      "output": {
+        "count": 1,
+        "base_ingredient": {
+          "tag": "forge:ores/nickel"
+        }
+      }
+    },
+    {
+      "chance": 0.3,
+      "output": {
+        "count": 1,
+        "base_ingredient": {
+          "tag": "forge:dusts/sulfur"
+        }
+      }
+    }
+  ],
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "weight": 25,
+  "fail_chance": 0.05
+}

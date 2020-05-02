@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/ingot_aluminum_to_storage_aluminum"
+    ]
+  },
+  "criteria": {
+    "has_ingot_aluminum": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:ingot_aluminum"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/ingot_aluminum_to_storage_aluminum"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ingot_aluminum",
+      "has_the_recipe"
+    ]
+  ]
+}

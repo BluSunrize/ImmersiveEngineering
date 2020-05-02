@@ -1,0 +1,14 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "mold": {
+    "item": "immersiveengineering:mold_unpacking"
+  },
+  "result": {
+    "item": "minecraft:melon_slice",
+    "count": 9
+  },
+  "input": {
+    "item": "minecraft:melon"
+  },
+  "energy": 3200
+}

@@ -1,0 +1,11 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [],
+  "result": {
+    "item": "minecraft:gravel"
+  },
+  "input": {
+    "tag": "forge:cobblestone"
+  },
+  "energy": 1600
+}

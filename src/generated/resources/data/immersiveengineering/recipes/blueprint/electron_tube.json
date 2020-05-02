@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "inputs": [
+    {
+      "tag": "forge:glass"
+    },
+    {
+      "tag": "forge:plates/nickel"
+    },
+    {
+      "tag": "forge:wires/copper"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    }
+  ],
+  "category": "components",
+  "result": {
+    "item": "immersiveengineering:electron_tube",
+    "count": 3
+  }
+}

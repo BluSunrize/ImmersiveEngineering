@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/sheetmetal_uranium_to_slab"
+    ]
+  },
+  "criteria": {
+    "has_sheetmetal_uranium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:sheetmetal_uranium"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/sheetmetal_uranium_to_slab"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sheetmetal_uranium",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:plates/steel"
+    },
+    {
+      "item": "immersiveengineering:wirecutter"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:wire_steel"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/treated_fence"
+    ]
+  },
+  "criteria": {
+    "has_treated_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:treated_wood"
+          }
+        ]
+      }
+    },
+    "has_treated_sticks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:rods/treated_wood"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/treated_fence"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_treated_planks",
+      "has_treated_sticks",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/toolupgrade_drill_lube"
+    ]
+  },
+  "criteria": {
+    "has_plantoil_bucket": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:plantoil_bucket"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/toolupgrade_drill_lube"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_plantoil_bucket",
+      "has_the_recipe"
+    ]
+  ]
+}

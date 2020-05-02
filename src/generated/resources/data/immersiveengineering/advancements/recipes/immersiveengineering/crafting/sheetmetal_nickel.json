@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/sheetmetal_nickel"
+    ]
+  },
+  "criteria": {
+    "has_plate_nickel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:plate_nickel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/sheetmetal_nickel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_plate_nickel",
+      "has_the_recipe"
+    ]
+  ]
+}

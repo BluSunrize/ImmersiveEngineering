@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/nugget_steel_to_ingot_steel"
+    ]
+  },
+  "criteria": {
+    "has_nugget_steel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:nugget_steel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/nugget_steel_to_ingot_steel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_nugget_steel",
+      "has_the_recipe"
+    ]
+  ]
+}
