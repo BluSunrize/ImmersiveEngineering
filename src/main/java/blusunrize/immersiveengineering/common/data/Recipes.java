@@ -420,11 +420,10 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("blueprint/circuit_board"));
 
 		Item[] molds = {Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking};
-		Ingredient cutters = Ingredient.fromItems(Items.SHEARS, Tools.wirecutter);
 		for(Item mold : molds)
 			BlueprintCraftingRecipeBuilder.builder("molds", mold)
 					.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 5))
-					.addInput(cutters)
+					.addInput(Tools.wirecutter)
 					.build(out, toRL("blueprint/"+toPath(mold)));
 
 
@@ -2070,22 +2069,22 @@ public class Recipes extends RecipeProvider
 
 		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireCopper)
 				.addIngredient(IETags.getTagsFor(EnumMetals.COPPER).plate)
-				.addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+				.addIngredient(Tools.wirecutter)
 				.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.build(out, toRL(toPath(Ingredients.wireCopper)));
 		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireElectrum)
 				.addIngredient(IETags.getTagsFor(EnumMetals.ELECTRUM).plate)
-				.addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+				.addIngredient(Tools.wirecutter)
 				.addCriterion("has_electrum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
 				.build(out, toRL(toPath(Ingredients.wireElectrum)));
 		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireAluminum)
 				.addIngredient(IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
-				.addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+				.addIngredient(Tools.wirecutter)
 				.addCriterion("has_aluminum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
 				.build(out, toRL(toPath(Ingredients.wireAluminum)));
 		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireSteel)
 				.addIngredient(IETags.getTagsFor(EnumMetals.STEEL).plate)
-				.addIngredient(Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+				.addIngredient(Tools.wirecutter)
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(Ingredients.wireSteel)));
 
@@ -2369,7 +2368,7 @@ public class Recipes extends RecipeProvider
 		ShapedRecipeBuilder.shapedRecipe(Misc.maintenanceKit)
 				.patternLine("sc ")
 				.patternLine("fff")
-				.key('c', Ingredient.fromItems(Items.SHEARS, Tools.wirecutter))
+				.key('c', Tools.wirecutter)
 				.key('s', Tools.screwdriver)
 				.key('f', IETags.fabricHemp)
 				.addCriterion("has_"+toPath(Tools.wirecutter), hasItem(Tools.wirecutter))
