@@ -33,7 +33,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	@Override
 	public CrusherRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(JSONUtils.getJsonObject(json, "result"));
+		ItemStack output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.deserialize(JSONUtils.getJsonObject(json, "input"));
 		JsonArray array = json.getAsJsonArray("secondaries");
 		SecondaryOutput[] secondaries = new SecondaryOutput[array.size()];
@@ -41,7 +41,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 		{
 			JsonObject element = array.get(i).getAsJsonObject();
 			float chance = JSONUtils.getFloat(element, "chance");
-			ItemStack stack = readOutput(JSONUtils.getJsonObject(element, "output"));
+			ItemStack stack = readOutput(element.get("output"));
 			secondaries[i] = new SecondaryOutput(stack, chance);
 		}
 		int energy = JSONUtils.getInt(json, "energy");

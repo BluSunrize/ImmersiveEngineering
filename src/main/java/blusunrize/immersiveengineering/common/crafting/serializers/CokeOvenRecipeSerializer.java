@@ -31,8 +31,8 @@ public class CokeOvenRecipeSerializer extends IERecipeSerializer<CokeOvenRecipe>
 	@Override
 	public CokeOvenRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(JSONUtils.getJsonObject(json, "result"));
-		IngredientWithSize input = IngredientWithSize.deserialize(json.getAsJsonObject("input"));
+		ItemStack output = readOutput(json.get("result"));
+		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
 		int time = JSONUtils.getInt(json, "time");
 		int oil = JSONUtils.getInt(json, "creosote");
 		return new CokeOvenRecipe(recipeId, output, input, time, oil);

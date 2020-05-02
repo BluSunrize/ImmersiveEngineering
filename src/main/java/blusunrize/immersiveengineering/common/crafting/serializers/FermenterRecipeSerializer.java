@@ -38,8 +38,8 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 			fluidOutput = Utils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "fluid"));
 		ItemStack itemOutput = ItemStack.EMPTY;
 		if(json.has("result"))
-			itemOutput = readOutput(JSONUtils.getJsonObject(json, "result"));
-		IngredientWithSize input = IngredientWithSize.deserialize(JSONUtils.getJsonObject(json, "input"));
+			itemOutput = readOutput(json.get("result"));
+		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
 		int energy = JSONUtils.getInt(json, "energy");
 		return new FermenterRecipe(recipeId, fluidOutput, itemOutput, input, energy);
 	}

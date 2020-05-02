@@ -33,7 +33,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	@Override
 	public BottlingMachineRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(JSONUtils.getJsonObject(json, "result"));
+		ItemStack output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.deserialize(JSONUtils.getJsonObject(json, "input"));
 		FluidStack fluidStack = Utils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "fluid"));
 		return new BottlingMachineRecipe(recipeId, output, input, fluidStack);

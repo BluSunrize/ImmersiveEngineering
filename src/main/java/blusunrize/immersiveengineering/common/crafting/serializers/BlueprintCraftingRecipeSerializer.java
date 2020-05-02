@@ -33,11 +33,11 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	public BlueprintCraftingRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		String category = JSONUtils.getString(json, "category");
-		ItemStack output = readOutput(json.getAsJsonObject("result"));
+		ItemStack output = readOutput(json.get("result"));
 		JsonArray inputs = json.getAsJsonArray("inputs");
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputs.size()];
 		for(int i = 0; i < ingredients.length; i++)
-			ingredients[i] = IngredientWithSize.deserialize(inputs.get(i).getAsJsonObject());
+			ingredients[i] = IngredientWithSize.deserialize(inputs.get(i));
 		return new BlueprintCraftingRecipe(recipeId, category, output, ingredients);
 	}
 

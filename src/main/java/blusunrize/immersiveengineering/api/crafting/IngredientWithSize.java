@@ -53,7 +53,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		this(basePredicate, 1);
 	}
 
-	public static IngredientWithSize deserialize(JsonObject input)
+	public static IngredientWithSize deserialize(JsonElement input)
 	{
 		return IngredientWithSizeSerializer.INSTANCE.parse(input);
 	}

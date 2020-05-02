@@ -32,9 +32,9 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	@Override
 	public MetalPressRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(json.getAsJsonObject("result"));
-		IngredientWithSize input = IngredientWithSize.deserialize(json.getAsJsonObject("input"));
-		ItemStack mold = readOutput(json.getAsJsonObject("mold"));
+		ItemStack output = readOutput(json.get("result"));
+		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
+		ItemStack mold = readOutput(json.get("mold"));
 		int energy = JSONUtils.getInt(json, "energy");
 		return new MetalPressRecipe(recipeId, output, input, new ComparableItemStack(mold), energy);
 	}

@@ -33,8 +33,8 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 	@Override
 	public BlastFurnaceRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(JSONUtils.getJsonObject(json, "result"));
-		IngredientWithSize input = IngredientWithSize.deserialize(json.getAsJsonObject("input"));
+		ItemStack output = readOutput(json.get("result"));
+		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
 		int time = JSONUtils.getInt(json, "time", 200);
 		ItemStack slag = ItemStack.EMPTY;
 		if(json.has("slag"))

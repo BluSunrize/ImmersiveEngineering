@@ -36,18 +36,18 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 		JsonArray results = json.getAsJsonArray("results");
 		NonNullList<ItemStack> outputs = NonNullList.withSize(results.size(), ItemStack.EMPTY);
 		for(int i = 0; i < results.size(); i++)
-			outputs.set(i, readOutput(results.get(i).getAsJsonObject()));
+			outputs.set(i, readOutput(results.get(i)));
 
-		IngredientWithSize input = IngredientWithSize.deserialize(json.getAsJsonObject("input"));
+		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
 
 		JsonArray additives = json.getAsJsonArray("additives");
 		IngredientWithSize[] ingredients = new IngredientWithSize[additives.size()];
 		for(int i = 0; i < additives.size(); i++)
-			ingredients[i] = IngredientWithSize.deserialize(additives.get(i).getAsJsonObject());
+			ingredients[i] = IngredientWithSize.deserialize(additives.get(i));
 
 		ItemStack slag = ItemStack.EMPTY;
 		if(json.has("slag"))
-			slag = readOutput(JSONUtils.getJsonObject(json, "slag"));
+			slag = readOutput(json.get("slag"));
 
 		int time = JSONUtils.getInt(json, "time");
 		int energy = JSONUtils.getInt(json, "energy");

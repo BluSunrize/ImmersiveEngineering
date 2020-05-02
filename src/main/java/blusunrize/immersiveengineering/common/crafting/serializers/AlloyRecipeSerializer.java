@@ -32,9 +32,9 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	@Override
 	public AlloyRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(JSONUtils.getJsonObject(json, "result"));
-		IngredientWithSize input0 = IngredientWithSize.deserialize(json.getAsJsonObject("input0"));
-		IngredientWithSize input1 = IngredientWithSize.deserialize(json.getAsJsonObject("input1"));
+		ItemStack output = readOutput(json.get("result"));
+		IngredientWithSize input0 = IngredientWithSize.deserialize(json.get("input0"));
+		IngredientWithSize input1 = IngredientWithSize.deserialize(json.get("input1"));
 		int time = JSONUtils.getInt(json, "time", 200);
 		return new AlloyRecipe(recipeId, output, input0, input1, time);
 	}

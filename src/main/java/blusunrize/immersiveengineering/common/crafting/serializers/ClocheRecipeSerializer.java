@@ -39,7 +39,7 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 
 		List<ItemStack> outputs = new ArrayList<>(results.size());
 		for(int i = 0; i < results.size(); i++)
-			outputs.add(readOutput(results.get(i).getAsJsonObject()));
+			outputs.add(readOutput(results.get(i)));
 
 		Ingredient seed = Ingredient.deserialize(json.get("input"));
 		Ingredient soil = Ingredient.deserialize(json.get("soil"));

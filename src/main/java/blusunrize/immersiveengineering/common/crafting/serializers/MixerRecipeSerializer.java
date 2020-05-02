@@ -39,7 +39,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 		JsonArray inputs = json.getAsJsonArray("inputs");
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputs.size()];
 		for(int i = 0; i < ingredients.length; i++)
-			ingredients[i] = IngredientWithSize.deserialize(inputs.get(i).getAsJsonObject());
+			ingredients[i] = IngredientWithSize.deserialize(inputs.get(i));
 		int energy = JSONUtils.getInt(json, "energy");
 		return new MixerRecipe(recipeId, fluidOutput, fluidInput, ingredients, energy);
 	}

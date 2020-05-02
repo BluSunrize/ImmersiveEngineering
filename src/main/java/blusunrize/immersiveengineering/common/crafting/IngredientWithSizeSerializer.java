@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
@@ -39,12 +40,12 @@ public class IngredientWithSizeSerializer
 	}
 
 	@Nonnull
-	public IngredientWithSize parse(@Nonnull JsonObject json)
+	public IngredientWithSize parse(@Nonnull JsonElement json)
 	{
-		if(json.has(BASE_KEY))
+		if(json.isJsonObject() && json.getAsJsonObject().has(BASE_KEY))
 		{
-			final int count = JSONUtils.getInt(json, COUNT_KEY, 1);
-			final JsonObject baseJson = json.getAsJsonObject(BASE_KEY);
+			final int count = JSONUtils.getInt(json.getAsJsonObject(), COUNT_KEY, 1);
+			final JsonElement baseJson = json.getAsJsonObject().get(BASE_KEY);
 			final Ingredient base = Ingredient.deserialize(baseJson);
 			return new IngredientWithSize(base, count);
 		}
