@@ -7,7 +7,7 @@
  *
  */
 
-package blusunrize.immersiveengineering.common.crafting.builders;
+package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import net.minecraft.fluid.Fluid;

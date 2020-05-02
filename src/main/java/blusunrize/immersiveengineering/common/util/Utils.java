@@ -213,27 +213,6 @@ public class Utils
 		return fs;
 	}
 
-	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
-	{
-		if(fluidStack==null)
-			return JsonNull.INSTANCE;
-		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("fluid", fluidStack.getFluid().getRegistryName().toString());
-		jsonObject.addProperty("amount", fluidStack.getAmount());
-		if(fluidStack.hasTag())
-			jsonObject.addProperty("tag", fluidStack.getTag().toString());
-		return jsonObject;
-	}
-
-	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject){
-		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(JSONUtils.getString(jsonObject, "fluid")));
-		int amount = JSONUtils.getInt(jsonObject, "amount");
-		FluidStack fluidStack = new FluidStack(fluid, amount);
-		if(JSONUtils.hasField(jsonObject, "tag"))
-			fluidStack.setTag(JsonUtils.readNBT(jsonObject, "tag"));
-		return fluidStack;
-	}
-
 	private static final long UUID_BASE = 109406000905L;
 	private static long UUIDAdd = 1L;
 

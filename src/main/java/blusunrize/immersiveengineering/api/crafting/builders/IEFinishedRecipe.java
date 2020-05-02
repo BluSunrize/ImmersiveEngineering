@@ -7,11 +7,11 @@
  *
  */
 
-package blusunrize.immersiveengineering.common.crafting.builders;
+package blusunrize.immersiveengineering.api.crafting.builders;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -283,7 +283,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishe
 
 	public R addFluid(String key, FluidStack fluidStack)
 	{
-		return addWriter(jsonObject -> jsonObject.add(key, Utils.jsonSerializeFluidStack(fluidStack)));
+		return addWriter(jsonObject -> jsonObject.add(key, ApiUtils.jsonSerializeFluidStack(fluidStack)));
 	}
 
 	public R addFluid(FluidStack fluidStack)

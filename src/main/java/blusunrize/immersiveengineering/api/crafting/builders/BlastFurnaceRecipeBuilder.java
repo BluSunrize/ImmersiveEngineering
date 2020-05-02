@@ -7,7 +7,7 @@
  *
  */
 
-package blusunrize.immersiveengineering.common.crafting.builders;
+package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;

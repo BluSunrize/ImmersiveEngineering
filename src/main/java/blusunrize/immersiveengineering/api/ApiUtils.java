@@ -21,6 +21,9 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
@@ -33,6 +36,7 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -55,6 +59,7 @@ import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.extensions.IForgeEntityMinecart;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.common.util.JsonUtils;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -64,6 +69,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
@@ -211,6 +217,27 @@ public class ApiUtils
 		ComparableItemStack comp = new ComparableItemStack(stack, copy);
 		comp.setUseNBT(useNbt);
 		return comp;
+	}
+
+	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
+	{
+		if(fluidStack==null)
+			return JsonNull.INSTANCE;
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("fluid", fluidStack.getFluid().getRegistryName().toString());
+		jsonObject.addProperty("amount", fluidStack.getAmount());
+		if(fluidStack.hasTag())
+			jsonObject.addProperty("tag", fluidStack.getTag().toString());
+		return jsonObject;
+	}
+
+	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject){
+		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(JSONUtils.getString(jsonObject, "fluid")));
+		int amount = JSONUtils.getInt(jsonObject, "amount");
+		FluidStack fluidStack = new FluidStack(fluid, amount);
+		if(JSONUtils.hasField(jsonObject, "tag"))
+			fluidStack.setTag(JsonUtils.readNBT(jsonObject, "tag"));
+		return fluidStack;
 	}
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)

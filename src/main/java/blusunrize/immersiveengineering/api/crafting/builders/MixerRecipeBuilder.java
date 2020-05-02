@@ -7,10 +7,9 @@
  *
  */
 
-package blusunrize.immersiveengineering.common.crafting.builders;
+package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
-import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import net.minecraft.fluid.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
