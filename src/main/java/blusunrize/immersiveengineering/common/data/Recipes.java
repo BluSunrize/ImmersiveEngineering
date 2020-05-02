@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
@@ -419,6 +418,76 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.addInput(new ItemStack(Ingredients.electronTube, 2))
 				.build(out, toRL("blueprint/circuit_board"));
+
+		Item[] molds = {Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking};
+		Ingredient cutters = Ingredient.fromItems(Items.SHEARS, Tools.wirecutter);
+		for(Item mold : molds)
+			BlueprintCraftingRecipeBuilder.builder("molds", mold)
+					.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 5))
+					.addInput(cutters)
+					.build(out, toRL("blueprint/"+toPath(mold)));
+
+
+		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.CASULL))
+				.addInput(BulletHandler.emptyCasing)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
+				.build(out, toRL("blueprint/bullet_casull"));
+		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.ARMOR_PIERCING))
+				.addInput(BulletHandler.emptyCasing)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).nugget, 2))
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.CONSTANTAN).nugget, 2))
+				.build(out, toRL("blueprint/bullet_armorpiercing"));
+		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.SILVER))
+				.addInput(BulletHandler.emptyCasing)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
+				.addInput(IETags.getTagsFor(EnumMetals.SILVER).nugget)
+				.build(out, toRL("blueprint/bullet_silver"));
+		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.BUCKSHOT))
+				.addInput(BulletHandler.emptyShell)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).dust, 2))
+				.build(out, toRL("blueprint/bullet_buckshot"));
+
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.HIGH_EXPLOSIVE))
+				.addInput(BulletHandler.emptyCasing)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(Items.TNT)
+				.build(out, toRL("blueprint/bullet_explosive"));
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.DRAGONS_BREATH))
+				.addInput(BulletHandler.emptyShell)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.ALUMINUM).dust, 4))
+				.build(out, toRL("blueprint/bullet_dragonsbreath"));
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.POTION))
+				.addInput(BulletHandler.emptyCasing)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(Items.GLASS_BOTTLE)
+				.build(out, toRL("blueprint/bullet_potion"));
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.FLARE))
+				.addInput(BulletHandler.emptyShell)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
+				.addInput(Tags.Items.DYES_RED)
+				.build(out, toRL("blueprint/bullet_flare_red"));
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.FLARE))
+				.addInput(BulletHandler.emptyShell)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
+				.addInput(Tags.Items.DYES_GREEN)
+				.build(out, toRL("blueprint/bullet_flare_green"));
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.FLARE))
+				.addInput(BulletHandler.emptyShell)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
+				.addInput(Tags.Items.DYES_YELLOW)
+				.build(out, toRL("blueprint/bullet_flare_yellow"));
+
+		BlueprintCraftingRecipeBuilder.builder("electrode", Misc.graphiteElectrode)
+				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
+				.build(out, toRL("blueprint/electrode"));
 	}
 
 	private void recipesMultiblockMachines(@Nonnull Consumer<IFinishedRecipe> out)

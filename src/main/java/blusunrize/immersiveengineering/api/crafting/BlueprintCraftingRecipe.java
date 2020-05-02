@@ -40,7 +40,6 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static float timeModifier = 1;
 
 	public static ArrayListMultimap<String, BlueprintCraftingRecipe> recipeList = ArrayListMultimap.create();
-	public static HashMap<String, ItemStack> villagerPrices = new HashMap<>();
 
 	public String blueprintCategory;
 	public ItemStack output;
@@ -185,14 +184,6 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 			return list.toArray(new BlueprintCraftingRecipe[list.size()]);
 		}
 		return new BlueprintCraftingRecipe[0];
-	}
-
-	/**
-	 * registers a type of blueprint to be up for sale at the IE villager. Stacksize of the price will be slightly randomized (+- 2)
-	 */
-	public static void addVillagerTrade(String blueprintCategory, ItemStack villagerPrice)
-	{
-		villagerPrices.put(blueprintCategory, villagerPrice);
 	}
 
 	@Override
