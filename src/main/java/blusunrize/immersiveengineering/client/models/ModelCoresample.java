@@ -95,6 +95,7 @@ public class ModelCoresample extends BakedIEModel
 				int pixelLength = 0;
 
 				Map<TextureAtlasSprite, Integer> textureOre = new HashMap<>();
+				TextureAtlasSprite textureStone;
 				if(mineral!=null)
 				{
 					for(StackWithChance o : mineral.outputs)
@@ -102,18 +103,21 @@ public class ModelCoresample extends BakedIEModel
 						{
 							int weight = Math.max(2, Math.round(16*o.getChance()));
 							Block b = Block.getBlockFromItem(o.getStack().getItem());
-							if(b!=Blocks.AIR)
-							{
-								BlockState state = b.getDefaultState();
-								IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
-								textureOre.put(model.getParticleTexture(), weight);
-								pixelLength += weight;
-							}
+							if(b==Blocks.AIR)
+								b = mineral.background;
+							BlockState state = b.getDefaultState();
+							IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
+							textureOre.put(model.getParticleTexture(), weight);
+							pixelLength += weight;
 						}
+					IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(mineral.background.getDefaultState());
+					textureStone = model.getParticleTexture();
 				}
 				else
+				{
 					pixelLength = 16;
-				TextureAtlasSprite textureStone = ClientUtils.getSprite(new ResourceLocation("block/stone"));
+					textureStone = ClientUtils.getSprite(new ResourceLocation("block/stone"));
+				}
 
 				Vec2f[] stoneUVs = {
 						new Vec2f(textureStone.getInterpolatedU(16*wOff), textureStone.getInterpolatedV(16*dOff)),

@@ -55,6 +55,11 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		return addWriter(jsonObject -> jsonObject.addProperty("fail_chance", failChance));
 	}
 
+	public MineralMixBuilder setBackground(ResourceLocation resourceLocation)
+	{
+		return addWriter(jsonObject -> jsonObject.addProperty("sample_background", resourceLocation.toString()));
+	}
+
 	public MineralMixBuilder addDimension(DimensionType dimension)
 	{
 		return addDimension(DimensionType.getKey(dimension));

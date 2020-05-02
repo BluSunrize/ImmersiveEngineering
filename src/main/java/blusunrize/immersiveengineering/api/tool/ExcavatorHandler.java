@@ -15,17 +15,14 @@ import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.common.IESaveData;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.*;
@@ -117,14 +114,16 @@ public class ExcavatorHandler
 		public final int weight;
 		public final float failChance;
 		public final ImmutableSet<DimensionType> dimensions;
+		public final Block background;
 
-		public MineralMix(ResourceLocation id, StackWithChance[] outputs, int weight, float failChance, DimensionType[] dimensions)
+		public MineralMix(ResourceLocation id, StackWithChance[] outputs, int weight, float failChance, DimensionType[] dimensions, Block background)
 		{
 			super(ItemStack.EMPTY, TYPE, id);
 			this.weight = weight;
 			this.failChance = failChance;
 			this.outputs = outputs;
 			this.dimensions = ImmutableSet.copyOf(dimensions);
+			this.background = background;
 		}
 
 		@Override

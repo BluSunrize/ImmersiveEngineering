@@ -58,6 +58,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -831,6 +832,7 @@ public class Recipes extends RecipeProvider
 				.addOre(sulfur, .2f)
 				.setWeight(20)
 				.setFailchance(.15f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
 				.build(out, toRL("mineral/mephitic_quarzite"));
 
 		// Compat

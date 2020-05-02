@@ -14,12 +14,15 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -59,7 +62,11 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		DimensionType[] dimensions = new DimensionType[array.size()];
 		for(int i = 0; i < array.size(); i++)
 			dimensions[i] = DimensionType.byName(new ResourceLocation(array.get(i).getAsString()));
-		return new MineralMix(recipeId, ores, weight, failChance, dimensions);
+		ResourceLocation rl = new ResourceLocation(JSONUtils.getString(json, "sample_background", "minecraft:stone"));
+		Block b = ForgeRegistries.BLOCKS.getValue(rl);
+		if(b ==Blocks.AIR)
+			b = Blocks.STONE;
+		return new MineralMix(recipeId, ores, weight, failChance, dimensions, b);
 	}
 
 	@Nullable
@@ -76,7 +83,8 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		DimensionType[] dimensions = new DimensionType[count];
 		for(int i = 0; i < count; i++)
 			dimensions[i] = DimensionType.byName(buffer.readResourceLocation());
-		return new MineralMix(recipeId, outputs, weight, failChance, dimensions);
+		Block bg = ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation());
+		return new MineralMix(recipeId, outputs, weight, failChance, dimensions, bg);
 	}
 
 	@Override
@@ -90,5 +98,6 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		buffer.writeInt(recipe.dimensions.size());
 		for(DimensionType dimension : recipe.dimensions)
 			buffer.writeResourceLocation(DimensionType.getKey(dimension));
+		buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(recipe.background));
 	}
 }
