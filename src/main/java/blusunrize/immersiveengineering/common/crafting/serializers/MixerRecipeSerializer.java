@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
@@ -34,8 +35,8 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	@Override
 	public MixerRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		FluidStack fluidOutput = Utils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result"));
-		FluidStack fluidInput = Utils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "fluid"));
+		FluidStack fluidOutput = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result"));
+		FluidStack fluidInput = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "fluid"));
 		JsonArray inputs = json.getAsJsonArray("inputs");
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputs.size()];
 		for(int i = 0; i < ingredients.length; i++)

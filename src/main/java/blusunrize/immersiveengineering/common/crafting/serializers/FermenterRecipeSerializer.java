@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -35,7 +36,7 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 	{
 		FluidStack fluidOutput = FluidStack.EMPTY;
 		if(json.has("fluid"))
-			fluidOutput = Utils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "fluid"));
+			fluidOutput = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "fluid"));
 		ItemStack itemOutput = ItemStack.EMPTY;
 		if(json.has("result"))
 			itemOutput = readOutput(json.get("result"));
