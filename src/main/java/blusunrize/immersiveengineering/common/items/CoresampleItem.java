@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
@@ -27,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -55,10 +57,13 @@ public class CoresampleItem extends IEBaseItem
 		{
 			if(ItemNBTHelper.hasKey(stack, "mineral"))
 			{
-				String mineral = ItemNBTHelper.getString(stack, "mineral");
-				String unloc = Lib.DESC_INFO+"mineral."+mineral;
+				ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(stack, "mineral"));
+				MineralMix mineral = ExcavatorHandler.mineralList.get(rl);
+				String unloc = mineral.getTranslationKey();
 				String loc = I18n.format(unloc);
-				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mineral", (unloc.equals(loc)?mineral: loc)));
+				if(unloc.equals(loc))
+					loc = mineral.getPlainName();
+				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mineral", loc));
 			}
 			else
 				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.noMineral"));

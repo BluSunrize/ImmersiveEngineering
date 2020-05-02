@@ -1,9 +1,13 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.ManualElementBlueprint;
+import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
+import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.multiblocks.ManualElementMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
@@ -12,7 +16,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.OreOutput;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.manual.ShaderManualElement;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -269,42 +272,36 @@ public class IEManual
 
 	private static String[] setupMineralEntry(TextSplitter splitter)
 	{
-		final ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
+//		final ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
 
 		List<MineralMix> mineralsToAdd = new ArrayList<>();
-		for(MineralMix mineral : minerals)
+		for(MineralMix mineral : ExcavatorHandler.mineralList.values())
 		{
-			mineral.recalculateChances();
-			if(mineral.isValid())
-				mineralsToAdd.add(mineral);
+			mineralsToAdd.add(mineral);
 		}
 		Function<MineralMix, String> toName = mineral -> {
-			String name = Lib.DESC_INFO+"mineral."+mineral.name;
-			String localizedName = I18n.format(name);
-			if(localizedName.equals(name))
-				localizedName = mineral.name;
+			String translationKey = mineral.getTranslationKey();
+			String localizedName = I18n.format(translationKey);
+			if(localizedName.equals(translationKey))
+				localizedName = mineral.getPlainName();
 			return localizedName;
 		};
 		mineralsToAdd.sort((i1, i2) -> toName.apply(i1).compareToIgnoreCase(toName.apply(i2)));
 		StringBuilder entry = new StringBuilder(I18n.format("ie.manual.entry.mineral_main"));
 		for(MineralMix mineral : mineralsToAdd)
 		{
-			String name = Lib.DESC_INFO+"mineral."+mineral.name;
-			String localizedName = I18n.format(name);
-			if(localizedName.equalsIgnoreCase(name))
-				localizedName = mineral.name;
-
 			String dimensionString;
-			if(mineral.dimensionWhitelist!=null&&mineral.dimensionWhitelist.size() > 0)
+			if(mineral.dimensions!=null&&mineral.dimensions.size() > 0)
 			{
 				StringBuilder validDims = new StringBuilder();
-				for(DimensionType dim : mineral.dimensionWhitelist)
+				for(DimensionType dim : mineral.dimensions)
 					validDims.append((validDims.length() > 0)?", ": "")
 							.append("<dim;")
 							.append(DimensionType.getKey(dim))
 							.append(">");
-				dimensionString = I18n.format("ie.manual.entry.mineralsDimValid", localizedName, validDims.toString());
+				dimensionString = I18n.format("ie.manual.entry.mineralsDimValid", toName.apply(mineral), validDims.toString());
 			}
+			/* todo: remove
 			else if(mineral.dimensionBlacklist!=null&&mineral.dimensionBlacklist.size() > 0)
 			{
 				StringBuilder invalidDims = new StringBuilder();
@@ -315,35 +312,36 @@ public class IEManual
 							.append(">");
 				dimensionString = I18n.format("ie.manual.entry.mineralsDimInvalid", localizedName, invalidDims.toString());
 			}
+			 */
 			else
-				dimensionString = I18n.format("ie.manual.entry.mineralsDimAny", localizedName);
+				dimensionString = I18n.format("ie.manual.entry.mineralsDimAny", toName.apply(mineral));
 
-			List<OreOutput> formattedOutputs = new ArrayList<>();
-			for(OreOutput o : mineral.outputs)
-				if(!o.stack.isEmpty())
-					formattedOutputs.add(o);
-			formattedOutputs.sort(Comparator.comparingDouble(i -> -i.recalculatedChance));
+			List<StackWithChance> formattedOutputs = Arrays.asList(mineral.outputs);
+//			for(OreOutput o : mineral.outputs)
+//				if(!o.stack.isEmpty())
+//					formattedOutputs.add(o);
+			formattedOutputs.sort(Comparator.comparingDouble(i -> -i.getChance()));
 
 			StringBuilder outputString = new StringBuilder();
 			NonNullList<ItemStack> sortedOres = NonNullList.create();
-			for(OreOutput sorted : formattedOutputs)
+			for(StackWithChance sorted : formattedOutputs)
 			{
 				outputString
 						.append("\n")
 						.append(
 								new DecimalFormat("00.00")
-										.format(sorted.recalculatedChance*100)
+										.format(sorted.getChance()*100)
 										.replaceAll("\\G0", "\u00A0")
 						).append("% ")
-						.append(sorted.stack.getDisplayName().getFormattedText());
-				sortedOres.add(sorted.stack);
+						.append(sorted.getStack().getDisplayName().getFormattedText());
+				sortedOres.add(sorted.getStack());
 			}
-			splitter.addSpecialPage(mineral.name, 0, new ManualElementItem(ManualHelper.getManual(), sortedOres));
+			splitter.addSpecialPage(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres));
 			String desc = I18n.format("ie.manual.entry.minerals_desc", dimensionString, outputString.toString());
 			if(entry.length() > 0)
 				entry.append("<np>");
 			entry.append("<&")
-					.append(mineral.name)
+					.append(mineral.getId())
 					.append(">")
 					.append(desc);
 		}

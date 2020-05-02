@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.crafting.serializers.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -88,6 +89,9 @@ public class RecipeSerializers
 		);
 		MixerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"mixer", MixerRecipeSerializer::new
+		);
+		MineralMix.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"mineral_mix", MineralMixSerializer::new
 		);
 	}
 }

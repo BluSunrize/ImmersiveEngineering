@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.builders.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -27,7 +28,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
-import blusunrize.immersiveengineering.api.crafting.builders.*;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
@@ -53,6 +53,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
@@ -180,6 +181,8 @@ public class Recipes extends RecipeProvider
 		recipesCloche(out);
 		recipesBlueprint(out);
 		recipesMultiblockMachines(out);
+
+		mineralMixes(out);
 		//NYI
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
 //		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[1]).patternLine("iii").patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
@@ -713,6 +716,149 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.clay)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/concrete"));
+	}
+
+	private void mineralMixes(@Nonnull Consumer<IFinishedRecipe> out)
+	{
+		// Metals
+		Tag<Item> iron = Tags.Items.ORES_IRON;
+		Tag<Item> gold = Tags.Items.ORES_GOLD;
+		Tag<Item> copper = IETags.getItemTag(IETags.getTagsFor(EnumMetals.COPPER).ore);
+		Tag<Item> aluminum = IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).ore);
+		Tag<Item> lead = IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).ore);
+		Tag<Item> silver = IETags.getItemTag(IETags.getTagsFor(EnumMetals.SILVER).ore);
+		Tag<Item> nickel = IETags.getItemTag(IETags.getTagsFor(EnumMetals.NICKEL).ore);
+		Tag<Item> uranium = IETags.getItemTag(IETags.getTagsFor(EnumMetals.URANIUM).ore);
+		Tag<Item> tin = new ItemTags.Wrapper(IETags.getOre("tin"));
+		Tag<Item> titanium = new ItemTags.Wrapper(IETags.getOre("titanium"));
+		Tag<Item> thorium = new ItemTags.Wrapper(IETags.getOre("thorium"));
+		Tag<Item> tungsten = new ItemTags.Wrapper(IETags.getOre("tungsten"));
+		Tag<Item> manganese = new ItemTags.Wrapper(IETags.getOre("manganese"));
+		Tag<Item> platinum = new ItemTags.Wrapper(IETags.getOre("platinum"));
+		Tag<Item> paladium = new ItemTags.Wrapper(IETags.getOre("paladium"));
+		Tag<Item> mercury = new ItemTags.Wrapper(IETags.getOre("mercury"));
+		// Gems & Dusts
+		Tag<Item> sulfur = IETags.sulfurDust;
+		Tag<Item> phosphorus = new ItemTags.Wrapper(IETags.getDust("phosphorus"));
+		Tag<Item> redstone = Tags.Items.ORES_REDSTONE;
+		Tag<Item> emerald = Tags.Items.ORES_EMERALD;
+		Block prismarine = Blocks.PRISMARINE;
+		Tag<Item> aquamarine = new ItemTags.Wrapper(IETags.getGem("aquamarine"));
+
+		// Common things
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(Tags.Items.ORES_COAL, .8f)
+				.addOre(sulfur, .2f)
+				.addOre(phosphorus, .2f, getTagCondition(phosphorus))
+				.setWeight(25)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/bituminous_coal"));
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(Items.CLAY, .5f)
+				.addOre(Items.SAND, .3f)
+				.addOre(Items.GRAVEL, .2f)
+				.setWeight(25)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/silt"));
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(Blocks.GRANITE, .3f)
+				.addOre(Blocks.DIORITE, .3f)
+				.addOre(Blocks.ANDESITE, .3f)
+				.addOre(Blocks.OBSIDIAN, .1f)
+				.setWeight(25)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/igneous_rock"));
+		// Metals
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(iron, .35f)
+				.addOre(nickel, .35f)
+				.addOre(sulfur, .3f)
+				.setWeight(25)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/pentlandite"));
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(iron, .35f)
+				.addOre(copper, .35f)
+				.addOre(sulfur, .3f)
+				.setWeight(20)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/chalcopyrite"));
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(aluminum, .7f)
+				.addOre(iron, .2f)
+				.addOre(titanium, .1f, getTagCondition(titanium))
+				.setWeight(20)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/laterite"));
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(copper, .75f)
+				.addOre(gold, .25f)
+				.setWeight(30)
+				.setFailchance(.1f)
+				.build(out, toRL("mineral/auricupride"));
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(lead, .4f)
+				.addOre(sulfur, .4f)
+				.addOre(silver, .2f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/galena"));
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(redstone, .6f)
+				.addOre(sulfur, .4f)
+				.addOre(mercury, .3f, getTagCondition(mercury))
+				.setWeight(15)
+				.setFailchance(.1f)
+				.build(out, toRL("mineral/cinnabar"));
+		// Rare
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(uranium, .7f)
+				.addOre(lead, .3f)
+				.addOre(thorium, .1f, getTagCondition(thorium))
+				.setWeight(10)
+				.setFailchance(.15f)
+				.build(out, toRL("mineral/uraninite"));
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addOre(emerald, .3f)
+				.addOre(prismarine, .7f)
+				.addOre(aquamarine, .3f, getTagCondition(aquamarine))
+				.setWeight(5)
+				.setFailchance(.2f)
+				.build(out, toRL("mineral/beryl"));
+		// Nether
+		MineralMixBuilder.builder(DimensionType.THE_NETHER)
+				.addOre(Blocks.NETHER_QUARTZ_ORE, .8f)
+				.addOre(sulfur, .2f)
+				.setWeight(20)
+				.setFailchance(.15f)
+				.build(out, toRL("mineral/mephitic_quarzite"));
+
+		// Compat
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addCondition(getTagCondition(tin))
+				.addOre(tin, 1)
+				.setWeight(20)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/cassiterite"));
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addCondition(getTagCondition(platinum))
+				.addOre(platinum, .5f)
+				.addOre(paladium, .5f, getTagCondition(paladium))
+				.addOre(nickel, .5f)
+				.setWeight(5)
+				.setFailchance(.1f)
+				.build(out, toRL("mineral/cooperite"));
+		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+				.addCondition(getTagCondition(tungsten))
+				.addOre(tungsten, .5f)
+				.addOre(iron, .5f)
+				.addOre(manganese, .5f, getTagCondition(manganese))
+				.setWeight(5)
+				.setFailchance(.1f)
+				.build(out, toRL("mineral/wolframite"));
+		//todo
+		//	Lapis
+		//	Cinnabar
 	}
 
 	private void recipesStoneDecorations(@Nonnull Consumer<IFinishedRecipe> out)

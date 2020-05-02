@@ -10,22 +10,21 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
-import blusunrize.immersiveengineering.client.ClientProxy;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Supplier;
 
 public class MessageMineralListSync implements IMessage
 {
-	HashMap<MineralMix, Integer> map = new HashMap<MineralMix, Integer>();
+	Collection<MineralMix> list = new ArrayList<>();
 
-	public MessageMineralListSync(HashMap<MineralMix, Integer> map)
+	public MessageMineralListSync(Collection<MineralMix> list)
 	{
-		this.map = map;
+		this.list = list;
 	}
 
 	public MessageMineralListSync(PacketBuffer buf)
@@ -35,22 +34,16 @@ public class MessageMineralListSync implements IMessage
 		{
 			CompoundNBT tag = buf.readCompoundTag();
 			assert tag!=null;
-			MineralMix mix = MineralMix.readFromNBT(tag);
-			if(mix!=null)
-				map.put(mix, tag.getInt("weight"));
+			list.add(MineralMix.readFromNBT(tag));
 		}
 	}
 
 	@Override
 	public void toBytes(PacketBuffer buf)
 	{
-		buf.writeInt(map.size());
-		for(Map.Entry<MineralMix, Integer> e : map.entrySet())
-		{
-			CompoundNBT tag = e.getKey().writeToNBT();
-			tag.putInt("weight", e.getValue());
-			buf.writeCompoundTag(tag);
-		}
+		buf.writeInt(list.size());
+		for(MineralMix e : list)
+			buf.writeCompoundTag(e.writeToNBT());
 	}
 
 	@Override
@@ -62,7 +55,7 @@ public class MessageMineralListSync implements IMessage
 	private void onMessageMain()
 	{
 		ExcavatorHandler.mineralList.clear();
-		for(MineralMix min : map.keySet())
-			ExcavatorHandler.mineralList.put(min, map.get(min));
+		for(MineralMix min : list)
+			ExcavatorHandler.mineralList.put(min.getId(), min);
 	}
 }

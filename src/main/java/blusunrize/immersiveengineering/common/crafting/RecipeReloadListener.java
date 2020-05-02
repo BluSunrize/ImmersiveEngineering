@@ -10,6 +10,8 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.resources.IResourceManager;
@@ -55,6 +57,11 @@ public class RecipeReloadListener implements ISelectiveResourceReloadListener
 			SqueezerRecipe.recipeList = filterRecipes(recipes, SqueezerRecipe.class, SqueezerRecipe.TYPE);
 			RefineryRecipe.recipeList = filterRecipes(recipes, RefineryRecipe.class, RefineryRecipe.TYPE);
 			MixerRecipe.recipeList = filterRecipes(recipes, MixerRecipe.class, MixerRecipe.TYPE);
+
+			List<MineralMix> mineralMixes = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
+			ExcavatorHandler.mineralList.clear();
+			for(MineralMix r : mineralMixes)
+				ExcavatorHandler.mineralList.put(r.getId(), r);
 		}
 	}
 

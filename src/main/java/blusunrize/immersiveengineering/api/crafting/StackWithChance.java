@@ -64,4 +64,9 @@ public class StackWithChance
 	{
 		return new StackWithChance(buffer.readItemStack(), buffer.readFloat());
 	}
+
+	public StackWithChance recalculate(float totalChance)
+	{
+		return new StackWithChance(this.stack, this.chance/totalChance);
+	}
 }

@@ -149,9 +149,9 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		if(info==null)
 			return stack;
 		if(info.mineralOverride!=null)
-			ItemNBTHelper.putString(stack, "mineral", info.mineralOverride.name);
+			ItemNBTHelper.putString(stack, "mineral", info.mineralOverride.getId().toString());
 		else if(info.mineral!=null)
-			ItemNBTHelper.putString(stack, "mineral", info.mineral.name);
+			ItemNBTHelper.putString(stack, "mineral", info.mineral.getId().toString());
 		else
 			return stack;
 		if(ExcavatorHandler.mineralVeinCapacity < 0||info.depletion < 0)

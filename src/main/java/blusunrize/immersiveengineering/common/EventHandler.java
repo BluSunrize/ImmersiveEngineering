@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
@@ -43,7 +42,6 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -61,7 +59,10 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.TableLootEntry;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.event.*;
+import net.minecraftforge.event.AnvilUpdateEvent;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -76,14 +77,12 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.Map.Entry;
 
 public class EventHandler
 {
@@ -172,8 +171,9 @@ public class EventHandler
 	private static Field f_lootEntries;
 
 	@SubscribeEvent
-	public void lootTableLoad(LootTableLoadEvent event) {
-		if (event.getName().equals(TALL_GRASS_DROP))
+	public void lootTableLoad(LootTableLoadEvent event)
+	{
+		if(event.getName().equals(TALL_GRASS_DROP))
 			event.getTable().addPool(LootPool.builder()
 					.addEntry(TableLootEntry.builder(new ResourceLocation(ImmersiveEngineering.MODID, "blocks/grass_drops")))
 					.name("ie_grass_drops").build());
@@ -220,6 +220,7 @@ public class EventHandler
 	}
 
 	private LongList tickTimes = new LongArrayList();
+
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
 	{
@@ -268,12 +269,8 @@ public class EventHandler
 		ExcavatorHandler.allowPacketsToPlayer.add(event.getPlayer().getUniqueID());
 		if(!event.getPlayer().world.isRemote)
 		{
-			HashMap<MineralMix, Integer> packetMap = new HashMap<MineralMix, Integer>();
-			for(Entry<MineralMix, Integer> e : ExcavatorHandler.mineralList.entrySet())
-				if(e.getKey()!=null&&e.getValue()!=null)
-					packetMap.put(e.getKey(), e.getValue());
 			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)event.getPlayer()),
-					new MessageMineralListSync(packetMap));
+					new MessageMineralListSync(ExcavatorHandler.mineralList.values()));
 		}
 	}
 
