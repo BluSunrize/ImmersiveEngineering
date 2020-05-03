@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.IProperty;
@@ -49,6 +50,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.wires.GlobalWireNetwork.getNetwork;
@@ -58,7 +60,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 {
 	private boolean hasColours = false;
 
-	public IETileProviderBlock(String name, Block.Properties blockProps, @Nullable Class<? extends BlockItemIE> itemBlock,
+	public IETileProviderBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> itemBlock,
 							   IProperty... stateProps)
 	{
 		super(name, blockProps, itemBlock, stateProps);

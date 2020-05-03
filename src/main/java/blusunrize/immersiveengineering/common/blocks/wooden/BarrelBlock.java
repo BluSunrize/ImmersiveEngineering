@@ -26,7 +26,7 @@ public class BarrelBlock extends IETileProviderBlock
 
 	public BarrelBlock(String name, boolean metal)
 	{
-		super(name, getProperties(metal), BlockItemIE.class);
+		super(name, getProperties(metal), BlockItemIE::new);
 		this.metal = metal;
 	}
 

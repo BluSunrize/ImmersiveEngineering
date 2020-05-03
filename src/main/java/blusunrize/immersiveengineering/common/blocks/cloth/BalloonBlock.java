@@ -27,7 +27,7 @@ public class BalloonBlock extends IETileProviderBlock
 	{
 		super("balloon", Properties.create(Material.WOOL)
 				.hardnessAndResistance(0.8F)
-				.lightValue(13), BlockItemBalloon.class);
+				.lightValue(13), BlockItemBalloon::new);
 		setHasColours();
 		setLightOpacity(0);
 		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
