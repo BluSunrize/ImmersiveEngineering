@@ -22,9 +22,9 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.Rotation;
 
 public class TurntableTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, INeighbourChangeTile, IHammerInteraction
 {
@@ -32,13 +32,6 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	//rotationMapping is rotating clockwise around the face of the turntable, starting at North for top/bottom facing turntables and Top for sideways facing turntables
 	private Rotation[] rotationMapping = new Rotation[]{Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90};
 	private boolean[] redstone = {false, false, false, false};
-	public boolean invert = false;
-
-//	@Override
-//	public Direction getFacing()
-//	{
-//		return null;
-//	}
 
 	public TurntableTileEntity()
 	{
@@ -53,7 +46,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 		for(int i = 0; i < rotationMapping.length; i++)
 		{
 			rotationMapping[i] = intToRotation((rotationMapValue >> 2*i)&3);
-			redstone[i] = (redstoneByte & (1 << i)) != 0;
+			redstone[i] = (redstoneByte&(1<<i))!=0;
 		}
 	}
 
@@ -62,10 +55,10 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	{
 		byte rotationMapValue = 0;
 		byte redstoneByte = 0;
-		for(int i = 0; i <  rotationMapping.length; i++)
+		for(int i = 0; i < rotationMapping.length; i++)
 		{
 			rotationMapValue += rotationToInt(rotationMapping[i])<<2*i;
-			if (redstone[i])
+			if(redstone[i])
 				redstoneByte += 1<<i;
 		}
 		nbt.putByte("redstone", redstoneByte);
@@ -78,11 +71,8 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 		Direction facing = getFacing();
 		BlockPos difference = otherPos.subtract(pos);
 		Direction otherDir = Direction.getFacingFromVector(difference.getX(), difference.getY(), difference.getZ());
-		//if (otherPos != pos.offset(facing) && otherPos != pos.offset(facing.getOpposite()))
-		if (otherDir.getAxis() != facing.getAxis())
+		if(otherDir.getAxis()!=facing.getAxis())
 		{
-//			BlockPos difference = otherPos.subtract(pos);
-//			Direction otherDir = Direction.getFacingFromVector(difference.getX(), difference.getY(), difference.getZ());
 			boolean r = this.world.isSidePowered(pos.offset(otherDir), otherDir);
 
 			int directionIndex = getRotationDirectionIndexFromFacing(otherDir, facing);
@@ -127,16 +117,15 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		Direction facing = getFacing();
-		if(player.isSneaking() && side.getAxis() != facing.getAxis())
+		if(player.isSneaking()&&side.getAxis()!=facing.getAxis())
 		{
 			if(!world.isRemote)
 			{
 				int directionIndex = getRotationDirectionIndexFromFacing(side, facing);
-				rotationMapping[directionIndex] = intToRotation((rotationToInt(rotationMapping[directionIndex]) % 3) + 1); //looks strange, but made to avoid values of <1 and >3
+				rotationMapping[directionIndex] = intToRotation((rotationToInt(rotationMapping[directionIndex])%3)+1); //looks strange, but made to avoid values of <1 and >3
 				markDirty();
 				world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
 			}
-			//Rotation.CLOCKWISE_90;
 			return true;
 		}
 		return false;
@@ -148,36 +137,57 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 		return IEProperties.FACING_ALL;
 	}
 
-	private Rotation intToRotation(int rotationValue) {
-		switch(rotationValue) {
-			case 2: return Rotation.CLOCKWISE_180;
-			case 3: return Rotation.COUNTERCLOCKWISE_90;
+	private Rotation intToRotation(int rotationValue)
+	{
+		switch(rotationValue)
+		{
+			case 2:
+				return Rotation.CLOCKWISE_180;
+			case 3:
+				return Rotation.COUNTERCLOCKWISE_90;
 			case 0: //illegal value, replace by default one
 			case 1:
-			default: return Rotation.CLOCKWISE_90;
-		}
-	}
-	private int rotationToInt(Rotation rotation) {
-		switch(rotation) {
-			case CLOCKWISE_180: return 2;
-			case COUNTERCLOCKWISE_90: return 3;
-			case NONE: //illegal value, replace by default one
-			case CLOCKWISE_90:
-			default: return 1;
+			default:
+				return Rotation.CLOCKWISE_90;
 		}
 	}
 
-	private int getRotationDirectionIndexFromFacing(Direction indexee, Direction facing) {
+	private int rotationToInt(Rotation rotation)
+	{
+		switch(rotation)
+		{
+			case CLOCKWISE_180:
+				return 2;
+			case COUNTERCLOCKWISE_90:
+				return 3;
+			case NONE: //illegal value, replace by default one
+			case CLOCKWISE_90:
+			default:
+				return 1;
+		}
+	}
+
+	private int getRotationDirectionIndexFromFacing(Direction indexee, Direction facing)
+	{
 		int index = 0;
 		Direction indexFinder = facing.getAxis()==Axis.Y?Direction.NORTH: Direction.UP;
-		while (indexee != indexFinder && index < 4) {
+		while(indexee!=indexFinder&&index < 4)
+		{
 			indexFinder = indexFinder.rotateAround(facing.getAxis());
 			index++;
 		}
-		if (index >= 4)
-			throw new IllegalStateException("Unable to get " + facing.getAxis().getName2() + "-rotated facing of " + indexee);
-		if (facing.getAxisDirection() == AxisDirection.NEGATIVE)
-			index = -index % 4;
+		if(index >= 4)
+			throw new IllegalStateException("Unable to get "+facing.getAxis().getName2()+"-rotated facing of "+indexee);
+		if(facing.getAxisDirection()==AxisDirection.NEGATIVE)
+			index = -index%4;
 		return index;
+	}
+
+	public Rotation getRotationFromSide(Direction side)
+	{
+		Direction facing = getFacing();
+		if(side.getAxis()==facing.getAxis())
+			return Rotation.NONE;
+		return rotationMapping[getRotationDirectionIndexFromFacing(side, facing)];
 	}
 }
