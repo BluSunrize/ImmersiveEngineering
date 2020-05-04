@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
@@ -33,5 +34,17 @@ public class TurntableBlock extends IETileProviderBlock
 	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
 		return new TurntableTileEntity();
+	}
+
+	@Override
+	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canProvidePower(BlockState state)
+	{
+		return false;
 	}
 }

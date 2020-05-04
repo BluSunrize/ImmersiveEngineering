@@ -20,6 +20,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.Rotation;
@@ -27,17 +29,16 @@ import net.minecraft.util.Rotation;
 public class TurntableTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, INeighbourChangeTile, IHammerInteraction
 {
 	public static TileEntityType<TurntableTileEntity> TYPE;
-	private boolean redstone = false;
 	//rotationMapping is rotating clockwise around the face of the turntable, starting at North for top/bottom facing turntables and Top for sideways facing turntables
 	private Rotation[] rotationMapping = new Rotation[]{Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90};
-
-	@Override
-	public Direction getFacing()
-	{
-		return null;
-	}
-
+	private boolean[] redstone = {false, false, false, false};
 	public boolean invert = false;
+
+//	@Override
+//	public Direction getFacing()
+//	{
+//		return null;
+//	}
 
 	public TurntableTileEntity()
 	{
@@ -47,36 +48,53 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		redstone = nbt.getBoolean("redstone");
-		invert = nbt.getBoolean("invert");
+		byte redstoneByte = nbt.getByte("redstone");
 		byte rotationMapValue = nbt.getByte("rotationMapping");
 		for(int i = 0; i < rotationMapping.length; i++)
-			rotationMapping[i] = intToRotation((rotationMapValue >> 2*i) & 3);
+		{
+			rotationMapping[i] = intToRotation((rotationMapValue >> 2*i)&3);
+			redstone[i] = (redstoneByte & (1 << i)) != 0;
+		}
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putBoolean("redstone", redstone);
-		nbt.putBoolean("invert", invert);
 		byte rotationMapValue = 0;
+		byte redstoneByte = 0;
 		for(int i = 0; i <  rotationMapping.length; i++)
-			rotationMapValue += (byte)(rotationToInt(rotationMapping[i]) << 2*i);
+		{
+			rotationMapValue += rotationToInt(rotationMapping[i])<<2*i;
+			if (redstone[i])
+				redstoneByte += 1<<i;
+		}
+		nbt.putByte("redstone", redstoneByte);
 		nbt.putByte("rotationMapping", rotationMapValue);
 	}
 
 	@Override
 	public void onNeighborBlockChange(BlockPos otherPos)
 	{
-		boolean r = this.world.isBlockPowered(pos);
-		if(r!=this.redstone)
+		Direction facing = getFacing();
+		BlockPos difference = otherPos.subtract(pos);
+		Direction otherDir = Direction.getFacingFromVector(difference.getX(), difference.getY(), difference.getZ());
+		//if (otherPos != pos.offset(facing) && otherPos != pos.offset(facing.getOpposite()))
+		if (otherDir.getAxis() != facing.getAxis())
 		{
-			this.redstone = r;
-			if(this.redstone)
+//			BlockPos difference = otherPos.subtract(pos);
+//			Direction otherDir = Direction.getFacingFromVector(difference.getX(), difference.getY(), difference.getZ());
+			boolean r = this.world.isSidePowered(pos.offset(otherDir), otherDir);
+
+			int directionIndex = getRotationDirectionIndexFromFacing(otherDir, facing);
+
+			if(r!=this.redstone[directionIndex])
 			{
-				System.out.println("test");
-				BlockPos target = pos.offset(getFacing());
-				RotationUtil.rotateBlock(this.world, target, invert);
+				this.redstone[directionIndex] = r;
+				if(this.redstone[directionIndex])
+				{
+					BlockPos target = pos.offset(facing);
+					RotationUtil.rotateBlock(this.world, target, rotationMapping[directionIndex]);
+				}
 			}
 		}
 	}
@@ -108,11 +126,13 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		if(player.isSneaking())
+		Direction facing = getFacing();
+		if(player.isSneaking() && side.getAxis() != facing.getAxis())
 		{
 			if(!world.isRemote)
 			{
-				invert = !invert;
+				int directionIndex = getRotationDirectionIndexFromFacing(side, facing);
+				rotationMapping[directionIndex] = intToRotation((rotationToInt(rotationMapping[directionIndex]) % 3) + 1); //looks strange, but made to avoid values of <1 and >3
 				markDirty();
 				world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
 			}
@@ -145,5 +165,19 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 			case CLOCKWISE_90:
 			default: return 1;
 		}
+	}
+
+	private int getRotationDirectionIndexFromFacing(Direction indexee, Direction facing) {
+		int index = 0;
+		Direction indexFinder = facing.getAxis()==Axis.Y?Direction.NORTH: Direction.UP;
+		while (indexee != indexFinder && index < 4) {
+			indexFinder = indexFinder.rotateAround(facing.getAxis());
+			index++;
+		}
+		if (index >= 4)
+			throw new IllegalStateException("Unable to get " + facing.getAxis().getName2() + "-rotated facing of " + indexee);
+		if (facing.getAxisDirection() == AxisDirection.NEGATIVE)
+			index = -index % 4;
+		return index;
 	}
 }
