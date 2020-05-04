@@ -12,8 +12,10 @@ import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author BluSunrize - 02.03.2016
@@ -79,36 +81,27 @@ public class RefineryRecipe extends MultiblockRecipe
 		return null;
 	}
 
-	public static List<RefineryRecipe> findIncompleteRefineryRecipe(FluidStack input0, FluidStack input1)
+	public static Optional<RefineryRecipe> findIncompleteRefineryRecipe(@Nonnull FluidStack input0, @Nonnull FluidStack input1)
 	{
-		if(input0==null&&input1==null)
-			return null;
-		List<RefineryRecipe> list = Lists.newArrayList();
+		if(input0.isEmpty()&&input1.isEmpty())
+			return Optional.empty();
 		for(RefineryRecipe recipe : recipeList)
 		{
-			if(input0!=null&&input1==null)
+			if(!input0.isEmpty()&&input1.isEmpty())
 			{
 				if(input0.isFluidEqual(recipe.input0)||input0.isFluidEqual(recipe.input1))
-				{
-					list.add(recipe);
-					break;
-				}
+					return Optional.of(recipe);
 			}
-			else if(input0==null&&input1!=null)
+			else if(input0.isEmpty()&&!input1.isEmpty())
 			{
 				if(input1.isFluidEqual(recipe.input0)||input1.isFluidEqual(recipe.input1))
-				{
-					list.add(recipe);
-					break;
-				}
+					return Optional.of(recipe);
 			}
-			else if((input0.isFluidEqual(recipe.input0)&&input1.isFluidEqual(recipe.input1))||(input0.isFluidEqual(recipe.input1)&&input1.isFluidEqual(recipe.input0)))
-			{
-				list.add(recipe);
-				break;
-			}
+			else if((input0.isFluidEqual(recipe.input0)&&input1.isFluidEqual(recipe.input1))
+					||(input0.isFluidEqual(recipe.input1)&&input1.isFluidEqual(recipe.input0)))
+				return Optional.of(recipe);
 		}
-		return list;
+		return Optional.empty();
 	}
 
 	@Override

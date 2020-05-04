@@ -533,7 +533,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 		if(connections!=3&&connections!=12&&connections!=48)
 			return 1;
-		TileEntity con = world.getTileEntity(getPos().offset(connection));
+		TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(connection));
 		if(con instanceof FluidPipeTileEntity)
 		{
 			byte tileConnections = ((FluidPipeTileEntity)con).connections;

@@ -39,7 +39,7 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 {
 	public IEMultiblockBlock(String name, Properties props, IProperty<?>... additionalProperties)
 	{
-		super(name, props, BlockItemIE.class, ArrayUtils.addAll(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));
+		super(name, props, BlockItemIE::new, ArrayUtils.addAll(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));
 		setMobility(PushReaction.BLOCK);
 		setNotNormalBlock();
 	}

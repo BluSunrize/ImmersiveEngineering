@@ -38,6 +38,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTileEntity, RefineryRecipe> implements
@@ -408,13 +409,14 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 				return false;
 			if(master.tanks[0].getFluid().isEmpty()&&master.tanks[1].getFluid().isEmpty())
 			{
-				List<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource, null);
-				return incompleteRecipes!=null&&!incompleteRecipes.isEmpty();
+				Optional<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource, FluidStack.EMPTY);
+				return incompleteRecipes.isPresent();
 			}
 			else
 			{
-				List<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource, master.tanks[iTank==0?1: 0].getFluid());
-				return incompleteRecipes!=null&&!incompleteRecipes.isEmpty();
+				FluidStack otherFluid = master.tanks[iTank==0?1: 0].getFluid();
+				Optional<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource, otherFluid);
+				return incompleteRecipes.isPresent();
 			}
 		}
 		return false;

@@ -26,7 +26,7 @@ public class SorterBlock extends IETileProviderBlock
 	public SorterBlock(String name, boolean fluid)
 	{
 		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2F, 5F),
-				BlockItemIE.class);
+				BlockItemIE::new);
 		this.fluid = fluid;
 	}
 

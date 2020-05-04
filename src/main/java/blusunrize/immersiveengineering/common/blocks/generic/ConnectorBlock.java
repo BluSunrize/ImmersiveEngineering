@@ -20,6 +20,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -31,10 +33,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.function.BiFunction;
 
 public abstract class ConnectorBlock extends IETileProviderBlock
 {
-	public ConnectorBlock(String name, @Nullable Class<? extends BlockItemIE> item, IProperty... additional)
+	public ConnectorBlock(String name, BiFunction<Block, Item.Properties, Item> item, IProperty... additional)
 	{
 		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
 				item, additional);
@@ -45,7 +48,7 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 
 	public ConnectorBlock(String name, IProperty... additional)
 	{
-		this(name, BlockItemIE.class, additional);
+		this(name, BlockItemIE::new, additional);
 	}
 
 	@Override

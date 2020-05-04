@@ -10,7 +10,9 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -18,6 +20,7 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class GenericTileBlock extends IETileProviderBlock
@@ -26,11 +29,11 @@ public class GenericTileBlock extends IETileProviderBlock
 
 	public GenericTileBlock(String name, Supplier<TileEntityType<?>> tileType, Properties blockProps, IProperty<?>... stateProps)
 	{
-		this(name, tileType, blockProps, BlockItemIE.class, stateProps);
+		this(name, tileType, blockProps, BlockItemIE::new, stateProps);
 	}
 
 	public GenericTileBlock(String name, Supplier<TileEntityType<?>> tileType, Properties blockProps,
-							@Nullable Class<? extends BlockItemIE> itemBlock, IProperty<?>... stateProps)
+							BiFunction<Block, Item.Properties, Item> itemBlock, IProperty<?>... stateProps)
 	{
 		super(name, blockProps, itemBlock, stateProps);
 		this.tileType = tileType;

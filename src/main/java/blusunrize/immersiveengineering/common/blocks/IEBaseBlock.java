@@ -19,6 +19,7 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.*;
@@ -36,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class IEBaseBlock extends Block implements IIEBlock
 {
@@ -52,7 +55,7 @@ public class IEBaseBlock extends Block implements IIEBlock
 	protected boolean canHammerHarvest;
 	protected boolean notNormalBlock;
 
-	public IEBaseBlock(String name, Block.Properties blockProps, @Nullable Class<? extends BlockItem> itemBlock, IProperty... additionalProperties)
+	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock, IProperty... additionalProperties)
 	{
 		super(setTempProperties(blockProps, additionalProperties));
 		this.name = name;
@@ -63,19 +66,11 @@ public class IEBaseBlock extends Block implements IIEBlock
 		setRegistryName(registryName);
 
 		IEContent.registeredIEBlocks.add(this);
-		if(itemBlock!=null)
+		Item item = createItemBlock.apply(this, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		if(item!=null)
 		{
-			try
-			{
-				Item item = itemBlock.getConstructor(Block.class, Item.Properties.class)
-						.newInstance(this, new Item.Properties().group(ImmersiveEngineering.itemGroup));
-				item.setRegistryName(registryName);
-				IEContent.registeredIEItems.add(item);
-			} catch(Exception e)
-			{
-				//TODO e.printStackTrace();
-				throw new RuntimeException(e);
-			}
+			item.setRegistryName(registryName);
+			IEContent.registeredIEItems.add(item);
 		}
 		lightOpacity = 15;
 	}
@@ -311,7 +306,7 @@ public class IEBaseBlock extends Block implements IIEBlock
 	public abstract static class IELadderBlock extends IEBaseBlock
 	{
 		public IELadderBlock(String name, Block.Properties material,
-							 Class<? extends BlockItemIE> itemBlock, IProperty... additionalProperties)
+							 BiFunction<Block, Item.Properties, Item> itemBlock, IProperty... additionalProperties)
 		{
 			super(name, material, itemBlock, additionalProperties);
 		}
