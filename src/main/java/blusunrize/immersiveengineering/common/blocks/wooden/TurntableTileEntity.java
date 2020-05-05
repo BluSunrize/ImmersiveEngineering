@@ -179,7 +179,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 		if(index >= 4)
 			throw new IllegalStateException("Unable to get "+facing.getAxis().getName2()+"-rotated facing of "+indexee);
 		if(facing.getAxisDirection()==AxisDirection.NEGATIVE)
-			index = -index%4;
+			index = Math.floorMod(-index, 4);
 		return index;
 	}
 
