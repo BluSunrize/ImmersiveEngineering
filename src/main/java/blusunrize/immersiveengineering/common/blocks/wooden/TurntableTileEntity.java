@@ -176,19 +176,6 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 		if (index >= 2 && ((facing.getAxisDirection()==AxisDirection.POSITIVE) != (facing.getAxis()==Axis.Z)))
 			index++;
  		return rotationDirectionIndexMap[index];
-
-//		int index = 0;
-//		Direction indexFinder = facing.getAxis()==Axis.Y?Direction.NORTH: Direction.DOWN;
-//		while(indexee!=indexFinder&&index < 4)
-//		{
-//			indexFinder = indexFinder.rotateAround(facing.getAxis());
-//			index++;
-//		}
-//		if(index >= 4)
-//			throw new IllegalStateException("Unable to get "+facing.getAxis().getName2()+"-rotated facing of "+indexee);
-//		if(facing.getAxisDirection()==AxisDirection.NEGATIVE)
-//			index = Math.floorMod(-index, 4);
-//		return index;
 	}
 
 	public Rotation getRotationFromSide(Direction side)
@@ -231,13 +218,4 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 			redstone[i] = oldRedstone[sourceIndex]; //rotate redstone, too, to prevent toggling
 		}
 	}
-
-/*	@Override
-	public void rotate(Rotation rotation)
-	{
-		Direction facing = getFacing();
-		if (facing.getAxis() == Axis.Y)
-			rotateRotationMap(facing.getAxisDirection() == AxisDirection.NEGATIVE ? rotation.add(rotation).add(rotation) : rotation);
-		super.rotate(rotation);
-	}*/
 }
