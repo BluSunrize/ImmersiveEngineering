@@ -29,9 +29,10 @@ import net.minecraft.util.math.Vec3d;
 public class TurntableTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, INeighbourChangeTile, IHammerInteraction
 {
 	public static TileEntityType<TurntableTileEntity> TYPE;
-	//rotationMapping is rotating clockwise around the face of the turntable, starting at North for top/bottom facing turntables and Top for sideways facing turntables
+	//rotationMapping is rotating clockwise around the face of the turntable, starting at NORTH for top/bottom facing turntables and DOWN for sideways facing turntables
 	private Rotation[] rotationMapping = new Rotation[]{Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90};
 	private boolean[] redstone = {false, false, false, false};
+	private static final int[] rotationDirectionIndexMap = {0, 2, 1, 3, 1};
 
 	public TurntableTileEntity()
 	{
@@ -169,18 +170,25 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 
 	private int getRotationDirectionIndexFromFacing(Direction indexee, Direction facing)
 	{
-		int index = 0;
-		Direction indexFinder = facing.getAxis()==Axis.Y?Direction.NORTH: Direction.UP;
-		while(indexee!=indexFinder&&index < 4)
-		{
-			indexFinder = indexFinder.rotateAround(facing.getAxis());
+		int index = indexee.getIndex();
+		if (facing.getIndex()<index)
+			index -= 2;
+		if (index >= 2 && ((facing.getAxisDirection()==AxisDirection.POSITIVE) != (facing.getAxis()==Axis.Z)))
 			index++;
-		}
-		if(index >= 4)
-			throw new IllegalStateException("Unable to get "+facing.getAxis().getName2()+"-rotated facing of "+indexee);
-		if(facing.getAxisDirection()==AxisDirection.NEGATIVE)
-			index = Math.floorMod(-index, 4);
-		return index;
+ 		return rotationDirectionIndexMap[index];
+
+//		int index = 0;
+//		Direction indexFinder = facing.getAxis()==Axis.Y?Direction.NORTH: Direction.DOWN;
+//		while(indexee!=indexFinder&&index < 4)
+//		{
+//			indexFinder = indexFinder.rotateAround(facing.getAxis());
+//			index++;
+//		}
+//		if(index >= 4)
+//			throw new IllegalStateException("Unable to get "+facing.getAxis().getName2()+"-rotated facing of "+indexee);
+//		if(facing.getAxisDirection()==AxisDirection.NEGATIVE)
+//			index = Math.floorMod(-index, 4);
+//		return index;
 	}
 
 	public Rotation getRotationFromSide(Direction side)
@@ -190,4 +198,46 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 			return Rotation.NONE;
 		return rotationMapping[getRotationDirectionIndexFromFacing(side, facing)];
 	}
+
+	public void rotateRotationMap(Rotation rotation) {
+		if (rotation == Rotation.NONE)
+			return;
+		int offset = rotationToInt(rotation);
+		for(int i = 0; i < rotationMapping.length; i++)
+			rotationMapping[i] = rotationMapping[Math.floorMod(i-offset, rotationMapping.length)];
+	}
+
+	public void verticalTransitionRotationMap(Direction facingOld, Direction facingNew) {
+		//see if it transition is to or from vertical. return if none of the directions are vertical
+		boolean toVert = false;
+		if (facingNew.getAxis() == Axis.Y)
+			toVert = true;
+		if ((facingOld.getAxis() == Axis.Y) == toVert)
+			return;
+
+		Direction horizontalFacing = (toVert ? facingOld : facingNew);
+		int offset;
+		if (horizontalFacing.getAxis() == Axis.Z)
+			offset = facingNew.getAxisDirection() == facingOld.getAxisDirection() ? 2 : 0;
+		else
+			offset = (horizontalFacing.getAxisDirection() == AxisDirection.POSITIVE) == toVert ? 3 : 1;
+
+		Rotation[] oldRotMap = rotationMapping.clone();
+		boolean[] oldRedstone = redstone.clone();
+		for(int i = 0; i < rotationMapping.length; i++)
+		{
+			int sourceIndex = Math.floorMod(i + offset, rotationMapping.length);
+			rotationMapping[i] = oldRotMap[sourceIndex];
+			redstone[i] = oldRedstone[sourceIndex]; //rotate redstone, too, to prevent toggling
+		}
+	}
+
+/*	@Override
+	public void rotate(Rotation rotation)
+	{
+		Direction facing = getFacing();
+		if (facing.getAxis() == Axis.Y)
+			rotateRotationMap(facing.getAxisDirection() == AxisDirection.NEGATIVE ? rotation.add(rotation).add(rotation) : rotation);
+		super.rotate(rotation);
+	}*/
 }
