@@ -1004,9 +1004,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	private static double[][] halfRotationArrowCoords = {{.375, 0}, {.5, -.125}, {.4375, -.125}, {.4375, -.25}, {.25, -.4375}, {-.25, -.4375}, {-.4375, -.25}, {-.4375, -.0625}, {-.3125, -.0625}, {-.3125, -.1875}, {-.1875, -.3125}, {.1875, -.3125}, {.3125, -.1875}, {.3125, -.125}, {.25, -.125}};
 	private static double[][] halfRotationArrowQuads = {halfRotationArrowCoords[7], halfRotationArrowCoords[8], halfRotationArrowCoords[6], halfRotationArrowCoords[9], halfRotationArrowCoords[5], halfRotationArrowCoords[10], halfRotationArrowCoords[4], halfRotationArrowCoords[11], halfRotationArrowCoords[3], halfRotationArrowCoords[12], halfRotationArrowCoords[2], halfRotationArrowCoords[13], halfRotationArrowCoords[1], halfRotationArrowCoords[14], halfRotationArrowCoords[0], halfRotationArrowCoords[0]};
 
-//	private static double[][] rotationArrowCoords = {{.375, 0}, {.5, -.125}, {.4375, -.125}, {.4375, -.25}, {.25, -.4375}, {-.25, -.4375}, {-.4375, -.25}, {-.4375, -.0625}, {-.3125, -.0625}, {-.3125, -.1875}, {-.1875, -.3125}, {.1875, -.3125}, {.3125, -.1875}, {.3125, -.125}, {.25, -.125}};
-//	private static double[][] rotationArrowQuads = {rotationArrowCoords[7], rotationArrowCoords[8], rotationArrowCoords[6], rotationArrowCoords[9], rotationArrowCoords[5], rotationArrowCoords[4], rotationArrowCoords[3], rotationArrowCoords[2], rotationArrowCoords[1], rotationArrowCoords[0], rotationArrowCoords[0]};
-
 	public static void drawCircularRotationArrows(Tessellator tessellator, BufferBuilder BufferBuilder, Direction facing, double rotation, boolean flip, boolean halfCircle)
 	{
 		double[][] rotationArrowCoords;
