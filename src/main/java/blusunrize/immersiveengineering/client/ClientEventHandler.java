@@ -1068,7 +1068,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		tessellator.draw();
 	}
 
-	private static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
+	private final static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
 
 	public static void drawBlockOverlayArrow(Tessellator tessellator, BufferBuilder BufferBuilder, Vec3d directionVec, Direction side, AxisAlignedBB targetedBB)
 	{
