@@ -402,7 +402,9 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				if(shader!=null)
 				{
 					Vec3d pos = Utils.getLivingFrontPos(player, .75, player.getHeight()*.75, hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite(), false, 1);
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver, shader.getRight().getShaderType().toString(), pos, player.getForward(), .125f);
+					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver,
+							shader.getRight().getShaderType().toString(), pos,
+							Vec3d.fromPitchYaw(player.getPitchYaw()), .125f);
 				}
 			}
 			return new ActionResult<>(ActionResultType.SUCCESS, revolver);
