@@ -12,10 +12,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.PushReaction;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -25,6 +27,8 @@ import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -315,6 +319,36 @@ public class IEBaseBlock extends Block implements IIEBlock
 		public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
 		{
 			return true;
+		}
+
+		@Override
+		public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
+		{
+			super.onEntityCollision(state, worldIn, pos, entityIn);
+			if(entityIn instanceof LivingEntity&&isLadder(state, worldIn, pos, (LivingEntity)entityIn))
+				applyLadderLogic(entityIn);
+		}
+
+		public static void applyLadderLogic(Entity entityIn)
+		{
+			if(entityIn instanceof LivingEntity&&!((LivingEntity)entityIn).isOnLadder())
+			{
+				Vec3d motion = entityIn.getMotion();
+				float maxMotion = 0.15F;
+				motion = new Vec3d(
+						MathHelper.clamp(motion.x, -maxMotion, maxMotion),
+						Math.max(motion.y, -maxMotion),
+						MathHelper.clamp(motion.z, -maxMotion, maxMotion)
+				);
+
+				entityIn.fallDistance = 0.0F;
+
+				if(motion.y < 0&&entityIn instanceof PlayerEntity&&entityIn.isSneaking())
+					motion = new Vec3d(motion.x, 0, motion.z);
+				else if(entityIn.collidedHorizontally)
+					motion = new Vec3d(motion.x, 0.2, motion.z);
+				entityIn.setMotion(motion);
+			}
 		}
 	}
 }

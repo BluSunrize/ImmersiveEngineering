@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
@@ -208,26 +209,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 					climb = true;
 					break;
 				}
-			if(!climb)
-				return;
-			double motionX = entity.getMotion().x;
-			double motionY = entity.getMotion().y;
-			double motionZ = entity.getMotion().z;
-			double maxSpeed = 0.15;
-			motionX = MathHelper.clamp(motionX, -maxSpeed, maxSpeed);
-			motionY = MathHelper.clamp(motionY, -maxSpeed, maxSpeed);
-			motionZ = MathHelper.clamp(motionZ, -maxSpeed, maxSpeed);
-
-			entity.fallDistance = 0f;
-
-			if(motionY < 0&&entity instanceof PlayerEntity&&entity.isSneaking())
-			{
-				motionY = .05;
-				return;
-			}
-			if(entity.collidedHorizontally)
-				motionY = .2;
-			entity.setMotion(motionX, motionY, motionZ);
+			if(climb)
+				IELadderBlock.applyLadderLogic(entity);
 		}
 	}
 
