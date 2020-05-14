@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntit
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.entity.Entity;
@@ -31,7 +30,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -294,8 +292,8 @@ public class ConveyorHandler
 		 * sets the colour of the conveyor when rightclicked with a dye
 		 * parsed value is a hex RGB
 		 *
-		 * @return true if renderupdate should happen
 		 * @param colour
+		 * @return true if renderupdate should happen
 		 */
 		boolean setDyeColour(DyeColor colour);
 
@@ -419,8 +417,8 @@ public class ConveyorHandler
 				entity.setMotion(vec);
 				double distX = Math.abs(pos.offset(getFacing()).getX()+.5-entity.posX);
 				double distZ = Math.abs(pos.offset(getFacing()).getZ()+.5-entity.posZ);
-				double treshold = .9;
-				boolean contact = getFacing().getAxis()==Axis.Z?distZ < treshold: distX < treshold;
+				double threshold = .9;
+				boolean contact = getFacing().getAxis()==Axis.Z?distZ < threshold: distX < threshold;
 				World w = getTile().getWorld();
 				BlockPos upPos = pos.offset(getFacing()).up();
 				if(contact&&conveyorDirection==ConveyorDirection.UP&&
@@ -469,7 +467,7 @@ public class ConveyorHandler
 			World world = getTile().getWorld();
 			boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
 			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
-			if(inventoryTile instanceof IConveyorTile || !contact)
+			if(inventoryTile instanceof IConveyorTile||!contact)
 				return;
 
 			LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
