@@ -20,6 +20,8 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.world.ChunkWatchEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -28,7 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = ImmersiveEngineering.MODID)
 public class WireSyncManager
 {
 	private static void sendMessagesForChunk(World w, ChunkPos pos, ServerPlayerEntity player, boolean add)
@@ -89,17 +91,19 @@ public class WireSyncManager
 			sendToPlayersForConnection(new MessageWireSync(c, false), (ServerWorld)w, c);
 	}
 
-	//TODO uncomment once the event is working in Forge @SubscribeEvent
-	public static void onChunkWatch(ServerWorld world, ChunkPos pos, ServerPlayerEntity player)
+	@SubscribeEvent
+	public static void onChunkWatch(ChunkWatchEvent.Watch ev)
 	{
 		//TODO this is a hack
-		ApiUtils.addFutureServerTask(world, () -> sendMessagesForChunk(world, pos, player, true), true);
+		ApiUtils.addFutureServerTask(ev.getWorld(),
+				() -> sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), true), true);
 	}
 
-	//TODO uncomment once the event is working in Forge @SubscribeEvent
-	public static void onChunkUnWatch(ServerWorld world, ChunkPos pos, ServerPlayerEntity player)
+	@SubscribeEvent
+	public static void onChunkUnWatch(ChunkWatchEvent.UnWatch ev)
 	{
 		//TODO this is a hack
-		ApiUtils.addFutureServerTask(world, () -> sendMessagesForChunk(world, pos, player, false), true);
+		ApiUtils.addFutureServerTask(ev.getWorld(),
+				() -> sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), false), true);
 	}
 }
