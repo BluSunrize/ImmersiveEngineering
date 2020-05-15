@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -27,7 +26,6 @@ public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 	{
 		super(name, material, BlockItemIE::new);
 		setNotNormalBlock();
-		setBlockLayer(BlockRenderLayer.CUTOUT);
 		lightOpacity = 0;
 	}
 

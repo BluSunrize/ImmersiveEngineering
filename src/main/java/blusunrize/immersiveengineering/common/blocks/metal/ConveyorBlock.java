@@ -23,7 +23,6 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -47,7 +46,6 @@ public class ConveyorBlock extends IETileProviderBlock
 				Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
 				BlockItemIE::new, FACING);
 		this.typeName = type;
-		this.setBlockLayer(BlockRenderLayer.CUTOUT);
 		this.setNotNormalBlock();
 		lightOpacity = 0;
 		ConveyorHandler.conveyorBlocks.put(type, this);

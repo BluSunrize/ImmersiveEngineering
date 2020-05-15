@@ -15,7 +15,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.world.IBlockReader;
 
@@ -31,7 +30,6 @@ public class StructuralArmBlock extends IETileProviderBlock
 		super(name, Properties.create(Material.IRON).hardnessAndResistance(3, 15),
 				BlockItemIE::new, FACING);
 		setNotNormalBlock();
-		setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);
 	}
 
 	@Nullable

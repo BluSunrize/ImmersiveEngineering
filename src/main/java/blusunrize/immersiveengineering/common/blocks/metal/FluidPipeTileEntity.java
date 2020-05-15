@@ -29,6 +29,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -42,7 +43,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -294,9 +294,14 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		{
 			BlockState state = cover.getDefaultState();
 			IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
-			BlockRenderLayer curL = MinecraftForgeClient.getRenderLayer();
+			RenderType curL = MinecraftForgeClient.getRenderLayer();
 			if(model!=null)
-				for(BlockRenderLayer layer : BlockRenderLayer.values())
+				for(RenderType layer : new RenderType[]{
+						RenderType.getSolid(),
+						RenderType.getTranslucent(),
+						RenderType.getCutout(),
+						RenderType.getCutoutMipped(),
+				})
 				{
 					ForgeHooksClient.setRenderLayer(layer);
 					for(Direction direction : Direction.values())

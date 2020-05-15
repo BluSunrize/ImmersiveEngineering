@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.ItemFrameEntity;
@@ -21,7 +22,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -176,8 +176,8 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	public boolean shouldRenderGroup(BlockState object, String group)
 	{
 		if("glass".equals(group))
-			return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.TRANSLUCENT;
-		return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.CUTOUT;
+			return MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent();
+		return MinecraftForgeClient.getRenderLayer()==RenderType.getSolid();
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.LivingEntity;
@@ -36,7 +37,6 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
@@ -483,9 +483,9 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	public boolean shouldRenderGroup(BlockState object, String group)
 	{
 		if("glass".equals(group))
-			return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.TRANSLUCENT;
+			return MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent();
 		else
-			return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.SOLID;
+			return MinecraftForgeClient.getRenderLayer()==RenderType.getSolid();
 	}
 
 	@OnlyIn(Dist.CLIENT)

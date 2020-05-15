@@ -14,19 +14,16 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FeedthroughBlock extends MiscConnectorBlock
@@ -35,8 +32,7 @@ public class FeedthroughBlock extends MiscConnectorBlock
 	{
 		super("feedthrough", () -> FeedthroughTileEntity.TYPE,
 				//TODO maybe clean up a bit
-				ImmutableList.of(IEProperties.FACING_ALL),
-				Arrays.asList(BlockRenderLayer.values())
+				IEProperties.FACING_ALL
 		);
 	}
 

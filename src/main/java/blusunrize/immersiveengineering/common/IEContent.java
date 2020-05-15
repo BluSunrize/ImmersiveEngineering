@@ -85,7 +85,6 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
@@ -234,12 +233,10 @@ public class IEContent
 		StoneDecoration.concreteSheet = new PartialConcreteBlock("concrete_sheet", 1);
 
 		IEBlocks.StoneDecoration.insulatingGlass = new IEBaseBlock("insulating_glass", stoneDecoProps, BlockItemIE::new)
-				.setBlockLayer(BlockRenderLayer.TRANSLUCENT)
 				.setNotNormalBlock();
 		IEBlocks.StoneDecoration.concreteSprayed = new IEBaseBlock("concrete_sprayed", Block.Properties.create(Material.ROCK).hardnessAndResistance(.2F, 1), BlockItemIE::new)
 				.setNotNormalBlock()
-				.setHammerHarvest()
-				.setBlockLayer(BlockRenderLayer.CUTOUT);
+				.setHammerHarvest();
 		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.cokebrick);
 		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.blastbrick);
 		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.blastbrickReinforced);
@@ -329,9 +326,9 @@ public class IEContent
 			MetalDecoration.steelScaffolding.put(type, steelBlock);
 			MetalDecoration.aluScaffolding.put(type, aluBlock);
 			MetalDecoration.steelScaffoldingStair.put(type, new IEStairsBlock("stairs_steel_scaffolding_"+name,
-					defaultMetalProperties, steelBlock).setRenderLayer(BlockRenderLayer.CUTOUT));
+					defaultMetalProperties, steelBlock));
 			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("stairs_alu_scaffolding_"+name,
-					defaultMetalProperties, aluBlock).setRenderLayer(BlockRenderLayer.CUTOUT));
+					defaultMetalProperties, aluBlock));
 			addSlabFor(steelBlock);
 			addSlabFor(aluBlock);
 		}
@@ -342,7 +339,7 @@ public class IEContent
 			if(!WireType.HV_CATEGORY.equals(cat))
 				relay = new PowerConnectorBlock(cat, true);
 			else
-				relay = new PowerConnectorBlock(cat, true, BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID);
+				relay = new PowerConnectorBlock(cat, true);
 			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, false), connector);
 			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, true), relay);
 		}
@@ -357,16 +354,13 @@ public class IEContent
 				IEProperties.ACTIVE, IEProperties.FACING_ALL);
 		Connectors.currentTransformer = new EnergyMeterBlock();
 		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
-		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE,
-				BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID);
-		Connectors.connectorBundled = new MiscConnectorBlock("connector_bundled", () -> ConnectorBundledTileEntity.TYPE,
-				BlockRenderLayer.CUTOUT, BlockRenderLayer.SOLID);
+		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE);
+		Connectors.connectorBundled = new MiscConnectorBlock("connector_bundled", () -> ConnectorBundledTileEntity.TYPE);
 
 		Connectors.feedthrough = new FeedthroughBlock();
 
 		MetalDevices.fluidPlacer = new GenericTileBlock("fluid_placer", () -> FluidPlacerTileEntity.TYPE,
 				defaultMetalProperties)
-				.setBlockLayer(BlockRenderLayer.CUTOUT)
 				.setNotNormalBlock();
 		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE,
 				IEProperties.FACING_HORIZONTAL);
@@ -381,8 +375,7 @@ public class IEContent
 		MetalDevices.fluidPump = new FluidPumpBlock();
 		MetalDevices.blastFurnacePreheater = new BlastFurnacePreheaterBlock();
 		MetalDevices.furnaceHeater = new GenericTileBlock("furnace_heater", () -> FurnaceHeaterTileEntity.TYPE,
-				defaultMetalProperties, IEProperties.ACTIVE, IEProperties.FACING_ALL)
-				.setBlockLayer(BlockRenderLayer.CUTOUT);
+				defaultMetalProperties, IEProperties.ACTIVE, IEProperties.FACING_ALL);
 		MetalDevices.dynamo = new GenericTileBlock("dynamo", () -> DynamoTileEntity.TYPE, defaultMetalProperties, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.thermoelectricGen = new GenericTileBlock("thermoelectric_generator", () -> ThermoelectricGenTileEntity.TYPE,
 				defaultMetalProperties);
@@ -390,11 +383,9 @@ public class IEContent
 				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE);
 		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
 				defaultMetalProperties, IEProperties.FACING_HORIZONTAL)
-				.setNotNormalBlock()
-				.setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+				.setNotNormalBlock();
 		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties)
-				.setNotNormalBlock()
-				.setBlockLayer(BlockRenderLayer.CUTOUT);
+				.setNotNormalBlock();
 		MetalDevices.sampleDrill = new SampleDrillBlock();
 		MetalDevices.teslaCoil = new TeslaCoilBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
@@ -412,8 +403,7 @@ public class IEContent
 		Multiblocks.blastFurnaceAdv = new StoneMultiBlock("advanced_blast_furnace", () -> BlastFurnaceAdvancedTileEntity.TYPE);
 		Multiblocks.crusher = new MetalMultiblockBlock("crusher", () -> CrusherTileEntity.TYPE);
 		Multiblocks.silo = new MetalMultiblockBlock("silo", () -> SiloTileEntity.TYPE);
-		Multiblocks.tank = new MetalMultiblockBlock("tank", () -> SheetmetalTankTileEntity.TYPE)
-				.setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		Multiblocks.tank = new MetalMultiblockBlock("tank", () -> SheetmetalTankTileEntity.TYPE);
 		Multiblocks.arcFurnace = new MetalMultiblockBlock("arc_furnace", () -> ArcFurnaceTileEntity.TYPE);
 		Multiblocks.assembler = new MetalMultiblockBlock("assembler", () -> AssemblerTileEntity.TYPE);
 		Multiblocks.autoWorkbench = new MetalMultiblockBlock("auto_workbench", () -> AutoWorkbenchTileEntity.TYPE);
@@ -421,7 +411,6 @@ public class IEContent
 		Multiblocks.excavator = new MetalMultiblockBlock("excavator", () -> ExcavatorTileEntity.TYPE);
 		Multiblocks.metalPress = new MetalMultiblockBlock("metal_press", () -> MetalPressTileEntity.TYPE);
 		Multiblocks.bottlingMachine = new MetalMultiblockBlock("bottling_machine", () -> BottlingMachineTileEntity.TYPE);
-		//TODO multilayer models? .setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		Multiblocks.fermenter = new MetalMultiblockBlock("fermenter", () -> FermenterTileEntity.TYPE);
 		Multiblocks.squeezer = new MetalMultiblockBlock("squeezer", () -> SqueezerTileEntity.TYPE);
 		Multiblocks.mixer = new MetalMultiblockBlock("mixer", () -> MixerTileEntity.TYPE);

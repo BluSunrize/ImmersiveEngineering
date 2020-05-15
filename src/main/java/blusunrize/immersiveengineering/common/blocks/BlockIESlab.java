@@ -14,9 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -72,18 +70,6 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 	public String getNameForFlavour()
 	{
 		return base.getNameForFlavour();
-	}
-
-	@Override
-	public BlockRenderLayer getRenderLayer()
-	{
-		return base.getRenderLayer();
-	}
-
-	@Override
-	public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer)
-	{
-		return base.canRenderInLayer(base.getDefaultState(), layer);
 	}
 
 	@Override

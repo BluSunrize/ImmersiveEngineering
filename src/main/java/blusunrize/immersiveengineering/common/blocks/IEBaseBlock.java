@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
-import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.PushReaction;
@@ -39,7 +38,6 @@ import net.minecraftforge.common.ToolType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -51,7 +49,6 @@ public class IEBaseBlock extends Block implements IIEBlock
 	public final IProperty[] additionalProperties;
 	boolean isHidden;
 	boolean hasFlavour;
-	protected List<BlockRenderLayer> renderLayers = Collections.singletonList(BlockRenderLayer.SOLID);
 	//TODO wtf is variable opacity?
 	protected int lightOpacity;
 	protected PushReaction mobilityFlag = PushReaction.NORMAL;
@@ -122,30 +119,10 @@ public class IEBaseBlock extends Block implements IIEBlock
 		return hasFlavour;
 	}
 
-	public IEBaseBlock setBlockLayer(BlockRenderLayer... layer)
-	{
-		Preconditions.checkArgument(layer.length > 0);
-		this.renderLayers = Arrays.asList(layer);
-		return this;
-	}
-
-	@Override
-	public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer)
-	{
-		return renderLayers.contains(layer);
-	}
-
 	public IEBaseBlock setLightOpacity(int opacity)
 	{
 		lightOpacity = opacity;
 		return this;
-	}
-
-	@Override
-	public BlockRenderLayer getRenderLayer()
-	{
-		//TODO This is currently mostly a marker for culling, the actual layer is determined by canRenderInLayer
-		return notNormalBlock?BlockRenderLayer.CUTOUT: BlockRenderLayer.SOLID;
 	}
 
 	@Override

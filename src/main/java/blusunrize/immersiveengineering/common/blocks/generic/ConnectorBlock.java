@@ -21,18 +21,15 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.function.BiFunction;
 
 public abstract class ConnectorBlock extends IETileProviderBlock
@@ -42,7 +39,6 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
 				item, additional);
 		lightOpacity = 0;
-		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setNotNormalBlock();
 	}
 

@@ -18,7 +18,6 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.world.IBlockReader;
 
@@ -36,31 +35,19 @@ public class MiscConnectorBlock extends ConnectorBlock
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType)
 	{
-		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL), ImmutableList.of());
+		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL), BlockItemIE::new);
 	}
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, IProperty<?>... extraProperties)
 	{
-		this(name, tileType, ImmutableList.copyOf(extraProperties), ImmutableList.of());
-	}
-
-	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, BlockRenderLayer... layers)
-	{
-		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL), ImmutableList.copyOf(layers));
-	}
-
-	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, List<IProperty<?>> extraProps, List<BlockRenderLayer> layers)
-	{
-		this(name, tileType, extraProps, layers, BlockItemIE::new);
+		this(name, tileType, ImmutableList.copyOf(extraProperties), BlockItemIE::new);
 	}
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, List<IProperty<?>> extraProps,
-							  List<BlockRenderLayer> layers, BiFunction<Block, Item.Properties, Item> itemClass)
+							  BiFunction<Block, Item.Properties, Item> itemClass)
 	{
 		super(name, itemClass, extraProps.toArray(new IProperty[0]));
 		this.tileType = tileType;
-		if(!layers.isEmpty())
-			setBlockLayer(layers.toArray(new BlockRenderLayer[0]));
 	}
 
 	@Nullable

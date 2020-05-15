@@ -38,11 +38,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
@@ -627,34 +627,35 @@ public class BlockStates extends BlockStateProvider
 				MetalDevices.floodlight,
 				rl("block/metal_device/floodlight.obj.ie"),
 				ImmutableMap.of(),
-				BlockRenderLayer.TRANSLUCENT, BlockRenderLayer.SOLID
+				RenderType.getTranslucent(), RenderType.getSolid()
 		);
 		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), rl("block/connector/connector_lv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/connector_lv")), BlockRenderLayer.SOLID);
+				ImmutableMap.of("texture", modLoc("block/connector/connector_lv")), RenderType.getSolid());
 		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), rl("block/connector/connector_lv.obj"),
 				ImmutableMap.of("texture", modLoc("block/connector/relay_lv")),
-				BlockRenderLayer.SOLID);
+				RenderType.getSolid());
 
 		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false), rl("block/connector/connector_mv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/connector_mv")), BlockRenderLayer.SOLID);
+				ImmutableMap.of("texture", modLoc("block/connector/connector_mv")), RenderType.getSolid());
 		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), rl("block/connector/connector_mv.obj"),
 				ImmutableMap.of("texture", modLoc("block/connector/relay_mv")),
-				BlockRenderLayer.SOLID);
+				RenderType.getSolid());
 
 		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), rl("block/connector/connector_hv.obj"),
-				ImmutableMap.of(), BlockRenderLayer.SOLID);
+				ImmutableMap.of(), RenderType.getSolid());
 		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), rl("block/connector/relay_hv.obj"),
-				ImmutableMap.of(), BlockRenderLayer.TRANSLUCENT);
+				ImmutableMap.of(), RenderType.getTranslucent());
 
 		createConnector(Connectors.connectorStructural, rl("block/connector/connector_structural.obj.ie"),
-				ImmutableMap.of(), BlockRenderLayer.SOLID);
+				ImmutableMap.of(), RenderType.getSolid());
 		createConnector(Connectors.connectorRedstone, rl("block/connector/connector_redstone.obj.ie"),
-				ImmutableMap.of(), BlockRenderLayer.SOLID);
+				ImmutableMap.of(), RenderType.getSolid());
 		createConnector(Connectors.connectorProbe, rl("block/connector/connector_probe.obj.ie"),
-				ImmutableMap.of(), BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
+				ImmutableMap.of(), RenderType.getCutout(), RenderType.getTranslucent());
 		createConnector(Connectors.connectorBundled, rl("block/connector/connector_bundled.obj"),
-				ImmutableMap.of(), BlockRenderLayer.CUTOUT);
-		createConnector(Connectors.feedthrough, FeedthroughLoader.LOCATION, ImmutableMap.of(), BlockRenderLayer.values());
+				ImmutableMap.of(), RenderType.getCutout());
+		//TODO all layers
+		createConnector(Connectors.feedthrough, FeedthroughLoader.LOCATION, ImmutableMap.of());
 		createConnector(MetalDevices.electricLantern, state -> rl("block/metal_device/e_lantern.obj"),
 				state -> {
 					if(state.getSetStates().get(IEProperties.ACTIVE)==Boolean.FALSE)
@@ -662,16 +663,16 @@ public class BlockStates extends BlockStateProvider
 					else
 						return ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on"));
 				},
-				ImmutableList.of(IEProperties.ACTIVE), BlockRenderLayer.SOLID);
+				ImmutableList.of(IEProperties.ACTIVE), RenderType.getSolid());
 
 		createConnector(Connectors.redstoneBreaker, rl("block/connector/redstone_breaker.obj.ie"),
-				ImmutableMap.of(), BlockRenderLayer.SOLID);
+				ImmutableMap.of(), RenderType.getSolid());
 		createConnector(Connectors.breakerswitch, map -> {
 			if(map.getSetStates().get(IEProperties.ACTIVE)==Boolean.FALSE)
 				return rl("block/connector/breaker_switch_off.obj.ie");
 			else
 				return rl("block/connector/breaker_switch_on.obj.ie");
-		}, ImmutableMap.of(), ImmutableList.of(IEProperties.ACTIVE), BlockRenderLayer.SOLID);
+		}, ImmutableMap.of(), ImmutableList.of(IEProperties.ACTIVE), RenderType.getSolid());
 		{
 			ResourceLocation leftModel = rl("block/connector/transformer_mv_left.obj");
 			createConnector(Connectors.transformer, map -> {
@@ -686,10 +687,10 @@ public class BlockStates extends BlockStateProvider
 			), ImmutableList.of(
 					IEProperties.MULTIBLOCKSLAVE,
 					IEProperties.MIRRORED
-			), BlockRenderLayer.SOLID);
+			), RenderType.getSolid());
 		}
 		createConnector(Connectors.postTransformer, rl("block/connector/transformer_post.obj"),
-				ImmutableMap.of(), BlockRenderLayer.SOLID);
+				ImmutableMap.of(), RenderType.getSolid());
 		{
 			ResourceLocation leftModel = rl("block/connector/transformer_hv_left.obj");
 			createConnector(Connectors.transformerHV, map -> {
@@ -704,7 +705,7 @@ public class BlockStates extends BlockStateProvider
 			), ImmutableList.of(
 					IEProperties.MULTIBLOCKSLAVE,
 					IEProperties.MIRRORED
-			), BlockRenderLayer.SOLID);
+			), RenderType.getSolid());
 		}
 
 		ResourceLocation ctModel = rl("block/connector/e_meter.obj");
@@ -715,11 +716,11 @@ public class BlockStates extends BlockStateProvider
 				return EMPTY_MODEL.model.getLocation();
 		}, ImmutableMap.of(
 				"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(ctModel, goodExistingFileHelper))
-		), ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), BlockRenderLayer.SOLID);
+		), ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), RenderType.getSolid());
 		createConnector(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"), ImmutableMap.of(),
-				BlockRenderLayer.SOLID);
+				RenderType.getSolid());
 		createConnector(Cloth.balloon, map -> rl("block/balloon.obj.ie"), ImmutableMap.of(),
-				ImmutableList.of(), BlockRenderLayer.TRANSLUCENT);
+				ImmutableList.of(), RenderType.getTranslucent());
 	}
 
 	private void createMetalMultiblocks()
@@ -1021,7 +1022,7 @@ public class BlockStates extends BlockStateProvider
 
 	private void createConnector(Block b, Function<PartialBlockstate, ResourceLocation> model,
 								 Function<PartialBlockstate, ImmutableMap<String, ResourceLocation>> textures,
-								 List<IProperty<?>> additional, BlockRenderLayer... layers)
+								 List<IProperty<?>> additional, RenderType... layers)
 	{
 		Preconditions.checkArgument(layers.length > 0);
 		final IProperty<Direction> facingProp;
@@ -1051,7 +1052,7 @@ public class BlockStates extends BlockStateProvider
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
 		forEachState(builder.partialState(), additional, map -> {
 			final List<String> layersList = Arrays.stream(layers)
-					.map(BlockRenderLayer::name)
+					.map(RenderType::toString) // toString is implemented as getName
 					.collect(Collectors.toList());
 			if(facingProp!=null)
 			{
@@ -1175,13 +1176,13 @@ public class BlockStates extends BlockStateProvider
 
 	private void createConnector(Block b, Function<PartialBlockstate, ResourceLocation> model,
 								 ImmutableMap<String, ResourceLocation> textures,
-								 List<IProperty<?>> additional, BlockRenderLayer... layers)
+								 List<IProperty<?>> additional, RenderType... layers)
 	{
 		createConnector(b, model, state -> textures, additional, layers);
 	}
 
 	private void createConnector(Block b, ResourceLocation model, ImmutableMap<String, ResourceLocation> textures,
-								 BlockRenderLayer... layers)
+								 RenderType... layers)
 	{
 		createConnector(b, map -> model, textures, ImmutableList.of(), layers);
 	}

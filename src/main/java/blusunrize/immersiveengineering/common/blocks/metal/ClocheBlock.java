@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -18,7 +17,6 @@ public class ClocheBlock extends GenericTileBlock
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 		setNotNormalBlock();
 		setLightOpacity(0);
-		setBlockLayer(BlockRenderLayer.CUTOUT);
 	}
 
 	@Override
