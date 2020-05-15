@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.font;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
 import net.minecraft.client.Minecraft;
@@ -30,7 +30,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
@@ -45,7 +44,8 @@ public class IEFontRender extends FontRenderer
 	{
 		unicodeReplacements.put((char)Integer.parseInt("260E", 16),
 				new TexturedGlyph(new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/hud_elements.png"),
-						.5f, .75f, .5625f, .8125f, 0, 7.99F, 0, 7.99F));
+						.5f, .75f, .5625f, .8125f,
+						0, 7.99F, 0, 7.99F));
 	}
 
 	public float customSpaceWidth = 4f;

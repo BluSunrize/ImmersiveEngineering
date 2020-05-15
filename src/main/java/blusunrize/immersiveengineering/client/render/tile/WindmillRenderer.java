@@ -18,24 +18,22 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -49,8 +47,13 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/windmill.obj.ie"),
 			"windmill", ModelType.IE_OBJ);
 
+	public WindmillRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	{
+		super(rendererDispatcherIn);
+	}
+
 	@Override
-	public void render(WindmillTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(WindmillTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;

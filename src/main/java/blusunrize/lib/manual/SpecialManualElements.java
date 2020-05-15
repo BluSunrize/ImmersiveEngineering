@@ -13,7 +13,7 @@ import blusunrize.lib.manual.gui.ManualScreen;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

@@ -260,7 +260,7 @@ public class ExcavatorHandler
 		{
 			ListNBT ret = new ListNBT();
 			for(DimensionType t : types)
-				ret.add(new StringNBT(DimensionType.getKey(t).toString()));
+				ret.add(StringNBT.valueOf(DimensionType.getKey(t).toString()));
 			return ret;
 		}
 

@@ -17,8 +17,8 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
@@ -136,7 +136,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 			visible.remove(g);
 		}
 		if(!callback.areGroupsFullbright(stack, groups))
-			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		else
 			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 		VertexBufferConsumer vbc = new VertexBufferConsumer(bb);
@@ -161,7 +161,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					lastShaderLayer.modifyRender(true, partialTicks);
 				//start new batch
 				if(!callback.areGroupsFullbright(stack, groups))
-					bb.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+					bb.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 				else
 					bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 

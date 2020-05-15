@@ -7,21 +7,21 @@ import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.*;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.IntegerProperty;
-import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ClocheRenderHelper
 {
-	private static final TRSRTransformation DEFAULT_TRANSFORMATION = new TRSRTransformation(null);
+	private static final TransformationMatrix DEFAULT_TRANSFORMATION = new TransformationMatrix(null);
 
 	public static class RenderFunctionCrop implements ClocheRenderFunction
 	{
@@ -65,7 +65,7 @@ public class ClocheRenderHelper
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
 		{
 			int age = Math.min(this.maxAge, Math.round(this.maxAge*growth));
 			return ImmutableList.of(Pair.of(this.cropBlock.getDefaultState().with(this.ageProperty, age), DEFAULT_TRANSFORMATION));
@@ -88,10 +88,10 @@ public class ClocheRenderHelper
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
 		{
-			TRSRTransformation bottom = new TRSRTransformation(new Vector3f(0, growth-1, 0), null, null, null);
-			TRSRTransformation top = new TRSRTransformation(new Vector3f(0, growth, 0), null, null, null);
+			TransformationMatrix bottom = new TransformationMatrix(new Vector3f(0, growth-1, 0), null, null, null);
+			TransformationMatrix top = new TransformationMatrix(new Vector3f(0, growth, 0), null, null, null);
 			return ImmutableList.of(
 					Pair.of(this.cropBlock.getDefaultState(), bottom),
 					Pair.of(this.cropBlock.getDefaultState(), top));
@@ -119,28 +119,28 @@ public class ClocheRenderHelper
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
 		{
-			Set<Pair<BlockState, TRSRTransformation>> ret = new HashSet();
+			Set<Pair<BlockState, TransformationMatrix>> ret = new HashSet();
 			Matrix4f stemMatrix = new Matrix4f();
 			stemMatrix.setIdentity();
 			stemMatrix.rotY(-(float)Math.PI/2); //-90 deg
-			stemMatrix.setTranslation(new Vector3f(.75f, .0625f, 0));
+			stemMatrix.setTranslation(.75f, .0625f, 0);
 
 			if(growth < .375)
 			{
 				int age = Math.round(7*growth/.375f);
-				return ImmutableList.of(Pair.of(this.stemBlock.getDefaultState().with(StemBlock.AGE, age), new TRSRTransformation(stemMatrix)));
+				return ImmutableList.of(Pair.of(this.stemBlock.getDefaultState().with(StemBlock.AGE, age), new TransformationMatrix(stemMatrix)));
 			}
 			else
 			{
 				float scale = ((growth-.375f)/.625f)*.3125f;
 				Matrix4f cropMatrix = new Matrix4f();
 				cropMatrix.setIdentity();
-				cropMatrix.setTranslation(new Vector3f(0.75f-scale/2, .5625f-scale, 0.5f-scale/2));
+				cropMatrix.setTranslation(0.75f-scale/2, .5625f-scale, 0.5f-scale/2);
 				cropMatrix.setScale(scale);
-				return ImmutableList.of(Pair.of(this.attachedStemBlock.getDefaultState(), new TRSRTransformation(stemMatrix)),
-						Pair.of(this.cropBlock.getDefaultState(), new TRSRTransformation(cropMatrix)));
+				return ImmutableList.of(Pair.of(this.attachedStemBlock.getDefaultState(), new TransformationMatrix(stemMatrix)),
+						Pair.of(this.cropBlock.getDefaultState(), new TransformationMatrix(cropMatrix)));
 			}
 		}
 	}
@@ -161,11 +161,11 @@ public class ClocheRenderHelper
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
 		{
 			Vector3f transl = new Vector3f(0.5f-growth/2, 0, 0.5f-growth/2);
 			Vector3f scale = new Vector3f(growth, growth, growth);
-			return ImmutableList.of(Pair.of(this.cropBlock.getDefaultState(), new TRSRTransformation(transl, null, scale, null)));
+			return ImmutableList.of(Pair.of(this.cropBlock.getDefaultState(), new TransformationMatrix(transl, null, scale, null)));
 		}
 	}
 
@@ -178,12 +178,12 @@ public class ClocheRenderHelper
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
 		{
 			growth *= 2;
-			TRSRTransformation bottom = new TRSRTransformation(new Vector3f(0, growth-2, 0), null, null, null);
-			TRSRTransformation middle = new TRSRTransformation(new Vector3f(0, growth-1, 0), null, null, null);
-			TRSRTransformation top = new TRSRTransformation(new Vector3f(0, growth, 0), null, null, null);
+			TransformationMatrix bottom = new TransformationMatrix(new Vector3f(0, growth-2, 0), null, null, null);
+			TransformationMatrix middle = new TransformationMatrix(new Vector3f(0, growth-1, 0), null, null, null);
+			TransformationMatrix top = new TransformationMatrix(new Vector3f(0, growth, 0), null, null, null);
 			BlockState stem = Blocks.CHORUS_PLANT.getDefaultState().with(ChorusPlantBlock.DOWN, true).with(ChorusPlantBlock.UP, true);
 			return ImmutableList.of(
 					Pair.of(stem, bottom),
@@ -201,17 +201,18 @@ public class ClocheRenderHelper
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
 		{
 			int age = Math.min(4, Math.round(growth*4));
-			if(age==4){
-				TRSRTransformation top = new TRSRTransformation(new Vector3f(0, 1, 0), null, null, null);
+			if(age==4)
+			{
+				TransformationMatrix top = new TransformationMatrix(new Vector3f(0, 1, 0), null, null, null);
 				return ImmutableList.of(
-						Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new TRSRTransformation(null)),
+						Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new TransformationMatrix(null)),
 						Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.TOP0), top)
 				);
 			}
-			return ImmutableList.of(Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.values()[age]), new TRSRTransformation(null)));
+			return ImmutableList.of(Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.values()[age]), new TransformationMatrix(null)));
 		}
 	}
 }

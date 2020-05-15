@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import blusunrize.immersiveengineering.common.network.MessageMaintenanceKit;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;

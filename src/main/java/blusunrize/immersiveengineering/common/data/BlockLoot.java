@@ -20,12 +20,14 @@ import blusunrize.immersiveengineering.common.util.loot.DropInventoryLootEntry;
 import blusunrize.immersiveengineering.common.util.loot.MBOriginalBlockLootEntry;
 import blusunrize.immersiveengineering.common.util.loot.TileDropLootEntry;
 import blusunrize.immersiveengineering.common.util.loot.WindmillLootFunction;
+import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.LootTable.Builder;
@@ -213,9 +215,11 @@ public class BlockLoot extends LootGenerator
 				.acceptFunction(ApplyBonus.binomialWithBonusCount(ench, prob, extra));
 	}
 
-	private <T extends Comparable<T>> ILootCondition.IBuilder propertyIs(Block b, IProperty<T> prop, T value)
+	private <T extends Comparable<T> & IStringSerializable> ILootCondition.IBuilder propertyIs(Block b, IProperty<T> prop, T value)
 	{
 		return BlockStateProperty.builder(b)
-				.with(prop, value);
+				.fromProperties(
+						StatePropertiesPredicate.Builder.newBuilder().withProp(prop, value)
+				);
 	}
 }

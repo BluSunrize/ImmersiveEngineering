@@ -28,10 +28,13 @@ import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.network.MessageSpeedloaderSync;
 import blusunrize.immersiveengineering.common.util.*;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -66,7 +69,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -78,7 +80,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.vecmath.Vector3f;
 import java.util.*;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
@@ -89,7 +90,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 {
 	public RevolverItem()
 	{
-		super("revolver", withIEOBJRender().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "REVOLVER");
+		super("revolver", withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "REVOLVER");
 	}
 
 	public static UUID speedModUUID = Utils.generateNewUUID();
@@ -315,7 +316,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			else if(player.getCooledAttackStrength(1) >= 1)
 			{
 				if(this.getUpgrades(revolver).getBoolean("nerf"))
-					world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 0.6f);
+					world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 0.6f);
 				else
 				{
 					if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
@@ -331,7 +332,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 							{
 								for(ItemStack b : bullets)
 									if(!b.isEmpty())
-										world.addEntity(new ItemEntity(world, player.posX, player.posY, player.posZ, b));
+										world.addEntity(new ItemEntity(world, player.getPosX(), player.getPosY(), player.getPosZ(), b));
 								setBullets(revolver, ((SpeedloaderItem)stack.getItem()).getContainedItems(stack), true);
 								((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 								player.inventory.markDirty();
@@ -376,13 +377,13 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 								SoundEvent sound = bullet.getSound();
 								if(sound==null)
 									sound = IESounds.revolverFire;
-								world.playSound(null, player.posX, player.posY, player.posZ, sound, SoundCategory.PLAYERS, noise, 1f);
+								world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), sound, SoundCategory.PLAYERS, noise, 1f);
 							}
 							else
-								world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1f, 1f);
+								world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1f, 1f);
 						}
 						else
-							world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1f, 1f);
+							world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1f, 1f);
 
 						rotateCylinder(revolver, player, true, bullets);
 						ItemNBTHelper.putInt(revolver, "cooldown", getMaxShootCooldown(revolver));
@@ -677,7 +678,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective, @Nullable LivingEntity entity)
+	public void handlePerspective(ItemStack stack, TransformType cameraTransformType, MatrixStack mat, @Nullable LivingEntity entity)
 	{
 		if(entity instanceof PlayerEntity&&(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
 		{
@@ -691,8 +692,8 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 					float angle = f*-6.28318f;
 					if(left)
 						angle *= -1;
-					perspective.translate(0, 1.5-f, 0);
-					perspective.rotate(angle, 0, 0, 1);
+					mat.translate(0, 1.5-f, 0);
+					mat.rotate(angle, 0, 0, 1);
 				}
 			}
 
@@ -703,20 +704,20 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
 				if(f > .35&&f < 1.95)
 					if(f < .5)
-						perspective.translate((.35-f)*2, 0, 0).rotate(2.64*(f-.35), 0, 0, left?-1: 1);
+						mat.translate((.35-f)*2, 0, 0).rotate(2.64*(f-.35), 0, 0, left?-1: 1);
 					else if(f < .6)
-						perspective.translate((f-.5)*6, (.5-f)*1, 0).rotate(.87266, 0, 0, left?-1: 1);
+						mat.translate((f-.5)*6, (.5-f)*1, 0).rotate(.87266, 0, 0, left?-1: 1);
 					else if(f < 1.7)
-						perspective.translate(0, -.6, 0).rotate(.87266, 0, 0, left?-1: 1);
+						mat.translate(0, -.6, 0).rotate(.87266, 0, 0, left?-1: 1);
 					else if(f < 1.8)
-						perspective.translate((1.8-f)*6, (f-1.8)*1, 0).rotate(.87266, 0, 0, left?-1: 1);
+						mat.translate((1.8-f)*6, (f-1.8)*1, 0).rotate(.87266, 0, 0, left?-1: 1);
 					else
-						perspective.translate((f-1.95f)*2, 0, 0).rotate(2.64*(1.95-f), 0, 0, left?-1: 1);
+						mat.translate((f-1.95f)*2, 0, 0).rotate(2.64*(1.95-f), 0, 0, left?-1: 1);
 			}
 			else if(((PlayerEntity)entity).openContainer instanceof RevolverContainer)
-				perspective.translate(left?.4: -.4, .4, 0).rotate(.87266, 0, 0, left?-1: 1);
+				mat.translate(left?.4: -.4, .4, 0).rotate(.87266, 0, 0, left?-1: 1);
 		}
-		return perspective;
+		return mat;
 	}
 
 	private static final String[][] groups = {{"frame"}, {"cylinder"}};
@@ -728,14 +729,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return groups;
 	}
 
-	private static final TRSRTransformation matOpen = new TRSRTransformation(new Vector3f(-.625F, .25F, 0), TRSRTransformation.quatFromXYZ(0, 0, -.87266f), null, null);
-	private static final TRSRTransformation matClose = new TRSRTransformation(new Vector3f(-.625F, .25F, 0), null, null, null);
-	private static final TRSRTransformation matCylinder = new TRSRTransformation(new Vector3f(0, .6875F, 0), null, null, null);
+	private static final TransformationMatrix matOpen = new TransformationMatrix(new Vector3f(-.625F, .25F, 0), new Quaternion(0, 0, -.87266f, false), null, null);
+	private static final TransformationMatrix matClose = new TransformationMatrix(new Vector3f(-.625F, .25F, 0), null, null, null);
+	private static final TransformationMatrix matCylinder = new TransformationMatrix(new Vector3f(0, .6875F, 0), null, null, null);
 
 	@Nonnull
 	@Override
-	public TRSRTransformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
-													float partialTicks)
+	public TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
+													  float partialTicks)
 	{
 		if(entity instanceof PlayerEntity&&(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND))
 		{
@@ -751,24 +752,24 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 					if(f < .35||f > 1.95)
 						return matClose;
 					else if(f < .5)
-						return new TRSRTransformation(
+						return new TransformationMatrix(
 								new Vector3f(-.625f, .25f, 0),
-								TRSRTransformation.quatFromXYZ(0, 0, -2.64F*(f-.35F)),
+								new Quaternion(0, 0, -2.64F*(f-.35F), false),
 								null, null);
 					else if(f < 1.8)
 						return matOpen;
 					else
-						return new TRSRTransformation(
+						return new TransformationMatrix(
 								new Vector3f(-.625f, .25f, 0),
-								TRSRTransformation.quatFromXYZ(0, 0, -2.64f*(1.95f-f)),
+								new Quaternion(0, 0, -2.64f*(1.95f-f), false),
 								null, null);
 				}
 				else if(f > 2.5&&f < 2.9)
 				{
 					float angle = (left?-1: 1)*-15.70795f*(f-2.5f);
-					return new TRSRTransformation(
+					return new TransformationMatrix(
 							new Vector3f(0, .6875f, 0),
-							TRSRTransformation.quatFromXYZ(angle, 0, 0),
+							new Quaternion(angle, 0, 0, false),
 							null, null);
 				}
 			}

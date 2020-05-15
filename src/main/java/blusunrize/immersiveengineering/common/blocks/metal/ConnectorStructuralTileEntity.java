@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -28,7 +29,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 
@@ -98,11 +98,11 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	}
 
 	@Override
-	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
+	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
 	{
 		Matrix4 mat = new Matrix4(transform.getMatrixVec());
 		mat = mat.translate(.5, 0, .5).rotate(Math.toRadians(rotation), 0, 1, 0).translate(-.5, 0, -.5);
-		transform = new TRSRTransformation(mat.toMatrix4f());
+		transform = new TransformationMatrix(mat.toMatrix4f());
 		return transform;
 	}
 

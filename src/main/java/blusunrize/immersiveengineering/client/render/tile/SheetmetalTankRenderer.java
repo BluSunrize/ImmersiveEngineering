@@ -10,17 +10,25 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTileEntity>
 {
+	public SheetmetalTankRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	{
+		super(rendererDispatcherIn);
+	}
+
 	@Override
-	public void render(SheetmetalTankTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(SheetmetalTankTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!tile.formed||tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;

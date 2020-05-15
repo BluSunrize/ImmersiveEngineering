@@ -122,7 +122,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				Entity shooter = null;
 				if(shooterId!=null)
 					shooter = world.getPlayerByUuid(shooterId);
-				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, Mode.BREAK);
+				world.createExplosion(shooter, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), 2, Mode.BREAK);
 			}
 
 			@Override
@@ -283,7 +283,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				if(effects!=null)
 					if(bullet.bulletPotion.getItem() instanceof LingeringPotionItem)
 					{
-						AreaEffectCloudEntity entityareaeffectcloud = new AreaEffectCloudEntity(bullet.world, bullet.posX, bullet.posY, bullet.posZ);
+						AreaEffectCloudEntity entityareaeffectcloud = new AreaEffectCloudEntity(bullet.world, bullet.getPosX(), bullet.getPosY(), bullet.getPosZ());
 						entityareaeffectcloud.setOwner(world.getPlayerByUuid(shooter));
 						entityareaeffectcloud.setRadius(3.0F);
 						entityareaeffectcloud.setRadiusOnUse(-0.5F);
@@ -367,7 +367,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 					projectile.getMotion().x*1.5,
 					projectile.getMotion().y*1.5,
 					projectile.getMotion().z*1.5, this, cartridge):
-					new RevolvershotFlareEntity(projectile.world, projectile.posX, projectile.posY, projectile.posZ, 0, 0, 0, this);
+					new RevolvershotFlareEntity(projectile.world, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), 0, 0, 0, this);
 			flare.setMotion(projectile.getMotion());
 			flare.bulletElectro = electro;
 			flare.colour = this.getColour(cartridge, 1);
@@ -430,7 +430,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		{
 			ItemStack fireworkStack = new ItemStack(Items.FIREWORK_ROCKET);
 			fireworkStack.setTag(cartridge.hasTag()?cartridge.getTag().copy(): null);
-			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.world, fireworkStack, shooter.posX, shooter.posY+(double)shooter.getEyeHeight()-(double)0.15F, shooter.posZ, true);
+			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.world, fireworkStack, shooter.getPosX(), shooter.getPosY()+(double)shooter.getEyeHeight()-(double)0.15F, shooter.getPosZ(), true);
 			Vec3d vector = projectile.getMotion();
 			firework.shoot(vector.getX(), vector.getY(), vector.getZ(), 1.6f, 1.0f);
 			return firework;
@@ -492,7 +492,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		public Entity getProjectile(PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
 			RevolvershotHomingEntity shot = shooter!=null?new RevolvershotHomingEntity(projectile.world, shooter,
-					projectile.getMotion().x*1.5, projectile.getMotion().y*1.5, projectile.getMotion().z*1.5, this): new RevolvershotHomingEntity(projectile.world, projectile.posX, projectile.posY, projectile.posZ, 0, 0, 0, this);
+					projectile.getMotion().x*1.5, projectile.getMotion().y*1.5, projectile.getMotion().z*1.5, this): new RevolvershotHomingEntity(projectile.world, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), 0, 0, 0, this);
 			shot.setMotion(projectile.getMotion());
 			shot.bulletElectro = electro;
 			return shot;

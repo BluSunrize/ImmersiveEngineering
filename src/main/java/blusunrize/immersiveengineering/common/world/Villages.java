@@ -147,8 +147,8 @@ public class Villages
 			newPieces.add(new Pair<>(p, 1));
 		}
 		newPieces.add(new Pair<>(new SingleJigsawPiece(toAdd.toString()), weight));
-		ResourceLocation something = old.func_214948_a();
-		JigsawManager.REGISTRY.register(new JigsawPattern(pool, something, newPieces, PlacementBehaviour.RIGID));
+		ResourceLocation name = old.getName();
+		JigsawManager.REGISTRY.register(new JigsawPattern(pool, name, newPieces, PlacementBehaviour.RIGID));
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)

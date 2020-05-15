@@ -101,7 +101,7 @@ public class TileInventory implements IInventory
 	{
 		if(tile instanceof IInteractionObjectIE&&!((IInteractionObjectIE)tile).canUseGui(player))
 			return false;
-		return !tile.isRemoved()&&tile.getDistanceSq(player.posX, player.posY, player.posZ) < 64;
+		return !tile.isRemoved()&&tile.getDistanceSq(player.getPosX(), player.getPosY(), player.getPosZ()) < 64;
 	}
 
 	@Override

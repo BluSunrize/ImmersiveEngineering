@@ -26,6 +26,9 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -45,12 +48,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 public class FloodlightTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IAdvancedDirectionalTile,
 		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, IOBJModelCallback<BlockState>,
@@ -487,7 +490,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
+	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
 	{
 		Matrix4f mat = transform.getMatrixVec();
 		Vector3f transl = new Vector3f(.5f, .5f, .5f);
@@ -543,7 +546,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		}
 		mat.setRotation(ClientUtils.degreeToQuaterion(pitch, yaw, roll));
 		mat.setTranslation(transl);
-		return new TRSRTransformation(mat);
+		return new TransformationMatrix(mat);
 	}
 
 	@OnlyIn(Dist.CLIENT)

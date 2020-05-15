@@ -8,12 +8,12 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.platform.GlStateManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;

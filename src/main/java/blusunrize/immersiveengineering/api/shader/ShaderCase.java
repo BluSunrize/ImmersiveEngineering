@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.util.ResourceLocation;
 
-import javax.vecmath.Vector4f;
 import java.util.Collection;
 
 /**

@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement.Type;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.Usage;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.model.pipeline.*;
 
 import java.lang.reflect.Field;
@@ -67,7 +67,7 @@ public class SmartLightingQuad extends BakedQuad
 	@Override
 	public void pipe(IVertexConsumer consumer)
 	{
-		IEnviromentBlockReader world = null;
+		ILightReader world = null;
 		BlockInfo info = null;
 		if(consumer instanceof VertexLighterFlat)
 		{
@@ -87,8 +87,8 @@ public class SmartLightingQuad extends BakedQuad
 		float[] data = new float[4];
 		VertexFormat format = consumer.getVertexFormat();
 		int count = format.getElementCount();
-		int[] eMap = LightUtil.mapFormats(format, DefaultVertexFormats.ITEM);
-		int itemCount = DefaultVertexFormats.ITEM.getElementCount();
+		int[] eMap = LightUtil.mapFormats(format, DefaultVertexFormats.BLOCK);
+		int itemCount = DefaultVertexFormats.BLOCK.getElementCount();
 		eMap[eMap.length-1] = 2;
 		for(int v = 0; v < 4; v++)
 			for(int e = 0; e < count; e++)
@@ -108,7 +108,7 @@ public class SmartLightingQuad extends BakedQuad
 						data[1] = ((float)((brightness >> 0x14)&0xF)*0x20)/0xFFFF;
 					}
 					else
-						LightUtil.unpack(this.getVertexData(), data, DefaultVertexFormats.ITEM, v, eMap[e]);
+						LightUtil.unpack(this.getVertexData(), data, DefaultVertexFormats.BLOCK, v, eMap[e]);
 					consumer.put(e, data);
 				}
 				else

@@ -91,7 +91,7 @@ public class IESaveData extends WorldSavedData
 			ListNBT playerReceived = new ListNBT();
 			for(ResourceLocation shader : ShaderRegistry.receivedShaders.get(player))
 				if(shader!=null)
-					playerReceived.add(new StringNBT(shader.toString()));
+					playerReceived.add(StringNBT.valueOf(shader.toString()));
 			tag.put("received", playerReceived);
 			receivedShaderList.add(tag);
 		}

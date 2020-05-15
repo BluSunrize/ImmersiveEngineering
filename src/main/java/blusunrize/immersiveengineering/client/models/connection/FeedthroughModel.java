@@ -33,8 +33,8 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -48,13 +48,12 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -114,7 +113,7 @@ public class FeedthroughModel extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> ret = new ArrayList<>();
 		ret.add(tileData);
@@ -340,7 +339,7 @@ public class FeedthroughModel extends BakedIEModel
 					case 0:
 						if(k.layer==null||k.baseState.getBlock().canRenderInLayer(k.baseState, k.layer))
 						{
-							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TRSRTransformation.identity(),
+							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TransformationMatrix.identity(),
 									colorMultiplier);
 							quads.add(model.getQuads(k.baseState, side, Utils.RAND, EmptyModelData.INSTANCE)
 									.stream()
@@ -361,7 +360,7 @@ public class FeedthroughModel extends BakedIEModel
 						mat = new Matrix4();
 						mat.translate(0, 0, -1);
 						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat));
-						Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TRSRTransformation.identity(),
+						Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TransformationMatrix.identity(),
 								colorMultiplier);
 						all.addAll(model.getQuads(k.baseState, side, Utils.RAND).stream().map(tintTransformer)
 								.collect(Collectors.toCollection(ArrayList::new)));
@@ -394,8 +393,8 @@ public class FeedthroughModel extends BakedIEModel
 					.getModel(info.conn.get().with(IEProperties.FACING_ALL, Direction.DOWN));
 			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, Utils.RAND, EmptyModelData.INSTANCE));
 			if(side==facing)
-				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
-			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(new TRSRTransformation(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
+				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
+			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(new TransformationMatrix(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
 			if(transf!=null)
 				return conn.stream().map(transf).collect(Collectors.toList());
 			else

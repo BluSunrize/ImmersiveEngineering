@@ -10,13 +10,13 @@ package blusunrize.immersiveengineering.common.data.models;
 
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.gson.*;
+import net.minecraft.client.renderer.Quat4f;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraftforge.client.model.ForgeBlockStateV1.TRSRDeserializer;
 import net.minecraftforge.client.model.generators.ModelBuilder.Perspective;
-import net.minecraftforge.common.model.TRSRTransformation;
 
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,11 +42,11 @@ public class TransformationMap
 		}
 	}
 
-	private final Map<Perspective, TRSRTransformation> transforms = new TreeMap<>();
+	private final Map<Perspective, TransformationMatrix> transforms = new TreeMap<>();
 
 	public TransformationMap setTransformations(Perspective t, Matrix4 mat)
 	{
-		transforms.put(t, new TRSRTransformation(mat.toMatrix4f()));
+		transforms.put(t, new TransformationMatrix(mat.toMatrix4f()));
 		return this;
 	}
 
@@ -64,11 +64,11 @@ public class TransformationMap
 	public void addFromJson(String json)
 	{
 		Gson GSON = new GsonBuilder()
-				.registerTypeAdapter(TRSRTransformation.class, TRSRDeserializer.INSTANCE)
+				.registerTypeAdapter(TransformationMatrix.class, TRSRDeserializer.INSTANCE)
 				.registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
 				.create();
 		JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
-		Map<Perspective, TRSRTransformation> transforms = new HashMap<>();
+		Map<Perspective, TransformationMatrix> transforms = new HashMap<>();
 		Optional<String> type = Optional.ofNullable(obj.remove("type")).map(JsonElement::getAsString);
 		boolean vanilla = type.map("vanilla"::equals).orElse(false);
 		for(Perspective perspective : Perspective.values())
@@ -82,29 +82,29 @@ public class TransformationMap
 				forType = obj.getAsJsonObject(key);
 				obj.remove(key);
 			}
-			TRSRTransformation transform;
+			TransformationMatrix transform;
 			if(forType!=null)
 			{
 				if(vanilla)
 				{
 					ItemTransformVec3f vanillaTransform = GSON.fromJson(forType, ItemTransformVec3f.class);
-					transform = TRSRTransformation.from(vanillaTransform);
+					transform = TransformationMatrix.from(vanillaTransform);
 				}
 				else
-					transform = GSON.fromJson(forType, TRSRTransformation.class);
+					transform = GSON.fromJson(forType, TransformationMatrix.class);
 			}
 			else
-				transform = TRSRTransformation.identity();
+				transform = TransformationMatrix.identity();
 			if(type.map("no_corner_offset"::equals).orElse(false))
-				transform = TRSRTransformation.blockCornerToCenter(transform);
+				transform = TransformationMatrix.blockCornerToCenter(transform);
 			transforms.put(perspective, transform);
 		}
-		TRSRTransformation baseTransform;
+		TransformationMatrix baseTransform;
 		if(obj.size() > 0)
-			baseTransform = GSON.fromJson(obj, TRSRTransformation.class);
+			baseTransform = GSON.fromJson(obj, TransformationMatrix.class);
 		else
-			baseTransform = TRSRTransformation.identity();
-		for(Entry<Perspective, TRSRTransformation> e : transforms.entrySet())
+			baseTransform = TransformationMatrix.identity();
+		for(Entry<Perspective, TransformationMatrix> e : transforms.entrySet())
 			this.transforms.put(e.getKey(), e.getValue().compose(baseTransform));
 	}
 
@@ -117,12 +117,12 @@ public class TransformationMap
 	public JsonObject toJson()
 	{
 		JsonObject ret = new JsonObject();
-		for(Entry<Perspective, TRSRTransformation> entry : transforms.entrySet())
+		for(Entry<Perspective, TransformationMatrix> entry : transforms.entrySet())
 			add(ret, entry.getKey(), entry.getValue());
 		return ret;
 	}
 
-	private void add(JsonObject main, Perspective type, TRSRTransformation trsr)
+	private void add(JsonObject main, Perspective type, TransformationMatrix trsr)
 	{
 		JsonObject result = new JsonObject();
 		result.add("translation", toJson(trsr.getTranslation()));

@@ -80,9 +80,9 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	{
 		super.tick();
 		//movement logic
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
+		this.prevPosX = this.getPosX();
+		this.prevPosY = this.getPosY();
+		this.prevPosZ = this.getPosZ();
 		Vec3d motion = getMotion();
 		motion = motion.add(0, -.4, 0);
 		this.move(MoverType.SELF, motion);
@@ -159,7 +159,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 		{
 			ItemStack tube = new ItemStack(Misc.fluorescentTube);
 			FluorescentTubeItem.setRGB(tube, rgb);
-			ItemEntity ent = new ItemEntity(world, posX, posY, posZ, tube);
+			ItemEntity ent = new ItemEntity(world, getPosX(), getPosY(), getPosZ(), tube);
 			world.addEntity(ent);
 			remove();
 		}

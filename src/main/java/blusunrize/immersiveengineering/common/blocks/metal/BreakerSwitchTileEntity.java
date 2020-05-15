@@ -21,6 +21,9 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -37,7 +40,6 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -70,10 +72,12 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
-		Matrix4 mat = new Matrix4(getFacing());
-		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
-		//TODO what is Matrix(facing)^-1?
-		mat.invert();
+		Matrix4 mat = new Matrix4()
+				.setIdentity()
+				.translate(.5, .5, 0)
+				.rotate(-Math.PI/2*rotation, 0, 0, 1)
+				.translate(-.5, -.5, 0)
+				.multiply(Matrix4.inverseFacing(getFacing()));
 		Vec3d transformedHit = mat.apply(new Vec3d(info.hitX, info.hitY, info.hitZ));
 		IELogger.logger.info("Transformed hit: {}, original: {}", transformedHit,
 				new Vec3d(info.hitX, info.hitY, info.hitZ));
@@ -260,12 +264,15 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
+	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
 	{
-		Matrix4 mat = new Matrix4(transform.getMatrixVec());
-		mat = mat.translate(.5, 0, .5).rotate(Math.PI/2*rotation, 0, 1, 0).translate(-.5, 0, -.5);
-		transform = new TRSRTransformation(mat.toMatrix4f());
-		return transform;
+		return transform.compose(new TransformationMatrix(
+				new Vector3f(0.5F, 0, 0.5F),
+				new Quaternion(0, 180*rotation, 0, true),
+				null, null
+		)).compose(new TransformationMatrix(
+				new Vector3f(-0.5F, 0, -0.5F), null, null, null
+		));
 	}
 
 	@Override

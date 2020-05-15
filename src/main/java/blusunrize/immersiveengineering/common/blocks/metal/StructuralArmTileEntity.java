@@ -35,7 +35,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -366,9 +365,9 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 			for(int i = 0; i < vertices.length; i++)
 				vertices[i] = SHRINK.apply(vertices[i]);
 		}
-		quads.add(createSide(DefaultVertexFormats.ITEM, getArrayByIndices(vertices, 5, 1, 0, 4),
+		quads.add(createSide(DefaultVertexFormats.BLOCK, getArrayByIndices(vertices, 5, 1, 0, 4),
 				WEST, tas, lowerV, upperV, invert));
-		quads.add(createSide(DefaultVertexFormats.ITEM, getArrayByIndices(vertices, 7, 3, 2, 6),
+		quads.add(createSide(DefaultVertexFormats.BLOCK, getArrayByIndices(vertices, 7, 3, 2, 6),
 				EAST, tas, upperV, lowerV, invert));
 	}
 
@@ -386,7 +385,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		if(invert)
 			facing = facing.getOpposite();
 		float[] colour = {1, 1, 1, 1};
-		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
+		BakedQuadBuilder builder = new BakedQuadBuilder(format);
 		builder.setQuadOrientation(facing);
 		builder.setTexture(sprite);
 		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(),

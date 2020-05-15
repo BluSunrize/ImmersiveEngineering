@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.SorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.RenderHelper;
@@ -30,9 +30,9 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
-import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE;
-import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
+import static blusunrize.immersiveengineering.dummy.GlStateManager.DestFactor.ZERO;
+import static blusunrize.immersiveengineering.dummy.GlStateManager.SourceFactor.ONE;
+import static blusunrize.immersiveengineering.dummy.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class SorterScreen extends IEContainerScreen<SorterContainer>
 {

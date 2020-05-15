@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;

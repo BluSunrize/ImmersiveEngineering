@@ -20,6 +20,8 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -37,12 +39,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import javax.vecmath.Matrix4f;
 import java.util.*;
 
 public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IAdvancedHasObjProperty,
@@ -312,7 +312,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 			{
 				Direction dir = Direction.valueOf(split[1]).getOpposite();
 				Matrix4f matrix = new Matrix4(dir).toMatrix4f();
-				cachedOBJStates.put(key, new IEObjState(VisibilityList.show("diagonal"), new TRSRTransformation(matrix)));
+				cachedOBJStates.put(key, new IEObjState(VisibilityList.show("diagonal"), new TransformationMatrix(matrix)));
 			}
 			else
 				cachedOBJStates.put(key, new IEObjState(VisibilityList.show(split)));

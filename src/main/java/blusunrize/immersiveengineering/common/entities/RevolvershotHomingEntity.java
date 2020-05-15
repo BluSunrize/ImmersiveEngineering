@@ -71,9 +71,9 @@ public class RevolvershotHomingEntity extends RevolvershotEntity
 			{
 				Vec3d oldMotion = getMotion();
 				Vec3d newMotion = new Vec3d(
-						oldMotion.x*(1-redirectionSpeed)+(target.posX-this.posX)*redirectionSpeed,
-						oldMotion.y*(1-redirectionSpeed)+((target.posY+target.getHeight()/2)-this.posY)*redirectionSpeed,
-						oldMotion.z*(1-redirectionSpeed)+(target.posZ-this.posZ)*redirectionSpeed).normalize();
+						oldMotion.x*(1-redirectionSpeed)+(target.getPosX()-this.getPosX())*redirectionSpeed,
+						oldMotion.y*(1-redirectionSpeed)+((target.getPosY()+target.getHeight()/2)-this.getPosY())*redirectionSpeed,
+						oldMotion.z*(1-redirectionSpeed)+(target.getPosZ()-this.getPosZ())*redirectionSpeed).normalize();
 
 				setMotion(newMotion);
 			}
@@ -85,7 +85,7 @@ public class RevolvershotHomingEntity extends RevolvershotEntity
 		if(targetOverride!=null&&targetOverride.isAlive())
 			return targetOverride;
 		double r = 20D;
-		AxisAlignedBB aabb = new AxisAlignedBB(posX-r, posY-r, posZ-r, posX+r, posY+r, posZ+r);
+		AxisAlignedBB aabb = new AxisAlignedBB(getPosX()-r, getPosY()-r, getPosZ()-r, getPosX()+r, getPosY()+r, getPosZ()+r);
 		LivingEntity target = null;
 		for(Object o : world.getEntitiesWithinAABB(LivingEntity.class, aabb))
 			if(o instanceof LivingEntity&&!o.equals(this.shootingEntity))

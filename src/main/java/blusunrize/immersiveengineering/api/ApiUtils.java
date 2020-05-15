@@ -26,8 +26,12 @@ import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.entity.Entity;
@@ -51,10 +55,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.extensions.IForgeEntityMinecart;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -71,8 +74,6 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -963,7 +964,7 @@ public class ApiUtils
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static Function<BakedQuad, BakedQuad> transformQuad(TRSRTransformation transform, Int2IntFunction colorMultiplier)
+	public static Function<BakedQuad, BakedQuad> transformQuad(TransformationMatrix transform, Int2IntFunction colorMultiplier)
 	{
 		return new QuadTransformer(transform, colorMultiplier);
 	}
@@ -972,13 +973,14 @@ public class ApiUtils
 	private static class QuadTransformer implements Function<BakedQuad, BakedQuad>
 	{
 		@Nonnull
-		private final TRSRTransformation transform;
+		private final TransformationMatrix transform;
 		@Nullable
 		private final Int2IntFunction colorTransform;
-		private UnpackedBakedQuad.Builder currentQuadBuilder;
-		private final Map<VertexFormat, IVertexConsumer> consumers = new HashMap<>();
+		private BakedQuadBuilder currentQuadBuilder;
+		//TODO BQBuilder seems to exclusively use BLOCK. Is that correct or a Forge bug?
+		private IVertexConsumer transformer = createConsumer(DefaultVertexFormats.BLOCK);
 
-		private QuadTransformer(TRSRTransformation transform, @Nullable Int2IntFunction colorTransform)
+		private QuadTransformer(TransformationMatrix transform, @Nullable Int2IntFunction colorTransform)
 		{
 			this.transform = transform;
 			this.colorTransform = colorTransform;
@@ -987,9 +989,7 @@ public class ApiUtils
 		@Override
 		public BakedQuad apply(BakedQuad q)
 		{
-			IVertexConsumer transformer = consumers.computeIfAbsent(q.getFormat(), this::createConsumer);
-			assert transformer!=null;
-			currentQuadBuilder = new UnpackedBakedQuad.Builder(q.getFormat());
+			currentQuadBuilder = new BakedQuadBuilder(q.func_187508_a());
 			q.pipe(transformer);
 			return currentQuadBuilder.build();
 		}
@@ -1000,11 +1000,11 @@ public class ApiUtils
 			int normPos = -1;
 			int colorPos = -1;
 			for(int i = 0; i < f.getElements().size(); i++)
-				if(f.getElement(i).getUsage()==VertexFormatElement.Usage.POSITION)
+				if(f.getElements().get(i).getUsage()==VertexFormatElement.Usage.POSITION)
 					posPos = i;
-				else if(f.getElement(i).getUsage()==VertexFormatElement.Usage.NORMAL)
+				else if(f.getElements().get(i).getUsage()==VertexFormatElement.Usage.NORMAL)
 					normPos = i;
-				else if(f.getElement(i).getUsage()==VertexFormatElement.Usage.COLOR)
+				else if(f.getElements().get(i).getUsage()==VertexFormatElement.Usage.COLOR)
 					colorPos = i;
 			if(posPos==-1)
 				return null;
@@ -1035,7 +1035,11 @@ public class ApiUtils
 					Vec3i normal = orientation.getDirectionVec();
 					Vector3f newFront = new Vector3f(normal.getX(), normal.getY(), normal.getZ());
 					transform.transformNormal(newFront);
-					Direction newOrientation = Direction.getFacingFromVector(newFront.x, newFront.y, newFront.z);
+					Direction newOrientation = Direction.getFacingFromVector(
+							newFront.getX(),
+							newFront.getY(),
+							newFront.getZ()
+					);
 					currentQuadBuilder.setQuadOrientation(newOrientation);
 				}
 
@@ -1059,18 +1063,18 @@ public class ApiUtils
 						Vector4f newPos = new Vector4f(data[0], data[1], data[2], 1);
 						transform.transformPosition(newPos);
 						data = new float[3];
-						data[0] = (float)newPos.x;
-						data[1] = (float)newPos.y;
-						data[2] = (float)newPos.z;
+						data[0] = newPos.getX();
+						data[1] = newPos.getY();
+						data[2] = newPos.getZ();
 					}
 					else if(element==normPosFinal)
 					{
 						Vector3f newNormal = new Vector3f(data[0], data[1], data[2]);
 						transform.transformNormal(newNormal);
 						data = new float[3];
-						data[0] = (float)newNormal.x;
-						data[1] = (float)newNormal.y;
-						data[2] = (float)newNormal.z;
+						data[0] = newNormal.getX();
+						data[1] = newNormal.getY();
+						data[2] = newNormal.getZ();
 					}
 					else if(element==colorPosFinal)
 					{

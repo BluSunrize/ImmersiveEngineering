@@ -18,23 +18,21 @@ import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -50,15 +48,16 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 	private static final ResourceLocation HOT_METLA_STILL = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_still");
 	private static final ResourceLocation HOT_METLA_FLOW = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_flow");
 
-
-	public ArcFurnaceRenderer()
+	public ArcFurnaceRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
+		super(rendererDispatcherIn);
 		DynamicModelLoader.requestTexture(HOT_METLA_FLOW);
 		DynamicModelLoader.requestTexture(HOT_METLA_STILL);
 	}
 
 	@Override
-	public void render(ArcFurnaceTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(ArcFurnaceTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn,
+					   int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;

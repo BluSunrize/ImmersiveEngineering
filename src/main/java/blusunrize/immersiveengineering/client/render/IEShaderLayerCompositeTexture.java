@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.mojang.blaze3d.platform.TextureUtil;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.resources.IResource;
@@ -21,7 +22,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nonnull;
-import javax.vecmath.Vector4f;
 import java.io.IOException;
 import java.util.function.IntFunction;
 

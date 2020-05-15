@@ -23,13 +23,15 @@ import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -45,7 +47,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IModelBuilder;
@@ -58,14 +60,11 @@ import net.minecraftforge.client.model.obj.MaterialLibrary2;
 import net.minecraftforge.client.model.obj.OBJModel2;
 import net.minecraftforge.client.model.obj.OBJModel2.ModelGroup;
 import net.minecraftforge.client.model.obj.OBJModel2.ModelObject;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -122,16 +121,16 @@ public class IESmartObjModel implements IBakedModel
 	}
 
 	@Override
-	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
+	public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack mat)
 	{
 		this.lastCameraTransform = cameraTransformType;
-		Matrix4f superMatrix = TRSRTransformation.blockCornerToCenter(PerspectiveMapWrapper.getTransforms(owner.getCombinedState())
-				.getOrDefault(cameraTransformType, TRSRTransformation.identity()))
-				.getMatrixVec();
-		Matrix4 matrix = new Matrix4(superMatrix);
+		TransformationMatrix matrix =
+				PerspectiveMapWrapper.getTransforms(owner.getCombinedTransform()).getOrDefault(cameraTransformType, TransformationMatrix.identity())
+						.blockCornerToCenter();
 
+		matrix.push(mat);
 		if(!this.tempStack.isEmpty()&&this.tempStack.getItem() instanceof IOBJModelCallback)
-			matrix = ((IOBJModelCallback)this.tempStack.getItem()).handlePerspective(this.tempStack, cameraTransformType, matrix, tempEntity);
+			((IOBJModelCallback)this.tempStack.getItem()).handlePerspective(this.tempStack, cameraTransformType, mat, tempEntity);
 
 		//matrix = new Matrix4(); //Assign Matrixes here manually in debug mode, then move them to the actual registration method
 		//Dynamic stuff to use when figurign out positioning for new items!
@@ -150,7 +149,7 @@ public class IESmartObjModel implements IBakedModel
 		//if (cameraTransformType==TransformType.GROUND)//GROUND
 		//	matrix = new Matrix4().scale(.5, .5, .5).translate(0, .5, 0);
 
-		return Pair.of(this, matrix.toMatrix4f());
+		return this;
 	}
 
 	@Nonnull
@@ -294,7 +293,7 @@ public class IESmartObjModel implements IBakedModel
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> customData = new ArrayList<>();
 		if(state.getBlock() instanceof IAdvancedHasObjProperty)
@@ -433,8 +432,8 @@ public class IESmartObjModel implements IBakedModel
 			numPasses = 1;
 		ModelGroup g = OBJHelper.getGroups(baseModel).get(groupName);
 		List<BakedQuad> quads = new ArrayList<>();
-		TRSRTransformation transform = state.transform;
-		Optional<TRSRTransformation> optionalTransform = sprite.getState().apply(Optional.empty());
+		TransformationMatrix transform = state.transform;
+		Optional<TransformationMatrix> optionalTransform = sprite.getState().apply(Optional.empty());
 		if(callback!=null)
 			optionalTransform = Optional.of(callback.applyTransformations(callbackObject, groupName, optionalTransform.get()));
 
@@ -452,7 +451,7 @@ public class IESmartObjModel implements IBakedModel
 					//g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
 					IModelBuilder modelBuilder = new QuadListAdder(quads::add, transform);
 					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, format, optionalTransform);
-					Optional<TRSRTransformation> finalOptionalTransform = optionalTransform;
+					Optional<TransformationMatrix> finalOptionalTransform = optionalTransform;
 					g.getParts().stream().filter(part -> owner.getPartVisibility(part)&&part instanceof ModelObject)
 							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, format, finalOptionalTransform));
 				}
@@ -465,7 +464,7 @@ public class IESmartObjModel implements IBakedModel
 	private void addModelObjectQuads(ModelObject modelObject, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
 									 MaterialSpriteGetter<?> spriteGetter, MaterialColorGetter<?> colorGetter,
 									 TextureCoordinateRemapper coordinateRemapper, VertexFormat format,
-									 Optional<TRSRTransformation> transform)
+									 Optional<TransformationMatrix> transform)
 	{
 		List<MeshWrapper> meshes = OBJHelper.getMeshes(modelObject);
 		for(MeshWrapper mesh : meshes)
@@ -479,7 +478,7 @@ public class IESmartObjModel implements IBakedModel
 
 			boolean isFullbright = baseModel.ambientToFullbright&&mesh.isFullbright();
 
-			if(format.equals(DefaultVertexFormats.ITEM)&&isFullbright)
+			if(format.equals(DefaultVertexFormats.BLOCK)&&isFullbright)
 			{
 				format = DefaultVertexFormats.BLOCK;
 			}

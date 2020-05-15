@@ -48,7 +48,7 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20200112-1.14.3'
+    mappings channel: 'snapshot', version: '20200515-1.15.1'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -128,9 +128,9 @@ repositories {
     }
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.2.16'
-    runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11")
-    runtimeOnly fg.deobf("nbtedit:NBTEdit:0.8.2")
+    minecraft 'net.minecraftforge:forge:1.15.2-31.1.88'
+    //TODO runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11")
+    //TODO runtimeOnly fg.deobf("nbtedit:NBTEdit:0.8.2")
     compileOnly fg.deobf("mezz.jei:jei-1.14.4:6.0.0.11:api")
     testImplementation('junit:junit:4.13')
 }

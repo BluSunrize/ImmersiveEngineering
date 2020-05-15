@@ -13,12 +13,11 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.client.gui.elements.GuiReactiveList;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
@@ -174,7 +173,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 	@Override
 	public boolean keyPressed(int key, int scancode, int p_keyPressed_3_)
 	{
-		if(this.nameField.func_212955_f())
+		if(this.nameField.isFocused())
 		{
 			if(key==GLFW.GLFW_KEY_ENTER)
 			{

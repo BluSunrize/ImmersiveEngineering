@@ -17,17 +17,16 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -36,7 +35,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
@@ -47,8 +45,13 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 	private static HashMap<Direction, List<BakedQuad>> quads = new HashMap<>();
 	private static HashMap<BlockState, List<BakedQuad>> plantQuads = new HashMap<>();
 
+	public ClocheRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	{
+		super(rendererDispatcherIn);
+	}
+
 	@Override
-	public void render(ClocheTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(ClocheTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(tile.dummy!=0||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
@@ -99,8 +102,8 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 			GlStateManager.translated((1-scale)/2, 0, (1-scale)/2);
 			GlStateManager.scalef(scale, scale, scale);
 
-			Collection<Pair<BlockState, TRSRTransformation>> blocks = recipe.renderFunction.getBlocks(seed, growth);
-			for(Pair<BlockState, TRSRTransformation> block : blocks)
+			Collection<Pair<BlockState, TransformationMatrix>> blocks = recipe.renderFunction.getBlocks(seed, growth);
+			for(Pair<BlockState, TransformationMatrix> block : blocks)
 			{
 				BlockState state = block.getLeft();
 				List<BakedQuad> plantQuadList = plantQuads.get(state);
@@ -114,7 +117,7 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 				}
 				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);
 				GlStateManager.pushMatrix();
-				GlStateManager.multMatrix(TRSRTransformation.toMojang(block.getRight().getMatrixVec()));
+				GlStateManager.multMatrix(TransformationMatrix.toMojang(block.getRight().getMatrixVec()));
 				worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 				ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorldNonnull(), blockPos, false, col);
 				Tessellator.getInstance().draw();

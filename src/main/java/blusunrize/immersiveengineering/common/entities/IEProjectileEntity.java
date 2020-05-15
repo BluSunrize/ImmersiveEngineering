@@ -61,7 +61,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double ax, double ay, double az)
 	{
-		this(type, world, living, living.posX, living.posY+living.getEyeHeight(), living.posZ, ax, ay, az);
+		this(type, world, living, living.getPosX(), living.getPosY()+living.getEyeHeight(), living.getPosZ(), ax, ay, az);
 	}
 
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double x, double y, double z, double ax, double ay, double az)
@@ -70,7 +70,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		float yaw = living!=null?living.rotationYaw: 0;
 		float pitch = living!=null?living.rotationPitch: 0;
 		this.setLocationAndAngles(x, y, z, yaw, pitch);
-		this.setPosition(this.posX, this.posY, this.posZ);
+		this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
 		setMotion(ax, ay, az);
 		this.shootingEntity = living!=null?living.getUniqueID(): UUID.randomUUID();
 		this.setShooterSynced();
@@ -131,7 +131,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		{
 			VoxelShape shape = localState.getCollisionShape(this.world, stuckIn);
 			for(AxisAlignedBB subbox : shape.toBoundingBoxList())
-				if(subbox.contains(this.posX, this.posY, this.posZ))
+				if(subbox.contains(this.getPosX(), this.getPosY(), this.getPosZ()))
 				{
 					inGround = true;
 					break;
@@ -164,8 +164,8 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				return;
 			}
 
-			Vec3d currentPos = new Vec3d(this.posX, this.posY, this.posZ);
-			Vec3d nextPos = new Vec3d(this.posX, this.posY, this.posZ).add(getMotion());
+			Vec3d currentPos = new Vec3d(this.getPosX(), this.getPosY(), this.getPosZ());
+			Vec3d nextPos = new Vec3d(this.getPosX(), this.getPosY(), this.getPosZ()).add(getMotion());
 			RayTraceResult mop = this.world.rayTraceBlocks(new RayTraceContext(currentPos, nextPos, BlockMode.COLLIDER,
 					FluidMode.NONE, this));
 
@@ -229,9 +229,11 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 					setMotion(blockHit.getHitVec().subtract(getPositionVector()));
 					float f2 = (float)getMotion().length();
 					Vec3d motion = getMotion();
-					this.posX -= motion.x/(double)f2*0.05;
-					this.posY -= motion.y/(double)f2*0.05;
-					this.posZ -= motion.z/(double)f2*0.05;
+					this.setPosition(
+							this.getPosX()-motion.x/(double)f2*0.05,
+							this.getPosY()-motion.y/(double)f2*0.05,
+							this.getPosZ()-motion.z/(double)f2*0.05
+					);
 
 					this.inGround = true;
 					if(this.inBlockState.getMaterial()!=Material.AIR)
@@ -239,13 +241,15 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				}
 			}
 
-			this.posX += getMotion().x;
-			this.posY += getMotion().y;
-			this.posZ += getMotion().z;
+			this.setPosition(
+					this.getPosX()+getMotion().x,
+					this.getPosY()+getMotion().y,
+					this.getPosZ()+getMotion().z
+			);
 
 			float absMotion = (float)getMotion().length();
 			this.rotationYaw = (float)(Math.atan2(getMotion().x, getMotion().z)*180.0D/Math.PI);
-			this.rotationPitch = (float)(Math.atan2(getMotion().y, (double)absMotion)*180.0D/Math.PI);
+			this.rotationPitch = (float)(Math.atan2(getMotion().y, absMotion)*180.0D/Math.PI);
 			while(this.rotationPitch-this.prevRotationPitch < -180.0F)
 				this.prevRotationPitch -= 360.0F;
 			while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
@@ -266,9 +270,9 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				{
 					float f3 = 0.25F;
 					this.world.addParticle(ParticleTypes.BUBBLE,
-							this.posX-getMotion().x*(double)f3,
-							this.posY-getMotion().y*(double)f3,
-							this.posZ-getMotion().z*(double)f3,
+							this.getPosX()-getMotion().x*(double)f3,
+							this.getPosY()-getMotion().y*(double)f3,
+							this.getPosZ()-getMotion().z*(double)f3,
 							getMotion().x,
 							getMotion().y,
 							getMotion().z);
@@ -277,7 +281,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			}
 			if(movementDecay > 0)
 				setMotion(getMotion().scale(movementDecay).add(0, -getGravity(), 0));
-			this.setPosition(this.posX, this.posY, this.posZ);
+			this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
 			this.doBlockCollisions();
 		}
 	}

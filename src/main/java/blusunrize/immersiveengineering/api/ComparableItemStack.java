@@ -113,7 +113,7 @@ public class ComparableItemStack
 		{
 			ListNBT tagList = new ListNBT();
 			for(ResourceLocation rl : tags)
-				tagList.add(new StringNBT(rl.toString()));
+				tagList.add(StringNBT.valueOf(rl.toString()));
 			nbt.put("tags", tagList);
 		}
 		else

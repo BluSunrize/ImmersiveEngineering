@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -42,7 +43,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Vector4f;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +53,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 
 	public FluorescentTubeItem()
 	{
-		super("fluorescent_tube", new Properties().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE));
+		super("fluorescent_tube", new Properties().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE));
 	}
 
 	@Override
@@ -263,7 +263,8 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 			boolean lit = isLit(object);
 			float min = .3F+(lit?ItemNBTHelper.getFloat(object, LIT_STRENGTH)*.68F: 0);
 			float mult = min+(lit?Utils.RAND.nextFloat()*MathHelper.clamp(1-min, 0, .1F): 0);
-			return new Vector4f(getRGBFloat(object, mult));
+			float[] colors = getRGBFloat(object, mult);
+			return new Vector4f(colors[0], colors[1], colors[2], colors[3]);
 		}
 		else
 			return new Vector4f(.067f, .067f, .067f, 1);

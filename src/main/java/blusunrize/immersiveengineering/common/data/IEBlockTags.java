@@ -22,7 +22,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.BlockTags;
-import net.minecraftforge.common.Tags;
 
 class IEBlockTags extends BlockTagsProvider
 {
@@ -51,7 +50,6 @@ class IEBlockTags extends BlockTagsProvider
 			if(!metal.isVanillaMetal())
 			{
 				Block storage = IEBlocks.Metals.storage.get(metal);
-				getBuilder(Tags.Blocks.SUPPORTS_BEACON).add(storage);
 				getBuilder(tags.storage).add(storage);
 				if(metal.shouldAddOre())
 				{

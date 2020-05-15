@@ -1,7 +1,8 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.api.Lib;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.particle.IParticleFactory;
@@ -76,7 +77,7 @@ public class FractalParticle extends Particle
 	}
 
 	@Override
-	public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ)
+	public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
 	{
 		PARTICLE_FRACTAL_DEQUE.add(this);
 	}

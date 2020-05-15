@@ -27,7 +27,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -117,7 +116,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 	{
 		if(this.getFluid()==null&&this.world.isRemote)
 			this.fluid = getFluidSynced();
-		BlockState state = world.getBlockState(new BlockPos(posX, posY, posZ));
+		BlockState state = world.getBlockState(getPosition());
 		Block b = state.getBlock();
 		if(b!=null&&this.canIgnite()&&(state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
 			this.setFire(6);
@@ -174,7 +173,6 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 			}
 		}
 	}
-
 
 	@Override
 	@OnlyIn(Dist.CLIENT)

@@ -65,7 +65,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 {
 	public ChemthrowerItem()
 	{
-		super("chemthrower", new Item.Properties().setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE).maxStackSize(1), "CHEMTHROWER");
+		super("chemthrower", new Item.Properties().setISTER(() -> () -> IEOBJItemRenderer.INSTANCE).maxStackSize(1), "CHEMTHROWER");
 	}
 
 	@Override
@@ -170,9 +170,9 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				if(count%4==0)
 				{
 					if(ignite)
-						player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.sprayFire, SoundCategory.PLAYERS, .5f, 1.5f);
+						player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), IESounds.sprayFire, SoundCategory.PLAYERS, .5f, 1.5f);
 					else
-						player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.spray, SoundCategory.PLAYERS, .5f, .75f);
+						player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), IESounds.spray, SoundCategory.PLAYERS, .5f, .75f);
 				}
 			}
 			else

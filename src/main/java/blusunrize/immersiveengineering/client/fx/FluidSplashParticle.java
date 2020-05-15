@@ -102,7 +102,7 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 
 	public void setFluidTexture(FluidStack fluid)
 	{
-		TextureAtlasSprite sprite = ClientUtils.getSprite(fluid.getFluid().getAttributes().getStill(fluid));
+		TextureAtlasSprite sprite = ClientUtils.getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid));
 		if(sprite==null)
 			sprite = MissingTextureSprite.func_217790_a();
 		setSprite(sprite);

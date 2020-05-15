@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -20,8 +19,10 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.item.Item.Properties;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.*;
@@ -36,13 +37,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class IEBaseBlock extends Block implements IIEBlock
 {
@@ -293,8 +292,8 @@ public class IEBaseBlock extends Block implements IIEBlock
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-									BlockRayTraceResult hit)
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
+											 BlockRayTraceResult hit)
 	{
 		ItemStack activeStack = player.getHeldItem(hand);
 		if(activeStack.getToolTypes().contains(HammerItem.HAMMER_TOOL))
@@ -302,9 +301,9 @@ public class IEBaseBlock extends Block implements IIEBlock
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
 
-	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	public abstract static class IELadderBlock extends IEBaseBlock

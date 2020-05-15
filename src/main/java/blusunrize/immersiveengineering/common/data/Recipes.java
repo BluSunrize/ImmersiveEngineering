@@ -152,19 +152,19 @@ public class Recipes extends RecipeProvider
 		recipesWeapons(out);
 		recipesMisc(out);
 
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.SPEEDLOADER_LOAD.get())
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.SPEEDLOADER_LOAD.get())
 				.build(out, ImmersiveEngineering.MODID+":speedloader_load");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.FLARE_BULLET_COLOR.get())
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.FLARE_BULLET_COLOR.get())
 				.build(out, ImmersiveEngineering.MODID+":flare_bullet_color");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POTION_BULLET_FILL.get())
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.POTION_BULLET_FILL.get())
 				.build(out, ImmersiveEngineering.MODID+":potion_bullet_fill");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POWERPACK_SERIALIZER.get())
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.POWERPACK_SERIALIZER.get())
 				.build(out, ImmersiveEngineering.MODID+":powerpack_attach");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.ORE_CRUSHING_SERIALIZER.get())
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.ORE_CRUSHING_SERIALIZER.get())
 				.build(out, ImmersiveEngineering.MODID+":ore_crushing");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.EARMUFF_SERIALIZER.get())
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.EARMUFF_SERIALIZER.get())
 				.build(out, ImmersiveEngineering.MODID+":earmuffs_attach");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.JERRYCAN_REFILL.get())
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.JERRYCAN_REFILL.get())
 				.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
 		addRGBRecipe(out, rl("curtain_colour"), Ingredient.fromItems(Cloth.curtain), "colour");
 

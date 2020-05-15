@@ -14,9 +14,10 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.entity.model.MinecartModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ModelBox;
@@ -24,7 +25,6 @@ import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import javax.vecmath.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class ShaderMinecartModel<T extends AbstractMinecartEntity> extends Minec
 					for(int pass = 0; pass < layers.length; pass++)
 						if(sCase.shouldRenderGroupForPass(""+part, pass))
 						{
-							Vector4f col = sCase.getRenderColor(""+part, pass, new javax.vecmath.Vector4f(1, 1, 1, 1));
+							Vector4f col = sCase.getRenderColor(""+part, pass, new net.minecraft.client.renderer.Vector4f(1, 1, 1, 1));
 							GlStateManager.scalef(scale, scale, scale);
 							GlStateManager.color4f(col.x, col.y, col.z, col.w);
 

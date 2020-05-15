@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.font;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import it.unimi.dsi.fastutil.floats.FloatList;
 import net.minecraft.client.gui.fonts.TexturedGlyph;
 import net.minecraft.client.renderer.BufferBuilder;

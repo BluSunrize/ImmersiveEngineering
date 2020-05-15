@@ -16,8 +16,11 @@ import blusunrize.immersiveengineering.client.render.IEShaderLayerCompositeTextu
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
-import com.mojang.blaze3d.platform.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.model.BannerModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -32,8 +35,13 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 {
 	private final BannerModel bannerModel = new BannerModel();
 
+	public ShaderBannerRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	{
+		super(rendererDispatcherIn);
+	}
+
 	@Override
-	public void render(ShaderBannerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(ShaderBannerTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		long time = te.getWorldNonnull().getGameTime();
 		GlStateManager.pushMatrix();

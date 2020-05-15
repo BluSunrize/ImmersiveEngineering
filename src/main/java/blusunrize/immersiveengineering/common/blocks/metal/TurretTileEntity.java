@@ -332,7 +332,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			nbt.putString("owner", owner);
 		ListNBT list = new ListNBT();
 		for(String s : targetList)
-			list.add(new StringNBT(s));
+			list.add(StringNBT.valueOf(s));
 		nbt.put("targetList", list);
 		nbt.putBoolean("whitelist", whitelist);
 		nbt.putBoolean("attackAnimals", attackAnimals);
@@ -540,7 +540,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		{
 			ListNBT list = new ListNBT();
 			for(String s : turret.targetList)
-				list.add(new StringNBT(s));
+				list.add(StringNBT.valueOf(s));
 			tag.put("targetList", list);
 		}
 		if(turret.whitelist)

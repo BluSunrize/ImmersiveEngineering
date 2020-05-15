@@ -24,15 +24,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
-import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -207,20 +203,22 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		TileEntity tile = w.getTileEntity(pos);
 		if(tile instanceof IHammerInteraction)
 		{
 			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hit.getHitVec());
 			if(b)
-				return true;
+				return ActionResultType.SUCCESS;
+			else
+				return ActionResultType.FAIL;
 		}
 		return super.hammerUseSide(side, player, w, pos, hit);
 	}
 
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
 	{
 		final Direction side = hit.getFace();
 		final float hitX = (float)hit.getHitVec().x-pos.getX();
@@ -256,13 +254,15 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			tile.markDirty();
 			world.notifyBlockUpdate(pos, state, state, 3);
 			world.addBlockEvent(tile.getPos(), tile.getBlockState().getBlock(), 255, 0);
-			return true;
+			return ActionResultType.SUCCESS;
 		}
 		if(tile instanceof IPlayerInteraction)
 		{
 			boolean b = ((IPlayerInteraction)tile).interact(side, player, hand, heldItem, hitX, hitY, hitZ);
 			if(b)
-				return b;
+				return ActionResultType.SUCCESS;
+			else
+				return ActionResultType.FAIL;
 		}
 		if(tile instanceof IInteractionObjectIE&&hand==Hand.MAIN_HAND&&!player.isSneaking())
 		{
@@ -270,7 +270,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			interaction = interaction.getGuiMaster();
 			if(interaction!=null&&interaction.canUseGui(player)&&!world.isRemote)
 				NetworkHooks.openGui((ServerPlayerEntity)player, interaction, ((TileEntity)interaction).getPos());
-			return true;
+			return ActionResultType.SUCCESS;
 		}
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}

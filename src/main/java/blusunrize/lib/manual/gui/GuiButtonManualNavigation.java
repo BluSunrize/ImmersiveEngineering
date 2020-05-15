@@ -8,14 +8,14 @@
 
 package blusunrize.lib.manual.gui;
 
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualUtils;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.widget.button.Button;
 
-import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
-import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
-import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE;
-import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
+import static blusunrize.immersiveengineering.dummy.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static blusunrize.immersiveengineering.dummy.GlStateManager.DestFactor.ZERO;
+import static blusunrize.immersiveengineering.dummy.GlStateManager.SourceFactor.ONE;
+import static blusunrize.immersiveengineering.dummy.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class GuiButtonManualNavigation extends Button
 {

@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -43,6 +43,6 @@ public class FluidSorterContainer extends IEBaseContainer<FluidSorterTileEntity>
 	{
 		if(tile instanceof IInteractionObjectIE&&!((IInteractionObjectIE)tile).canUseGui(player))
 			return false;
-		return !tile.isRemoved()&&tile.getDistanceSq(player.posX, player.posY, player.posZ) < 64;
+		return !tile.isRemoved()&&tile.getDistanceSq(player.getPosX(), player.getPosY(), player.getPosZ()) < 64;
 	}
 }

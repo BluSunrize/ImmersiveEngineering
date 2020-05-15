@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -21,26 +20,24 @@ import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -54,8 +51,13 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bucket_wheel.obj.ie"),
 			"bucket_wheel", ModelType.IE_OBJ);
 
+	public BucketWheelRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	{
+		super(rendererDispatcherIn);
+	}
+
 	@Override
-	public void render(BucketWheelTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
+	public void render(BucketWheelTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!tile.formed||!tile.getWorldNonnull().isBlockLoaded(tile.getPos())||tile.isDummy())
 			return;
@@ -119,9 +121,5 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();
 		GlStateManager.enableCull();
-		if(tile.getIsMirrored())
-		{
-			GlStateManager.enableCull();
-		}
 	}
 }

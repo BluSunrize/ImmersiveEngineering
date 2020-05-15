@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -26,10 +27,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.*;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry2.ExpandedBlockModelDeserializer;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.client.model.SimpleModelTransform;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -60,13 +60,13 @@ public class DynamicModelLoader
 		for(Entry<ModelWithTransforms, IUnbakedModel> unbaked : unbakedModels.entrySet())
 		{
 			ModelRequest conf = unbaked.getKey().model;
-			IModelState state;
+			IModelTransform state;
 			if(unbaked.getKey().transforms.isEmpty())
 				state = ModelRotation.getModelRotation(conf.rotX, conf.rotY);
 			else
-				state = new SimpleModelState(ImmutableMap.copyOf(unbaked.getKey().transforms));
-			IBakedModel baked = unbaked.getValue().bake(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
-					new BasicState(state, conf.uvLock), DefaultVertexFormats.ITEM);
+				state = new SimpleModelTransform(ImmutableMap.copyOf(unbaked.getKey().transforms));
+			IBakedModel baked = unbaked.getValue().bakeModel(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
+					new BasicState(state, conf.uvLock), DefaultVertexFormats.BLOCK);
 			for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
 				evt.getModelRegistry().put(mrl, baked);
 		}
@@ -161,7 +161,7 @@ public class DynamicModelLoader
 	}
 
 	public static void requestModel(ModelRequest reqModel, ModelResourceLocation name,
-									Map<TransformType, TRSRTransformation> transforms)
+									Map<TransformType, TransformationMatrix> transforms)
 	{
 		requestedModels.put(new ModelWithTransforms(reqModel, transforms), name);
 	}
@@ -204,9 +204,9 @@ public class DynamicModelLoader
 	private static class ModelWithTransforms
 	{
 		final ModelRequest model;
-		final Map<TransformType, TRSRTransformation> transforms;
+		final Map<TransformType, TransformationMatrix> transforms;
 
-		private ModelWithTransforms(ModelRequest model, Map<TransformType, TRSRTransformation> transforms)
+		private ModelWithTransforms(ModelRequest model, Map<TransformType, TransformationMatrix> transforms)
 		{
 			this.model = model;
 			this.transforms = transforms;

@@ -28,8 +28,8 @@ import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -85,13 +85,13 @@ public class SkylineHelper
 			SkylineHookEntity hook = new SkylineHookEntity(player.world, connection, cpA, linePos, hand, horSpeed, limitSpeed);
 			IELogger.logger.info("Speed keeping: Player {}, wire {}, Pos: {}", playerMovement, extendedWire,
 					hook.getPositionVector());
-			if(hook.isValidPosition(hook.posX, hook.posY, hook.posZ, player))
+			if(hook.isValidPosition(hook.getPosX(), hook.getPosY(), hook.getPosZ(), player))
 			{
 				double vertSpeed = Math.sqrt(totalSpeed*totalSpeed-horSpeed*horSpeed);
 				double speedDiff = player.getMotion().y-vertSpeed;
 				if(speedDiff < 0)
 				{
-					player.fall(fallDistanceFromSpeed(speedDiff), 1.2F);
+					player.onLivingFall(fallDistanceFromSpeed(speedDiff), 1.2F);
 					player.fallDistance = 0;
 				}
 
@@ -125,7 +125,7 @@ public class SkylineHelper
 		return list;
 	}
 
-	//Mostly taken from IWorldReader, added the ignored parameter
+	//Mostly taken from ICollisionReader, added the ignored parameter
 	public static void getBlockCollisionBoxes(@Nullable Entity entityIn, AxisAlignedBB aabb, @Nonnull List<VoxelShape> outList,
 											  World w, Collection<BlockPos> ignored)
 	{
@@ -137,7 +137,7 @@ public class SkylineHelper
 		int maxZ = MathHelper.floor(aabb.maxZ+1.0E-7D)+1;
 		final ISelectionContext selectionCtx = entityIn==null?ISelectionContext.dummy(): ISelectionContext.forEntity(entityIn);
 		final CubeCoordinateIterator it = new CubeCoordinateIterator(minX, minY, minZ, maxX, maxY, maxZ);
-		final BlockPos.MutableBlockPos currPos = new BlockPos.MutableBlockPos();
+		final BlockPos.Mutable currPos = new BlockPos.Mutable();
 		final VoxelShape searchShape = VoxelShapes.create(aabb);
 		StreamSupport.stream(new AbstractSpliterator<VoxelShape>(Long.MAX_VALUE, Spliterator.NONNULL|Spliterator.IMMUTABLE)
 		{
@@ -172,11 +172,11 @@ public class SkylineHelper
 					{
 						int chunkX = currX >> 4;
 						int chunkZ = currZ >> 4;
-						IChunk ichunk = w.getChunk(chunkX, chunkZ, w.getChunkStatus(), false);
-						if(ichunk!=null)
+						IBlockReader iblockreader = w.getBlockReader(chunkX, chunkZ);
+						if(iblockreader!=null)
 						{
 							currPos.setPos(currX, currY, currZ);
-							BlockState blockstate = ichunk.getBlockState(currPos);
+							BlockState blockstate = iblockreader.getBlockState(currPos);
 							if((numBounderies!=1||blockstate.isCollisionShapeLargerThanFullBlock())&&
 									(numBounderies!=2||blockstate.getBlock()==Blocks.MOVING_PISTON)&&
 									!ignored.contains(currPos)

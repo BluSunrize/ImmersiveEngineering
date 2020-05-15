@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.Property;
@@ -23,7 +24,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import java.util.*;
 
@@ -139,15 +139,17 @@ public class IEProperties
 		}
 	}
 
-	public static class IEObjState {
+	public static class IEObjState
+	{
 		public final VisibilityList visibility;
-		public final TRSRTransformation transform;
+		public final TransformationMatrix transform;
 
 		public IEObjState(VisibilityList visibility)
 		{
-			this(visibility, TRSRTransformation.identity());
+			this(visibility, TransformationMatrix.identity());
 		}
-		public IEObjState(VisibilityList visibility, TRSRTransformation transform)
+
+		public IEObjState(VisibilityList visibility, TransformationMatrix transform)
 		{
 			this.visibility = visibility;
 			this.transform = transform;

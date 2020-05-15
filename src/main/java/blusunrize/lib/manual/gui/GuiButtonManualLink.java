@@ -8,9 +8,9 @@
 
 package blusunrize.lib.manual.gui;
 
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;

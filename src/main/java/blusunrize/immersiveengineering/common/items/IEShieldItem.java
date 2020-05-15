@@ -20,9 +20,10 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -61,7 +62,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 {
 	public IEShieldItem()
 	{
-		super("shield", new Properties().defaultMaxDamage(1024).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
+		super("shield", new Properties().defaultMaxDamage(1024).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
 		DispenserBlock.registerDispenseBehavior(this, ArmorItem.DISPENSER_BEHAVIOR);
 	}
 
@@ -194,7 +195,8 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 			if(b)
 			{
 				getUpgrades(stack).putInt("shock_cooldown", 40);
-				player.world.playSound(null, player.posX, player.posY, player.posZ, IESounds.spark, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
+				player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), IESounds.spark,
+						SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
 			}
 		}
 	}
@@ -244,24 +246,37 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	}
 
 	@Override
-	public Matrix4 handlePerspective(ItemStack Object, TransformType cameraTransformType, Matrix4 perspective, LivingEntity entity)
+	public void handlePerspective(ItemStack Object, TransformType cameraTransformType, MatrixStack mat, LivingEntity entity)
 	{
 		if(entity!=null&&entity.isHandActive())
 			if((entity.getActiveHand()==Hand.MAIN_HAND)==(entity.getPrimaryHand()==HandSide.RIGHT))
 			{
 				if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
-					perspective.rotate(-.15, 1, 0, 0).translate(-.25, .5, -.4375);
+				{
+					mat.rotate(new Quaternion(-.15F, 0, 0, false));
+					mat.translate(-.25, .5, -.4375);
+				}
 				else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)
-					perspective.rotate(0.52359, 1, 0, 0).rotate(0.78539, 0, 1, 0).translate(.40625, -.125, -.125);
+				{
+					mat.rotate(new Quaternion(0.52359F, 0, 0, false));
+					mat.rotate(new Quaternion(0, 0.78539F, 0, false));
+					mat.translate(.40625, -.125, -.125);
+				}
 			}
 			else
 			{
 				if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)
-					perspective.rotate(.15, 1, 0, 0).translate(.25, .375, .4375);
+				{
+					mat.rotate(new Quaternion(.15F, 0, 0, false));
+					mat.translate(.25, .375, .4375);
+				}
 				else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
-					perspective.rotate(-0.52359, 1, 0, 0).rotate(0.78539, 0, 1, 0).translate(.1875, .3125, .5625);
+				{
+					mat.rotate(new Quaternion(-0.52359F, 1, 0, false));
+					mat.rotate(new Quaternion(0, 0.78539F, 0, false));
+					mat.translate(.1875, .3125, .5625);
+				}
 			}
-		return perspective;
 	}
 
 	@Override

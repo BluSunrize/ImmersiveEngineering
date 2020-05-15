@@ -9,7 +9,9 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -18,11 +20,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Vector4f;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -55,15 +55,15 @@ public interface IOBJModelCallback<T>
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	default TRSRTransformation applyTransformations(T object, String group, TRSRTransformation transform)
+	default TransformationMatrix applyTransformations(T object, String group, TransformationMatrix transform)
 	{
 		return transform;
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	default Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective, @Nullable LivingEntity entity)
+	default void handlePerspective(T Object, TransformType cameraTransformType, MatrixStack mat, @Nullable LivingEntity entity)
 	{
-		return perspective;
+		return mat;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -94,10 +94,10 @@ public interface IOBJModelCallback<T>
 
 	@OnlyIn(Dist.CLIENT)
 	@Nonnull
-	default TRSRTransformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
-													 float partialTicks)
+	default TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
+													   float partialTicks)
 	{
-		return TRSRTransformation.identity();
+		return TransformationMatrix.identity();
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -92,7 +92,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 
 	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> eType, World world, LivingEntity living, double ax, double ay, double az, IBullet type)
 	{
-		this(eType, world, living, living.posX+ax, living.posY+living.getEyeHeight()+ay, living.posZ+az, ax, ay, az, type);
+		this(eType, world, living, living.getPosX()+ax, living.getPosY()+living.getEyeHeight()+ay, living.getPosZ()+az, ax, ay, az, type);
 		setShooterSynced();
 		setMotion(Vec3d.ZERO);
 	}
@@ -128,7 +128,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 					PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
 					if(shooter!=null)
 						Utils.unlockIEAdvancement(shooter, "main/secret_birthdayparty");
-					world.playSound(null, posX, posY, posZ, IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F/(this.rand.nextFloat()*0.2F+0.9F));
+					world.playSound(null, getPosX(), getPosY(), getPosZ(), IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F/(this.rand.nextFloat()*0.2F+0.9F));
 					ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_ENTITY.with(() -> hitEntity), new MessageBirthdayParty((LivingEntity)hitEntity));
 				}
 			}

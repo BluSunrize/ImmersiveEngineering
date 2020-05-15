@@ -99,7 +99,7 @@ public class GeneralLoot extends LootGenerator
 		Builder<?> ret = ItemLootEntry.builder(item.getItem())
 				.weight(weight);
 		if(item.hasTag())
-			ret.acceptFunction(SetNBT.func_215952_a(item.getOrCreateTag()));
+			ret.acceptFunction(SetNBT.builder(item.getOrCreateTag()));
 		return ret;
 	}
 

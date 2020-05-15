@@ -67,6 +67,7 @@ public class IESounds
 	public static void PlaySoundForPlayer(Entity player, SoundEvent sound, float volume, float pitch)
 	{
 		if(player instanceof ServerPlayerEntity)
-			((ServerPlayerEntity)player).connection.sendPacket(new SPlaySoundEffectPacket(sound, player.getSoundCategory(), player.posX, player.posY, player.posZ, volume, pitch));
+			((ServerPlayerEntity)player).connection.sendPacket(new SPlaySoundEffectPacket(sound, player.getSoundCategory(),
+					player.getPosX(), player.getPosY(), player.getPosZ(), volume, pitch));
 	}
 }

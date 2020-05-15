@@ -18,7 +18,9 @@ import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
-import com.google.common.collect.*;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,6 +31,7 @@ import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -89,7 +92,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Vector4f;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -404,9 +406,9 @@ public class Utils
 		float f = 1.0F;
 		float f1 = living.prevRotationPitch+(living.rotationPitch-living.prevRotationPitch)*f;
 		float f2 = living.prevRotationYaw+(living.rotationYaw-living.prevRotationYaw)*f;
-		double d0 = living.prevPosX+(living.posX-living.prevPosX)*(double)f;
-		double d1 = living.prevPosY+(living.posY-living.prevPosY)*(double)f+(double)(world.isRemote?living.getEyeHeight()-(living instanceof PlayerEntity?((PlayerEntity)living).getEyeHeight(): 0): living.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
-		double d2 = living.prevPosZ+(living.posZ-living.prevPosZ)*(double)f;
+		double d0 = living.prevPosX+(living.getPosX()-living.prevPosX)*(double)f;
+		double d1 = living.prevPosY+(living.getPosY()-living.prevPosY)*(double)f+(double)(world.isRemote?living.getEyeHeight()-(living instanceof PlayerEntity?((PlayerEntity)living).getEyeHeight(): 0): living.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
+		double d2 = living.prevPosZ+(living.getPosZ()-living.prevPosZ)*(double)f;
 		Vec3d vec3 = new Vec3d(d0, d1, d2);
 		float f3 = MathHelper.cos(-f2*(float)Math.PI/180-(float)Math.PI);
 		float f4 = MathHelper.sin(-f2*(float)Math.PI/180-(float)Math.PI);
@@ -450,7 +452,7 @@ public class Utils
 		float pitchCos = -MathHelper.cos(-pitch*(float)Math.PI/180);
 		float pitchSin = MathHelper.sin(-pitch*(float)Math.PI/180);
 
-		return new Vec3d(entity.posX+offsetX*yawCos+offset*pitchCos*yawSin, entity.posY+offset*pitchSin+height, entity.posZ+offset*pitchCos*yawCos-offsetX*yawSin);
+		return new Vec3d(entity.getPosX()+offsetX*yawCos+offset*pitchCos*yawSin, entity.getPosY()+offset*pitchSin+height, entity.getPosZ()+offset*pitchCos*yawCos-offsetX*yawSin);
 	}
 
 	public static List<LivingEntity> getTargetsInCone(World world, Vec3d start, Vec3d dir, float spreadAngle, float truncationLength)
@@ -549,7 +551,7 @@ public class Utils
 
 	public static void attractEnemies(LivingEntity target, float radius, Predicate<MonsterEntity> predicate)
 	{
-		AxisAlignedBB aabb = new AxisAlignedBB(target.posX-radius, target.posY-radius, target.posZ-radius, target.posX+radius, target.posY+radius, target.posZ+radius);
+		AxisAlignedBB aabb = new AxisAlignedBB(target.getPosX()-radius, target.getPosY()-radius, target.getPosZ()-radius, target.getPosX()+radius, target.getPosY()+radius, target.getPosZ()+radius);
 
 		List<MonsterEntity> list = target.getEntityWorld().getEntitiesWithinAABB(MonsterEntity.class, aabb);
 		for(MonsterEntity mob : list)
@@ -633,7 +635,7 @@ public class Utils
 	{
 		if(entity.getHeight()/entity.getWidth() < 2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
 			return false;
-		double d = vec.y-(entity.posY+entity.getEyeHeight());
+		double d = vec.y-(entity.getPosY()+entity.getEyeHeight());
 		return Math.abs(d) < .25;
 	}
 
@@ -681,8 +683,12 @@ public class Utils
 
 	public static int intFromRGBA(Vector4f rgba)
 	{
-		float[] array = new float[4];
-		rgba.get(array);
+		float[] array = {
+				rgba.getX(),
+				rgba.getY(),
+				rgba.getZ(),
+				rgba.getW(),
+		};
 		return intFromRGBA(array);
 	}
 
@@ -1181,8 +1187,6 @@ public class Utils
 				RayTraceResult rtr = state.getCollisionShape(world, blockPos).rayTrace(posVeryPrev, posPrev, blockPos);
 				if(rtr!=null&&rtr.getType()!=Type.MISS)
 					ret.add(blockPos);
-				//				if (place)
-				//					world.setBlock(blockPos.posX, blockPos.posY, blockPos.posZ, tmp);
 				checked.add(blockPos);
 				out.accept(blockPos);
 			}

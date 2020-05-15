@@ -167,7 +167,7 @@ public class ItemNBTHelper
 		CompoundNBT displayTag = getTagCompound(stack, "display");
 		ListNBT list = new ListNBT();
 		for(String s : lore)
-			list.add(new StringNBT(s));
+			list.add(StringNBT.valueOf(s));
 		displayTag.put("Lore", list);
 		setTagCompound(stack, "display", displayTag);
 	}

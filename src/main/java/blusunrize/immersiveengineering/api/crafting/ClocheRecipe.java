@@ -1,21 +1,16 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.ComparableItemStack;
-import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
@@ -177,7 +172,7 @@ public class ClocheRecipe
 	{
 		float getScale(ItemStack seed, float growth);
 
-		Collection<Pair<BlockState, TRSRTransformation>> getBlocks(ItemStack stack, float growth);
+		Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth);
 	}
 
 }

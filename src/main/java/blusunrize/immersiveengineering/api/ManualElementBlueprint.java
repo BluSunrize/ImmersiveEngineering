@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.PositionedItemStack;
@@ -16,7 +17,6 @@ import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.collect.ArrayListMultimap;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.RenderHelper;

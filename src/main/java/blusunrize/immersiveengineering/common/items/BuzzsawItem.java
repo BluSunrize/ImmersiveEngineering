@@ -35,6 +35,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
@@ -72,7 +75,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -91,7 +93,6 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Vector3f;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -101,7 +102,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 	public BuzzsawItem()
 	{
-		super("buzzsaw", withIEOBJRender().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "BUZZSAW");
+		super("buzzsaw", withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "BUZZSAW");
 	}
 
 	/* ------------- CORE ITEM METHODS ------------- */
@@ -731,18 +732,18 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public TRSRTransformation applyTransformations(ItemStack stack, String group, TRSRTransformation transform)
+	public TransformationMatrix applyTransformations(ItemStack stack, String group, TransformationMatrix transform)
 	{
 //		CompoundNBT upgrades = this.getUpgrades(stack);
 //		if(group.equals("drill_sawblade")&&upgrades.getInt("damage") <= 0)
 //		{
 //			Matrix4 mat = new Matrix4(transform.getMatrixVec());
 //			mat.translate(-.25f, 0, 0);
-//			return new TRSRTransformation(mat.toMatrix4f());
+//			return new TransformationMatrix(mat.toMatrix4f());
 //		}
 //		Matrix4 mat = new Matrix4(transform.getMatrixVec());
 //		mat.translate(.25f, -0.25f, 0);
-//		return new TRSRTransformation(mat.toMatrix4f());
+//		return new TransformationMatrix(mat.toMatrix4f());
 		return transform;
 	}
 
@@ -764,16 +765,19 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		return GROUP_BLADE;
 	}
 
-	private static final TRSRTransformation MAT_FIXED = new TRSRTransformation(new Vector3f(0.60945f, 0, 0), null, null, null);
+	private static final TransformationMatrix MAT_FIXED = new TransformationMatrix(new Vector3f(0.60945f, 0, 0), null, null, null);
 
 	@Nonnull
 	@Override
-	public TRSRTransformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
+	public TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
 	{
 		if(!shouldRotate(entity, stack, transform))
 			return MAT_FIXED;
 		float ticksPerRotation = 10f;
 		float angle = (entity.ticksExisted%ticksPerRotation+partialTicks)/ticksPerRotation*(float)(2*Math.PI);
-		return new TRSRTransformation(new Vector3f(0.60945f, 0, 0), TRSRTransformation.quatFromXYZ(0, angle, 0), null, null);
+		return new TransformationMatrix(
+				new Vector3f(0.60945f, 0, 0),
+				new Quaternion(0, angle, 0, false),
+				null, null);
 	}
 }

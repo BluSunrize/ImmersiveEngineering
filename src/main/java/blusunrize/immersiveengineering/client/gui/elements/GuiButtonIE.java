@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
+import blusunrize.immersiveengineering.dummy.GlStateManager.DestFactor;
+import blusunrize.immersiveengineering.dummy.GlStateManager.SourceFactor;
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;

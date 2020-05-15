@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
@@ -35,11 +34,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IEnviromentBlockReader;
-import net.minecraftforge.client.model.ICustomModelLoader;
+import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.resource.IResourceType;
@@ -48,7 +45,6 @@ import net.minecraftforge.resource.VanillaResourceType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -144,7 +140,7 @@ public class ModelConfigurableSides extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> data = new ArrayList<>();
 		data.add(tileData);
@@ -166,19 +162,19 @@ public class ModelConfigurableSides extends BakedIEModel
 		List<BakedQuad> quads = Lists.newArrayListWithExpectedSize(6);
 		float[] colour = {1, 1, 1, 1};
 		Vec3d[] vertices = {new Vec3d(0, 0, 0), new Vec3d(0, 0, 1), new Vec3d(1, 0, 1), new Vec3d(1, 0, 0)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, DOWN, sprites.get(DOWN), new double[]{0, 16, 16, 0}, colour, true));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, DOWN, sprites.get(DOWN), new double[]{0, 16, 16, 0}, colour, true));
 		vertices = new Vec3d[]{new Vec3d(0, 1, 0), new Vec3d(0, 1, 1), new Vec3d(1, 1, 1), new Vec3d(1, 1, 0)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, UP, sprites.get(UP), new double[]{0, 0, 16, 16}, colour, false));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, UP, sprites.get(UP), new double[]{0, 0, 16, 16}, colour, false));
 
 		vertices = new Vec3d[]{new Vec3d(1, 0, 0), new Vec3d(1, 1, 0), new Vec3d(0, 1, 0), new Vec3d(0, 0, 0)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, NORTH, sprites.get(NORTH), new double[]{0, 16, 16, 0}, colour, true));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, NORTH, sprites.get(NORTH), new double[]{0, 16, 16, 0}, colour, true));
 		vertices = new Vec3d[]{new Vec3d(1, 0, 1), new Vec3d(1, 1, 1), new Vec3d(0, 1, 1), new Vec3d(0, 0, 1)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, SOUTH, sprites.get(SOUTH), new double[]{16, 16, 0, 0}, colour, false));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, SOUTH, sprites.get(SOUTH), new double[]{16, 16, 0, 0}, colour, false));
 
 		vertices = new Vec3d[]{new Vec3d(0, 0, 0), new Vec3d(0, 1, 0), new Vec3d(0, 1, 1), new Vec3d(0, 0, 1)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, WEST, sprites.get(WEST), new double[]{0, 16, 16, 0}, colour, true));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, WEST, sprites.get(WEST), new double[]{0, 16, 16, 0}, colour, true));
 		vertices = new Vec3d[]{new Vec3d(1, 0, 0), new Vec3d(1, 1, 0), new Vec3d(1, 1, 1), new Vec3d(1, 0, 1)};
-		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, EAST, sprites.get(EAST), new double[]{16, 16, 0, 0}, colour, false));
+		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, EAST, sprites.get(EAST), new double[]{16, 16, 0, 0}, colour, false));
 		return quads;
 	}
 

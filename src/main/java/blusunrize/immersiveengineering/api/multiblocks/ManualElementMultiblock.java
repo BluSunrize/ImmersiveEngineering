@@ -10,14 +10,13 @@ package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.BlockstateProvider;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -33,11 +32,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
-import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.ILightReader;
 import net.minecraft.world.LightType;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -329,7 +325,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		return yOffTotal;
 	}
 
-	static class MultiblockBlockAccess implements IEnviromentBlockReader
+	static class MultiblockBlockAccess implements ILightReader
 	{
 		private final MultiblockRenderInfo data;
 		private final Map<BlockPos, TileEntity> tiles;
@@ -367,7 +363,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		}
 
 		@Override
-		public int getCombinedLight(BlockPos pos, int lightValue)
+		public int getLightValue(BlockPos pos)
 		{
 			// full brightness always
 			return 15<<20|15<<4;
@@ -392,16 +388,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 		public IFluidState getFluidState(BlockPos pos)
 		{
 			return getBlockState(pos).getFluidState();
-		}
-
-		@Override
-		public Biome getBiome(BlockPos pos)
-		{
-			World world = Minecraft.getInstance().world;
-			if(world!=null)
-				return world.getBiome(pos);
-			else
-				return Biomes.BIRCH_FOREST;
 		}
 
 		@Override

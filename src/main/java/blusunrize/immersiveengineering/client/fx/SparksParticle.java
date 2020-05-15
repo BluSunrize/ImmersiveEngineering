@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.client.fx;
 
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
 
@@ -40,11 +40,11 @@ public class SparksParticle extends SpriteTexturedParticle
 	}
 
 	@Override
-	public void renderParticle(BufferBuilder bufferBuilder, ActiveRenderInfo activeRenderInfo, float v, float v1, float v2, float v3, float v4, float v5)
+	public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
 	{
 		int particleAge = age;
 		this.setColor(1, .2f+(16-particleAge)/16f, particleAge > 4?0: (4-particleAge)/4f);
-		super.renderParticle(bufferBuilder, activeRenderInfo, v, v1, v2, v3, v4, v5);
+		super.renderParticle(buffer, renderInfo, partialTicks);
 	}
 
 	@Nonnull

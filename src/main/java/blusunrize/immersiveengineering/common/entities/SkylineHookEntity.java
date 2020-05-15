@@ -247,15 +247,13 @@ public class SkylineHookEntity extends Entity
 		horizontalSpeed *= friction;
 		linePos += horSpeedToUse/getHorizontalLength();
 		Vec3d pos = connection.getPoint(linePos, start).add(new Vec3d(start.getPosition()));
-		setMotion(pos.x-posX, pos.z-posZ, pos.y-posY);
+		setMotion(pos.x-getPosX(), pos.z-getPosZ(), pos.y-getPosY());
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
 		{
 			remove();
 			return;
 		}
-		posX = pos.x;
-		posY = pos.y;
-		posZ = pos.z;
+		this.setPosition(pos.x, pos.y, pos.z);
 
 		super.tick();
 		Vec3d motion = getMotion();
@@ -281,18 +279,18 @@ public class SkylineHookEntity extends Entity
 			{
 				float f3 = 0.25F;
 				this.world.addParticle(ParticleTypes.BUBBLE,
-						this.posX-motion.x*(double)f3,
-						this.posY-motion.y*(double)f3,
-						this.posZ-motion.z*(double)f3,
+						this.getPosX()-motion.x*(double)f3,
+						this.getPosY()-motion.y*(double)f3,
+						this.getPosZ()-motion.z*(double)f3,
 						motion.x,
 						motion.y,
 						motion.z);
 			}
 		}
 
-		double dx = this.posX-this.prevPosX;
-		double dy = this.posY-this.prevPosY;
-		double dz = this.posZ-this.prevPosZ;
+		double dx = this.getPosX()-this.prevPosX;
+		double dy = this.getPosY()-this.prevPosY;
+		double dz = this.getPosZ()-this.prevPosZ;
 		int distTrvl = Math.round(MathHelper.sqrt(dx*dx+dy*dy+dz*dz)*100.0F);
 //			if(distTrvl>0)
 //				player.addStat(IEAchievements.statDistanceSkyhook, distTrvl);
@@ -302,7 +300,7 @@ public class SkylineHookEntity extends Entity
 //				if(((EntityPlayerMP)player).getStatFile().func_150870_b(IEAchievements.statDistanceSkyhook)>100000)
 //					player.triggerAchievement(IEAchievements.skyhookPro);
 
-		this.setPosition(this.posX, this.posY, this.posZ);
+		this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
 		if(switchingAtPos!=null)
 			switchConnection(switchingAtPos, player, horSpeedToUse);
 	}
@@ -499,7 +497,7 @@ public class SkylineHookEntity extends Entity
 
 	private void handleDismount(Entity passenger)
 	{
-		passenger.setPositionAndUpdate(posX, posY+getMountedYOffset()+passenger.getYOffset(), posZ);
+		passenger.setPositionAndUpdate(getPosX(), getPosY()+getMountedYOffset()+passenger.getYOffset(), getPosZ());
 		passenger.setMotion(getMotion());
 		if(getMotion().y < 0)
 		{

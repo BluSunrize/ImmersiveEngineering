@@ -9,12 +9,12 @@
 package blusunrize.lib.manual.gui;
 
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.AbstractNode;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -90,8 +90,8 @@ public class ManualScreen extends Screen
 		if(mc.gameSettings.guiScale==1)
 		{
 			mc.gameSettings.guiScale = 2;
-			this.width = mc.mainWindow.getScaledWidth();
-			this.height = mc.mainWindow.getScaledHeight();
+			this.width = mc.getMainWindow().getScaledWidth();
+			this.height = mc.getMainWindow().getScaledHeight();
 			mc.gameSettings.guiScale = 1;
 		}
 		this.manual.openManual();

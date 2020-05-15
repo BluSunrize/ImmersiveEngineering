@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,7 +35,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import javax.annotation.Nonnull;
-import javax.vecmath.Vector4f;
 import java.util.List;
 
 public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity

@@ -30,8 +30,9 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -50,7 +51,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -67,7 +67,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 {
 	public RailgunItem()
 	{
-		super("railgun", new Properties().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "RAILGUN");
+		super("railgun", new Properties().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "RAILGUN");
 	}
 
 	@Override
@@ -191,7 +191,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		if(this.extractEnergy(stack, energy, true)==energy&&!findAmmo(player).isEmpty())
 		{
 			player.setActiveHand(hand);
-			player.world.playSound(null, player.posX, player.posY, player.posZ, getChargeTime(stack) <= 20?IESounds.chargeFast: IESounds.chargeSlow, SoundCategory.PLAYERS, 1.5f, 1f);
+			player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), getChargeTime(stack) <= 20?IESounds.chargeFast: IESounds.chargeSlow, SoundCategory.PLAYERS, 1.5f, 1f);
 			return new ActionResult<>(ActionResultType.SUCCESS, stack);
 		}
 		return new ActionResult<>(ActionResultType.PASS, stack);
@@ -203,7 +203,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		int inUse = this.getUseDuration(stack)-count;
 		if(inUse > getChargeTime(stack)&&inUse%20==user.getRNG().nextInt(20))
 		{
-			user.world.playSound(null, user.posX, user.posY, user.posZ, IESounds.spark, SoundCategory.PLAYERS, .8f+(.2f*user.getRNG().nextFloat()), .5f+(.5f*user.getRNG().nextFloat()));
+			user.world.playSound(null, user.getPosX(), user.getPosY(), user.getPosZ(), IESounds.spark, SoundCategory.PLAYERS, .8f+(.2f*user.getRNG().nextFloat()), .5f+(.5f*user.getRNG().nextFloat()));
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
@@ -236,7 +236,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 					ammo.shrink(1);
 					if(ammo.getCount() <= 0)
 						((PlayerEntity)user).inventory.deleteStack(ammo);
-					user.world.playSound(null, user.posX, user.posY, user.posZ, IESounds.railgunFire, SoundCategory.PLAYERS, 1, .5f+(.5f*user.getRNG().nextFloat()));
+					user.world.playSound(null, user.getPosX(), user.getPosY(), user.getPosZ(), IESounds.railgunFire, SoundCategory.PLAYERS, 1, .5f+(.5f*user.getRNG().nextFloat()));
 					this.extractEnergy(stack, energy, false);
 					if(!world.isRemote)
 						user.world.addEntity(shot);
@@ -354,30 +354,14 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public TRSRTransformation applyTransformations(ItemStack stack, String group, TRSRTransformation transform)
+	public TransformationMatrix applyTransformations(ItemStack stack, String group, TransformationMatrix transform)
 	{
-		//		if(transform.isPresent())
-		//		{
-		//			NBTTagCompound upgrades = this.getUpgrades(stack);
-		//			Matrix4 mat = new Matrix4(transform.get().getMatrix());
-		////			mat.translate(.41f,2,0);
-		//			return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
-		//		}
 		return transform;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective, LivingEntity entity)
+	public void handlePerspective(ItemStack stack, TransformType cameraTransformType, MatrixStack mat, LivingEntity entity)
 	{
-		//		if(stack.)
-//		if(ItemNBTHelper.getBoolean(stack, "inUse"))
-//		{
-//			if (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
-//				perspective = perspective.translate(-.75, -2, -.5).rotate(Math.toRadians(-78), 0, 0, 1);
-//			else
-//				perspective = perspective.translate(0, -.5, -.375).rotate(Math.toRadians(8), 0, 1, 0).rotate(Math.toRadians(-12), 1, 0, 0).rotate(Math.toRadians(8), 0, 0, 1);
-//		}
-		return perspective;
 	}
 }

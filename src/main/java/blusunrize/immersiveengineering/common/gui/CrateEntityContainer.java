@@ -35,7 +35,7 @@ public class CrateEntityContainer extends CrateContainer
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
-		return wrappingEntity.isAlive()&&wrappingEntity.getDistanceSq(player.posX, player.posY, player.posZ) < 64;
+		return wrappingEntity.isAlive()&&wrappingEntity.getDistanceSq(player.getPosX(), player.getPosY(), player.getPosZ()) < 64;
 	}
 
 }

@@ -16,9 +16,11 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
@@ -40,7 +42,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -153,12 +154,12 @@ public class VerticalConveyor extends BasicConveyor
 	{
 		BlockPos posWall = getTile().getPos().offset(getFacing());
 		double d = .625+entity.getWidth();
-		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.posZ: entity.posX));
+		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.getPosZ(): entity.getPosX()));
 		if(distToWall > d)
 			return super.getDirection(entity);
 
 		double vBase = entity instanceof LivingEntity?1.5: 1.15;
-		double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.posY);
+		double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.getPosY());
 		double treshold = .9;
 		boolean contact = distY < treshold;
 
@@ -174,16 +175,16 @@ public class VerticalConveyor extends BasicConveyor
 			vZ = 0.05*getFacing().getZOffset();
 			if(getFacing()==Direction.WEST||getFacing()==Direction.EAST)
 			{
-				if(entity.posZ > getTile().getPos().getZ()+0.65D)
+				if(entity.getPosZ() > getTile().getPos().getZ()+0.65D)
 					vZ = -0.1D*vBase;
-				else if(entity.posZ < getTile().getPos().getZ()+0.35D)
+				else if(entity.getPosZ() < getTile().getPos().getZ()+0.35D)
 					vZ = 0.1D*vBase;
 			}
 			else if(getFacing()==Direction.NORTH||getFacing()==Direction.SOUTH)
 			{
-				if(entity.posX > getTile().getPos().getX()+0.65D)
+				if(entity.getPosX() > getTile().getPos().getX()+0.65D)
 					vX = -0.1D*vBase;
-				else if(entity.posX < getTile().getPos().getX()+0.35D)
+				else if(entity.getPosX() < getTile().getPos().getX()+0.35D)
 					vX = 0.1D*vBase;
 			}
 		}
@@ -205,7 +206,7 @@ public class VerticalConveyor extends BasicConveyor
 
 		BlockPos posWall = getTile().getPos().offset(getFacing());
 		double d = .625+entity.getWidth();
-		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.posZ: entity.posX));
+		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.getPosZ(): entity.getPosX()));
 		if(distToWall > d)
 		{
 			super.onEntityCollision(entity);
@@ -214,7 +215,7 @@ public class VerticalConveyor extends BasicConveyor
 
 		if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking()))
 		{
-			double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.posY);
+			double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.getPosY());
 			double treshold = .9;
 			boolean contact = distY < treshold;
 
@@ -241,7 +242,7 @@ public class VerticalConveyor extends BasicConveyor
 				if(!contact)
 				{
 					if(item.age > item.lifespan-60*20)
-						item.setAgeToCreativeDespawnTime();
+						item.age = item.lifespan-60*20;
 				}
 				else
 				{
@@ -304,9 +305,15 @@ public class VerticalConveyor extends BasicConveyor
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Matrix4f modifyBaseRotationMatrix(Matrix4f matrix)
+	public TransformationMatrix modifyBaseRotationMatrix(TransformationMatrix matrix)
 	{
-		return new Matrix4(matrix).translate(0, 1, 0).rotate(Math.PI/2, 1, 0, 0).toMatrix4f();
+		return matrix
+				.compose(new TransformationMatrix(
+						new Vector3f(0, 1, 0),
+						new Quaternion((float)Math.PI/2, 0, 0, false),
+						null,
+						null
+				));
 	}
 
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/vertical");
@@ -328,12 +335,22 @@ public class VerticalConveyor extends BasicConveyor
 	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
 	{
-		if(getTile()!=null&&this.renderBottomBelt(getTile(), getFacing()))
+		if(getTile()!=null&&renderBottomBelt(getTile(), getFacing()))
 		{
 			TextureAtlasSprite sprite = ClientUtils.getSprite(isActive()?BasicConveyor.texture_on: BasicConveyor.texture_off);
 			TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
 			boolean[] walls = {renderBottomWall(getTile(), getFacing(), 0), renderBottomWall(getTile(), getFacing(), 1)};
-			baseModel.addAll(ModelConveyor.getBaseConveyor(getFacing(), .875f, new Matrix4(getFacing()), ConveyorDirection.HORIZONTAL, sprite, walls, new boolean[]{true, false}, spriteColour, getDyeColour()));
+			baseModel.addAll(ModelConveyor.getBaseConveyor(
+					getFacing(),
+					.875f,
+					ClientUtils.toModelRotation(getFacing()).getRotation(),
+					ConveyorDirection.HORIZONTAL,
+					sprite,
+					walls,
+					new boolean[]{true, false},
+					spriteColour,
+					getDyeColour()
+			));
 		}
 		return baseModel;
 	}

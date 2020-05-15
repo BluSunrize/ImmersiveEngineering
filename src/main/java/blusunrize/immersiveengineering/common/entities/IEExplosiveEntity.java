@@ -173,9 +173,9 @@ public class IEExplosiveEntity extends TNTEntity
 		if(world.isRemote&&this.block==null)
 			this.getBlockSynced();
 
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
+		this.prevPosX = this.getPosX();
+		this.prevPosY = this.getPosY();
+		this.prevPosZ = this.getPosZ();
 		if(!this.hasNoGravity())
 		{
 			this.setMotion(this.getMotion().add(0.0D, -0.04D, 0.0D));
@@ -195,7 +195,7 @@ public class IEExplosiveEntity extends TNTEntity
 
 			if(!this.world.isRemote)
 			{
-				Explosion explosion = new IEExplosion(world, this, posX, posY+(getHeight()/16f), posZ, size, isFlaming, mode)
+				Explosion explosion = new IEExplosion(world, this, getPosX(), getPosY()+(getHeight()/16f), getPosZ(), size, isFlaming, mode)
 						.setDropChance(explosionDropChance);
 				if(!ForgeEventFactory.onExplosionStart(world, explosion))
 				{
@@ -207,7 +207,7 @@ public class IEExplosiveEntity extends TNTEntity
 		else
 		{
 			this.handleWaterMovement();
-			this.world.addParticle(ParticleTypes.SMOKE, this.posX, this.posY+0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+			this.world.addParticle(ParticleTypes.SMOKE, this.getPosX(), this.getPosY()+0.5D, this.getPosZ(), 0.0D, 0.0D, 0.0D);
 		}
 	}
 

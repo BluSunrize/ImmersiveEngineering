@@ -43,7 +43,6 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -130,7 +129,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onMinecartInteraction(EntityInteractSpecific event)
 	{
-		PlayerEntity player = event.getEntityPlayer();
+		PlayerEntity player = event.getPlayer();
 		ItemStack stack = event.getItemStack();
 		if(!(event.getTarget() instanceof AbstractMinecartEntity))
 			return;
@@ -325,7 +324,7 @@ public class EventHandler
 				if(boring.isAssignableFrom(event.getEntityLiving().getClass()))
 					return;
 			ItemStack bag = new ItemStack(Misc.shaderBag.get(r));
-			event.getDrops().add(new ItemEntity(event.getEntityLiving().world, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
+			event.getDrops().add(new ItemEntity(event.getEntityLiving().world, event.getEntityLiving().getPosX(), event.getEntityLiving().getPosY(), event.getEntityLiving().getPosZ(), bag));
 		}
 	}
 
@@ -405,7 +404,7 @@ public class EventHandler
 						{
 							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 								it.remove();
-							else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ) <= interdictor.getInterdictionRangeSquared())
+							else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().getPosX(), event.getEntity().getPosY(), event.getEntity().getPosZ()) <= interdictor.getInterdictionRangeSquared())
 								event.setCanceled(true);
 						}
 						else if(interdictor instanceof Entity)
@@ -444,7 +443,7 @@ public class EventHandler
 						{
 							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 								it.remove();
-							else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().posX, event.getEntity().posY, event.getEntity().posZ) <= interdictor.getInterdictionRangeSquared())
+							else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().getPosX(), event.getEntity().getPosY(), event.getEntity().getPosZ()) <= interdictor.getInterdictionRangeSquared())
 								event.setResult(Event.Result.DENY);
 						}
 						else if(interdictor instanceof Entity)
@@ -463,9 +462,9 @@ public class EventHandler
 	@SubscribeEvent()
 	public void digSpeedEvent(PlayerEvent.BreakSpeed event)
 	{
-		ItemStack current = event.getEntityPlayer().getHeldItem(Hand.MAIN_HAND);
+		ItemStack current = event.getPlayer().getHeldItem(Hand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
-		if(!current.isEmpty()&&current.getItem()==Tools.drill&&event.getEntityPlayer().isInWater())
+		if(!current.isEmpty()&&current.getItem()==Tools.drill&&event.getPlayer().isInWater())
 			if(((DrillItem)Tools.drill).getUpgrades(current).getBoolean("waterproof"))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
@@ -476,8 +475,8 @@ public class EventHandler
 				event.setCanceled(true);
 				RazorWireTileEntity.applyDamage(event.getEntityLiving());
 			}
-		TileEntity te = event.getEntityPlayer().getEntityWorld().getTileEntity(event.getPos());
-		if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getEntityPlayer()))
+		TileEntity te = event.getPlayer().getEntityWorld().getTileEntity(event.getPos());
+		if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getPlayer()))
 			event.setCanceled(true);
 	}
 

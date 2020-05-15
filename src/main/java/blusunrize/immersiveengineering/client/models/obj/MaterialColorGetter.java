@@ -2,8 +2,8 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import net.minecraft.client.renderer.Vector4f;
 
-import javax.vecmath.Vector4f;
 import java.util.function.BiFunction;
 
 public class MaterialColorGetter<T> implements BiFunction<String, Vector4f, Vector4f>

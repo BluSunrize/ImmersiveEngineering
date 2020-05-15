@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,7 +39,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
@@ -46,7 +47,6 @@ import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -410,7 +410,7 @@ public class IEBlockInterfaces
 		@Override
 		default IEObjState getIEObjState(BlockState state)
 		{
-			return new IEObjState(compileDisplayList(state), TRSRTransformation.identity());
+			return new IEObjState(compileDisplayList(state), TransformationMatrix.identity());
 		}
 	}
 
@@ -470,7 +470,7 @@ public class IEBlockInterfaces
 
 	public interface IModelDataBlock
 	{
-		IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+		IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
 								@Nonnull IModelData tileData);
 	}
 }

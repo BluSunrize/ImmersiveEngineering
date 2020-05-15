@@ -123,7 +123,7 @@ public class CapabilitySkyhookData
 			@Override
 			public INBT writeNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side)
 			{
-				return new IntNBT(instance.status.ordinal());
+				return IntNBT.valueOf(instance.status.ordinal());
 			}
 
 			@Override

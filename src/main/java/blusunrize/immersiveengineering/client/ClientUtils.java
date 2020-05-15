@@ -24,25 +24,22 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraft.client.renderer.model.ModelRotation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -63,7 +60,6 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import org.apache.commons.compress.utils.IOUtils;
@@ -72,8 +68,6 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
-import javax.vecmath.Quat4d;
-import javax.vecmath.Vector4f;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -599,7 +593,7 @@ public class ClientUtils
 	public static void drawRepeatedFluidSprite(FluidStack fluid, float x, float y, float w, float h)
 	{
 		bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE.toString());
-		TextureAtlasSprite sprite = getSprite(fluid.getFluid().getAttributes().getStill(fluid));
+		TextureAtlasSprite sprite = getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid));
 		int col = fluid.getFluid().getAttributes().getColor(fluid);
 		GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
 		int iW = sprite.getWidth();
@@ -874,8 +868,8 @@ public class ClientUtils
 						current.subtract(cross),
 						previous.subtract(cross),
 						previous.add(cross)};
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.DOWN, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.UP, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.DOWN, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
 
 				if(!vertical)
 				{
@@ -888,8 +882,8 @@ public class ClientUtils
 						current.subtract(cross),
 						previous.subtract(cross),
 						previous.add(cross)};
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.WEST, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.EAST, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.WEST, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.EAST, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
 			}
 		}
 		return ret;
@@ -916,13 +910,18 @@ public class ClientUtils
 			return greater?totalPoints+1: 0;
 	}
 
-	public static Vec3d[] applyMatrixToVertices(Matrix4 matrix, Vec3d... vertices)
+	public static Vec3d[] applyMatrixToVertices(TransformationMatrix matrix, Vec3d... vertices)
 	{
 		if(matrix==null)
 			return vertices;
 		Vec3d[] ret = new Vec3d[vertices.length];
 		for(int i = 0; i < ret.length; i++)
-			ret[i] = matrix.apply(vertices[i]);
+		{
+			Vector4f vec = new Vector4f((float)vertices[i].x, (float)vertices[i].y, (float)vertices[i].z, 1);
+			matrix.transformPosition(vec);
+			vec.perspectiveDivide();
+			ret[i] = new Vec3d(vec.getX(), vec.getY(), vec.getZ());
+		}
 		return ret;
 	}
 
@@ -951,7 +950,7 @@ public class ClientUtils
 		};
 		TextureAtlasSprite sprite = textureGetter.apply(Direction.DOWN);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), sprite, new double[]{from.x*16, 16-from.z*16, to.x*16, 16-to.z*16}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), sprite, new double[]{from.x*16, 16-from.z*16, to.x*16, 16-to.z*16}, colour, true));
 
 		for(int i = 0; i < vertices.length; i++)
 		{
@@ -960,7 +959,7 @@ public class ClientUtils
 		}
 		sprite = textureGetter.apply(Direction.UP);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.UP, facing), sprite, new double[]{from.x*16, from.z*16, to.x*16, to.z*16}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.UP, facing), sprite, new double[]{from.x*16, from.z*16, to.x*16, to.z*16}, colour, false));
 
 		vertices = new Vec3d[]{
 				new Vec3d(to.x, to.y, from.z),
@@ -970,7 +969,7 @@ public class ClientUtils
 		};
 		sprite = textureGetter.apply(Direction.NORTH);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, facing), sprite, new double[]{from.x*16, 16-to.y*16, to.x*16, 16-from.y*16}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, facing), sprite, new double[]{from.x*16, 16-to.y*16, to.x*16, 16-from.y*16}, colour, false));
 
 		for(int i = 0; i < vertices.length; i++)
 		{
@@ -979,7 +978,7 @@ public class ClientUtils
 		}
 		sprite = textureGetter.apply(Direction.SOUTH);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), sprite, new double[]{to.x*16, 16-to.y*16, from.x*16, 16-from.y*16}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), sprite, new double[]{to.x*16, 16-to.y*16, from.x*16, 16-from.y*16}, colour, true));
 
 		vertices = new Vec3d[]{
 				new Vec3d(from.x, to.y, to.z),
@@ -989,7 +988,7 @@ public class ClientUtils
 		};
 		sprite = textureGetter.apply(Direction.WEST);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.WEST, facing), sprite, new double[]{to.z*16, 16-to.y*16, from.z*16, 16-from.y*16}, colour, true));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.WEST, facing), sprite, new double[]{to.z*16, 16-to.y*16, from.z*16, 16-from.y*16}, colour, true));
 
 		for(int i = 0; i < vertices.length; i++)
 		{
@@ -998,7 +997,7 @@ public class ClientUtils
 		}
 		sprite = textureGetter.apply(Direction.EAST);
 		if(sprite!=null)
-			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.EAST, facing), sprite, new double[]{16-to.z*16, 16-to.y*16, 16-from.z*16, 16-from.y*16}, colour, false));
+			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.EAST, facing), sprite, new double[]{16-to.z*16, 16-to.y*16, 16-from.z*16, 16-from.y*16}, colour, false));
 
 		return quads;
 	}
@@ -1025,7 +1024,7 @@ public class ClientUtils
 
 	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
-		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
+		BakedQuadBuilder builder = new BakedQuadBuilder(format);
 		builder.setQuadOrientation(facing);
 		builder.setTexture(sprite);
 		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(), facing.getDirectionVec().getZ());
@@ -1045,7 +1044,7 @@ public class ClientUtils
 		return smartLighting?new SmartLightingQuad(tmp.getVertexData(), -1, facing, sprite, format, basePos): tmp;
 	}
 
-	public static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vec3d pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
+	public static void putVertexData(VertexFormat format, BakedQuadBuilder builder, Vec3d pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
 	{
 		for(int e = 0; e < format.getElementCount(); e++)
 			switch(format.getElement(e).getUsage())
@@ -1093,7 +1092,7 @@ public class ClientUtils
 		BufferBuilder BufferBuilder = tessellator.getBuffer();
 		for(BakedQuad bakedquad : quads)
 		{
-			BufferBuilder.begin(7, DefaultVertexFormats.ITEM);
+			BufferBuilder.begin(7, DefaultVertexFormats.BLOCK);
 			BufferBuilder.addVertexData(bakedquad.getVertexData());
 			if(bakedquad.hasTintIndex())
 				BufferBuilder.putColorRGB_F4(red*brightness, green*brightness, blue*brightness);
@@ -1448,5 +1447,25 @@ public class ClientUtils
 			return InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), keyCode.getKeyCode());
 		else
 			return false;
+	}
+
+	public static ModelRotation toModelRotation(Direction d)
+	{
+		switch(d)
+		{
+			case DOWN:
+				return ModelRotation.X90_Y0;
+			case UP:
+				return ModelRotation.X270_Y0;
+			case NORTH:
+				return ModelRotation.X0_Y0;
+			case SOUTH:
+				return ModelRotation.X0_Y180;
+			case WEST:
+				return ModelRotation.X0_Y270;
+			case EAST:
+				return ModelRotation.X0_Y90;
+		}
+		throw new IllegalArgumentException(String.valueOf(d));
 	}
 }

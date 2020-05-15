@@ -264,16 +264,16 @@ public class ChemthrowerHandler
 			super.applyToEntity(target, shooter, thrower, fluid);
 			if(Utils.RAND.nextFloat() < chance)
 			{
-				double x = target.posX-8+Utils.RAND.nextInt(17);
-				double y = target.posY+Utils.RAND.nextInt(8);
-				double z = target.posZ-8+Utils.RAND.nextInt(17);
+				double x = target.getPosX()-8+Utils.RAND.nextInt(17);
+				double y = target.getPosY()+Utils.RAND.nextInt(8);
+				double z = target.getPosZ()-8+Utils.RAND.nextInt(17);
 				if(!target.world.getBlockState(new BlockPos(x, y, z)).getMaterial().isSolid())
 				{
 					EnderTeleportEvent event = new EnderTeleportEvent(target, x, y, z, 0);
 					if(MinecraftForge.EVENT_BUS.post(event))
 						return;
 					target.setPositionAndUpdate(event.getTargetX(), event.getTargetY(), event.getTargetZ());
-					target.world.playSound(target.posX, target.posY, target.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F, false);
+					target.world.playSound(target.getPosX(), target.getPosY(), target.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F, false);
 				}
 			}
 		}

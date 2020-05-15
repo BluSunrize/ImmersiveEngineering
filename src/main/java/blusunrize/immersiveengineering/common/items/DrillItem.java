@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.google.common.collect.ImmutableList;
@@ -35,6 +34,9 @@ import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
@@ -71,7 +73,6 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -87,8 +88,6 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -102,7 +101,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 
 	public DrillItem()
 	{
-		super("drill", withIEOBJRender().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
+		super("drill", withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
 	}
 
 	/* ------------- CORE ITEM METHODS ------------- */
@@ -550,15 +549,13 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public TRSRTransformation applyTransformations(ItemStack stack, String group, TRSRTransformation transform)
+	public TransformationMatrix applyTransformations(ItemStack stack, String group, TransformationMatrix transform)
 	{
 		CompoundNBT upgrades = this.getUpgrades(stack);
 		if(group.equals("drill_head")&&upgrades.getInt("damage") <= 0)
-		{
-			Matrix4 mat = new Matrix4(transform.getMatrixVec());
-			mat.translate(-.25f, 0, 0);
-			return new TRSRTransformation(mat.toMatrix4f());
-		}
+			return transform.compose(new TransformationMatrix(
+					new Vector3f(-.25f, 0, 0), null, null, null
+			));
 		return transform;
 	}
 
@@ -589,29 +586,29 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 			return FIXED;
 	}
 
-	private static final TRSRTransformation matAugers = new TRSRTransformation(new Vector3f(.441f, 0, 0), null, null, null);
+	private static final TransformationMatrix matAugers = new TransformationMatrix(new Vector3f(.441f, 0, 0), null, null, null);
 
 	@Nonnull
 	@Override
-	public TRSRTransformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
+	public TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
 	{
 		if(groups==FIXED[0])
 			return matAugers;
 		float angle = (entity.ticksExisted%60+partialTicks)/60f*(float)(2*Math.PI);
-		Quat4f rotation = null;
+		Quaternion rotation = null;
 		Vector3f translation = null;
 		if("drill_head".equals(groups[0]))
-			rotation = TRSRTransformation.quatFromXYZ(angle, 0, 0);
+			rotation = new Quaternion(angle, 0, 0, false);
 		else if("upgrade_damage1".equals(groups[0]))
 		{
 			translation = new Vector3f(.441f, 0, 0);
-			rotation = TRSRTransformation.quatFromXYZ(0, angle, 0);
+			rotation = new Quaternion(0, angle, 0, false);
 		}
 		else if("upgrade_damage3".equals(groups[0]))
 		{
 			translation = new Vector3f(.441f, 0, 0);
-			rotation = TRSRTransformation.quatFromXYZ(0, 0, angle);
+			rotation = new Quaternion(0, 0, angle, false);
 		}
-		return new TRSRTransformation(translation, rotation, null, null);
+		return new TransformationMatrix(translation, rotation, null, null);
 	}
 }

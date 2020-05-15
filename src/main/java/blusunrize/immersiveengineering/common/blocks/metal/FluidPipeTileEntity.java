@@ -29,6 +29,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.entity.Entity;
@@ -57,7 +59,6 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -67,7 +68,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -317,7 +317,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
+	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
 	{
 		return transform;
 	}
@@ -697,7 +697,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		if(!cachedOBJStates.containsKey(key))
 		{
 			ArrayList<String> parts = new ArrayList<>();
-			Matrix4 rotationMatrix = new Matrix4(TRSRTransformation.identity().getMatrixVec());//TODO is getMatrixVec correct?
+			Matrix4 rotationMatrix = new Matrix4();
+			rotationMatrix.translate(0.5, 0.5, 0.5);
 			short connections = getConnectionsFromKey(key);
 			if(key.contains("scaf:"))
 				parts.add("cover");
@@ -934,15 +935,10 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 					break;
 			}
-
-			Matrix4 tempMatr = new Matrix4();
-			tempMatr.m03 = tempMatr.m13 = tempMatr.m23 = .5f;
-			rotationMatrix.leftMultiply(tempMatr);
-			tempMatr.invert();
-			rotationMatrix = rotationMatrix.multiply(tempMatr);
+			rotationMatrix.translate(-0.5, -0.5, -0.5);
 
 			cachedOBJStates.put(key, new IEObjState(VisibilityList.show(parts),
-					new TRSRTransformation(rotationMatrix.toMatrix4f())));
+					new TransformationMatrix(rotationMatrix.toMatrix4f())));
 		}
 		return cachedOBJStates.get(key);
 	}

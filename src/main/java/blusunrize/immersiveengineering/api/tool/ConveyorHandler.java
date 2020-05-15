@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntit
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
@@ -31,7 +31,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -46,7 +45,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -388,16 +386,16 @@ public class ConveyorHandler
 
 			if(getFacing()==Direction.WEST||getFacing()==Direction.EAST)
 			{
-				if(entity.posZ > pos.getZ()+0.55D)
+				if(entity.getPosZ() > pos.getZ()+0.55D)
 					vZ = -0.1D*vBase;
-				else if(entity.posZ < pos.getZ()+0.45D)
+				else if(entity.getPosZ() < pos.getZ()+0.45D)
 					vZ = 0.1D*vBase;
 			}
 			else if(getFacing()==Direction.NORTH||getFacing()==Direction.SOUTH)
 			{
-				if(entity.posX > pos.getX()+0.55D)
+				if(entity.getPosX() > pos.getX()+0.55D)
 					vX = -0.1D*vBase;
-				else if(entity.posX < pos.getX()+0.45D)
+				else if(entity.getPosX() < pos.getX()+0.45D)
 					vX = 0.1D*vBase;
 			}
 
@@ -411,14 +409,14 @@ public class ConveyorHandler
 			BlockPos pos = getTile().getPos();
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			float heightLimit = conveyorDirection==ConveyorDirection.HORIZONTAL?.25f: 1f;
-			if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.posY-pos.getY() >= 0&&entity.posY-pos.getY() < heightLimit)
+			if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.getPosY()-pos.getY() >= 0&&entity.getPosY()-pos.getY() < heightLimit)
 			{
 				Vec3d vec = this.getDirection(entity);
 				if(entity.fallDistance < 3)
 					entity.fallDistance = 0;
 				entity.setMotion(vec);
-				double distX = Math.abs(pos.offset(getFacing()).getX()+.5-entity.posX);
-				double distZ = Math.abs(pos.offset(getFacing()).getZ()+.5-entity.posZ);
+				double distX = Math.abs(pos.offset(getFacing()).getX()+.5-entity.getPosX());
+				double distZ = Math.abs(pos.offset(getFacing()).getZ()+.5-entity.getPosZ());
 				double treshold = .9;
 				boolean contact = getFacing().getAxis()==Axis.Z?distZ < treshold: distX < treshold;
 				World w = getTile().getWorld();
@@ -427,7 +425,7 @@ public class ConveyorHandler
 						!Block.doesSideFillSquare(w.getBlockState(upPos).getShape(w, upPos), Direction.DOWN))
 				{
 					double move = .4;
-					entity.setPosition(entity.posX+move*getFacing().getXOffset(), entity.posY+1*move, entity.posZ+move*getFacing().getZOffset());
+					entity.setPosition(entity.getPosX()+move*getFacing().getXOffset(), entity.getPosY()+1*move, entity.getPosZ()+move*getFacing().getZOffset());
 				}
 				if(!contact)
 					ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)getTile());
@@ -445,7 +443,7 @@ public class ConveyorHandler
 					if(!contact)
 					{
 						if(item.age > item.lifespan-60*20)
-							item.setAgeToCreativeDespawnTime();
+							item.age = item.lifespan-60*20;
 					}
 					else
 						handleInsertion(item, conveyorDirection, distX, distZ);
@@ -515,7 +513,7 @@ public class ConveyorHandler
 		void readConveyorNBT(CompoundNBT nbt);
 
 		@OnlyIn(Dist.CLIENT)
-		default Matrix4f modifyBaseRotationMatrix(Matrix4f matrix)
+		default TransformationMatrix modifyBaseRotationMatrix(TransformationMatrix matrix)
 		{
 			return matrix;
 		}

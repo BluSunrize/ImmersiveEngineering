@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.ILightReader;
 
 import javax.annotation.Nullable;
 
@@ -27,7 +27,7 @@ public class IEDefaultColourHandlers implements IItemColor, IBlockColor
 	public static IEDefaultColourHandlers INSTANCE = new IEDefaultColourHandlers();
 
 	@Override
-	public int getColor(BlockState state, @Nullable IEnviromentBlockReader worldIn, @Nullable BlockPos pos, int tintIndex)
+	public int getColor(BlockState state, @Nullable ILightReader worldIn, @Nullable BlockPos pos, int tintIndex)
 	{
 		if(state.getBlock() instanceof IColouredBlock)
 			return ((IColouredBlock)state.getBlock()).getRenderColour(state, worldIn, pos, tintIndex);

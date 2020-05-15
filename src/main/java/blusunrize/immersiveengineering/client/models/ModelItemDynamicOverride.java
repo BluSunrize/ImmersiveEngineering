@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -27,12 +29,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -53,9 +53,9 @@ public class ModelItemDynamicOverride extends BakedIEModel
 		if(textures!=null)
 		{
 			ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
-			Optional<TRSRTransformation> transform = Optional.of(TRSRTransformation.identity());
+			Optional<TransformationMatrix> transform = Optional.of(TransformationMatrix.identity());
 			for(int i = 0; i < textures.size(); i++)
-				builder.addAll(ItemLayerModel.getQuadsForSprite(i, ClientUtils.getSprite(textures.get(i)), DefaultVertexFormats.ITEM, transform));
+				builder.addAll(ItemLayerModel.getQuadsForSprite(i, ClientUtils.getSprite(textures.get(i)), DefaultVertexFormats.BLOCK, transform));
 			quads = builder.build();
 			guiModel = new BakedGuiItemModel(this);
 		}

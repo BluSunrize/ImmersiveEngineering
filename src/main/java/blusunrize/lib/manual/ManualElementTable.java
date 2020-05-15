@@ -8,8 +8,8 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;

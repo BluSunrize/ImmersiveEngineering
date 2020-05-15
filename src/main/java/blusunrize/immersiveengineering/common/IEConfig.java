@@ -640,7 +640,7 @@ public class IEConfig
 	}
 
 	@SubscribeEvent
-	public static void onConfigReload(ModConfig.ConfigReloading ev)
+	public static void onConfigReload(ModConfig.Reloading ev)
 	{
 		CACHED.wireLossRatio = toDoubleArray(WIRES.wireLossRatio);
 		CACHED.wireTransferRate = toIntArray(WIRES.wireTransferRate);

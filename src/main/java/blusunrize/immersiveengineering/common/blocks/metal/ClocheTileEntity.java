@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,7 +51,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -514,7 +514,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
+	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
 	{
 		return transform;
 	}
@@ -550,7 +550,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 			}
 		}
 		if(rl==null&&!soil.isEmpty()&&Utils.isFluidRelatedItemStack(soil))
-			rl = FluidUtil.getFluidContained(soil).map(fs -> fs.getFluid().getAttributes().getStill(fs)).orElse(rl);
+			rl = FluidUtil.getFluidContained(soil).map(fs -> fs.getFluid().getAttributes().getStillTexture(fs)).orElse(rl);
 		return rl;
 	}
 

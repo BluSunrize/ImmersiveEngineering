@@ -1,6 +1,9 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector2f;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -9,11 +12,8 @@ import net.minecraftforge.client.model.obj.MaterialLibrary2;
 import net.minecraftforge.client.model.obj.OBJModel2;
 import net.minecraftforge.client.model.obj.OBJModel2.ModelGroup;
 import net.minecraftforge.client.model.obj.OBJModel2.ModelObject;
-import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.vecmath.Vector2f;
-import javax.vecmath.Vector4f;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -105,7 +105,7 @@ public class OBJHelper
 
 	public static Pair<BakedQuad, Direction> makeQuad(OBJModel2 model, int[][] indices, int tintIndex, Vector4f colorTint,
 													  Vector4f ambientColor, boolean isFullbright, TextureAtlasSprite texture,
-													  VertexFormat format, Optional<TRSRTransformation> transform)
+													  VertexFormat format, Optional<TransformationMatrix> transform)
 	{
 		return invoke(OBJModel2_makeQuad, model, indices, tintIndex, colorTint, ambientColor, isFullbright, texture, format, transform);
 	}

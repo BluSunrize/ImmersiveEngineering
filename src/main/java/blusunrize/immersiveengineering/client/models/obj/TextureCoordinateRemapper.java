@@ -2,9 +2,9 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
+import net.minecraft.client.renderer.Vector2f;
 import net.minecraftforge.client.model.obj.OBJModel2;
 
-import javax.vecmath.Vector2f;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

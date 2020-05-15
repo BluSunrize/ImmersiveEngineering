@@ -69,9 +69,9 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	}
 
 	@Override
-	public void setWorld(@Nonnull World worldIn)
+	public void setWorldAndPos(World worldIn, BlockPos pos)
 	{
-		super.setWorld(worldIn);
+		super.setWorldAndPos(worldIn, pos);
 		globalNet = GlobalWireNetwork.getNetwork(worldIn);
 	}
 
