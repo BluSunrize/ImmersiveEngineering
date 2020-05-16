@@ -69,16 +69,6 @@ public class SqueezerRecipe extends MultiblockRecipe
 
 	public static List<SqueezerRecipe> recipeList = new ArrayList<>();
 
-	public static SqueezerRecipe addRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		SqueezerRecipe r = new SqueezerRecipe(fluidOutput, itemOutput, input, energy);
-		recipeList.add(r);
-		return r;
-		 */
-	}
-
 	public static SqueezerRecipe findRecipe(ItemStack input)
 	{
 		if(input.isEmpty())

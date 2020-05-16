@@ -60,16 +60,6 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 
 	public static List<BlastFurnaceRecipe> recipeList = new ArrayList<>();
 
-	public static void addRecipe(ItemStack output, IngredientWithSize input, int time, @Nonnull ItemStack slag)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		BlastFurnaceRecipe recipe = new BlastFurnaceRecipe(output, input, time, slag);
-		if(recipe.input!=null)
-			recipeList.add(recipe);
-		 */
-	}
-
 	public static BlastFurnaceRecipe findRecipe(ItemStack input)
 	{
 		for(BlastFurnaceRecipe recipe : recipeList)

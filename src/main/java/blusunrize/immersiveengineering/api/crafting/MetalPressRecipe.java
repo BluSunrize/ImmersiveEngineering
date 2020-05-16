@@ -90,21 +90,6 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	public static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipeList = ArrayListMultimap.create();
 
-	public static MetalPressRecipe addRecipe(ItemStack output, IngredientWithSize input, ItemStack mold, int energy)
-	{
-		return addRecipe(output, input, ApiUtils.createComparableItemStack(mold, true), energy);
-	}
-
-	public static MetalPressRecipe addRecipe(ItemStack output, IngredientWithSize input, ComparableItemStack mold, int energy)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		MetalPressRecipe r = new MetalPressRecipe(output, input, mold, energy);
-		recipeList.put(mold, r);
-		return r;
-		 */
-	}
-
 	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, World world)
 	{
 		if(mold.isEmpty()||input.isEmpty())

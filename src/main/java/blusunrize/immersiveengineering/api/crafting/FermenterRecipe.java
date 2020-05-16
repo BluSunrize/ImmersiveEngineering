@@ -67,16 +67,6 @@ public class FermenterRecipe extends MultiblockRecipe
 
 	public static List<FermenterRecipe> recipeList = new ArrayList<>();
 
-	public static FermenterRecipe addRecipe(FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		FermenterRecipe r = new FermenterRecipe(fluidOutput, itemOutput, input, energy);
-		recipeList.add(r);
-		return r;
-		 */
-	}
-
 	public static FermenterRecipe findRecipe(ItemStack input)
 	{
 		if(input.isEmpty())

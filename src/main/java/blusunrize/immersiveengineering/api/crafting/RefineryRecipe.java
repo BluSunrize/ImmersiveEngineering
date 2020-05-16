@@ -58,16 +58,6 @@ public class RefineryRecipe extends MultiblockRecipe
 
 	public static List<RefineryRecipe> recipeList = new ArrayList<>();
 
-	public static RefineryRecipe addRecipe(FluidStack output, FluidStack input0, FluidStack input1, int energy)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		RefineryRecipe r = new RefineryRecipe(output, input0, input1, energy);
-		recipeList.add(r);
-		return r;
-		 */
-	}
-
 	public static RefineryRecipe findRecipe(FluidStack input0, FluidStack input1)
 	{
 		for(RefineryRecipe recipe : recipeList)

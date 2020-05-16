@@ -172,18 +172,6 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static ArcFurnaceRecipe addRecipe(ItemStack output, IngredientWithSize input, @Nonnull ItemStack slag,
-											 int time, int energyPerTick, IngredientWithSize... additives)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(output, input, slag, time, energyPerTick, additives);
-		if(recipe.input!=null)
-			recipeList.add(recipe);
-		return recipe;
-		 */
-	}
-
 	public static ArcFurnaceRecipe findRecipe(ItemStack input, NonNullList<ItemStack> additives)
 	{
 		for(ArcFurnaceRecipe recipe : recipeList)

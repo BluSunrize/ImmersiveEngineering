@@ -57,16 +57,6 @@ public class CokeOvenRecipe extends IESerializableRecipe
 
 	public static List<CokeOvenRecipe> recipeList = new ArrayList<>();
 
-	public static void addRecipe(ItemStack output, IngredientWithSize input, int time, int creosoteOutput)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		CokeOvenRecipe recipe = new CokeOvenRecipe(output, input, time, creosoteOutput);
-		if(recipe.input!=null)
-			recipeList.add(recipe);
-		 */
-	}
-
 	public static CokeOvenRecipe findRecipe(ItemStack input)
 	{
 		for(CokeOvenRecipe recipe : recipeList)

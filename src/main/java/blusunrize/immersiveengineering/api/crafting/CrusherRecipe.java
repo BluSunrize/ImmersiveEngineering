@@ -83,17 +83,6 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public static List<CrusherRecipe> recipeList = new ArrayList<>();
 
-	public static CrusherRecipe addRecipe(ItemStack output, Ingredient input, int energy)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		CrusherRecipe r = new CrusherRecipe(output, input, energy);
-		if(r.input!=null&&!r.output.isEmpty())
-			recipeList.add(r);
-		return r;
-		 */
-	}
-
 	public static CrusherRecipe findRecipe(ItemStack input)
 	{
 		for(CrusherRecipe recipe : recipeList)

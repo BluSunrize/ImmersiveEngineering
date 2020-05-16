@@ -65,16 +65,6 @@ public class MixerRecipe extends MultiblockRecipe
 
 	public static List<MixerRecipe> recipeList = new ArrayList<>();
 
-	public static MixerRecipe addRecipe(FluidStack fluidOutput, FluidStack fluidInput, IngredientWithSize[] itemInput, int energy)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		MixerRecipe r = new MixerRecipe(fluidOutput, fluidInput, itemInput, energy);
-		recipeList.add(r);
-		return r;
-		 */
-	}
-
 	public static MixerRecipe findRecipe(FluidStack fluid, NonNullList<ItemStack> components)
 	{
 		if(fluid==null)

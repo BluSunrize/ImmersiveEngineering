@@ -58,16 +58,6 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 	public static List<BottlingMachineRecipe> recipeList = new ArrayList<>();
 
-	public static void addRecipe(ItemStack output, Ingredient input, FluidStack fluidInput)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		BottlingMachineRecipe recipe = new BottlingMachineRecipe(output, input, fluidInput);
-		if(recipe.input!=null)
-			recipeList.add(recipe);
-		 */
-	}
-
 	public static BottlingMachineRecipe findRecipe(ItemStack input, FluidStack fluid)
 	{
 		if(!input.isEmpty()&&fluid!=null)

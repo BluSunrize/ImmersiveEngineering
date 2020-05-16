@@ -166,16 +166,6 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		return consumed;
 	}
 
-	public static void addRecipe(String blueprintCategory, ItemStack output, IngredientWithSize... inputs)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		recipeList.put(blueprintCategory, new BlueprintCraftingRecipe(blueprintCategory, output, inputs));
-		if(!blueprintCategories.contains(blueprintCategory))
-			blueprintCategories.add(blueprintCategory);
-		 */
-	}
-
 	public static BlueprintCraftingRecipe[] findRecipes(String blueprintCategory)
 	{
 		if(recipeList.containsKey(blueprintCategory))

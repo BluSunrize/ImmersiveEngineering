@@ -57,16 +57,6 @@ public class AlloyRecipe extends IESerializableRecipe
 
 	public static List<AlloyRecipe> recipeList = new ArrayList<>();
 
-	public static void addRecipe(ItemStack output, IngredientWithSize input0, IngredientWithSize input1, int time)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		AlloyRecipe recipe = new AlloyRecipe(output, input0, input1, time);
-		if(recipe.input0!=null&&recipe.input1!=null)
-			recipeList.add(recipe);
-		 */
-	}
-
 	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1)
 	{
 		for(AlloyRecipe recipe : recipeList)

@@ -58,37 +58,6 @@ public class ClocheRecipe extends IESerializableRecipe
 		return this.outputs.get(0);
 	}
 
-	/**
-	 * Add a recipe for a List of ItemStack outputs
-	 *
-	 * @param outputs
-	 * @param seed
-	 * @param soil
-	 * @param time    time in ticks for the recipe to grow
-	 */
-	public static void addRecipe(List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
-	{
-		throw new RuntimeException("This is no longer supported");
-		/*
-		ClocheRecipe recipe = new ClocheRecipe(outputs, seed, soil, time, renderFunction);
-		if(recipe.seed!=null&&recipe.soil!=null)
-			recipeList.add(recipe);
-		 */
-	}
-
-	/**
-	 * Add a recipe for a single ItemStack output
-	 *
-	 * @param output
-	 * @param seed
-	 * @param soil
-	 * @param time   time in ticks for the recipe to grow
-	 */
-	public static void addRecipe(ItemStack output, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
-	{
-		addRecipe(ImmutableList.of(output), seed, soil, time, renderFunction);
-	}
-
 	public static ClocheRecipe findRecipe(ItemStack seed, ItemStack soil)
 	{
 		for(ClocheRecipe recipe : recipeList)
