@@ -26,6 +26,8 @@ import org.lwjgl.opengl.GL11;
 import java.util.Iterator;
 import java.util.List;
 
+import static blusunrize.immersiveengineering.client.ClientUtils.setLightmapDisabled;
+
 public class TeslaCoilRenderer extends TileEntityRenderer<TeslaCoilTileEntity>
 {
 	public TeslaCoilRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
@@ -50,8 +52,7 @@ public class TeslaCoilRenderer extends TileEntityRenderer<TeslaCoilTileEntity>
 			if(animation.shoudlRecalculateLightning())
 				animation.createLightning(Utils.RAND);
 
-			GlStateManager.pushMatrix();
-			GlStateManager.translated(x, y, z);
+			matrixStack.push();
 
 			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
@@ -68,7 +69,7 @@ public class TeslaCoilRenderer extends TileEntityRenderer<TeslaCoilTileEntity>
 			GlStateManager.enableTexture();
 			GlStateManager.disableBlend();
 
-			GlStateManager.popMatrix();
+			matrixStack.pop();
 		}
 		if(wasLightingEnabled)
 			GlStateManager.enableLighting();

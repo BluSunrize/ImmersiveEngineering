@@ -18,20 +18,13 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -61,25 +54,16 @@ public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 			quads = model.get(null).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
 		}
 		Tessellator tessellator = Tessellator.getInstance();
-		GlStateManager.pushMatrix();
+		matrixStack.push();
 
-		GlStateManager.translated(x+.5, y+.5, z+.5);
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
+		matrixStack.translate(.5, .5, .5);
 		final float dir = (tile.getFacing().getHorizontalAngle()+180)%180;
 		float wheelRotation = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*(float)tile.perTick);
-		GlStateManager.rotatef(dir, 0, 1, 0);
-		GlStateManager.rotatef(wheelRotation, 0, 0, 1);
-		RenderHelper.disableStandardItemLighting();
-		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-		BufferBuilder worldRenderer = tessellator.getBuffer();
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5, -.5, -.5);
-		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorldNonnull(), tile.getPos());
-		worldRenderer.setTranslation(0, 0, 0);
-		tessellator.draw();
-		GlStateManager.popMatrix();
+		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
+		matrixStack.rotate(new Quaternion(new Vector3f(0, 0, 1), wheelRotation, true));
+		matrixStack.translate(-.5, -.5, -.5);
+		ClientUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.getSolid()), tile.getWorldNonnull(), tile.getPos());
+		matrixStack.pop();
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();
 		GlStateManager.enableCull();

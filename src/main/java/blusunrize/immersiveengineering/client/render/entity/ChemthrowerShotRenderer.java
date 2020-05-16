@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
@@ -55,7 +56,9 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 		GlStateManager.rotatef(180.0F-this.renderManager.info.getYaw(), 0.0F, 1.0F, 0.0F);
 		GlStateManager.rotatef(-this.renderManager.info.getPitch(), 1.0F, 0.0F, 0.0F);
 
-		TextureAtlasSprite sprite = ClientUtils.mc().getTextureMap().getAtlasSprite(f.getFluid().getAttributes().getStillTexture(f).toString());
+		TextureAtlasSprite sprite = ClientUtils.mc().getModelManager()
+				.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+				.getSprite(f.getFluid().getAttributes().getStillTexture(f));
 		int colour = f.getFluid().getAttributes().getColor(f);
 		float a = (colour >> 24&255)/255f;
 		float r = (colour >> 16&255)/255f;

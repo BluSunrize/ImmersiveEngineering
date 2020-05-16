@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -1223,7 +1224,7 @@ public class ClientUtils
 	 * @param useCached Whether to use cached information for world local data. Set to true if the previous call to this method was in the same tick and for the same world+pos
 	 * @param color 	the render color (mostly used for plants)
 	 */
-	public static void renderModelTESRFancy(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, boolean useCached, int color)
+	public static void renderModelTESRFancy(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos, boolean useCached, int color)
 	{//TODO include matrix transformations?, cache normals?
 		if(IEConfig.GENERAL.disableFancyTESR.get())
 			renderModelTESRFast(quads, renderer, world, pos, color);
@@ -1340,12 +1341,12 @@ public class ClientUtils
 		return (val/scale)*(val/scale);
 	}
 
-	public static void renderModelTESRFast(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos)
+	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos)
 	{
 		renderModelTESRFast(quads, renderer, world, pos, -1);
 	}
 
-	public static void renderModelTESRFast(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, int color)
+	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos, int color)
 	{
 		int brightness = world.getLightSubtracted(pos, 0);
 		int l1 = (brightness >> 0x10)&0xFFFF;

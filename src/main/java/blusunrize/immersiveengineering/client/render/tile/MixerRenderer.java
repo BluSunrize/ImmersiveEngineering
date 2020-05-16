@@ -21,13 +21,11 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 {
@@ -48,50 +46,33 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
-		BlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = te.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.mixer)
 			return;
 		IBakedModel model = dynamic.get(te.getFacing());
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldRenderer = tessellator.getBuffer();
-
 		ClientUtils.bindAtlas();
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(x+.5, y+.5, z+.5);
+		matrixStack.push();
+		matrixStack.translate(.5, .5, .5);
 
 		if(te.getIsMirrored())
-			GlStateManager.scalef(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
+			matrixStack.scale(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
 
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.WEST?-.5: .5, 0, te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.EAST?.5: -.5);
+		matrixStack.push();
+		matrixStack.translate(te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.WEST?-.5: .5, 0, te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.EAST?.5: -.5);
 		float agitator = te.animation_agitator-(!te.shouldRenderAsActive()?0: (1-partialTicks)*9f);
-		GlStateManager.rotatef(agitator, 0, 1, 0);
+		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), agitator, true));
 
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
-		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, worldRenderer, true,
-				getWorld().rand, 0, EmptyModelData.INSTANCE);
-		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
-		tessellator.draw();
-		RenderHelper.enableStandardItemLighting();
+		matrixStack.translate(-0.5, -0.5, -0.5);
+		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
+				bufferIn.getBuffer(RenderType.getSolid()), true, te.getWorld().rand, 0,
+				combinedOverlayIn, EmptyModelData.INSTANCE);
 
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 
-		GlStateManager.scalef(.0625f, 1, .0625f);
-		GlStateManager.rotatef(90, 1, 0, 0);
-		GlStateManager.translated(8, -8, .625f);
-
-		RenderHelper.disableStandardItemLighting();
+		matrixStack.scale(.0625f, 1, .0625f);
+		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), 90, true));
+		matrixStack.translate(8, -8, .625f);
 
 		for(int i = te.tank.getFluidTypes()-1; i >= 0; i--)
 		{
@@ -102,12 +83,12 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 				GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
 
 				float yy = fs.getAmount()/(float)te.tank.getCapacity()*1.125f;
-				GlStateManager.translated(0, 0, -yy);
+				matrixStack.translate(0, 0, -yy);
 				float w = (i < te.tank.getFluidTypes()-1||yy >= .125)?26: 16+yy/.0125f;
 				ClientUtils.drawRepeatedFluidSprite(fs, -w/2, -w/2, w, w);
 			}
 		}
 
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 	}
 }

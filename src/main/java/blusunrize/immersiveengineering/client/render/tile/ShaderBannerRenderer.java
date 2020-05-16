@@ -19,6 +19,8 @@ import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.model.BannerModel;
@@ -44,13 +46,13 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 	public void render(ShaderBannerTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		long time = te.getWorldNonnull().getGameTime();
-		GlStateManager.pushMatrix();
+		matrixStack.push();
 		if(!te.wall)
 		{
 			int orientation = te.getState().get(ShaderBannerStandingBlock.ROTATION);
-			GlStateManager.translated((float)x+0.5F, (float)y+0.5F, (float)z+0.5F);
+			matrixStack.translate((float)x+0.5F, (float)y+0.5F, (float)z+0.5F);
 			float f1 = (float)(orientation*360)/16.0F;
-			GlStateManager.rotatef(-f1, 0.0F, 1.0F, 0.0F);
+			matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -f1, true));
 			this.bannerModel.func_205057_b().showModel = true;
 		}
 		else
@@ -58,9 +60,9 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 			Direction facing = te.getState().get(ShaderBannerWallBlock.FACING);
 			float rotation = facing.getHorizontalAngle();
 
-			GlStateManager.translated((float)x+0.5F, (float)y-0.16666667F, (float)z+0.5F);
-			GlStateManager.rotatef(-rotation, 0.0F, 1.0F, 0.0F);
-			GlStateManager.translated(0.0F, -0.3125F, -0.4375F);
+			matrixStack.translate((float)x+0.5F, (float)y-0.16666667F, (float)z+0.5F);
+			matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -rotation, true));
+			matrixStack.translate(0.0F, -0.3125F, -0.4375F);
 			this.bannerModel.func_205057_b().showModel = false;
 		}
 
@@ -73,23 +75,23 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 		if(resourcelocation!=null)
 		{
 			this.bindTexture(resourcelocation);
-			GlStateManager.pushMatrix();
+			matrixStack.push();
 
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 			GlStateManager.enableAlphaTest();
 			GlStateManager.enableBlend();
 
-			GlStateManager.scalef(0.6666667F, -0.6666667F, -0.6666667F);
+			matrixStack.scale(0.6666667F, -0.6666667F, -0.6666667F);
 			this.bannerModel.renderBanner();
 
 			GlStateManager.disableBlend();
 			GlStateManager.disableAlphaTest();
 
-			GlStateManager.popMatrix();
+			matrixStack.pop();
 		}
 
 		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 	}
 
 	private static final ResourceLocation BASE_TEXTURE = new ResourceLocation("textures/entity/banner_base.png");

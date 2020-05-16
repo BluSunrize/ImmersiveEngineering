@@ -9,15 +9,13 @@
 package blusunrize.immersiveengineering.client.font;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.floats.FloatList;
 import net.minecraft.client.gui.fonts.TexturedGlyph;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.ResourceLocation;
-
-import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 public class NixieFontRender extends IEFontRender
 {
@@ -52,54 +50,45 @@ public class NixieFontRender extends IEFontRender
 	}
 
 	@Override
-	protected void renderGlyph(TexturedGlyph glyph, boolean bold, boolean italic, float boldOffset, float x, float y,
-							   BufferBuilder bufferBuilder, float red, float green, float blue, float alpha, char orig)
+	protected void renderGlyph(char orig, TexturedGlyph glyph, boolean bold, boolean italic, float boldOffset, float x,
+							   float y, Matrix4f matrix, IVertexBuilder buffer, float red, float green,
+							   float blue, float alpha, int packedLight)
 	{
 		float baseCharWidth = super.getCharWidthIE(orig, bold);
 		x = (float)Math.floor(x+NIXIE_X_OFFSET+(NIXIE_WIDTH-baseCharWidth)/2);
-		super.renderGlyph(glyph, bold, italic, boldOffset, x, y, bufferBuilder, red, green, blue, alpha, orig);
+		super.renderGlyph(orig, glyph, bold, italic, boldOffset, x, y, matrix, buffer, red, green, blue, alpha, packedLight);
 		final float backgroundFactor = 0.875F;
 		final float alphaFactor = 0.375F;
 		red *= backgroundFactor;
 		green *= backgroundFactor;
 		blue *= backgroundFactor;
 		alpha *= alphaFactor;
-		super.renderGlyph(glyph, bold, italic, boldOffset, x-.5F, y, bufferBuilder, red, green, blue, alpha, orig);
-		super.renderGlyph(glyph, bold, italic, boldOffset, x+.5F, y, bufferBuilder, red, green, blue, alpha, orig);
+		super.renderGlyph(orig, glyph, bold, italic, boldOffset, x-.5F, y, matrix, buffer, red, green, blue, alpha, packedLight);
+		super.renderGlyph(orig, glyph, bold, italic, boldOffset, x+.5F, y, matrix, buffer, red, green, blue, alpha, packedLight);
 	}
 
 	@Override
-	protected void postStringRender(String text, FloatList charPositions, BufferBuilder bb, Tessellator tes, float y)
+	protected void postStringRender(String text, FloatList charPositions, IRenderTypeBuffer buffer, Matrix4f baseTransform, float y)
 	{
-		super.postStringRender(text, charPositions, bb, tes, y);
+		super.postStringRender(text, charPositions, buffer, baseTransform, y);
 		if(this.drawTube)
+		{
+			IVertexBuilder builder = buffer.getBuffer(RenderType.getTextSeeThrough(
+					TUBE_OVERLAY
+			));
 			for(float x : charPositions)
-				drawTube(bb, tes, x, y);
+				drawTube(builder, baseTransform, x, y);
+		}
 	}
 
-	//TODO pre-draw?
-	private void drawBackground(BufferBuilder bb, Tessellator tes, float x, float y)
-	{
-		bb.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		bb.pos(x, y, 0.0F).tex(0, .125f).endVertex();
-		bb.pos(x, y+BACKGROUND_HEIGHT, 0.0F).tex(0, .1874f).endVertex();
-		bb.pos(x+BACKGROUND_WIDTH, y+BACKGROUND_HEIGHT, 0.0F).tex(.0625f, .1874f).endVertex();
-		bb.pos(x+BACKGROUND_WIDTH, y, 0.0F).tex(.0625f, .125f).endVertex();
-		tes.draw();
-	}
-
-	private void drawTube(BufferBuilder bb, Tessellator tes, float x, float y)
+	private void drawTube(IVertexBuilder builder, Matrix4f tes, float x, float y)
 	{
 		y += NIXIE_Y_OFFSET;
 		x += NIXIE_X_OFFSET;
-		GlStateManager.color3f(1, 1, 1);
-		texManager.bindTexture(TUBE_OVERLAY);
-		bb.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		bb.pos(x, y, 0.0F).tex(0, 0).endVertex();
-		bb.pos(x, y+NIXIE_HEIGHT, 0.0F).tex(0, .874f).endVertex();
-		bb.pos(x+NIXIE_WIDTH, y+NIXIE_HEIGHT, 0.0F).tex(.625f, .874f).endVertex();
-		bb.pos(x+NIXIE_WIDTH, y, 0.0F).tex(.625f, 0).endVertex();
-		tes.draw();
+		builder.pos(x, y, 0.0F).tex(0, 0).endVertex();
+		builder.pos(x, y+NIXIE_HEIGHT, 0.0F).tex(0, .874f).endVertex();
+		builder.pos(x+NIXIE_WIDTH, y+NIXIE_HEIGHT, 0.0F).tex(.625f, .874f).endVertex();
+		builder.pos(x+NIXIE_WIDTH, y, 0.0F).tex(.625f, 0).endVertex();
 	}
 
 	public void setDrawTubeFlag(boolean flag)

@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.api.shader;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.client.renderer.Vector4f;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 
 public class ShaderLayer
@@ -9,7 +11,7 @@ public class ShaderLayer
 	/**
 	 * A resource location pointing to a texture on the sheet
 	 */
-	private final ResourceLocation texture;
+	private final Material texture;
 	/**
 	 * An ARGB formatted colour
 	 */
@@ -27,6 +29,11 @@ public class ShaderLayer
 	private double[] cutoutBounds;
 
 	public ShaderLayer(ResourceLocation texture, int color)
+	{
+		this(new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, texture), color);
+	}
+
+	public ShaderLayer(Material texture, int color)
 	{
 		this.texture = texture;
 		this.color = new Vector4f((color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f);
@@ -71,7 +78,7 @@ public class ShaderLayer
 		return this.cutoutBounds;
 	}
 
-	public ResourceLocation getTexture()
+	public Material getTexture()
 	{
 		return texture;
 	}

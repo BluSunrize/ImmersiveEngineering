@@ -32,20 +32,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector4f;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
@@ -92,15 +85,14 @@ public class IESmartObjModel implements IBakedModel
 	private final IBakedModel baseBaked;
 	private final IModelConfiguration owner;
 	private final ModelBakery bakery;
-	private final Function<ResourceLocation, TextureAtlasSprite> spriteGetter;
-	private final ISprite sprite;
-	private final VertexFormat format;
+	private final Function<Material, TextureAtlasSprite> spriteGetter;
+	private final IModelTransform sprite;
 
 	private final IEObjState state;
 
 	public IESmartObjModel(OBJModel baseModel, IBakedModel baseBaked, IModelConfiguration owner, ModelBakery bakery,
-						   Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite,
-						   VertexFormat format, IEObjState state, boolean dynamic)
+						   Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform sprite,
+						   IEObjState state, boolean dynamic)
 	{
 
 		this.baseModel = baseModel;
@@ -109,7 +101,6 @@ public class IESmartObjModel implements IBakedModel
 		this.bakery = bakery;
 		this.spriteGetter = spriteGetter;
 		this.sprite = sprite;
-		this.format = format;
 		this.state = state;
 		this.isDynamic = dynamic;
 	}
@@ -169,6 +160,13 @@ public class IESmartObjModel implements IBakedModel
 	public boolean isGui3d()
 	{
 		return true;
+	}
+
+	//TODO
+	@Override
+	public boolean func_230044_c_()
+	{
+		return false;
 	}
 
 	@Override
@@ -349,9 +347,9 @@ public class IESmartObjModel implements IBakedModel
 			{
 				IESmartObjModel model;
 				if(visibility!=null)
-					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, visibility, isDynamic);
+					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, visibility, isDynamic);
 				else
-					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, format, this.state, isDynamic);
+					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, this.state, isDynamic);
 
 				model.tempState = blockState;
 				return model.buildQuads(modelData);
@@ -433,9 +431,9 @@ public class IESmartObjModel implements IBakedModel
 		ModelGroup g = OBJHelper.getGroups(baseModel).get(groupName);
 		List<BakedQuad> quads = new ArrayList<>();
 		TransformationMatrix transform = state.transform;
-		Optional<TransformationMatrix> optionalTransform = sprite.getState().apply(Optional.empty());
+		TransformationMatrix optionalTransform = sprite.getRotation();
 		if(callback!=null)
-			optionalTransform = Optional.of(callback.applyTransformations(callbackObject, groupName, optionalTransform.get()));
+			optionalTransform = callback.applyTransformations(callbackObject, groupName, optionalTransform);
 
 		final MaterialSpriteGetter<T> spriteGetter = new MaterialSpriteGetter<>(this.spriteGetter, groupName, callback, callbackObject, sCase);
 		final MaterialColorGetter<T> colorGetter = new MaterialColorGetter<>(groupName, callback, callbackObject, sCase);
@@ -450,10 +448,11 @@ public class IESmartObjModel implements IBakedModel
 					coordinateRemapper.setRenderPass(pass);
 					//g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
 					IModelBuilder modelBuilder = new QuadListAdder(quads::add, transform);
-					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, format, optionalTransform);
-					Optional<TransformationMatrix> finalOptionalTransform = optionalTransform;
+					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, optionalTransform);
+					final TransformationMatrix finalTransform = optionalTransform;
 					g.getParts().stream().filter(part -> owner.getPartVisibility(part)&&part instanceof ModelObject)
-							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, format, finalOptionalTransform));
+							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter,
+									colorGetter, coordinateRemapper, finalTransform));
 				}
 		return quads;
 	}
@@ -463,8 +462,8 @@ public class IESmartObjModel implements IBakedModel
 	 */
 	private void addModelObjectQuads(ModelObject modelObject, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
 									 MaterialSpriteGetter<?> spriteGetter, MaterialColorGetter<?> colorGetter,
-									 TextureCoordinateRemapper coordinateRemapper, VertexFormat format,
-									 Optional<TransformationMatrix> transform)
+									 TextureCoordinateRemapper coordinateRemapper,
+									 TransformationMatrix transform)
 	{
 		List<MeshWrapper> meshes = OBJHelper.getMeshes(modelObject);
 		for(MeshWrapper mesh : meshes)
@@ -472,16 +471,14 @@ public class IESmartObjModel implements IBakedModel
 			MaterialLibrary.Material mat = mesh.getMaterial();
 			if(mat==null)
 				continue;
-			TextureAtlasSprite texture = spriteGetter.apply(mat.name, ModelLoaderRegistry.resolveTexture(mat.diffuseColorMap, owner));
+			TextureAtlasSprite texture = spriteGetter.apply(
+					mat.name,
+					ModelLoaderRegistry.resolveTexture(mat.diffuseColorMap, owner)
+			);
 			int tintIndex = mat.diffuseTintIndex;
 			Vector4f colorTint = colorGetter.apply(mat.name, mat.diffuseColor);
 
 			boolean isFullbright = baseModel.ambientToFullbright&&mesh.isFullbright();
-
-			if(format.equals(DefaultVertexFormats.BLOCK)&&isFullbright)
-			{
-				format = DefaultVertexFormats.BLOCK;
-			}
 
 			for(int[][] face : mesh.getFaces())
 			{
@@ -489,7 +486,7 @@ public class IESmartObjModel implements IBakedModel
 				if(drawFace)
 				{
 					Pair<BakedQuad, Direction> quad = OBJHelper.makeQuad(baseModel, face, tintIndex, colorTint,
-							mat.ambientColor, isFullbright, texture, format, transform);
+							mat.ambientColor, texture, transform);
 					if(quad.getRight()==null)
 						modelBuilder.addGeneralQuad(quad.getLeft());
 					else

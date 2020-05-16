@@ -16,14 +16,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GLX;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -89,15 +84,14 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 				List<BakedQuad> quads = new ArrayList<>();
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
-					GlStateManager.pushMatrix();
-					Matrix4 mat = new Matrix4(callback.getTransformForGroups(stack, groups, transformType, mc().player,
-							partialTicks).getMatrixVec());
-					GlStateManager.multMatrix(mat.toFloatBuffer(transform));
+					TransformationMatrix mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
+							partialTicks);
+					mat.push(matrixStackIn);
 					boolean wasLightmapEnabled, wasLightingEnabled;
 					{
-						GlStateManager.activeTexture(GLX.GL_TEXTURE1);
+						GlStateManager.activeTexture("GL_TEXTURE1");
 						wasLightmapEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
-						GlStateManager.activeTexture(GLX.GL_TEXTURE0);
+						GlStateManager.activeTexture("GL_TEXTURE0");
 						wasLightingEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
 					}
 					boolean bright = callback.areGroupsFullbright(stack, groups);
@@ -115,7 +109,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 						if(wasLightmapEnabled)
 							ClientUtils.setLightmapDisabled(false);
 					}
-					GlStateManager.popMatrix();
+					matrixStackIn.pop();
 				}
 				renderQuadsForGroups(visible.toArray(new String[0]), callback, obj, quads, stack,
 						sCase, shader, false, bb, tes, visible, partialTicks);

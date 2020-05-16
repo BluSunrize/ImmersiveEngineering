@@ -82,10 +82,10 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(0.5, 0.5, 0.5);
+		matrixStack.push();
+		matrixStack.translate(0.5, 0.5, 0.5);
 		if(te.getIsMirrored())
-			GlStateManager.scalef(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
+			matrixStack.scale(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.processQueue.size()][];
@@ -184,52 +184,52 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		}
 
 		ClientUtils.bindAtlas();
-		GlStateManager.pushMatrix();
+		matrixStack.push();
 		ItemStack blueprintStack = te.inventory.get(0);
 		if(!blueprintStack.isEmpty())
 			renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "blueprint");
 
 
-		GlStateManager.translated(0, lift, 0);
+		matrixStack.translate(0, lift, 0);
 		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "lift");
-		GlStateManager.translated(0, -lift, 0);
+		matrixStack.translate(0, -lift, 0);
 
 		Direction f = te.getFacing();
 		float tx = f==Direction.WEST?-.9375f: f==Direction.EAST?.9375f: 0;
 		float tz = f==Direction.NORTH?-.9375f: f==Direction.SOUTH?.9375f: 0;
-		GlStateManager.translated(tx, 0, tz);
-		GlStateManager.rotatef(drill, 0, 1, 0);
+		matrixStack.translate(tx, 0, tz);
+		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), drill, true));
 		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "drill");
-		GlStateManager.rotatef(-drill, 0, 1, 0);
-		GlStateManager.translated(-tx, 0, -tz);
+		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), -drill, true));
+		matrixStack.translate(-tx, 0, -tz);
 
 		tx = f==Direction.WEST?-.59375f: f==Direction.EAST?.59375f: 0;
 		tz = f==Direction.NORTH?-.59375f: f==Direction.SOUTH?.59375f: 0;
-		GlStateManager.translated(tx, -.21875, tz);
-		GlStateManager.rotatef(press*90, -f.getZOffset(), 0, f.getXOffset());
+		matrixStack.translate(tx, -.21875, tz);
+		matrixStack.rotate(new Quaternion(new Vector3f(-f.getZOffset(), 0, f.getXOffset()), press*90, true));
 		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "press");
-		GlStateManager.rotatef(-press*90, -f.getZOffset(), 0, f.getXOffset());
-		GlStateManager.translated(-tx, .21875, -tz);
+		matrixStack.rotate(new Quaternion(new Vector3f(-f.getZOffset(), 0, f.getXOffset()), -press*90, true));
+		matrixStack.translate(-tx, .21875, -tz);
 
-		GlStateManager.translated(0, liftPress, 0);
+		matrixStack.translate(0, liftPress, 0);
 		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "pressLift");
-		GlStateManager.translated(0, -liftPress, 0);
+		matrixStack.translate(0, -liftPress, 0);
 
 		RenderHelper.enableStandardItemLighting();
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 
 		switch(f)
 		{
 			case NORTH:
 				break;
 			case SOUTH:
-				GlStateManager.rotatef(180, 0, 1, 0);
+				matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 180, true));
 				break;
 			case WEST:
-				GlStateManager.rotatef(90, 0, 1, 0);
+				matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 				break;
 			case EAST:
-				GlStateManager.rotatef(-90, 0, 1, 0);
+				matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), -90, true));
 				break;
 		}
 
@@ -246,13 +246,13 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 				if(!dList.isEmpty())
 					if(dList.size() < 2)
 					{
-						GlStateManager.translated(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
-						GlStateManager.rotatef(itemDisplays[i][4], 1, 0, 0);
-						GlStateManager.scalef(scale, scale, .5f);
+						matrixStack.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
+						matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), itemDisplays[i][4], true));
+						matrixStack.scale(scale, scale, .5f);
 						ClientUtils.mc().getItemRenderer().renderItem(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
-						GlStateManager.scalef(1/scale, 1/scale, 2);
-						GlStateManager.rotatef(-itemDisplays[i][4], 1, 0, 0);
-						GlStateManager.translated(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
+						matrixStack.scale(1/scale, 1/scale, 2);
+						matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -itemDisplays[i][4], true));
+						matrixStack.translate(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
 					}
 					else
 					{
@@ -284,13 +284,13 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 									localItemY = -.34375f+(24-subProcess)/5f*.25f;
 								}
 							}
-							GlStateManager.translated(localItemX, localItemY, localItemZ);
-							GlStateManager.rotatef(localAngle, 1, 0, 0);
-							GlStateManager.scalef(scale, scale, .5f);
+							matrixStack.translate(localItemX, localItemY, localItemZ);
+							matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), localAngle, true));
+							matrixStack.scale(scale, scale, .5f);
 							ClientUtils.mc().getItemRenderer().renderItem(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
-							GlStateManager.scalef(1/scale, 1/scale, 2);
-							GlStateManager.rotatef(-localAngle, 1, 0, 0);
-							GlStateManager.translated(-localItemX, -localItemY, -localItemZ);
+							matrixStack.scale(1/scale, 1/scale, 2);
+							matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -localAngle, true));
+							matrixStack.translate(-localItemX, -localItemY, -localItemZ);
 						}
 					}
 			}
@@ -307,22 +307,22 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			{
 				//Width depends on distance
 				float lineWidth = playerDistanceSq < 6?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
-				GlStateManager.translated(-.195, .125, .97);
-				GlStateManager.rotatef(-45, 1, 0, 0);
+				matrixStack.translate(-.195, .125, .97);
+				matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -45, true));
 				GlStateManager.disableCull();
 				GlStateManager.disableTexture();
 				GlStateManager.enableBlend();
 				float scale = .0375f/(blueprint.textureScale/16f);
-				GlStateManager.scalef(scale, -scale, scale);
+				matrixStack.scale(scale, -scale, scale);
 				GlStateManager.color3f(1, 1, 1);
 				blueprint.draw(lineWidth);
-				GlStateManager.scalef(1/scale, -1/scale, 1/scale);
+				matrixStack.scale(1/scale, -1/scale, 1/scale);
 				GlStateManager.enableAlphaTest();
 				GlStateManager.enableTexture();
 				GlStateManager.enableCull();
 			}
 		}
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 	}
 
 	public static void renderModelPart(

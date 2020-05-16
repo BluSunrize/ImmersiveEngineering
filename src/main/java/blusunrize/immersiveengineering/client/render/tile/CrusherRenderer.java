@@ -21,13 +21,11 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import org.lwjgl.opengl.GL11;
 
 public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 {
@@ -49,7 +47,7 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
-		BlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = te.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.crusher)
 			return;
 		Direction dir = te.getFacing();
@@ -62,9 +60,8 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 
 		ClientUtils.bindAtlas();
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(x, y, z);
-		GlStateManager.translated(.5, 1.5, .5);
+		matrixStack.push();
+		matrixStack.translate(.5, 1.5, .5);
 
 
 		RenderHelper.disableStandardItemLighting();
@@ -75,30 +72,29 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 			GlStateManager.shadeModel(7425);
 		else
 			GlStateManager.shadeModel(7424);
-		GlStateManager.translated(te.getFacing().getXOffset()*.5, 0, te.getFacing().getZOffset()*.5);
+		matrixStack.translate(te.getFacing().getXOffset()*.5, 0, te.getFacing().getZOffset()*.5);
 		GlStateManager.rotatef(angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
-		renderPart(worldRenderer, blockPos, blockRenderer, tessellator, te, model, state);
+		renderPart(matrixStack, bufferIn, blockPos, blockRenderer, te, model, state, combinedOverlayIn);
 		GlStateManager.rotatef(-angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
-		GlStateManager.translated(te.getFacing().getXOffset()*-1, 0, te.getFacing().getZOffset()*-1);
+		matrixStack.translate(te.getFacing().getXOffset()*-1, 0, te.getFacing().getZOffset()*-1);
 		GlStateManager.rotatef(-angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
-		renderPart(worldRenderer, blockPos, blockRenderer, tessellator, te, model, state);
+		renderPart(matrixStack, bufferIn, blockPos, blockRenderer, te, model, state, combinedOverlayIn);
 		GlStateManager.rotatef(angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
 
 		RenderHelper.enableStandardItemLighting();
 
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 	}
 
-	private void renderPart(BufferBuilder bb, BlockPos pos, BlockRendererDispatcher blockRenderer, Tessellator tes,
-							TileEntity te, IBakedModel model, BlockState state)
+	private void renderPart(MatrixStack matrix, IRenderTypeBuffer buffer, BlockPos pos, BlockRendererDispatcher blockRenderer,
+							TileEntity te, IBakedModel model, BlockState state, int overlay)
 	{
-		bb.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		bb.setTranslation(-.5-pos.getX(), -.5-pos.getY(), -.5-pos.getZ());
-		bb.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, pos, bb, true, getWorld().rand,
-				0, EmptyModelData.INSTANCE);
-		bb.setTranslation(0.0D, 0.0D, 0.0D);
-		tes.draw();
+		matrix.push();
+		matrix.translate(-.5, -.5, -.5);
+		blockRenderer.getBlockModelRenderer().renderModel(te.getWorld(), model, state, pos, matrix,
+				buffer.getBuffer(RenderType.getSolid()), true, te.getWorld().rand,
+				0, overlay, EmptyModelData.INSTANCE);
+		matrix.pop();
 	}
 
 }

@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEn
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity.BottlingProcess;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -58,7 +59,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		//Grab model
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
-		BlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = te.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.bottlingMachine)
 			return;
 		IBakedModel model = dynamic.get(te.getFacing());
@@ -67,16 +68,17 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(x+.5, y+.5, z+.5);
+		matrixStack.push();
+		matrixStack.translate(.5, .5, .5);
 		if(te.getIsMirrored())
-			GlStateManager.scalef(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
+			matrixStack.scale(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.bottlingProcessQueue.size()][];
 		//Animations
 		float lift = 0;
 
+		IVertexBuilder solidBuilder = bufferIn.getBuffer(RenderType.getSolid());
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
 			BottlingProcess process = te.bottlingProcessQueue.get(i);
@@ -123,41 +125,41 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		}
 
 		ClientUtils.bindAtlas();
-		GlStateManager.pushMatrix();
+		matrixStack.push();
 
-		GlStateManager.translated(0, lift, 0);
-		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "lift");
-		GlStateManager.translated(0, -lift, 0);
+		matrixStack.translate(0, lift, 0);
+		renderModelPart(blockRenderer, matrixStack, solidBuilder, te.getWorldNonnull(), state, model, blockPos, combinedOverlayIn, "lift");
+		matrixStack.translate(0, -lift, 0);
 
 		RenderHelper.enableStandardItemLighting();
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 
 		float scale = .0625f;
 		FluidStack fs = te.tanks[0].getFluid();
 		if(!fs.isEmpty())
 		{
-			GlStateManager.pushMatrix();
+			matrixStack.push();
 			float level = fs.getAmount()/(float)te.tanks[0].getCapacity();
-			GlStateManager.translated(-.21875, .376, 1.21875);
-			GlStateManager.scalef(scale, scale, scale);
+			matrixStack.translate(-.21875, .376, 1.21875);
+			matrixStack.scale(scale, scale, scale);
 			float h = level*9;
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
-			GlStateManager.rotatef(90, 0, 1, 0);
+			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
-			GlStateManager.rotatef(90, 0, 1, 0);
-			GlStateManager.translated(-7, 0, 7);
+			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
+			matrixStack.translate(-7, 0, 7);
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
-			GlStateManager.rotatef(90, 0, 1, 0);
+			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
 
-			GlStateManager.rotatef(90, 1, 0, 0);
+			matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), 90, true));
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, 7);
-			GlStateManager.translated(0, 0, -h);
+			matrixStack.translate(0, 0, -h);
 			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, 7);
 
-			GlStateManager.scalef(1/scale, 1/scale, 1/scale);
-			GlStateManager.translated(0, -1, -1);
-			GlStateManager.popMatrix();
+			matrixStack.scale(1/scale, 1/scale, 1/scale);
+			matrixStack.translate(0, -1, -1);
+			matrixStack.pop();
 		}
 
 
@@ -172,13 +174,15 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 				ItemStack display = itemDisplays[i][4]==0||process.items.get(1).isEmpty()?process.items.get(0): process.items.get(1);
 				scale = .4375f;
 
-				GlStateManager.translated(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
-				GlStateManager.scalef(scale, scale, scale);
+				matrixStack.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
+				matrixStack.scale(scale, scale, scale);
 
 				if(itemDisplays[i][4]==0)
-					ClientUtils.mc().getItemRenderer().renderItem(process.items.get(0), TransformType.FIXED);
+					ClientUtils.mc().getItemRenderer().renderItem(process.items.get(0), TransformType.FIXED,
+							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 				else if(itemDisplays[i][4]==1||!ClientProxy.stencilBufferEnabled)
-					ClientUtils.mc().getItemRenderer().renderItem(display, TransformType.FIXED);
+					ClientUtils.mc().getItemRenderer().renderItem(display, TransformType.FIXED,
+							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 				else
 				{
 					float h0 = -.5f;
@@ -198,7 +202,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 					GL11.glStencilMask(0xFF);
 					GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT, true);
 
-					GlStateManager.rotatef(90.0F-ClientUtils.mc().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+					matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 90.0F-ClientUtils.mc().getRenderManager().info.getYaw(), true));
 
 					GlStateManager.disableTexture();
 					worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
@@ -206,7 +210,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 					tessellator.draw();
 					GlStateManager.enableTexture();
 
-					GlStateManager.rotatef(-(90.0F-ClientUtils.mc().getRenderManager().playerViewY), 0.0F, 1.0F, 0.0F);
+					matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -(90.0F-ClientUtils.mc().getRenderManager().info.getYaw()), true));
 
 					GlStateManager.colorMask(true, true, true, true);
 					GlStateManager.depthMask(true);
@@ -214,39 +218,31 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 					GL11.glStencilMask(0x00);
 
 					GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0xFF);
-					ClientUtils.mc().getItemRenderer().renderItem(process.items.get(0), TransformType.FIXED);
+					ClientUtils.mc().getItemRenderer().renderItem(process.items.get(0), TransformType.FIXED,
+							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 
 					GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-					ClientUtils.mc().getItemRenderer().renderItem(display, TransformType.FIXED);
+					ClientUtils.mc().getItemRenderer().renderItem(display, TransformType.FIXED,
+							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 
 					GL11.glDisable(GL11.GL_STENCIL_TEST);
 				}
 
-				GlStateManager.scalef(1/scale, 1/scale, 1/scale);
-				GlStateManager.translated(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
+				matrixStack.scale(1/scale, 1/scale, 1/scale);
+				matrixStack.translate(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
 			}
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 	}
 
-	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, BlockState state, IBakedModel model, BlockPos pos, String... parts)
+	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, MatrixStack matrixStack,
+									   IVertexBuilder builder, World world, BlockState state, IBakedModel model,
+									   BlockPos pos, int combinedOverlayIn, String... parts)
 	{
 		IModelData data = new SinglePropertyModelData<>(new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE);
-
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
-		GlStateManager.color3f(1, 0, 0);
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5-pos.getX(), -.5-pos.getY(), -.5-pos.getZ());
-		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, worldRenderer, true, world.rand, 0,
-				data);
-		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
-		tessellator.draw();
+		matrixStack.push();
+		matrixStack.translate(-.5, -.5, -.5);
+		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, matrixStack, builder, true, world.rand, 0,
+				combinedOverlayIn, data);
+		matrixStack.pop();
 	}
 }

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ChargingStationTileEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -29,31 +28,32 @@ public class ChargingStationRenderer extends TileEntityRenderer<ChargingStationT
 	{
 		if(te.getWorldNonnull()!=null&&te.getWorldNonnull().isBlockLoaded(te.getPos()))
 		{
-			GlStateManager.pushMatrix();
-			GlStateManager.translated(x+.5, y+.3125, z+.5);
-			GlStateManager.scalef(.75f, .75f, .75f);
+			matrixStack.push();
+			matrixStack.translate(.5, .3125, .5);
+			matrixStack.scale(.75f, .75f, .75f);
 			ClientUtils.bindAtlas();
 			switch(te.getFacing())
 			{
 				case NORTH:
-					GlStateManager.rotatef(180, 0, 1, 0);
+					matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 180, true));
 					break;
 				case SOUTH:
 					break;
 				case WEST:
-					GlStateManager.rotatef(-90, 0, 1, 0);
+					matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), -90, true));
 					break;
 				case EAST:
-					GlStateManager.rotatef(90, 0, 1, 0);
+					matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 					break;
 			}
 			if(!te.inventory.get(0).isEmpty())
 			{
-				GlStateManager.pushMatrix();
+				matrixStack.push();
 				float scale = .625f;
-				GlStateManager.scalef(scale, scale, 1);
-				ClientUtils.mc().getItemRenderer().renderItem(te.inventory.get(0), TransformType.FIXED);
-				GlStateManager.popMatrix();
+				matrixStack.scale(scale, scale, 1);
+				ClientUtils.mc().getItemRenderer().renderItem(te.inventory.get(0), TransformType.FIXED, combinedLightIn,
+						combinedOverlayIn, matrixStack, bufferIn);
+				matrixStack.pop();
 
 //				if(!RenderManager.instance.options.fancyGraphics && MinecraftForgeClient.getItemRenderer(te.inventory, ItemRenderType.ENTITY)==null)
 //				{
@@ -66,7 +66,7 @@ public class ChargingStationRenderer extends TileEntityRenderer<ChargingStationT
 //				RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
 //				RenderItem.renderInFrame = false;
 			}
-			GlStateManager.popMatrix();
+			matrixStack.pop();
 		}
 	}
 }

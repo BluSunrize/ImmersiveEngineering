@@ -84,28 +84,28 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		IEObjState objState = new IEObjState(VisibilityList.show(list));
 
 		Tessellator tessellator = Tessellator.getInstance();
-		GlStateManager.pushMatrix();
+		matrixStack.push();
 
-		GlStateManager.translated(x+.5, y+.5, z+.5);
+		matrixStack.translate(.5, .5, .5);
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
 		Direction facing = tile.getFacing();
 		if(tile.getIsMirrored())
 		{
-			GlStateManager.scalef(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
+			matrixStack.scale(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
 			GlStateManager.disableCull();
 		}
 		float dir = tile.getFacing()==Direction.SOUTH?90: tile.getFacing()==Direction.NORTH?-90: tile.getFacing()==Direction.EAST?180: 0;
-		GlStateManager.rotatef(dir, 0, 1, 0);
+		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 		float rot = tile.rotation+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
-		GlStateManager.rotatef(rot, 1, 0, 0);
+		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), rot, true));
 
 		RenderHelper.disableStandardItemLighting();
 		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5, -.5, -.5);
+		matrixStack.translate(-.5, -.5, -.5);
 //		IModelData modelData = new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE);
 		IModelData modelData = new SinglePropertyModelData<>(tile, IOBJModelCallback.PROPERTY);
 		List<BakedQuad> quads;
@@ -115,9 +115,9 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		else
 			quads = model.getQuads(state, null, Utils.RAND, modelData);
 		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorldNonnull(), tile.getPos());
-		worldRenderer.setTranslation(0, 0, 0);
+		matrixStack.translate(0.5, 0.5, 0.5);
 		tessellator.draw();
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();
 		GlStateManager.enableCull();

@@ -25,18 +25,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.IModelData;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 //TODO maybe replace with Forge animations?
@@ -61,7 +59,7 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 		BlockPos blockPos = tile.getPos();
 		if(quads[tile.sails]==null)
 		{
-			BlockState state = getWorld().getBlockState(blockPos);
+			BlockState state = tile.getWorld().getBlockState(blockPos);
 			if(state.getBlock()!=WoodenDevices.windmill)
 				return;
 			state = state.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
@@ -78,32 +76,22 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(x+.5, y+.5, z+.5);
+		matrixStack.push();
+		matrixStack.translate(.5, .5, .5);
 
 		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
 		float rot = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*tile.perTick);
 
 		GlStateManager.rotatef(rot, tile.getFacing().getAxis()==Axis.X?1: 0, 0, tile.getFacing().getAxis()==Axis.Z?1: 0);
-		GlStateManager.rotatef(dir, 0, 1, 0);
+		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 
-		RenderHelper.disableStandardItemLighting();
-		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-		BufferBuilder worldRenderer = tessellator.getBuffer();
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5, -.5, -.5);
-		ClientUtils.renderModelTESRFast(quads[tile.sails], worldRenderer, tile.getWorldNonnull(), blockPos);
-		worldRenderer.setTranslation(0, 0, 0);
-		tessellator.draw();
-		GlStateManager.popMatrix();
-		RenderHelper.enableStandardItemLighting();
-		GlStateManager.disableBlend();
-		GlStateManager.enableCull();
+		matrixStack.translate(-.5, -.5, -.5);
+		ClientUtils.renderModelTESRFast(quads[tile.sails], bufferIn.getBuffer(RenderType.getSolid()), tile.getWorldNonnull(), blockPos);
+		matrixStack.pop();
 	}
 
 	public static void reset()
 	{
-		for(int i = 0; i < quads.length; i++)
-			quads[i] = null;
+		Arrays.fill(quads, null);
 	}
 }

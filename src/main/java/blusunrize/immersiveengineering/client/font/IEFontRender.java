@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.font;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
 import net.minecraft.client.Minecraft;
@@ -18,10 +18,11 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.fonts.Font;
 import net.minecraft.client.gui.fonts.IGlyph;
 import net.minecraft.client.gui.fonts.TexturedGlyph;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.gui.fonts.TexturedGlyph.Effect;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
@@ -43,7 +44,9 @@ public class IEFontRender extends FontRenderer
 	static
 	{
 		unicodeReplacements.put((char)Integer.parseInt("260E", 16),
-				new TexturedGlyph(new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/hud_elements.png"),
+				new TexturedGlyph(
+						RenderType.getText(new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/hud_elements.png")),
+						RenderType.getTextSeeThrough(new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/hud_elements.png")),
 						.5f, .75f, .5625f, .8125f,
 						0, 7.99F, 0, 7.99F));
 	}
@@ -66,18 +69,22 @@ public class IEFontRender extends FontRenderer
 	}
 
 	@Override
-	public float renderStringAtPos(String text, float x, float y, int color, boolean isShadow)
+	public float renderStringAtPos(String text, float x, float y, int color, boolean isShadow, Matrix4f matrix,
+								   IRenderTypeBuffer buffer, boolean isTransparent, int colorBackgroundIn,
+								   int packedLight)
 	{
-		float ret = renderStringAtPosImpl(text, x, y, color, isShadow);
+		float ret = renderStringAtPosImpl(text, x, y, color, isShadow, matrix, buffer, isTransparent, colorBackgroundIn, packedLight);
 		if(verticalBoldness)
 		{
 			float yOffset = unicode?.5f: 1;
-			renderStringAtPosImpl(text, x, y+yOffset, color, isShadow);
+			renderStringAtPosImpl(text, x, y+yOffset, color, isShadow, matrix, buffer, isTransparent, colorBackgroundIn, packedLight);
 		}
 		return ret;
 	}
 
-	private float renderStringAtPosImpl(String text, float x, float y, int color, boolean isShadow)
+	private float renderStringAtPosImpl(String text, float x, float y, int color, boolean isShadow, Matrix4f matrix,
+										IRenderTypeBuffer buffer, boolean isTransparent, int colorBackgroundIn,
+										int packedLight)
 	{
 		final float colorScale = isShadow?0.25F: 1.0F;
 		final float argRed = (float)(color >> 16&255)/255.0F*colorScale;
@@ -87,16 +94,12 @@ public class IEFontRender extends FontRenderer
 		float currentGreen = argGreen;
 		float currentBlue = argBlue;
 		float alpha = (float)(color >> 24&255)/255.0F;
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		ResourceLocation lastGlyphTexture = null;
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 		boolean obfuscated = false;
 		boolean bold = false;
 		boolean italic = false;
 		boolean underline = false;
 		boolean strikethrough = false;
-		List<Entry> lineSegments = Lists.newArrayList();
+		List<TexturedGlyph.Effect> lineSegments = Lists.newArrayList();
 		int resetColorAt = -1;
 		FloatList charPositions = new FloatArrayList(text.length());
 
@@ -170,33 +173,24 @@ public class IEFontRender extends FontRenderer
 				TexturedGlyph replacement = unicodeReplacements.get(currentChar);
 				if(replacement!=null)
 					texturedglyph = replacement;
-				ResourceLocation glyphLocation = texturedglyph.getTextureLocation();
-				if(glyphLocation!=null)
-				{
-					if(lastGlyphTexture!=glyphLocation)
-					{
-						tessellator.draw();
-						this.texManager.bindTexture(glyphLocation);
-						bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-						lastGlyphTexture = glyphLocation;
-					}
-
 					float boldOffset = bold?currentGlyph.getBoldOffset(): 0.0F;
 					float shadowOffset = isShadow?currentGlyph.getShadowOffset(): 0.0F;
-					this.renderGlyph(texturedglyph, bold, italic, boldOffset, x+shadowOffset,
-							y+shadowOffset, bufferbuilder, currentRed, currentGreen, currentBlue, alpha, currentChar);
-				}
+					IVertexBuilder typeBuffer = buffer.getBuffer(texturedglyph.getRenderType(isTransparent));
+					this.renderGlyph(currentChar, texturedglyph, bold, italic, boldOffset, x+shadowOffset,
+							y+shadowOffset, matrix, typeBuffer, currentRed, currentGreen, currentBlue, alpha, currentChar);
 
 				float advance = getCharWidthIE(currentChar, bold);
-				float shadowOffset = isShadow?1.0F: 0.0F;
+				float lineShadowOffset = isShadow?1.0F: 0.0F;
 				if(strikethrough)
-					lineSegments.add(new Entry(x+shadowOffset-1.0F, y+shadowOffset+4.5F,
-							x+shadowOffset+advance, y+shadowOffset+4.5F-1.0F,
+					lineSegments.add(new TexturedGlyph.Effect(x+lineShadowOffset-1.0F, y+lineShadowOffset+4.5F,
+							x+lineShadowOffset+advance, y+lineShadowOffset+4.5F-1.0F,
+							-0.01F,
 							currentRed, currentGreen, currentBlue, alpha));
 
 				if(underline)
-					lineSegments.add(new Entry(x+shadowOffset-1.0F, y+shadowOffset+9.0F,
-							x+shadowOffset+advance, y+shadowOffset+9.0F-1.0F,
+					lineSegments.add(new TexturedGlyph.Effect(x+lineShadowOffset-1.0F, y+lineShadowOffset+9.0F,
+							x+lineShadowOffset+advance, y+lineShadowOffset+9.0F-1.0F,
+							-0.01F,
 							currentRed, currentGreen, currentBlue, alpha));
 
 				charPositions.add(x);
@@ -204,38 +198,34 @@ public class IEFontRender extends FontRenderer
 			}
 		}
 
-		tessellator.draw();
-		if(!lineSegments.isEmpty())
-		{
-			GlStateManager.disableTexture();
-			bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+		if (!lineSegments.isEmpty()) {
+			TexturedGlyph texturedglyph1 = this.font.getWhiteGlyph();
+			IVertexBuilder ivertexbuilder1 = buffer.getBuffer(texturedglyph1.getRenderType(isTransparent));
 
-			for(Entry entry : lineSegments)
-				entry.pipe(bufferbuilder);
-
-			tessellator.draw();
-			GlStateManager.enableTexture();
+			for(Effect texturedglyph$effect : lineSegments) {
+				texturedglyph1.renderEffect(texturedglyph$effect, matrix, ivertexbuilder1, packedLight);
+			}
 		}
-		postStringRender(text, charPositions, bufferbuilder, tessellator, y);
+		postStringRender(text, charPositions, buffer, matrix, y);
 
 		return x;
 	}
 
-	protected void postStringRender(String text, FloatList charPositions, BufferBuilder bb, Tessellator tes, float y)
+	protected void postStringRender(String text, FloatList charPositions, IRenderTypeBuffer buffer, Matrix4f baseTransform, float y)
 	{
 
 	}
 
-	protected void renderGlyph(TexturedGlyph glyph, boolean bold, boolean italic, float boldOffset, float x, float y,
-							   BufferBuilder bufferBuilder, float red, float green, float blue, float alpha, char orig)
+	protected void renderGlyph(char orig, TexturedGlyph glyphIn, boolean boldIn, boolean italicIn, float boldOffsetIn,
+							   float xIn, float yIn,
+							   Matrix4f matrix, IVertexBuilder bufferIn,
+							   float redIn, float greenIn, float blueIn, float alphaIn,
+							   int packedLight)
 	{
 
-		glyph.render(this.texManager, italic, x, y, bufferBuilder, red, green, blue, alpha);
-		if(bold)
-		{
-			glyph.render(this.texManager, italic, x+boldOffset, y, bufferBuilder, red, green, blue, alpha);
-		}
-
+		glyphIn.render(italicIn, xIn, yIn, matrix, bufferIn, redIn, greenIn, blueIn, alphaIn, packedLight);
+		if (boldIn)
+			glyphIn.render(italicIn, xIn + boldOffsetIn, yIn, matrix, bufferIn, redIn, greenIn, blueIn, alphaIn, packedLight);
 	}
 
 	public float getCharWidthIE(char character, boolean bold)
@@ -350,37 +340,5 @@ public class IEFontRender extends FontRenderer
 	public int getWordWrappedHeight(String str, int maxLength)
 	{
 		return getFontHeight()*this.listFormattedStringToWidth(str, maxLength).size();
-	}
-
-	static class Entry
-	{
-		protected final float x1;
-		protected final float y1;
-		protected final float x2;
-		protected final float y2;
-		protected final float red;
-		protected final float green;
-		protected final float blue;
-		protected final float alpha;
-
-		private Entry(float x1, float y1, float x2, float y2, float red, float green, float blue, float alpha)
-		{
-			this.x1 = x1;
-			this.y1 = y1;
-			this.x2 = x2;
-			this.y2 = y2;
-			this.red = red;
-			this.green = green;
-			this.blue = blue;
-			this.alpha = alpha;
-		}
-
-		public void pipe(BufferBuilder buffer)
-		{
-			buffer.pos(this.x1, this.y1, 0.0D).color(this.red, this.green, this.blue, this.alpha).endVertex();
-			buffer.pos(this.x2, this.y1, 0.0D).color(this.red, this.green, this.blue, this.alpha).endVertex();
-			buffer.pos(this.x2, this.y2, 0.0D).color(this.red, this.green, this.blue, this.alpha).endVertex();
-			buffer.pos(this.x1, this.y2, 0.0D).color(this.red, this.green, this.blue, this.alpha).endVertex();
-		}
 	}
 }

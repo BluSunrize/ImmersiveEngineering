@@ -35,8 +35,8 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 	@Override
 	public void render(RailgunShotEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
-		double yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*f1-90.0F;
-		double pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*f1;
+		double yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks-90.0F;
+		double pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks;
 
 		ItemStack ammo = entity.getAmmo();
 		int[][] colourMap = {{0x777777, 0xa4a4a4}};
@@ -46,13 +46,12 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 			colourMap = prop!=null?prop.colourMap: colourMap;
 		}
 
-		renderRailgunProjectile(x, y, z, yaw, pitch, colourMap);
+		renderRailgunProjectile(yaw, pitch, colourMap);
 	}
 
-	public static void renderRailgunProjectile(double x, double y, double z, double yaw, double pitch, int[][] colourMap)
+	public static void renderRailgunProjectile(double yaw, double pitch, int[][] colourMap)
 	{
 		GlStateManager.pushMatrix();
-		GlStateManager.translated(x, y, z);
 		GlStateManager.enableRescaleNormal();
 		Tessellator tes = ClientUtils.tes();
 		BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
@@ -155,9 +154,8 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 		GlStateManager.popMatrix();
 	}
 
-
 	@Override
-	protected ResourceLocation getEntityTexture(@Nonnull RailgunShotEntity p_110775_1_)
+	public ResourceLocation getEntityTexture(@Nonnull RailgunShotEntity p_110775_1_)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/white.png");
 	}

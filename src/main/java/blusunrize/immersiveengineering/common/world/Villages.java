@@ -159,52 +159,49 @@ public class Villages
 
 		// TODO: Add more workstations. We need a different one for each profession
 		public static final RegistryObject<PointOfInterestType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
-				"craftingtable", () -> createPOI("craftingtable", assembleStates(WoodenDevices.craftingTable), SoundEvents.ENTITY_VILLAGER_WORK_MASON)
+				"craftingtable", () -> createPOI("craftingtable", assembleStates(WoodenDevices.craftingTable))
 		);
 		public static final RegistryObject<PointOfInterestType> POI_ANVIL = POINTS_OF_INTEREST.register(
-				"anvil", () -> createPOI("anvil", assembleStates(Blocks.ANVIL), SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH)
+				"anvil", () -> createPOI("anvil", assembleStates(Blocks.ANVIL))
 		);
 		public static final RegistryObject<PointOfInterestType> POI_ENERGYMETER = POINTS_OF_INTEREST.register(
-				"energymeter", () -> createPOI("energymeter", assembleStates(Connectors.currentTransformer), IESounds.spark)
+				"energymeter", () -> createPOI("energymeter", assembleStates(Connectors.currentTransformer))
 		);
 		public static final RegistryObject<PointOfInterestType> POI_BANNER = POINTS_OF_INTEREST.register(
-				"shaderbanner", () -> createPOI("shaderbanner", assembleStates(Cloth.shaderBanner), SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER)
+				"shaderbanner", () -> createPOI("shaderbanner", assembleStates(Cloth.shaderBanner))
 		);
 		public static final RegistryObject<PointOfInterestType> POI_WORKBENCH = POINTS_OF_INTEREST.register(
-				"workbench", () -> createPOI("workbench", assembleStates(WoodenDevices.workbench), IESounds.revolverReload)
+				"workbench", () -> createPOI("workbench", assembleStates(WoodenDevices.workbench))
 		);
 
 		public static final RegistryObject<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(
-				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_CRAFTINGTABLE.get())
+				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_CRAFTINGTABLE.get(), SoundEvents.ENTITY_VILLAGER_WORK_MASON)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_MACHINIST = PROFESSIONS.register(
-				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_ANVIL.get())
+				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_ANVIL.get(), SoundEvents.ENTITY_VILLAGER_WORK_TOOLSMITH)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_ELECTRICIAN = PROFESSIONS.register(
-				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_ENERGYMETER.get())
+				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_ENERGYMETER.get(), IESounds.spark)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_OUTFITTER = PROFESSIONS.register(
-				OUTFITTER.getPath(), () -> createProf(OUTFITTER, POI_BANNER.get())
+				OUTFITTER.getPath(), () -> createProf(OUTFITTER, POI_BANNER.get(), SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_GUNSMITH = PROFESSIONS.register(
-				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH.get())
+				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH.get(), IESounds.revolverReload)
 		);
 
 
-		private static PointOfInterestType createPOI(String name, Collection<BlockState> block, SoundEvent sound)
+		private static PointOfInterestType createPOI(String name, Collection<BlockState> block)
 		{
-			return new PointOfInterestType(MODID+":"+name, ImmutableSet.copyOf(block), 1, sound, 1);
+			return PointOfInterestType.register(MODID+":"+name, ImmutableSet.copyOf(block), 1, 1);
 		}
 
-		private static VillagerProfession createProf(ResourceLocation name, PointOfInterestType poi)
+		private static VillagerProfession createProf(ResourceLocation name, PointOfInterestType poi, SoundEvent sound)
 		{
-			return new VillagerProfession(
+			return VillagerProfession.register(
 					name.toString(),
 					poi,
-					ImmutableSet.of(),
-					//TODO
-					ImmutableSet.of()
-					//ImmutableSet.of(WoodenDevices.crate)
+					sound
 			);
 		}
 
@@ -216,33 +213,6 @@ public class Villages
 				return true;
 			}).collect(Collectors.toList());
 		}
-/*
-		@SubscribeEvent
-		public static void registerPOI(RegistryEvent.Register<PointOfInterestType> ev)
-		{
-			workbench =
-					.setRegistryName(new ResourceLocation(MODID, "workbench"));
-			ev.getRegistry().register(workbench);
-
-			try
-			{
-				blockStatesInjector.invoke(null, Registers.workbench);
-			} catch(IllegalAccessException|IllegalArgumentException|InvocationTargetException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-
-		@SubscribeEvent
-		public static void registerProfessions(RegistryEvent.Register<VillagerProfession> ev)
-		{
-			ev.getRegistry().register(create(ENGINEER, workbench));
-			ev.getRegistry().register(create(MACHINIST));
-			ev.getRegistry().register(create(ELECTRICIAN));
-			ev.getRegistry().register(create(OUTFITTER));
-			ev.getRegistry().register(create(GUNSMITH));
-		}
-		*/
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.FORGE)

@@ -25,17 +25,20 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
+
+import static blusunrize.immersiveengineering.client.ClientUtils.setLightmapDisabled;
 
 public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 {
@@ -77,7 +80,7 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
-		BlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = te.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.arcFurnace)
 			return;
 		IBakedModel model = electrodes.get(te.getFacing());
@@ -87,9 +90,8 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 
 		ClientUtils.bindAtlas();
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(x, y, z);
-		GlStateManager.translated(.5, .5, .5);
+		matrixStack.push();
+		matrixStack.translate(.5, .5, .5);
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
@@ -100,11 +102,12 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		else
 			GlStateManager.shadeModel(7424);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5-blockPos.getX(), -.5-blockPos.getY(), -.5-blockPos.getZ());
+		matrixStack.translate(-.5, -.5, -.5);
 		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, worldRenderer, true,
-				getWorld().rand, 0, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
-		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
+		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
+				bufferIn.getBuffer(RenderType.getSolid()), true, te.getWorld().rand, 0, 0,
+				new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
+		matrixStack.translate(.5, .5, .5);
 		tessellator.draw();
 
 		RenderHelper.enableStandardItemLighting();
@@ -112,57 +115,50 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		{
 			if(hotMetal_flow==null)
 			{
-				hotMetal_still = ClientUtils.mc().getTextureMap().getAtlasSprite(HOT_METLA_STILL.toString());
-				hotMetal_flow = ClientUtils.mc().getTextureMap().getAtlasSprite(HOT_METLA_FLOW.toString());
+				AtlasTexture blockMap = ClientUtils.mc().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+				hotMetal_still = blockMap.getSprite(HOT_METLA_STILL);
+				hotMetal_flow = blockMap.getSprite(HOT_METLA_FLOW);
 			}
-			GlStateManager.rotatef(-te.getFacing().getHorizontalAngle()+180, 0, 1, 0);
+			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), -te.getFacing().getHorizontalAngle()+180, true));
 			int process = 40;
 			float speed = 5f;
 			int pour = process-te.pouringMetal;
-			Vec3d translation = Vec3d.ZERO;
 			float h = (pour > (process-speed)?((process-pour)/speed*27): pour > speed?27: (pour/speed*27))/16f;
-			GlStateManager.translated(-.5f, 1.25-.6875f, 1.5f);
+			matrixStack.translate(-.5f, 1.25-.6875f, 1.5f);
 			worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 			GlStateManager.disableLighting();
 			setLightmapDisabled(true);
+			matrixStack.push();
 			if(pour > (process-speed))
-				translation = addTranslation(translation, worldRenderer, 0, -1.6875f+h, 0);
+				matrixStack.translate(0, -1.6875f+h, 0);
 			if(h > 1)
 			{
-				translation = addTranslation(translation, worldRenderer, 0, -h, 0);
-				ClientUtils.renderTexturedBox(worldRenderer, .375, 0, .375, .625, 1, .625, hotMetal_flow, true);
-				translation = addTranslation(translation, worldRenderer, 0, 1, 0);
-				ClientUtils.renderTexturedBox(worldRenderer, .375, 0, .375, .625, h-1, .625, hotMetal_flow, true);
-				translation = addTranslation(translation, worldRenderer, 0, -1, 0);
-				translation = addTranslation(translation, worldRenderer, 0, h, 0);
+				matrixStack.translate(0, -h, 0);
+				ClientUtils.renderTexturedBox(worldRenderer, .375F, 0, .375F, .625F, 1, .625F, hotMetal_flow, true);
+				matrixStack.translate(0, 1, 0);
+				ClientUtils.renderTexturedBox(worldRenderer, .375F, 0, .375F, .625F, h-1, .625F, hotMetal_flow, true);
+				matrixStack.translate(0, -1, 0);
+				matrixStack.translate(0, h, 0);
 			}
 			else
 			{
-				translation = addTranslation(translation, worldRenderer, 0, -h, 0);
-				ClientUtils.renderTexturedBox(worldRenderer, .375, 0, .375, .625, h, .625, hotMetal_flow, true);
-				translation = addTranslation(translation, worldRenderer, 0, h, 0);
+				matrixStack.translate(0, -h, 0);
+				ClientUtils.renderTexturedBox(worldRenderer, .375F, 0, .375F, .625F, h, .625F, hotMetal_flow, true);
+				matrixStack.translate(0, h, 0);
 			}
 			if(pour > (process-speed))
-				translation = addTranslation(translation, worldRenderer, 0, 1.6875f-h, 0);
+				matrixStack.translate(0, 1.6875f-h, 0);
 			if(pour > speed)
 			{
 				float h2 = (pour > (process-speed)?.625f: pour/(process-speed)*.625f);
-				translation = addTranslation(translation, worldRenderer, 0, -1.6875f, 0);
-				ClientUtils.renderTexturedBox(worldRenderer, .125, 0, .125, .875, h2, .875, hotMetal_still, false);
-				translation = addTranslation(translation, worldRenderer, 0, 1.6875f, 0);
+				matrixStack.translate(0, -1.6875f, 0);
+				ClientUtils.renderTexturedBox(worldRenderer, .125F, 0, .125F, .875F, h2, .875F, hotMetal_still, false);
+				matrixStack.translate(0, 1.6875f, 0);
 			}
-			worldRenderer.setTranslation(0, 0, 0);
-			tessellator.draw();
+			matrixStack.pop();
 			setLightmapDisabled(false);
 			GlStateManager.enableLighting();
 		}
-		GlStateManager.popMatrix();
-	}
-
-	private Vec3d addTranslation(Vec3d tmp, BufferBuilder bb, float x, float y, float z)
-	{
-		Vec3d ret = tmp.add(x, y, z);
-		bb.setTranslation(ret.x, ret.y, ret.z);
-		return ret;
+		matrixStack.pop();
 	}
 }

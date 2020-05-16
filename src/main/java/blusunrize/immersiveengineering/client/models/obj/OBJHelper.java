@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.client.model.obj.MaterialLibrary;
@@ -41,7 +40,7 @@ public class OBJHelper
 			OBJModel2_texCoords = OBJModel.class.getDeclaredField("texCoords");
 			OBJModel2_texCoords.setAccessible(true);
 			OBJModel2_makeQuad = OBJModel.class.getDeclaredMethod("makeQuad", int[][].class, int.class, Vector4f.class,
-					Vector4f.class, boolean.class, TextureAtlasSprite.class, VertexFormat.class, Optional.class);
+					Vector4f.class, TextureAtlasSprite.class, TransformationMatrix.class);
 			OBJModel2_makeQuad.setAccessible(true);
 			ModelGroup_parts = ModelGroup.class.getDeclaredField("parts");
 			ModelGroup_parts.setAccessible(true);
@@ -104,10 +103,10 @@ public class OBJHelper
 	}
 
 	public static Pair<BakedQuad, Direction> makeQuad(OBJModel model, int[][] indices, int tintIndex, Vector4f colorTint,
-													  Vector4f ambientColor, boolean isFullbright, TextureAtlasSprite texture,
-													  VertexFormat format, Optional<TransformationMatrix> transform)
+													  Vector4f ambientColor, TextureAtlasSprite texture,
+													  TransformationMatrix transform)
 	{
-		return invoke(OBJModel2_makeQuad, model, indices, tintIndex, colorTint, ambientColor, isFullbright, texture, format, transform);
+		return invoke(OBJModel2_makeQuad, model, indices, tintIndex, colorTint, ambientColor, texture, transform);
 	}
 
 	@SuppressWarnings("unchecked")

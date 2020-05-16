@@ -202,19 +202,4 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		}
 		return super.getBrightness();
 	}
-
-//	@Override
-//	protected void writeAdditional(NBTTagCompound nbt)
-//	{
-//		super.writeAdditional(nbt);
-//		if(this.fluid!=null)
-//			nbt.putString("fluid", this.fluid.getName());
-//	}
-//
-//	@Override
-//	protected void readAdditional(NBTTagCompound nbt)
-//	{
-//		super.readAdditional(nbt);
-//		this.fluid = FluidRegistry.getFluid(nbt.getString("fluid"));
-//	}
 }

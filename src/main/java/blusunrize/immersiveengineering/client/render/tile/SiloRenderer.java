@@ -14,6 +14,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
@@ -30,22 +32,22 @@ public class SiloRenderer extends TileEntityRenderer<SiloTileEntity>
 	{
 		if(!tile.formed||tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
-		GlStateManager.pushMatrix();
+		matrixStack.push();
 
-		GlStateManager.translated(x+.5, y, z+.5);
+		matrixStack.translate(.5, 0, .5);
 
 		if(!tile.identStack.isEmpty())
 		{
-			GlStateManager.translated(0, 5, 0);
+			matrixStack.translate(0, 5, 0);
 			float baseScale = .0625f;
 			float itemScale = .75f;
 			float flatScale = .001f;
 			baseScale *= itemScale;
 			float textScale = .375f;
-			GlStateManager.scalef(baseScale, -baseScale, baseScale);
+			matrixStack.scale(baseScale, -baseScale, baseScale);
 			ItemStack stack = Utils.copyStackWithAmount(tile.identStack, tile.storageAmount);
 			String s = ""+stack.getCount();
-			float w = this.getFontRenderer().getStringWidth(s);
+			float w = ClientUtils.mc().fontRenderer.getStringWidth(s);
 
 			float xx = -.5f*itemScale;
 			float zz = 1.501f;
@@ -54,25 +56,25 @@ public class SiloRenderer extends TileEntityRenderer<SiloTileEntity>
 			w *= textScale;
 			for(int i = 0; i < 4; i++)
 			{
-				GlStateManager.pushMatrix();
-				GlStateManager.translated(xx, 0, zz);
-				GlStateManager.scalef(1, 1, flatScale);
+				matrixStack.push();
+				matrixStack.translate(xx, 0, zz);
+				matrixStack.scale(1, 1, flatScale);
 				ClientUtils.mc().getItemRenderer().renderItemAndEffectIntoGUI(stack, 0, 0);
-				GlStateManager.scalef(1, 1, 1/flatScale);
+				matrixStack.scale(1, 1, 1/flatScale);
 
 				GlStateManager.disableLighting();
 				GlStateManager.depthMask(false);
-				GlStateManager.translated(8-w/2, 17, .001f);
-				GlStateManager.scalef(textScale, textScale, 1);
+				matrixStack.translate(8-w/2, 17, .001f);
+				matrixStack.scale(textScale, textScale, 1);
 				ClientUtils.font().drawStringWithShadow(""+stack.getCount(), 0, 0, 0x888888);
-				GlStateManager.scalef(1/textScale, 1/textScale, 1);
-				GlStateManager.translated(-(8-w/2), -17, -.001f);
+				matrixStack.scale(1/textScale, 1/textScale, 1);
+				matrixStack.translate(-(8-w/2), -17, -.001f);
 				GlStateManager.depthMask(true);
 				GlStateManager.enableLighting();
 
-				GlStateManager.translated(-xx, 0, -zz);
-				GlStateManager.popMatrix();
-				GlStateManager.rotatef(90, 0, 1, 0);
+				matrixStack.translate(-xx, 0, -zz);
+				matrixStack.pop();
+				matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 
 				GlStateManager.enableAlphaTest();
 				GlStateManager.alphaFunc(516, 0.1F);
@@ -80,7 +82,7 @@ public class SiloRenderer extends TileEntityRenderer<SiloTileEntity>
 				GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			}
 		}
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 	}
 
 }

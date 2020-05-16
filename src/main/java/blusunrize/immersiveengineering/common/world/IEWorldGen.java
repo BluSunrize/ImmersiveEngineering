@@ -19,10 +19,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
@@ -31,9 +29,11 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
+import net.minecraft.world.gen.placement.ConfiguredPlacement;
 import net.minecraft.world.gen.placement.CountRange;
 import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
@@ -52,37 +52,41 @@ import java.util.stream.Stream;
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class IEWorldGen
 {
-	public static Map<String, ConfiguredFeature<?>> features = new HashMap<>();
-	public static Map<String, ConfiguredFeature<?>> retroFeatures = new HashMap<>();
+	public static Map<String, ConfiguredFeature<?, ?>> features = new HashMap<>();
+	public static Map<String, ConfiguredFeature<?, ?>> retroFeatures = new HashMap<>();
 	public static List<ResourceLocation> oreDimBlacklist = new ArrayList<>();
 	public static Set<String> retrogenOres = new HashSet<>();
 
 	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence)
 	{
 		OreFeatureConfig cfg = new OreFeatureConfig(FillerBlockType.NATURAL_STONE, state, maxVeinSize);
-		ConfiguredFeature<?> feature = Biome.createDecoratedFeature(Feature.ORE, cfg, COUNT_RANGE_IE,
-				new CountRangeConfig(chunkOccurence, minY, minY, maxY));
+		ConfiguredFeature<?, ?> feature = new ConfiguredFeature<>(Feature.ORE, cfg)
+				.withPlacement(
+						new ConfiguredPlacement<>(COUNT_RANGE_IE, new CountRangeConfig(chunkOccurence, minY, minY, maxY))
+				);
 		for(Biome biome : ForgeRegistries.BIOMES.getValues())
 			biome.addFeature(Decoration.UNDERGROUND_ORES, feature);
 		features.put(name, feature);
 
-		ConfiguredFeature<?> retroFeature = Biome.createDecoratedFeature(IEContent.ORE_RETROGEN, cfg, COUNT_RANGE_IE,
-				new CountRangeConfig(chunkOccurence, minY, minY, maxY));
+		ConfiguredFeature<?, ?> retroFeature = new ConfiguredFeature<>(IEContent.ORE_RETROGEN, cfg)
+				.withPlacement(
+						new ConfiguredPlacement<>(COUNT_RANGE_IE, new CountRangeConfig(chunkOccurence, minY, minY, maxY))
+				);
 		retroFeatures.put(name, retroFeature);
 	}
 
-	public void generateOres(Random random, int chunkX, int chunkZ, World world, boolean newGeneration)
+	public void generateOres(Random random, int chunkX, int chunkZ, ServerWorld world, boolean newGeneration)
 	{
 		if(!oreDimBlacklist.contains(world.getDimension().getType().getRegistryName()))
 		{
 			if(newGeneration)
 			{
-				for(Entry<String, ConfiguredFeature<?>> gen : features.entrySet())
+				for(Entry<String, ConfiguredFeature<?, ?>> gen : features.entrySet())
 					gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
 			}
 			else
 			{
-				for(Entry<String, ConfiguredFeature<?>> gen : retroFeatures.entrySet())
+				for(Entry<String, ConfiguredFeature<?, ?>> gen : retroFeatures.entrySet())
 				{
 					if(retrogenOres.contains("retrogen_"+gen.getKey()))
 						gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
@@ -126,7 +130,7 @@ public class IEWorldGen
 	@SubscribeEvent
 	public void serverWorldTick(TickEvent.WorldTickEvent event)
 	{
-		if(event.side==LogicalSide.CLIENT||event.phase==TickEvent.Phase.START)
+		if(event.side==LogicalSide.CLIENT||event.phase==TickEvent.Phase.START || !(event.world instanceof ServerWorld))
 			return;
 		DimensionType dimension = event.world.getDimension().getType();
 		int counter = 0;
@@ -151,7 +155,7 @@ public class IEWorldGen
 						long xSeed = (fmlRandom.nextLong() >> 3);
 						long zSeed = (fmlRandom.nextLong() >> 3);
 						fmlRandom.setSeed(xSeed*loc.x+zSeed*loc.z^worldSeed);
-						this.generateOres(fmlRandom, loc.x, loc.z, event.world, false);
+						this.generateOres(fmlRandom, loc.x, loc.z, (ServerWorld) event.world, false);
 						counter++;
 						chunks.remove(indexToRemove);
 					}

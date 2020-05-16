@@ -35,10 +35,11 @@ public class IEOBJModel implements IModelGeometry<IEOBJModel>
 	}
 
 	@Override
-	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
+							IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 	{
 		IBakedModel baseBaked = base.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
-		return new IESmartObjModel(base, baseBaked, owner, bakery, spriteGetter, sprite, format, state, dynamic);
+		return new IESmartObjModel(base, baseBaked, owner, bakery, spriteGetter, modelTransform, state, dynamic);
 	}
 
 	@Override

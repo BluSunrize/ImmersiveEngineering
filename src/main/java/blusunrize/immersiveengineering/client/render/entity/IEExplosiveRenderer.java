@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
@@ -35,7 +35,7 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 			return;
 		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 		GlStateManager.pushMatrix();
-		GlStateManager.translated((float)x, (float)y+0.5F, (float)z);
+		GlStateManager.translated(0, 0.5F, 0);
 
 		if(entity.getFuse()-partialTicks+1 < 10)
 		{
@@ -72,12 +72,12 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 		}
 
 		GlStateManager.popMatrix();
-		super.doRender(entity, x, y, z, entityYaw, partialTicks);
+		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(IEExplosiveEntity entity)
+	public ResourceLocation getEntityTexture(IEExplosiveEntity entity)
 	{
-		return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
+		return PlayerContainer.LOCATION_BLOCKS_TEXTURE;
 	}
 }

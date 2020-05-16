@@ -232,6 +232,11 @@ public class GlStateManager
 		throw new UnsupportedOperationException();
 	}
 
+	public static void activeTexture(String gl_texture1)
+	{
+		throw new UnsupportedOperationException();
+	}
+
 	public enum SourceFactor
 	{
 		SRC_ALPHA,

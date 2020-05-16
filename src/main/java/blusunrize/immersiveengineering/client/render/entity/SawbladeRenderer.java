@@ -68,14 +68,14 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.scalef(.75f, .75f, .75f);
 
-		double yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*f1-90.0F;
-		double pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*f1;
+		double yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks-90.0F;
+		double pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks;
 		GlStateManager.rotatef((float)yaw, 0.0F, 1.0F, 0.0F);
 		GlStateManager.rotatef((float)pitch, 0.0F, 0.0F, 1.0F);
 
 		if(!entity.inGround)
 		{
-			float spin = ((entity.ticksExisted+f1)%10)/10f*360;
+			float spin = ((entity.ticksExisted+partialTicks)%10)/10f*360;
 			GlStateManager.rotatef(spin, 0, 1, 0);
 		}
 		RenderHelper.disableStandardItemLighting();
@@ -94,8 +94,9 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-blockPos.getX(), -blockPos.getY(), -blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(entity.getEntityWorld(), model, state, blockPos, worldRenderer, true,
-				entity.getEntityWorld().rand, 0, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
+		blockRenderer.getBlockModelRenderer().renderModel(entity.getEntityWorld(), model, state, blockPos,
+				matrixStackIn, bufferIn.getBuffer(RenderType.getSolid()), true,
+				entity.getEntityWorld().rand, 0, 0, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 

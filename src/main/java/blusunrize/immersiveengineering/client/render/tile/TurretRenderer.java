@@ -19,18 +19,16 @@ import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -50,7 +48,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 		//Grab model + correct eextended state
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
-		BlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = tile.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=MetalDevices.turretChem&&state.getBlock()!=MetalDevices.turretGun)
 			return;
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
@@ -59,13 +57,13 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(x+.5, y+.5, z+.5);
+		matrixStack.push();
+		matrixStack.translate(.5, .5, .5);
 
-		GlStateManager.rotatef(tile.rotationYaw, 0, 1, 0);
+		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), tile.rotationYaw, true));
 		GlStateManager.rotatef(tile.rotationPitch, tile.getFacing().getZOffset(), 0, -tile.getFacing().getXOffset());
 
-		renderModelPart(tessellator, worldRenderer, tile.getWorldNonnull(), state, model, tile.getPos(), true, "gun");
+		renderModelPart(bufferIn, matrixStack, tile.getWorldNonnull(), state, model, tile.getPos(), true, "gun");
 		if(tile instanceof TurretGunTileEntity)
 		{
 			if(((TurretGunTileEntity)tile).cycleRender > 0)
@@ -76,38 +74,26 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 				else
 					cycle = ((TurretGunTileEntity)tile).cycleRender/3f;
 
-				GlStateManager.translated(-tile.getFacing().getXOffset()*cycle*.3125, 0, -tile.getFacing().getZOffset()*cycle*.3125);
+				matrixStack.translate(-tile.getFacing().getXOffset()*cycle*.3125, 0, -tile.getFacing().getZOffset()*cycle*.3125);
 			}
-			renderModelPart(tessellator, worldRenderer, tile.getWorldNonnull(), state, model, tile.getPos(), false, "action");
+			renderModelPart(bufferIn, matrixStack, tile.getWorldNonnull(), state, model, tile.getPos(), false, "action");
 		}
 
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 	}
 
-	public static void renderModelPart(Tessellator tessellator, BufferBuilder worldRenderer, World world, BlockState state, IBakedModel model, BlockPos pos, boolean isFirst, String... parts)
+	public static void renderModelPart(IRenderTypeBuffer buffer, MatrixStack matrix, World world, BlockState state,
+									   IBakedModel model, BlockPos pos, boolean isFirst, String... parts)
 	{
 		pos = pos.up();
 
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
-		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5, 0, -.5);
+		IVertexBuilder solidBuilder = buffer.getBuffer(RenderType.getSolid());
+		matrix.push();
+		matrix.translate(-.5, 0, -.5);
 		List<BakedQuad> quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(
-				new IEObjState(VisibilityList.show(parts)),
-				Model.IE_OBJ_STATE));
-		ClientUtils.renderModelTESRFancy(quads, worldRenderer, world, pos, !isFirst, -1);
-		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
-		tessellator.draw();
-		RenderHelper.enableStandardItemLighting();
-		GlStateManager.disableBlend();
-		GlStateManager.enableCull();
+				new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE));
+		ClientUtils.renderModelTESRFancy(quads, solidBuilder, world, pos, !isFirst, -1);
+		matrix.pop();
 	}
 
 }

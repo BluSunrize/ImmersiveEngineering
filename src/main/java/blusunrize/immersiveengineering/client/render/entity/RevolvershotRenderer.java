@@ -41,8 +41,8 @@ public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 		BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
 
 		GlStateManager.disableCull();
-		GlStateManager.rotatef(entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*f1-90.0F, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotatef(entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*f1, 0.0F, 0.0F, 1.0F);
+		GlStateManager.rotatef(entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks-90.0F, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotatef(entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks, 0.0F, 0.0F, 1.0F);
 
 		GlStateManager.scalef(.25f, .25f, .25f);
 

@@ -59,7 +59,7 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 		BlockPos blockPos = tile.getPos();
 		if(!quads.containsKey(tile.getFacing()))
 		{
-			BlockState state = getWorld().getBlockState(blockPos);
+			BlockState state = tile.getWorld().getBlockState(blockPos);
 			if(state.getBlock()!=MetalDevices.cloche)
 				return;
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
@@ -70,8 +70,7 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 			quads.put(tile.getFacing(), model.getQuads(state, null, Utils.RAND, data));
 		}
 		ClientUtils.bindAtlas();
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(x, y, z);
+		matrixStack.push();
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
@@ -90,17 +89,17 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 		ClocheRecipe recipe = tile.getRecipe();
 		if(recipe!=null)
 		{
-			GlStateManager.pushMatrix();
+			matrixStack.push();
 			GlStateManager.color4f(1,1,1,1);
 			GlStateManager.disableBlend();
-			GlStateManager.translated(0, 1.0625, 0);
+			matrixStack.translate(0, 1.0625, 0);
 
 			NonNullList<ItemStack> inventory = tile.getInventory();
 			ItemStack seed = inventory.get(ClocheTileEntity.SLOT_SEED);
 			float growth = MathHelper.clamp(tile.renderGrowth/recipe.time, 0, 1);
 			float scale = recipe.renderFunction.getScale(seed, growth);
-			GlStateManager.translated((1-scale)/2, 0, (1-scale)/2);
-			GlStateManager.scalef(scale, scale, scale);
+			matrixStack.translate((1-scale)/2, 0, (1-scale)/2);
+			matrixStack.scale(scale, scale, scale);
 
 			Collection<Pair<BlockState, TransformationMatrix>> blocks = recipe.renderFunction.getBlocks(seed, growth);
 			for(Pair<BlockState, TransformationMatrix> block : blocks)
@@ -116,16 +115,16 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 					plantQuads.put(state, plantQuadList);
 				}
 				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);
-				GlStateManager.pushMatrix();
-				GlStateManager.multMatrix(TransformationMatrix.toMojang(block.getRight().getMatrixVec()));
+				matrixStack.push();
+				block.getRight().push(matrixStack);
 				worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 				ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorldNonnull(), blockPos, false, col);
 				Tessellator.getInstance().draw();
-				GlStateManager.popMatrix();
+				matrixStack.pop();
 			}
 
 			GlStateManager.enableBlend();
-			GlStateManager.popMatrix();
+			matrixStack.pop();
 		}
 
 		GlStateManager.depthMask(false);
@@ -136,7 +135,7 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 		GlStateManager.disableBlend();
 		GlStateManager.depthMask(true);
 
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 		RenderHelper.enableStandardItemLighting();
 	}
 

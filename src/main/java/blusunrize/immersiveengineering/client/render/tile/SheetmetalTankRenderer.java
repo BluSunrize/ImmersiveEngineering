@@ -14,6 +14,8 @@ import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -32,14 +34,14 @@ public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTil
 	{
 		if(!tile.formed||tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
-		GlStateManager.pushMatrix();
+		matrixStack.push();
 
-		GlStateManager.translated(x+.5, y, z+.5);
+		matrixStack.translate(.5, 0, .5);
 
 		FluidStack fs = tile.tank.getFluid();
-		GlStateManager.translated(0, 3.5f, 0);
+		matrixStack.translate(0, 3.5f, 0);
 		float baseScale = .0625f;
-		GlStateManager.scalef(baseScale, -baseScale, baseScale);
+		matrixStack.scale(baseScale, -baseScale, baseScale);
 
 		float xx = -.5f;
 		float zz = 1.5f-.004f;
@@ -47,7 +49,7 @@ public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTil
 		zz /= baseScale;
 		for(int i = 0; i < 4; i++)
 		{
-			GlStateManager.translated(xx, 0, zz);
+			matrixStack.translate(xx, 0, zz);
 
 			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
@@ -72,20 +74,20 @@ public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTil
 			{
 				float h = fs.getAmount()/(float)tile.tank.getCapacity();
 				GlStateManager.depthMask(false);
-				GlStateManager.translated(0, 0, .004f);
+				matrixStack.translate(0, 0, .004f);
 				ClientUtils.drawRepeatedFluidSprite(fs, 0, 0+(1-h)*16, 16, h*16);
-				GlStateManager.translated(0, 0, -.004f);
+				matrixStack.translate(0, 0, -.004f);
 				GlStateManager.depthMask(true);
 			}
 
-			GlStateManager.translated(-xx, 0, -zz);
-			GlStateManager.rotatef(90, 0, 1, 0);
+			matrixStack.translate(-xx, 0, -zz);
+			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 			GlStateManager.enableAlphaTest();
 			GlStateManager.alphaFunc(516, 0.1F);
 			GlStateManager.enableBlend();
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 		}
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 	}
 
 }
