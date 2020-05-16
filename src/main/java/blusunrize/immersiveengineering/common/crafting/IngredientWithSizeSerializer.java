@@ -56,9 +56,13 @@ public class IngredientWithSizeSerializer
 		}
 	}
 
-	public void write(@Nonnull JsonObject json, @Nonnull IngredientWithSize ingredient)
+	public JsonElement write(@Nonnull IngredientWithSize ingredient)
 	{
+		if(ingredient.getCount()==1)
+			return ingredient.getBaseIngredient().serialize();
+		JsonObject json = new JsonObject();
 		json.addProperty(COUNT_KEY, ingredient.getCount());
 		json.add(BASE_KEY, ingredient.getBaseIngredient().serialize());
+		return json;
 	}
 }

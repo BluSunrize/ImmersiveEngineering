@@ -84,9 +84,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	@Nonnull
 	public JsonElement serialize()
 	{
-		JsonObject ret = new JsonObject();
-		IngredientWithSizeSerializer.INSTANCE.write(ret, this);
-		return ret;
+		return IngredientWithSizeSerializer.INSTANCE.write(this);
 	}
 
 	public boolean hasNoMatchingItems()

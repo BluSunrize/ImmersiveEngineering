@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class IEFinishedRecipe<R extends IEFinishedRecipe<?>> implements IFinishedRecipe
+public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishedRecipe
 {
 	private final IERecipeSerializer<?> serializer;
 	private final List<Consumer<JsonObject>> writerFunctions;

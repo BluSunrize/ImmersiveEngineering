@@ -70,6 +70,6 @@ public class RecipeReloadListener implements ISelectiveResourceReloadListener
 		return recipes.stream()
 				.filter(iRecipe -> iRecipe.getType()==recipeType)
 				.map(recipeClass::cast)
-				.collect(Collectors.toCollection(ArrayList::new));
+				.collect(Collectors.toList());
 	}
 }
