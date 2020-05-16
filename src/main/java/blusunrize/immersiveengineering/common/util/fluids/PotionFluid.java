@@ -9,24 +9,33 @@
 package blusunrize.immersiveengineering.common.util.fluids;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.potion.*;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidAttributes.Builder;
+import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
@@ -119,7 +128,61 @@ public class PotionFluid extends Fluid
 	@Override
 	protected FluidAttributes createAttributes()
 	{
-		return FluidAttributes.builder(rl("block/fluid/potion_still"), rl("block/fluid/potion_flowing"))
-				.build(this);
+		Builder builder = FluidAttributes.builder(rl("block/fluid/potion_still"), rl("block/fluid/potion_flowing"));
+		return new PotionFluidAttributes(builder, this);
+	}
+
+	public void addInformation(FluidStack fluidStack, List<ITextComponent> tooltip)
+	{
+		if(fluidStack!=null&&fluidStack.hasTag())
+		{
+			List<EffectInstance> effects = PotionUtils.getEffectsFromTag(fluidStack.getTag());
+			if(effects.isEmpty())
+				tooltip.add(new TranslationTextComponent("effect.none").applyTextStyle(TextFormatting.GRAY));
+			else
+			{
+				for(EffectInstance instance : effects)
+				{
+					ITextComponent itextcomponent = new TranslationTextComponent(instance.getEffectName());
+					Effect effect = instance.getPotion();
+					if(instance.getAmplifier() > 0)
+						itextcomponent.appendText(" ").appendSibling(new TranslationTextComponent("potion.potency."+instance.getAmplifier()));
+					if(instance.getDuration() > 20)
+						itextcomponent.appendText(" (").appendText(EffectUtils.getPotionDurationString(instance, 1)).appendText(")");
+
+					tooltip.add(itextcomponent.applyTextStyle(effect.getEffectType().getColor()));
+				}
+			}
+			Potion potionType = PotionUtils.getPotionTypeFromNBT(fluidStack.getTag());
+			if(potionType!=Potions.EMPTY)
+			{
+				String modID = potionType.getRegistryName().getNamespace();
+				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).applyTextStyle(TextFormatting.DARK_GRAY));
+			}
+		}
+	}
+
+	public static class PotionFluidAttributes extends FluidAttributes
+	{
+		protected PotionFluidAttributes(Builder builder, Fluid fluid)
+		{
+			super(builder, fluid);
+		}
+
+		@Override
+		public ITextComponent getDisplayName(FluidStack stack)
+		{
+			if(stack==null||!stack.hasTag())
+				return super.getDisplayName(stack);
+			return new TranslationTextComponent(PotionUtils.getPotionTypeFromNBT(stack.getTag()).getNamePrefixed("item.minecraft.potion.effect."));
+		}
+
+		@Override
+		public int getColor(FluidStack stack)
+		{
+			if(stack==null||!stack.hasTag())
+				return 0xff0000ff;
+			return 0xff000000|PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromTag(stack.getTag()));
+		}
 	}
 }

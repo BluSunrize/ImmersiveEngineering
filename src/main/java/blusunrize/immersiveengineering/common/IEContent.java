@@ -1019,16 +1019,6 @@ public class IEContent
 		{
 			x.printStackTrace();
 		}
-		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
-			if(recipe instanceof BrewingRecipe)
-			{
-				IngredientWithSize ingredient = new IngredientWithSize(((BrewingRecipe)recipe).getIngredient());
-				Ingredient input = ((BrewingRecipe)recipe).getInput();
-				ItemStack output = ((BrewingRecipe)recipe).getOutput();
-				if(/*TODO input.getItem()==Items.POTIONITEM&&*/output.getItem()==Items.POTION)
-					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output),
-							PotionUtils.getPotionFromItem(input.getMatchingStacks()[0]), ingredient);
-			}
 		if(arcRecycleThread!=null)
 		{
 			try
