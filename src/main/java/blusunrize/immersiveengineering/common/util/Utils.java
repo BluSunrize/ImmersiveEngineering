@@ -283,7 +283,7 @@ public class Utils
 	{
 		BlockPos other = pos.offset(facing);
 		BlockState state = world.getBlockState(other);
-		return ((FenceBlock)Blocks.ACACIA_FENCE).func_220111_a(state, Block.hasSolidSide(state, world, pos, facing), facing);
+		return ((FenceBlock)Blocks.ACACIA_FENCE).canConnect(state, Block.hasSolidSide(state, world, pos, facing), facing);
 	}
 
 	public static int generatePlayerInfluencedInt(int median, int deviation, PlayerEntity player, boolean isBad, double luckScale)

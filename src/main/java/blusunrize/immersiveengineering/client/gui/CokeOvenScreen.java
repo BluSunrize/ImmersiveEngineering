@@ -37,7 +37,7 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableGUIStandardItemLighting();
+			RenderHelper.enableStandardItemLighting();
 		}
 	}
 

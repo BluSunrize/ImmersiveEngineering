@@ -63,7 +63,7 @@ public interface IOBJModelCallback<T>
 	@OnlyIn(Dist.CLIENT)
 	default void handlePerspective(T Object, TransformType cameraTransformType, MatrixStack mat, @Nullable LivingEntity entity)
 	{
-		return mat;
+
 	}
 
 	@OnlyIn(Dist.CLIENT)

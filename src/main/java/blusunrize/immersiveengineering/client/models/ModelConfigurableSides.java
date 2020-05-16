@@ -21,13 +21,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.*;
-import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -252,14 +253,14 @@ public class ModelConfigurableSides extends BakedIEModel
 		{
 			final String name = modelContents.get("base_name").getAsString();
 			final String type = modelContents.get("type").getAsString();
-			ImmutableMap.Builder<String, ResourceLocation> builder = ImmutableMap.builder();
+			ImmutableMap.Builder<String, Material> builder = ImmutableMap.builder();
 			ITextureNamer namer = TYPES.get(type);
 			for(Direction f : Direction.VALUES)
 				for(IOSideConfig cfg : IOSideConfig.values())
 				{
 					String key = f.getName()+"_"+cfg.getTextureName();
 					String tex = name+"_"+namer.getTextureName(f, cfg);
-					builder.put(key, new ResourceLocation(tex));
+					builder.put(key, new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(tex)));
 				}
 			return new ConfigSidesModelBase(name, type, builder.build());
 		}
@@ -269,9 +270,9 @@ public class ModelConfigurableSides extends BakedIEModel
 	{
 		final String name;
 		final String type;
-		Map<String, ResourceLocation> textures;
+		Map<String, Material> textures;
 
-		public ConfigSidesModelBase(String name, String type, Map<String, ResourceLocation> textures)
+		public ConfigSidesModelBase(String name, String type, Map<String, Material> textures)
 		{
 			this.name = name;
 			this.type = type;
@@ -279,13 +280,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		}
 
 		@Override
-		public Collection<ResourceLocation> getTextureDependencies(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
-		{
-			return textures.values();
-		}
-
-		@Override
-		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format, ItemOverrideList overrides)
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 		{
 			Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> tex = new EnumMap<>(Direction.class);
 			for(Direction f : Direction.VALUES)
@@ -293,13 +288,19 @@ public class ModelConfigurableSides extends BakedIEModel
 				Map<IOSideConfig, TextureAtlasSprite> forSide = new EnumMap<>(IOSideConfig.class);
 				for(IOSideConfig cfg : IOSideConfig.values())
 				{
-					ResourceLocation rl = textures.get(f.getName()+"_"+cfg.getTextureName());
+					Material rl = textures.get(f.getName()+"_"+cfg.getTextureName());
 					if(rl!=null)
 						forSide.put(cfg, spriteGetter.apply(rl));
 				}
 				tex.put(f, forSide);
 			}
 			return new ModelConfigurableSides(name, tex);
+		}
+
+		@Override
+		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+		{
+			return textures.values();
 		}
 	}
 

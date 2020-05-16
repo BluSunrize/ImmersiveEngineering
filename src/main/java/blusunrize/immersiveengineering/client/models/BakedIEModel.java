@@ -31,4 +31,11 @@ public abstract class BakedIEModel implements IBakedModel
 	{
 		return getQuads(state, side, rand, EmptyModelData.INSTANCE);
 	}
+
+	//TODO isSideLit (Figure out what needs this set)
+	@Override
+	public boolean func_230044_c_()
+	{
+		return false;
+	}
 }

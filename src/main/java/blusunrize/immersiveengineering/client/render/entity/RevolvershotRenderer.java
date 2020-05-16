@@ -11,7 +11,9 @@ package blusunrize.immersiveengineering.client.render.entity;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -29,11 +31,11 @@ public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 	}
 
 	@Override
-	public void doRender(@Nonnull RevolvershotEntity entity, double x, double y, double z, float f0, float f1)
+	public void render(@Nonnull RevolvershotEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn,
+						 IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
 		GlStateManager.pushMatrix();
 		this.bindEntityTexture(entity);
-		GlStateManager.translated(x, y, z);
 		GlStateManager.enableRescaleNormal();
 		Tessellator tessellator = ClientUtils.tes();
 		BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
@@ -45,24 +47,24 @@ public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 		GlStateManager.scalef(.25f, .25f, .25f);
 
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(0, .0, -.25).tex(5/32d, 10/32d).endVertex();
-		worldrenderer.pos(0, .0, .25).tex(0/32d, 10/32d).endVertex();
-		worldrenderer.pos(0, .5, .25).tex(0/32d, 5/32d).endVertex();
-		worldrenderer.pos(0, .5, -.25).tex(5/32d, 5/32d).endVertex();
+		worldrenderer.pos(0, .0, -.25).tex(5/32f, 10/32f).endVertex();
+		worldrenderer.pos(0, .0, .25).tex(0/32f, 10/32f).endVertex();
+		worldrenderer.pos(0, .5, .25).tex(0/32f, 5/32f).endVertex();
+		worldrenderer.pos(0, .5, -.25).tex(5/32f, 5/32f).endVertex();
 		tessellator.draw();
 
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(.375, .125, 0).tex(8/32d, 5/32d).endVertex();
-		worldrenderer.pos(0, .125, 0).tex(0/32d, 5/32d).endVertex();
-		worldrenderer.pos(0, .375, 0).tex(0/32d, 0/32d).endVertex();
-		worldrenderer.pos(.375, .375, 0).tex(8/32d, 0/32d).endVertex();
+		worldrenderer.pos(.375, .125, 0).tex(8/32f, 5/32f).endVertex();
+		worldrenderer.pos(0, .125, 0).tex(0/32f, 5/32f).endVertex();
+		worldrenderer.pos(0, .375, 0).tex(0/32f, 0/32f).endVertex();
+		worldrenderer.pos(.375, .375, 0).tex(8/32f, 0/32f).endVertex();
 		tessellator.draw();
 
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(.375, .25, -.25).tex(8/32d, 5/32d).endVertex();
-		worldrenderer.pos(0, .25, -.25).tex(0/32d, 5/32d).endVertex();
-		worldrenderer.pos(0, .25, .25).tex(0/32d, 0/32d).endVertex();
-		worldrenderer.pos(.375, .25, .25).tex(8/32d, 0/32d).endVertex();
+		worldrenderer.pos(.375, .25, -.25).tex(8/32f, 5/32f).endVertex();
+		worldrenderer.pos(0, .25, -.25).tex(0/32f, 5/32f).endVertex();
+		worldrenderer.pos(0, .25, .25).tex(0/32f, 0/32f).endVertex();
+		worldrenderer.pos(.375, .25, .25).tex(8/32f, 0/32f).endVertex();
 		tessellator.draw();
 
 		GlStateManager.enableCull();
@@ -71,7 +73,8 @@ public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(@Nonnull RevolvershotEntity p_110775_1_)
+	@Nonnull
+	public ResourceLocation getEntityTexture(@Nonnull RevolvershotEntity p_110775_1_)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/bullet.png");
 	}

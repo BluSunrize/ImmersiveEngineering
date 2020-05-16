@@ -107,10 +107,9 @@ public class ModelConveyor extends BakedIEModel
 			if(conveyor==null)
 				conveyor = ConveyorHandler.getConveyor(new ResourceLocation(key), tile);
 			cachedQuads = Collections.synchronizedList(Lists.newArrayList());
-			Matrix4f facingMatrix = ClientUtils.toModelRotation(facing).getRotation().getMatrix();
+			TransformationMatrix matrix = ClientUtils.toModelRotation(facing).getRotation();
 			if(conveyor!=null)
-				facingMatrix = conveyor.modifyBaseRotationMatrix(facingMatrix);
-			TransformationMatrix matrix = new TransformationMatrix(facingMatrix);
+				matrix = conveyor.modifyBaseRotationMatrix(matrix);
 			ConveyorDirection conDir = conveyor!=null?conveyor.getConveyorDirection(): ConveyorDirection.HORIZONTAL;
 			boolean[] walls = conveyor!=null&&tile!=null?new boolean[]{conveyor.renderWall(facing, 0), conveyor.renderWall(facing, 1)}: new boolean[]{true, true};
 			TextureAtlasSprite tex_conveyor = MissingTextureSprite.func_217790_a();

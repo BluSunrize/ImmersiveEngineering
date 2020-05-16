@@ -602,9 +602,8 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public void setWorld(World p_145834_1_)
-	{
-		super.setWorld(p_145834_1_);
+	public void setWorldAndPos(World world, BlockPos blockPos) {
+		super.setWorldAndPos(world, blockPos);
 		if(getWorld()!=null)
 		{
 			for(int i = 0; i < patterns.length; i++)

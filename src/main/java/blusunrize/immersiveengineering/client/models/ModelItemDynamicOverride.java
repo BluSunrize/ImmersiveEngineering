@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.TransformationMatrix;
@@ -53,9 +54,8 @@ public class ModelItemDynamicOverride extends BakedIEModel
 		if(textures!=null)
 		{
 			ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
-			Optional<TransformationMatrix> transform = Optional.of(TransformationMatrix.identity());
 			for(int i = 0; i < textures.size(); i++)
-				builder.addAll(ItemLayerModel.getQuadsForSprite(i, ClientUtils.getSprite(textures.get(i)), DefaultVertexFormats.BLOCK, transform));
+				builder.addAll(ItemLayerModel.getQuadsForSprite(i, ClientUtils.getSprite(textures.get(i)), TransformationMatrix.identity()));
 			quads = builder.build();
 			guiModel = new BakedGuiItemModel(this);
 		}
@@ -111,9 +111,9 @@ public class ModelItemDynamicOverride extends BakedIEModel
 	}
 
 	@Override
-	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
+	public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack matrixStack)
 	{
-		return Pair.of(cameraTransformType==TransformType.GUI?guiModel: this, itemModel.handlePerspective(cameraTransformType).getRight());
+		return cameraTransformType==TransformType.GUI?guiModel: this;
 	}
 
 	public static final HashMap<String, IBakedModel> modelCache = new HashMap<>();
@@ -172,9 +172,9 @@ public class ModelItemDynamicOverride extends BakedIEModel
 
 		@Nonnull
 		@Override
-		public Pair<? extends IBakedModel, Matrix4f> handlePerspective(@Nonnull TransformType type)
+		public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat)
 		{
-			return this.originalModel.itemModel.handlePerspective(type);
+			return originalModel.itemModel.handlePerspective(cameraTransformType, mat);
 		}
 	}
 }

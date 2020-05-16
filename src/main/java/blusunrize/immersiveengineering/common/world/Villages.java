@@ -154,8 +154,8 @@ public class Villages
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 	public static class Registers
 	{
-		public static final DeferredRegister<PointOfInterestType> POINTS_OF_INTEREST = new DeferredRegister(ForgeRegistries.POI_TYPES, ImmersiveEngineering.MODID);
-		public static final DeferredRegister<VillagerProfession> PROFESSIONS = new DeferredRegister(ForgeRegistries.PROFESSIONS, ImmersiveEngineering.MODID);
+		public static final DeferredRegister<PointOfInterestType> POINTS_OF_INTEREST = new DeferredRegister<>(ForgeRegistries.POI_TYPES, ImmersiveEngineering.MODID);
+		public static final DeferredRegister<VillagerProfession> PROFESSIONS = new DeferredRegister<>(ForgeRegistries.PROFESSIONS, ImmersiveEngineering.MODID);
 
 		// TODO: Add more workstations. We need a different one for each profession
 		public static final RegistryObject<PointOfInterestType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
@@ -474,7 +474,7 @@ public class Villages
 				}
 				BlockPos blockPos = new BlockPos(chunkCoords.getXStart()+8, 64, chunkCoords.getZStart()+8);
 				ItemStack selling = FilledMapItem.setupNewMap(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
-				FilledMapItem.renderBiomePreviewMap(world, selling);
+				FilledMapItem.func_219992_b(world, selling);
 				MapData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.TARGET_POINT);
 				selling.setDisplayName(new TranslationTextComponent("item.immersiveengineering.map_orevein.name"));
 				ItemNBTHelper.setLore(selling, mineralWorldInfo.mineral.name);

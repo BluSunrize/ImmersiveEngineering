@@ -95,7 +95,7 @@ public class ManualUtils
 			return inst.formatCategoryName(node.getNodeData());
 	}
 
-	public static void drawTexturedRect(int x, int y, int w, int h, double... uv)
+	public static void drawTexturedRect(int x, int y, int w, int h, float... uv)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldrenderer = tessellator.getBuffer();

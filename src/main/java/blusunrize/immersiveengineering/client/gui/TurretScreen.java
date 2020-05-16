@@ -147,7 +147,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, -1, -1);
-			RenderHelper.enableGUIStandardItemLighting();
+			RenderHelper.enableStandardItemLighting();
 		}
 
 	}

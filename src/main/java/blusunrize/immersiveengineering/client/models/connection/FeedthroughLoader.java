@@ -13,33 +13,18 @@ import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoade
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.texture.ISprite;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
-import net.minecraftforge.resource.IResourceType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
-import static net.minecraftforge.resource.VanillaResourceType.MODELS;
-import static net.minecraftforge.resource.VanillaResourceType.TEXTURES;
 
 public class FeedthroughLoader implements IModelLoader<FeedthroughModelRaw>
 {
@@ -58,17 +43,17 @@ public class FeedthroughLoader implements IModelLoader<FeedthroughModelRaw>
 
 	public static class FeedthroughModelRaw implements IModelGeometry<FeedthroughModelRaw>
 	{
-		@Override
-		public Collection<ResourceLocation> getTextureDependencies(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
-		{
-			return ImmutableList.of();
-		}
 
 		@Override
-		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format, ItemOverrideList overrides)
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 		{
 			return new FeedthroughModel();
 		}
 
+		@Override
+		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+		{
+			return ImmutableList.of();
+		}
 	}
 }

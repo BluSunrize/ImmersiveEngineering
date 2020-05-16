@@ -93,6 +93,7 @@ import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
@@ -327,7 +328,7 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void textureStichPre(TextureStitchEvent.Pre event)
 	{
-		if(event.getMap()!=mc().getTextureMap())
+		if(event.getMap()!=mc().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
 			return;
 		IELogger.info("Stitching Revolver Textures!");
 		RevolverItem.addRevolverTextures(event);
@@ -384,7 +385,7 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void textureStichPost(TextureStitchEvent.Post event)
 	{
-		if(event.getMap()!=mc().getTextureMap())
+		if(event.getMap()!=mc().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
 			return;
 		ImmersiveEngineering.proxy.clearRenderCaches();
 		RevolverItem.retrieveRevolverTextures(event.getMap());
@@ -394,7 +395,7 @@ public class ClientProxy extends CommonProxy
 			Preconditions.checkNotNull(p.sprite);
 		}
 		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "block/wire"));
-		AtlasTexture texturemap = Minecraft.getInstance().getTextureMap();
+		AtlasTexture texturemap = Minecraft.getInstance().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 		for(int i = 0; i < ClientUtils.destroyBlockIcons.length; i++)
 		{
 			ClientUtils.destroyBlockIcons[i] = texturemap.getSprite(new ResourceLocation("block/destroy_stage_"+i));
@@ -480,9 +481,9 @@ public class ClientProxy extends CommonProxy
 			for(Object render : mc().getRenderManager().renderers.values())
 				if(render instanceof MinecartRenderer)
 				{
-					EntityModel<?> wrapped = ((MinecartRenderer<?>)render).field_77013_a;
+					EntityModel<?> wrapped = ((MinecartRenderer<?>)render).modelMinecart;
 					if(wrapped instanceof MinecartModel)
-						((MinecartRenderer<?>)render).field_77013_a = new ShaderMinecartModel((MinecartModel<?>)wrapped);
+						((MinecartRenderer<?>)render).modelMinecart = new ShaderMinecartModel((MinecartModel<?>)wrapped);
 				}
 			ShaderMinecartModel.rendersReplaced = true;
 		}

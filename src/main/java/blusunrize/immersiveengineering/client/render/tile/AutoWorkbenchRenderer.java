@@ -74,7 +74,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		//Grab model + correct eextended state
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
-		BlockState state = getWorld().getBlockState(blockPos);
+		BlockState state = te.getWorldNonnull().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.autoWorkbench)
 			return;
 		IBakedModel model = dynamic.get(te.getFacing());
@@ -84,7 +84,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
 		GlStateManager.pushMatrix();
-		GlStateManager.translated(x+.5, y+.5, z+.5);
+		GlStateManager.translated(0.5, 0.5, 0.5);
 		if(te.getIsMirrored())
 			GlStateManager.scalef(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
 
@@ -250,7 +250,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 						GlStateManager.translated(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
 						GlStateManager.rotatef(itemDisplays[i][4], 1, 0, 0);
 						GlStateManager.scalef(scale, scale, .5f);
-						ClientUtils.mc().getItemRenderer().renderItem(dList.get(0), TransformType.FIXED);
+						ClientUtils.mc().getItemRenderer().renderItem(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 						GlStateManager.scalef(1/scale, 1/scale, 2);
 						GlStateManager.rotatef(-itemDisplays[i][4], 1, 0, 0);
 						GlStateManager.translated(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
@@ -288,7 +288,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 							GlStateManager.translated(localItemX, localItemY, localItemZ);
 							GlStateManager.rotatef(localAngle, 1, 0, 0);
 							GlStateManager.scalef(scale, scale, .5f);
-							ClientUtils.mc().getItemRenderer().renderItem(dList.get(d), TransformType.FIXED);
+							ClientUtils.mc().getItemRenderer().renderItem(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 							GlStateManager.scalef(1/scale, 1/scale, 2);
 							GlStateManager.rotatef(-localAngle, 1, 0, 0);
 							GlStateManager.translated(-localItemX, -localItemY, -localItemZ);

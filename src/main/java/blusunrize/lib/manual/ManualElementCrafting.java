@@ -183,7 +183,7 @@ public class ManualElementCrafting extends SpecialManualElements
 	public void render(ManualScreen gui, int x, int y, int mx, int my)
 	{
 		GlStateManager.enableRescaleNormal();
-		RenderHelper.enableGUIStandardItemLighting();
+		RenderHelper.enableStandardItemLighting();
 
 		int totalYOff = 0;
 		highlighted = ItemStack.EMPTY;

@@ -22,6 +22,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
+
 public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntity>
 {
 	public ChemthrowerShotRenderer(EntityRendererManager renderManager)
@@ -77,7 +79,8 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(ChemthrowerShotEntity p_110775_1_)
+	@Nonnull
+	public ResourceLocation getEntityTexture(@Nonnull ChemthrowerShotEntity chemthrowerShotEntity)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/bullet.png");
 	}

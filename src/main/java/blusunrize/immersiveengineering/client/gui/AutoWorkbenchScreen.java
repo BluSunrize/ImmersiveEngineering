@@ -84,7 +84,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableGUIStandardItemLighting();
+			RenderHelper.enableStandardItemLighting();
 		}
 	}
 

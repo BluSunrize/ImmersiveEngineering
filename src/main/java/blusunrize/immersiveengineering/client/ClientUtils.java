@@ -35,7 +35,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.Model;
@@ -60,6 +59,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
+import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import org.apache.commons.compress.utils.IOUtils;
@@ -1168,7 +1168,7 @@ public class ClientUtils
 		wr.pos(x1, y0, z0).endVertex();
 	}
 
-	public static void renderTexturedBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1, TextureAtlasSprite tex, boolean yForV)
+	public static void renderTexturedBox(BufferBuilder wr, float x0, float y0, float z0, float x1, float y1, float z1, TextureAtlasSprite tex, boolean yForV)
 	{
 		float minU = tex.getInterpolatedU(x0*16);
 		float maxU = tex.getInterpolatedU(x1*16);
@@ -1177,7 +1177,7 @@ public class ClientUtils
 		renderTexturedBox(wr, x0, y0, z0, x1, y1, z1, minU, minV, maxU, maxV);
 	}
 
-	public static void renderTexturedBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1, double u0, double v0, double u1, double v1)
+	public static void renderTexturedBox(BufferBuilder wr, float x0, float y0, float z0, float x1, float y1, float z1, float u0, float v0, float u1, float v1)
 	{
 		wr.pos(x0, y0, z1).tex(u0, v0).endVertex();
 		wr.pos(x1, y0, z1).tex(u1, v0).endVertex();
@@ -1251,7 +1251,7 @@ public class ClientUtils
 				// Calculate surrounding brighness and split into block and sky light
 				for(Direction f : Direction.VALUES)
 				{
-					int val = world.getCombinedLight(pos.offset(f), 0);
+					int val = world.getLightSubtracted(pos.offset(f), 0);
 					neighbourBrightness[0][f.getIndex()] = (val >> 16)&255;
 					neighbourBrightness[1][f.getIndex()] = val&255;
 				}
@@ -1275,7 +1275,7 @@ public class ClientUtils
 						normalizationFactors[type][i] = (float)Math.sqrt(sSquared);
 					}
 			}
-			int localBrightness = world.getCombinedLight(pos, 0);
+			int localBrightness = world.getLightSubtracted(pos, 0);
 			int rgba[] = {255, 255, 255, 255};
 			if(color >= 0)
 			{

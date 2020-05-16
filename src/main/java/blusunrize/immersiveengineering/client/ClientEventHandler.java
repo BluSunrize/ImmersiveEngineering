@@ -87,6 +87,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeIngameGui;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
@@ -369,8 +370,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(ZoomHandler.isZooming)
 			{
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/scope.png");
-				int width = ClientUtils.mc().mainWindow.getScaledWidth();
-				int height = ClientUtils.mc().mainWindow.getScaledHeight();
+				int width = ClientUtils.mc().getMainWindow().getScaledWidth();
+				int height = ClientUtils.mc().getMainWindow().getScaledHeight();
 				int resMin = Math.min(width, height);
 				float offsetX = (width-resMin)/2f;
 				float offsetY = (height-resMin)/2f;
@@ -442,8 +443,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onRenderOverlayPost(RenderGameOverlayEvent.Post event)
 	{
-		int scaledWidth = ClientUtils.mc().mainWindow.getScaledWidth();
-		int scaledHeight = ClientUtils.mc().mainWindow.getScaledHeight();
+		int scaledWidth = ClientUtils.mc().getMainWindow().getScaledWidth();
+		int scaledHeight = ClientUtils.mc().getMainWindow().getScaledHeight();
 		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
 		{
 			PlayerEntity player = ClientUtils.mc().player;
@@ -853,9 +854,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	}
 
 	@SubscribeEvent()
-	public void renderAdditionalBlockBounds(DrawBlockHighlightEvent event)
+	public void renderAdditionalBlockBounds(DrawHighlightEvent event)
 	{
-		if(event.getSubID()==0&&event.getTarget().getType()==Type.BLOCK)
+		if(event.getTarget().getType()==Type.BLOCK)
 		{
 			BlockRayTraceResult rtr = (BlockRayTraceResult)event.getTarget();
 			Entity player = event.getInfo().getRenderViewEntity();
@@ -1237,6 +1238,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		EntityModel m = renderer.getEntityModel();
 		if(m instanceof IHasHead)
-			((IHasHead)m).func_205072_a().showModel = shouldEnable;
+			((IHasHead)m).getModelHead().showModel = shouldEnable;
 	}
 }

@@ -9,17 +9,20 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.models.SimpleUVModelTransform;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
@@ -28,7 +31,8 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry2.ExpandedBlockModelDeserializer;
+import net.minecraftforge.client.model.ModelLoaderRegistry.ExpandedBlockModelDeserializer;
+import net.minecraftforge.client.model.ModelTransformComposition;
 import net.minecraftforge.client.model.SimpleModelTransform;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -48,7 +52,7 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 @EventBusSubscriber(value = Dist.CLIENT, modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class DynamicModelLoader
 {
-	private static Set<ResourceLocation> requestedTextures = new HashSet<>();
+	private static Set<Material> requestedTextures = new HashSet<>();
 	private static Set<ResourceLocation> manualTextureRequests = new HashSet<>();
 	private static Multimap<ModelWithTransforms, ModelResourceLocation> requestedModels = HashMultimap.create();
 	private static Map<ModelWithTransforms, IUnbakedModel> unbakedModels = new HashMap<>();
@@ -64,9 +68,9 @@ public class DynamicModelLoader
 			if(unbaked.getKey().transforms.isEmpty())
 				state = ModelRotation.getModelRotation(conf.rotX, conf.rotY);
 			else
-				state = new SimpleModelTransform(ImmutableMap.copyOf(unbaked.getKey().transforms));
+				state = new SimpleUVModelTransform(ImmutableMap.copyOf(unbaked.getKey().transforms), conf.uvLock);
 			IBakedModel baked = unbaked.getValue().bakeModel(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
-					new BasicState(state, conf.uvLock), DefaultVertexFormats.BLOCK);
+					state, DefaultVertexFormats.BLOCK);
 			for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
 				evt.getModelRegistry().put(mrl, baked);
 		}
@@ -75,16 +79,15 @@ public class DynamicModelLoader
 	@SubscribeEvent
 	public static void textureStitch(TextureStitchEvent.Pre evt)
 	{
-		if(evt.getMap()!=mc().getTextureMap())
+		if(evt.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
 			return;
 		IELogger.logger.debug("Loading dynamic models");
-		final IResourceManager manager = Minecraft.getInstance().getResourceManager();
 		try
 		{
 			for(ModelWithTransforms reqModel : requestedModels.keySet())
 			{
 				BlockModel model = ExpandedBlockModelDeserializer.INSTANCE.fromJson(reqModel.model.data, BlockModel.class);
-				Set<String> missingTexErrors = new HashSet<>();
+				Set<Pair<String, String>> missingTexErrors = new HashSet<>();
 				requestedTextures.addAll(model.getTextures(DynamicModelLoader::getVanillaModel, missingTexErrors));
 				if(!missingTexErrors.isEmpty())
 					throw new RuntimeException("Missing textures: "+missingTexErrors);
@@ -99,8 +102,8 @@ public class DynamicModelLoader
 		IELogger.logger.debug("Stitching textures!");
 		for(ResourceLocation rl : manualTextureRequests)
 			evt.addSprite(rl);
-		for(ResourceLocation rl : requestedTextures)
-			evt.addSprite(rl);
+		for(Material rl : requestedTextures)
+			evt.addSprite(rl.getTextureLocation());
 	}
 
 	private static Class<? extends IUnbakedModel> VANILLA_MODEL_WRAPPER;

@@ -103,7 +103,9 @@ public class IEExplosion extends Explosion
 							.withNullableParameter(LootParameters.BLOCK_ENTITY, tile);
 					if(damagesTerrain==Explosion.Mode.DESTROY)
 						lootCtx.withParameter(LootParameters.EXPLOSION_RADIUS, this.size);
-					Block.spawnDrops(state, lootCtx);
+					state.getDrops(lootCtx).forEach((p_229977_2_) -> {
+						func_229976_a_(objectarraylist, p_229977_2_, blockpos1);
+					});
 					state.onBlockExploded(world, pos, this);
 				}
 			}
@@ -187,9 +189,9 @@ public class IEExplosion extends Explosion
 						.squareDistanceTo(getPosition().x, getPosition().y, getPosition().z)/(double)f3;
 				if(d12 <= 1.0D)
 				{
-					double d5 = entity.posX-getPosition().x;
-					double d7 = entity.posY+(double)entity.getEyeHeight()-getPosition().y;
-					double d9 = entity.posZ-getPosition().z;
+					double d5 = entity.getPosX()-getPosition().x;
+					double d7 = entity.getPosY()+(double)entity.getEyeHeight()-getPosition().y;
+					double d9 = entity.getPosZ()-getPosition().z;
 					double d13 = MathHelper.sqrt(d5*d5+d7*d7+d9*d9);
 					if(d13!=0.0D)
 					{

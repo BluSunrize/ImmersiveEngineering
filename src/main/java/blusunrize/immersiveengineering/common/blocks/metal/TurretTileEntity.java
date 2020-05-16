@@ -200,7 +200,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 
 	protected Vec3d getTargetVector(LivingEntity e)
 	{
-		return new Vec3d(e.posX, e.posY+.5*e.getEyeHeight(), e.posZ);
+		return new Vec3d(e.getPosX(), e.getPosY()+.5*e.getEyeHeight(), e.getPosZ());
 	}
 
 	protected Vec3d getGunPosition()

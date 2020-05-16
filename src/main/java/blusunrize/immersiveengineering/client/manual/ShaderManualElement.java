@@ -165,7 +165,7 @@ public class ShaderManualElement extends SpecialManualElements
 	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		RenderHelper.enableGUIStandardItemLighting();
+		RenderHelper.enableStandardItemLighting();
 		float scale = 2;
 		GL11.glScalef(scale, scale, scale);
 		boolean examples = exampleItems!=null&&exampleItems.length > 0;

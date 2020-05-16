@@ -91,7 +91,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 									.setStyle(new Style().setColor(TextFormatting.GRAY)));
 
 						ClientUtils.drawHoveringText(tooltip, mx, my, font);
-						RenderHelper.enableGUIStandardItemLighting();
+						RenderHelper.enableStandardItemLighting();
 					}
 			}
 		}
@@ -125,13 +125,13 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 				ItemStack ghostStack = ((IESlot.BlueprintOutput)s).recipe.output;
 				if(!ghostStack.isEmpty())
 				{
-					this.blitOffset = 200;
+					this.setBlitOffset(200);
 					itemRender.zLevel = 200.0F;
 					FontRenderer font = ghostStack.getItem().getFontRenderer(ghostStack);
 					if(font==null)
 						font = this.font;
 					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xPos, guiTop+s.yPos);
-					this.blitOffset = 0;
+					this.setBlitOffset(0);
 					itemRender.zLevel = 0.0F;
 					GlStateManager.depthFunc(GL11.GL_GREATER);
 					ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0xbb333333);

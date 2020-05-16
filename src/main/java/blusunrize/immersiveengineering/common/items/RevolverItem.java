@@ -113,14 +113,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	public static void retrieveRevolverTextures(AtlasTexture map)
 	{
-		revolverDefaultTexture = map.getAtlasSprite("immersiveengineering:revolvers/revolver");
+		revolverDefaultTexture = map.getSprite(new ResourceLocation("immersiveengineering:revolvers/revolver"));
 		for(String key : specialRevolversByTag.keySet())
 			if(!key.isEmpty()&&!specialRevolversByTag.get(key).tag.isEmpty())
 			{
 				int split = key.lastIndexOf("_");
 				if(split < 0)
 					split = key.length();
-				revolverIcons.put(key, map.getAtlasSprite("immersiveengineering:revolvers/revolver_"+key.substring(0, split).toLowerCase()));
+				revolverIcons.put(key, map.getSprite(new ResourceLocation("immersiveengineering:revolvers/revolver_"+key.substring(0, split).toLowerCase())));
 			}
 	}
 
@@ -693,7 +693,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 					if(left)
 						angle *= -1;
 					mat.translate(0, 1.5-f, 0);
-					mat.rotate(angle, 0, 0, 1);
+					mat.rotate(new Quaternion(new Vector3f(0, 0, 1), angle, false));
 				}
 			}
 
@@ -704,20 +704,37 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
 				if(f > .35&&f < 1.95)
 					if(f < .5)
-						mat.translate((.35-f)*2, 0, 0).rotate(2.64*(f-.35), 0, 0, left?-1: 1);
+					{
+						mat.translate((.35-f)*2, 0, 0);
+						mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(f-.35F), false));
+					}
 					else if(f < .6)
-						mat.translate((f-.5)*6, (.5-f)*1, 0).rotate(.87266, 0, 0, left?-1: 1);
+					{
+						mat.translate((f-.5)*6, (.5-f)*1, 0);
+						mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+					}
 					else if(f < 1.7)
-						mat.translate(0, -.6, 0).rotate(.87266, 0, 0, left?-1: 1);
+					{
+						mat.translate(0, -.6, 0);
+						mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+					}
 					else if(f < 1.8)
-						mat.translate((1.8-f)*6, (f-1.8)*1, 0).rotate(.87266, 0, 0, left?-1: 1);
+					{
+						mat.translate((1.8-f)*6, (f-1.8)*1, 0);
+						mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+					}
 					else
-						mat.translate((f-1.95f)*2, 0, 0).rotate(2.64*(1.95-f), 0, 0, left?-1: 1);
+					{
+						mat.translate((f-1.95f)*2, 0, 0);
+						mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(1.95F-f), false));
+					}
 			}
 			else if(((PlayerEntity)entity).openContainer instanceof RevolverContainer)
-				mat.translate(left?.4: -.4, .4, 0).rotate(.87266, 0, 0, left?-1: 1);
+			{
+				mat.translate(left?.4: -.4, .4, 0);
+				mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+			}
 		}
-		return mat;
 	}
 
 	private static final String[][] groups = {{"frame"}, {"cylinder"}};

@@ -70,7 +70,7 @@ public class ManualElementItem extends SpecialManualElements
 	public void render(ManualScreen gui, int x, int y, int mx, int my)
 	{
 		GlStateManager.enableRescaleNormal();
-		RenderHelper.enableGUIStandardItemLighting();
+		RenderHelper.enableStandardItemLighting();
 		highlighted = ItemStack.EMPTY;
 		int length = stacks.size();
 		if(length > 0)

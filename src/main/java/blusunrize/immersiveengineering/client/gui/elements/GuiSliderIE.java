@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraftforge.fml.client.config.GuiSlider;
+import net.minecraftforge.fml.client.gui.widget.Slider;
 
-public class GuiSliderIE extends GuiSlider
+public class GuiSliderIE extends Slider
 {
 	public GuiSliderIE(int x, int y, int width, String name, float value, IPressable handler)
 	{

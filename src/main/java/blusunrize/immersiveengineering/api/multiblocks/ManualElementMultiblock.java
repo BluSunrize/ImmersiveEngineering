@@ -202,7 +202,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 
 				GlStateManager.enableRescaleNormal();
 				GlStateManager.pushMatrix();
-				RenderHelper.disableStandardItemLighting();
+				RenderHelper.enableStandardItemLighting();
 
 				final BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
 

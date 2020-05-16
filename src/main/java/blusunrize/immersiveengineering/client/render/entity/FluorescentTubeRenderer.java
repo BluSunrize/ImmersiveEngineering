@@ -14,13 +14,16 @@ import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -42,20 +45,19 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(FluorescentTubeEntity entity)
+	public ResourceLocation getEntityTexture(FluorescentTubeEntity entity)
 	{
 		return null;
 	}
 
 	@Override
-	public void doRender(FluorescentTubeEntity entity, double x, double y, double z, float entityYaw,
-						 float partialTicks)
+	public void render(FluorescentTubeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder wr = tes.getBuffer();
 		ClientUtils.bindAtlas();
 		GlStateManager.pushMatrix();
-		GlStateManager.translated(x, y+1, z);
+		GlStateManager.translated(0, 1, 0);
 		GlStateManager.rotatef(entityYaw+90, 0, 1, 0);
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(0, 0, .03125);
@@ -66,11 +68,12 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		GlStateManager.translated(-0.25, -1, 0);
 		GlStateManager.color3f(1, 1, 1);
 		if(tex==null)
-			tex = Minecraft.getInstance().getTextureMap().getAtlasSprite("minecraft:block/iron_block");
+			tex = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+					.apply(new ResourceLocation("minecraft:block/iron_block"));
 
 		wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		ClientUtils.renderTexturedBox(wr, 0, 0, 0, .0625, 1, .0625, tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
-		ClientUtils.renderTexturedBox(wr, .0625, .9375, 0, .25, 1, .0625, tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
+		ClientUtils.renderTexturedBox(wr, 0, 0, 0, .0625F, 1, .0625F, tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
+		ClientUtils.renderTexturedBox(wr, .0625F, .9375F, 0, .25F, 1, .0625F, tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
 		tes.draw();
 
 		GlStateManager.popMatrix();

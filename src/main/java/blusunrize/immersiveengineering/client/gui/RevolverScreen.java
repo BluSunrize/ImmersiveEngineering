@@ -79,7 +79,7 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 		else if(bulletAmount > 8)
 			ClientUtils.drawTexturedRect(57, 1, 79, 39, 57/256f, 136/256f, 12/256f, 51/256f);
 
-		RenderHelper.enableGUIStandardItemLighting();
+		RenderHelper.enableStandardItemLighting();
 		GlStateManager.enableDepthTest();
 
 		ItemRenderer ir = ClientUtils.mc().getItemRenderer();

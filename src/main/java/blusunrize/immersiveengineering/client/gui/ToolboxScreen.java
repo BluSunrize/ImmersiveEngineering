@@ -50,7 +50,7 @@ public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableGUIStandardItemLighting();
+			RenderHelper.enableStandardItemLighting();
 		}
 	}
 

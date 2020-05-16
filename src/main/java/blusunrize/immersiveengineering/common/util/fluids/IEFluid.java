@@ -29,7 +29,6 @@ import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.IStateHolder;
 import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -153,13 +152,6 @@ public class IEFluid extends FlowingFluid
 	@OnlyIn(Dist.CLIENT)
 	public void addTooltipInfo(FluidStack fluidStack, @Nullable PlayerEntity player, List<ITextComponent> tooltip)
 	{
-	}
-
-	@Nonnull
-	@Override
-	public BlockRenderLayer getRenderLayer()
-	{
-		return BlockRenderLayer.TRANSLUCENT;
 	}
 
 	@Nonnull
