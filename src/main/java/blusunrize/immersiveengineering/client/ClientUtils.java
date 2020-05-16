@@ -804,18 +804,18 @@ public class ClientUtils
 			tooltip.add(new StringTextComponent(fluid.getAmount()+"mB").setStyle(gray));
 	}
 
-	public static Quat4d degreeToQuaterion(double x, double y, double z)
+	public static Quaternion degreeToQuaterion(double x, double y, double z)
 	{
 		x = Math.toRadians(x);
 		y = Math.toRadians(y);
 		z = Math.toRadians(z);
-		Quat4d qYaw = new Quat4d(0, Math.sin(y/2), 0, Math.cos(y/2));
-		Quat4d qPitch = new Quat4d(Math.sin(x/2), 0, 0, Math.cos(x/2));
-		Quat4d qRoll = new Quat4d(0, 0, Math.sin(z/2), Math.cos(z/2));
+		Quaternion qYaw = new Quaternion(0, (float)Math.sin(y/2), 0, (float)Math.cos(y/2));
+		Quaternion qPitch = new Quaternion((float)Math.sin(x/2), 0, 0, (float)Math.cos(x/2));
+		Quaternion qRoll = new Quaternion(0, 0, (float)Math.sin(z/2), (float)Math.cos(z/2));
 
-		Quat4d quat = qYaw;
-		quat.mul(qRoll);
-		quat.mul(qPitch);
+		Quaternion quat = qYaw;
+		quat.multiply(qRoll);
+		quat.multiply(qPitch);
 		return quat;
 	}
 
@@ -1041,13 +1041,13 @@ public class ClientUtils
 		u = vId > 1?2: 0;
 		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
 		BakedQuad tmp = builder.build();
-		return smartLighting?new SmartLightingQuad(tmp.getVertexData(), -1, facing, sprite, format, basePos): tmp;
+		return smartLighting?new SmartLightingQuad(tmp.getVertexData(), -1, facing, sprite, basePos): tmp;
 	}
 
-	public static void putVertexData(VertexFormat format, BakedQuadBuilder builder, Vec3d pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
+	public static void putVertexData(VertexFormat format, BakedQuadBuilder builder, Vec3d pos, Vec3d faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
 	{
-		for(int e = 0; e < format.getElementCount(); e++)
-			switch(format.getElement(e).getUsage())
+		for(int e = 0; e < format.getElements().size(); e++)
+			switch(format.getElements().get(e).getUsage())
 			{
 				case POSITION:
 					builder.put(e, (float)pos.x, (float)pos.y, (float)pos.z, 0);
@@ -1065,7 +1065,7 @@ public class ClientUtils
 							0, 1);
 					break;
 				case NORMAL:
-					builder.put(e, faceNormal.x, faceNormal.y, faceNormal.z, 0);
+					builder.put(e, (float)faceNormal.getX(), (float)faceNormal.getY(), (float)faceNormal.getZ(), 0);
 					break;
 				default:
 					builder.put(e);

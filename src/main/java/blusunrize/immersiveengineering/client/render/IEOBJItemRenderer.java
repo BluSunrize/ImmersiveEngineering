@@ -18,9 +18,11 @@ import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GLX;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -46,7 +48,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 	private static FloatBuffer transform = GLAllocation.createDirectFloatBuffer(16);
 
 	@Override
-	public void renderByItem(ItemStack stack)
+	public void render(ItemStack stack, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		GlStateManager.enableCull();
 		float partialTicks = mc().getRenderPartialTicks();

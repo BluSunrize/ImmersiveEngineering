@@ -15,6 +15,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.IStringSerializable;
@@ -27,7 +28,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-
 import java.util.Locale;
 
 import static blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation.*;
@@ -84,7 +84,7 @@ public class WallmountBlock extends IEBaseBlock
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		if(player.isSneaking())
 		{
@@ -92,9 +92,9 @@ public class WallmountBlock extends IEBaseBlock
 			Orientation old = state.get(ORIENTATION);
 			Orientation newO = old.getDual();
 			w.setBlockState(pos, state.with(ORIENTATION, newO));
-			return true;
+			return ActionResultType.SUCCESS;
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	@Override

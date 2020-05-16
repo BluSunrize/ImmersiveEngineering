@@ -46,14 +46,14 @@ public class GuiButtonItem extends Button
 			if(!item.isEmpty())
 			{
 				Minecraft mc = Minecraft.getInstance();
-				this.blitOffset = 200;
+				this.setBlitOffset(200);
 				ItemRenderer itemRender = mc.getItemRenderer();
 				itemRender.zLevel = 200.0F;
 				FontRenderer font = item.getItem().getFontRenderer(item);
 				if(font==null)
 					font = mc.fontRenderer;
 				itemRender.renderItemAndEffectIntoGUI(item, x+1, y+1);
-				this.blitOffset = 0;
+				this.setBlitOffset(0);
 				itemRender.zLevel = 0.0F;
 
 				if(!state)

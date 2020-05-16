@@ -75,7 +75,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableGUIStandardItemLighting();
+			RenderHelper.enableStandardItemLighting();
 		}
 	}
 

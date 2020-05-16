@@ -21,17 +21,14 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResourceManager;
@@ -44,8 +41,8 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -216,7 +213,7 @@ public class ModelCoresample extends BakedIEModel
 
 	protected final void putVertexData(Vec3d normal, Vec3d[] vertices, Vec2f[] uvs, TextureAtlasSprite sprite, List<BakedQuad> out)
 	{
-		BakedQuadBuilder builder = new BakedQuadBuilder(DefaultVertexFormats.BLOCK);
+		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(Direction.getFacingFromVector(normal.x, normal.y, normal.z));
 		builder.setTexture(sprite);
 		for(int i = 0; i < vertices.length; i++)
@@ -312,23 +309,21 @@ public class ModelCoresample extends BakedIEModel
 	}
 
 	@Override
-	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
+	public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack mat)
 	{
-		Matrix4f id = new Matrix4f();
-		id.setIdentity();
-		return Pair.of(this, id);
+		return this;
 	}
 
 	public static class RawCoresampleModel implements IModelGeometry<RawCoresampleModel>
 	{
 		@Override
-		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format, ItemOverrideList overrides)
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 		{
 			return new ModelCoresample(null);
 		}
 
 		@Override
-		public Collection<ResourceLocation> getTextureDependencies(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
+		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors)
 		{
 			return ImmutableList.of();
 		}

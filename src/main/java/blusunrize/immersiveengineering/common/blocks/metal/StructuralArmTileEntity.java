@@ -34,7 +34,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
 import java.util.ArrayList;
@@ -298,8 +297,8 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		float upperHeight = (slopePosition+1F)/totalLength;
 		double lowerV = 16*lowerHeight;
 		double upperV = 16*upperHeight;
-		TextureAtlasSprite tas = quads.get(0).getSprite();
-		VertexFormat format = quads.get(0).getFormat();
+		TextureAtlasSprite tas = quads.get(0).func_187508_a();
+		VertexFormat format = DefaultVertexFormats.BLOCK;
 		quads = new ArrayList<>();
 		Matrix4 mat = new Matrix4(facing);
 
@@ -386,11 +385,9 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		if(invert)
 			facing = facing.getOpposite();
 		float[] colour = {1, 1, 1, 1};
-		BakedQuadBuilder builder = new BakedQuadBuilder(format);
+		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
-		builder.setTexture(sprite);
-		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(),
-				facing.getDirectionVec().getZ());
+		Vec3d faceNormal = new Vec3d(facing.getDirectionVec());
 		int vertexId = invert?3: 0;
 		double v = onCeiling?16-leftV: 0;
 		putVertexData(format, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);

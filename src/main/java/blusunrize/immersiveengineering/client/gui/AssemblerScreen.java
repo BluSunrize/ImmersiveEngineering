@@ -96,7 +96,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, xSize, -1);
-			RenderHelper.enableGUIStandardItemLighting();
+			RenderHelper.enableStandardItemLighting();
 		}
 
 	}
@@ -123,7 +123,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 				GlStateManager.translatef(0.0F, 0.0F, 32.0F);
 				GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 				RenderHelper.disableStandardItemLighting();
-				this.blitOffset = 200;
+				this.setBlitOffset(200);
 				itemRenderer.zLevel = 200.0F;
 				FontRenderer font = null;
 				if(!stack.isEmpty())
@@ -132,7 +132,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 					font = this.font;
 				itemRenderer.renderItemAndEffectIntoGUI(stack, guiLeft+27+i*58, guiTop+64);
 				itemRenderer.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.getCount());
-				this.blitOffset = 0;
+				this.setBlitOffset(0);
 				itemRenderer.zLevel = 0.0F;
 
 

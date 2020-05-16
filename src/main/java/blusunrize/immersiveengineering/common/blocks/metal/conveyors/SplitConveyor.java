@@ -74,7 +74,7 @@ public class SplitConveyor extends BasicConveyor
 		{
 			Direction redirect = Direction.values()[entity.getPersistentData().getInt(nbtKey)];
 			BlockPos nextPos = getTile().getPos().offset(redirect);
-			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.posZ: entity.posX));
+			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.getPosZ(): entity.getPosX()));
 			if(distNext < .7)
 				super.handleInsertion(entity, conDir, distX, distZ);
 		}
@@ -111,7 +111,7 @@ public class SplitConveyor extends BasicConveyor
 		{
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
 			BlockPos nextPos = getTile().getPos().offset(redirect);
-			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.posZ: entity.posX));
+			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.getPosZ(): entity.getPosX()));
 			double treshold = .4;
 			boolean contact = distNext < treshold;
 			if(contact)
@@ -140,7 +140,7 @@ public class SplitConveyor extends BasicConveyor
 			return vec;
 		Direction redirect = Direction.byIndex(entity.getPersistentData().getInt(nbtKey));
 		BlockPos wallPos = getTile().getPos().offset(getFacing());
-		double distNext = Math.abs((getFacing().getAxis()==Axis.Z?wallPos.getZ(): wallPos.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.posZ: entity.posX));
+		double distNext = Math.abs((getFacing().getAxis()==Axis.Z?wallPos.getZ(): wallPos.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.getPosZ(): entity.getPosX()));
 		if(distNext < 1.33)
 		{
 			double sideMove = Math.pow(1+distNext, 0.1)*.2;

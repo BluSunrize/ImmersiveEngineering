@@ -22,7 +22,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -78,7 +77,7 @@ public class FeedthroughMultiblock implements IMultiblock
 		GlStateManager.scaled(1.75, 1.75, 1.75);
 
 		GlStateManager.disableCull();
-		ClientUtils.mc().getItemRenderer().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
+		ClientUtils.mc().getItemRenderer().renderItemIntoGUI(renderStack, 0, 0);
 		GlStateManager.enableCull();
 	}
 

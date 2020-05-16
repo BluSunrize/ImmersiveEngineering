@@ -11,18 +11,17 @@ package blusunrize.immersiveengineering.client.models.multilayer;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.IModelData;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,15 +31,19 @@ import java.util.Random;
 
 public class BakedMultiLayerModel extends BakedIEModel
 {
-	private final Map<BlockRenderLayer, IBakedModel> models;
+	private final Map<String, IBakedModel> models;
 	private final IBakedModel model;
 
-	public BakedMultiLayerModel(Map<BlockRenderLayer, IBakedModel> models)
+	public BakedMultiLayerModel(Map<String, IBakedModel> models)
 	{
 		this.models = models;
-		BlockRenderLayer[] preferences = {BlockRenderLayer.SOLID, BlockRenderLayer.CUTOUT, BlockRenderLayer.CUTOUT_MIPPED,
-				BlockRenderLayer.TRANSLUCENT};
-		for(BlockRenderLayer layer : preferences)
+		String[] preferences = {
+				RenderType.getSolid().toString(),
+				RenderType.getCutout().toString(),
+				RenderType.getCutoutMipped().toString(),
+				RenderType.getTranslucent().toString()
+		};
+		for(String layer : preferences)
 			if(models.containsKey(layer))
 			{
 				model = models.get(layer);
@@ -53,7 +56,7 @@ public class BakedMultiLayerModel extends BakedIEModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
-		BlockRenderLayer current = MinecraftForgeClient.getRenderLayer();
+		String current = MinecraftForgeClient.getRenderLayer().toString();
 		if(current==null)
 		{
 			ImmutableList.Builder<BakedQuad> ret = new Builder<>();
@@ -104,9 +107,9 @@ public class BakedMultiLayerModel extends BakedIEModel
 	}
 
 	@Override
-	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
+	public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack mat)
 	{
-		Pair<? extends IBakedModel, Matrix4f> base = model.handlePerspective(cameraTransformType);
-		return Pair.of(this, base.getRight());
+		model.handlePerspective(cameraTransformType, mat);
+		return this;
 	}
 }

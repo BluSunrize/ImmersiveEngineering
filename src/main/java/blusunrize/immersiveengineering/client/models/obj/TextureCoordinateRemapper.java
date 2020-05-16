@@ -2,8 +2,8 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
-import net.minecraft.client.renderer.Vector2f;
-import net.minecraftforge.client.model.obj.OBJModel2;
+import net.minecraft.util.math.Vec2f;
+import net.minecraftforge.client.model.obj.OBJModel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,14 +11,14 @@ import java.util.Map;
 
 public class TextureCoordinateRemapper
 {
-	private final List<Vector2f> texCoords;
-	private final HashMap<Integer, Vector2f> backup;
+	private final List<Vec2f> texCoords;
+	private final HashMap<Integer, Vec2f> backup;
 	private final ShaderCase shaderCase;
 	private final boolean flipV;
 
 	private ShaderLayer shaderLayer;
 
-	public TextureCoordinateRemapper(OBJModel2 model, ShaderCase shaderCase)
+	public TextureCoordinateRemapper(OBJModel model, ShaderCase shaderCase)
 	{
 		this.texCoords = OBJHelper.getTexCoords(model);
 		this.shaderCase = shaderCase;
@@ -62,27 +62,28 @@ public class TextureCoordinateRemapper
 			int texIndex = index[1];
 			if(this.backup.containsKey(texIndex)) // if this coordinate has already been modified, abort
 				continue;
-			Vector2f texCoord = texCoords.get(texIndex);
-			this.backup.put(texIndex, new Vector2f(texCoord));
+			Vec2f texCoord = texCoords.get(texIndex);
+			this.backup.put(texIndex, texCoord);
 
 			if(flipV)
-				texCoord.y = 1-texCoord.y;
+				texCoord = new Vec2f(texCoord.x, 1-texCoord.y);
 
 			if(texBounds!=null)
 			{
 				//if any uvs are outside the layers bounds
 				if(texBounds[0] > texCoord.x||texCoord.x > texBounds[2]||texBounds[1] > texCoord.y||texCoord.y > texBounds[3])
 				{
-					if(flipV) // early exit, flip v back
-						texCoord.y = 1-texCoord.y;
+					texCoords.set(texIndex, texCoord);
 					return false;
 				}
 
 				double dU = texBounds[2]-texBounds[0];
 				double dV = texBounds[3]-texBounds[1];
 				//Rescaling to the partial bounds that the texture represents
-				texCoord.x = (float)((texCoord.x-texBounds[0])/dU);
-				texCoord.y = (float)((texCoord.y-texBounds[1])/dV);
+				texCoord = new Vec2f(
+						(float)((texCoord.x-texBounds[0])/dU),
+						(float)((texCoord.y-texBounds[1])/dV)
+				);
 			}
 			//Rescaling to the selective area of the texture that is used
 
@@ -90,11 +91,14 @@ public class TextureCoordinateRemapper
 			{
 				double dU = cutBounds[2]-cutBounds[0];
 				double dV = cutBounds[3]-cutBounds[1];
-				texCoord.x = (float)(cutBounds[0]+dU*texCoord.x);
-				texCoord.y = (float)(cutBounds[1]+dV*texCoord.y);
+				texCoord = new Vec2f(
+						(float)(cutBounds[0]+dU*texCoord.x),
+						(float)(cutBounds[1]+dV*texCoord.y)
+				);
 			}
 			if(flipV)
-				texCoord.y = 1-texCoord.y;
+				texCoord = new Vec2f(texCoord.x, 1-texCoord.y);
+			texCoords.set(texIndex, texCoord);
 		}
 		return true;
 	}
@@ -104,8 +108,8 @@ public class TextureCoordinateRemapper
 	 */
 	public void resetCoords()
 	{
-		for(Map.Entry<Integer, Vector2f> entry : this.backup.entrySet())
-			this.texCoords.get(entry.getKey()).set(entry.getValue());
+		for(Map.Entry<Integer, Vec2f> entry : this.backup.entrySet())
+			this.texCoords.set(entry.getKey(), entry.getValue());
 		this.backup.clear();
 	}
 }

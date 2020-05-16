@@ -17,9 +17,10 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -100,10 +101,13 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	@Override
 	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
 	{
-		Matrix4 mat = new Matrix4(transform.getMatrixVec());
-		mat = mat.translate(.5, 0, .5).rotate(Math.toRadians(rotation), 0, 1, 0).translate(-.5, 0, -.5);
-		transform = new TransformationMatrix(mat.toMatrix4f());
-		return transform;
+		return transform.compose(new TransformationMatrix(
+				new Vector3f(-.5F, 0, -.5F),
+				new Quaternion(0, rotation, 0, true),
+				null, null
+		)).compose(new TransformationMatrix(
+				new Vector3f(0.5F, 0, 0.5F), null, null, null
+		));
 	}
 
 	@Override

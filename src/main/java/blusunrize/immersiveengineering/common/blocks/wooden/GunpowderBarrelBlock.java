@@ -49,7 +49,7 @@ public class GunpowderBarrelBlock extends TNTBlock
 	{
 		IEExplosiveEntity explosive = new IEExplosiveEntity(world, pos, igniter, state, 4).setDropChance(1);
 		world.addEntity(explosive);
-		world.playSound(null, explosive.posX, explosive.posY, explosive.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+		world.playSound(null, explosive.getPosX(), explosive.getPosY(), explosive.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		world.removeBlock(pos, false);
 	}
 

@@ -10,17 +10,18 @@ package blusunrize.immersiveengineering.client.models.multilayer;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry2;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class MultiLayerLoader implements IModelLoader<MultiLayerModel>
 {
@@ -35,12 +36,12 @@ public class MultiLayerLoader implements IModelLoader<MultiLayerModel>
 	@Override
 	public MultiLayerModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
 	{
-		Map<BlockRenderLayer, IModelGeometry<?>> subModels = new HashMap<>();
-		for(BlockRenderLayer l : BlockRenderLayer.values())
+		Map<String, IModelGeometry<?>> subModels = new HashMap<>();
+		for(Entry<String, JsonElement> entry : modelContents.entrySet())
 		{
-			JsonObject subModel = modelContents.getAsJsonObject(l.toString().toLowerCase());
+			JsonObject subModel = entry.getValue().getAsJsonObject();
 			if(subModel!=null)
-				subModels.put(l, ModelLoaderRegistry2.deserializeGeometry(deserializationContext, subModel));
+				subModels.put(entry.getKey(), ModelLoaderRegistry.deserializeGeometry(deserializationContext, subModel));
 		}
 		return new MultiLayerModel(subModels);
 	}

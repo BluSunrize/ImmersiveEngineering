@@ -23,13 +23,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -45,18 +47,18 @@ import java.util.concurrent.TimeUnit;
 
 public class BakedConnectionModel extends BakedIEModel
 {
-
-	TextureAtlasSprite textureAtlasSprite = Minecraft.getInstance().getTextureMap()
-			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":block/wire");
+	TextureAtlasSprite textureAtlasSprite = Minecraft.getInstance().getModelManager()
+			.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+			.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/wire"));
 	public static final Cache<ModelKey, IBakedModel> cache = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
 			.build();
 	@Nullable
 	private final IBakedModel base;
-	private final ImmutableSet<BlockRenderLayer> layers;
+	private final ImmutableSet<String> layers;
 
-	public BakedConnectionModel(@Nullable IBakedModel basic, Collection<BlockRenderLayer> layers)
+	public BakedConnectionModel(@Nullable IBakedModel basic, Collection<String> layers)
 	{
 		base = basic;
 		this.layers = ImmutableSet.copyOf(layers);
@@ -96,7 +98,7 @@ public class BakedConnectionModel extends BakedIEModel
 				e.printStackTrace();
 			}
 		}
-		return getBaseQuads(MinecraftForgeClient.getRenderLayer(), state, side, rand, extraData);
+		return getBaseQuads(MinecraftForgeClient.getRenderLayer().toString(), state, side, rand, extraData);
 	}
 
 	@Override
@@ -124,7 +126,7 @@ public class BakedConnectionModel extends BakedIEModel
 		if(base!=null)
 			return base.getParticleTexture();
 		else
-			return White.INSTANCE;
+			return White.instance();
 	}
 
 	@Nonnull
@@ -134,7 +136,7 @@ public class BakedConnectionModel extends BakedIEModel
 		return ItemOverrideList.EMPTY;
 	}
 
-	private List<BakedQuad> getBaseQuads(BlockRenderLayer currentLayer, BlockState state, Direction side, Random rand, IModelData data)
+	private List<BakedQuad> getBaseQuads(String currentLayer, BlockState state, Direction side, Random rand, IModelData data)
 	{
 		if(base!=null&&(layers.contains(currentLayer)||currentLayer==null))
 			return base.getQuads(state, side, rand, data);
@@ -167,13 +169,13 @@ public class BakedConnectionModel extends BakedIEModel
 		@Override
 		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand, IModelData data)
 		{
-			BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
-			if(layer!=BlockRenderLayer.SOLID&&layer!=BlockRenderLayer.TRANSLUCENT)
-				return getBaseQuads(layer, state, side, rand, data);
+			RenderType layer = MinecraftForgeClient.getRenderLayer();
+			if(layer!=RenderType.getSolid()&&layer!=RenderType.getTranslucent())
+				return getBaseQuads(layer.toString(), state, side, rand, data);
 			if(lists==null)
 				lists = ClientUtils.convertConnectionFromBlockstate(key.here, key.connections, texture);
-			List<BakedQuad> l = new ArrayList<>(lists[layer==BlockRenderLayer.SOLID?0: 1]);
-			l.addAll(getBaseQuads(layer, state, side, rand, data));
+			List<BakedQuad> l = new ArrayList<>(lists[layer==RenderType.getSolid()?0: 1]);
+			l.addAll(getBaseQuads(layer.toString(), state, side, rand, data));
 			return Collections.synchronizedList(l);
 		}
 
@@ -191,6 +193,13 @@ public class BakedConnectionModel extends BakedIEModel
 
 		@Override
 		public boolean isGui3d()
+		{
+			return false;
+		}
+
+		//TODO
+		@Override
+		public boolean func_230044_c_()
 		{
 			return false;
 		}

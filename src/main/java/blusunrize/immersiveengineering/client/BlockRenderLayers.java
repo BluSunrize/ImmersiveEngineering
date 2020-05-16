@@ -81,5 +81,7 @@ public class BlockRenderLayers
 				Cloth.balloon,
 				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
 		);
+
+		RenderTypeLookup.setRenderLayer(IEContent.fluidPotion, RenderType.getTranslucent());
 	}
 }

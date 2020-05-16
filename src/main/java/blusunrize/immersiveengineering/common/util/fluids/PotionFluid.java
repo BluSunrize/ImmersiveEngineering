@@ -16,7 +16,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -36,13 +35,6 @@ public class PotionFluid extends Fluid
 	{
 		setRegistryName(ImmersiveEngineering.MODID, "potion");
 		IEContent.registeredIEFluids.add(this);
-	}
-
-	@Nonnull
-	@Override
-	public BlockRenderLayer getRenderLayer()
-	{
-		return BlockRenderLayer.TRANSLUCENT;
 	}
 
 	@Nonnull

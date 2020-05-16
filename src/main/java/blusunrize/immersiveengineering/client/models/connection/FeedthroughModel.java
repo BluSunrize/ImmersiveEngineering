@@ -33,6 +33,8 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.color.ItemColors;
@@ -44,7 +46,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -156,7 +157,7 @@ public class FeedthroughModel extends BakedIEModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return ModelLoader.White.INSTANCE;
+		return ModelLoader.White.instance();
 	}
 
 	private ItemCameraTransforms transform = new ItemCameraTransforms(
@@ -222,14 +223,14 @@ public class FeedthroughModel extends BakedIEModel
 		final BlockState baseState;
 		final int offset;
 		final Direction facing;
-		final BlockRenderLayer layer;
+		final RenderType layer;
 		@Nullable
 		Int2IntMap usedColorMultipliers;
 		@Nullable
 		final Int2IntFunction allColorMultipliers;
 
 		public FeedthroughCacheKey(WireType type, BlockState baseState, int offset, Direction facing,
-								   BlockRenderLayer layer)
+								   RenderType layer)
 		{
 			this.type = type;
 			this.baseState = baseState;
@@ -241,7 +242,7 @@ public class FeedthroughModel extends BakedIEModel
 		}
 
 		public FeedthroughCacheKey(WireType type, BlockState baseState, int offset, Direction facing,
-								   BlockRenderLayer layer, Int2IntFunction colorMultiplier)
+								   RenderType layer, Int2IntFunction colorMultiplier)
 		{
 			this.type = type;
 			this.baseState = baseState;
@@ -337,7 +338,7 @@ public class FeedthroughModel extends BakedIEModel
 				switch(k.offset)
 				{
 					case 0:
-						if(k.layer==null||k.baseState.getBlock().canRenderInLayer(k.baseState, k.layer))
+						if(k.layer==null||RenderTypeLookup.canRenderInLayer(k.baseState, k.layer))
 						{
 							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TransformationMatrix.identity(),
 									colorMultiplier);
@@ -350,7 +351,7 @@ public class FeedthroughModel extends BakedIEModel
 					case 1:
 						facing = facing.getOpposite();
 					case -1:
-						if(k.layer==BlockRenderLayer.SOLID)
+						if(k.layer.equals(RenderType.getSolid().toString()))
 							quads.add(getConnQuads(facing, side, k.type, new Matrix4()));
 						break;
 					case Integer.MAX_VALUE:

@@ -30,11 +30,11 @@ public abstract class ModelIEArmorBase<T extends LivingEntity> extends BipedMode
 		isSneak = entity.isSneaking();
 		isSitting = entity.isPassenger()&&(entity.getRidingEntity()!=null&&entity.getRidingEntity().shouldRiderSit());
 		this.setLivingAnimations(entity, p_78088_2_, p_78088_3_, ClientUtils.partialTicks());
-		super.render(entity, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
+		super.render(entity, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_);
 	}
 
 	@Override
-	public void setRotationAngles(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor)
+	public void setRotationAngles(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		swingProgress = entity.getSwingProgress(ClientUtils.partialTicks());
 		if(entity instanceof ArmorStandEntity)
@@ -42,12 +42,12 @@ public abstract class ModelIEArmorBase<T extends LivingEntity> extends BipedMode
 		else if(entity instanceof SkeletonEntity||entity instanceof ZombieEntity)
 			setRotationAnglesZombie(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
 		else
-			super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+			super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 	}
 
 	public void setRotationAnglesZombie(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor)
 	{
-		super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+		super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		float f6 = MathHelper.sin(this.swingProgress*3.141593F);
 		float f7 = MathHelper.sin((1.0F-(1.0F-this.swingProgress)*(1.0F-this.swingProgress))*3.141593F);
 		this.bipedRightArm.rotateAngleZ = 0.0F;

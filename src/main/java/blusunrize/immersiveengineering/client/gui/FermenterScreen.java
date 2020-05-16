@@ -40,7 +40,7 @@ public class FermenterScreen extends IEContainerScreen<FermenterContainer>
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableGUIStandardItemLighting();
+			RenderHelper.enableStandardItemLighting();
 		}
 	}
 

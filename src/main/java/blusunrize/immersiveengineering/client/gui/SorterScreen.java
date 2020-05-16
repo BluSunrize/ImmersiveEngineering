@@ -60,7 +60,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 					for(int i = 0; i < split.length; i++)
 						tooltip.add(new StringTextComponent(split[i]).setStyle(new Style().setColor(i==0?TextFormatting.WHITE: TextFormatting.GRAY)));
 					ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-					RenderHelper.enableGUIStandardItemLighting();
+					RenderHelper.enableStandardItemLighting();
 				}
 		}
 	}

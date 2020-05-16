@@ -26,6 +26,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.PlantType;
 
 import java.util.EnumMap;
@@ -134,7 +135,7 @@ public class HempBlock extends BushBlock implements IGrowable
 	}
 
 	@Override
-	public void tick(BlockState state, World world, BlockPos pos, Random random)
+	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random)
 	{
 		int light = world.getLight(pos);
 		if(light >= 12)
@@ -184,7 +185,7 @@ public class HempBlock extends BushBlock implements IGrowable
 	}
 
 	@Override
-	public void grow(World world, Random rand, BlockPos pos, BlockState state)
+	public void grow(ServerWorld world, Random rand, BlockPos pos, BlockState state)
 	{
 		EnumHempGrowth growth = state.get(GROWTH);
 		if(growth!=getMaxGrowth(growth))

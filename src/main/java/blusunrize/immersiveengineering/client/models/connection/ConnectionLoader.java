@@ -10,25 +10,21 @@ package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader.ConnectorModel;
-import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerModel;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.texture.ISprite;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry2;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import javax.annotation.Nonnull;
@@ -57,8 +53,8 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 			subloader = new ResourceLocation(baseModelData.get("loader").getAsString());
 		else
 			subloader = new ResourceLocation("minecraft", "elements");
-		model = ModelLoaderRegistry2.getModel(subloader, deserializationContext, baseModelData);
-		List<BlockRenderLayer> layers = ImmutableList.of(BlockRenderLayer.SOLID);
+		model = ModelLoaderRegistry.getModel(subloader, deserializationContext, baseModelData);
+		List<String> layers = ImmutableList.of(RenderType.getSolid().toString());
 		if(modelContents.has("layers")&&modelContents.get("layers").isJsonArray())
 		{
 			JsonArray arr = modelContents.get("layers").getAsJsonArray();
@@ -66,13 +62,7 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 			for(JsonElement ele : arr)
 			{
 				if(ele.isJsonPrimitive()&&ele.getAsJsonPrimitive().isString())
-				{
-					String layerAsStr = ele.getAsString();
-					if(MultiLayerModel.LAYERS_BY_NAME.containsKey(layerAsStr))
-						layers.add(MultiLayerModel.LAYERS_BY_NAME.get(layerAsStr));
-					else
-						throw new RuntimeException("Invalid layer \""+layerAsStr+"\" in wire model");
-				}
+					layers.add(ele.getAsString());
 				else
 					throw new RuntimeException("Layers in wire models must be strings! Invalid value: "+ele.toString());
 			}
@@ -86,9 +76,9 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 		@Nullable
 		private final IModelGeometry<?> baseModel;
 		@Nonnull
-		private final List<BlockRenderLayer> layers;
+		private final List<String> layers;
 
-		public ConnectorModel(@Nullable IModelGeometry<?> baseModel, @Nonnull List<BlockRenderLayer> layers)
+		public ConnectorModel(@Nullable IModelGeometry<?> baseModel, @Nonnull List<String> layers)
 		{
 			this.baseModel = baseModel;
 			this.layers = layers;
@@ -98,32 +88,29 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 		public IBakedModel bake(
 				IModelConfiguration owner,
 				ModelBakery bakery,
-				Function<ResourceLocation, TextureAtlasSprite> spriteGetter,
-				ISprite sprite,
-				VertexFormat format,
-				ItemOverrideList overrides)
+				Function<Material, TextureAtlasSprite> spriteGetter,
+				IModelTransform modelTransform,
+				ItemOverrideList overrides,
+				ResourceLocation modelLocation)
 		{
 			IBakedModel base;
 			if(baseModel==null)
 				base = null;
 			else
-				base = baseModel.bake(owner, bakery, spriteGetter, sprite, format, overrides);
+				base = baseModel.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
 			return new BakedConnectionModel(base, layers);
 		}
 
 		@Override
-		public Collection<ResourceLocation> getTextureDependencies(
-				IModelConfiguration owner,
-				Function<ResourceLocation, IUnbakedModel> modelGetter,
-				Set<String> missingTextureErrors)
+		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 		{
-			Collection<ResourceLocation> ret;
+			Collection<Material> ret;
 			if(baseModel!=null)
 				ret = new ArrayList<>(
-						baseModel.getTextureDependencies(owner, modelGetter, missingTextureErrors));
+						baseModel.getTextures(owner, modelGetter, missingTextureErrors));
 			else
 				ret = new ArrayList<>();
-			ret.add(WIRE_LOC);
+			ret.add(new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, WIRE_LOC));
 			return ret;
 		}
 	}

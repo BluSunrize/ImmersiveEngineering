@@ -2,16 +2,16 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector2f;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
-import net.minecraftforge.client.model.obj.MaterialLibrary2;
-import net.minecraftforge.client.model.obj.OBJModel2;
-import net.minecraftforge.client.model.obj.OBJModel2.ModelGroup;
-import net.minecraftforge.client.model.obj.OBJModel2.ModelObject;
+import net.minecraft.util.math.Vec2f;
+import net.minecraftforge.client.model.obj.MaterialLibrary;
+import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
+import net.minecraftforge.client.model.obj.OBJModel.ModelObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Field;
@@ -36,18 +36,18 @@ public class OBJHelper
 	{
 		try
 		{
-			OBJModel2_parts = OBJModel2.class.getDeclaredField("parts");
+			OBJModel2_parts = OBJModel.class.getDeclaredField("parts");
 			OBJModel2_parts.setAccessible(true);
-			OBJModel2_texCoords = OBJModel2.class.getDeclaredField("texCoords");
+			OBJModel2_texCoords = OBJModel.class.getDeclaredField("texCoords");
 			OBJModel2_texCoords.setAccessible(true);
-			OBJModel2_makeQuad = OBJModel2.class.getDeclaredMethod("makeQuad", int[][].class, int.class, Vector4f.class,
+			OBJModel2_makeQuad = OBJModel.class.getDeclaredMethod("makeQuad", int[][].class, int.class, Vector4f.class,
 					Vector4f.class, boolean.class, TextureAtlasSprite.class, VertexFormat.class, Optional.class);
 			OBJModel2_makeQuad.setAccessible(true);
 			ModelGroup_parts = ModelGroup.class.getDeclaredField("parts");
 			ModelGroup_parts.setAccessible(true);
 			ModelObject_meshes = ModelObject.class.getDeclaredField("meshes");
 			ModelObject_meshes.setAccessible(true);
-			ModelMesh = Class.forName("net.minecraftforge.client.model.obj.OBJModel2$ModelMesh");
+			ModelMesh = Class.forName("net.minecraftforge.client.model.obj.OBJModel$ModelMesh");
 			ModelMesh_faces = ModelMesh.getDeclaredField("faces");
 			ModelMesh_faces.setAccessible(true);
 			ModelMesh_mat = ModelMesh.getDeclaredField("mat");
@@ -61,12 +61,12 @@ public class OBJHelper
 		}
 	}
 
-	public static Map<String, ModelGroup> getGroups(OBJModel2 model)
+	public static Map<String, ModelGroup> getGroups(OBJModel model)
 	{
 		return get(OBJModel2_parts, model);
 	}
 
-	public static List<Vector2f> getTexCoords(OBJModel2 model)
+	public static List<Vec2f> getTexCoords(OBJModel model)
 	{
 		return get(OBJModel2_texCoords, model);
 	}
@@ -76,7 +76,7 @@ public class OBJHelper
 		return get(ModelGroup_parts, group);
 	}
 
-	public static List<ModelObject> getRecursiveParts(OBJModel2 model)
+	public static List<ModelObject> getRecursiveParts(OBJModel model)
 	{
 		List<ModelObject> ret = new ArrayList<>();
 		Deque<ModelGroup> toExtract = new ArrayDeque<>(getGroups(model).values());
@@ -103,7 +103,7 @@ public class OBJHelper
 		return ret;
 	}
 
-	public static Pair<BakedQuad, Direction> makeQuad(OBJModel2 model, int[][] indices, int tintIndex, Vector4f colorTint,
+	public static Pair<BakedQuad, Direction> makeQuad(OBJModel model, int[][] indices, int tintIndex, Vector4f colorTint,
 													  Vector4f ambientColor, boolean isFullbright, TextureAtlasSprite texture,
 													  VertexFormat format, Optional<TransformationMatrix> transform)
 	{
@@ -149,7 +149,7 @@ public class OBJHelper
 			return get(ModelMesh_faces, mesh);
 		}
 
-		public MaterialLibrary2.Material getMaterial()
+		public MaterialLibrary.Material getMaterial()
 		{
 			return get(ModelMesh_mat, mesh);
 		}

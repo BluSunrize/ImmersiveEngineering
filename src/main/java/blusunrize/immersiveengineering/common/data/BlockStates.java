@@ -65,13 +65,10 @@ public class BlockStates extends BlockStateProvider
 	private static final ResourceLocation ALU_FENCE_TEXTURE = rl("block/metal/storage_aluminum");
 	private static final ResourceLocation STEEL_FENCE_TEXTURE = rl("block/metal/storage_steel");
 	private static final ResourceLocation TREATED_FENCE_TEXTURE = rl("block/wooden_decoration/treated_wood_horizontal");
-	private final ConfiguredModel EMPTY_MODEL = new ConfiguredModel(
-			new ExistingModelFile(modLoc("block/ie_empty"), existingFileHelper)
-	);
+	private final ConfiguredModel EMPTY_MODEL;
 	private final LoadedModels loadedModels;
 	final Map<Block, ModelFile> itemModels = new HashMap<>();
-	//The one in super doesn't properly do getResource
-	private final ExistingFileHelper goodExistingFileHelper;
+	private final ExistingFileHelper existingFileHelper;
 
 	public ModelFile blastFurnaceOff;
 	public ModelFile blastFurnaceOn;
@@ -84,7 +81,10 @@ public class BlockStates extends BlockStateProvider
 	{
 		super(gen, MODID, exHelper);
 		loadedModels = loaded;
-		this.goodExistingFileHelper = exHelper;
+		this.existingFileHelper = exHelper;
+		EMPTY_MODEL = new ConfiguredModel(
+				new ExistingModelFile(modLoc("block/ie_empty"), existingFileHelper)
+		);
 	}
 
 	private String name(Block b)
@@ -105,19 +105,19 @@ public class BlockStates extends BlockStateProvider
 
 	private void cubeSideVertical(Block b, ResourceLocation side, ResourceLocation vertical)
 	{
-		simpleBlockItem(b, cubeBottomTop(name(b), side, vertical, vertical));
+		simpleBlockItem(b, models().cubeBottomTop(name(b), side, vertical, vertical));
 	}
 
 	private void cubeAll(Block b, ResourceLocation texture)
 	{
-		simpleBlockItem(b, cubeAll(name(b), texture));
+		simpleBlockItem(b, models().cubeAll(name(b), texture));
 	}
 
 	private void scaffold(Block b, ResourceLocation others, ResourceLocation top)
 	{
 		simpleBlockItem(
 				b,
-				withExistingParent(name(b), modLoc("block/ie_scaffolding"))
+				models().withExistingParent(name(b), modLoc("block/ie_scaffolding"))
 						.texture("side", others)
 						.texture("bottom", others)
 						.texture("top", top)
@@ -136,12 +136,12 @@ public class BlockStates extends BlockStateProvider
 
 	private void slab(SlabBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
 	{
-		ModelFile mainModel = slab(name(b)+"_bottom", side, bottom, top);
+		ModelFile mainModel = models().slab(name(b)+"_bottom", side, bottom, top);
 		slabBlock(
 				b,
 				mainModel,
-				slabTop(name(b)+"_top", side, bottom, top),
-				cubeBottomTop(name(b)+"_double", side, bottom, top)
+				models().slabTop(name(b)+"_top", side, bottom, top),
+				models().cubeBottomTop(name(b)+"_double", side, bottom, top)
 		);
 		itemModels.put(b, mainModel);
 	}
@@ -154,9 +154,9 @@ public class BlockStates extends BlockStateProvider
 	private void stairs(StairsBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
 	{
 		String baseName = name(b);
-		ModelFile stairs = stairs(baseName, side, bottom, top);
-		ModelFile stairsInner = stairsInner(baseName+"_inner", side, bottom, top);
-		ModelFile stairsOuter = stairsOuter(baseName+"_outer", side, bottom, top);
+		ModelFile stairs = models().stairs(baseName, side, bottom, top);
+		ModelFile stairsInner = models().stairsInner(baseName+"_inner", side, bottom, top);
+		ModelFile stairsOuter = models().stairsOuter(baseName+"_outer", side, bottom, top);
 		stairsBlock(b, stairs, stairsInner, stairsOuter);
 		itemModels.put(b, stairs);
 	}
@@ -190,7 +190,7 @@ public class BlockStates extends BlockStateProvider
 					.partialState()
 					.with(PostBlock.POST_SLAVE, i)
 					.setModels(new ConfiguredModel(
-							withExistingParent("empty_"+b.getRegistryName().getPath(), EMPTY_MODEL.model.getLocation())
+							models().withExistingParent("empty_"+b.getRegistryName().getPath(), EMPTY_MODEL.model.getLocation())
 									.texture("particle", texture)
 					));
 	}
@@ -198,7 +198,7 @@ public class BlockStates extends BlockStateProvider
 	private ModelFile cubeTwo(String name, ResourceLocation top, ResourceLocation bottom,
 							  ResourceLocation side, ResourceLocation front)
 	{
-		return withExistingParent(name, modLoc("ie_two_cubed"))
+		return models().withExistingParent(name, modLoc("ie_two_cubed"))
 				.texture("north", front)
 				.texture("top", top)
 				.texture("bottom", bottom)
@@ -209,7 +209,7 @@ public class BlockStates extends BlockStateProvider
 
 	private ModelFile cubeThree(String name, ResourceLocation def, ResourceLocation front)
 	{
-		return withExistingParent(name, modLoc("ie_three_cubed"))
+		return models().withExistingParent(name, modLoc("ie_three_cubed"))
 				.texture("north", front)
 				.texture("top", def)
 				.texture("bottom", def)
@@ -237,7 +237,7 @@ public class BlockStates extends BlockStateProvider
 				.additional("detectCullableFaces", false)
 				.additional("model", addModelsPrefix(model))
 				.additional("flip-v", true);
-		String particleTex = DataGenUtils.getTextureFromObj(model, goodExistingFileHelper);
+		String particleTex = DataGenUtils.getTextureFromObj(model, existingFileHelper);
 		if(particleTex.charAt(0)=='#')
 			particleTex = textures.get(particleTex.substring(1)).toString();
 		ret.texture("particle", particleTex);
@@ -258,7 +258,7 @@ public class BlockStates extends BlockStateProvider
 				.loader(modLoc("ie_obj"))
 				.additional("model", addModelsPrefix(model))
 				.additional("flip-v", true)
-				.texture("particle", DataGenUtils.getTextureFromObj(model, goodExistingFileHelper));
+				.texture("particle", DataGenUtils.getTextureFromObj(model, existingFileHelper));
 	}
 
 	@Override
@@ -279,12 +279,12 @@ public class BlockStates extends BlockStateProvider
 				{
 					ResourceLocation side = modLoc("block/metal/storage_"+name+"_side");
 					ResourceLocation top = modLoc("block/metal/storage_"+name+"_top");
-					storageModel = cubeBottomTop(storageName, side, top, top);
+					storageModel = models().cubeBottomTop(storageName, side, top, top);
 					slabFor(storage, side, top, top);
 				}
 				else
 				{
-					storageModel = cubeAll(storageName, defaultStorageTexture);
+					storageModel = models().cubeAll(storageName, defaultStorageTexture);
 					slabFor(storage, defaultStorageTexture);
 				}
 				simpleBlockItem(storage, storageModel);
@@ -418,7 +418,7 @@ public class BlockStates extends BlockStateProvider
 
 		createWallmount(WoodenDevices.treatedWallmount, rl("block/wooden_device/wallmount"));
 		{
-			ModelFile turntableModel = cubeBottomTop("turntable",
+			ModelFile turntableModel = models().cubeBottomTop("turntable",
 					modLoc("block/wooden_device/turntable"),
 					modLoc("block/wooden_device/turntable_bottom"),
 					modLoc("block/wooden_device/turntable_top")
@@ -446,7 +446,7 @@ public class BlockStates extends BlockStateProvider
 		createRotatedBlock(StoneDecoration.coresample, map -> obj("block/coresample.obj"),
 				IEProperties.FACING_HORIZONTAL, ImmutableList.of());
 		ResourceLocation concreteTexture = rl("block/stone_decoration/concrete");
-		simpleBlockItem(StoneDecoration.concreteSheet, carpet("concrete_sheet", concreteTexture));
+		simpleBlockItem(StoneDecoration.concreteSheet, models().carpet("concrete_sheet", concreteTexture));
 		simpleBlockItem(StoneDecoration.concreteQuarter, quarter("concrete_quarter", concreteTexture));
 		simpleBlockItem(StoneDecoration.concreteThreeQuarter, threeQuarter("concrete_three_quarter", concreteTexture));
 		simpleBlock(StoneDecoration.concreteSprayed, obj("block/sprayed_concrete.obj"));
@@ -456,7 +456,7 @@ public class BlockStates extends BlockStateProvider
 		cubeAll(WoodenDevices.crate, modLoc("block/wooden_device/crate"));
 		cubeAll(WoodenDevices.reinforcedCrate, modLoc("block/wooden_device/reinforced_crate"));
 		{
-			ModelFile gunpowderModel = cubeBottomTop(
+			ModelFile gunpowderModel = models().cubeBottomTop(
 					"gunpowder_barrel", rl("block/wooden_device/gunpowder_barrel"),
 					rl("block/wooden_device/barrel_up_none"), rl("block/wooden_device/gunpowder_barrel_top")
 			);
@@ -466,7 +466,7 @@ public class BlockStates extends BlockStateProvider
 		simpleBlockItem(WoodenDevices.sorter, createRouterModel(rl("block/wooden_device/sorter"),
 				"router"));
 		{
-			ModelFile batcherModel = cubeBottomTop("item_batcher",
+			ModelFile batcherModel = models().cubeBottomTop("item_batcher",
 					modLoc("block/wooden_device/item_batcher"),
 					modLoc("block/wooden_device/item_batcher_in"),
 					modLoc("block/wooden_device/item_batcher_out")
@@ -523,11 +523,11 @@ public class BlockStates extends BlockStateProvider
 		createMultiblock(MetalDevices.blastFurnacePreheater,
 				obj("block/metal_device/blastfurnace_preheater.obj"));
 		{
-			ModelFile furnaceHeaterOn = withExistingParent("furnace_heater_on", rl("block/ie_six_sides_overlay_all_but_one"))
+			ModelFile furnaceHeaterOn = models().withExistingParent("furnace_heater_on", rl("block/ie_six_sides_overlay_all_but_one"))
 					.texture("block_all", rl("block/metal_device/furnace_heater_active"))
 					.texture("block_north", rl("block/metal_device/furnace_heater_socket"))
 					.texture("overlay_all", rl("block/metal_device/furnace_heater_active_overlay"));
-			ModelFile furnaceHeaterOff = withExistingParent("furnace_heater_off", rl("block/ie_six_sides_overlay_all_but_one"))
+			ModelFile furnaceHeaterOff = models().withExistingParent("furnace_heater_off", rl("block/ie_six_sides_overlay_all_but_one"))
 					.texture("block_all", rl("block/metal_device/furnace_heater"))
 					.texture("block_north", rl("block/metal_device/furnace_heater_socket"))
 					.texture("overlay_all", rl("block/metal_device/furnace_heater_overlay"));
@@ -541,7 +541,7 @@ public class BlockStates extends BlockStateProvider
 		}
 		createPump();
 		{
-			ModelFile kineticDynamo = withExistingParent("kinetic_dynamo", mcLoc("block/cube"))
+			ModelFile kineticDynamo = models().withExistingParent("kinetic_dynamo", mcLoc("block/cube"))
 					.texture("down", modLoc("block/metal_device/dynamo_bottom"))
 					.texture("south", modLoc("block/metal_device/dynamo_bottom"))
 					.texture("up", modLoc("block/metal_device/dynamo_top"))
@@ -552,7 +552,7 @@ public class BlockStates extends BlockStateProvider
 					ImmutableList.of());
 			itemModels.put(MetalDevices.dynamo, kineticDynamo);
 		}
-		simpleBlockItem(MetalDevices.thermoelectricGen, new ConfiguredModel(cubeBottomTop(
+		simpleBlockItem(MetalDevices.thermoelectricGen, new ConfiguredModel(models().cubeBottomTop(
 				"thermoelectric_generator",
 				modLoc("block/metal_device/thermoelectric_gen_side"),
 				modLoc("block/metal_device/thermoelectric_gen_bottom"),
@@ -576,7 +576,7 @@ public class BlockStates extends BlockStateProvider
 					.transforms(modLoc("item/block"))
 					.texture("particle", DataGenUtils.getTextureFromObj(
 							modLoc("block/metal_device/charging_station.obj"),
-							goodExistingFileHelper
+							existingFileHelper
 					));
 			createRotatedBlock(MetalDevices.chargingStation,
 					state -> full,
@@ -594,7 +594,7 @@ public class BlockStates extends BlockStateProvider
 		for(IEFluid f : IEFluid.IE_FLUIDS)
 		{
 			ResourceLocation stillTexture = f.getAttributes().getStillTexture();
-			ModelFile model = getBuilder("block/fluid/"+f.getRegistryName().getPath())
+			ModelFile model = models().getBuilder("block/fluid/"+f.getRegistryName().getPath())
 					.texture("particle", stillTexture);
 			getVariantBuilder(f.block).partialState().setModels(new ConfiguredModel(model));
 		}
@@ -604,11 +604,11 @@ public class BlockStates extends BlockStateProvider
 		loadedModels.backupModels();
 	}
 
-	protected void fenceBlock(FenceBlock b, ResourceLocation texture)
+	public void fenceBlock(FenceBlock b, ResourceLocation texture)
 	{
 		super.fenceBlock(b, texture);
 		itemModels.put(b,
-				withExistingParent(b.getRegistryName().getPath()+"_inventory", mcLoc("block/fence_inventory"))
+				models().withExistingParent(b.getRegistryName().getPath()+"_inventory", mcLoc("block/fence_inventory"))
 						.texture("texture", texture));
 	}
 
@@ -683,7 +683,7 @@ public class BlockStates extends BlockStateProvider
 				else
 					return rl("block/connector/transformer_mv_right.obj");
 			}, ImmutableMap.of(
-					"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(leftModel, goodExistingFileHelper))
+					"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(leftModel, existingFileHelper))
 			), ImmutableList.of(
 					IEProperties.MULTIBLOCKSLAVE,
 					IEProperties.MIRRORED
@@ -701,7 +701,7 @@ public class BlockStates extends BlockStateProvider
 				else
 					return rl("block/connector/transformer_hv_right.obj");
 			}, ImmutableMap.of(
-					"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(leftModel, goodExistingFileHelper))
+					"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(leftModel, existingFileHelper))
 			), ImmutableList.of(
 					IEProperties.MULTIBLOCKSLAVE,
 					IEProperties.MIRRORED
@@ -715,7 +715,7 @@ public class BlockStates extends BlockStateProvider
 			else
 				return EMPTY_MODEL.model.getLocation();
 		}, ImmutableMap.of(
-				"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(ctModel, goodExistingFileHelper))
+				"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(ctModel, existingFileHelper))
 		), ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), RenderType.getSolid());
 		createConnector(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"), ImmutableMap.of(),
 				RenderType.getSolid());
@@ -893,7 +893,7 @@ public class BlockStates extends BlockStateProvider
 		createMultiblock(b, masterModel, mirroredModel, isSlave, facing, mirroredState, rotationOffset,
 				new ResourceLocation(DataGenUtils.getTextureFromObj(
 						new ResourceLocation(objLoc),
-						goodExistingFileHelper
+						existingFileHelper
 				)));
 	}
 
@@ -906,7 +906,7 @@ public class BlockStates extends BlockStateProvider
 		builder.partialState()
 				.with(isSlave, true)
 				.setModels(new ConfiguredModel(
-						withExistingParent(b.getRegistryName().getPath()+"_empty", EMPTY_MODEL.model.getLocation())
+						models().withExistingParent(b.getRegistryName().getPath()+"_empty", EMPTY_MODEL.model.getLocation())
 								.texture("particle", particleTex)
 				));
 		boolean[] possibleMirrorStates;
@@ -1117,7 +1117,7 @@ public class BlockStates extends BlockStateProvider
 			ret.texture(e.getKey(), e.getValue());
 		if(!texForState.containsKey("particle")&&loader.isPresent()&&loader.get().getPath().contains("obj"))
 		{
-			String particleTex = DataGenUtils.getTextureFromObj(modelLoc, goodExistingFileHelper);
+			String particleTex = DataGenUtils.getTextureFromObj(modelLoc, existingFileHelper);
 			if(particleTex.charAt(0)=='#')
 				particleTex = texForState.get(particleTex.substring(1)).toString();
 			ret.texture("particle", particleTex);
@@ -1189,13 +1189,13 @@ public class BlockStates extends BlockStateProvider
 
 	private ModelFile quarter(String out, ResourceLocation texture)
 	{
-		return withExistingParent(out, modLoc("block/ie_quarter_block"))
+		return models().withExistingParent(out, modLoc("block/ie_quarter_block"))
 				.texture("texture", texture);
 	}
 
 	private ModelFile threeQuarter(String out, ResourceLocation texture)
 	{
-		return withExistingParent(out, modLoc("block/ie_three_quarter_block"))
+		return models().withExistingParent(out, modLoc("block/ie_three_quarter_block"))
 				.texture("texture", texture);
 	}
 
@@ -1204,7 +1204,7 @@ public class BlockStates extends BlockStateProvider
 		VariantBlockStateBuilder builder = getVariantBuilder(Misc.hempPlant);
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 		{
-			ModelFile model = withExistingParent("block/hemp/"+g.getName(),
+			ModelFile model = models().withExistingParent("block/hemp/"+g.getName(),
 					new ResourceLocation("block/crop"))
 					.texture("crop", g.getTextureName());
 			builder.partialState()
@@ -1215,7 +1215,7 @@ public class BlockStates extends BlockStateProvider
 
 	private ModelFile createRouterModel(ResourceLocation baseTexName, String outName)
 	{
-		BlockModelBuilder builder = withExistingParent(outName, modLoc("block/ie_six_sides"));
+		BlockModelBuilder builder = models().withExistingParent(outName, modLoc("block/ie_six_sides"));
 		for(Direction d : Direction.VALUES)
 			builder.texture(d.getName(), new ResourceLocation(baseTexName.getNamespace(),
 					baseTexName.getPath()+"_"+d.ordinal()));

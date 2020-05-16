@@ -26,6 +26,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
@@ -142,7 +143,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, World world, BlockPos pos, BlockRayTraceResult hit)
+	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, World world, BlockPos pos, BlockRayTraceResult hit)
 	{
 		BlockState state = world.getBlockState(pos);
 		int dummy = state.get(POST_SLAVE);
@@ -153,11 +154,11 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 			BlockPos offsetPos = pos.offset(side);
 			//No Arms if space is blocked
 			if(!world.isAirBlock(offsetPos))
-				return false;
+				return ActionResultType.FAIL;
 			//No Arms if perpendicular arms exist
 			for(Direction forbidden : ImmutableList.of(side.rotateY(), side.rotateYCCW()))
 				if(hasArmFor(pos, forbidden, world))
-					return false;
+					return ActionResultType.FAIL;
 
 			world.setBlockState(offsetPos, getDefaultState().with(POST_SLAVE, 3).with(HORIZONTAL_OFFSET, HorizontalOffset.get(side)));
 			changed = true;
@@ -172,6 +173,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 			BlockPos masterPos = pos.down(dummy).subtract(offset.getOffset());
 			BlockState masterState = world.getBlockState(masterPos);
 			world.notifyBlockUpdate(masterPos, masterState, masterState, 3);
+			return ActionResultType.SUCCESS;
 		}
 		return super.hammerUseSide(side, player, world, pos, hit);
 	}

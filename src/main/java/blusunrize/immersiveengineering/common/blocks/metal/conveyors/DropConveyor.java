@@ -45,11 +45,12 @@ public class DropConveyor extends BasicConveyor
 	{
 		BlockPos posDown = getTile().getPos().down();
 		TileEntity inventoryTile = getTile().getWorld().getTileEntity(posDown);
-		boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getTile().getPos().getZ()+.5-entity.posZ): (getTile().getPos().getX()+.5-entity.posX)) < .2;
+		boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getTile().getPos().getZ()+.5-entity.getPosZ()):
+				(getTile().getPos().getX()+.5-entity.getPosX())) < .2;
 
 		LazyOptional<IItemHandler> cap = LazyOptional.empty();
-		if(contact && !(inventoryTile instanceof IConveyorTile))
-			 cap = ApiUtils.findItemHandlerAtPos( getTile().getWorld(), posDown, Direction.UP, true);
+		if(contact&&!(inventoryTile instanceof IConveyorTile))
+			cap = ApiUtils.findItemHandlerAtPos(getTile().getWorld(), posDown, Direction.UP, true);
 
 		if(cap.isPresent())
 			cap.ifPresent(itemHandler ->

@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -49,7 +48,8 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 		GlStateManager.scaled(5.25, 5.25, 5.25);
 
 		GlStateManager.disableCull();
-		ClientUtils.mc().getItemRenderer().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
+		//TODO location?
+		ClientUtils.mc().getItemRenderer().renderItemIntoGUI(renderStack, 0, 0);
 		GlStateManager.enableCull();
 	}
 

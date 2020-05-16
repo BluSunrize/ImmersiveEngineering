@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -17,8 +16,8 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.obj.OBJLoader2;
-import net.minecraftforge.client.model.obj.OBJModel2;
+import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.client.model.obj.OBJModel;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -40,7 +39,7 @@ public class IEOBJLoader implements IModelLoader<IEOBJModel>
 	@Override
 	public IEOBJModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
 	{
-		OBJModel2 model = OBJLoader2.INSTANCE.read(deserializationContext, modelContents);
+		OBJModel model = OBJLoader.INSTANCE.read(deserializationContext, modelContents);
 		return new IEOBJModel(
 				model,
 				modelContents.has("dynamic")&&modelContents.get("dynamic").getAsBoolean(),

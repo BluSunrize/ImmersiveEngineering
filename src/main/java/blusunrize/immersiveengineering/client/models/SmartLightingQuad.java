@@ -45,9 +45,9 @@ public class SmartLightingQuad extends BakedQuad
 	boolean ignoreLight;
 	public static int staticBrightness;
 
-	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, Direction faceIn, TextureAtlasSprite spriteIn, VertexFormat format, BlockPos p)
+	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, Direction faceIn, TextureAtlasSprite spriteIn, BlockPos p)
 	{
-		super(vertexDataIn, tintIndexIn, faceIn, spriteIn, false, format);
+		super(vertexDataIn, tintIndexIn, faceIn, spriteIn, false);
 		blockPos = p;
 		relativePos = new int[4][];
 		ignoreLight = false;
@@ -58,9 +58,9 @@ public class SmartLightingQuad extends BakedQuad
 			};
 	}
 
-	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, Direction faceIn, TextureAtlasSprite spriteIn, VertexFormat format)
+	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, Direction faceIn, TextureAtlasSprite spriteIn)
 	{
-		super(vertexDataIn, tintIndexIn, faceIn, spriteIn, false, format);
+		super(vertexDataIn, tintIndexIn, faceIn, spriteIn, false);
 		ignoreLight = true;
 	}
 
@@ -86,21 +86,21 @@ public class SmartLightingQuad extends BakedQuad
 			consumer.setQuadTint(this.getTintIndex());
 		float[] data = new float[4];
 		VertexFormat format = consumer.getVertexFormat();
-		int count = format.getElementCount();
+		int count = format.getElements().size();
 		int[] eMap = LightUtil.mapFormats(format, DefaultVertexFormats.BLOCK);
-		int itemCount = DefaultVertexFormats.BLOCK.getElementCount();
+		int itemCount = DefaultVertexFormats.BLOCK.getElements().size();
 		eMap[eMap.length-1] = 2;
 		for(int v = 0; v < 4; v++)
 			for(int e = 0; e < count; e++)
 				if(eMap[e]!=itemCount)
 				{
-					if(format.getElement(e).getUsage()==Usage.UV&&format.getElement(e).getType()==Type.SHORT)//lightmap is UV with 2 shorts
+					if(format.getElements().get(e).getUsage()==Usage.UV&&format.getElements().get(e).getType()==Type.SHORT)//lightmap is UV with 2 shorts
 					{
 						int brightness;
 						if(!ignoreLight&&world!=null)
 						{
 							BlockPos here = blockPos.add(relativePos[v][0], relativePos[v][1], relativePos[v][2]);
-							brightness = world.getCombinedLight(here, 0);
+							brightness = world.getLightSubtracted(here, 0);
 						}
 						else
 							brightness = staticBrightness;

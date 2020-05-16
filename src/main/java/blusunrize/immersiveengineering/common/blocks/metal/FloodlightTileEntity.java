@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;
@@ -492,7 +491,6 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	@Override
 	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
 	{
-		Matrix4f mat = transform.getMatrixVec();
 		Vector3f transl = new Vector3f(.5f, .5f, .5f);
 
 		double yaw = 0;
@@ -544,9 +542,11 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			if("light".equals(group)||"off".equals(group)||"glass".equals(group))
 				pitch += rotX;
 		}
-		mat.setRotation(ClientUtils.degreeToQuaterion(pitch, yaw, roll));
-		mat.setTranslation(transl);
-		return new TransformationMatrix(mat);
+		return new TransformationMatrix(
+				transl,
+				ClientUtils.degreeToQuaterion(pitch, yaw, roll),
+				null, null
+		);
 	}
 
 	@OnlyIn(Dist.CLIENT)

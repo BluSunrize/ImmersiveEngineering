@@ -17,13 +17,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,8 +29,6 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry.ExpandedBlockModelDeserializer;
-import net.minecraftforge.client.model.ModelTransformComposition;
-import net.minecraftforge.client.model.SimpleModelTransform;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -45,8 +40,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 //Loads models not referenced in any blockstates for rendering in TE(S)Rs
 @EventBusSubscriber(value = Dist.CLIENT, modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
@@ -70,7 +63,7 @@ public class DynamicModelLoader
 			else
 				state = new SimpleUVModelTransform(ImmutableMap.copyOf(unbaked.getKey().transforms), conf.uvLock);
 			IBakedModel baked = unbaked.getValue().bakeModel(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
-					state, DefaultVertexFormats.BLOCK);
+					state, conf.name);
 			for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
 				evt.getModelRegistry().put(mrl, baked);
 		}
@@ -169,14 +162,17 @@ public class DynamicModelLoader
 		requestedModels.put(new ModelWithTransforms(reqModel, transforms), name);
 	}
 
-	public static class ModelRequest {
+	public static class ModelRequest
+	{
 		private final JsonObject data;
 		private final int rotX;
 		private final int rotY;
 		private final boolean uvLock;
+		private final ResourceLocation name;
 
-		public ModelRequest(ResourceLocation loader, JsonObject data, int rotX, int rotY, boolean uvLock)
+		public ModelRequest(ResourceLocation name, ResourceLocation loader, JsonObject data, int rotX, int rotY, boolean uvLock)
 		{
+			this.name = name;
 			//TODO copy?
 			this.data = data;
 			this.rotX = rotX;
@@ -200,7 +196,7 @@ public class DynamicModelLoader
 			JsonObject json = new JsonObject();
 			json.addProperty("model", new ResourceLocation(model.getNamespace(), "models/"+model.getPath()).toString());
 			json.addProperty("flip-v", true);
-			return new ModelRequest(loader, json, 0, rotY, true);
+			return new ModelRequest(model, loader, json, 0, rotY, true);
 		}
 	}
 

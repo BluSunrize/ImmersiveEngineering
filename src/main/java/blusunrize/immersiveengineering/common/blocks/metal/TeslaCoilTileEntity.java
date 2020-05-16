@@ -246,9 +246,9 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			Entity target = world.getEntityByID(message.getInt("targetEntity"));
 			if(target instanceof LivingEntity)
 			{
-				double dx = target.posX-getPos().getX();
-				double dy = target.posY-getPos().getY();
-				double dz = target.posZ-getPos().getZ();
+				double dx = target.getPosX()-getPos().getX();
+				double dy = target.getPosY()-getPos().getY();
+				double dz = target.getPosZ()-getPos().getZ();
 
 				Direction f = null;
 				if(getFacing().getAxis()==Axis.Y)

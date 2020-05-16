@@ -103,7 +103,9 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 			TextureAtlasSprite sprite = ClientUtils.getSprite(isActive()?BasicConveyor.texture_on: BasicConveyor.texture_off);
 			TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
 			walls = new boolean[]{renderBottomWall(getTile(), getFacing(), 0), renderBottomWall(getTile(), getFacing(), 1)};
-			baseModel.addAll(ModelConveyor.getBaseConveyor(getFacing(), .875f, new Matrix4(getFacing()), ConveyorDirection.HORIZONTAL, sprite, walls, new boolean[]{true, false}, spriteColour, getDyeColour()));
+			baseModel.addAll(ModelConveyor.getBaseConveyor(getFacing(), .875f,
+					ClientUtils.toModelRotation(getFacing()).getRotation(),
+					ConveyorDirection.HORIZONTAL, sprite, walls, new boolean[]{true, false}, spriteColour, getDyeColour()));
 		}
 		else
 			walls = new boolean[]{true, true};
@@ -118,11 +120,11 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 
 			for(Direction f : Direction.VALUES)
 				for(BakedQuad q : model.getQuads(state, f, Utils.RAND))
-					if(q!=null&&q.getSprite()!=null)
-						sprites.put(f, q.getSprite());
+					if(q!=null&&q.func_187508_a()!=null)
+						sprites.put(f, q.func_187508_a());
 			for(BakedQuad q : model.getQuads(state, null, Utils.RAND))
-				if(q!=null&&q.getSprite()!=null&&q.getFace()!=null)
-					sprites.put(q.getFace(), q.getSprite());
+				if(q!=null&&q.func_187508_a()!=null&&q.getFace()!=null)
+					sprites.put(q.getFace(), q.func_187508_a());
 
 			Function<Direction, TextureAtlasSprite> getSprite = f -> sprites.containsKey(f)?sprites.get(f): sprite;
 

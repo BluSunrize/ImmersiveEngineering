@@ -9,17 +9,13 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.texture.ISprite;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
-import net.minecraftforge.client.model.obj.OBJModel2;
+import net.minecraftforge.client.model.obj.OBJModel;
 
 import java.util.Collection;
 import java.util.Set;
@@ -28,10 +24,10 @@ import java.util.function.Function;
 public class IEOBJModel implements IModelGeometry<IEOBJModel>
 {
 	private final boolean dynamic;
-	private final OBJModel2 base;
+	private final OBJModel base;
 	private final IEObjState state;
 
-	public IEOBJModel(OBJModel2 base, boolean dynamic, IEObjState state)
+	public IEOBJModel(OBJModel base, boolean dynamic, IEObjState state)
 	{
 		this.dynamic = dynamic;
 		this.base = base;
@@ -39,17 +35,15 @@ public class IEOBJModel implements IModelGeometry<IEOBJModel>
 	}
 
 	@Override
-	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-							Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite,
-							VertexFormat format, ItemOverrideList overrides)
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 	{
-		IBakedModel baseBaked = base.bake(owner, bakery, spriteGetter, sprite, format, overrides);
+		IBakedModel baseBaked = base.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
 		return new IESmartObjModel(base, baseBaked, owner, bakery, spriteGetter, sprite, format, state, dynamic);
 	}
 
 	@Override
-	public Collection<ResourceLocation> getTextureDependencies(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
+	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 	{
-		return base.getTextureDependencies(owner, modelGetter, missingTextureErrors);
+		return base.getTextures(owner, modelGetter, missingTextureErrors);
 	}
 }

@@ -79,6 +79,7 @@ import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -694,7 +695,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void removeStateFromSmartModelCache(BlockState state)
 	{
-		for(BlockRenderLayer r : BlockRenderLayer.values())
+		for(RenderType r : RenderType.getBlockRenderTypes())
 			IESmartObjModel.modelCache.invalidate(new RenderCacheKey(state, r));
 		IESmartObjModel.modelCache.invalidate(new RenderCacheKey(state, null));
 	}
@@ -703,7 +704,7 @@ public class ClientProxy extends CommonProxy
 	public void removeStateFromConnectionModelCache(BlockState state)
 	{
 		//TODO
-		for(BlockRenderLayer r : BlockRenderLayer.values())
+		for(RenderType r : RenderType.getBlockRenderTypes())
 			BakedConnectionModel.cache.invalidate(new RenderCacheKey(state, r));
 		BakedConnectionModel.cache.invalidate(new RenderCacheKey(state, null));
 	}

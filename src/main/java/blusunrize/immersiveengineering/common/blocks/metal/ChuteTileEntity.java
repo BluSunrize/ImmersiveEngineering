@@ -96,17 +96,17 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 		boolean contact = false;
 		Direction facing = getFacing();
 		if(!diagonal)
-			contact = entity.posY-getPos().getY() <= .125;
+			contact = entity.getPosY()-getPos().getY() <= .125;
 		else if(facing==Direction.NORTH)
-			contact = entity.posZ-getPos().getZ() <= .125;
+			contact = entity.getPosZ()-getPos().getZ() <= .125;
 		else if(facing==Direction.SOUTH)
-			contact = entity.posZ-getPos().getZ() >= .875;
+			contact = entity.getPosZ()-getPos().getZ() >= .875;
 		else if(facing==Direction.WEST)
-			contact = entity.posX-getPos().getX() <= .125;
+			contact = entity.getPosX()-getPos().getX() <= .125;
 		else if(facing==Direction.EAST)
-			contact = entity.posX-getPos().getX() >= .875;
+			contact = entity.getPosX()-getPos().getX() >= .875;
 
-		if(this.diagonal&&entity.posY-getPos().getY() <= .625)
+		if(this.diagonal&&entity.getPosY()-getPos().getY() <= .625)
 		{
 			BlockPos target = getPos().offset(facing);
 			TileEntity targetTile = world.getTileEntity(target);
@@ -132,7 +132,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 				if(!glitched)
 				{
 					Vec3d oldPos = entity.getPositionVec();
-					double py = entity.getHeight() > 1?getPos().getY()+.125: entity.posY;
+					double py = entity.getHeight() > 1?getPos().getY()+.125: entity.getPosY();
 					entity.setPosition(target.getX()+.5, py, target.getZ()+.5);
 					if(entity.isEntityInsideOpaqueBlock())
 					{
@@ -151,7 +151,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 
 			if(!contact&&!prevent&&!glitched)
 			{
-				world.playSound(null, entity.posX, entity.posY, entity.posZ, IESounds.chute, SoundCategory.BLOCKS, .6f+(.4f*world.rand.nextFloat()), .5f+(.5f*world.rand.nextFloat()));
+				world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), IESounds.chute, SoundCategory.BLOCKS, .6f+(.4f*world.rand.nextFloat()), .5f+(.5f*world.rand.nextFloat()));
 				entity.getPersistentData().putLong(NBT_POS, nbt_pos);
 				entity.getPersistentData().putLong(NBT_TIME, time);
 			}
@@ -164,7 +164,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 			if(!contact)
 			{
 				if(itemEntity.age > itemEntity.lifespan-60*20)
-					itemEntity.setAgeToCreativeDespawnTime();
+					itemEntity.age = itemEntity.lifespan-60*20;
 			}
 			else
 			{

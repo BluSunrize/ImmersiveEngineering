@@ -52,14 +52,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.ModelLoaderRegistry2;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.MaterialLibrary2;
-import net.minecraftforge.client.model.obj.OBJModel2;
-import net.minecraftforge.client.model.obj.OBJModel2.ModelGroup;
-import net.minecraftforge.client.model.obj.OBJModel2.ModelObject;
+import net.minecraftforge.client.model.obj.MaterialLibrary;
+import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
+import net.minecraftforge.client.model.obj.OBJModel.ModelObject;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -88,7 +88,7 @@ public class IESmartObjModel implements IBakedModel
 	public TransformType lastCameraTransform;
 	public boolean isDynamic;
 
-	public final OBJModel2 baseModel;
+	public final OBJModel baseModel;
 	private final IBakedModel baseBaked;
 	private final IModelConfiguration owner;
 	private final ModelBakery bakery;
@@ -98,7 +98,7 @@ public class IESmartObjModel implements IBakedModel
 
 	private final IEObjState state;
 
-	public IESmartObjModel(OBJModel2 baseModel, IBakedModel baseBaked, IModelConfiguration owner, ModelBakery bakery,
+	public IESmartObjModel(OBJModel baseModel, IBakedModel baseBaked, IModelConfiguration owner, ModelBakery bakery,
 						   Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite,
 						   VertexFormat format, IEObjState state, boolean dynamic)
 	{
@@ -469,10 +469,10 @@ public class IESmartObjModel implements IBakedModel
 		List<MeshWrapper> meshes = OBJHelper.getMeshes(modelObject);
 		for(MeshWrapper mesh : meshes)
 		{
-			MaterialLibrary2.Material mat = mesh.getMaterial();
+			MaterialLibrary.Material mat = mesh.getMaterial();
 			if(mat==null)
 				continue;
-			TextureAtlasSprite texture = spriteGetter.apply(mat.name, ModelLoaderRegistry2.resolveTexture(mat.diffuseColorMap, owner));
+			TextureAtlasSprite texture = spriteGetter.apply(mat.name, ModelLoaderRegistry.resolveTexture(mat.diffuseColorMap, owner));
 			int tintIndex = mat.diffuseTintIndex;
 			Vector4f colorTint = colorGetter.apply(mat.name, mat.diffuseColor);
 

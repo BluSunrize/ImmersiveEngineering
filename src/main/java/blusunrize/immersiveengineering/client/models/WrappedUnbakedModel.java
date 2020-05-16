@@ -8,15 +8,10 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.texture.ISprite;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.animation.IClip;
 
 import javax.annotation.Nullable;
@@ -41,52 +36,22 @@ public abstract class WrappedUnbakedModel implements IUnbakedModel
 	}
 
 	@Override
-	public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
+	public Collection<Material> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 	{
 		return base.getTextures(modelGetter, missingTextureErrors);
 	}
 
 	@Nullable
 	@Override
-	public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
+	public IBakedModel bakeModel(ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn, ResourceLocation locationIn)
 	{
-		return base.bake(bakery, spriteGetter, sprite, format);
-	}
-
-	@Override
-	public IModelState getDefaultState()
-	{
-		return base.getDefaultState();
+		return base.bakeModel(modelBakeryIn, spriteGetterIn, transformIn, locationIn);
 	}
 
 	@Override
 	public Optional<? extends IClip> getClip(String name)
 	{
 		return base.getClip(name);
-	}
-
-	@Override
-	public IUnbakedModel process(ImmutableMap<String, String> customData)
-	{
-		return newInstance(base.process(customData));
-	}
-
-	@Override
-	public IUnbakedModel smoothLighting(boolean value)
-	{
-		return newInstance(base.smoothLighting(value));
-	}
-
-	@Override
-	public IUnbakedModel gui3d(boolean value)
-	{
-		return newInstance(base.gui3d(value));
-	}
-
-	@Override
-	public IUnbakedModel retexture(ImmutableMap<String, String> textures)
-	{
-		return newInstance(base.retexture(textures));
 	}
 
 	protected abstract WrappedUnbakedModel newInstance(IUnbakedModel base);
