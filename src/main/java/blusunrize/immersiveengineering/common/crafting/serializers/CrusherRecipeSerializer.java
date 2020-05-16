@@ -58,8 +58,8 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	{
 		ItemStack output = buffer.readItemStack();
 		Ingredient input = Ingredient.read(buffer);
-		int secondaryCount = buffer.readInt();
 		int energy = buffer.readInt();
+		int secondaryCount = buffer.readInt();
 		CrusherRecipe recipe = new CrusherRecipe(recipeId, output, input, energy);
 		for(int i = 0; i < secondaryCount; i++)
 			recipe.addToSecondaryOutput(StackWithChance.read(buffer));
@@ -71,9 +71,9 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	{
 		buffer.writeItemStack(recipe.output);
 		recipe.input.write(buffer);
+		buffer.writeInt(recipe.getTotalProcessEnergy());
 		buffer.writeInt(recipe.secondaryOutputs.size());
 		for(StackWithChance secondaryOutput : recipe.secondaryOutputs)
 			secondaryOutput.write(buffer);
-		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}
 }
