@@ -387,6 +387,7 @@ public class ClientUtils
 
 	public static List<ModelRenderer> copyModelRenderers(Model model, List<ModelRenderer> oldRenderers)
 	{
+		/* TODO fix copying of ModelRenderers
 		List<ModelRenderer> newRenderers = new ArrayList<>(oldRenderers.size());
 		for(int i = 0; i < oldRenderers.size(); i++)
 		{
@@ -412,6 +413,8 @@ public class ClientUtils
 			newRenderers.add(newM);
 		}
 		return newRenderers;
+		 */
+		return oldRenderers;
 	}
 
 	//TODO move somewhere else?
@@ -490,7 +493,7 @@ public class ClientUtils
 		GlStateManager.pushMatrix();
 		//preRenderDamagedBlocks END
 		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRendererIn.setTranslation(-d0, -d1-entityIn.getEyeHeight(), -d2);
+		worldRendererIn.pos(-d0, -d1-entityIn.getEyeHeight(), -d2);
 		//		worldRendererIn.markDirty();
 		for(BlockPos blockpos : blocks)
 		{
@@ -512,7 +515,7 @@ public class ClientUtils
 			}
 		}
 		tessellatorIn.draw();
-		worldRendererIn.setTranslation(0.0D, 0.0D, 0.0D);
+		worldRendererIn.pos(0.0D, 0.0D, 0.0D);
 		// postRenderDamagedBlocks BEGIN
 		GlStateManager.disableAlphaTest();
 		GlStateManager.polygonOffset(0.0F, 0.0F);
@@ -1272,7 +1275,7 @@ public class ClientUtils
 				int[] vData = quad.getVertexData();
 				VertexFormat format = DefaultVertexFormats.BLOCK;
 				int size = format.getIntegerSize();
-				int uv = format.getUvOffsetById(0)/4;
+				int uv = format.getOffset(0)/4;
 				// extract position info from the quad
 				for(int i = 0; i < 4; i++)
 				{
@@ -1363,7 +1366,7 @@ public class ClientUtils
 			int[] vData = quad.getVertexData();
 			VertexFormat format = DefaultVertexFormats.BLOCK;
 			int size = format.getIntegerSize();
-			int uv = format.getUvOffsetById(0)/4;
+			int uv = format.getOffset(0)/4;
 			for(int i = 0; i < 4; ++i)
 			{
 				renderer

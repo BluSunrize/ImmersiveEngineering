@@ -138,7 +138,7 @@ public class ClocheRenderHelper
 				Matrix4f cropMatrix = new Matrix4f();
 				cropMatrix.setIdentity();
 				cropMatrix.setTranslation(0.75f-scale/2, .5625f-scale, 0.5f-scale/2);
-				cropMatrix.setScale(scale);
+				cropMatrix.mul(scale);
 				return ImmutableList.of(Pair.of(this.attachedStemBlock.getDefaultState(), new TransformationMatrix(stemMatrix)),
 						Pair.of(this.cropBlock.getDefaultState(), new TransformationMatrix(cropMatrix)));
 			}

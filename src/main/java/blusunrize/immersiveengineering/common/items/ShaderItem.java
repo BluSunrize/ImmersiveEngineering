@@ -26,6 +26,7 @@ import net.minecraft.block.BannerBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.WallBannerBlock;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemGroup;
@@ -234,7 +235,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 				ShaderLayer[] layers = sCase.getLayers();
 				ArrayList<ResourceLocation> list = new ArrayList<>(layers.length);
 				for(ShaderLayer layer : layers)
-					list.add(layer.getTexture());
+					list.add(layer.getTexture().getTextureLocation());
 				return list;
 			}
 		}

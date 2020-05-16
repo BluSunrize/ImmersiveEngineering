@@ -59,7 +59,7 @@ public class ShaderHelper
 		// TEMA: here's where you'd stick in any config option for enabling/disabling the shaders... don't know how it would interact with the shader mod, etc.
 
 		//return ConfigHandler.useShaders && OpenGlHelper.shadersSupported;
-		return GLX.usePostProcess;
+		return false;
 	}
 
 	// Most of the code taken from the LWJGL wiki

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.shader.impl.*;
 import blusunrize.immersiveengineering.common.IERecipes;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.client.renderer.model.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -218,7 +219,7 @@ public class ShaderRegistry
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_uncoloured"), 0xffffffff));
-		list.add(new ShaderLayer(null, 0xffffffff));//final pass is for drill head and augers
+		list.add(new ShaderLayer(((Material)null), 0xffffffff));//final pass is for drill head and augers
 		ShaderCaseDrill shader = new ShaderCaseDrill(list);
 		return registerShaderCase(name, shader, rarity);
 	}
@@ -249,7 +250,7 @@ public class ShaderRegistry
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_uncoloured"), 0xffffffff));
-		list.add(new ShaderLayer(null, 0xffffffff));//final pass is for drill head and augers
+		list.add(new ShaderLayer(((Material)null), 0xffffffff));//final pass is for drill head and augers
 		ShaderCaseBuzzsaw shader = new ShaderCaseBuzzsaw(list);
 		return registerShaderCase(name, shader, rarity);
 	}

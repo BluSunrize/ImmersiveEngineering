@@ -64,7 +64,6 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 		ClientUtils.bindAtlas();
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translated(x, y, z);
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.scalef(.75f, .75f, .75f);
 
@@ -92,12 +91,12 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 			GlStateManager.shadeModel(7424);
 
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-blockPos.getX(), -blockPos.getY(), -blockPos.getZ());
+		worldRenderer.pos(-blockPos.getX(), -blockPos.getY(), -blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
 		blockRenderer.getBlockModelRenderer().renderModel(entity.getEntityWorld(), model, state, blockPos,
 				matrixStackIn, bufferIn.getBuffer(RenderType.getSolid()), true,
 				entity.getEntityWorld().rand, 0, 0, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
-		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
+		worldRenderer.pos(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 
 		ClientUtils.mc().gameSettings.ambientOcclusionStatus = aoStat;

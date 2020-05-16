@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import com.mojang.blaze3d.platform.TextureUtil;
+
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.Texture;
@@ -63,20 +63,19 @@ public class IEShaderLayerCompositeTexture extends Texture
 
 				try
 				{
-					String texPath = this.layers[layer].getTexture().getPath();
+					String texPath = this.layers[layer].getTexture().getTextureLocation().getPath();
 
 					if(!texPath.startsWith("textures/"))
 						texPath = "textures/"+texPath;
 					if(!texPath.endsWith(".png"))
 						texPath += ".png";
-					String texture = this.layers[layer].getTexture().getNamespace()+":"+texPath;
+					String texture = this.layers[layer].getTexture().getTextureLocation().getNamespace()+":"+texPath;
 					Vector4f colour = this.layers[layer].getColor();
 
 					iresource1 = resourceManager.getResource(new ResourceLocation(texture));
 					NativeImage texureImage = NativeImage.read(iresource1.getInputStream());
 
-					float[] mod = new float[4];
-					colour.get(mod);
+					float[] mod = new float[]{colour.getW(), colour.getX(), colour.getY(), colour.getZ()};
 					if(mod[3] < 0.2)
 						mod[3] *= 2.5f;
 

@@ -13,6 +13,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
@@ -20,6 +21,7 @@ import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.IParticleData.IDeserializer;
@@ -104,7 +106,7 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 	{
 		TextureAtlasSprite sprite = ClientUtils.getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid));
 		if(sprite==null)
-			sprite = MissingTextureSprite.func_217790_a();
+			sprite = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(MissingTextureSprite.getLocation());
 		setSprite(sprite);
 		int argb = fluid.getFluid().getAttributes().getColor(fluid);
 		this.particleAlpha = ((argb >> 24)&255)/255f;

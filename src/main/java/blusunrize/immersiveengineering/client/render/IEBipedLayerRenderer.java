@@ -94,10 +94,4 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 			GlStateManager.popMatrix();
 		}
 	}
-
-	@Override
-	public boolean shouldCombineTextures()
-	{
-		return false;
-	}
 }

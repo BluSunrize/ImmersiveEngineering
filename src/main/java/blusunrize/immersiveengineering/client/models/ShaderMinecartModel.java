@@ -19,7 +19,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.entity.model.MinecartModel;
-import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
@@ -38,6 +37,7 @@ public class ShaderMinecartModel<T extends AbstractMinecartEntity> extends Minec
 	public ShaderMinecartModel(MinecartModel<T> model)
 	{
 		super();
+		/* TODO Fix Minecart Shaders
 		this.boxList.clear();
 		this.boxList.addAll(ClientUtils.copyModelRenderers(model, model.boxList));
 		this.sideModelsMirrored = ClientUtils.copyModelRenderers(model, model.boxList);
@@ -47,8 +47,10 @@ public class ShaderMinecartModel<T extends AbstractMinecartEntity> extends Minec
 			newCubes.add(new ModelBox(sideModelsMirrored.get(4), 0, 0, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
 		sideModelsMirrored.get(4).cubeList.clear();
 		sideModelsMirrored.get(4).cubeList.addAll(newCubes);
+		 */
 	}
 
+	/*
 	@Override
 	public void render(T entity, float f0, float f1, float f2, float f3, float f4, float f5)
 	{
@@ -103,4 +105,5 @@ public class ShaderMinecartModel<T extends AbstractMinecartEntity> extends Minec
 		else
 			super.render(entity, f0, f1, f2, f3, f4, f5);
 	}
+	 */
 }

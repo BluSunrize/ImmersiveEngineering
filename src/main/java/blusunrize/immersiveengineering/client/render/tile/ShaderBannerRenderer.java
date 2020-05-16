@@ -21,9 +21,10 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.tileentity.BannerTileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.tileentity.model.BannerModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -35,11 +36,17 @@ import java.util.HashMap;
 
 public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEntity>
 {
-	private final BannerModel bannerModel = new BannerModel();
+	private final ModelRenderer field_228833_a_ = BannerTileEntityRenderer.func_228836_a_();
+	private final ModelRenderer field_228834_c_ = new ModelRenderer(64, 64, 44, 0);
+	private final ModelRenderer field_228835_d_;
 
 	public ShaderBannerRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
+		this.field_228834_c_.addBox(-1.0F, -30.0F, -1.0F, 2.0F, 42.0F, 2.0F, 0.0F);
+		this.field_228835_d_ = new ModelRenderer(64, 64, 0, 42);
+		this.field_228835_d_.addBox(-10.0F, -32.0F, -1.0F, 20.0F, 2.0F, 2.0F, 0.0F);
+
 	}
 
 	@Override
@@ -50,7 +57,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 		if(!te.wall)
 		{
 			int orientation = te.getState().get(ShaderBannerStandingBlock.ROTATION);
-			matrixStack.translate((float)x+0.5F, (float)y+0.5F, (float)z+0.5F);
+			matrixStack.translate((float)0.5F, (float)0.5F, (float)0.5F);
 			float f1 = (float)(orientation*360)/16.0F;
 			matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -f1, true));
 			this.bannerModel.func_205057_b().showModel = true;

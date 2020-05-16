@@ -36,7 +36,6 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 		GlStateManager.pushMatrix();
 		GlStateManager.translated(0, 0.5F, 0);
-
 		if(entity.getFuse()-partialTicks+1 < 10)
 		{
 			float f = 1.0F-((float)entity.getFuse()-partialTicks+1.0F)/10.0F;

@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -180,19 +182,19 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 	}
 
 	@Override
-	public void render(T entity, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float scale)
+	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
 	{
-		if(entity instanceof LivingEntity)
+		if(entityTemp instanceof LivingEntity)
 		{
-			ItemStack chest = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
+			ItemStack chest = entityTemp.getItemStackFromSlot(EquipmentSlotType.CHEST);
 			ItemStack powerpack = null;
 			float storage = 0;
 			if(!chest.isEmpty()&&chest.getItem() instanceof PowerpackItem)
 				powerpack = chest;
 			else if(!chest.isEmpty()&&chest.getItem() instanceof ArmorItem&&ItemNBTHelper.hasKey(chest, "IE:Powerpack"))
 				powerpack = ItemNBTHelper.getItemStack(chest, "IE:Powerpack");
-			else if(IEBipedLayerRenderer.POWERPACK_PLAYERS.containsKey(entity.getUniqueID()))
-				powerpack = IEBipedLayerRenderer.POWERPACK_PLAYERS.get(entity.getUniqueID()).getLeft();
+			else if(IEBipedLayerRenderer.POWERPACK_PLAYERS.containsKey(entityTemp.getUniqueID()))
+				powerpack = IEBipedLayerRenderer.POWERPACK_PLAYERS.get(entityTemp.getUniqueID()).getLeft();
 
 			if(powerpack!=null)
 			{
@@ -203,7 +205,7 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 		}
 
 		GlStateManager.enableBlend();
-		super.render(entity, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
+		super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		GlStateManager.disableBlend();
 
 		ClientUtils.bindTexture("immersiveengineering:textures/block/wire.png");
@@ -211,10 +213,10 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 		GlStateManager.color3f(1, 1, 1);
 		for(Hand hand : Hand.values())
 		{
-			ItemStack stack = entity.getHeldItem(hand);
+			ItemStack stack = entityTemp.getHeldItem(hand);
 			if(!stack.isEmpty()&&EnergyHelper.isFluxRelated(stack))
 			{
-				boolean right = (hand==Hand.MAIN_HAND)==(entity.getPrimaryHand()==HandSide.RIGHT);
+				boolean right = (hand==Hand.MAIN_HAND)==(entityTemp.getPrimaryHand()==HandSide.RIGHT);
 				float angleX = (right?bipedRightArm: bipedLeftArm).rotateAngleX;
 				float angleZ = (right?bipedRightArm: bipedLeftArm).rotateAngleZ;
 				String cacheKey = keyFormat.format(angleX)+"_"+keyFormat.format(angleZ);

@@ -462,13 +462,6 @@ public class SkylineHookEntity extends Entity
 		return 1.0F;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public int getBrightnessForRender()
-	{
-		return 15728880;
-	}
-
 	@Override
 	public boolean canBeCollidedWith()
 	{

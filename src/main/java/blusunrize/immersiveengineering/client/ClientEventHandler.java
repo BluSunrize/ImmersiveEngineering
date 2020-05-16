@@ -303,14 +303,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			for(BlockPos obstruction : entry.getValue().getKey())
 			{
-				bb.setTranslation(obstruction.getX()-dx,
+				bb.pos(obstruction.getX()-dx,
 						obstruction.getY()-dy,
 						obstruction.getZ()-dz);
 				final double eps = 1e-3;
 				ClientUtils.renderBox(bb, -eps, -eps, -eps, 1+eps, 1+eps, 1+eps);
 			}
 		}
-		bb.setTranslation(0, 0, 0);
+		bb.pos(0, 0, 0);
 		tes.draw();
 	}
 
@@ -874,7 +874,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				GlStateManager.depthMask(false);
 
 				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder BufferBuilder = tessellator.getBuffer();
+				BufferBuilder bufferBuilder = tessellator.getBuffer();
 
 				Direction f = ((TurntableTileEntity)tile).getFacing();
 				double tx = pos.getX()+.5;
@@ -886,12 +886,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					ty += f.getYOffset();
 					tz += f.getZOffset();
 				}
-				BufferBuilder.setTranslation(tx, ty, tz);
+				bufferBuilder.pos(tx, ty, tz);
 
 				double angle = -player.ticksExisted%80/40d*Math.PI;
-				drawRotationArrows(tessellator, BufferBuilder, f, angle, ((TurntableTileEntity)tile).invert);
+				drawRotationArrows(tessellator, bufferBuilder, f, angle, ((TurntableTileEntity)tile).invert);
 
-				BufferBuilder.setTranslation(0, 0, 0);
+				bufferBuilder.pos(0, 0, 0);
 
 				GlStateManager.depthMask(true);
 				GlStateManager.enableTexture();
@@ -914,8 +914,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				GlStateManager.depthMask(false);
 
 				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder BufferBuilder = tessellator.getBuffer();
-				BufferBuilder.setTranslation(pos.getX(), pos.getY(), pos.getZ());
+				BufferBuilder bufferBuilder = tessellator.getBuffer();
+				bufferBuilder.pos(pos.getX(), pos.getY(), pos.getZ());
 				double[][] points = new double[4][];
 
 
@@ -943,16 +943,16 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					points[2] = new double[]{x, 1+f1, 0-f1};
 					points[3] = new double[]{x, 0-f1, 1+f1};
 				}
-				BufferBuilder.begin(1, DefaultVertexFormats.POSITION_COLOR);
+				bufferBuilder.begin(1, DefaultVertexFormats.POSITION_COLOR);
 				for(double[] point : points)
-					BufferBuilder.pos(point[0], point[1], point[2]).color(0, 0, 0, 0.4F).endVertex();
+					bufferBuilder.pos(point[0], point[1], point[2]).color(0, 0, 0, 0.4F).endVertex();
 				tessellator.draw();
 
-				BufferBuilder.begin(2, DefaultVertexFormats.POSITION_COLOR);
-				BufferBuilder.pos(points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
-				BufferBuilder.pos(points[2][0], points[2][1], points[2][2]).color(0, 0, 0, 0.4F).endVertex();
-				BufferBuilder.pos(points[1][0], points[1][1], points[1][2]).color(0, 0, 0, 0.4F).endVertex();
-				BufferBuilder.pos(points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
+				bufferBuilder.begin(2, DefaultVertexFormats.POSITION_COLOR);
+				bufferBuilder.pos(points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
+				bufferBuilder.pos(points[2][0], points[2][1], points[2][2]).color(0, 0, 0, 0.4F).endVertex();
+				bufferBuilder.pos(points[1][0], points[1][1], points[1][2]).color(0, 0, 0, 0.4F).endVertex();
+				bufferBuilder.pos(points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
 				tessellator.draw();
 
 				float xFromMid = side.getAxis()==Axis.X?0: (float)rtr.getHitVec().x-pos.getX()-.5f;
@@ -960,8 +960,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getHitVec().z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
 				Vec3d dir = new Vec3d(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
-				drawBlockOverlayArrow(tessellator, BufferBuilder, dir, side, targetedBB);
-				BufferBuilder.setTranslation(0, 0, 0);
+				drawBlockOverlayArrow(tessellator, bufferBuilder, dir, side, targetedBB);
+				bufferBuilder.pos(0, 0, 0);
 
 				GlStateManager.depthMask(true);
 				GlStateManager.enableTexture();
@@ -1102,9 +1102,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			chunkBorders = true;
 
 		float partial = event.getPartialTicks();
-		double px = TileEntityRendererDispatcher.staticPlayerX;
-		double py = TileEntityRendererDispatcher.staticPlayerY;
-		double pz = TileEntityRendererDispatcher.staticPlayerZ;
+		//TODO staticPlayerX?
+		//double px = TileEntityRendererDispatcher.staticPlayerX;
+		//double py = TileEntityRendererDispatcher.staticPlayerY;
+		//double pz = TileEntityRendererDispatcher.staticPlayerZ;
 		if(!FractalParticle.PARTICLE_FRACTAL_DEQUE.isEmpty())
 		{
 
@@ -1116,11 +1117,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
-			tessellator.getBuffer().setTranslation(-px, -py, -pz);
+			//tessellator.getBuffer().pos(-px, -py, -pz);
 			FractalParticle part;
 			while((part = FractalParticle.PARTICLE_FRACTAL_DEQUE.pollFirst())!=null)
 				part.render(tessellator, tessellator.getBuffer(), partial);
-			tessellator.getBuffer().setTranslation(0, 0, 0);
+			tessellator.getBuffer().pos(0, 0, 0);
 
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 			GlStateManager.enableCull();
@@ -1136,7 +1137,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			int y = Math.min((int)player.getPosY()-2, 0);//TODO player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
 			float h = (float)Math.max(32, player.getPosY()-y+4);
 			Tessellator tessellator = Tessellator.getInstance();
-			BufferBuilder BufferBuilder = tessellator.getBuffer();
+			BufferBuilder bufferBuilder = tessellator.getBuffer();
 
 			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
@@ -1146,28 +1147,28 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			float r = Lib.COLOUR_F_ImmersiveOrange[0];
 			float g = Lib.COLOUR_F_ImmersiveOrange[1];
 			float b = Lib.COLOUR_F_ImmersiveOrange[2];
-			BufferBuilder.setTranslation(chunkX-px, y+2-py, chunkZ-pz);
+			//bufferBuilder.setTranslation(chunkX-px, y+2-py, chunkZ-pz);
 			GlStateManager.lineWidth(5f);
-			BufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-			BufferBuilder.pos(0, 0, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, h, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 0, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, h, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 0, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, h, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 0, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, h, 16).color(r, g, b, .375f).endVertex();
+			bufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+			bufferBuilder.pos(0, 0, 0).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(0, h, 0).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(16, 0, 0).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(16, h, 0).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(16, 0, 16).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(16, h, 16).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(0, 0, 16).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(0, h, 16).color(r, g, b, .375f).endVertex();
 
-			BufferBuilder.pos(0, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 2, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 2, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 16).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(0, 2, 0).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(16, 2, 0).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(0, 2, 0).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(0, 2, 16).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(0, 2, 16).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(16, 2, 16).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(16, 2, 0).color(r, g, b, .375f).endVertex();
+			bufferBuilder.pos(16, 2, 16).color(r, g, b, .375f).endVertex();
 			tessellator.draw();
-			BufferBuilder.setTranslation(0, 0, 0);
+			bufferBuilder.pos(0, 0, 0);
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 			GlStateManager.enableCull();
 			GlStateManager.disableBlend();
@@ -1206,12 +1207,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					prev = next;
 				}
 			}
-			bb.setTranslation(0, 0, 0);
+			bb.pos(0, 0, 0);
 			tes.draw();
 			GlStateManager.lineWidth(oldLineWidth);
 			GlStateManager.enableBlend();
 			GlStateManager.color4f(1, 0, 0, .5F);
-			renderObstructingBlocks(bb, tes, px, py, pz);
+			//TODO staticPlayerX -Sky
+			//renderObstructingBlocks(bb, tes, px, py, pz);
 
 			GlStateManager.disableBlend();
 			GlStateManager.enableTexture();
