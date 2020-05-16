@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.common.data.models;
 
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.gson.*;
-import net.minecraft.client.renderer.Quat4f;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
-import net.minecraftforge.client.model.ForgeBlockStateV1.TRSRDeserializer;
 import net.minecraftforge.client.model.generators.ModelBuilder.Perspective;
+import net.minecraftforge.common.model.TransformationHelper;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -64,7 +64,7 @@ public class TransformationMap
 	public void addFromJson(String json)
 	{
 		Gson GSON = new GsonBuilder()
-				.registerTypeAdapter(TransformationMatrix.class, TRSRDeserializer.INSTANCE)
+				.registerTypeAdapter(TransformationMatrix.class, new TransformationHelper.Deserializer())
 				.registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
 				.create();
 		JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
@@ -88,7 +88,7 @@ public class TransformationMap
 				if(vanilla)
 				{
 					ItemTransformVec3f vanillaTransform = GSON.fromJson(forType, ItemTransformVec3f.class);
-					transform = TransformationMatrix.from(vanillaTransform);
+					transform = TransformationHelper.toTransformation(vanillaTransform);
 				}
 				else
 					transform = GSON.fromJson(forType, TransformationMatrix.class);
@@ -96,7 +96,9 @@ public class TransformationMap
 			else
 				transform = TransformationMatrix.identity();
 			if(type.map("no_corner_offset"::equals).orElse(false))
-				transform = TransformationMatrix.blockCornerToCenter(transform);
+				transform = transform.compose(new TransformationMatrix(
+						new Vector3f(-0.5F, -0.5F, -0.5F), null, null, null
+				));
 			transforms.put(perspective, transform);
 		}
 		TransformationMatrix baseTransform;
@@ -126,28 +128,28 @@ public class TransformationMap
 	{
 		JsonObject result = new JsonObject();
 		result.add("translation", toJson(trsr.getTranslation()));
-		result.add("rotation", toJson(trsr.getLeftRot()));
+		result.add("rotation", toJson(trsr.getRotationLeft()));
 		result.add("scale", toJson(trsr.getScale()));
 		result.add("post-rotation", toJson(trsr.getRightRot()));
 		main.add(getName(type), result);
 	}
 
-	private static JsonArray toJson(Quat4f v)
+	private static JsonArray toJson(Quaternion v)
 	{
 		JsonArray ret = new JsonArray();
-		ret.add(v.x);
-		ret.add(v.y);
-		ret.add(v.z);
-		ret.add(v.w);
+		ret.add(v.getX());
+		ret.add(v.getY());
+		ret.add(v.getZ());
+		ret.add(v.getW());
 		return ret;
 	}
 
 	private static JsonArray toJson(Vector3f v)
 	{
 		JsonArray ret = new JsonArray();
-		ret.add(v.x);
-		ret.add(v.y);
-		ret.add(v.z);
+		ret.add(v.getX());
+		ret.add(v.getY());
+		ret.add(v.getZ());
 		return ret;
 	}
 

@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.platform.GLX;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -35,10 +34,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRotation;
+import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.model.ModelRenderer.ModelBox;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -52,13 +49,16 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -286,7 +286,7 @@ public class ClientUtils
 
 	public static TextureAtlasSprite getSprite(ResourceLocation rl)
 	{
-		return mc().getTextureMap().getSprite(rl);
+		return mc().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE).getSprite(rl);
 	}
 
 	public static FontRenderer font()
@@ -384,13 +384,13 @@ public class ClientUtils
 		return sound;
 	}
 
-	public static List<RendererModel> copyModelRenderers(Model model, List<RendererModel> oldRenderers)
+	public static List<ModelRenderer> copyModelRenderers(Model model, List<ModelRenderer> oldRenderers)
 	{
-		List<RendererModel> newRenderers = new ArrayList<>(oldRenderers.size());
+		List<ModelRenderer> newRenderers = new ArrayList<>(oldRenderers.size());
 		for(int i = 0; i < oldRenderers.size(); i++)
 		{
-			RendererModel oldM = oldRenderers.get(i);
-			RendererModel newM = new RendererModel(model, oldM.boxName);
+			ModelRenderer oldM = oldRenderers.get(i);
+			ModelRenderer newM = new ModelRenderer(model);
 			// remove the freshly added box, because the constructor adds it
 			model.boxList.remove(model.boxList.size()-1);
 			int toX = oldM.textureOffsetX;
@@ -399,14 +399,15 @@ public class ClientUtils
 			newM.mirror = oldM.mirror;
 			newM.cubeList.clear();
 			for(ModelBox cube : oldM.cubeList)
-				newM.cubeList.add(new ModelBox(newM, toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
+				newM.cubeList.add(new ModelBox(
+						newM, toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
 			newM.setRotationPoint(oldM.rotationPointX, oldM.rotationPointY, oldM.rotationPointZ);
 			newM.rotateAngleX = oldM.rotateAngleX;
 			newM.rotateAngleY = oldM.rotateAngleY;
 			newM.rotateAngleZ = oldM.rotateAngleZ;
-			newM.offsetX = oldM.offsetX;
-			newM.offsetY = oldM.offsetY;
-			newM.offsetZ = oldM.offsetZ;
+			newM.rotationPointX = oldM.rotationPointX;
+			newM.rotationPointY = oldM.rotationPointY;
+			newM.rotationPointZ = oldM.rotationPointZ;
 			newRenderers.add(newM);
 		}
 		return newRenderers;
@@ -469,14 +470,14 @@ public class ClientUtils
 	//Cheers boni =P
 	public static void drawBlockDamageTexture(Tessellator tessellatorIn, BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
 	{
-		double d0 = entityIn.lastTickPosX+(entityIn.posX-entityIn.lastTickPosX)*(double)partialTicks;
-		double d1 = entityIn.lastTickPosY+(entityIn.posY-entityIn.lastTickPosY)*(double)partialTicks;
-		double d2 = entityIn.lastTickPosZ+(entityIn.posZ-entityIn.lastTickPosZ)*(double)partialTicks;
+		double d0 = entityIn.lastTickPosX+(entityIn.getPosX()-entityIn.lastTickPosX)*(double)partialTicks;
+		double d1 = entityIn.lastTickPosY+(entityIn.getPosY()-entityIn.lastTickPosY)*(double)partialTicks;
+		double d2 = entityIn.lastTickPosZ+(entityIn.getPosZ()-entityIn.lastTickPosZ)*(double)partialTicks;
 		TextureManager renderEngine = Minecraft.getInstance().textureManager;
 		int progress = (int)(Minecraft.getInstance().playerController.curBlockDamageMP*10f)-1; // 0-10
 		if(progress < 0)
 			return;
-		renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+		renderEngine.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 		//preRenderDamagedBlocks BEGIN
 		GlStateManager.blendFuncSeparate(774, 768, 1, 0);
 		GlStateManager.enableBlend();
@@ -577,10 +578,10 @@ public class ClientUtils
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(x, y+h, 0).tex(uv[0], uv[3]).endVertex();
-		worldrenderer.pos(x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();
-		worldrenderer.pos(x+w, y, 0).tex(uv[1], uv[2]).endVertex();
-		worldrenderer.pos(x, y, 0).tex(uv[0], uv[2]).endVertex();
+		worldrenderer.pos(x, y+h, 0).tex((float)uv[0], (float)uv[3]).endVertex();
+		worldrenderer.pos(x+w, y+h, 0).tex((float)uv[1], (float)uv[3]).endVertex();
+		worldrenderer.pos(x+w, y, 0).tex((float)uv[1], (float)uv[2]).endVertex();
+		worldrenderer.pos(x, y, 0).tex((float)uv[0], (float)uv[2]).endVertex();
 		tessellator.draw();
 	}
 
@@ -936,8 +937,9 @@ public class ClientUtils
 	}
 
 	@Nonnull
-	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, Direction facing, Function<Vec3d[], Vec3d[]> vertexTransformer, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrixIn, Direction facing, Function<Vec3d[], Vec3d[]> vertexTransformer, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
+		TransformationMatrix matrix = matrixIn.toTransformationMatrix();
 		HashSet<BakedQuad> quads = new HashSet<>();
 		if(vertexTransformer==null)
 			vertexTransformer = v -> v;
@@ -1024,10 +1026,10 @@ public class ClientUtils
 
 	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
-		BakedQuadBuilder builder = new BakedQuadBuilder(format);
+		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
 		builder.setTexture(sprite);
-		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(), facing.getDirectionVec().getZ());
+		Vec3d faceNormal = new Vec3d(facing.getDirectionVec());
 		int vId = invert?3: 0;
 		int u = vId > 1?2: 0;
 		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
@@ -1086,24 +1088,6 @@ public class ClientUtils
 		return ((int)Math.floor(a+offset)) >> 4!=((int)Math.floor(b+offset)) >> 4;
 	}
 
-	public static void renderQuads(Collection<BakedQuad> quads, float brightness, float red, float green, float blue)
-	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder BufferBuilder = tessellator.getBuffer();
-		for(BakedQuad bakedquad : quads)
-		{
-			BufferBuilder.begin(7, DefaultVertexFormats.BLOCK);
-			BufferBuilder.addVertexData(bakedquad.getVertexData());
-			if(bakedquad.hasTintIndex())
-				BufferBuilder.putColorRGB_F4(red*brightness, green*brightness, blue*brightness);
-			else
-				BufferBuilder.putColorRGB_F4(brightness, brightness, brightness);
-			Vec3i vec3i = bakedquad.getFace().getDirectionVec();
-			BufferBuilder.putNormal((float)vec3i.getX(), (float)vec3i.getY(), (float)vec3i.getZ());
-			tessellator.draw();
-		}
-	}
-
 	public static ResourceLocation getSideTexture(@Nonnull ItemStack stack, Direction side)
 	{
 		IBakedModel model = mc().getItemRenderer().getItemModelWithOverrides(stack, null, null);
@@ -1123,7 +1107,7 @@ public class ClientUtils
 			quads = model.getQuads(state, null, Utils.RAND);
 		if(quads==null||quads.isEmpty())//no quads at all D:
 			return null;
-		return quads.get(0).getSprite().getName();
+		return quads.get(0).func_187508_a().getName();
 	}
 
 	public static Vector4f pulseRGBAlpha(Vector4f rgba, int tickrate, float min, float max)
@@ -1131,8 +1115,7 @@ public class ClientUtils
 		float f_alpha = mc().player.ticksExisted%(tickrate*2)/(float)tickrate;
 		if(f_alpha > 1)
 			f_alpha = 2-f_alpha;
-		rgba.w = MathHelper.clamp(f_alpha, min, max);
-		return rgba;
+		return new Vector4f(rgba.getX(), rgba.getY(), rgba.getZ(), MathHelper.clamp(f_alpha, min, max));
 	}
 
 	public static void renderBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1)
@@ -1286,7 +1269,7 @@ public class ClientUtils
 			for(BakedQuad quad : quads)
 			{
 				int[] vData = quad.getVertexData();
-				VertexFormat format = quad.getFormat();
+				VertexFormat format = DefaultVertexFormats.BLOCK;
 				int size = format.getIntegerSize();
 				int uv = format.getUvOffsetById(0)/4;
 				// extract position info from the quad
@@ -1364,7 +1347,7 @@ public class ClientUtils
 
 	public static void renderModelTESRFast(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, int color)
 	{
-		int brightness = world.getCombinedLight(pos, 0);
+		int brightness = world.getLightSubtracted(pos, 0);
 		int l1 = (brightness >> 0x10)&0xFFFF;
 		int l2 = brightness&0xFFFF;
 		int rgba[] = {255, 255, 255, 255};
@@ -1377,7 +1360,7 @@ public class ClientUtils
 		for(BakedQuad quad : quads)
 		{
 			int[] vData = quad.getVertexData();
-			VertexFormat format = quad.getFormat();
+			VertexFormat format = DefaultVertexFormats.BLOCK;
 			int size = format.getIntegerSize();
 			int uv = format.getUvOffsetById(0)/4;
 			for(int i = 0; i < 4; ++i)
@@ -1395,46 +1378,15 @@ public class ClientUtils
 		}
 	}
 
-	//Taken from TESR
 	public static void setLightmapDisabled(boolean disabled)
 	{
-		GlStateManager.activeTexture(GLX.GL_TEXTURE1);
-
-		if(disabled)
-		{
-			GlStateManager.disableTexture();
-		}
-		else
-		{
-			GlStateManager.enableTexture();
-		}
-
-		GlStateManager.activeTexture(GLX.GL_TEXTURE0);
+		//TODO
+		throw new UnsupportedOperationException();
 	}
-
-	@Nullable
-	private static Boolean lightmapState;
 
 	public static void toggleLightmap(boolean pre, boolean disabled)
 	{
-		GlStateManager.activeTexture(GLX.GL_TEXTURE1);
-		if(pre)
-		{
-			lightmapState = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
-			if(disabled)
-				GlStateManager.disableTexture();
-			else
-				GlStateManager.enableTexture();
-		}
-		else if(lightmapState!=null)
-		{
-			if(lightmapState)
-				GlStateManager.enableTexture();
-			else
-				GlStateManager.disableTexture();
-			lightmapState = null;
-		}
-		GlStateManager.activeTexture(GLX.GL_TEXTURE0);
+		throw new UnsupportedOperationException();
 	}
 
 	public static boolean isSneakKeyPressed()
@@ -1444,7 +1396,7 @@ public class ClientUtils
 		KeyBinding keybind = Minecraft.getInstance().gameSettings.keyBindSneak;
 		Input keyCode = keybind.getKey();
 		if(keyCode.getType()==InputMappings.Type.KEYSYM&&keyCode.getKeyCode()!=InputMappings.INPUT_INVALID.getKeyCode())
-			return InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), keyCode.getKeyCode());
+			return InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), keyCode.getKeyCode());
 		else
 			return false;
 	}

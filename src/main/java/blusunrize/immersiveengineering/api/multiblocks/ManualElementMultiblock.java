@@ -10,30 +10,25 @@ package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
-import net.minecraft.world.ILightReader;
-import net.minecraft.world.LightType;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -180,8 +175,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 	@Override
 	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
-		boolean openBuffer = false;
-		int stackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
 		try
 		{
 			multiblock.getSize();
@@ -200,25 +193,27 @@ public class ManualElementMultiblock extends SpecialManualElements
 				int structureWidth = renderInfo.structureWidth;
 				int structureHeight = renderInfo.structureHeight;
 
-				GlStateManager.enableRescaleNormal();
-				GlStateManager.pushMatrix();
+				MatrixStack transform = new MatrixStack();
+				IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+				transform.push();
+				RenderSystem.enableRescaleNormal();
 				RenderHelper.enableStandardItemLighting();
 
 				final BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
 
-				GlStateManager.translated(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
-				GlStateManager.scaled(scale, -scale, 1);
-				GlStateManager.rotated(rotX, 1, 0, 0);
-				GlStateManager.rotated(90+rotY, 0, 1, 0);
+				transform.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
+				transform.scale(scale, -scale, 1);
+				transform.rotate(new Quaternion(rotX, 0, 0, true));
+				transform.rotate(new Quaternion(0, 90+rotY, 0, true));
 
-				GlStateManager.translatef((float)structureLength/-2f, (float)structureHeight/-2f, (float)structureWidth/-2f);
+				transform.translate(structureLength/-2f, structureHeight/-2f, structureWidth/-2f);
 
-				GlStateManager.disableLighting();
+				RenderSystem.disableLighting();
 
 				if(Minecraft.isAmbientOcclusionEnabled())
-					GlStateManager.shadeModel(GL11.GL_SMOOTH);
+					RenderSystem.shadeModel(GL11.GL_SMOOTH);
 				else
-					GlStateManager.shadeModel(GL11.GL_FLAT);
+					RenderSystem.shadeModel(GL11.GL_FLAT);
 
 				gui.getMinecraft().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 				int idx = 0;
@@ -233,37 +228,31 @@ public class ManualElementMultiblock extends SpecialManualElements
 								BlockState state = blockAccess.getBlockState(pos);
 								if(!state.isAir(blockAccess, pos))
 								{
-									if(pos.equals(multiblock.getTriggerOffset()))
-										//TODO this currently does not work correctly, but it would be a nice feature IMO
-										GlStateManager.color3f(1, 0, 0);
-									GlStateManager.translatef(l, h, w);
+									transform.push();
+									transform.translate(l, h, w);
 									boolean b = multiblock.overwriteBlockRender(state, idx++);
-									GlStateManager.translatef(-l, -h, -w);
 									if(!b)
 									{
-										Tessellator tessellator = Tessellator.getInstance();
-										BufferBuilder buffer = tessellator.getBuffer();
-										buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-										openBuffer = true;
 										IModelData modelData = EmptyModelData.INSTANCE;
 										TileEntity te = blockAccess.getTileEntity(pos);
 										if(te!=null)
 											modelData = te.getModelData();
 
-										blockRender.renderBlock(state, pos, blockAccess, buffer, Utils.RAND, modelData);
-										tessellator.draw();
-										openBuffer = false;
+										blockRender.renderBlock(state, transform, buffer,
+												//TODO correct combinedLight value
+												0, 0, modelData);
 									}
-									GlStateManager.color3f(1, 1, 1);
+									transform.pop();
 								}
 							}
 
-				GlStateManager.popMatrix();
+				transform.pop();
+				buffer.finish();
 
 				RenderHelper.disableStandardItemLighting();
-				GlStateManager.disableRescaleNormal();
+				RenderSystem.disableRescaleNormal();
 
-				GlStateManager.enableBlend();
+				RenderSystem.enableBlend();
 				RenderHelper.disableStandardItemLighting();
 
 				if(componentTooltip!=null)
@@ -285,19 +274,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 		} catch(Exception e)
 		{
 			e.printStackTrace();
-		}
-		if(openBuffer)
-			try
-			{
-				Tessellator.getInstance().draw();
-			} catch(Exception e)
-			{
-			}
-		int newStackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
-		while(newStackDepth > stackDepth)
-		{
-			GlStateManager.popMatrix();
-			newStackDepth--;
 		}
 	}
 
@@ -325,7 +301,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		return yOffTotal;
 	}
 
-	static class MultiblockBlockAccess implements ILightReader
+	static class MultiblockBlockAccess implements IBlockReader
 	{
 		private final MultiblockRenderInfo data;
 		private final Map<BlockPos, TileEntity> tiles;
@@ -388,12 +364,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 		public IFluidState getFluidState(BlockPos pos)
 		{
 			return getBlockState(pos).getFluidState();
-		}
-
-		@Override
-		public int getLightFor(LightType type, BlockPos pos)
-		{
-			return 0;
 		}
 	}
 

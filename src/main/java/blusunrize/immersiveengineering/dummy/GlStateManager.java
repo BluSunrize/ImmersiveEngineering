@@ -192,6 +192,46 @@ public class GlStateManager
 		throw new UnsupportedOperationException();
 	}
 
+	public static void polygonOffset(float v, float v1)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public static void enablePolygonOffset()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public static void disablePolygonOffset()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public static void fogStart(float v)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public static void fogMode(FogMode linear)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public static void fogEnd(float f1)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public static void fogDensity(float v)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public static void fogi(int i, int i1)
+	{
+		throw new UnsupportedOperationException();
+	}
+
 	public enum SourceFactor
 	{
 		SRC_ALPHA,
@@ -202,5 +242,10 @@ public class GlStateManager
 	{
 		ONE_MINUS_SRC_ALPHA,
 		ZERO
+	}
+
+	public enum FogMode
+	{
+		LINEAR
 	}
 }

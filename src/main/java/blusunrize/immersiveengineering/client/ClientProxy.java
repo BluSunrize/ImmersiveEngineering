@@ -18,8 +18,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.font.IEFontReloadListener;
 import blusunrize.immersiveengineering.client.font.IEFontRender;
@@ -85,7 +83,6 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.MinecartModel;
-import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -96,7 +93,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ItemParticleData;
@@ -129,7 +125,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -623,24 +618,6 @@ public class ClientProxy extends CommonProxy
 				{
 				}
 			return b==null?false: b;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean drawConveyorInGui(String conveyor, Direction facing)
-	{
-		IConveyorBelt con = ConveyorHandler.getConveyor(new ResourceLocation(conveyor), null);
-		if(con!=null)
-		{
-			GlStateManager.pushMatrix();
-			List<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, ClientUtils.toModelRotation(facing).getRotation(),
-					ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true},
-					new boolean[]{true, true}, null, DyeColor.WHITE);
-//			GlStateManager.translate(0, 0, 1);
-			ClientUtils.renderQuads(quads, 1, 1, 1, 1);
-			GlStateManager.popMatrix();
-			return true;
 		}
 		return false;
 	}

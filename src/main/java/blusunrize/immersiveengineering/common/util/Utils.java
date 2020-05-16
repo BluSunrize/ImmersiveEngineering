@@ -394,9 +394,9 @@ public class Utils
 		else if(dir==Direction.EAST&&f.getAxis()!=Axis.Y)
 			return f.rotateY();
 		else if(dir==Direction.DOWN&&f.getAxis()!=Axis.Y)
-			return f.rotateAround(Axis.X);
+			return DirectionUtils.rotateAround(f, Axis.X);
 		else if(dir==Direction.UP&&f.getAxis()!=Axis.X)
-			return f.rotateAround(Axis.X).getOpposite();
+			return DirectionUtils.rotateAround(f, Axis.X).getOpposite();
 		return f;
 	}
 

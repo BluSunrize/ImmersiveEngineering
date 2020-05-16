@@ -19,7 +19,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -39,103 +39,103 @@ import java.util.concurrent.TimeUnit;
  */
 public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 {
-	public RendererModel[] modelParts;
-	public RendererModel[] colouredParts;
+	public ModelRenderer[] modelParts;
+	public ModelRenderer[] colouredParts;
 
 	public ModelPowerpack(float modelSize, float p_i1149_2_, int textureWidthIn, int textureHeightIn)
 	{
 		super(modelSize, p_i1149_2_, textureWidthIn, textureHeightIn);
-		modelParts = new RendererModel[8];
-		colouredParts = new RendererModel[4];
+		modelParts = new ModelRenderer[8];
+		colouredParts = new ModelRenderer[4];
 
-		this.modelParts[0] = new RendererModel(this, 40, 0);
+		this.modelParts[0] = new ModelRenderer(this, 40, 0);
 		this.modelParts[0].addBox(-4f, -5f, -2f, 8, 10, 3, 0);
 		this.modelParts[0].setRotationPoint(0, 5, 4);
 		this.bipedBody.addChild(modelParts[0]);
 
-		this.modelParts[1] = new RendererModel(this, 12, 0);
+		this.modelParts[1] = new ModelRenderer(this, 12, 0);
 		this.modelParts[1].addBox(-3f, -2f, -2f, 6, 4, 4, 0);
 		this.modelParts[1].setRotationPoint(0, 12, 4f);
 		this.bipedBody.addChild(modelParts[1]);
 
-		this.modelParts[2] = new RendererModel(this, 0, 0);
+		this.modelParts[2] = new ModelRenderer(this, 0, 0);
 		this.modelParts[2].addBox(-1f, -4f, -1f, 2, 8, 2, 0);
 		this.modelParts[2].setRotationPoint(-5f, 5, 3f);
 		this.bipedBody.addChild(modelParts[2]);
 
-		this.modelParts[3] = new RendererModel(this, 0, 0);
+		this.modelParts[3] = new ModelRenderer(this, 0, 0);
 		this.modelParts[3].addBox(-1f, -4.0f, -1f, 2, 8, 2, 0);
 		this.modelParts[3].setRotationPoint(5f, 5, 3f);
 		this.modelParts[3].rotateAngleZ = 3.14159f;
 		this.bipedBody.addChild(modelParts[3]);
 
 
-		RendererModel gauge = new RendererModel(this, 40, 13);
+		ModelRenderer gauge = new ModelRenderer(this, 40, 13);
 		gauge.addBox(-.5f, -1.5f, -.5f, 1, 3, 1, 0);
 		gauge.setRotationPoint(-3f, 5.5f, 5f);
 		this.bipedBody.addChild(gauge);
 
-		gauge = new RendererModel(this, 40, 13);
+		gauge = new ModelRenderer(this, 40, 13);
 		gauge.addBox(-.5f, -1.5f, -.5f, 1, 3, 1, 0);
 		gauge.setRotationPoint(1f, 5.5f, 5f);
 		this.bipedBody.addChild(gauge);
 
-		gauge = new RendererModel(this, 44, 13);
+		gauge = new ModelRenderer(this, 44, 13);
 		gauge.addBox(-2f, -.5f, -.5f, 3, 1, 1, 0);
 		gauge.setRotationPoint(-.5f, 3.5f, 5f);
 		this.bipedBody.addChild(gauge);
 
-		gauge = new RendererModel(this, 44, 13);
+		gauge = new ModelRenderer(this, 44, 13);
 		gauge.addBox(-2f, -.5f, -.5f, 3, 1, 1, 0);
 		gauge.setRotationPoint(-.5f, 7.5f, 5f);
 		this.bipedBody.addChild(gauge);
 
-		this.modelParts[7] = new RendererModel(this, 52, 14);
+		this.modelParts[7] = new ModelRenderer(this, 52, 14);
 		this.modelParts[7].addBox(-.5f, -3.5f, -.5f, 1, 4, 1, -.25f);
 		this.modelParts[7].setRotationPoint(-1f, 7.625f, 5f);
 		this.modelParts[7].rotateAngleZ = 0.7853975f;
 		this.bipedBody.addChild(modelParts[7]);
 
-		RendererModel connector = new RendererModel(this, 17, 9);
+		ModelRenderer connector = new ModelRenderer(this, 17, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 3, 3, 3, 0);
 		connector.setRotationPoint(-4.5f, 0f, 0f);
 		this.modelParts[1].addChild(connector);
 
-		connector = new RendererModel(this, 17, 9);
+		connector = new ModelRenderer(this, 17, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 3, 3, 3, -.375f);
 		connector.setRotationPoint(-6f, 0f, 0);
 		this.modelParts[1].addChild(connector);
 
-		connector = new RendererModel(this, 29, 9);
+		connector = new ModelRenderer(this, 29, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 1, 3, 3, 0);
 		connector.setRotationPoint(-6.25f, 0f, 0);
 		this.modelParts[1].addChild(connector);
 
-		connector = new RendererModel(this, 12, 8);
+		connector = new ModelRenderer(this, 12, 8);
 		connector.addBox(-.5f, -1f, -1f, 2, 2, 2, 0);
 		connector.setRotationPoint(-7.5f, 0f, 0f);
 		this.modelParts[1].addChild(connector);
 
 
-		connector = new RendererModel(this, 17, 9);
+		connector = new ModelRenderer(this, 17, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 3, 3, 3, 0);
 		connector.setRotationPoint(4.5f, 0f, 0f);
 		connector.rotateAngleY = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
-		connector = new RendererModel(this, 17, 9);
+		connector = new ModelRenderer(this, 17, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 3, 3, 3, -.375f);
 		connector.setRotationPoint(6f, 0f, 0);
 		connector.rotateAngleY = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
-		connector = new RendererModel(this, 29, 9);
+		connector = new ModelRenderer(this, 29, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 1, 3, 3, 0);
 		connector.setRotationPoint(6.25f, 0f, 0);
 		connector.rotateAngleY = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
-		connector = new RendererModel(this, 12, 8);
+		connector = new ModelRenderer(this, 12, 8);
 		connector.addBox(-.5f, -1f, -1f, 2, 2, 2, 0);
 		connector.setRotationPoint(7.5f, 0f, 0f);
 		connector.rotateAngleY = 3.14159f;
@@ -144,39 +144,39 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 		for(int i = 0; i < 3; i++)
 		{
 			float pos = 3.125f-i*2.25f;
-			RendererModel tube = new RendererModel(this, 56, 19);
+			ModelRenderer tube = new ModelRenderer(this, 56, 19);
 			tube.addBox(-1f, -1f, -1f, 2, 2, 2, -.25f);
 			tube.setRotationPoint(pos, 1, 5);
 			tube.rotateAngleX = (float)Math.toRadians(-45);
 			this.bipedBody.addChild(tube);
 
-			RendererModel tube2 = new RendererModel(this, 52, 18);
+			ModelRenderer tube2 = new ModelRenderer(this, 52, 18);
 			tube2.addBox(-.5f, -2f, -.5f, 1, 3, 1, 0);
 			tube2.setRotationPoint(0, -.5f, 0);
 			tube.addChild(tube2);
 
-			tube2 = new RendererModel(this, 56, 15);
+			tube2 = new ModelRenderer(this, 56, 15);
 			tube2.addBox(-1f, -2f, -1f, 2, 2, 2, 0);
 			tube2.setRotationPoint(0, -.75f, 0);
 			tube.addChild(tube2);
 
-			tube2 = new RendererModel(this, 56, 13);
+			tube2 = new ModelRenderer(this, 56, 13);
 			tube2.addBox(-.5f, -1f, -.5f, 1, 1, 1, 0);
 			tube2.setRotationPoint(0, -2.25f, 0);
 			tube.addChild(tube2);
 
-			tube2 = new RendererModel(this, 56, 13);
+			tube2 = new ModelRenderer(this, 56, 13);
 			tube2.addBox(-.5f, -1f, -.5f, 1, 1, 1, -.25f);
 			tube2.setRotationPoint(0, -3f, 0);
 			tube.addChild(tube2);
 		}
 
-		this.bipedHead.isHidden = true;
-		this.bipedHeadwear.isHidden = true;
-		this.bipedLeftArm.isHidden = true;
-		this.bipedRightArm.isHidden = true;
-		this.bipedLeftLeg.isHidden = true;
-		this.bipedRightLeg.isHidden = true;
+		this.bipedHead.showModel = false;
+		this.bipedHeadwear.showModel = false;
+		this.bipedLeftArm.showModel = false;
+		this.bipedRightArm.showModel = false;
+		this.bipedLeftLeg.showModel = false;
+		this.bipedRightLeg.showModel = false;
 	}
 
 	@Override

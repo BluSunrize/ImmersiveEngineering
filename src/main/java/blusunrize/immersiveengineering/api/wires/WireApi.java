@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -109,7 +110,7 @@ public final class WireApi
 		//TODO use more appropriate event
 		public void onModelBake(ModelBakeEvent evt)
 		{
-			tex = Minecraft.getInstance().getTextureMap().getSprite(texLoc);
+			tex = Minecraft.getInstance().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE).getSprite(texLoc);
 		}
 	}
 }

@@ -281,7 +281,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				{
 					coilPos = coilPos.add(f.getXOffset()*.375, f.getYOffset()*.375, f.getZOffset()*.375);
 					//random side offset
-					f = f.rotateAround(getFacing().getAxis());
+					f = DirectionUtils.rotateAround(f, getFacing().getAxis());
 					double dShift = (Utils.RAND.nextDouble()-.5)*.75;
 					coilPos = coilPos.add(f.getXOffset()*dShift, f.getYOffset()*dShift, f.getZOffset()*dShift);
 				}
@@ -333,7 +333,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		//offset to direction
 		coilPos = coilPos.add(f.getXOffset()*.375, f.getYOffset()*.375, f.getZOffset()*.375);
 		//random side offset
-		f = f.rotateAround(getFacing().getAxis());
+		f = DirectionUtils.rotateAround(f, getFacing().getAxis());
 		double dShift = (Utils.RAND.nextDouble()-.5)*.75;
 		coilPos = coilPos.add(f.getXOffset()*dShift, f.getYOffset()*dShift, f.getZOffset()*dShift);
 		addAnimation(new LightningAnimation(coilPos, new Vec3d(getPos()).add(tx, ty, tz)));

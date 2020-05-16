@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile.PlacementLimitation;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -240,7 +241,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 					f = Direction.VALUES[(f.ordinal()+1)%Direction.VALUES.length];
 					break;
 				case PISTON_LIKE:
-					f = player.isSneaking()?f.rotateAround(side.getAxis()).getOpposite(): f.rotateAround(side.getAxis());
+					f = player.isSneaking()?DirectionUtils.rotateAround(f, side.getAxis()).getOpposite(): DirectionUtils.rotateAround(f, side.getAxis());
 					break;
 				case HORIZONTAL:
 				case HORIZONTAL_PREFER_SIDE:

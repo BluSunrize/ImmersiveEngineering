@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.Entity;
@@ -24,12 +26,12 @@ public class NoneRenderer<T extends Entity> extends EntityRenderer<T>
 	}
 
 	@Override
-	public void doRender(@Nonnull T entity, double x, double y, double z, float f0, float f1)
+	public void render(T entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(@Nonnull T p_110775_1_)
+	public ResourceLocation getEntityTexture(@Nonnull T p_110775_1_)
 	{
 		return null;
 	}

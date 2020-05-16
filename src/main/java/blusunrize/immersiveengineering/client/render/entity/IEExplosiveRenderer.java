@@ -10,8 +10,10 @@ package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -27,7 +29,7 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 	}
 
 	@Override
-	public void doRender(IEExplosiveEntity entity, double x, double y, double z, float entityYaw, float partialTicks)
+	public void render(IEExplosiveEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
 		if(entity.block==null)
 			return;

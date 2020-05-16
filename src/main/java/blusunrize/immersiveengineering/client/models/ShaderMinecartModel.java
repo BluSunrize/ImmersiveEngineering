@@ -19,8 +19,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.entity.model.MinecartModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -33,7 +33,7 @@ public class ShaderMinecartModel<T extends AbstractMinecartEntity> extends Minec
 	public static Int2ObjectMap<ItemStack> shadedCarts = new Int2ObjectOpenHashMap<>();
 	public static boolean rendersReplaced = false;
 
-	public List<RendererModel> sideModelsMirrored;
+	public List<ModelRenderer> sideModelsMirrored;
 
 	public ShaderMinecartModel(MinecartModel<T> model)
 	{

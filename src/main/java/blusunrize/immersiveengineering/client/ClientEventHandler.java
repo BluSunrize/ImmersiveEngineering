@@ -84,7 +84,6 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeIngameGui;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
@@ -861,9 +860,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			BlockRayTraceResult rtr = (BlockRayTraceResult)event.getTarget();
 			Entity player = event.getInfo().getRenderViewEntity();
 			float f1 = 0.002F;
-			double px = -TileEntityRendererDispatcher.staticPlayerX;
-			double py = -TileEntityRendererDispatcher.staticPlayerY;
-			double pz = -TileEntityRendererDispatcher.staticPlayerZ;
 			TileEntity tile = player.world.getTileEntity(rtr.getPos());
 			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getHeldItem(Hand.MAIN_HAND): ItemStack.EMPTY;
 
@@ -890,7 +886,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					ty += f.getYOffset();
 					tz += f.getZOffset();
 				}
-				BufferBuilder.setTranslation(tx+px, ty+py, tz+pz);
+				BufferBuilder.setTranslation(tx, ty, tz);
 
 				double angle = -player.ticksExisted%80/40d*Math.PI;
 				drawRotationArrows(tessellator, BufferBuilder, f, angle, ((TurntableTileEntity)tile).invert);
@@ -919,7 +915,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 				Tessellator tessellator = Tessellator.getInstance();
 				BufferBuilder BufferBuilder = tessellator.getBuffer();
-				BufferBuilder.setTranslation(pos.getX()+px, pos.getY()+py, pos.getZ()+pz);
+				BufferBuilder.setTranslation(pos.getX(), pos.getY(), pos.getZ());
 				double[][] points = new double[4][];
 
 
@@ -980,7 +976,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				{
 					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world,
 							(PlayerEntity)player, event.getTarget());
-					drawAdditionalBlockbreak(event.getContext(), (PlayerEntity)player, event.getPartialTicks(), blocks);
+					drawAdditionalBlockbreak(event, (PlayerEntity)player, event.getPartialTicks(), blocks);
 				}
 			}
 		}
@@ -1073,10 +1069,17 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		tessellator.draw();
 	}
 
-	public static void drawAdditionalBlockbreak(WorldRenderer context, PlayerEntity player, float partialTicks, Collection<BlockPos> blocks)
+	public static void drawAdditionalBlockbreak(DrawHighlightEvent ev, PlayerEntity player, float partialTicks, Collection<BlockPos> blocks)
 	{
 		for(BlockPos pos : blocks)
-			context.drawSelectionBox(ClientUtils.mc().gameRenderer.getActiveRenderInfo(), new BlockRayTraceResult(new Vec3d(0, 0, 0), Direction.DOWN, pos, false), 0);
+			ev.getContext().drawSelectionBox(
+					ev.getMatrix(),
+					ev.getBuffers().getBuffer(RenderType.getLines()),
+					player,
+					0, 0, 0,
+					pos,
+					ClientUtils.mc().world.getBlockState(pos)
+			);
 
 		PlayerController controllerMP = ClientUtils.mc().playerController;
 		if(controllerMP.isHittingBlock)
@@ -1128,10 +1131,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(chunkBorders)
 		{
 			PlayerEntity player = ClientUtils.mc().player;
-			int chunkX = (int)player.posX >> 4<<4;
-			int chunkZ = (int)player.posZ >> 4<<4;
-			int y = Math.min((int)player.posY-2, 0);//TODO player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
-			float h = (float)Math.max(32, player.posY-y+4);
+			int chunkX = (int)player.getPosX() >> 4<<4;
+			int chunkZ = (int)player.getPosZ() >> 4<<4;
+			int y = Math.min((int)player.getPosY()-2, 0);//TODO player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
+			float h = (float)Math.max(32, player.getPosY()-y+4);
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder BufferBuilder = tessellator.getBuffer();
 

@@ -12,7 +12,9 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -31,7 +33,7 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 	}
 
 	@Override
-	public void doRender(RailgunShotEntity entity, double x, double y, double z, float f0, float f1)
+	public void render(RailgunShotEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
 		double yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*f1-90.0F;
 		double pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*f1;

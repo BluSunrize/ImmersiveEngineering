@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.common.EventHandler;
 import com.google.common.collect.Sets;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.ProtectionEnchantment;
@@ -64,6 +66,7 @@ public class IEExplosion extends Explosion
 
 	public void doExplosionTick()
 	{
+		ObjectArrayList<Pair<ItemStack, BlockPos>> objectarraylist = new ObjectArrayList<>();
 		int max = Math.min(blockDestroyInt+blocksPerTick, this.getAffectedBlockPositions().size());
 		for(; blockDestroyInt < max; blockDestroyInt++)
 		{
@@ -104,11 +107,15 @@ public class IEExplosion extends Explosion
 					if(damagesTerrain==Explosion.Mode.DESTROY)
 						lootCtx.withParameter(LootParameters.EXPLOSION_RADIUS, this.size);
 					state.getDrops(lootCtx).forEach((p_229977_2_) -> {
-						func_229976_a_(objectarraylist, p_229977_2_, blockpos1);
+						func_229976_a_(objectarraylist, p_229977_2_, pos);
 					});
 					state.onBlockExploded(world, pos, this);
 				}
 			}
+		}
+		for(Pair<ItemStack, BlockPos> pair : objectarraylist)
+		{
+			Block.spawnAsEntity(this.world, pair.getSecond(), pair.getFirst());
 		}
 		if(blockDestroyInt >= this.getAffectedBlockPositions().size())
 			this.isExplosionFinished = true;

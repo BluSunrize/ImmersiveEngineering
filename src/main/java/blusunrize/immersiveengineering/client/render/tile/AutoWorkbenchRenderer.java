@@ -34,7 +34,6 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResource;
@@ -188,11 +187,11 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		GlStateManager.pushMatrix();
 		ItemStack blueprintStack = te.inventory.get(0);
 		if(!blueprintStack.isEmpty())
-			renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "blueprint");
+			renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "blueprint");
 
 
 		GlStateManager.translated(0, lift, 0);
-		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "lift");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "lift");
 		GlStateManager.translated(0, -lift, 0);
 
 		Direction f = te.getFacing();
@@ -200,7 +199,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		float tz = f==Direction.NORTH?-.9375f: f==Direction.SOUTH?.9375f: 0;
 		GlStateManager.translated(tx, 0, tz);
 		GlStateManager.rotatef(drill, 0, 1, 0);
-		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "drill");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "drill");
 		GlStateManager.rotatef(-drill, 0, 1, 0);
 		GlStateManager.translated(-tx, 0, -tz);
 
@@ -208,12 +207,12 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		tz = f==Direction.NORTH?-.59375f: f==Direction.SOUTH?.59375f: 0;
 		GlStateManager.translated(tx, -.21875, tz);
 		GlStateManager.rotatef(press*90, -f.getZOffset(), 0, f.getXOffset());
-		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "press");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "press");
 		GlStateManager.rotatef(-press*90, -f.getZOffset(), 0, f.getXOffset());
 		GlStateManager.translated(-tx, .21875, -tz);
 
 		GlStateManager.translated(0, liftPress, 0);
-		renderModelPart(blockRenderer, tessellator, worldRenderer, te.getWorldNonnull(), state, model, blockPos, "pressLift");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "pressLift");
 		GlStateManager.translated(0, -liftPress, 0);
 
 		RenderHelper.enableStandardItemLighting();
@@ -327,9 +326,9 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 	}
 
 	public static void renderModelPart(
+			MatrixStack matrix,
 			final BlockRendererDispatcher blockRenderer,
-			Tessellator tessellator,
-			BufferBuilder worldRenderer,
+			IRenderTypeBuffer buffers,
 			World world,
 			BlockState state,
 			IBakedModel model,
@@ -339,21 +338,8 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 	{
 		IModelData data = new SinglePropertyModelData<>(new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE);
 
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5-pos.getX(), -.5-pos.getY(), -.5-pos.getZ());
-		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, worldRenderer, true, world.rand,
-				0, data);
-		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
-		tessellator.draw();
+		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, matrix,
+				buffers.getBuffer(RenderType.getSolid()), false, world.rand, 0, 0, data);
 	}
 
 	public static HashMap<BlueprintCraftingRecipe, BlueprintLines> blueprintCache = new HashMap<BlueprintCraftingRecipe, BlueprintLines>();
@@ -383,8 +369,8 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			HashSet<String> textures = new HashSet<>();
 			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.rand, EmptyModelData.INSTANCE);
 			for(BakedQuad quad : quads)
-				if(quad!=null&&quad.getSprite()!=null)
-					textures.add(quad.getSprite().getName().toString());
+				if(quad!=null&&quad.func_187508_a()!=null)
+					textures.add(quad.func_187508_a().getName().toString());
 			for(String s : textures)
 			{
 				ResourceLocation rl = new ResourceLocation(s);

@@ -385,7 +385,7 @@ public class FeedthroughModel extends BakedIEModel
 			}
 			else
 			{
-				Direction rotateAround = facing.rotateAround(Y);
+				Direction rotateAround = DirectionUtils.rotateAround(facing, Y);
 				mat.rotate(Math.PI/2, rotateAround.getXOffset(), rotateAround.getYOffset(),
 						rotateAround.getZOffset());
 			}

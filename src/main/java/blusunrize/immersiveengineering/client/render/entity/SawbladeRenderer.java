@@ -19,12 +19,10 @@ import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -51,7 +49,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 	}
 
 	@Override
-	public void doRender(SawbladeEntity entity, double x, double y, double z, float f0, float f1)
+	public void render(SawbladeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
 		this.bindEntityTexture(entity);
 		Tessellator tessellator = ClientUtils.tes();
@@ -109,7 +107,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(@Nonnull SawbladeEntity p_110775_1_)
+	public ResourceLocation getEntityTexture(@Nonnull SawbladeEntity p_110775_1_)
 	{
 		return SAWBLADE;
 	}

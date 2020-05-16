@@ -17,9 +17,10 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableManager;
-import net.minecraft.world.storage.loot.ValidationResults;
+import net.minecraft.world.storage.loot.ValidationTracker;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -44,9 +45,13 @@ public abstract class LootGenerator implements IDataProvider
 
 		registerTables();
 
-		ValidationResults validator = new ValidationResults();
+		ValidationTracker validator = new ValidationTracker(
+				LootParameterSets.GENERIC,
+				(p_229442_0_) -> null,
+				tables::get
+		);
 		tables.forEach((name, table) -> {
-			LootTableManager.func_215302_a(validator, name, table, tables::get);
+			LootTableManager.func_227508_a_(validator, name, table);
 		});
 		Multimap<String, String> problems = validator.getProblems();
 		if(!problems.isEmpty())

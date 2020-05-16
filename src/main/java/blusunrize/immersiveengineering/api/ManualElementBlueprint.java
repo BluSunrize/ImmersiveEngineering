@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.PositionedItemStack;
@@ -17,6 +16,7 @@ import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.collect.ArrayListMultimap;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.RenderHelper;
@@ -97,8 +97,8 @@ public class ManualElementBlueprint extends SpecialManualElements
 	@Override
 	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
-		GlStateManager.enableRescaleNormal();
-		RenderHelper.enableGUIStandardItemLighting();
+		RenderSystem.enableRescaleNormal();
+		RenderHelper.enableStandardItemLighting();
 
 		highlighted = ItemStack.EMPTY;
 
@@ -117,7 +117,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 
 		}
 
-		GlStateManager.translatef(0, 0, 300);
+		RenderSystem.translatef(0, 0, 300);
 		if(!recipes.isEmpty()&&recipePage >= 0&&recipePage < this.recipes.size())
 		{
 			for(PositionedItemStack pstack : recipes.get(recipePage))
@@ -132,13 +132,13 @@ public class ManualElementBlueprint extends SpecialManualElements
 					}
 		}
 
-		GlStateManager.translatef(0, 0, -300);
-		GlStateManager.disableRescaleNormal();
-		GlStateManager.enableBlend();
+		RenderSystem.translatef(0, 0, -300);
+		RenderSystem.disableRescaleNormal();
+		RenderSystem.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 
 		this.renderHighlightedTooltip(gui, mouseX, mouseY);
-		GlStateManager.enableBlend();
+		RenderSystem.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 	}
 

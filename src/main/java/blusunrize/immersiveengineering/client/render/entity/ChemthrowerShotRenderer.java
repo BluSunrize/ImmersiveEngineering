@@ -11,7 +11,9 @@ package blusunrize.immersiveengineering.client.render.entity;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -32,7 +34,7 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 	}
 
 	@Override
-	public void doRender(ChemthrowerShotEntity entity, double x, double y, double z, float f0, float f1)
+	public void render(ChemthrowerShotEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
 		FluidStack f = entity.getFluid();
 		if(f==null)
@@ -43,7 +45,6 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 		}
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translated(x, y, z);
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -51,8 +52,8 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 
 		Tessellator tessellator = ClientUtils.tes();
 
-		GlStateManager.rotatef(180.0F-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotatef(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+		GlStateManager.rotatef(180.0F-this.renderManager.info.getYaw(), 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotatef(-this.renderManager.info.getPitch(), 1.0F, 0.0F, 0.0F);
 
 		TextureAtlasSprite sprite = ClientUtils.mc().getTextureMap().getAtlasSprite(f.getFluid().getAttributes().getStillTexture(f).toString());
 		int colour = f.getFluid().getAttributes().getColor(f);

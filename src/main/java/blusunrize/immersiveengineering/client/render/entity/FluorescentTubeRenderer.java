@@ -63,7 +63,7 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		GlStateManager.translated(0, 0, .03125);
 		GlStateManager.rotatef(entity.angleHorizontal, 1, 0, 0);
 		GlStateManager.translated(0, -entity.TUBE_LENGTH/2, 0);
-		drawTube(entity.active, entity.rgb);
+		drawTube(entity.active, entity.rgb, matrixStackIn, bufferIn, packedLightIn, 0);
 		GlStateManager.popMatrix();
 		GlStateManager.translated(-0.25, -1, 0);
 		GlStateManager.color3f(1, 1, 1);
@@ -82,7 +82,7 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 	private static ItemStack tube = ItemStack.EMPTY;
 	private static ItemStack tubeActive = ItemStack.EMPTY;
 
-	static void drawTube(boolean active, float[] rgb)
+	static void drawTube(boolean active, float[] rgb, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
 	{
 		if(tube.isEmpty())
 			tube = new ItemStack(Misc.fluorescentTube);
@@ -94,6 +94,6 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		GlStateManager.translated(-.5, .25, -.5);
 		ItemStack renderStack = active?tubeActive: tube;
 		FluorescentTubeItem.setRGB(renderStack, rgb);
-		IEOBJItemRenderer.INSTANCE.renderByItem(renderStack);
+		IEOBJItemRenderer.INSTANCE.render(renderStack, matrixStack, buffer, light, overlay);
 	}
 }
