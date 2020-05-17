@@ -9,8 +9,8 @@
     "flip-v": true
   },
   "layers": [
-    "TRANSLUCENT",
-    "SOLID"
+    "translucent",
+    "solid"
   ],
   "detectCullableFaces": false
 }

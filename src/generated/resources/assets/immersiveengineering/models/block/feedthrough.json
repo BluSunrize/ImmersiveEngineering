@@ -4,9 +4,9 @@
     "loader": "immersiveengineering:feedthrough"
   },
   "layers": [
-    "SOLID",
-    "CUTOUT_MIPPED",
-    "CUTOUT",
-    "TRANSLUCENT"
+    "solid",
+    "cutout_mipped",
+    "cutout",
+    "translucent"
   ]
 }

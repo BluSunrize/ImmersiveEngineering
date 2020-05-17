@@ -10,7 +10,7 @@
     "flip-v": true
   },
   "layers": [
-    "SOLID"
+    "solid"
   ],
   "detectCullableFaces": false
 }

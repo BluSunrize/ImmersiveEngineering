@@ -9,8 +9,8 @@
     "flip-v": true
   },
   "layers": [
-    "CUTOUT",
-    "TRANSLUCENT"
+    "cutout",
+    "translucent"
   ],
   "detectCullableFaces": false
 }

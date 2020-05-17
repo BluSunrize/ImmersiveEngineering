@@ -9,7 +9,7 @@
     "flip-v": true
   },
   "layers": [
-    "CUTOUT"
+    "cutout"
   ],
   "detectCullableFaces": false
 }
