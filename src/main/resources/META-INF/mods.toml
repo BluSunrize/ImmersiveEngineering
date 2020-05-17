@@ -26,6 +26,6 @@ credits="All the great other Git Contributors, and the nerds on IRC!"
 [[dependencies.immersiveengineering]]
   modId="minecraft"
   mandatory=true
-  versionRange="[1.14.4]"
+  versionRange="[1.15.2]"
   ordering="NONE"
   side="BOTH"

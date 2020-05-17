@@ -94,8 +94,6 @@ public class Villages
 	public static final ResourceLocation OUTFITTER = new ResourceLocation(MODID, "outfitter");
 	public static final ResourceLocation GUNSMITH = new ResourceLocation(MODID, "gunsmith");
 
-	private static Method blockStatesInjector = ObfuscationReflectionHelper.findMethod(PointOfInterestType.class, "func_221052_a", PointOfInterestType.class);
-
 	public static void init()
 	{
 		PlainsVillagePools.init();
@@ -122,19 +120,6 @@ public class Villages
 				),
 				JigsawPattern.PlacementBehaviour.RIGID
 		));
-
-		// We have to do this to allow workstations to be used. Otherwise they just won't work when placed in village
-		try
-		{
-			blockStatesInjector.invoke(null, Registers.POI_CRAFTINGTABLE.get());
-			blockStatesInjector.invoke(null, Registers.POI_ANVIL.get());
-			blockStatesInjector.invoke(null, Registers.POI_ENERGYMETER.get());
-			blockStatesInjector.invoke(null, Registers.POI_BANNER.get());
-			blockStatesInjector.invoke(null, Registers.POI_WORKBENCH.get());
-		} catch(IllegalAccessException|IllegalArgumentException|InvocationTargetException e)
-		{
-			throw new RuntimeException(e);
-		}
 	}
 
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
@@ -190,17 +175,20 @@ public class Villages
 				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH.get(), IESounds.revolverReload)
 		);
 
-
 		private static PointOfInterestType createPOI(String name, Collection<BlockState> block)
 		{
-			return PointOfInterestType.register(MODID+":"+name, ImmutableSet.copyOf(block), 1, 1);
+			PointOfInterestType type = new PointOfInterestType(MODID+":"+name, ImmutableSet.copyOf(block), 1, 1);
+			PointOfInterestType.registerBlockStates(type);
+			return type;
 		}
 
 		private static VillagerProfession createProf(ResourceLocation name, PointOfInterestType poi, SoundEvent sound)
 		{
-			return VillagerProfession.register(
+			return new VillagerProfession(
 					name.toString(),
 					poi,
+					ImmutableSet.<Item>builder().build(),
+					ImmutableSet.<Block>builder().build(),
 					sound
 			);
 		}

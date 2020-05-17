@@ -324,7 +324,7 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void textureStichPre(TextureStitchEvent.Pre event)
 	{
-		if(event.getMap()!=mc().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
+		if(event.getMap().getTextureLocation() != PlayerContainer.LOCATION_BLOCKS_TEXTURE)
 			return;
 		IELogger.info("Stitching Revolver Textures!");
 		RevolverItem.addRevolverTextures(event);
@@ -381,7 +381,7 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void textureStichPost(TextureStitchEvent.Post event)
 	{
-		if(event.getMap()!=mc().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
+		if(event.getMap().getTextureLocation() != PlayerContainer.LOCATION_BLOCKS_TEXTURE)
 			return;
 		ImmersiveEngineering.proxy.clearRenderCaches();
 		RevolverItem.retrieveRevolverTextures(event.getMap());
@@ -391,7 +391,7 @@ public class ClientProxy extends CommonProxy
 			Preconditions.checkNotNull(p.sprite);
 		}
 		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "block/wire"));
-		AtlasTexture texturemap = Minecraft.getInstance().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+		AtlasTexture texturemap = event.getMap();
 		for(int i = 0; i < ClientUtils.destroyBlockIcons.length; i++)
 		{
 			ClientUtils.destroyBlockIcons[i] = texturemap.getSprite(new ResourceLocation("block/destroy_stage_"+i));

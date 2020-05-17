@@ -17,6 +17,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.Map.Entry;
 
@@ -42,7 +43,7 @@ public class BlockRenderLayers
 		}
 		RenderTypeLookup.setRenderLayer(WoodenDecoration.treatedScaffolding, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(
-				Connectors.ENERGY_CONNECTORS.get(Pair.of(WireType.HV_CATEGORY, true)),
+				Connectors.ENERGY_CONNECTORS.get(ImmutablePair.of(WireType.HV_CATEGORY, true)),
 				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
 		);
 		RenderTypeLookup.setRenderLayer(

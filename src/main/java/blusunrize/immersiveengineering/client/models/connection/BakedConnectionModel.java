@@ -38,6 +38,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader.White;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,9 +48,9 @@ import java.util.concurrent.TimeUnit;
 
 public class BakedConnectionModel extends BakedIEModel
 {
-	TextureAtlasSprite textureAtlasSprite = Minecraft.getInstance().getModelManager()
+	Lazy<TextureAtlasSprite> textureAtlasSprite =  Lazy.of(() -> Minecraft.getInstance().getModelManager()
 			.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
-			.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/wire"));
+			.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/wire")));
 	public static final Cache<ModelKey, IBakedModel> cache = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
@@ -91,7 +92,7 @@ public class BakedConnectionModel extends BakedIEModel
 			ModelKey key = new ModelKey(data, ad, orig.here);
 			try
 			{
-				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(key, textureAtlasSprite, base));
+				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(key, textureAtlasSprite.get(), base));
 				return ret.getQuads(state, null, rand, extraData);
 			} catch(ExecutionException e)
 			{
