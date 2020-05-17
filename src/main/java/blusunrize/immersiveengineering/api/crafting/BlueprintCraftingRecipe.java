@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
@@ -24,6 +23,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * @author BluSunrize - 21.07.2015
@@ -39,7 +39,9 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
-	public static ArrayListMultimap<String, BlueprintCraftingRecipe> recipeList = ArrayListMultimap.create();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, BlueprintCraftingRecipe> recipeList;
+	public static Set<String> recipeCategories;
 
 	public String blueprintCategory;
 	public ItemStack output;
@@ -168,12 +170,14 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static BlueprintCraftingRecipe[] findRecipes(String blueprintCategory)
 	{
-		if(recipeList.containsKey(blueprintCategory))
-		{
-			List<BlueprintCraftingRecipe> list = recipeList.get(blueprintCategory);
-			return list.toArray(new BlueprintCraftingRecipe[list.size()]);
-		}
-		return new BlueprintCraftingRecipe[0];
+		return recipeList.values().stream().filter(recipe -> recipe.blueprintCategory.equals(blueprintCategory))
+				.toArray(BlueprintCraftingRecipe[]::new);
+	}
+
+	public static void updateRecipeCategories()
+	{
+		recipeCategories = BlueprintCraftingRecipe.recipeList.values().stream().map(recipe -> recipe.blueprintCategory)
+				.collect(Collectors.toSet());
 	}
 
 	@Override

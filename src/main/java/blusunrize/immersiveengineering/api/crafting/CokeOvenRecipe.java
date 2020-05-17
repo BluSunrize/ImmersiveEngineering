@@ -15,9 +15,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -55,29 +53,15 @@ public class CokeOvenRecipe extends IESerializableRecipe
 		return this.output;
 	}
 
-	public static List<CokeOvenRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, CokeOvenRecipe> recipeList;
 
 	public static CokeOvenRecipe findRecipe(ItemStack input)
 	{
-		for(CokeOvenRecipe recipe : recipeList)
+		for(CokeOvenRecipe recipe : recipeList.values())
 			if(ApiUtils.stackMatchesObject(input, recipe.input))
 				return recipe;
 		return null;
 	}
 
-	public static List<CokeOvenRecipe> removeRecipes(ItemStack stack)
-	{
-		List<CokeOvenRecipe> list = new ArrayList<>();
-		Iterator<CokeOvenRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			CokeOvenRecipe ir = it.next();
-			if(ItemStack.areItemsEqual(ir.output, stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
-	}
 }

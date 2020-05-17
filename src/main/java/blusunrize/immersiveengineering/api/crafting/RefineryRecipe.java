@@ -12,13 +12,12 @@ import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 02.03.2016
@@ -56,11 +55,12 @@ public class RefineryRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	public static List<RefineryRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, RefineryRecipe> recipeList;
 
 	public static RefineryRecipe findRecipe(FluidStack input0, FluidStack input1)
 	{
-		for(RefineryRecipe recipe : recipeList)
+		for(RefineryRecipe recipe : recipeList.values())
 		{
 			if(input0!=null)
 			{
@@ -92,7 +92,7 @@ public class RefineryRecipe extends MultiblockRecipe
 		if(input0==null&&input1==null)
 			return null;
 		List<RefineryRecipe> list = Lists.newArrayList();
-		for(RefineryRecipe recipe : recipeList)
+		for(RefineryRecipe recipe : recipeList.values())
 		{
 			if(input0!=null&&input1==null)
 			{
@@ -123,12 +123,5 @@ public class RefineryRecipe extends MultiblockRecipe
 	public int getMultipleProcessTicks()
 	{
 		return 0;
-	}
-
-	public static RefineryRecipe loadFromNBT(CompoundNBT nbt)
-	{
-		FluidStack input0 = FluidStack.loadFluidStackFromNBT(nbt.getCompound("input0"));
-		FluidStack input1 = FluidStack.loadFluidStackFromNBT(nbt.getCompound("input1"));
-		return findRecipe(input0, input1);
 	}
 }

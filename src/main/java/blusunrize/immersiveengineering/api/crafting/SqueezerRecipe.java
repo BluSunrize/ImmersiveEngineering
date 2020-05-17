@@ -8,20 +8,21 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -67,13 +68,14 @@ public class SqueezerRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static List<SqueezerRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, SqueezerRecipe> recipeList;
 
 	public static SqueezerRecipe findRecipe(ItemStack input)
 	{
 		if(input.isEmpty())
 			return null;
-		for(SqueezerRecipe recipe : recipeList)
+		for(SqueezerRecipe recipe : recipeList.values())
 			if(recipe.input.test(input))
 				return recipe;
 		return null;
@@ -90,7 +92,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 		SortedMap<String, Integer> map = new TreeMap<>(
 				inverse?Comparator.<String>reverseOrder(): Comparator.<String>naturalOrder()
 		);
-		for(SqueezerRecipe recipe : recipeList)
+		for(SqueezerRecipe recipe : recipeList.values())
 			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f&&!recipe.input.hasNoMatchingItems())
 			{
 				ItemStack is = recipe.input.getMatchingStacks()[0];

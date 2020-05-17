@@ -8,20 +8,15 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -63,13 +58,14 @@ public class MixerRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	public static List<MixerRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, MixerRecipe> recipeList;
 
 	public static MixerRecipe findRecipe(FluidStack fluid, NonNullList<ItemStack> components)
 	{
 		if(fluid==null)
 			return null;
-		for(MixerRecipe recipe : recipeList)
+		for(MixerRecipe recipe : recipeList.values())
 			if(recipe.matches(fluid, components))
 				return recipe;
 		return null;

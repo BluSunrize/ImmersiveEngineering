@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -31,6 +31,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -47,7 +48,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWorkbenchTileEntity, IMultiblockRecipe>
+public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWorkbenchTileEntity, MultiblockRecipe>
 		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
 {
 	public static TileEntityType<AutoWorkbenchTileEntity> TYPE;
@@ -228,7 +229,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public boolean additionalCanProcessCheck(MultiblockProcess<IMultiblockRecipe> process)
+	public boolean additionalCanProcessCheck(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return true;
 	}
@@ -255,7 +256,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public void onProcessFinish(MultiblockProcess<IMultiblockRecipe> process)
+	public void onProcessFinish(MultiblockProcess<MultiblockRecipe> process)
 	{
 	}
 
@@ -272,7 +273,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
+	public float getMinProcessDistance(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return .4375f;
 	}
@@ -339,15 +340,15 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public IMultiblockRecipe findRecipeForInsertion(ItemStack inserting)
+	public MultiblockRecipe findRecipeForInsertion(ItemStack inserting)
 	{
 		return null;
 	}
 
 	@Override
-	protected IMultiblockRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected BlueprintCraftingRecipe getRecipeForId(ResourceLocation id)
 	{
-		throw new UnsupportedOperationException();
+		return BlueprintCraftingRecipe.recipeList.get(id);
 	}
 
 	@Override

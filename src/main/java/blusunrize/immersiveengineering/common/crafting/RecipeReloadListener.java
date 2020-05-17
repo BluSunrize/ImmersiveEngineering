@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
@@ -18,16 +17,14 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class RecipeReloadListener implements IResourceManagerReloadListener
@@ -57,15 +54,11 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		CokeOvenRecipe.recipeList = filterRecipes(recipes, CokeOvenRecipe.class, CokeOvenRecipe.TYPE);
 		ClocheRecipe.recipeList = filterRecipes(recipes, ClocheRecipe.class, ClocheRecipe.TYPE);
 
-		// Blueprint & MetalPress recipes are a little more invested
-		List<BlueprintCraftingRecipe> blueprintCraftingRecipes = filterRecipes(recipes, BlueprintCraftingRecipe.class, BlueprintCraftingRecipe.TYPE);
-		BlueprintCraftingRecipe.recipeList.clear();
-		for(BlueprintCraftingRecipe r : blueprintCraftingRecipes)
-			BlueprintCraftingRecipe.recipeList.put(r.blueprintCategory, r);
-		List<MetalPressRecipe> metalPressRecipes = filterRecipes(recipes, MetalPressRecipe.class, MetalPressRecipe.TYPE);
-		MetalPressRecipe.recipeList.clear();
-		for(MetalPressRecipe r : metalPressRecipes)
-			MetalPressRecipe.recipeList.put(r.mold, r);
+		BlueprintCraftingRecipe.recipeList = filterRecipes(recipes, BlueprintCraftingRecipe.class, BlueprintCraftingRecipe.TYPE);
+		BlueprintCraftingRecipe.updateRecipeCategories();
+
+		MetalPressRecipe.recipeList = filterRecipes(recipes, MetalPressRecipe.class, MetalPressRecipe.TYPE);
+		MetalPressRecipe.updateRecipesByMold();
 
 		ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
 		BottlingMachineRecipe.recipeList = filterRecipes(recipes, BottlingMachineRecipe.class, BottlingMachineRecipe.TYPE);
@@ -74,20 +67,16 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		SqueezerRecipe.recipeList = filterRecipes(recipes, SqueezerRecipe.class, SqueezerRecipe.TYPE);
 		RefineryRecipe.recipeList = filterRecipes(recipes, RefineryRecipe.class, RefineryRecipe.TYPE);
 		MixerRecipe.recipeList = filterRecipes(recipes, MixerRecipe.class, MixerRecipe.TYPE);
-
-		List<MineralMix> mineralMixes = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
-		ExcavatorHandler.mineralList.clear();
-		for(MineralMix r : mineralMixes)
-			ExcavatorHandler.mineralList.put(r.getId(), r);
+		ExcavatorHandler.mineralList = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
 
 		MixerRecipePotion.initPotionRecipes();
 	}
 
-	static <R extends IRecipe<?>> List<R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType)
+	static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType)
 	{
 		return recipes.stream()
 				.filter(iRecipe -> iRecipe.getType()==recipeType)
 				.map(recipeClass::cast)
-				.collect(Collectors.toList());
+				.collect(Collectors.toMap(recipe -> recipe.getId(), recipe -> recipe));
 	}
 }

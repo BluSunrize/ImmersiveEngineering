@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -32,11 +30,11 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -506,15 +504,16 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	}
 
 	@Override
-	protected MixerRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected MixerRecipe getRecipeForId(ResourceLocation id)
 	{
-		throw new UnsupportedOperationException();
+		return MixerRecipe.recipeList.get(id);
 	}
 
 	@Override
 	protected MultiblockProcess<MixerRecipe> loadProcessFromNBT(CompoundNBT tag)
 	{
-		MixerRecipe recipe = readRecipeFromNBT(tag);
+		String id = tag.getString("recipe");
+		MixerRecipe recipe = getRecipeForId(new ResourceLocation(id));
 		if(recipe!=null)
 			return new MultiblockProcessMixer(recipe, tag.getIntArray("process_inputSlots")).setInputTanks(tag.getIntArray("process_inputTanks"));
 		return null;

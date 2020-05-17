@@ -16,15 +16,15 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class BlastFurnaceFuel extends IESerializableRecipe
 {
 	public static IRecipeType<BlastFurnaceFuel> TYPE = IRecipeType.register(Lib.MODID+":blast_furnace_fuel");
 	public static RegistryObject<IERecipeSerializer<BlastFurnaceFuel>> SERIALIZER;
 
-	public static List<BlastFurnaceFuel> blastFuels = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, BlastFurnaceFuel> blastFuels;
 
 	public final Ingredient input;
 	public final int burnTime;
@@ -38,7 +38,7 @@ public class BlastFurnaceFuel extends IESerializableRecipe
 
 	public static int getBlastFuelTime(ItemStack stack)
 	{
-		for(BlastFurnaceFuel e : blastFuels)
+		for(BlastFurnaceFuel e : blastFuels.values())
 			if(e.input.test(stack))
 				return e.burnTime;
 		return 0;

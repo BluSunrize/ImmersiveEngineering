@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -37,11 +37,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootContext.Builder;
@@ -57,7 +57,7 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.List;
 import java.util.Set;
 
-public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTileEntity, IMultiblockRecipe> implements
+public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTileEntity, MultiblockRecipe> implements
 		IBlockBounds
 {
 	public static TileEntityType<ExcavatorTileEntity> TYPE;
@@ -378,7 +378,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	@Override
-	public boolean additionalCanProcessCheck(MultiblockProcess<IMultiblockRecipe> process)
+	public boolean additionalCanProcessCheck(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return false;
 	}
@@ -400,7 +400,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	@Override
-	public void onProcessFinish(MultiblockProcess<IMultiblockRecipe> process)
+	public void onProcessFinish(MultiblockProcess<MultiblockRecipe> process)
 	{
 	}
 
@@ -417,7 +417,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	@Override
-	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
+	public float getMinProcessDistance(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return 0;
 	}
@@ -486,13 +486,13 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 
 
 	@Override
-	public IMultiblockRecipe findRecipeForInsertion(ItemStack inserting)
+	public MultiblockRecipe findRecipeForInsertion(ItemStack inserting)
 	{
 		return null;
 	}
 
 	@Override
-	protected IMultiblockRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected MultiblockRecipe getRecipeForId(ResourceLocation id)
 	{
 		return null;
 	}

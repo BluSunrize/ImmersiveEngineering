@@ -19,7 +19,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * @author BluSunrize - 01.03.2016
@@ -65,13 +68,14 @@ public class FermenterRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static List<FermenterRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, FermenterRecipe> recipeList;
 
 	public static FermenterRecipe findRecipe(ItemStack input)
 	{
 		if(input.isEmpty())
 			return null;
-		for(FermenterRecipe recipe : recipeList)
+		for(FermenterRecipe recipe : recipeList.values())
 			if(recipe.input.test(input))
 				return recipe;
 		return null;
@@ -88,7 +92,7 @@ public class FermenterRecipe extends MultiblockRecipe
 		SortedMap<String, Integer> map = new TreeMap<>(
 				inverse?Comparator.<String>reverseOrder(): Comparator.<String>reverseOrder()
 		);
-		for(FermenterRecipe recipe : recipeList)
+		for(FermenterRecipe recipe : recipeList.values())
 			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f&&!recipe.input.hasNoMatchingItems())
 			{
 				ItemStack is = recipe.input.getMatchingStacks()[0];

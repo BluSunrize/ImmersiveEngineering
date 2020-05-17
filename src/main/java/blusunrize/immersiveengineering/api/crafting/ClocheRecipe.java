@@ -13,6 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ClocheRecipe extends IESerializableRecipe
 {
@@ -26,7 +27,8 @@ public class ClocheRecipe extends IESerializableRecipe
 	public final ClocheRenderReference renderReference;
 	public final ClocheRenderFunction renderFunction;
 
-	public static List<ClocheRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, ClocheRecipe> recipeList;
 	public static List<ClocheFertilizer> fertilizerList = new ArrayList<>();
 	private static List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
@@ -60,7 +62,7 @@ public class ClocheRecipe extends IESerializableRecipe
 
 	public static ClocheRecipe findRecipe(ItemStack seed, ItemStack soil)
 	{
-		for(ClocheRecipe recipe : recipeList)
+		for(ClocheRecipe recipe : recipeList.values())
 		{
 			if(ApiUtils.stackMatchesObject(seed, recipe.seed)&&ApiUtils.stackMatchesObject(soil, recipe.soil))
 				return recipe;

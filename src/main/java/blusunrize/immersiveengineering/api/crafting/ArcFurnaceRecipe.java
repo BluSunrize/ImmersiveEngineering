@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -43,7 +44,8 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public String specialRecipeType;
 	public static List<String> specialRecipeTypes = new ArrayList<>();
-	public static List<ArcFurnaceRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, ArcFurnaceRecipe> recipeList;
 
 	public ArcFurnaceRecipe(ResourceLocation id, NonNullList<ItemStack> output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
 							int energy, IngredientWithSize... additives)
@@ -174,33 +176,15 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public static ArcFurnaceRecipe findRecipe(ItemStack input, NonNullList<ItemStack> additives)
 	{
-		for(ArcFurnaceRecipe recipe : recipeList)
+		for(ArcFurnaceRecipe recipe : recipeList.values())
 			if(recipe!=null&&recipe.matches(input, additives))
 				return recipe;
 		return null;
 	}
 
-	public static List<ArcFurnaceRecipe> removeRecipes(ItemStack stack)
-	{
-		List<ArcFurnaceRecipe> list = new ArrayList<>();
-		Iterator<ArcFurnaceRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			ArcFurnaceRecipe ir = it.next();
-			for(ItemStack out : ir.output)
-				if(ItemStack.areItemStacksEqual(out, stack))
-				{
-					list.add(ir);
-					it.remove();
-					break;
-				}
-		}
-		return list;
-	}
-
 	public static boolean isValidRecipeInput(ItemStack stack)
 	{
-		for(ArcFurnaceRecipe recipe : recipeList)
+		for(ArcFurnaceRecipe recipe : recipeList.values())
 			if(recipe!=null&&recipe.isValidInput(stack))
 				return true;
 		return false;
@@ -208,7 +192,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public static boolean isValidRecipeAdditive(ItemStack stack)
 	{
-		for(ArcFurnaceRecipe recipe : recipeList)
+		for(ArcFurnaceRecipe recipe : recipeList.values())
 			if(recipe!=null&&recipe.isValidAdditive(stack))
 				return true;
 		return false;

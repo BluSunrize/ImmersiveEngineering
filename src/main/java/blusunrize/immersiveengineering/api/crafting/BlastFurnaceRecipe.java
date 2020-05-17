@@ -8,18 +8,14 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -58,29 +54,14 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 		return output;
 	}
 
-	public static List<BlastFurnaceRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, BlastFurnaceRecipe> recipeList;
 
 	public static BlastFurnaceRecipe findRecipe(ItemStack input)
 	{
-		for(BlastFurnaceRecipe recipe : recipeList)
+		for(BlastFurnaceRecipe recipe : recipeList.values())
 			if(recipe.input.test(input))
 				return recipe;
 		return null;
-	}
-
-	public static List<BlastFurnaceRecipe> removeRecipes(ItemStack stack)
-	{
-		List<BlastFurnaceRecipe> list = new ArrayList<>();
-		Iterator<BlastFurnaceRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			BlastFurnaceRecipe ir = it.next();
-			if(ItemStack.areItemsEqual(ir.output, stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
 	}
 }

@@ -28,10 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -349,9 +346,9 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	}
 
 	@Override
-	protected MetalPressRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected MetalPressRecipe getRecipeForId(ResourceLocation id)
 	{
-		throw new UnsupportedOperationException();
+		return MetalPressRecipe.recipeList.get(id);
 	}
 
 	@Override

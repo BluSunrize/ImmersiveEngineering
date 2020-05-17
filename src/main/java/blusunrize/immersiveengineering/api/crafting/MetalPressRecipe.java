@@ -16,15 +16,11 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * @author BluSunrize - 07.01.2016
@@ -88,14 +84,23 @@ public class MetalPressRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipeList = ArrayListMultimap.create();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, MetalPressRecipe> recipeList;
+	private static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipesByMold;
+
+	public static void updateRecipesByMold()
+	{
+		recipesByMold = ArrayListMultimap.create();
+		recipeList.values().forEach(recipe -> recipesByMold.put(recipe.mold, recipe));
+	}
+
 
 	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, World world)
 	{
 		if(mold.isEmpty()||input.isEmpty())
 			return null;
 		ComparableItemStack comp = ApiUtils.createComparableItemStack(mold, false);
-		List<MetalPressRecipe> list = recipeList.get(comp);
+		List<MetalPressRecipe> list = recipesByMold.get(comp);
 		for(MetalPressRecipe recipe : list)
 			if(recipe.matches(mold, input, world))
 				return recipe.getActualRecipe(mold, input, world);
@@ -105,10 +110,10 @@ public class MetalPressRecipe extends MultiblockRecipe
 	public static List<MetalPressRecipe> removeRecipes(ItemStack output)
 	{
 		List<MetalPressRecipe> list = new ArrayList<>();
-		Set<ComparableItemStack> keySet = new HashSet<>(recipeList.keySet());
+		Set<ComparableItemStack> keySet = new HashSet<>(recipesByMold.keySet());
 		for(ComparableItemStack mold : keySet)
 		{
-			Iterator<MetalPressRecipe> it = recipeList.get(mold).iterator();
+			Iterator<MetalPressRecipe> it = recipesByMold.get(mold).iterator();
 			while(it.hasNext())
 			{
 				MetalPressRecipe ir = it.next();

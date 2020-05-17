@@ -11,13 +11,10 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 19.05.2017
@@ -55,29 +52,14 @@ public class AlloyRecipe extends IESerializableRecipe
 		return this.output;
 	}
 
-	public static List<AlloyRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, AlloyRecipe> recipeList;
 
 	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1)
 	{
-		for(AlloyRecipe recipe : recipeList)
+		for(AlloyRecipe recipe : recipeList.values())
 			if((recipe.input0.test(input0)&&recipe.input1.test(input1))||(recipe.input0.test(input1)&&recipe.input1.test(input0)))
 				return recipe;
 		return null;
-	}
-
-	public static List<AlloyRecipe> removeRecipes(ItemStack stack)
-	{
-		List<AlloyRecipe> list = new ArrayList<>();
-		Iterator<AlloyRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			AlloyRecipe ir = it.next();
-			if(ItemStack.areItemsEqual(ir.output, stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
 	}
 }

@@ -70,11 +70,10 @@ public class EngineersBlueprintItem extends IEBaseItem
 
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> list)
 	{
-		if(this.isInGroup(tab))
-			for(String key : BlueprintCraftingRecipe.recipeList.keySet())
+		if(this.isInGroup(tab) && BlueprintCraftingRecipe.recipeCategories!=null)
+			for(String key : BlueprintCraftingRecipe.recipeCategories)
 			{
 				ItemStack stack = new ItemStack(this);
 				ItemNBTHelper.putString(stack, "blueprint", key);

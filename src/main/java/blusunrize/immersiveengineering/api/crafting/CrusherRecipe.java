@@ -22,8 +22,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -81,46 +81,15 @@ public class CrusherRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static List<CrusherRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, CrusherRecipe> recipeList;
 
 	public static CrusherRecipe findRecipe(ItemStack input)
 	{
-		for(CrusherRecipe recipe : recipeList)
+		for(CrusherRecipe recipe : recipeList.values())
 			if(recipe.input.test(input))
 				return recipe;
 		return null;
-	}
-
-	public static List<CrusherRecipe> removeRecipesForOutput(ItemStack stack)
-	{
-		List<CrusherRecipe> list = new ArrayList<>();
-		Iterator<CrusherRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			CrusherRecipe ir = it.next();
-			if(ItemStack.areItemsEqual(ir.output, stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
-	}
-
-	public static List<CrusherRecipe> removeRecipesForInput(ItemStack stack)
-	{
-		List<CrusherRecipe> list = new ArrayList<>();
-		Iterator<CrusherRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			CrusherRecipe ir = it.next();
-			if(ir.input.test(stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
 	}
 
 	@Override

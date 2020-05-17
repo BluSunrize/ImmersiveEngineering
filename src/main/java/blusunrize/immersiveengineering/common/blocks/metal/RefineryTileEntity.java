@@ -26,10 +26,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
@@ -440,9 +440,9 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	}
 
 	@Override
-	protected RefineryRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected RefineryRecipe getRecipeForId(ResourceLocation id)
 	{
-		return RefineryRecipe.loadFromNBT(tag);
+		return RefineryRecipe.recipeList.get(id);
 	}
 
 	@Override

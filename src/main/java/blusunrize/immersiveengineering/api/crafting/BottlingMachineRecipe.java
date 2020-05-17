@@ -15,14 +15,11 @@ import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 14.01.2016
@@ -56,31 +53,16 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	public static List<BottlingMachineRecipe> recipeList = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, BottlingMachineRecipe> recipeList;
 
 	public static BottlingMachineRecipe findRecipe(ItemStack input, FluidStack fluid)
 	{
 		if(!input.isEmpty()&&fluid!=null)
-			for(BottlingMachineRecipe recipe : recipeList)
+			for(BottlingMachineRecipe recipe : recipeList.values())
 				if(ApiUtils.stackMatchesObject(input, recipe.input)&&fluid.containsFluid(recipe.fluidInput))
 					return recipe;
 		return null;
-	}
-
-	public static List<BottlingMachineRecipe> removeRecipes(ItemStack stack)
-	{
-		List<BottlingMachineRecipe> list = new ArrayList<>();
-		Iterator<BottlingMachineRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			BottlingMachineRecipe ir = it.next();
-			if(ItemStack.areItemsEqual(ir.output, stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
 	}
 
 	@Override
