@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -42,14 +42,14 @@ public class AssemblerMultiblock extends IETemplateMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(Multiblocks.assembler);
-		GlStateManager.translated(1.5, 1.5, 1.5);
-		GlStateManager.rotatef(-45, 0, 1, 0);
-		GlStateManager.rotatef(-20, 1, 0, 0);
-		GlStateManager.scaled(4, 4, 4);
+		RenderSystem.translated(1.5, 1.5, 1.5);
+		RenderSystem.rotatef(-45, 0, 1, 0);
+		RenderSystem.rotatef(-20, 1, 0, 0);
+		RenderSystem.scaled(4, 4, 4);
 
-		GlStateManager.disableCull();
+		RenderSystem.disableCull();
 		ClientUtils.mc().getItemRenderer().renderItemIntoGUI(renderStack, 0, 0);
-		GlStateManager.enableCull();
+		RenderSystem.enableCull();
 	}
 
 	@Override

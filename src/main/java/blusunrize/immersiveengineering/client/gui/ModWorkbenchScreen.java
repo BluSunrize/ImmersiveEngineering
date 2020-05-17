@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -101,7 +102,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/workbench.png");
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -133,9 +134,9 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xPos, guiTop+s.yPos);
 					this.setBlitOffset(0);
 					itemRender.zLevel = 0.0F;
-					GlStateManager.depthFunc(GL11.GL_GREATER);
+					RenderSystem.depthFunc(GL11.GL_GREATER);
 					ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0xbb333333);
-					GlStateManager.depthFunc(GL11.GL_LEQUAL);
+					RenderSystem.depthFunc(GL11.GL_LEQUAL);
 				}
 			}
 		}

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.common.gui.MixerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -114,15 +116,15 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 		MatrixStack transform = new MatrixStack();
 		transform.push();
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		IVertexBuilder builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/mixer.png")));
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		for(MultiblockProcess process : tile.processQueue)
+		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)
 			if(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInMachine)
 			{
 				float mod = 1-(process.processTick/(float)process.maxTicks);
-				for(int slot : ((MultiblockProcessInMachine)process).getInputSlots())
+				for(int slot : ((MultiblockProcessInMachine<?>)process).getInputSlots())
 				{
 					int h = (int)Math.max(1, mod*16);
 					this.blit(guiLeft+24+slot%2*21, guiTop+7+slot/2*18+(16-h), 176, 16-h, 2, h);

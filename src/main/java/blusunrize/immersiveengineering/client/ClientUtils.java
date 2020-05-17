@@ -25,9 +25,9 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -38,8 +38,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.*;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -276,7 +276,7 @@ public class ClientUtils
 
 	public static void bindAtlas()
 	{
-		mc().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+		mc().getTextureManager().bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 	}
 
 	public static ResourceLocation getResource(String path)
@@ -485,14 +485,14 @@ public class ClientUtils
 			return;
 		renderEngine.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 		//preRenderDamagedBlocks BEGIN
-		GlStateManager.blendFuncSeparate(774, 768, 1, 0);
-		GlStateManager.enableBlend();
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.5F);
-		GlStateManager.polygonOffset(-3.0F, -3.0F);
-		GlStateManager.enablePolygonOffset();
-		GlStateManager.alphaFunc(516, 0.1F);
-		GlStateManager.enableAlphaTest();
-		GlStateManager.pushMatrix();
+		RenderSystem.blendFuncSeparate(774, 768, 1, 0);
+		RenderSystem.enableBlend();
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.5F);
+		RenderSystem.polygonOffset(-3.0F, -3.0F);
+		RenderSystem.enablePolygonOffset();
+		RenderSystem.alphaFunc(516, 0.1F);
+		RenderSystem.enableAlphaTest();
+		RenderSystem.pushMatrix();
 		//preRenderDamagedBlocks END
 		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRendererIn.pos(-d0, -d1-entityIn.getEyeHeight(), -d2);
@@ -519,22 +519,22 @@ public class ClientUtils
 		tessellatorIn.draw();
 		worldRendererIn.pos(0.0D, 0.0D, 0.0D);
 		// postRenderDamagedBlocks BEGIN
-		GlStateManager.disableAlphaTest();
-		GlStateManager.polygonOffset(0.0F, 0.0F);
-		GlStateManager.disablePolygonOffset();
-		GlStateManager.enableAlphaTest();
-		GlStateManager.depthMask(true);
-		GlStateManager.popMatrix();
+		RenderSystem.disableAlphaTest();
+		RenderSystem.polygonOffset(0.0F, 0.0F);
+		RenderSystem.disablePolygonOffset();
+		RenderSystem.enableAlphaTest();
+		RenderSystem.depthMask(true);
+		RenderSystem.popMatrix();
 		// postRenderDamagedBlocks END
 	}
 
 	public static void drawColouredRect(int x, int y, int w, int h, int colour)
 	{
-		GlStateManager.disableTexture();
-		GlStateManager.enableBlend();
-		GlStateManager.disableAlphaTest();
-		GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-		GlStateManager.shadeModel(GL11.GL_SMOOTH);
+		RenderSystem.disableTexture();
+		RenderSystem.enableBlend();
+		RenderSystem.disableAlphaTest();
+		RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+		RenderSystem.shadeModel(GL11.GL_SMOOTH);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
@@ -543,10 +543,10 @@ public class ClientUtils
 		worldrenderer.pos(x+w, y, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
 		worldrenderer.pos(x, y, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
 		tessellator.draw();
-		GlStateManager.shadeModel(GL11.GL_FLAT);
-		GlStateManager.disableBlend();
-		GlStateManager.enableAlphaTest();
-		GlStateManager.enableTexture();
+		RenderSystem.shadeModel(GL11.GL_FLAT);
+		RenderSystem.disableBlend();
+		RenderSystem.enableAlphaTest();
+		RenderSystem.enableTexture();
 	}
 
 	//TODO replace these methods with AbstractGui#fillGradient and (Abstract)Gui#blit, or figure out why that isn't possible
@@ -560,11 +560,11 @@ public class ClientUtils
 		float blue1 = (colour1 >> 16&255)/255.0F;
 		float green1 = (colour1 >> 8&255)/255.0F;
 		float red1 = (colour1&255)/255.0F;
-		GlStateManager.disableTexture();
-		GlStateManager.enableBlend();
-		GlStateManager.disableAlphaTest();
-		GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-		GlStateManager.shadeModel(GL11.GL_SMOOTH);
+		RenderSystem.disableTexture();
+		RenderSystem.enableBlend();
+		RenderSystem.disableAlphaTest();
+		RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+		RenderSystem.shadeModel(GL11.GL_SMOOTH);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
@@ -573,19 +573,19 @@ public class ClientUtils
 		worldrenderer.pos(x0, y1, 0).color(blue1, green1, red1, alpha1).endVertex();
 		worldrenderer.pos(x1, y1, 0).color(blue1, green1, red1, alpha1).endVertex();
 		tessellator.draw();
-		GlStateManager.shadeModel(GL11.GL_FLAT);
-		GlStateManager.disableBlend();
-		GlStateManager.enableAlphaTest();
-		GlStateManager.enableTexture();
+		RenderSystem.shadeModel(GL11.GL_FLAT);
+		RenderSystem.disableBlend();
+		RenderSystem.enableAlphaTest();
+		RenderSystem.enableTexture();
 	}
 
 	public static void drawTexturedRect(IVertexBuilder builder, MatrixStack transform, float x, float y, float w, float h, double... uv)
 	{
 		Matrix4f mat = transform.getLast().getMatrix();
-		builder.pos(mat, x, y+h, 0).tex((float)uv[0], (float)uv[3]).endVertex();
-		builder.pos(mat, x+w, y+h, 0).tex((float)uv[1], (float)uv[3]).endVertex();
-		builder.pos(mat, x+w, y, 0).tex((float)uv[1], (float)uv[2]).endVertex();
-		builder.pos(mat, x, y, 0).tex((float)uv[0], (float)uv[2]).endVertex();
+		builder.pos(mat, x, y+h, 0).color(1, 1, 1, 1).tex((float)uv[0], (float)uv[3]).overlay(OverlayTexture.NO_OVERLAY).lightmap(15728880).normal(1, 1, 1).endVertex();
+		builder.pos(mat, x+w, y+h, 0).color(1, 1, 1, 1).tex((float)uv[1], (float)uv[3]).overlay(OverlayTexture.NO_OVERLAY).lightmap(15728880).normal(1, 1, 1).endVertex();
+		builder.pos(mat, x+w, y, 0).color(1, 1, 1, 1).tex((float)uv[1], (float)uv[2]).overlay(OverlayTexture.NO_OVERLAY).lightmap(15728880).normal(1, 1, 1).endVertex();
+		builder.pos(mat, x, y, 0).color(1, 1, 1, 1).tex((float)uv[0], (float)uv[2]).overlay(OverlayTexture.NO_OVERLAY).lightmap(15728880).normal(1, 1, 1).endVertex();
 	}
 
 	public static void drawTexturedRect(IVertexBuilder builder, MatrixStack transform, int x, int y, int w, int h, float picSize, int... uv)
@@ -596,10 +596,11 @@ public class ClientUtils
 
 	public static void drawRepeatedFluidSprite(IRenderTypeBuffer buffer, MatrixStack transform, FluidStack fluid, float x, float y, float w, float h)
 	{
-		IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(PlayerContainer.LOCATION_BLOCKS_TEXTURE));
+		RenderType renderType = IERenderTypes.getGui(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+		IVertexBuilder builder = buffer.getBuffer(renderType);
 		TextureAtlasSprite sprite = getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid));
 		int col = fluid.getFluid().getAttributes().getColor(fluid);
-		GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
+		RenderSystem.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
 		int iW = sprite.getWidth();
 		int iH = sprite.getHeight();
 		if(iW > 0&&iH > 0)
@@ -677,10 +678,10 @@ public class ClientUtils
 	{
 		if(!list.isEmpty())
 		{
-			GlStateManager.disableRescaleNormal();
+			RenderSystem.disableRescaleNormal();
 			RenderHelper.disableStandardItemLighting();
-			GlStateManager.disableLighting();
-			GlStateManager.disableDepthTest();
+			RenderSystem.disableLighting();
+			RenderSystem.disableDepthTest();
 			int k = 0;
 			Iterator<ITextComponent> iterator = list.iterator();
 			while(iterator.hasNext())
@@ -716,7 +717,7 @@ public class ClientUtils
 
 			if(list.size() > 1)
 				i1 += 2+(list.size()-1)*10;
-			GlStateManager.translatef(0, 0, 300);
+			RenderSystem.translatef(0, 0, 300);
 			int j1 = -267386864;
 			drawGradientRect(j2-3, k2-4, j2+k+3, k2-3, j1, j1);
 			drawGradientRect(j2-3, k2+i1+3, j2+k+3, k2+i1+4, j1, j1);
@@ -729,7 +730,7 @@ public class ClientUtils
 			drawGradientRect(j2+k+2, k2-3+1, j2+k+3, k2+i1+3-1, k1, l1);
 			drawGradientRect(j2-3, k2-3, j2+k+3, k2-3+1, k1, k1);
 			drawGradientRect(j2-3, k2+i1+2, j2+k+3, k2+i1+3, l1, l1);
-			GlStateManager.translatef(0, 0, -300);
+			RenderSystem.translatef(0, 0, -300);
 
 			for(int i2 = 0; i2 < list.size(); ++i2)
 			{
@@ -742,10 +743,10 @@ public class ClientUtils
 				k2 += 10;
 			}
 
-			GlStateManager.enableLighting();
-			GlStateManager.enableDepthTest();
+			RenderSystem.enableLighting();
+			RenderSystem.enableDepthTest();
 			RenderHelper.enableStandardItemLighting();
-			GlStateManager.enableRescaleNormal();
+			RenderSystem.enableRescaleNormal();
 		}
 	}
 
@@ -756,19 +757,23 @@ public class ClientUtils
 
 	public static void handleGuiTank(FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
 	{
-		if(true) throw new UnsupportedOperationException();
 		if(tooltip==null)
 		{
+			RenderSystem.pushMatrix();
+			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+			MatrixStack transform = new MatrixStack();
 			if(fluid!=null&&fluid.getFluid()!=null)
 			{
 				int fluidHeight = (int)(h*(fluid.getAmount()/(float)capacity));
-				drawRepeatedFluidSprite(null, null, fluid, x, y+h-fluidHeight, w, fluidHeight);
-				bindTexture(originalTexture);
-				GlStateManager.color3f(1, 1, 1);
+				drawRepeatedFluidSprite(buffer, transform, fluid, x, y+h-fluidHeight, w, fluidHeight);
+				RenderSystem.color3f(1, 1, 1);
 			}
 			int xOff = (w-oW)/2;
 			int yOff = (h-oH)/2;
-			drawTexturedRect(null, null, x+xOff, y+yOff, oW, oH, 256f, oX, oX+oW, oY, oY+oH);
+			RenderType renderType = IERenderTypes.getGui(new ResourceLocation(originalTexture));
+			drawTexturedRect(buffer.getBuffer(renderType), transform, x+xOff, y+yOff, oW, oH, 256f, oX, oX+oW, oY, oY+oH);
+			buffer.finish(renderType);
+			RenderSystem.popMatrix();
 		}
 		else
 		{
@@ -1231,7 +1236,7 @@ public class ClientUtils
 	 * @param world     the world the model is in. Will be used to obtain lighting information
 	 * @param pos       the position that this model is in. Use the position the the quads are actually in, not the rendering block
 	 * @param useCached Whether to use cached information for world local data. Set to true if the previous call to this method was in the same tick and for the same world+pos
-	 * @param color 	the render color (mostly used for plants)
+	 * @param color     the render color (mostly used for plants)
 	 */
 	public static void renderModelTESRFancy(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos, boolean useCached, int color)
 	{//TODO include matrix transformations?, cache normals?

@@ -305,7 +305,7 @@ public class IESmartObjModel implements IBakedModel
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof IOBJModelCallback)
-				customData.add(new SinglePropertyModelData<>((IOBJModelCallback)te, IOBJModelCallback.PROPERTY));
+				customData.add(new SinglePropertyModelData<>((IOBJModelCallback<?>)te, IOBJModelCallback.PROPERTY));
 			if(te instanceof IAdvancedHasObjProperty)
 				customData.add(new SinglePropertyModelData<>(((IAdvancedHasObjProperty)te).getIEObjState(state),
 						Model.IE_OBJ_STATE));

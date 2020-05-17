@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
@@ -81,17 +81,17 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 							matrixStack.translate(dX, dY/scale, 0);
 
 							//Width depends on distance
-							GlStateManager.disableCull();
-							GlStateManager.disableTexture();
-							GlStateManager.enableBlend();
+							RenderSystem.disableCull();
+							RenderSystem.disableTexture();
+							RenderSystem.enableBlend();
 							float texScale = blueprint.textureScale/16f;
 							matrixStack.scale(1/texScale, 1/texScale, 1/texScale);
-							GlStateManager.color3f(1, 1, 1);
+							RenderSystem.color3f(1, 1, 1);
 							blueprint.draw(lineWidth);
 							matrixStack.scale(texScale, texScale, texScale);
-							GlStateManager.enableAlphaTest();
-							GlStateManager.enableTexture();
-							GlStateManager.enableCull();
+							RenderSystem.enableAlphaTest();
+							RenderSystem.enableTexture();
+							RenderSystem.enableCull();
 							matrixStack.translate(-dX, -dY/scale, 0);
 							i++;
 						}
@@ -103,7 +103,7 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 			{
 				showIngredients = false;
 				matrixStack.push();
-				GlStateManager.disableLighting();
+				RenderSystem.disableLighting();
 				matrixStack.translate(0, .5625, 0);
 
 				matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 180, true));
@@ -120,13 +120,13 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 						e.printStackTrace();
 					}
 				}
-				GlStateManager.enableLighting();
+				RenderSystem.enableLighting();
 				matrixStack.pop();
 			}
 		}
 		if(showIngredients)
 		{
-			GlStateManager.disableLighting();
+			RenderSystem.disableLighting();
 			for(int i = 1; i < te.getInventory().size(); i++)
 			{
 				double dX, dZ;
@@ -162,7 +162,7 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 					matrixStack.pop();
 				}
 			}
-			GlStateManager.enableLighting();
+			RenderSystem.enableLighting();
 		}
 
 		matrixStack.pop();
