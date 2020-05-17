@@ -34,6 +34,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -62,6 +63,7 @@ public class MixerRecipePotion extends MixerRecipe
 
 	public static void initPotionRecipes()
 	{
+		REGISTERED.clear();
 		// Vanilla
 		try
 		{
@@ -73,6 +75,7 @@ public class MixerRecipePotion extends MixerRecipe
 			f_input.setAccessible(true);
 			f_reagent.setAccessible(true);
 			f_output.setAccessible(true);
+			List l =  PotionBrewing.POTION_TYPE_CONVERSIONS;
 			for(Object mixPredicate : PotionBrewing.POTION_TYPE_CONVERSIONS)
 			{
 				Ingredient reagent = (Ingredient)f_reagent.get(mixPredicate);
@@ -80,6 +83,7 @@ public class MixerRecipePotion extends MixerRecipe
 				IRegistryDelegate<Potion> output = (IRegistryDelegate<Potion>)f_output.get(mixPredicate);
 				registerPotionRecipe(output.get(), input.get(), new IngredientWithSize(reagent));
 			}
+
 		} catch(Exception e)
 		{
 			IELogger.error("Error when trying to figure out vanilla potion recipes", e);
@@ -108,13 +112,13 @@ public class MixerRecipePotion extends MixerRecipe
 		else if(!BLACKLIST.contains(output.getRegistryName().toString()))
 		{
 			MixerRecipePotion recipe = new MixerRecipePotion(output.getRegistryName(), output, input, reagent);
-			MixerRecipe.recipeList.add(recipe);
+			MixerRecipe.recipeList.put(recipe.getId(), recipe);
 			REGISTERED.put(output, recipe);
 
 			BottlingMachineRecipe bottling = new BottlingMachineRecipe(output.getRegistryName(),
 					PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), output),
 					Ingredient.fromItems(Items.GLASS_BOTTLE), getFluidStackForType(output, 250));
-			BottlingMachineRecipe.recipeList.add(bottling);
+			BottlingMachineRecipe.recipeList.put(bottling.getId(), bottling);
 		}
 	}
 
