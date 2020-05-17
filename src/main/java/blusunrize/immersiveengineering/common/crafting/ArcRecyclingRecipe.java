@@ -16,7 +16,10 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
+import java.util.AbstractCollection;
+import java.util.AbstractList;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,10 +27,10 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
 	private Map<ItemStack, Double> outputs;
 
-	public ArcRecyclingRecipe(Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
+	public ArcRecyclingRecipe(ResourceLocation id, Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
-		//TODO: this needs an id
-		super(null, null, input, ItemStack.EMPTY, time, energyPerTick);
+		super(id, outputs.keySet().stream().collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll),
+				input, ItemStack.EMPTY, time, energyPerTick);
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");
 		this.outputList = NonNullList.create();
@@ -65,7 +68,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
 		if(nuggetOut > 0)
 		{
-			String[] type = ApiUtils.getMetalComponentTypeAndMetal(e.getKey(), "ingot");
+			String[] type = ApiUtils.getMetalComponentTypeAndMetal(e.getKey(), "ingots");
 			if(type!=null)
 			{
 				ItemStack nuggets = IEApi.getPreferredTagStack(IETags.getNugget(type[1]));

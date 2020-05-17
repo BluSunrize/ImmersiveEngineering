@@ -24,6 +24,7 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,10 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	{
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
 
+		// Start recycling
+		ArcRecyclingThreadHandler recyclingHandler = new ArcRecyclingThreadHandler(recipes);
+		recyclingHandler.start();
+
 		AlloyRecipe.recipeList = filterRecipes(recipes, AlloyRecipe.class, AlloyRecipe.TYPE);
 		BlastFurnaceRecipe.recipeList = filterRecipes(recipes, BlastFurnaceRecipe.class, BlastFurnaceRecipe.TYPE);
 		BlastFurnaceFuel.blastFuels = filterRecipes(recipes, BlastFurnaceFuel.class, BlastFurnaceFuel.TYPE);
@@ -70,6 +75,16 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		ExcavatorHandler.mineralList = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
 
 		MixerRecipePotion.initPotionRecipes();
+
+		// Wrap up recycling
+		try
+		{
+			recyclingHandler.join();
+			recyclingHandler.finishUp();
+		} catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType)

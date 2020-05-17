@@ -51,7 +51,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	{
 		ArcFurnaceRecipeCategory cat = new ArcFurnaceRecipeCategory(helper, ArcRecyclingRecipe.class, UID_RECYCLING);
 		cat.localizedName += " - Recycling";
-		cat.setIcon(helper.createDrawable(new ResourceLocation(Lib.MODID, "textures/gui/recycle.png"), 0, 0, 16, 16));
+		cat.setIcon(helper.drawableBuilder(new ResourceLocation(Lib.MODID, "textures/gui/recycle.png"), 0, 0, 16, 16).setTextureSize(16, 16).build());
 		return cat;
 	}
 
@@ -60,7 +60,9 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	{
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).add(recipe.additives).build());
 		NonNullList<ItemStack> l = ListUtils.fromItems(recipe.output);
-		if(!recipe.slag.isEmpty())
+		if(recipe.slag==null)
+			System.out.println("ERROR ON RECIPE");
+		else if(!recipe.slag.isEmpty())
 			l.add(recipe.slag);
 		ingredients.setOutputs(VanillaTypes.ITEM, l);
 	}
@@ -72,20 +74,30 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 		int i = 0;
 		guiItemStacks.init(i, true, 20, 0);
 		guiItemStacks.set(i++, Arrays.asList(recipe.input.getMatchingStacks()));
+		ItemStack simulatedInput = recipe.input.getRandomizedExampleStack(0);
 
+		NonNullList<ItemStack> simulatedAdditives = NonNullList.withSize(recipe.additives.length, ItemStack.EMPTY);
 		for(int j = 0; j < recipe.additives.length; j++)
 		{
 			guiItemStacks.init(i, true, 12+j%2*18, 18+j/2*18);
 			guiItemStacks.set(i++, Arrays.asList(recipe.additives[j].getMatchingStacks()));
+			simulatedAdditives.set(j, recipe.additives[j].getRandomizedExampleStack(0));
 		}
 
-		int outputSize = recipe.output.size();
+		NonNullList<ItemStack> simulatedOutput = recipe.getOutputs(simulatedInput, simulatedAdditives);
+		int outputSize = simulatedOutput.size();
 		for(int j = 0; j < outputSize; j++)
 		{
-			int x = 122-(Math.min(outputSize-1, 2)*18)+j%3*18;
-			int y = (outputSize > 3?0: 18)+(j/3*18);
-			guiItemStacks.init(i, false, x, y);
-			guiItemStacks.set(i++, recipe.output.get(j));
+			ItemStack out = simulatedOutput.get(j);
+			if(out.isEmpty())
+				System.out.println("BLU, YOU FUCKED UP");
+			else
+			{
+				int x = 122-(Math.min(outputSize-1, 2)*18)+j%3*18;
+				int y = (outputSize > 3?0: 18)+(j/3*18);
+				guiItemStacks.init(i, false, x, y);
+				guiItemStacks.set(i++, out);
+			}
 		}
 		if(!recipe.slag.isEmpty())
 		{

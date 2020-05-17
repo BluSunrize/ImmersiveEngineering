@@ -8,20 +8,18 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -198,24 +196,70 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return false;
 	}
 
-	public static ArrayList recyclingAllowed = new ArrayList();
+	private static final Set<IRecipeType<?>> RECYCLING_RECIPE_TYPES = new HashSet<>();
+	private static final List<Predicate<ItemStack>> RECYCLING_ALLOWED = new ArrayList<>();
+	private static final List<Predicate<ItemStack>> INVALID_RECYCLING_OUTPUTS = new ArrayList<>();
 
 	/**
-	 * Set an item/oredict-entry to be considered for recycling in the arc furnace. Tools and Armor should usually be auto-detected
+	 * Add a predicate to the list of predicates determining whether an item may be recycled
 	 */
-	public static void allowItemForRecycling(Object stack)
+	public static void allowRecipeTypeForRecycling(IRecipeType<?> recipeType)
 	{
-		recyclingAllowed.add(ApiUtils.convertToValidRecipeInput(stack));
+		RECYCLING_RECIPE_TYPES.add(recipeType);
 	}
 
-	public static ArrayList invalidRecyclingOutput = new ArrayList();
+	/**
+	 * Add a predicate to the list of predicates determining whether an item may be recycled
+	 */
+	public static void allowItemForRecycling(Predicate<ItemStack> predicate)
+	{
+		RECYCLING_ALLOWED.add(predicate);
+	}
 
 	/**
-	 * Set an item/oredict-entry to be an invalid output for the recycling process.
+	 * Add a predicate to determine an invalid output for the recycling process.
 	 * Used for magical ingots that should not be reclaimable or similar
 	 */
-	public static void makeItemInvalidRecyclingOutput(Object stack)
+	public static void makeItemInvalidRecyclingOutput(Predicate<ItemStack> predicate)
 	{
-		invalidRecyclingOutput.add(ApiUtils.convertToValidRecipeInput(stack));
+		INVALID_RECYCLING_OUTPUTS.add(predicate);
+	}
+
+	/**
+	 * @return true if the given ItemStack can be recycled
+	 */
+	public static boolean canRecycle(ItemStack stack)
+	{
+		if(stack.isEmpty())
+			return false;
+		for(Predicate<ItemStack> predicate : RECYCLING_ALLOWED)
+			if(predicate.test(stack))
+				return true;
+		return false;
+	}
+
+	/**
+	 * @return true if the given ItemStack should not be returned from recycling
+	 */
+	public static boolean isValidRecyclingOutput(ItemStack stack)
+	{
+		if(stack.isEmpty())
+			return false;
+		for(Predicate<ItemStack> predicate : INVALID_RECYCLING_OUTPUTS)
+			if(predicate.test(stack))
+				return false;
+		return true;
+	}
+
+	/**
+	 * @return a predicate for IRecipes which is used to filter the list of crafting recipes for recycling
+	 */
+	public static Predicate<IRecipe<?>> assembleRecyclingFilter()
+	{
+		return iRecipe -> {
+			if(!RECYCLING_RECIPE_TYPES.contains(iRecipe.getType()))
+				return false;
+			return canRecycle(iRecipe.getRecipeOutput());
+		};
 	}
 }

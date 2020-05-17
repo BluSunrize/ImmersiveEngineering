@@ -81,7 +81,9 @@ import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.*;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.api.IETags.getIngot;
 
@@ -231,7 +233,8 @@ public class ApiUtils
 		return jsonObject;
 	}
 
-	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject){
+	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject)
+	{
 		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(JSONUtils.getString(jsonObject, "fluid")));
 		int amount = JSONUtils.getInt(jsonObject, "amount");
 		FluidStack fluidStack = new FluidStack(fluid, amount);
@@ -304,7 +307,13 @@ public class ApiUtils
 		{
 			for(String componentType : componentTypes)
 				if(name.getPath().startsWith(componentType))
-					return new String[]{componentType, name.getPath().substring(componentType.length())};
+				{
+					String material = name.getPath().substring(componentType.length());
+					if(material.startsWith("/"))
+						material = material.substring(1);
+					if(material.length() > 0)
+						return new String[]{componentType, material};
+				}
 		}
 		return null;
 	}
