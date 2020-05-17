@@ -22,7 +22,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -175,10 +175,11 @@ public class ManualElementMultiblock extends SpecialManualElements
 	@Override
 	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
-		try
+		if(multiblock.getStructure()!=null)
 		{
-			multiblock.getSize();
-			if(multiblock.getStructure()!=null)
+			MatrixStack transform = new MatrixStack();
+			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+			try
 			{
 				long currentTime = System.currentTimeMillis();
 				if(lastStep < 0)
@@ -193,8 +194,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 				int structureWidth = renderInfo.structureWidth;
 				int structureHeight = renderInfo.structureHeight;
 
-				MatrixStack transform = new MatrixStack();
-				IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 				transform.push();
 				RenderSystem.enableRescaleNormal();
 				RenderHelper.enableStandardItemLighting();
@@ -215,7 +214,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 				else
 					RenderSystem.shadeModel(GL11.GL_FLAT);
 
-				gui.getMinecraft().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 				int idx = 0;
 				if(showCompleted&&multiblock.canRenderFormedStructure())
 					multiblock.renderFormedStructure();
@@ -233,47 +231,49 @@ public class ManualElementMultiblock extends SpecialManualElements
 									boolean b = multiblock.overwriteBlockRender(state, idx++);
 									if(!b)
 									{
+										int overlay;
+										if(pos.equals(multiblock.getTriggerOffset()))
+											overlay = OverlayTexture.getPackedUV(0, true);
+										else
+											overlay = OverlayTexture.NO_OVERLAY;
 										IModelData modelData = EmptyModelData.INSTANCE;
 										TileEntity te = blockAccess.getTileEntity(pos);
 										if(te!=null)
 											modelData = te.getModelData();
 
 										blockRender.renderBlock(state, transform, buffer,
-												//TODO correct combinedLight value
-												0, 0, modelData);
+												0xf000f0, overlay, modelData);
 									}
 									transform.pop();
 								}
 							}
+			} catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			transform.pop();
+			buffer.finish();
 
-				transform.pop();
-				buffer.finish();
+			RenderHelper.disableStandardItemLighting();
+			RenderSystem.disableRescaleNormal();
 
-				RenderHelper.disableStandardItemLighting();
-				RenderSystem.disableRescaleNormal();
+			RenderSystem.enableBlend();
+			RenderHelper.disableStandardItemLighting();
 
-				RenderSystem.enableBlend();
-				RenderHelper.disableStandardItemLighting();
-
-				if(componentTooltip!=null)
+			if(componentTooltip!=null)
+			{
+				manual.fontRenderer().drawString("?", 116, yOffTotal/2-4, manual.getTextColour());
+				if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
 				{
-					manual.fontRenderer().drawString("?", 116, yOffTotal/2-4, manual.getTextColour());
-					if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
+					List<String> asStrings = new ArrayList<>();
+					for(ITextComponent iTextComponent : componentTooltip)
 					{
-						List<String> asStrings = new ArrayList<>();
-						for(ITextComponent iTextComponent : componentTooltip)
-						{
-							String formattedText = iTextComponent.getFormattedText();
-							asStrings.add(formattedText);
-						}
-						gui.renderTooltip(asStrings, mouseX, mouseY, manual.fontRenderer());
+						String formattedText = iTextComponent.getFormattedText();
+						asStrings.add(formattedText);
 					}
+					gui.renderTooltip(asStrings, mouseX, mouseY, manual.fontRenderer());
 				}
 			}
-
-		} catch(Exception e)
-		{
-			e.printStackTrace();
 		}
 	}
 

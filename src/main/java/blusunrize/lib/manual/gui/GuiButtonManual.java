@@ -8,14 +8,14 @@
 
 package blusunrize.lib.manual.gui;
 
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualUtils;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.widget.button.Button;
 
-import static blusunrize.immersiveengineering.dummy.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
-import static blusunrize.immersiveengineering.dummy.GlStateManager.DestFactor.ZERO;
-import static blusunrize.immersiveengineering.dummy.GlStateManager.SourceFactor.ONE;
-import static blusunrize.immersiveengineering.dummy.GlStateManager.SourceFactor.SRC_ALPHA;
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class GuiButtonManual extends Button
 {
@@ -47,10 +47,10 @@ public class GuiButtonManual extends Button
 		if(this.visible)
 		{
 			ManualUtils.bindTexture(gui.texture);
-			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+			RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 			this.isHovered = mx >= this.x&&mx < (this.x+this.width)&&my >= this.y&&my < (this.y+this.height);
-			GlStateManager.enableBlend();
-			GlStateManager.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 
 			int col = colour[isHovered?1: 0];
 			fill(x, y, x+width, y+height, col);

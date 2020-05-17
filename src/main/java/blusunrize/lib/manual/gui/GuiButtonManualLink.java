@@ -8,7 +8,6 @@
 
 package blusunrize.lib.manual.gui;
 
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
@@ -52,7 +51,6 @@ public class GuiButtonManualLink extends Button
 			for(GuiButtonManualLink btn : otherParts)
 				if(btn!=this)
 					btn.drawHovered(mc, false, mx, my);
-			GlStateManager.enableBlend();
 		}
 	}
 
@@ -66,6 +64,5 @@ public class GuiButtonManualLink extends Button
 		else
 			tooltip = Collections.singletonList("Invalid link");
 		gui.renderTooltip(tooltip, mx+8, my+4, font);
-		GlStateManager.disableLighting();
 	}
 }

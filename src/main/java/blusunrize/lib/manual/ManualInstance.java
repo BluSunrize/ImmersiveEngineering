@@ -41,7 +41,7 @@ import java.util.stream.Stream;
 
 public abstract class ManualInstance implements ISelectiveResourceReloadListener
 {
-	public String texture;
+	public ResourceLocation texture;
 	private Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
 	private final Tree<ResourceLocation, ManualEntry> contentTree;
 	public Map<ResourceLocation, ManualEntry> contentsByName = new HashMap<>();
@@ -50,7 +50,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	private boolean initialized = false;
 
-	public ManualInstance(String texture, int pageWidth, int pageHeight, ResourceLocation name)
+	public ManualInstance(ResourceLocation texture, int pageWidth, int pageHeight, ResourceLocation name)
 	{
 		this.texture = texture;
 		this.pageHeight = pageHeight;

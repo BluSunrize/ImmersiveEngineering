@@ -38,7 +38,7 @@ public class IEManualInstance extends ManualInstance
 
 	public IEManualInstance()
 	{
-		super("immersiveengineering:textures/gui/manual.png",
+		super(new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/manual.png"),
 				120, 148, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
 		/*
 		TODO no longer easily possible?

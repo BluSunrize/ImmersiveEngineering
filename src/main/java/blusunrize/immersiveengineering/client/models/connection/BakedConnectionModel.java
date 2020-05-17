@@ -99,7 +99,7 @@ public class BakedConnectionModel extends BakedIEModel
 				e.printStackTrace();
 			}
 		}
-		return getBaseQuads(MinecraftForgeClient.getRenderLayer().toString(), state, side, rand, extraData);
+		return getBaseQuads(MinecraftForgeClient.getRenderLayer(), state, side, rand, extraData);
 	}
 
 	@Override
@@ -137,9 +137,9 @@ public class BakedConnectionModel extends BakedIEModel
 		return ItemOverrideList.EMPTY;
 	}
 
-	private List<BakedQuad> getBaseQuads(String currentLayer, BlockState state, Direction side, Random rand, IModelData data)
+	private List<BakedQuad> getBaseQuads(RenderType currentLayer, BlockState state, Direction side, Random rand, IModelData data)
 	{
-		if(base!=null&&(layers.contains(currentLayer)||currentLayer==null))
+		if(base!=null&&(currentLayer==null||layers.contains(currentLayer.toString())))
 			return base.getQuads(state, side, rand, data);
 		return ImmutableList.of();
 	}
@@ -172,11 +172,11 @@ public class BakedConnectionModel extends BakedIEModel
 		{
 			RenderType layer = MinecraftForgeClient.getRenderLayer();
 			if(layer!=RenderType.getSolid()&&layer!=RenderType.getTranslucent())
-				return getBaseQuads(layer.toString(), state, side, rand, data);
+				return getBaseQuads(layer, state, side, rand, data);
 			if(lists==null)
 				lists = ClientUtils.convertConnectionFromBlockstate(key.here, key.connections, texture);
 			List<BakedQuad> l = new ArrayList<>(lists[layer==RenderType.getSolid()?0: 1]);
-			l.addAll(getBaseQuads(layer.toString(), state, side, rand, data));
+			l.addAll(getBaseQuads(layer, state, side, rand, data));
 			return Collections.synchronizedList(l);
 		}
 

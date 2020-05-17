@@ -8,8 +8,8 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -69,13 +69,12 @@ public class ManualElementItem extends SpecialManualElements
 	@Override
 	public void render(ManualScreen gui, int x, int y, int mx, int my)
 	{
-		GlStateManager.enableRescaleNormal();
 		RenderHelper.enableStandardItemLighting();
 		highlighted = ItemStack.EMPTY;
 		int length = stacks.size();
 		if(length > 0)
 		{
-			GlStateManager.scalef(scale, scale, scale);
+			RenderSystem.scalef(scale, scale, scale);
 			for(int line = 0; line < lines; line++)
 			{
 				int perLine = line==lines-1?itemsLastLine: line%2==0?longLineLen: shortLineLen;
@@ -94,14 +93,13 @@ public class ManualElementItem extends SpecialManualElements
 						highlighted = stacks.get(item);
 				}
 			}
-			GlStateManager.scalef(1/scale, 1/scale, 1/scale);
+			RenderSystem.scalef(1/scale, 1/scale, 1/scale);
 		}
 		RenderHelper.disableStandardItemLighting();
-		GlStateManager.disableRescaleNormal();
-		GlStateManager.enableBlend();
+		RenderSystem.disableRescaleNormal();
+		RenderSystem.enableBlend();
 
 		this.renderHighlightedTooltip(gui, mx, my);
-		RenderHelper.disableStandardItemLighting();
 	}
 
 	@Override

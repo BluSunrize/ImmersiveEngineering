@@ -8,8 +8,8 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -21,7 +21,6 @@ public class ManualElementTable extends SpecialManualElements
 	private String[][] table;
 	private String[][] localizedTable;
 	private int[] bars;
-	//		int[] barsH;
 	private boolean horizontalBars = false;
 	private int height;
 	private int[] textOff;
@@ -121,11 +120,11 @@ public class ManualElementTable extends SpecialManualElements
 					if(horizontalBars)
 					{
 						float scale = .5f;
-						GlStateManager.scalef(1, scale, 1);
+						RenderSystem.scalef(1, scale, 1);
 						int barHeight = (int)((y+yOff+height*manual.fontRenderer().FONT_HEIGHT)/scale);
 						AbstractGui.fill(x, barHeight, x+120, barHeight+1,
 								manual.getTextColour()|0xff000000);
-						GlStateManager.scalef(1, 1/scale, 1);
+						RenderSystem.scalef(1, 1/scale, 1);
 					}
 
 					yOff += height*(manual.fontRenderer().FONT_HEIGHT+1);

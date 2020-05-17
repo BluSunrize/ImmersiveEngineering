@@ -8,12 +8,12 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
@@ -103,10 +103,10 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 		ManualUtils.drawSplitString(manual.fontRenderer(), toRender.renderText, x, y+offsetText,
 				manual.getTextColour());
-		GlStateManager.pushMatrix();
-		GlStateManager.translatef(x, y+offsetSpecial, 0);
+		RenderSystem.pushMatrix();
+		RenderSystem.translatef(x, y+offsetSpecial, 0);
 		toRender.special.render(gui, 0, 0, mouseX, mouseY);
-		GlStateManager.popMatrix();
+		RenderSystem.popMatrix();
 	}
 
 	public String getTitle()

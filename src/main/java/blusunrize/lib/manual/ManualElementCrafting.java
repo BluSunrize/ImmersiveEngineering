@@ -8,13 +8,16 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -182,11 +185,13 @@ public class ManualElementCrafting extends SpecialManualElements
 	@Override
 	public void render(ManualScreen gui, int x, int y, int mx, int my)
 	{
-		GlStateManager.enableRescaleNormal();
+		RenderSystem.enableRescaleNormal();
 		RenderHelper.enableStandardItemLighting();
 
 		int totalYOff = 0;
 		highlighted = ItemStack.EMPTY;
+		MatrixStack transform = new MatrixStack();
+		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 		for(int i = 0; i < recipeRows.length; i++)
 		{
 			List<PositionedItemStack[]> rList = this.recipeLayout[i];
@@ -201,15 +206,18 @@ public class ManualElementCrafting extends SpecialManualElements
 						AbstractGui.fill(x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666);
 					}
 
-				ManualUtils.bindTexture(manual.texture);
-				ManualUtils.drawTexturedRect(x+maxX-17, y+totalYOff+heightPixels[i]/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
+				ManualUtils.drawTexturedRect(transform, buffers, manual.texture, x+maxX-17,
+						y+totalYOff+heightPixels[i]/2-5, 16, 10, 0/256f,
+						16/256f, 226/256f, 236/256f);
 
 				totalYOff += heightPixels[i]+8;
 			}
 		}
+		buffers.finish();
 
 		totalYOff = 0;
-		GlStateManager.translatef(0, 0, 300);
+		RenderSystem.pushMatrix();
+		RenderSystem.translated(0, 0, 300);
 		for(int i = 0; i < recipeRows.length; i++)
 		{
 			List<PositionedItemStack[]> rList = this.recipeLayout[i];
@@ -227,16 +235,9 @@ public class ManualElementCrafting extends SpecialManualElements
 				totalYOff += heightPixels[i]+8;
 			}
 		}
-
-		GlStateManager.translatef(0, 0, -300);
-		GlStateManager.disableRescaleNormal();
-		GlStateManager.enableBlend();
-		RenderHelper.disableStandardItemLighting();
+		RenderSystem.popMatrix();
 
 		this.renderHighlightedTooltip(gui, mx, my);
-		GlStateManager.enableBlend();
-		GlStateManager.enableAlphaTest();
-		RenderHelper.disableStandardItemLighting();
 	}
 
 	@Override

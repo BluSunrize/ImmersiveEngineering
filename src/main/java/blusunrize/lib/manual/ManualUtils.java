@@ -8,24 +8,25 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.lib.manual.ManualElementImage.ManualImage;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,7 +38,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -95,16 +95,22 @@ public class ManualUtils
 			return inst.formatCategoryName(node.getNodeData());
 	}
 
-	public static void drawTexturedRect(int x, int y, int w, int h, float... uv)
+	public static void drawTexturedRect(ResourceLocation texture, int x, int y, int w, int h, float... uv)
 	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldrenderer = tessellator.getBuffer();
-		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(x, y+h, 0).tex(uv[0], uv[3]).endVertex();
-		worldrenderer.pos(x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();
-		worldrenderer.pos(x+w, y, 0).tex(uv[1], uv[2]).endVertex();
-		worldrenderer.pos(x, y, 0).tex(uv[0], uv[2]).endVertex();
-		tessellator.draw();
+		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		drawTexturedRect(new MatrixStack(), buffers, texture, x, y, w, h, uv);
+		buffers.finish();
+	}
+
+	public static void drawTexturedRect(MatrixStack transform, IRenderTypeBuffer buffers, ResourceLocation texture,
+										int x, int y, int w, int h, float... uv)
+	{
+		IVertexBuilder buffer = buffers.getBuffer(IERenderTypes.getGui(texture));
+		Matrix4f mat = transform.getLast().getMatrix();
+		buffer.pos(mat, x, y+h, 0).tex(uv[0], uv[3]).endVertex();
+		buffer.pos(mat, x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();
+		buffer.pos(mat, x+w, y, 0).tex(uv[1], uv[2]).endVertex();
+		buffer.pos(mat, x, y, 0).tex(uv[0], uv[2]).endVertex();
 	}
 
 	public static <T> List<T> getPrimitiveSpellingCorrections
@@ -286,9 +292,9 @@ public class ManualUtils
 		return Minecraft.getInstance();
 	}
 
-	public static void bindTexture(String path)
+	public static void bindTexture(ResourceLocation path)
 	{
-		mc().getTextureManager().bindTexture(getResource(path));
+		mc().getTextureManager().bindTexture(path);
 	}
 
 	public static ResourceLocation getResource(String path)

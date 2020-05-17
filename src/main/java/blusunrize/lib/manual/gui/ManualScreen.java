@@ -9,12 +9,12 @@
 package blusunrize.lib.manual.gui;
 
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.AbstractNode;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -24,7 +24,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -47,7 +46,7 @@ public class ManualScreen extends Screen
 	public static ManualScreen lastActiveManual;
 
 	ManualInstance manual;
-	String texture;
+	ResourceLocation texture;
 	private double[] lastClick;
 	private double[] lastDrag;
 	private TextFieldWidget searchField;
@@ -55,7 +54,7 @@ public class ManualScreen extends Screen
 	private ClickableList entryList;
 	private ClickableList suggestionList;
 
-	public ManualScreen(ManualInstance manual, String texture)
+	public ManualScreen(ManualInstance manual, ResourceLocation texture)
 	{
 		super(new StringTextComponent("manual"));
 		this.manual = manual;
@@ -166,7 +165,6 @@ public class ManualScreen extends Screen
 	public void render(int mouseX, int mouseY, float f)
 	{
 		manualTick++;
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		manual.entryRenderPre();
 
 		ManualUtils.bindTexture(texture);
@@ -209,7 +207,7 @@ public class ManualScreen extends Screen
 			boolean b0 = mouseX > 32&&mouseX < 32+17&&mouseY > 179&&mouseY < 179+10;
 			boolean b1 = mouseX > 135&&mouseX < 135+17&&mouseY > 179&&mouseY < 179+10;
 
-			GL11.glEnable(GL11.GL_BLEND);
+			RenderSystem.enableBlend();
 			if(page > 0)
 				this.blit(guiLeft+32, guiTop+179, 0, 216+(b0?20: 0), 16, 10);
 			if(page < selectedEntry.getPageCount()-1)
@@ -224,7 +222,6 @@ public class ManualScreen extends Screen
 			this.drawCenteredStringScaled(manual.fontRenderer(), TextFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2, guiTop+183, manual.getPagenumberColour(), 1, false);
 			manual.titleRenderPost();
 
-			GL11.glColor3f(1, 1, 1);
 			selectedEntry.renderPage(this, guiLeft+32, guiTop+28, mouseX-32, mouseY-28);
 
 			mouseX += guiLeft;
@@ -247,7 +244,7 @@ public class ManualScreen extends Screen
 		for(Button btn : pageButtons)
 			btn.render(mouseX, mouseY, f);
 		super.render(mouseX, mouseY, f);
-		GlStateManager.enableBlend();
+		RenderSystem.enableBlend();
 		manual.entryRenderPost();
 	}
 
@@ -266,15 +263,15 @@ public class ManualScreen extends Screen
 		int yy = (int)Math.floor(y/scale-(fr.FONT_HEIGHT/2.));
 		if(scale!=1)
 		{
-			GlStateManager.pushMatrix();
-			GlStateManager.scalef(scale, scale, scale);
+			RenderSystem.pushMatrix();
+			RenderSystem.scalef(scale, scale, scale);
 		}
 		if(shadow)
 			fr.drawStringWithShadow(s, xx, yy, colour);
 		else
 			fr.drawString(s, xx, yy, colour);
 		if(scale!=1)
-			GlStateManager.popMatrix();
+			RenderSystem.popMatrix();
 	}
 
 	@Override

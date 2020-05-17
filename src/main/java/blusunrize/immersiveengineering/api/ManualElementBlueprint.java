@@ -28,7 +28,7 @@ import java.util.List;
 public class ManualElementBlueprint extends SpecialManualElements
 {
 	private ItemStack[] stacks;
-	private ArrayList<PositionedItemStack[]> recipes = new ArrayList();
+	private List<PositionedItemStack[]> recipes = new ArrayList<>();
 	private int recipePage;
 	private int yOff;
 
@@ -112,9 +112,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 						maxX = pstack.x;
 					AbstractGui.fill(x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666);
 				}
-			ManualUtils.bindTexture(manual.texture);
-			ManualUtils.drawTexturedRect(x+maxX-17, y+yOff/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
-
+			ManualUtils.drawTexturedRect(manual.texture, x+maxX-17, y+yOff/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
 		}
 
 		RenderSystem.translatef(0, 0, 300);

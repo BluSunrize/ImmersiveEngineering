@@ -8,11 +8,11 @@
 
 package blusunrize.lib.manual.gui;
 
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree;
 import blusunrize.lib.manual.Tree.AbstractNode;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
@@ -62,19 +62,19 @@ public class ClickableList extends Button
 		FontRenderer fr = gui.manual.fontRenderer();
 
 		int mmY = my-this.y;
-		GlStateManager.pushMatrix();
-		GlStateManager.scalef(textScale, textScale, textScale);
-		GlStateManager.translatef(x/textScale, y/textScale, 0);
+		RenderSystem.pushMatrix();
+		RenderSystem.scalef(textScale, textScale, textScale);
+		RenderSystem.translatef(x/textScale, y/textScale, 0);
 		isHovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		for(int i = 0; i < Math.min(perPage, headers.length); i++)
 		{
-			GlStateManager.color3f(1, 1, 1);
+			RenderSystem.color3f(1, 1, 1);
 			int col = gui.manual.getTextColour();
 			boolean currEntryHovered = isHovered&&mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight();
 			if(currEntryHovered)
 				col = gui.manual.getHighlightColour();
 			if(i!=0)
-				GlStateManager.translatef(0, getFontHeight(), 0);
+				RenderSystem.translatef(0, getFontHeight(), 0);
 			int j = offset+i;
 			if(j > headers.length-1)
 				j = headers.length-1;
@@ -82,13 +82,13 @@ public class ClickableList extends Button
 			if(isCategory[j])
 			{
 				ManualUtils.bindTexture(gui.texture);
-				GlStateManager.enableBlend();
+				RenderSystem.enableBlend();
 				this.blit(0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
 			}
 			fr.drawString(s, isCategory[j]?7: 0, 0, col);
 		}
-		GlStateManager.scalef(1/textScale, 1/textScale, 1/textScale);
-		GlStateManager.popMatrix();
+		RenderSystem.scalef(1/textScale, 1/textScale, 1/textScale);
+		RenderSystem.popMatrix();
 		if(maxOffset > 0)
 		{
 			final int minVisibleBlack = 0x1B<<24;
