@@ -1,7 +1,5 @@
 {
   "IE wire damage": "asm/wiredamage.js",
   "IE arm angle adjustment": "asm/arm_angles.js",
-  "IE block update callback": "asm/blockwirecollisions.js",
-  "IE chunk (un)watch callback": "asm/chunk_watch_workaround.js",
-  "IE chunk load callback": "asm/chunk_load_workaround.js"
+  "IE block update callback": "asm/blockwirecollisions.js"
 }
