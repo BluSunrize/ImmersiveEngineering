@@ -26,7 +26,9 @@ import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import it.unimi.dsi.fastutil.ints.Int2IntMaps.EmptyMap;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -60,9 +62,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.apache.commons.compress.utils.IOUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -472,7 +476,7 @@ public class ClientUtils
 	}
 
 	//Cheers boni =P
-	public static void drawBlockDamageTexture(Tessellator tessellatorIn, BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
+	public static void drawBlockDamageTexture(Tessellator tessellatorIn, MatrixStack matrix, BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
 	{
 		double d0 = entityIn.lastTickPosX+(entityIn.getPosX()-entityIn.lastTickPosX)*(double)partialTicks;
 		double d1 = entityIn.lastTickPosY+(entityIn.getPosY()-entityIn.lastTickPosY)*(double)partialTicks;
@@ -510,7 +514,7 @@ public class ClientUtils
 					TextureAtlasSprite textureatlassprite = destroyBlockIcons[progress];
 					Preconditions.checkNotNull(textureatlassprite, "No destroy icon for "+progress);
 					BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-					blockrendererdispatcher.renderBlockDamage(iblockstate, blockpos, textureatlassprite, world);
+					blockrendererdispatcher.renderModel(iblockstate, blockpos, world, matrix, worldRendererIn, EmptyModelData.INSTANCE);
 				}
 			}
 		}
@@ -1064,7 +1068,7 @@ public class ClientUtils
 					break;
 				case UV:
 					if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-						sprite = MissingTextureSprite.func_217790_a();
+						sprite = ClientUtils.getMissingSprite();
 					builder.put(e,
 							sprite.getInterpolatedU(u),
 							sprite.getInterpolatedV((v)),
@@ -1076,6 +1080,11 @@ public class ClientUtils
 				default:
 					builder.put(e);
 			}
+	}
+
+	private static TextureAtlasSprite getMissingSprite()
+	{
+		return Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(MissingTextureSprite.getLocation());
 	}
 
 	public static boolean crossesChunkBoundary(Vec3d start, Vec3d end, BlockPos offset)

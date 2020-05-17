@@ -16,9 +16,12 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
 
 public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 {
@@ -47,9 +50,8 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 		}
 
 		float f2 = (1-(entity.getFuse()-partialTicks+1)/100F)*.8F;
-		this.bindEntityTexture(entity);
 		GlStateManager.translated(-0.5F, -0.5F, 0.5F);
-		blockrendererdispatcher.renderBlockBrightness(entity.block, entity.getBrightness());
+		blockrendererdispatcher.renderBlock(entity.block, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
 		GlStateManager.translated(0.0F, 0.0F, 1.0F);
 
 		if(entity.getFuse()/5%2==0)
@@ -61,7 +63,7 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, f2);
 			GlStateManager.polygonOffset(-3.0F, -3.0F);
 			GlStateManager.enablePolygonOffset();
-			blockrendererdispatcher.renderBlockBrightness(entity.block, 1.0F);
+			blockrendererdispatcher.renderBlock(entity.block, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
 			GlStateManager.polygonOffset(0.0F, 0.0F);
 			GlStateManager.disablePolygonOffset();
 			GlStateManager.color3f(1, 1, 1);

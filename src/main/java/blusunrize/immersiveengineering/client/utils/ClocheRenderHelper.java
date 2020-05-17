@@ -124,7 +124,8 @@ public class ClocheRenderHelper
 			Set<Pair<BlockState, TransformationMatrix>> ret = new HashSet();
 			Matrix4f stemMatrix = new Matrix4f();
 			stemMatrix.setIdentity();
-			stemMatrix.rotY(-(float)Math.PI/2); //-90 deg
+			//TODO PORTME
+			//stemMatrix.rotY(-(float)Math.PI/2); //-90 deg
 			stemMatrix.setTranslation(.75f, .0625f, 0);
 
 			if(growth < .375)

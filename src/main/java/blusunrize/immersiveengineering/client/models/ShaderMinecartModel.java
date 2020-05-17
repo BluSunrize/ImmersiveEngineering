@@ -37,7 +37,7 @@ public class ShaderMinecartModel<T extends AbstractMinecartEntity> extends Minec
 	public ShaderMinecartModel(MinecartModel<T> model)
 	{
 		super();
-		/* TODO Fix Minecart Shaders
+		/* TODO PORTME
 		this.boxList.clear();
 		this.boxList.addAll(ClientUtils.copyModelRenderers(model, model.boxList));
 		this.sideModelsMirrored = ClientUtils.copyModelRenderers(model, model.boxList);

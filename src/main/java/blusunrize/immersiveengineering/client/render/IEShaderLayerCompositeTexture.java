@@ -159,8 +159,11 @@ public class IEShaderLayerCompositeTexture extends Texture
 
 				++layer;
 			}
-			TextureUtil.prepareImage(this.getGlTextureId(), 0, finalTexture.getWidth(), finalTexture.getHeight());
+			/* TODO PORTME
+						TextureUtil.prepareImage(this.getGlTextureId(), 0, finalTexture.getWidth(), finalTexture.getHeight());
 			finalTexture.uploadTextureSub(0, 0, 0, 0, 0, finalTexture.getWidth(), finalTexture.getHeight(), false, false, false);
+			 */
+
 		} catch(IOException ioexception)
 		{
 			IELogger.error("Couldn't load layered image", ioexception);

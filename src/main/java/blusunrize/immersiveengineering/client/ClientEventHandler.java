@@ -1083,7 +1083,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 		PlayerController controllerMP = ClientUtils.mc().playerController;
 		if(controllerMP.isHittingBlock)
-			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ClientUtils.tes().getBuffer(), player, partialTicks, player.world, blocks);
+			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ev.getMatrix(), ClientUtils.tes().getBuffer(), player, partialTicks, player.world, blocks);
 	}
 
 	@SubscribeEvent
@@ -1190,9 +1190,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 			{
 				Connection conn = entry.getKey();
-				bb.setTranslation(conn.getEndA().getX()-px,
+				//TODO PORTME
+				/*bb.setTranslation(conn.getEndA().getX()-px,
 						conn.getEndA().getY()-py,
 						conn.getEndA().getZ()-pz);
+				*/
 				int time = entry.getValue().getValue().get();
 				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
 				Vec3d prev = conn.getPoint(0, conn.getEndA());
@@ -1212,7 +1214,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.lineWidth(oldLineWidth);
 			GlStateManager.enableBlend();
 			GlStateManager.color4f(1, 0, 0, .5F);
-			//TODO staticPlayerX -Sky
+			//TODO PORTME
 			//renderObstructingBlocks(bb, tes, px, py, pz);
 
 			GlStateManager.disableBlend();

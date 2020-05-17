@@ -51,7 +51,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 	@Override
 	public void render(SawbladeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
-		this.bindEntityTexture(entity);
+		//TODO PORTME this.bindEntityTexture(entity);
 		Tessellator tessellator = ClientUtils.tes();
 		BufferBuilder worldRenderer = ClientUtils.tes().getBuffer();
 

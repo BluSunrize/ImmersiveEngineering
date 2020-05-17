@@ -35,7 +35,7 @@ public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 						 IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
 		GlStateManager.pushMatrix();
-		this.bindEntityTexture(entity);
+		//TODO PORTME this.bindEntityTexture(entity);
 		GlStateManager.enableRescaleNormal();
 		Tessellator tessellator = ClientUtils.tes();
 		BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();

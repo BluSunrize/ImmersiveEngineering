@@ -33,6 +33,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -150,9 +151,10 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 			if(burnTime <= 10&&getRecipe()!=null)
 			{
 				ItemStack fuel = inventory.get(2);
-				if(FurnaceTileEntity.isFuel(fuel))
+				int newBurnTime = ForgeHooks.getBurnTime(fuel);
+				if(newBurnTime > 0)
 				{
-					lastBurnTime = getBurnTime(fuel);
+					lastBurnTime = newBurnTime;
 					burnTime += lastBurnTime;
 					Item itemFuel = fuel.getItem();
 					fuel.shrink(1);
@@ -298,11 +300,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 			return 0;
 		else
 		{
-			Item item = stack.getItem();
-			int baseBurnTime = stack.getBurnTime();
-			if(baseBurnTime==-1)
-				baseBurnTime = AbstractFurnaceTileEntity.getBurnTimes().getOrDefault(item, 0);
-			return ForgeEventFactory.getItemBurnTime(stack, baseBurnTime);
+			return ForgeHooks.getBurnTime(stack);
 		}
 	}
 

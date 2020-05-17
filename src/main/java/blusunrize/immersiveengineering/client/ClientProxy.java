@@ -333,7 +333,7 @@ public class ClientProxy extends CommonProxy
 				if(sCase.stitchIntoSheet())
 					for(ShaderLayer layer : sCase.getLayers())
 						if(layer.getTexture()!=null)
-							event.addSprite(layer.getTexture());
+							event.addSprite(layer.getTexture().getTextureLocation());
 
 		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
 			event.addSprite(p.texture);
@@ -483,7 +483,7 @@ public class ClientProxy extends CommonProxy
 				}
 			ShaderMinecartModel.rendersReplaced = true;
 		}
-		/*TODO
+		/*TODO PORTME
 		if(!IEBipedLayerRenderer.rendersAssigned)
 		{
 			for(Object render : mc().getRenderManager().renderers.values())
@@ -597,7 +597,8 @@ public class ClientProxy extends CommonProxy
 			GlStateManager.shadeModel(7425);
 		else
 			GlStateManager.shadeModel(7424);
-		blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
+		//TODO PORTME
+		//blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
 	}
 
 	static Map<String, Boolean> hasArmorModel = new HashMap<>();

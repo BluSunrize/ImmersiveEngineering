@@ -174,6 +174,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		}
 	}
 
+	/* TODO PORTME
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public int getBrightnessForRender()
@@ -189,6 +190,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		}
 		return super.getBrightnessForRender();
 	}
+	 */
 
 	@Override
 	public float getBrightness()

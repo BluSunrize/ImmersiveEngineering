@@ -52,6 +52,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 	@Override
 	public void render(ShaderBannerTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
+		/* TODO PORTME
 		long time = te.getWorldNonnull().getGameTime();
 		matrixStack.push();
 		if(!te.wall)
@@ -99,6 +100,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 
 		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		matrixStack.pop();
+		 */
 	}
 
 	private static final ResourceLocation BASE_TEXTURE = new ResourceLocation("textures/entity/banner_base.png");
