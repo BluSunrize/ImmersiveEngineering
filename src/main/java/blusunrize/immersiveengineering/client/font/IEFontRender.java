@@ -15,6 +15,7 @@ import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.fonts.EmptyGlyph;
 import net.minecraft.client.gui.fonts.Font;
 import net.minecraft.client.gui.fonts.IGlyph;
 import net.minecraft.client.gui.fonts.TexturedGlyph;
@@ -173,11 +174,14 @@ public class IEFontRender extends FontRenderer
 				TexturedGlyph replacement = unicodeReplacements.get(currentChar);
 				if(replacement!=null)
 					texturedglyph = replacement;
+				if(!(texturedglyph instanceof EmptyGlyph))
+				{
 					float boldOffset = bold?currentGlyph.getBoldOffset(): 0.0F;
 					float shadowOffset = isShadow?currentGlyph.getShadowOffset(): 0.0F;
 					IVertexBuilder typeBuffer = buffer.getBuffer(texturedglyph.getRenderType(isTransparent));
 					this.renderGlyph(currentChar, texturedglyph, bold, italic, boldOffset, x+shadowOffset,
-							y+shadowOffset, matrix, typeBuffer, currentRed, currentGreen, currentBlue, alpha, currentChar);
+							y+shadowOffset, matrix, typeBuffer, currentRed, currentGreen, currentBlue, alpha, packedLight);
+				}
 
 				float advance = getCharWidthIE(currentChar, bold);
 				float lineShadowOffset = isShadow?1.0F: 0.0F;

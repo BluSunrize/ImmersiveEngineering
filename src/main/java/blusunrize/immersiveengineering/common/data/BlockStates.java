@@ -655,7 +655,8 @@ public class BlockStates extends BlockStateProvider
 		createConnector(Connectors.connectorBundled, rl("block/connector/connector_bundled.obj"),
 				ImmutableMap.of(), RenderType.getCutout());
 		//TODO all layers
-		createConnector(Connectors.feedthrough, FeedthroughLoader.LOCATION, ImmutableMap.of());
+		createConnector(Connectors.feedthrough, FeedthroughLoader.LOCATION, ImmutableMap.of(),
+				RenderType.getBlockRenderTypes().toArray(new RenderType[0]));
 		createConnector(MetalDevices.electricLantern, state -> rl("block/metal_device/e_lantern.obj"),
 				state -> {
 					if(state.getSetStates().get(IEProperties.ACTIVE)==Boolean.FALSE)

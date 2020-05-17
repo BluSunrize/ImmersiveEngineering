@@ -18,7 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-//Helper functions to extract info from the new OBJModel2, which is far less permissive than ObjModel
+//Helper functions to extract info from the new OBJModel, which is far less permissive than the 1.12 ObjModel
 public class OBJHelper
 {
 	private static Field OBJModel2_parts;
@@ -29,7 +29,6 @@ public class OBJHelper
 	private static Class<?> ModelMesh;
 	private static Field ModelMesh_faces;
 	private static Field ModelMesh_mat;
-	private static Method ModelMesh_isFullbright;
 
 	static
 	{
@@ -51,8 +50,6 @@ public class OBJHelper
 			ModelMesh_faces.setAccessible(true);
 			ModelMesh_mat = ModelMesh.getDeclaredField("mat");
 			ModelMesh_mat.setAccessible(true);
-			ModelMesh_isFullbright = ModelMesh.getDeclaredMethod("isFullbright");
-			ModelMesh_isFullbright.setAccessible(true);
 		} catch(NoSuchFieldException|NoSuchMethodException|ClassNotFoundException e)
 		{
 			e.printStackTrace();
@@ -151,11 +148,6 @@ public class OBJHelper
 		public MaterialLibrary.Material getMaterial()
 		{
 			return get(ModelMesh_mat, mesh);
-		}
-
-		public boolean isFullbright()
-		{
-			return invoke(ModelMesh_isFullbright, mesh);
 		}
 	}
 }

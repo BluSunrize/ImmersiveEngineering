@@ -95,10 +95,8 @@ public class TransformationMap
 			}
 			else
 				transform = TransformationMatrix.identity();
-			if(type.map("no_corner_offset"::equals).orElse(false))
-				transform = transform.compose(new TransformationMatrix(
-						new Vector3f(-0.5F, -0.5F, -0.5F), null, null, null
-				));
+			if(!type.map("no_corner_offset"::equals).orElse(false))
+				transform = transform.blockCornerToCenter();
 			transforms.put(perspective, transform);
 		}
 		TransformationMatrix baseTransform;

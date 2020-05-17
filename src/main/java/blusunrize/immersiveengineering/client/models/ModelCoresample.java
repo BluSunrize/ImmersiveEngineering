@@ -29,6 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResourceManager;
@@ -218,13 +219,20 @@ public class ModelCoresample extends BakedIEModel
 		builder.setTexture(sprite);
 		for(int i = 0; i < vertices.length; i++)
 		{
-			builder.put(0, (float)vertices[i].x, (float)vertices[i].y, (float)vertices[i].z, 1);//Pos
 			float d = LightUtil.diffuseLight((float)normal.x, (float)normal.y, (float)normal.z);
-			builder.put(1, d, d, d, 1);//Colour
-			builder.put(2, uvs[i].x, uvs[i].y, 0, 1);//UV
-			builder.put(3, (float)normal.x, (float)normal.y, (float)normal.z, 0);//Normal
-			builder.put(4);//padding
+			ClientUtils.putVertexData(
+					DefaultVertexFormats.BLOCK,
+					builder,
+					vertices[i],
+					normal,
+					uvs[i].x,
+					uvs[i].y,
+					sprite,
+					new float[]{d, d, d, 1},
+					1
+			);
 		}
+
 		out.add(builder.build());
 	}
 

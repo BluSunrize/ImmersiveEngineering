@@ -85,7 +85,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 				float yy = fs.getAmount()/(float)te.tank.getCapacity()*1.125f;
 				matrixStack.translate(0, 0, -yy);
 				float w = (i < te.tank.getFluidTypes()-1||yy >= .125)?26: 16+yy/.0125f;
-				ClientUtils.drawRepeatedFluidSprite(fs, -w/2, -w/2, w, w);
+				ClientUtils.drawRepeatedFluidSprite(bufferIn, matrixStack, fs, -w/2, -w/2, w, w);
 			}
 		}
 

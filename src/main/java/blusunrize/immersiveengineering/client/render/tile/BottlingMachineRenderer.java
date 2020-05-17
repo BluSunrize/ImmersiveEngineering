@@ -143,19 +143,19 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 			matrixStack.translate(-.21875, .376, 1.21875);
 			matrixStack.scale(scale, scale, scale);
 			float h = level*9;
-			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
+			ClientUtils.drawRepeatedFluidSprite(bufferIn, matrixStack, fs, 0, 0, 7, h);
 			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
-			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
+			ClientUtils.drawRepeatedFluidSprite(bufferIn, matrixStack, fs, 0, 0, 7, h);
 			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 			matrixStack.translate(-7, 0, 7);
-			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
+			ClientUtils.drawRepeatedFluidSprite(bufferIn, matrixStack, fs, 0, 0, 7, h);
 			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
-			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, h);
+			ClientUtils.drawRepeatedFluidSprite(bufferIn, matrixStack, fs, 0, 0, 7, h);
 
 			matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), 90, true));
-			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, 7);
+			ClientUtils.drawRepeatedFluidSprite(bufferIn, matrixStack, fs, 0, 0, 7, 7);
 			matrixStack.translate(0, 0, -h);
-			ClientUtils.drawRepeatedFluidSprite(fs, 0, 0, 7, 7);
+			ClientUtils.drawRepeatedFluidSprite(bufferIn, matrixStack, fs, 0, 0, 7, 7);
 
 			matrixStack.scale(1/scale, 1/scale, 1/scale);
 			matrixStack.translate(0, -1, -1);

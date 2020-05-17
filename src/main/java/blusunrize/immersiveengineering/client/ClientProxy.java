@@ -177,6 +177,9 @@ public class ClientProxy extends CommonProxy
 		 */
 
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.TYPE, RevolvershotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(RevolvershotFlareEntity.TYPE, RevolvershotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(RevolvershotHomingEntity.TYPE, RevolvershotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(WolfpackShotEntity.TYPE, RevolvershotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(SkylineHookEntity.TYPE, NoneRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ChemthrowerShotEntity.TYPE, ChemthrowerShotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(RailgunShotEntity.TYPE, RailgunShotRenderer::new);

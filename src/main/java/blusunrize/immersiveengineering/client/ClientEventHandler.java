@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
@@ -53,6 +54,8 @@ import blusunrize.immersiveengineering.dummy.GlStateManager;
 import blusunrize.immersiveengineering.dummy.GlStateManager.DestFactor;
 import blusunrize.immersiveengineering.dummy.GlStateManager.SourceFactor;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
@@ -61,7 +64,6 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.IHasHead;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -113,6 +115,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+
+import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class ClientEventHandler implements ISelectiveResourceReloadListener
 {
@@ -242,16 +246,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				int currentX = event.getX();
 				int currentY = line > 0?event.getY()+(event.getHeight()+1-line*10): event.getY()-42;
 
-				GlStateManager.pushMatrix();
-				GlStateManager.enableBlend();
-				GlStateManager.enableRescaleNormal();
-				GlStateManager.translatef(currentX, currentY, 700);
-				GlStateManager.scalef(.5f, .5f, 1);
+				MatrixStack transform = new MatrixStack();
+				transform.push();
+				transform.translate(currentX, currentY, 700);
+				transform.scale(.5f, .5f, 1);
 
-				RevolverScreen.drawExternalGUI(bullets, bulletAmount);
-
-				GlStateManager.disableRescaleNormal();
-				GlStateManager.popMatrix();
+				RevolverScreen.drawExternalGUI(bullets, bulletAmount, transform);
 			}
 		}
 	}
@@ -331,28 +331,25 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, event.getEntityItemFrame().getEntityWorld());
 					if(blueprint!=null)
 					{
-						GlStateManager.rotatef(-i*45.0F, 0.0F, 0.0F, 1.0F);
-						ClientUtils.bindTexture("immersiveengineering:textures/models/blueprint_frame.png");
-						GlStateManager.translated(-.5, .5, -.001);
-						ClientUtils.drawTexturedRect(.125f, -.875f, .75f, .75f, 1d, 0d, 1d, 0d);
+						MatrixStack transform = event.getMatrix();
+						transform.push();
+						IRenderTypeBuffer buffer = event.getBuffers();
+						transform.rotate(new Quaternion(0, 0, -i*45, true));
+						transform.translate(-.5, .5, -.001);
+						IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
+						ClientUtils.drawTexturedRect(builder, transform, .125f, -.875f, .75f, .75f, 1d, 0d, 1d, 0d);
 						//Width depends on distance
 						float lineWidth = playerDistanceSq < 3?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
-						GlStateManager.translated(.75, -.25, -.002);
+						transform.translate(.75, -.25, -.002);
 						GlStateManager.disableCull();
 						GlStateManager.disableTexture();
 						GlStateManager.enableBlend();
 						float scale = .0375f/(blueprint.getTextureScale()/16f);
-						GlStateManager.scalef(-scale, -scale, scale);
-						GlStateManager.color3f(1, 1, 1);
+						transform.scale(-scale, -scale, scale);
 
 						blueprint.draw(lineWidth);
 
-						GlStateManager.scalef(1/scale, -1/scale, 1/scale);
-						GlStateManager.enableAlphaTest();
-						GlStateManager.enableTexture();
-						GlStateManager.enableCull();
-						GlStateManager.disableBlend();
-
+						transform.pop();
 						event.setCanceled(true);
 					}
 				}
@@ -368,7 +365,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			event.setCanceled(true);
 			if(ZoomHandler.isZooming)
 			{
-				ClientUtils.bindTexture("immersiveengineering:textures/gui/scope.png");
+				IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+				MatrixStack transform = new MatrixStack();
+				transform.push();
+				IVertexBuilder builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/scope.png")));
 				int width = ClientUtils.mc().getMainWindow().getScaledWidth();
 				int height = ClientUtils.mc().getMainWindow().getScaledHeight();
 				int resMin = Math.min(width, height);
@@ -389,10 +389,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 
 				GlStateManager.translated(offsetX, offsetY, 0);
-				ClientUtils.drawTexturedRect(0, 0, resMin, resMin, 0f, 1f, 0f, 1f);
+				ClientUtils.drawTexturedRect(builder, transform, 0, 0, resMin, resMin, 0f, 1f, 0f, 1f);
 
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-				ClientUtils.drawTexturedRect(218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 64/256f, 88/256f, 96/256f, 224/256f);
+				ClientUtils.drawTexturedRect(builder, transform, 218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 64/256f, 88/256f, 96/256f, 224/256f);
 				ItemStack equipped = ClientUtils.mc().player.getHeldItem(Hand.MAIN_HAND);
 				if(!equipped.isEmpty()&&equipped.getItem() instanceof IZoomTool)
 				{
@@ -410,7 +410,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						GlStateManager.translated(0, (5+stepOffset)/256*resMin, 0);
 						for(int i = 0; i < steps.length; i++)
 						{
-							ClientUtils.drawTexturedRect(0, 0, 8/256f*resMin, 7/256f*resMin, 88/256f, 96/256f, 96/256f, 103/256f);
+							ClientUtils.drawTexturedRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 88/256f, 96/256f, 96/256f, 103/256f);
 							GlStateManager.translated(0, stepLength/256*resMin, 0);
 							totalOffset += stepLength;
 
@@ -425,7 +425,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(curStep < steps.length)
 						{
 							GlStateManager.translated(6/256f*resMin, curStep*stepLength/256*resMin, 0);
-							ClientUtils.drawTexturedRect(0, 0, 8/256f*resMin, 7/256f*resMin, 88/256f, 98/256f, 103/256f, 110/256f);
+							ClientUtils.drawTexturedRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 88/256f, 98/256f, 103/256f, 110/256f);
 							ClientUtils.font().drawString((1/steps[curStep])+"x", (int)(16/256f*resMin), 0, 0xffffff);
 							GlStateManager.translated(-6/256f*resMin, -curStep*stepLength/256*resMin, 0);
 						}
@@ -435,6 +435,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				}
 
 				GlStateManager.translated(-offsetX, -offsetY, 0);
+				buffers.finish();
 			}
 		}
 	}
@@ -447,6 +448,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
 		{
 			PlayerEntity player = ClientUtils.mc().player;
+			MatrixStack transform = new MatrixStack();
+			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 
 			for(Hand hand : Hand.values())
 				if(!player.getHeldItem(hand).isEmpty())
@@ -492,13 +495,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							boolean right = side==HandSide.RIGHT;
 							float dx = right?scaledWidth-32-48: 48;
 							float dy = scaledHeight-64;
-							GlStateManager.pushMatrix();
-							GlStateManager.enableRescaleNormal();
-							GlStateManager.enableBlend();
-							GlStateManager.translated(dx, dy, 0);
-							GlStateManager.scalef(.5f, .5f, 1);
-
-							RevolverScreen.drawExternalGUI(bullets, bulletAmount);
+							transform.push();
+							transform.push();
+							transform.translate(dx, dy, 0);
+							transform.scale(.5f, .5f, 1);
+							RevolverScreen.drawExternalGUI(bullets, bulletAmount, transform);
+							transform.pop();
 
 							if(equipped.getItem() instanceof RevolverItem)
 							{
@@ -507,9 +509,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								float cooldown = 1-cd/cdMax;
 								if(cooldown > 0)
 								{
-									GlStateManager.scalef(2, 2, 1);
-									GlStateManager.translated(-dx, -dy, 0);
-									GlStateManager.translated(scaledWidth/2+(right?1: -6), scaledHeight/2-7, 0);
+									transform.translate(scaledWidth/2+(right?1: -6), scaledHeight/2-7, 0);
 
 									float h1 = cooldown > .33?.5f: cooldown*1.5f;
 									float h2 = cooldown;
@@ -520,20 +520,15 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									float vMin1 = (112+(right?h1: h2)*15)/256f;
 									float vMin2 = (112+(right?h2: h1)*15)/256f;
 
-									ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-									Tessellator tessellator = Tessellator.getInstance();
-									BufferBuilder worldrenderer = tessellator.getBuffer();
-									worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-									worldrenderer.pos((right?0: 1-x2)*7, 15, 0).tex(uMin, 127/256f).endVertex();
-									worldrenderer.pos((right?x2: 1)*7, 15, 0).tex(uMax, 127/256f).endVertex();
-									worldrenderer.pos((right?x2: 1)*7, (right?h2: h1)*15, 0).tex(uMax, vMin2).endVertex();
-									worldrenderer.pos((right?0: 1-x2)*7, (right?h1: h2)*15, 0).tex(uMin, vMin1).endVertex();
-									tessellator.draw();
+									IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
+									Matrix4f mat = transform.getLast().getMatrix();
+									builder.pos(mat, (right?0: 1-x2)*7, 15, 0).tex(uMin, 127/256f).endVertex();
+									builder.pos(mat, (right?x2: 1)*7, 15, 0).tex(uMax, 127/256f).endVertex();
+									builder.pos(mat, (right?x2: 1)*7, (right?h2: h1)*15, 0).tex(uMax, vMin2).endVertex();
+									builder.pos(mat, (right?0: 1-x2)*7, (right?h1: h2)*15, 0).tex(uMin, vMin1).endVertex();
 								}
 							}
-							RenderHelper.disableStandardItemLighting();
-							GlStateManager.disableBlend();
-							GlStateManager.popMatrix();
+							transform.pop();
 						}
 
 					}
@@ -543,33 +538,29 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						int chargeTime = ((RailgunItem)equipped.getItem()).getChargeTime(equipped);
 						int chargeLevel = duration < 72000?Math.min(99, (int)(duration/(float)chargeTime*100)): 0;
 						float scale = 2f;
-						GlStateManager.pushMatrix();
-						GlStateManager.enableBlend();
-						GlStateManager.translated(scaledWidth-80, scaledHeight-30, 0);
-						GlStateManager.scalef(scale, scale, 1);
+						transform.push();
+						transform.translate(scaledWidth-80, scaledHeight-30, 0);
+						transform.scale(scale, scale, 1);
 						ClientProxy.nixieFont.drawString((chargeLevel < 10?"0": "")+chargeLevel, 0, 0, Lib.colour_nixieTubeText);
-						GlStateManager.scalef(1/scale, 1/scale, 1);
-						GlStateManager.disableBlend();
-						GlStateManager.popMatrix();
+						transform.pop();
 					}
 					else if(equipped.getItem() instanceof DrillItem||equipped.getItem() instanceof ChemthrowerItem)
 					{
 						boolean drill = equipped.getItem() instanceof DrillItem;
-						ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-						GlStateManager.color3f(1, 1, 1);
+						IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
 						float dx = scaledWidth-16;
 						float dy = scaledHeight;
-						GlStateManager.pushMatrix();
-						GlStateManager.translated(dx, dy, 0);
+						transform.push();
+						transform.translate(dx, dy, 0);
 						int w = 31;
 						int h = 62;
 						double uMin = 179/256f;
 						double uMax = 210/256f;
 						double vMin = 9/256f;
 						double vMax = 71/256f;
-						ClientUtils.drawTexturedRect(-24, -68, w, h, uMin, uMax, vMin, vMax);
+						ClientUtils.drawTexturedRect(builder, transform, -24, -68, w, h, uMin, uMax, vMin, vMax);
 
-						GlStateManager.translated(-23, -37, 0);
+						transform.translate(-23, -37, 0);
 						LazyOptional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(equipped);
 						int capacity = -1;
 						if(handlerOpt.isPresent())
@@ -589,29 +580,29 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							}
 							float cap = (float)capacity;
 							float angle = 83-(166*amount/cap);
-							GlStateManager.rotatef(angle, 0, 0, 1);
-							ClientUtils.drawTexturedRect(6, -2, 24, 4, 91/256f, 123/256f, 80/256f, 87/256f);
-							GlStateManager.rotatef(-angle, 0, 0, 1);
-							GlStateManager.translated(23, 37, 0);
+							transform.push();
+							transform.rotate(new Quaternion(0, 0, angle, true));
+							ClientUtils.drawTexturedRect(builder, transform, 6, -2, 24, 4, 91/256f, 123/256f, 80/256f, 87/256f);
+							transform.pop();
+							transform.translate(23, 37, 0);
 							if(drill)
 							{
-								ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
+								ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
 								ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 								ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
 								if(!head.isEmpty())
 								{
 									ir.renderItemIntoGUI(head, -51, -45);
 									ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
-									RenderHelper.disableStandardItemLighting();
 								}
 							}
 							else
 							{
-								ClientUtils.drawTexturedRect(-41, -73, 53, 72, 8/256f, 61/256f, 4/256f, 76/256f);
+								ClientUtils.drawTexturedRect(builder, transform, -41, -73, 53, 72, 8/256f, 61/256f, 4/256f, 76/256f);
 								boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
-								ClientUtils.drawTexturedRect(-32, -43, 12, 12, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
+								ClientUtils.drawTexturedRect(builder, transform, -32, -43, 12, 12, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
 
-								ClientUtils.drawTexturedRect(-100, -20, 64, 16, 0/256f, 64/256f, 76/256f, 92/256f);
+								ClientUtils.drawTexturedRect(builder, transform, -100, -20, 64, 16, 0/256f, 64/256f, 76/256f, 92/256f);
 								if(!fuel.isEmpty())
 								{
 									String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
@@ -619,43 +610,40 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								}
 							}
 						}
-						GlStateManager.popMatrix();
+						transform.pop();
 					}
 					else if(equipped.getItem() instanceof IEShieldItem)
 					{
 						CompoundNBT upgrades = ((IEShieldItem)equipped.getItem()).getUpgrades(equipped);
 						if(!upgrades.isEmpty())
 						{
-							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-							GlStateManager.color3f(1, 1, 1);
+							IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
 							boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
 							float dx = boundLeft?16: (scaledWidth-16-64);
 							float dy = scaledHeight;
-							GlStateManager.pushMatrix();
-							GlStateManager.enableBlend();
-							GlStateManager.translated(dx, dy, 0);
-							ClientUtils.drawTexturedRect(0, -22, 64, 22, 0, 64/256f, 176/256f, 198/256f);
+							transform.push();
+							transform.translate(dx, dy, 0);
+							ClientUtils.drawTexturedRect(builder, transform, 0, -22, 64, 22, 0, 64/256f, 176/256f, 198/256f);
 
 							if(upgrades.getBoolean("flash"))
 							{
-								ClientUtils.drawTexturedRect(11, -38, 16, 16, 11/256f, 27/256f, 160/256f, 176/256f);
+								ClientUtils.drawTexturedRect(builder, transform, 11, -38, 16, 16, 11/256f, 27/256f, 160/256f, 176/256f);
 								if(upgrades.contains("flash_cooldown"))
 								{
 									float h = upgrades.getInt("flash_cooldown")/40f*16;
-									ClientUtils.drawTexturedRect(11, -22-h, 16, h, 11/256f, 27/256f, (214-h)/256f, 214/256f);
+									ClientUtils.drawTexturedRect(builder, transform, 11, -22-h, 16, h, 11/256f, 27/256f, (214-h)/256f, 214/256f);
 								}
 							}
 							if(upgrades.getBoolean("shock"))
 							{
-								ClientUtils.drawTexturedRect(40, -38, 12, 16, 40/256f, 52/256f, 160/256f, 176/256f);
+								ClientUtils.drawTexturedRect(builder, transform, 40, -38, 12, 16, 40/256f, 52/256f, 160/256f, 176/256f);
 								if(upgrades.contains("shock_cooldown"))
 								{
 									float h = upgrades.getInt("shock_cooldown")/40f*16;
-									ClientUtils.drawTexturedRect(40, -22-h, 12, h, 40/256f, 52/256f, (214-h)/256f, 214/256f);
+									ClientUtils.drawTexturedRect(builder, transform, 40, -22-h, 12, h, 40/256f, 52/256f, (214-h)/256f, 214/256f);
 								}
 							}
-							GlStateManager.disableBlend();
-							GlStateManager.popMatrix();
+							transform.pop();
 						}
 					}
 					if(equipped.getItem()==Tools.voltmeter)
@@ -722,6 +710,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					}
 				}
 			}
+			buffer.finish();
 		}
 	}
 

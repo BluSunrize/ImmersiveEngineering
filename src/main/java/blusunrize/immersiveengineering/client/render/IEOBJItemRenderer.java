@@ -12,24 +12,25 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.*;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
 import java.util.*;
@@ -43,9 +44,9 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 	private static FloatBuffer transform = GLAllocation.createDirectFloatBuffer(16);
 
 	@Override
-	public void render(ItemStack stack, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(ItemStack stack, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn,
+					   int combinedLightIn, int combinedOverlayIn)
 	{
-		GlStateManager.enableCull();
 		float partialTicks = mc().getRenderPartialTicks();
 		if(stack.getItem() instanceof IOBJModelCallback)
 		{
@@ -55,7 +56,6 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					IESmartObjModel.tempEntityStatic);
 			if(model instanceof IESmartObjModel)
 			{
-				GlStateManager.disableCull();
 
 				ItemStack shader;
 				ShaderCase sCase;
@@ -78,8 +78,6 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 				for(String g : OBJHelper.getGroups(obj.baseModel).keySet())
 					if(callback.shouldRenderGroup(stack, g))
 						visible.add(g);
-				Tessellator tes = Tessellator.getInstance();
-				BufferBuilder bb = tes.getBuffer();
 				TransformType transformType = obj.lastCameraTransform;
 				List<BakedQuad> quads = new ArrayList<>();
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
@@ -87,41 +85,28 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					TransformationMatrix mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
 							partialTicks);
 					mat.push(matrixStackIn);
-					boolean wasLightmapEnabled, wasLightingEnabled;
-					{
-						GlStateManager.activeTexture("GL_TEXTURE1");
-						wasLightmapEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
-						GlStateManager.activeTexture("GL_TEXTURE0");
-						wasLightingEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
-					}
 					boolean bright = callback.areGroupsFullbright(stack, groups);
+					IVertexBuilder builder;
 					if(bright)
-					{
-						GlStateManager.disableLighting();
-						ClientUtils.setLightmapDisabled(true);
-					}
+						builder = bufferIn.getBuffer(IERenderTypes.SOLID_FULLBRIGHT);
+					else
+						builder = bufferIn.getBuffer(RenderType.getSolid());
 					renderQuadsForGroups(groups, callback, obj, quads, stack,
-							sCase, shader, true, bb, tes, visible, partialTicks);
-					if(bright)
-					{
-						if(wasLightingEnabled)
-							GlStateManager.enableLighting();
-						if(wasLightmapEnabled)
-							ClientUtils.setLightmapDisabled(false);
-					}
+							sCase, shader, true, matrixStackIn, builder, visible, partialTicks,
+							combinedLightIn, combinedOverlayIn);
 					matrixStackIn.pop();
 				}
 				renderQuadsForGroups(visible.toArray(new String[0]), callback, obj, quads, stack,
-						sCase, shader, false, bb, tes, visible, partialTicks);
-				GlStateManager.enableCull();
+						sCase, shader, false, matrixStackIn, bufferIn.getBuffer(RenderType.getSolid()),
+						visible, partialTicks, combinedLightIn, combinedOverlayIn);
 			}
 		}
 	}
 
 	private void renderQuadsForGroups(String[] groups, IOBJModelCallback<ItemStack> callback, IESmartObjModel model,
 									  List<BakedQuad> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
-									  boolean dynamic, BufferBuilder bb, Tessellator tes, Set<String> visible,
-									  float partialTicks)
+									  boolean dynamic, MatrixStack matrix, IVertexBuilder builder, Set<String> visible,
+									  float partialTicks, int light, int overlay)
 	{
 		quadsForGroup.clear();
 		for(String g : groups)
@@ -131,16 +116,12 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 			visible.remove(g);
 		}
-		if(!callback.areGroupsFullbright(stack, groups))
-			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		else
-			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-		VertexBufferConsumer vbc = new VertexBufferConsumer(bb);
+		VertexBufferConsumer vbc = new VertexBufferConsumer(builder);
 		ShaderLayer lastShaderLayer = null;
 		for(BakedQuad bq : quadsForGroup)
 		{
 			//Switch to or between dynamic layers
-			/*TODO
+			/*TODO move to RenderType and MatrixStack
 			boolean switchDynamic = layer!=lastShaderLayer;
 			if(switchDynamic)
 			{
@@ -163,9 +144,8 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 
 			}
 			 */
-			bq.pipe(vbc);
+			builder.addQuad(matrix.getLast(), bq, 1, 1, 1, light, overlay);
 		}
-		tes.draw();
 		if(lastShaderLayer!=null)//finish dynamic call on final layer
 			lastShaderLayer.modifyRender(false, partialTicks);
 

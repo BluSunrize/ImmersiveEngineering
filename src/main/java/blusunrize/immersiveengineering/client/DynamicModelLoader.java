@@ -47,7 +47,7 @@ public class DynamicModelLoader
 {
 	private static Set<Material> requestedTextures = new HashSet<>();
 	private static Set<ResourceLocation> manualTextureRequests = new HashSet<>();
-	private static Multimap<ModelWithTransforms, ModelResourceLocation> requestedModels = HashMultimap.create();
+	private static final Multimap<ModelWithTransforms, ModelResourceLocation> requestedModels = HashMultimap.create();
 	private static Map<ModelWithTransforms, IUnbakedModel> unbakedModels = new HashMap<>();
 
 	@SubscribeEvent
@@ -64,8 +64,11 @@ public class DynamicModelLoader
 				state = new SimpleUVModelTransform(ImmutableMap.copyOf(unbaked.getKey().transforms), conf.uvLock);
 			IBakedModel baked = unbaked.getValue().bakeModel(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
 					state, conf.name);
-			for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
-				evt.getModelRegistry().put(mrl, baked);
+			synchronized(requestedModels)
+			{
+				for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
+					evt.getModelRegistry().put(mrl, baked);
+			}
 		}
 	}
 
@@ -77,14 +80,18 @@ public class DynamicModelLoader
 		IELogger.logger.debug("Loading dynamic models");
 		try
 		{
-			for(ModelWithTransforms reqModel : requestedModels.keySet())
+			//apparently this is needed to prevent CMEs. TODO Figure out the threads involved and how to solve this in a nicer way.
+			synchronized(requestedModels)
 			{
-				BlockModel model = ExpandedBlockModelDeserializer.INSTANCE.fromJson(reqModel.model.data, BlockModel.class);
-				Set<Pair<String, String>> missingTexErrors = new HashSet<>();
-				requestedTextures.addAll(model.getTextures(DynamicModelLoader::getVanillaModel, missingTexErrors));
-				if(!missingTexErrors.isEmpty())
-					throw new RuntimeException("Missing textures: "+missingTexErrors);
-				unbakedModels.put(reqModel, model);
+				for(ModelWithTransforms reqModel : requestedModels.keySet())
+				{
+					BlockModel model = ExpandedBlockModelDeserializer.INSTANCE.fromJson(reqModel.model.data, BlockModel.class);
+					Set<Pair<String, String>> missingTexErrors = new HashSet<>();
+					requestedTextures.addAll(model.getTextures(DynamicModelLoader::getVanillaModel, missingTexErrors));
+					if(!missingTexErrors.isEmpty())
+						throw new RuntimeException("Missing textures: "+missingTexErrors);
+					unbakedModels.put(reqModel, model);
+				}
 			}
 		} catch(Exception x)
 		{
@@ -106,6 +113,7 @@ public class DynamicModelLoader
 	{
 		try
 		{
+			//TODO update?
 			VANILLA_MODEL_WRAPPER = (Class<? extends IUnbakedModel>)Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaModelWrapper");
 			BASE_MODEL = VANILLA_MODEL_WRAPPER.getDeclaredField("model");
 			BASE_MODEL.setAccessible(true);
@@ -159,7 +167,10 @@ public class DynamicModelLoader
 	public static void requestModel(ModelRequest reqModel, ModelResourceLocation name,
 									Map<TransformType, TransformationMatrix> transforms)
 	{
-		requestedModels.put(new ModelWithTransforms(reqModel, transforms), name);
+		synchronized(requestedModels)
+		{
+			requestedModels.put(new ModelWithTransforms(reqModel, transforms), name);
+		}
 	}
 
 	public static class ModelRequest

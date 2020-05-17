@@ -56,7 +56,7 @@ public class BakedMultiLayerModel extends BakedIEModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
-		String current = MinecraftForgeClient.getRenderLayer().toString();
+		RenderType current = MinecraftForgeClient.getRenderLayer();
 		if(current==null)
 		{
 			ImmutableList.Builder<BakedQuad> ret = new Builder<>();
@@ -64,10 +64,10 @@ public class BakedMultiLayerModel extends BakedIEModel
 				ret.addAll(model.getQuads(state, side, rand));
 			return ret.build();
 		}
-		else if(models.containsKey(current))
+		else if(models.containsKey(current.toString()))
 		{
 			ImmutableList.Builder<BakedQuad> ret = new Builder<>();
-			ret.addAll(models.get(current).getQuads(state, side, rand));
+			ret.addAll(models.get(current.toString()).getQuads(state, side, rand));
 			return ret.build();
 		}
 		else

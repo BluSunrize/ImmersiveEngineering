@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
@@ -19,7 +20,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.gui.MixerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -29,6 +34,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class MixerScreen extends IEContainerScreen<MixerContainer>
 {
@@ -104,8 +111,11 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
+		MatrixStack transform = new MatrixStack();
+		transform.push();
+		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/mixer.png");
+		IVertexBuilder builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/mixer.png")));
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(MultiblockProcess process : tile.processQueue)
@@ -132,9 +142,10 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 			{
 				fluidUpToNow += fs.getAmount();
 				int newY = (int)(47*(fluidUpToNow/capacity));
-				ClientUtils.drawRepeatedFluidSprite(fs, guiLeft+76, guiTop+58-newY, 58, newY-lastY);
+				ClientUtils.drawRepeatedFluidSprite(buffers, transform, fs, guiLeft+76, guiTop+58-newY, 58, newY-lastY);
 				lastY = newY;
 			}
 		}
+		buffers.finish();
 	}
 }

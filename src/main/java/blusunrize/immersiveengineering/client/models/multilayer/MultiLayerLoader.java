@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models.multilayer;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -38,11 +39,15 @@ public class MultiLayerLoader implements IModelLoader<MultiLayerModel>
 	{
 		Map<String, IModelGeometry<?>> subModels = new HashMap<>();
 		for(Entry<String, JsonElement> entry : modelContents.entrySet())
-		{
-			JsonObject subModel = entry.getValue().getAsJsonObject();
-			if(subModel!=null)
-				subModels.put(entry.getKey(), ModelLoaderRegistry.deserializeGeometry(deserializationContext, subModel));
-		}
+			if(!"loader".equals(entry.getKey())&&!"textures".equals(entry.getKey())&&!"transform".equals(entry.getKey()))
+			{
+				JsonObject subModel = entry.getValue().getAsJsonObject();
+				if(subModel!=null)
+				{
+					IModelGeometry<?> model = ModelLoaderRegistry.deserializeGeometry(deserializationContext, subModel);
+					subModels.put(entry.getKey(), Preconditions.checkNotNull(model));
+				}
+			}
 		return new MultiLayerModel(subModels);
 	}
 }

@@ -12,12 +12,17 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.FluidSorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
@@ -32,6 +37,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import java.util.ArrayList;
+
+import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 {
@@ -109,8 +116,9 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
+		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		MatrixStack transform = new MatrixStack();
+		IVertexBuilder builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/sorter.png")));
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 		for(int side = 0; side < 6; side++)
 		{
@@ -125,7 +133,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 						int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 						int col = tile.filters[side][i].getFluid().getAttributes().getColor(tile.filters[side][i]);
 						GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
-						ClientUtils.drawTexturedRect(x, y, 16, 16, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
+						ClientUtils.drawTexturedRect(builder, transform, x, y, 16, 16, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
 					}
 				}
 			int x = guiLeft+30+(side/2)*58;
@@ -135,6 +143,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 			ClientUtils.font().drawStringWithShadow(s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
 		}
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
+		buffers.finish();
 	}
 
 	@Override

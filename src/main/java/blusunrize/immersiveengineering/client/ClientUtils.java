@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem;
 import blusunrize.immersiveengineering.common.items.DrillItem;
@@ -28,7 +29,6 @@ import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import it.unimi.dsi.fastutil.ints.Int2IntMaps.EmptyMap;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -38,7 +38,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.*;
-import net.minecraft.client.renderer.model.ModelRenderer.ModelBox;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -66,7 +65,6 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.apache.commons.compress.utils.IOUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -581,37 +579,35 @@ public class ClientUtils
 		GlStateManager.enableTexture();
 	}
 
-	public static void drawTexturedRect(float x, float y, float w, float h, double... uv)
+	public static void drawTexturedRect(IVertexBuilder builder, MatrixStack transform, float x, float y, float w, float h, double... uv)
 	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldrenderer = tessellator.getBuffer();
-		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(x, y+h, 0).tex((float)uv[0], (float)uv[3]).endVertex();
-		worldrenderer.pos(x+w, y+h, 0).tex((float)uv[1], (float)uv[3]).endVertex();
-		worldrenderer.pos(x+w, y, 0).tex((float)uv[1], (float)uv[2]).endVertex();
-		worldrenderer.pos(x, y, 0).tex((float)uv[0], (float)uv[2]).endVertex();
-		tessellator.draw();
+		Matrix4f mat = transform.getLast().getMatrix();
+		builder.pos(mat, x, y+h, 0).tex((float)uv[0], (float)uv[3]).endVertex();
+		builder.pos(mat, x+w, y+h, 0).tex((float)uv[1], (float)uv[3]).endVertex();
+		builder.pos(mat, x+w, y, 0).tex((float)uv[1], (float)uv[2]).endVertex();
+		builder.pos(mat, x, y, 0).tex((float)uv[0], (float)uv[2]).endVertex();
 	}
 
-	public static void drawTexturedRect(int x, int y, int w, int h, float picSize, int... uv)
+	public static void drawTexturedRect(IVertexBuilder builder, MatrixStack transform, int x, int y, int w, int h, float picSize, int... uv)
 	{
 		double[] d_uv = new double[]{uv[0]/picSize, uv[1]/picSize, uv[2]/picSize, uv[3]/picSize};
-		drawTexturedRect(x, y, w, h, d_uv);
+		drawTexturedRect(builder, transform, x, y, w, h, d_uv);
 	}
 
-	public static void drawRepeatedFluidSprite(FluidStack fluid, float x, float y, float w, float h)
+	public static void drawRepeatedFluidSprite(IRenderTypeBuffer buffer, MatrixStack transform, FluidStack fluid, float x, float y, float w, float h)
 	{
-		bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE.toString());
+		IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(PlayerContainer.LOCATION_BLOCKS_TEXTURE));
 		TextureAtlasSprite sprite = getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid));
 		int col = fluid.getFluid().getAttributes().getColor(fluid);
 		GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
 		int iW = sprite.getWidth();
 		int iH = sprite.getHeight();
 		if(iW > 0&&iH > 0)
-			drawRepeatedSprite(x, y, w, h, iW, iH, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
+			drawRepeatedSprite(builder, transform, x, y, w, h, iW, iH, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
 	}
 
-	public static void drawRepeatedSprite(float x, float y, float w, float h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax)
+	public static void drawRepeatedSprite(IVertexBuilder builder, MatrixStack transform, float x, float y, float w,
+										  float h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax)
 	{
 		int iterMaxW = (int)(w/iconWidth);
 		int iterMaxH = (int)(h/iconHeight);
@@ -624,14 +620,14 @@ public class ClientUtils
 		for(int ww = 0; ww < iterMaxW; ww++)
 		{
 			for(int hh = 0; hh < iterMaxH; hh++)
-				drawTexturedRect(x+ww*iconWidth, y+hh*iconHeight, iconWidth, iconHeight, uMin, uMax, vMin, vMax);
-			drawTexturedRect(x+ww*iconWidth, y+iterMaxH*iconHeight, iconWidth, leftoverH, uMin, uMax, vMin, (vMin+iconVDif*leftoverHf));
+				drawTexturedRect(builder, transform, x+ww*iconWidth, y+hh*iconHeight, iconWidth, iconHeight, uMin, uMax, vMin, vMax);
+			drawTexturedRect(builder, transform, x+ww*iconWidth, y+iterMaxH*iconHeight, iconWidth, leftoverH, uMin, uMax, vMin, (vMin+iconVDif*leftoverHf));
 		}
 		if(leftoverW > 0)
 		{
 			for(int hh = 0; hh < iterMaxH; hh++)
-				drawTexturedRect(x+iterMaxW*iconWidth, y+hh*iconHeight, leftoverW, iconHeight, uMin, (uMin+iconUDif*leftoverWf), vMin, vMax);
-			drawTexturedRect(x+iterMaxW*iconWidth, y+iterMaxH*iconHeight, leftoverW, leftoverH, uMin, (uMin+iconUDif*leftoverWf), vMin, (vMin+iconVDif*leftoverHf));
+				drawTexturedRect(builder, transform, x+iterMaxW*iconWidth, y+hh*iconHeight, leftoverW, iconHeight, uMin, (uMin+iconUDif*leftoverWf), vMin, vMax);
+			drawTexturedRect(builder, transform, x+iterMaxW*iconWidth, y+iterMaxH*iconHeight, leftoverW, leftoverH, uMin, (uMin+iconUDif*leftoverWf), vMin, (vMin+iconVDif*leftoverHf));
 		}
 	}
 
@@ -760,18 +756,19 @@ public class ClientUtils
 
 	public static void handleGuiTank(FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
 	{
+		if(true) throw new UnsupportedOperationException();
 		if(tooltip==null)
 		{
 			if(fluid!=null&&fluid.getFluid()!=null)
 			{
 				int fluidHeight = (int)(h*(fluid.getAmount()/(float)capacity));
-				drawRepeatedFluidSprite(fluid, x, y+h-fluidHeight, w, fluidHeight);
+				drawRepeatedFluidSprite(null, null, fluid, x, y+h-fluidHeight, w, fluidHeight);
 				bindTexture(originalTexture);
 				GlStateManager.color3f(1, 1, 1);
 			}
 			int xOff = (w-oW)/2;
 			int yOff = (h-oH)/2;
-			drawTexturedRect(x+xOff, y+yOff, oW, oH, 256f, oX, oX+oW, oY, oY+oH);
+			drawTexturedRect(null, null, x+xOff, y+yOff, oW, oH, 256f, oX, oX+oW, oY, oY+oH);
 		}
 		else
 		{

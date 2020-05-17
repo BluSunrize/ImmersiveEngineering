@@ -75,7 +75,7 @@ public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTil
 				float h = fs.getAmount()/(float)tile.tank.getCapacity();
 				GlStateManager.depthMask(false);
 				matrixStack.translate(0, 0, .004f);
-				ClientUtils.drawRepeatedFluidSprite(fs, 0, 0+(1-h)*16, 16, h*16);
+				ClientUtils.drawRepeatedFluidSprite(bufferIn, matrixStack, fs, 0, 0+(1-h)*16, 16, h*16);
 				matrixStack.translate(0, 0, -.004f);
 				GlStateManager.depthMask(true);
 			}

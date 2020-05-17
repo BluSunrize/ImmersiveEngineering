@@ -478,8 +478,6 @@ public class IESmartObjModel implements IBakedModel
 			int tintIndex = mat.diffuseTintIndex;
 			Vector4f colorTint = colorGetter.apply(mat.name, mat.diffuseColor);
 
-			boolean isFullbright = baseModel.ambientToFullbright&&mesh.isFullbright();
-
 			for(int[][] face : mesh.getFaces())
 			{
 				boolean drawFace = coordinateRemapper.remapCoord(face);

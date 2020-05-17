@@ -10,15 +10,20 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class RevolverScreen extends IEContainerScreen<RevolverContainer>
@@ -48,7 +53,6 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
 	{
-		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
 		this.blit(guiLeft+(offset > 0?offset: 0), guiTop+77, 0, 125, 176, 89);
 
@@ -65,25 +69,24 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 		}
 	}
 
-
-	public static void drawExternalGUI(NonNullList<ItemStack> bullets, int bulletAmount)
+	public static void drawExternalGUI(NonNullList<ItemStack> bullets, int bulletAmount, MatrixStack transform)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-		GlStateManager.color3f(1, 1, 1);
+		IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(
+				new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/revolver.png")));
 
-		RenderHelper.disableStandardItemLighting();
-
-		ClientUtils.drawTexturedRect(0, 1, 74, 74, 0/256f, 74/256f, 51/256f, 125/256f);
+		ClientUtils.drawTexturedRect(builder, transform, 0, 1, 74, 74, 0/256f, 74/256f, 51/256f, 125/256f);
 		if(bulletAmount >= 18)
-			ClientUtils.drawTexturedRect(47, 1, 103, 74, 74/256f, 177/256f, 51/256f, 125/256f);
+			ClientUtils.drawTexturedRect(builder, transform, 47, 1, 103, 74, 74/256f, 177/256f, 51/256f, 125/256f);
 		else if(bulletAmount > 8)
-			ClientUtils.drawTexturedRect(57, 1, 79, 39, 57/256f, 136/256f, 12/256f, 51/256f);
-
-		RenderHelper.enableStandardItemLighting();
-		GlStateManager.enableDepthTest();
+			ClientUtils.drawTexturedRect(builder, transform, 57, 1, 79, 39, 57/256f, 136/256f, 12/256f, 51/256f);
+		buffer.finish();
 
 		ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
+		RenderSystem.pushMatrix();
+		RenderSystem.multMatrix(transform.getLast().getMatrix());
+		RenderSystem.translated(0, 0, 10);
 		for(int i = 0; i < bulletAmount; i++)
 		{
 			ItemStack b = bullets.get(i);
@@ -110,6 +113,6 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 				ir.renderItemIntoGUI(b, x, y);
 			}
 		}
-
+		RenderSystem.popMatrix();
 	}
 }
