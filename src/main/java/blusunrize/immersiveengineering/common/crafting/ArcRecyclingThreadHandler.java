@@ -123,7 +123,7 @@ public class ArcRecyclingThreadHandler extends Thread
 	private void makeRecipe(RecyclingCalculation calculation)
 	{
 		ResourceLocation id = new ResourceLocation(Lib.MODID, "recycling/"+ForgeRegistries.ITEMS.getKey(calculation.stack.getItem()).getPath());
-		ArcRecyclingRecipe recipe = new ArcRecyclingRecipe(id, calculation.outputs, IngredientWithSize.of(calculation.stack), 100, 512);
+		ArcRecyclingRecipe recipe = new ArcRecyclingRecipe(id, calculation.outputs, IngredientWithSize.of(calculation.stack), 100, 51200);
 		ArcFurnaceRecipe.recipeList.put(id, recipe);
 	}
 
