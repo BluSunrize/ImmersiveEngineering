@@ -4,19 +4,13 @@
     {
       "chance": 0.5,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/tungsten"
-        }
+        "tag": "forge:ores/tungsten"
       }
     },
     {
       "chance": 0.5,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/iron"
-        }
+        "tag": "forge:ores/iron"
       }
     },
     {
@@ -31,10 +25,7 @@
       ],
       "chance": 0.5,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/manganese"
-        }
+        "tag": "forge:ores/manganese"
       }
     }
   ],

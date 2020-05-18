@@ -4,27 +4,8 @@
     "item": "immersiveengineering:mold_plate"
   },
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:plates/electrum"
-    }
+    "tag": "forge:plates/electrum"
   },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/electrum",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:plates/electrum",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
   "input": {
     "tag": "forge:ingots/electrum"
   },

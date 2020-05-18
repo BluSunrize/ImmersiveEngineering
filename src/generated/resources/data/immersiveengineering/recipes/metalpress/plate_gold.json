@@ -4,27 +4,8 @@
     "item": "immersiveengineering:mold_plate"
   },
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:plates/gold"
-    }
+    "tag": "forge:plates/gold"
   },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/gold",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:plates/gold",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
   "input": {
     "tag": "forge:ingots/gold"
   },

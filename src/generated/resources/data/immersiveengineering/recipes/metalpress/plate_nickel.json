@@ -4,27 +4,8 @@
     "item": "immersiveengineering:mold_plate"
   },
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:plates/nickel"
-    }
+    "tag": "forge:plates/nickel"
   },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/nickel",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:plates/nickel",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
   "input": {
     "tag": "forge:ingots/nickel"
   },

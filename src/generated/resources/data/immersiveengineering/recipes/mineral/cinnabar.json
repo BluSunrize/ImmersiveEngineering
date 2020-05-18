@@ -4,19 +4,13 @@
     {
       "chance": 0.6,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/redstone"
-        }
+        "tag": "forge:ores/redstone"
       }
     },
     {
       "chance": 0.4,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:dusts/sulfur"
-        }
+        "tag": "forge:dusts/sulfur"
       }
     },
     {
@@ -31,10 +25,7 @@
       ],
       "chance": 0.3,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/mercury"
-        }
+        "tag": "forge:ores/mercury"
       }
     }
   ],

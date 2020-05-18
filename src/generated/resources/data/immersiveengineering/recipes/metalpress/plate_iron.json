@@ -4,27 +4,8 @@
     "item": "immersiveengineering:mold_plate"
   },
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:plates/iron"
-    }
+    "tag": "forge:plates/iron"
   },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/iron",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:plates/iron",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
   "input": {
     "tag": "forge:ingots/iron"
   },

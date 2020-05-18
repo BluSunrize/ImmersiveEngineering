@@ -4,27 +4,8 @@
     "item": "immersiveengineering:mold_plate"
   },
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:plates/constantan"
-    }
+    "tag": "forge:plates/constantan"
   },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/constantan",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:plates/constantan",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
   "input": {
     "tag": "forge:ingots/constantan"
   },

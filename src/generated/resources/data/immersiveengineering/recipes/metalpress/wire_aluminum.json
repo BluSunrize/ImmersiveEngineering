@@ -12,13 +12,6 @@
   "conditions": [
     {
       "value": {
-        "tag": "forge:ingots/aluminum",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
         "tag": "forge:wires/aluminum",
         "type": "forge:tag_empty"
       },

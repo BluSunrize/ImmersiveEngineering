@@ -1,10 +1,7 @@
 {
   "type": "immersiveengineering:blast_furnace",
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:storage_blocks/steel"
-    }
+    "tag": "forge:storage_blocks/steel"
   },
   "input": {
     "tag": "forge:storage_blocks/iron"

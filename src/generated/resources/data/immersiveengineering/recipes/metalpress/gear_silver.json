@@ -4,19 +4,9 @@
     "item": "immersiveengineering:mold_gear"
   },
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:gears/silver"
-    }
+    "tag": "forge:gears/silver"
   },
   "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/silver",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
     {
       "value": {
         "tag": "forge:gears/silver",

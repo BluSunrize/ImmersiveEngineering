@@ -12,13 +12,6 @@
   "conditions": [
     {
       "value": {
-        "tag": "forge:ingots/electrum",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
         "tag": "forge:rods/electrum",
         "type": "forge:tag_empty"
       },

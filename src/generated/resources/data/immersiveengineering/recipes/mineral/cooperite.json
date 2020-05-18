@@ -4,10 +4,7 @@
     {
       "chance": 0.5,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/platinum"
-        }
+        "tag": "forge:ores/platinum"
       }
     },
     {
@@ -22,19 +19,13 @@
       ],
       "chance": 0.5,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/paladium"
-        }
+        "tag": "forge:ores/paladium"
       }
     },
     {
       "chance": 0.5,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/nickel"
-        }
+        "tag": "forge:ores/nickel"
       }
     }
   ],

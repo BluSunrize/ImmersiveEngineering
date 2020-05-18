@@ -1,0 +1,21 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [
+    {
+      "chance": 0.2,
+      "output": {
+        "tag": "forge:dusts/sulfur"
+      }
+    }
+  ],
+  "result": {
+    "count": 3,
+    "base_ingredient": {
+      "item": "minecraft:quartz"
+    }
+  },
+  "input": {
+    "tag": "forge:ores/quartz"
+  },
+  "energy": 6000
+}

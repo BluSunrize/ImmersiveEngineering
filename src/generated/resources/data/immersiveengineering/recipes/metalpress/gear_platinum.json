@@ -1,0 +1,32 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "mold": {
+    "item": "immersiveengineering:mold_gear"
+  },
+  "result": {
+    "tag": "forge:gears/platinum"
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:ingots/platinum",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:gears/platinum",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "count": 4,
+    "base_ingredient": {
+      "tag": "forge:ingots/platinum"
+    }
+  },
+  "energy": 2400
+}

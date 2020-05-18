@@ -8,10 +8,7 @@
       }
     },
     {
-      "count": 1,
-      "base_ingredient": {
-        "tag": "forge:ingots/copper"
-      }
+      "tag": "forge:ingots/copper"
     }
   ],
   "category": "components",

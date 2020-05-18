@@ -7,22 +7,6 @@
       "tag": "forge:dusts/gold"
     }
   },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:ores/gold",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:dusts/gold",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
   "input": {
     "tag": "forge:ores/gold"
   },

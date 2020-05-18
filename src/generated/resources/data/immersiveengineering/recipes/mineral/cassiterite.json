@@ -4,10 +4,7 @@
     {
       "chance": 1.0,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/tin"
-        }
+        "tag": "forge:ores/tin"
       }
     }
   ],

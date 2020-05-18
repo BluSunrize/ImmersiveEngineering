@@ -4,19 +4,13 @@
     {
       "chance": 0.8,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/coal"
-        }
+        "tag": "forge:ores/coal"
       }
     },
     {
       "chance": 0.2,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:dusts/sulfur"
-        }
+        "tag": "forge:dusts/sulfur"
       }
     },
     {
@@ -31,10 +25,7 @@
       ],
       "chance": 0.2,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:dusts/phosphorus"
-        }
+        "tag": "forge:dusts/phosphorus"
       }
     }
   ],

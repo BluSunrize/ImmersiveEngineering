@@ -4,10 +4,7 @@
     {
       "chance": 0.5,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:dusts/saltpeter"
-        }
+        "tag": "forge:dusts/saltpeter"
       }
     }
   ],

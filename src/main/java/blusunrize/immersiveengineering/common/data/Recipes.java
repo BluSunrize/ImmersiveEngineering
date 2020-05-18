@@ -28,6 +28,10 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
+import blusunrize.immersiveengineering.common.data.resources.RecipeMetals;
+import blusunrize.immersiveengineering.common.data.resources.RecipeMetals.AlloyProperties;
+import blusunrize.immersiveengineering.common.data.resources.RecipeOres;
+import blusunrize.immersiveengineering.common.data.resources.SecondaryOutput;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
@@ -176,7 +180,6 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
 		addRGBRecipe(out, toRL("curtain_colour"), Ingredient.fromItems(Cloth.curtain), "colour");
 
-		recipesAlloy(out);
 		recipesBlast(out);
 		recipesCoke(out);
 		recipesCloche(out);
@@ -184,77 +187,6 @@ public class Recipes extends RecipeProvider
 		recipesMultiblockMachines(out);
 
 		mineralMixes(out);
-		//NYI
-//		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[0]).patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-//		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[1]).patternLine("iii").patternLine("i i").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-//		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[2]).patternLine("i i").patternLine("iii").patternLine("iii").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-//		ShapedRecipeBuilder.shapedRecipe(IEItems.Misc.steelArmor[3]).patternLine("iii").patternLine("i i").key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot).addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot)).build(out);
-	}
-
-	private void recipesAlloy(@Nonnull Consumer<IFinishedRecipe> out)
-	{
-		AlloyRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot, 2)
-				.addInput(IETags.getTagsFor(EnumMetals.GOLD).ingot)
-				.addInput(IETags.getTagsFor(EnumMetals.SILVER).ingot)
-				.build(out, toRL("alloys/electrum"));
-		AlloyRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot, 2)
-				.addInput(IETags.getTagsFor(EnumMetals.GOLD).dust)
-				.addInput(IETags.getTagsFor(EnumMetals.SILVER).dust)
-				.build(out, toRL("alloys/electrum"));
-
-		AlloyRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.CONSTANTAN).ingot, 2)
-				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
-				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).ingot)
-				.build(out, toRL("alloys/constantan"));
-		AlloyRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.CONSTANTAN).ingot, 2)
-				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
-				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).dust)
-				.build(out, toRL("alloys/constantan"));
-
-		Tag<Item> invar = new ItemTags.Wrapper(IETags.getIngot("invar"));
-		Tag<Item> bronze = new ItemTags.Wrapper(IETags.getIngot("bronze"));
-		Tag<Item> tin = new ItemTags.Wrapper(IETags.getIngot("tin"));
-		Tag<Item> tin_dust = new ItemTags.Wrapper(IETags.getDust("tin"));
-		Tag<Item> brass = new ItemTags.Wrapper(IETags.getIngot("brass"));
-		Tag<Item> zinc = new ItemTags.Wrapper(IETags.getIngot("zinc"));
-		Tag<Item> zinc_dust = new ItemTags.Wrapper(IETags.getDust("zinc"));
-
-		AlloyRecipeBuilder.builder(invar, 2)
-				.addCondition(getTagCondition(invar))
-				.addInput(IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).ingot)
-				.build(out, toRL("alloys/invar"));
-		AlloyRecipeBuilder.builder(invar, 2)
-				.addCondition(getTagCondition(invar))
-				.addInput(IETags.getTagsFor(EnumMetals.IRON).dust)
-				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).dust)
-				.build(out, toRL("alloys/invar"));
-
-		AlloyRecipeBuilder.builder(bronze, 2)
-				.addCondition(getTagCondition(bronze))
-				.addCondition(getTagCondition(tin))
-				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
-				.addInput(tin)
-				.build(out, toRL("alloys/bronze"));
-		AlloyRecipeBuilder.builder(bronze, 2)
-				.addCondition(getTagCondition(bronze))
-				.addCondition(getTagCondition(tin_dust))
-				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
-				.addInput(tin_dust)
-				.build(out, toRL("alloys/bronze"));
-
-		AlloyRecipeBuilder.builder(brass, 2)
-				.addCondition(getTagCondition(brass))
-				.addCondition(getTagCondition(zinc))
-				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
-				.addInput(zinc)
-				.build(out, toRL("alloys/brass"));
-		AlloyRecipeBuilder.builder(brass, 2)
-				.addCondition(getTagCondition(brass))
-				.addCondition(getTagCondition(zinc_dust))
-				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
-				.addInput(zinc_dust)
-				.build(out, toRL("alloys/brass"));
 	}
 
 	private void recipesBlast(@Nonnull Consumer<IFinishedRecipe> out)
@@ -495,66 +427,139 @@ public class Recipes extends RecipeProvider
 
 	private void recipesMultiblockMachines(@Nonnull Consumer<IFinishedRecipe> out)
 	{
-		for(EnumMetals metal : EnumMetals.values())
+		CrusherRecipeBuilder crusherBuilder;
+		ArcFurnaceRecipeBuilder arcBuilder;
+		MetalPressRecipeBuilder pressBuilder;
+		AlloyRecipeBuilder alloyBuilder;
+
+		/* Common Metals */
+		for(RecipeMetals metal : RecipeMetals.values())
 		{
-			IETags.MetalTags tags = IETags.getTagsFor(metal);
+			if(metal.getOre()!=null)
+			{
+				SecondaryOutput[] secondaryOutputs = metal.getSecondaryOutputs();
 
-			Tag<Item> plate = new ItemTags.Wrapper(IETags.getPlate(metal.tagName()));
-			Tag<Item> ingot = new ItemTags.Wrapper(IETags.getIngot(metal.tagName()));
-			MetalPressRecipeBuilder.builder(Molds.moldPlate, plate, 1)
-					.addCondition(getTagCondition(ingot))
-					.addCondition(getTagCondition(plate))
-					.addInput(ingot)
+				// Crush ore
+				crusherBuilder = CrusherRecipeBuilder.builder(metal.getDust(), 2);
+				if(!metal.isNative())
+					crusherBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getOre()));
+				if(secondaryOutputs!=null)
+					for(SecondaryOutput secondaryOutput : secondaryOutputs)
+						crusherBuilder.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance());
+				crusherBuilder.addInput(metal.getOre())
+						.setEnergy(6000)
+						.build(out, toRL("crusher/ore_"+metal.getName()));
+
+				// Crush ingot
+				crusherBuilder = CrusherRecipeBuilder.builder(metal.getDust(), 1);
+				if(!metal.isNative())
+					crusherBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getIngot()));
+				crusherBuilder.addInput(metal.getIngot())
+						.setEnergy(3000)
+						.build(out, toRL("crusher/ingot_"+metal.getName()));
+
+				// Arcfurnace ore
+				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 2);
+				if(!metal.isNative())
+					arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getOre()));
+				arcBuilder.addIngredient("input", metal.getOre())
+						.addSlag(IETags.slag, 1)
+						.setTime(200)
+						.setEnergy(102400)
+						.build(out, toRL("arcfurnace/ore_"+metal.getName()));
+
+				// Arcfurnace dust
+				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 1);
+				if(!metal.isNative())
+					arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getDust()));
+				arcBuilder.addIngredient("input", metal.getDust())
+						.setTime(100)
+						.setEnergy(51200)
+						.build(out, toRL("arcfurnace/dust_"+metal.getName()));
+			}
+
+			// Plate
+			Tag<Item> plate = new ItemTags.Wrapper(IETags.getPlate(metal.getName()));
+			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldPlate, plate, 1);
+			if(!metal.isNative())
+				pressBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(plate));
+			pressBuilder.addInput(metal.getIngot())
 					.setEnergy(2400)
-					.build(out, toRL("metalpress/plate_"+metal.tagName()));
+					.build(out, toRL("metalpress/plate_"+metal.getName()));
 
-			Tag<Item> gear = new ItemTags.Wrapper(IETags.getGear(metal.tagName()));
-			MetalPressRecipeBuilder.builder(Molds.moldGear, gear, 1)
-					.addCondition(getTagCondition(ingot))
-					.addCondition(getTagCondition(gear))
-					.addInput(new IngredientWithSize(tags.ingot, 4))
+			// Gear
+			Tag<Item> gear = new ItemTags.Wrapper(IETags.getGear(metal.getName()));
+			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldGear, gear, 1);
+			if(!metal.isNative())
+				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
+			pressBuilder.addCondition(getTagCondition(gear))
+					.addInput(new IngredientWithSize(metal.getIngot(), 4))
 					.setEnergy(2400)
-					.build(out, toRL("metalpress/gear_"+metal.tagName()));
+					.build(out, toRL("metalpress/gear_"+metal.getName()));
 
-			Tag<Item> rods = new ItemTags.Wrapper(IETags.getRod(metal.tagName()));
-			MetalPressRecipeBuilder.builder(Molds.moldRod, rods, 2)
-					.addCondition(getTagCondition(ingot))
-					.addCondition(getTagCondition(rods))
-					.addInput(tags.ingot)
+			// Rod
+			Tag<Item> rods = new ItemTags.Wrapper(IETags.getRod(metal.getName()));
+			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldRod, rods, 2);
+			if(!metal.isNative())
+				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
+			pressBuilder.addCondition(getTagCondition(rods))
+					.addInput(metal.getIngot())
 					.setEnergy(2400)
-					.build(out, toRL("metalpress/rod_"+metal.tagName()));
+					.build(out, toRL("metalpress/rod_"+metal.getName()));
 
-			Tag<Item> wire = new ItemTags.Wrapper(IETags.getWire(metal.tagName()));
-			MetalPressRecipeBuilder.builder(Molds.moldWire, wire, 2)
-					.addCondition(getTagCondition(ingot))
-					.addCondition(getTagCondition(wire))
-					.addInput(tags.ingot)
+			// Wire
+			Tag<Item> wire = new ItemTags.Wrapper(IETags.getWire(metal.getName()));
+			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldWire, wire, 2);
+			if(!metal.isNative())
+				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
+			pressBuilder.addCondition(getTagCondition(wire))
+					.addInput(metal.getIngot())
 					.setEnergy(2400)
-					.build(out, toRL("metalpress/wire_"+metal.tagName()));
+					.build(out, toRL("metalpress/wire_"+metal.getName()));
 
-			Tag<Item> dust = new ItemTags.Wrapper(IETags.getDust(metal.tagName()));
-			Tag<Item> ore = new ItemTags.Wrapper(IETags.getOre(metal.tagName()));
-			CrusherRecipeBuilder.builder(dust, 2)
-					.addCondition(getTagCondition(ore))
-					.addCondition(getTagCondition(dust))
-					.addInput(ore)
+			AlloyProperties alloy = metal.getAlloyProperties();
+			if(alloy!=null)
+			{
+				IngredientWithSize[] ingredients = alloy.getAlloyIngredients();
+				if(alloy.isSimple())
+				{
+					alloyBuilder = AlloyRecipeBuilder.builder(metal.getIngot(), alloy.getOutputSize());
+					if(!metal.isNative())
+						alloyBuilder.addCondition(getTagCondition(metal.getIngot()));
+					for(ICondition condition : alloy.getConditions())
+						alloyBuilder.addCondition(condition);
+					for(IngredientWithSize ingr : ingredients)
+						alloyBuilder.addInput(ingr);
+					alloyBuilder.build(out, toRL("alloysmelter/"+metal.getName()));
+				}
+
+				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), alloy.getOutputSize());
+				if(!metal.isNative())
+					arcBuilder.addCondition(getTagCondition(metal.getIngot()));
+				for(ICondition condition : alloy.getConditions())
+					arcBuilder.addCondition(condition);
+				arcBuilder.addIngredient("input", ingredients[0]);
+				for(int i = 1; i < ingredients.length; i++)
+					arcBuilder.addInput(ingredients[i]);
+				arcBuilder.setTime(100)
+						.setEnergy(51200)
+						.build(out, toRL("arcfurnace/alloy_"+metal.getName()));
+			}
+		}
+
+		// Non-metal ores
+		for(RecipeOres ore : RecipeOres.values())
+		{
+			SecondaryOutput[] secondaryOutputs = ore.getSecondaryOutputs();
+			crusherBuilder = CrusherRecipeBuilder.builder(ore.getOutput());
+			if(!ore.isNative())
+				crusherBuilder.addCondition(getTagCondition(ore.getOre()));
+			if(secondaryOutputs!=null)
+				for(SecondaryOutput secondaryOutput : secondaryOutputs)
+					crusherBuilder.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance());
+			crusherBuilder.addInput(ore.getOre())
 					.setEnergy(6000)
-					.build(out, toRL("crusher/ore_"+metal.tagName()));
-			CrusherRecipeBuilder.builder(dust, 1)
-					.addCondition(getTagCondition(ingot))
-					.addCondition(getTagCondition(dust))
-					.addInput(ingot)
-					.setEnergy(3000)
-					.build(out, toRL("crusher/ingot_"+metal.tagName()));
-
-			ArcFurnaceRecipeBuilder.builder(ingot, 2)
-					.addCondition(getTagCondition(ore))
-					.addCondition(getTagCondition(ingot))
-					.addIngredient("input", ore)
-					.addSlag(IETags.slag, 1)
-					.setTime(200)
-					.setEnergy(102400)
-					.build(out, toRL("arcfurnace/"+metal.tagName()));
+					.build(out, toRL("crusher/ore_"+ore.getName()));
 		}
 
 		/* METAL PRESS */
@@ -2750,9 +2755,14 @@ public class Recipes extends RecipeProvider
 		return makeIngredient(itemTag);
 	}
 
-	private ICondition getTagCondition(Tag<?> tag)
+	public static ICondition getTagCondition(Tag<?> tag)
 	{
 		return new NotCondition(new TagEmptyCondition(tag.getId()));
+	}
+
+	public static ICondition getTagCondition(ResourceLocation tag)
+	{
+		return getTagCondition(new ItemTags.Wrapper(tag));
 	}
 
 	/**

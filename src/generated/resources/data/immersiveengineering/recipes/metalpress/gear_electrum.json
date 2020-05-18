@@ -4,19 +4,9 @@
     "item": "immersiveengineering:mold_gear"
   },
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:gears/electrum"
-    }
+    "tag": "forge:gears/electrum"
   },
   "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/electrum",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
     {
       "value": {
         "tag": "forge:gears/electrum",

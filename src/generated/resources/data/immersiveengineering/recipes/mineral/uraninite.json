@@ -4,19 +4,13 @@
     {
       "chance": 0.7,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/uranium"
-        }
+        "tag": "forge:ores/uranium"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/lead"
-        }
+        "tag": "forge:ores/lead"
       }
     },
     {
@@ -31,10 +25,7 @@
       ],
       "chance": 0.1,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/thorium"
-        }
+        "tag": "forge:ores/thorium"
       }
     }
   ],

@@ -1,0 +1,21 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [
+    {
+      "chance": 0.1,
+      "output": {
+        "tag": "forge:dusts/sulfur"
+      }
+    }
+  ],
+  "result": {
+    "count": 9,
+    "base_ingredient": {
+      "item": "minecraft:lapis_lazuli"
+    }
+  },
+  "input": {
+    "tag": "forge:ores/lapis"
+  },
+  "energy": 6000
+}

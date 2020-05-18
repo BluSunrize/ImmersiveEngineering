@@ -12,13 +12,6 @@
   "conditions": [
     {
       "value": {
-        "tag": "forge:ingots/iron",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
         "tag": "forge:wires/iron",
         "type": "forge:tag_empty"
       },

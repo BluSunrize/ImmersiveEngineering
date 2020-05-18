@@ -4,19 +4,9 @@
     "item": "immersiveengineering:mold_gear"
   },
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:gears/constantan"
-    }
+    "tag": "forge:gears/constantan"
   },
   "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/constantan",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
     {
       "value": {
         "tag": "forge:gears/constantan",

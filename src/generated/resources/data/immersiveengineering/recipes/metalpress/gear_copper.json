@@ -4,19 +4,9 @@
     "item": "immersiveengineering:mold_gear"
   },
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:gears/copper"
-    }
+    "tag": "forge:gears/copper"
   },
   "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/copper",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
     {
       "value": {
         "tag": "forge:gears/copper",

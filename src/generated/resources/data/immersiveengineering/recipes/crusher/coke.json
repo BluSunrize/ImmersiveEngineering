@@ -2,10 +2,7 @@
   "type": "immersiveengineering:crusher",
   "secondaries": [],
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:dusts/coal_coke"
-    }
+    "tag": "forge:dusts/coal_coke"
   },
   "input": {
     "tag": "forge:coal_coke"

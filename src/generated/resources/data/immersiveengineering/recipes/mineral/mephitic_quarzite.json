@@ -10,10 +10,7 @@
     {
       "chance": 0.2,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:dusts/sulfur"
-        }
+        "tag": "forge:dusts/sulfur"
       }
     }
   ],

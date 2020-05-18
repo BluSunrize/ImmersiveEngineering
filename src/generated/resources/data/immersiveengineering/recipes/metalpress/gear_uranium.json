@@ -4,19 +4,9 @@
     "item": "immersiveengineering:mold_gear"
   },
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:gears/uranium"
-    }
+    "tag": "forge:gears/uranium"
   },
   "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/uranium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
     {
       "value": {
         "tag": "forge:gears/uranium",

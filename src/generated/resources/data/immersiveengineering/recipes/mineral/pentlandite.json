@@ -4,28 +4,19 @@
     {
       "chance": 0.35,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/iron"
-        }
+        "tag": "forge:ores/iron"
       }
     },
     {
       "chance": 0.35,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/nickel"
-        }
+        "tag": "forge:ores/nickel"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:dusts/sulfur"
-        }
+        "tag": "forge:dusts/sulfur"
       }
     }
   ],

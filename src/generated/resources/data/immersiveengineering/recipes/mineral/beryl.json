@@ -4,10 +4,7 @@
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/emerald"
-        }
+        "tag": "forge:ores/emerald"
       }
     },
     {
@@ -28,10 +25,7 @@
       ],
       "chance": 0.3,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:gems/aquamarine"
-        }
+        "tag": "forge:gems/aquamarine"
       }
     }
   ],

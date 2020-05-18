@@ -43,6 +43,11 @@ public class CrusherRecipeBuilder extends IEFinishedRecipe<CrusherRecipeBuilder>
 		return new CrusherRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
 
+	public static CrusherRecipeBuilder builder(IngredientWithSize result)
+	{
+		return new CrusherRecipeBuilder().addResult(result);
+	}
+
 	public CrusherRecipeBuilder addSecondary(IItemProvider itemProvider, float chance)
 	{
 		return this.addSecondary(new ItemStack(itemProvider), chance);

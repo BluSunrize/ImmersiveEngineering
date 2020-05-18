@@ -2,27 +2,8 @@
   "type": "immersiveengineering:crusher",
   "secondaries": [],
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:dusts/iron"
-    }
+    "tag": "forge:dusts/iron"
   },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/iron",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:dusts/iron",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
   "input": {
     "tag": "forge:ingots/iron"
   },

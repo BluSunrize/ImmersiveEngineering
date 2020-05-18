@@ -1,10 +1,7 @@
 {
   "type": "immersiveengineering:coke_oven",
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:storage_blocks/coal_coke"
-    }
+    "tag": "forge:storage_blocks/coal_coke"
   },
   "input": {
     "item": "minecraft:coal_block"

@@ -4,19 +4,13 @@
     {
       "chance": 0.7,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/aluminum"
-        }
+        "tag": "forge:ores/aluminum"
       }
     },
     {
       "chance": 0.2,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/iron"
-        }
+        "tag": "forge:ores/iron"
       }
     },
     {
@@ -31,10 +25,7 @@
       ],
       "chance": 0.1,
       "output": {
-        "count": 1,
-        "base_ingredient": {
-          "tag": "forge:ores/titanium"
-        }
+        "tag": "forge:ores/titanium"
       }
     }
   ],

@@ -1,0 +1,27 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [],
+  "result": {
+    "tag": "forge:dusts/tungsten"
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:dusts/tungsten",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:ingots/tungsten",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:ingots/tungsten"
+  },
+  "energy": 3000
+}

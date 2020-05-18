@@ -1,19 +1,13 @@
 {
   "type": "immersiveengineering:blast_furnace",
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:ingots/steel"
-    }
+    "tag": "forge:ingots/steel"
   },
   "input": {
     "tag": "forge:ingots/iron"
   },
   "slag": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:slag"
-    }
+    "tag": "forge:slag"
   },
   "time": 1200
 }

@@ -1,10 +1,7 @@
 {
   "type": "immersiveengineering:squeezer",
   "result": {
-    "count": 1,
-    "base_ingredient": {
-      "tag": "forge:dusts/hop_graphite"
-    }
+    "tag": "forge:dusts/hop_graphite"
   },
   "input": {
     "count": 8,
