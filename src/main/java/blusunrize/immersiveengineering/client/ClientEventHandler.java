@@ -846,7 +846,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getTarget().getType()==Type.BLOCK)
 		{
+			MatrixStack transform = event.getMatrix();
 			BlockRayTraceResult rtr = (BlockRayTraceResult)event.getTarget();
+			BlockPos pos = rtr.getPos();
+			Vec3d renderView = event.getInfo().getProjectedView();
+			transform.push();
+			transform.translate(-renderView.x, -renderView.y, -renderView.z);
+			transform.translate(pos.getX(), pos.getY(), pos.getZ());
 			Entity player = event.getInfo().getRenderViewEntity();
 			float f1 = 0.002F;
 			TileEntity tile = player.world.getTileEntity(rtr.getPos());
@@ -854,8 +860,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 			if(Utils.isHammer(stack)&&tile instanceof TurntableTileEntity)
 			{
-				BlockPos pos = rtr.getPos();
-
 				GlStateManager.enableBlend();
 				GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 				GlStateManager.lineWidth(2.0F);
@@ -891,70 +895,59 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(!stack.isEmpty()&&ConveyorHandler.conveyorBlocks.containsValue(Block.getBlockFromItem(stack.getItem()))&&rtr.getFace().getAxis()==Axis.Y)
 			{
 				Direction side = rtr.getFace();
-				BlockPos pos = rtr.getPos();
 				VoxelShape shape = world.getBlockState(pos).getRenderShape(world, pos);
 				AxisAlignedBB targetedBB = null;
 				if(!shape.isEmpty())
 					targetedBB = shape.getBoundingBox();
-				GlStateManager.enableBlend();
-				GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-				GlStateManager.lineWidth(2.0F);
-				GlStateManager.disableTexture();
-				GlStateManager.depthMask(false);
 
-				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder bufferBuilder = tessellator.getBuffer();
-				bufferBuilder.pos(pos.getX(), pos.getY(), pos.getZ());
-				double[][] points = new double[4][];
+				IRenderTypeBuffer buffers = event.getBuffers();
+				float[][] points = new float[4][];
 
 
 				if(side.getAxis()==Axis.Y)
 				{
-					double y = targetedBB==null?0: side==Direction.DOWN?targetedBB.minY-f1: targetedBB.maxY+f1;
-					points[0] = new double[]{0-f1, y, 0-f1};
-					points[1] = new double[]{1+f1, y, 1+f1};
-					points[2] = new double[]{0-f1, y, 1+f1};
-					points[3] = new double[]{1+f1, y, 0-f1};
+					float y = (float)(targetedBB==null?0: side==Direction.DOWN?targetedBB.minY-f1: targetedBB.maxY+f1);
+					points[0] = new float[]{0-f1, y, 0-f1};
+					points[1] = new float[]{1+f1, y, 1+f1};
+					points[2] = new float[]{0-f1, y, 1+f1};
+					points[3] = new float[]{1+f1, y, 0-f1};
 				}
 				else if(side.getAxis()==Axis.Z)
 				{
-					double z = targetedBB==null?0: side==Direction.NORTH?targetedBB.minZ-f1: targetedBB.maxZ+f1;
-					points[0] = new double[]{1+f1, 1+f1, z};
-					points[1] = new double[]{0-f1, 0-f1, z};
-					points[2] = new double[]{0-f1, 1+f1, z};
-					points[3] = new double[]{1+f1, 0-f1, z};
+					float z = (float)(targetedBB==null?0: side==Direction.NORTH?targetedBB.minZ-f1: targetedBB.maxZ+f1);
+					points[0] = new float[]{1+f1, 1+f1, z};
+					points[1] = new float[]{0-f1, 0-f1, z};
+					points[2] = new float[]{0-f1, 1+f1, z};
+					points[3] = new float[]{1+f1, 0-f1, z};
 				}
 				else
 				{
-					double x = targetedBB==null?0: side==Direction.WEST?targetedBB.minX-f1: targetedBB.maxX+f1;
-					points[0] = new double[]{x, 1+f1, 1+f1};
-					points[1] = new double[]{x, 0-f1, 0-f1};
-					points[2] = new double[]{x, 1+f1, 0-f1};
-					points[3] = new double[]{x, 0-f1, 1+f1};
+					float x = (float)(targetedBB==null?0: side==Direction.WEST?targetedBB.minX-f1: targetedBB.maxX+f1);
+					points[0] = new float[]{x, 1+f1, 1+f1};
+					points[1] = new float[]{x, 0-f1, 0-f1};
+					points[2] = new float[]{x, 1+f1, 0-f1};
+					points[3] = new float[]{x, 0-f1, 1+f1};
 				}
-				bufferBuilder.begin(1, DefaultVertexFormats.POSITION_COLOR);
-				for(double[] point : points)
-					bufferBuilder.pos(point[0], point[1], point[2]).color(0, 0, 0, 0.4F).endVertex();
-				tessellator.draw();
+				Matrix4f mat = transform.getLast().getMatrix();
+				IVertexBuilder lineBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_LINES);
+				for(float[] point : points)
+					lineBuilder.pos(mat, point[0], point[1], point[2])
+							.color(0, 0, 0, 0.4F)
+							.endVertex();
 
-				bufferBuilder.begin(2, DefaultVertexFormats.POSITION_COLOR);
-				bufferBuilder.pos(points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
-				bufferBuilder.pos(points[2][0], points[2][1], points[2][2]).color(0, 0, 0, 0.4F).endVertex();
-				bufferBuilder.pos(points[1][0], points[1][1], points[1][2]).color(0, 0, 0, 0.4F).endVertex();
-				bufferBuilder.pos(points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
-				tessellator.draw();
+				lineBuilder.pos(mat, points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
+				lineBuilder.pos(mat, points[2][0], points[2][1], points[2][2]).color(0, 0, 0, 0.4F).endVertex();
+				lineBuilder.pos(mat, points[1][0], points[1][1], points[1][2]).color(0, 0, 0, 0.4F).endVertex();
+				lineBuilder.pos(mat, points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
+				lineBuilder.pos(mat, points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
 
 				float xFromMid = side.getAxis()==Axis.X?0: (float)rtr.getHitVec().x-pos.getX()-.5f;
 				float yFromMid = side.getAxis()==Axis.Y?0: (float)rtr.getHitVec().y-pos.getY()-.5f;
 				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getHitVec().z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
 				Vec3d dir = new Vec3d(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
-				drawBlockOverlayArrow(tessellator, bufferBuilder, dir, side, targetedBB);
-				bufferBuilder.pos(0, 0, 0);
+				drawBlockOverlayArrow(mat, buffers, dir, side, targetedBB);
 
-				GlStateManager.depthMask(true);
-				GlStateManager.enableTexture();
-				GlStateManager.disableBlend();
 			}
 
 			if(!stack.isEmpty()&&stack.getItem() instanceof DrillItem&&
@@ -968,6 +961,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					drawAdditionalBlockbreak(event, (PlayerEntity)player, event.getPartialTicks(), blocks);
 				}
 			}
+			transform.pop();
 		}
 	}
 
@@ -1027,7 +1021,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 	private static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
 
-	public static void drawBlockOverlayArrow(Tessellator tessellator, BufferBuilder BufferBuilder, Vec3d directionVec, Direction side, AxisAlignedBB targetedBB)
+	public static void drawBlockOverlayArrow(Matrix4f transform, IRenderTypeBuffer buffers, Vec3d directionVec,
+											 Direction side, AxisAlignedBB targetedBB)
 	{
 		Vec3d[] translatedPositions = new Vec3d[arrowCoords.length];
 		Matrix4 mat = new Matrix4();
@@ -1048,14 +1043,27 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			translatedPositions[i] = vec;
 		}
 
-		BufferBuilder.begin(6, DefaultVertexFormats.POSITION_COLOR);
-		for(Vec3d point : translatedPositions)
-			BufferBuilder.pos(point.x, point.y, point.z).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
-		tessellator.draw();
-		BufferBuilder.begin(2, DefaultVertexFormats.POSITION_COLOR);
-		for(Vec3d point : translatedPositions)
-			BufferBuilder.pos(point.x, point.y, point.z).color(0, 0, 0, 0.4F).endVertex();
-		tessellator.draw();
+		IVertexBuilder triBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_TRIANGLES);
+		Vec3d center = translatedPositions[0];
+		for(int i = 2; i < translatedPositions.length; i++)
+		{
+			Vec3d point = translatedPositions[i];
+			Vec3d prevPoint = translatedPositions[i-1];
+			for(Vec3d p : new Vec3d[]{center, prevPoint, point})
+				triBuilder.pos(transform, (float)p.x, (float)p.y, (float)p.z)
+						.color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F)
+						.endVertex();
+		}
+		IVertexBuilder lineBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_LINES);
+		for(int i = 0; i <= translatedPositions.length; i++)
+		{
+			Vec3d point = translatedPositions[i%translatedPositions.length];
+			int max = i==0||i==translatedPositions.length?1: 2;
+			for(int j = 0; j < max; ++j)
+				lineBuilder.pos(transform, (float)point.x, (float)point.y, (float)point.z)
+						.color(0, 0, 0, 0.4F)
+						.endVertex();
+		}
 	}
 
 	public static void drawAdditionalBlockbreak(DrawHighlightEvent ev, PlayerEntity player, float partialTicks, Collection<BlockPos> blocks)

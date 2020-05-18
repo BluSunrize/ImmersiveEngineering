@@ -198,11 +198,10 @@ public class BakedConnectionModel extends BakedIEModel
 			return false;
 		}
 
-		//TODO
 		@Override
 		public boolean func_230044_c_()
 		{
-			return false;
+			return true;
 		}
 
 		@Override

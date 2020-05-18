@@ -162,11 +162,10 @@ public class IESmartObjModel implements IBakedModel
 		return true;
 	}
 
-	//TODO
 	@Override
 	public boolean func_230044_c_()
 	{
-		return false;
+		return true;
 	}
 
 	@Override

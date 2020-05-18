@@ -44,6 +44,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement.Type;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
@@ -1038,7 +1039,7 @@ public class ClientUtils
 	{
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
-		builder.setTexture(sprite);
+		builder.setApplyDiffuseLighting(true);
 		Vec3d faceNormal = new Vec3d(facing.getDirectionVec());
 		int vId = invert?3: 0;
 		int u = vId > 1?2: 0;
@@ -1069,12 +1070,18 @@ public class ClientUtils
 					builder.put(e, d*colour[0], d*colour[1], d*colour[2], 1*colour[3]*alpha);
 					break;
 				case UV:
-					if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-						sprite = ClientUtils.getMissingSprite();
-					builder.put(e,
-							sprite.getInterpolatedU(u),
-							sprite.getInterpolatedV((v)),
-							0, 1);
+					if(format.getElements().get(e).getType()==Type.FLOAT)
+					{
+						// Actual UVs
+						if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
+							sprite = ClientUtils.getMissingSprite();
+						builder.put(e,
+								sprite.getInterpolatedU(u),
+								sprite.getInterpolatedV(v));
+					}
+					else
+						//Lightmap UVs (0, 0 is "automatic")
+						builder.put(e, 0, 0);
 					break;
 				case NORMAL:
 					builder.put(e, (float)faceNormal.getX(), (float)faceNormal.getY(), (float)faceNormal.getZ(), 0);
@@ -1414,6 +1421,14 @@ public class ClientUtils
 			return InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), keyCode.getKeyCode());
 		else
 			return false;
+	}
+
+	public static TransformationMatrix rotateTo(Direction d)
+	{
+		return new TransformationMatrix(null)
+				.blockCornerToCenter()
+				.compose(toModelRotation(d).getRotation())
+				.blockCenterToCorner();
 	}
 
 	public static ModelRotation toModelRotation(Direction d)

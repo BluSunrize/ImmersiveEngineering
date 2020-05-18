@@ -343,7 +343,7 @@ public class VerticalConveyor extends BasicConveyor
 			baseModel.addAll(ModelConveyor.getBaseConveyor(
 					getFacing(),
 					.875f,
-					ClientUtils.toModelRotation(getFacing()).getRotation(),
+					ClientUtils.rotateTo(getFacing()),
 					ConveyorDirection.HORIZONTAL,
 					sprite,
 					walls,

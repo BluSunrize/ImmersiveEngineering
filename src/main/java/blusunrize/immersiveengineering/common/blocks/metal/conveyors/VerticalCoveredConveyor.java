@@ -104,7 +104,7 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 			TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
 			walls = new boolean[]{renderBottomWall(getTile(), getFacing(), 0), renderBottomWall(getTile(), getFacing(), 1)};
 			baseModel.addAll(ModelConveyor.getBaseConveyor(getFacing(), .875f,
-					ClientUtils.toModelRotation(getFacing()).getRotation(),
+					ClientUtils.rotateTo(getFacing()),
 					ConveyorDirection.HORIZONTAL, sprite, walls, new boolean[]{true, false}, spriteColour, getDyeColour()));
 		}
 		else

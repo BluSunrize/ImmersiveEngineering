@@ -28,7 +28,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -109,7 +108,7 @@ public class ModelConveyor extends BakedIEModel
 			if(conveyor==null)
 				conveyor = ConveyorHandler.getConveyor(new ResourceLocation(key), tile);
 			cachedQuads = Collections.synchronizedList(Lists.newArrayList());
-			TransformationMatrix matrix = ClientUtils.toModelRotation(facing).getRotation();
+			TransformationMatrix matrix = ClientUtils.rotateTo(facing);
 			if(conveyor!=null)
 				matrix = conveyor.modifyBaseRotationMatrix(matrix);
 			ConveyorDirection conDir = conveyor!=null?conveyor.getConveyorDirection(): ConveyorDirection.HORIZONTAL;
