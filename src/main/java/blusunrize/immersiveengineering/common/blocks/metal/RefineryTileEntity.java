@@ -365,7 +365,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 			if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==getFacing().rotateYCCW().getAxis()))
 				return new FluidTank[]{master.tanks[0], master.tanks[1]};
 		}
-		return tanks;
+		return new FluidTank[0];
 	}
 
 	@Override
