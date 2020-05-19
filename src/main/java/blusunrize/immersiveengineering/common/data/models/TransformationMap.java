@@ -91,21 +91,33 @@ public class TransformationMap
 					transform = TransformationHelper.toTransformation(vanillaTransform);
 				}
 				else
-					transform = GSON.fromJson(forType, TransformationMatrix.class);
+				{
+					transform = readMatrix(forType, GSON);
+					if(type.map("no_corner_offset"::equals).orElse(false))
+						transform = transform.blockCornerToCenter();
+				}
 			}
 			else
 				transform = TransformationMatrix.identity();
-			if(!type.map("no_corner_offset"::equals).orElse(false))
-				transform = transform.blockCornerToCenter();
 			transforms.put(perspective, transform);
 		}
 		TransformationMatrix baseTransform;
 		if(obj.size() > 0)
-			baseTransform = GSON.fromJson(obj, TransformationMatrix.class);
+			baseTransform = readMatrix(obj, GSON);
 		else
 			baseTransform = TransformationMatrix.identity();
 		for(Entry<Perspective, TransformationMatrix> e : transforms.entrySet())
-			this.transforms.put(e.getKey(), e.getValue().compose(baseTransform));
+		{
+			TransformationMatrix transform = e.getValue().compose(baseTransform);
+			this.transforms.put(e.getKey(), transform);
+		}
+	}
+
+	private TransformationMatrix readMatrix(JsonObject json, Gson GSON)
+	{
+		if(!json.has("origin"))
+			json.addProperty("origin", "center");
+		return GSON.fromJson(json, TransformationMatrix.class);
 	}
 
 	private String alternateName(Perspective type)
@@ -129,6 +141,7 @@ public class TransformationMap
 		result.add("rotation", toJson(trsr.getRotationLeft()));
 		result.add("scale", toJson(trsr.getScale()));
 		result.add("post-rotation", toJson(trsr.getRightRot()));
+		result.addProperty("origin", "corner");
 		main.add(getName(type), result);
 	}
 

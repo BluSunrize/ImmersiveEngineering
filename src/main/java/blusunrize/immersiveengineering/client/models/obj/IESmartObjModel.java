@@ -116,8 +116,7 @@ public class IESmartObjModel implements IBakedModel
 	{
 		this.lastCameraTransform = cameraTransformType;
 		TransformationMatrix matrix =
-				PerspectiveMapWrapper.getTransforms(owner.getCombinedTransform()).getOrDefault(cameraTransformType, TransformationMatrix.identity())
-						.blockCornerToCenter();
+				PerspectiveMapWrapper.getTransforms(owner.getCombinedTransform()).getOrDefault(cameraTransformType, TransformationMatrix.identity());
 
 		matrix.push(mat);
 		if(!this.tempStack.isEmpty()&&this.tempStack.getItem() instanceof IOBJModelCallback)

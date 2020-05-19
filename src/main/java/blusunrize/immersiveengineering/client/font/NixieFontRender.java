@@ -85,10 +85,26 @@ public class NixieFontRender extends IEFontRender
 	{
 		y += NIXIE_Y_OFFSET;
 		x += NIXIE_X_OFFSET;
-		builder.pos(x, y, 0.0F).tex(0, 0).endVertex();
-		builder.pos(x, y+NIXIE_HEIGHT, 0.0F).tex(0, .874f).endVertex();
-		builder.pos(x+NIXIE_WIDTH, y+NIXIE_HEIGHT, 0.0F).tex(.625f, .874f).endVertex();
-		builder.pos(x+NIXIE_WIDTH, y, 0.0F).tex(.625f, 0).endVertex();
+		builder.pos(tes, x, y, 0.0F)
+				.color(1F, 1F, 1F, 1F)
+				.tex(0, 0)
+				.lightmap(0xF0, 0xF0)
+				.endVertex();
+		builder.pos(tes, x, y+NIXIE_HEIGHT, 0.0F)
+				.color(1F, 1F, 1F, 1F)
+				.tex(0, .874f)
+				.lightmap(0xF0, 0xF0)
+				.endVertex();
+		builder.pos(tes, x+NIXIE_WIDTH, y+NIXIE_HEIGHT, 0.0F)
+				.color(1F, 1F, 1F, 1F)
+				.tex(.625f, .874f)
+				.lightmap(0xF0, 0xF0)
+				.endVertex();
+		builder.pos(tes, x+NIXIE_WIDTH, y, 0.0F)
+				.color(1F, 1F, 1F, 1F)
+				.tex(.625f, 0)
+				.lightmap(0xF0, 0xF0)
+				.endVertex();
 	}
 
 	public void setDrawTubeFlag(boolean flag)

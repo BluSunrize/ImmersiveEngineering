@@ -129,7 +129,7 @@ repositories {
     }
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.88'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
     runtimeOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.4")
     //TODO runtimeOnly fg.deobf("nbtedit:NBTEdit:0.8.2")
     compileOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.4:api")

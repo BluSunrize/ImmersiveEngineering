@@ -5,9 +5,9 @@
   "transform": {
     "thirdperson_righthand": {
       "translation": [
-        -0.3125,
-        -0.47952542,
-        -0.19516087
+        -0.112500004,
+        0.14805329,
+        -0.099788725
       ],
       "rotation": [
         0.70773274,
@@ -25,13 +25,14 @@
         0.0,
         0.0,
         0.99830717
-      ]
+      ],
+      "origin": "corner"
     },
     "thirdperson_lefthand": {
       "translation": [
-        -0.3125,
-        -0.47952542,
-        -0.19516087
+        -0.112500004,
+        0.14805329,
+        -0.099788725
       ],
       "rotation": [
         0.70773274,
@@ -49,7 +50,8 @@
         0.0,
         0.0,
         0.99830717
-      ]
+      ],
+      "origin": "corner"
     },
     "firstperson_righthand": {
       "translation": [
@@ -73,7 +75,8 @@
         0.0,
         0.0,
         1.0
-      ]
+      ],
+      "origin": "corner"
     },
     "firstperson_lefthand": {
       "translation": [
@@ -97,7 +100,8 @@
         0.0,
         0.0,
         1.0
-      ]
+      ],
+      "origin": "corner"
     },
     "head": {
       "translation": [
@@ -121,7 +125,8 @@
         0.0,
         0.0,
         1.0
-      ]
+      ],
+      "origin": "corner"
     },
     "gui": {
       "translation": [
@@ -145,7 +150,8 @@
         0.0,
         0.0,
         1.0
-      ]
+      ],
+      "origin": "corner"
     },
     "ground": {
       "translation": [
@@ -169,7 +175,8 @@
         0.0,
         0.0,
         1.0
-      ]
+      ],
+      "origin": "corner"
     },
     "fixed": {
       "translation": [
@@ -193,7 +200,8 @@
         0.0,
         0.0,
         1.0
-      ]
+      ],
+      "origin": "corner"
     }
   }
 }

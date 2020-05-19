@@ -3,9 +3,9 @@
   "transform": {
     "thirdperson_righthand": {
       "translation": [
-        -0.23483497,
-        2.0485287,
-        -0.31888893
+        0.0,
+        2.5,
+        0.0
       ],
       "rotation": [
         0.5624222,
@@ -23,7 +23,8 @@
         0.0,
         0.0,
         0.99830717
-      ]
+      ],
+      "origin": "corner"
     },
     "thirdperson_lefthand": {
       "translation": [
@@ -47,13 +48,14 @@
         0.0,
         0.0,
         1.0
-      ]
+      ],
+      "origin": "corner"
     },
     "firstperson_righthand": {
       "translation": [
-        -0.2171573,
-        -0.3,
-        -0.5
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -71,13 +73,14 @@
         0.0,
         0.0,
         0.99830717
-      ]
+      ],
+      "origin": "corner"
     },
     "firstperson_lefthand": {
       "translation": [
-        -0.78284276,
-        -0.3,
-        -0.50000006
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -95,7 +98,8 @@
         0.0,
         0.0,
         0.99830717
-      ]
+      ],
+      "origin": "corner"
     },
     "head": {
       "translation": [
@@ -119,13 +123,14 @@
         0.0,
         0.0,
         1.0
-      ]
+      ],
+      "origin": "corner"
     },
     "gui": {
       "translation": [
-        -0.94194174,
-        -0.22936705,
-        -0.34375006
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         -0.099045716,
@@ -143,13 +148,14 @@
         0.0,
         0.0,
         0.99830717
-      ]
+      ],
+      "origin": "corner"
     },
     "ground": {
       "translation": [
-        -0.375,
-        2.625,
-        -0.375
+        0.0,
+        3.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -167,13 +173,14 @@
         0.0,
         0.0,
         0.99830717
-      ]
+      ],
+      "origin": "corner"
     },
     "fixed": {
       "translation": [
-        -0.25,
-        -0.25,
-        -0.25
+        0.0,
+        0.0,
+        0.0
       ],
       "rotation": [
         0.0,
@@ -191,7 +198,8 @@
         0.0,
         0.0,
         0.99830717
-      ]
+      ],
+      "origin": "corner"
     }
   }
 }
