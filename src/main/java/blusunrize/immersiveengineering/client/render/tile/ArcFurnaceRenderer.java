@@ -15,12 +15,13 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -29,16 +30,12 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
-
-import static blusunrize.immersiveengineering.client.ClientUtils.setLightmapDisabled;
 
 public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 {
@@ -86,31 +83,15 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		IBakedModel model = electrodes.get(te.getFacing());
 		IEObjState objState = new IEObjState(VisibilityList.show(renderedParts));
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldRenderer = tessellator.getBuffer();
-
-		ClientUtils.bindAtlas();
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
 
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		matrixStack.translate(-.5, -.5, -.5);
-		worldRenderer.color(255, 255, 255, 255);
 		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
 				bufferIn.getBuffer(RenderType.getSolid()), true, te.getWorld().rand, 0, 0,
 				new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
 		matrixStack.translate(.5, .5, .5);
-		tessellator.draw();
 
-		RenderHelper.enableStandardItemLighting();
 		if(te.pouringMetal > 0)
 		{
 			if(hotMetal_flow==null)
@@ -125,25 +106,23 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 			int pour = process-te.pouringMetal;
 			float h = (pour > (process-speed)?((process-pour)/speed*27): pour > speed?27: (pour/speed*27))/16f;
 			matrixStack.translate(-.5f, 1.25-.6875f, 1.5f);
-			worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-			GlStateManager.disableLighting();
-			setLightmapDisabled(true);
+			IVertexBuilder fullbright = bufferIn.getBuffer(IERenderTypes.SOLID_FULLBRIGHT);
 			matrixStack.push();
 			if(pour > (process-speed))
 				matrixStack.translate(0, -1.6875f+h, 0);
 			if(h > 1)
 			{
 				matrixStack.translate(0, -h, 0);
-				ClientUtils.renderTexturedBox(worldRenderer, .375F, 0, .375F, .625F, 1, .625F, hotMetal_flow, true);
+				ClientUtils.renderTexturedBox(fullbright, matrixStack, .375F, 0, .375F, .625F, 1, .625F, hotMetal_flow, true);
 				matrixStack.translate(0, 1, 0);
-				ClientUtils.renderTexturedBox(worldRenderer, .375F, 0, .375F, .625F, h-1, .625F, hotMetal_flow, true);
+				ClientUtils.renderTexturedBox(fullbright, matrixStack, .375F, 0, .375F, .625F, h-1, .625F, hotMetal_flow, true);
 				matrixStack.translate(0, -1, 0);
 				matrixStack.translate(0, h, 0);
 			}
 			else
 			{
 				matrixStack.translate(0, -h, 0);
-				ClientUtils.renderTexturedBox(worldRenderer, .375F, 0, .375F, .625F, h, .625F, hotMetal_flow, true);
+				ClientUtils.renderTexturedBox(fullbright, matrixStack, .375F, 0, .375F, .625F, h, .625F, hotMetal_flow, true);
 				matrixStack.translate(0, h, 0);
 			}
 			if(pour > (process-speed))
@@ -152,12 +131,10 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 			{
 				float h2 = (pour > (process-speed)?.625f: pour/(process-speed)*.625f);
 				matrixStack.translate(0, -1.6875f, 0);
-				ClientUtils.renderTexturedBox(worldRenderer, .125F, 0, .125F, .875F, h2, .875F, hotMetal_still, false);
+				ClientUtils.renderTexturedBox(fullbright, matrixStack, .125F, 0, .125F, .875F, h2, .875F, hotMetal_still, false);
 				matrixStack.translate(0, 1.6875f, 0);
 			}
 			matrixStack.pop();
-			setLightmapDisabled(false);
-			GlStateManager.enableLighting();
 		}
 		matrixStack.pop();
 	}

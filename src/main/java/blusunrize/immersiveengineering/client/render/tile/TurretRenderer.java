@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
@@ -61,7 +60,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 		matrixStack.translate(.5, .5, .5);
 
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), tile.rotationYaw, true));
-		GlStateManager.rotatef(tile.rotationPitch, tile.getFacing().getZOffset(), 0, -tile.getFacing().getXOffset());
+		matrixStack.rotate(new Quaternion(new Vector3f(tile.getFacing().getZOffset(), 0, -tile.getFacing().getXOffset()), tile.rotationPitch, true));
 
 		renderModelPart(bufferIn, matrixStack, tile.getWorldNonnull(), state, model, tile.getPos(), true, "gun");
 		if(tile instanceof TurretGunTileEntity)

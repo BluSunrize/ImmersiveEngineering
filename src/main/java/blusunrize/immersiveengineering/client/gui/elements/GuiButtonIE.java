@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
-import blusunrize.immersiveengineering.dummy.GlStateManager.DestFactor;
-import blusunrize.immersiveengineering.dummy.GlStateManager.SourceFactor;
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
@@ -53,11 +53,11 @@ public class GuiButtonIE extends Button
 			Minecraft mc = Minecraft.getInstance();
 			ClientUtils.bindTexture(texture);
 			FontRenderer fontrenderer = mc.fontRenderer;
-			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+			RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 			this.isHovered = isPressable(mouseX, mouseY);
-			GlStateManager.enableBlend();
-			GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-			GlStateManager.blendFunc(770, 771);
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+			RenderSystem.blendFunc(770, 771);
 			if(hoverOffset!=null&&this.isHovered)
 				this.blit(x, y, texU+hoverOffset[0], texV+hoverOffset[1], width, height);
 			else

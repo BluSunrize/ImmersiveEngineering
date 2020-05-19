@@ -9,11 +9,9 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -56,32 +54,21 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 		boolean b = te.shouldRenderAsActive();
 		float angle = te.animation_barrelRotation+(b?18*partialTicks: 0);
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldRenderer = tessellator.getBuffer();
-
-		ClientUtils.bindAtlas();
 		matrixStack.push();
+
 		matrixStack.translate(.5, 1.5, .5);
-
-
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
 		matrixStack.translate(te.getFacing().getXOffset()*.5, 0, te.getFacing().getZOffset()*.5);
-		GlStateManager.rotatef(angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
-		renderPart(matrixStack, bufferIn, blockPos, blockRenderer, te, model, state, combinedOverlayIn);
-		GlStateManager.rotatef(-angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
-		matrixStack.translate(te.getFacing().getXOffset()*-1, 0, te.getFacing().getZOffset()*-1);
-		GlStateManager.rotatef(-angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
-		renderPart(matrixStack, bufferIn, blockPos, blockRenderer, te, model, state, combinedOverlayIn);
-		GlStateManager.rotatef(angle, -te.getFacing().getZOffset(), 0, te.getFacing().getXOffset());
 
-		RenderHelper.enableStandardItemLighting();
+		matrixStack.push();
+		matrixStack.rotate(new Quaternion(new Vector3f(-te.getFacing().getZOffset(), 0, te.getFacing().getXOffset()), angle, true));
+		renderPart(matrixStack, bufferIn, blockPos, blockRenderer, te, model, state, combinedOverlayIn);
+		matrixStack.pop();
+
+		matrixStack.push();
+		matrixStack.translate(te.getFacing().getXOffset()*-1, 0, te.getFacing().getZOffset()*-1);
+		matrixStack.rotate(new Quaternion(new Vector3f(-te.getFacing().getZOffset(), 0, te.getFacing().getXOffset()), -angle, true));
+		renderPart(matrixStack, bufferIn, blockPos, blockRenderer, te, model, state, combinedOverlayIn);
+		matrixStack.pop();
 
 		matrixStack.pop();
 	}

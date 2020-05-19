@@ -1175,46 +1175,74 @@ public class ClientUtils
 
 	public static void renderTexturedBox(BufferBuilder wr, float x0, float y0, float z0, float x1, float y1, float z1, TextureAtlasSprite tex, boolean yForV)
 	{
+		throw new UnsupportedOperationException();
+	}
+
+	public static void renderTexturedBox(IVertexBuilder wr, MatrixStack stack, float x0, float y0, float z0, float x1, float y1, float z1, TextureAtlasSprite tex, boolean yForV)
+	{
 		float minU = tex.getInterpolatedU(x0*16);
 		float maxU = tex.getInterpolatedU(x1*16);
 		float minV = tex.getInterpolatedV((yForV?y1: z0)*16);
 		float maxV = tex.getInterpolatedV((yForV?y0: z1)*16);
-		renderTexturedBox(wr, x0, y0, z0, x1, y1, z1, minU, minV, maxU, maxV);
+		renderTexturedBox(wr, stack, x0, y0, z0, x1, y1, z1, minU, minV, maxU, maxV);
 	}
 
 	public static void renderTexturedBox(BufferBuilder wr, float x0, float y0, float z0, float x1, float y1, float z1, float u0, float v0, float u1, float v1)
 	{
-		wr.pos(x0, y0, z1).tex(u0, v0).endVertex();
-		wr.pos(x1, y0, z1).tex(u1, v0).endVertex();
-		wr.pos(x1, y1, z1).tex(u1, v1).endVertex();
-		wr.pos(x0, y1, z1).tex(u0, v1).endVertex();
+		throw new UnsupportedOperationException();
+	}
 
-		wr.pos(x0, y1, z0).tex(u0, v0).endVertex();
-		wr.pos(x1, y1, z0).tex(u1, v0).endVertex();
-		wr.pos(x1, y0, z0).tex(u1, v1).endVertex();
-		wr.pos(x0, y0, z0).tex(u0, v1).endVertex();
+	public static void renderTexturedBox(IVertexBuilder wr, MatrixStack stack, float x0, float y0, float z0, float x1, float y1, float z1, float u0, float v0, float u1, float v1)
+	{
+		Matrix4f mat = stack.getLast().getMatrix();
+		Matrix3f nMat = stack.getLast().getNormal();
+		float normalX = 0;
+		float normalY = 0;
+		float normalZ = 1;
 
+		putVertex(wr, stack, x0, y0, z1, u0, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y0, z1, u1, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y1, z1, u1, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y1, z1, u0, v1, normalX, normalY, normalZ);
+		normalZ = -1;
+		putVertex(wr, stack, x0, y1, z0, u0, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y1, z0, u1, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y0, z0, u1, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y0, z0, u0, v1, normalX, normalY, normalZ);
 
-		wr.pos(x0, y0, z0).tex(u0, v0).endVertex();
-		wr.pos(x1, y0, z0).tex(u1, v0).endVertex();
-		wr.pos(x1, y0, z1).tex(u1, v1).endVertex();
-		wr.pos(x0, y0, z1).tex(u0, v1).endVertex();
+		normalZ = 0;
+		normalY = -1;
+		putVertex(wr, stack, x0, y0, z0, u0, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y0, z0, u1, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y0, z1, u1, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y0, z1, u0, v1, normalX, normalY, normalZ);
+		normalY = 1;
+		putVertex(wr, stack, x0, y1, z1, u0, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y1, z1, u1, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y1, z0, u1, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y1, z0, u0, v1, normalX, normalY, normalZ);
 
-		wr.pos(x0, y1, z1).tex(u0, v0).endVertex();
-		wr.pos(x1, y1, z1).tex(u1, v0).endVertex();
-		wr.pos(x1, y1, z0).tex(u1, v1).endVertex();
-		wr.pos(x0, y1, z0).tex(u0, v1).endVertex();
+		normalY = 0;
+		normalX = -1;
+		putVertex(wr, stack, x0, y0, z0, u0, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y0, z1, u1, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y1, z1, u1, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y1, z0, u0, v1, normalX, normalY, normalZ);
+		normalX = 1;
+		putVertex(wr, stack, x1, y1, z0, u0, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y1, z1, u1, v0, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y0, z1, u1, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y0, z0, u0, v1, normalX, normalY, normalZ);
+	}
 
-
-		wr.pos(x0, y0, z0).tex(u0, v0).endVertex();
-		wr.pos(x0, y0, z1).tex(u1, v0).endVertex();
-		wr.pos(x0, y1, z1).tex(u1, v1).endVertex();
-		wr.pos(x0, y1, z0).tex(u0, v1).endVertex();
-
-		wr.pos(x1, y1, z0).tex(u0, v0).endVertex();
-		wr.pos(x1, y1, z1).tex(u1, v0).endVertex();
-		wr.pos(x1, y0, z1).tex(u1, v1).endVertex();
-		wr.pos(x1, y0, z0).tex(u0, v1).endVertex();
+	private static void putVertex(IVertexBuilder b, MatrixStack mat, float x, float y, float z, float u, float v, float nX, float nY, float nZ)
+	{
+		b.pos(mat.getLast().getMatrix(), x, y, z)
+				.color(1F, 1F, 1F, 1F)
+				.tex(u, v)
+				.lightmap(0, 0)
+				.normal(mat.getLast().getNormal(), nX, nY, nZ)
+				.endVertex();
 	}
 
 	public static int intFromRgb(float[] rgb)

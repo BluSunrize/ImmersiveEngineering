@@ -82,7 +82,7 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
 		float rot = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*tile.perTick);
 
-		GlStateManager.rotatef(rot, tile.getFacing().getAxis()==Axis.X?1: 0, 0, tile.getFacing().getAxis()==Axis.Z?1: 0);
+		matrixStack.rotate(new Quaternion(new Vector3f(tile.getFacing().getAxis()==Axis.X?1: 0, 0, tile.getFacing().getAxis()==Axis.Z?1: 0), rot, true));
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 
 		matrixStack.translate(-.5, -.5, -.5);
