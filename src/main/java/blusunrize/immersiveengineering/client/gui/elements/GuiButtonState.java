@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
@@ -54,11 +54,11 @@ public class GuiButtonState<E> extends GuiButtonIE
 		{
 			ClientUtils.bindTexture(texture);
 			FontRenderer fontrenderer = mc.fontRenderer;
-			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+			RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 			this.isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
-			GlStateManager.enableBlend();
-			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-			GlStateManager.blendFunc(770, 771);
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+			RenderSystem.blendFunc(770, 771);
 			int u = texU+(offsetDir==0?width: offsetDir==2?-width: 0)*state;
 			int v = texV+(offsetDir==1?height: offsetDir==3?-height: 0)*state;
 			this.blit(x, y, u, v, width, height);

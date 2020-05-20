@@ -347,7 +347,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						float scale = .0375f/(blueprint.getTextureScale()/16f);
 						transform.scale(-scale, -scale, scale);
 
-						blueprint.draw(lineWidth);
+						blueprint.draw(lineWidth, transform, buffer);
 
 						transform.pop();
 						event.setCanceled(true);

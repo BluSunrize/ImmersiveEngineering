@@ -718,7 +718,6 @@ public class ClientUtils
 
 			if(list.size() > 1)
 				i1 += 2+(list.size()-1)*10;
-			RenderSystem.translatef(0, 0, 300);
 			int j1 = -267386864;
 			drawGradientRect(j2-3, k2-4, j2+k+3, k2-3, j1, j1);
 			drawGradientRect(j2-3, k2+i1+3, j2+k+3, k2+i1+4, j1, j1);
@@ -731,7 +730,6 @@ public class ClientUtils
 			drawGradientRect(j2+k+2, k2-3+1, j2+k+3, k2+i1+3-1, k1, l1);
 			drawGradientRect(j2-3, k2-3, j2+k+3, k2-3+1, k1, k1);
 			drawGradientRect(j2-3, k2+i1+2, j2+k+3, k2+i1+3, l1, l1);
-			RenderSystem.translatef(0, 0, -300);
 
 			for(int i2 = 0; i2 < list.size(); ++i2)
 			{

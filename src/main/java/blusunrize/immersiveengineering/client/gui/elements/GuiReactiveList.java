@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -109,7 +109,7 @@ public class GuiReactiveList extends Button
 
 		int mmY = my-this.y;
 		int strWidth = width-padding[2]-padding[3]-(needsSlider?6: 0);
-		GlStateManager.color3f(1, 1, 1);
+		RenderSystem.color3f(1, 1, 1);
 		if(needsSlider)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
@@ -127,7 +127,7 @@ public class GuiReactiveList extends Button
 				this.blit(x+width-5, (int)(y+silderShift+3+i), 20, 131, 4, 1);
 		}
 
-		GlStateManager.scalef(textScale, textScale, 1);
+		RenderSystem.scalef(textScale, textScale, 1);
 		this.isHovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		boolean hasTarget = false;
 		for(int i = 0; i < Math.min(perPage, entries.length); i++)
@@ -162,11 +162,11 @@ public class GuiReactiveList extends Button
 			}
 			float tx = ((x+padding[2])/textScale);
 			float ty = ((y+padding[0]+(fr.FONT_HEIGHT*i))/textScale);
-			GlStateManager.translatef(tx, ty, 0);
+			RenderSystem.translatef(tx, ty, 0);
 			fr.drawString(s, 0, 0, col);
-			GlStateManager.translatef(-tx, -ty, 0);
+			RenderSystem.translatef(-tx, -ty, 0);
 		}
-		GlStateManager.scalef(1/textScale, 1/textScale, 1);
+		RenderSystem.scalef(1/textScale, 1/textScale, 1);
 		if(!hasTarget)
 		{
 			targetEntry = -1;

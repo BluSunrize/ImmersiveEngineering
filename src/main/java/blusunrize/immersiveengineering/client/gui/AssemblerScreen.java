@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
@@ -95,16 +95,18 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 
 		if(!tooltip.isEmpty())
 		{
+			RenderSystem.disableDepthTest();
+			RenderSystem.translated(0, 0, 300);
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, xSize, -1);
+			RenderSystem.translated(0, 0, -300);
 			RenderHelper.enableStandardItemLighting();
 		}
-
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture(texture);
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -119,12 +121,9 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 			if(tile.inventory.get(18+i).isEmpty()&&!tile.patterns[i].inv.get(9).isEmpty())
 			{
 				ItemStack stack = tile.patterns[i].inv.get(9);
-				GlStateManager.pushMatrix();
-				GlStateManager.translatef(0.0F, 0.0F, 32.0F);
-				GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+				RenderSystem.pushMatrix();
+				RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 				RenderHelper.disableStandardItemLighting();
-				this.setBlitOffset(200);
-				itemRenderer.zLevel = 200.0F;
 				FontRenderer font = null;
 				if(!stack.isEmpty())
 					font = stack.getItem().getFontRenderer(stack);
@@ -132,17 +131,14 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 					font = this.font;
 				itemRenderer.renderItemAndEffectIntoGUI(stack, guiLeft+27+i*58, guiTop+64);
 				itemRenderer.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.getCount());
-				this.setBlitOffset(0);
-				itemRenderer.zLevel = 0.0F;
 
-
-				GlStateManager.disableLighting();
-				GlStateManager.disableDepthTest();
+				RenderSystem.disableLighting();
+				RenderSystem.disableDepthTest();
 				ClientUtils.drawColouredRect(guiLeft+27+i*58, guiTop+64, 16, 16, 0x77444444);
-				GlStateManager.enableLighting();
-				GlStateManager.enableDepthTest();
+				RenderSystem.enableLighting();
+				RenderSystem.enableDepthTest();
 
-				GlStateManager.popMatrix();
+				RenderSystem.popMatrix();
 			}
 	}
 }

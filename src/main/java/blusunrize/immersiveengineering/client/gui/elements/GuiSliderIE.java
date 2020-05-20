@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.fml.client.gui.widget.Slider;
@@ -28,11 +28,11 @@ public class GuiSliderIE extends Slider
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 			FontRenderer fontrenderer = Minecraft.getInstance().fontRenderer;
-			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+			RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 			isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
-			GlStateManager.enableBlend();
-			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-			GlStateManager.blendFunc(770, 771);
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+			RenderSystem.blendFunc(770, 771);
 			this.blit(x, y, 8, 128, 4, height);
 			this.blit(x+width-4, y, 16, 128, 4, height);
 			for(int i = 0; i < width-8; i += 2)

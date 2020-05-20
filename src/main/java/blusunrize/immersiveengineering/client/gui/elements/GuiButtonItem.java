@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
@@ -35,35 +35,31 @@ public class GuiButtonItem extends Button
 		if(this.visible)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.5F);
+			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.5F);
 			this.isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
-			GlStateManager.enableBlend();
-			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-			GlStateManager.blendFunc(770, 771);
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+			RenderSystem.blendFunc(770, 771);
 			this.blit(x, y, 24+(state?18: 0), 128, width, height);
 			//TODO this.mouseDragged(mc, mouseX, mouseY);
 
 			if(!item.isEmpty())
 			{
 				Minecraft mc = Minecraft.getInstance();
-				this.setBlitOffset(200);
 				ItemRenderer itemRender = mc.getItemRenderer();
-				itemRender.zLevel = 200.0F;
 				FontRenderer font = item.getItem().getFontRenderer(item);
 				if(font==null)
 					font = mc.fontRenderer;
 				itemRender.renderItemAndEffectIntoGUI(item, x+1, y+1);
-				this.setBlitOffset(0);
-				itemRender.zLevel = 0.0F;
 
 				if(!state)
 				{
 					RenderHelper.enableStandardItemLighting();
-					GlStateManager.disableLighting();
-					GlStateManager.disableDepthTest();
+					RenderSystem.disableLighting();
+					RenderSystem.disableDepthTest();
 					ClientUtils.drawColouredRect(x+1, y+1, 16, 16, 0x77444444);
-					GlStateManager.enableLighting();
-					GlStateManager.enableDepthTest();
+					RenderSystem.enableLighting();
+					RenderSystem.enableDepthTest();
 				}
 				RenderHelper.disableStandardItemLighting();
 			}

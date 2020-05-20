@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
@@ -23,9 +24,9 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -45,7 +46,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -197,19 +197,19 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		Direction f = te.getFacing();
 		float tx = f==Direction.WEST?-.9375f: f==Direction.EAST?.9375f: 0;
 		float tz = f==Direction.NORTH?-.9375f: f==Direction.SOUTH?.9375f: 0;
+		matrixStack.push();
 		matrixStack.translate(tx, 0, tz);
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), drill, true));
 		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "drill");
-		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), -drill, true));
-		matrixStack.translate(-tx, 0, -tz);
+		matrixStack.pop();
 
 		tx = f==Direction.WEST?-.59375f: f==Direction.EAST?.59375f: 0;
 		tz = f==Direction.NORTH?-.59375f: f==Direction.SOUTH?.59375f: 0;
+		matrixStack.push();
 		matrixStack.translate(tx, -.21875, tz);
 		matrixStack.rotate(new Quaternion(new Vector3f(-f.getZOffset(), 0, f.getXOffset()), press*90, true));
 		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "press");
-		matrixStack.rotate(new Quaternion(new Vector3f(-f.getZOffset(), 0, f.getXOffset()), -press*90, true));
-		matrixStack.translate(-tx, .21875, -tz);
+		matrixStack.pop();
 
 		matrixStack.translate(0, liftPress, 0);
 		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "pressLift");
@@ -246,13 +246,12 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 				if(!dList.isEmpty())
 					if(dList.size() < 2)
 					{
+						matrixStack.push();
 						matrixStack.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
 						matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), itemDisplays[i][4], true));
 						matrixStack.scale(scale, scale, .5f);
 						ClientUtils.mc().getItemRenderer().renderItem(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
-						matrixStack.scale(1/scale, 1/scale, 2);
-						matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -itemDisplays[i][4], true));
-						matrixStack.translate(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
+						matrixStack.pop();
 					}
 					else
 					{
@@ -284,13 +283,12 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 									localItemY = -.34375f+(24-subProcess)/5f*.25f;
 								}
 							}
+							matrixStack.push();
 							matrixStack.translate(localItemX, localItemY, localItemZ);
 							matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), localAngle, true));
 							matrixStack.scale(scale, scale, .5f);
 							ClientUtils.mc().getItemRenderer().renderItem(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
-							matrixStack.scale(1/scale, 1/scale, 2);
-							matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -localAngle, true));
-							matrixStack.translate(-localItemX, -localItemY, -localItemZ);
+							matrixStack.pop();
 						}
 					}
 			}
@@ -309,17 +307,12 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 				float lineWidth = playerDistanceSq < 6?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
 				matrixStack.translate(-.195, .125, .97);
 				matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -45, true));
-				GlStateManager.disableCull();
-				GlStateManager.disableTexture();
-				GlStateManager.enableBlend();
 				float scale = .0375f/(blueprint.textureScale/16f);
+				matrixStack.push();
 				matrixStack.scale(scale, -scale, scale);
-				GlStateManager.color3f(1, 1, 1);
-				blueprint.draw(lineWidth);
-				matrixStack.scale(1/scale, -1/scale, 1/scale);
-				GlStateManager.enableAlphaTest();
-				GlStateManager.enableTexture();
-				GlStateManager.enableCull();
+				matrixStack.translate(0.5, 0.5, 0.5);
+				blueprint.draw(lineWidth, matrixStack, bufferIn);
+				matrixStack.pop();
 			}
 		}
 		matrixStack.pop();
@@ -336,10 +329,13 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			String... parts
 	)
 	{
+		matrix.push();
+		matrix.translate(-0.5, -0.5, -0.5);
 		IModelData data = new SinglePropertyModelData<>(new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE);
 
 		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, matrix,
 				buffers.getBuffer(RenderType.getSolid()), false, world.rand, 0, 0, data);
+		matrix.pop();
 	}
 
 	public static HashMap<BlueprintCraftingRecipe, BlueprintLines> blueprintCache = new HashMap<BlueprintCraftingRecipe, BlueprintLines>();
@@ -478,7 +474,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		}
 
 		ArrayList<Integer> lumiSort = new ArrayList<>(area.keySet());
-		Collections.sort(lumiSort, (rgb1, rgb2) -> Double.compare(getLuminance(rgb1), getLuminance(rgb2)));
+		lumiSort.sort(Comparator.comparingDouble(AutoWorkbenchRenderer::getLuminance));
 		HashMultimap<ShadeStyle, Point> complete_areaMap = HashMultimap.create();
 		int lineNumber = 2;
 		int lineStyle = 0;
@@ -519,28 +515,22 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			return textureScale;
 		}
 
-		public void draw(float lineWidth)
+		public void draw(float lineWidth, MatrixStack matrixStack, IRenderTypeBuffer buffer)
 		{
 			//Draw edges
-			GlStateManager.lineWidth(lineWidth);
-			//TODO use more modern GL?
-			GL11.glBegin(GL11.GL_LINES);
+			IVertexBuilder bb = buffer.getBuffer(IERenderTypes.getLines(lineWidth));
+			Matrix4f mat = matrixStack.getLast().getMatrix();
 			for(Pair<Point, Point> line : lines)
 			{
-				GL11.glVertex3f(line.getKey().x, line.getKey().y, 0);
-				GL11.glVertex3f(line.getValue().x, line.getValue().y, 0);
+				bb.pos(mat, line.getKey().x, line.getKey().y, 0).endVertex();
+				bb.pos(mat, line.getValue().x, line.getValue().y, 0).endVertex();
 			}
-			GL11.glEnd();
 
 			if(lineWidth >= 1)//Draw shading if player is close enough
 			{
-				GL11.glLineWidth(lineWidth*.66f);
-				GL11.glPointSize(4);
-				GL11.glBegin(GL11.GL_LINES);
 				for(ShadeStyle style : areas.keySet())
 					for(Point pixel : areas.get(style))
-						style.drawShading(pixel);
-				GL11.glEnd();
+						style.drawShading(pixel, bb, mat);
 			}
 		}
 	}
@@ -556,7 +546,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			this.stripeDirection = stripeDirection;
 		}
 
-		void drawShading(Point pixel)
+		void drawShading(Point pixel, IVertexBuilder builder, Matrix4f mat)
 		{
 			float step = 1/(float)stripeAmount;
 			float offset = step/2;
@@ -569,30 +559,30 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			for(int i = 0; i < stripeAmount; i++)
 				if(stripeDirection==0)//vertical
 				{
-					GL11.glVertex3f(pixel.x+offset+step*i, pixel.y, 0);
-					GL11.glVertex3f(pixel.x+offset+step*i, pixel.y+1, 0);
+					builder.pos(mat, pixel.x+offset+step*i, pixel.y, 0).endVertex();
+					builder.pos(mat, pixel.x+offset+step*i, pixel.y+1, 0).endVertex();
 				}
 				else if(stripeDirection==1)//horizontal
 				{
-					GL11.glVertex3f(pixel.x, pixel.y+offset+step*i, 0);
-					GL11.glVertex3f(pixel.x+1, pixel.y+offset+step*i, 0);
+					builder.pos(mat, pixel.x, pixel.y+offset+step*i, 0).endVertex();
+					builder.pos(mat, pixel.x+1, pixel.y+offset+step*i, 0).endVertex();
 				}
 				else if(stripeDirection==2)//diagonal
 				{
 					if(i==stripeAmount-1&&stripeAmount%2==1)
 					{
-						GL11.glVertex3f(pixel.x, pixel.y+1, 0);
-						GL11.glVertex3f(pixel.x+1, pixel.y, 0);
+						builder.pos(mat, pixel.x, pixel.y+1, 0).endVertex();
+						builder.pos(mat, pixel.x+1, pixel.y, 0).endVertex();
 					}
 					else if(i%2==0)
 					{
-						GL11.glVertex3f(pixel.x, pixel.y+offset+step*(i/2), 0);
-						GL11.glVertex3f(pixel.x+offset+step*(i/2), pixel.y, 0);
+						builder.pos(mat, pixel.x, pixel.y+offset+step*(i/2), 0).endVertex();
+						builder.pos(mat, pixel.x+offset+step*(i/2), pixel.y, 0).endVertex();
 					}
 					else
 					{
-						GL11.glVertex3f(pixel.x+1-offset-step*(i/2), pixel.y+1, 0);
-						GL11.glVertex3f(pixel.x+1, pixel.y+1-offset-step*(i/2), 0);
+						builder.pos(mat, pixel.x+1-offset-step*(i/2), pixel.y+1, 0).endVertex();
+						builder.pos(mat, pixel.x+1, pixel.y+1-offset-step*(i/2), 0).endVertex();
 					}
 				}
 		}

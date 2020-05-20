@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.common.gui.AutoWorkbenchContainer;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -26,6 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContainer>
 {
@@ -77,13 +78,15 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 	{
 		super.render(mx, my, partial);
 
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
+		List<ITextComponent> tooltip = new ArrayList<>();
 		if(mx > guiLeft+80&&mx < guiLeft+87&&my > guiTop+36&&my < guiTop+82)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
 		if(!tooltip.isEmpty())
 		{
+			RenderSystem.translated(0, 0, 500);
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
+			RenderSystem.translated(0, 0, -500);
 			RenderHelper.enableStandardItemLighting();
 		}
 	}
@@ -92,7 +95,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/auto_workbench.png");
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 

@@ -77,4 +77,19 @@ public class IERenderTypes
 						.build(false)
 		);
 	}
+
+	public static RenderType getLines(float lineWidth)
+	{
+		return RenderType.makeType(
+				"lines_only_pos",
+				DefaultVertexFormats.POSITION,
+				GL11.GL_LINES,
+				256,
+				//TODO more state?
+				RenderType.State.getBuilder()
+						.line(new LineState(OptionalDouble.of(lineWidth)))
+						.texture(new TextureState())
+						.build(false)
+		);
+	}
 }
