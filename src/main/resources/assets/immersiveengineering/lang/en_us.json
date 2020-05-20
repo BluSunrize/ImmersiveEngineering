@@ -298,6 +298,7 @@
   "desc.immersiveengineering.info.redstoneChannel": "Channel: %1$s",
   "desc.immersiveengineering.info.redstoneChannel.send": "Channel Sending: %1$s",
   "desc.immersiveengineering.info.redstoneChannel.rec": "Channel Receiving: %1$s",
+  "desc.immersiveengineering.info.blastFuelTime": "Burn time: %1$s",
   "desc.immersiveengineering.info.multiblock.IE:AlloySmelter": "Alloy Kiln",
   "desc.immersiveengineering.info.multiblock.IE:ArcFurnace": "Arc Furnace",
   "desc.immersiveengineering.info.multiblock.IE:Assembler": "Assembler",

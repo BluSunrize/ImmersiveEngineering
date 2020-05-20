@@ -12,14 +12,13 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity.BottlingProcess;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
@@ -29,7 +28,6 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +35,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineTileEntity>
 {
@@ -64,9 +61,6 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 			return;
 		IBakedModel model = dynamic.get(te.getFacing());
 
-		//Initialize Tesselator and BufferBuilder
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
@@ -124,14 +118,12 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 
 		}
 
-		ClientUtils.bindAtlas();
 		matrixStack.push();
 
 		matrixStack.translate(0, lift, 0);
 		renderModelPart(blockRenderer, matrixStack, solidBuilder, te.getWorldNonnull(), state, model, blockPos, combinedOverlayIn, "lift");
 		matrixStack.translate(0, -lift, 0);
 
-		RenderHelper.enableStandardItemLighting();
 		matrixStack.pop();
 
 		float scale = .0625f;
@@ -180,52 +172,15 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 				if(itemDisplays[i][4]==0)
 					ClientUtils.mc().getItemRenderer().renderItem(process.items.get(0), TransformType.FIXED,
 							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
-				else if(itemDisplays[i][4]==1||!ClientProxy.stencilBufferEnabled)
+				else if(itemDisplays[i][4]==1||!ClientUtils.mc().getFramebuffer().isStencilEnabled())
 					ClientUtils.mc().getItemRenderer().renderItem(display, TransformType.FIXED,
 							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 				else
 				{
 					float h0 = -.5f;
 					float h1 = h0+itemDisplays[i][4];
-
-					BufferBuilder worldrenderer = tessellator.getBuffer();
-
-					//TODO move to GlStateManager if that ever gets the stencil functions
-					GL11.glEnable(GL11.GL_STENCIL_TEST);
-
-					GlStateManager.colorMask(false, false, false, false);
-					GlStateManager.depthMask(false);
-
-					GL11.glStencilFunc(GL11.GL_NEVER, 1, 0xFF);
-					GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
-
-					GL11.glStencilMask(0xFF);
-					GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT, true);
-
-					matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 90.0F-ClientUtils.mc().getRenderManager().info.getYaw(), true));
-
-					GlStateManager.disableTexture();
-					worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-					ClientUtils.renderBox(worldrenderer, -.5, h0, -.5, .5, h1, .5);
-					tessellator.draw();
-					GlStateManager.enableTexture();
-
-					matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -(90.0F-ClientUtils.mc().getRenderManager().info.getYaw()), true));
-
-					GlStateManager.colorMask(true, true, true, true);
-					GlStateManager.depthMask(true);
-
-					GL11.glStencilMask(0x00);
-
-					GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0xFF);
-					ClientUtils.mc().getItemRenderer().renderItem(process.items.get(0), TransformType.FIXED,
-							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
-
-					GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-					ClientUtils.mc().getItemRenderer().renderItem(display, TransformType.FIXED,
-							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
-
-					GL11.glDisable(GL11.GL_STENCIL_TEST);
+					renderItemPart(bufferIn, matrixStack, process.items.get(0), h0, h1, combinedLightIn, combinedOverlayIn, 0);
+					renderItemPart(bufferIn, matrixStack, process.items.get(1), h0, h1, combinedLightIn, combinedOverlayIn, 1);
 				}
 
 				matrixStack.scale(1/scale, 1/scale, 1/scale);
@@ -244,5 +199,26 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, matrixStack, builder, true, world.rand, 0,
 				combinedOverlayIn, data);
 		matrixStack.pop();
+	}
+
+	private void renderItemPart(IRenderTypeBuffer baseBuffer, MatrixStack matrix, ItemStack item, float minY, float maxY,
+								int combinedLightIn, int combinedOverlayIn, int ref)
+	{
+		MatrixStack innerStack = new MatrixStack();
+		innerStack.getLast().getMatrix().mul(matrix.getLast().getMatrix());
+		innerStack.getLast().getNormal().mul(matrix.getLast().getNormal());
+		IRenderTypeBuffer stencilWrapper = IERenderTypes.wrapWithStencil(
+				baseBuffer,
+				vertexBuilder -> {
+					innerStack.push();
+					innerStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 90.0F-ClientUtils.mc().getRenderManager().info.getYaw(), true));
+					ClientUtils.renderBox(vertexBuilder, innerStack, -.5f, minY, -.5f, .5f, maxY, .5f);
+					innerStack.pop();
+				},
+				"min"+minY+"max"+maxY,
+				ref
+		);
+		ClientUtils.mc().getItemRenderer().renderItem(item, TransformType.FIXED,
+				combinedLightIn, combinedOverlayIn, matrix, stencilWrapper);
 	}
 }

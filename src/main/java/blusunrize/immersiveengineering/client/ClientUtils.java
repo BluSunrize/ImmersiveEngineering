@@ -1138,37 +1138,43 @@ public class ClientUtils
 		return new Vector4f(rgba.getX(), rgba.getY(), rgba.getZ(), MathHelper.clamp(f_alpha, min, max));
 	}
 
-	public static void renderBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1)
+	public static void renderBox(IVertexBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1)
 	{
-		wr.pos(x0, y0, z1).endVertex();
-		wr.pos(x1, y0, z1).endVertex();
-		wr.pos(x1, y1, z1).endVertex();
-		wr.pos(x0, y1, z1).endVertex();
+		renderBox(wr, new MatrixStack(), (float)x0, (float)y0, (float)z0, (float)x1, (float)y1, (float)z1);
+	}
 
-		wr.pos(x0, y1, z0).endVertex();
-		wr.pos(x1, y1, z0).endVertex();
-		wr.pos(x1, y0, z0).endVertex();
-		wr.pos(x0, y0, z0).endVertex();
+	public static void renderBox(IVertexBuilder wr, MatrixStack m, float x0, float y0, float z0, float x1, float y1, float z1)
+	{
+		Matrix4f transform = m.getLast().getMatrix();
+		wr.pos(transform, x0, y0, z1).endVertex();
+		wr.pos(transform, x1, y0, z1).endVertex();
+		wr.pos(transform, x1, y1, z1).endVertex();
+		wr.pos(transform, x0, y1, z1).endVertex();
 
-		wr.pos(x0, y0, z0).endVertex();
-		wr.pos(x1, y0, z0).endVertex();
-		wr.pos(x1, y0, z1).endVertex();
-		wr.pos(x0, y0, z1).endVertex();
+		wr.pos(transform, x0, y1, z0).endVertex();
+		wr.pos(transform, x1, y1, z0).endVertex();
+		wr.pos(transform, x1, y0, z0).endVertex();
+		wr.pos(transform, x0, y0, z0).endVertex();
 
-		wr.pos(x0, y1, z1).endVertex();
-		wr.pos(x1, y1, z1).endVertex();
-		wr.pos(x1, y1, z0).endVertex();
-		wr.pos(x0, y1, z0).endVertex();
+		wr.pos(transform, x0, y0, z0).endVertex();
+		wr.pos(transform, x1, y0, z0).endVertex();
+		wr.pos(transform, x1, y0, z1).endVertex();
+		wr.pos(transform, x0, y0, z1).endVertex();
 
-		wr.pos(x0, y0, z0).endVertex();
-		wr.pos(x0, y0, z1).endVertex();
-		wr.pos(x0, y1, z1).endVertex();
-		wr.pos(x0, y1, z0).endVertex();
+		wr.pos(transform, x0, y1, z1).endVertex();
+		wr.pos(transform, x1, y1, z1).endVertex();
+		wr.pos(transform, x1, y1, z0).endVertex();
+		wr.pos(transform, x0, y1, z0).endVertex();
 
-		wr.pos(x1, y1, z0).endVertex();
-		wr.pos(x1, y1, z1).endVertex();
-		wr.pos(x1, y0, z1).endVertex();
-		wr.pos(x1, y0, z0).endVertex();
+		wr.pos(transform, x0, y0, z0).endVertex();
+		wr.pos(transform, x0, y0, z1).endVertex();
+		wr.pos(transform, x0, y1, z1).endVertex();
+		wr.pos(transform, x0, y1, z0).endVertex();
+
+		wr.pos(transform, x1, y1, z0).endVertex();
+		wr.pos(transform, x1, y1, z1).endVertex();
+		wr.pos(transform, x1, y0, z1).endVertex();
+		wr.pos(transform, x1, y0, z0).endVertex();
 	}
 
 	public static void renderTexturedBox(BufferBuilder wr, float x0, float y0, float z0, float x1, float y1, float z1, TextureAtlasSprite tex, boolean yForV)

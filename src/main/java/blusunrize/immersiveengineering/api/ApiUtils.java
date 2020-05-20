@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
@@ -129,6 +130,8 @@ public class ApiUtils
 					.orElse(false);
 		else if(o instanceof ResourceLocation)
 			return compareToOreName(stack, (ResourceLocation)o);
+		else if(o instanceof IngredientWithSize)
+			return ((IngredientWithSize)o).test(stack);
 		else
 			throw new IllegalArgumentException("Comparisong object "+o+" of class "+o.getClass()+" is invalid!");
 		return false;

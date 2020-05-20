@@ -42,6 +42,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
@@ -175,18 +176,16 @@ public class IERecipes
 
 	private static void initBlastFurnaceRecipes()
 	{
-		/* todo these need to be replaced with JSON
-		Tag<Item> ironIngot = IETags.getTagsFor(IRON).ingot;
-		Tag<Block> ironBlock = IETags.getTagsFor(IRON).storage;
+		Ingredient ironIngot = Ingredient.fromTag(IETags.getTagsFor(IRON).ingot);
+		Ingredient ironBlock = Ingredient.fromTag(Tags.Items.STORAGE_BLOCKS_IRON);
 		BlastFurnaceRecipe.addRecipe(new ItemStack(ingots.get(STEEL)), ironIngot, 1200, new ItemStack(slag));
 		BlastFurnaceRecipe.addRecipe(new ItemStack(storage.get(STEEL)), ironBlock, 1200*9, new ItemStack(slag, 9));
 
-		BlastFurnaceRecipe.addBlastFuel(IETags.coalCoke, 1200);
-		BlastFurnaceRecipe.addBlastFuel(IETags.coalCokeBlock, 1200*10);
+		BlastFurnaceRecipe.addBlastFuel(Ingredient.fromTag(IETags.coalCoke), 1200);
+		BlastFurnaceRecipe.addBlastFuel(Ingredient.fromTag(IETags.getItemTag(IETags.coalCokeBlock)), 1200*10);
 
-		BlastFurnaceRecipe.addBlastFuel(IETags.charCoal, 300);
-		BlastFurnaceRecipe.addBlastFuel(IETags.getItemTag(IETags.charCoalBlocks), 300*10);
-		 */
+		BlastFurnaceRecipe.addBlastFuel(Ingredient.fromTag(IETags.charCoal), 300);
+		BlastFurnaceRecipe.addBlastFuel(Ingredient.fromTag(IETags.getItemTag(IETags.charCoalBlocks)), 300*10);
 	}
 
 	private static void initClocheRecipes()

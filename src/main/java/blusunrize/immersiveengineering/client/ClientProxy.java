@@ -87,7 +87,6 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -118,6 +117,7 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -141,7 +141,6 @@ public class ClientProxy extends CommonProxy
 	public static IEFontRender nixieFontOptional;
 	public static IEFontRender nixieFont;
 	public static IEFontRender itemFont;
-	public static boolean stencilBufferEnabled = false;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.gameplay");
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", -1, "key.categories.gameplay");
 
@@ -168,13 +167,9 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void preInit()
 	{
-		Framebuffer fb = mc().getFramebuffer();
-		/*TODO this probably needs to be readded to Forge
-		if(GLX.isUsingFBOs()&&IEConfig.stencilBufferEnabled&&!fb.isStencilEnabled())
-		{
-			stencilBufferEnabled = fb.enableStencil();//Enabling FBO stencils
-		}
-		 */
+		//TODO auto-detect old cards that don't support this?
+		if(IEConfig.GENERAL.stencilBufferEnabled.get())
+			DeferredWorkQueue.runLater(() -> Minecraft.getInstance().getFramebuffer().enableStencil());
 
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.TYPE, RevolvershotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotFlareEntity.TYPE, RevolvershotRenderer::new);

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
+import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
@@ -74,6 +75,7 @@ public class IETags
 
 	public static Tag<Item> getItemTag(Tag<Block> blockTag)
 	{
+		Preconditions.checkArgument(toItemTag.containsKey(blockTag));
 		return toItemTag.get(blockTag);
 	}
 
