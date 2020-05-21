@@ -133,7 +133,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 						int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 						int col = tile.filters[side][i].getFluid().getAttributes().getColor(tile.filters[side][i]);
 						GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
-						ClientUtils.drawTexturedRect(builder, transform, x, y, 16, 16, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
+						ClientUtils.drawTexturedRect(builder, transform, x, y, 16, 16, 1, 1, 1, 1, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
 					}
 				}
 			int x = guiLeft+30+(side/2)*58;

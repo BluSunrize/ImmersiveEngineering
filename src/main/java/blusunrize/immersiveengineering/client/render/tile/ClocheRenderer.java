@@ -129,7 +129,7 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 
 		GlStateManager.depthMask(false);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		ClientUtils.renderModelTESRFast(quads.get(tile.getFacing()), worldRenderer, tile.getWorldNonnull(), blockPos);
+		ClientUtils.renderModelTESRFast(quads.get(tile.getFacing()), worldRenderer, matrixStack, combinedLightIn);
 		Tessellator.getInstance().draw();
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.disableBlend();

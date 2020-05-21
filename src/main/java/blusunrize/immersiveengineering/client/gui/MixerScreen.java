@@ -13,19 +13,15 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
-import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.gui.MixerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
@@ -104,10 +100,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 		if(mx >= guiLeft+106&&mx <= guiLeft+136&&my >= guiTop+61&&my <= guiTop+77)
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
 		if(!tooltip.isEmpty())
-		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableStandardItemLighting();
-		}
 	}
 
 	@Override
@@ -117,7 +110,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 		transform.push();
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
-		IVertexBuilder builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/mixer.png")));
+		ClientUtils.bindTexture(rl("textures/gui/mixer.png").toString());
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)
@@ -144,7 +137,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 			{
 				fluidUpToNow += fs.getAmount();
 				int newY = (int)(47*(fluidUpToNow/capacity));
-				ClientUtils.drawRepeatedFluidSprite(buffers, transform, fs, guiLeft+76, guiTop+58-newY, 58, newY-lastY);
+				ClientUtils.drawRepeatedFluidSpriteGui(buffers, transform, fs, guiLeft+76, guiTop+58-newY, 58, newY-lastY);
 				lastY = newY;
 			}
 		}

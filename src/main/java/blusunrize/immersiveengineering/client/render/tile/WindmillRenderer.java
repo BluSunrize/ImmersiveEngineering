@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -86,7 +87,8 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 
 		matrixStack.translate(-.5, -.5, -.5);
-		ClientUtils.renderModelTESRFast(quads[tile.sails], bufferIn.getBuffer(RenderType.getSolid()), tile.getWorldNonnull(), blockPos);
+		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getSolid());
+		ClientUtils.renderModelTESRFast(quads[tile.sails], builder, matrixStack, combinedLightIn);
 		matrixStack.pop();
 	}
 

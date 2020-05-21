@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.RefineryTileEntity;
 import blusunrize.immersiveengineering.common.gui.RefineryContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 {
@@ -33,7 +33,7 @@ public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 	public void render(int mx, int my, float partial)
 	{
 		super.render(mx, my, partial);
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
+		List<ITextComponent> tooltip = new ArrayList<>();
 		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+13, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/refinery.png", tooltip);
 		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+61, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/refinery.png", tooltip);
 		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+109, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/refinery.png", tooltip);
@@ -41,10 +41,7 @@ public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
 		if(!tooltip.isEmpty())
-		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableStandardItemLighting();
-		}
 	}
 
 	@Override

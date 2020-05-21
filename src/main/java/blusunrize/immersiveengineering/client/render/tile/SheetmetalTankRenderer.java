@@ -9,18 +9,14 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector3f;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTileEntity>
 {
@@ -49,43 +45,25 @@ public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTil
 		zz /= baseScale;
 		for(int i = 0; i < 4; i++)
 		{
+			matrixStack.push();
 			matrixStack.translate(xx, 0, zz);
 
-			GlStateManager.disableTexture();
-			GlStateManager.enableBlend();
-			GlStateManager.disableAlphaTest();
-			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-			GlStateManager.shadeModel(GL11.GL_SMOOTH);
-			GlStateManager.disableLighting();
-
-			BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
-			worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-			worldrenderer.pos(-4, -4, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
-			worldrenderer.pos(-4, 20, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
-			worldrenderer.pos(20, 20, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
-			worldrenderer.pos(20, -4, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
-			ClientUtils.tes().draw();
-			GlStateManager.shadeModel(GL11.GL_FLAT);
-			GlStateManager.disableBlend();
-			GlStateManager.enableAlphaTest();
-			GlStateManager.enableTexture();
+			Matrix4f mat = matrixStack.getLast().getMatrix();
+			final IVertexBuilder builder = bufferIn.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
+			builder.pos(mat, -4, -4, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
+			builder.pos(mat, -4, 20, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
+			builder.pos(mat, 20, 20, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
+			builder.pos(mat, 20, -4, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
 
 			if(!fs.isEmpty())
 			{
 				float h = fs.getAmount()/(float)tile.tank.getCapacity();
-				GlStateManager.depthMask(false);
 				matrixStack.translate(0, 0, .004f);
-				ClientUtils.drawRepeatedFluidSprite(bufferIn, matrixStack, fs, 0, 0+(1-h)*16, 16, h*16);
-				matrixStack.translate(0, 0, -.004f);
-				GlStateManager.depthMask(true);
+				ClientUtils.drawRepeatedFluidSprite(bufferIn.getBuffer(RenderType.getSolid()), matrixStack, fs,
+						0, 0+(1-h)*16, 16, h*16);
 			}
-
-			matrixStack.translate(-xx, 0, -zz);
+			matrixStack.pop();
 			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
-			GlStateManager.enableAlphaTest();
-			GlStateManager.alphaFunc(516, 0.1F);
-			GlStateManager.enableBlend();
-			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 		}
 		matrixStack.pop();
 	}

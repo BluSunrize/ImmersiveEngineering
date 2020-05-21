@@ -44,7 +44,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.Type;
+import net.minecraft.client.renderer.vertex.VertexFormatElement.Usage;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
@@ -580,36 +582,68 @@ public class ClientUtils
 		RenderSystem.enableTexture();
 	}
 
-	public static void drawTexturedRect(IVertexBuilder builder, MatrixStack transform, float x, float y, float w, float h, double... uv)
+	public static void drawTexturedRect(IVertexBuilder builder, MatrixStack transform, float x, float y, float w, float h,
+										float r, float g, float b, float alpha, float u0, float u1, float v0, float v1)
 	{
 		Matrix4f mat = transform.getLast().getMatrix();
-		builder.pos(mat, x, y+h, 0).color(1, 1, 1, 1).tex((float)uv[0], (float)uv[3]).overlay(OverlayTexture.NO_OVERLAY).lightmap(15728880).normal(1, 1, 1).endVertex();
-		builder.pos(mat, x+w, y+h, 0).color(1, 1, 1, 1).tex((float)uv[1], (float)uv[3]).overlay(OverlayTexture.NO_OVERLAY).lightmap(15728880).normal(1, 1, 1).endVertex();
-		builder.pos(mat, x+w, y, 0).color(1, 1, 1, 1).tex((float)uv[1], (float)uv[2]).overlay(OverlayTexture.NO_OVERLAY).lightmap(15728880).normal(1, 1, 1).endVertex();
-		builder.pos(mat, x, y, 0).color(1, 1, 1, 1).tex((float)uv[0], (float)uv[2]).overlay(OverlayTexture.NO_OVERLAY).lightmap(15728880).normal(1, 1, 1).endVertex();
+		builder.pos(mat, x, y+h, 0)
+				.color(r, g, b, alpha)
+				.tex(u0, v1)
+				.overlay(OverlayTexture.NO_OVERLAY)
+				.lightmap(0xf000f0)
+				.normal(1, 1, 1)
+				.endVertex();
+		builder.pos(mat, x+w, y+h, 0)
+				.color(r, g, b, alpha)
+				.tex(u1, v1)
+				.overlay(OverlayTexture.NO_OVERLAY)
+				.lightmap(15728880)
+				.normal(1, 1, 1)
+				.endVertex();
+		builder.pos(mat, x+w, y, 0)
+				.color(r, g, b, alpha)
+				.tex(u1, v0)
+				.overlay(OverlayTexture.NO_OVERLAY)
+				.lightmap(15728880)
+				.normal(1, 1, 1)
+				.endVertex();
+		builder.pos(mat, x, y, 0)
+				.color(r, g, b, alpha)
+				.tex(u0, v0)
+				.overlay(OverlayTexture.NO_OVERLAY)
+				.lightmap(15728880)
+				.normal(1, 1, 1)
+				.endVertex();
 	}
 
-	public static void drawTexturedRect(IVertexBuilder builder, MatrixStack transform, int x, int y, int w, int h, float picSize, int... uv)
+	public static void drawTexturedRect(IVertexBuilder builder, MatrixStack transform, int x, int y, int w, int h, float picSize,
+										int u0, int u1, int v0, int v1)
 	{
-		double[] d_uv = new double[]{uv[0]/picSize, uv[1]/picSize, uv[2]/picSize, uv[3]/picSize};
-		drawTexturedRect(builder, transform, x, y, w, h, d_uv);
+		drawTexturedRect(builder, transform, x, y, w, h, 1, 1, 1, 1, u0/picSize, u1/picSize, v0/picSize, v1/picSize);
 	}
 
-	public static void drawRepeatedFluidSprite(IRenderTypeBuffer buffer, MatrixStack transform, FluidStack fluid, float x, float y, float w, float h)
+	public static void drawRepeatedFluidSpriteGui(IRenderTypeBuffer buffer, MatrixStack transform, FluidStack fluid, float x, float y, float w, float h)
 	{
 		RenderType renderType = IERenderTypes.getGui(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 		IVertexBuilder builder = buffer.getBuffer(renderType);
+		drawRepeatedFluidSprite(builder, transform, fluid, x, y, w, h);
+	}
+
+	public static void drawRepeatedFluidSprite(IVertexBuilder builder, MatrixStack transform, FluidStack fluid, float x, float y, float w, float h)
+	{
 		TextureAtlasSprite sprite = getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid));
 		int col = fluid.getFluid().getAttributes().getColor(fluid);
-		RenderSystem.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
 		int iW = sprite.getWidth();
 		int iH = sprite.getHeight();
 		if(iW > 0&&iH > 0)
-			drawRepeatedSprite(builder, transform, x, y, w, h, iW, iH, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
+			drawRepeatedSprite(builder, transform, x, y, w, h, iW, iH,
+					sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV(),
+					(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f, 1);
 	}
 
 	public static void drawRepeatedSprite(IVertexBuilder builder, MatrixStack transform, float x, float y, float w,
-										  float h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax)
+										  float h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax,
+										  float r, float g, float b, float alpha)
 	{
 		int iterMaxW = (int)(w/iconWidth);
 		int iterMaxH = (int)(h/iconHeight);
@@ -622,14 +656,18 @@ public class ClientUtils
 		for(int ww = 0; ww < iterMaxW; ww++)
 		{
 			for(int hh = 0; hh < iterMaxH; hh++)
-				drawTexturedRect(builder, transform, x+ww*iconWidth, y+hh*iconHeight, iconWidth, iconHeight, uMin, uMax, vMin, vMax);
-			drawTexturedRect(builder, transform, x+ww*iconWidth, y+iterMaxH*iconHeight, iconWidth, leftoverH, uMin, uMax, vMin, (vMin+iconVDif*leftoverHf));
+				drawTexturedRect(builder, transform, x+ww*iconWidth, y+hh*iconHeight, iconWidth, iconHeight,
+						r, g, b, alpha, uMin, uMax, vMin, vMax);
+			drawTexturedRect(builder, transform, x+ww*iconWidth, y+iterMaxH*iconHeight, iconWidth, leftoverH,
+					r, g, b, alpha, uMin, uMax, vMin, (vMin+iconVDif*leftoverHf));
 		}
 		if(leftoverW > 0)
 		{
 			for(int hh = 0; hh < iterMaxH; hh++)
-				drawTexturedRect(builder, transform, x+iterMaxW*iconWidth, y+hh*iconHeight, leftoverW, iconHeight, uMin, (uMin+iconUDif*leftoverWf), vMin, vMax);
-			drawTexturedRect(builder, transform, x+iterMaxW*iconWidth, y+iterMaxH*iconHeight, leftoverW, leftoverH, uMin, (uMin+iconUDif*leftoverWf), vMin, (vMin+iconVDif*leftoverHf));
+				drawTexturedRect(builder, transform, x+iterMaxW*iconWidth, y+hh*iconHeight, leftoverW, iconHeight,
+						r, g, b, alpha, uMin, (uMin+iconUDif*leftoverWf), vMin, vMax);
+			drawTexturedRect(builder, transform, x+iterMaxW*iconWidth, y+iterMaxH*iconHeight, leftoverW, leftoverH,
+					r, g, b, alpha, uMin, (uMin+iconUDif*leftoverWf), vMin, (vMin+iconVDif*leftoverHf));
 		}
 	}
 
@@ -680,14 +718,10 @@ public class ClientUtils
 		if(!list.isEmpty())
 		{
 			RenderSystem.disableRescaleNormal();
-			RenderHelper.disableStandardItemLighting();
-			RenderSystem.disableLighting();
 			RenderSystem.disableDepthTest();
 			int k = 0;
-			Iterator<ITextComponent> iterator = list.iterator();
-			while(iterator.hasNext())
+			for(ITextComponent s : list)
 			{
-				ITextComponent s = iterator.next();
 				int l = font.getStringWidth(s.getFormattedText());
 				if(l > k)
 					k = l;
@@ -742,9 +776,7 @@ public class ClientUtils
 				k2 += 10;
 			}
 
-			RenderSystem.enableLighting();
 			RenderSystem.enableDepthTest();
-			RenderHelper.enableStandardItemLighting();
 			RenderSystem.enableRescaleNormal();
 		}
 	}
@@ -764,7 +796,7 @@ public class ClientUtils
 			if(fluid!=null&&fluid.getFluid()!=null)
 			{
 				int fluidHeight = (int)(h*(fluid.getAmount()/(float)capacity));
-				drawRepeatedFluidSprite(buffer, transform, fluid, x, y+h-fluidHeight, w, fluidHeight);
+				drawRepeatedFluidSpriteGui(buffer, transform, fluid, x, y+h-fluidHeight, w, fluidHeight);
 				RenderSystem.color3f(1, 1, 1);
 			}
 			int xOff = (w-oW)/2;
@@ -1239,6 +1271,31 @@ public class ClientUtils
 		putVertex(wr, stack, x1, y0, z0, u0, v1, normalX, normalY, normalZ);
 	}
 
+	public static int findOffset(VertexFormat vf, Usage u, Type t)
+	{
+		int offset = 0;
+		for(VertexFormatElement element : vf.getElements())
+		{
+			if(element.getUsage()==u&&element.getType()==t)
+			{
+				Preconditions.checkState(offset%4==0);
+				return offset/4;
+			}
+			offset += element.getSize();
+		}
+		throw new IllegalStateException();
+	}
+
+	public static int findTextureOffset(VertexFormat vf)
+	{
+		return findOffset(vf, Usage.UV, Type.FLOAT);
+	}
+
+	public static int findPositionOffset(VertexFormat vf)
+	{
+		return findOffset(vf, Usage.POSITION, Type.FLOAT);
+	}
+
 	private static void putVertex(IVertexBuilder b, MatrixStack mat, float x, float y, float z, float u, float v, float nX, float nY, float nZ)
 	{
 		b.pos(mat.getLast().getMatrix(), x, y, z)
@@ -1280,7 +1337,7 @@ public class ClientUtils
 	public static void renderModelTESRFancy(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos, boolean useCached, int color)
 	{//TODO include matrix transformations?, cache normals?
 		if(IEConfig.GENERAL.disableFancyTESR.get())
-			renderModelTESRFast(quads, renderer, world, pos, color);
+			renderModelTESRFast(quads, renderer, new MatrixStack(), world.getLightSubtracted(pos, 0), color);
 		else
 		{
 			if(!useCached)
@@ -1394,38 +1451,45 @@ public class ClientUtils
 		return (val/scale)*(val/scale);
 	}
 
-	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos)
+	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, MatrixStack transform, int light)
 	{
-		renderModelTESRFast(quads, renderer, world, pos, -1);
+		renderModelTESRFast(quads, renderer, transform, -1, light);
 	}
 
-	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos, int color)
+	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, MatrixStack transform, int color, int light)
 	{
-		int brightness = world.getLightSubtracted(pos, 0);
-		int l1 = (brightness >> 0x10)&0xFFFF;
-		int l2 = brightness&0xFFFF;
-		int rgba[] = {255, 255, 255, 255};
+		int l1 = (light >> 0x10)&0xFFFF;
+		int l2 = light&0xFFFF;
+		int[] rgba = {255, 255, 255, 255};
 		if(color >= 0)
 		{
 			rgba[0] = color >> 16&255;
 			rgba[1] = color >> 8&255;
 			rgba[2] = color&255;
 		}
+		VertexFormat format = DefaultVertexFormats.BLOCK;
+		int size = format.getIntegerSize();
+		int uv = findTextureOffset(format);
+		int position = findPositionOffset(format);
+		int normal = findOffset(format, Usage.NORMAL, Type.BYTE);
 		for(BakedQuad quad : quads)
 		{
 			int[] vData = quad.getVertexData();
-			VertexFormat format = DefaultVertexFormats.BLOCK;
-			int size = format.getIntegerSize();
-			int uv = format.getOffset(0)/4;
 			for(int i = 0; i < 4; ++i)
 			{
+				int normalPacked = vData[size*i+normal];
+				float normalX = (normalPacked&255)/255F;
+				float normalY = ((normalPacked >> 8)&255)/255F;
+				float normalZ = ((normalPacked >> 16)&255)/255F;
 				renderer
-						.pos(Float.intBitsToFloat(vData[size*i]),
-								Float.intBitsToFloat(vData[size*i+1]),
-								Float.intBitsToFloat(vData[size*i+2]))
+						.pos(transform.getLast().getMatrix(),
+								Float.intBitsToFloat(vData[size*i+position]),
+								Float.intBitsToFloat(vData[size*i+position+1]),
+								Float.intBitsToFloat(vData[size*i+position+2]))
 						.color(rgba[0], rgba[1], rgba[2], rgba[3])
 						.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
 						.lightmap(l1, l2)
+						.normal(transform.getLast().getNormal(), normalX, normalY, normalZ)
 						.endVertex();
 			}
 

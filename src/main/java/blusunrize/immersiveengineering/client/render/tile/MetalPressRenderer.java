@@ -58,10 +58,6 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 			return;
 		IBakedModel model = piston.get(null);
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldRenderer = tessellator.getBuffer();
-
-		ClientUtils.bindAtlas();
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
 		float piston = 0;
@@ -93,26 +89,26 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 				}
 		}
 
-		matrixStack.translate(-0.5, -piston*.6875f-0.5, -0.5);
+		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.WEST?90: te.getFacing()==Direction.EAST?-90: 0, true));
+		matrixStack.push();
+		matrixStack.translate(0, -piston*.6875f, 0);
+		matrixStack.push();
+		matrixStack.translate(-0.5, -0.5, -0.5);
 		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
 				bufferIn.getBuffer(RenderType.getSolid()), true,
 				te.getWorld().rand, 0, combinedOverlayIn, EmptyModelData.INSTANCE);
-		tessellator.draw();
+		matrixStack.pop();
 
-		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.WEST?90: te.getFacing()==Direction.EAST?-90: 0, true));
 		if(!te.mold.isEmpty())
 		{
-			matrixStack.push();
 			matrixStack.translate(0, .34, 0);
 			matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -90, true));
 			float scale = .75f;
 			matrixStack.scale(scale, scale, 1);
 			ClientUtils.mc().getItemRenderer().renderItem(te.mold, TransformType.FIXED, combinedLightIn, combinedOverlayIn,
 					matrixStack, bufferIn);
-			matrixStack.scale(1/scale, 1/scale, 1);
-			matrixStack.pop();
 		}
-		matrixStack.translate(0, piston*.6875f, 0);
+		matrixStack.pop();
 		matrixStack.translate(0, -.35, 1.25);
 		for(int i = 0; i < shift.length; i++)
 		{

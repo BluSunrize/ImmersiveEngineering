@@ -20,9 +20,9 @@ import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -30,15 +30,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
-import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
 import java.util.List;
@@ -83,30 +80,19 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		}
 		IEObjState objState = new IEObjState(VisibilityList.show(list));
 
-		Tessellator tessellator = Tessellator.getInstance();
 		matrixStack.push();
 
 		matrixStack.translate(.5, .5, .5);
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
 		Direction facing = tile.getFacing();
 		if(tile.getIsMirrored())
-		{
 			matrixStack.scale(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
-			GlStateManager.disableCull();
-		}
 		float dir = tile.getFacing()==Direction.SOUTH?90: tile.getFacing()==Direction.NORTH?-90: tile.getFacing()==Direction.EAST?180: 0;
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 		float rot = tile.rotation+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
 		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), rot, true));
 
-		RenderHelper.disableStandardItemLighting();
-		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-		BufferBuilder worldRenderer = tessellator.getBuffer();
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		matrixStack.translate(-.5, -.5, -.5);
-//		IModelData modelData = new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE);
+		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getSolid());
 		IModelData modelData = new SinglePropertyModelData<>(tile, IOBJModelCallback.PROPERTY);
 		List<BakedQuad> quads;
 		if(model instanceof IESmartObjModel)
@@ -114,12 +100,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 					modelData);
 		else
 			quads = model.getQuads(state, null, Utils.RAND, modelData);
-		ClientUtils.renderModelTESRFast(quads, worldRenderer, tile.getWorldNonnull(), tile.getPos());
-		matrixStack.translate(0.5, 0.5, 0.5);
-		tessellator.draw();
+		ClientUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn);
 		matrixStack.pop();
-		RenderHelper.enableStandardItemLighting();
-		GlStateManager.disableBlend();
-		GlStateManager.enableCull();
 	}
 }

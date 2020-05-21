@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -79,13 +78,11 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 			FluidStack fs = te.tank.fluids.get(i);
 			if(fs!=null&&fs.getFluid()!=null)
 			{
-				int col = fs.getFluid().getAttributes().getColor(fs);
-				GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
-
 				float yy = fs.getAmount()/(float)te.tank.getCapacity()*1.125f;
 				matrixStack.translate(0, 0, -yy);
 				float w = (i < te.tank.getFluidTypes()-1||yy >= .125)?26: 16+yy/.0125f;
-				ClientUtils.drawRepeatedFluidSprite(bufferIn, matrixStack, fs, -w/2, -w/2, w, w);
+				ClientUtils.drawRepeatedFluidSprite(bufferIn.getBuffer(RenderType.getTranslucent()), matrixStack, fs,
+						-w/2, -w/2, w, w);
 			}
 		}
 

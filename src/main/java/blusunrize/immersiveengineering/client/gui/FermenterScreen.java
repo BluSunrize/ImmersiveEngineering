@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.FermenterTileEntity;
 import blusunrize.immersiveengineering.common.gui.FermenterContainer;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FermenterScreen extends IEContainerScreen<FermenterContainer>
 {
@@ -33,22 +33,19 @@ public class FermenterScreen extends IEContainerScreen<FermenterContainer>
 	public void render(int mx, int my, float partial)
 	{
 		super.render(mx, my, partial);
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
+		List<ITextComponent> tooltip = new ArrayList<>();
 		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+112, guiTop+21, 16, 47, 177, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/cokeOven.png", tooltip);
 		if(mx > guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 		if(!tooltip.isEmpty())
-		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableStandardItemLighting();
-		}
 	}
 
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/fermenter.png");
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 

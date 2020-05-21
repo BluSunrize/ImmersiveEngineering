@@ -337,7 +337,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						transform.rotate(new Quaternion(0, 0, -i*45, true));
 						transform.translate(-.5, .5, -.001);
 						IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
-						ClientUtils.drawTexturedRect(builder, transform, .125f, -.875f, .75f, .75f, 1d, 0d, 1d, 0d);
+						ClientUtils.drawTexturedRect(builder, transform, .125f, -.875f, .75f, .75f, 1, 1, 1, 1, 1, 0, 1, 0);
 						//Width depends on distance
 						float lineWidth = playerDistanceSq < 3?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
 						transform.translate(.75, -.25, -.002);
@@ -389,10 +389,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 
 				GlStateManager.translated(offsetX, offsetY, 0);
-				ClientUtils.drawTexturedRect(builder, transform, 0, 0, resMin, resMin, 0f, 1f, 0f, 1f);
+				ClientUtils.drawTexturedRect(builder, transform, 0, 0, resMin, resMin, 1, 1, 1, 1, 0f, 1f, 0f, 1f);
 
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-				ClientUtils.drawTexturedRect(builder, transform, 218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 64/256f, 88/256f, 96/256f, 224/256f);
+				ClientUtils.drawTexturedRect(builder, transform, 218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 1, 1, 1, 1, 64/256f, 88/256f, 96/256f, 224/256f);
 				ItemStack equipped = ClientUtils.mc().player.getHeldItem(Hand.MAIN_HAND);
 				if(!equipped.isEmpty()&&equipped.getItem() instanceof IZoomTool)
 				{
@@ -410,7 +410,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						GlStateManager.translated(0, (5+stepOffset)/256*resMin, 0);
 						for(int i = 0; i < steps.length; i++)
 						{
-							ClientUtils.drawTexturedRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 88/256f, 96/256f, 96/256f, 103/256f);
+							ClientUtils.drawTexturedRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 96/256f, 96/256f, 103/256f);
 							GlStateManager.translated(0, stepLength/256*resMin, 0);
 							totalOffset += stepLength;
 
@@ -425,7 +425,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(curStep < steps.length)
 						{
 							GlStateManager.translated(6/256f*resMin, curStep*stepLength/256*resMin, 0);
-							ClientUtils.drawTexturedRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 88/256f, 98/256f, 103/256f, 110/256f);
+							ClientUtils.drawTexturedRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 98/256f, 103/256f, 110/256f);
 							ClientUtils.font().drawString((1/steps[curStep])+"x", (int)(16/256f*resMin), 0, 0xffffff);
 							GlStateManager.translated(-6/256f*resMin, -curStep*stepLength/256*resMin, 0);
 						}
@@ -554,11 +554,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						transform.translate(dx, dy, 0);
 						int w = 31;
 						int h = 62;
-						double uMin = 179/256f;
-						double uMax = 210/256f;
-						double vMin = 9/256f;
-						double vMax = 71/256f;
-						ClientUtils.drawTexturedRect(builder, transform, -24, -68, w, h, uMin, uMax, vMin, vMax);
+						float uMin = 179/256f;
+						float uMax = 210/256f;
+						float vMin = 9/256f;
+						float vMax = 71/256f;
+						ClientUtils.drawTexturedRect(builder, transform, -24, -68, w, h, 1, 1, 1, 1, uMin, uMax, vMin, vMax);
 
 						transform.translate(-23, -37, 0);
 						LazyOptional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(equipped);
@@ -582,12 +582,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							float angle = 83-(166*amount/cap);
 							transform.push();
 							transform.rotate(new Quaternion(0, 0, angle, true));
-							ClientUtils.drawTexturedRect(builder, transform, 6, -2, 24, 4, 91/256f, 123/256f, 80/256f, 87/256f);
+							ClientUtils.drawTexturedRect(builder, transform, 6, -2, 24, 4, 1, 1, 1, 1, 91/256f, 123/256f, 80/256f, 87/256f);
 							transform.pop();
 							transform.translate(23, 37, 0);
 							if(drill)
 							{
-								ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
+								ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
 								ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 								ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
 								if(!head.isEmpty())
@@ -598,11 +598,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							}
 							else
 							{
-								ClientUtils.drawTexturedRect(builder, transform, -41, -73, 53, 72, 8/256f, 61/256f, 4/256f, 76/256f);
+								ClientUtils.drawTexturedRect(builder, transform, -41, -73, 53, 72, 1, 1, 1, 1, 8/256f, 61/256f, 4/256f, 76/256f);
 								boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
-								ClientUtils.drawTexturedRect(builder, transform, -32, -43, 12, 12, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
+								ClientUtils.drawTexturedRect(builder, transform, -32, -43, 12, 12, 1, 1, 1, 1, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
 
-								ClientUtils.drawTexturedRect(builder, transform, -100, -20, 64, 16, 0/256f, 64/256f, 76/256f, 92/256f);
+								ClientUtils.drawTexturedRect(builder, transform, -100, -20, 64, 16, 1, 1, 1, 1, 0/256f, 64/256f, 76/256f, 92/256f);
 								if(!fuel.isEmpty())
 								{
 									String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
@@ -623,24 +623,24 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							float dy = scaledHeight;
 							transform.push();
 							transform.translate(dx, dy, 0);
-							ClientUtils.drawTexturedRect(builder, transform, 0, -22, 64, 22, 0, 64/256f, 176/256f, 198/256f);
+							ClientUtils.drawTexturedRect(builder, transform, 0, -22, 64, 22, 0, 1, 1, 1, 1, 64/256f, 176/256f, 198/256f);
 
 							if(upgrades.getBoolean("flash"))
 							{
-								ClientUtils.drawTexturedRect(builder, transform, 11, -38, 16, 16, 11/256f, 27/256f, 160/256f, 176/256f);
+								ClientUtils.drawTexturedRect(builder, transform, 11, -38, 16, 16, 11/256f, 1, 1, 1, 1, 27/256f, 160/256f, 176/256f);
 								if(upgrades.contains("flash_cooldown"))
 								{
 									float h = upgrades.getInt("flash_cooldown")/40f*16;
-									ClientUtils.drawTexturedRect(builder, transform, 11, -22-h, 16, h, 11/256f, 27/256f, (214-h)/256f, 214/256f);
+									ClientUtils.drawTexturedRect(builder, transform, 11, -22-h, 16, h, 1, 1, 1, 1, 11/256f, 27/256f, (214-h)/256f, 214/256f);
 								}
 							}
 							if(upgrades.getBoolean("shock"))
 							{
-								ClientUtils.drawTexturedRect(builder, transform, 40, -38, 12, 16, 40/256f, 52/256f, 160/256f, 176/256f);
+								ClientUtils.drawTexturedRect(builder, transform, 40, -38, 12, 16, 1, 1, 1, 1, 40/256f, 52/256f, 160/256f, 176/256f);
 								if(upgrades.contains("shock_cooldown"))
 								{
 									float h = upgrades.getInt("shock_cooldown")/40f*16;
-									ClientUtils.drawTexturedRect(builder, transform, 40, -22-h, 12, h, 40/256f, 52/256f, (214-h)/256f, 214/256f);
+									ClientUtils.drawTexturedRect(builder, transform, 40, -22-h, 12, h, 1, 1, 1, 1, 40/256f, 52/256f, (214-h)/256f, 214/256f);
 								}
 							}
 							transform.pop();

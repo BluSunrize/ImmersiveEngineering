@@ -20,6 +20,8 @@ public class IERenderTypes
 	public static final RenderType SOLID_FULLBRIGHT;
 	public static final RenderType TRANSLUCENT_LINES;
 	public static final RenderType TRANSLUCENT_TRIANGLES;
+	public static final RenderType TRANSLUCENT_POSITION_COLOR;
+	public static final RenderType TRANSLUCENT_NO_DEPTH;
 	protected static final RenderState.ShadeModelState SHADE_ENABLED = new RenderState.ShadeModelState(true);
 	protected static final RenderState.TextureState BLOCK_SHEET_MIPPED = new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
 	protected static final RenderState.LightmapState LIGHTMAP_DISABLED = new RenderState.LightmapState(false);
@@ -43,25 +45,43 @@ public class IERenderTypes
 				256,//TODO is that a good value?
 				fullbrightSolidState
 		);
-		RenderType.State translucentLinesState = RenderType.State.getBuilder()
+		RenderType.State translucentNoDepthState = RenderType.State.getBuilder()
 				.transparency(TRANSLUCENT_TRANSPARENCY)
 				.line(new LineState(OptionalDouble.of(2)))
 				.texture(new TextureState())
 				.depthTest(DEPTH_ALWAYS)
+				.build(true);
+		RenderType.State translucentNoTextureState = RenderType.State.getBuilder()
+				.transparency(TRANSLUCENT_TRANSPARENCY)
+				.texture(new TextureState())
 				.build(true);
 		TRANSLUCENT_LINES = RenderType.makeType(
 				ImmersiveEngineering.MODID+":translucent_lines",
 				DefaultVertexFormats.POSITION_COLOR,
 				GL11.GL_LINES,
 				256,//TODO is that a good value?
-				translucentLinesState
+				translucentNoDepthState
 		);
 		TRANSLUCENT_TRIANGLES = RenderType.makeType(
 				ImmersiveEngineering.MODID+":translucent_triangle_fan",
 				DefaultVertexFormats.POSITION_COLOR,
 				GL11.GL_TRIANGLES,
 				256,//TODO is that a good value?
-				translucentLinesState
+				translucentNoDepthState
+		);
+		TRANSLUCENT_POSITION_COLOR = RenderType.makeType(
+				ImmersiveEngineering.MODID+":translucent_pos_color",
+				DefaultVertexFormats.POSITION_COLOR,
+				GL11.GL_QUADS,
+				256,//TODO is that a good value?
+				translucentNoTextureState
+		);
+		TRANSLUCENT_NO_DEPTH = RenderType.makeType(
+				ImmersiveEngineering.MODID+":translucent_no_depth",
+				DefaultVertexFormats.POSITION_COLOR,
+				GL11.GL_QUADS,
+				256,//TODO is that a good value?
+				translucentNoDepthState
 		);
 	}
 
@@ -69,7 +89,7 @@ public class IERenderTypes
 	{
 		return RenderType.makeType(
 				"gui",
-				DefaultVertexFormats.POSITION_TEX,
+				DefaultVertexFormats.POSITION_COLOR_TEX,
 				GL11.GL_QUADS,
 				256,
 				RenderType.State.getBuilder()

@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -42,7 +41,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootContext.Builder;
@@ -135,10 +133,12 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 							TileEntity te = world.getTileEntity(wheelPos.add(0, h, 0).offset(getFacing(), w));
 							if(te instanceof BucketWheelTileEntity)
 							{
-								((BucketWheelTileEntity)te).setFacing(fRot);
-								((BucketWheelTileEntity)te).setMirrored(this.getIsMirrored());
+								BucketWheelTileEntity bucketTE = (BucketWheelTileEntity)te;
+								bucketTE.setFacing(fRot);
+								bucketTE.setMirrored(this.getIsMirrored());
+								bucketTE.posInMultiblock = new BlockPos(6-bucketTE.posInMultiblock.getX(), bucketTE.posInMultiblock.getY(), bucketTE.posInMultiblock.getZ());
 								te.markDirty();
-								((BucketWheelTileEntity)te).markContainingBlockForUpdate(null);
+								bucketTE.markContainingBlockForUpdate(null);
 								world.addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 255, 0);
 							}
 						}
@@ -162,7 +162,6 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 							if(wheel.digStacks.get(targetDown).isEmpty())
 							{
 								ItemStack blocking = this.digBlocksInTheWay(wheel);
-								BlockPos lowGroundPos = wheelPos.add(0, -5, 0);
 								if(!blocking.isEmpty())
 								{
 									wheel.digStacks.set(targetDown, blocking);
