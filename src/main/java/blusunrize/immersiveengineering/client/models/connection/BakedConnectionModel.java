@@ -171,11 +171,13 @@ public class BakedConnectionModel extends BakedIEModel
 		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand, IModelData data)
 		{
 			RenderType layer = MinecraftForgeClient.getRenderLayer();
-			if(layer!=RenderType.getSolid()&&layer!=RenderType.getTranslucent())
+			// The new rendering system does not support making non-translucent textures translucent using alpha,
+			// so the fading ends are currently does
+			if(layer!=RenderType.getSolid())
 				return getBaseQuads(layer, state, side, rand, data);
 			if(lists==null)
 				lists = ClientUtils.convertConnectionFromBlockstate(key.here, key.connections, texture);
-			List<BakedQuad> l = new ArrayList<>(lists[layer==RenderType.getSolid()?0: 1]);
+			List<BakedQuad> l = new ArrayList<>(lists[0]);
 			l.addAll(getBaseQuads(layer, state, side, rand, data));
 			return Collections.synchronizedList(l);
 		}

@@ -533,23 +533,20 @@ public class ClientUtils
 
 	public static void drawColouredRect(int x, int y, int w, int h, int colour)
 	{
-		RenderSystem.disableTexture();
-		RenderSystem.enableBlend();
-		RenderSystem.disableAlphaTest();
-		RenderSystem.blendFuncSeparate(770, 771, 1, 0);
-		RenderSystem.shadeModel(GL11.GL_SMOOTH);
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldrenderer = tessellator.getBuffer();
-		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-		worldrenderer.pos(x, y+h, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
-		worldrenderer.pos(x+w, y+h, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
-		worldrenderer.pos(x+w, y, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
-		worldrenderer.pos(x, y, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
-		tessellator.draw();
-		RenderSystem.shadeModel(GL11.GL_FLAT);
-		RenderSystem.disableBlend();
-		RenderSystem.enableAlphaTest();
-		RenderSystem.enableTexture();
+		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		drawColouredRect(x, y, w, h, colour, buffers, new MatrixStack());
+		buffers.finish();
+	}
+
+	public static void drawColouredRect(int x, int y, int w, int h, int colour, IRenderTypeBuffer buffers,
+										MatrixStack transform)
+	{
+		Matrix4f mat = transform.getLast().getMatrix();
+		IVertexBuilder worldrenderer = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
+		worldrenderer.pos(mat, x, y+h, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
+		worldrenderer.pos(mat, x+w, y+h, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
+		worldrenderer.pos(mat, x+w, y, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
+		worldrenderer.pos(mat, x, y, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
 	}
 
 	//TODO replace these methods with AbstractGui#fillGradient and (Abstract)Gui#blit, or figure out why that isn't possible
@@ -1093,7 +1090,7 @@ public class ClientUtils
 			switch(format.getElements().get(e).getUsage())
 			{
 				case POSITION:
-					builder.put(e, (float)pos.x, (float)pos.y, (float)pos.z, 0);
+					builder.put(e, (float)pos.x, (float)pos.y, (float)pos.z);
 					break;
 				case COLOR:
 					float d = 1;//LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
@@ -1114,7 +1111,7 @@ public class ClientUtils
 						builder.put(e, 0, 0);
 					break;
 				case NORMAL:
-					builder.put(e, (float)faceNormal.getX(), (float)faceNormal.getY(), (float)faceNormal.getZ(), 0);
+					builder.put(e, (float)faceNormal.getX(), (float)faceNormal.getY(), (float)faceNormal.getZ());
 					break;
 				default:
 					builder.put(e);

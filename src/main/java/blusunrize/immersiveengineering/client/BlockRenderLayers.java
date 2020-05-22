@@ -7,7 +7,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.client.renderer.RenderType;
@@ -31,9 +30,16 @@ public class BlockRenderLayers
 		RenderTypeLookup.setRenderLayer(StoneDecoration.concreteSprayed, RenderType.getCutout());
 		for(Block b : IEContent.registeredIEBlocks)
 			if(b instanceof ConnectorBlock)
-				RenderTypeLookup.setRenderLayer(
-						b, rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
-				);
+				RenderTypeLookup.setRenderLayer(b, RenderType.getSolid());
+		RenderTypeLookup.setRenderLayer(
+				Connectors.getEnergyConnector(WireType.HV_CATEGORY, true),
+				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+		);
+		RenderTypeLookup.setRenderLayer(
+				Connectors.connectorProbe,
+				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+		);
+
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
 			RenderTypeLookup.setRenderLayer(MetalDecoration.steelScaffoldingStair.get(type), RenderType.getCutout());

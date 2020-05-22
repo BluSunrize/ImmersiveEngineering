@@ -4,9 +4,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.RenderState.AlphaState;
-import net.minecraft.client.renderer.RenderState.LineState;
-import net.minecraft.client.renderer.RenderState.TextureState;
+import net.minecraft.client.renderer.RenderState.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -20,9 +18,11 @@ public class IERenderTypes
 {
 	public static final RenderType SOLID_FULLBRIGHT;
 	public static final RenderType TRANSLUCENT_LINES;
+	public static final RenderType LINES;
 	public static final RenderType TRANSLUCENT_TRIANGLES;
 	public static final RenderType TRANSLUCENT_POSITION_COLOR;
 	public static final RenderType TRANSLUCENT_NO_DEPTH;
+	public static final RenderType CHUNK_MARKER;
 	protected static final RenderState.ShadeModelState SHADE_ENABLED = new RenderState.ShadeModelState(true);
 	protected static final RenderState.TextureState BLOCK_SHEET_MIPPED = new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
 	protected static final RenderState.LightmapState LIGHTMAP_DISABLED = new RenderState.LightmapState(false);
@@ -63,6 +63,13 @@ public class IERenderTypes
 				256,//TODO is that a good value?
 				translucentNoDepthState
 		);
+		LINES = RenderType.makeType(
+				ImmersiveEngineering.MODID+":lines",
+				DefaultVertexFormats.POSITION_COLOR,
+				GL11.GL_LINES,
+				256,//TODO is that a good value?
+				RenderType.State.getBuilder().build(false)
+		);
 		TRANSLUCENT_TRIANGLES = RenderType.makeType(
 				ImmersiveEngineering.MODID+":translucent_triangle_fan",
 				DefaultVertexFormats.POSITION_COLOR,
@@ -83,6 +90,20 @@ public class IERenderTypes
 				GL11.GL_QUADS,
 				256,//TODO is that a good value?
 				translucentNoDepthState
+		);
+		RenderType.State chunkMarkerState = RenderType.State.getBuilder()
+				.texture(new TextureState())
+				.transparency(TRANSLUCENT_TRANSPARENCY)
+				.cull(new CullState(false))
+				.shadeModel(new ShadeModelState(true))
+				.line(new LineState(OptionalDouble.of(5)))
+				.build(false);
+		CHUNK_MARKER = RenderType.makeType(
+				ImmersiveEngineering.MODID+":chunk_marker",
+				DefaultVertexFormats.POSITION_COLOR,
+				GL11.GL_LINES,
+				256,//TODO is that a good value?
+				chunkMarkerState
 		);
 	}
 
