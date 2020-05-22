@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
@@ -51,7 +50,6 @@ public class SqueezerRenderer extends TileEntityRenderer<SqueezerTileEntity>
 			return;
 		IBakedModel model = dynamic.get(te.getFacing());
 
-		ClientUtils.bindAtlas();
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
 		if(te.getIsMirrored())
@@ -65,7 +63,8 @@ public class SqueezerRenderer extends TileEntityRenderer<SqueezerTileEntity>
 
 		matrixStack.translate(-.5, -.5, -.5);
 		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
-				bufferIn.getBuffer(RenderType.getSolid()), true, te.getWorld().rand, 0, combinedOverlayIn, EmptyModelData.INSTANCE);
+				bufferIn.getBuffer(RenderType.getSolid()), true, te.getWorld().rand, 0, combinedOverlayIn,
+				EmptyModelData.INSTANCE);
 
 		matrixStack.pop();
 	}

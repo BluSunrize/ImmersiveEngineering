@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
@@ -60,7 +59,6 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 					for(int i = 0; i < split.length; i++)
 						tooltip.add(new StringTextComponent(split[i]).setStyle(new Style().setColor(i==0?TextFormatting.WHITE: TextFormatting.GRAY)));
 					ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-					RenderHelper.enableStandardItemLighting();
 				}
 		}
 	}

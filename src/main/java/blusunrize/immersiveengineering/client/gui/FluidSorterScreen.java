@@ -21,7 +21,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
@@ -80,10 +79,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 						ClientUtils.addFluidTooltip(tile.filters[side][i], tooltip, 0);
 				}
 		if(!tooltip.isEmpty())
-		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableStandardItemLighting();
-		}
 	}
 
 	@Override

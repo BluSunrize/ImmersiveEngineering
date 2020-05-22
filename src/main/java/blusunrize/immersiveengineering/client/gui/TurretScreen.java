@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
@@ -145,11 +144,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 
 		renderCustom(tooltip, mx, my);
 		if(!tooltip.isEmpty())
-		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, -1, -1);
-			RenderHelper.enableStandardItemLighting();
-		}
-
 	}
 
 	@Override

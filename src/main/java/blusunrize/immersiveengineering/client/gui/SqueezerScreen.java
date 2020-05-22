@@ -11,8 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
 import blusunrize.immersiveengineering.common.gui.SqueezerContainer;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -39,17 +38,14 @@ public class SqueezerScreen extends IEContainerScreen<SqueezerContainer>
 		if(mx > guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 		if(!tooltip.isEmpty())
-		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableStandardItemLighting();
-		}
 	}
 
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
+		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/squeezer.png");
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 

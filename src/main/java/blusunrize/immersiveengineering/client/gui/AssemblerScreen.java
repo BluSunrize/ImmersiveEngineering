@@ -94,13 +94,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients")));
 
 		if(!tooltip.isEmpty())
-		{
-			RenderSystem.disableDepthTest();
-			RenderSystem.translated(0, 0, 300);
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, xSize, -1);
-			RenderSystem.translated(0, 0, -300);
-			RenderHelper.enableStandardItemLighting();
-		}
 	}
 
 	@Override

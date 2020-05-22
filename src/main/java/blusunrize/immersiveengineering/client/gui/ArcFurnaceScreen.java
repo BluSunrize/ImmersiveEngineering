@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.text.ITextComponent;
@@ -51,10 +50,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
 
 		if(!tooltip.isEmpty())
-		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableStandardItemLighting();
-		}
 	}
 
 

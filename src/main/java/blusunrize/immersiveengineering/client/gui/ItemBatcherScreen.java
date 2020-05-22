@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntit
 import blusunrize.immersiveengineering.common.gui.ItemBatcherContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.dummy.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
@@ -119,10 +118,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 			}
 
 		if(!tooltip.isEmpty())
-		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
-			RenderHelper.enableStandardItemLighting();
-		}
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class IERenderTypes
 {
@@ -116,16 +117,10 @@ public class IERenderTypes
 
 	public static IRenderTypeBuffer wrapWithStencil(IRenderTypeBuffer in, Consumer<IVertexBuilder> setupStencilArea, String name, int ref)
 	{
-		return type -> in.getBuffer(new RenderType(
-				ImmersiveEngineering.MODID+":stencil_"+name+"_"+type.toString()+"_"+ref,
-				type.getVertexFormat(),
-				type.getDrawMode(),
-				type.getBufferSize(),
-				type.isUseDelegate(),
-				false, // needsSorting is private and shouldn't be too relevant here
+		return wrapWithAdditional(
+				in,
+				type -> ImmersiveEngineering.MODID+":stencil_"+name+"_"+type+"_"+ref,
 				() -> {
-					type.setupRenderState();
-
 					GL11.glEnable(GL11.GL_STENCIL_TEST);
 					RenderSystem.colorMask(false, false, false, false);
 					RenderSystem.depthMask(false);
@@ -146,8 +141,40 @@ public class IERenderTypes
 					GL11.glStencilMask(0x00);
 					GL11.glStencilFunc(GL11.GL_EQUAL, ref, 0xFF);
 				},
+				() -> GL11.glDisable(GL11.GL_STENCIL_TEST)
+		);
+	}
+
+	public static IRenderTypeBuffer disableLighting(IRenderTypeBuffer in)
+	{
+		return wrapWithAdditional(
+				in,
+				type -> ImmersiveEngineering.MODID+":"+type+"_no_lighting",
+				RenderSystem::disableLighting,
+				RenderSystem::enableLighting
+		);
+	}
+
+	private static IRenderTypeBuffer wrapWithAdditional(
+			IRenderTypeBuffer in,
+			Function<String, String> nameTransform,
+			Runnable setup,
+			Runnable teardown
+	)
+	{
+		return type -> in.getBuffer(new RenderType(
+				nameTransform.apply(type.toString()),
+				type.getVertexFormat(),
+				type.getDrawMode(),
+				type.getBufferSize(),
+				type.isUseDelegate(),
+				false, // needsSorting is private and shouldn't be too relevant here
 				() -> {
-					GL11.glDisable(GL11.GL_STENCIL_TEST);
+					type.setupRenderState();
+					setup.run();
+				},
+				() -> {
+					teardown.run();
 					type.clearRenderState();
 				}
 		)
