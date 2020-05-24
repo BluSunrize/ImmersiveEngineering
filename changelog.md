@@ -20,6 +20,7 @@
 - Fixed refinery accepting fluid pipes from all sides (BluSunrize)
 - Fixed Voltmeter being broken (Malte)
 - Fixed renders for Bottling Machine and Mixer (Malte)
+- Fixed collision on diagonal covered conveyors (BluSunrize)
 
 ##### Version 0.14-95 - BUILT
 - Added the Buzzsaw! It cuts Trees! (BluSunrize)
