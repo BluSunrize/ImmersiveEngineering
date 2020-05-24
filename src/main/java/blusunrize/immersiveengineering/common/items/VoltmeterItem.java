@@ -108,13 +108,13 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 			if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 			{
 				CompoundNBT nbt = stack.getOrCreateTag();
-				nbt.putString("linkingDim", world.getDimension().getType().toString());
+				nbt.putString("linkingDim", world.getDimension().getType().getRegistryName().toString());
 				nbt.put("linkingPos", cp.createTag());
 			}
 			else
 			{
 				String dim = ItemNBTHelper.getString(stack, "linkingDim");
-				if(dim.equals(world.getDimension().getType().toString()))
+				if(dim.equals(world.getDimension().getType().getRegistryName().toString()))
 				{
 					ConnectionPoint linkCP = new ConnectionPoint(stack.getOrCreateTag().getCompound("linkingPos"));
 					GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);

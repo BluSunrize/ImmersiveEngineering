@@ -570,7 +570,7 @@ public class ApiUtils
 				CompoundNBT nbt = stack.getOrCreateTag();
 				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 				{
-					nbt.putString("linkingDim", world.getDimension().getType().toString());
+					nbt.putString("linkingDim", world.getDimension().getType().getRegistryName().toString());
 					nbt.put("linkingPos", cpHere.createTag());
 					nbt.put("linkingOffset", NBTUtil.writeBlockPos(offsetHere));
 				}
