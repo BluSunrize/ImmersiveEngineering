@@ -30,7 +30,7 @@ public class WatermillBlock extends IETileProviderBlock
 	public WatermillBlock(String name)
 	{
 		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5),
-				BlockItemIE.class, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
+				BlockItemIE::new, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
 		setNotNormalBlock();
 	}
 

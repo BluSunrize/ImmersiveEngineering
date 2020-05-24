@@ -24,7 +24,7 @@ public class WindmillBlock extends IETileProviderBlock
 	public WindmillBlock(String name)
 	{
 		super(name, Properties.create(Material.WOOD).hardnessAndResistance(2, 5),
-				BlockItemIE.class, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
+				BlockItemIE::new, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
 		setNotNormalBlock();
 	}
 

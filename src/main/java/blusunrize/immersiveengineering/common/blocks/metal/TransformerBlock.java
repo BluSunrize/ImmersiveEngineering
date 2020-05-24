@@ -17,7 +17,7 @@ public class TransformerBlock extends MiscConnectorBlock
 	{
 		super("transformer", () -> TransformerTileEntity.TYPE,
 				ImmutableList.of(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, IEProperties.MIRRORED),
-				ImmutableList.of(), TransformerBlockItem.class);
+				ImmutableList.of(), TransformerBlockItem::new);
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class StructuralArmBlock extends IETileProviderBlock
 	public StructuralArmBlock(String name)
 	{
 		super(name, Properties.create(Material.IRON).hardnessAndResistance(3, 15),
-				BlockItemIE.class, FACING);
+				BlockItemIE::new, FACING);
 		setNotNormalBlock();
 		setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);
 	}

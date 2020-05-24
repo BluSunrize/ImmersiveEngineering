@@ -25,7 +25,7 @@ public class TurntableBlock extends IETileProviderBlock
 	public TurntableBlock(String name)
 	{
 		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5),
-				BlockItemIE.class, IEProperties.FACING_ALL);
+				BlockItemIE::new, IEProperties.FACING_ALL);
 	}
 
 	@Nullable

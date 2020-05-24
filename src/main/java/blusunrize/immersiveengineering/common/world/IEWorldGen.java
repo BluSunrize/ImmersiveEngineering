@@ -100,22 +100,20 @@ public class IEWorldGen
 		nbt.putBoolean(IEConfig.ORES.retrogen_key.get(), true);
 	}
 
-	// @SubscribeEvent
-	// Called using ASM (chunk_load_workaround) until https://github.com/MinecraftForge/MinecraftForge/pull/6610 is
-	// merged
-	public static void chunkLoad(IChunk c, CompoundNBT data)
+	@SubscribeEvent
+	public static void chunkLoad(ChunkDataEvent.Load event)
 	{
-		if(c.getStatus()==ChunkStatus.FULL)
+		if(event.getChunk().getStatus()==ChunkStatus.FULL)
 		{
-			DimensionType dimension = c.getWorldForge().getDimension().getType();
-			if(!data.getCompound("ImmersiveEngineering").contains(IEConfig.ORES.retrogen_key.get())&&
+			DimensionType dimension = event.getChunk().getWorldForge().getDimension().getType();
+			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEConfig.ORES.retrogen_key.get())&&
 					!retrogenOres.isEmpty())
 			{
 				if(IEConfig.ORES.retrogen_log_flagChunk.get())
-					IELogger.info("Chunk "+c.getPos()+" has been flagged for Ore RetroGeneration by IE.");
+					IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");
 				synchronized(retrogenChunks)
 				{
-					retrogenChunks.computeIfAbsent(dimension, d -> new ArrayList<>()).add(c.getPos());
+					retrogenChunks.computeIfAbsent(dimension, d -> new ArrayList<>()).add(event.getChunk().getPos());
 				}
 			}
 		}

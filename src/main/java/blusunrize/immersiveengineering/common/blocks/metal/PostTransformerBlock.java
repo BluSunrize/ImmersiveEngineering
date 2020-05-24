@@ -32,7 +32,7 @@ public class PostTransformerBlock extends MiscConnectorBlock
 	{
 		super("post_transformer", () -> PostTransformerTileEntity.TYPE,
 				ImmutableList.of(IEProperties.FACING_HORIZONTAL),
-				ImmutableList.of(), null);
+				ImmutableList.of(), (b, p) -> null);
 	}
 
 	@Override

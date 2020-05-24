@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.client.font.IEFontReloadListener;
 import blusunrize.immersiveengineering.client.font.IEFontRender;
 import blusunrize.immersiveengineering.client.font.NixieFontRender;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
@@ -162,6 +163,8 @@ public class ClientProxy extends CommonProxy
 			ModelLoaderRegistry2.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
 			ModelLoaderRegistry2.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
 			ModelLoaderRegistry2.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
+
+			((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(new IEFontReloadListener());
 		}
 	}
 
@@ -229,9 +232,6 @@ public class ClientProxy extends CommonProxy
 		keybind_chemthrowerSwitch.setKeyConflictContext(KeyConflictContext.IN_GAME);
 		ClientRegistry.registerKeyBinding(keybind_chemthrowerSwitch);
 
-		nixieFontOptional = new NixieFontRender(false);
-		nixieFont = new NixieFontRender(false);
-		itemFont = new IEFontRender(false);
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 
 		ClientRegistry.bindTileEntitySpecialRenderer(ChargingStationTileEntity.class, new ChargingStationRenderer());

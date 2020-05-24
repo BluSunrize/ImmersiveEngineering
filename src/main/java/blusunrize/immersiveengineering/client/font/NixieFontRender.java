@@ -32,9 +32,9 @@ public class NixieFontRender extends IEFontRender
 
 	public boolean drawTube = true;
 
-	public NixieFontRender(boolean unicode)
+	public NixieFontRender(boolean unicode, ResourceLocation id)
 	{
-		super(unicode);
+		super(unicode, id);
 	}
 
 	@Override

@@ -17,8 +17,9 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
-import blusunrize.immersiveengineering.common.util.shapes.MultiblockCacheKey;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,6 +43,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -189,92 +191,58 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 		}
 	}
 
-	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(FermenterTileEntity::getShape);
+	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES =
+			CachedShapesWithTransform.createForMultiblock(FermenterTileEntity::getShape);
 
 	@Override
 	public VoxelShape getBlockBounds()
 	{
-		return SHAPES.get(new MultiblockCacheKey(this));
+		return CachedShapesWithTransform.get(SHAPES, this);
 	}
 
-	private static List<AxisAlignedBB> getShape(MultiblockCacheKey key)
+	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
 	{
-		BlockPos posInMultiblock = key.posInMultiblock;
-		Direction fl = key.facing;
-		Direction fw = key.facing.rotateY();
-		if(key.mirrored)
-			fw = fw.getOpposite();
 		if(new BlockPos(2, 0, 2).equals(posInMultiblock))
-		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
-			float maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .25f;
-			float minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .125f;
-			float maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .25f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
-
-			minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .75f;
-			maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .875f;
-			minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .75f;
-			maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .875f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
-			return list;
-		}
+			return ImmutableList.of(
+					new AxisAlignedBB(0, 0, 0, 1, .5f, 1),
+					new AxisAlignedBB(0.125, .5f, 0.625, 0.25, 1, 0.875),
+					new AxisAlignedBB(0.75, .5f, 0.625, 0.875, 1, 0.875)
+			);
 		if(new MutableBoundingBox(0, 0, 0, 1, 0, 1)
 				.isVecInside(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			if(posInMultiblock.getZ()==0)
-				fl = fl.getOpposite();
-			if(posInMultiblock.getX()==1)
-				fw = fw.getOpposite();
-			float minX = fl==Direction.WEST?.6875f: fl==Direction.EAST?.0625f: fw==Direction.EAST?.0625f: .6875f;
-			float maxX = fl==Direction.EAST?.3125f: fl==Direction.WEST?.9375f: fw==Direction.EAST?.3125f: .9375f;
-			float minZ = fl==Direction.NORTH?.6875f: fl==Direction.SOUTH?.0625f: fw==Direction.SOUTH?.0625f: .6875f;
-			float maxZ = fl==Direction.SOUTH?.3125f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?.3125f: .9375f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1.1875f, maxZ));
+			List<AxisAlignedBB> list = Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==1,
+					new AxisAlignedBB(0, 0, 0, 1, .5f, 1),
+					new AxisAlignedBB(0.0625, .5f, 0.6875, 0.3125, 1.1875f, 0.9375)
+			);
 
 			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
-				minX = fl==Direction.WEST?.375f: fl==Direction.EAST?.625f: fw==Direction.WEST?-.125f: 0;
-				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.625f: fw==Direction.EAST?1.125f: 1;
-				minZ = fl==Direction.NORTH?.375f: fl==Direction.SOUTH?.625f: fw==Direction.NORTH?-.125f: 0;
-				maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.625f: fw==Direction.SOUTH?1.125f: 1;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
-
-				minX = fl==Direction.WEST?-.125f: fl==Direction.EAST?.625f: fw==Direction.WEST?-.125f: .875f;
-				maxX = fl==Direction.EAST?1.125f: fl==Direction.WEST?.375f: fw==Direction.EAST?1.125f: .125f;
-				minZ = fl==Direction.NORTH?-.125f: fl==Direction.SOUTH?.625f: fw==Direction.NORTH?-.125f: .875f;
-				maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?.375f: fw==Direction.SOUTH?1.125f: .125f;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
-
-				minX = fl==Direction.WEST?-.125f: fl==Direction.EAST?.875f: fw==Direction.WEST?-.125f: .875f;
-				maxX = fl==Direction.EAST?1.125f: fl==Direction.WEST?.125f: fw==Direction.EAST?1.125f: .125f;
-				minZ = fl==Direction.NORTH?-.125f: fl==Direction.SOUTH?.875f: fw==Direction.NORTH?-.125f: .875f;
-				maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?.125f: fw==Direction.SOUTH?1.125f: .125f;
-				list.add(new AxisAlignedBB(minX, .75f, minZ, maxX, 1, maxZ));
+				list.add(new AxisAlignedBB(0, .5f, 0.375, 1.125, .75f, 0.625));
+				list.add(new AxisAlignedBB(0.875, .5f, -0.125, 1.125, .75f, 0.375));
+				list.add(new AxisAlignedBB(0.875, .75f, -0.125, 1.125, 1, 0.125));
 			}
 
 			return list;
 		}
 		if(new MutableBoundingBox(0, 1, 0, 1, 2, 1).isVecInside(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>(2);
-			if(posInMultiblock.getZ()==0)
-				fl = fl.getOpposite();
-			if(posInMultiblock.getX()==1)
-				fw = fw.getOpposite();
 			float minY = posInMultiblock.getY() < 2?.1875f: -.8125f;
 			float maxY = posInMultiblock.getY() < 2?2: 1;
-
-			float minX = fl==Direction.WEST?0: fl==Direction.EAST?.0625f: fw==Direction.EAST?.0625f: 0;
-			float maxX = fl==Direction.EAST?1: fl==Direction.WEST?.9375f: fw==Direction.EAST?1: .9375f;
-			float minZ = fl==Direction.NORTH?0: fl==Direction.SOUTH?.0625f: fw==Direction.SOUTH?.0625f: 0;
-			float maxZ = fl==Direction.SOUTH?1: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?1: .9375f;
-			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
-			return list;
+			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==1,
+					new AxisAlignedBB(0.0625, minY, 0, 1, maxY, 0.9375));
 		}
-		return null;
+		AxisAlignedBB ret;
+		if(posInMultiblock.getY()==0&&!ImmutableSet.of(
+				new BlockPos(2, 0, 1),
+				new BlockPos(0, 0, 2)
+		).contains(posInMultiblock))
+			ret = new AxisAlignedBB(0, 0, 0, 1, .5f, 1);
+		else if(new BlockPos(2, 1, 2).equals(posInMultiblock))
+			ret = new AxisAlignedBB(0, 0, 0.5, 1, 1, 1);
+		else
+			ret = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
+		return ImmutableList.of(ret);
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import java.util.List;
+import java.util.Optional;
 
 public class RefineryContainer extends IEBaseContainer<RefineryTileEntity>
 {
@@ -37,14 +38,14 @@ public class RefineryContainer extends IEBaseContainer<RefineryTileEntity>
 							FluidStack fs = h.getFluidInTank(0);
 							if(fs.isEmpty())
 								return false;
-							if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
+							if(!RefineryRecipe.findIncompleteRefineryRecipe(fs, FluidStack.EMPTY).isPresent())
 								return false;
 							if(tileF.tanks[0].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[0].getFluid()))
 								return false;
 							if(tileF.tanks[1].getFluidAmount() <= 0)
 								return true;
-							List<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[1].getFluid());
-							return incomplete!=null&&!incomplete.isEmpty();
+							Optional<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[1].getFluid());
+							return incomplete.isPresent();
 						}).orElse(false);
 			}
 		});
@@ -62,14 +63,14 @@ public class RefineryContainer extends IEBaseContainer<RefineryTileEntity>
 							FluidStack fs = h.getFluidInTank(0);
 							if(fs.isEmpty())
 								return false;
-							if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
+							if(!RefineryRecipe.findIncompleteRefineryRecipe(fs, FluidStack.EMPTY).isPresent())
 								return false;
 							if(tileF.tanks[1].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[1].getFluid()))
 								return false;
 							if(tileF.tanks[0].getFluidAmount() <= 0)
 								return true;
-							List<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[0].getFluid());
-							return incomplete!=null&&!incomplete.isEmpty();
+							Optional<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[0].getFluid());
+							return incomplete.isPresent();
 						}).orElse(false);
 			}
 		});

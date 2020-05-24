@@ -39,7 +39,7 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 		super(name, Properties.create(Material.IRON)
 						.hardnessAndResistance(3, 15)
 						.lightValue(14),
-				BlockItem.class,
+				BlockItem::new,
 				FACING);
 		setNotNormalBlock();
 	}

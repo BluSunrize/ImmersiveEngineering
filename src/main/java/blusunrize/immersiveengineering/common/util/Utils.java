@@ -1493,7 +1493,6 @@ public class Utils
 		return null;//This shouldn't ever happen
 	}
 
-
 	public static AxisAlignedBB transformAABB(AxisAlignedBB original, Direction facing)
 	{
 		double minX = 0, minZ = 0, maxX = 0, maxZ = 0;
@@ -1537,6 +1536,29 @@ public class Utils
 				break;
 		}
 		return new AxisAlignedBB(minX, original.minY, minZ, maxX, original.maxY, maxZ);
+	}
+
+	public static List<AxisAlignedBB> flipBoxes(boolean flipFront, boolean flipRight, List<AxisAlignedBB> boxes)
+	{
+		return flipBoxes(flipFront, flipRight, boxes.toArray(new AxisAlignedBB[0]));
+	}
+
+	public static List<AxisAlignedBB> flipBoxes(boolean flipFront, boolean flipRight, AxisAlignedBB... boxes)
+	{
+		List<AxisAlignedBB> ret = new ArrayList<>(boxes.length);
+		for(AxisAlignedBB aabb : boxes)
+			ret.add(flipBox(flipFront, flipRight, aabb));
+		return ret;
+	}
+
+	public static AxisAlignedBB flipBox(boolean flipFront, boolean flipRight, AxisAlignedBB aabb)
+	{
+		AxisAlignedBB result = aabb;
+		if(flipRight)
+			result = new AxisAlignedBB(1-result.maxX, result.minY, result.minZ, 1-result.minX, result.maxY, result.maxZ);
+		if(flipFront)
+			result = new AxisAlignedBB(result.minX, result.minY, 1-result.maxZ, result.maxX, result.maxY, 1-result.minZ);
+		return result;
 	}
 
 	public static IBlockReader getSingleBlockWorldAccess(BlockState state)

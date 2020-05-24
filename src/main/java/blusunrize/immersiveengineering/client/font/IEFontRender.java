@@ -37,7 +37,7 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 @OnlyIn(Dist.CLIENT)
 public class IEFontRender extends FontRenderer
 {
-	private static HashMap<Character, TexturedGlyph> unicodeReplacements = new HashMap<>();
+	private static final HashMap<Character, TexturedGlyph> unicodeReplacements = new HashMap<>();
 	private static final ResourceLocation UNICODE = new ResourceLocation(ImmersiveEngineering.MODID, "unicode");
 	private static final ResourceLocation NORMAL = Minecraft.DEFAULT_FONT_RENDERER_NAME;
 
@@ -50,22 +50,19 @@ public class IEFontRender extends FontRenderer
 
 	public float customSpaceWidth = 4f;
 	public boolean verticalBoldness = false;
-	private Font font;
 	protected final TextureManager texManager;
 	private final boolean unicode;
 
-	public IEFontRender(boolean unicode)
+	public IEFontRender(boolean unicode, ResourceLocation id)
 	{
-		super(mc().textureManager, new Font(mc().textureManager, unicode?UNICODE: NORMAL));
+		super(mc().textureManager, new Font(mc().textureManager, id));
 		texManager = mc().textureManager;
-		if(Minecraft.getInstance().gameSettings.language!=null)
-			this.setBidiFlag(mc().getLanguageManager().isCurrentLanguageBidirectional());
 		this.unicode = unicode;
 	}
 
-	void updateFont()
+	public ResourceLocation getBaseID()
 	{
-		font = Objects.requireNonNull(mc().getFontResourceManager().getFontRenderer(unicode?UNICODE: NORMAL)).font;
+		return unicode?UNICODE: NORMAL;
 	}
 
 	@Override
@@ -82,7 +79,6 @@ public class IEFontRender extends FontRenderer
 
 	private float renderStringAtPosImpl(String text, float x, float y, int color, boolean isShadow)
 	{
-		updateFont();
 		final float colorScale = isShadow?0.25F: 1.0F;
 		final float argRed = (float)(color >> 16&255)/255.0F*colorScale;
 		final float argGreen = (float)(color >> 8&255)/255.0F*colorScale;
@@ -246,7 +242,6 @@ public class IEFontRender extends FontRenderer
 	{
 		if(character==32)
 			return customSpaceWidth;
-		updateFont();
 		return character==167?0.0F: this.font.findGlyph(character).getAdvance(bold);
 	}
 

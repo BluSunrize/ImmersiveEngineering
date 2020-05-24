@@ -245,7 +245,9 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 					if(shader!=null)
 					{
 						Vec3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
-						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), pos, user.getForward(), .125f);
+						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack,
+								shader.getRight().getShaderType().toString(), pos,
+								Vec3d.fromPitchYaw(user.getPitchYaw()), .125f);
 					}
 				}
 			}

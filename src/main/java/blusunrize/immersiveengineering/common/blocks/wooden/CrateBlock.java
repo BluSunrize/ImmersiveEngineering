@@ -30,7 +30,7 @@ public class CrateBlock extends IETileProviderBlock
 	public CrateBlock(String name, boolean reinforced)
 	{
 		super(name, Properties.create(Material.WOOD).hardnessAndResistance(2, 5),
-				BlockItemIE.class);
+				BlockItemIE::new);
 		this.reinforced = reinforced;
 	}
 

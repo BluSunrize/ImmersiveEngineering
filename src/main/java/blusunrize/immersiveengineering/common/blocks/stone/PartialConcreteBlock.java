@@ -27,7 +27,7 @@ public class PartialConcreteBlock extends IEBaseBlock
 	public PartialConcreteBlock(String name, int pixels)
 	{
 		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20),
-				BlockItemIE.class);
+				BlockItemIE::new);
 		shape = VoxelShapes.create(0, 0, 0, 1, pixels/16F, 1);
 		full = pixels==16;
 		if(!full)

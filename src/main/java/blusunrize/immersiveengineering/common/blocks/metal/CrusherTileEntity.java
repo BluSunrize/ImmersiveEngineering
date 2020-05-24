@@ -20,8 +20,8 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
-import blusunrize.immersiveengineering.common.util.shapes.MultiblockCacheKey;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
@@ -51,6 +51,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -129,9 +130,8 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		return new AxisAlignedBB(getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getPos().getY(), getPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getPos().getY()+3, getPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
 	}
 
-	public static VoxelShape getBasicShape(MultiblockCacheKey key)
+	public static VoxelShape getBasicShape(BlockPos posInMultiblock)
 	{
-		BlockPos posInMultiblock = key.posInMultiblock;
 		Set<BlockPos> slabs = ImmutableSet.of(
 				new BlockPos(3, 0, 2),
 				new BlockPos(1, 0, 2),
@@ -151,10 +151,6 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		if(new BlockPos(2, 2, 1).equals(posInMultiblock))
 			return VoxelShapes.create(0, 0, 0, 0, 0, 0);
 
-		Direction fl = key.facing;
-		Direction fw = key.facing.rotateY();
-		if(key.mirrored)
-			fw = fw.getOpposite();
 		if(posInMultiblock.getY() > 0&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4)
 		{
 			float minX = 0;
@@ -163,70 +159,47 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			float maxZ = 1;
 			if(posInMultiblock.getX()==3)
 			{
-				minX = fw==Direction.EAST?.1875f: 0;
-				maxX = fw==Direction.WEST?.8125f: 1;
-				minZ = fw==Direction.SOUTH?.1875f: 0;
-				maxZ = fw==Direction.NORTH?.8125f: 1;
+				minX = .1875f;
+				maxX = 1;
+				minZ = 0;
+				maxZ = 1;
 			}
 			else if(posInMultiblock.getX()==1)
 			{
-				minX = fw==Direction.WEST?.1875f: 0;
-				maxX = fw==Direction.EAST?.8125f: 1;
-				minZ = fw==Direction.NORTH?.1875f: 0;
-				maxZ = fw==Direction.SOUTH?.8125f: 1;
+				minX = 0;
+				maxX = .8125f;
+				minZ = 0;
+				maxZ = 1;
 			}
 			if(posInMultiblock.getZ()==2)
-			{
-				if(fl==Direction.EAST)
-					minX = .1875f;
-				if(fl==Direction.WEST)
-					maxX = .8125f;
-				if(fl==Direction.SOUTH)
-					minZ = .1875f;
-				if(fl==Direction.NORTH)
-					maxZ = .8125f;
-			}
+				maxZ = .8125f;
 
 			return VoxelShapes.create(minX, 0, minZ, maxX, 1, maxZ);
 		}
 		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
-			return VoxelShapes.create(key.facing==Direction.WEST?.5f: 0, 0, key.facing==Direction.NORTH?.5f: 0, key.facing==Direction.EAST?.5f: 1, 1, key.facing==Direction.SOUTH?.5f: 1);
+			return VoxelShapes.create(0, 0, .5f, 1, 1, 1);
 
 		return VoxelShapes.fullCube();
 	}
 
-	private static final CachedVoxelShapes<MultiblockCacheKey> SHAPES = new CachedVoxelShapes<>(CrusherTileEntity::getShape);
+	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES
+			= CachedShapesWithTransform.createForMultiblock(CrusherTileEntity::getShape);
 
 	@Override
 	public VoxelShape getBlockBounds()
 	{
-		return SHAPES.get(new MultiblockCacheKey(this));
+		return SHAPES.get(posInMultiblock, Pair.of(getFacing(), getIsMirrored()));
 	}
 
-	private static List<AxisAlignedBB> getShape(MultiblockCacheKey key)
+	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
 	{
-		BlockPos posInMultiblock = key.posInMultiblock;
 		if(posInMultiblock.getZ()==1&&posInMultiblock.getX()==2)
-			return getBasicShape(key).toBoundingBoxList();
-		Direction fl = key.facing;
-		Direction fw = key.facing.rotateY();
-		if(key.mirrored)
-			fw = fw.getOpposite();
-		//TODO clean all of this up a bit
+			return getBasicShape(posInMultiblock).toBoundingBoxList();
 		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
-			float maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .25f;
-			float minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .125f;
-			float maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .25f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
-
-			minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .75f;
-			maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .875f;
-			minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .75f;
-			maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .875f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
+			list.add(new AxisAlignedBB(.125, .5f, .625, .25, 1, .875));
+			list.add(new AxisAlignedBB(.75, .5f, .625, .875, 1, .875));
 			return list;
 		}
 		if(new MutableBoundingBox(1, 1, 1, 3, 2, 1)
@@ -234,44 +207,41 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		{
 			List<AxisAlignedBB> list = new ArrayList<>(3);
 			float minY = .5f;
-			float minX = (posInMultiblock.getX()==3&&fw==Direction.EAST)||(posInMultiblock.getX()==1&&fw==Direction.WEST)?.4375f: 0;
-			float maxX = (posInMultiblock.getX()==3&&fw==Direction.WEST)||(posInMultiblock.getX()==1&&fw==Direction.EAST)?.5625f: 1;
-			float minZ = (posInMultiblock.getX()==3&&fw==Direction.SOUTH)||(posInMultiblock.getX()==1&&fw==Direction.NORTH)?.4375f: 0;
-			float maxZ = (posInMultiblock.getX()==3&&fw==Direction.NORTH)||(posInMultiblock.getX()==1&&fw==Direction.SOUTH)?.5625f: 1;
+			float minX = posInMultiblock.getX()==1?.4375f: 0;
+			float maxX = posInMultiblock.getX()==3?.5625f: 1;
 			if(posInMultiblock.getY()==1)
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
+				list.add(new AxisAlignedBB(minX, .5f, 0, maxX, .75f, 1));
 			else
 				minY = 0;
 
-			minX = (posInMultiblock.getX()==3&&fw==Direction.EAST)||(posInMultiblock.getX()==1&&fw==Direction.WEST)?.1875f: (posInMultiblock.getX()==3&&fw==Direction.WEST)||(posInMultiblock.getX()==1&&fw==Direction.EAST)?.5625f: 0;
-			maxX = (posInMultiblock.getX()==3&&fw==Direction.WEST)||(posInMultiblock.getX()==1&&fw==Direction.EAST)?.8125f: (posInMultiblock.getX()==3&&fw==Direction.EAST)||(posInMultiblock.getX()==1&&fw==Direction.WEST)?.4375f: 1;
-			minZ = (posInMultiblock.getX()==3&&fw==Direction.SOUTH)||(posInMultiblock.getX()==1&&fw==Direction.NORTH)?.1875f: (posInMultiblock.getX()==3&&fw==Direction.NORTH)||(posInMultiblock.getX()==1&&fw==Direction.SOUTH)?.5625f: 0;
-			maxZ = (posInMultiblock.getX()==3&&fw==Direction.NORTH)||(posInMultiblock.getX()==1&&fw==Direction.SOUTH)?.8125f: (posInMultiblock.getX()==3&&fw==Direction.SOUTH)||(posInMultiblock.getX()==1&&fw==Direction.NORTH)?.4375f: 1;
-			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ));
+			if(posInMultiblock.getX()==1)
+				minX = .1875f;
+			else
+				minX = posInMultiblock.getX()==3?.5625f: 0;
+			maxX = posInMultiblock.getX()==3?.8125f: posInMultiblock.getX()==1?.4375f: 1;
+			list.add(new AxisAlignedBB(minX, minY, 0, maxX, 1, 1));
 			return list;
 		}
 		if((posInMultiblock.getZ()==0||posInMultiblock.getZ()==2)&&posInMultiblock.getY() > 0&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4)
 		{
-			if(posInMultiblock.getZ()==0)
-				fl = fl.getOpposite();
-			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>(3);
+			boolean front = posInMultiblock.getZ()==0;
+			boolean right = posInMultiblock.getX()==1;
+			boolean left = posInMultiblock.getX()==3;
+			List<AxisAlignedBB> list = new ArrayList<>(3);
 			float minY = .5f;
-			float minX = (posInMultiblock.getX()==3&&fw==Direction.EAST)||(posInMultiblock.getX()==1&&fw==Direction.WEST)?.4375f: fl==Direction.EAST?.4375f: 0;
-			float maxX = (posInMultiblock.getX()==3&&fw==Direction.WEST)||(posInMultiblock.getX()==1&&fw==Direction.EAST)?.5625f: fl==Direction.WEST?.5625f: 1;
-			float minZ = (posInMultiblock.getX()==3&&fw==Direction.SOUTH)||(posInMultiblock.getX()==1&&fw==Direction.NORTH)?.4375f: fl==Direction.SOUTH?.4375f: 0;
-			float maxZ = (posInMultiblock.getX()==3&&fw==Direction.NORTH)||(posInMultiblock.getX()==1&&fw==Direction.SOUTH)?.5625f: fl==Direction.NORTH?.5625f: 1;
+			float minX = right?.4375f: 0;
+			float maxX = left?.5625f: 1;
+			float minZ = front?.4375f: 0;
+			float maxZ = !front?.5625f: 1;
 			if(posInMultiblock.getY()==1)
 				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
 			else
 				minY = 0;
 
-			//TODO this doesn't make any sense? if(posInMultiblock/15 > 9)
-			//	fl = fl.getOpposite();
-
-			minX = (posInMultiblock.getX()==3&&fw==Direction.EAST)||(posInMultiblock.getX()==1&&fw==Direction.WEST)?.1875f: fl==Direction.EAST?.1875f: fl==Direction.WEST?.5625f: 0;
-			maxX = (posInMultiblock.getX()==3&&fw==Direction.WEST)||(posInMultiblock.getX()==1&&fw==Direction.EAST)?.8125f: fl==Direction.WEST?.8125f: fl==Direction.EAST?.4375f: 1;
-			minZ = (posInMultiblock.getX()==3&&fw==Direction.SOUTH)||(posInMultiblock.getX()==1&&fw==Direction.NORTH)?.1875f: fl==Direction.SOUTH?.1875f: fl==Direction.NORTH?.5625f: 0;
-			maxZ = (posInMultiblock.getX()==3&&fw==Direction.NORTH)||(posInMultiblock.getX()==1&&fw==Direction.SOUTH)?.8125f: fl==Direction.NORTH?.8125f: fl==Direction.SOUTH?.4375f: 1;
+			minX = right?.1875f: (float)0;
+			maxX = left?.8125f: (float)1;
+			minZ = front?.1875f: .5625f;
+			maxZ = !front?.8125f: .4375f;
 			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ));
 			if(!ImmutableSet.of(
 					new BlockPos(2, 1, 2),
@@ -280,14 +250,12 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 					new BlockPos(2, 2, 0)
 			).contains(posInMultiblock))
 			{
-				minX = (posInMultiblock.getX()==3&&fw==Direction.EAST)||(posInMultiblock.getX()==1&&fw==Direction.WEST)?.1875f: fl==Direction.EAST?.4375f: fl==Direction.WEST?0: .5625f;
-				maxX = (posInMultiblock.getX()==3&&fw==Direction.WEST)||(posInMultiblock.getX()==1&&fw==Direction.EAST)?.8125f: fl==Direction.WEST?.5625f: fl==Direction.EAST?1: .4375f;
-				minZ = (posInMultiblock.getX()==3&&fw==Direction.SOUTH)||(posInMultiblock.getX()==1&&fw==Direction.NORTH)?.1875f: fl==Direction.SOUTH?.4375f: fl==Direction.NORTH?0: .5625f;
-				maxZ = (posInMultiblock.getX()==3&&fw==Direction.NORTH)||(posInMultiblock.getX()==1&&fw==Direction.SOUTH)?.8125f: fl==Direction.NORTH?.5625f: fl==Direction.SOUTH?1: .4375f;
+				minX = right?.1875f: .5625f;
+				maxX = left?.8125f: .4375f;
+				minZ = front?.4375f: 0;
+				maxZ = !front?.5625f: 1;
 				list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ));
 
-				if(posInMultiblock.getX()==3&&(posInMultiblock.getZ()==0||posInMultiblock.getZ()==2))
-					fw = fw.getOpposite();
 				if(ImmutableSet.of(
 						new BlockPos(3, 1, 2),
 						new BlockPos(2, 1, 2),
@@ -297,11 +265,9 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 						new BlockPos(1, 1, 0)
 				).contains(posInMultiblock))
 				{
-					minX = fl==Direction.WEST?.5f: fl==Direction.EAST?.25f: fw==Direction.EAST?.5f: .25f;
-					maxX = fl==Direction.EAST?.5f: fl==Direction.WEST?.75f: fw==Direction.EAST?.75f: .5f;
-					minZ = fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.25f: fw==Direction.SOUTH?.5f: .25f;
-					maxZ = fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.75f: fw==Direction.SOUTH?.75f: .5f;
-					list.add(new AxisAlignedBB(minX, 0, minZ, maxX, .5f, maxZ));
+					minZ = front?.25f: .5f;
+					maxZ = front?.5f: .75f;
+					list.add(new AxisAlignedBB(0.25, 0, minZ, 0.75, .5f, maxZ));
 				}
 			}
 			return list;
@@ -312,22 +278,12 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 				new BlockPos(3, 0, 0),
 				new BlockPos(1, 0, 0)
 		).contains(posInMultiblock))
-		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			if(posInMultiblock.getZ()==0)
-				fl = fl.getOpposite();
-			if(posInMultiblock.getX()==3&&(posInMultiblock.getZ()==0||posInMultiblock.getZ()==2))
-				fw = fw.getOpposite();
-			float minX = fl==Direction.WEST?.5f: fl==Direction.EAST?.25f: fw==Direction.EAST?.5f: .25f;
-			float maxX = fl==Direction.EAST?.5f: fl==Direction.WEST?.75f: fw==Direction.EAST?.75f: .5f;
-			float minZ = fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.25f: fw==Direction.SOUTH?.5f: .25f;
-			float maxZ = fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.75f: fw==Direction.SOUTH?.75f: .5f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
+			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==3,
+					new AxisAlignedBB(0.25, 0.5, 0.5, 0.5, 1, 0.75),
+					new AxisAlignedBB(0, 0, 0, 1, .5f, 1)
+			);
 
-			return list;
-		}
-
-		return getBasicShape(key).toBoundingBoxList();
+		return getBasicShape(posInMultiblock).toBoundingBoxList();
 	}
 
 	private boolean isInInput()

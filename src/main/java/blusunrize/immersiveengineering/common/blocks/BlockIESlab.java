@@ -15,17 +15,20 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 
+import java.util.function.Function;
+
 public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implements IIEBlock
 {
 	private final T base;
 
-	public BlockIESlab(String name, Properties props, Class<? extends BlockItem> itemBlock, T base)
+	public BlockIESlab(String name, Properties props, Function<Block, Item> itemBlock, T base)
 	{
 		super(props);
 		ResourceLocation registryName = new ResourceLocation(ImmersiveEngineering.MODID, name);
@@ -34,8 +37,7 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 		IEContent.registeredIEBlocks.add(this);
 		try
 		{
-			IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class)
-					.newInstance(this));
+			IEContent.registeredIEItems.add(itemBlock.apply(this));
 		} catch(Exception e)
 		{
 			//TODO e.printStackTrace();
