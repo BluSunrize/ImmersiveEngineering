@@ -6,6 +6,7 @@
 - Overhauled the turntable, to allow side-based redstone input to produce different rotations (MalkContent)
 - Added furnace fuel values for coke coal and coke coal blocks (Malte)
 - Re-Added automatic changelog generation (Malte)
+- Re-Added Graphite Electrode blueprints (BluSunrize)
 - Changed and improved Multiblock bounding boxes (Malte)
 - Changed dropping conveyors to not drop downwards when given redstone signal (MalkContent)
 - Changed hammers and wirecutters to allow repairing (BluSunrize)

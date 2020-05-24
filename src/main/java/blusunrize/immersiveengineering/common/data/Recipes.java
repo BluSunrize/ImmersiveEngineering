@@ -25,10 +25,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
-import blusunrize.immersiveengineering.common.crafting.HammerCrushingRecipeBuilder;
-import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
-import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
-import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
+import blusunrize.immersiveengineering.common.crafting.*;
+import blusunrize.immersiveengineering.common.crafting.IEConfigConditionSerializer.ConditionIEConfig;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals.AlloyProperties;
 import blusunrize.immersiveengineering.common.data.resources.RecipeOres;
@@ -41,6 +39,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.*;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -60,6 +59,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
@@ -2281,6 +2281,18 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "molds"), toRL("blueprint_molds"));
+
+		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
+				.patternLine("ggg")
+				.patternLine("ddd")
+				.patternLine("ppp")
+				.key('g', IETags.hopGraphiteIngot)
+				.key('d', Tags.Items.DYES_BLUE)
+				//TODO tag?
+				.key('p', Items.PAPER)
+				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
+				.build(buildBlueprint(out, "electrode", new ConditionIEConfig(true, "machines.arcfurnace_electrodeCrafting")),
+						toRL("blueprint_electrode"));
 	}
 
 	private void recipesVanilla(@Nonnull Consumer<IFinishedRecipe> out)
@@ -2307,7 +2319,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("gunpowder_from_dusts"));
 	}
 
-	private Consumer<IFinishedRecipe> buildBlueprint(Consumer<IFinishedRecipe> out, String blueprint)
+	private Consumer<IFinishedRecipe> buildBlueprint(Consumer<IFinishedRecipe> out, String blueprint, ICondition... conditions)
 	{
 		return recipe -> {
 			out.accept(new IFinishedRecipe()
@@ -2315,6 +2327,13 @@ public class Recipes extends RecipeProvider
 				@Override
 				public void serialize(@Nonnull JsonObject json)
 				{
+					if(conditions.length>0){
+						JsonArray conditionArray = new JsonArray();
+						for(ICondition condition : conditions)
+							conditionArray.add(CraftingHelper.serialize(condition));
+						json.add("conditions", conditionArray);
+					}
+
 					recipe.serialize(json);
 					JsonObject output = json.getAsJsonObject("result");
 					JsonObject nbt = new JsonObject();
