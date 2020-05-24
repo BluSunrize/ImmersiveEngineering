@@ -22,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
@@ -238,6 +239,8 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 		obj.addProperty("item", stack.getItem().getRegistryName().toString());
 		if(stack.getCount() > 1)
 			obj.addProperty("count", stack.getCount());
+		if(stack.hasTag())
+			obj.addProperty("nbt", stack.getTag().toString());
 		return obj;
 	}
 
