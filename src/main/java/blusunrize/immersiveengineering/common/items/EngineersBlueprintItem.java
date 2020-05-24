@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemGroup;
@@ -47,7 +48,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		String key = ItemNBTHelper.getString(stack, "blueprint");
-		if(!key.isEmpty()&&BlueprintCraftingRecipe.recipeList.containsKey(key))
+		if(!key.isEmpty()&&BlueprintCraftingRecipe.recipeCategories.contains(key))
 		{
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;
 			String formatted = I18n.format(formatKey);
@@ -55,7 +56,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 				list.add(new StringTextComponent(key));
 			else
 				list.add(new TranslationTextComponent(formatKey));
-			if(ClientUtils.isSneakKeyPressed())
+			if(Screen.hasShiftDown())
 			{
 				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates1"));
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
