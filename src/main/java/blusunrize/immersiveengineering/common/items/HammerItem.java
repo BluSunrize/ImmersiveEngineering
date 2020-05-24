@@ -57,7 +57,7 @@ public class HammerItem extends IEBaseItem implements ITool
 
 	public HammerItem()
 	{
-		super("hammer", new Properties().defaultMaxDamage(IEConfig.TOOLS.hammerDurabiliy.get()).setNoRepair());
+		super("hammer", new Properties().defaultMaxDamage(IEConfig.TOOLS.hammerDurabiliy.get()));
 	}
 
 	@Override
