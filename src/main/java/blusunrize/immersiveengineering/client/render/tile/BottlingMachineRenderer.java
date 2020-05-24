@@ -132,10 +132,14 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.popMatrix();
 
+		float dir = te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.NORTH?0: te.getFacing()==Direction.EAST?-90: 90;
+		GlStateManager.rotatef(dir, 0, 1, 0);
+
 		float scale = .0625f;
 		FluidStack fs = te.tanks[0].getFluid();
 		if(!fs.isEmpty())
 		{
+			RenderHelper.disableStandardItemLighting();
 			GlStateManager.pushMatrix();
 			float level = fs.getAmount()/(float)te.tanks[0].getCapacity();
 			GlStateManager.translated(-.21875, .376, 1.21875);

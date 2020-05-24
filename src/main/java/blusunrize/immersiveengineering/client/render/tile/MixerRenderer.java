@@ -83,9 +83,9 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 
 		GlStateManager.popMatrix();
 
+		GlStateManager.translated(te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.WEST?-.5: .5, -.625f, te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.EAST?.5: -.5);
 		GlStateManager.scalef(.0625f, 1, .0625f);
 		GlStateManager.rotatef(90, 1, 0, 0);
-		GlStateManager.translated(8, -8, .625f);
 
 		RenderHelper.disableStandardItemLighting();
 
