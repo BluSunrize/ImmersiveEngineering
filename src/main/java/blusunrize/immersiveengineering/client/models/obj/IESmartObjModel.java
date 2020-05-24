@@ -414,6 +414,8 @@ public class IESmartObjModel implements IBakedModel
 												ShaderCase sCase, boolean allowCaching)
 	{
 		String objCacheKey = callback!=null?callback.getCacheKey(callbackObject): "<none>";
+		if(sCase!=null)
+			objCacheKey += ";"+sCase.getShaderType().toString();
 		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
 		if(allowCaching)
 		{
@@ -452,6 +454,8 @@ public class IESmartObjModel implements IBakedModel
 							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter,
 									colorGetter, coordinateRemapper, finalTransform));
 				}
+		if(allowCaching)
+			groupCache.put(cacheKey, quads);
 		return quads;
 	}
 

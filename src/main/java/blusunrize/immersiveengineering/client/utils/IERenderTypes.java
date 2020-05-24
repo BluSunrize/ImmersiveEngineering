@@ -110,7 +110,7 @@ public class IERenderTypes
 	public static RenderType getGui(ResourceLocation texture)
 	{
 		return RenderType.makeType(
-				"gui",
+				"gui_"+texture,
 				DefaultVertexFormats.POSITION_COLOR_TEX,
 				GL11.GL_QUADS,
 				256,
@@ -124,13 +124,36 @@ public class IERenderTypes
 	public static RenderType getLines(float lineWidth)
 	{
 		return RenderType.makeType(
-				"lines_only_pos",
-				DefaultVertexFormats.POSITION,
+				"lines_color_pos_"+lineWidth,
+				DefaultVertexFormats.POSITION_COLOR,
 				GL11.GL_LINES,
 				256,
 				//TODO more state?
 				RenderType.State.getBuilder()
 						.line(new LineState(OptionalDouble.of(lineWidth)))
+						.texture(new TextureState())
+						.build(false)
+		);
+	}
+
+	public static RenderType getPoints(float pointSize)
+	{
+		//Not really a fog state, but using it like this makes using RenderType.State with custom states possible
+		FogState setPointSize = new FogState(
+				ImmersiveEngineering.MODID+":pointsize_"+pointSize,
+				() -> GL11.glPointSize(pointSize),
+				() -> {
+					GL11.glPointSize(1);
+				}
+		);
+		return RenderType.makeType(
+				"point_pos_color_"+pointSize,
+				DefaultVertexFormats.POSITION_COLOR,
+				GL11.GL_POINTS,
+				256,
+				//TODO more state?
+				RenderType.State.getBuilder()
+						.fog(setPointSize)
 						.texture(new TextureState())
 						.build(false)
 		);

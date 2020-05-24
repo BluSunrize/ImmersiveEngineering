@@ -1,7 +1,8 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -9,9 +10,9 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.IParticleData.IDeserializer;
@@ -20,11 +21,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author BluSunrize - 13.05.2018
@@ -79,6 +83,8 @@ public class FractalParticle extends Particle
 	@Override
 	public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
 	{
+		// Use a custom render queue to allow the particles to use multiple render types (by default particles can only
+		// use one)
 		PARTICLE_FRACTAL_DEQUE.add(this);
 	}
 
@@ -88,49 +94,66 @@ public class FractalParticle extends Particle
 		return IParticleRenderType.CUSTOM;
 	}
 
-	public void render(Tessellator tessellator, BufferBuilder buffer, float partialTicks)
+	public List<Pair<RenderType, Consumer<IVertexBuilder>>> render(float partialTicks, MatrixStack matrixStack)
 	{
 		float mod = (age+partialTicks)/(float)maxAge;
-		int iStart = 0;
-		int iEnd = pointsList.length;
+		int iStartMut = 0;
+		int iEndMut = pointsList.length;
 		if(mod >= .76)
 		{
 			float rem = (((mod-.7599f)%.25f)*48)/2f;
-			iStart += Math.ceil(rem);
-			iEnd -= Math.floor(rem);
+			iStartMut += Math.ceil(rem);
+			iEndMut -= Math.floor(rem);
 		}
+		final int iStart = iStartMut;
+		final int iEnd = iEndMut;
 		mod = .3f+mod*mod;
+		matrixStack.push();
+		matrixStack.translate(posX, posY, posZ);
+		matrixStack.scale(mod, mod, mod);
+		matrixStack.rotate(new Quaternion(0, 180*mod, 0, true));
+		Matrix4f transform = matrixStack.getLast().getMatrix();
+		matrixStack.pop();
 
-		Vec3d[] vectorsScaled = new Vec3d[iEnd];
-		Vec3d vecRender;
+		List<Pair<RenderType, Consumer<IVertexBuilder>>> ret = new ArrayList<>();
+		LinePointProcessor putLinePoint = (buffer, i, color) -> {
+			int correctIndex = iStart+(i-iStart)%(iEnd-iStart);
+			Vec3d vecRender = pointsList[correctIndex];
+			buffer.pos(transform, (float)vecRender.x, (float)vecRender.y, (float)vecRender.z)
+					.color(color[0], color[1], color[2], color[3]).endVertex();
+			if(i!=iStart&&i!=iEnd)
+				buffer.pos(transform, (float)vecRender.x, (float)vecRender.y, (float)vecRender.z)
+						.color(color[0], color[1], color[2], color[3]).endVertex();
+		};
+		ret.add(Pair.of(IERenderTypes.getLines(4f), buffer -> {
+			for(int i = iStart; i <= iEnd; i++)
+				putLinePoint.draw(buffer, i, colourOut);
+		}));
 
-		GlStateManager.lineWidth(4f);
-		buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
-		for(int i = iStart; i < iEnd; i++)
-		{
-			vecRender = pointsList[i].scale(mod);//.rotateYaw(3.1415926535f*mod);
-			buffer.pos(posX+vecRender.x, posY+vecRender.y, posZ+vecRender.z).color(colourOut[0], colourOut[1], colourOut[2], colourOut[3]).endVertex();
-			vectorsScaled[i] = vecRender;
-		}
-		tessellator.draw();
+		ret.add(Pair.of(IERenderTypes.getLines(1f), buffer -> {
+			for(int i = iEnd; i >= iStart; i--)
+				putLinePoint.draw(buffer, i, colourIn);
+		}));
 
-		GlStateManager.lineWidth(1f);
-		buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
-		for(int i = iEnd-1; i >= iStart; i--)
-			buffer.pos(posX+vectorsScaled[i].x, posY+vectorsScaled[i].y, posZ+vectorsScaled[i].z).color(colourIn[0], colourIn[1], colourIn[2], colourIn[3]).endVertex();
-		tessellator.draw();
+		ret.add(Pair.of(IERenderTypes.getPoints(8f), buffer -> {
+			for(int i = iStart; i < iEnd; i++)
+				buffer.pos(transform, (float)pointsList[i].x, (float)pointsList[i].y, (float)pointsList[i].z)
+						.color(colourOut[0], colourOut[1], colourOut[2], colourOut[3])
+						.endVertex();
+		}));
 
-		GL11.glPointSize(8f);
-		buffer.begin(GL11.GL_POINTS, DefaultVertexFormats.POSITION_COLOR);
-		for(int i = iStart; i < iEnd; i++)
-			buffer.pos(posX+vectorsScaled[i].x, posY+vectorsScaled[i].y, posZ+vectorsScaled[i].z).color(colourOut[0], colourOut[1], colourOut[2], colourOut[3]).endVertex();
-		tessellator.draw();
+		ret.add(Pair.of(IERenderTypes.getPoints(2f), buffer -> {
+			for(int i = iEnd-1; i >= iStart; i--)
+				buffer.pos(transform, (float)pointsList[i].x, (float)pointsList[i].y, (float)pointsList[i].z)
+						.color(colourIn[0], colourIn[1], colourIn[2], colourIn[3])
+						.endVertex();
+		}));
+		return ret;
+	}
 
-		GL11.glPointSize(2f);
-		buffer.begin(GL11.GL_POINTS, DefaultVertexFormats.POSITION_COLOR);
-		for(int i = iEnd-1; i >= iStart; i--)
-			buffer.pos(posX+vectorsScaled[i].x, posY+vectorsScaled[i].y, posZ+vectorsScaled[i].z).color(colourIn[0], colourIn[1], colourIn[2], colourIn[3]).endVertex();
-		tessellator.draw();
+	private interface LinePointProcessor
+	{
+		void draw(IVertexBuilder builder, int index, float[] color);
 	}
 
 	public static class Data implements IParticleData
@@ -156,7 +179,7 @@ public class FractalParticle extends Particle
 		@Override
 		public ParticleType<?> getType()
 		{
-			return IEParticles.FLUID_SPLASH;
+			return IEParticles.FRACTAL;
 		}
 
 		@Override

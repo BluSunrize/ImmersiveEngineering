@@ -18,9 +18,8 @@ import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -32,7 +31,6 @@ import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.nio.FloatBuffer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,7 +39,6 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 {
 	public static final ItemStackTileEntityRenderer INSTANCE = new IEOBJItemRenderer();
-	private static FloatBuffer transform = GLAllocation.createDirectFloatBuffer(16);
 
 	@Override
 	public void render(ItemStack stack, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn,
@@ -90,14 +87,14 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					if(bright)
 						builder = bufferIn.getBuffer(IERenderTypes.SOLID_FULLBRIGHT);
 					else
-						builder = bufferIn.getBuffer(RenderType.getSolid());
+						builder = bufferIn.getBuffer(Atlases.getTranslucentCullBlockType());
 					renderQuadsForGroups(groups, callback, obj, quads, stack,
 							sCase, shader, true, matrixStackIn, builder, visible, partialTicks,
 							combinedLightIn, combinedOverlayIn);
 					matrixStackIn.pop();
 				}
 				renderQuadsForGroups(visible.toArray(new String[0]), callback, obj, quads, stack,
-						sCase, shader, false, matrixStackIn, bufferIn.getBuffer(RenderType.getSolid()),
+						sCase, shader, false, matrixStackIn, bufferIn.getBuffer(Atlases.getTranslucentCullBlockType()),
 						visible, partialTicks, combinedLightIn, combinedOverlayIn);
 			}
 		}
@@ -112,7 +109,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 		for(String g : groups)
 		{
 			if(visible.contains(g)&&callback.shouldRenderGroup(stack, g))
-				quadsForGroup.addAll(model.addQuadsForGroup(callback, stack, g, sCase, !dynamic)
+				quadsForGroup.addAll(model.addQuadsForGroup(callback, stack, g, sCase, true)
 						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 			visible.remove(g);
 		}
@@ -144,7 +141,11 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 
 			}
 			 */
-			builder.addQuad(matrix.getLast(), bq, 1, 1, 1, light, overlay);
+			builder.addQuad(matrix.getLast(), bq,
+					new float[]{1, 1, 1, 1},
+					1, 1, 1,
+					new int[]{light, light, light, light}, overlay,
+					true);
 		}
 		if(lastShaderLayer!=null)//finish dynamic call on final layer
 			lastShaderLayer.modifyRender(false, partialTicks);

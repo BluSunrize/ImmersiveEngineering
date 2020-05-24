@@ -51,7 +51,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -105,14 +104,12 @@ import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.resource.VanillaResourceType;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
@@ -516,15 +513,26 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 									IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
 									Matrix4f mat = transform.getLast().getMatrix();
-									builder.pos(mat, (right?0: 1-x2)*7, 15, 0).tex(uMin, 127/256f).endVertex();
-									builder.pos(mat, (right?x2: 1)*7, 15, 0).tex(uMax, 127/256f).endVertex();
-									builder.pos(mat, (right?x2: 1)*7, (right?h2: h1)*15, 0).tex(uMax, vMin2).endVertex();
-									builder.pos(mat, (right?0: 1-x2)*7, (right?h1: h2)*15, 0).tex(uMin, vMin1).endVertex();
+									builder.pos(mat, (right?0: 1-x2)*7, 15, 0)
+											.color(1F, 1F, 1F, 1F)
+											.tex(uMin, 127/256f)
+											.endVertex();
+									builder.pos(mat, (right?x2: 1)*7, 15, 0)
+											.color(1F, 1F, 1F, 1F)
+											.tex(uMax, 127/256f)
+											.endVertex();
+									builder.pos(mat, (right?x2: 1)*7, (right?h2: h1)*15, 0)
+											.color(1F, 1F, 1F, 1F)
+											.tex(uMax, vMin2)
+											.endVertex();
+									builder.pos(mat, (right?0: 1-x2)*7, (right?h1: h2)*15, 0)
+											.color(1F, 1F, 1F, 1F)
+											.tex(uMin, vMin1)
+											.endVertex();
 								}
 							}
 							transform.pop();
 						}
-
 					}
 					else if(equipped.getItem() instanceof RailgunItem)
 					{
@@ -1115,25 +1123,28 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 		if(!FractalParticle.PARTICLE_FRACTAL_DEQUE.isEmpty())
 		{
-
-			Tessellator tessellator = Tessellator.getInstance();
-
-			GlStateManager.disableTexture();
-			GlStateManager.enableBlend();
-			GlStateManager.disableCull();
-			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-			GlStateManager.shadeModel(GL11.GL_SMOOTH);
-
-			//tessellator.getBuffer().pos(-px, -py, -pz);
-			FractalParticle part;
-			while((part = FractalParticle.PARTICLE_FRACTAL_DEQUE.pollFirst())!=null)
-				part.render(tessellator, tessellator.getBuffer(), partial);
-			tessellator.getBuffer().pos(0, 0, 0);
-
-			GlStateManager.shadeModel(GL11.GL_FLAT);
-			GlStateManager.enableCull();
-			GlStateManager.disableBlend();
-			GlStateManager.enableTexture();
+			List<Pair<RenderType, List<Consumer<IVertexBuilder>>>> renders = new ArrayList<>();
+			for(FractalParticle p : FractalParticle.PARTICLE_FRACTAL_DEQUE)
+				for(Entry<RenderType, Consumer<IVertexBuilder>> r : p.render(partial, transform))
+				{
+					boolean added = false;
+					for(Entry<RenderType, List<Consumer<IVertexBuilder>>> e : renders)
+						if(e.getKey().equals(r.getKey()))
+						{
+							e.getValue().add(r.getValue());
+							added = true;
+							break;
+						}
+					if(!added)
+						renders.add(Pair.of(r.getKey(), new ArrayList<>(ImmutableList.of(r.getValue()))));
+				}
+			for(Entry<RenderType, List<Consumer<IVertexBuilder>>> entry : renders)
+			{
+				IVertexBuilder bb = buffers.getBuffer(entry.getKey());
+				for(Consumer<IVertexBuilder> render : entry.getValue())
+					render.accept(bb);
+			}
+			FractalParticle.PARTICLE_FRACTAL_DEQUE.clear();
 		}
 
 		if(chunkBorders)

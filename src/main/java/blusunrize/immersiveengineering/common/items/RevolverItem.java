@@ -397,7 +397,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
 				return new ActionResult<>(ActionResultType.PASS, revolver);
 			NonNullList<ItemStack> bullets = getBullets(revolver);
-			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem&&ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
+			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem)
 			{
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(revolver);
 				if(shader!=null)
@@ -499,7 +499,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				ItemStack b = inv.getStackInSlot(i);
 				boolean isValid = true;
 				if(!allowCasing)
-					isValid = b.getItem() instanceof BulletItem&&ItemNBTHelper.hasKey(b, "bullet");
+					isValid = b.getItem() instanceof BulletItem;
 				if(!b.isEmpty()&&isValid)
 					return false;
 			}

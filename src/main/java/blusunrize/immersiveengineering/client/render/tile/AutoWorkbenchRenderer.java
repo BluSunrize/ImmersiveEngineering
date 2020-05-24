@@ -522,8 +522,12 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			Matrix4f mat = matrixStack.getLast().getMatrix();
 			for(Pair<Point, Point> line : lines)
 			{
-				bb.pos(mat, line.getKey().x, line.getKey().y, 0).endVertex();
-				bb.pos(mat, line.getValue().x, line.getValue().y, 0).endVertex();
+				bb.pos(mat, line.getKey().x, line.getKey().y, 0)
+						.color(1F, 1F, 1F, 1F)
+						.endVertex();
+				bb.pos(mat, line.getValue().x, line.getValue().y, 0)
+						.color(1F, 1F, 1F, 1F)
+						.endVertex();
 			}
 
 			if(lineWidth >= 1)//Draw shading if player is close enough
