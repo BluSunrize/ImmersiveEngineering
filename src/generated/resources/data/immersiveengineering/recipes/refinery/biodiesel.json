@@ -1,0 +1,16 @@
+{
+  "type": "immersiveengineering:refinery",
+  "result": {
+    "fluid": "immersiveengineering:biodiesel",
+    "amount": 16
+  },
+  "input0": {
+    "fluid": "immersiveengineering:plantoil",
+    "amount": 8
+  },
+  "input1": {
+    "fluid": "immersiveengineering:ethanol",
+    "amount": 8
+  },
+  "energy": 80
+}

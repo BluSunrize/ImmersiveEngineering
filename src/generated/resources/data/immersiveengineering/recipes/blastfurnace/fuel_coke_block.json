@@ -1,0 +1,7 @@
+{
+  "type": "immersiveengineering:blast_furnace_fuel",
+  "input": {
+    "tag": "forge:storage_blocks/coal_coke"
+  },
+  "time": 12000
+}

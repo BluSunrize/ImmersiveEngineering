@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/conveyor_extract"
+    ]
+  },
+  "criteria": {
+    "has_conveyor": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:conveyor_basic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/conveyor_extract"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_conveyor",
+      "has_the_recipe"
+    ]
+  ]
+}

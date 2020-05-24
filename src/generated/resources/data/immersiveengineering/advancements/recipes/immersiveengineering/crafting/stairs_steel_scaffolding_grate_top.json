@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/stairs_steel_scaffolding_grate_top"
+    ]
+  },
+  "criteria": {
+    "has_steel_scaffolding_grate_top": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:steel_scaffolding_grate_top"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/stairs_steel_scaffolding_grate_top"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_steel_scaffolding_grate_top",
+      "has_the_recipe"
+    ]
+  ]
+}

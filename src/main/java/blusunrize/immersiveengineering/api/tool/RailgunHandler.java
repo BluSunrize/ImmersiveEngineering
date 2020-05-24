@@ -9,18 +9,19 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RailgunHandler
 {
-	public static ArrayList<Pair<IngredientStack, RailgunProjectileProperties>> projectilePropertyMap = new ArrayList<>();
+	public static List<Pair<Ingredient, RailgunProjectileProperties>> projectilePropertyMap = new ArrayList<>();
 
-	public static RailgunProjectileProperties registerProjectileProperties(IngredientStack stack, double damage, double gravity)
+	public static RailgunProjectileProperties registerProjectileProperties(Ingredient stack, double damage, double gravity)
 	{
 		RailgunProjectileProperties properties = new RailgunProjectileProperties(damage, gravity);
 		projectilePropertyMap.add(Pair.of(stack, properties));
@@ -29,13 +30,13 @@ public class RailgunHandler
 
 	public static RailgunProjectileProperties registerProjectileProperties(ItemStack stack, double damage, double gravity)
 	{
-		return registerProjectileProperties(ApiUtils.createIngredientStack(stack), damage, gravity);
+		return registerProjectileProperties(Ingredient.fromStacks(stack), damage, gravity);
 	}
 
 	public static RailgunProjectileProperties getProjectileProperties(ItemStack stack)
 	{
-		for(Pair<IngredientStack, RailgunProjectileProperties> pair : projectilePropertyMap)
-			if(pair.getLeft().matchesItemStack(stack))
+		for(Pair<Ingredient, RailgunProjectileProperties> pair : projectilePropertyMap)
+			if(pair.getLeft().test(stack))
 				return pair.getRight();
 		return null;
 	}

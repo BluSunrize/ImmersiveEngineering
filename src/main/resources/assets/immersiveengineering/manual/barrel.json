@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "wooden_barrel"
+    "recipe": "crafting/wooden_barrel"
   }
 }

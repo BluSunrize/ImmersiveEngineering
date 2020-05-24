@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "mold": {
+    "item": "immersiveengineering:mold_rod"
+  },
+  "result": {
+    "count": 2,
+    "base_ingredient": {
+      "tag": "forge:rods/iron"
+    }
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:rods/iron",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:ingots/iron"
+  },
+  "energy": 2400
+}

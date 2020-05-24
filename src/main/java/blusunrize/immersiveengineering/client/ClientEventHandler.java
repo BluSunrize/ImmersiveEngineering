@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
@@ -212,8 +214,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 		if(ClientUtils.mc().currentScreen!=null
 				&&ClientUtils.mc().currentScreen instanceof BlastFurnaceScreen
-				&&BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
-			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack()))
+				&&BlastFurnaceFuel.isValidBlastFuel(event.getItemStack()))
+			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack()))
 					.setStyle(gray));
 
 		if(IEConfig.GENERAL.tagTooltips.get()&&event.getFlags().isAdvanced())
@@ -451,8 +453,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(equipped.hasTag()&&equipped.getOrCreateTag().contains("linkingPos", NBT.TAG_COMPOUND))
 						{
 							CompoundNBT link = equipped.getOrCreateTag().getCompound("linkingPos");
-							DimensionBlockPos pos = new DimensionBlockPos(link.getCompound("master"));
-							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.pos.getX(), pos.pos.getY(), pos.pos.getZ());
+							ConnectionPoint cp = new ConnectionPoint(link);
+							BlockPos pos = cp.getPosition();
+							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
 							int col = WireType.ELECTRUM.getColour(null);
 							if(equipped.getItem() instanceof IWireCoil)
 							{
@@ -460,9 +463,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
 								double d;
 								if(rtr instanceof BlockRayTraceResult)
-									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.pos.getX(), pos.pos.getY(), pos.pos.getZ(), true);
+									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.getX(), pos.getY(), pos.getZ(), true);
 								else
-									d = player.getDistanceSq(pos.pos.getX(), pos.pos.getY(), pos.pos.getZ());
+									d = player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ());
 								int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
 								if(d > max*max)
 									col = 0xdd3333;
@@ -864,15 +867,27 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 			if(Utils.isHammer(stack)&&tile instanceof TurntableTileEntity)
 			{
-				Direction f = ((TurntableTileEntity)tile).getFacing();
-				transform.push();
-				transform.translate(0.5, 0.5, 0.5);
-				ClientUtils.toModelRotation(f).getRotation().push(transform);
-				transform.rotate(new Quaternion(-90, 0, 0, true));
-				double angle = -player.ticksExisted%80/40d*Math.PI;
-				drawRotationArrows(buffer, transform, (float)angle, ((TurntableTileEntity)tile).invert);
-				transform.pop();
-				transform.pop();
+				TurntableTileEntity turntableTile = ((TurntableTileEntity)tile);
+				Direction side = rtr.getFace();
+				Direction facing = turntableTile.getFacing();
+				if(side.getAxis()!=facing.getAxis())
+				{
+					transform.push();
+					transform.translate(0.5, 0.5, 0.5);
+					ClientUtils.toModelRotation(side).getRotation().push(transform);
+					transform.rotate(new Quaternion(-90, 0, 0, true));
+					Rotation rotation = turntableTile.getRotationFromSide(side);
+					boolean cw180 = rotation==Rotation.CLOCKWISE_180;
+					double angle;
+					if(cw180)
+						angle = player.ticksExisted%40/20d;
+					else
+						angle = player.ticksExisted%80/40d;
+					double stepDistance = (cw180?2: 4)*Math.PI;
+					angle = -(angle-Math.sin(angle*stepDistance)/stepDistance)*Math.PI;
+					drawCircularRotationArrows(buffer, transform, (float) angle, rotation==Rotation.COUNTERCLOCKWISE_90, cw180);
+					transform.pop();
+				}
 			}
 
 			World world = player.world;
@@ -949,58 +964,97 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 	}
 
-	private static float[][] rotationArrowCoords = {
-			{.375f, 0},
-			{.5f, -.125f},
-			{.4375f, -.125f},
-			{.4375f, -.25f},
-			{.25f, -.4375f},
-			{-.25f, -.4375f},
-			{-.4375f, -.25f},
-			{-.4375f, -.0625f},
-			{-.3125f, -.0625f},
-			{-.3125f, -.1875f},
-			{-.1875f, -.3125f},
-			{.1875f, -.3125f},
-			{.3125f, -.1875f},
-			{.3125f, -.125f},
-			{.25f, -.125f}
+	private final static float[][] quarterRotationArrowCoords = {
+			{.375F, 0},
+			{.5F, -.125F},
+			{.4375F, -.125F},
+			{.4375F, -.25F},
+			{.25F, -.4375F},
+			{0, -.4375F},
+			{0, -.3125F},
+			{.1875F, -.3125F},
+			{.3125F, -.1875F},
+			{.3125F, -.125F},
+			{.25F, -.125F}
 	};
-	private static float[][] rotationArrowQuads = {
-			rotationArrowCoords[7],
-			rotationArrowCoords[8],
-			rotationArrowCoords[6],
-			rotationArrowCoords[9],
-			rotationArrowCoords[5],
-			rotationArrowCoords[10],
-			rotationArrowCoords[4],
-			rotationArrowCoords[11],
-			rotationArrowCoords[3],
-			rotationArrowCoords[12],
-			rotationArrowCoords[2],
-			rotationArrowCoords[13],
-			rotationArrowCoords[1],
-			rotationArrowCoords[14],
-			rotationArrowCoords[0],
-			rotationArrowCoords[0]
+	private final static float[][] quarterRotationArrowQuads = {
+			quarterRotationArrowCoords[5],
+			quarterRotationArrowCoords[6],
+			quarterRotationArrowCoords[4],
+			quarterRotationArrowCoords[7],
+			quarterRotationArrowCoords[3],
+			quarterRotationArrowCoords[8],
+			quarterRotationArrowCoords[2],
+			quarterRotationArrowCoords[9],
+			quarterRotationArrowCoords[1],
+			quarterRotationArrowCoords[10],
+			quarterRotationArrowCoords[0],
+			quarterRotationArrowCoords[0]
 	};
 
-	public static void drawRotationArrows(IRenderTypeBuffer buffer, MatrixStack transform, float rotation, boolean flip)
+	private final static float[][] halfRotationArrowCoords = {
+			{.375F, 0},
+			{.5F, -.125F},
+			{.4375F, -.125F},
+			{.4375F, -.25F},
+			{.25F, -.4375F},
+			{-.25F, -.4375F},
+			{-.4375F, -.25F},
+			{-.4375F, -.0625F},
+			{-.3125F, -.0625F},
+			{-.3125F, -.1875F},
+			{-.1875F, -.3125F},
+			{.1875F, -.3125F},
+			{.3125F, -.1875F},
+			{.3125F, -.125F},
+			{.25F, -.125F}
+	};
+	private final static float[][] halfRotationArrowQuads = {
+			halfRotationArrowCoords[7],
+			halfRotationArrowCoords[8],
+			halfRotationArrowCoords[6],
+			halfRotationArrowCoords[9],
+			halfRotationArrowCoords[5],
+			halfRotationArrowCoords[10],
+			halfRotationArrowCoords[4],
+			halfRotationArrowCoords[11],
+			halfRotationArrowCoords[3],
+			halfRotationArrowCoords[12],
+			halfRotationArrowCoords[2],
+			halfRotationArrowCoords[13],
+			halfRotationArrowCoords[1],
+			halfRotationArrowCoords[14],
+			halfRotationArrowCoords[0],
+			halfRotationArrowCoords[0]
+	};
+
+	public static void drawCircularRotationArrows(IRenderTypeBuffer buffer, MatrixStack transform, float rotation,  boolean flip, boolean halfCircle)
 	{
 		transform.push();
 		transform.translate(0, 0.502, 0);
+		float[][] rotationArrowCoords;
+		float[][] rotationArrowQuads;
+		if(halfCircle)
+		{
+			rotationArrowCoords = halfRotationArrowCoords;
+			rotationArrowQuads = halfRotationArrowQuads;
+		}
+		else
+		{
+			rotationArrowCoords = quarterRotationArrowCoords;
+			rotationArrowQuads = quarterRotationArrowQuads;
+		}
+
 		int[] vertexOrder;
 		if(flip)
 		{
 			transform.rotate(new Quaternion(0, -rotation, 0, false));
-			;
 			transform.scale(1, 1, -1);
 			vertexOrder = new int[]{2, 3, 1, 0};
 		}
 		else
 		{
 			transform.rotate(new Quaternion(0, rotation, 0, false));
-			;
 			vertexOrder = new int[]{0, 1, 3, 2};
 		}
 		transform.push();
@@ -1036,7 +1090,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		transform.pop();
 	}
 
-	private static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
+	private final static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
 
 	public static void drawBlockOverlayArrow(Matrix4f transform, IRenderTypeBuffer buffers, Vec3d directionVec,
 											 Direction side, AxisAlignedBB targetedBB)

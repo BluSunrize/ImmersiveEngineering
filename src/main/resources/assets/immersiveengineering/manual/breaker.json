@@ -1,10 +1,10 @@
 {
   "manual_breaker": {
     "type": "crafting",
-    "recipe": "breaker_switch"
+    "recipe": "crafting/breaker_switch"
   },
   "rs_breaker": {
     "type": "crafting",
-    "recipe": "redstone_breaker"
+    "recipe": "crafting/redstone_breaker"
   }
 }

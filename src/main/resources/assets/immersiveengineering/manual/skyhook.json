@@ -3,8 +3,8 @@
     "type": "crafting",
     "recipes": [
       [
-        "skyhook",
-        "wooden_grip"
+        "crafting/skyhook",
+        "crafting/wooden_grip"
       ]
     ]
   }

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/transformer"
+    ]
+  },
+  "criteria": {
+    "has_mv_connector": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:connector_mv"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/transformer"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_mv_connector",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -22,6 +22,8 @@ import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
+
 public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRecipe>
 {
 	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "blastfurnace");
@@ -36,23 +38,19 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 	@Override
 	public void setIngredients(BlastFurnaceRecipe recipe, IIngredients ingredients)
 	{
-		/* todo: fix this with JSON recipes
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
 		ingredients.setOutputs(VanillaTypes.ITEM, ListUtils.fromItems(recipe.output, recipe.slag));
-		 */
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, BlastFurnaceRecipe recipe, IIngredients iIngredients)
 	{
-		/* todo: fix this with JSON recipes
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 43, 8);
 		guiItemStacks.init(1, false, 103, 8);
 		guiItemStacks.init(2, false, 103, 44);
-		guiItemStacks.set(0, recipe.input.getSizedStackList());
+		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
 		guiItemStacks.set(1, recipe.output);
 		guiItemStacks.set(2, recipe.slag);
-		 */
 	}
 }

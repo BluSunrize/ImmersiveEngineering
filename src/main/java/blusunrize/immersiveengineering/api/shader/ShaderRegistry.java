@@ -8,17 +8,23 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.impl.*;
 import blusunrize.immersiveengineering.common.IERecipes;
+import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -73,7 +79,7 @@ public class ShaderRegistry
 	/**
 	 * The deafault cost for replicating a shader. Prices are multiplied with 10-rarity level. Prices can be adjusted for every registry entry
 	 */
-	public static IngredientStack defaultReplicationCost = new IngredientStack(IERecipes.getDust("silver"));
+	public static Tag<Item> defaultReplicationCost = IETags.getTagsFor(EnumMetals.SILVER).dust;
 	/**
 	 * A HashMap to set default texture bounds for the additional layers of a shadercase. Saves you the trouble of redfining them for every shader. See {@link ShaderLayer#setTextureBounds(double... bounds)}.
 	 */
@@ -100,7 +106,10 @@ public class ShaderRegistry
 		registerShader_Banner(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		for(IShaderRegistryMethod method : shaderRegistrationMethods)
 			method.apply(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture, colourAdditional);
-		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags).setReplicationCost(defaultReplicationCost.copyWithMultipliedSize(10-rarityWeightMap.get(rarity)));
+		return shaderRegistry.get(name)
+				.setCrateLoot(loot)
+				.setBagLoot(bags)
+				.setReplicationCost(new IngredientWithSize(Ingredient.fromTag(defaultReplicationCost), 10-rarityWeightMap.get(rarity)));
 	}
 
 	public static <T extends ShaderCase> T registerShaderCase(ResourceLocation name, T shader, Rarity rarity)
@@ -627,7 +636,7 @@ public class ShaderRegistry
 		public String info_set;
 		public String info_reference;
 		public String info_details;
-		public IngredientStack replicationCost;
+		public IngredientWithSize replicationCost;
 
 		public IShaderEffectFunction effectFunction;
 		private static final IShaderEffectFunction DEFAULT_EFFECT = (world, shader, item, shaderType, pos, dir, scale) -> {
@@ -730,7 +739,7 @@ public class ShaderRegistry
 			return this;
 		}
 
-		public ShaderRegistryEntry setReplicationCost(@Nonnull IngredientStack replicationCost)
+		public ShaderRegistryEntry setReplicationCost(@Nonnull IngredientWithSize replicationCost)
 		{
 			this.replicationCost = replicationCost;
 			return this;

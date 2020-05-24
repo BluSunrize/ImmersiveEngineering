@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "turntable"
+    "recipe": "crafting/turntable"
   }
 }

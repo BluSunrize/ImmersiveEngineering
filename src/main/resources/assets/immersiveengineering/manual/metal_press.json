@@ -5,7 +5,7 @@
   },
   "mold_blueprint": {
     "type": "crafting",
-    "recipe": "blueprint_molds"
+    "recipe": "crafting/blueprint_molds"
   },
   "mold_recipes": {
     "type": "blueprint",

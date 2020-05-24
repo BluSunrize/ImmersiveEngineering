@@ -1,0 +1,13 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "mold": {
+    "item": "immersiveengineering:mold_plate"
+  },
+  "result": {
+    "tag": "forge:plates/iron"
+  },
+  "input": {
+    "tag": "forge:ingots/iron"
+  },
+  "energy": 2400
+}

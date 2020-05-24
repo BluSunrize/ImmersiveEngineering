@@ -50,7 +50,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -231,7 +231,7 @@ public class BasicConveyor implements IConveyorBelt
 
 	static final VoxelShape topBox = VoxelShapes.create(0, .75, 0, 1, 1, 1);
 
-	private static final CachedVoxelShapes<Pair<Boolean, Direction>> SHAPES = new CachedVoxelShapes<>(BasicConveyor::getBoxes);
+	private static final CachedVoxelShapes<Triple<Boolean, Boolean, Direction>> SHAPES = new CachedVoxelShapes<>(BasicConveyor::getBoxes);
 
 	@Override
 	public VoxelShape getCollisionShape()
@@ -245,7 +245,7 @@ public class BasicConveyor implements IConveyorBelt
 			else
 			{
 				boolean up = getConveyorDirection()==ConveyorDirection.UP;
-				other = SHAPES.get(Pair.of(up, getFacing()));
+				other = SHAPES.get(Triple.of(up, true, getFacing()));
 			}
 			ret = VoxelShapes.combineAndSimplify(ret, other, IBooleanFunction.OR);
 		}
@@ -261,19 +261,20 @@ public class BasicConveyor implements IConveyorBelt
 			else
 			{
 				boolean up = getConveyorDirection()==ConveyorDirection.UP;
-				return SHAPES.get(Pair.of(up, getFacing()));
+				return SHAPES.get(Triple.of(up, false, getFacing()));
 			}
 		return IConveyorBelt.super.getSelectionShape();
 	}
 
-	private static List<AxisAlignedBB> getBoxes(Pair<Boolean, Direction> key)
+	private static List<AxisAlignedBB> getBoxes(Triple<Boolean, Boolean, Direction> key)
 	{
 		boolean up = key.getLeft();
+		boolean collision = key.getMiddle();
 		Direction facing = key.getRight();
 		return Lists.newArrayList(
 				new AxisAlignedBB(
 						(facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 0,
-						.5,
+						collision?1.75:.5,
 						(facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 0,
 						(facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 1,
 						2,
@@ -281,7 +282,7 @@ public class BasicConveyor implements IConveyorBelt
 				),
 				new AxisAlignedBB(
 						(facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 0,
-						0,
+						collision?1.25:0,
 						(facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 0,
 						(facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 1,
 						1.5,

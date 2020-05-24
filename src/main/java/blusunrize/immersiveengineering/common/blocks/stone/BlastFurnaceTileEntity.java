@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -158,9 +159,9 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 
 			if(burnTime <= 0&&getRecipe()!=null)
 			{
-				if(BlastFurnaceRecipe.isValidBlastFuel(inventory.get(1)))
+				if(BlastFurnaceFuel.isValidBlastFuel(inventory.get(1)))
 				{
-					lastBurnTime = BlastFurnaceRecipe.getBlastFuelTime(inventory.get(1));
+					lastBurnTime = BlastFurnaceFuel.getBlastFuelTime(inventory.get(1));
 					burnTime += lastBurnTime;
 					Utils.modifyInvStackSize(inventory, 1, -1);
 					markContainingBlockForUpdate(null);
@@ -269,7 +270,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot==1&&BlastFurnaceRecipe.isValidBlastFuel(stack);
+		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot==1&&BlastFurnaceFuel.isValidBlastFuel(stack);
 	}
 
 	@Override

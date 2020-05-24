@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "mold": {
+    "item": "immersiveengineering:mold_rod"
+  },
+  "result": {
+    "count": 2,
+    "base_ingredient": {
+      "tag": "forge:rods/nickel"
+    }
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:rods/nickel",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:ingots/nickel"
+  },
+  "energy": 2400
+}

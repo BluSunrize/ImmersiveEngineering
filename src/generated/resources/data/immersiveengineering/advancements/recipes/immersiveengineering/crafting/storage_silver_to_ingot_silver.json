@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/storage_silver_to_ingot_silver"
+    ]
+  },
+  "criteria": {
+    "has_storage_silver": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:ingot_silver"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/storage_silver_to_ingot_silver"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_storage_silver",
+      "has_the_recipe"
+    ]
+  ]
+}

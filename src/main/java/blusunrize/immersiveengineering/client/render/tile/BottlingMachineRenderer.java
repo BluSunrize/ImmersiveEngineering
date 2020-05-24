@@ -126,6 +126,9 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 
 		matrixStack.pop();
 
+		float dir = te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.NORTH?0: te.getFacing()==Direction.EAST?-90: 90;
+		matrixStack.rotate(new Quaternion(0, dir, 0, true));
+
 		float scale = .0625f;
 		FluidStack fs = te.tanks[0].getFluid();
 		if(!fs.isEmpty())

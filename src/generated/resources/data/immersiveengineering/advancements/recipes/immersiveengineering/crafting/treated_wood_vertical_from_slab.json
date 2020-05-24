@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/treated_wood_vertical_from_slab"
+    ]
+  },
+  "criteria": {
+    "has_treated_wood_vertical": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:treated_wood_vertical"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/treated_wood_vertical_from_slab"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_treated_wood_vertical",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -4,37 +4,37 @@
         "recipes": [
             [
                 {
-                    "recipe": "plate_silver_hammering"
+                    "recipe": "crafting/plate_silver_hammering"
                 },
                 {
-                    "recipe": "plate_aluminum_hammering"
+                    "recipe": "crafting/plate_aluminum_hammering"
                 },
                 {
-                    "recipe": "plate_constantan_hammering"
+                    "recipe": "crafting/plate_constantan_hammering"
                 },
                 {
-                    "recipe": "plate_copper_hammering"
+                    "recipe": "crafting/plate_copper_hammering"
                 },
                 {
-                    "recipe": "plate_electrum_hammering"
+                    "recipe": "crafting/plate_electrum_hammering"
                 },
                 {
-                    "recipe": "plate_gold_hammering"
+                    "recipe": "crafting/plate_gold_hammering"
                 },
                 {
-                    "recipe": "plate_iron_hammering"
+                    "recipe": "crafting/plate_iron_hammering"
                 },
                 {
-                    "recipe": "plate_lead_hammering"
+                    "recipe": "crafting/plate_lead_hammering"
                 },
                 {
-                    "recipe": "plate_nickel_hammering"
+                    "recipe": "crafting/plate_nickel_hammering"
                 },
                 {
-                    "recipe": "plate_steel_hammering"
+                    "recipe": "crafting/plate_steel_hammering"
                 },
                 {
-                    "recipe": "plate_uranium_hammering"
+                    "recipe": "crafting/plate_uranium_hammering"
                 }
             ]
         ]

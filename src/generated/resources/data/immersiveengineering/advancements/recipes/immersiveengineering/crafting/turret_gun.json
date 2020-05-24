@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/turret_gun"
+    ]
+  },
+  "criteria": {
+    "has_revolver": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:revolver"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/turret_gun"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_revolver",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/concrete_leaded_from_slab"
+    ]
+  },
+  "criteria": {
+    "has_concrete_leaded": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:concrete_leaded"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/concrete_leaded_from_slab"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_concrete_leaded",
+      "has_the_recipe"
+    ]
+  ]
+}

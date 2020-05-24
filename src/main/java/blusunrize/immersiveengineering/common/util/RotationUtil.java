@@ -38,12 +38,16 @@ public class RotationUtil
 
 	public static boolean rotateBlock(World world, BlockPos pos, boolean inverse)
 	{
+		return rotateBlock(world, pos, inverse?Rotation.COUNTERCLOCKWISE_90: Rotation.CLOCKWISE_90);
+	}
+
+	public static boolean rotateBlock(World world, BlockPos pos, Rotation rotation) {
 		for(RotationBlacklistEntry e : blacklist)
 			if(!e.blockRotation(world, pos))
 				return false;
 
 		BlockState state = world.getBlockState(pos);
-		BlockState newState = state.rotate(world, pos, inverse?Rotation.COUNTERCLOCKWISE_90: Rotation.CLOCKWISE_90);
+		BlockState newState = state.rotate(world, pos, rotation);
 		if(newState!=state)
 		{
 			world.setBlockState(pos, newState);

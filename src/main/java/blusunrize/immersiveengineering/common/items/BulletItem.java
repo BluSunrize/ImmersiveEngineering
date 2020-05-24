@@ -122,7 +122,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				Entity shooter = null;
 				if(shooterId!=null)
 					shooter = world.getPlayerByUuid(shooterId);
-				world.createExplosion(shooter, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), 2, Mode.BREAK);
+				world.createExplosion(shooter, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), 2, Mode.NONE);
 			}
 
 			@Override

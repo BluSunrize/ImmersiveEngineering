@@ -8,24 +8,50 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
+public abstract class MultiblockRecipe extends IESerializableRecipe implements IMultiblockRecipe, IJEIRecipe
 {
-	protected List<IngredientStack> inputList;
+	protected MultiblockRecipe(ItemStack outputDummy, IRecipeType<?> type, ResourceLocation id)
+	{
+		super(outputDummy, type, id);
+	}
 
 	@Override
-	public List<IngredientStack> getItemInputs()
+	public ItemStack getRecipeOutput()
+	{
+		return getItemOutputs().get(0);
+	}
+
+	private List<IngredientWithSize> inputList;
+
+	@Override
+	public List<IngredientWithSize> getItemInputs()
 	{
 		return inputList;
+	}
+
+	protected void setInputListWithSizes(List<IngredientWithSize> inputList)
+	{
+		this.inputList = new ArrayList<>(inputList);
+	}
+
+	protected void setInputList(List<Ingredient> inputList)
+	{
+		this.inputList = inputList.stream()
+				.map(IngredientWithSize::new)
+				.collect(Collectors.toList());
 	}
 
 	protected NonNullList<ItemStack> outputList;
@@ -87,17 +113,8 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 			this.jeiTotalItemInputList = new ArrayList<>();
 			for(int i = 0; i < inputList.size(); i++)
 			{
-				IngredientStack ingr = inputList.get(i);
-				ArrayList<ItemStack> list = new ArrayList<>();
-				if(ingr.tag!=null)
-					for(ItemStack stack : ApiUtils.getItemsInTag(ingr.tag))
-						list.add(ApiUtils.copyStackWithAmount(stack, ingr.inputSize));
-				else if(ingr.stackList!=null)
-					for(ItemStack stack : ingr.stackList)
-						list.add(ApiUtils.copyStackWithAmount(stack, ingr.inputSize));
-				else
-					list.add(ApiUtils.copyStackWithAmount(ingr.stack, ingr.inputSize));
-
+				IngredientWithSize ingr = inputList.get(i);
+				List<ItemStack> list = Lists.newArrayList(ingr.getMatchingStacks());
 				this.jeiItemInputList[i] = list;
 				this.jeiTotalItemInputList.addAll(list);
 			}

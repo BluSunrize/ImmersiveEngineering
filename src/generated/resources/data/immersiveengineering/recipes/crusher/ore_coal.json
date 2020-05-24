@@ -1,0 +1,30 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [
+    {
+      "chance": 0.05,
+      "output": {
+        "tag": "forge:dusts/sulfur"
+      },
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:dusts/sulfur",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "count": 4,
+    "base_ingredient": {
+      "item": "minecraft:coal"
+    }
+  },
+  "input": {
+    "tag": "forge:ores/coal"
+  },
+  "energy": 6000
+}

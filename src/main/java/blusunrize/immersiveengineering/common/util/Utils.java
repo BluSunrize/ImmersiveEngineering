@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
@@ -22,10 +21,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -79,6 +75,7 @@ import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.util.JsonUtils;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -89,6 +86,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -125,35 +123,6 @@ public class Utils
 		if(hasTag1&&!stack1.getOrCreateTag().equals(stack2.getOrCreateTag()))
 			return false;
 		return stack1.areCapsCompatible(stack2);
-	}
-
-	public static boolean canCombineArrays(ItemStack[] stacks, ItemStack[] target)
-	{
-		HashSet<IngredientStack> inputSet = new HashSet<>();
-		for(ItemStack s : stacks)
-			inputSet.add(new IngredientStack(s));
-		for(ItemStack t : target)
-		{
-			int size = t.getCount();
-			Iterator<IngredientStack> it = inputSet.iterator();
-			while(it.hasNext())
-			{
-				IngredientStack in = it.next();
-				if(in.matchesItemStackIgnoringSize(t))
-				{
-					int taken = Math.min(size, in.inputSize);
-					size -= taken;
-					in.inputSize -= taken;
-					if(in.inputSize <= 0)
-						it.remove();
-					if(size <= 0)
-						break;
-				}
-			}
-			if(size > 0)
-				return false;
-		}
-		return true;
 	}
 
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
@@ -704,9 +673,9 @@ public class Utils
 	public static Vector4f vec4fFromDye(DyeColor dyeColor)
 	{
 		if(dyeColor==null)
-			return new Vector4f(1,1,1,1);
+			return new Vector4f(1, 1, 1, 1);
 		float[] rgb = dyeColor.getColorComponentValues();
-		return new Vector4f(rgb[0],rgb[1],rgb[2],1);
+		return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
 	}
 
 	public static FluidStack drainFluidBlock(World world, BlockPos pos, FluidAction action)
@@ -965,10 +934,10 @@ public class Utils
 		int val = 0;
 		final int prime = 31;
 		for(IProperty<?> n : state.getProperties())
-			{
-				Object o = state.get(n);
-				val = prime*val+Objects.hash(o);
-			}
+		{
+			Object o = state.get(n);
+			val = prime*val+Objects.hash(o);
+		}
 		return val;
 	}
 

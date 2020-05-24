@@ -4,22 +4,22 @@
       "offset": 0,
       "type": "crafting",
       "recipes": [
-        "light_engineering",
-        "rs_engineering"
+        "crafting/light_engineering",
+        "crafting/rs_engineering"
       ]
     },
     {
       "offset": 1,
       "type": "crafting",
       "recipes": [
-        "heavy_engineering",
-        "generator"
+        "crafting/heavy_engineering",
+        "crafting/generator"
       ]
     },
     {
       "offset": 2,
       "type": "crafting",
-      "recipe": "radiator"
+      "recipe": "crafting/radiator"
     }
   ]
 }

@@ -28,6 +28,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -647,16 +648,17 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	}
 
 	@Override
-	protected ArcFurnaceRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected ArcFurnaceRecipe getRecipeForId(ResourceLocation id)
 	{
-		return ArcFurnaceRecipe.loadFromNBT(tag);
+		return ArcFurnaceRecipe.recipeList.get(id);
 	}
 
 	@Override
 	@Nullable
 	protected MultiblockProcess<ArcFurnaceRecipe> loadProcessFromNBT(CompoundNBT tag)
 	{
-		ArcFurnaceRecipe recipe = readRecipeFromNBT(tag);
+		String id = tag.getString("recipe");
+		ArcFurnaceRecipe recipe = getRecipeForId(new ResourceLocation(id));
 		if(recipe!=null)
 		{
 			MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, tag.getIntArray("process_inputSlots"));

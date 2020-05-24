@@ -1,8 +1,4 @@
 {
-  "seed_recipe": {
-    "type": "crafting",
-    "recipe": "seed"
-  },
   "items": {
     "type": "item_display",
     "items": [
@@ -16,14 +12,14 @@
   },
   "fabric_recipe": {
     "type": "crafting",
-    "recipe": "hemp_fabric"
+    "recipe": "crafting/hemp_fabric"
   },
   "cushion_recipe": {
     "type": "crafting",
-    "recipe": "cushion"
+    "recipe": "crafting/cushion"
   },
   "curtain_recipe": {
     "type": "crafting",
-    "recipe": "strip_curtain"
+    "recipe": "crafting/strip_curtain"
   }
 }

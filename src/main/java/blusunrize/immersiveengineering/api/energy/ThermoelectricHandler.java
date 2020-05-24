@@ -8,46 +8,49 @@
 
 package blusunrize.immersiveengineering.api.energy;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * @author BluSunrize - 08.05.2015
  * <p>
- * The temperature registry to allow additional blocks to work with the Thermoelectric Generator<br>
- * Registry uses IngredientStacks which may be based on OreDictionary names
+ * The temperature registry to allow additional blocks to work with the Thermoelectric Generator
  */
 public class ThermoelectricHandler
 {
-	public static HashMap<IngredientStack, Integer> temperatureMap = new HashMap<IngredientStack, Integer>();
+	public static List<ThermoelectricSource> temperatureMap = new ArrayList<>();
 
-	public static void registerSourceInKelvin(IngredientStack source, int value)
+	public static void registerSourceInKelvin(ThermoelectricSource source)
 	{
-		temperatureMap.put(source, value);
+		temperatureMap.add(source);
 	}
 
-	public static void registerSourceInKelvin(Tag tag, int value)
+	public static void registerSourceInKelvin(Block b, int value)
 	{
-		registerSourceInKelvin(new IngredientStack(tag), value);
+		temperatureMap.add(new ThermoelectricSource(b, value, TemperatureScale.KELVIN));
 	}
 
-	public static void registerSourceInCelsius(Tag tag, int value)
+	public static void registerSourceInKelvin(Tag<Block> tag, int value)
 	{
-		registerSourceInKelvin(new IngredientStack(tag), value+273);
+		temperatureMap.add(new ThermoelectricSource(tag, value, TemperatureScale.KELVIN));
+	}
+
+	public static void registerSourceInCelsius(Tag<Block> tag, int value)
+	{
+		temperatureMap.add(new ThermoelectricSource(tag, value, TemperatureScale.CELSIUS));
 	}
 
 	public static int getTemperature(Block block)
 	{
-		ItemStack stack = new ItemStack(block, 1);
-		if(!stack.isEmpty())
-			for(Map.Entry<IngredientStack, Integer> entry : temperatureMap.entrySet())
-				if(entry.getKey().matchesItemStackIgnoringSize(stack))
-					return entry.getValue();
+		for(ThermoelectricSource entry : temperatureMap)
+			if(entry.matches.test(block))
+				return entry.temperature;
 		return -1;
 	}
 
@@ -56,13 +59,52 @@ public class ThermoelectricHandler
 		SortedMap<String, Integer> existingMap = new TreeMap<>(
 				inverse?Comparator.<String>reverseOrder(): Comparator.<String>reverseOrder()
 		);
-		for(IngredientStack ingr : temperatureMap.keySet())
-			if(ingr.isValid())
-			{
-				ItemStack example = ingr.getExampleStack();
-				if(!example.isEmpty())
-					existingMap.put(example.getDisplayName().getFormattedText(), temperatureMap.get(ingr));
-			}
+		for(ThermoelectricSource ingr : temperatureMap)
+		{
+			Optional<Block> exampleOpt = ingr.getExample.get();
+			exampleOpt.ifPresent(example ->
+					existingMap.put(new ItemStack(example).getDisplayName().getFormattedText(), ingr.temperature));
+		}
 		return existingMap;
+	}
+
+	public static class ThermoelectricSource
+	{
+		public final Predicate<Block> matches;
+		public final int temperature;
+		public final Supplier<Optional<Block>> getExample;
+
+		public ThermoelectricSource(Block b, int temperature, TemperatureScale s)
+		{
+			this(b2 -> b2==b, temperature, () -> Optional.of(b), s);
+		}
+
+		public ThermoelectricSource(Tag<Block> tag, int temperature, TemperatureScale scale)
+		{
+			this(b -> b.isIn(tag), temperature, () -> {
+				Collection<Block> allMatching = tag.getAllElements();
+				return allMatching.stream().findAny();
+			}, scale);
+		}
+
+		public ThermoelectricSource(Predicate<Block> matches, int temperature, Supplier<Optional<Block>> getExample, TemperatureScale s)
+		{
+			this.matches = matches;
+			this.temperature = s.convertToKelvin.applyAsInt(temperature);
+			this.getExample = getExample;
+		}
+	}
+
+	public enum TemperatureScale
+	{
+		KELVIN(s -> s),
+		CELSIUS(s -> s+273),
+		FAHRENHEIT(value -> (int)Math.round((value-32)/1.8D+273));
+		public final Int2IntFunction convertToKelvin;
+
+		TemperatureScale(Int2IntFunction convertToKelvin)
+		{
+			this.convertToKelvin = convertToKelvin;
+		}
 	}
 }

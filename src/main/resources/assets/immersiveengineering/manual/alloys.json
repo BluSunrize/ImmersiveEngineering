@@ -3,10 +3,10 @@
         "type": "crafting",
         "recipes": [
             {
-                "recipe": "electrum_mix"
+                "recipe": "crafting/electrum_mix"
             },
             {
-                "recipe": "constantan_mix"
+                "recipe": "crafting/constantan_mix"
             }
         ]
     }

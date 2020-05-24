@@ -10,7 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -30,6 +31,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -52,7 +54,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<BottlingMachineTileEntity, IMultiblockRecipe>
+public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<BottlingMachineTileEntity, MultiblockRecipe>
 		implements IConveyorAttachable, IBlockBounds
 {
 	public static TileEntityType<BottlingMachineTileEntity> TYPE;
@@ -246,7 +248,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	}
 
 	@Override
-	public boolean additionalCanProcessCheck(MultiblockProcess<IMultiblockRecipe> process)
+	public boolean additionalCanProcessCheck(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return true;
 	}
@@ -269,7 +271,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	}
 
 	@Override
-	public void onProcessFinish(MultiblockProcess<IMultiblockRecipe> process)
+	public void onProcessFinish(MultiblockProcess<MultiblockRecipe> process)
 	{
 	}
 
@@ -286,7 +288,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	}
 
 	@Override
-	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
+	public float getMinProcessDistance(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return .5f;
 	}
@@ -336,13 +338,13 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 
 
 	@Override
-	public IMultiblockRecipe findRecipeForInsertion(ItemStack inserting)
+	public MultiblockRecipe findRecipeForInsertion(ItemStack inserting)
 	{
 		return null;
 	}
 
 	@Override
-	protected IMultiblockRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected MultiblockRecipe getRecipeForId(ResourceLocation id)
 	{
 		return null;
 	}

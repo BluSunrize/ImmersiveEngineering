@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
@@ -97,7 +97,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
-			MultiblockProcess<IMultiblockRecipe> process = te.processQueue.get(i);
+			MultiblockProcess<MultiblockRecipe> process = te.processQueue.get(i);
 			if(process==null||process.processTick <= 0||process.processTick==process.maxTicks)
 				continue;
 			//+partialTicks
@@ -237,7 +237,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		for(int i = 0; i < itemDisplays.length; i++)
 			if(itemDisplays[i]!=null)
 			{
-				MultiblockProcess<IMultiblockRecipe> process = te.processQueue.get(i);
+				MultiblockProcess<MultiblockRecipe> process = te.processQueue.get(i);
 				if(!(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInWorld))
 					continue;
 

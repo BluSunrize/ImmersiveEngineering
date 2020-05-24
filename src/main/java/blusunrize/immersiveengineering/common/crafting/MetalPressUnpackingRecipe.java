@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.ComparableItemStack;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -28,19 +28,9 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 
 	public MetalPressUnpackingRecipe(ComparableItemStack mold, int energy)
 	{
-		super(ItemStack.EMPTY, ItemStack.EMPTY, mold, energy);
+		//TODO: this needs an id
+		super(null, ItemStack.EMPTY, new IngredientWithSize(Ingredient.EMPTY), mold, energy);
 		this.baseEnergy = energy;
-
-		MetalPressRecipe.deserializers.put("unpacking", nbt -> {
-			ComparableItemStack comp = ComparableItemStack.readFromNBT(nbt.getCompound("mapKey"));
-			if(cache.containsKey(comp))
-				return cache.get(comp);
-			PackedDelegate delegate = new PackedDelegate(comp, ItemStack.read(nbt.getCompound("output")),
-					IngredientStack.readFromNBT(nbt.getCompound("input")),
-					ComparableItemStack.readFromNBT(nbt.getCompound("mold")), nbt.getInt("energy"));
-			cache.put(comp, delegate);
-			return delegate;
-		});
 	}
 
 	@Override
@@ -65,9 +55,10 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 	{
 		private final ComparableItemStack mapKey;
 
-		public PackedDelegate(ComparableItemStack mapKey, ItemStack output, Object input, ComparableItemStack mold, int energy)
+		public PackedDelegate(ComparableItemStack mapKey, ItemStack output, ItemStack input, ComparableItemStack mold, int energy)
 		{
-			super(output, input, mold, energy);
+			//TODO: this needs an id
+			super(null, output, IngredientWithSize.of(input), mold, energy);
 			this.mapKey = mapKey;
 		}
 
@@ -77,22 +68,11 @@ public class MetalPressUnpackingRecipe extends MetalPressRecipe
 			return false;
 		}
 
-		@Override
-		public CompoundNBT writeToNBT(CompoundNBT nbt)
-		{
-			nbt.putString("type", "unpacking");
-			nbt.put("mapKey", mapKey.writeToNBT(new CompoundNBT()));
-			nbt.put("output", output.write(new CompoundNBT()));
-			nbt.put("input", input.writeToNBT(new CompoundNBT()));
-			nbt.put("mold", mold.writeToNBT(new CompoundNBT()));
-			nbt.putInt("energy", (int)(getTotalProcessEnergy()/energyModifier));
-			return nbt;
-		}
 	}
 
 	private PackedDelegate getOutputCached(ItemStack input, World world)
 	{
-		ComparableItemStack comp = new ComparableItemStack(input, true, false);
+		ComparableItemStack comp = new ComparableItemStack(input, false);
 		if(this.cache.containsKey(comp))
 			return this.cache.get(comp);
 

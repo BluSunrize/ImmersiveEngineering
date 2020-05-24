@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "thermoelectric_generator"
+    "recipe": "crafting/thermoelectric_generator"
   }
 }

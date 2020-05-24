@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -52,7 +51,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	@Nullable
 	private Template template;
 	@Nullable
-	private IngredientStack[] materials;
+	private ItemStack[] materials;
 	private BlockState trigger = Blocks.AIR.getDefaultState();
 
 	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin,
@@ -218,28 +217,28 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	}
 
 	@Override
-	public IngredientStack[] getTotalMaterials()
+	public ItemStack[] getTotalMaterials()
 	{
 		if(materials==null)
 		{
 			List<BlockInfo> structure = getStructure();
-			List<IngredientStack> ret = new ArrayList<>(structure.size());
+			List<ItemStack> ret = new ArrayList<>(structure.size());
 			RayTraceResult rtr = new BlockRayTraceResult(Vec3d.ZERO, Direction.DOWN, BlockPos.ZERO, false);
 			for(BlockInfo info : structure)
 			{
 				ItemStack picked = Utils.getPickBlock(info.state, rtr, ImmersiveEngineering.proxy.getClientPlayer());
 				boolean added = false;
-				for(IngredientStack existing : ret)
-					if(existing.matchesItemStackIgnoringSize(picked))
+				for(ItemStack existing : ret)
+					if(ItemStack.areItemsEqual(existing, picked))
 					{
-						++existing.inputSize;
+						existing.grow(1);
 						added = true;
 						break;
 					}
 				if(!added)
-					ret.add(new IngredientStack(picked));
+					ret.add(picked.copy());
 			}
-			materials = ret.toArray(new IngredientStack[0]);
+			materials = ret.toArray(new ItemStack[0]);
 		}
 		return materials;
 	}

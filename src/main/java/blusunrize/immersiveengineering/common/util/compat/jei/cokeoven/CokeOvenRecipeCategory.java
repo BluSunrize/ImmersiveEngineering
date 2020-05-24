@@ -26,6 +26,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Arrays;
+
 public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 {
 	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "cokeoven");
@@ -53,7 +55,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 21, 18);
-		guiItemStacks.set(0, recipe.input.getSizedStackList());
+		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
 
 		guiItemStacks.init(1, false, 76, 18);
 		if(!recipe.output.isEmpty())

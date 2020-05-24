@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " p ",
+    "p p",
+    " p "
+  ],
+  "key": {
+    "p": {
+      "tag": "forge:plates/uranium"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:sheetmetal_uranium",
+    "count": 4
+  }
+}

@@ -119,23 +119,21 @@ public class JEIHelper implements IModPlugin
 	public void registerRecipes(IRecipeRegistration registration)
 	{
 		IELogger.info("Adding recipes to JEI!!");
-		registration.addRecipes(new ArrayList<>(CokeOvenRecipe.recipeList), CokeOvenRecipeCategory.UID);
-		registration.addRecipes(new ArrayList<>(AlloyRecipe.recipeList), AlloySmelterRecipeCategory.UID);
-		registration.addRecipes(new ArrayList<>(BlastFurnaceRecipe.recipeList), BlastFurnaceRecipeCategory.UID);
-		registration.addRecipes(new ArrayList<>(BlastFurnaceRecipe.blastFuels), BlastFurnaceFuelCategory.UID);
-		registration.addRecipes(new ArrayList<>(ClocheRecipe.recipeList), ClocheRecipeCategory.UID);
+		registration.addRecipes(new ArrayList<>(CokeOvenRecipe.recipeList.values()), CokeOvenRecipeCategory.UID);
+		registration.addRecipes(new ArrayList<>(AlloyRecipe.recipeList.values()), AlloySmelterRecipeCategory.UID);
+		registration.addRecipes(new ArrayList<>(BlastFurnaceRecipe.recipeList.values()), BlastFurnaceRecipeCategory.UID);
+		registration.addRecipes(new ArrayList<>(BlastFurnaceFuel.blastFuels.values()), BlastFurnaceFuelCategory.UID);
+		registration.addRecipes(new ArrayList<>(ClocheRecipe.recipeList.values()), ClocheRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(MetalPressRecipe.recipeList.values(), IJEIRecipe::listInJEI)), MetalPressRecipeCategory.UID);
-		registration.addRecipes(new ArrayList<>(Collections2.filter(CrusherRecipe.recipeList, IJEIRecipe::listInJEI)), CrusherRecipeCategory.UID);
+		registration.addRecipes(new ArrayList<>(Collections2.filter(CrusherRecipe.recipeList.values(), IJEIRecipe::listInJEI)), CrusherRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(BlueprintCraftingRecipe.recipeList.values(), IJEIRecipe::listInJEI)), WorkbenchRecipeCategory.UID);
-		registration.addRecipes(new ArrayList<>(Collections2.filter(SqueezerRecipe.recipeList, IJEIRecipe::listInJEI)), SqueezerRecipeCategory.UID);
-		registration.addRecipes(new ArrayList<>(Collections2.filter(FermenterRecipe.recipeList, IJEIRecipe::listInJEI)), FermenterRecipeCategory.UID);
-		registration.addRecipes(new ArrayList<>(Collections2.filter(RefineryRecipe.recipeList, IJEIRecipe::listInJEI)), RefineryRecipeCategory.UID);
-		registration.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> input instanceof ArcRecyclingRecipe&&input.listInJEI())), ArcFurnaceRecipeCategory.UID_RECYCLING);
-		registration.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList, input -> {
-			return !(input instanceof ArcRecyclingRecipe)&&input.listInJEI();
-		})), ArcFurnaceRecipeCategory.UID);
-		registration.addRecipes(new ArrayList(Collections2.filter(BottlingMachineRecipe.recipeList, input -> input.listInJEI())), BottlingMachineRecipeCategory.UID);
-		registration.addRecipes(new ArrayList(Collections2.filter(MixerRecipe.recipeList, input -> input.listInJEI())), MixerRecipeCategory.UID);
+		registration.addRecipes(new ArrayList<>(Collections2.filter(SqueezerRecipe.recipeList.values(), IJEIRecipe::listInJEI)), SqueezerRecipeCategory.UID);
+		registration.addRecipes(new ArrayList<>(Collections2.filter(FermenterRecipe.recipeList.values(), IJEIRecipe::listInJEI)), FermenterRecipeCategory.UID);
+		registration.addRecipes(new ArrayList<>(Collections2.filter(RefineryRecipe.recipeList.values(), IJEIRecipe::listInJEI)), RefineryRecipeCategory.UID);
+		registration.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList.values(), input -> input instanceof ArcRecyclingRecipe&&input.listInJEI())), ArcFurnaceRecipeCategory.UID_RECYCLING);
+		registration.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList.values(), input -> !(input instanceof ArcRecyclingRecipe)&&input.listInJEI())), ArcFurnaceRecipeCategory.UID);
+		registration.addRecipes(new ArrayList(Collections2.filter(BottlingMachineRecipe.recipeList.values(), IJEIRecipe::listInJEI)), BottlingMachineRecipeCategory.UID);
+		registration.addRecipes(new ArrayList(Collections2.filter(MixerRecipe.recipeList.values(), IJEIRecipe::listInJEI)), MixerRecipeCategory.UID);
 
 	}
 

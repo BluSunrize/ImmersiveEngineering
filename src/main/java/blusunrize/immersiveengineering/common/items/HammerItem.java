@@ -57,7 +57,7 @@ public class HammerItem extends IEBaseItem implements ITool
 
 	public HammerItem()
 	{
-		super("hammer", new Properties().defaultMaxDamage(IEConfig.TOOLS.hammerDurabiliy.get()).setNoRepair());
+		super("hammer", new Properties().defaultMaxDamage(IEConfig.TOOLS.hammerDurabiliy.get()));
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class HammerItem extends IEBaseItem implements ITool
 				boolean rotate = !(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction);
 				if(!rotate&&tile instanceof IDirectionalTile)
 					rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(new Vec3d(pos)), player);
-				if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&player.isSneaking()))
+				if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isSneaking()!=side.equals(Direction.DOWN))))
 					return ActionResultType.SUCCESS;
 				else if(!rotate&&tile instanceof IHammerInteraction)
 				{

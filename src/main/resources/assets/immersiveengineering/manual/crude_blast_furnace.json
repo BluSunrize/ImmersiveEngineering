@@ -1,7 +1,7 @@
 {
   "block": {
     "type": "crafting",
-    "recipe": "blastbrick"
+    "recipe": "crafting/blastbrick"
   },
   "multiblock": {
     "type": "multiblock",

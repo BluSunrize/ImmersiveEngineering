@@ -69,9 +69,9 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 
 		matrixStack.pop();
 
+		matrixStack.translate(te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.WEST?-.5: .5, -.625f, te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.EAST?.5: -.5);
 		matrixStack.scale(.0625f, 1, .0625f);
-		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), 90, true));
-		matrixStack.translate(8, -8, .625f);
+		matrixStack.rotate(new Quaternion(90, 0, 0, true));
 
 		for(int i = te.tank.getFluidTypes()-1; i >= 0; i--)
 		{

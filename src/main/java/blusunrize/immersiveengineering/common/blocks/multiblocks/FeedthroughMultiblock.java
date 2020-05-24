@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -238,11 +237,11 @@ public class FeedthroughMultiblock implements IMultiblock
 	}
 
 	@Override
-	public IngredientStack[] getTotalMaterials()
+	public ItemStack[] getTotalMaterials()
 	{
-		return new IngredientStack[]{
-				new IngredientStack(new ItemStack(getDemoConnector(), 2)),
-				new IngredientStack(new ItemStack(Blocks.BOOKSHELF, 1).setDisplayName(ARBITRARY_SOLID))
+		return new ItemStack[]{
+				new ItemStack(getDemoConnector(), 2),
+				new ItemStack(Blocks.BOOKSHELF, 1).setDisplayName(ARBITRARY_SOLID)
 		};
 	}
 

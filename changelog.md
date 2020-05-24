@@ -1,3 +1,28 @@
+##### Version 0.14-96
+- All IE recipes are now JSON based! (BluSunrize)
+    - This includes the excavator's mineral veins. ALL EXISTING VEINS WILL BE BROKEN. The last release was an Alpha, so
+      this has to be expected
+    - Mineral veins have also been changed and rebalanced
+- Overhauled the turntable, to allow side-based redstone input to produce different rotations (MalkContent)
+- Added furnace fuel values for coke coal and coke coal blocks (Malte)
+- Re-Added automatic changelog generation (Malte)
+- Changed and improved Multiblock bounding boxes (Malte)
+- Changed dropping conveyors to not drop downwards when given redstone signal (MalkContent)
+- Changed hammers and wirecutters to allow repairing (BluSunrize)
+- Changed high-explosive cartridge to not destroy blocks (BluSunrize)
+- Fixed IE ores not generating in non-vanilla biomes (Malte)
+- Fixed IE ores generating in blacklisted dimensions (Malte)
+- Fixed refinery not accepting input fluids when only one tank is filled  (Malte)
+- Fixed crashes when using railguns or revolvers with shaders on a dedicated server (Malte)
+- Fixed some texture and model loading errors (Malte)
+- Fixed scaffolding not acting as a ladder (Malte)
+- Fixed fontrendering issues with Optifine (Malte)
+- Fixed refinery accepting fluid pipes from all sides (BluSunrize)
+- Fixed Voltmeter being broken (Malte)
+- Fixed renders for Bottling Machine and Mixer (Malte)
+- Fixed collision on diagonal covered conveyors (BluSunrize)
+- Fixed recipes for sheetmetal not accepting other mods' plates (BluSunrize)
+
 ##### Version 0.14-95 - BUILT
 - Added the Buzzsaw! It cuts Trees! (BluSunrize)
 - Added full support for the new Villages! (BluSunrize)

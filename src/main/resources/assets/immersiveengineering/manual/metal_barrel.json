@@ -1,6 +1,6 @@
 {
   "start": {
     "type": "crafting",
-    "recipe": "metal_barrel"
+    "recipe": "crafting/metal_barrel"
   }
 }

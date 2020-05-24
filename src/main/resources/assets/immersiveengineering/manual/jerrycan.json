@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "jerrycan"
+    "recipe": "crafting/jerrycan"
   }
 }

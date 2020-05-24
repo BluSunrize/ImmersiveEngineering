@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -435,15 +436,16 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	}
 
 	@Override
-	protected MixerRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected MixerRecipe getRecipeForId(ResourceLocation id)
 	{
-		return MixerRecipe.loadFromNBT(tag);
+		return MixerRecipe.recipeList.get(id);
 	}
 
 	@Override
 	protected MultiblockProcess<MixerRecipe> loadProcessFromNBT(CompoundNBT tag)
 	{
-		MixerRecipe recipe = readRecipeFromNBT(tag);
+		String id = tag.getString("recipe");
+		MixerRecipe recipe = getRecipeForId(new ResourceLocation(id));
 		if(recipe!=null)
 			return new MultiblockProcessMixer(recipe, tag.getIntArray("process_inputSlots")).setInputTanks(tag.getIntArray("process_inputTanks"));
 		return null;

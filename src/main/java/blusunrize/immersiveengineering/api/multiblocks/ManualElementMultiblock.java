@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.multiblocks;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
@@ -113,7 +112,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 
 	private void checkMaterials()
 	{
-		IngredientStack[] totalMaterials = this.multiblock.getTotalMaterials();
+		ItemStack[] totalMaterials = this.multiblock.getTotalMaterials();
 		if(totalMaterials!=null)
 		{
 			componentTooltip = new ArrayList<>();
@@ -124,12 +123,12 @@ public class ManualElementMultiblock extends SpecialManualElements
 			for(int ss = 0; ss < totalMaterials.length; ss++)
 				if(totalMaterials[ss]!=null)
 				{
-					IngredientStack req = totalMaterials[ss];
-					int reqSize = req.inputSize;
+					ItemStack req = totalMaterials[ss];
+					int reqSize = req.getCount();
 					for(int slot = 0; slot < ManualUtils.mc().player.inventory.getSizeInventory(); slot++)
 					{
 						ItemStack inSlot = ManualUtils.mc().player.inventory.getStackInSlot(slot);
-						if(!inSlot.isEmpty()&&req.matchesItemStackIgnoringSize(inSlot))
+						if(!inSlot.isEmpty()&&ItemStack.areItemsEqual(inSlot, req))
 							if((reqSize -= inSlot.getCount()) <= 0)
 								break;
 					}
@@ -139,13 +138,13 @@ public class ManualElementMultiblock extends SpecialManualElements
 						if(!hasAnyItems)
 							hasAnyItems = true;
 					}
-					maxOff = Math.max(maxOff, (""+req.inputSize).length());
+					maxOff = Math.max(maxOff, (""+req.getCount()).length());
 				}
 			for(int ss = 0; ss < totalMaterials.length; ss++)
 				if(totalMaterials[ss]!=null)
 				{
-					IngredientStack req = totalMaterials[ss];
-					int indent = maxOff-(""+req.inputSize).length();
+					ItemStack req = totalMaterials[ss];
+					int indent = maxOff-(""+req.getCount()).length();
 					StringBuilder sIndent = new StringBuilder();
 					if(indent > 0)
 						for(int ii = 0; ii < indent; ii++)
@@ -156,14 +155,13 @@ public class ManualElementMultiblock extends SpecialManualElements
 					else
 						s = new StringTextComponent(hasAnyItems?"   ": "");
 					s.appendSibling(
-							new StringTextComponent(sIndent.toString()+req.inputSize+"x ")
+							new StringTextComponent(sIndent.toString()+req.getCount()+"x ")
 									.setStyle(new Style().setColor(TextFormatting.GRAY))
 					);
-					ItemStack example = req.getExampleStack();
-					if(!example.isEmpty())
+					if(!req.isEmpty())
 						s.appendSibling(
-								example.getDisplayName().deepCopy()
-										.setStyle(new Style().setColor(example.getRarity().color))
+								req.getDisplayName().deepCopy()
+										.setStyle(new Style().setColor(req.getRarity().color))
 						);
 					else
 						s.appendSibling(new StringTextComponent("???"));

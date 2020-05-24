@@ -23,6 +23,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
@@ -49,11 +50,11 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 4, 6);
-		guiItemStacks.set(0, recipe.seed.getSizedStackList());
+		guiItemStacks.set(0, Arrays.asList(recipe.seed.getMatchingStacks()));
 		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 
 		guiItemStacks.init(1, true, 4, 30);
-		guiItemStacks.set(1, recipe.soil.getSizedStackList());
+		guiItemStacks.set(1, Arrays.asList(recipe.soil.getMatchingStacks()));
 		guiItemStacks.setBackground(1, JEIHelper.slotDrawable);
 
 		for(int i = 0; i < recipe.outputs.size(); i++)

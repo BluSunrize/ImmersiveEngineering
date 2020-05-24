@@ -1,0 +1,30 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [
+    {
+      "chance": 0.1,
+      "output": {
+        "tag": "forge:dusts/gold"
+      },
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:dusts/gold",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "count": 2,
+    "base_ingredient": {
+      "tag": "forge:dusts/copper"
+    }
+  },
+  "input": {
+    "tag": "forge:ores/copper"
+  },
+  "energy": 6000
+}

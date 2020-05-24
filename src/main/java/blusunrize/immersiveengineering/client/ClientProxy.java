@@ -50,6 +50,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
+import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
@@ -207,6 +208,8 @@ public class ClientProxy extends CommonProxy
 		ClientEventHandler handler = new ClientEventHandler();
 		MinecraftForge.EVENT_BUS.register(handler);
 		((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(handler);
+
+		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener());
 
 		keybind_magnetEquip.setKeyConflictContext(new IKeyConflictContext()
 		{

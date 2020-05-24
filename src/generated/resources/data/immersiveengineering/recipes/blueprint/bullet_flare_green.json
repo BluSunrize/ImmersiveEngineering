@@ -1,0 +1,21 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "inputs": [
+    {
+      "item": "immersiveengineering:empty_shell"
+    },
+    {
+      "tag": "forge:gunpowder"
+    },
+    {
+      "tag": "forge:dusts/aluminum"
+    },
+    {
+      "tag": "forge:dyes/green"
+    }
+  ],
+  "category": "specialBullet",
+  "result": {
+    "item": "immersiveengineering:flare"
+  }
+}

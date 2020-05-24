@@ -2,8 +2,8 @@
   "start": {
     "type": "crafting",
     "recipes": [
-      "blueprint_components",
-      "blueprint_molds"
+      "crafting/blueprint_components",
+      "crafting/blueprint_molds"
     ]
   }
 }

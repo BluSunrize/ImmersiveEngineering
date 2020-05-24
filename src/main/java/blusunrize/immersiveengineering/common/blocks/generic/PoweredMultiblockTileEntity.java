@@ -11,7 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
@@ -23,11 +24,13 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,7 +48,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTileEntity<T, R>, R extends IMultiblockRecipe>
+public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTileEntity<T, R>, R extends MultiblockRecipe>
 		extends MultiblockPartTileEntity<T> implements IIEInventory, IIEInternalFluxHandler,
 		IProcessTile, IComparatorOverride
 {
@@ -72,8 +75,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		for(int i = 0; i < processNBT.size(); i++)
 		{
 			CompoundNBT tag = processNBT.getCompound(i);
-			IMultiblockRecipe recipe = readRecipeFromNBT(tag);
-			if(recipe!=null)
+			if(tag.contains("recipe"))
 			{
 				int processTick = tag.getInt("process_processTick");
 				MultiblockProcess<R> process = loadProcessFromNBT(tag);
@@ -118,13 +120,28 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			nbt.putByte("computerOn", (byte)2);
 	}
 
+	ArrayDeque<R> lastCachedRecipes = new ArrayDeque(5);
 	@Nullable
-	protected abstract R readRecipeFromNBT(CompoundNBT tag);
+	protected abstract R getRecipeForId(ResourceLocation id);
+	//{
+//		for(R recipe : lastCachedRecipes)
+//			if(id.equals(recipe.getId()))
+//				return recipe;
+//		Optional<R> opt = (Optional<R>)this.world.getRecipeManager().getRecipe(id);
+//		if(!opt.isPresent())
+//			return null;
+//		R recipe = opt.get();
+//		if(lastCachedRecipes.size()==5)
+//			lastCachedRecipes.pop();
+//		lastCachedRecipes.add(recipe);
+//		return recipe;
+//	}
 
 	@Nullable
 	protected MultiblockProcess<R> loadProcessFromNBT(CompoundNBT tag)
 	{
-		R recipe = readRecipeFromNBT(tag);
+		String id = tag.getString("recipe");
+		R recipe = getRecipeForId(new ResourceLocation(id));
 		if(recipe!=null)
 			if(isInWorldProcessingMachine())
 				return new MultiblockProcessInWorld<>(recipe, tag.getFloat("process_transformationPoint"),
@@ -137,7 +154,8 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 
 	protected CompoundNBT writeProcessToNBT(MultiblockProcess process)
 	{
-		CompoundNBT tag = process.recipe.writeToNBT(new CompoundNBT());
+		CompoundNBT tag = new CompoundNBT();
+		tag.putString("recipe", process.recipe.getId().toString());
 		tag.putInt("process_processTick", process.processTick);
 		process.writeExtraDataToNBT(tag);
 		return tag;
@@ -366,7 +384,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		return getEnergyStored(null) > 0&&!isRSDisabled()&&!processQueue.isEmpty();
 	}
 
-	public abstract static class MultiblockProcess<R extends IMultiblockRecipe>
+	public abstract static class MultiblockProcess<R extends MultiblockRecipe>
 	{
 		public R recipe;
 		public int processTick;
@@ -539,7 +557,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		protected abstract void writeExtraDataToNBT(CompoundNBT nbt);
 	}
 
-	public static class MultiblockProcessInMachine<R extends IMultiblockRecipe> extends MultiblockProcess<R>
+	public static class MultiblockProcessInMachine<R extends MultiblockRecipe> extends MultiblockProcess<R>
 	{
 		protected int[] inputSlots = new int[0];
 		protected int[] inputAmounts = null;
@@ -579,7 +597,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			return this.inputTanks;
 		}
 
-		protected List<IngredientStack> getRecipeItemInputs(PoweredMultiblockTileEntity<?, R> multiblock)
+		protected List<IngredientWithSize> getRecipeItemInputs(PoweredMultiblockTileEntity<?, R> multiblock)
 		{
 			return recipe.getItemInputs();
 		}
@@ -599,7 +617,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 				for(int i = 0; i < inputSlots.length; i++)
 					if(inputSlots[i] >= 0&&inputSlots[i] < inv.size())
 						query.set(i, multiblock.getInventory().get(inputSlots[i]));
-				if(!ApiUtils.stacksMatchIngredientList(recipe.getItemInputs(), query))
+				if(!ApiUtils.stacksMatchIngredientWithSizeList(recipe.getItemInputs(), query))
 				{
 					this.clearProcess = true;
 					return;
@@ -613,7 +631,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		{
 			super.processFinish(multiblock);
 			NonNullList<ItemStack> inv = multiblock.getInventory();
-			List<IngredientStack> itemInputList = this.getRecipeItemInputs(multiblock);
+			List<IngredientWithSize> itemInputList = this.getRecipeItemInputs(multiblock);
 			if(inv!=null&&this.inputSlots!=null&&itemInputList!=null)
 			{
 				if(this.inputAmounts!=null&&this.inputSlots.length==this.inputAmounts.length)
@@ -624,14 +642,11 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 
 				}
 				else
-				{
-					Iterator<IngredientStack> iterator = new ArrayList<>(itemInputList).iterator();
-					while(iterator.hasNext())
+					for(IngredientWithSize ingr : new ArrayList<>(itemInputList))
 					{
-						IngredientStack ingr = iterator.next();
-						int ingrSize = ingr.inputSize;
+						int ingrSize = ingr.getCount();
 						for(int slot : this.inputSlots)
-							if(!inv.get(slot).isEmpty()&&ingr.matchesItemStackIgnoringSize(inv.get(slot)))
+							if(!inv.get(slot).isEmpty()&&ingr.test(inv.get(slot)))
 							{
 								int taken = Math.min(inv.get(slot).getCount(), ingrSize);
 								inv.get(slot).shrink(taken);
@@ -641,7 +656,6 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 									break;
 							}
 					}
-				}
 			}
 			IFluidTank[] tanks = multiblock.getInternalTanks();
 			List<FluidStack> fluidInputList = this.getRecipeFluidInputs(multiblock);
@@ -684,7 +698,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		}
 	}
 
-	public static class MultiblockProcessInWorld<R extends IMultiblockRecipe> extends MultiblockProcess<R>
+	public static class MultiblockProcessInWorld<R extends MultiblockRecipe> extends MultiblockProcess<R>
 	{
 		public List<ItemStack> inputItems;
 		protected float transformationPoint;
@@ -722,10 +736,10 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 
 			for(ItemStack inputItem : this.inputItems)
 			{
-				for(IngredientStack s : recipe.getItemInputs())
-					if(s.matchesItemStackIgnoringSize(inputItem))
+				for(IngredientWithSize s : recipe.getItemInputs())
+					if(s.test(inputItem))
 					{
-						size = s.inputSize;
+						size = s.getCount();
 						break;
 					}
 
@@ -740,7 +754,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	}
 
 	public static class MultiblockInventoryHandler_DirectProcessing
-			<T extends PoweredMultiblockTileEntity<T, R>, R extends IMultiblockRecipe>
+			<T extends PoweredMultiblockTileEntity<T, R>, R extends MultiblockRecipe>
 			implements IItemHandlerModifiable
 	{
 		T multiblock;

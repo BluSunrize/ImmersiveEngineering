@@ -8,21 +8,22 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.Tag;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.RegistryObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -31,24 +32,32 @@ import java.util.*;
  */
 public class CrusherRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<CrusherRecipe> TYPE = IRecipeType.register(Lib.MODID+":crusher");
+	public static RegistryObject<IERecipeSerializer<CrusherRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
-	public final String oreInputString;
-	public final IngredientStack input;
+	public final Ingredient input;
 	public final ItemStack output;
-	public final List<SecondaryOutput> secondaryOutputs = new ArrayList<>();
+	public final List<StackWithChance> secondaryOutputs = new ArrayList<>();
 
-	public CrusherRecipe(ItemStack output, Object input, int energy)
+	public CrusherRecipe(ResourceLocation id, ItemStack output, Ingredient input, int energy)
 	{
+		super(output, TYPE, id);
 		this.output = output;
-		this.input = ApiUtils.createIngredientStack(input);
-		this.oreInputString = input instanceof String?(String)input: null;
+		this.input = input;
 		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
 		this.totalProcessTime = (int)Math.floor(50*timeModifier);
 
-		this.inputList = Lists.newArrayList(this.input);
+		setInputList(Lists.newArrayList(this.input));
 		this.outputList = ListUtils.fromItem(this.output);
+	}
+
+	@Override
+	protected IERecipeSerializer<CrusherRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
 	}
 
 	@Override
@@ -56,71 +65,31 @@ public class CrusherRecipe extends MultiblockRecipe
 	{
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(output);
-		for(SecondaryOutput output : secondaryOutputs)
-			if(output.stack.isValid()&&Utils.RAND.nextFloat() < output.chance)
-				list.add(output.stack.getExampleStack());
+		for(StackWithChance output : secondaryOutputs)
+			if(!output.getStack().isEmpty()&&Utils.RAND.nextFloat() < output.getChance())
+				list.add(output.getStack());
 		return list;
 	}
 
 	/**
 	 * Adds secondary outputs to the recipe. Should the recipe have secondary outputs, these will be added /in addition/
 	 */
-	public CrusherRecipe addToSecondaryOutput(SecondaryOutput... outputs)
+	public CrusherRecipe addToSecondaryOutput(StackWithChance output)
 	{
-		for(SecondaryOutput o : outputs)
-			Preconditions.checkNotNull(o);
-		secondaryOutputs.addAll(Arrays.asList(outputs));
+		Preconditions.checkNotNull(output);
+		secondaryOutputs.add(output);
 		return this;
 	}
 
-	public static ArrayList<CrusherRecipe> recipeList = new ArrayList<>();
-
-	public static CrusherRecipe addRecipe(ItemStack output, Object input, int energy)
-	{
-		CrusherRecipe r = new CrusherRecipe(output, input, energy);
-		if(r.input!=null&&!r.output.isEmpty())
-			recipeList.add(r);
-		return r;
-	}
+	// Initialized by reload listener
+	public static Map<ResourceLocation, CrusherRecipe> recipeList;
 
 	public static CrusherRecipe findRecipe(ItemStack input)
 	{
-		for(CrusherRecipe recipe : recipeList)
-			if(recipe.input.matchesItemStack(input))
+		for(CrusherRecipe recipe : recipeList.values())
+			if(recipe.input.test(input))
 				return recipe;
 		return null;
-	}
-
-	public static List<CrusherRecipe> removeRecipesForOutput(ItemStack stack)
-	{
-		List<CrusherRecipe> list = new ArrayList<>();
-		Iterator<CrusherRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			CrusherRecipe ir = it.next();
-			if(ItemStack.areItemsEqual(ir.output, stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
-	}
-
-	public static List<CrusherRecipe> removeRecipesForInput(ItemStack stack)
-	{
-		List<CrusherRecipe> list = new ArrayList<>();
-		Iterator<CrusherRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			CrusherRecipe ir = it.next();
-			if(ir.input.matchesItemStackIgnoringSize(stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
 	}
 
 	@Override
@@ -129,48 +98,4 @@ public class CrusherRecipe extends MultiblockRecipe
 		return 4;
 	}
 
-	@Override
-	public CompoundNBT writeToNBT(CompoundNBT nbt)
-	{
-		nbt.put("input", input.writeToNBT(new CompoundNBT()));
-		return nbt;
-	}
-
-	public static CrusherRecipe loadFromNBT(CompoundNBT nbt)
-	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
-		for(CrusherRecipe recipe : recipeList)
-			if(recipe.input.equals(input))
-				return recipe;
-		return null;
-	}
-
-
-	public static class SecondaryOutput
-	{
-		public final IngredientStack stack;
-		public final float chance;
-
-		public SecondaryOutput(Item item, float chance)
-		{
-			this(new IngredientStack(item), chance);
-		}
-
-		public SecondaryOutput(Tag<Item> tag, float chance)
-		{
-			this(new IngredientStack(tag), chance);
-		}
-
-		public SecondaryOutput(ResourceLocation tag, float chance)
-		{
-			this(new IngredientStack(tag), chance);
-		}
-
-		public SecondaryOutput(IngredientStack stack, float chance)
-		{
-			Preconditions.checkNotNull(stack);
-			this.stack = stack;
-			this.chance = chance;
-		}
-	}
 }

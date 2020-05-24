@@ -4,31 +4,31 @@
     "recipes": [
       [
         {
-          "recipe": "buzzsaw"
+          "recipe": "crafting/buzzsaw"
         },
         {
-          "recipe": "sawblade"
+          "recipe": "crafting/sawblade"
         },
         {
-          "recipe": "wooden_grip"
+          "recipe": "crafting/wooden_grip"
         }
       ]
     ]
   },
   "rockcutter_recipe": {
     "type": "crafting",
-    "recipe": "rockcutter"
+    "recipe": "crafting/rockcutter"
   },
   "tank_recipe": {
     "type": "crafting",
-    "recipe": "toolupgrade_drill_capacity"
+    "recipe": "crafting/toolupgrade_drill_capacity"
   },
   "lube_recipe": {
     "type": "crafting",
-    "recipe": "toolupgrade_drill_lube"
+    "recipe": "crafting/toolupgrade_drill_lube"
   },
   "quiver_recipe": {
     "type": "crafting",
-    "recipe": "toolupgrade_buzzsaw_spareblades"
+    "recipe": "crafting/toolupgrade_buzzsaw_spareblades"
   }
 }

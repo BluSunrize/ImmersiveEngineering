@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [
+    {
+      "chance": 0.5,
+      "output": {
+        "tag": "forge:dusts/sulfur"
+      }
+    }
+  ],
+  "result": {
+    "item": "minecraft:blaze_powder",
+    "count": 4
+  },
+  "input": {
+    "tag": "forge:rods/blaze"
+  },
+  "energy": 1600
+}

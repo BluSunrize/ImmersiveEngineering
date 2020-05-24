@@ -43,35 +43,40 @@ public class DropConveyor extends BasicConveyor
 	@Override
 	public void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 	{
-		BlockPos posDown = getTile().getPos().down();
-		TileEntity inventoryTile = getTile().getWorld().getTileEntity(posDown);
-		boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getTile().getPos().getZ()+.5-entity.getPosZ()):
+		if(getTile().getWorld().getRedstonePowerFromNeighbors(getTile().getPos()) <= 0)
+		{
+			BlockPos posDown = getTile().getPos().down();
+			TileEntity inventoryTile = getTile().getWorld().getTileEntity(posDown);
+			boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getTile().getPos().getZ()+.5-entity.getPosZ()):
 				(getTile().getPos().getX()+.5-entity.getPosX())) < .2;
 
 		LazyOptional<IItemHandler> cap = LazyOptional.empty();
 		if(contact&&!(inventoryTile instanceof IConveyorTile))
 			cap = ApiUtils.findItemHandlerAtPos(getTile().getWorld(), posDown, Direction.UP, true);
 
-		if(cap.isPresent())
-			cap.ifPresent(itemHandler ->
-			{
-				ItemStack stack = entity.getItem();
-				ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
-				if(temp.isEmpty()||temp.getCount() < stack.getCount())
+			if(cap.isPresent())
+				cap.ifPresent(itemHandler ->
 				{
-					temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
-					if(temp.isEmpty())
-						entity.remove();
-					else if(temp.getCount() < stack.getCount())
-						entity.setItem(temp);
-				}
-			});
-		else if(contact&&isEmptySpace(getTile().getWorld(), posDown, inventoryTile))
-		{
-			entity.setMotion(0, entity.getMotion().y, 0);
-			entity.setPosition(getTile().getPos().getX()+.5, getTile().getPos().getY()-.5, getTile().getPos().getZ()+.5);
-			if(!(inventoryTile instanceof IConveyorTile))
-				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)getTile());
+					ItemStack stack = entity.getItem();
+					ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
+					if(temp.isEmpty()||temp.getCount() < stack.getCount())
+					{
+						temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
+						if(temp.isEmpty())
+							entity.remove();
+						else if(temp.getCount() < stack.getCount())
+							entity.setItem(temp);
+					}
+				});
+			else if(contact&&isEmptySpace(getTile().getWorld(), posDown, inventoryTile))
+			{
+				entity.setMotion(0, entity.getMotion().y, 0);
+				entity.setPosition(getTile().getPos().getX()+.5, getTile().getPos().getY()-.5, getTile().getPos().getZ()+.5);
+				if(!(inventoryTile instanceof IConveyorTile))
+					ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)getTile());
+			}
+			else
+				super.handleInsertion(entity, conDir, distX, distZ);
 		}
 		else
 			super.handleInsertion(entity, conDir, distX, distZ);

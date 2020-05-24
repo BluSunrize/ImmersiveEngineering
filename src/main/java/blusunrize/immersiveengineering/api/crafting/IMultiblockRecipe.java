@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 public interface IMultiblockRecipe
 {
-	List<IngredientStack> getItemInputs();
+	List<IngredientWithSize> getItemInputs();
 
 	default boolean shouldCheckItemAvailability()
 	{
@@ -45,9 +46,14 @@ public interface IMultiblockRecipe
 
 	default ItemStack getDisplayStack(ItemStack input)
 	{
-		for(IngredientStack ingr : getItemInputs())
-			if(ingr.matchesItemStack(input))
-				return Utils.copyStackWithAmount(input, ingr.inputSize);
+		for(IngredientWithSize ingr : getItemInputs())
+			if(ingr.test(input))
+			{
+				if(ingr.hasNoMatchingItems())
+					return input;
+				else
+					return ingr.getMatchingStacks()[0];
+			}
 		return ItemStack.EMPTY;
 	}
 
@@ -61,6 +67,4 @@ public interface IMultiblockRecipe
 	int getTotalProcessEnergy();
 
 	int getMultipleProcessTicks();
-
-	CompoundNBT writeToNBT(CompoundNBT nbtTagCompound);
 }

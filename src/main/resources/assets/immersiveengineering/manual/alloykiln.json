@@ -1,7 +1,7 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "alloybrick"
+    "recipe": "crafting/alloybrick"
   },
   "multiblock": {
     "type": "multiblock",

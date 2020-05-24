@@ -24,6 +24,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingRecipe>
@@ -58,7 +59,7 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 		for(int j = 0; j < recipe.inputs.length; j++)
 		{
 			guiItemStacks.init(i, true, 80+j%2*18, y+j/2*18);
-			guiItemStacks.set(i, recipe.inputs[j].getSizedStackList());
+			guiItemStacks.set(i, Arrays.asList(recipe.inputs[j].getMatchingStacks()));
 			guiItemStacks.setBackground(i++, JEIHelper.slotDrawable);
 		}
 		guiItemStacks.init(i, false, 140, 14);
