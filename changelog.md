@@ -1,4 +1,4 @@
-##### Version 0.14-96
+##### Version 0.14-96 - BUILT
 - All IE recipes are now JSON based! (BluSunrize)
     - This includes the excavator's mineral veins. ALL EXISTING VEINS WILL BE BROKEN. The last release was an Alpha, so
       this has to be expected
