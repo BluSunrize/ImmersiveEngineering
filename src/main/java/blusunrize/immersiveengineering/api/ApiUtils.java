@@ -566,29 +566,26 @@ public class ApiUtils
 			}
 
 			if(!world.isRemote)
+			{
+				CompoundNBT nbt = stack.getOrCreateTag();
 				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 				{
-					DimensionBlockPos linkingPos = new DimensionBlockPos(masterPos, world);
-					CompoundNBT linkingNBT = new CompoundNBT();
-					linkingNBT.put("master", linkingPos.toNBT());
-					linkingNBT.put("offset", NBTUtil.writeBlockPos(offsetHere));
-					stack.getOrCreateTag().put("linkingPos", linkingNBT);
-					CompoundNBT targetNbt = new CompoundNBT();
-					targetHere.writeToNBT(targetNbt);
-					ItemNBTHelper.setTagCompound(stack, "targettingInfo", targetNbt);
+					nbt.putString("linkingDim", world.getDimension().getType().toString());
+					nbt.put("linkingPos", cpHere.createTag());
+					nbt.put("linkingOffset", NBTUtil.writeBlockPos(offsetHere));
 				}
 				else
 				{
-					CompoundNBT linkNBT = stack.getOrCreateTag().getCompound("linkingPos");
-					DimensionBlockPos linkPos = new DimensionBlockPos(linkNBT.getCompound("master"));
-					BlockPos offsetLink = NBTUtil.readBlockPos(linkNBT.getCompound("offset"));
-					TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos.pos);
-					int distanceSq = (int)Math.ceil(linkPos.pos.distanceSq(masterPos));
+					ConnectionPoint cpLink = new ConnectionPoint(nbt.getCompound("linkingPos"));
+					ResourceLocation linkDimension = new ResourceLocation(nbt.getString("linkingDim"));
+					BlockPos linkOffset = NBTUtil.readBlockPos(nbt.getCompound("linkingOffset"));
+					TileEntity tileEntityLinkingPos = world.getTileEntity(cpLink.getPosition());
+					int distanceSq = (int)Math.ceil(cpLink.getPosition().distanceSq(masterPos));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
-					if(linkPos.dimension!=world.getDimension().getType())
+					if(!linkDimension.equals(world.getDimension().getType().getRegistryName()))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongDimension"), true);
-					else if(linkPos.pos.equals(masterPos))
+					else if(cpLink.getPosition().equals(masterPos))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"sameConnection"), true);
 					else if(distanceSq > maxLengthSq)
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"tooFar"), true);
@@ -600,9 +597,8 @@ public class ApiUtils
 						else
 						{
 							IImmersiveConnectable iicLink = (IImmersiveConnectable)tileEntityLinkingPos;
-							ConnectionPoint cpLink = iicLink.getTargetedPoint(targetLink, offsetLink);
-							if(!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, cpLink, offsetLink)||
-									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos.pos)||
+							if(!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, cpLink, linkOffset)||
+									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(cpLink.getPosition())||
 									!coil.canConnectCable(stack, tileEntityLinkingPos))
 							{
 								player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"invalidPoint"), true);
@@ -641,7 +637,7 @@ public class ApiUtils
 												failedReasons.add(p.getLeft());
 										}
 									}, (p) -> {
-									}, start, end.add(new Vec3d(linkPos.pos.subtract(masterPos))));
+									}, start, end.add(new Vec3d(cpLink.getPosition().subtract(masterPos))));
 									if(failedReasons.isEmpty())
 									{
 										Connection conn = new Connection(wire, cpHere, cpLink);
@@ -659,9 +655,9 @@ public class ApiUtils
 										BlockState state = world.getBlockState(masterPos);
 										world.notifyBlockUpdate(masterPos, state, state, 3);
 										((TileEntity)iicLink).markDirty();
-										world.addBlockEvent(linkPos.pos, ((TileEntity)iicLink).getBlockState().getBlock(), -1, 0);
-										state = world.getBlockState(linkPos.pos);
-										world.notifyBlockUpdate(linkPos.pos, state, state, 3);
+										world.addBlockEvent(cpLink.getPosition(), tileEntityLinkingPos.getBlockState().getBlock(), -1, 0);
+										state = world.getBlockState(cpLink.getPosition());
+										world.notifyBlockUpdate(cpLink.getPosition(), state, state, 3);
 									}
 									else
 									{
@@ -677,6 +673,7 @@ public class ApiUtils
 					ItemNBTHelper.remove(stack, "linkingPos");
 					ItemNBTHelper.remove(stack, "targettingInfo");
 				}
+			}
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;

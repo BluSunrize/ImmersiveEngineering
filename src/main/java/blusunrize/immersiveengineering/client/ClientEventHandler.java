@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
@@ -457,8 +458,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(equipped.hasTag()&&equipped.getOrCreateTag().contains("linkingPos", NBT.TAG_COMPOUND))
 						{
 							CompoundNBT link = equipped.getOrCreateTag().getCompound("linkingPos");
-							DimensionBlockPos pos = new DimensionBlockPos(link.getCompound("master"));
-							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.pos.getX(), pos.pos.getY(), pos.pos.getZ());
+							ConnectionPoint cp = new ConnectionPoint(link);
+							BlockPos pos = cp.getPosition();
+							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
 							int col = WireType.ELECTRUM.getColour(null);
 							if(equipped.getItem() instanceof IWireCoil)
 							{
@@ -466,9 +468,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
 								double d;
 								if(rtr instanceof BlockRayTraceResult)
-									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.pos.getX(), pos.pos.getY(), pos.pos.getZ(), true);
+									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.getX(), pos.getY(), pos.getZ(), true);
 								else
-									d = player.getDistanceSq(pos.pos.getX(), pos.pos.getY(), pos.pos.getZ());
+									d = player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ());
 								int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
 								if(d > max*max)
 									col = 0xdd3333;

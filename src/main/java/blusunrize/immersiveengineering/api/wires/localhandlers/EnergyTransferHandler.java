@@ -24,7 +24,9 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class EnergyTransferHandler extends LocalNetworkHandler implements IWorldTickable
 {
@@ -124,11 +126,27 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		return sources;
 	}
 
+	@Nullable
 	public Path getPath(ConnectionPoint source, ConnectionPoint sink)
 	{
 		if(uninitialised)
 			calcPaths();
-		return energyPaths.get(source, sink);
+		if(sources.containsKey(source)&&sinks.containsKey(sink))
+			return energyPaths.get(source, sink);
+		else
+		{
+			final Path[] ret = {null};
+			runDijkstraWithSource(source, p -> {
+				if(p.end.equals(sink))
+				{
+					ret[0] = p;
+					return true;
+				}
+				else
+					return false;
+			});
+			return ret[0];
+		}
 	}
 
 	private void calcPaths()
@@ -150,38 +168,45 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		if(sources.isEmpty()||sinks.isEmpty())
 			return;
 		for(ConnectionPoint source : sources.keySet())
+			runDijkstraWithSource(source, p -> {
+				energyPaths.put(source, p.end, p);
+				return false;
+			});
+	}
+
+	private void runDijkstraWithSource(ConnectionPoint source, Predicate<Path> stopAfter)
+	{
+		Map<ConnectionPoint, Path> shortestKnown = new HashMap<>();
+		BinaryHeap<ConnectionPoint> heap = new BinaryHeap<>(
+				Comparator.comparingDouble(end -> shortestKnown.get(end).loss));
+		Map<ConnectionPoint, HeapEntry<ConnectionPoint>> entryMap = new HashMap<>();
+		shortestKnown.put(source, new Path(source));
+		entryMap.put(source, heap.insert(source));
+		while(!heap.empty())
 		{
-			Map<ConnectionPoint, Path> shortestKnown = new HashMap<>();
-			BinaryHeap<ConnectionPoint> heap = new BinaryHeap<>(
-					Comparator.comparingDouble(end -> shortestKnown.get(end).loss));
-			Map<ConnectionPoint, HeapEntry<ConnectionPoint>> entryMap = new HashMap<>();
-			shortestKnown.put(source, new Path(source));
-			entryMap.put(source, heap.insert(source));
-			while(!heap.empty())
+			ConnectionPoint endPoint = heap.extractMin();
+			entryMap.remove(endPoint);
+			Path shortest = shortestKnown.get(endPoint);
+			if(stopAfter.test(shortest))
+				return;
+			//Loss of 1 means no energy will be transferred, so the paths are irrelevant
+			if(shortest.loss >= 1)
+				break;
+			for(Connection next : net.getConnections(endPoint))
 			{
-				ConnectionPoint endPoint = heap.extractMin();
-				entryMap.remove(endPoint);
-				Path shortest = shortestKnown.get(endPoint);
-				energyPaths.put(source, shortest.end, shortest);
-				//Loss of 1 means no energy will be transferred, so the paths are irrelevant
-				if(shortest.loss >= 1)
-					break;
-				for(Connection next : net.getConnections(endPoint))
+				Path alternative = shortest.append(next, sinks.containsKey(next.getOtherEnd(shortest.end)));
+				if(!shortestKnown.containsKey(alternative.end))
 				{
-					Path alternative = shortest.append(next, sinks.containsKey(next.getOtherEnd(shortest.end)));
-					if(!shortestKnown.containsKey(alternative.end))
+					shortestKnown.put(alternative.end, alternative);
+					entryMap.put(alternative.end, heap.insert(alternative.end));
+				}
+				else
+				{
+					Path oldPath = shortestKnown.get(alternative.end);
+					if(alternative.loss < oldPath.loss)
 					{
 						shortestKnown.put(alternative.end, alternative);
-						entryMap.put(alternative.end, heap.insert(alternative.end));
-					}
-					else
-					{
-						Path oldPath = shortestKnown.get(alternative.end);
-						if(alternative.loss < oldPath.loss)
-						{
-							shortestKnown.put(alternative.end, alternative);
-							heap.decreaseKey(entryMap.get(alternative.end));
-						}
+						heap.decreaseKey(entryMap.get(alternative.end));
 					}
 				}
 			}
