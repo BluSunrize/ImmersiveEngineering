@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/sheetmetal_iron"
+    ]
+  },
+  "criteria": {
+    "has_plate_iron": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:plate_iron"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/sheetmetal_iron"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_plate_iron",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "inputs": [
+    {
+      "count": 2,
+      "base_ingredient": {
+        "tag": "forge:plates/iron"
+      }
+    },
+    {
+      "tag": "forge:ingots/copper"
+    }
+  ],
+  "category": "components",
+  "result": {
+    "item": "immersiveengineering:component_iron"
+  }
+}

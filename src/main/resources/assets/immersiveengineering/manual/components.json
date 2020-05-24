@@ -4,10 +4,10 @@
         "recipes": [
             [
                 {
-                    "recipe": "component_iron"
+                    "recipe": "crafting/component_iron"
                 },
                 {
-                    "recipe": "component_steel"
+                    "recipe": "crafting/component_steel"
                 }
             ]
         ]

@@ -21,6 +21,8 @@ import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
+
 public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 {
 	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "alloysmelter");
@@ -35,25 +37,21 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 	@Override
 	public void setIngredients(AlloyRecipe recipe, IIngredients ingredients)
 	{
-		/* todo: fix this with JSON
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input0, recipe.input1).build());
 		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
-		 */
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, AlloyRecipe recipe, IIngredients iIngredients)
 	{
-		/* todo: fix this with JSON
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 5, 0);
-		guiItemStacks.set(0, recipe.input0.getSizedStackList());
+		guiItemStacks.set(0, Arrays.asList(recipe.input0.getMatchingStacks()));
 
 		guiItemStacks.init(1, false, 33, 0);
-		guiItemStacks.set(1, recipe.input1.getSizedStackList());
+		guiItemStacks.set(1, Arrays.asList(recipe.input1.getMatchingStacks()));
 
 		guiItemStacks.init(2, false, 87, 18);
 		guiItemStacks.set(2, recipe.output);
-		 */
 	}
 }

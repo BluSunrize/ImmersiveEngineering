@@ -31,11 +31,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -445,9 +445,9 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	}
 
 	@Override
-	protected SqueezerRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected SqueezerRecipe getRecipeForId(ResourceLocation id)
 	{
-		return SqueezerRecipe.loadFromNBT(tag);
+		return SqueezerRecipe.recipeList.get(id);
 	}
 
 	@Override

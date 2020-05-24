@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/nugget_lead_to_ingot_lead"
+    ]
+  },
+  "criteria": {
+    "has_nugget_lead": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:nugget_lead"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/nugget_lead_to_ingot_lead"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_nugget_lead",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "mold": {
+    "item": "immersiveengineering:mold_plate"
+  },
+  "result": {
+    "tag": "forge:plates/brass"
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:ingots/brass",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:plates/brass",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:ingots/brass"
+  },
+  "energy": 2400
+}

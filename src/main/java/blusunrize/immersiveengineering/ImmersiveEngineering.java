@@ -8,15 +8,19 @@
 
 package blusunrize.immersiveengineering;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.crafting.IngredientSerializers;
+import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
+import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.items.RevolverItem;
+import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -29,8 +33,8 @@ import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
@@ -43,6 +47,7 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -53,6 +58,7 @@ import org.apache.logging.log4j.LogManager;
 import javax.annotation.Nonnull;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Objects;
 import java.util.function.Function;
 
 @Mod(ImmersiveEngineering.MODID)
@@ -80,6 +86,7 @@ public class ImmersiveEngineering
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+		MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -104,15 +111,51 @@ public class ImmersiveEngineering
 		for(String b : IEConfig.ORES.oreDimBlacklist.get())
 			IEWorldGen.oreDimBlacklist.add(new ResourceLocation(b));
 		IEApi.modPreference = IEConfig.GENERAL.preferredOres.get();
-		IEApi.prefixToIngotMap.put("ingot", new Integer[]{1, 1});
-		IEApi.prefixToIngotMap.put("nugget", new Integer[]{1, 9});
-		IEApi.prefixToIngotMap.put("block", new Integer[]{9, 1});
-		IEApi.prefixToIngotMap.put("plate", new Integer[]{1, 1});
-		IEApi.prefixToIngotMap.put("wire", new Integer[]{1, 1});
-		IEApi.prefixToIngotMap.put("gear", new Integer[]{4, 1});
-		IEApi.prefixToIngotMap.put("rod", new Integer[]{2, 1});
-		IEApi.prefixToIngotMap.put("fence", new Integer[]{5, 3});
+		IEApi.prefixToIngotMap.put("ingots", new Integer[]{1, 1});
+		IEApi.prefixToIngotMap.put("nuggets", new Integer[]{1, 9});
+		IEApi.prefixToIngotMap.put("storage_blocks", new Integer[]{9, 1});
+		IEApi.prefixToIngotMap.put("plates", new Integer[]{1, 1});
+		IEApi.prefixToIngotMap.put("wires", new Integer[]{1, 1});
+		IEApi.prefixToIngotMap.put("gears", new Integer[]{4, 1});
+		IEApi.prefixToIngotMap.put("rods", new Integer[]{1, 2});
+		IEApi.prefixToIngotMap.put("fences", new Integer[]{5, 3});
 		IECompatModule.doModulesPreInit();
+
+		ArcFurnaceRecipe.allowRecipeTypeForRecycling(IRecipeType.CRAFTING);
+		ArcFurnaceRecipe.allowRecipeTypeForRecycling(MetalPressRecipe.TYPE);
+		// Vanilla Tools, Swords & Armor
+		ArcFurnaceRecipe.allowItemForRecycling(stack -> stack.getItem() instanceof ToolItem
+				||stack.getItem() instanceof HoeItem||stack.getItem() instanceof ShearsItem
+				||stack.getItem() instanceof SwordItem||stack.getItem() instanceof ArmorItem
+				||stack.getItem() instanceof HorseArmorItem||stack.getItem() instanceof BucketItem);
+		// IE Tools
+		ArcFurnaceRecipe.allowItemForRecycling(stack -> stack.getItem() instanceof HammerItem
+				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem
+				||stack.getItem() instanceof DrillheadItem);
+		// Molds
+		ArcFurnaceRecipe.allowItemForRecycling(stack -> stack.getItem()==Molds.moldPlate
+				||stack.getItem()==Molds.moldGear
+				||stack.getItem()==Molds.moldRod
+				||stack.getItem()==Molds.moldBulletCasing
+				||stack.getItem()==Molds.moldWire
+				||stack.getItem()==Molds.moldPacking4
+				||stack.getItem()==Molds.moldPacking9
+				||stack.getItem()==Molds.moldUnpacking
+		);
+		// Blocks, Plates, Rods, Wires, Gears, Scaffoldings, Fences
+		ArcFurnaceRecipe.allowItemForRecycling(stack -> ApiUtils.isPlate(stack)
+				||ApiUtils.isMetalComponent(stack, "rods/")
+				||ApiUtils.isMetalComponent(stack, "wires/")
+				||ApiUtils.isMetalComponent(stack, "gears/")
+				||ApiUtils.isMetalComponent(stack, "scaffoldings/")
+				||ApiUtils.isMetalComponent(stack, "fences/"));
+		// Prevent tools used during crafting to be recycled as components
+		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
+				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem);
+		// Ignore bricks
+		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> ApiUtils.isIngot(stack)
+				&&Objects.requireNonNull(ApiUtils.getMetalComponentTypeAndMetal(stack, "ingots"))[1].contains("brick"));
+
 
 		new ThreadContributorSpecialsDownloader();
 
@@ -141,7 +184,6 @@ public class ImmersiveEngineering
 
 		IECompatModule.doModulesInit();
 		proxy.initEnd();
-		registerMessage(MessageMineralListSync.class, MessageMineralListSync::new);
 		registerMessage(MessageTileSync.class, MessageTileSync::new);
 		registerMessage(MessageTileSync.class, MessageTileSync::new);
 		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new);
@@ -213,6 +255,11 @@ public class ImmersiveEngineering
 		CommandHandler.registerServer(event.getCommandDispatcher());
 	}
 
+	public void serverAboutToStart(FMLServerAboutToStartEvent event)
+	{
+		event.getServer().getResourceManager().addReloadListener(new RecipeReloadListener());
+	}
+
 	public void serverStarted(FMLServerStartedEvent event)
 	{
 		//TODO isn't this always true? if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
@@ -226,7 +273,6 @@ public class ImmersiveEngineering
 			}
 		}
 		IEContent.refreshFluidReferences();
-		ExcavatorHandler.recalculateChances(true);
 	}
 
 	public static ItemGroup itemGroup = new ItemGroup(MODID)

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/wire_aluminum"
+    ]
+  },
+  "criteria": {
+    "has_aluminum_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/aluminum"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/wire_aluminum"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_aluminum_ingot",
+      "has_the_recipe"
+    ]
+  ]
+}

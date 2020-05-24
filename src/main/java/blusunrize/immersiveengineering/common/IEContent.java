@@ -9,9 +9,11 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.*;
-import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.CapabilitySkyhookData;
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
@@ -27,10 +29,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
-import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionCrop;
-import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionGeneric;
-import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionStacking;
-import blusunrize.immersiveengineering.client.utils.ClocheRenderHelper.RenderFunctionStem;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
@@ -568,10 +567,7 @@ public class IEContent
 		IEWireTypes.setup();
 		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
-		ClocheRecipe.RENDER_FUNCTION_CROP = RenderFunctionCrop::new;
-		ClocheRecipe.RENDER_FUNCTION_STACK = RenderFunctionStacking::new;
-		ClocheRecipe.RENDER_FUNCTION_STEM = RenderFunctionStem::new;
-		ClocheRecipe.RENDER_FUNCTION_GENERIC = RenderFunctionGeneric::new;
+		ClocheRenderFunctions.init();
 
 		IELootFunctions.preInit();
 		IEShaders.preInit();
@@ -903,21 +899,24 @@ public class IEContent
 		blockFluidConcrete.setPotionEffects(new EffectInstance(Effects.SLOWNESS, 20, 3, false, false));
  */
 
+		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion.get();
+		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance.get();
+
 		ChemthrowerEffects.register();
 
-		RailgunHandler.registerProjectileProperties(new IngredientStack(IETags.ironRod), 15, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(new IngredientStack(IETags.aluminumRod), 13, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(new IngredientStack(IETags.steelRod), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
+		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.ironRod), 15, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
+		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.aluminumRod), 13, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
+		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.steelRod), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
 		RailgunHandler.registerProjectileProperties(new ItemStack(IEItems.Misc.graphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();
 		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
 
-		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.MAGMA_BLOCK), 1300);
+		ThermoelectricHandler.registerSourceInKelvin(Blocks.MAGMA_BLOCK, 1300);
 		//TODO tags?
-		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.ICE), 273);
-		ThermoelectricHandler.registerSourceInKelvin(new IngredientStack(Blocks.PACKED_ICE), 200);
+		ThermoelectricHandler.registerSourceInKelvin(Blocks.ICE, 273);
+		ThermoelectricHandler.registerSourceInKelvin(Blocks.PACKED_ICE, 200);
 		ThermoelectricHandler.registerSourceInKelvin(IETags.getTagsFor(EnumMetals.URANIUM).storage, 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/yellorium"), 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/plutonium"), 4000);
@@ -1014,15 +1013,6 @@ public class IEContent
 		{
 			x.printStackTrace();
 		}
-		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
-			if(recipe instanceof BrewingRecipe)
-			{
-				IngredientStack ingredientStack = ApiUtils.createIngredientStack(((BrewingRecipe)recipe).getIngredient());
-				Ingredient input = ((BrewingRecipe)recipe).getInput();
-				ItemStack output = ((BrewingRecipe)recipe).getOutput();
-				if(/*TODO input.getItem()==Items.POTIONITEM&&*/output.getItem()==Items.POTION)
-					MixerRecipePotion.registerPotionRecipe(PotionUtils.getPotionFromItem(output), PotionUtils.getPotionFromItem(input.getMatchingStacks()[0]), ingredientStack);
-			}
 		if(arcRecycleThread!=null)
 		{
 			try

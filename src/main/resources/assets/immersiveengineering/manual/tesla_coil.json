@@ -1,26 +1,26 @@
 {
   "tesla_coil_recipe": {
     "type": "crafting",
-    "recipe": "tesla_coil"
+    "recipe": "crafting/tesla_coil"
   },
   "tesla_stuff_recipes": {
     "type": "crafting",
     "recipes": [
       [
         {
-          "recipe": "armor_faraday_feet"
+          "recipe": "crafting/armor_faraday_feet"
         },
         {
-          "recipe": "armor_faraday_legs"
+          "recipe": "crafting/armor_faraday_legs"
         },
         {
-          "recipe": "armor_faraday_chest"
+          "recipe": "crafting/armor_faraday_chest"
         },
         {
-          "recipe": "armor_faraday_head"
+          "recipe": "crafting/armor_faraday_head"
         },
         {
-          "recipe": "tool/fluorescent_tube"
+          "recipe": "crafting/fluorescent_tube"
         }
       ]
     ]

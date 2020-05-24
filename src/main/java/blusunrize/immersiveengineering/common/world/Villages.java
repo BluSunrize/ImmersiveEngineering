@@ -477,7 +477,7 @@ public class Villages
 				FilledMapItem.renderBiomePreviewMap(world, selling);
 				MapData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.TARGET_POINT);
 				selling.setDisplayName(new TranslationTextComponent("item.immersiveengineering.map_orevein.name"));
-				ItemNBTHelper.setLore(selling, mineralWorldInfo.mineral.name);
+				ItemNBTHelper.setLore(selling, mineralWorldInfo.mineral.getId().getPath());
 
 				return new MerchantOffer(new ItemStack(Items.EMERALD, 8+random.nextInt(8)),
 						new ItemStack(Metals.ingots.get(EnumMetals.COPPER)), selling, 0, 16, 30, 0.5F);

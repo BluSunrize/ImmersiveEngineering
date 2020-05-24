@@ -1,7 +1,10 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.crafting.*;
+import blusunrize.immersiveengineering.common.crafting.serializers.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
@@ -42,4 +45,53 @@ public class RecipeSerializers
 	public static final RegistryObject<RevolverAssemblyRecipeSerializer> REVOLVER_ASSEMBLY_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"revolver_assembly", RevolverAssemblyRecipeSerializer::new
 	);
+
+	static
+	{
+		AlloyRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"alloy", AlloyRecipeSerializer::new
+		);
+		BlastFurnaceRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"blast_furnace", BlastFurnaceRecipeSerializer::new
+		);
+		BlastFurnaceFuel.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"blast_furnace_fuel", BlastFurnaceFuelSerializer::new
+		);
+		CokeOvenRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"coke_oven", CokeOvenRecipeSerializer::new
+		);
+		ClocheRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"cloche", ClocheRecipeSerializer::new
+		);
+		BlueprintCraftingRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"blueprint", BlueprintCraftingRecipeSerializer::new
+		);
+		MetalPressRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"metal_press", MetalPressRecipeSerializer::new
+		);
+		ArcFurnaceRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"arc_furnace", ArcFurnaceRecipeSerializer::new
+		);
+		BottlingMachineRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"bottling_machine", BottlingMachineRecipeSerializer::new
+		);
+		CrusherRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"crusher", CrusherRecipeSerializer::new
+		);
+		FermenterRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"fermenter", FermenterRecipeSerializer::new
+		);
+		SqueezerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"squeezer", SqueezerRecipeSerializer::new
+		);
+		RefineryRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"refinery", RefineryRecipeSerializer::new
+		);
+		MixerRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"mixer", MixerRecipeSerializer::new
+		);
+		MineralMix.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"mineral_mix", MineralMixSerializer::new
+		);
+	}
 }

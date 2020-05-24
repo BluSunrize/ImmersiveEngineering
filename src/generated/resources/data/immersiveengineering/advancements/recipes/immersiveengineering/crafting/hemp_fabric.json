@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/hemp_fabric"
+    ]
+  },
+  "criteria": {
+    "has_hemp_fiber": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:fiber_hemp"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/hemp_fabric"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_hemp_fiber",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "s s",
+    "s s",
+    "s s"
+  ],
+  "key": {
+    "s": {
+      "tag": "forge:sheetmetals/steel"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:chute_steel",
+    "count": 12
+  }
+}

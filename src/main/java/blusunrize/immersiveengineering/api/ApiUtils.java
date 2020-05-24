@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
@@ -21,6 +21,9 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
@@ -33,6 +36,7 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -55,6 +59,7 @@ import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.extensions.IForgeEntityMinecart;
 import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.common.util.JsonUtils;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -64,6 +69,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
@@ -75,10 +81,11 @@ import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static blusunrize.immersiveengineering.common.IERecipes.getIngot;
+import static blusunrize.immersiveengineering.api.IETags.getIngot;
 
 public class ApiUtils
 {
@@ -114,8 +121,10 @@ public class ApiUtils
 				if(stackMatchesObject(stack, io, checkNBT))
 					return true;
 		}
-		else if(o instanceof IngredientStack)
-			return ((IngredientStack)o).matchesItemStack(stack);
+		else if(o instanceof IngredientWithSize)
+			return ((IngredientWithSize)o).test(stack);
+		else if(o instanceof Ingredient)
+			return ((Ingredient)o).test(stack);
 		else if(o instanceof ItemStack[])
 		{
 			for(ItemStack io : (ItemStack[])o)
@@ -142,24 +151,35 @@ public class ApiUtils
 		return s2;
 	}
 
-	public static boolean stacksMatchIngredientList(List<IngredientStack> list, NonNullList<ItemStack> stacks)
+	public static boolean stacksMatchIngredientList(List<Ingredient> list, NonNullList<ItemStack> stacks)
 	{
-		ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(stacks.size());
+		return stacksMatchList(list, stacks, i -> 1, Ingredient::test);
+	}
+
+	public static boolean stacksMatchIngredientWithSizeList(List<IngredientWithSize> list, NonNullList<ItemStack> stacks)
+	{
+		return stacksMatchList(list, stacks, IngredientWithSize::getCount, IngredientWithSize::testIgnoringSize);
+	}
+
+	private static <T> boolean stacksMatchList(List<T> list, NonNullList<ItemStack> stacks, Function<T, Integer> size,
+											   BiPredicate<T, ItemStack> matchesIgnoringSize)
+	{
+		List<ItemStack> queryList = new ArrayList<>(stacks.size());
 		for(ItemStack s : stacks)
 			if(!s.isEmpty())
 				queryList.add(s.copy());
 
-		for(IngredientStack ingr : list)
+		for(T ingr : list)
 			if(ingr!=null)
 			{
-				int amount = ingr.inputSize;
+				int amount = size.apply(ingr);
 				Iterator<ItemStack> it = queryList.iterator();
 				while(it.hasNext())
 				{
 					ItemStack query = it.next();
 					if(!query.isEmpty())
 					{
-						if(ingr.matchesItemStackIgnoringSize(query))
+						if(matchesIgnoringSize.test(ingr, query))
 						{
 							if(query.getCount() > amount)
 							{
@@ -189,13 +209,6 @@ public class ApiUtils
 		return Ingredient.fromStacks(list.toArray(new ItemStack[0]));
 	}
 
-	@Deprecated
-	public static ComparableItemStack createComparableItemStack(ItemStack stack)
-	{
-		return createComparableItemStack(stack, true);
-	}
-
-
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
 	{
 		return createComparableItemStack(stack, copy, stack.hasTag()&&!stack.getOrCreateTag().isEmpty());
@@ -203,9 +216,31 @@ public class ApiUtils
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
 	{
-		ComparableItemStack comp = new ComparableItemStack(stack, true, copy);
+		ComparableItemStack comp = new ComparableItemStack(stack, copy);
 		comp.setUseNBT(useNbt);
 		return comp;
+	}
+
+	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
+	{
+		if(fluidStack==null)
+			return JsonNull.INSTANCE;
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("fluid", fluidStack.getFluid().getRegistryName().toString());
+		jsonObject.addProperty("amount", fluidStack.getAmount());
+		if(fluidStack.hasTag())
+			jsonObject.addProperty("tag", fluidStack.getTag().toString());
+		return jsonObject;
+	}
+
+	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject)
+	{
+		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(JSONUtils.getString(jsonObject, "fluid")));
+		int amount = JSONUtils.getInt(jsonObject, "amount");
+		FluidStack fluidStack = new FluidStack(fluid, amount);
+		if(JSONUtils.hasField(jsonObject, "tag"))
+			fluidStack.setTag(JsonUtils.readNBT(jsonObject, "tag"));
+		return fluidStack;
 	}
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)
@@ -272,7 +307,13 @@ public class ApiUtils
 		{
 			for(String componentType : componentTypes)
 				if(name.getPath().startsWith(componentType))
-					return new String[]{componentType, name.getPath().substring(componentType.length())};
+				{
+					String material = name.getPath().substring(componentType.length());
+					if(material.startsWith("/"))
+						material = material.substring(1);
+					if(material.length() > 0)
+						return new String[]{componentType, material};
+				}
 		}
 		return null;
 	}
@@ -697,61 +738,14 @@ public class ApiUtils
 			throw new RuntimeException("Recipe Inputs must always be ItemStack, Item, Block or ResourceLocation (tag name), "+input+" is invalid");
 	}
 
-	public static IngredientStack createIngredientStack(Object input)
+	public static boolean hasPlayerIngredient(PlayerEntity player, IngredientWithSize ingredient)
 	{
-		if(input instanceof IngredientStack)
-			return (IngredientStack)input;
-		else if(input instanceof ItemStack)
-			return new IngredientStack((ItemStack)input);
-		else if(input instanceof Item)
-			return new IngredientStack(new ItemStack((Item)input));
-		else if(input instanceof Block)
-			return new IngredientStack(new ItemStack((Block)input));
-		else if(input instanceof Ingredient)
-			return new IngredientStack(Arrays.asList(((Ingredient)input).getMatchingStacks()));
-		else if(input instanceof Tag)
-			return new IngredientStack(((Tag)input).getId());
-		else if(input instanceof List)
-		{
-			if(!((List)input).isEmpty())
-			{
-				if(((List)input).get(0) instanceof ItemStack)
-					return new IngredientStack(((List<ItemStack>)input));
-				else if(((List)input).get(0) instanceof ResourceLocation)
-				{
-					List<ItemStack> itemList = new ArrayList<>();
-					for(ResourceLocation s : ((List<ResourceLocation>)input))
-						itemList.addAll(getItemsInTag(s));
-					return new IngredientStack(itemList);
-				}
-			}
-			else
-				return new IngredientStack(ItemStack.EMPTY);
-		}
-		else if(input instanceof ItemStack[])
-			return new IngredientStack(Arrays.asList((ItemStack[])input));
-		else if(input instanceof ResourceLocation[])
-		{
-			ArrayList<ItemStack> itemList = new ArrayList<>();
-			for(ResourceLocation s : ((ResourceLocation[])input))
-				itemList.addAll(getItemsInTag(s));
-			return new IngredientStack(itemList);
-		}
-		else if(input instanceof ResourceLocation)
-			return new IngredientStack((ResourceLocation)input);
-		else if(input instanceof FluidStack)
-			return new IngredientStack((FluidStack)input);
-		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, ResourceLocation (Tag name) or FluidStack; "+input+" is invalid");
-	}
-
-	public static boolean hasPlayerIngredient(PlayerEntity player, IngredientStack ingredient)
-	{
-		int amount = ingredient.inputSize;
+		int amount = ingredient.getCount();
 		ItemStack itemstack;
 		for(Hand hand : Hand.values())
 		{
 			itemstack = player.getHeldItem(hand);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.test(itemstack))
 			{
 				amount -= itemstack.getCount();
 				if(amount <= 0)
@@ -761,7 +755,7 @@ public class ApiUtils
 		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 		{
 			itemstack = player.inventory.getStackInSlot(i);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.test(itemstack))
 			{
 				amount -= itemstack.getCount();
 				if(amount <= 0)
@@ -771,14 +765,14 @@ public class ApiUtils
 		return amount <= 0;
 	}
 
-	public static void consumePlayerIngredient(PlayerEntity player, IngredientStack ingredient)
+	public static void consumePlayerIngredient(PlayerEntity player, IngredientWithSize ingredient)
 	{
-		int amount = ingredient.inputSize;
+		int amount = ingredient.getCount();
 		ItemStack itemstack;
 		for(Hand hand : Hand.values())
 		{
 			itemstack = player.getHeldItem(hand);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.testIgnoringSize(itemstack))
 			{
 				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;
@@ -792,7 +786,7 @@ public class ApiUtils
 		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 		{
 			itemstack = player.inventory.getStackInSlot(i);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.testIgnoringSize(itemstack))
 			{
 				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;

@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "ores": [
+    {
+      "chance": 1.0,
+      "output": {
+        "tag": "forge:ores/tin"
+      }
+    }
+  ],
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:ores/tin",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "weight": 20,
+  "fail_chance": 0.05
+}

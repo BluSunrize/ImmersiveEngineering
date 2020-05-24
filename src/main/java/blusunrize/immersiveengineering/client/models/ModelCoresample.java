@@ -10,16 +10,15 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.OreOutput;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
@@ -40,7 +39,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
@@ -97,23 +95,29 @@ public class ModelCoresample extends BakedIEModel
 				int pixelLength = 0;
 
 				Map<TextureAtlasSprite, Integer> textureOre = new HashMap<>();
+				TextureAtlasSprite textureStone;
 				if(mineral!=null)
 				{
-					for(OreOutput o : mineral.outputs)
-						if(!o.stack.isEmpty())
+					for(StackWithChance o : mineral.outputs)
+						if(!o.getStack().isEmpty())
 						{
-							int weight = Math.max(2, (int)Math.round(16*o.recalculatedChance));
-							Block b = Block.getBlockFromItem(o.stack.getItem());
-							BlockState state = b!=Blocks.AIR?b.getDefaultState(): Blocks.STONE.getDefaultState();
+							int weight = Math.max(2, Math.round(16*o.getChance()));
+							Block b = Block.getBlockFromItem(o.getStack().getItem());
+							if(b==Blocks.AIR)
+								b = mineral.background;
+							BlockState state = b.getDefaultState();
 							IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
-							if(model!=null&&model.getParticleTexture()!=null)
-								textureOre.put(model.getParticleTexture(), weight);
+							textureOre.put(model.getParticleTexture(), weight);
 							pixelLength += weight;
 						}
+					IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(mineral.background.getDefaultState());
+					textureStone = model.getParticleTexture();
 				}
 				else
+				{
 					pixelLength = 16;
-				TextureAtlasSprite textureStone = ClientUtils.getSprite(new ResourceLocation("block/stone"));
+					textureStone = ClientUtils.getSprite(new ResourceLocation("block/stone"));
+				}
 
 				Vec2f[] stoneUVs = {
 						new Vec2f(textureStone.getInterpolatedU(16*wOff), textureStone.getInterpolatedV(16*dOff)),
@@ -286,8 +290,8 @@ public class ModelCoresample extends BakedIEModel
 					try
 					{
 						return modelCache.get(name, () -> {
-							for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
-								if(name.equals(mix.name))
+							for(MineralMix mix : ExcavatorHandler.mineralList.values())
+								if(name.equals(mix.getId().toString()))
 									return new ModelCoresample(mix);
 							throw new RuntimeException("Invalid mineral mix: "+name);
 						});

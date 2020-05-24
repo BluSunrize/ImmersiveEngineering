@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/metal_ladder_steel"
+    ]
+  },
+  "criteria": {
+    "has_metal_ladder": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:metal_ladder_none"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/metal_ladder_steel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_metal_ladder",
+      "has_the_recipe"
+    ]
+  ]
+}

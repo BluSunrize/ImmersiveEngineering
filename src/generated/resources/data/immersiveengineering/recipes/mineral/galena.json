@@ -1,0 +1,28 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "ores": [
+    {
+      "chance": 0.4,
+      "output": {
+        "tag": "forge:ores/lead"
+      }
+    },
+    {
+      "chance": 0.4,
+      "output": {
+        "tag": "forge:dusts/sulfur"
+      }
+    },
+    {
+      "chance": 0.2,
+      "output": {
+        "tag": "forge:ores/silver"
+      }
+    }
+  ],
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "weight": 15,
+  "fail_chance": 0.05
+}

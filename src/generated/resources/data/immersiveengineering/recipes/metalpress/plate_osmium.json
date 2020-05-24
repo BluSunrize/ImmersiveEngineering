@@ -1,0 +1,29 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "mold": {
+    "item": "immersiveengineering:mold_plate"
+  },
+  "result": {
+    "tag": "forge:plates/osmium"
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:ingots/osmium",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:plates/osmium",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:ingots/osmium"
+  },
+  "energy": 2400
+}

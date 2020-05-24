@@ -1,0 +1,35 @@
+{
+  "type": "immersiveengineering:alloy",
+  "time": 200,
+  "result": {
+    "count": 4,
+    "base_ingredient": {
+      "tag": "forge:ingots/brass"
+    }
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:ingots/brass",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:ingots/zinc",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input0": {
+    "count": 3,
+    "base_ingredient": {
+      "tag": "forge:ingots/copper"
+    }
+  },
+  "input1": {
+    "tag": "forge:ingots/zinc"
+  }
+}

@@ -1,14 +1,14 @@
 {
   "pipe_recipe": {
     "type": "crafting",
-    "recipe": "fluid_pipe"
+    "recipe": "crafting/fluid_pipe"
   },
   "pump_recipe": {
     "type": "crafting",
-    "recipe": "fluid_pump"
+    "recipe": "crafting/fluid_pump"
   },
   "outlet_recipe": {
     "type": "crafting",
-    "recipe": "fluid_placer"
+    "recipe": "crafting/fluid_placer"
   }
 }

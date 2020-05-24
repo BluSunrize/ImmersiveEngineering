@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/toolupgrade_railgun_scope"
+    ]
+  },
+  "criteria": {
+    "has_ingot_copper": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/copper"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/toolupgrade_railgun_scope"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ingot_copper",
+      "has_the_recipe"
+    ]
+  ]
+}

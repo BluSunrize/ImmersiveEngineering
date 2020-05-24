@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -70,9 +70,9 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 						List<ITextComponent> tooltip = new ArrayList<>();
 						tooltip.add(recipe.output.getDisplayName().deepCopy().setStyle(new Style().setColor(recipe.output.getRarity().color)));
 						ArrayList<ItemStack> inputs = new ArrayList<ItemStack>();
-						for(IngredientStack stack : recipe.inputs)
+						for(IngredientWithSize stack : recipe.inputs)
 						{
-							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.inputSize);
+							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.getCount());
 							if(toAdd.isEmpty())
 								continue;
 							boolean isNew = true;

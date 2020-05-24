@@ -24,6 +24,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
@@ -51,7 +52,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 0, 12);
-		guiItemStacks.set(0, recipe.input.getSizedStackList());
+		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
 		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 
 		guiItemStacks.init(1, true, 56, 0);

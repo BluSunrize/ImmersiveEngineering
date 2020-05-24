@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/plate_gold_hammering"
+    ]
+  },
+  "criteria": {
+    "has_gold_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/gold"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/plate_gold_hammering"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_gold_ingot",
+      "has_the_recipe"
+    ]
+  ]
+}

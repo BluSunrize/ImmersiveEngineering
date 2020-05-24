@@ -12,10 +12,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.client.Minecraft;
@@ -27,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -38,6 +41,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 
 public class CoresampleItem extends IEBaseItem
 {
@@ -55,10 +59,13 @@ public class CoresampleItem extends IEBaseItem
 		{
 			if(ItemNBTHelper.hasKey(stack, "mineral"))
 			{
-				String mineral = ItemNBTHelper.getString(stack, "mineral");
-				String unloc = Lib.DESC_INFO+"mineral."+mineral;
+				ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(stack, "mineral"));
+				MineralMix mineral = ExcavatorHandler.mineralList.get(rl);
+				String unloc = mineral.getTranslationKey();
 				String loc = I18n.format(unloc);
-				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mineral", (unloc.equals(loc)?mineral: loc)));
+				if(unloc.equals(loc))
+					loc = mineral.getPlainName();
+				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mineral", loc));
 			}
 			else
 				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.noMineral"));
@@ -74,7 +81,10 @@ public class CoresampleItem extends IEBaseItem
 			String s1 = (coords.x*16+16)+", "+(coords.z*16+16);
 			//TODO
 			String s2 = coords.dimension.getRegistryName().getPath();
-			list.add(new StringTextComponent(s2));
+
+			if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
+				s2 = s2.substring(4);
+			list.add(new StringTextComponent(Utils.toCamelCase(s2)));
 			list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.pos", s0, s1, ""));
 
 			if(ItemNBTHelper.hasKey(stack, "infinite"))

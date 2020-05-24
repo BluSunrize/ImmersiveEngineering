@@ -1,10 +1,10 @@
 {
   "turret_chemthrower_recipe": {
     "type": "crafting",
-    "recipe": "turret_chem"
+    "recipe": "crafting/turret_chem"
   },
   "turret_gun_recipe": {
     "type": "crafting",
-    "recipe": "turret_gun"
+    "recipe": "crafting/turret_gun"
   }
 }

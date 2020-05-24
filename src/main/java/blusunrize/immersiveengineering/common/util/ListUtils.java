@@ -45,10 +45,7 @@ public final class ListUtils
 	public static NonNullList<ItemStack> fromItems(List<ItemStack> stackList)
 	{
 		NonNullList<ItemStack> list = NonNullList.create();
-		for(ItemStack itemStack : stackList)
-		{
-			list.add(itemStack);
-		}
+		list.addAll(stackList);
 		return list;
 	}
 }

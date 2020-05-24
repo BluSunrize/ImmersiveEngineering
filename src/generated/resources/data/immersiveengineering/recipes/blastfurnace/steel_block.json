@@ -1,0 +1,16 @@
+{
+  "type": "immersiveengineering:blast_furnace",
+  "result": {
+    "tag": "forge:storage_blocks/steel"
+  },
+  "input": {
+    "tag": "forge:storage_blocks/iron"
+  },
+  "slag": {
+    "count": 9,
+    "base_ingredient": {
+      "tag": "forge:slag"
+    }
+  },
+  "time": 10800
+}

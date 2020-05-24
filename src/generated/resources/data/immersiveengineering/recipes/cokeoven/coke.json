@@ -1,0 +1,11 @@
+{
+  "type": "immersiveengineering:coke_oven",
+  "result": {
+    "tag": "forge:coal_coke"
+  },
+  "input": {
+    "item": "minecraft:coal"
+  },
+  "creosote": 500,
+  "time": 1800
+}

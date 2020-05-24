@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -213,8 +214,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 		if(ClientUtils.mc().currentScreen!=null
 				&&ClientUtils.mc().currentScreen instanceof BlastFurnaceScreen
-				&&BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
-			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack()))
+				&&BlastFurnaceFuel.isValidBlastFuel(event.getItemStack()))
+			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack()))
 					.setStyle(gray));
 
 		if(IEConfig.GENERAL.tagTooltips.get()&&event.getFlags().isAdvanced())

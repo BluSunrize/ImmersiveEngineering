@@ -1,0 +1,13 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "mold": {
+    "item": "immersiveengineering:mold_plate"
+  },
+  "result": {
+    "tag": "forge:plates/electrum"
+  },
+  "input": {
+    "tag": "forge:ingots/electrum"
+  },
+  "energy": 2400
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/coke_to_slab"
+    ]
+  },
+  "criteria": {
+    "has_coke": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:coke"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/coke_to_slab"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_coke",
+      "has_the_recipe"
+    ]
+  ]
+}

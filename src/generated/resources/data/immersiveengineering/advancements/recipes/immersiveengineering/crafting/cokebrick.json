@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/cokebrick"
+    ]
+  },
+  "criteria": {
+    "has_cokebrick": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:cokebrick"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/cokebrick"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_cokebrick",
+      "has_the_recipe"
+    ]
+  ]
+}

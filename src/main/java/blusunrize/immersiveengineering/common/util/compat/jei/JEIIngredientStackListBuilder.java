@@ -8,10 +8,12 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,17 +28,31 @@ public class JEIIngredientStackListBuilder
 		this.list = new ArrayList<>();
 	}
 
-	public static JEIIngredientStackListBuilder make(IngredientStack... ingredientStacks)
+	public static JEIIngredientStackListBuilder make(Ingredient... ingredientStacks)
 	{
 		JEIIngredientStackListBuilder builder = new JEIIngredientStackListBuilder();
 		builder.add(ingredientStacks);
 		return builder;
 	}
 
-	public JEIIngredientStackListBuilder add(IngredientStack... ingredientStacks)
+	public static JEIIngredientStackListBuilder make(IngredientWithSize... ingredientStacks)
 	{
-		for(IngredientStack ingr : ingredientStacks)
-			this.list.add(ingr.getSizedStackList());
+		JEIIngredientStackListBuilder builder = new JEIIngredientStackListBuilder();
+		builder.add(ingredientStacks);
+		return builder;
+	}
+
+	public JEIIngredientStackListBuilder add(Ingredient... ingredientStacks)
+	{
+		for(Ingredient ingr : ingredientStacks)
+			this.list.add(Arrays.asList(ingr.getMatchingStacks()));
+		return this;
+	}
+
+	public JEIIngredientStackListBuilder add(IngredientWithSize... ingredientStacks)
+	{
+		for(IngredientWithSize ingr : ingredientStacks)
+			this.list.add(Arrays.asList(ingr.getMatchingStacks()));
 		return this;
 	}
 
