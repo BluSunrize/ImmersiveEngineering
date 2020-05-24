@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

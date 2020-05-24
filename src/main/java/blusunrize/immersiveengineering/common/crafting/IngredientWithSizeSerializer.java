@@ -42,7 +42,7 @@ public class IngredientWithSizeSerializer
 	@Nonnull
 	public IngredientWithSize parse(@Nonnull JsonElement json)
 	{
-		if(json.isJsonObject() && json.getAsJsonObject().has(BASE_KEY))
+		if(json.isJsonObject()&&json.getAsJsonObject().has(BASE_KEY))
 		{
 			final int count = JSONUtils.getInt(json.getAsJsonObject(), COUNT_KEY, 1);
 			final JsonElement baseJson = json.getAsJsonObject().get(BASE_KEY);
