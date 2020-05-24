@@ -131,7 +131,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	{
 		if(itemStack.isEmpty())
 			return false;
-		return recipeList.containsKey(ApiUtils.createComparableItemStack(itemStack, false));
+		return recipesByMold.containsKey(ApiUtils.createComparableItemStack(itemStack, false));
 	}
 
 	@Override
