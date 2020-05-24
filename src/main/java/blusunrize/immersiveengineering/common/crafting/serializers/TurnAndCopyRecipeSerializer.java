@@ -1,14 +1,16 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
+ *
  */
 
-package blusunrize.immersiveengineering.common.crafting;
+package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -20,19 +22,19 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-public class RevolverAssemblyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RevolverAssemblyRecipe>
+public class TurnAndCopyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<TurnAndCopyRecipe>
 {
-	public static final IRecipeSerializer<RevolverAssemblyRecipe> INSTANCE = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+":revolver_assembly", new RevolverAssemblyRecipeSerializer()
-	);
-
 	@Nonnull
 	@Override
-	public RevolverAssemblyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
+	public TurnAndCopyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
 	{
 		ShapedRecipe basic = IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, json);
-		RevolverAssemblyRecipe recipe = new RevolverAssemblyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
+		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
 				basic.getIngredients(), basic.getRecipeOutput());
+		if(JSONUtils.getBoolean(json, "quarter_turn", false))
+			recipe.allowQuarterTurn();
+		if(JSONUtils.getBoolean(json, "eighth_turn", false))
+			recipe.allowEighthTurn();
 		if(JSONUtils.hasField(json, "copy_nbt"))
 		{
 			if(JSONUtils.isJsonArray(json, "copy_nbt"))
@@ -45,16 +47,18 @@ public class RevolverAssemblyRecipeSerializer extends ForgeRegistryEntry<IRecipe
 			}
 			else
 				recipe.setNBTCopyTargetRecipe(JSONUtils.getInt(json, "copy_nbt"));
+			if(JSONUtils.hasField(json, "copy_nbt_predicate"))
+				recipe.setNBTCopyPredicate(JSONUtils.getString(json, "copy_nbt_predicate"));
 		}
 		return recipe;
 	}
 
 	@Nonnull
 	@Override
-	public RevolverAssemblyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public TurnAndCopyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
 	{
 		ShapedRecipe basic = IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, buffer);
-		RevolverAssemblyRecipe recipe = new RevolverAssemblyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
+		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
 				basic.getIngredients(), basic.getRecipeOutput());
 		if(buffer.readBoolean())
 			recipe.allowQuarterTurn();
@@ -72,7 +76,7 @@ public class RevolverAssemblyRecipeSerializer extends ForgeRegistryEntry<IRecipe
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull RevolverAssemblyRecipe recipe)
+	public void write(@Nonnull PacketBuffer buffer, @Nonnull TurnAndCopyRecipe recipe)
 	{
 		IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe);
 		buffer.writeBoolean(recipe.isQuarterTurn());
