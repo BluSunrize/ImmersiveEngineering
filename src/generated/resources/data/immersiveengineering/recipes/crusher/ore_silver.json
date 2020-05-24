@@ -5,7 +5,16 @@
       "chance": 0.1,
       "output": {
         "tag": "forge:dusts/lead"
-      }
+      },
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:dusts/lead",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ]
     }
   ],
   "result": {

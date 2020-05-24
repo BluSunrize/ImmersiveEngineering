@@ -5,7 +5,16 @@
       "chance": 0.1,
       "output": {
         "tag": "forge:dusts/sulfur"
-      }
+      },
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:dusts/sulfur",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ]
     }
   ],
   "result": {

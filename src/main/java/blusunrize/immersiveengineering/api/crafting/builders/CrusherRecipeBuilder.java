@@ -17,6 +17,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 public class CrusherRecipeBuilder extends IEFinishedRecipe<CrusherRecipeBuilder>
 {
@@ -67,11 +69,18 @@ public class CrusherRecipeBuilder extends IEFinishedRecipe<CrusherRecipeBuilder>
 		return addSecondary(new IngredientWithSize(tag), chance);
 	}
 
-	public CrusherRecipeBuilder addSecondary(IngredientWithSize ingredient, float chance)
+	public CrusherRecipeBuilder addSecondary(IngredientWithSize ingredient, float chance, ICondition... conditions)
 	{
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("chance", chance);
 		jsonObject.add("output", ingredient.serialize());
+		if(conditions.length > 0)
+		{
+			JsonArray conditionArray = new JsonArray();
+			for(ICondition condition : conditions)
+				conditionArray.add(CraftingHelper.serialize(condition));
+			jsonObject.add("conditions", conditionArray);
+		}
 		secondaryArray.add(jsonObject);
 		return this;
 	}

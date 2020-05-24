@@ -445,7 +445,7 @@ public class Recipes extends RecipeProvider
 					crusherBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getOre()));
 				if(secondaryOutputs!=null)
 					for(SecondaryOutput secondaryOutput : secondaryOutputs)
-						crusherBuilder.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance());
+						crusherBuilder.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance(), secondaryOutput.getConditions());
 				crusherBuilder.addInput(metal.getOre())
 						.setEnergy(6000)
 						.build(out, toRL("crusher/ore_"+metal.getName()));
@@ -556,7 +556,7 @@ public class Recipes extends RecipeProvider
 				crusherBuilder.addCondition(getTagCondition(ore.getOre()));
 			if(secondaryOutputs!=null)
 				for(SecondaryOutput secondaryOutput : secondaryOutputs)
-					crusherBuilder.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance());
+					crusherBuilder.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance(), secondaryOutput.getConditions());
 			crusherBuilder.addInput(ore.getOre())
 					.setEnergy(6000)
 					.build(out, toRL("crusher/ore_"+ore.getName()));

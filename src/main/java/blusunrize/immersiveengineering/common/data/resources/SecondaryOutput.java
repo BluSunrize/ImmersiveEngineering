@@ -14,21 +14,27 @@ import net.minecraft.item.Item;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+
+import static blusunrize.immersiveengineering.common.data.Recipes.getTagCondition;
 
 public class SecondaryOutput
 {
 	private final IngredientWithSize item;
 	private final float chance;
+	private ICondition[] conditions;
 
 	public SecondaryOutput(IngredientWithSize item, float chance)
 	{
 		this.item = item;
 		this.chance = chance;
+		this.conditions = new ICondition[0];
 	}
 
 	public SecondaryOutput(Tag<Item> tag, float chance)
 	{
 		this(new IngredientWithSize(tag), chance);
+		this.conditions = new ICondition[]{getTagCondition(tag)};
 	}
 
 	public SecondaryOutput(ResourceLocation tag, float chance)
@@ -44,5 +50,16 @@ public class SecondaryOutput
 	public float getChance()
 	{
 		return chance;
+	}
+
+	public SecondaryOutput setConditions(ICondition[] conditions)
+	{
+		this.conditions = conditions;
+		return this;
+	}
+
+	public ICondition[] getConditions()
+	{
+		return conditions;
 	}
 }

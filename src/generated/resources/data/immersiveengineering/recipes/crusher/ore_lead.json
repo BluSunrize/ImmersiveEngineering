@@ -5,7 +5,16 @@
       "chance": 0.1,
       "output": {
         "tag": "forge:dusts/silver"
-      }
+      },
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:dusts/silver",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ]
     }
   ],
   "result": {

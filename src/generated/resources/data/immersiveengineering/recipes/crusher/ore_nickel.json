@@ -5,7 +5,16 @@
       "chance": 0.1,
       "output": {
         "tag": "forge:dusts/platinum"
-      }
+      },
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:dusts/platinum",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ]
     }
   ],
   "result": {
