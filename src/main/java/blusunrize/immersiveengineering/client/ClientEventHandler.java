@@ -871,37 +871,50 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 			if(Utils.isHammer(stack)&&tile instanceof TurntableTileEntity)
 			{
-				BlockPos pos = rtr.getPos();
-
-				GlStateManager.enableBlend();
-				GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-				GlStateManager.lineWidth(2.0F);
-				GlStateManager.disableTexture();
-				GlStateManager.depthMask(false);
-
-				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder BufferBuilder = tessellator.getBuffer();
-
-				Direction f = ((TurntableTileEntity)tile).getFacing();
-				double tx = pos.getX()+.5;
-				double ty = pos.getY()+.5;
-				double tz = pos.getZ()+.5;
-				if(!player.world.isAirBlock(pos.offset(f)))
+				TurntableTileEntity turntableTile = ((TurntableTileEntity)tile);
+				Direction side = rtr.getFace();
+				Direction facing = turntableTile.getFacing();
+				if(side.getAxis()!=facing.getAxis())
 				{
-					tx += f.getXOffset();
-					ty += f.getYOffset();
-					tz += f.getZOffset();
+					BlockPos pos = rtr.getPos();
+
+					GlStateManager.enableBlend();
+					GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+					GlStateManager.lineWidth(2.0F);
+					GlStateManager.disableTexture();
+					GlStateManager.depthMask(false);
+
+					Tessellator tessellator = Tessellator.getInstance();
+					BufferBuilder BufferBuilder = tessellator.getBuffer();
+
+					double tx = pos.getX()+.5;
+					double ty = pos.getY()+.5;
+					double tz = pos.getZ()+.5;
+					if(!player.world.isAirBlock(pos.offset(facing)))
+					{
+						tx += facing.getXOffset();
+						ty += facing.getYOffset();
+						tz += facing.getZOffset();
+					}
+					BufferBuilder.setTranslation(tx+px, ty+py, tz+pz);
+
+					Rotation rotation = turntableTile.getRotationFromSide(side);
+					boolean cw180 = rotation==Rotation.CLOCKWISE_180;
+					double angle;
+					if(cw180)
+						angle = player.ticksExisted%40/20d;
+					else
+						angle = player.ticksExisted%80/40d;
+					double stepDistance = (cw180?2: 4)*Math.PI;
+					angle = -(angle-Math.sin(angle*stepDistance)/stepDistance)*Math.PI;
+					drawCircularRotationArrows(tessellator, BufferBuilder, facing, angle, rotation==Rotation.COUNTERCLOCKWISE_90, cw180);
+
+					BufferBuilder.setTranslation(0, 0, 0);
+
+					GlStateManager.depthMask(true);
+					GlStateManager.enableTexture();
+					GlStateManager.disableBlend();
 				}
-				BufferBuilder.setTranslation(tx+px, ty+py, tz+pz);
-
-				double angle = -player.ticksExisted%80/40d*Math.PI;
-				drawRotationArrows(tessellator, BufferBuilder, f, angle, ((TurntableTileEntity)tile).invert);
-
-				BufferBuilder.setTranslation(0, 0, 0);
-
-				GlStateManager.depthMask(true);
-				GlStateManager.enableTexture();
-				GlStateManager.disableBlend();
 			}
 
 			World world = player.world;
@@ -988,11 +1001,27 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 	}
 
-	private static double[][] rotationArrowCoords = {{.375, 0}, {.5, -.125}, {.4375, -.125}, {.4375, -.25}, {.25, -.4375}, {-.25, -.4375}, {-.4375, -.25}, {-.4375, -.0625}, {-.3125, -.0625}, {-.3125, -.1875}, {-.1875, -.3125}, {.1875, -.3125}, {.3125, -.1875}, {.3125, -.125}, {.25, -.125}};
-	private static double[][] rotationArrowQuads = {rotationArrowCoords[7], rotationArrowCoords[8], rotationArrowCoords[6], rotationArrowCoords[9], rotationArrowCoords[5], rotationArrowCoords[10], rotationArrowCoords[4], rotationArrowCoords[11], rotationArrowCoords[3], rotationArrowCoords[12], rotationArrowCoords[2], rotationArrowCoords[13], rotationArrowCoords[1], rotationArrowCoords[14], rotationArrowCoords[0], rotationArrowCoords[0]};
+	private final static double[][] quarterRotationArrowCoords = {{.375, 0}, {.5, -.125}, {.4375, -.125}, {.4375, -.25}, {.25, -.4375}, {0, -.4375}, {0, -.3125}, {.1875, -.3125}, {.3125, -.1875}, {.3125, -.125}, {.25, -.125}};
+	private final static double[][] quarterRotationArrowQuads = {quarterRotationArrowCoords[5], quarterRotationArrowCoords[6], quarterRotationArrowCoords[4], quarterRotationArrowCoords[7], quarterRotationArrowCoords[3], quarterRotationArrowCoords[8], quarterRotationArrowCoords[2], quarterRotationArrowCoords[9], quarterRotationArrowCoords[1], quarterRotationArrowCoords[10], quarterRotationArrowCoords[0], quarterRotationArrowCoords[0]};
 
-	public static void drawRotationArrows(Tessellator tessellator, BufferBuilder BufferBuilder, Direction facing, double rotation, boolean flip)
+	private final static double[][] halfRotationArrowCoords = {{.375, 0}, {.5, -.125}, {.4375, -.125}, {.4375, -.25}, {.25, -.4375}, {-.25, -.4375}, {-.4375, -.25}, {-.4375, -.0625}, {-.3125, -.0625}, {-.3125, -.1875}, {-.1875, -.3125}, {.1875, -.3125}, {.3125, -.1875}, {.3125, -.125}, {.25, -.125}};
+	private final static double[][] halfRotationArrowQuads = {halfRotationArrowCoords[7], halfRotationArrowCoords[8], halfRotationArrowCoords[6], halfRotationArrowCoords[9], halfRotationArrowCoords[5], halfRotationArrowCoords[10], halfRotationArrowCoords[4], halfRotationArrowCoords[11], halfRotationArrowCoords[3], halfRotationArrowCoords[12], halfRotationArrowCoords[2], halfRotationArrowCoords[13], halfRotationArrowCoords[1], halfRotationArrowCoords[14], halfRotationArrowCoords[0], halfRotationArrowCoords[0]};
+
+	public static void drawCircularRotationArrows(Tessellator tessellator, BufferBuilder BufferBuilder, Direction facing, double rotation, boolean flip, boolean halfCircle)
 	{
+		double[][] rotationArrowCoords;
+		double[][] rotationArrowQuads;
+		if(halfCircle)
+		{
+			rotationArrowCoords = halfRotationArrowCoords;
+			rotationArrowQuads = halfRotationArrowQuads;
+		}
+		else
+		{
+			rotationArrowCoords = quarterRotationArrowCoords;
+			rotationArrowQuads = quarterRotationArrowQuads;
+		}
+
 		double cos = Math.cos(rotation);
 		double sin = Math.sin(rotation);
 		BufferBuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
@@ -1042,7 +1071,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		tessellator.draw();
 	}
 
-	private static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
+	private final static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
 
 	public static void drawBlockOverlayArrow(Tessellator tessellator, BufferBuilder BufferBuilder, Vec3d directionVec, Direction side, AxisAlignedBB targetedBB)
 	{

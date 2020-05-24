@@ -24,12 +24,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
-import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -239,16 +239,16 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			switch(limit)
 			{
 				case SIDE_CLICKED:
-					f = Direction.VALUES[(f.ordinal()+1)%Direction.VALUES.length];
+					f = Direction.VALUES[Math.floorMod(f.ordinal()+(player.isSneaking()?-1: 1), Direction.VALUES.length)];
 					break;
 				case PISTON_LIKE:
-					f = player.isSneaking()?f.rotateAround(side.getAxis()).getOpposite(): f.rotateAround(side.getAxis());
+					f = player.isSneaking()!=(side.getAxisDirection()==AxisDirection.NEGATIVE)?f.rotateAround(side.getAxis()).getOpposite(): f.rotateAround(side.getAxis());
 					break;
 				case HORIZONTAL:
 				case HORIZONTAL_PREFER_SIDE:
 				case HORIZONTAL_QUADRANT:
 				case HORIZONTAL_AXIS:
-					f = player.isSneaking()?f.rotateYCCW(): f.rotateY();
+					f = player.isSneaking()!=side.equals(Direction.DOWN)?f.rotateYCCW(): f.rotateY();
 					break;
 			}
 			((IDirectionalTile)tile).setFacing(f);
