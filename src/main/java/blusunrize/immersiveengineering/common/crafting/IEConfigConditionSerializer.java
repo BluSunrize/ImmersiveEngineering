@@ -11,10 +11,13 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.crafting.IEConfigConditionSerializer.ConditionIEConfig;
+import blusunrize.immersiveengineering.common.util.IELogger;
+import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import com.google.gson.JsonObject;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
@@ -24,11 +27,6 @@ import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
  */
 public class IEConfigConditionSerializer implements IConditionSerializer<ConditionIEConfig>
 {
-	static
-	{
-		CraftingHelper.register(new IEConfigConditionSerializer());
-	}
-
 	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "config");
 
 	@Override
@@ -72,7 +70,15 @@ public class IEConfigConditionSerializer implements IConditionSerializer<Conditi
 		@Override
 		public boolean test()
 		{
-			return IEConfig.ALL.<Boolean>get(key)==value;
+			UnmodifiableConfig config = IEConfig.ALL.getValues();
+			Object configEntry = config.get(key);
+			if(configEntry instanceof ForgeConfigSpec.BooleanValue)
+			{
+				Boolean configValue = ((BooleanValue)configEntry).get();
+				return configValue!=null&&configValue==value;
+			}
+			IELogger.error("Unknown config value {}", key);
+			return false;
 		}
 	}
 }

@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.crafting.HammerCrushingRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
@@ -172,8 +173,6 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":potion_bullet_fill");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.POWERPACK_SERIALIZER.get())
 				.build(out, ImmersiveEngineering.MODID+":powerpack_attach");
-		CustomRecipeBuilder.func_218656_a(RecipeSerializers.ORE_CRUSHING_SERIALIZER.get())
-				.build(out, ImmersiveEngineering.MODID+":ore_crushing");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.EARMUFF_SERIALIZER.get())
 				.build(out, ImmersiveEngineering.MODID+":earmuffs_attach");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.JERRYCAN_REFILL.get())
@@ -427,6 +426,7 @@ public class Recipes extends RecipeProvider
 
 	private void recipesMultiblockMachines(@Nonnull Consumer<IFinishedRecipe> out)
 	{
+		HammerCrushingRecipeBuilder hammerBuilder;
 		CrusherRecipeBuilder crusherBuilder;
 		ArcFurnaceRecipeBuilder arcBuilder;
 		MetalPressRecipeBuilder pressBuilder;
@@ -438,6 +438,13 @@ public class Recipes extends RecipeProvider
 			if(metal.getOre()!=null)
 			{
 				SecondaryOutput[] secondaryOutputs = metal.getSecondaryOutputs();
+
+				// Hammer crushing
+				hammerBuilder = HammerCrushingRecipeBuilder.builder(metal.getDust());
+				if(!metal.isNative())
+					hammerBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getOre()));
+				hammerBuilder.addInput(metal.getOre())
+						.build(out, toRL("crafting/hammercrushing_"+metal.getName()));
 
 				// Crush ore
 				crusherBuilder = CrusherRecipeBuilder.builder(metal.getDust(), 2);
