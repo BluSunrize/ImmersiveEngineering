@@ -21,6 +21,7 @@
 - Fixed Voltmeter being broken (Malte)
 - Fixed renders for Bottling Machine and Mixer (Malte)
 - Fixed collision on diagonal covered conveyors (BluSunrize)
+- Fixed recipes for sheetmetal not accepting other mods' plates (BluSunrize)
 
 ##### Version 0.14-95 - BUILT
 - Added the Buzzsaw! It cuts Trees! (BluSunrize)

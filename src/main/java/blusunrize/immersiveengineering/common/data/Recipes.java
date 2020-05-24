@@ -125,10 +125,10 @@ public class Recipes extends RecipeProvider
 					.addCriterion("has_"+metal.tagName()+"_ingot", hasItem(IETags.getTagsFor(metal).ingot))
 					.build(out, toRL("plate_"+metal.tagName()+"_hammering"));
 			ShapedRecipeBuilder.shapedRecipe(sheetMetal, 4)
-					.key('p', plate)
 					.patternLine(" p ")
 					.patternLine("p p")
 					.patternLine(" p ")
+					.key('p', IETags.getTagsFor(metal).plate)
 					.addCriterion("has_"+toPath(plate), hasItem(plate))
 					.build(out, toRL(toPath(sheetMetal)));
 		}
