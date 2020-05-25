@@ -64,7 +64,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 			dimensions[i] = DimensionType.byName(new ResourceLocation(array.get(i).getAsString()));
 		ResourceLocation rl = new ResourceLocation(JSONUtils.getString(json, "sample_background", "minecraft:stone"));
 		Block b = ForgeRegistries.BLOCKS.getValue(rl);
-		if(b ==Blocks.AIR)
+		if(b==Blocks.AIR)
 			b = Blocks.STONE;
 		return new MineralMix(recipeId, ores, weight, failChance, dimensions, b);
 	}

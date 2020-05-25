@@ -75,7 +75,7 @@ public class MixerRecipePotion extends MixerRecipe
 			f_input.setAccessible(true);
 			f_reagent.setAccessible(true);
 			f_output.setAccessible(true);
-			List l =  PotionBrewing.POTION_TYPE_CONVERSIONS;
+			List l = PotionBrewing.POTION_TYPE_CONVERSIONS;
 			for(Object mixPredicate : PotionBrewing.POTION_TYPE_CONVERSIONS)
 			{
 				Ingredient reagent = (Ingredient)f_reagent.get(mixPredicate);

@@ -4,7 +4,8 @@
     "item": "immersiveengineering:mold_rod"
   },
   "result": {
-    "item": "immersiveengineering:graphite_electrode"
+    "item": "immersiveengineering:graphite_electrode",
+    "nbt": "{graphDmg:48000}"
   },
   "input": {
     "count": 4,

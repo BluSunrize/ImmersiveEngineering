@@ -1,0 +1,16 @@
+{
+  "type": "immersiveengineering:hammer_crushing",
+  "conditions": [
+    {
+      "key": "tools.disable_hammer_crushing",
+      "value": false,
+      "type": "immersiveengineering:config"
+    }
+  ],
+  "result": {
+    "tag": "forge:dusts/lead"
+  },
+  "input": {
+    "tag": "forge:ores/lead"
+  }
+}

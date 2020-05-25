@@ -1,4 +1,7 @@
-##### Version 0.14-96
+##### Version 0.14-97
+- Fixed a crash triggered by other mod's automatic recipe unlocks (BluSunrize)
+
+##### Version 0.14-96 - BUILT
 - All IE recipes are now JSON based! (BluSunrize)
     - This includes the excavator's mineral veins. ALL EXISTING VEINS WILL BE BROKEN. The last release was an Alpha, so
       this has to be expected
@@ -6,6 +9,7 @@
 - Overhauled the turntable, to allow side-based redstone input to produce different rotations (MalkContent)
 - Added furnace fuel values for coke coal and coke coal blocks (Malte)
 - Re-Added automatic changelog generation (Malte)
+- Re-Added Graphite Electrode blueprints (BluSunrize)
 - Changed and improved Multiblock bounding boxes (Malte)
 - Changed dropping conveyors to not drop downwards when given redstone signal (MalkContent)
 - Changed hammers and wirecutters to allow repairing (BluSunrize)

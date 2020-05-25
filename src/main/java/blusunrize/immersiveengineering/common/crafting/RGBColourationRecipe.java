@@ -139,6 +139,12 @@ public class RGBColourationRecipe implements ICraftingRecipe
 		return id;
 	}
 
+	@Override
+	public boolean isDynamic()
+	{
+		return true;
+	}
+
 	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer()

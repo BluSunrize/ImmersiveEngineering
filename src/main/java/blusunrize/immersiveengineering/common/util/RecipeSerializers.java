@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.crafting.serializers.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -30,8 +31,8 @@ public class RecipeSerializers
 	public static final RegistryObject<SpecialRecipeSerializer<PowerpackRecipe>> POWERPACK_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"powerpack", () -> new SpecialRecipeSerializer<>(PowerpackRecipe::new)
 	);
-	public static final RegistryObject<SpecialRecipeSerializer<OreCrushingRecipe>> ORE_CRUSHING_SERIALIZER = RECIPE_SERIALIZERS.register(
-			"ore_crushing", () -> new SpecialRecipeSerializer<>(OreCrushingRecipe::new)
+	public static final RegistryObject<HammerCrushingRecipeSerializer> HAMMER_CRUSHING_SERIALIZER = RECIPE_SERIALIZERS.register(
+			"hammer_crushing", HammerCrushingRecipeSerializer::new
 	);
 	public static final RegistryObject<SpecialRecipeSerializer<EarmuffsRecipe>> EARMUFF_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"earmuffs", () -> new SpecialRecipeSerializer<>(EarmuffsRecipe::new)
@@ -93,5 +94,7 @@ public class RecipeSerializers
 		MineralMix.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"mineral_mix", MineralMixSerializer::new
 		);
+
+		CraftingHelper.register(new IEConfigConditionSerializer());
 	}
 }
