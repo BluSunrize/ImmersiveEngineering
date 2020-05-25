@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.gui.ClocheContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -47,18 +47,18 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 		if(mx > guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
 	}
 
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
-		GlStateManager.enableBlend();
+		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
+		RenderSystem.enableBlend();
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/cloche.png");
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
-		GlStateManager.disableBlend();
+		RenderSystem.disableBlend();
 
 		ClientUtils.handleGuiTank(tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, "immersiveengineering:textures/gui/cloche.png", null);
 		int stored = (int)(46*(tile.fertilizerAmount/(float)IEConfig.MACHINES.cloche_fertilizer.get()));

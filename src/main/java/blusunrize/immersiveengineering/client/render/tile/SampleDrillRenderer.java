@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -21,11 +20,8 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import org.lwjgl.opengl.GL11;
 
 public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntity>
 {
@@ -48,21 +44,10 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
-		BlockPos blockPos = tile.getPos();
 		IBakedModel model = drill.get(null);
 		if(state.getBlock()!=MetalDevices.sampleDrill)
 			return;
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldRenderer = tessellator.getBuffer();
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
 
@@ -76,12 +61,9 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 			matrixStack.translate(0, -2.8f*push, 0);
 		}
 
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		matrixStack.translate(-0.5, -0.5, -0.5);
-		worldRenderer.color(255, 255, 255, 255);
 		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorldNonnull(), model, state, tile.getPos(), matrixStack,
 				bufferIn.getBuffer(RenderType.getSolid()), true, tile.getWorld().rand, 0, combinedOverlayIn, EmptyModelData.INSTANCE);
-		tessellator.draw();
 		matrixStack.pop();
 		RenderHelper.enableStandardItemLighting();
 	}

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
@@ -34,13 +33,11 @@ public class CoresampleRenderer extends TileEntityRenderer<CoresampleTileEntity>
 			return;
 
 		matrixStack.push();
-		GlStateManager.disableLighting();
 		matrixStack.translate(.5, .54864, .52903);
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.WEST?-90: tile.getFacing()==Direction.EAST?90: 0, true));
 		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -45, true));
 		ClientUtils.mc().getItemRenderer().renderItem(tile.coresample, TransformType.FIXED, combinedLightIn,
 				combinedOverlayIn, matrixStack, bufferIn);
-		GlStateManager.enableLighting();
 		matrixStack.pop();
 	}
 }

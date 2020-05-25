@@ -14,20 +14,22 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -36,7 +38,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
@@ -69,29 +70,13 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 					Model.IE_OBJ_STATE);
 			quads.put(tile.getFacing(), model.getQuads(state, null, Utils.RAND, data));
 		}
-		ClientUtils.bindAtlas();
 		matrixStack.push();
-
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
-		Minecraft.getInstance().textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-		BufferBuilder worldRenderer = Tessellator.getInstance().getBuffer();
-
-
-		GlStateManager.enableCull();
 
 		ClocheRecipe recipe = tile.getRecipe();
 		if(recipe!=null)
 		{
+			IVertexBuilder baseBuilder = bufferIn.getBuffer(RenderType.getCutout());
 			matrixStack.push();
-			GlStateManager.color4f(1,1,1,1);
-			GlStateManager.disableBlend();
 			matrixStack.translate(0, 1.0625, 0);
 
 			NonNullList<ItemStack> inventory = tile.getInventory();
@@ -115,28 +100,17 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 					plantQuads.put(state, plantQuadList);
 				}
 				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);
-				matrixStack.push();
 				block.getRight().push(matrixStack);
-				worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-				ClientUtils.renderModelTESRFancy(plantQuadList, worldRenderer, tile.getWorldNonnull(), blockPos, false, col);
-				Tessellator.getInstance().draw();
+				ClientUtils.renderModelTESRFancy(plantQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack),
+						tile.getWorldNonnull(), blockPos, false, col, combinedLightIn);
 				matrixStack.pop();
 			}
-
-			GlStateManager.enableBlend();
 			matrixStack.pop();
 		}
 
-		GlStateManager.depthMask(false);
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		ClientUtils.renderModelTESRFast(quads.get(tile.getFacing()), worldRenderer, matrixStack, combinedLightIn);
-		Tessellator.getInstance().draw();
-		RenderHelper.enableStandardItemLighting();
-		GlStateManager.disableBlend();
-		GlStateManager.depthMask(true);
-
+		ClientUtils.renderModelTESRFast(quads.get(tile.getFacing()), bufferIn.getBuffer(RenderType.getTranslucent()),
+				matrixStack, combinedLightIn);
 		matrixStack.pop();
-		RenderHelper.enableStandardItemLighting();
 	}
 
 	public static void reset()

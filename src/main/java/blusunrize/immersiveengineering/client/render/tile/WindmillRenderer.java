@@ -18,12 +18,13 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -56,7 +57,6 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 	{
 		if(!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
 		if(quads[tile.sails]==null)
 		{
@@ -73,10 +73,6 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 					new IEObjState(VisibilityList.show(parts)), IEProperties.Model.IE_OBJ_STATE);
 			quads[tile.sails] = model.getQuads(state, null, Utils.RAND, data);
 		}
-		Tessellator tessellator = Tessellator.getInstance();
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
 
@@ -87,7 +83,7 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 
 		matrixStack.translate(-.5, -.5, -.5);
-		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getSolid());
+		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getCutout());
 		ClientUtils.renderModelTESRFast(quads[tile.sails], builder, matrixStack, combinedLightIn);
 		matrixStack.pop();
 	}

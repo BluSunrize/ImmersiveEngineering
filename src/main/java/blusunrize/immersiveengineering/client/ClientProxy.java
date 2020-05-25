@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
@@ -42,7 +41,6 @@ import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
@@ -62,13 +60,11 @@ import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETickableSound;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
@@ -76,15 +72,11 @@ import net.minecraft.client.gui.ScreenManager.IScreenFactory;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.MinecartModel;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.settings.KeyBinding;
@@ -92,7 +84,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ItemParticleData;
@@ -565,79 +556,6 @@ public class ClientProxy extends CommonProxy
 		FractalParticle.Data particle = new FractalParticle.Data(direction, scale, 10, 16, colour[0], colour[1]);
 		world.addParticle(particle, x, y, z, 0, 0, 0);
 	}
-
-	@Override
-	public void draw3DBlockCauldron()
-	{
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockState state = Blocks.CAULDRON.getDefaultState();
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
-
-		renderBlockModel(blockRenderer, model, state);
-	}
-
-	@Override
-	public void drawSpecificFluidPipe(String configuration)
-	{
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockState state = MetalDevices.fluidPipe.getDefaultState();
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(0, 0, 1);
-		renderBlockModel(blockRenderer, model, state);
-		GlStateManager.popMatrix();
-	}
-
-	private void renderBlockModel(BlockRendererDispatcher blockRenderer, IBakedModel model, BlockState state)
-	{
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
-		//TODO PORTME
-		//blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
-	}
-
-	static Map<String, Boolean> hasArmorModel = new HashMap<>();
-
-	@Override
-	public boolean armorHasCustomModel(ItemStack stack)
-	{
-		if(!stack.isEmpty()&&stack.getItem() instanceof ArmorItem)
-		{
-			Boolean b = hasArmorModel.get(stack.getTranslationKey());
-			if(b==null)
-				try
-				{
-					BipedModel<?> model = stack.getItem().getArmorModel(mc().player, stack, ((ArmorItem)stack.getItem()).getEquipmentSlot(), null);
-					b = model!=null&&model.getClass()!=BipedModel.class; //Model isn't a base Biped
-					hasArmorModel.put(stack.getTranslationKey(), b);
-				} catch(Exception e)
-				{
-				}
-			return b==null?false: b;
-		}
-		return false;
-	}
-
-	@Override
-	public void drawFluidPumpTop()
-	{
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockState state = MetalDevices.fluidPump.getDefaultState();
-		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
-
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(0, 0, 1);
-		renderBlockModel(blockRenderer, model, state);
-		GlStateManager.popMatrix();
-	}
-
 
 	@Override
 	public String[] splitStringOnWidth(String s, int w)

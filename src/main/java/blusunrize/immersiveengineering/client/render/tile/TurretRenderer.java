@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
@@ -52,9 +53,6 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 			return;
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 
-		//Initialize Tesselator and BufferBuilder
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
@@ -62,7 +60,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), tile.rotationYaw, true));
 		matrixStack.rotate(new Quaternion(new Vector3f(tile.getFacing().getZOffset(), 0, -tile.getFacing().getXOffset()), tile.rotationPitch, true));
 
-		renderModelPart(bufferIn, matrixStack, tile.getWorldNonnull(), state, model, tile.getPos(), true, "gun");
+		renderModelPart(bufferIn, matrixStack, tile.getWorldNonnull(), state, model, tile.getPos(), true, combinedLightIn, "gun");
 		if(tile instanceof TurretGunTileEntity)
 		{
 			if(((TurretGunTileEntity)tile).cycleRender > 0)
@@ -75,14 +73,14 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 
 				matrixStack.translate(-tile.getFacing().getXOffset()*cycle*.3125, 0, -tile.getFacing().getZOffset()*cycle*.3125);
 			}
-			renderModelPart(bufferIn, matrixStack, tile.getWorldNonnull(), state, model, tile.getPos(), false, "action");
+			renderModelPart(bufferIn, matrixStack, tile.getWorldNonnull(), state, model, tile.getPos(), false, combinedLightIn, "action");
 		}
 
 		matrixStack.pop();
 	}
 
 	public static void renderModelPart(IRenderTypeBuffer buffer, MatrixStack matrix, World world, BlockState state,
-									   IBakedModel model, BlockPos pos, boolean isFirst, String... parts)
+									   IBakedModel model, BlockPos pos, boolean isFirst, int light, String... parts)
 	{
 		pos = pos.up();
 
@@ -91,7 +89,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 		matrix.translate(-.5, 0, -.5);
 		List<BakedQuad> quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(
 				new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE));
-		ClientUtils.renderModelTESRFancy(quads, solidBuilder, world, pos, !isFirst, -1);
+		ClientUtils.renderModelTESRFancy(quads, new TransformingVertexBuilder(solidBuilder, matrix), world, pos, !isFirst, -1, light);
 		matrix.pop();
 	}
 

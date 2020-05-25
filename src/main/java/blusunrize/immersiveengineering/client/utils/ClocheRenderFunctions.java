@@ -7,8 +7,8 @@ import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.*;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.item.ItemStack;
@@ -20,8 +20,6 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ClocheRenderFunctions
 {
@@ -141,27 +139,28 @@ public class ClocheRenderFunctions
 		@Override
 		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
 		{
-			Set<Pair<BlockState, TransformationMatrix>> ret = new HashSet();
-			Matrix4f stemMatrix = new Matrix4f();
-			stemMatrix.setIdentity();
-			//TODO PORTME
-			//stemMatrix.rotY(-(float)Math.PI/2); //-90 deg
-			stemMatrix.setTranslation(.75f, .0625f, 0);
+			MatrixStack transform = new MatrixStack();
+			transform.translate(0, .0625f, 0.25f);
 
 			if(growth < .375)
 			{
 				int age = Math.round(7*growth/.375f);
-				return ImmutableList.of(Pair.of(this.stemBlock.getDefaultState().with(StemBlock.AGE, age), new TransformationMatrix(stemMatrix)));
+				return ImmutableList.of(Pair.of(this.stemBlock.getDefaultState().with(StemBlock.AGE, age),
+						new TransformationMatrix(transform.getLast().getMatrix())));
 			}
 			else
 			{
 				float scale = ((growth-.375f)/.625f)*.3125f;
-				Matrix4f cropMatrix = new Matrix4f();
-				cropMatrix.setIdentity();
-				cropMatrix.setTranslation(0.75f-scale/2, .5625f-scale, 0.5f-scale/2);
-				cropMatrix.mul(scale);
-				return ImmutableList.of(Pair.of(this.attachedStemBlock.getDefaultState(), new TransformationMatrix(stemMatrix)),
-						Pair.of(this.cropBlock.getDefaultState(), new TransformationMatrix(cropMatrix)));
+				TransformationMatrix cropMatrix = new TransformationMatrix(
+						new Vector3f(0.5f-scale/2, .5625f-scale, 0.25f-scale/2),
+						null,
+						new Vector3f(scale, scale, scale),
+						null
+				);
+				return ImmutableList.of(
+						Pair.of(this.attachedStemBlock.getDefaultState(), new TransformationMatrix(transform.getLast().getMatrix())),
+						Pair.of(this.cropBlock.getDefaultState(), cropMatrix)
+				);
 			}
 		}
 	}

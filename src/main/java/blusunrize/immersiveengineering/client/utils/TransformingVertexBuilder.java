@@ -46,7 +46,7 @@ public class TransformingVertexBuilder implements IVertexBuilder
 	@Override
 	public IVertexBuilder color(int red, int green, int blue, int alpha)
 	{
-		color.putData(new Vector4f(red, green, blue, alpha));
+		color.putData(new Vector4f(red/255f, green/255f, blue/255f, alpha/255f));
 		return this;
 	}
 

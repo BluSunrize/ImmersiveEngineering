@@ -120,23 +120,6 @@ public class CommonProxy
 	{
 	}
 
-	public void draw3DBlockCauldron()
-	{
-	}
-
-	public void drawSpecificFluidPipe(String configuration)
-	{
-	}
-
-	public boolean armorHasCustomModel(ItemStack stack)
-	{
-		return false;
-	}
-
-	public void drawFluidPumpTop()
-	{
-	}
-
 	public String[] splitStringOnWidth(String s, int w)
 	{
 		return new String[]{s};

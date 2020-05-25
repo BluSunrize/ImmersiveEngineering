@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.FluidSorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -128,14 +128,14 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 						int x = guiLeft+4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
 						int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 						int col = tile.filters[side][i].getFluid().getAttributes().getColor(tile.filters[side][i]);
-						GlStateManager.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
+						RenderSystem.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
 						ClientUtils.drawTexturedRect(builder, transform, x, y, 16, 16, 1, 1, 1, 1, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
 					}
 				}
 			int x = guiLeft+30+(side/2)*58;
 			int y = guiTop+44+(side%2)*76;
 			String s = I18n.format("desc.immersiveengineering.info.blockSide."+Direction.byIndex(side).toString()).substring(0, 1);
-			GlStateManager.enableBlend();
+			RenderSystem.enableBlend();
 			ClientUtils.font().drawStringWithShadow(s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
 		}
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");

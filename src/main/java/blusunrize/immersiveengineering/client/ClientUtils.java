@@ -68,6 +68,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.apache.commons.compress.utils.IOUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -712,70 +713,10 @@ public class ClientUtils
 
 	public static void drawHoveringText(List<ITextComponent> list, int x, int y, FontRenderer font, int xSize, int ySize)
 	{
-		if(!list.isEmpty())
-		{
-			RenderSystem.disableRescaleNormal();
-			RenderSystem.disableDepthTest();
-			int k = 0;
-			for(ITextComponent s : list)
-			{
-				int l = font.getStringWidth(s.getFormattedText());
-				if(l > k)
-					k = l;
-			}
-
-			int j2 = x+12;
-			int k2 = y-12;
-			int i1 = 8;
-
-			boolean shift = false;
-			if(xSize > 0&&j2+k > xSize)
-			{
-				j2 -= 28+k;
-				shift = true;
-			}
-			if(ySize > 0&&k2+i1+6 > ySize)
-			{
-				k2 = ySize-i1-6;
-				shift = true;
-			}
-			if(!shift&&mc().currentScreen!=null)
-			{
-				if(j2+k > mc().currentScreen.width)
-					j2 -= 28+k;
-				if(k2+i1+6 > mc().currentScreen.height)
-					k2 = mc().currentScreen.height-i1-6;
-			}
-
-			if(list.size() > 1)
-				i1 += 2+(list.size()-1)*10;
-			int j1 = -267386864;
-			drawGradientRect(j2-3, k2-4, j2+k+3, k2-3, j1, j1);
-			drawGradientRect(j2-3, k2+i1+3, j2+k+3, k2+i1+4, j1, j1);
-			drawGradientRect(j2-3, k2-3, j2+k+3, k2+i1+3, j1, j1);
-			drawGradientRect(j2-4, k2-3, j2-3, k2+i1+3, j1, j1);
-			drawGradientRect(j2+k+3, k2-3, j2+k+4, k2+i1+3, j1, j1);
-			int k1 = 1347420415;
-			int l1 = ((k1&16711422) >> 1|k1&-16777216);
-			drawGradientRect(j2-3, k2-3+1, j2-3+1, k2+i1+3-1, k1, l1);
-			drawGradientRect(j2+k+2, k2-3+1, j2+k+3, k2+i1+3-1, k1, l1);
-			drawGradientRect(j2-3, k2-3, j2+k+3, k2-3+1, k1, k1);
-			drawGradientRect(j2-3, k2+i1+2, j2+k+3, k2+i1+3, l1, l1);
-
-			for(int i2 = 0; i2 < list.size(); ++i2)
-			{
-				String s1 = list.get(i2).getFormattedText();
-				font.drawStringWithShadow(s1, j2, k2, -1);
-
-				if(i2==0)
-					k2 += 2;
-
-				k2 += 10;
-			}
-
-			RenderSystem.enableDepthTest();
-			RenderSystem.enableRescaleNormal();
-		}
+		List<String> textTooltip = new ArrayList<>(list.size());
+		for(ITextComponent c : list)
+			textTooltip.add(c.getFormattedText());
+		GuiUtils.drawHoveringText(textTooltip, x, y, xSize, ySize, -1, font);
 	}
 
 	public static void handleGuiTank(IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
@@ -1331,7 +1272,8 @@ public class ClientUtils
 	 * @param useCached Whether to use cached information for world local data. Set to true if the previous call to this method was in the same tick and for the same world+pos
 	 * @param color     the render color (mostly used for plants)
 	 */
-	public static void renderModelTESRFancy(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos, boolean useCached, int color)
+	public static void renderModelTESRFancy(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos,
+											boolean useCached, int color, int light)
 	{//TODO include matrix transformations?, cache normals?
 		if(IEConfig.GENERAL.disableFancyTESR.get())
 			renderModelTESRFast(quads, renderer, new MatrixStack(), world.getLightSubtracted(pos, 0), color);
@@ -1342,7 +1284,7 @@ public class ClientUtils
 				// Calculate surrounding brighness and split into block and sky light
 				for(Direction f : Direction.VALUES)
 				{
-					int val = world.getLightSubtracted(pos.offset(f), 0);
+					int val = WorldRenderer.getCombinedLight(world, pos.offset(f));
 					neighbourBrightness[0][f.getIndex()] = (val >> 16)&255;
 					neighbourBrightness[1][f.getIndex()] = val&255;
 				}
@@ -1366,7 +1308,6 @@ public class ClientUtils
 						normalizationFactors[type][i] = (float)Math.sqrt(sSquared);
 					}
 			}
-			int localBrightness = world.getLightSubtracted(pos, 0);
 			int rgba[] = {255, 255, 255, 255};
 			if(color >= 0)
 			{
@@ -1379,13 +1320,14 @@ public class ClientUtils
 				int[] vData = quad.getVertexData();
 				VertexFormat format = DefaultVertexFormats.BLOCK;
 				int size = format.getIntegerSize();
-				int uv = format.getOffset(0)/4;
+				int uvOffset = ClientUtils.findTextureOffset(format);
+				int posOffset = ClientUtils.findPositionOffset(format);
 				// extract position info from the quad
 				for(int i = 0; i < 4; i++)
 				{
-					quadCoords[i][0] = Float.intBitsToFloat(vData[size*i]);
-					quadCoords[i][1] = Float.intBitsToFloat(vData[size*i+1]);
-					quadCoords[i][2] = Float.intBitsToFloat(vData[size*i+2]);
+					quadCoords[i][0] = Float.intBitsToFloat(vData[size*i+posOffset]);
+					quadCoords[i][1] = Float.intBitsToFloat(vData[size*i+posOffset+1]);
+					quadCoords[i][2] = Float.intBitsToFloat(vData[size*i+posOffset+2]);
 				}
 				//generate the normal vector
 				Vec3d side1 = new Vec3d(quadCoords[1][0]-quadCoords[3][0],
@@ -1397,15 +1339,16 @@ public class ClientUtils
 				Vec3d normal = side1.crossProduct(side2);
 				normal = normal.normalize();
 				// calculate the final light values and do the rendering
-				int l1 = getLightValue(neighbourBrightness[0], normalizationFactors[0], (localBrightness >> 16)&255, normal);
-				int l2 = getLightValue(neighbourBrightness[1], normalizationFactors[1], localBrightness&255, normal);
+				int l1 = getLightValue(neighbourBrightness[1], normalizationFactors[1], light&255, normal);
+				int l2 = getLightValue(neighbourBrightness[0], normalizationFactors[0], (light >> 16)&255, normal);
 				for(int i = 0; i < 4; ++i)
 				{
 					renderer
 							.pos(quadCoords[i][0], quadCoords[i][1], quadCoords[i][2])
 							.color(rgba[0], rgba[1], rgba[2], rgba[3])
-							.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
+							.tex(Float.intBitsToFloat(vData[size*i+uvOffset]), Float.intBitsToFloat(vData[size*i+uvOffset+1]))
 							.lightmap(l1, l2)
+							.normal((float)normal.x, (float)normal.y, (float)normal.z)
 							.endVertex();
 				}
 			}
@@ -1455,8 +1398,6 @@ public class ClientUtils
 
 	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, MatrixStack transform, int color, int light)
 	{
-		int l1 = (light >> 0x10)&0xFFFF;
-		int l2 = light&0xFFFF;
 		int[] rgba = {255, 255, 255, 255};
 		if(color >= 0)
 		{
@@ -1485,7 +1426,7 @@ public class ClientUtils
 								Float.intBitsToFloat(vData[size*i+position+2]))
 						.color(rgba[0], rgba[1], rgba[2], rgba[3])
 						.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
-						.lightmap(l1, l2)
+						.lightmap(light)
 						.normal(transform.getLast().getNormal(), normalX, normalY, normalZ)
 						.endVertex();
 			}

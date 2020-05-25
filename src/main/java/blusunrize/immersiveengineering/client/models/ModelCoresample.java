@@ -36,14 +36,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 
 import javax.annotation.Nonnull;
@@ -326,6 +324,12 @@ public class ModelCoresample extends BakedIEModel
 	public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack mat)
 	{
 		return this;
+	}
+
+	@Override
+	public boolean func_230044_c_()
+	{
+		return false;
 	}
 
 	public static class RawCoresampleModel implements IModelGeometry<RawCoresampleModel>

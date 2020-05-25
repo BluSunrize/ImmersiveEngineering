@@ -15,11 +15,13 @@ import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -54,7 +56,6 @@ public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 			state = state.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
 			quads = model.get(null).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
 		}
-		Tessellator tessellator = Tessellator.getInstance();
 		matrixStack.push();
 
 		matrixStack.translate(.5, .5, .5);
@@ -63,12 +64,9 @@ public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 0, 1), wheelRotation, true));
 		matrixStack.translate(-.5, -.5, -.5);
-		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getSolid());
+		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getCutout());
 		ClientUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn);
 		matrixStack.pop();
-		RenderHelper.enableStandardItemLighting();
-		GlStateManager.disableBlend();
-		GlStateManager.enableCull();
 	}
 
 	public static void reset()
