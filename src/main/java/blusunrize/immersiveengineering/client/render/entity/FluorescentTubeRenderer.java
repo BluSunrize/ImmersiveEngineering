@@ -10,23 +10,21 @@ package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntity>
 {
@@ -53,36 +51,38 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 	@Override
 	public void render(FluorescentTubeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
-		Tessellator tes = Tessellator.getInstance();
-		BufferBuilder wr = tes.getBuffer();
-		ClientUtils.bindAtlas();
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(0, 1, 0);
-		GlStateManager.rotatef(entityYaw+90, 0, 1, 0);
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(0, 0, .03125);
-		GlStateManager.rotatef(entity.angleHorizontal, 1, 0, 0);
-		GlStateManager.translated(0, -entity.TUBE_LENGTH/2, 0);
+		matrixStackIn.push();
+		matrixStackIn.translate(0, 1, 0);
+		matrixStackIn.rotate(new Quaternion(0, entityYaw+90, 0, true));
+		matrixStackIn.push();
+		matrixStackIn.translate(0, 0, .03125);
+		matrixStackIn.rotate(new Quaternion(entity.angleHorizontal, 0, 0, true));
+		matrixStackIn.translate(0, -entity.TUBE_LENGTH/2, 0);
 		drawTube(entity.active, entity.rgb, matrixStackIn, bufferIn, packedLightIn, 0);
-		GlStateManager.popMatrix();
-		GlStateManager.translated(-0.25, -1, 0);
-		GlStateManager.color3f(1, 1, 1);
+		matrixStackIn.pop();
+		matrixStackIn.translate(-0.25, -1, 0);
 		if(tex==null)
 			tex = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
 					.apply(new ResourceLocation("minecraft:block/iron_block"));
 
-		wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		ClientUtils.renderTexturedBox(wr, 0, 0, 0, .0625F, 1, .0625F, tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
-		ClientUtils.renderTexturedBox(wr, .0625F, .9375F, 0, .25F, 1, .0625F, tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
-		tes.draw();
+		IVertexBuilder builder = bufferIn.getBuffer(IERenderTypes.getPositionTex(PlayerContainer.LOCATION_BLOCKS_TEXTURE));
+		ClientUtils.renderTexturedBox(builder, matrixStackIn,
+				0, 0, 0,
+				.0625F, 1, .0625F,
+				tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
+		ClientUtils.renderTexturedBox(builder, matrixStackIn,
+				.0625F, .9375F, 0,
+				.25F, 1, .0625F,
+				tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
 
-		GlStateManager.popMatrix();
+		matrixStackIn.pop();
 	}
 
 	private static ItemStack tube = ItemStack.EMPTY;
 	private static ItemStack tubeActive = ItemStack.EMPTY;
 
-	static void drawTube(boolean active, float[] rgb, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
+	static void drawTube(boolean active, float[] rgb, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light,
+						 int overlay)
 	{
 		if(tube.isEmpty())
 			tube = new ItemStack(Misc.fluorescentTube);
@@ -91,7 +91,7 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 			tubeActive = new ItemStack(Misc.fluorescentTube);
 			FluorescentTubeItem.setLit(tubeActive, 1);
 		}
-		GlStateManager.translated(-.5, .25, -.5);
+		matrixStack.translate(-.5, .25, -.5);
 		ItemStack renderStack = active?tubeActive: tube;
 		FluorescentTubeItem.setRGB(renderStack, rgb);
 		IEOBJItemRenderer.INSTANCE.render(renderStack, matrixStack, buffer, light, overlay);

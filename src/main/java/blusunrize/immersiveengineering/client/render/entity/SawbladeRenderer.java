@@ -18,19 +18,17 @@ import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.AmbientOcclusionStatus;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 
@@ -51,9 +49,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 	@Override
 	public void render(SawbladeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
-		//TODO PORTME this.bindEntityTexture(entity);
-		Tessellator tessellator = ClientUtils.tes();
-		BufferBuilder worldRenderer = ClientUtils.tes().getBuffer();
+		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getEntityTranslucent(SAWBLADE));
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = entity.getPosition();
@@ -63,47 +59,34 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 
 		ClientUtils.bindAtlas();
 
-		GlStateManager.pushMatrix();
-		GlStateManager.enableRescaleNormal();
-		GlStateManager.scalef(.75f, .75f, .75f);
+		matrixStackIn.push();
+		matrixStackIn.scale(.75f, .75f, .75f);
 
 		double yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks-90.0F;
 		double pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks;
-		GlStateManager.rotatef((float)yaw, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotatef((float)pitch, 0.0F, 0.0F, 1.0F);
+		matrixStackIn.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), (float)yaw, true));
+		matrixStackIn.rotate(new Quaternion(new Vector3f(0.0F, 0.0F, 1.0F), (float)pitch, true));
 
 		if(!entity.inGround)
 		{
 			float spin = ((entity.ticksExisted+partialTicks)%10)/10f*360;
-			GlStateManager.rotatef(spin, 0, 1, 0);
+			matrixStackIn.rotate(new Quaternion(new Vector3f(0, 1, 0), spin, true));
 		}
 		RenderHelper.disableStandardItemLighting();
 
 		AmbientOcclusionStatus aoStat = ClientUtils.mc().gameSettings.ambientOcclusionStatus;
 		ClientUtils.mc().gameSettings.ambientOcclusionStatus = AmbientOcclusionStatus.OFF;
 
-		GlStateManager.blendFunc(770, 771);
-		GlStateManager.enableBlend();
-		GlStateManager.disableCull();
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
-
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.pos(-blockPos.getX(), -blockPos.getY(), -blockPos.getZ());
-		worldRenderer.color(255, 255, 255, 255);
+		matrixStackIn.translate(-0.5, -0.5, -0.5);
 		blockRenderer.getBlockModelRenderer().renderModel(entity.getEntityWorld(), model, state, blockPos,
-				matrixStackIn, bufferIn.getBuffer(RenderType.getSolid()), true,
+				matrixStackIn, builder, true,
 				entity.getEntityWorld().rand, 0, 0, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
-		worldRenderer.pos(0.0D, 0.0D, 0.0D);
-		tessellator.draw();
 
 		ClientUtils.mc().gameSettings.ambientOcclusionStatus = aoStat;
 
 		RenderHelper.enableStandardItemLighting();
 
-		GlStateManager.popMatrix();
+		matrixStackIn.pop();
 	}
 
 	@Override

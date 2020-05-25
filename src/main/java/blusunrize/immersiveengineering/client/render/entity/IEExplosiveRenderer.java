@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -20,8 +19,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
 
 public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 {
@@ -37,8 +34,8 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 		if(entity.block==null)
 			return;
 		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(0, 0.5F, 0);
+		matrixStackIn.push();
+		matrixStackIn.translate(0, 0.5F, 0);
 		if(entity.getFuse()-partialTicks+1 < 10)
 		{
 			float f = 1.0F-((float)entity.getFuse()-partialTicks+1.0F)/10.0F;
@@ -46,33 +43,21 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 			f = f*f;
 			f = f*f;
 			float f1 = 1.0F+f*0.3F;
-			GlStateManager.scalef(f1, f1, f1);
+			matrixStackIn.scale(f1, f1, f1);
 		}
 
-		float f2 = (1-(entity.getFuse()-partialTicks+1)/100F)*.8F;
-		GlStateManager.translated(-0.5F, -0.5F, 0.5F);
-		blockrendererdispatcher.renderBlock(entity.block, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
-		GlStateManager.translated(0.0F, 0.0F, 1.0F);
-
+		int overlay;
 		if(entity.getFuse()/5%2==0)
 		{
-			GlStateManager.disableTexture();
-			GlStateManager.disableLighting();
-			GlStateManager.enableBlend();
-			GlStateManager.blendFunc(770, 772);
-			GlStateManager.color4f(1.0F, 1.0F, 1.0F, f2);
-			GlStateManager.polygonOffset(-3.0F, -3.0F);
-			GlStateManager.enablePolygonOffset();
-			blockrendererdispatcher.renderBlock(entity.block, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
-			GlStateManager.polygonOffset(0.0F, 0.0F);
-			GlStateManager.disablePolygonOffset();
-			GlStateManager.color3f(1, 1, 1);
-			GlStateManager.disableBlend();
-			GlStateManager.enableLighting();
-			GlStateManager.enableTexture();
+			overlay = OverlayTexture.getPackedUV(OverlayTexture.getU(1.0F), 10);
 		}
+		else
+		{
+			overlay = OverlayTexture.NO_OVERLAY;
+		}
+		blockrendererdispatcher.renderBlock(entity.block, matrixStackIn, bufferIn, packedLightIn, overlay);
 
-		GlStateManager.popMatrix();
+		matrixStackIn.pop();
 		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 

@@ -107,10 +107,22 @@ public class ManualUtils
 	{
 		IVertexBuilder buffer = buffers.getBuffer(IERenderTypes.getGui(texture));
 		Matrix4f mat = transform.getLast().getMatrix();
-		buffer.pos(mat, x, y+h, 0).tex(uv[0], uv[3]).endVertex();
-		buffer.pos(mat, x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();
-		buffer.pos(mat, x+w, y, 0).tex(uv[1], uv[2]).endVertex();
-		buffer.pos(mat, x, y, 0).tex(uv[0], uv[2]).endVertex();
+		buffer.pos(mat, x, y+h, 0)
+				.color(1F, 1F, 1F, 1F)
+				.tex(uv[0], uv[3])
+				.endVertex();
+		buffer.pos(mat, x+w, y+h, 0)
+				.color(1F, 1F, 1F, 1F)
+				.tex(uv[1], uv[3])
+				.endVertex();
+		buffer.pos(mat, x+w, y, 0)
+				.color(1F, 1F, 1F, 1F)
+				.tex(uv[1], uv[2])
+				.endVertex();
+		buffer.pos(mat, x, y, 0)
+				.color(1F, 1F, 1F, 1F)
+				.tex(uv[0], uv[2])
+				.endVertex();
 	}
 
 	public static <T> List<T> getPrimitiveSpellingCorrections

@@ -174,8 +174,6 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		}
 	}
 
-	/* TODO PORTME
-	@Override
 	@OnlyIn(Dist.CLIENT)
 	public int getBrightnessForRender()
 	{
@@ -183,14 +181,13 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		if(fluidStack!=null)
 		{
 			int light = this.isBurning()?15: fluidStack.getFluid().getAttributes().getLuminosity(fluidStack);
-			int superBrightness = super.getBrightnessForRender();
+			int superBrightness = 0;
 			light = (superBrightness&(0xff<<20))|(light<<4);
 			if(light > 0)
 				return Math.max(light, superBrightness);
 		}
-		return super.getBrightnessForRender();
+		return 0;
 	}
-	 */
 
 	@Override
 	public float getBrightness()

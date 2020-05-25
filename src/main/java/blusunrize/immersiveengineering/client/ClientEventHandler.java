@@ -9,10 +9,8 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -30,8 +28,8 @@ import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
-import blusunrize.immersiveengineering.client.utils.BasicDefaultColorVertexBuilder;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
@@ -56,7 +54,6 @@ import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultColorVertexBuilder;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.ITickableSound;
@@ -297,8 +294,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	private void renderObstructingBlocks(MatrixStack transform, IRenderTypeBuffer buffers)
 	{
 		IVertexBuilder baseBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
-		DefaultColorVertexBuilder builder = new BasicDefaultColorVertexBuilder(baseBuilder);
-		builder.setDefaultColor(255, 0, 0, 128);
+		TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder);
+		builder.setColor(1, 0, 0, 0.5F);
 		for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 		{
 			for(BlockPos obstruction : entry.getValue().getKey())
@@ -470,14 +467,18 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								if(d > max*max)
 									col = 0xdd3333;
 							}
-							ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2, scaledHeight-ForgeIngameGui.left_height-20, col);
+							ClientUtils.font().renderString(
+									s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2, scaledHeight-ForgeIngameGui.left_height-20, col,
+									true, transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0);
 						}
 					}
 					else if(equipped.getItem()==Misc.fluorescentTube)
 					{
 						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+FluorescentTubeItem.hexColorString(equipped));
-						ClientUtils.font().drawStringWithShadow(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2,
-								scaledHeight-ForgeIngameGui.left_height-20, FluorescentTubeItem.getRGBInt(equipped, 1));
+						ClientUtils.font().renderString(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2,
+								scaledHeight-ForgeIngameGui.left_height-20, FluorescentTubeItem.getRGBInt(equipped, 1),
+								true, transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
+						);
 					}
 					else if(equipped.getItem() instanceof RevolverItem||equipped.getItem() instanceof SpeedloaderItem)
 					{
@@ -615,7 +616,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								if(!fuel.isEmpty())
 								{
 									String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
-									ClientUtils.font().drawString(name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0);
+									ClientUtils.font().renderString(
+											name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0,
+											false, transform.getLast().getMatrix(), buffer, false,
+											0, 0xf000f0
+									);
 								}
 							}
 						}
@@ -687,9 +692,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								{
 									s = s.trim();
 									int w = ClientProxy.nixieFontOptional.getStringWidth(s);
-									ClientProxy.nixieFontOptional.drawStringWithShadow(s, scaledWidth/2-w/2,
+									ClientProxy.nixieFontOptional.renderString(
+											s, scaledWidth/2-w/2,
 											scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.getFontHeight()+2)+
-													(i++)*(ClientProxy.nixieFontOptional.getFontHeight()+2), col);
+													(i++)*(ClientProxy.nixieFontOptional.getFontHeight()+2), col,
+											false, transform.getLast().getMatrix(), buffer, false,
+											0, 0xf000f0
+									);
 								}
 							RenderSystem.disableBlend();
 						}
@@ -714,7 +723,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							int i = 0;
 							for(String s : text)
 								if(s!=null)
-									font.drawStringWithShadow(s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, col);
+									font.renderString(
+											s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, col, true,
+											transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
+									);
 						}
 					}
 				}

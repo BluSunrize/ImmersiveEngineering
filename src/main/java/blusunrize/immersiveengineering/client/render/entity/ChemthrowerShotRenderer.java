@@ -9,21 +9,17 @@
 package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 
@@ -45,16 +41,10 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 				return;
 		}
 
-		GlStateManager.pushMatrix();
-		GlStateManager.enableRescaleNormal();
-		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-		RenderHelper.disableStandardItemLighting();
+		matrixStackIn.push();
 
-		Tessellator tessellator = ClientUtils.tes();
-
-		GlStateManager.rotatef(180.0F-this.renderManager.info.getYaw(), 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotatef(-this.renderManager.info.getPitch(), 1.0F, 0.0F, 0.0F);
+		matrixStackIn.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 180.0F-this.renderManager.info.getYaw(), true));
+		matrixStackIn.rotate(new Quaternion(new Vector3f(1.0F, 0.0F, 0.0F), -this.renderManager.info.getPitch(), true));
 
 		TextureAtlasSprite sprite = ClientUtils.mc().getModelManager()
 				.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
@@ -64,22 +54,40 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 		float r = (colour >> 16&255)/255f;
 		float g = (colour >> 8&255)/255f;
 		float b = (colour&255)/255f;
-		ClientUtils.bindAtlas();
-		int lightAll = 1; //TODO PORTME entity.getBrightnessForRender();
-		int lightA = (lightAll >> 0x10)&0xffff;
-		int lightB = lightAll&0xffff;
-		GlStateManager.scalef(.25f, .25f, .25f);
-		BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
-		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
-		worldrenderer.pos(-.25, -.25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(4)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
-		worldrenderer.pos(.25, -.25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(4)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
-		worldrenderer.pos(.25, .25, 0).tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(0)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
-		worldrenderer.pos(-.25, .25, 0).tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(0)).lightmap(lightA, lightB).color(r, g, b, a).endVertex();
-		tessellator.draw();
-		RenderHelper.enableStandardItemLighting();
-		GlStateManager.disableBlend();
-		GlStateManager.disableRescaleNormal();
-		GlStateManager.popMatrix();
+		int lightAll = entity.getBrightnessForRender();
+		int blockLight = Math.max(
+				LightTexture.getLightBlock(lightAll),
+				LightTexture.getLightBlock(packedLightIn)
+		);
+		int skyLight = Math.max(
+				LightTexture.getLightSky(lightAll),
+				LightTexture.getLightSky(packedLightIn)
+		);
+		packedLightIn = LightTexture.packLight(blockLight, skyLight);
+		matrixStackIn.scale(.25f, .25f, .25f);
+		Matrix4f mat = matrixStackIn.getLast().getMatrix();
+		IVertexBuilder builder = bufferIn.getBuffer(IERenderTypes.POSITION_COLOR_TEX_LIGHTMAP);
+		builder.pos(mat, -.25f, -.25f, 0)
+				.color(r, g, b, a)
+				.tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(4))
+				.lightmap(packedLightIn)
+				.endVertex();
+		builder.pos(mat, .25f, -.25f, 0)
+				.color(r, g, b, a)
+				.tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(4))
+				.lightmap(packedLightIn)
+				.endVertex();
+		builder.pos(mat, .25f, .25f, 0)
+				.color(r, g, b, a)
+				.tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(0))
+				.lightmap(packedLightIn)
+				.endVertex();
+		builder.pos(mat, -.25f, .25f, 0)
+				.color(r, g, b, a)
+				.tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(0))
+				.lightmap(packedLightIn)
+				.endVertex();
+		matrixStackIn.pop();
 	}
 
 	@Override

@@ -8,18 +8,16 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.BufferBuilder;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 
@@ -34,42 +32,29 @@ public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 	public void render(@Nonnull RevolvershotEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn,
 						 IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
-		GlStateManager.pushMatrix();
-		//TODO PORTME this.bindEntityTexture(entity);
-		GlStateManager.enableRescaleNormal();
-		Tessellator tessellator = ClientUtils.tes();
-		BufferBuilder worldrenderer = ClientUtils.tes().getBuffer();
+		matrixStackIn.push();
+		IVertexBuilder builder = bufferIn.getBuffer(IERenderTypes.getPositionTex(getEntityTexture(entity)));
+		matrixStackIn.rotate(new Quaternion(0, entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks-90.0F, 0, true));
+		matrixStackIn.rotate(new Quaternion(0.0F, 0.0F, entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks, true));
+		matrixStackIn.scale(0.25F, 0.25F, 0.25F);
+		Matrix4f mat = matrixStackIn.getLast().getMatrix();
 
-		GlStateManager.disableCull();
-		GlStateManager.rotatef(entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks-90.0F, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotatef(entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks, 0.0F, 0.0F, 1.0F);
+		builder.pos(mat, 0, 0, -.25f).tex(5/32f, 10/32f).endVertex();
+		builder.pos(mat, 0, 0, .25f).tex(0/32f, 10/32f).endVertex();
+		builder.pos(mat, 0, .5f, .25f).tex(0/32f, 5/32f).endVertex();
+		builder.pos(mat, 0, .5f, -.25f).tex(5/32f, 5/32f).endVertex();
 
-		GlStateManager.scalef(.25f, .25f, .25f);
+		builder.pos(mat, .375f, .125f, 0).tex(8/32f, 5/32f).endVertex();
+		builder.pos(mat, 0, .125f, 0).tex(0/32f, 5/32f).endVertex();
+		builder.pos(mat, 0, .375f, 0).tex(0/32f, 0/32f).endVertex();
+		builder.pos(mat, .375f, .375f, 0).tex(8/32f, 0/32f).endVertex();
 
-		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(0, .0, -.25).tex(5/32f, 10/32f).endVertex();
-		worldrenderer.pos(0, .0, .25).tex(0/32f, 10/32f).endVertex();
-		worldrenderer.pos(0, .5, .25).tex(0/32f, 5/32f).endVertex();
-		worldrenderer.pos(0, .5, -.25).tex(5/32f, 5/32f).endVertex();
-		tessellator.draw();
+		builder.pos(mat, .375f, .25f, -.25f).tex(8/32f, 5/32f).endVertex();
+		builder.pos(mat, 0, .25f, -.25f).tex(0/32f, 5/32f).endVertex();
+		builder.pos(mat, 0, .25f, .25f).tex(0/32f, 0/32f).endVertex();
+		builder.pos(mat, .375f, .25f, .25f).tex(8/32f, 0/32f).endVertex();
 
-		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(.375, .125, 0).tex(8/32f, 5/32f).endVertex();
-		worldrenderer.pos(0, .125, 0).tex(0/32f, 5/32f).endVertex();
-		worldrenderer.pos(0, .375, 0).tex(0/32f, 0/32f).endVertex();
-		worldrenderer.pos(.375, .375, 0).tex(8/32f, 0/32f).endVertex();
-		tessellator.draw();
-
-		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(.375, .25, -.25).tex(8/32f, 5/32f).endVertex();
-		worldrenderer.pos(0, .25, -.25).tex(0/32f, 5/32f).endVertex();
-		worldrenderer.pos(0, .25, .25).tex(0/32f, 0/32f).endVertex();
-		worldrenderer.pos(.375, .25, .25).tex(8/32f, 0/32f).endVertex();
-		tessellator.draw();
-
-		GlStateManager.enableCull();
-		GlStateManager.disableRescaleNormal();
-		GlStateManager.popMatrix();
+		matrixStackIn.pop();
 	}
 
 	@Override

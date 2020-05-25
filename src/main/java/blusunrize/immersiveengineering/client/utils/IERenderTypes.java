@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.RenderState.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -23,6 +24,8 @@ public class IERenderTypes
 	public static final RenderType TRANSLUCENT_POSITION_COLOR;
 	public static final RenderType TRANSLUCENT_NO_DEPTH;
 	public static final RenderType CHUNK_MARKER;
+	public static final RenderType POSITION_COLOR_TEX_LIGHTMAP;
+	public static final RenderType POSITION_COLOR_LIGHTMAP;
 	protected static final RenderState.ShadeModelState SHADE_ENABLED = new RenderState.ShadeModelState(true);
 	protected static final RenderState.TextureState BLOCK_SHEET_MIPPED = new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
 	protected static final RenderState.LightmapState LIGHTMAP_DISABLED = new RenderState.LightmapState(false);
@@ -51,11 +54,11 @@ public class IERenderTypes
 				.line(new LineState(OptionalDouble.of(2)))
 				.texture(new TextureState())
 				.depthTest(DEPTH_ALWAYS)
-				.build(true);
+				.build(false);
 		RenderType.State translucentNoTextureState = RenderType.State.getBuilder()
 				.transparency(TRANSLUCENT_TRANSPARENCY)
 				.texture(new TextureState())
-				.build(true);
+				.build(false);
 		TRANSLUCENT_LINES = RenderType.makeType(
 				ImmersiveEngineering.MODID+":translucent_lines",
 				DefaultVertexFormats.POSITION_COLOR,
@@ -104,6 +107,28 @@ public class IERenderTypes
 				GL11.GL_LINES,
 				256,//TODO is that a good value?
 				chunkMarkerState
+		);
+		POSITION_COLOR_TEX_LIGHTMAP = RenderType.makeType(
+				ImmersiveEngineering.MODID+":pos_color_tex_lightmap",
+				DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
+				GL11.GL_QUADS,
+				256,//TODO is that a good value?
+				RenderType.State.getBuilder()
+						.texture(new TextureState(
+								PlayerContainer.LOCATION_BLOCKS_TEXTURE,
+								false, false))
+						.lightmap(new LightmapState(true))
+						.build(false)
+		);
+		POSITION_COLOR_LIGHTMAP = RenderType.makeType(
+				ImmersiveEngineering.MODID+":pos_color_lightmap",
+				DefaultVertexFormats.POSITION_COLOR_LIGHTMAP,
+				GL11.GL_QUADS,
+				256,//TODO is that a good value?
+				RenderType.State.getBuilder()
+						.texture(new TextureState())
+						.lightmap(new LightmapState(true))
+						.build(false)
 		);
 	}
 
@@ -155,6 +180,21 @@ public class IERenderTypes
 				RenderType.State.getBuilder()
 						.fog(setPointSize)
 						.texture(new TextureState())
+						.build(false)
+		);
+	}
+
+	public static RenderType getPositionTex(ResourceLocation texture)
+	{
+		return RenderType.makeType(
+				ImmersiveEngineering.MODID+":pos_tex_"+texture,
+				DefaultVertexFormats.POSITION_TEX,
+				GL11.GL_QUADS,
+				256,//TODO is that a good value?
+				RenderType.State.getBuilder()
+						.texture(new TextureState(
+								texture,
+								false, false))
 						.build(false)
 		);
 	}
