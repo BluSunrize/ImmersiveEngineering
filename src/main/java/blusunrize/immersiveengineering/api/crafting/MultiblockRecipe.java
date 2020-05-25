@@ -31,10 +31,13 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return getItemOutputs().get(0);
+		NonNullList<ItemStack> outputs = getItemOutputs();
+		if(outputs!=null&&outputs.size() > 0)
+			return outputs.get(0);
+		return ItemStack.EMPTY;
 	}
 
-	private List<IngredientWithSize> inputList;
+	private List<IngredientWithSize> inputList = new ArrayList<>(0);
 
 	@Override
 	public List<IngredientWithSize> getItemInputs()
@@ -54,7 +57,7 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 				.collect(Collectors.toList());
 	}
 
-	protected NonNullList<ItemStack> outputList;
+	protected NonNullList<ItemStack> outputList = NonNullList.withSize(0, ItemStack.EMPTY);
 
 	@Override
 	public NonNullList<ItemStack> getItemOutputs()
