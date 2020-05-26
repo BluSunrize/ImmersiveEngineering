@@ -24,8 +24,8 @@ public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 
 	public ScaffoldingBlock(String name, Properties material)
 	{
+		//TODO
 		super(name, material, BlockItemIE::new);
-		setNotNormalBlock();
 		lightOpacity = 0;
 	}
 

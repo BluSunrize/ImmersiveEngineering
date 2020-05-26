@@ -27,9 +27,8 @@ public class StructuralArmBlock extends IETileProviderBlock
 
 	public StructuralArmBlock(String name)
 	{
-		super(name, Properties.create(Material.IRON).hardnessAndResistance(3, 15),
+		super(name, Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid(),
 				BlockItemIE::new, FACING);
-		setNotNormalBlock();
 	}
 
 	@Nullable

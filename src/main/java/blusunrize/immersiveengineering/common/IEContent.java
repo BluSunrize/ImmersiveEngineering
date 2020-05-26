@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.CapabilitySkyhookData;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
@@ -45,7 +44,6 @@ import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
-import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
@@ -80,7 +78,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -88,9 +85,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraftforge.common.brewing.BrewingRecipe;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.RegistryEvent.Register;
@@ -215,6 +209,7 @@ public class IEContent
 			IEItems.Metals.dusts.put(m, dust);
 		}
 		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10);
+		Block.Properties stoneDecoPropsNotSolid = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10).notSolid();
 		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180);
 
 		StoneDecoration.cokebrick = new IEBaseBlock("cokebrick", stoneDecoProps, BlockItemIE::new);
@@ -231,10 +226,10 @@ public class IEContent
 		StoneDecoration.concreteQuarter = new PartialConcreteBlock("concrete_quarter", 4);
 		StoneDecoration.concreteSheet = new PartialConcreteBlock("concrete_sheet", 1);
 
-		IEBlocks.StoneDecoration.insulatingGlass = new IEBaseBlock("insulating_glass", stoneDecoProps, BlockItemIE::new)
-				.setNotNormalBlock();
-		IEBlocks.StoneDecoration.concreteSprayed = new IEBaseBlock("concrete_sprayed", Block.Properties.create(Material.ROCK).hardnessAndResistance(.2F, 1), BlockItemIE::new)
-				.setNotNormalBlock()
+		IEBlocks.StoneDecoration.insulatingGlass = new IEBaseBlock("insulating_glass", stoneDecoPropsNotSolid, BlockItemIE::new);
+		IEBlocks.StoneDecoration.concreteSprayed = new IEBaseBlock("concrete_sprayed", Block.Properties.create(Material.ROCK)
+				.hardnessAndResistance(.2F, 1)
+				.notSolid(), BlockItemIE::new)
 				.setHammerHarvest();
 		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.cokebrick);
 		addSlabFor((IEBaseBlock)IEBlocks.StoneDecoration.blastbrick);
@@ -252,10 +247,10 @@ public class IEContent
 		StoneDecoration.concreteStairs[1] = new IEStairsBlock("stairs_concrete_tile", stoneDecoProps, (IEBaseBlock)StoneDecoration.concreteTile);
 		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stairs_concrete_leaded", stoneDecoLeadedProps, (IEBaseBlock)StoneDecoration.concreteLeaded);
 		StoneDecoration.coresample = new GenericTileBlock("coresample", () -> CoresampleTileEntity.TYPE,
-				stoneDecoProps, (b, p) -> null, IEProperties.FACING_HORIZONTAL)
-				.setNotNormalBlock();
+				stoneDecoPropsNotSolid, (b, p) -> null, IEProperties.FACING_HORIZONTAL);
 
 		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5);
+		Block.Properties standardWoodPropertiesNotSolid = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5).notSolid();
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			IEBaseBlock baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, BlockItemIE::new)
@@ -263,14 +258,13 @@ public class IEContent
 			WoodenDecoration.treatedWood.put(style, baseBlock);
 			addSlabFor(baseBlock);
 			WoodenDecoration.treatedStairs.put(style,
-					new IEStairsBlock("stairs_treated_wood_"+style.name().toLowerCase(), standardWoodProperties, baseBlock));
+					new IEStairsBlock("stairs_treated_wood_"+style.name().toLowerCase(), standardWoodPropertiesNotSolid, baseBlock));
 		}
-		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodProperties);
-		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodProperties);
+		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodPropertiesNotSolid);
+		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodPropertiesNotSolid);
 
 		WoodenDevices.craftingTable = new GenericTileBlock("craftingtable", () -> CraftingTableTileEntity.TYPE,
-				standardWoodProperties, IEProperties.FACING_HORIZONTAL)
-				.setNotNormalBlock();
+				standardWoodPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
 		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
@@ -284,8 +278,8 @@ public class IEContent
 		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
 		WoodenDevices.windmill = new WindmillBlock("windmill");
 		WoodenDevices.watermill = new WatermillBlock("watermill");
-		WoodenDecoration.treatedPost = new PostBlock("treated_post", standardWoodProperties);
-		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodProperties);
+		WoodenDecoration.treatedPost = new PostBlock("treated_post", standardWoodPropertiesNotSolid);
+		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodPropertiesNotSolid);
 		IEBlocks.Misc.hempPlant = new HempBlock("hemp");
 
 		Cloth.cushion = new CushionBlock();
@@ -298,6 +292,7 @@ public class IEContent
 
 
 		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15);
+		Block.Properties metalPropertiesNotSolid = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid();
 		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.hvCoil = new IEBaseBlock("coil_hv", defaultMetalProperties, BlockItemIE::new);
@@ -306,12 +301,12 @@ public class IEContent
 		MetalDecoration.engineeringLight = new IEBaseBlock("light_engineering", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.generator = new IEBaseBlock("generator", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.radiator = new IEBaseBlock("radiator", defaultMetalProperties, BlockItemIE::new);
-		MetalDecoration.steelFence = new IEFenceBlock("steel_fence", defaultMetalProperties);
-		MetalDecoration.aluFence = new IEFenceBlock("alu_fence", defaultMetalProperties);
-		MetalDecoration.steelWallmount = new WallmountBlock("steel_wallmount", defaultMetalProperties);
-		MetalDecoration.aluWallmount = new WallmountBlock("alu_wallmount", defaultMetalProperties);
-		MetalDecoration.steelPost = new PostBlock("steel_post", defaultMetalProperties);
-		MetalDecoration.aluPost = new PostBlock("alu_post", defaultMetalProperties);
+		MetalDecoration.steelFence = new IEFenceBlock("steel_fence", metalPropertiesNotSolid);
+		MetalDecoration.aluFence = new IEFenceBlock("alu_fence", metalPropertiesNotSolid);
+		MetalDecoration.steelWallmount = new WallmountBlock("steel_wallmount", metalPropertiesNotSolid);
+		MetalDecoration.aluWallmount = new WallmountBlock("alu_wallmount", metalPropertiesNotSolid);
+		MetalDecoration.steelPost = new PostBlock("steel_post", metalPropertiesNotSolid);
+		MetalDecoration.aluPost = new PostBlock("alu_post", metalPropertiesNotSolid);
 		MetalDecoration.lantern = new LanternBlock("lantern");
 		MetalDecoration.slopeSteel = new StructuralArmBlock("steel_slope");
 		MetalDecoration.slopeAlu = new StructuralArmBlock("alu_slope");
@@ -320,14 +315,14 @@ public class IEContent
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
 			String name = type.name().toLowerCase(Locale.ENGLISH);
-			IEBaseBlock steelBlock = new ScaffoldingBlock("steel_scaffolding_"+name, defaultMetalProperties);
-			IEBaseBlock aluBlock = new ScaffoldingBlock("alu_scaffolding_"+name, defaultMetalProperties);
+			IEBaseBlock steelBlock = new ScaffoldingBlock("steel_scaffolding_"+name, metalPropertiesNotSolid);
+			IEBaseBlock aluBlock = new ScaffoldingBlock("alu_scaffolding_"+name, metalPropertiesNotSolid);
 			MetalDecoration.steelScaffolding.put(type, steelBlock);
 			MetalDecoration.aluScaffolding.put(type, aluBlock);
 			MetalDecoration.steelScaffoldingStair.put(type, new IEStairsBlock("stairs_steel_scaffolding_"+name,
-					defaultMetalProperties, steelBlock));
+					metalPropertiesNotSolid, steelBlock));
 			MetalDecoration.aluScaffoldingStair.put(type, new IEStairsBlock("stairs_alu_scaffolding_"+name,
-					defaultMetalProperties, aluBlock));
+					metalPropertiesNotSolid, aluBlock));
 			addSlabFor(steelBlock);
 			addSlabFor(aluBlock);
 		}
@@ -359,13 +354,11 @@ public class IEContent
 		Connectors.feedthrough = new FeedthroughBlock();
 
 		MetalDevices.fluidPlacer = new GenericTileBlock("fluid_placer", () -> FluidPlacerTileEntity.TYPE,
-				defaultMetalProperties)
-				.setNotNormalBlock();
+				metalPropertiesNotSolid);
 		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE,
 				IEProperties.FACING_HORIZONTAL);
-		MetalDevices.toolbox = new GenericTileBlock("toolbox_block", () -> ToolboxTileEntity.TYPE, defaultMetalProperties,
-				(b, p) -> null, IEProperties.FACING_HORIZONTAL)
-				.setNotNormalBlock();
+		MetalDevices.toolbox = new GenericTileBlock("toolbox_block", () -> ToolboxTileEntity.TYPE, metalPropertiesNotSolid,
+				(b, p) -> null, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.capacitorLV = new GenericTileBlock("capacitor_lv", () -> CapacitorLVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorMV = new GenericTileBlock("capacitor_mv", () -> CapacitorMVTileEntity.TYPE, defaultMetalProperties);
 		MetalDevices.capacitorHV = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
@@ -381,10 +374,8 @@ public class IEContent
 		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE,
 				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE);
 		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
-				defaultMetalProperties, IEProperties.FACING_HORIZONTAL)
-				.setNotNormalBlock();
-		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties)
-				.setNotNormalBlock();
+				metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
+		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, metalPropertiesNotSolid);
 		MetalDevices.sampleDrill = new SampleDrillBlock();
 		MetalDevices.teslaCoil = new TeslaCoilBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
@@ -393,8 +384,7 @@ public class IEContent
 		MetalDevices.cloche = new ClocheBlock();
 		for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
 			MetalDevices.chutes.put(metal, new GenericTileBlock("chute_"+metal.tagName(), () -> ChuteTileEntity.TYPE,
-					defaultMetalProperties, IEProperties.FACING_HORIZONTAL)
-					.setNotNormalBlock());
+					metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL));
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);

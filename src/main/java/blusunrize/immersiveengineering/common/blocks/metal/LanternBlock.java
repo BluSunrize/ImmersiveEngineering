@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
@@ -27,7 +26,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Map;
 
 public class LanternBlock extends IEBaseBlock implements IHasObjProperty
@@ -38,10 +36,9 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 	{
 		super(name, Properties.create(Material.IRON)
 						.hardnessAndResistance(3, 15)
-						.lightValue(14),
+						.lightValue(14).notSolid(),
 				BlockItem::new,
 				FACING);
-		setNotNormalBlock();
 	}
 
 	private static final Map<Direction, VoxelShape> SHAPES = ImmutableMap.<Direction, VoxelShape>builder()

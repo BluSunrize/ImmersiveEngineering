@@ -53,11 +53,12 @@ public class IEBaseBlock extends Block implements IIEBlock
 	protected int lightOpacity;
 	protected PushReaction mobilityFlag = PushReaction.NORMAL;
 	protected boolean canHammerHarvest;
-	protected boolean notNormalBlock;
+	protected final boolean notNormalBlock;
 
 	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock, IProperty... additionalProperties)
 	{
 		super(setTempProperties(blockProps, additionalProperties));
+		this.notNormalBlock = !isSolid(getDefaultState());
 		this.name = name;
 
 		this.additionalProperties = Arrays.copyOf(tempProperties, tempProperties.length);
@@ -150,13 +151,6 @@ public class IEBaseBlock extends Block implements IIEBlock
 	{
 		return mobilityFlag;
 	}
-
-	public IEBaseBlock setNotNormalBlock()
-	{
-		notNormalBlock = true;
-		return this;
-	}
-
 
 	@Override
 	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader world, BlockPos pos)

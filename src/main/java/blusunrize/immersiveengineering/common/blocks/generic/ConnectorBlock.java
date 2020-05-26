@@ -36,10 +36,9 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 {
 	public ConnectorBlock(String name, BiFunction<Block, Item.Properties, Item> item, IProperty... additional)
 	{
-		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
+		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F).notSolid(),
 				item, additional);
 		lightOpacity = 0;
-		setNotNormalBlock();
 	}
 
 	public ConnectorBlock(String name, IProperty... additional)

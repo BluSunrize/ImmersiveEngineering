@@ -34,9 +34,9 @@ public class ModWorkbenchBlock extends IETileProviderBlock
 
 	public ModWorkbenchBlock(String name)
 	{
-		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5), BlockItemIE::new,
+		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5).notSolid(),
+				BlockItemIE::new,
 				DUMMY, FACING);
-		setNotNormalBlock();
 	}
 
 	@Nullable

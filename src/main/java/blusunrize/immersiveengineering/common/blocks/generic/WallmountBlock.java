@@ -39,9 +39,9 @@ public class WallmountBlock extends IEBaseBlock
 
 	public WallmountBlock(String name, Properties blockProps)
 	{
+		//TODO
 		super(name, blockProps, BlockItemIE::new, IEProperties.FACING_HORIZONTAL,
 				ORIENTATION);
-		setNotNormalBlock();
 		lightOpacity = 0;
 	}
 

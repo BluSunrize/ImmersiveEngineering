@@ -25,11 +25,11 @@ import java.util.function.Supplier;
 
 public class MetalMultiblockBlock extends IEMultiblockBlock
 {
-	private Supplier<TileEntityType<?>> tileType;
+	private final Supplier<TileEntityType<?>> tileType;
 
 	public MetalMultiblockBlock(String name, Supplier<TileEntityType<?>> te, IProperty<?>... additionalProperties)
 	{
-		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15),
+		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid(),
 				ArrayUtils.addAll(additionalProperties,
 						IEProperties.MIRRORED));
 		tileType = te;

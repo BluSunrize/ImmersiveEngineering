@@ -25,8 +25,7 @@ public abstract class ShaderBannerBlock extends IETileProviderBlock
 {
 	public ShaderBannerBlock(String name, IProperty... stateProps)
 	{
-		super(name, Block.Properties.create(Material.WOOL).doesNotBlockMovement(), (b, p) -> null, stateProps);
-		setNotNormalBlock();
+		super(name, Block.Properties.create(Material.WOOL).doesNotBlockMovement().notSolid(), (b, p) -> null, stateProps);
 	}
 
 	@Nullable

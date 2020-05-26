@@ -13,9 +13,8 @@ public class SampleDrillBlock extends GenericTileBlock
 	public SampleDrillBlock()
 	{
 		super("sample_drill", () -> SampleDrillTileEntity.TYPE,
-				Properties.create(Material.IRON).hardnessAndResistance(3, 15),
+				Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid(),
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
-		setNotNormalBlock();
 	}
 
 	@Override

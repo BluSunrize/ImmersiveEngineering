@@ -14,9 +14,8 @@ public class TurretBlock extends GenericTileBlock
 {
 	public TurretBlock(String name, Supplier<TileEntityType<?>> tileType)
 	{
-		super(name, tileType, Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15),
+		super(name, tileType, Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid(),
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
-		setNotNormalBlock();
 	}
 
 	@Override

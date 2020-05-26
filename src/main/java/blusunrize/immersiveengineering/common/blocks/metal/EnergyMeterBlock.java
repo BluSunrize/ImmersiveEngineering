@@ -20,7 +20,6 @@ public class EnergyMeterBlock extends MiscConnectorBlock
 	public EnergyMeterBlock()
 	{
 		super("current_transformer", () -> EnergyMeterTileEntity.TYPE, DUMMY, FACING);
-		setNotNormalBlock();
 	}
 
 	@Override

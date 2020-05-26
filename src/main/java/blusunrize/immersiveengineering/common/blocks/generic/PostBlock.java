@@ -59,8 +59,8 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 
 	public PostBlock(String name, Properties blockProps)
 	{
+		//TODO
 		super(name, blockProps, BlockItemIE::new, POST_SLAVE, HORIZONTAL_OFFSET);
-		setNotNormalBlock();
 		setMobility(PushReaction.BLOCK);
 		lightOpacity = 0;
 	}

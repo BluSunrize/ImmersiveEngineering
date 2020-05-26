@@ -14,9 +14,8 @@ public class BlastFurnacePreheaterBlock extends GenericTileBlock
 	public BlastFurnacePreheaterBlock()
 	{
 		super("blastfurnace_preheater", () -> BlastFurnacePreheaterTileEntity.TYPE,
-				Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15),
+				Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid(),
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
-		setNotNormalBlock();
 	}
 
 	@Override

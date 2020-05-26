@@ -13,9 +13,8 @@ public class ClocheBlock extends GenericTileBlock
 	public ClocheBlock()
 	{
 		super("cloche", () -> ClocheTileEntity.TYPE,
-				Properties.create(Material.IRON).hardnessAndResistance(3, 15),
+				Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid(),
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
-		setNotNormalBlock();
 		setLightOpacity(0);
 	}
 

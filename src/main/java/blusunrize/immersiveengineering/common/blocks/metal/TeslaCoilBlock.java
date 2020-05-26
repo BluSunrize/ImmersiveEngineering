@@ -13,9 +13,8 @@ public class TeslaCoilBlock extends GenericTileBlock
 	public TeslaCoilBlock()
 	{
 		super("tesla_coil", () -> TeslaCoilTileEntity.TYPE,
-				Properties.create(Material.IRON).hardnessAndResistance(3, 15),
+				Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid(),
 				IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE);
-		setNotNormalBlock();
 	}
 
 	@Override

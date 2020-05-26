@@ -16,7 +16,6 @@ public class TransformerHVBlock extends MiscConnectorBlock
 	{
 		super("transformer_hv", () -> TransformerHVTileEntity.TYPE,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, IEProperties.MIRRORED);
-		setNotNormalBlock();
 	}
 
 	@Override
