@@ -16,11 +16,13 @@ import blusunrize.immersiveengineering.client.render.IEShaderLayerCompositeTextu
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.tileentity.BannerTileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -36,71 +38,65 @@ import java.util.HashMap;
 
 public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEntity>
 {
-	private final ModelRenderer field_228833_a_ = BannerTileEntityRenderer.func_228836_a_();
-	private final ModelRenderer field_228834_c_ = new ModelRenderer(64, 64, 44, 0);
-	private final ModelRenderer field_228835_d_;
+	private final ModelRenderer clothModel = BannerTileEntityRenderer.func_228836_a_();
+	private final ModelRenderer standingModel = new ModelRenderer(64, 64, 44, 0);
+	private final ModelRenderer crossbar;
 
 	public ShaderBannerRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
-		this.field_228834_c_.addBox(-1.0F, -30.0F, -1.0F, 2.0F, 42.0F, 2.0F, 0.0F);
-		this.field_228835_d_ = new ModelRenderer(64, 64, 0, 42);
-		this.field_228835_d_.addBox(-10.0F, -32.0F, -1.0F, 20.0F, 2.0F, 2.0F, 0.0F);
+		this.standingModel.addBox(-1.0F, -30.0F, -1.0F, 2.0F, 42.0F, 2.0F, 0.0F);
+		this.crossbar = new ModelRenderer(64, 64, 0, 42);
+		this.crossbar.addBox(-10.0F, -32.0F, -1.0F, 20.0F, 2.0F, 2.0F, 0.0F);
 
 	}
 
 	@Override
 	public void render(ShaderBannerTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		/* TODO PORTME
 		long time = te.getWorldNonnull().getGameTime();
 		matrixStack.push();
 		if(!te.wall)
 		{
 			int orientation = te.getState().get(ShaderBannerStandingBlock.ROTATION);
-			matrixStack.translate((float)0.5F, (float)0.5F, (float)0.5F);
+			matrixStack.translate(0.5F, 0.5F, 0.5F);
 			float f1 = (float)(orientation*360)/16.0F;
 			matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -f1, true));
-			this.bannerModel.func_205057_b().showModel = true;
+			standingModel.showModel = true;
 		}
 		else
 		{
 			Direction facing = te.getState().get(ShaderBannerWallBlock.FACING);
 			float rotation = facing.getHorizontalAngle();
 
-			matrixStack.translate((float)x+0.5F, (float)y-0.16666667F, (float)z+0.5F);
+			matrixStack.translate(0.5F, -1/6f, 0.5F);
 			matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -rotation, true));
 			matrixStack.translate(0.0F, -0.3125F, -0.4375F);
-			this.bannerModel.func_205057_b().showModel = false;
+			standingModel.showModel = false;
 		}
 
 		BlockPos blockpos = te.getPos();
 		float f3 = (float)(blockpos.getX()*7+blockpos.getY()*9+blockpos.getZ()*13)+(float)time+partialTicks;
-		this.bannerModel.func_205056_c().rotateAngleX = (-0.0125F+0.01F*MathHelper.cos(f3*(float)Math.PI*0.02F))*(float)Math.PI;
-		GlStateManager.enableRescaleNormal();
+		clothModel.rotateAngleX = (-0.0125F+0.01F*MathHelper.cos(f3*(float)Math.PI*0.02F))*(float)Math.PI;
+		clothModel.rotationPointY = -32.0F;
 		ResourceLocation resourcelocation = this.getBannerResourceLocation(te);
 
 		if(resourcelocation!=null)
 		{
-			this.bindTexture(resourcelocation);
 			matrixStack.push();
 
-			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-			GlStateManager.enableAlphaTest();
-			GlStateManager.enableBlend();
-
-			matrixStack.scale(0.6666667F, -0.6666667F, -0.6666667F);
-			this.bannerModel.renderBanner();
-
-			GlStateManager.disableBlend();
-			GlStateManager.disableAlphaTest();
+			matrixStack.scale(2f/3, -2f/3, -2f/3);
+			IVertexBuilder builder;
+			builder = bufferIn.getBuffer(RenderType.getEntitySolid(resourcelocation));
+			this.clothModel.render(matrixStack, builder, combinedLightIn, combinedOverlayIn);
+			builder = ModelBakery.LOCATION_BANNER_BASE.getBuffer(bufferIn, RenderType::getEntitySolid);
+			this.crossbar.render(matrixStack, builder, combinedLightIn, combinedOverlayIn);
+			this.standingModel.render(matrixStack, builder, combinedLightIn, combinedOverlayIn);
 
 			matrixStack.pop();
 		}
 
-		GlStateManager.color3f(1.0F, 1.0F, 1.0F);
 		matrixStack.pop();
-		 */
 	}
 
 	private static final ResourceLocation BASE_TEXTURE = new ResourceLocation("textures/entity/banner_base.png");

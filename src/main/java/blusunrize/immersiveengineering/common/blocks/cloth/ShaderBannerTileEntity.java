@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class ShaderBannerTileEntity extends IEBaseTileEntity implements ICollisionBounds, ITileDrop
+public class ShaderBannerTileEntity extends IEBaseTileEntity implements IBlockBounds, ITileDrop
 {
 	public boolean wall = false;
 	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
@@ -76,7 +76,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements ICollisi
 
 	@Nonnull
 	@Override
-	public VoxelShape getCollisionShape()
+	public VoxelShape getBlockBounds()
 	{
 		if(this.wall)
 			return WALL_SHAPES.get(getState().get(ShaderBannerWallBlock.FACING));

@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.common.util.IELogger;
-
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.Texture;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -75,7 +75,7 @@ public class IEShaderLayerCompositeTexture extends Texture
 					iresource1 = resourceManager.getResource(new ResourceLocation(texture));
 					NativeImage texureImage = NativeImage.read(iresource1.getInputStream());
 
-					float[] mod = new float[]{colour.getW(), colour.getX(), colour.getY(), colour.getZ()};
+					float[] mod = new float[]{colour.getX(), colour.getY(), colour.getZ(), colour.getW()};
 					if(mod[3] < 0.2)
 						mod[3] *= 2.5f;
 
@@ -159,10 +159,8 @@ public class IEShaderLayerCompositeTexture extends Texture
 
 				++layer;
 			}
-			/* TODO PORTME
-						TextureUtil.prepareImage(this.getGlTextureId(), 0, finalTexture.getWidth(), finalTexture.getHeight());
-			finalTexture.uploadTextureSub(0, 0, 0, 0, 0, finalTexture.getWidth(), finalTexture.getHeight(), false, false, false);
-			 */
+			TextureUtil.prepareImage(this.getGlTextureId(), 0, finalTexture.getWidth(), finalTexture.getHeight());
+			finalTexture.uploadTextureSub(0, 0, 0, 0, 0, finalTexture.getWidth(), finalTexture.getHeight(), false, false, false, false);
 
 		} catch(IOException ioexception)
 		{
