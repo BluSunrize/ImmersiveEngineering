@@ -9,11 +9,9 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -52,13 +50,11 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 			ItemStack earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty())
 			{
-				GlStateManager.pushMatrix();
 				BipedModel<E> model = Misc.earmuffs.getArmorModel(living, earmuffs, EquipmentSlotType.HEAD, null);
 				model.setRotationAngles(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 				model.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntitySolid(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, "overlay")))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 				int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
 				model.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntitySolid(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, null)))), packedLightIn, OverlayTexture.NO_OVERLAY, (colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f, 1F);
-				GlStateManager.popMatrix();
 			}
 		}
 
@@ -90,11 +86,9 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 	{
 		if(!powerpack.isEmpty())
 		{
-			GlStateManager.pushMatrix();
 			BipedModel<E> model = Misc.powerpack.getArmorModel(living, powerpack, EquipmentSlotType.CHEST, null);
 			model.setRotationAngles(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			model.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntitySolid(new ResourceLocation(Misc.powerpack.getArmorTexture(powerpack, living, EquipmentSlotType.CHEST, null)))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
-			GlStateManager.popMatrix();
 		}
 	}
 }

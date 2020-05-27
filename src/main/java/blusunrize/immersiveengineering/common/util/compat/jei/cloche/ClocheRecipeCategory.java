@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
@@ -68,9 +68,9 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 	@Override
 	public void draw(ClocheRecipe recipe, double mouseX, double mouseY)
 	{
-		GlStateManager.pushMatrix();
-		GlStateManager.scalef(3, 3, 1);
+		RenderSystem.pushMatrix();
+		RenderSystem.scalef(3, 3, 1);
 		this.getIcon().draw(7, 0);
-		GlStateManager.popMatrix();
+		RenderSystem.popMatrix();
 	}
 }

@@ -191,7 +191,6 @@ public class ManualElementCrafting extends SpecialManualElements
 		int totalYOff = 0;
 		highlighted = ItemStack.EMPTY;
 		MatrixStack transform = new MatrixStack();
-		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 		for(int i = 0; i < recipeRows.length; i++)
 		{
 			List<PositionedItemStack[]> rList = this.recipeLayout[i];
@@ -206,18 +205,17 @@ public class ManualElementCrafting extends SpecialManualElements
 						AbstractGui.fill(x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666);
 					}
 
+				IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 				ManualUtils.drawTexturedRect(transform, buffers, manual.texture, x+maxX-17,
 						y+totalYOff+heightPixels[i]/2-5, 16, 10, 0/256f,
 						16/256f, 226/256f, 236/256f);
+				buffers.finish();
 
 				totalYOff += heightPixels[i]+8;
 			}
 		}
-		buffers.finish();
 
 		totalYOff = 0;
-		RenderSystem.pushMatrix();
-		RenderSystem.translated(0, 0, 300);
 		for(int i = 0; i < recipeRows.length; i++)
 		{
 			List<PositionedItemStack[]> rList = this.recipeLayout[i];
@@ -235,7 +233,6 @@ public class ManualElementCrafting extends SpecialManualElements
 				totalYOff += heightPixels[i]+8;
 			}
 		}
-		RenderSystem.popMatrix();
 
 		this.renderHighlightedTooltip(gui, mx, my);
 	}

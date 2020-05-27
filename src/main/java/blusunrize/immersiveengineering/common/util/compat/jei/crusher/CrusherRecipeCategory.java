@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
@@ -91,12 +91,12 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 					y+6,
 					0x777777
 			);
-			GlStateManager.color4f(1, 1, 1, 1);
+			RenderSystem.color4f(1, 1, 1, 1);
 		}
-		GlStateManager.pushMatrix();
-		GlStateManager.scalef(3f, 3f, 1);
+		RenderSystem.pushMatrix();
+		RenderSystem.scalef(3f, 3f, 1);
 		this.getIcon().draw(8, 0);
-		GlStateManager.popMatrix();
+		RenderSystem.popMatrix();
 	}
 
 	private List<StackWithChance> getValidSecondaryOutputs(CrusherRecipe recipe)

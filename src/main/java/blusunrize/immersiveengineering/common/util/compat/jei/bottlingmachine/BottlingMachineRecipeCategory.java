@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -71,9 +71,9 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	{
 		ClientUtils.drawSlot(75, 15, 16, 48);
 
-		GlStateManager.pushMatrix();
-		GlStateManager.scalef(3, 3, 1);
+		RenderSystem.pushMatrix();
+		RenderSystem.scalef(3, 3, 1);
 		this.getIcon().draw(8, 0);
-		GlStateManager.popMatrix();
+		RenderSystem.popMatrix();
 	}
 }

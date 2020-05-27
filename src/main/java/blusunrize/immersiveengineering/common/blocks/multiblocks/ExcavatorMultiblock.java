@@ -11,7 +11,11 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer.Impl;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -38,19 +42,22 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure()
+	public void renderFormedStructure(MatrixStack transform, Impl buffer)
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(Multiblocks.excavator);
-		GlStateManager.translated(2, 1.5, 2.875);
-		GlStateManager.rotatef(-225, 0, 1, 0);
-		GlStateManager.rotatef(-20, 1, 0, 0);
-		GlStateManager.scaled(5.25, 5.25, 5.25);
+		transform.translate(2, 1.5, 2.875);
+		transform.rotate(new Quaternion(0, 225, 0, true));
+		transform.rotate(new Quaternion(-20, 0, 0, true));
+		transform.scale(5.25F, 5.25F, 5.25F);
 
-		GlStateManager.disableCull();
-		//TODO location?
-		ClientUtils.mc().getItemRenderer().renderItemIntoGUI(renderStack, 0, 0);
-		GlStateManager.enableCull();
+		ClientUtils.mc().getItemRenderer().renderItem(
+				renderStack,
+				TransformType.GUI,
+				0xf000f0,
+				OverlayTexture.NO_OVERLAY,
+				transform, buffer
+		);
 	}
 
 	@Override

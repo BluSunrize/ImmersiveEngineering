@@ -11,7 +11,11 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer.Impl;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -38,18 +42,22 @@ public class AssemblerMultiblock extends IETemplateMultiblock
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure()
+	public void renderFormedStructure(MatrixStack transform, Impl buffer)
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(Multiblocks.assembler);
-		RenderSystem.translated(1.5, 1.5, 1.5);
-		RenderSystem.rotatef(-45, 0, 1, 0);
-		RenderSystem.rotatef(-20, 1, 0, 0);
-		RenderSystem.scaled(4, 4, 4);
+		transform.translate(1.5, 1.5, 1.5);
+		transform.rotate(new Quaternion(0, 45, 0, true));
+		transform.rotate(new Quaternion(-20, 0, 0, true));
+		transform.scale(4, 4, 4);
 
-		RenderSystem.disableCull();
-		ClientUtils.mc().getItemRenderer().renderItemIntoGUI(renderStack, 0, 0);
-		RenderSystem.enableCull();
+		ClientUtils.mc().getItemRenderer().renderItem(
+				renderStack,
+				TransformType.GUI,
+				0xf000f0,
+				OverlayTexture.NO_OVERLAY,
+				transform, buffer
+		);
 	}
 
 	@Override

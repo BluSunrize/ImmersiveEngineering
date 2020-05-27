@@ -214,7 +214,11 @@ public class ManualElementMultiblock extends SpecialManualElements
 
 				int idx = 0;
 				if(showCompleted&&multiblock.canRenderFormedStructure())
-					multiblock.renderFormedStructure();
+				{
+					transform.push();
+					multiblock.renderFormedStructure(transform, buffer);
+					transform.pop();
+				}
 				else
 					for(int h = 0; h < structureHeight; h++)
 						for(int l = 0; l < structureLength; l++)

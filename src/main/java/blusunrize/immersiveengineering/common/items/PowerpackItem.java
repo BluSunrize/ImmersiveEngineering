@@ -49,10 +49,11 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 		super("powerpack");
 	}
 
+	@Nullable
 	@Override
-	public boolean canEquip(ItemStack stack, EquipmentSlotType armorType, Entity entity)
+	public EquipmentSlotType getEquipmentSlot(ItemStack stack)
 	{
-		return armorType==EquipmentSlotType.CHEST;
+		return EquipmentSlotType.CHEST;
 	}
 
 	@Override

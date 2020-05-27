@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.api.multiblocks;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.IRenderTypeBuffer.Impl;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -109,9 +111,12 @@ public class MultiblockHandler
 
 		/**
 		 * use this function to render the complete multiblock
+		 *
+		 * @param transform
+		 * @param buffer
 		 */
 		@OnlyIn(Dist.CLIENT)
-		void renderFormedStructure();
+		void renderFormedStructure(MatrixStack transform, Impl buffer);
 
 		Vec3i getSize();
 

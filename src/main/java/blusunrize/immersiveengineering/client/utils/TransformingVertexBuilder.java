@@ -106,6 +106,21 @@ public class TransformingVertexBuilder implements IVertexBuilder
 		color.setGlobal(new Vector4f(r, g, b, a));
 	}
 
+	public void setNormal(float x, float y, float z)
+	{
+		Vector3f vec = new Vector3f(x, y, z);
+		vec.normalize();
+		normal.setGlobal(vec);
+	}
+
+	public void setOverlay(int packedOverlayIn)
+	{
+		overlay.setGlobal(new Vec2i(
+				packedOverlayIn&0xffff,
+				packedOverlayIn >> 16
+		));
+	}
+
 	private static class Vec2i
 	{
 		final int x, y;

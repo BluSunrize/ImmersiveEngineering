@@ -11,7 +11,11 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer.Impl;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -38,23 +42,27 @@ public class SiloMultiblock extends IETemplateMultiblock
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure()
+	public void renderFormedStructure(MatrixStack transform, Impl buffer)
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(Multiblocks.silo);
-		GlStateManager.translated(1.5, 1.5, 2.5);
-		GlStateManager.rotatef(-45, 0, 1, 0);
-		GlStateManager.rotatef(-20, 1, 0, 0);
-		GlStateManager.scaled(5.5, 5.5, 5.5);
+		transform.translate(2, 2.5, 1);
+		transform.rotate(new Quaternion(0, 45, 0, true));
+		transform.rotate(new Quaternion(-20, 0, 0, true));
+		transform.scale(8, 8, 8);
 
-		GlStateManager.disableCull();
-		ClientUtils.mc().getItemRenderer().renderItemIntoGUI(renderStack, 0, 0);
-		GlStateManager.enableCull();
+		ClientUtils.mc().getItemRenderer().renderItem(
+				renderStack,
+				TransformType.FIXED,
+				0xf000f0,
+				OverlayTexture.NO_OVERLAY,
+				transform, buffer
+		);
 	}
 
 	@Override
 	public float getManualScale()
 	{
-		return 12;
+		return 10;
 	}
 }

@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -58,7 +57,6 @@ import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -83,185 +81,8 @@ import java.util.function.Function;
 
 public class ClientUtils
 {
-	public static final AxisAlignedBB standardBlockAABB = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 	static HashMap<String, ResourceLocation> resourceMap = new HashMap<String, ResourceLocation>();
 	public static TextureAtlasSprite[] destroyBlockIcons = new TextureAtlasSprite[10];
-
-	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, TextureAtlasSprite sprite)
-	{
-		if(connection==null||start==null||end==null)
-			return;
-		int col = connection.type.getColour(connection);
-		double r = connection.type.getRenderDiameter()/2;
-		int[] rgba = new int[]{col >> 16&255, col >> 8&255, col&255, 255};
-		tessellateConnection(connection, start, end, rgba, r, sprite);
-	}
-
-	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int[] rgba, double radius, TextureAtlasSprite sprite)
-	{
-		/*TODO
-		Vec3d startOffset = Vec3d.ZERO;//TODO start.getConnectionOffset(connection);
-		Vec3d endOffset = Vec3d.ZERO;//TODO end.getConnectionOffset(connection);
-		if(startOffset==null)
-			startOffset = new Vec3d(.5, .5, .5);
-		if(endOffset==null)
-			endOffset = new Vec3d(.5, .5, .5);
-		double dx = (connection.end.getX()+endOffset.x)-(connection.start.getX()+startOffset.x);
-		double dy = (connection.end.getY()+endOffset.y)-(connection.start.getY()+startOffset.y);
-		double dz = (connection.end.getZ()+endOffset.z)-(connection.start.getZ()+startOffset.z);
-		double dw = Math.sqrt(dx*dx+dz*dz);
-		double d = Math.sqrt(dx*dx+dy*dy+dz*dz);
-		World world = ((TileEntity)start).getWorld();
-		Tessellator tes = tes();
-
-		double rmodx = dz/dw;
-		double rmodz = dx/dw;
-
-		Vec3d[] vertex = connection.getSubVertices(world);
-		//		Vec3 initPos = new Vec3(connection.start.getX()+startOffset.xCoord, connection.start.getY()+startOffset.yCoord, connection.start.getZ()+startOffset.zCoord);
-		Vec3d initPos = new Vec3d(startOffset.x, startOffset.y, startOffset.z);
-
-		double uMin = sprite.getMinU();
-		double uMax = sprite.getMaxU();
-		double vMin = sprite.getMinV();
-		double vMax = sprite.getMaxV();
-		double uD = uMax-uMin;
-		boolean vertical = connection.end.getX()==connection.start.getX()&&connection.end.getZ()==connection.start.getZ();
-		boolean b = (dx < 0&&dz <= 0)||(dz < 0&&dx <= 0)||(dz < 0&&dx > 0);
-
-
-		BufferBuilder worldrenderer = tes.getBuffer();
-		//		worldrenderer.pos(x, y+h, 0).tex(uv[0], uv[3]).endVertex();
-		//		worldrenderer.pos(x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();
-		//		worldrenderer.pos(x+w, y, 0).tex(uv[1], uv[2]).endVertex();
-		//		worldrenderer.pos(x, y, 0).tex(uv[0], uv[2]).endVertex();
-		if(vertical)
-		{
-			//			double uShift = Math.abs(dy)/ * uD;
-			//			worldrenderer.pos(x, y, z)
-			worldrenderer.setTranslation(initPos.x, initPos.y, initPos.z);
-
-			//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0-radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx-radius, dy, dz).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx+radius, dy, dz).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0+radius, 0, 0).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-
-			//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx-radius, dy, dz).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0-radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0+radius, 0, 0).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx+radius, dy, dz).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-
-
-			//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0, 0, 0-radius).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx, dy, dz-radius).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx, dy, dz+radius).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0, 0, 0+radius).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-
-			//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx, dy, dz-radius).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0, 0, 0-radius).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0, 0, 0+radius).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx, dy, dz+radius).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-			worldrenderer.setTranslation(0, 0, 0);
-		}
-		else
-		{
-			double u0 = uMin;
-			double u1 = uMin;
-			for(int i = b?(vertex.length-1): 0; (b?(i >= 0): (i < vertex.length)); i += (b?-1: 1))
-			{
-				Vec3d v0 = i > 0?vertex[i-1].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ()): initPos;
-				Vec3d v1 = vertex[i].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ());
-
-				//				double u0 = uMin;
-				//				double u1 = uMax;
-				u0 = u1;
-				u1 = u0+(v0.distanceTo(v1)/d)*uD;
-				if((dx < 0&&dz <= 0)||(dz < 0&&dx <= 0)||(dz < 0&&dx > 0))
-				{
-					u1 = uMin;
-					u0 = uMax;
-				}
-				worldrenderer.pos(v0.x, v0.y+radius, v0.z).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x, v1.y+radius, v1.z).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x, v1.y-radius, v1.z).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x, v0.y-radius, v0.z).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-
-				worldrenderer.pos(v1.x, v1.y+radius, v1.z).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x, v0.y+radius, v0.z).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x, v0.y-radius, v0.z).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x, v1.y-radius, v1.z).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-
-				worldrenderer.pos(v0.x-radius*rmodx, v0.y, v0.z+radius*rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x-radius*rmodx, v1.y, v1.z+radius*rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x+radius*rmodx, v1.y, v1.z-radius*rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x+radius*rmodx, v0.y, v0.z-radius*rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-
-				worldrenderer.pos(v1.x-radius*rmodx, v1.y, v1.z+radius*rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x-radius*rmodx, v0.y, v0.z+radius*rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.x+radius*rmodx, v0.y, v0.z-radius*rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.x+radius*rmodx, v1.y, v1.z-radius*rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
-
-			}
-		}
-		//		tes.setColorRGBA_I(0xffffff, 0xff);
-		*/
-	}
-	//
-	//	public static int calcBrightness(IBlockAccess world, double x, double y, double z)
-	//	{
-	//		return world.getLightBrightnessForSkyBlocks((int)Math.floor(x), (int)Math.floor(y), (int)Math.floor(z), 0);
-	//	}
-	//
-	//
-	//	public static void tessellateBox(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, IIcon icon)
-	//	{
-	//		tes().addVertexWithUV(xMin,yMin,zMax, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(zMax*16));
-	//		tes().addVertexWithUV(xMin,yMin,zMin, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(zMin*16));
-	//		tes().addVertexWithUV(xMax,yMin,zMin, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(zMin*16));
-	//		tes().addVertexWithUV(xMax,yMin,zMax, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(zMax*16));
-	//
-	//		tes().addVertexWithUV(xMin,yMax,zMin, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(zMin*16));
-	//		tes().addVertexWithUV(xMin,yMax,zMax, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(zMax*16));
-	//		tes().addVertexWithUV(xMax,yMax,zMax, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(zMax*16));
-	//		tes().addVertexWithUV(xMax,yMax,zMin, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(zMin*16));
-	//
-	//		tes().addVertexWithUV(xMax,yMin,zMin, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(yMax*16));
-	//		tes().addVertexWithUV(xMin,yMin,zMin, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(yMax*16));
-	//		tes().addVertexWithUV(xMin,yMax,zMin, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(yMin*16));
-	//		tes().addVertexWithUV(xMax,yMax,zMin, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(yMin*16));
-	//
-	//		tes().addVertexWithUV(xMin,yMin,zMax, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(yMax*16));
-	//		tes().addVertexWithUV(xMax,yMin,zMax, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(yMax*16));
-	//		tes().addVertexWithUV(xMax,yMax,zMax, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(yMin*16));
-	//		tes().addVertexWithUV(xMin,yMax,zMax, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(yMin*16));
-	//
-	//		tes().addVertexWithUV(xMin,yMin,zMin, icon.getInterpolatedU(zMin*16),icon.getInterpolatedV(yMax*16));
-	//		tes().addVertexWithUV(xMin,yMin,zMax, icon.getInterpolatedU(zMax*16),icon.getInterpolatedV(yMax*16));
-	//		tes().addVertexWithUV(xMin,yMax,zMax, icon.getInterpolatedU(zMax*16),icon.getInterpolatedV(yMin*16));
-	//		tes().addVertexWithUV(xMin,yMax,zMin, icon.getInterpolatedU(zMin*16),icon.getInterpolatedV(yMin*16));
-	//
-	//		tes().addVertexWithUV(xMax,yMin,zMax, icon.getInterpolatedU(zMax*16),icon.getInterpolatedV(yMax*16));
-	//		tes().addVertexWithUV(xMax,yMin,zMin, icon.getInterpolatedU(zMin*16),icon.getInterpolatedV(yMax*16));
-	//		tes().addVertexWithUV(xMax,yMax,zMin, icon.getInterpolatedU(zMin*16),icon.getInterpolatedV(yMin*16));
-	//		tes().addVertexWithUV(xMax,yMax,zMax, icon.getInterpolatedU(zMax*16),icon.getInterpolatedV(yMin*16));
-	//	}
-	//
 
 	public static Tessellator tes()
 	{

@@ -30,15 +30,19 @@ public abstract class ModelIEArmorBase<T extends LivingEntity> extends BipedMode
 	@Override
 	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
 	{
-		isChild = entityTemp.isChild();
-		isSneak = entityTemp.isSneaking();
-		isSitting = entityTemp.isPassenger()&&(entityTemp.getRidingEntity()!=null&&entityTemp.getRidingEntity().shouldRiderSit());
+		if(entityTemp!=null)
+		{
+			isChild = entityTemp.isChild();
+			isSneak = entityTemp.isSneaking();
+			isSitting = entityTemp.isPassenger()&&(entityTemp.getRidingEntity()!=null&&entityTemp.getRidingEntity().shouldRiderSit());
+		}
 		super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 	}
 
 	@Override
 	public void setRotationAngles(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
+		entityTemp = entity;
 		swingProgress = entity.getSwingProgress(ClientUtils.partialTicks());
 		if(entity instanceof ArmorStandEntity)
 			setRotationAnglesStand(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);

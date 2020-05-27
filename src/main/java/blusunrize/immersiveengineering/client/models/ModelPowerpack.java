@@ -9,28 +9,28 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
+import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
-import org.lwjgl.opengl.GL11;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
@@ -204,13 +204,11 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 			}
 		}
 
-		GlStateManager.enableBlend();
 		super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-		GlStateManager.disableBlend();
 
-		ClientUtils.bindTexture("immersiveengineering:textures/block/wire.png");
-		GlStateManager.pushMatrix();
-		GlStateManager.color3f(1, 1, 1);
+		TextureAtlasSprite wireTexture = Minecraft.getInstance()
+				.getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+				.apply(new ResourceLocation(Lib.MODID, "textures/block/wire"));
 		for(Hand hand : Hand.values())
 		{
 			ItemStack stack = entityTemp.getHeldItem(hand);
@@ -220,7 +218,7 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 				float angleX = (right?bipedRightArm: bipedLeftArm).rotateAngleX;
 				float angleZ = (right?bipedRightArm: bipedLeftArm).rotateAngleZ;
 				String cacheKey = keyFormat.format(angleX)+"_"+keyFormat.format(angleZ);
-				Vec3d[] vex = new Vec3d[0];
+				Vec3d[] vex;
 				try
 				{
 					vex = (right?catenaryCacheRight: catenaryCacheLeft).get(cacheKey, () ->
@@ -234,33 +232,66 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 					});
 				} catch(Exception e)
 				{
+					throw new RuntimeException(e);
 				}
 
 				float vStep = 1f/vex.length;
-				int i = 0;
-				Tessellator tes = ClientUtils.tes();
-				BufferBuilder worldrenderer = tes.getBuffer();
 
-				float[] colour = {.93f, .63f, .27f, 1};
-				worldrenderer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR);
+				TransformingVertexBuilder builder = new TransformingVertexBuilder(bufferIn, matrixStackIn);
 				double scaleX = right?-1: 1;
-				for(Vec3d v : vex)
-				{
-					worldrenderer.pos(scaleX*v.x-.015625, -v.y, v.z).tex(vStep*i, 0).color(colour[0], colour[1], colour[2], colour[3]).endVertex();
-					worldrenderer.pos(scaleX*v.x+.015625, -v.y, v.z).tex(vStep*i++, 1).color(colour[0], colour[1], colour[2], colour[3]).endVertex();
-				}
-				tes.draw();
-				worldrenderer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_TEX_COLOR);
-				i = 0;
-				for(Vec3d v : vex)
-				{
-					worldrenderer.pos(scaleX*v.x, -v.y-.015625, v.z).tex(vStep*i, 0).color(colour[0], colour[1], colour[2], colour[3]).endVertex();
-					worldrenderer.pos(scaleX*v.x, -v.y+.015625, v.z).tex(vStep*i++, 1).color(colour[0], colour[1], colour[2], colour[3]).endVertex();
-				}
-				tes.draw();
+				builder.setColor(.93f, .63f, .27f, 1);
+				builder.setLight(packedLightIn);
+				builder.setOverlay(packedOverlayIn);
+				final float v0 = wireTexture.getMinV();
+				final float v1 = wireTexture.getMaxV();
+				for(int i = 1; i < vex.length; i++)
+					for(int offset = 0; offset < 2; ++offset)
+					{
+						int iHere = i-offset;
+						int iThere = i-1+offset;
+						Vec3d vecHere = vex[iHere];
+						Vec3d vecThere = vex[iThere];
+						builder.setNormal((float)(vecThere.z-vecHere.z), 0, (float)(vecHere.x-vecThere.x));
+						for(int index : new int[]{iHere, iThere})
+						{
+							Vec3d vec = vex[index];
+							double xA = scaleX*vec.x-.015625;
+							double xB = scaleX*vec.x+.015625;
+							if(index==iHere)
+							{
+								double tmp = xA;
+								xA = xB;
+								xB = tmp;
+							}
+							builder.pos(xA, -vec.y, vec.z)
+									.tex(wireTexture.getInterpolatedU(vStep*index), v0)
+									.endVertex();
+							builder.pos(xB, -vec.y, vec.z)
+									.tex(wireTexture.getInterpolatedU(vStep*index), v1)
+									.endVertex();
+						}
+						builder.setNormal((float)(vecThere.y-vecHere.y), (float)(vecHere.x-vecThere.x), 0);
+						for(int index : new int[]{iHere, iThere})
+						{
+							Vec3d vec = vex[index];
+							double yA = -vec.y-.015625;
+							double yB = -vec.y;
+							if(index==iThere)
+							{
+								double tmp = yA;
+								yA = yB;
+								yB = tmp;
+							}
+							builder.pos(scaleX*vec.x, yA, vec.z)
+									.tex(wireTexture.getInterpolatedU(vStep*index), v0)
+									.endVertex();
+							builder.pos(scaleX*vec.x, yB, vec.z)
+									.tex(wireTexture.getInterpolatedU(vStep*index), v1)
+									.endVertex();
+						}
+					}
 			}
 		}
-		GlStateManager.popMatrix();
 	}
 
 	static final DecimalFormat keyFormat = new DecimalFormat("0.0000");

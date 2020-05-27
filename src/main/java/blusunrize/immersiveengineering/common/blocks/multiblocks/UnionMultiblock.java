@@ -1,7 +1,9 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.IRenderTypeBuffer.Impl;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -97,7 +99,7 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public void renderFormedStructure()
+	public void renderFormedStructure(MatrixStack transform, Impl buffer)
 	{
 
 	}
