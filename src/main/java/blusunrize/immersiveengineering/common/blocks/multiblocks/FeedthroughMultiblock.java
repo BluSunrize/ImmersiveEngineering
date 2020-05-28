@@ -21,7 +21,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.IRenderTypeBuffer.Impl;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -69,7 +69,7 @@ public class FeedthroughMultiblock implements IMultiblock
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure(MatrixStack transform, Impl buffer)
+	public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer)
 	{
 		if(renderStack==null||renderStack.isEmpty())
 			renderStack = new ItemStack(Connectors.feedthrough);

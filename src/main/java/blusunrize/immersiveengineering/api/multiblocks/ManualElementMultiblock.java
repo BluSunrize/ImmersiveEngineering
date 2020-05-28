@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -31,7 +31,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -48,8 +47,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	private float scale = 50f;
 	private float transX = 0;
 	private float transY = 0;
-	private float rotX = 0;
-	private float rotY = 0;
+	private TransformationMatrix additionalTransform;
 	private List<ITextComponent> componentTooltip;
 	private MultiblockRenderInfo renderInfo;
 	private MultiblockBlockAccess blockAccess;
@@ -68,8 +66,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		blockAccess = new MultiblockBlockAccess(renderInfo);
 		transX = 60+renderInfo.structureWidth/2F;
 		transY = 35+diagLength/2;
-		rotX = 25;
-		rotY = -45;
+		additionalTransform = forRotation(25, -45);
 		scale = multiblock.getManualScale();
 		yOffTotal = (int)(transY+scale*diagLength/2);
 	}
@@ -193,30 +190,21 @@ public class ManualElementMultiblock extends SpecialManualElements
 				int structureHeight = renderInfo.structureHeight;
 
 				transform.push();
-				RenderSystem.enableRescaleNormal();
-				RenderHelper.enableStandardItemLighting();
 
 				final BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
 
 				transform.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
 				transform.scale(scale, -scale, 1);
-				transform.rotate(new Quaternion(rotX, 0, 0, true));
-				transform.rotate(new Quaternion(0, 90+rotY, 0, true));
+				additionalTransform.push(transform);
+				transform.rotate(new Quaternion(0, 90, 0, true));
 
 				transform.translate(structureLength/-2f, structureHeight/-2f, structureWidth/-2f);
-
-				RenderSystem.disableLighting();
-
-				if(Minecraft.isAmbientOcclusionEnabled())
-					RenderSystem.shadeModel(GL11.GL_SMOOTH);
-				else
-					RenderSystem.shadeModel(GL11.GL_FLAT);
 
 				int idx = 0;
 				if(showCompleted&&multiblock.canRenderFormedStructure())
 				{
 					transform.push();
-					multiblock.renderFormedStructure(transform, buffer);
+					multiblock.renderFormedStructure(transform, IERenderTypes.disableLighting(buffer));
 					transform.pop();
 				}
 				else
@@ -243,7 +231,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 										if(te!=null)
 											modelData = te.getModelData();
 
-										blockRender.renderBlock(state, transform, buffer,
+										blockRender.renderBlock(state, transform,
+												IERenderTypes.disableLighting(buffer),
 												0xf000f0, overlay, modelData);
 									}
 									transform.pop();
@@ -254,13 +243,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 				e.printStackTrace();
 			}
 			transform.pop();
+			transform.pop();
 			buffer.finish();
-
-			RenderHelper.disableStandardItemLighting();
-			RenderSystem.disableRescaleNormal();
-
-			RenderSystem.enableBlend();
-			RenderHelper.disableStandardItemLighting();
 
 			if(componentTooltip!=null)
 			{
@@ -286,9 +270,22 @@ public class ManualElementMultiblock extends SpecialManualElements
 		{
 			double dx = mouseX-lastX;
 			double dy = mouseY-lastY;
-			rotY = (float)(rotY+(dx/104f)*80);
-			rotX = (float)(rotX+(dy/100f)*80);
+			additionalTransform = forRotation(dx*80D/104, dy*0.8).compose(additionalTransform);
 		}
+	}
+
+	private TransformationMatrix forRotation(double rX, double rY)
+	{
+		Vector3f axis = new Vector3f((float)rY, (float)rX, 0);
+		float angle = (float)Math.sqrt(axis.dot(axis));
+		if(!axis.normalize())
+			return TransformationMatrix.identity();
+		return new TransformationMatrix(
+				null,
+				new Quaternion(axis, angle, true),
+				null,
+				null
+		);
 	}
 
 	@Override
