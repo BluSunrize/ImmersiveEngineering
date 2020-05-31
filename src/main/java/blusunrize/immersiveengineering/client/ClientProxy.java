@@ -73,6 +73,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ArmorStandRenderer;
+import net.minecraft.client.renderer.entity.BipedRenderer;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -475,7 +477,6 @@ public class ClientProxy extends CommonProxy
 				}
 			ShaderMinecartModel.rendersReplaced = true;
 		}
-		/*TODO PORTME
 		if(!IEBipedLayerRenderer.rendersAssigned)
 		{
 			for(Object render : mc().getRenderManager().renderers.values())
@@ -484,7 +485,7 @@ public class ClientProxy extends CommonProxy
 				else if(ArmorStandRenderer.class.isAssignableFrom(render.getClass()))
 					((ArmorStandRenderer)render).addLayer(new IEBipedLayerRenderer<>((ArmorStandRenderer)render));
 			IEBipedLayerRenderer.rendersAssigned = true;
-		}*/
+		}
 	}
 
 	@Override

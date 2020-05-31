@@ -4,8 +4,8 @@ function initializeCoreMod() {
             'target': {
                 'type': 'METHOD',
                 'class': 'net.minecraft.client.renderer.entity.model.BipedModel',
-                'methodName': 'func_212844_a_',
-                'methodDesc': '(Lnet/minecraft/entity/LivingEntity;FFFFFF)V'
+                'methodName': 'func_225597_a_',
+                'methodDesc': '(Lnet/minecraft/entity/LivingEntity;FFFFF)V'
             },
             'transformer': function(method) {
                 var ASMAPI = Java.type('net.minecraftforge.coremod.api.ASMAPI');

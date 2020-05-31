@@ -52,9 +52,12 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 			{
 				BipedModel<E> model = Misc.earmuffs.getArmorModel(living, earmuffs, EquipmentSlotType.HEAD, null);
 				model.setRotationAngles(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-				model.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntitySolid(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, "overlay")))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+				RenderType type = model.getRenderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, "overlay")));
+				model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 				int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
-				model.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntitySolid(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, null)))), packedLightIn, OverlayTexture.NO_OVERLAY, (colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f, 1F);
+				type = model.getRenderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, null)));
+				model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY,
+						(colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f, 1F);
 			}
 		}
 
@@ -88,7 +91,10 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 		{
 			BipedModel<E> model = Misc.powerpack.getArmorModel(living, powerpack, EquipmentSlotType.CHEST, null);
 			model.setRotationAngles(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-			model.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntitySolid(new ResourceLocation(Misc.powerpack.getArmorTexture(powerpack, living, EquipmentSlotType.CHEST, null)))), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+			RenderType type = model.getRenderType(
+					new ResourceLocation(Misc.powerpack.getArmorTexture(powerpack, living, EquipmentSlotType.CHEST, null))
+			);
+			model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 		}
 	}
 }

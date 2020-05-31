@@ -20,6 +20,7 @@ import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
@@ -292,6 +293,12 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 					}
 			}
 		}
+	}
+
+	@Override
+	public RenderType getRenderType(ResourceLocation locationIn)
+	{
+		return RenderType.getEntityTranslucent(locationIn);
 	}
 
 	static final DecimalFormat keyFormat = new DecimalFormat("0.0000");

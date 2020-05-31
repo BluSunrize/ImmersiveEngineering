@@ -23,7 +23,6 @@ function initializeCoreMod() {
                         "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;I)V",
                         ASMAPI.MethodType.STATIC
                     ));
-                //INVOKEINTERFACE java/util/Set.iterator ()Ljava/util/Iterator; (itf)
                 if (ASMAPI.insertInsnList(
                     method,
                     ASMAPI.MethodType.INTERFACE,
