@@ -38,7 +38,7 @@ public interface IUpgradeableTool
 	/**
 	 * Iterate through the stored items and apply upgrades. For an example implementation, see ItemUpgradeableTool in the IE source
 	 */
-	void recalculateUpgrades(ItemStack stack, World w);
+	void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player);
 
 	/**
 	 * @return false to prevent this item from being removed from the workbench. Used by blueprints for example.
@@ -52,6 +52,6 @@ public interface IUpgradeableTool
 	/**
 	 * @return an array of Slots to display in the workbench when this item is placed in it
 	 */
-	Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld);
+	Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer);
 
 }

@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
-import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.items.BulletItem;
@@ -197,9 +196,10 @@ public abstract class IESlot extends Slot
 		final boolean preventDoubles;
 		final Container container;
 		final Supplier<World> getWorld;
+		final Supplier<PlayerEntity> getPlayer;
 
 		public Upgrades(Container container, IItemHandler inv, int id, int x, int y, String type, ItemStack upgradeableTool,
-						boolean preventDoubles, Supplier<World> getWorld)
+						boolean preventDoubles, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 		{
 			super(inv, id, x, y);
 			this.container = container;
@@ -207,6 +207,7 @@ public abstract class IESlot extends Slot
 			this.upgradeableTool = upgradeableTool;
 			this.preventDoubles = preventDoubles;
 			this.getWorld = getWorld;
+			this.getPlayer = getPlayer;
 		}
 
 		@Override
@@ -228,7 +229,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public void onSlotChanged()
 		{
-			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, getWorld.get());
+			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, getWorld.get(), getPlayer.get());
 		}
 	}
 

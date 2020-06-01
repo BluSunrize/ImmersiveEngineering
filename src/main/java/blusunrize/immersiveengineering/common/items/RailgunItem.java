@@ -77,14 +77,14 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 0, 80, 32, "RAILGUN", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 1, 100, 32, "RAILGUN", stack, true, getWorld)
+						new IESlot.Upgrades(container, inv, 0, 80, 32, "RAILGUN", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv, 1, 100, 32, "RAILGUN", stack, true, getWorld, getPlayer)
 				};
 	}
 
@@ -95,9 +95,9 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack, World w)
+	public void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player)
 	{
-		super.recalculateUpgrades(stack, w);
+		super.recalculateUpgrades(stack, w, player);
 		if(this.getEnergyStored(stack) > this.getMaxEnergyStored(stack))
 			ItemNBTHelper.putInt(stack, "energy", this.getMaxEnergyStored(stack));
 	}

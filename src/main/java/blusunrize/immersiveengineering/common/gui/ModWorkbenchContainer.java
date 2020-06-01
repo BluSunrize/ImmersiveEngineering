@@ -71,7 +71,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 						if(handler instanceof IEItemStackHandler)
 							((IEItemStackHandler)handler).setTile(tile);
 					});
-			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, () -> world);
+			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, () -> world, () -> inventoryPlayer.player);
 			if(slots!=null)
 				for(Slot s : slots)
 				{
@@ -81,10 +81,10 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 
 			tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null).ifPresent(wrapper ->
 			{
-					this.shaderInv = new ShaderInventory(this, wrapper);
-					this.addSlot(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
-					slotCount++;
-					this.shaderInv.shader = wrapper.getShaderItem();
+				this.shaderInv = new ShaderInventory(this, wrapper);
+				this.addSlot(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
+				slotCount++;
+				this.shaderInv.shader = wrapper.getShaderItem();
 			});
 		}
 		else if(!(tool.getItem() instanceof IConfigurableTool))

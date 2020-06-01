@@ -271,13 +271,13 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 0, 80, 32, "SHIELD", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 1, 100, 32, "SHIELD", stack, true, getWorld)
+						new IESlot.Upgrades(container, inv, 0, 80, 32, "SHIELD", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv, 1, 100, 32, "SHIELD", stack, true, getWorld, getPlayer)
 //						new IESlot.Upgrades(container, invItem,2,100,32, "SHIELD", stack, true)
 				};
 

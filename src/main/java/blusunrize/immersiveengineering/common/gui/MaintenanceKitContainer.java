@@ -62,7 +62,7 @@ public class MaintenanceKitContainer extends ItemContainer
 		if(tool.getItem() instanceof IUpgradeableTool)
 		{
 			wasUsed = true;
-			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, () -> world);
+			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, () -> world, () -> player);
 			if(slots!=null)
 				for(Slot s : slots)
 				{

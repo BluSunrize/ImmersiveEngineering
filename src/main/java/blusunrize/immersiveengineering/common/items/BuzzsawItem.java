@@ -177,7 +177,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
@@ -185,8 +185,8 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			return new Slot[]
 					{
 							new IESlot.WithPredicate(inv, 0, 88, 22, (itemStack) -> sawblades.contains(itemStack.getItem())),
-							new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld),
-							new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld),
+							new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld, getPlayer),
+							new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld, getPlayer),
 							new IESlot.WithPredicate(inv, 3, 108, 12, (itemStack) -> sawblades.contains(itemStack.getItem())),
 							new IESlot.WithPredicate(inv, 4, 108, 32, (itemStack) -> sawblades.contains(itemStack.getItem()))
 					};
@@ -194,8 +194,8 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			return new Slot[]
 					{
 							new IESlot.WithPredicate(inv, 0, 98, 22, (itemStack) -> sawblades.contains(itemStack.getItem())),
-							new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld),
-							new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld)
+							new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld, getPlayer),
+							new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld, getPlayer)
 					};
 	}
 
@@ -216,9 +216,9 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack, World w)
+	public void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player)
 	{
-		super.recalculateUpgrades(stack, w);
+		super.recalculateUpgrades(stack, w, player);
 		FluidStack fs = getFluid(stack);
 		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, 2000))
 		{
