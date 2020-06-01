@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.connection.RenderCacheKey;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper.MeshWrapper;
@@ -30,15 +31,18 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
@@ -397,8 +401,14 @@ public class IESmartObjModel implements IBakedModel
 		}
 		for(String groupName : OBJHelper.getGroups(baseModel).keySet())
 		{
-			List<BakedQuad> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, true);
-			quads.addAll(temp.stream().filter(Objects::nonNull).collect(Collectors.toList()));
+			List<ShadedQuads> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, true);
+			quads.addAll(
+					temp.stream()
+							.map(s -> s.quadsInLayer)
+							.flatMap(List::stream)
+							.filter(Objects::nonNull)
+							.collect(Collectors.toList())
+			);
 		}
 
 		if(callback!=null)
@@ -406,20 +416,20 @@ public class IESmartObjModel implements IBakedModel
 		return ImmutableList.copyOf(quads);
 	}
 
-	private Cache<Pair<String, String>, List<BakedQuad>> groupCache = CacheBuilder.newBuilder()
+	private Cache<Pair<String, String>, List<ShadedQuads>> groupCache = CacheBuilder.newBuilder()
 			.maximumSize(100)
 			.build();
 
-	public <T> List<BakedQuad> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject, String groupName,
-												ShaderCase sCase, boolean allowCaching)
+	public <T> List<ShadedQuads> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject, String groupName,
+												  ShaderCase sCase, boolean allowCaching)
 	{
 		String objCacheKey = callback!=null?callback.getCacheKey(callbackObject): "<none>";
 		if(sCase!=null)
 			objCacheKey += ";"+sCase.getShaderType().toString();
 		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
-		if(allowCaching)
+		if(allowCaching&&false)
 		{
-			List<BakedQuad> cached = groupCache.getIfPresent(cacheKey);
+			List<ShadedQuads> cached = groupCache.getIfPresent(cacheKey);
 			if(cached!=null)
 				return cached;
 		}
@@ -429,7 +439,7 @@ public class IESmartObjModel implements IBakedModel
 		else
 			numPasses = 1;
 		ModelGroup g = OBJHelper.getGroups(baseModel).get(groupName);
-		List<BakedQuad> quads = new ArrayList<>();
+		List<ShadedQuads> ret = new ArrayList<>();
 		TransformationMatrix transform = state.transform;
 		TransformationMatrix optionalTransform = sprite.getRotation();
 		if(callback!=null)
@@ -443,6 +453,7 @@ public class IESmartObjModel implements IBakedModel
 			for(int pass = 0; pass < numPasses; ++pass)
 				if(sCase==null||sCase.shouldRenderGroupForPass(groupName, pass))
 				{
+					List<BakedQuad> quads = new ArrayList<>();
 					spriteGetter.setRenderPass(pass);
 					colorGetter.setRenderPass(pass);
 					coordinateRemapper.setRenderPass(pass);
@@ -453,10 +464,19 @@ public class IESmartObjModel implements IBakedModel
 					g.getParts().stream().filter(part -> owner.getPartVisibility(part)&&part instanceof ModelObject)
 							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter,
 									colorGetter, coordinateRemapper, finalTransform));
+					ShaderLayer layer = sCase!=null?sCase.getLayers()[pass]: new ShaderLayer(new ResourceLocation("missing/no"), -1)
+					{
+						@Override
+						public RenderType getRenderType(Function<ResourceLocation, RenderType> baseType)
+						{
+							return baseType.apply(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+						}
+					};
+					ret.add(new ShadedQuads(layer, quads));
 				}
 		if(allowCaching)
-			groupCache.put(cacheKey, quads);
-		return quads;
+			groupCache.put(cacheKey, ret);
+		return ret;
 	}
 
 	/**
@@ -497,4 +517,15 @@ public class IESmartObjModel implements IBakedModel
 		}
 	}
 
+	public static class ShadedQuads
+	{
+		public final ShaderLayer layer;
+		public final List<BakedQuad> quadsInLayer;
+
+		public ShadedQuads(ShaderLayer layer, List<BakedQuad> quadsInLayer)
+		{
+			this.layer = layer;
+			this.quadsInLayer = quadsInLayer;
+		}
+	}
 }

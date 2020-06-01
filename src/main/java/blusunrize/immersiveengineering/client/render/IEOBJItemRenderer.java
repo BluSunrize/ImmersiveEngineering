@@ -11,27 +11,31 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel.ShadedQuads;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.system.MemoryStack;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -76,79 +80,92 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					if(callback.shouldRenderGroup(stack, g))
 						visible.add(g);
 				TransformType transformType = obj.lastCameraTransform;
-				List<BakedQuad> quads = new ArrayList<>();
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
 					TransformationMatrix mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
 							partialTicks);
 					mat.push(matrixStackIn);
-					boolean bright = callback.areGroupsFullbright(stack, groups);
-					IVertexBuilder builder;
-					if(bright)
-						builder = bufferIn.getBuffer(IERenderTypes.SOLID_FULLBRIGHT);
-					else
-						builder = bufferIn.getBuffer(Atlases.getTranslucentCullBlockType());
-					renderQuadsForGroups(groups, callback, obj, quads, stack,
-							sCase, shader, true, matrixStackIn, builder, visible, partialTicks,
+					renderQuadsForGroups(groups, callback, obj, stack, sCase, matrixStackIn, bufferIn, visible,
 							combinedLightIn, combinedOverlayIn);
 					matrixStackIn.pop();
 				}
-				renderQuadsForGroups(visible.toArray(new String[0]), callback, obj, quads, stack,
-						sCase, shader, false, matrixStackIn, bufferIn.getBuffer(Atlases.getTranslucentCullBlockType()),
-						visible, partialTicks, combinedLightIn, combinedOverlayIn);
+				renderQuadsForGroups(visible.toArray(new String[0]), callback, obj, stack,
+						sCase, matrixStackIn, bufferIn, visible, combinedLightIn, combinedOverlayIn);
 			}
 		}
 	}
 
 	private void renderQuadsForGroups(String[] groups, IOBJModelCallback<ItemStack> callback, IESmartObjModel model,
-									  List<BakedQuad> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
-									  boolean dynamic, MatrixStack matrix, IVertexBuilder builder, Set<String> visible,
-									  float partialTicks, int light, int overlay)
+									  ItemStack stack, ShaderCase sCase, MatrixStack matrix, IRenderTypeBuffer buffer,
+									  Set<String> visible, int light, int overlay)
 	{
-		quadsForGroup.clear();
+		List<ShadedQuads> quadsByLayer = new ArrayList<>();
 		for(String g : groups)
 		{
 			if(visible.contains(g)&&callback.shouldRenderGroup(stack, g))
-				quadsForGroup.addAll(model.addQuadsForGroup(callback, stack, g, sCase, true)
+				quadsByLayer.addAll(model.addQuadsForGroup(callback, stack, g, sCase, true)
 						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 			visible.remove(g);
 		}
-		VertexBufferConsumer vbc = new VertexBufferConsumer(builder);
-		ShaderLayer lastShaderLayer = null;
-		for(BakedQuad bq : quadsForGroup)
+		matrix.push();
+		for(ShadedQuads quadsForLayer : quadsByLayer)
 		{
-			//Switch to or between dynamic layers
-			/*TODO move to RenderType and MatrixStack
-			boolean switchDynamic = layer!=lastShaderLayer;
-			if(switchDynamic)
-			{
-				//interrupt batch
-				tes.draw();
-
-				if(lastShaderLayer!=null)//finish dynamic call on last layer
-					lastShaderLayer.modifyRender(false, partialTicks);
-
-				//set new layer
-				lastShaderLayer = layer;
-
-				if(lastShaderLayer!=null)//start dynamic call on layer
-					lastShaderLayer.modifyRender(true, partialTicks);
-				//start new batch
-				if(!callback.areGroupsFullbright(stack, groups))
-					bb.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-				else
-					bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-
-			}
-			 */
-			builder.addQuad(matrix.getLast(), bq,
-					new float[]{1, 1, 1, 1},
-					1, 1, 1,
-					new int[]{light, light, light, light}, overlay,
-					true);
+			boolean bright = callback.areGroupsFullbright(stack, groups);
+			Function<ResourceLocation, RenderType> toBaseType;
+			if(bright)
+				toBaseType = IERenderTypes::getFullbrightTranslucent;
+			else if(quadsForLayer.layer.isTranslucent())
+				toBaseType = RenderType::getEntityTranslucent;
+			else
+				toBaseType = RenderType::getEntityCutout;
+			IVertexBuilder builder = buffer.getBuffer(quadsForLayer.layer.getRenderType(toBaseType));
+			Vector4f color = quadsForLayer.layer.getColor();
+			for(BakedQuad quad : quadsForLayer.quadsInLayer)
+				addQuadWithAlpha(
+						matrix.getLast(), quad, color, new int[]{light, light, light, light}, overlay, builder
+				);
+			matrix.scale(1.01F, 1.01F, 1.01F);
 		}
-		if(lastShaderLayer!=null)//finish dynamic call on final layer
-			lastShaderLayer.modifyRender(false, partialTicks);
+		matrix.pop();
+	}
 
+	private void addQuadWithAlpha(MatrixStack.Entry matrixEntryIn, BakedQuad quadIn, Vector4f color,
+								  int[] combinedLightsIn, int combinedOverlayIn, IVertexBuilder builder)
+	{
+		int[] aint = quadIn.getVertexData();
+		Vec3i normalInt = quadIn.getFace().getDirectionVec();
+		Vector3f normal = new Vector3f(normalInt.getX(), normalInt.getY(), normalInt.getZ());
+		Matrix4f transform = matrixEntryIn.getMatrix();
+		normal.transform(matrixEntryIn.getNormal());
+		int i = 8;
+		int j = aint.length/8;
+
+		try(MemoryStack memorystack = MemoryStack.stackPush())
+		{
+			ByteBuffer bytebuffer = memorystack.malloc(DefaultVertexFormats.BLOCK.getSize());
+			IntBuffer intbuffer = bytebuffer.asIntBuffer();
+
+			for(int k = 0; k < j; ++k)
+			{
+				intbuffer.clear();
+				intbuffer.put(aint, k*8, 8);
+				//TODO general formats?
+				float x = bytebuffer.getFloat(0);
+				float y = bytebuffer.getFloat(4);
+				float z = bytebuffer.getFloat(8);
+				int lightmapUV = builder.applyBakedLighting(combinedLightsIn[k], bytebuffer);
+				float texU = bytebuffer.getFloat(16);
+				float texV = bytebuffer.getFloat(20);
+				Vector4f vector4f = new Vector4f(x, y, z, 1.0F);
+				vector4f.transform(transform);
+				builder.applyBakedNormals(normal, bytebuffer, matrixEntryIn.getNormal());
+				builder.addVertex(
+						vector4f.getX(), vector4f.getY(), vector4f.getZ(),
+						color.getX(), color.getY(), color.getZ(), color.getW(),
+						texU, texV, combinedOverlayIn, lightmapUV,
+						normal.getX(), normal.getY(), normal.getZ()
+				);
+			}
+		}
 	}
 }

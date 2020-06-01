@@ -216,15 +216,6 @@ public class RevolvershotEntity extends IEProjectileEntity
 		return 1.0F;
 	}
 
-	/*TODO PORTME
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public int getBrightnessForRender()
-	{
-		return 15728880;
-	}
-	 */
-
 	@Override
 	public boolean canBeCollidedWith()
 	{

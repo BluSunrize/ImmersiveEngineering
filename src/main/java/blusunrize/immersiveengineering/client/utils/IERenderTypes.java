@@ -49,8 +49,7 @@ public class IERenderTypes
 				256,//TODO is that a good value?
 				fullbrightSolidState
 		);
-		RenderType.State translucentNoDepthState = RenderType.State.getBuilder()
-				.transparency(TRANSLUCENT_TRANSPARENCY)
+		RenderType.State translucentNoDepthState = RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY)
 				.line(new LineState(OptionalDouble.of(2)))
 				.texture(new TextureState())
 				.depthTest(DEPTH_ALWAYS)
@@ -196,6 +195,22 @@ public class IERenderTypes
 								texture,
 								false, false))
 						.build(false)
+		);
+	}
+
+	public static RenderType getFullbrightTranslucent(ResourceLocation resourceLocation)
+	{
+		RenderType.State glState = RenderType.State.getBuilder()
+				.transparency(TRANSLUCENT_TRANSPARENCY)
+				.texture(new TextureState(resourceLocation, false, false))
+				.lightmap(new LightmapState(false))
+				.build(false);
+		return RenderType.makeType(
+				"immersiveengineering:fullbright_translucent_"+resourceLocation,
+				DefaultVertexFormats.BLOCK,
+				GL11.GL_QUADS,
+				256,
+				glState
 		);
 	}
 

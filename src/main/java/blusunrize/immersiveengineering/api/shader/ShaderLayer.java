@@ -1,10 +1,13 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.function.Function;
 
 public class ShaderLayer
 {
@@ -96,10 +99,13 @@ public class ShaderLayer
 		return false;
 	}
 
-	/**
-	 * modify the render, provided that the layer is flagged as dynamic
-	 */
-	public void modifyRender(boolean pre, float partialTick)
+	public RenderType getRenderType(Function<ResourceLocation, RenderType> baseType)
 	{
+		return baseType.apply(texture.getAtlasLocation());
+	}
+
+	public boolean isTranslucent()
+	{
+		return false;
 	}
 }

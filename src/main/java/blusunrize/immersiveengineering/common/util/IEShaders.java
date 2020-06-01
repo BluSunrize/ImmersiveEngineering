@@ -17,16 +17,21 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryE
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseDrill;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.dummy.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector4f;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.opengl.GL11;
 
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class IEShaders
 {
@@ -78,20 +83,22 @@ public class IEShaders
 		entry = addShader("ikelos", 2, Lib.RARITY_MASTERWORK, 0xff74665d, 0xff424348, 0xff424348, 0xff313131).setInfo(null, "Destiny", "ikelos");
 		addDynamicLayer(entry, "circuit", 0xffefa117,
 				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 40, .15f, 1f),
-				(pre, partialTick) -> {
+				pre -> {
 					//TODO are push/pop Attributes broken?
 					if(pre)
 					{
-						GlStateManager.pushLightingAttributes();
-						//TODO GL11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(.5f, .2f, 0, .5f));
-						ClientUtils.toggleLightmap(true, true);
+						RenderSystem.pushLightingAttributes();
+						GL11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, new float[]{.5f, .2f, 0, .5f});
+						Minecraft.getInstance().gameRenderer.getLightTexture().disableLightmap();
 					}
 					else
 					{
-						ClientUtils.toggleLightmap(false, true);
-						GlStateManager.popAttributes();
+						RenderSystem.popAttributes();
+						Minecraft.getInstance().gameRenderer.getLightTexture().enableLightmap();
 					}
-				});
+				},
+				true
+		);
 		addLayer(entry, "1_4", 0xff5f646a);
 		entry.setEffectFunction((world, shader, item, shaderType, pos, dir, scale) -> {
 			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3d(0, 1, 0), scale, 2, null);
@@ -112,7 +119,14 @@ public class IEShaders
 		entry = addShader("ancient", 6, Lib.RARITY_MASTERWORK, 0xff9c3a2d, 0xff514848, 0xfff6ae4a, 0xff80fcf2).setInfo(null, "The Legend of Zelda: Breath of the Wild", "ancient");
 		addDynamicLayer(entry, "1_6", 0xff80fcf2,//0xaafaf307,
 				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 60, .05f, .5f),
-				(pre, partialTick) -> ClientUtils.toggleLightmap(pre, true));
+				pre -> {
+					if(pre)
+						Minecraft.getInstance().gameRenderer.getLightTexture().disableLightmap();
+					else
+						Minecraft.getInstance().gameRenderer.getLightTexture().enableLightmap();
+				},
+				true
+		);
 		addLayer(entry, "circuit", 0x99bc9377);
 		((ShaderCaseDrill)entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill"))).addHeadLayers(new ShaderLayer(new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_iron"), 0xff80fcf2));
 
@@ -185,17 +199,22 @@ public class IEShaders
 		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner")).addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_"+texture), colour));
 	}
 
-	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, final BiConsumer<Boolean, Float> func_modifyRender)
+	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, final Consumer<Boolean> func_modifyRender)
 	{
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "railgun")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "balloon")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_"+texture), colour, func_getColour, func_modifyRender));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_"+texture), colour, func_getColour, func_modifyRender));
+		addDynamicLayer(entry, texture, colour, func_getColour, func_modifyRender, false);
+	}
+
+	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, final Consumer<Boolean> func_modifyRender, boolean translucent)
+	{
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+texture), colour, func_getColour, func_modifyRender, translucent));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_"+texture), colour, func_getColour, func_modifyRender, translucent));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_"+texture), colour, func_getColour, func_modifyRender, translucent));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/chemthrower_"+texture), colour, func_getColour, func_modifyRender, translucent));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "railgun")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/railgun_"+texture), colour, func_getColour, func_modifyRender, translucent));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/shield_"+texture), colour, func_getColour, func_modifyRender, translucent));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+texture+".png"), colour, func_getColour, func_modifyRender, translucent));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "balloon")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/balloon_"+texture), colour, func_getColour, func_modifyRender, translucent));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner")).addLayers(new InternalDynamicShaderLayer(new ResourceLocation("immersiveengineering:block/shaders/banner_"+texture), colour, func_getColour, func_modifyRender, translucent));
 	}
 
 	public static void setDefaultTextureBounds(ResourceLocation rl, double... bounds)
@@ -206,13 +225,16 @@ public class IEShaders
 	private static class InternalDynamicShaderLayer extends DynamicShaderLayer
 	{
 		private final BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour;
-		private final BiConsumer<Boolean, Float> func_modifyRender;
+		// TODO direct render layer?
+		private final Consumer<Boolean> func_modifyRender;
+		private final boolean translucent;
 
-		public InternalDynamicShaderLayer(ResourceLocation texture, int colour, BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, BiConsumer<Boolean, Float> func_modifyRender)
+		public InternalDynamicShaderLayer(ResourceLocation texture, int colour, BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, Consumer<Boolean> func_modifyRender, boolean translucent)
 		{
 			super(texture, colour);
 			this.func_getColour = func_getColour;
 			this.func_modifyRender = func_modifyRender;
+			this.translucent = translucent;
 		}
 
 		@Override
@@ -225,11 +247,37 @@ public class IEShaders
 		}
 
 		@Override
-		@OnlyIn(Dist.CLIENT)
-		public void modifyRender(boolean pre, float partialTick)
+		public RenderType getRenderType(Function<ResourceLocation, RenderType> baseType)
 		{
-			if(func_modifyRender!=null)
-				func_modifyRender.accept(pre, partialTick);
+			RenderType base = baseType.apply(getTexture().getAtlasLocation());
+			if(func_modifyRender==null)
+				return base;
+			else
+				return new RenderType(
+						//TODO better name?
+						"shader_"+base.toString()+func_modifyRender,
+						DefaultVertexFormats.BLOCK,
+						GL11.GL_QUADS,
+						256,
+						false,
+						true,
+						() -> {
+							base.setupRenderState();
+							func_modifyRender.accept(true);
+						},
+						() -> {
+							func_modifyRender.accept(false);
+							base.clearRenderState();
+						}
+				)
+				{
+				};
+		}
+
+		@Override
+		public boolean isTranslucent()
+		{
+			return translucent;
 		}
 	}
 }
