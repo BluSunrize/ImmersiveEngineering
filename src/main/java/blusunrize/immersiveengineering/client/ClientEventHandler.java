@@ -9,10 +9,8 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -555,9 +553,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						GlStateManager.disableBlend();
 						GlStateManager.popMatrix();
 					}
-					else if(equipped.getItem() instanceof DrillItem||equipped.getItem() instanceof ChemthrowerItem)
+					else if(equipped.getItem() instanceof DrillItem||equipped.getItem() instanceof ChemthrowerItem||equipped.getItem() instanceof BuzzsawItem)
 					{
 						boolean drill = equipped.getItem() instanceof DrillItem;
+						boolean buzzsaw = equipped.getItem() instanceof BuzzsawItem;
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 						GlStateManager.color3f(1, 1, 1);
 						float dx = scaledWidth-16;
@@ -605,6 +604,18 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								{
 									ir.renderItemIntoGUI(head, -51, -45);
 									ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
+									RenderHelper.disableStandardItemLighting();
+								}
+							}
+							else if(buzzsaw)
+							{
+								ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
+								ItemRenderer ir = ClientUtils.mc().getItemRenderer();
+								ItemStack blade = ((BuzzsawItem)equipped.getItem()).getSawblade(equipped);
+								if(!blade.isEmpty())
+								{
+									ir.renderItemIntoGUI(blade, -51, -45);
+									ir.renderItemOverlayIntoGUI(blade.getItem().getFontRenderer(blade), blade, -51, -45, null);
 									RenderHelper.disableStandardItemLighting();
 								}
 							}
