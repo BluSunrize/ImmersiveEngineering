@@ -283,7 +283,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		if(slot==EquipmentSlotType.MAINHAND)
 		{
 			ItemStack head = getHead(stack);
-			if(!head.isEmpty())
+			if(!head.isEmpty()&&canDrillBeUsed(stack, null))
 			{
 				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage"), Operation.ADDITION));
 				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
@@ -301,6 +301,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	@Override
 	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity player)
 	{
+		consumeDurability(stack, target.getEntityWorld(), null, null, player);
 		return true;
 	}
 
@@ -330,6 +331,28 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		return getHeadDamage(stack) >= getMaxHeadDamage(stack)||getFluid(stack)==null||getFluid(stack).isEmpty();
 	}
 
+	private void consumeDurability(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
+	{
+		if(state==null||state.getBlockHardness(world, pos)!=0.0f)
+		{
+			int dmg = state==null||ForgeHooks.isToolEffective(world, pos, stack)||isEffective(state.getMaterial())?1: 3;
+			ItemStack head = getHead(stack);
+			if(!head.isEmpty())
+			{
+
+				if(!getUpgrades(stack).getBoolean("oiled")||Utils.RAND.nextInt(4)==0)
+					((IDrillHead)head.getItem()).damageHead(head, dmg);
+				this.setHead(stack, head);
+				IFluidHandler handler = FluidUtil.getFluidHandler(stack).orElseThrow(RuntimeException::new);
+				handler.drain(1, FluidAction.EXECUTE);
+
+				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
+				if(shader!=null)
+					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), new Vec3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
+			}
+		}
+	}
+
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
 	{
@@ -345,15 +368,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 						return true;
 					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (PlayerEntity)living);
 				}
-				if(!getUpgrades(stack).getBoolean("oiled")||Utils.RAND.nextInt(4)==0)
-					((IDrillHead)head.getItem()).damageHead(head, dmg);
-				this.setHead(stack, head);
-				IFluidHandler handler = FluidUtil.getFluidHandler(stack).orElseThrow(RuntimeException::new);
-				handler.drain(1, FluidAction.EXECUTE);
-
-				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
-				if(shader!=null)
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), new Vec3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
+				consumeDurability(stack, world, state, pos, living);
 			}
 		}
 
