@@ -1,5 +1,10 @@
 ##### Version 0.14-97
+- Added fuel gauge for the buzzsaw (BluSunrize)
 - Fixed a crash triggered by other mod's automatic recipe unlocks (BluSunrize)
+- Fixed a crash with the wirecoil tooltips (Malte)
+- Fixed a crash when rendering coresamples with Optifine installed (Malte)
+- Fixed buzzsaw upgrade achievement not triggering (BluSunrize)
+- Fixed buzzsaw and drill not taking damage or requiring fuel when used as weapons (BluSunrize)
 
 ##### Version 0.14-96 - BUILT
 - All IE recipes are now JSON based! (BluSunrize)
