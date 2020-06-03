@@ -9,7 +9,10 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
@@ -170,6 +173,7 @@ public abstract class IESlot extends Slot
 	public static class WithPredicate extends SlotItemHandler
 	{
 		final Predicate<ItemStack> predicate;
+
 		public WithPredicate(IItemHandler inv, int id, int x, int y, Predicate<ItemStack> predicate)
 		{
 			super(inv, id, x, y);
@@ -229,7 +233,12 @@ public abstract class IESlot extends Slot
 		@Override
 		public void onSlotChanged()
 		{
+			super.onSlotChanged();
 			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, getWorld.get(), getPlayer.get());
+			if(container instanceof ModWorkbenchContainer)
+				((ModWorkbenchContainer)container).rebindSlots();
+			else if(container instanceof MaintenanceKitContainer)
+				((MaintenanceKitContainer)container).updateSlots();
 		}
 	}
 

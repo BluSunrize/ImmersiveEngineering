@@ -56,7 +56,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 		if(world.isRemote)
 			for(Slot slot : inventorySlots)
 				if(slot instanceof IESlot.Upgrades)
-					if(ItemStack.areItemsEqual(((IESlot.Upgrades)slot).upgradeableTool, inv.getStackInSlot(0)))
+					if(ItemStack.areItemStacksEqual(((IESlot.Upgrades)slot).upgradeableTool, inv.getStackInSlot(0)))
 						return;
 		this.inventorySlots.clear();
 		this.inventoryItemStacks.clear();
