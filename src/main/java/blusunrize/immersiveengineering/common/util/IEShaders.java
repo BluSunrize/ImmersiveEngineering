@@ -31,7 +31,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class IEShaders
 {
@@ -247,9 +246,8 @@ public class IEShaders
 		}
 
 		@Override
-		public RenderType getRenderType(Function<ResourceLocation, RenderType> baseType)
+		public RenderType getRenderType(RenderType base)
 		{
-			RenderType base = baseType.apply(getTexture().getAtlasLocation());
 			if(func_modifyRender==null)
 				return base;
 			else

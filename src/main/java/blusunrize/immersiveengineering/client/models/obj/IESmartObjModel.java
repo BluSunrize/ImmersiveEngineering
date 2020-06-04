@@ -38,7 +38,6 @@ import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -467,9 +466,9 @@ public class IESmartObjModel implements IBakedModel
 					ShaderLayer layer = sCase!=null?sCase.getLayers()[pass]: new ShaderLayer(new ResourceLocation("missing/no"), -1)
 					{
 						@Override
-						public RenderType getRenderType(Function<ResourceLocation, RenderType> baseType)
+						public RenderType getRenderType(RenderType baseType)
 						{
-							return baseType.apply(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+							return baseType;
 						}
 					};
 					ret.add(new ShadedQuads(layer, quads));

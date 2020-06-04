@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
-import blusunrize.immersiveengineering.client.models.ShaderMinecartModel;
+import blusunrize.immersiveengineering.client.render.entity.ShaderMinecartRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
@@ -83,7 +83,7 @@ public class MessageMinecartShaderSync implements IMessage
 				{
 					Entity entity = world.getEntityByID(entityID);
 					if(entity instanceof AbstractMinecartEntity)
-						ShaderMinecartModel.shadedCarts.put(entityID, shader);
+						ShaderMinecartRenderer.shadedCarts.put(entityID, shader);
 				}
 			});
 	}

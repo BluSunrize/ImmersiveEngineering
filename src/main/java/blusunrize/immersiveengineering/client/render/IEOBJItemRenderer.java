@@ -35,7 +35,6 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -111,14 +110,15 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 		for(ShadedQuads quadsForLayer : quadsByLayer)
 		{
 			boolean bright = callback.areGroupsFullbright(stack, groups);
-			Function<ResourceLocation, RenderType> toBaseType;
+			RenderType baseType;
+			ResourceLocation atlas = quadsForLayer.layer.getTexture().getAtlasLocation();
 			if(bright)
-				toBaseType = IERenderTypes::getFullbrightTranslucent;
+				baseType = IERenderTypes.getFullbrightTranslucent(atlas);
 			else if(quadsForLayer.layer.isTranslucent())
-				toBaseType = RenderType::getEntityTranslucent;
+				baseType = RenderType.getEntityTranslucent(atlas);
 			else
-				toBaseType = RenderType::getEntityCutout;
-			IVertexBuilder builder = buffer.getBuffer(quadsForLayer.layer.getRenderType(toBaseType));
+				baseType = RenderType.getEntityCutout(atlas);
+			IVertexBuilder builder = buffer.getBuffer(quadsForLayer.layer.getRenderType(baseType));
 			Vector4f color = quadsForLayer.layer.getColor();
 			for(BakedQuad quad : quadsForLayer.quadsInLayer)
 				addQuadWithAlpha(

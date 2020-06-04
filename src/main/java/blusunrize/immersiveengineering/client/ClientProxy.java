@@ -75,13 +75,12 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.BipedRenderer;
-import net.minecraft.client.renderer.entity.MinecartRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.MinecartModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -466,16 +465,12 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void onWorldLoad()
 	{
-		if(!ShaderMinecartModel.rendersReplaced)
+		if(!ShaderMinecartRenderer.rendersReplaced)
 		{
-			for(Object render : mc().getRenderManager().renderers.values())
-				if(render instanceof MinecartRenderer)
-				{
-					EntityModel<?> wrapped = ((MinecartRenderer<?>)render).modelMinecart;
-					if(wrapped instanceof MinecartModel)
-						((MinecartRenderer<?>)render).modelMinecart = new ShaderMinecartModel((MinecartModel<?>)wrapped);
-				}
-			ShaderMinecartModel.rendersReplaced = true;
+			EntityRendererManager rendererManager = mc().getRenderManager();
+			for(EntityType<?> type : rendererManager.renderers.keySet())
+				ShaderMinecartRenderer.overrideModelIfMinecart(type);
+			ShaderMinecartRenderer.rendersReplaced = true;
 		}
 		if(!IEBipedLayerRenderer.rendersAssigned)
 		{

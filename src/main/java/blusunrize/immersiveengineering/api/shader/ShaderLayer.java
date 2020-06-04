@@ -7,8 +7,6 @@ import net.minecraft.client.renderer.model.Material;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.function.Function;
-
 public class ShaderLayer
 {
 	/**
@@ -99,9 +97,9 @@ public class ShaderLayer
 		return false;
 	}
 
-	public RenderType getRenderType(Function<ResourceLocation, RenderType> baseType)
+	public RenderType getRenderType(RenderType baseType)
 	{
-		return baseType.apply(texture.getAtlasLocation());
+		return baseType;
 	}
 
 	public boolean isTranslucent()
