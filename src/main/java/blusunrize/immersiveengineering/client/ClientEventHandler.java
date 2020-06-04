@@ -573,66 +573,64 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 						GlStateManager.translated(-23, -37, 0);
 						LazyOptional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(equipped);
-						int capacity = -1;
-						if(handlerOpt.isPresent())
-						{
-							IFluidHandlerItem handler = handlerOpt.orElseThrow(RuntimeException::new);
+						handlerOpt.ifPresent(handler -> {
+							int capacity = -1;
 							if(handler.getTanks() > 0)
 								capacity = handler.getTankCapacity(0);
-						}
-						if(capacity >= 0)
-						{
-							FluidStack fuel = FluidUtil.getFluidContained(equipped).orElse(FluidStack.EMPTY);
-							int amount = fuel.getAmount();
-							if(!drill&&player.isHandActive()&&player.getActiveHand()==hand)
+							if(capacity > 0)
 							{
-								int use = player.getItemInUseMaxCount();
-								amount -= use*IEConfig.TOOLS.chemthrower_consumption.get();
-							}
-							float cap = (float)capacity;
-							float angle = 83-(166*amount/cap);
-							GlStateManager.rotatef(angle, 0, 0, 1);
-							ClientUtils.drawTexturedRect(6, -2, 24, 4, 91/256f, 123/256f, 80/256f, 87/256f);
-							GlStateManager.rotatef(-angle, 0, 0, 1);
-							GlStateManager.translated(23, 37, 0);
-							if(drill)
-							{
-								ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
-								ItemRenderer ir = ClientUtils.mc().getItemRenderer();
-								ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
-								if(!head.isEmpty())
+								FluidStack fuel = handler.getFluidInTank(0);
+								int amount = fuel.getAmount();
+								if(!drill&&player.isHandActive()&&player.getActiveHand()==hand)
 								{
-									ir.renderItemIntoGUI(head, -51, -45);
-									ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
-									RenderHelper.disableStandardItemLighting();
+									int use = player.getItemInUseMaxCount();
+									amount -= use*IEConfig.TOOLS.chemthrower_consumption.get();
 								}
-							}
-							else if(buzzsaw)
-							{
-								ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
-								ItemRenderer ir = ClientUtils.mc().getItemRenderer();
-								ItemStack blade = ((BuzzsawItem)equipped.getItem()).getSawblade(equipped);
-								if(!blade.isEmpty())
+								float cap = (float)capacity;
+								float angle = 83-(166*amount/cap);
+								GlStateManager.rotatef(angle, 0, 0, 1);
+								ClientUtils.drawTexturedRect(6, -2, 24, 4, 91/256f, 123/256f, 80/256f, 87/256f);
+								GlStateManager.rotatef(-angle, 0, 0, 1);
+								GlStateManager.translated(23, 37, 0);
+								if(drill)
 								{
-									ir.renderItemIntoGUI(blade, -51, -45);
-									ir.renderItemOverlayIntoGUI(blade.getItem().getFontRenderer(blade), blade, -51, -45, null);
-									RenderHelper.disableStandardItemLighting();
+									ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
+									ItemRenderer ir = ClientUtils.mc().getItemRenderer();
+									ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
+									if(!head.isEmpty())
+									{
+										ir.renderItemIntoGUI(head, -51, -45);
+										ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
+										RenderHelper.disableStandardItemLighting();
+									}
 								}
-							}
-							else
-							{
-								ClientUtils.drawTexturedRect(-41, -73, 53, 72, 8/256f, 61/256f, 4/256f, 76/256f);
-								boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
-								ClientUtils.drawTexturedRect(-32, -43, 12, 12, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
+								else if(buzzsaw)
+								{
+									ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
+									ItemRenderer ir = ClientUtils.mc().getItemRenderer();
+									ItemStack blade = ((BuzzsawItem)equipped.getItem()).getSawblade(equipped);
+									if(!blade.isEmpty())
+									{
+										ir.renderItemIntoGUI(blade, -51, -45);
+										ir.renderItemOverlayIntoGUI(blade.getItem().getFontRenderer(blade), blade, -51, -45, null);
+										RenderHelper.disableStandardItemLighting();
+									}
+								}
+								else
+								{
+									ClientUtils.drawTexturedRect(-41, -73, 53, 72, 8/256f, 61/256f, 4/256f, 76/256f);
+									boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
+									ClientUtils.drawTexturedRect(-32, -43, 12, 12, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
 
-								ClientUtils.drawTexturedRect(-100, -20, 64, 16, 0/256f, 64/256f, 76/256f, 92/256f);
-								if(!fuel.isEmpty())
-								{
-									String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
-									ClientUtils.font().drawString(name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0);
+									ClientUtils.drawTexturedRect(-100, -20, 64, 16, 0/256f, 64/256f, 76/256f, 92/256f);
+									if(!fuel.isEmpty())
+									{
+										String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
+										ClientUtils.font().drawString(name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0);
+									}
 								}
 							}
-						}
+						});
 						GlStateManager.popMatrix();
 					}
 					else if(equipped.getItem() instanceof IEShieldItem)
