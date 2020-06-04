@@ -307,9 +307,9 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 
 	/* ------------- DIGGING ------------- */
 
-	public boolean canDrillBeUsed(ItemStack drill, LivingEntity player)
+	public boolean canDrillBeUsed(ItemStack drill, @Nullable LivingEntity player)
 	{
-		if(player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
+		if(player!=null&&player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
 			return false;
 		return !getFluid(drill).isEmpty();
 	}
