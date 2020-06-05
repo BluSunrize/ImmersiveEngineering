@@ -8,18 +8,14 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.impl.*;
-import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -228,7 +224,7 @@ public class ShaderRegistry
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_uncoloured"), 0xffffffff));
-		list.add(new ShaderLayer(((Material)null), 0xffffffff));//final pass is for drill head and augers
+		list.add(new ShaderLayer(null, 0xffffffff));//final pass is for drill head and augers
 		ShaderCaseDrill shader = new ShaderCaseDrill(list);
 		return registerShaderCase(name, shader, rarity);
 	}
@@ -249,7 +245,7 @@ public class ShaderRegistry
 	 */
 	public static ShaderCaseBuzzsaw registerShader_Buzzsaw(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
 	{
-		List<ShaderLayer> list = new ArrayList();
+		List<ShaderLayer> list = new ArrayList<>();
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_0"), colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_0"), colour1));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_1_"+overlayType), colour2));
@@ -259,7 +255,7 @@ public class ShaderRegistry
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:item/shaders/buzzsaw_diesel_uncoloured"), 0xffffffff));
-		list.add(new ShaderLayer(((Material)null), 0xffffffff));//final pass is for drill head and augers
+		list.add(new ShaderLayer(null, 0xffffffff));//final pass is for drill head and augers
 		ShaderCaseBuzzsaw shader = new ShaderCaseBuzzsaw(list);
 		return registerShaderCase(name, shader, rarity);
 	}

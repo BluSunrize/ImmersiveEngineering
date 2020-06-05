@@ -765,12 +765,16 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		return GROUP_BLADE;
 	}
 
-	private static final TransformationMatrix MAT_FIXED = new TransformationMatrix(new Vector3f(0.60945f, 0, 0), null, null, null);
+	@OnlyIn(Dist.CLIENT)
+	private static TransformationMatrix MAT_FIXED;
 
 	@Nonnull
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
 	{
+		if(MAT_FIXED==null)
+			MAT_FIXED = new TransformationMatrix(new Vector3f(0.60945f, 0, 0), null, null, null);
 		if(!shouldRotate(entity, stack, transform))
 			return MAT_FIXED;
 		float ticksPerRotation = 10f;

@@ -86,8 +86,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecartEntity> extends Mi
 							matrixStackIn.scale(scale, scale, scale);
 
 							RenderType type = sCase.getLayers()[pass].getRenderType(RenderType.getEntityTranslucent(
-									//TODO should be atlas?
-									sCase.getTextureReplacement(Integer.toString(part), pass).getTextureLocation()
+									sCase.getTextureReplacement(Integer.toString(part), pass).getAtlasLocation()
 							));
 
 							ModelRenderer subModel = boxList.get(part);

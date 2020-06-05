@@ -4,19 +4,20 @@ import com.google.common.base.Preconditions;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.Material;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ShaderLayer
 {
 	/**
 	 * A resource location pointing to a texture on the sheet
 	 */
-	private final Material texture;
+	private final ResourceLocation texture;
 	/**
 	 * An ARGB formatted colour
 	 */
-	private final Vector4f color;
+	private final int color;
 	/**
 	 * An optional double array (uMin, vMin, uMax, vMax; values of 0-1) to define which part of the original texture is overriden<br>
 	 * The model will then only render faces who's coords lie within that limited space.<br>
@@ -31,13 +32,8 @@ public class ShaderLayer
 
 	public ShaderLayer(ResourceLocation texture, int color)
 	{
-		this(new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, texture), color);
-	}
-
-	public ShaderLayer(Material texture, int color)
-	{
 		this.texture = texture;
-		this.color = new Vector4f((color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f);
+		this.color = color;
 		if(ShaderRegistry.defaultLayerBounds.containsKey(texture))
 			this.setTextureBounds(ShaderRegistry.defaultLayerBounds.get(texture));
 	}
@@ -81,12 +77,16 @@ public class ShaderLayer
 
 	public Material getTexture()
 	{
-		return texture;
+		if(texture!=null)
+			return new Material(texture, texture);
+		else
+			return null;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	public Vector4f getColor()
 	{
-		return color;
+		return new Vector4f((color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f);
 	}
 
 	/**

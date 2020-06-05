@@ -586,12 +586,16 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 			return FIXED;
 	}
 
-	private static final TransformationMatrix matAugers = new TransformationMatrix(new Vector3f(.441f, 0, 0), null, null, null);
+	@OnlyIn(Dist.CLIENT)
+	private static TransformationMatrix matAugers;
 
 	@Nonnull
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
 	{
+		if(matAugers==null)
+			matAugers = new TransformationMatrix(new Vector3f(.441f, 0, 0), null, null, null);
 		if(groups==FIXED[0])
 			return matAugers;
 		float angle = (entity.ticksExisted%60+partialTicks)/60f*(float)(2*Math.PI);

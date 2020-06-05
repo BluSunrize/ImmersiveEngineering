@@ -746,15 +746,25 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return groups;
 	}
 
-	private static final TransformationMatrix matOpen = new TransformationMatrix(new Vector3f(-.625F, .25F, 0), new Quaternion(0, 0, -.87266f, false), null, null);
-	private static final TransformationMatrix matClose = new TransformationMatrix(new Vector3f(-.625F, .25F, 0), null, null, null);
-	private static final TransformationMatrix matCylinder = new TransformationMatrix(new Vector3f(0, .6875F, 0), null, null, null);
+	@OnlyIn(Dist.CLIENT)
+	private static TransformationMatrix matOpen;
+	@OnlyIn(Dist.CLIENT)
+	private static TransformationMatrix matClose;
+	@OnlyIn(Dist.CLIENT)
+	private static TransformationMatrix matCylinder;
 
 	@Nonnull
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
 													  float partialTicks)
 	{
+		if(matOpen==null)
+			matOpen = new TransformationMatrix(new Vector3f(-.625F, .25F, 0), new Quaternion(0, 0, -.87266f, false), null, null);
+		if(matClose==null)
+			matClose = new TransformationMatrix(new Vector3f(-.625F, .25F, 0), null, null, null);
+		if(matCylinder==null)
+			matCylinder = new TransformationMatrix(new Vector3f(0, .6875F, 0), null, null, null);
 		if(entity instanceof PlayerEntity&&(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND))
 		{
 			boolean main = (transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getPrimaryHand()==HandSide.RIGHT);

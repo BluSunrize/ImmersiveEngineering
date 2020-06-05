@@ -23,8 +23,6 @@ import java.util.Collection;
 
 public class ClocheRenderFunctions
 {
-	private static final TransformationMatrix DEFAULT_TRANSFORMATION = new TransformationMatrix(null);
-
 	public static void init()
 	{
 		// register farmland texture
@@ -86,7 +84,7 @@ public class ClocheRenderFunctions
 		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
 		{
 			int age = Math.min(this.maxAge, Math.round(this.maxAge*growth));
-			return ImmutableList.of(Pair.of(this.cropBlock.getDefaultState().with(this.ageProperty, age), DEFAULT_TRANSFORMATION));
+			return ImmutableList.of(Pair.of(this.cropBlock.getDefaultState().with(this.ageProperty, age), new TransformationMatrix(null)));
 		}
 	}
 

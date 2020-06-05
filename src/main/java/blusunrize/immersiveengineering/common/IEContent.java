@@ -530,12 +530,6 @@ public class IEContent
 			}
 		};
 
-
-		/*TODO
-		if(IEConfig.hempSeedWeight > 0)
-			MinecraftForge.addGrassSeed(new ItemStack(IEItems.Misc.hempSeeds), IEConfig.hempSeedWeight);
-		 */
-
 		IEItems.Misc.iconBirthday = new FakeIconItem("birthday");
 		IEItems.Misc.iconLucky = new FakeIconItem("lucky");
 		IEItems.Misc.iconDrillbreak = new FakeIconItem("drillbreak");
@@ -549,7 +543,7 @@ public class IEContent
 		ClocheRenderFunctions.init();
 
 		IELootFunctions.preInit();
-		IEShaders.preInit();
+		IEShaders.commonConstruction();
 	}
 
 	@SubscribeEvent
